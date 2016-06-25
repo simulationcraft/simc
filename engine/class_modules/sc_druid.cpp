@@ -2027,6 +2027,8 @@ public:
   struct {
     bool direct, tick;
   } razor_claws;
+  bool    snapshots_tf;
+  bool    snapshots_sr;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
@@ -2035,7 +2037,9 @@ public:
     requires_stealth( false ),
     consumes_combo_points( false ),
     consumes_clearcasting( true ),
-    trigger_tier17_2pc( false )
+    trigger_tier17_2pc( false ),
+    snapshots_sr( true ),
+    snapshots_tf( true )
   {
     parse_options( options );
     
@@ -2156,10 +2160,11 @@ public:
     double am = base_t::action_multiplier();
 
     // Cancel out the multipliers from druid_t::composite_player_multiplier.
-    if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+    if ( snapshots_tf )
       am /= 1.0 + p() -> buff.tigers_fury -> check_value();
 
-    am /= 1.0 + p() -> buff.savage_roar -> check_value();
+    if ( snapshots_sr )
+      am /= 1.0 + p() -> buff.savage_roar -> check_value();
 
     return am;
   }
@@ -2171,10 +2176,11 @@ public:
     if ( consumes_bloodtalons )
       pm *= 1.0 + p() -> buff.bloodtalons -> check_value();
     
-    if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+    if ( snapshots_tf )
       pm *= 1.0 + p() -> buff.tigers_fury -> check_value();
 
-    pm *= 1.0 + p() -> buff.savage_roar -> check_value();
+    if ( snapshots_sr )
+      pm *= 1.0 + p() -> buff.savage_roar -> check_value();
 
     return pm;
   }
@@ -2668,6 +2674,8 @@ struct lunar_inspiration_t : public cat_attack_t
     cat_attack_t( "lunar_inspiration", player, player -> find_spell( 155625 ), options_str )
   {
     may_dodge = may_parry = may_block = may_glance = false;
+    snapshots_sr = snapshots_tf = false; // June 6 2016
+    hasted_ticks = true;
   }
 
   void init() override
@@ -7026,9 +7034,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.manipulated_fel_energy -> check_stack_value();
 
   // Tiger's Fury and Savage Roar are player multipliers. Their "snapshotting" for cat abilities is handled in cat_attack_t.
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
-    m *= 1.0 + buff.tigers_fury -> check_value();
-
+  m *= 1.0 + buff.tigers_fury -> check_value();
   m *= 1.0 + buff.savage_roar -> check_value();
 
   m *= 1.0 + buff.celestial_alignment -> check_value();
