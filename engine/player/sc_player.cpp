@@ -9341,6 +9341,7 @@ void player_t::copy_from( player_t* source )
   sets.actor = this;
   gear = source -> gear;
   enchant = source -> enchant;
+  bugs = source -> bugs;
 }
 
 
