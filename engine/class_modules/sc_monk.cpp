@@ -2065,7 +2065,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     monk_heal_t( name, p, p.talent.eye_of_the_tiger -> effectN( 1 ).trigger() )
   {
     background = true;
-    may_crit = hasted_ticks = false;
+    hasted_ticks = false;
     target = player;
   }
 };
@@ -2076,7 +2076,7 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
     monk_spell_t( name, player, player -> talent.eye_of_the_tiger -> effectN( 1 ).trigger() )
   {
     background = true;
-    may_crit = hasted_ticks = false;
+    hasted_ticks = false;
     attack_power_mod.direct = 0;
     attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
   }
@@ -2960,8 +2960,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
     channeled = tick_zero = true;
     hasted_ticks = false;
     interrupt_auto_attack = true;
+    dot_behavior = DOT_REFRESH;
     // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
-    base_tick_time = p -> spec.fists_of_fury -> duration() / 5;
+    base_tick_time = dot_duration / 5;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
     attack_power_mod.direct = 0.0;
@@ -2973,6 +2974,12 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p -> artifact.crosswinds.rank() )
       add_child( crosswinds );
+  }
+
+  // N full ticks, but never additional ones.
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration;
   }
 
   virtual double action_multiplier() const override
@@ -5323,15 +5330,6 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     attack_power_mod.direct = 0.750; // Hard code 06/21/16
     target = player;
   }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    am *= combo_strikes_multiplier();
-
-    return am;
-  }
 };
 
 struct chi_wave_dmg_tick_t: public monk_spell_t
@@ -5417,15 +5415,6 @@ struct chi_burst_heal_t: public monk_heal_t
     background = true;
     target = p();
     attack_power_mod.direct = 4.125; // Hard code 06/21/16
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    am *= combo_strikes_multiplier();
-
-    return am;
   }
 };
 
