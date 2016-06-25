@@ -7857,10 +7857,10 @@ void effect_callbacks_t<T_CB>::reset()
 struct item_targetdata_initializer_t
 {
   unsigned item_id;
-  std::vector< slot_e > slots;
+  std::vector< slot_e > slots_;
 
   item_targetdata_initializer_t( unsigned iid, const std::vector< slot_e >& s ) :
-    item_id( iid ), slots( s )
+    item_id( iid ), slots_( s )
   { }
 
   virtual ~item_targetdata_initializer_t() {}
@@ -7875,11 +7875,11 @@ struct item_targetdata_initializer_t
       return 0;
     }
 
-    for ( size_t i = 0; i < slots.size(); ++i )
+    for ( size_t i = 0; i < slots_.size(); ++i )
     {
-      if ( player -> items[ slots[ i ] ].parsed.data.id == item_id )
+      if ( player -> items[slots_[ i ] ].parsed.data.id == item_id )
       {
-        return player -> items[ slots[ i ] ].parsed.special_effects[ 0 ];
+        return player -> items[slots_[ i ] ].parsed.special_effects[ 0 ];
       }
     }
 
