@@ -5336,7 +5336,12 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     double am = monk_heal_t::action_multiplier();
 
     if ( p() -> buff.storm_earth_and_fire -> up() )
-      am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 3 ).percent();
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 3 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 3 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     return am;
   }
@@ -5432,7 +5437,12 @@ struct chi_burst_heal_t: public monk_heal_t
     double am = monk_heal_t::action_multiplier();
 
     if ( p() -> buff.storm_earth_and_fire -> up() )
-      am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 3 ).percent();
+    {
+      double sef_mult = p() -> spec.storm_earth_and_fire -> effectN( 3 ).percent();
+      if ( p() -> artifact.spiritual_focus.rank() )
+        sef_mult += p() -> artifact.spiritual_focus.data().effectN( 3 ).percent();
+      am *= 1.0 + sef_mult;
+    }
 
     return am;
   }
