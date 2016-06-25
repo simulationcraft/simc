@@ -4538,8 +4538,6 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
 
 struct taint_of_the_sea_t : public spell_t
 {
-  action_t* absorb;
-
   taint_of_the_sea_t( const special_effect_t& effect ) :
     spell_t( "taint_of_the_sea", effect.player, effect.player -> find_spell( 215695 ) )
   {
@@ -4563,49 +4561,49 @@ struct taint_of_the_sea_t : public spell_t
 
   void execute() override
   {
-    /* buff_t* d = player -> get_target_data( target ) -> debuff.taint_of_the_sea;
+    buff_t* d = player -> get_target_data( target ) -> debuff.taint_of_the_sea;
     
     assert( d && d -> check() );
 
-    base_dd_min = base_dd_max = std::min( base_dd_min, d -> current_value ); */
+    base_dd_min = base_dd_max = std::min( base_dd_min, d -> current_value / base_multiplier );
 
     spell_t::execute();
 
-    /* d -> current_value -= execute_state -> result;
+    d -> current_value -= execute_state -> result_amount;
 
-    assert( d -> current_value >= 0.0 );
+    // can't assert on any negative number because precision reasons
+    assert( d -> current_value >= -1.0 );
 
     if ( d -> current_value <= 0.0 )
-      d -> expire(); */
+      d -> expire();
   }
 };
 
 struct taint_of_the_sea_driver_t : public dbc_proc_callback_t
 {
   action_t* damage;
-  player_t* player, * taint_target;
+  player_t* player, *active_target;
 
   taint_of_the_sea_driver_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.player, effect ),
     damage( effect.player -> find_action( "taint_of_the_sea" ) ),
-    player( effect.player ), taint_target( nullptr )
+    player( effect.player ), active_target( nullptr )
   {}
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
-    if ( taint_target == trigger_state -> target )
-    {
-      return;
-    }
+    assert( active_target );
 
-    if ( ! player -> get_target_data( taint_target ) -> debuff.taint_of_the_sea -> check() )
-    {
+    if ( trigger_state -> target == active_target )
       return;
-    }
+    if ( trigger_state -> result_amount <= 0 )
+      return;
 
-    damage -> target = taint_target;
+    assert( player -> get_target_data( active_target ) -> debuff.taint_of_the_sea -> check() );
+
+    damage -> target = active_target;
     damage -> base_dd_min = damage -> base_dd_max = trigger_state -> result_amount;
-    damage -> schedule_execute();
+    damage -> execute();
   }
 };
 
@@ -4615,9 +4613,9 @@ struct taint_of_the_sea_debuff_t : public debuff_t
 
   taint_of_the_sea_debuff_t( player_t* target, const special_effect_t* effect ) : 
     debuff_t( buff_creator_t( actor_pair_t( target, effect -> player ), "taint_of_the_sea", effect -> driver() )
-      .default_value( effect -> driver() -> effectN( 2 ).average( effect -> item ) ) )
+      .default_value( effect -> driver() -> effectN( 2 ).trigger() -> effectN( 2 ).average( effect -> item ) ) )
   {
-    // Damage transfer effect & callback
+    // Damage transfer effect & callback. We'll enable this callback whenever the debuff is active.
     special_effect_t* effect2 = new special_effect_t( effect -> player );
     effect2 -> name_str = "taint_of_the_sea_driver";
     effect2 -> proc_chance_ = 1.0;
@@ -4633,14 +4631,15 @@ struct taint_of_the_sea_debuff_t : public debuff_t
   {
     debuff_t::start( stacks, value, duration );
 
-    callback -> taint_target = player;
+    callback -> active_target = player;
     callback -> activate();
   }
 
   void expire_override( int stacks, timespan_t remaining ) override
   {
     debuff_t::expire_override( stacks, remaining );
-
+    
+    callback -> active_target = nullptr;
     callback -> deactivate();
   }
 
@@ -4648,6 +4647,7 @@ struct taint_of_the_sea_debuff_t : public debuff_t
   {
     debuff_t::reset();
 
+    callback -> active_target = nullptr;
     callback -> deactivate();
   }
 };
@@ -4693,15 +4693,15 @@ void item::figurehead_of_the_naglfar( special_effect_t& effect )
     apply_debuff_t( special_effect_t& effect ) :
       spell_t( "apply_taint_of_the_sea", effect.player, spell_data_t::nil() )
     {
-      background = true;
+      background = quiet = true;
       callbacks = false;
     }
 
-    void impact( action_state_t* s ) override
+    void execute() override
     {
-      action_t::impact( s );
+      spell_t::execute();
 
-      player -> get_target_data( s -> target ) -> debuff.taint_of_the_sea -> trigger();
+      player -> get_target_data( target ) -> debuff.taint_of_the_sea -> trigger();
     }
   };
 
