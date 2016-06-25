@@ -1297,7 +1297,7 @@ struct chaos_blades_t : public demon_hunter_spell_t
   chaos_blades_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "chaos_blades", p, p -> talent.chaos_blades, options_str )
   {
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_block = may_dodge = may_parry = may_crit = harmful = false;
   }
 
   void execute() override
@@ -2008,6 +2008,8 @@ struct metamorphosis_t : public demon_hunter_spell_t
     base_teleport_distance  = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
     impact_action = new metamorphosis_impact_t( p );
+    min_gcd = timespan_t::from_seconds( 1.0 ); // cannot use skills during travel time
+    travel_speed = 1.0; // allows use precombat
 
     cooldown -> duration += p -> artifact.unleashed_demons.time_value();
   }
@@ -4962,12 +4964,45 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( "pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=30" );
   def -> add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=active_enemies>desired_targets|raid_event.adds.in>60" );
   def -> add_action( this, "Consume Magic" );
-  def -> add_action( this, "Vengeful Retreat", "jump_cancel=1,if=gcd.remains&((talent.momentum.enabled&buff.momentum.down)|!talent.momentum.enabled)" );
+  def -> add_action( this, "Vengeful Retreat", "jump_cancel=1,if=gcd.remains&((talent.momentum.enabled&buff.momentum.down)|!talent.momentum.enabled)&buff.prepared.down" );
   def -> add_action( this, "Fel Rush", "jump_cancel=1,if=talent.momentum.enabled&buff.momentum.down&raid_event.movement.in>charges*10&(charges=2|cooldown.vengeful_retreat.remains>4)" );
   def -> add_action( this, "Eye Beam", "if=talent.demonic.enabled&buff.metamorphosis.down&(!talent.first_blood.enabled|fury>=80|fury.deficit<30)" );
   def -> add_talent( this, "Chaos Blades", "if=buff.chaos_blades.down&cooldown.metamorphosis.remains>100" );
   def -> add_talent( this, "Chaos Blades", "sync=metamorphosis" );
-  def -> add_action( this, "Metamorphosis", "if=buff.metamorphosis.down&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(cooldown.chaos_blades.ready|buff.chaos_blades.up|!talent.demon_reborn.enabled)" );
+  def -> add_action( this, "Metamorphosis", "if=buff.metamorphosis.down&fury.deficit<25&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(cooldown.chaos_blades.ready|buff.chaos_blades.up|!talent.demon_reborn.enabled)" );
+  def -> add_action( this, "Demon's Bite", "if=buff.metamorphosis.down&cooldown.metamorphosis.ready" );
+
+  // On-Use Items
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    if ( items[ i ].has_use_special_effect() )
+    {
+      std::string line = std::string( "use_item,slot=" ) + items[ i ].slot_name();
+      if ( util::str_compare_ci( items[ i ].name_str, "tiny_oozeling_in_a_jar" ) )
+        line += ",if=buff.congealing_goo.react=6|(buff.chaos_blades.up&buff.chaos_blades.remains<5&cooldown.chaos_blades.remains)";
+      else if ( util::str_compare_ci( items[ i ].name_str, "figurehead_of_the_naglfar" ) )
+        line += ",if=active_enemies>1";
+      else
+      {
+        timespan_t use_cd = items[ i ].special_effect().cooldown();
+
+        if ( talent.chaos_blades -> cooldown() % use_cd == timespan_t::zero() )
+        {
+          line += ",if=buff.chaos_blades.up|!talent.chaos_blades.enabled";
+
+          if ( use_cd < talent.chaos_blades -> cooldown() )
+          {
+            char buffer[8]; 
+            snprintf( buffer, sizeof(buffer), "%.0f", use_cd.total_seconds() );
+            line += "|cooldown.chaos_blades.remains>=" + std::string( buffer );
+          }
+        }
+      }
+
+      def -> add_action( line );
+    }
+  }
+
   def -> add_action( this, spec.death_sweep, "death_sweep", "if=talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled" );
   def -> add_action( this, "Demon's Bite", "if=buff.metamorphosis.remains>gcd&(talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled)&cooldown.blade_dance.remains<gcd&fury<70" );
   def -> add_action( this, "Blade Dance", "if=talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled" );
