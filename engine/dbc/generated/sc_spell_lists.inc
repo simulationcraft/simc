@@ -213,8 +213,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          982, // Revive Pet
       175686, // Stopping Power
         1515, // Tame Beast
-      207068, // Titan's Thunder (Artifact)
       207097, // Titan's Thunder
+      207068, // Titan's Thunder (Artifact)
       210000, // Wake Up
       204147, // Windburst (Artifact)
            0,
@@ -553,14 +553,16 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 6 abilities
+    // Pet tree, 8 abilities
     {
        81280, // Blood Burst
        47468, // Claw
+      212333, // Cleaver
        51963, // Gargoyle Strike
        47481, // Gnaw
        47484, // Huddle
        47482, // Leap
+      198715, // Val'kyr Strike
            0,
     },
   },

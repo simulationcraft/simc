@@ -1217,6 +1217,10 @@ class SpellDataGenerator(DataGenerator):
           ( 170205, 0 ), # Frost T17 4pc driver continued ...
           ( 187981, 0 ), ( 187970, 0 ), # T18 4pc unholy relevant spells
           ( 184982, 0 ),    # Frozen Obliteration
+          ( 212333, 5 ),    # Cleaver for Sludge Belcher
+          ( 212332, 5 ),    # Smash for Sludge Belcher
+          ( 212338, 5 ),    # Vile Gas for Sludge Belcher
+          ( 198715, 5 ),    # Val'kyr Strike for Dark Arbiter
         ),
 
         # Shaman:
