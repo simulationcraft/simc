@@ -421,7 +421,7 @@ class LegionWDBParser(DBCParserBase):
 
     def find_record_offset(self, id_):
         if self.flags & X_ID_BLOCK:
-            for record_id in range(0, self.records):
+            for record_id in range(0, self.n_records()):
                 if self.id_table[record_id][0] == id_:
                     return self.id_table[record_id]
             return -1, 0, 0
