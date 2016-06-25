@@ -387,6 +387,7 @@ public:
     proc_t* soul_fragment_lesser;
     
     // Havoc
+    proc_t* demon_blades_wasted;
     proc_t* demonic_appetite;
     proc_t* demons_bite_in_meta;
     proc_t* felblade_reset;
@@ -2576,9 +2577,16 @@ struct melee_t : public demon_hunter_attack_t
       return;
 
     // All hits have an x% chance to generate 1 charge.
-    if ( p() -> demon_blades_charges < 10 && rng().roll( p() -> talent.demon_blades -> effectN( 1 ).percent() ) )
+    if ( rng().roll( p() -> talent.demon_blades -> effectN( 1 ).percent() ) )
     {
-      p() -> demon_blades_charges++;
+      if ( p() -> demon_blades_charges < 10 )
+      {
+        p() -> demon_blades_charges++;
+      }
+      else
+      {
+        p() -> proc.demon_blades_wasted -> occur();
+      }
     }
     
     // Hits not during a GCD can expend up to 2 charges.
@@ -4540,6 +4548,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_lesser   = get_proc( "soul_fragment_lesser" );
 
   // Havoc
+  proc.demon_blades_wasted    = get_proc( "demon_blades_wasted" );
   proc.demonic_appetite       = get_proc( "demonic_appetite" );
   proc.demons_bite_in_meta    = get_proc( "demons_bite_in_meta" );
   proc.felblade_reset         = get_proc( "felblade_reset" );
