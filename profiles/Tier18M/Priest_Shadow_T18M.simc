@@ -27,7 +27,7 @@ actions=use_item,slot=finger1
 actions+=/call_action_list,name=vf,if=buff.voidform.up
 actions+=/call_action_list,name=main
 
-actions.main=voidform
+actions.main=void_eruption
 actions.main+=/mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc
 actions.main+=/shadow_word_death
 actions.main+=/mind_blast
