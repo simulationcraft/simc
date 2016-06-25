@@ -1637,11 +1637,20 @@ struct execution_sentence_t : public paladin_spell_t
 
   void execute() override
   {
+    double c = cost();
     paladin_spell_t::execute();
 
-    if ( ! ( p() -> bugs ) )
-      if ( p() -> buffs.the_fires_of_justice -> up() )
-        p() -> buffs.the_fires_of_justice -> expire();
+    if ( c <= 0.0 )
+    {
+      if ( p() -> buffs.divine_purpose -> check() )
+      {
+        p() -> buffs.divine_purpose -> expire();
+      }
+    }
+    else if ( p() -> buffs.the_fires_of_justice -> up() )
+    {
+      p() -> buffs.the_fires_of_justice -> expire();
+    }
 
     if ( p() -> buffs.crusade -> check() )
     {
@@ -2694,7 +2703,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
   {
     double c = cost();
     paladin_melee_attack_t::execute();
-    if ( c == 0.0 )
+    if ( c <= 0.0 )
     {
       if ( p() -> buffs.divine_purpose -> check() )
       {
@@ -3072,9 +3081,10 @@ struct divine_storm_t: public holy_power_consumer_t
 
   virtual void execute() override
   {
+    double cost = cost();
     holy_power_consumer_t::execute();
 
-    if ( p() -> buffs.the_fires_of_justice -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() && cost > 0 )
       p() -> buffs.the_fires_of_justice -> expire();
 
     if ( p() -> artifact.echo_of_the_highlord.rank() )
@@ -3596,7 +3606,7 @@ struct templars_verdict_t : public holy_power_consumer_t
     holy_power_consumer_t::execute();
 
     // TODO: do misses consume fires of justice?
-    if ( p() -> buffs.the_fires_of_justice -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() && c > 0 )
       p() -> buffs.the_fires_of_justice -> expire();
 
     // missed/dodged/parried TVs do not consume Holy Power
@@ -3652,7 +3662,7 @@ struct justicars_vengeance_t : public holy_power_consumer_t
     holy_power_consumer_t::execute();
 
     // TODO: do misses consume fires of justice?
-    if ( p() -> buffs.the_fires_of_justice -> up() )
+    if ( p() -> buffs.the_fires_of_justice -> up() && c > 0 )
       p() -> buffs.the_fires_of_justice -> expire();
 
     // missed/dodged/parried TVs do not consume Holy Power
@@ -3688,6 +3698,7 @@ struct seal_of_light_t : public paladin_spell_t
     double c = cost();
     paladin_spell_t::execute();
 
+    // TODO: verify this
     if ( p() -> buffs.the_fires_of_justice -> up() )
     {
       p() -> buffs.the_fires_of_justice -> expire();
