@@ -1065,7 +1065,7 @@ public:
     may_proc_windfury( p -> spec.windfury -> ok() ),
     may_proc_flametongue( p -> spec.flametongue -> ok() ),
     may_proc_frostbrand( p -> spec.frostbrand -> ok() ),
-    may_proc_maelstrom_weapon( p -> spec.maelstrom_weapon -> ok() ),
+    may_proc_maelstrom_weapon( false ), // Change to whitelisting
     may_proc_stormbringer( p -> spec.stormbringer -> ok() )
   {
     special = true;
@@ -2272,6 +2272,8 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
 
     // Windfury can not proc itself
     may_proc_windfury = false;
+
+    may_proc_maelstrom_weapon = true;
   }
 
   double action_multiplier() const
@@ -2413,6 +2415,8 @@ struct windlash_t : public shaman_attack_t
     weapon            = w;
     base_execute_time = w -> swing_time;
     trigger_gcd       = timespan_t::zero();
+
+    may_proc_maelstrom_weapon = true; // Presumption, but should be safe
   }
 
   double target_armor( player_t* ) const override
@@ -2659,6 +2663,8 @@ struct melee_t : public shaman_attack_t
 
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> dual_wield() )
       base_hit -= 0.19;
+
+    may_proc_maelstrom_weapon = true;
   }
 
   void reset() override
