@@ -4144,6 +4144,23 @@ Effects          :
 #1 (id=291742)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
+Name             : Val'kyr Strike (id=198715) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Range            : 40 yards
+Cast Time        : 2 seconds
+Velocity         : 30 yards/sec
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=292108)   : School Damage: shadow (2)
+                   Base Value: 110 | Scaled Value: 110 | AP Coefficient: 7.00000 | Target: Enemy(6)
+Description      : Inflicts Shadow damage to an enemy.
+
 Name             : Shadow Infusion (id=198943) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
@@ -5283,6 +5300,106 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7f | Radius: 0 - 80 yards | Target: At Caster(22) -> AOE friendly(30)
 Description      : Spending Runic Power increases the Val'kyr Battlemaiden's damage by $s1% per Runic Power spent.
 Tooltip          : Damage dealt increased by $w1%.
+
+Name             : Smash (id=212332) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Level      : 1
+Range            : 5 yards
+Duration         : 1 seconds
+Cooldown         : 90 seconds
+Stance Mask      : 0x00000040
+Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
+                 : ........ ........ ...xx... ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=314797)   : Apply Aura (6) | Stun (12)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy(6)
+#2 (id=314798)   : Weapon Damage% (31)
+                   Base Value: 12 | Scaled Value: 0.12 | Target: Enemy(6)
+Description      : $@spelldesc212336
+Tooltip          : Stunned.
+
+Name             : Cleaver (id=212333) 
+Class            : Death Knight
+School           : Physical
+Resource         : 40 Energy
+Spell Level      : 1
+Range            : 5 yards
+GCD              : 1 seconds
+Stance Mask      : 0x00000040
+Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=314799)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+Description      : Hack at the enemy, dealing $212335s1% of normal melee damage.$?s63560[
+
+|CFFE55BB0Dark Transformation: Expel vile gas, dealing $212338s1% of normal melee damage to all enemies within $212338A1 yds.|R][]
+
+Name             : Cleaver (id=212335) 
+Class            : Death Knight
+School           : Physical
+Resource         : 40 Energy
+Spell Level      : 1
+Range            : 5 yards
+Stance Mask      : 0x00000040
+Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=314801)   : Weapon Damage% (31)
+                   Base Value: 125 | Scaled Value: 1.25 | Target: Enemy(6)
+Description      : $@spelldesc212333
+
+Name             : Smash (id=212336) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Level      : 1
+Range            : 5 yards
+Cooldown         : 90 seconds
+Stance Mask      : 0x00000040
+Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ...xx... ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=314802)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+Description      : Smash the target with the blunt side of the cleaver, dealing light damage and stunning for $91800d.$?s63560[
+
+|CFFE55BB0Dark Transformation: Strike an enemy with a smashing attack, dealing $91797s2% of normal melee damage and stunning for $91797d.|R][]
+
+Name             : Vile Gas (id=212338) 
+Class            : Death Knight
+School           : Physical
+Resource         : 40 Energy
+Spell Level      : 1
+Range            : 5 yards
+GCD              : 1 seconds
+Stance Mask      : 0x00000040
+Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=314805)   : Weapon Damage% (31)
+                   Base Value: 150 | Scaled Value: 1.5 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+Description      : $@spelldesc212333
 
 Name             : Dark Arbiter (id=212412) [Spell Family (15), Hidden] 
 Class            : Death Knight

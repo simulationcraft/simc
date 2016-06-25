@@ -30,12 +30,14 @@ actions=auto_attack
 actions+=/pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=30
 actions+=/nemesis,target_if=min:target.time_to_die,if=active_enemies>desired_targets|raid_event.adds.in>60
 actions+=/consume_magic
-actions+=/vengeful_retreat,jump_cancel=1,if=gcd.remains&((talent.momentum.enabled&buff.momentum.down)|!talent.momentum.enabled)
+actions+=/vengeful_retreat,jump_cancel=1,if=gcd.remains&((talent.momentum.enabled&buff.momentum.down)|!talent.momentum.enabled)&buff.prepared.down
 actions+=/fel_rush,jump_cancel=1,if=talent.momentum.enabled&buff.momentum.down&raid_event.movement.in>charges*10&(charges=2|cooldown.vengeful_retreat.remains>4)
 actions+=/eye_beam,if=talent.demonic.enabled&buff.metamorphosis.down&(!talent.first_blood.enabled|fury>=80|fury.deficit<30)
 actions+=/chaos_blades,if=buff.chaos_blades.down&cooldown.metamorphosis.remains>100
 actions+=/chaos_blades,sync=metamorphosis
-actions+=/metamorphosis,if=buff.metamorphosis.down&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(cooldown.chaos_blades.ready|buff.chaos_blades.up|!talent.demon_reborn.enabled)
+actions+=/metamorphosis,if=buff.metamorphosis.down&fury.deficit<25&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(cooldown.chaos_blades.ready|buff.chaos_blades.up|!talent.demon_reborn.enabled)
+actions+=/demons_bite,if=buff.metamorphosis.down&cooldown.metamorphosis.ready
+actions+=/use_item,slot=trinket1,if=buff.chaos_blades.up|!talent.chaos_blades.enabled
 actions+=/death_sweep,if=talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled
 actions+=/demons_bite,if=buff.metamorphosis.remains>gcd&(talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled)&cooldown.blade_dance.remains<gcd&fury<70
 actions+=/blade_dance,if=talent.first_blood.enabled|spell_targets>1+talent.chaos_cleave.enabled
