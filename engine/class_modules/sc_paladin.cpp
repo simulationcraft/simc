@@ -3081,10 +3081,10 @@ struct divine_storm_t: public holy_power_consumer_t
 
   virtual void execute() override
   {
-    double cost = cost();
+    double c = cost();
     holy_power_consumer_t::execute();
 
-    if ( p() -> buffs.the_fires_of_justice -> up() && cost > 0 )
+    if ( p() -> buffs.the_fires_of_justice -> up() && c > 0 )
       p() -> buffs.the_fires_of_justice -> expire();
 
     if ( p() -> artifact.echo_of_the_highlord.rank() )
