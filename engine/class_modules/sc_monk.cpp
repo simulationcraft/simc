@@ -5330,6 +5330,16 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     attack_power_mod.direct = 0.750; // Hard code 06/21/16
     target = player;
   }
+
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+      am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 3 ).percent();
+
+    return am;
+  }
 };
 
 struct chi_wave_dmg_tick_t: public monk_spell_t
@@ -5415,6 +5425,16 @@ struct chi_burst_heal_t: public monk_heal_t
     background = true;
     target = p();
     attack_power_mod.direct = 4.125; // Hard code 06/21/16
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+      am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 3 ).percent();
+
+    return am;
   }
 };
 
@@ -6778,14 +6798,19 @@ double monk_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + spec.stance_of_the_fierce_tiger -> effectN( 3 ).percent();
 
   if ( buff.serenity -> up() )
-    m *= 1.0 + buff.serenity -> value();
+  {
+    double ser_mult = talent.serenity -> effectN( 2 ).percent();
+    if ( artifact.spiritual_focus.rank() )
+      ser_mult += artifact.spiritual_focus.data().effectN( 5 ).percent();
+    m *= ser_mult;
+  }
 
   if ( buff.storm_earth_and_fire -> up() )
   {
+    double sef_mult = spec.storm_earth_and_fire -> effectN( 1 ).percent();
     if ( artifact.spiritual_focus.rank() )
-      m *= 1.0 + spec.storm_earth_and_fire -> effectN( 2 ).percent() + artifact.spiritual_focus.percent();
-    else
-      m *= 1.0 + spec.storm_earth_and_fire -> effectN( 2 ).percent();
+      sef_mult += artifact.spiritual_focus.data().effectN( 1 ).percent();
+    m *= 1.0 + sef_mult;
   }
 
   // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, Elusive Brew increases damage based on spell data of the special effect.
@@ -6816,14 +6841,19 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
   double m = base_t::composite_player_heal_multiplier( s );
 
   if ( buff.serenity -> up() )
-    m *= 1.0 + talent.serenity -> effectN( 3 ).percent();
+  {
+    double ser_mult = talent.serenity -> effectN( 3 ).percent();
+    if ( artifact.spiritual_focus.rank() )
+      ser_mult += artifact.spiritual_focus.data().effectN( 6 ).percent();
+    m *= ser_mult;
+  }
 
   if ( buff.storm_earth_and_fire -> up() )
   {
+    double sef_mult = spec.storm_earth_and_fire -> effectN( 2 ).percent();
     if ( artifact.spiritual_focus.rank() )
-      m *= 1.0 + spec.storm_earth_and_fire -> effectN( 2 ).percent() + artifact.spiritual_focus.percent();
-    else
-      m *= 1.0 + spec.storm_earth_and_fire -> effectN( 2 ).percent();
+      sef_mult += artifact.spiritual_focus.data().effectN( 2 ).percent();
+    m *= 1.0 + sef_mult;
   }
 
   return m;
