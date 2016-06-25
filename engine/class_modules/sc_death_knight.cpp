@@ -782,7 +782,8 @@ struct pet_action_t : public T_ACTION
 {
   typedef pet_action_t<T_PET, T_ACTION> super;
 
-  pet_action_t( death_knight_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+  pet_action_t( T_PET* pet, const std::string& name,
+    const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     T_ACTION( name, pet, spell )
   {
     this -> parse_options( options );
@@ -821,7 +822,8 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
 {
   typedef pet_melee_attack_t<T_PET> super;
 
-  pet_melee_attack_t( death_knight_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+  pet_melee_attack_t( T_PET* pet, const std::string& name,
+    const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     pet_action_t<T_PET, melee_attack_t>( pet, name, spell, options )
   {
     this -> trigger_gcd = timespan_t::from_seconds( 1.5 );
@@ -882,7 +884,7 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 {
   typedef pet_spell_t<T_PET> super;
 
-  pet_spell_t( death_knight_pet_t* pet, const std::string& name,
+  pet_spell_t( T_PET* pet, const std::string& name,
     const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     pet_action_t<T_PET, spell_t>( pet, name, spell, options )
   { }
@@ -900,27 +902,26 @@ action_t* death_knight_pet_t::create_action( const std::string& name,
   return pet_t::create_action( name, options_str );
 }
 
-// Tempalted Dark Transformation ability, checks for readiness only
+// Templated Dark Transformation ability, checks for readiness only
 template <typename T>
 struct dt_melee_ability_t : public pet_melee_attack_t<T>
 {
   typedef dt_melee_ability_t<T> super;
 
-  dt_melee_ability_t( death_knight_pet_t* pet, const std::string& name,
+  dt_melee_ability_t( T* pet, const std::string& name,
       const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     pet_melee_attack_t<T>( pet, name, spell, options )
   { }
 
   bool ready() override
   {
-    if ( super::p() -> o() -> buffs.dark_transformation -> check() )
-      return super::ready();
+    if ( pet_melee_attack_t<T>::p() -> o() -> buffs.dark_transformation -> check() )
+      return pet_melee_attack_t<T>::ready();
 
     return false;
   }
 };
 
-// Templated auto melee attack
 template <typename T>
 struct auto_attack_melee_t : public pet_melee_attack_t<T>
 {
@@ -933,10 +934,107 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
 };
 
 // ==========================================================================
-// Unholy Ghoul
+// Generic Unholy "ghoul" (Ghoul, Sludge Belcher, Army ghouls)
 // ==========================================================================
 
-struct ghoul_pet_t : public death_knight_pet_t
+struct base_ghoul_pet_t : public death_knight_pet_t
+{
+  base_ghoul_pet_t( death_knight_t* owner, const std::string& name, bool guardian = false ) :
+    death_knight_pet_t( owner, name, guardian, true )
+  {
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+  }
+
+  attack_t* create_auto_attack() override
+  { return new auto_attack_melee_t<base_ghoul_pet_t>( this ); }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    resources.base[ RESOURCE_ENERGY ] = 100;
+    base_energy_regen_per_second  = 10;
+  }
+
+  resource_e primary_resource() const override
+  { return RESOURCE_ENERGY; }
+
+  timespan_t available() const override
+  {
+    double energy = resources.current[ RESOURCE_ENERGY ];
+
+    // Cheapest Ability need 40 Energy
+    if ( energy > 40 )
+      return timespan_t::from_seconds( 0.1 );
+
+    return std::max(
+             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
+             timespan_t::from_seconds( 0.1 )
+           );
+  }
+};
+
+// ==========================================================================
+// Unholy dark transformable pet
+// ==========================================================================
+
+struct dt_pet_t : public base_ghoul_pet_t
+{
+  // Unholy T18 4pc buff
+  buff_t* crazed_monstrosity;
+
+  dt_pet_t( death_knight_t* owner, const std::string& name ) :
+    base_ghoul_pet_t( owner, name, false ), crazed_monstrosity( nullptr )
+  { }
+
+  void create_buffs() override
+  {
+    base_ghoul_pet_t::create_buffs();
+
+    crazed_monstrosity = buff_creator_t( this, "crazed_monstrosity", find_spell( 187970 ) )
+                         .duration( find_spell( 187981 ) -> duration() ) // Grab duration from the player's spell
+                         .chance( owner -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) );
+  }
+
+  double composite_melee_speed() const override
+  {
+    double s = base_ghoul_pet_t::composite_melee_speed();
+
+    if ( crazed_monstrosity -> up() )
+    {
+      s *= 1.0 / ( 1.0 + crazed_monstrosity -> data().effectN( 3 ).percent() );
+    }
+
+    return s;
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = base_ghoul_pet_t::composite_player_multiplier( school );
+
+    if ( crazed_monstrosity -> up() )
+    {
+      m *= 1.0 + crazed_monstrosity -> data().effectN( 2 ).percent();
+    }
+
+    if ( o() -> buffs.dark_transformation -> up() )
+    {
+      double dtb = o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
+
+      dtb += o() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
+
+      m *= 1.0 + dtb;
+    }
+
+    return m;
+  }
+};
+
+// ==========================================================================
+// Unholy basic ghoul pet
+// ==========================================================================
+
+struct ghoul_pet_t : public dt_pet_t
 {
   struct ghoul_claw_t : public pet_melee_attack_t<ghoul_pet_t>
   {
@@ -971,31 +1069,19 @@ struct ghoul_pet_t : public death_knight_pet_t
     }
   };
 
-  // Unholy T18 4pc buff
-  buff_t* crazed_monstrosity;
-
-  ghoul_pet_t( death_knight_t* owner, const std::string& name ) :
-    death_knight_pet_t( owner, name, false, true ), crazed_monstrosity( nullptr )
-  {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-  }
-
-  attack_t* create_auto_attack() override
-  { return new auto_attack_melee_t<ghoul_pet_t>( this ); }
+  ghoul_pet_t( death_knight_t* owner, const std::string& name ) : dt_pet_t( owner, name )
+  { }
 
   void init_base_stats() override
   {
-    death_knight_pet_t::init_base_stats();
+    dt_pet_t::init_base_stats();
 
-    resources.base[ RESOURCE_ENERGY ] = 100;
-    base_energy_regen_per_second  = 10;
     owner_coeff.ap_from_ap = 1.0;
   }
 
   void init_action_list() override
   {
-    death_knight_pet_t::init_action_list();
+    dt_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     def -> add_action( "Monstrous Blow" );
@@ -1003,73 +1089,13 @@ struct ghoul_pet_t : public death_knight_pet_t
     def -> add_action( "Claw" );
   }
 
-  // Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
-  resource_e primary_resource() const override
-  { return RESOURCE_ENERGY; }
-
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "claw"           ) return new           ghoul_claw_t( this, options_str );
     if ( name == "sweeping_claws" ) return new ghoul_sweeping_claws_t( this, options_str );
     if ( name == "monstrous_blow" ) return new ghoul_monstrous_blow_t( this, options_str );
 
-    return death_knight_pet_t::create_action( name, options_str );
-  }
-
-  void create_buffs() override
-  {
-    death_knight_pet_t::create_buffs();
-
-    crazed_monstrosity = buff_creator_t( this, "crazed_monstrosity", find_spell( 187970 ) )
-                         .duration( find_spell( 187981 ) -> duration() ) // Grab duration from the player's spell
-                         .chance( owner -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) );
-  }
-
-  timespan_t available() const override
-  {
-    double energy = resources.current[ RESOURCE_ENERGY ];
-
-    // Cheapest Ability need 40 Energy
-    if ( energy > 40 )
-      return timespan_t::from_seconds( 0.1 );
-
-    return std::max(
-             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
-             timespan_t::from_seconds( 0.1 )
-           );
-  }
-
-  double composite_melee_speed() const override
-  {
-    double s = death_knight_pet_t::composite_melee_speed();
-
-    if ( crazed_monstrosity -> up() )
-    {
-      s *= 1.0 / ( 1.0 + crazed_monstrosity -> data().effectN( 3 ).percent() );
-    }
-
-    return s;
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = death_knight_pet_t::composite_player_multiplier( school );
-
-    if ( crazed_monstrosity -> up() )
-    {
-      m *= 1.0 + crazed_monstrosity -> data().effectN( 2 ).percent();
-    }
-
-    if ( o() -> buffs.dark_transformation -> up() )
-    {
-      double dtb = o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
-
-      dtb += o() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
-
-      m *= 1.0 + dtb;
-    }
-
-    return m;
+    return dt_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1077,36 +1103,24 @@ struct ghoul_pet_t : public death_knight_pet_t
 // Army of the Dead Ghoul
 // ==========================================================================
 
-struct army_pet_t : public death_knight_pet_t
+struct army_pet_t : public base_ghoul_pet_t
 {
-  struct army_claw_t : public pet_melee_attack_t<ghoul_pet_t>
+  struct army_claw_t : public pet_melee_attack_t<army_pet_t>
   {
     army_claw_t( army_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> find_spell( 91776 ), options_str )
     { }
   };
 
-  army_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "army_of_the_dead", true, true )
-  {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-  }
-
-  attack_t* create_auto_attack() override
-  { return new auto_attack_melee_t<army_pet_t>( this ); }
+  army_pet_t( death_knight_t* owner ) : base_ghoul_pet_t( owner, "army_of_the_dead", true )
+  { }
 
   void init_base_stats() override
   {
     death_knight_pet_t::init_base_stats();
 
-    resources.base[ RESOURCE_ENERGY ] = 100;
-    base_energy_regen_per_second  = 10;
-
     owner_coeff.ap_from_ap = 0.0415;
   }
-
-  resource_e primary_resource() const override
-  { return RESOURCE_ENERGY; }
 
   void init_action_list() override
   {
@@ -1121,19 +1135,6 @@ struct army_pet_t : public death_knight_pet_t
     if ( name == "claw" ) return new army_claw_t( this, options_str );
 
     return death_knight_pet_t::create_action( name, options_str );
-  }
-
-  timespan_t available() const override
-  {
-    double energy = resources.current[ RESOURCE_ENERGY ];
-
-    if ( energy > 40 )
-      return timespan_t::from_seconds( 0.1 );
-
-    return std::max(
-             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
-             timespan_t::from_seconds( 0.1 )
-           );
   }
 };
 
