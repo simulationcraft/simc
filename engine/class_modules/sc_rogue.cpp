@@ -105,6 +105,7 @@ struct rogue_td_t : public actor_target_data_t
     dot_t* garrote;
     dot_t* killing_spree; // Strictly speaking, this should probably be on player
     dot_t* kingsbane;
+    dot_t* mutilated_flesh; // Assassination T19 2PC
     dot_t* nightblade;
     dot_t* rupture;
   } dots;
@@ -160,6 +161,7 @@ struct rogue_t : public player_t
   action_t* poison_bomb;
   action_t* greed;
   action_t* soul_rip; // Akaari
+  action_t* t19_2pc_assassination;
 
   // Autoattacks
   action_t* auto_attack;
@@ -1277,6 +1279,17 @@ struct greed_t : public rogue_attack_t
   }
 };
 
+// TODO: Check if this is an ignite or a normal dot
+using namespace residual_action;
+struct mutilated_flesh_t : public residual_periodic_action_t<melee_attack_t>
+{
+  mutilated_flesh_t( rogue_t* p ) :
+    residual_periodic_action_t<melee_attack_t>( "mutilated_flesh", p, p -> find_spell( 211672 ) )
+  {
+    background = true;
+  }
+};
+
 // ==========================================================================
 // Poisons
 // ==========================================================================
@@ -2251,12 +2264,40 @@ struct envenom_t : public rogue_attack_t
     }
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B4 ) )
+    {
+      size_t bleeds = 0;
+      rogue_td_t* tdata = td( target );
+      bleeds += tdata -> dots.garrote -> is_ticking();
+      bleeds += tdata -> dots.rupture -> is_ticking();
+      bleeds += tdata -> dots.mutilated_flesh -> is_ticking(); // TODO: Presumably?
+
+      m *= 1.0 + p() -> sets.set( ROGUE_ASSASSINATION, T19, B4 ) -> effectN( 1 ).percent() * bleeds;
+    }
+
+    return m;
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
 
     if ( p() -> buffs.death_from_above -> up() )
       m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
+
+    return m;
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = rogue_attack_t::action_da_multiplier();
+
+    if ( p() -> mastery.potent_poisons -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
   }
@@ -2298,16 +2339,6 @@ struct envenom_t : public rogue_attack_t
           .start_time( sim -> current_time() )
           .action( p() -> poison_bomb ), true );
     }
-  }
-
-  virtual double action_da_multiplier() const override
-  {
-    double m = rogue_attack_t::action_da_multiplier();
-
-    if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    return m;
   }
 };
 
@@ -2986,6 +3017,13 @@ struct mutilate_strike_t : public rogue_attack_t
                             p() -> sets.set( ROGUE_ASSASSINATION, T17, B2 ) -> effectN( 1 ).base_value(),
                             p() -> gains.t17_2pc_assassination,
                             this );
+
+    if ( result_is_hit( state -> result ) && p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
+    {
+      double amount = state -> result_amount * p() -> sets.set( ROGUE_ASSASSINATION, T19, B2 ) -> effectN( 1 ).percent();
+
+      residual_action::trigger( p() -> t19_2pc_assassination, state -> target, amount );
+    }
   }
 };
 
@@ -5250,6 +5288,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   dots.deadly_poison    = target -> get_dot( "deadly_poison_dot", source );
   dots.garrote          = target -> get_dot( "garrote", source );
+  dots.mutilated_flesh  = target -> get_dot( "mutilated_flesh", source );
   dots.rupture          = target -> get_dot( "rupture", source );
   dots.kingsbane        = target -> get_dot( "kingsbane", source );
   dots.nightblade       = target -> get_dot( "nightblade", source );
@@ -5986,6 +6025,11 @@ void rogue_t::init_spells()
   if ( artifact.akaaris_soul.rank() )
   {
     soul_rip = new actions::soul_rip_t( this );
+  }
+
+  if ( sets.has_set_bonus( ROGUE_ASSASSINATION, T19, B2 ) )
+  {
+    t19_2pc_assassination = new actions::mutilated_flesh_t( this );
   }
 }
 
