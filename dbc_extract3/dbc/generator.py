@@ -1106,7 +1106,8 @@ class SpellDataGenerator(DataGenerator):
          191121, 191112, 191123,
          191124, 191146,
          214802, 214803,            # Momento of Angerboda trinket
-         215476                     # Obelisk of the Void trinket
+         215476,                    # Obelisk of the Void trinket
+         215695                     # Figurehead of the Naglfar trinket 
         ),
 
         # Warrior:

@@ -114,13 +114,19 @@ namespace item
   void infallible_tracking_charm( special_effect_t& );
 
   /* Legion 7.0 */
+  void chaos_talisman( special_effect_t& );
+  void figurehead_of_the_naglfar( special_effect_t& );
   void giant_ornamental_pearl( special_effect_t& );
+  void horn_of_valor( special_effect_t& );
   void impact_tremor( special_effect_t& );
   void memento_of_angerboda( special_effect_t& );
   void nightmare_egg_shell( special_effect_t& );
   void obelisk_of_the_void( special_effect_t& );
   void shivermaws_jawbone( special_effect_t& );
   void spiked_counterweight( special_effect_t& );
+  void tiny_oozeling_in_a_jar( special_effect_t& );
+  void tirathons_betrayal( special_effect_t& );
+  void windscar_whetstone( special_effect_t& );
 }
 
 namespace gem
@@ -4048,7 +4054,6 @@ struct down_draft_t : public stat_buff_t
 
 void item::nightmare_egg_shell( special_effect_t& effect )
 {
-  effect.type = SPECIAL_EFFECT_EQUIP;
   effect.custom_buff = new down_draft_t( effect );
 
   new dbc_proc_callback_t( effect.item, effect );
@@ -4087,7 +4092,6 @@ struct gaseous_bubble_t : public absorb_buff_t
 
 void item::giant_ornamental_pearl( special_effect_t& effect )
 {
-  effect.type = SPECIAL_EFFECT_USE;
   effect.custom_buff = new gaseous_bubble_t( effect );
 }
 
@@ -4265,6 +4269,453 @@ struct brutal_haymaker_t : public spell_t
 void item::spiked_counterweight( special_effect_t& effect )
 {
   effect.execute_action = new brutal_haymaker_t( effect );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+struct slicing_maelstrom_t : public spell_t
+{
+  slicing_maelstrom_t( special_effect_t& effect ) : 
+    spell_t( "slicing_maelstrom", effect.player, effect.driver() -> effectN( 1 ).trigger() )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    aoe = -1;
+    item = effect.item;
+    cooldown -> duration = timespan_t::zero(); // damage spell has erroneous cooldown
+
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( item );
+  }
+};
+
+void item::windscar_whetstone( special_effect_t& effect )
+{
+  action_t* slicing_maelstrom = effect.player -> find_action( "slicing_maelstrom" );
+  if ( ! slicing_maelstrom )
+  {
+    slicing_maelstrom = effect.player -> create_proc_action( "slicing_maelstrom", effect );
+  }
+
+  if ( ! slicing_maelstrom )
+  {
+    slicing_maelstrom = new slicing_maelstrom_t( effect );
+  }
+
+  effect.custom_buff = buff_creator_t( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
+    .tick_zero( true )
+    .tick_callback( [ slicing_maelstrom ]( buff_t*, int, const timespan_t& ) {
+      slicing_maelstrom -> schedule_execute();
+    } );
+}
+
+struct darkstrikes_absorb_t : public absorb_t
+{
+  darkstrikes_absorb_t( const special_effect_t& effect ) :
+    absorb_t( "darkstrikes_absorb", effect.player, effect.player -> find_spell( 215659 ) )
+  {
+    background = true;
+    callbacks = false;
+    item = effect.item;
+    target = effect.player;
+
+    base_dd_min = base_dd_max = data().effectN( 2 ).average( item );
+  }
+};
+
+struct darkstrikes_t : public spell_t
+{
+  action_t* absorb;
+
+  darkstrikes_t( const special_effect_t& effect ) :
+    spell_t( "darkstrikes", effect.player, effect.player -> find_spell( 215659 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    item = effect.item;
+
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( item );
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    absorb = player -> find_action( "darkstrikes_absorb" );
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    absorb -> schedule_execute();
+  }
+};
+
+struct darkstrikes_driver_t : public dbc_proc_callback_t
+{
+  action_t* damage;
+
+  darkstrikes_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect ),
+    damage( effect.player -> find_action( "darkstrikes" ) )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  {
+    damage -> target = trigger_state -> target;
+    damage -> schedule_execute();
+  }
+};
+
+struct darkstrikes_buff_t : public buff_t
+{
+  darkstrikes_driver_t* dmg_callback;
+  special_effect_t* dmg_effect;
+
+  darkstrikes_buff_t( const special_effect_t& effect ) :
+    buff_t( buff_creator_t( effect.player, "darkstrikes", effect.driver(), effect.item ).activated( false ) )
+  {
+    // Special effect to drive the AOE damage callback
+    dmg_effect = new special_effect_t( effect.player );
+    dmg_effect -> name_str = "darkstrikes_driver";
+    dmg_effect -> ppm_ = -effect.driver() -> real_ppm();
+    dmg_effect -> rppm_scale_ = RPPM_HASTE;
+    dmg_effect -> proc_flags_ = PF_MELEE | PF_RANGED | PF_MELEE_ABILITY | PF_RANGED_ABILITY;
+    dmg_effect -> proc_flags2_ = PF2_ALL_HIT;
+    effect.player -> special_effects.push_back( dmg_effect );
+
+    // And create, initialized and deactivate the callback
+    dmg_callback = new darkstrikes_driver_t( *dmg_effect );
+    dmg_callback -> initialize();
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+
+    dmg_callback -> activate();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    dmg_callback -> deactivate();
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+
+    dmg_callback -> deactivate();
+  }
+};
+
+void item::tirathons_betrayal( special_effect_t& effect )
+{
+  action_t* darkstrikes = effect.player -> find_action( "darkstrikes" );
+  if ( ! darkstrikes )
+  {
+    darkstrikes = effect.player -> create_proc_action( "darkstrikes", effect );
+  }
+
+  if ( ! darkstrikes )
+  {
+    darkstrikes = new darkstrikes_t( effect );
+  }
+
+  action_t* absorb = effect.player -> find_action( "darkstrikes_absorb" );
+  if ( ! absorb )
+  {
+    absorb = effect.player -> create_proc_action( "darkstrikes_absorb", effect );
+  }
+
+  if ( ! absorb )
+  {
+    absorb = new darkstrikes_absorb_t( effect );
+  }
+
+  effect.custom_buff = new darkstrikes_buff_t( effect );
+}
+
+void item::horn_of_valor( special_effect_t& effect )
+{
+  effect.custom_buff = stat_buff_creator_t( effect.player, "valarjars_path", effect.driver(), effect.item )
+    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver() -> effectN( 1 ).average( effect.item ) );
+}
+
+struct fetid_regurgitation_t : public spell_t
+{
+  buff_t* driver_buff;
+
+  fetid_regurgitation_t( special_effect_t& effect, buff_t* b ) :
+    spell_t( "fetid_regurgitation", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
+    driver_buff( b )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    aoe = -1;
+    item = effect.item;
+
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( item );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = spell_t::action_multiplier();
+
+    am *= driver_buff -> value();
+
+    return am;
+  }
+};
+
+// TOCHECK: Does this hit 6 or 7 times? Tooltip suggests 6 but it the buff lasts long enough for 7 ticks.
+
+void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
+{
+  struct congealing_goo_callback_t : public dbc_proc_callback_t
+  {
+    buff_t* goo;
+
+    congealing_goo_callback_t( const special_effect_t* effect, buff_t* cg ) :
+      dbc_proc_callback_t( effect -> item, *effect ), goo( cg )
+    {}
+
+    void execute( action_t* /* action */, action_state_t* /* state */ ) override
+    {
+      goo -> trigger();
+    }
+  };
+
+  buff_t* charges = buff_creator_t( effect.player, "congealing_goo", effect.player -> find_spell( 215126 ), effect.item );
+
+  special_effect_t* goo_effect = new special_effect_t( effect.player );
+  goo_effect -> item = effect.item;
+  goo_effect -> spell_id = 215120;
+  goo_effect -> proc_flags_ = PROC1_MELEE | PROC1_MELEE_ABILITY;
+  goo_effect -> proc_flags2_ = PF2_ALL_HIT;
+  effect.player -> special_effects.push_back( goo_effect );
+
+  new congealing_goo_callback_t( goo_effect, charges );
+
+  struct fetid_regurgitation_buff_t : public buff_t
+  {
+    buff_t* congealing_goo;
+
+    fetid_regurgitation_buff_t( special_effect_t& effect, action_t* ds, buff_t* cg ) : 
+      buff_t( buff_creator_t( effect.player, "fetid_regurgitation", effect.driver(), effect.item )
+        .activated( false )
+        .tick_zero( true )
+        .tick_callback( [ ds ] ( buff_t*, int, const timespan_t& ) {
+          ds -> schedule_execute();
+        } ) ), congealing_goo( cg )
+    {}
+
+    bool trigger( int stack, double, double chance, timespan_t duration ) override
+    {
+      bool s = buff_t::trigger( stack, congealing_goo -> stack(), chance, duration );
+
+      congealing_goo -> expire();
+
+      return s;
+    }
+  };
+
+  action_t* fetid_regurgitation = effect.player -> find_action( "fetid_regurgitation" );
+  if ( ! fetid_regurgitation )
+  {
+    fetid_regurgitation = effect.player -> create_proc_action( "fetid_regurgitation", effect );
+  }
+
+  if ( ! fetid_regurgitation )
+  {
+    fetid_regurgitation = new fetid_regurgitation_t( effect, charges );
+  }
+
+  effect.custom_buff = new fetid_regurgitation_buff_t( effect, fetid_regurgitation, charges );
+};
+
+struct taint_of_the_sea_t : public spell_t
+{
+  action_t* absorb;
+
+  taint_of_the_sea_t( const special_effect_t& effect ) :
+    spell_t( "taint_of_the_sea", effect.player, effect.player -> find_spell( 215695 ) )
+  {
+    background = true;
+    callbacks = may_crit = false;
+    item = effect.item;
+
+    base_multiplier = effect.driver() -> effectN( 1 ).percent();
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    snapshot_flags = STATE_MUL_DA;
+    update_flags = 0;
+  }
+
+  double composite_da_multiplier( const action_state_t* ) const override
+  { return base_multiplier; }
+
+  void execute() override
+  {
+    /* buff_t* d = player -> get_target_data( target ) -> debuff.taint_of_the_sea;
+    
+    assert( d && d -> check() );
+
+    base_dd_min = base_dd_max = std::min( base_dd_min, d -> current_value ); */
+
+    spell_t::execute();
+
+    /* d -> current_value -= execute_state -> result;
+
+    assert( d -> current_value >= 0.0 );
+
+    if ( d -> current_value <= 0.0 )
+      d -> expire(); */
+  }
+};
+
+struct taint_of_the_sea_driver_t : public dbc_proc_callback_t
+{
+  action_t* damage;
+  player_t* player;
+
+  taint_of_the_sea_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect ),
+    damage( effect.player -> find_action( "taint_of_the_sea" ) ),
+    player( effect.player )
+  {}
+
+  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  {
+    if ( player -> get_target_data( trigger_state -> target ) -> debuff.taint_of_the_sea -> check() )
+      return;
+
+    for ( size_t i = 0; i < player -> sim -> target_non_sleeping_list.size(); i++ )
+    {
+      player_t* target = player -> sim -> target_non_sleeping_list[ i ];
+
+      if ( player -> get_target_data( target ) -> debuff.taint_of_the_sea -> check() )
+      {
+        damage -> target = target;
+        damage -> base_dd_min = damage -> base_dd_max = trigger_state -> result_amount;
+        damage -> schedule_execute();
+      }
+    }
+  }
+};
+
+struct taint_of_the_sea_debuff_t : public debuff_t
+{
+  dbc_proc_callback_t* callback;
+
+  taint_of_the_sea_debuff_t( player_t* target, const special_effect_t* effect ) : 
+    debuff_t( buff_creator_t( target, "taint_of_the_sea", effect -> driver() )
+      .default_value( effect -> driver() -> effectN( 2 ).average( effect -> item ) ) )
+  {
+    // Damage transfer effect & callback
+    special_effect_t* effect2 = new special_effect_t( player );
+    effect2 -> name_str = "taint_of_the_sea_driver";
+    effect2 -> proc_chance_ = 1.0;
+    effect2 -> proc_flags_ = PF_ALL_DAMAGE;
+    effect2 -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+    player -> special_effects.push_back( effect2 );
+
+    callback = new taint_of_the_sea_driver_t( *effect2 );
+    callback -> initialize();
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    debuff_t::start( stacks, value, duration );
+
+    callback -> activate();
+  }
+
+  void expire_override( int stacks, timespan_t remaining ) override
+  {
+    debuff_t::expire_override( stacks, remaining );
+
+    callback -> deactivate();
+  }
+
+  void reset() override
+  {
+    debuff_t::reset();
+
+    callback -> deactivate();
+  }
+};
+
+struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initializer_t
+{
+  figurehead_of_the_naglfar_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if ( effect == 0 )
+    {
+      td -> debuff.taint_of_the_sea = buff_creator_t( *td, "taint_of_the_sea" );
+    }
+    else
+    {
+      assert( ! td -> debuff.taint_of_the_sea );
+
+      td -> debuff.taint_of_the_sea = new taint_of_the_sea_debuff_t( td -> target, effect );
+      td -> debuff.taint_of_the_sea -> reset();
+    }
+  }
+};
+
+void item::figurehead_of_the_naglfar( special_effect_t& effect )
+{
+  action_t* damage_spell = effect.player -> find_action( "taint_of_the_sea" );
+  if ( ! damage_spell )
+  {
+    damage_spell = effect.player -> create_proc_action( "taint_of_the_sea", effect );
+  }
+
+  if ( ! damage_spell )
+  {
+    damage_spell = new taint_of_the_sea_t( effect );
+  }
+
+  struct apply_debuff_t : public spell_t
+  {
+    apply_debuff_t( special_effect_t& effect ) :
+      spell_t( "apply_taint_of_the_sea", effect.player, spell_data_t::nil() )
+    {
+      background = true;
+      callbacks = false;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      action_t::impact( s );
+
+      player -> get_target_data( s -> target ) -> debuff.taint_of_the_sea -> trigger();
+    }
+  };
+
+  effect.execute_action = new apply_debuff_t( effect );
+}
+
+void item::chaos_talisman( special_effect_t& effect )
+{
+  // TODO: Stack decay
+  effect.proc_flags_ = PF_MELEE;
+  effect.proc_flags2_ = PF_ALL_DAMAGE;
+  const spell_data_t* buff_spell = effect.driver() -> effectN( 1 ).trigger();
+  effect.custom_buff = stat_buff_creator_t( effect.player, "chaotic_energy", buff_spell, effect.item )
+    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ), buff_spell -> effectN( 1 ).average( effect.item ) );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -4987,13 +5438,19 @@ void unique_gear::register_special_effects()
   register_special_effect( 188534, item::felmouth_frenzy                );
 
   /* Legion 7.0 */
+  register_special_effect( 214829, item::chaos_talisman                 );
+  register_special_effect( 215670, item::figurehead_of_the_naglfar      );
   register_special_effect( 214971, item::giant_ornamental_pearl         );
+  register_special_effect( 215956, item::horn_of_valor                  );
   register_special_effect( 224059, item::impact_tremor                  );
   register_special_effect( 214798, item::memento_of_angerboda           );
   register_special_effect( 214340, item::nightmare_egg_shell            );
   register_special_effect( 215467, item::obelisk_of_the_void            );
   register_special_effect( 214584, item::shivermaws_jawbone             );
   register_special_effect( 214168, item::spiked_counterweight           );
+  register_special_effect( 215127, item::tiny_oozeling_in_a_jar         );
+  register_special_effect( 215658, item::tirathons_betrayal             );
+  register_special_effect( 214980, item::windscar_whetstone             );
 
   /* Warlords of Draenor 6.2 */
   register_special_effect( 184270, item::mirror_of_the_blademaster      );
