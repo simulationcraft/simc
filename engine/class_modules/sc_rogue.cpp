@@ -288,6 +288,7 @@ struct rogue_t : public player_t
     gain_t* shadow_techniques;
     gain_t* shadow_blades;
     gain_t* enveloping_shadows;
+    gain_t* t19_4pc_subtlety;
   } gains;
 
   // Spec passives
@@ -3108,7 +3109,10 @@ struct nightblade_base_t : public rogue_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return data().duration() + data().effectN( 1 ).period() * cast_state( s ) -> cp;
+    timespan_t base_per_tick = data().effectN( 1 ).period();
+    base_per_tick += timespan_t::from_seconds( p() -> sets.set( ROGUE_SUBTLETY, T19, B2 ) -> effectN( 1 ).base_value() );
+
+    return data().duration() + base_per_tick * cast_state( s ) -> cp;
   }
 };
 
@@ -3470,6 +3474,12 @@ struct shadowstrike_t : public rogue_attack_t
     }
 
     p() -> buffs.death -> decrement();
+
+    if ( result_is_hit( execute_state -> result ) && rng().roll( p() -> sets.set( ROGUE_SUBTLETY, T19, B4 ) -> proc_chance() ) )
+    {
+      p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_SUBTLETY, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
+          p() -> gains.t19_4pc_subtlety, this );
+    }
   }
 
   double composite_crit() const override
@@ -5989,6 +5999,7 @@ void rogue_t::init_gains()
   gains.goremaws_bite = get_gain( "Goremaw's Bite" );
   gains.curse_of_the_dreadblades = get_gain( "Curse of the Dreadblades" );
   gains.relentless_strikes = get_gain( "Relentless Strikes" );
+  gains.t19_4pc_subtlety = get_gain( "Tier 19 4PC Set Bonus" );
 }
 
 // rogue_t::init_procs ======================================================
