@@ -715,6 +715,510 @@ inline void rune_t::regen_rune( timespan_t periodicity, bool rc )
 namespace pets {
 
 // ==========================================================================
+// Generic DK pet
+// ==========================================================================
+
+struct death_knight_pet_t : public pet_t
+{
+  bool use_auto_attack;
+  const spell_data_t* command;
+
+  death_knight_pet_t( death_knight_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true ) :
+    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack )
+  {
+    if ( auto_attack )
+    {
+      main_hand_weapon.type = WEAPON_BEAST;
+    }
+  }
+
+  death_knight_t* o() const
+  { return debug_cast<death_knight_t*>( owner ); }
+
+  void init_spells() override
+  {
+    pet_t::init_spells();
+
+    command = owner -> find_racial_spell( "Command" );
+  }
+
+  void init_action_list() override
+  {
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    if ( use_auto_attack )
+    {
+      def -> add_action( "auto_attack" );
+    }
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override;
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    m *= 1.0 + command -> effectN( 1 ).percent();
+
+    if ( dbc::is_school( school, SCHOOL_SHADOW ) && o() -> mastery.dreadblade -> ok() )
+    {
+      m *= 1.0 + o() -> cache.mastery_value();
+    }
+
+    return m;
+  }
+
+  virtual attack_t* create_auto_attack()
+  { return nullptr; }
+};
+
+// ==========================================================================
+// Base Death Knight Pet Action
+// ==========================================================================
+
+template <typename T_PET, typename T_ACTION>
+struct pet_action_t : public T_ACTION
+{
+  typedef pet_action_t<T_PET, T_ACTION> super;
+
+  pet_action_t( death_knight_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+    T_ACTION( name, pet, spell )
+  {
+    this -> parse_options( options );
+
+    this -> special = true;
+    this -> may_crit = true;
+  }
+
+  T_PET* p() const
+  { return debug_cast<T_PET*>( this -> player ); }
+
+  void init() override
+  {
+    T_ACTION::init();
+
+    if ( ! this -> player -> sim -> report_pets_separately )
+    {
+      auto it = range::find_if( p() -> o() -> pet_list, [ this ]( pet_t* pet ) {
+        return this -> player -> name_str == pet -> name_str;
+      } );
+
+      if ( it != p() -> o() -> pet_list.end() && this -> player != *it )
+      {
+        this -> stats = ( *it ) -> get_stats( this -> name(), this );
+      }
+    }
+  }
+};
+
+// ==========================================================================
+// Base Death Knight Pet Melee Attack
+// ==========================================================================
+
+template <typename T_PET>
+struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
+{
+  typedef pet_melee_attack_t<T_PET> super;
+
+  pet_melee_attack_t( death_knight_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+    pet_action_t<T_PET, melee_attack_t>( pet, name, spell, options )
+  {
+    this -> trigger_gcd = timespan_t::from_seconds( 1.5 );
+    if ( this -> school == SCHOOL_NONE )
+      this -> school = SCHOOL_PHYSICAL;
+  }
+
+  void init() override
+  {
+    pet_action_t<T_PET, melee_attack_t>::init();
+
+    if ( ! this -> special )
+    {
+      this -> weapon = &( this -> p() -> main_hand_weapon );
+      this -> base_execute_time = this -> weapon -> swing_time;
+    }
+  }
+
+  void execute() override
+  {
+    // If we're casting, we should clip a swing
+    if ( this -> time_to_execute > timespan_t::zero() && this -> player -> executing )
+      this -> schedule_execute();
+    else
+      pet_action_t<T_PET, melee_attack_t>::execute();
+  }
+};
+
+// ==========================================================================
+// Generalized Auto Attack Action
+// ==========================================================================
+
+struct auto_attack_t : public melee_attack_t
+{
+  auto_attack_t( death_knight_pet_t* player ) : melee_attack_t( "auto_attack", player )
+  {
+    assert( player -> main_hand_weapon.type != WEAPON_NONE );
+    player -> main_hand_attack = player -> create_auto_attack();
+    trigger_gcd = timespan_t::zero();
+  }
+
+  void execute() override
+  { player -> main_hand_attack -> schedule_execute(); }
+
+  bool ready() override
+  {
+    if ( player -> is_moving() ) return false;
+    return ( player -> main_hand_attack -> execute_event == nullptr );
+  }
+};
+
+// ==========================================================================
+// Base Death Knight Pet Spell
+// ==========================================================================
+
+template <typename T_PET>
+struct pet_spell_t : public pet_action_t<T_PET, spell_t>
+{
+  typedef pet_spell_t<T_PET> super;
+
+  pet_spell_t( death_knight_pet_t* pet, const std::string& name,
+    const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+    pet_action_t<T_PET, spell_t>( pet, name, spell, options )
+  { }
+};
+
+// ==========================================================================
+// Base Death Knight Pet Method Definitions
+// ==========================================================================
+
+action_t* death_knight_pet_t::create_action( const std::string& name,
+                                       const std::string& options_str )
+{
+  if ( name == "auto_attack" ) return new auto_attack_t( this );
+
+  return pet_t::create_action( name, options_str );
+}
+
+// Tempalted Dark Transformation ability, checks for readiness only
+template <typename T>
+struct dt_melee_ability_t : public pet_melee_attack_t<T>
+{
+  typedef dt_melee_ability_t<T> super;
+
+  dt_melee_ability_t( death_knight_pet_t* pet, const std::string& name,
+      const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+    pet_melee_attack_t<T>( pet, name, spell, options )
+  { }
+
+  bool ready() override
+  {
+    if ( super::p() -> o() -> buffs.dark_transformation -> check() )
+      return super::ready();
+
+    return false;
+  }
+};
+
+// Templated auto melee attack
+template <typename T>
+struct auto_attack_melee_t : public pet_melee_attack_t<T>
+{
+  auto_attack_melee_t( T* player, const std::string& name = "main_hand" ) :
+    pet_melee_attack_t<T>( player, name )
+  {
+    this -> background = this -> auto_attack = this -> repeating = true;
+    this -> special = false;
+  }
+};
+
+// ==========================================================================
+// Unholy Ghoul
+// ==========================================================================
+
+struct ghoul_pet_t : public death_knight_pet_t
+{
+  struct ghoul_claw_t : public pet_melee_attack_t<ghoul_pet_t>
+  {
+    ghoul_claw_t( ghoul_pet_t* player, const std::string& options_str ) :
+      super( player, "claw", player -> find_spell( 91776 ), options_str )
+    { }
+
+    bool ready() override
+    {
+      if ( p() -> o() -> buffs.dark_transformation -> check() )
+      {
+        return false;
+      }
+
+      return super::ready();
+    }
+  };
+
+  struct ghoul_monstrous_blow_t : public dt_melee_ability_t<ghoul_pet_t>
+  {
+    ghoul_monstrous_blow_t( ghoul_pet_t* player, const std::string& options_str ):
+      super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
+    { }
+  };
+
+  struct ghoul_sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
+  {
+    ghoul_sweeping_claws_t( ghoul_pet_t* player, const std::string& options_str ) :
+      super( player, "sweeping_claws", player -> find_spell( 91778 ), options_str )
+    {
+      aoe = -1; // TODO: Nearby enemies == all now?
+    }
+  };
+
+  // Unholy T18 4pc buff
+  buff_t* crazed_monstrosity;
+
+  ghoul_pet_t( death_knight_t* owner, const std::string& name ) :
+    death_knight_pet_t( owner, name, false, true ), crazed_monstrosity( nullptr )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+  }
+
+  attack_t* create_auto_attack() override
+  { return new auto_attack_melee_t<ghoul_pet_t>( this ); }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    resources.base[ RESOURCE_ENERGY ] = 100;
+    base_energy_regen_per_second  = 10;
+    owner_coeff.ap_from_ap = 1.0;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "Monstrous Blow" );
+    def -> add_action( "Sweeping Claws" );
+    def -> add_action( "Claw" );
+  }
+
+  // Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
+  resource_e primary_resource() const override
+  { return RESOURCE_ENERGY; }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "claw"           ) return new           ghoul_claw_t( this, options_str );
+    if ( name == "sweeping_claws" ) return new ghoul_sweeping_claws_t( this, options_str );
+    if ( name == "monstrous_blow" ) return new ghoul_monstrous_blow_t( this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
+  }
+
+  void create_buffs() override
+  {
+    death_knight_pet_t::create_buffs();
+
+    crazed_monstrosity = buff_creator_t( this, "crazed_monstrosity", find_spell( 187970 ) )
+                         .duration( find_spell( 187981 ) -> duration() ) // Grab duration from the player's spell
+                         .chance( owner -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) );
+  }
+
+  timespan_t available() const override
+  {
+    double energy = resources.current[ RESOURCE_ENERGY ];
+
+    // Cheapest Ability need 40 Energy
+    if ( energy > 40 )
+      return timespan_t::from_seconds( 0.1 );
+
+    return std::max(
+             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
+             timespan_t::from_seconds( 0.1 )
+           );
+  }
+
+  double composite_melee_speed() const override
+  {
+    double s = death_knight_pet_t::composite_melee_speed();
+
+    if ( crazed_monstrosity -> up() )
+    {
+      s *= 1.0 / ( 1.0 + crazed_monstrosity -> data().effectN( 3 ).percent() );
+    }
+
+    return s;
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = death_knight_pet_t::composite_player_multiplier( school );
+
+    if ( crazed_monstrosity -> up() )
+    {
+      m *= 1.0 + crazed_monstrosity -> data().effectN( 2 ).percent();
+    }
+
+    if ( o() -> buffs.dark_transformation -> up() )
+    {
+      double dtb = o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
+
+      dtb += o() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
+
+      m *= 1.0 + dtb;
+    }
+
+    return m;
+  }
+};
+
+// ==========================================================================
+// Army of the Dead Ghoul
+// ==========================================================================
+
+struct army_pet_t : public death_knight_pet_t
+{
+  struct army_claw_t : public pet_melee_attack_t<ghoul_pet_t>
+  {
+    army_claw_t( army_pet_t* player, const std::string& options_str ) :
+      super( player, "claw", player -> find_spell( 91776 ), options_str )
+    { }
+  };
+
+  army_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "army_of_the_dead", true, true )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+  }
+
+  attack_t* create_auto_attack() override
+  { return new auto_attack_melee_t<army_pet_t>( this ); }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    resources.base[ RESOURCE_ENERGY ] = 100;
+    base_energy_regen_per_second  = 10;
+
+    owner_coeff.ap_from_ap = 0.0415;
+  }
+
+  resource_e primary_resource() const override
+  { return RESOURCE_ENERGY; }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "Claw" );
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "claw" ) return new army_claw_t( this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
+  }
+
+  timespan_t available() const override
+  {
+    double energy = resources.current[ RESOURCE_ENERGY ];
+
+    if ( energy > 40 )
+      return timespan_t::from_seconds( 0.1 );
+
+    return std::max(
+             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
+             timespan_t::from_seconds( 0.1 )
+           );
+  }
+};
+
+// ==========================================================================
+// Gargoyle
+// ==========================================================================
+
+struct gargoyle_pet_t : public death_knight_pet_t
+{
+  struct travel_t : public action_t
+  {
+    bool executed;
+
+    travel_t( player_t* player ) :
+      action_t( ACTION_OTHER, "travel", player ),
+      executed( false )
+    {
+      may_miss = false;
+      dual = true;
+    }
+
+    result_e calculate_result( action_state_t* /* s */ ) const override
+    { return RESULT_HIT; }
+
+    block_result_e calculate_block_result( action_state_t* ) const override
+    { return BLOCK_RESULT_UNBLOCKED; }
+
+    void execute() override
+    {
+      action_t::execute();
+      executed = true;
+    }
+
+    void cancel() override
+    {
+      action_t::cancel();
+      executed = false;
+    }
+
+    // ~3 seconds seems to be the optimal initial delay
+    // FIXME: Verify if behavior still exists on 5.3 PTR
+    timespan_t execute_time() const override
+    { return timespan_t::from_seconds( const_cast<travel_t*>( this ) -> rng().gauss( 2.9, 0.2 ) ); }
+
+    bool ready() override
+    { return ! executed; }
+  };
+
+  struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
+  {
+    gargoyle_strike_t( gargoyle_pet_t* player, const std::string& options_str ) :
+      super( player, "gargoyle_strike", player -> find_spell( 51963 ), options_str )
+    { }
+  };
+
+  gargoyle_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "gargoyle", true, false )
+  { regen_type = REGEN_DISABLED; }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    // As per Blizzard
+    owner_coeff.sp_from_ap = 0.46625;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "Gargoyle Strike" );
+    def -> add_action( "travel" );
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this, options_str );
+    if ( name == "travel"          ) return new travel_t( this );
+
+    return death_knight_pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
 // Dancing Rune Weapon
 // ==========================================================================
 
@@ -1029,445 +1533,9 @@ dancing_rune_weapon_td_t::dancing_rune_weapon_td_t( player_t* target, dancing_ru
   dot.blood_plague    = target -> get_dot( "blood_plague",        drw );
 }
 
-struct death_knight_pet_t : public pet_t
-{
-  const spell_data_t* command;
-
-  death_knight_pet_t( sim_t* sim, death_knight_t* owner, const std::string& n, bool guardian, bool dynamic = false ) :
-    pet_t( sim, owner, n, guardian, dynamic )
-  {
-    command = find_spell( 54562 );
-  }
-
-  death_knight_t* o()
-  { return debug_cast<death_knight_t*>( owner ); }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( owner -> race == RACE_ORC )
-      m *= 1.0 + command -> effectN( 1 ).percent();
-
-    return m;
-  }
-};
-
 // ==========================================================================
 // Guardians
 // ==========================================================================
-
-// ==========================================================================
-// Army of the Dead Ghoul
-// ==========================================================================
-
-struct army_ghoul_pet_t : public death_knight_pet_t
-{
-  army_ghoul_pet_t( sim_t* sim, death_knight_t* owner ) :
-    death_knight_pet_t( sim, owner, "army_of_the_dead", true )
-  {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.5;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.5;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-    action_list_str = "snapshot_stats/auto_attack/claw";
-  }
-
-  struct army_ghoul_pet_melee_attack_t : public melee_attack_t
-  {
-    army_ghoul_pet_melee_attack_t( const std::string& n, army_ghoul_pet_t* p,
-                                   const spell_data_t* s = spell_data_t::nil() ) :
-      melee_attack_t( n, p, s )
-    {
-      weapon = &( player -> main_hand_weapon );
-      may_crit = true;
-    }
-
-    army_ghoul_pet_t* p() const
-    { return static_cast<army_ghoul_pet_t*>( player ); }
-
-    void init() override
-    {
-      melee_attack_t::init();
-
-      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pets.army_ghoul[ 0 ] )
-        stats = p() -> o() -> pets.army_ghoul[ 0 ] -> get_stats( name_str );
-    }
-  };
-
-  struct army_ghoul_pet_melee_t : public army_ghoul_pet_melee_attack_t
-  {
-    army_ghoul_pet_melee_t( army_ghoul_pet_t* p ) :
-      army_ghoul_pet_melee_attack_t( "auto_attack_mh", p )
-    {
-      auto_attack       = true;
-      school            = SCHOOL_PHYSICAL;
-      base_execute_time = weapon -> swing_time;
-      background        = true;
-      repeating         = true;
-      special           = false;
-    }
-  };
-
-  struct army_ghoul_pet_auto_melee_attack_t : public army_ghoul_pet_melee_attack_t
-  {
-    army_ghoul_pet_auto_melee_attack_t( army_ghoul_pet_t* p ) :
-      army_ghoul_pet_melee_attack_t( "auto_attack", p )
-    {
-      weapon = &( p -> main_hand_weapon );
-      p -> main_hand_attack = new army_ghoul_pet_melee_t( p );
-      trigger_gcd = timespan_t::zero();
-      special = true;
-    }
-
-    virtual void execute() override
-    {
-      player -> main_hand_attack -> schedule_execute();
-    }
-
-    virtual bool ready() override
-    {
-      return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
-    }
-  };
-
-  struct army_ghoul_pet_claw_t : public army_ghoul_pet_melee_attack_t
-  {
-    army_ghoul_pet_claw_t( army_ghoul_pet_t* p ) :
-      army_ghoul_pet_melee_attack_t( "claw", p, p -> find_spell( 91776 ) )
-    {
-      special = true;
-    }
-  };
-
-  virtual void init_base_stats() override
-  {
-    resources.base[ RESOURCE_ENERGY ] = 100;
-    base_energy_regen_per_second  = 10;
-
-    owner_coeff.ap_from_ap = 0.0415;
-  }
-
-  virtual resource_e primary_resource() const override { return RESOURCE_ENERGY; }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "auto_attack"    ) return new  army_ghoul_pet_auto_melee_attack_t( this );
-    if ( name == "claw"           ) return new         army_ghoul_pet_claw_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-
-  timespan_t available() const override
-  {
-    double energy = resources.current[ RESOURCE_ENERGY ];
-
-    if ( energy > 40 )
-      return timespan_t::from_seconds( 0.1 );
-
-    return std::max(
-             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
-             timespan_t::from_seconds( 0.1 )
-           );
-  }
-};
-
-// ==========================================================================
-// Gargoyle
-// ==========================================================================
-
-struct gargoyle_pet_t : public death_knight_pet_t
-{
-  struct travel_t : public action_t
-  {
-    bool executed;
-
-    travel_t( player_t* player ) :
-      action_t( ACTION_OTHER, "travel", player ),
-      executed( false )
-    {
-      may_miss = false;
-      dual = true;
-    }
-
-    result_e calculate_result( action_state_t* /* s */ ) const override
-    { return RESULT_HIT; }
-
-    block_result_e calculate_block_result( action_state_t* ) const override
-    { return BLOCK_RESULT_UNBLOCKED; }
-
-    void execute() override
-    {
-      action_t::execute();
-      executed = true;
-    }
-
-    void cancel() override
-    {
-      action_t::cancel();
-      executed = false;
-    }
-
-    // ~3 seconds seems to be the optimal initial delay
-    // FIXME: Verify if behavior still exists on 5.3 PTR
-    timespan_t execute_time() const override
-    { return timespan_t::from_seconds( const_cast<travel_t*>( this ) -> rng().gauss( 2.9, 0.2 ) ); }
-
-    bool ready() override
-    { return ! executed; }
-  };
-
-  struct gargoyle_strike_t : public spell_t
-  {
-    gargoyle_strike_t( gargoyle_pet_t* pet ) :
-      spell_t( "gargoyle_strike", pet, pet -> find_pet_spell( "Gargoyle Strike" ) )
-    {
-      harmful            = true;
-      trigger_gcd        = timespan_t::from_seconds( 1.5 );
-      may_crit           = true;
-      school             = SCHOOL_SHADOWSTORM;
-    }
-
-    double composite_da_multiplier( const action_state_t* state ) const override
-    {
-      double m = spell_t::composite_da_multiplier( state );
-
-      death_knight_t* dk = debug_cast< death_knight_t* >( static_cast<gargoyle_pet_t*>(player) -> owner );
-      if ( dk -> mastery.dreadblade -> ok() )
-        m *= 1.0 + dk -> cache.mastery_value();
-
-      return m;
-    }
-  };
-
-  gargoyle_pet_t( sim_t* sim, death_knight_t* owner ) :
-    death_knight_pet_t( sim, owner, "gargoyle", true )
-  { regen_type = REGEN_DISABLED; }
-
-  virtual void init_base_stats() override
-  {
-    action_list_str = "travel/gargoyle_strike";
-
-    // As per Blizzard
-    owner_coeff.sp_from_ap = 0.46625;
-  }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str ) override
-  {
-    if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this );
-    if ( name == "travel"          ) return new travel_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-};
-
-// ==========================================================================
-// Pet Ghoul
-// ==========================================================================
-
-struct ghoul_pet_t : public death_knight_pet_t
-{
-  // Unholy T18 4pc buff
-  buff_t* crazed_monstrosity;
-
-  ghoul_pet_t( sim_t* sim, death_knight_t* owner, const std::string& name, bool guardian ) :
-    death_knight_pet_t( sim, owner, name, guardian ),
-    crazed_monstrosity( nullptr )
-  {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.8;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level() ) * 0.8;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-    action_list_str = "auto_attack/monstrous_blow/sweeping_claws/claw";
-  }
-
-  struct ghoul_pet_melee_attack_t : public melee_attack_t
-  {
-    ghoul_pet_melee_attack_t( const char* n, ghoul_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-      melee_attack_t( n, p, s )
-    {
-      weapon = &( player -> main_hand_weapon );
-      may_crit = true;
-    }
-
-    virtual double action_multiplier() const override
-    {
-      double am = melee_attack_t::action_multiplier();
-
-      ghoul_pet_t* p = debug_cast<ghoul_pet_t*>( player );
-
-      if ( p -> o() -> buffs.dark_transformation -> up() )
-      {
-        double dtb = p -> o() -> buffs.dark_transformation -> data().effectN( 1 ).percent();
-
-        dtb += p -> o() -> sets.set( DEATH_KNIGHT_UNHOLY, T17, B2 ) -> effectN( 2 ).percent();
-
-        am *= 1.0 + dtb;
-      }
-
-      am *= 0.8;
-
-      return am;
-    }
-  };
-
-  struct ghoul_pet_melee_t : public ghoul_pet_melee_attack_t
-  {
-    ghoul_pet_melee_t( ghoul_pet_t* p ) :
-      ghoul_pet_melee_attack_t( "auto_attack_mh", p )
-    {
-      auto_attack       = true;
-      school            = SCHOOL_PHYSICAL;
-      base_execute_time = weapon -> swing_time;
-      background        = true;
-      repeating         = true;
-      special           = false;
-    }
-  };
-
-  struct ghoul_pet_auto_melee_attack_t : public ghoul_pet_melee_attack_t
-  {
-    ghoul_pet_auto_melee_attack_t( ghoul_pet_t* p ) :
-      ghoul_pet_melee_attack_t( "auto_attack", p )
-    {
-      weapon = &( p -> main_hand_weapon );
-      p -> main_hand_attack = new ghoul_pet_melee_t( p );
-      trigger_gcd = timespan_t::zero();
-      special = true;
-    }
-
-    virtual void execute() override
-    {
-      player -> main_hand_attack -> schedule_execute();
-    }
-
-    virtual bool ready() override
-    {
-      return( player -> main_hand_attack -> execute_event == nullptr ); // not swinging
-    }
-  };
-
-  struct ghoul_pet_claw_t : public ghoul_pet_melee_attack_t
-  {
-    ghoul_pet_claw_t( ghoul_pet_t* p ) :
-      ghoul_pet_melee_attack_t( "claw", p, p -> find_spell( 91776 ) )
-    {
-      special = true;
-    }
-  };
-
-  struct ghoul_pet_monstrous_blow_t: public ghoul_pet_melee_attack_t
-  {
-    ghoul_pet_monstrous_blow_t( ghoul_pet_t* p ):
-      ghoul_pet_melee_attack_t( "monstrous_blow", p, p -> find_spell( 91797 ) )
-    {
-      special = true;
-    }
-
-    bool ready() override
-    {
-      ghoul_pet_t* p = debug_cast<ghoul_pet_t*>( player );
-
-      if ( p -> o() -> buffs.dark_transformation -> check() ) // Only usable while dark transformed.
-        return ghoul_pet_melee_attack_t::ready();
-
-      return false;
-    }
-  };
-
-  struct ghoul_pet_sweeping_claws_t : public ghoul_pet_melee_attack_t
-  {
-    ghoul_pet_sweeping_claws_t( ghoul_pet_t* p ) :
-      ghoul_pet_melee_attack_t( "sweeping_claws", p, p -> find_spell( 91778 ) )
-    {
-      aoe = 3;
-      special = true;
-    }
-
-    virtual bool ready() override
-    {
-      death_knight_t* dk = debug_cast<ghoul_pet_t*>( player ) -> o();
-
-      if ( ! dk -> buffs.dark_transformation -> check() )
-        return false;
-
-      return ghoul_pet_melee_attack_t::ready();
-    }
-  };
-
-  virtual void init_base_stats() override
-  {
-    resources.base[ RESOURCE_ENERGY ] = 100;
-    base_energy_regen_per_second  = 10;
-    owner_coeff.ap_from_ap = 0.5;
-  }
-
-  //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
-  virtual resource_e primary_resource() const override
-  {
-    return RESOURCE_ENERGY;
-  }
-
-  virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    if ( name == "auto_attack"    ) return new    ghoul_pet_auto_melee_attack_t( this );
-    if ( name == "claw"           ) return new           ghoul_pet_claw_t( this );
-    if ( name == "sweeping_claws" ) return new ghoul_pet_sweeping_claws_t( this );
-    if ( name == "monstrous_blow" ) return new ghoul_pet_monstrous_blow_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-
-  void create_buffs() override
-  {
-    pet_t::create_buffs();
-
-    crazed_monstrosity = buff_creator_t( this, "crazed_monstrosity", find_spell( 187970 ) )
-                         .duration( find_spell( 187981 ) -> duration() ) // Grab duration from the player's spell
-                         .chance( owner -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) );
-  }
-
-  timespan_t available() const override
-  {
-    double energy = resources.current[ RESOURCE_ENERGY ];
-
-    // Cheapest Ability need 40 Energy
-    if ( energy > 40 )
-      return timespan_t::from_seconds( 0.1 );
-
-    return std::max(
-             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
-             timespan_t::from_seconds( 0.1 )
-           );
-  }
-
-  double composite_melee_speed() const override
-  {
-    double s = pet_t::composite_melee_speed();
-
-    if ( crazed_monstrosity -> up() )
-    {
-      s *= 1.0 / ( 1.0 + crazed_monstrosity -> data().effectN( 3 ).percent() );
-    }
-
-    return s;
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( crazed_monstrosity -> up() )
-    {
-      m *= 1.0 + crazed_monstrosity -> data().effectN( 2 ).percent();
-    }
-
-    return m;
-  }
-};
 
 } // namespace pets
 
@@ -4265,12 +4333,12 @@ void death_knight_t::create_pets()
   {
     if ( find_action( "summon_gargoyle" ) )
     {
-      pets.gargoyle = new pets::gargoyle_pet_t( sim, this );
+      pets.gargoyle = new pets::gargoyle_pet_t( this );
     }
 
     if ( find_action( "raise_dead" ) )
     {
-      pets.ghoul_pet = new pets::ghoul_pet_t( sim, this, "ghoul", false );
+      pets.ghoul_pet = new pets::ghoul_pet_t( this, "Ghoul" );
     }
   }
 
@@ -4283,7 +4351,7 @@ void death_knight_t::create_pets()
   {
     for ( int i = 0; i < 8; i++ )
     {
-      pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( sim, this );
+      pets.army_ghoul[ i ] = new pets::army_pet_t( this );
     }
   }
 }
