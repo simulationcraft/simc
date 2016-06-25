@@ -5590,21 +5590,21 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        def -> add_action( racial_actions[i] + ",if=energy<80" );
+        def -> add_action( racial_actions[i] + ",if=energy.deficit>20" );
       else
         def -> add_action( racial_actions[i] + ",if=buff.shadow_dance.up" );
     }
 
     // Rotation
-    def -> add_action( this, "Shadow Blades", "if=!buff.shadow_blades.up" );
-    def -> add_action( this, "Goremaw's Bite", "if=(combo_points.max-combo_points>=3&time<10)|(combo_points.max-combo_points>=4&energy<energy.max-10)" );
-    def -> add_action( this, "Symbols of Death", "if=buff.symbols_of_death.remains<=10.5" );
+    def -> add_action( this, "Shadow Blades", "if=!buff.shadow_blades.up&energy.deficit<20&(buff.shadow_dance.up|buff.vanish.up)" );
+    def -> add_action( this, "Goremaw's Bite", "if=(combo_points.max-combo_points>=2&energy.deficit>55&time<10)|(combo_points.max-combo_points>=4&energy.deficit>45)|target.time_to_die<8" );
+    def -> add_action( this, "Symbols of Death", "if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=10.5" );
     def -> add_action( this, find_specialization_spell( "Shadowstrike" ), "pool_resource", "for_next=1" );
     def -> add_action( this, "Shadowstrike", "if=combo_points.max-combo_points>=2" );
-    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=60" );
-    def -> add_action( this, "Vanish", "if=energy>60&combo_points.max-combo_points>=2&buff.symbols_of_death.remains<=10.5" );
-    def -> add_action( this, find_specialization_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=energy.max-(10+talent.master_of_shadows.enabled*60)" );
-    def -> add_action( this, "Shadow Dance", "if=combo_points.max-combo_points>=4&((cooldown.vanish.remains&buff.symbols_of_death.remains<=10.5&energy<energy.max-(10+talent.master_of_shadows.enabled*60))|cooldown.shadow_dance.charges>=2|target.time_to_die<20)" );
+    def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30" );
+    def -> add_action( this, "Vanish", "if=energy.deficit<talent.master_of_shadows.enabled*30&combo_points.max-combo_points>=3&cooldown.shadow_dance.charges<2|target.time_to_die<8" );
+    def -> add_action( this, find_specialization_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30" );
+    def -> add_action( this, "Shadow Dance", "if=combo_points.max-combo_points>=2&((cooldown.vanish.remains&buff.symbols_of_death.remains<=10.5&energy.deficit<talent.master_of_shadows.enabled*30)|cooldown.shadow_dance.charges>=2|target.time_to_die<25)" );
     def -> add_talent( this, "Enveloping Shadows", "if=buff.enveloping_shadows.remains<target.time_to_die&((buff.enveloping_shadows.remains<=10.8+talent.deeper_strategem.enabled*1.8&combo_points>=5+talent.deeper_strategem.enabled)|buff.enveloping_shadows.remains<=6)" );
     def -> add_talent( this, "Marked for Death", "if=combo_points.max-combo_points>=4" );
     def -> add_action( "run_action_list,name=finisher,if=combo_points>=5" );
@@ -5613,15 +5613,15 @@ void rogue_t::init_action_list()
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
     finisher -> add_action( this, "Nightblade", "if=!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3" );
-    finisher -> add_action( this, "Nightblade", ",cycle_targets=1,target_if=max:target.time_to_die,if=spell_targets.crimson_tempest<8&active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3)" );
+    finisher -> add_action( this, "Nightblade", ",cycle_targets=1,target_if=max:target.time_to_die,if=spell_targets.shuriken_storm<8&active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3)" );
     finisher -> add_talent( this, "Death from Above" );
     finisher -> add_action( this, "Eviscerate" );
 
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
     gen -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>2" );
-    gen -> add_talent( this, "Gloomblade", "if=energy.time_to_max<=1.3" );
-    gen -> add_action( this, "Backstab", "if=energy.time_to_max<=1.3" );
+    gen -> add_talent( this, "Gloomblade", "if=energy.time_to_max<2.5" );
+    gen -> add_action( this, "Backstab", "if=energy.time_to_max<2.5" );
   }
 
   use_default_action_list = true;
