@@ -2420,7 +2420,7 @@ struct ashamanes_frenzy_t : public cat_attack_t
     ashamanes_frenzy_damage_t( druid_t* p ) :
       cat_attack_t( "ashamanes_frenzy_dmg", p, p -> find_spell( 210723 ) )
     {
-      background = dual = direct_bleed = true;
+      background = dual = true;
       dot_max_stack = p -> artifact.ashamanes_frenzy.data().effectN( 2 ).base_value();
     }
     
@@ -2432,17 +2432,24 @@ struct ashamanes_frenzy_t : public cat_attack_t
   ashamanes_frenzy_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "ashamanes_frenzy", p, &p -> artifact.ashamanes_frenzy.data(), options_str )
   {
-    tick_action = new ashamanes_frenzy_damage_t( p );
-
     may_miss = may_parry = may_dodge = may_crit = false;
+
+    /* Copy all the modifiers that would affect any state multipliers that
+    will be inherited from this action. This is necessary because we need
+    the state to be inherited for Bloodtalons. */
+    ashamanes_frenzy_damage_t* damage = new ashamanes_frenzy_damage_t( p );
+    snapshots_sr       = damage -> snapshots_sr;
+    snapshots_tf       = damage -> snapshots_tf;
+    razor_claws.direct = damage -> razor_claws.direct;
+    razor_claws.tick   = damage -> razor_claws.tick;
+    tick_action        = damage;
   }
 
   void init() override
   {
     cat_attack_t::init();
-    
+
     tick_action -> direct_tick = false;
-    // consumes_bloodtalons = false;
   }
 
   // Does not trigger primal fury.
