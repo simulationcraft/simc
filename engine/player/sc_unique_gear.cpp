@@ -4583,48 +4583,47 @@ struct taint_of_the_sea_t : public spell_t
 struct taint_of_the_sea_driver_t : public dbc_proc_callback_t
 {
   action_t* damage;
-  player_t* player;
+  player_t* player, * taint_target;
 
   taint_of_the_sea_driver_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.player, effect ),
     damage( effect.player -> find_action( "taint_of_the_sea" ) ),
-    player( effect.player )
+    player( effect.player ), taint_target( nullptr )
   {}
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override
   {
-    if ( player -> get_target_data( trigger_state -> target ) -> debuff.taint_of_the_sea -> check() )
-      return;
-
-    for ( size_t i = 0; i < player -> sim -> target_non_sleeping_list.size(); i++ )
+    if ( taint_target == trigger_state -> target )
     {
-      player_t* target = player -> sim -> target_non_sleeping_list[ i ];
-
-      if ( player -> get_target_data( target ) -> debuff.taint_of_the_sea -> check() )
-      {
-        damage -> target = target;
-        damage -> base_dd_min = damage -> base_dd_max = trigger_state -> result_amount;
-        damage -> schedule_execute();
-      }
+      return;
     }
+
+    if ( ! player -> get_target_data( taint_target ) -> debuff.taint_of_the_sea -> check() )
+    {
+      return;
+    }
+
+    damage -> target = taint_target;
+    damage -> base_dd_min = damage -> base_dd_max = trigger_state -> result_amount;
+    damage -> schedule_execute();
   }
 };
 
 struct taint_of_the_sea_debuff_t : public debuff_t
 {
-  dbc_proc_callback_t* callback;
+  taint_of_the_sea_driver_t* callback;
 
   taint_of_the_sea_debuff_t( player_t* target, const special_effect_t* effect ) : 
-    debuff_t( buff_creator_t( target, "taint_of_the_sea", effect -> driver() )
+    debuff_t( buff_creator_t( actor_pair_t( target, effect -> player ), "taint_of_the_sea", effect -> driver() )
       .default_value( effect -> driver() -> effectN( 2 ).average( effect -> item ) ) )
   {
     // Damage transfer effect & callback
-    special_effect_t* effect2 = new special_effect_t( player );
+    special_effect_t* effect2 = new special_effect_t( effect -> player );
     effect2 -> name_str = "taint_of_the_sea_driver";
     effect2 -> proc_chance_ = 1.0;
     effect2 -> proc_flags_ = PF_ALL_DAMAGE;
     effect2 -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
-    player -> special_effects.push_back( effect2 );
+    effect -> player -> special_effects.push_back( effect2 );
 
     callback = new taint_of_the_sea_driver_t( *effect2 );
     callback -> initialize();
@@ -4634,6 +4633,7 @@ struct taint_of_the_sea_debuff_t : public debuff_t
   {
     debuff_t::start( stacks, value, duration );
 
+    callback -> taint_target = player;
     callback -> activate();
   }
 
@@ -5664,6 +5664,7 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   sim -> register_target_data_initializer( empty_drinking_horn_constructor_t( 124238, trinkets ) );
   sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
   sim -> register_target_data_initializer( spiked_counterweight_constructor_t( 136715, trinkets ) );
+  sim -> register_target_data_initializer( figurehead_of_the_naglfar_constructor_t( 137329, trinkets ) );
 }
 
 static const special_effect_t* find_special_effect( player_t* actor, unsigned spell_id )

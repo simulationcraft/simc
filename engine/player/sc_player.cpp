@@ -6653,11 +6653,7 @@ struct use_item_t : public action_t
       // Create an action
       if ( e.action_type() != SPECIAL_EFFECT_ACTION_NONE )
       {
-        action = player -> find_action( e.name() );
-        if ( ! action )
-        {
-          action = e.create_action();
-        }
+        action = e.create_action();
       }
 
       stats = player ->  get_stats( name_str, this );

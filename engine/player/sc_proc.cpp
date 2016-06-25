@@ -516,7 +516,14 @@ action_t* special_effect_t::create_action() const
   // special effect
   if ( action_type() != SPECIAL_EFFECT_ACTION_CUSTOM && action_type() != SPECIAL_EFFECT_ACTION_NONE )
   {
-    if ( action_t* a = player -> create_proc_action( name(), *this ) )
+    action_t* a = player -> find_action( name() );
+    if ( a )
+    {
+      return a;
+    }
+
+    a = player -> create_proc_action( name(), *this );
+    if ( a )
     {
       return a;
     }
