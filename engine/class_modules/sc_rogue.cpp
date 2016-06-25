@@ -222,6 +222,7 @@ struct rogue_t : public player_t
     buff_t* curse_of_the_dreadblades;
     buff_t* blurred_time;
     buff_t* death;
+    buff_t* t19_4pc_outlaw;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -490,9 +491,6 @@ struct rogue_t : public player_t
     real_ppm_t* bag_of_tricks;
   } prng;
 
-  player_t* tot_target;
-  action_callback_t* virtual_hat_callback;
-
   // Options
   uint32_t fof_p1, fof_p2, fof_p3;
   int initial_combo_points;
@@ -524,8 +522,6 @@ struct rogue_t : public player_t
     talent( talents_t() ),
     mastery( masteries_t() ),
     procs( procs_t() ),
-    tot_target( nullptr ),
-    virtual_hat_callback( nullptr ),
     fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 ),
     initial_combo_points( 0 )
   {
@@ -594,7 +590,7 @@ struct rogue_t : public player_t
 
   void trigger_auto_attack( const action_state_t* );
   void trigger_seal_fate( const action_state_t* );
-  void trigger_main_gauche( const action_state_t* );
+  void trigger_main_gauche( const action_state_t*, double = 0 );
   void trigger_combat_potency( const action_state_t* );
   void trigger_energy_refund( const action_state_t* );
   void trigger_venomous_wounds( const action_state_t* );
@@ -867,6 +863,9 @@ struct rogue_attack_t : public melee_attack_t
   // Generic rules for proccing Main Gauche, used by rogue_t::trigger_main_gauche()
   virtual bool procs_main_gauche() const
   { return callbacks && ! proc && weapon != nullptr && weapon -> slot == SLOT_MAIN_HAND; }
+
+  virtual double proc_chance_main_gauche() const
+  { return p() -> cache.mastery_value(); }
 
   action_state_t* new_state() override
   { return new rogue_attack_state_t( this, target ); }
@@ -1726,7 +1725,7 @@ void rogue_attack_t::impact( action_state_t* state )
 {
   melee_attack_t::impact( state );
 
-  p() -> trigger_main_gauche( state );
+  p() -> trigger_main_gauche( state, proc_chance_main_gauche() );
   p() -> trigger_combat_potency( state );
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
@@ -2939,10 +2938,12 @@ struct run_through_t: public rogue_attack_t
       p() -> greed -> schedule_execute();
     }
 
-    if (p() -> buffs.true_bearing -> up())
+    if ( p() -> buffs.true_bearing -> up() )
     {
       p() -> trigger_true_bearing( cast_state( execute_state ) -> cp );
     }
+
+    p() -> buffs.t19_4pc_outlaw -> trigger();
   }
 };
 
@@ -3280,38 +3281,57 @@ struct saber_slash_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.cursed_edges.percent();
   }
 
+  double proc_chance_main_gauche() const override
+  {
+    return rogue_attack_t::proc_chance_main_gauche() +
+           p() -> sets.set( ROGUE_OUTLAW, T19, B2 ) -> effectN( 1 ).percent();
+  }
+
   void reset() override
   {
     rogue_attack_t::reset();
     saberslash_proc_event = nullptr;
   }
 
-  void impact( action_state_t* state ) override
+  double cost() const override
   {
-    rogue_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) && ! saberslash_proc_event )
+    if ( p() -> buffs.t19_4pc_outlaw -> check() || saberslash_proc_event )
     {
-      if ( p() -> buffs.broadsides -> up() )
-      {
-        p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 2 ).base_value(),
-            p() -> gains.broadsides, this );
-      }
+      return 0;
+    }
 
-      if ( p() -> buffs.opportunity -> trigger() || p() -> buffs.hidden_blade -> up() )
-      {
-        saberslash_proc_event = new ( *sim ) saberslash_proc_event_t( p(), this, state -> target );
-      }
+    return rogue_attack_t::cost();
+  }
 
-      p() -> buffs.hidden_blade -> decrement();
+  void execute() override
+  {
+    rogue_attack_t::execute();
 
-      if ( p() -> buffs.curse_of_the_dreadblades -> up() )
+    if ( saberslash_proc_event || ! result_is_hit( execute_state -> result ) )
+    {
+      return;
+    }
+
+    if ( p() -> buffs.opportunity -> trigger() || p() -> buffs.hidden_blade -> up() )
+    {
+      saberslash_proc_event = new ( *sim ) saberslash_proc_event_t( p(), this, execute_state -> target );
+    }
+
+    p() -> buffs.hidden_blade -> decrement();
+    p() -> buffs.t19_4pc_outlaw -> decrement();
+
+    if ( p() -> buffs.broadsides -> up() )
+    {
+      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
+          p() -> gains.broadsides, this );
+    }
+
+    if ( p() -> buffs.curse_of_the_dreadblades -> up() )
+    {
+      double n_cp = p() -> resources.max[ RESOURCE_COMBO_POINT ] - p() -> resources.current[ RESOURCE_COMBO_POINT ];
+      if ( n_cp > 0 )
       {
-        double n_cp = p() -> resources.max[ RESOURCE_COMBO_POINT ] - p() -> resources.current[ RESOURCE_COMBO_POINT ];
-        if ( n_cp > 0 )
-        {
-          p() -> resource_gain( RESOURCE_COMBO_POINT, n_cp, p() -> gains.curse_of_the_dreadblades, this );
-        }
+        p() -> resource_gain( RESOURCE_COMBO_POINT, n_cp, p() -> gains.curse_of_the_dreadblades, this );
       }
     }
   }
@@ -4311,7 +4331,7 @@ void rogue_t::trigger_seal_fate( const action_state_t* state )
   procs.seal_fate -> occur();
 }
 
-void rogue_t::trigger_main_gauche( const action_state_t* state )
+void rogue_t::trigger_main_gauche( const action_state_t* state, double chance )
 {
   if ( ! mastery.main_gauche -> ok() )
     return;
@@ -4326,7 +4346,12 @@ void rogue_t::trigger_main_gauche( const action_state_t* state )
   if ( ! attack -> procs_main_gauche() )
     return;
 
-  if ( ! rng().roll( cache.mastery_value() ) )
+  if ( chance == 0 )
+  {
+    chance = cache.mastery_value();
+  }
+
+  if ( ! rng().roll( chance ) )
     return;
 
   active_main_gauche -> target = state -> target;
@@ -6257,6 +6282,9 @@ void rogue_t::create_buffs()
   buffs.curse_of_the_dreadblades = buff_creator_t( this, "curse_of_the_dreadblades", artifact.curse_of_the_dreadblades );
   buffs.blurred_time = new buffs::blurred_time_t( this );
   buffs.death = buff_creator_t( this, "death", spec.symbols_of_death -> effectN( 3 ).trigger() );
+  buffs.t19_4pc_outlaw = buff_creator_t( this, "swordplay" )
+    .spell( sets.set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets.set( ROGUE_OUTLAW, T19, B4 ) );
 }
 
 // rogue_t::create_options ==================================================
