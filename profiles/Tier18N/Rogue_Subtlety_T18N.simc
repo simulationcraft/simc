@@ -47,7 +47,7 @@ actions+=/run_action_list,name=generator,if=combo_points<5
 # Combo point finishers
 
 actions.finisher=nightblade,if=!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3
-actions.finisher+=/nightblade,,cycle_targets=1,target_if=max:target.time_to_die,if=spell_targets.shuriken_storm<8&active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3)
+actions.finisher+=/nightblade,cycle_targets=1,target_if=max:target.time_to_die,if=spell_targets.shuriken_storm<8&active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3)
 actions.finisher+=/death_from_above
 actions.finisher+=/eviscerate
 
