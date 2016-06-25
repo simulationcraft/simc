@@ -859,7 +859,7 @@ struct melee_t: public warrior_attack_t
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
-    base_rage_generation( 1.75 ), arms_rage_multiplier( 3.40 ), fury_rage_multiplier( 0.80 ),
+    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.0 ), fury_rage_multiplier( 0.80 ),
     arms_trinket_chance( 0 )
   {
     school = SCHOOL_PHYSICAL;
@@ -964,7 +964,7 @@ struct melee_t: public warrior_attack_t
     {
       if ( s -> result == RESULT_CRIT )
       {
-        rage_gain *= rng().range( 7.4375, 7.875 ); // Wild random numbers appear! Accurate as of 2016/05/01
+        rage_gain *= rng().range( 5.715, 6.00 ); 
       }
       else
       {
@@ -2431,7 +2431,12 @@ struct rampage_parent_t: public warrior_attack_t
     {
       add_child( p -> rampage_attacks[i] );
     }
-    trigger_gcd = timespan_t::from_millis( 1500 ); // Testing as of 5/20/2016
+    if ( p -> bugs )
+    {
+      trigger_gcd = timespan_t::from_millis( 1500 ); // Testing as of 5/20/2016
+      headlongrush = false;
+      headlongrushgcd = false;
+    }
     base_costs[RESOURCE_RAGE] += p -> talents.carnage -> effectN( 1 ).resource(RESOURCE_RAGE);
   }
 
