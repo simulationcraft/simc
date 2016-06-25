@@ -7007,6 +7007,7 @@ typedef std::vector<const special_effect_db_item_t*> special_effect_set_t;
 
 void register_hotfixes();
 void register_special_effects();
+void register_special_effects_x7(); // Legion special effects
 void sort_special_effects();
 void unregister_special_effects();
 
@@ -7034,6 +7035,7 @@ void register_special_effect( unsigned spell_id, const T& cb, bool fallback = fa
 }
 
 void register_target_data_initializers( sim_t* );
+void register_target_data_initializers_x7( sim_t* ); // Legion targetdata initializers
 
 void init( player_t* );
 
@@ -7839,5 +7841,53 @@ void effect_callbacks_t<T_CB>::reset()
 {
   T_CB::reset( all_callbacks );
 }
+
+/**
+ * Targetdata initializer for items. When targetdata is constructed (due to a call to
+ * player_t::get_target_data failing to find an object for the given target), all targetdata
+ * initializers in the sim are invoked. Most class specific targetdata is handled by the derived
+ * class-specific targetdata, however there are a couple of trinkets that require "generic"
+ * targetdata support. Item targetdata initializers will create the relevant debuffs/buffs needed.
+ * Note that the buff/debuff needs to be created always, since expressions for buffs/debuffs presume
+ * the buff exists or the whole sim fails to init.
+ *
+ * See unique_gear::register_target_data_initializers() for currently supported target-based debuffs
+ * in generic items.
+ */
+struct item_targetdata_initializer_t
+{
+  unsigned item_id;
+  std::vector< slot_e > slots;
+
+  item_targetdata_initializer_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_id( iid ), slots( s )
+  { }
+
+  virtual ~item_targetdata_initializer_t() {}
+
+  // Returns the special effect based on item id and slots to source from. Overridable if more
+  // esoteric functionality is needed
+  virtual const special_effect_t* find_effect( player_t* player ) const
+  {
+    // No need to check items on pets/enemies
+    if ( player -> is_pet() || player -> is_enemy() || player -> type == HEALING_ENEMY )
+    {
+      return 0;
+    }
+
+    for ( size_t i = 0; i < slots.size(); ++i )
+    {
+      if ( player -> items[ slots[ i ] ].parsed.data.id == item_id )
+      {
+        return player -> items[ slots[ i ] ].parsed.special_effects[ 0 ];
+      }
+    }
+
+    return 0;
+  }
+
+  // Override to initialize the targetdata object.
+  virtual void operator()( actor_target_data_t* ) const = 0;
+};
 
 #endif // SIMULATIONCRAFT_H

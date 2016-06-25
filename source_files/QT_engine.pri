@@ -57,6 +57,7 @@
  SOURCES += engine/report/sc_gear_weights.cpp
  SOURCES += engine/report/sc_color.cpp
  SOURCES += engine/report/sc_chart.cpp
+ SOURCES += engine/player/sc_unique_gear_x7.cpp
  SOURCES += engine/player/sc_unique_gear.cpp
  SOURCES += engine/player/sc_set_bonus.cpp
  SOURCES += engine/player/sc_proc.cpp

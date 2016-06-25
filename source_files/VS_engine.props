@@ -115,6 +115,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClCompile Include="..\engine\report\sc_chart.cpp">
 			
 		</ClCompile>
+		<ClCompile Include="..\engine\player\sc_unique_gear_x7.cpp">
+			
+		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_unique_gear.cpp">
 			
 		</ClCompile>
