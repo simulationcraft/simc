@@ -1369,15 +1369,6 @@ struct consecration_tick_t : public paladin_spell_t
     may_crit    = true;
     ground_aoe = true;
   }
-
-  virtual void execute() override
-  {
-    // TODO: check if this is needed anymore, because it causes errors!
-    //if ( target -> debuffs.flying -> check() )
-    //  if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), target -> name() );
-    //else
-      paladin_spell_t::execute();
-  }
 };
 
 // healing tick from Consecrated Ground talent
@@ -2942,6 +2933,9 @@ struct blade_of_wrath_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
+
+    // TODO: this shouldn't be necessary next build
+    tick_may_crit = true;
   }
 };
 
