@@ -5,7 +5,6 @@
 
 // TODO + BlizzardFeatures + Bugs
 // Subtlety
-// - Shuriken Storm
 // - Second Shuriken [artifact power]
 // - Does Weaponmaster attempt to proc per target or per cast?
 // - Weaponmaster interaction with Death from Above (double finisher or not?)
@@ -14,14 +13,9 @@
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
 // - Poisoned Knives [artifact power] does the damage doubledip in any way?
 // - Does Kingsbane debuff get procced 2x on Mutilate? (If both hands apply lethal poison).
-// - Agonizing poison does not proc kingsbane stacks in game?
-// - Bag of Tricks double dips in haste (RPPM is hasted, tick-time is hasted), intended?
 //
 // Outlaw:
 // - Blunderbuss [artifact power]
-// - Blurred Time is kind of confusing, it is not as tooltip advertises. In reality, it seems to be
-//   using the trigger spell's value in a "non standard" way (compared to how haste works in general
-//   with cooldown recharge).
 // - For some reason, Between the Eyes is not affected by Blurred Time
 
 #include "simulationcraft.hpp"
@@ -3582,11 +3576,8 @@ struct shuriken_storm_t: public rogue_attack_t
 struct shuriken_toss_t : public rogue_attack_t
 {
   shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shuriken_toss", p, p -> find_talent_spell( "Shuriken Toss" ), options_str )
-  {}
-
-  bool procs_poison() const override
-  { return true; }
+    rogue_attack_t( "shuriken_toss", p, p -> find_specialization_spell( "Shuriken Toss" ), options_str )
+  { }
 };
 
 // Slice and Dice ===========================================================
