@@ -664,6 +664,10 @@ namespace buffs {
       debuff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ), paladin( p )
     { }
 
+    forbearance_t( paladin_t* p, paladin_td_t *ap, const char *name ) :
+      debuff_t( buff_creator_t( *ap, name, p -> find_spell( 25771 ) ) ), paladin( p )
+    { }
+
     void execute( int stacks, double value, timespan_t duration ) override
     {
       debuff_t::execute( stacks, value, duration );
@@ -3822,7 +3826,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
-  buffs.forbearant_faithful = new buffs::forbearance_t( paladin, "forbearant_faithful" );
+  buffs.forbearant_faithful = new buffs::forbearance_t( paladin, this, "forbearant_faithful" );
   buffs.blessed_hammer_debuff = buff_creator_t( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
 }
 
