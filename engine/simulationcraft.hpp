@@ -1091,7 +1091,7 @@ public:
   virtual void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 
-  double consume( double amount );
+  virtual double consume( double amount );
 };
 
 struct cost_reduction_buff_t : public buff_t
