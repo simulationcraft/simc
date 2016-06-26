@@ -1222,6 +1222,7 @@ class SpellDataGenerator(DataGenerator):
           ( 212338, 5 ),    # Vile Gas for Sludge Belcher
           ( 198715, 5 ),    # Val'kyr Strike for Dark Arbiter
           ( 211947, 0 ),    # Shadow Empowerment for Dark Arbiter
+          ( 81141, 0 ),     # Crimson Scourge buff
         ),
 
         # Shaman:
