@@ -5556,39 +5556,38 @@ void rogue_t::init_action_list()
   if ( specialization() == ROGUE_ASSASSINATION )
   {
     precombat -> add_talent( this, "Marked for Death" );
-    precombat -> add_action( this, "Slice and Dice", "if=talent.marked_for_death.enabled" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      def -> add_action( item_actions[i] + ",if=spell_targets.fan_of_knives>1|(debuff.vendetta.up&spell_targets.fan_of_knives=1)" );
+      def -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<40|debuff.vendetta.up" );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        def -> add_action( racial_actions[i] + ",if=energy<60" );
+        def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up&energy<60" );
       else
-        def -> add_action( racial_actions[i] );
+        def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
 
     action_priority_list_t* finishers = get_action_priority_list( "finishers" );
 
-    def -> add_action( this, "Vanish", "if=time>10&energy>13&!buff.stealth.up&energy.time_to_max>gcd*2&(combo_points<8|(!talent.anticipation.enabled&combo_points<=1))" );
-    def -> add_action( this, "Mutilate", "if=buff.stealth.up|buff.vanish.up|combo_points<combo_points.max" );
-    def -> add_action( this, "Rupture", "if=((combo_points>=4&!talent.anticipation.enabled)|combo_points=5)&ticks_remain<3" );
+    def -> add_action( this, "Vendetta", "if=energy<30|time<10&combo_points>4&energy<60" );
+    def -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>21" );
+    def -> add_action( "pool_resource,if=energy<90&cooldown.kingsbane.remains<3.5" );
+    def -> add_action( "pool_resource,for_next=1,extra_amount=90" );
+    def -> add_action( this, "Kingsbane" );
+    def -> add_action( this, "Vanish", "if=energy>25&dot.rupture.refreshable&combo_points>5" );
+    def -> add_action( this, "Rupture", "if=buff.vanish.up&combo_points>5&refreshable" );
+    def -> add_action( this, "Garrote", "if=refreshable&combo_points<6&!dot.garrote.exsanguinated" );
+    def -> add_talent( this, "Hemorrhage", "if=debuff.hemorrhage.down&combo_points<6" );
+    def -> add_action( this, "Mutilate", "if=combo_points<5" );
+    def -> add_action( this, "Rupture", "if=!exsanguinated&refreshable&combo_points>4" );
+    def -> add_action( "pool_resource,for_next=1,extra_amount=25" );
+    def -> add_talent( this, "Death from Above", "if=combo_points>4");
+    def -> add_action( "pool_resource,for_next=1,extra_amount=80" );
+    def -> add_action( this, "Envenom", "if=combo_points>=5&energy>80&buff.envenom.remains<0.5&buff.elaborate_planning.remains<2" );
     def -> add_action( this, "Rupture", "cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&combo_points=5" );
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
-    def -> add_talent( this, "Shadow Reflection", "if=combo_points>4|target.time_to_die<=20" );
-    def -> add_action( this, "Vendetta", "if=target.time_to_die<=20|(target.time_to_die<=30&glyph.vendetta.enabled)" );
     def -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points=5&remains<=duration*0.3&spell_targets.fan_of_knives>1" );
-    def -> add_action( "call_action_list,name=finishers,if=combo_points=5&((!cooldown.death_from_above.remains&talent.death_from_above.enabled)|buff.envenom.down|!talent.anticipation.enabled|combo_points>=6)" );
-    def -> add_action( "call_action_list,name=finishers,if=dot.rupture.remains<2" );
-
-    finishers -> add_action( this, "Rupture", "cycle_targets=1,if=(remains<2|(combo_points=5&remains<=(duration*0.3)))" );
-    finishers -> add_action( "pool_resource,for_next=1" );
-    finishers -> add_talent( this, "Death from Above", "if=(cooldown.vendetta.remains>10|debuff.vendetta.up|target.time_to_die<=25)" );
-    finishers -> add_action( this, "Envenom", "cycle_targets=1,if=dot.deadly_poison_dot.remains<4&target.health.pct<=35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>45))|buff.bloodlust.up|debuff.vendetta.up" );
-    finishers -> add_action( this, "Envenom", "cycle_targets=1,if=dot.deadly_poison_dot.remains<4&target.health.pct>35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>55))|buff.bloodlust.up|debuff.vendetta.up" );
-    finishers -> add_action( this, "Envenom", "if=target.health.pct<=35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>45))|buff.bloodlust.up|debuff.vendetta.up" );
-    finishers -> add_action( this, "Envenom", "if=target.health.pct>35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>55))|buff.bloodlust.up|debuff.vendetta.up" );
   }
 
   else if ( specialization() == ROGUE_OUTLAW )
