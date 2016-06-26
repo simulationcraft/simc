@@ -233,7 +233,7 @@ public:
   struct buffs_t {
     buff_t* army_of_the_dead;
     buff_t* antimagic_shell;
-    buff_t* bone_shield;
+    haste_buff_t* bone_shield;
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
     buff_t* dark_transformation;
@@ -454,7 +454,7 @@ public:
 
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
-    cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 1.0 );
+    cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
     cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
@@ -1566,11 +1566,32 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
+  struct heart_strike_t : public drw_attack_t
+  {
+    heart_strike_t( dancing_rune_weapon_pet_t* p ) :
+      drw_attack_t( p, "heart_strike", p -> owner -> find_specialization_spell( "Heart Strike" ) )
+    {
+      weapon = &( p -> main_hand_weapon );
+      aoe = 2;
+    }
+  };
+
+  struct marrowrend_t : public drw_attack_t
+  {
+    marrowrend_t( dancing_rune_weapon_pet_t* p ) :
+      drw_attack_t( p, "marrowrend", p -> owner -> find_specialization_spell( "Marrowrend" ) )
+    {
+      weapon = &( p -> main_hand_weapon );
+    }
+  };
+
   struct abilities_t
   {
-    spell_t*        blood_plague;
-    spell_t*        blood_boil;
-    melee_attack_t* death_strike;
+    drw_spell_t*  blood_plague;
+    drw_spell_t*  blood_boil;
+    drw_attack_t* death_strike;
+    drw_attack_t* heart_strike;
+    drw_attack_t* marrowrend;
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
@@ -1593,9 +1614,11 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     // go away.
     type = DEATH_KNIGHT; _spec = DEATH_KNIGHT_BLOOD;
 
-    ability.blood_plague  = new blood_plague_t ( this );
-    ability.blood_boil    = new blood_boil_t   ( this );
-    ability.death_strike  = new death_strike_t ( this );
+    ability.blood_plague  = new blood_plague_t( this );
+    ability.blood_boil    = new blood_boil_t  ( this );
+    ability.death_strike  = new death_strike_t( this );
+    ability.heart_strike  = new heart_strike_t( this );
+    ability.marrowrend    = new marrowrend_t  ( this );
 
     type = PLAYER_GUARDIAN; _spec = SPEC_NONE;
   }
@@ -1816,6 +1839,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
                                const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s ), always_consume( false )
   {
+    special    = true;
     may_crit   = true;
     may_glance = false;
   }
@@ -2117,6 +2141,7 @@ struct melee_t : public death_knight_melee_attack_t
     background      = true;
     repeating       = true;
     trigger_gcd     = timespan_t::zero();
+    special         = false;
 
     if ( p -> dual_wield() )
       base_hit -= 0.19;
@@ -2503,45 +2528,44 @@ struct blood_tap_t : public death_knight_spell_t
   */
 };
 
-// Bone Shield ==============================================================
+// Chains of Ice ============================================================
 
-struct bone_shield_t : public death_knight_spell_t
+struct chains_of_ice_t : public death_knight_spell_t
 {
-  bone_shield_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "bone_shield", p, p -> find_specialization_spell( "Bone Shield" ) )
+  const spell_data_t* pvp_bonus;
+
+  chains_of_ice_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "chains_of_ice", p, p -> find_class_spell( "Chains of Ice" ) ),
+    pvp_bonus( p -> find_spell( 62459 ) )
   {
     parse_options( options_str );
 
-    harmful = false;
+    int exclusivity_check = 0;
+
+    for ( size_t i = 0, end = sizeof_array( p -> items[ SLOT_HANDS ].parsed.data.id_spell ); i < end; i++ )
+    {
+      if ( p -> items[ SLOT_HANDS ].parsed.data.id_spell[ i ] == static_cast<int>( pvp_bonus -> id() ) )
+      {
+        energize_type     = ENERGIZE_ON_HIT;
+        energize_resource = RESOURCE_RUNIC_POWER;
+        energize_amount   = pvp_bonus -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+        break;
+      }
+    }
+
+    if ( exclusivity_check > 1 )
+    {
+      sim -> errorf( "Disabling Chains of Ice because multiple exclusive glyphs are affecting it." );
+      background = true;
+    }
   }
 
-  virtual void execute() override
+  void impact( action_state_t* state ) override
   {
-    size_t max_stacks = p() -> buffs.bone_shield -> data().initial_stacks();
+    death_knight_spell_t::impact( state );
 
-    if ( ! p() -> in_combat )
-    {
-      // Pre-casting it before the fight, perfect timing would be so
-      // that the used rune is ready when it is needed in the
-      // rotation.  Assume we casted Bone Shield somewhere between
-      // 8-16s before we start fighting.  The cost in this case is
-      // zero and we don't cause any cooldown.
-      timespan_t pre_cast = timespan_t::from_seconds( rng().range( 8.0, 16.0 ) );
-
-      cooldown -> duration -= pre_cast;
-      p() -> buffs.bone_shield -> buff_duration -= pre_cast;
-
-      p() -> buffs.bone_shield -> trigger( static_cast<int>(max_stacks) ); // FIXME
-      death_knight_spell_t::execute();
-
-      cooldown -> duration += pre_cast;
-      p() -> buffs.bone_shield -> buff_duration += pre_cast;
-    }
-    else
-    {
-      p() -> buffs.bone_shield -> trigger( static_cast<int>(max_stacks) ); // FIXME
-      death_knight_spell_t::execute();
-    }
+    if ( result_is_hit( state -> result ) )
+      p() -> apply_diseases( state, DISEASE_FROST_FEVER );
   }
 };
 
@@ -2959,7 +2983,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     oh_attack( nullptr ), heal( new death_strike_heal_t( p ) )
   {
     parse_options( options_str );
-    special = true;
     may_parry = false;
     base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 1 ).percent();
 
@@ -3227,11 +3250,9 @@ struct frost_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "frost_strike", p, p -> find_specialization_spell( "Frost Strike" ) ),
     oh_attack( new frost_strike_offhand_t( p ) )
   {
-    special = true;
-
     parse_options( options_str );
 
-    weapon     = &( p -> main_hand_weapon );
+    weapon = &( p -> main_hand_weapon );
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3304,6 +3325,33 @@ struct glacial_advance_t : public death_knight_spell_t
 
     execute_action = new glacial_advance_damage_t( player );
     add_child( execute_action );
+  }
+};
+
+// Heart Strike =============================================================
+
+struct heart_strike_t : public death_knight_melee_attack_t
+{
+  heart_strike_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_melee_attack_t( "heart_strike", p, p -> find_specialization_spell( "Heart Strike" ) )
+  {
+    parse_options( options_str );
+
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  int n_targets() const override
+  { return td( target ) -> in_aoe_radius() ? 5 : 2; }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( p() -> buffs.dancing_rune_weapon -> check() )
+    {
+      p() -> pets.dancing_rune_weapon -> ability.heart_strike -> target = execute_state -> target;
+      p() -> pets.dancing_rune_weapon -> ability.heart_strike -> execute();
+    }
   }
 };
 
@@ -3412,44 +3460,29 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
   }
 };
 
-// Chains of Ice ============================================================
+// Marrowrend ===============================================================
 
-struct chains_of_ice_t : public death_knight_spell_t
+struct marrowrend_t : public death_knight_melee_attack_t
 {
-  const spell_data_t* pvp_bonus;
-
-  chains_of_ice_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "chains_of_ice", p, p -> find_class_spell( "Chains of Ice" ) ),
-    pvp_bonus( p -> find_spell( 62459 ) )
+  marrowrend_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_melee_attack_t( "marrowrend", p, p -> find_specialization_spell( "Marrowrend" ) )
   {
     parse_options( options_str );
 
-    int exclusivity_check = 0;
-
-    for ( size_t i = 0, end = sizeof_array( p -> items[ SLOT_HANDS ].parsed.data.id_spell ); i < end; i++ )
-    {
-      if ( p -> items[ SLOT_HANDS ].parsed.data.id_spell[ i ] == static_cast<int>( pvp_bonus -> id() ) )
-      {
-        energize_type     = ENERGIZE_ON_HIT;
-        energize_resource = RESOURCE_RUNIC_POWER;
-        energize_amount   = pvp_bonus -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-        break;
-      }
-    }
-
-    if ( exclusivity_check > 1 )
-    {
-      sim -> errorf( "Disabling Chains of Ice because multiple exclusive glyphs are affecting it." );
-      background = true;
-    }
+    weapon = &( p -> main_hand_weapon );
   }
 
-  void impact( action_state_t* state ) override
+  void execute() override
   {
-    death_knight_spell_t::impact( state );
+    death_knight_melee_attack_t::execute();
 
-    if ( result_is_hit( state -> result ) )
-      p() -> apply_diseases( state, DISEASE_FROST_FEVER );
+    if ( p() -> buffs.dancing_rune_weapon -> check() )
+    {
+      p() -> pets.dancing_rune_weapon -> ability.marrowrend -> target = execute_state -> target;
+      p() -> pets.dancing_rune_weapon -> ability.marrowrend -> execute();
+    }
+
+    p() -> buffs.bone_shield -> trigger( data().effectN( 3 ).base_value() );
   }
 };
 
@@ -3516,7 +3549,6 @@ struct obliterate_t : public death_knight_melee_attack_t
     oh_attack( new obliterate_offhand_t( p ) )
   {
     parse_options( options_str );
-    special = true;
 
     weapon = &( p -> main_hand_weapon );
   }
@@ -3782,7 +3814,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       death_knight_melee_attack_t( "scourge_strike_shadow", p, p -> find_spell( 70890 ) )
     {
       may_miss = may_parry = may_dodge = false;
-      special = proc = background = true;
+      proc = background = true;
       weapon = &( player -> main_hand_weapon );
       dual = true;
       school = SCHOOL_SHADOW;
@@ -3808,8 +3840,6 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     scourge_strike_shadow( new scourge_strike_shadow_t( p ) )
   {
     parse_options( options_str );
-
-    special = true;
 
     add_child( scourge_strike_shadow );
   }
@@ -4271,22 +4301,24 @@ struct runic_corruption_buff_t : public buff_t
 
 struct vampiric_blood_buff_t : public buff_t
 {
-  int health_gain;
-
   vampiric_blood_buff_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "vampiric_blood", p -> find_specialization_spell( "Vampiric Blood" ) ).cd( timespan_t::zero() ) ),
-    health_gain ( 0 )
+    buff_t( buff_creator_t( p, "vampiric_blood", p -> find_specialization_spell( "Vampiric Blood" ) ).cd( timespan_t::zero() ) )
   { }
+
+  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + data().effectN( 2 ).percent();
+    player -> recalculate_resource_max( RESOURCE_HEALTH );
+  }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( health_gain > 0 )
-    {
-      player -> stat_loss( STAT_MAX_HEALTH, health_gain );
-      player -> stat_loss( STAT_HEALTH, health_gain );
-    }
+    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + data().effectN( 2 ).percent();
+    player -> recalculate_resource_max( RESOURCE_HEALTH );
   }
 };
 } // UNNAMED NAMESPACE
@@ -4467,6 +4499,8 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "blood_tap"                ) return new blood_tap_t                ( this, options_str );
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
   if ( name == "dark_command"             ) return new dark_command_t             ( this, options_str );
+  if ( name == "heart_strike"             ) return new heart_strike_t             ( this, options_str );
+  if ( name == "marrowrend"               ) return new marrowrend_t               ( this, options_str );
   if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
 
@@ -4486,7 +4520,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
-  if ( name == "bone_shield"              ) return new bone_shield_t              ( this, options_str );
   if ( name == "dark_transformation"      ) return new dark_transformation_t      ( this, options_str );
   if ( name == "death_and_decay"          ) return new death_and_decay_t          ( this, options_str );
   if ( name == "death_coil"               ) return new death_coil_t               ( this, options_str );
@@ -4654,6 +4687,11 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 
+  if ( buffs.bone_shield -> up() )
+  {
+    haste *= buffs.bone_shield -> value();
+  }
+
   //if ( buffs.obliteration -> up() )
   //{
   //  haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
@@ -4671,6 +4709,11 @@ double death_knight_t::composite_spell_haste() const
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
 
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
+
+  if ( buffs.bone_shield -> up() )
+  {
+    haste *= buffs.bone_shield -> value();
+  }
 
   /*if ( buffs.obliteration -> up() )
   {
@@ -4907,9 +4950,8 @@ void death_knight_t::create_buffs()
 
   buffs.antimagic_shell     = new antimagic_shell_buff_t( this );
 
-  buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_specialization_spell( "Bone Shield" ) )
-                              .cd( timespan_t::zero() )
-                              .max_stack( find_specialization_spell( "Bone Shield" ) -> initial_stacks() + find_spell( 144948 ) -> max_stacks() );
+  buffs.bone_shield         = haste_buff_creator_t( this, "bone_shield", find_spell( 195181 ) )
+                              .default_value( 1.0 / ( 1.0 + find_spell( 195181 ) -> effectN( 4 ).percent() ) );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" )
                               .spell( find_spell( 81141 ) )
                               .trigger_spell( spec.crimson_scourge );
@@ -5126,9 +5168,6 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 
   if ( buffs.rune_tap -> up() )
     state -> result_amount *= 1.0 + buffs.rune_tap -> data().effectN( 1 ).percent();
-
-  if ( buffs.bone_shield -> up() )
-    state -> result_amount *= 1.0 + buffs.bone_shield -> data().effectN( 1 ).percent();
 
   if ( buffs.icebound_fortitude -> up() )
     state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent();
