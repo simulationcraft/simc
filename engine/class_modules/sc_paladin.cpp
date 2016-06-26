@@ -1055,6 +1055,8 @@ struct bastion_of_light_t : public paladin_spell_t
   bastion_of_light_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "bastion_of_light", p, p -> find_talent_spell( "Bastion of Light" ) )
   {
+    parse_options( options_str );
+
     charges = data().effectN( 1 ).base_value();
 
     harmful = false;
