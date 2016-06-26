@@ -1399,16 +1399,16 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
 struct valkyr_pet_t : public death_knight_pet_t
 {
-  struct travel_t : public action_t
+  struct general_confusion_t : public action_t
   {
     bool executed;
 
-    travel_t( player_t* player ) :
-      action_t( ACTION_OTHER, "travel", player ),
+    general_confusion_t( player_t* player ) : action_t( ACTION_OTHER, "general_confusion", player ),
       executed( false )
     {
       may_miss = false;
-      dual = true;
+      dual = quiet = true;
+      trigger_gcd = timespan_t::zero();
     }
 
     result_e calculate_result( action_state_t* /* s */ ) const override
@@ -1429,10 +1429,9 @@ struct valkyr_pet_t : public death_knight_pet_t
       executed = false;
     }
 
-    // ~3 seconds seems to be the optimal initial delay
-    // FIXME: Verify if behavior still exists on 5.3 PTR
+    // Seems to be spending roughly a second doing absolutely nothing after summoning
     timespan_t execute_time() const override
-    { return timespan_t::from_seconds( const_cast<travel_t*>( this ) -> rng().gauss( 2.9, 0.2 ) ); }
+    { return timespan_t::from_seconds( rng().gauss( 1.0, 0.1 ) ); }
 
     bool ready() override
     { return ! executed; }
@@ -1471,7 +1470,7 @@ struct valkyr_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "travel" );
+    def -> add_action( "general_confusion" );
     def -> add_action( "Val'kyr Strike" );
   }
 
@@ -1484,8 +1483,8 @@ struct valkyr_pet_t : public death_knight_pet_t
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "valkyr_strike" ) return new valkyr_strike_t( this, options_str );
-    if ( name == "travel"        ) return new travel_t( this );
+    if ( name == "valkyr_strike"     ) return new     valkyr_strike_t( this, options_str );
+    if ( name == "general_confusion" ) return new general_confusion_t( this );
 
     return death_knight_pet_t::create_action( name, options_str );
   }
