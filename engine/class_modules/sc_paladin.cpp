@@ -1404,6 +1404,8 @@ struct consecration_t : public paladin_spell_t
     dot_duration = timespan_t::zero(); // the periodic event is handled by ground_aoe_event_t
     may_miss       = false;
 
+    add_child( damage_tick );
+
     // Consecrated In Flame extends duration
     ground_effect_duration += timespan_t::from_millis( p -> artifact.consecration_in_flame.value() );
   }
