@@ -104,6 +104,9 @@ public:
   const special_effect_t* longview;
   const special_effect_t* blackness;
 
+  // Tier 19 trinket effects
+  const special_effect_t* convergence_of_fates;
+
   double blackness_multiplier;
 
   struct legendary_t
@@ -178,6 +181,7 @@ public:
     cooldown_t* mongoose_bite;
     cooldown_t* lacerate;
     cooldown_t* aspect_of_the_eagle;
+    cooldown_t* aspect_of_the_wild;
   } cooldowns;
 
   // Custom Parameters
@@ -214,10 +218,12 @@ public:
     proc_t* no_vuln_aimed_shot;
     proc_t* no_vuln_marked_shot;
     proc_t* zevrims_hunger;
+    proc_t* convergence;
   } procs;
 
   real_ppm_t* ppm_hunters_mark;
   real_ppm_t* ppm_call_of_the_hunter;
+  real_ppm_t* ppm_convergence_of_fates;
 
   // Talents
   struct talents_t
@@ -437,6 +443,7 @@ public:
     beastlord( nullptr ),
     longview( nullptr ),
     blackness( nullptr ),
+    convergence_of_fates( nullptr ),
     blackness_multiplier(),
     legendary( legendary_t() ),
     buffs( buffs_t() ),
@@ -445,6 +452,7 @@ public:
     procs( procs_t() ),
     ppm_hunters_mark( nullptr ),
     ppm_call_of_the_hunter( nullptr ),
+    ppm_convergence_of_fates( nullptr ),
     talents( talents_t() ),
     specs( specs_t() ),
     glyphs( glyphs_t() ),
@@ -469,6 +477,7 @@ public:
     cooldowns.mongoose_bite   = get_cooldown( "mongoose_bite" );
     cooldowns.lacerate        = get_cooldown( "lacerate" );
     cooldowns.aspect_of_the_eagle = get_cooldown( "aspect_of_the_eagle" );
+    cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
 
     summon_pet_str = "";
     base.distance = 40;
@@ -647,6 +656,12 @@ static void mm_waist( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
   init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_waist, effect );
+}
+
+static void convergence_of_fates( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, SPEC_NONE, hunter -> convergence_of_fates, effect );
 }
 
 // Template for common hunter action code. See priest_action_t.
@@ -2448,6 +2463,15 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     // TODO: Verify if only integer chunks of 20 focus reduce the CD, or if there's rollover
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
       p() -> cooldowns.trueshot -> adjust( timespan_t::from_seconds( -1.0 * cost() / p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 ) -> effectN( 1 ).base_value() ) );
+    
+    if ( p() -> convergence_of_fates && p() -> ppm_convergence_of_fates -> trigger() )
+    {
+      timespan_t t = timespan_t::from_seconds( p() -> convergence_of_fates -> driver() -> effectN( 1 ).base_value() );
+      if ( p() -> specialization() == HUNTER_MARKSMANSHIP )
+        p() -> cooldowns.trueshot -> adjust( -t );
+      else if ( p() -> specialization() == HUNTER_BEAST_MASTERY )
+        p() -> cooldowns.aspect_of_the_wild -> adjust( -t );
+    }
   }
 
   virtual timespan_t execute_time() const override
@@ -2511,6 +2535,14 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
       cc += p() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
 
     return cc;
+  }
+
+  virtual void execute() override
+  {
+    base_t::execute();
+    
+    if ( p() -> convergence_of_fates && p() -> ppm_convergence_of_fates -> trigger() )
+      p() -> cooldowns.aspect_of_the_eagle -> adjust( -timespan_t::from_seconds( p() -> convergence_of_fates -> driver() -> effectN( 1 ).base_value() ) );
   }
 };
 
@@ -2800,7 +2832,6 @@ struct barrage_t: public hunter_ranged_attack_t
 
 struct multi_shot_t: public hunter_ranged_attack_t
 {
-  double focus_gain;
   multi_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "multi_shot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
@@ -2826,7 +2857,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
   virtual double cost() const override
   {
-    return focus_gain > 0 ? 0 : hunter_ranged_attack_t::cost();
+    return energize_amount > 0 ? 0 : hunter_ranged_attack_t::cost();
   }
 
   virtual double action_multiplier() const override
@@ -3423,7 +3454,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     }
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false ); 
   }
 
   virtual timespan_t execute_time() const override
@@ -3684,6 +3715,9 @@ struct marked_shot_t: public hunter_ranged_attack_t
     hunter_td_t* td = this -> td( t );
     if ( td -> debuffs.vulnerable -> up() )
       m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+
+    if ( td -> debuffs.true_aim -> up() )
+      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
     return m;
   }
@@ -5860,6 +5894,7 @@ void hunter_t::init_procs()
   procs.no_vuln_aimed_shot           = get_proc( "no_vuln_aimed_shot" );
   procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
+  procs.convergence                  = get_proc( "convergence" );
 }
 
 // hunter_t::init_rng =======================================================
@@ -5869,6 +5904,7 @@ void hunter_t::init_rng()
   // RPPMS
   ppm_hunters_mark = get_rppm( "hunters_mark", find_specialization_spell( "Hunter's Mark" ) );
   ppm_call_of_the_hunter = get_rppm( "call_of_the_hunter", find_artifact_spell( "Call of the Hunter" ) );
+  ppm_convergence_of_fates = get_rppm( "convergence_of_fates", find_spell( 225139 ) );
 
   player_t::init_rng();
 }
@@ -6627,6 +6663,7 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 224550, mm_ring );
     unique_gear::register_special_effect( 208912, mm_waist );
     unique_gear::register_special_effect( 206332, wrist );
+    unique_gear::register_special_effect( 225139, convergence_of_fates );
   }
 
   virtual void init( player_t* p ) const override
