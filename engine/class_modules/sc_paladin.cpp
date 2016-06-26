@@ -864,9 +864,6 @@ struct paladin_ground_aoe_t : public ground_aoe_event_t
   {
     auto it = range::find( paladin -> active_consecrations, this );
     paladin -> active_consecrations.erase( it );
-
-    bool test = may_pulse();
-
     ground_aoe_event_t::execute();
   }
 };
