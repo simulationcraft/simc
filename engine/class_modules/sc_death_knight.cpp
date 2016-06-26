@@ -19,6 +19,7 @@ struct death_knight_t;
 struct runes_t;
 
 namespace pets {
+  struct valkyr_pet_t;
   struct dancing_rune_weapon_pet_t;
   struct dt_pet_t;
 }
@@ -184,13 +185,30 @@ struct death_knight_td_t : public actor_target_data_t {
   {
     debuff_t* razorice;
     debuff_t* festering_wound;
+    debuff_t* soul_reaper;
   } debuff;
 
-  int diseases() const {
-    int disease_count = 0;
-    if ( dot.blood_plague -> is_ticking() ) disease_count++;
-    if ( dot.frost_fever  -> is_ticking() ) disease_count++;
-    return disease_count;
+  // Check if DnD or Defile are up for ScS/CS AOE
+  bool in_aoe_radius() const
+  {
+    if ( ! source -> sim -> distance_targeting_enabled )
+    {
+      return dot.defile -> is_ticking() || dot.death_and_decay -> is_ticking();
+    }
+    else
+    {
+      if ( dot.defile -> is_ticking() )
+      {
+        return source -> get_ground_aoe_distance( *dot.defile -> state ) <=
+               dot.defile -> current_action -> radius;
+      }
+      else if ( dot.death_and_decay -> is_ticking() )
+      {
+        return source -> get_ground_aoe_distance( *dot.death_and_decay -> state ) <=
+               dot.death_and_decay -> current_action -> radius;
+      }
+      return false;
+    }
   }
 
   death_knight_td_t( player_t* target, death_knight_t* death_knight );
@@ -236,6 +254,8 @@ public:
     buff_t* blighted_rune_weapon;
     haste_buff_t* unholy_frenzy;
     buff_t* necrosis;
+    stat_buff_t* defile;
+    haste_buff_t* soul_reaper;
   } buffs;
 
   struct runeforge_t {
@@ -399,6 +419,7 @@ public:
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
     pets::dt_pet_t* ghoul_pet; // Covers both Ghoul and Sludge Belcher
     pet_t* gargoyle;
+    pets::valkyr_pet_t* dark_arbiter;
   } pets;
 
   // Procs
@@ -541,6 +562,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   debuff.festering_wound = buff_creator_t( *this, "festering_wound" )
                            .spell( death_knight -> find_spell( 194310 ) )
                            .trigger_spell( death_knight -> spec.festering_wound );
+  debuff.soul_reaper     = buff_creator_t( *this, "soul_reaper", death_knight -> talent.soul_reaper ).
+                           cd( timespan_t::zero() ); // Handled by the action
 
 }
 
@@ -1341,7 +1364,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     { }
   };
 
-  gargoyle_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "gargoyle", true, false )
+  gargoyle_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "Gargoyle", true, false )
   { regen_type = REGEN_DISABLED; }
 
   void init_base_stats() override
@@ -1357,8 +1380,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Gargoyle Strike" );
     def -> add_action( "travel" );
+    def -> add_action( "Gargoyle Strike" );
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -1367,6 +1390,122 @@ struct gargoyle_pet_t : public death_knight_pet_t
     if ( name == "travel"          ) return new travel_t( this );
 
     return death_knight_pet_t::create_action( name, options_str );
+  }
+};
+
+// ==========================================================================
+// Dark Arbiter
+// ==========================================================================
+
+struct valkyr_pet_t : public death_knight_pet_t
+{
+  struct travel_t : public action_t
+  {
+    bool executed;
+
+    travel_t( player_t* player ) :
+      action_t( ACTION_OTHER, "travel", player ),
+      executed( false )
+    {
+      may_miss = false;
+      dual = true;
+    }
+
+    result_e calculate_result( action_state_t* /* s */ ) const override
+    { return RESULT_HIT; }
+
+    block_result_e calculate_block_result( action_state_t* ) const override
+    { return BLOCK_RESULT_UNBLOCKED; }
+
+    void execute() override
+    {
+      action_t::execute();
+      executed = true;
+    }
+
+    void cancel() override
+    {
+      action_t::cancel();
+      executed = false;
+    }
+
+    // ~3 seconds seems to be the optimal initial delay
+    // FIXME: Verify if behavior still exists on 5.3 PTR
+    timespan_t execute_time() const override
+    { return timespan_t::from_seconds( const_cast<travel_t*>( this ) -> rng().gauss( 2.9, 0.2 ) ); }
+
+    bool ready() override
+    { return ! executed; }
+  };
+
+  struct valkyr_strike_t : public pet_spell_t<valkyr_pet_t>
+  {
+    valkyr_strike_t( valkyr_pet_t* player, const std::string& options_str ) :
+      super( player, "valkyr_strike", player -> find_spell( 198715 ), options_str )
+    { }
+  };
+
+  buff_t* shadow_empowerment;
+
+  valkyr_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "Val'kyr_Battlemaiden", true, false )
+  { regen_type = REGEN_DISABLED; }
+
+  double composite_player_multiplier( school_e s ) const override
+  {
+    double m = death_knight_pet_t::composite_player_multiplier( s );
+
+    m *= 1.0 + shadow_empowerment -> stack_value();
+
+    return m;
+  }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    owner_coeff.ap_from_ap = 1/3.0;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "travel" );
+    def -> add_action( "Val'kyr Strike" );
+  }
+
+  void create_buffs() override
+  {
+    death_knight_pet_t::create_buffs();
+
+    shadow_empowerment = buff_creator_t( this, "shadow_empowerment", find_spell( 211947 ) );
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "valkyr_strike" ) return new valkyr_strike_t( this, options_str );
+    if ( name == "travel"        ) return new travel_t( this );
+
+    return death_knight_pet_t::create_action( name, options_str );
+  }
+
+  void increase_power( double rp_spent )
+  {
+    double increase = rp_spent * shadow_empowerment -> data().effectN( 1 ).percent();
+
+    if ( ! shadow_empowerment -> check() )
+    {
+      shadow_empowerment -> trigger( 1, increase );
+    }
+    else
+    {
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s increasing shadow_empowerment power by %f", name(), increase );
+      }
+      shadow_empowerment -> current_value += increase;
+    }
   }
 };
 
@@ -1746,6 +1885,14 @@ struct death_knight_action_t : public Base
         td( this -> target ) -> dot.remorseless_winter -> extend_duration( base_extension * consumed );
       }
     }
+
+    // Dark arbiter
+    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> resource_consumed > 0 &&
+         p() -> talent.dark_arbiter -> ok() &&
+         p() -> pets.dark_arbiter && ! p() -> pets.dark_arbiter -> is_sleeping() )
+    {
+      p() -> pets.dark_arbiter -> increase_power( this -> resource_consumed );
+    }
   }
 
   bool init_finished() override
@@ -1855,6 +2002,10 @@ struct death_knight_action_t : public Base
         }
 
         td -> debuff.festering_wound -> decrement( n_executes );
+        if ( td -> debuff.soul_reaper -> up() )
+        {
+          dk -> buffs.soul_reaper -> trigger( n_executes );
+        }
       }
     };
 
@@ -2469,58 +2620,24 @@ struct virulent_plague_t : public disease_t
 
 // Soul Reaper ==============================================================
 
-struct soul_reaper_dot_t : public death_knight_melee_attack_t
-{
-  soul_reaper_dot_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "soul_reaper_execute", p, p -> find_spell( 114867 ) )
-  {
-    special = background = may_crit = proc = true;
-    may_miss = may_dodge = may_parry = may_block = false;
-    weapon_multiplier = 0;
-  }
-};
-
 struct soul_reaper_t : public death_knight_melee_attack_t
 {
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "soul_reaper", p, p -> specialization() != DEATH_KNIGHT_UNHOLY ? p -> find_specialization_spell( "Soul Reaper" ) : p -> find_spell( 130736 ) )
+    death_knight_melee_attack_t( "soul_reaper", p, p ->  talent.soul_reaper )
   {
     parse_options( options_str );
-    special   = true;
 
     weapon = &( p -> main_hand_weapon );
-
-    dynamic_tick_action = true;
-    tick_action = new soul_reaper_dot_t( p );
   }
 
-  double false_positive_pct() const override
-  {
-    if ( target -> health_percentage() > 40 )
-      return 0;
-    else
-      return death_knight_melee_attack_t::false_positive_pct();
-  }
-
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
-
-    snapshot_flags |= STATE_MUL_TA;
-  }
-
-  virtual void execute() override
+  void execute() override
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> buffs.dancing_rune_weapon -> check() )
-      p() -> pets.dancing_rune_weapon -> drw_soul_reaper -> execute();
-  }
-
-  void tick( dot_t* dot ) override
-  {
-    if ( dot -> state -> target -> health_percentage() <= 35 )
-      death_knight_melee_attack_t::tick( dot );
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      td( execute_state -> target ) -> debuff.soul_reaper -> trigger();
+    }
   }
 };
 
@@ -2670,23 +2787,7 @@ struct clawing_shadows_t : public death_knight_spell_t
   }
 
   int n_targets() const override
-  {
-    death_knight_td_t* tdata = td( target );
-
-    if ( tdata -> dot.death_and_decay -> is_ticking() )
-    {
-      if ( ! sim -> distance_targeting_enabled )
-      {
-        return -1;
-      }
-      else
-      {
-        return player -> get_ground_aoe_distance( *tdata -> dot.death_and_decay -> state ) <= radius;
-      }
-    }
-
-    return 0;
-  }
+  { return td( target ) -> in_aoe_radius() ? -1 : 0; }
 
   double action_multiplier() const override
   {
@@ -2736,6 +2837,25 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 
     p() -> buffs.dancing_rune_weapon -> trigger();
     p() -> pets.dancing_rune_weapon -> summon( data().duration() );
+  }
+};
+
+// Dark Arbiter ============================================================
+
+struct dark_arbiter_t : public death_knight_spell_t
+{
+  dark_arbiter_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "dark_arbiter", p, p -> talent.dark_arbiter )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  virtual void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p() -> pets.dark_arbiter -> summon( data().duration() );
   }
 };
 
@@ -2835,11 +2955,8 @@ struct death_and_decay_t : public death_knight_spell_t
 
 struct defile_t : public death_knight_spell_t
 {
-  cooldown_t* dnd_cd;
-
   defile_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "defile", p, p -> find_talent_spell( "Defile" ) ),
-    dnd_cd( p -> get_cooldown( "death_and_decay" ) )
+    death_knight_spell_t( "defile", p, p -> talent.defile )
   {
     parse_options( options_str );
 
@@ -2849,8 +2966,8 @@ struct defile_t : public death_knight_spell_t
     attack_power_mod.tick = p -> find_spell( 156000 ) -> effectN( 1 ).ap_coeff();
     radius =  data().effectN( 1 ).radius();
     dot_duration = data().duration();
-    tick_may_crit = true;
-    hasted_ticks = tick_zero = false;
+    tick_may_crit = tick_zero = true;
+    hasted_ticks = false;
     ignore_false_positive = true;
     ground_aoe = true;
   }
@@ -2874,37 +2991,7 @@ struct defile_t : public death_knight_spell_t
     return m;
   }
 
-  virtual void consume_resource() override
-  {
-    if ( p() -> buffs.crimson_scourge -> check() )
-      return;
-
-    death_knight_spell_t::consume_resource();
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buffs.crimson_scourge -> check() )
-      return 0;
-    return death_knight_spell_t::cost();
-  }
-
-  virtual void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    if ( p() -> buffs.crimson_scourge -> up() )
-      p() -> buffs.crimson_scourge -> expire();
-  }
-
-  virtual void update_ready( timespan_t cd_duration ) override
-  {
-    death_knight_spell_t::update_ready( cd_duration );
-
-    dnd_cd -> start( data().cooldown() );
-  }
-
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     if ( s -> target -> debuffs.flying -> check() )
     {
@@ -2916,25 +3003,19 @@ struct defile_t : public death_knight_spell_t
     }
   }
 
-  virtual bool ready() override
+  void tick( dot_t* dot ) override
   {
-    if ( ! spell_t::ready() )
-      return false;
+    death_knight_spell_t::tick( dot );
 
-    if ( p() -> buffs.crimson_scourge -> check() )
-      //return group_runes( p(), 0, 0, 0, 0, use );
-      // TODO
-      return true;
-    else
-      //return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
-      // TODO
-      return true;
+    p() -> buffs.defile -> trigger();
   }
 };
 
 // Death Coil ===============================================================
 
 // TODO: Conveert to mimic blizzard spells
+// TODO: As of 06/26/2016, Val'kyr does not benefit from Sudden Doomed Death Coils, check later if
+// this is fixed
 struct death_coil_t : public death_knight_spell_t
 {
 
@@ -3226,6 +3307,9 @@ struct epidemic_t : public death_knight_spell_t
 
     add_child( main );
     add_child( aoe );
+
+    // spec.death_knight -> effectN( 4 )
+    cooldown -> hasted = true;
   }
 
   void execute() override
@@ -3471,8 +3555,6 @@ struct howling_blast_t : public death_knight_spell_t
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
-
-    assert( p -> active_spells.frost_fever );
   }
 
   double action_multiplier() const override
@@ -3966,23 +4048,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
   }
 
   int n_targets() const override
-  {
-    death_knight_td_t* tdata = td( target );
-
-    if ( tdata -> dot.death_and_decay -> is_ticking() )
-    {
-      if ( ! sim -> distance_targeting_enabled )
-      {
-        return -1;
-      }
-      else
-      {
-        return player -> get_ground_aoe_distance( *tdata -> dot.death_and_decay -> state ) <= radius;
-      }
-    }
-
-    return 0;
-  }
+  { return td( target ) -> in_aoe_radius() ? -1 : 0; }
 
   void execute() override
   {
@@ -4044,13 +4110,23 @@ struct summon_gargoyle_t : public death_knight_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     death_knight_spell_t::execute();
 
     timespan_t duration = data().effectN( 3 ).trigger() -> duration();
 
     p() -> pets.gargoyle -> summon( duration );
+  }
+
+  bool ready() override
+  {
+    if ( p() -> talent.dark_arbiter -> ok() )
+    {
+      return false;
+    }
+
+    return death_knight_spell_t::ready();
   }
 };
 
@@ -4661,6 +4737,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "blighted_rune_weapon"     ) return new blighted_rune_weapon_t     ( this, options_str );
   if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
   if ( name == "clawing_shadows"          ) return new clawing_shadows_t          ( this, options_str );
+  if ( name == "dark_arbiter"             ) return new dark_arbiter_t             ( this, options_str );
   if ( name == "death_pact"               ) return new death_pact_t               ( this, options_str );
   if ( name == "defile"                   ) return new defile_t                   ( this, options_str );
   if ( name == "epidemic"                 ) return new epidemic_t                 ( this, options_str );
@@ -4764,9 +4841,14 @@ void death_knight_t::create_pets()
 {
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    if ( find_action( "summon_gargoyle" ) )
+    if ( find_action( "summon_gargoyle" ) && ! talent.dark_arbiter -> ok() )
     {
       pets.gargoyle = new pets::gargoyle_pet_t( this );
+    }
+
+    if ( find_action( "dark_arbiter" ) && talent.dark_arbiter -> ok() )
+    {
+      pets.dark_arbiter = new pets::valkyr_pet_t( this );
     }
 
     if ( find_action( "raise_dead" ) )
@@ -4806,6 +4888,8 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
 
+  haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
+
   //if ( buffs.obliteration -> up() )
   //{
   //  haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
@@ -4821,6 +4905,8 @@ double death_knight_t::composite_spell_haste() const
   double haste = player_t::composite_spell_haste();
 
   haste *= 1.0 / ( 1.0 + spec.veteran_of_the_third_war -> effectN( 6 ).percent() );
+
+  haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 
   /*if ( buffs.obliteration -> up() )
   {
@@ -5126,6 +5212,13 @@ void death_knight_t::create_buffs()
   buffs.necrosis = buff_creator_t( this, "necrosis", find_spell( 216974 ) )
     .default_value( find_spell( 216974 ) -> effectN( 1 ).percent() )
     .trigger_spell( talent.necrosis );
+
+  buffs.defile = stat_buff_creator_t( this, "defile", find_spell( 218100 ) )
+    .trigger_spell( talent.defile );
+
+  buffs.soul_reaper = haste_buff_creator_t( this, "soul_reaper", talent.soul_reaper -> effectN( 2 ).trigger() )
+    .default_value( talent.soul_reaper -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
+    .trigger_spell( talent.soul_reaper );
 }
 
 // death_knight_t::init_gains ===============================================
