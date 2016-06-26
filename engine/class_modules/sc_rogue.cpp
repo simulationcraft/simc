@@ -7,7 +7,6 @@
 // Subtlety
 // - Second Shuriken [artifact power]
 // - Does Weaponmaster attempt to proc per target or per cast?
-// - Weaponmaster interaction with Death from Above (double finisher or not?)
 //
 // Assassination
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
@@ -3822,6 +3821,8 @@ struct death_from_above_t : public rogue_attack_t
     affected_by.relentless_strikes = false;
     affected_by.deepening_shadows = false;
     affected_by.alacrity = false;
+    // 06/26/2016 Weaponmaster won't proc a second DFA, however the finisher can weaponmaster proc
+    affected_by.weaponmaster = false;
   }
 
   void adjust_attack( attack_t* attack, const timespan_t& oor_delay )
@@ -3867,13 +3868,6 @@ struct death_from_above_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-
-    // Don't allow Weaponmastered DFA to trigger another Eviscerate
-    // TODO: Is this true in game?
-    if ( secondary_trigger )
-    {
-      return;
-    }
 
     p() -> buffs.death_from_above -> trigger();
 
