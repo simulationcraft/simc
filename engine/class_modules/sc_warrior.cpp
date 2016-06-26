@@ -4324,7 +4324,7 @@ struct enrage_t: public warrior_buff_t < buff_t >
 {
   int health_gain;
   enrage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s ).duration( p.spec.enrage -> duration() + p.sets.set(WARRIOR_FURY, T19, B4 )->effectN( 1 ).time_value() ).can_cancel( false ).add_invalidate( CACHE_ATTACK_SPEED ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
+    base_t( p, buff_creator_t( &p, n, s ).duration( p.spec.enrage -> effectN( 2 ).trigger() -> duration() + p.sets.set(WARRIOR_FURY, T19, B4 )->effectN( 1 ).time_value() ).can_cancel( false ).add_invalidate( CACHE_ATTACK_SPEED ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
   {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
