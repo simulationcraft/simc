@@ -58,28 +58,28 @@ actions.generator=shuriken_storm,if=spell_targets.shuriken_storm>2
 actions.generator+=/gloomblade,if=energy.time_to_max<2.5
 actions.generator+=/backstab,if=energy.time_to_max<2.5
 
-head=gaze_of_fleeting_hours,id=137415,bonus_id=1726
-neck=erratically_ticking_talisman,id=137418,bonus_id=1726
-shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1726
-back=putrid_carapace,id=134408,bonus_id=1726
-chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1726
-wrists=thermal_bindings,id=134461,bonus_id=1726
-hands=ravens_veil_gloves,id=139242,bonus_id=1726
-waist=manafang_waistguard,id=137409,bonus_id=1726
-legs=charskin_legguards,id=137353,bonus_id=1726
-feet=shellshock_footguards,id=134441,bonus_id=1726
+head=gaze_of_fleeting_hours,id=137415,bonus_id=1727,ilevel=840
+neck=erratically_ticking_talisman,id=137418,bonus_id=1727,ilevel=840
+shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727,ilevel=840
+back=putrid_carapace,id=134408,bonus_id=1727,ilevel=840
+chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727,ilevel=840
+wrists=thermal_bindings,id=134461,bonus_id=1727,ilevel=840
+hands=ravens_veil_gloves,id=139242,bonus_id=1727,ilevel=840
+waist=manafang_waistguard,id=137409,bonus_id=1727,ilevel=840
+legs=charskin_legguards,id=137353,bonus_id=1727,ilevel=840
+feet=shellshock_footguards,id=134441,bonus_id=1727,ilevel=840
 finger1=empowered_ring_of_the_kirin_tor,id=139599
-finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1726
-trinket1=ranulfs_hunting_horn,id=133748,bonus_id=1726,stats=933agi_933mastery
-trinket2=spiked_counterweight,id=136715,bonus_id=1726
-main_hand=gorefang,id=128476,bonus_id=743
-off_hand=akaaris_will,id=128479
+finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727,ilevel=840
+trinket1=ranulfs_hunting_horn,id=133748,bonus_id=1727,ilevel=840,stats=933agi_933mastery
+trinket2=spiked_counterweight,id=136715,bonus_id=1727,ilevel=840
+main_hand=gorefang,id=128476,bonus_id=743,ilevel=840
+off_hand=akaaris_will,id=128479,ilevel=840
 
 # Gear Summary
-# gear_ilvl=814.06
-# gear_agility=8362
-# gear_stamina=14055
-# gear_crit_rating=5376
-# gear_haste_rating=834
-# gear_mastery_rating=9674
-# gear_armor=1830
+# gear_ilvl=841.56
+# gear_agility=10556
+# gear_stamina=17401
+# gear_crit_rating=5970
+# gear_haste_rating=898
+# gear_mastery_rating=10661
+# gear_armor=1957
