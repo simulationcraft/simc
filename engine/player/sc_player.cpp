@@ -4607,7 +4607,6 @@ void player_t::recalculate_resource_max( resource_e resource_type )
   resources.max[ resource_type ]  = resources.base[ resource_type ];
   resources.max[ resource_type ] *= resources.base_multiplier[ resource_type ];
   resources.max[ resource_type ] += total_gear.resource[ resource_type ];
-  resources.max[ resource_type ] *= resources.initial_multiplier[ resource_type ];
 
   switch ( resource_type )
   {
@@ -4624,6 +4623,8 @@ void player_t::recalculate_resource_max( resource_e resource_type )
     default: break;
   }
   resources.max[ resource_type ] += resources.temporary[ resource_type ];
+
+  resources.max[ resource_type ] *= resources.initial_multiplier[ resource_type ];
   // Sanity check on current values
   resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type ] );
 }
