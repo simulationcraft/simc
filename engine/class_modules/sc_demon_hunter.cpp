@@ -991,7 +991,7 @@ public:
   {
     double ea = ab::composite_energize_amount( s );
 
-    if ( havoc_t19_2pc && energize_resource == RESOURCE_FURY )
+    if ( havoc_t19_2pc && ab::energize_resource == RESOURCE_FURY )
     {
       ea *= 1.0 + p() -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) -> effectN( 1 ).percent();
     }
