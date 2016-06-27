@@ -5829,7 +5829,7 @@ void rogue_t::init_spells()
   spec.shadowstep           = find_specialization_spell( "Shadowstep" );
 
   // Generic
-  spec.subtlety_rogue       = find_spell( 137035 );
+  spec.subtlety_rogue       = find_specialization_spell( "Subtlety Rogue" );
 
   // Assassination
   spec.assassins_resolve    = find_specialization_spell( "Assassin's Resolve" );
