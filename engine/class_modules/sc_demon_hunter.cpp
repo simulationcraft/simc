@@ -3087,9 +3087,11 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   void record_data( action_state_t* s ) override
   { assert( s -> result_amount == 0.0 ); }
 
-  /* Function determines whether the OH hit should trigger a refund.
-     annihilation_t and chaos_strike_t each have different implementations. */
-  virtual bool roll_refund( chaos_strike_state_t* s ) = 0;
+  /* Determines whether the OH hit should trigger a refund. Leaving this as a virtual
+  function in case the two skills have different refund mechanics again.*/
+  // Jun 27 2016: Annihilation refunds half on crit despite what tooltip states.
+  virtual bool roll_refund( chaos_strike_state_t* s )
+  { return s -> is_critical; }
 
   action_state_t* new_state() override
   { return new chaos_strike_state_t( this, target ); }
@@ -3175,9 +3177,6 @@ struct chaos_strike_t : public chaos_strike_base_t
     energize_amount = p -> find_spell( 197125 ) -> effectN( 1 ).resource( RESOURCE_FURY );
   }
 
-  bool roll_refund( chaos_strike_state_t* s ) override
-  { return s -> is_critical; }
-
   bool ready() override
   {
     if ( p() -> buff.metamorphosis -> check() )
@@ -3198,9 +3197,6 @@ struct annihilation_t : public chaos_strike_base_t
   {
     energize_amount = base_costs[ RESOURCE_FURY ];
   }
-  
-  bool roll_refund( chaos_strike_state_t* ) override
-  { return rng().roll( data().effectN( 1 ).percent() ); }
 
   bool ready() override
   {
