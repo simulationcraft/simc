@@ -2612,7 +2612,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     dps.set_title( p.name_str + " Damage per Second" );
     dps.add_simple_series( "area", color::class_color( p.type ).str(), "DPS",
                            timeline_dps.data() );
-    dps.set_mean( timeline_dps.mean() );
+    dps.set_mean( p.collected_data.dps.mean() );
 
     if ( p.sim->player_no_pet_list.size() > 1 )
     {
