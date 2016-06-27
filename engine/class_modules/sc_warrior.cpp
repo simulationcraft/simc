@@ -1727,6 +1727,7 @@ struct hamstring_t: public warrior_attack_t
     warrior_attack_t( "hamstring", p, p -> spec.hamstring )
   {
     parse_options( options_str );
+    use_off_gcd = true;
     weapon = &( p -> main_hand_weapon );
   }
 };
@@ -2322,11 +2323,6 @@ struct warbreaker_t: public warrior_attack_t
 
     p() -> buff.shattered_defenses -> trigger();
     p() -> buff.precise_strikes -> trigger();
-
-    if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
-    {
-      p() -> proc.t17_2pc_arms -> occur();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -3199,6 +3195,7 @@ struct avatar_t: public warrior_spell_t
     warrior_spell_t( "avatar", p, p -> talents.avatar )
   {
     parse_options( options_str );
+    use_off_gcd = true;
   }
 
   void execute() override
@@ -3218,6 +3215,7 @@ struct berserker_rage_t: public warrior_spell_t
   {
     parse_options( options_str );
     callbacks = false;
+    use_off_gcd = true;
     range = -1;
   }
 
@@ -3241,6 +3239,7 @@ struct bloodbath_t: public warrior_spell_t
     warrior_spell_t( "bloodbath", p, p -> talents.bloodbath )
   {
     parse_options( options_str );
+    use_off_gcd = true;
   }
 
   void execute() override
@@ -3387,6 +3386,7 @@ struct battle_cry_t: public warrior_spell_t
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
     callbacks = false;
+    use_off_gcd = true;
     cooldown -> duration += p -> artifact.helyas_wrath.time_value();
 
     if ( p -> talents.reckless_abandon -> ok() )
