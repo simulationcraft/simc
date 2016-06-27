@@ -877,6 +877,7 @@ public:
   bool metamorphosis_gcd;
   bool hasted_gcd, hasted_cd;
   bool demonic_presence;
+  bool havoc_t19_2pc;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil(),
@@ -887,7 +888,8 @@ public:
       hasted_gcd( false ),
       hasted_cd( false ),
       demonic_presence( ab::data().affected_by(
-        p -> mastery_spell.demonic_presence -> effectN( 1 ) ) )
+        p -> mastery_spell.demonic_presence -> effectN( 1 ) ) ),
+      havoc_t19_2pc( ab::data().affected_by( p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) )
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -983,6 +985,18 @@ public:
     }
 
     return am;
+  }
+
+  virtual double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = ab::composite_energize_amount( s );
+
+    if ( havoc_t19_2pc && energize_resource == RESOURCE_FURY )
+    {
+      ea *= 1.0 + p() -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) -> effectN( 1 ).percent();
+    }
+
+    return ea;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -1129,6 +1143,19 @@ struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
   }
 };
 
+// ==========================================================================
+// Demon Hunter spells
+// ==========================================================================
+
+struct demon_hunter_spell_t : public demon_hunter_action_t<spell_t>
+{
+  demon_hunter_spell_t( const std::string& n, demon_hunter_t* p,
+                        const spell_data_t* s = spell_data_t::nil(),
+                        const std::string& o = std::string() )
+    : base_t( n, p, s, o )
+  {}
+};
+
 namespace heals
 {
 
@@ -1136,6 +1163,17 @@ namespace heals
 
 struct consume_soul_t : public demon_hunter_heal_t
 {
+  struct demonic_appetite_t : public demon_hunter_spell_t
+  {
+    demonic_appetite_t( demon_hunter_t* p ) :
+      demon_hunter_spell_t( "demonic_appetite", p, p -> find_spell( 210041 ) )
+    {
+      may_miss = may_crit = callbacks = false;
+      background = quiet = true;
+      energize_type = ENERGIZE_ON_CAST;
+    }
+  };
+
   soul_fragment_e type;
 
   consume_soul_t( demon_hunter_t* p, const std::string& n,
@@ -1144,12 +1182,9 @@ struct consume_soul_t : public demon_hunter_heal_t
   {
     background = true;
 
-    if ( p -> talent.demonic_appetite -> ok() ) 
+    if ( p -> talent.demonic_appetite -> ok() )
     {
-      energize_type = ENERGIZE_ON_CAST;
-      energize_resource = RESOURCE_FURY;
-      energize_amount = p -> spec.demonic_appetite_fury -> effectN( 1 ).resource( RESOURCE_FURY );
-      gain = p -> gain.demonic_appetite;
+      execute_action = new demonic_appetite_t( p );
     }
   }
 };
@@ -1274,19 +1309,6 @@ struct spirit_bomb_heal_t : public demon_hunter_heal_t
 };
 
 }
-
-// ==========================================================================
-// Demon Hunter spells
-// ==========================================================================
-
-struct demon_hunter_spell_t : public demon_hunter_action_t<spell_t>
-{
-  demon_hunter_spell_t( const std::string& n, demon_hunter_t* p,
-                        const spell_data_t* s = spell_data_t::nil(),
-                        const std::string& o = std::string() )
-    : base_t( n, p, s, o )
-  {}
-};
 
 namespace spells
 {
@@ -2985,6 +3007,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         + p -> talent.chaos_cleave -> effectN( 1 ).base_value();
       may_refund = weapon == &( p -> off_hand_weapon );
 
+      // Do not put crit chance modifiers here!
       base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
       crit_bonus_multiplier *=  1.0 + p -> artifact.critical_chaos.percent();
     }
@@ -3041,9 +3064,10 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         delays.push_back( timespan_t::from_millis( s -> effectN( i ).misc_value1() ) );
       }
     }
-
-    base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
-    crit_bonus_multiplier *= 1.0 + p -> artifact.critical_chaos.percent();
+    
+    // Don't put damage modifiers here, they should go in chaos_strike_damage_t.
+    // Crit chance modifiers need to be in here, not chaos_strike_damage_t.
+    base_crit += p -> sets.set( DEMON_HUNTER_HAVOC, T19, B4 ) -> effectN( 1 ).percent();
   }
 
   virtual bool init_finished() override
@@ -3226,18 +3250,15 @@ struct demons_bite_t : public demon_hunter_attack_t
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
   }
 
-  double composite_energize_amount( const action_state_t* s ) const override
-  {
-    double ea = demon_hunter_attack_t::composite_energize_amount( s );
-
-    ea += ( int ) rng().range( 1, 1 + energize_die_sides );
-
-    return ea;
-  }
-
   void execute() override
   {
+    // Modify base amount so it properly benefits from multipliers.
+    double old_amount = energize_amount;
+    energize_amount += ( int ) rng().range( 1, 1 + energize_die_sides );
+
     demon_hunter_attack_t::execute();
+
+    energize_amount = old_amount;
 
     if ( p() -> buff.metamorphosis -> check() )
     {
@@ -3658,6 +3679,9 @@ struct soul_cleave_t : public demon_hunter_attack_t
     mh = new soul_cleave_damage_t( "soul_cleave_mh", p, data().effectN( 2 ).trigger() );
     mh -> stats = stats;
 
+    base_costs[ RESOURCE_PAIN ] +=
+      p -> sets.set( DEMON_HUNTER_VENGEANCE, T19, B2 ) -> effectN( 1 ).resource( RESOURCE_PAIN );
+
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
 
@@ -3688,6 +3712,9 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
     p() -> buff.gluttony -> up(); // Benefit tracking
     p() -> buff.gluttony -> expire();
+
+    p() -> cooldown.demon_spikes ->
+      adjust( -p() -> sets.set( DEMON_HUNTER_VENGEANCE, T19, B4 ) -> effectN( 1 ).time_value() );
   }
 };
 
@@ -4344,12 +4371,12 @@ void demon_hunter_t::create_buffs()
                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.prepared =
-    buff_creator_t( this, "prepared",
-                    talent.prepared -> effectN( 1 ).trigger() )
+    buff_creator_t( this, "prepared", talent.prepared -> effectN( 1 ).trigger() )
       .trigger_spell( talent.prepared )
+      .default_value( talent.prepared -> effectN( 1 ).resource( RESOURCE_FURY )
+        * ( 1.0 + sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) -> effectN( 1 ).percent() ) )
       .tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
-        resource_gain( RESOURCE_FURY, b -> data().effectN( 1 ).resource( RESOURCE_FURY ),
-          gain.prepared );
+        resource_gain( RESOURCE_FURY, b -> check_value(), gain.prepared );
       } );
 
   buff.rage_of_the_illidari =
