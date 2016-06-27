@@ -7012,7 +7012,7 @@ void sort_special_effects();
 void unregister_special_effects();
 
 void add_effect( const special_effect_db_item_t& );
-special_effect_set_t find_special_effect_db_item( unsigned spell_id, const special_effect_t& );
+special_effect_set_t find_special_effect_db_item( unsigned spell_id );
 
 // Old-style special effect registering functions
 void register_special_effect( unsigned spell_id, const char* encoded_str );
