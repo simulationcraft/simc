@@ -830,8 +830,8 @@ struct darkmoon_deck_t
   timespan_t shuffle_period;
 
   darkmoon_deck_t( special_effect_t& effect, std::array<unsigned, 8> c ) : 
-    player( effect.player ), shuffle_period( effect.driver() -> effectN( 1 ).period() ),
-    top_card( nullptr )
+    player( effect.player ), top_card( nullptr ),
+    shuffle_period( effect.driver() -> effectN( 1 ).period() )
   {
     for ( unsigned i = 0; i < 8; i++ )
     {
@@ -886,12 +886,26 @@ struct shuffle_event_t : public event_t
   }
 };
 
+// TODO: The sim could use an "arise" and "demise" callback, it's kinda wasteful to call these
+// things per every player actor shifting in the non-sleeping list. Another option would be to make
+// (yet another list) that holds active, non-pet players.
+// TODO: Also, the darkmoon_deck_t objects are not cleaned up at the end
 void item::darkmoon_deck_dominion( special_effect_t& effect )
 {
   darkmoon_deck_t* d = new darkmoon_deck_t( effect,
     { { 191545, 191548, 191549, 191550, 191551, 191552, 191553, 191554 } } );
 
-  new ( *effect.player -> sim ) shuffle_event_t( d, true );
+  effect.player -> sim -> player_non_sleeping_list.register_callback([ d, &effect ]( player_t* player ) {
+    // Arise time gets set to timespan_t::min() in demise, before the actor is removed from the 
+    // non-sleeping list. In arise, the arise_time is set to current time before the actor is added
+    // to the non-sleeping list.
+    if ( player != effect.player || player -> arise_time < timespan_t::zero() )
+    {
+      return;
+    }
+
+    new ( *effect.player -> sim ) shuffle_event_t( d, true );
+  });
 }
 
 void item::darkmoon_deck_hellfire( special_effect_t& effect )
@@ -899,7 +913,14 @@ void item::darkmoon_deck_hellfire( special_effect_t& effect )
   darkmoon_deck_t* d = new darkmoon_deck_t( effect,
     { { 191603, 191604, 191605, 191606, 191607, 191608, 191609, 191610 } } );
 
-  new ( *effect.player -> sim ) shuffle_event_t( d, true );
+  effect.player -> sim -> player_non_sleeping_list.register_callback([ d, &effect ]( player_t* player ) {
+    if ( player != effect.player || player -> arise_time < timespan_t::zero() )
+    {
+      return;
+    }
+
+    new ( *effect.player -> sim ) shuffle_event_t( d, true );
+  });
 }
 
 void item::darkmoon_deck_immortality( special_effect_t& effect )
@@ -907,7 +928,14 @@ void item::darkmoon_deck_immortality( special_effect_t& effect )
   darkmoon_deck_t* d = new darkmoon_deck_t( effect,
     { { 191624, 191625, 191626, 191627, 191628, 191629, 191630, 191631 } } );
 
-  new ( *effect.player -> sim ) shuffle_event_t( d, true );
+  effect.player -> sim -> player_non_sleeping_list.register_callback([ d, &effect ]( player_t* player ) {
+    if ( player != effect.player || player -> arise_time < timespan_t::zero() )
+    {
+      return;
+    }
+
+    new ( *effect.player -> sim ) shuffle_event_t( d, true );
+  });
 }
 
 struct aw_nuts_t : public spell_t
