@@ -2223,8 +2223,7 @@ struct raging_blow_t: public warrior_attack_t
     {
       return warrior_attack_t::ready();
     }
-
-    if ( !p() -> buff.enrage -> check() )
+    else if ( !p() -> buff.enrage -> check() )
     {
       return false;
     }
