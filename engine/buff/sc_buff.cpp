@@ -1716,7 +1716,15 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
         s = STAT_BONUS_ARMOR;
 
       if ( s != STAT_NONE )
+      {
+        // Apply secondary stat rating coefficient if s is a combat rating
+        if ( params.item && util::is_combat_rating( as<item_mod_type>( util::translate_stat( s ) ) ) )
+        {
+          amount *= source -> dbc.combat_rating_multiplier( params.item -> item_level() );
+        }
+
         stats.push_back( buff_stat_t( s, amount ) );
+      }
     }
   }
   else // parse stats from params
