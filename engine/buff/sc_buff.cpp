@@ -1718,7 +1718,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
       if ( s != STAT_NONE )
       {
         // Apply secondary stat rating coefficient if s is a combat rating
-        if ( params.item && util::is_combat_rating( as<item_mod_type>( util::translate_stat( s ) ) ) )
+        if ( params.item && util::is_combat_rating( static_cast<item_mod_type>( util::translate_stat( s ) ) ) )
         {
           amount *= source -> dbc.combat_rating_multiplier( params.item -> item_level() );
         }
