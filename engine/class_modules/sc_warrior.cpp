@@ -2196,7 +2196,7 @@ struct raging_blow_t: public warrior_attack_t
     mh_attack = new raging_blow_attack_t( p, "raging_blow_mh", p -> spec.raging_blow -> effectN( 3 ).trigger() );
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
-    cooldown -> duration += p -> talents.inner_rage -> effectN( 1 ).time_value();
+    cooldown -> duration = p -> talents.inner_rage -> effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -3524,6 +3524,7 @@ action_t* warrior_t::create_action( const std::string& name,
 {
   if ( name == "auto_attack"          ) return new auto_attack_t          ( this, options_str );
   if ( name == "avatar"               ) return new avatar_t               ( this, options_str );
+  if ( name == "battle_cry"           ) return new battle_cry_t           ( this, options_str );
   if ( name == "berserker_rage"       ) return new berserker_rage_t       ( this, options_str );
   if ( name == "bladestorm"           ) return new bladestorm_t           ( this, options_str );
   if ( name == "bloodbath"            ) return new bloodbath_t            ( this, options_str );
@@ -3531,6 +3532,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "cleave"               ) return new cleave_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
+  if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
   if ( name == "corrupted_rage"       ) return new corrupted_rage_t       ( this, options_str );
   if ( name == "defensive_stance"     ) return new defensive_stance_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
@@ -3549,15 +3551,12 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "intervene"            ) return new intervene_t            ( this, options_str );
   if ( name == "last_stand"           ) return new last_stand_t           ( this, options_str );
   if ( name == "mortal_strike"        ) return new mortal_strike_t        ( this, options_str );
-  if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
-  if ( name == "overpower"            ) return new overpower_t            ( this, options_str );
   if ( name == "odyns_fury"           ) return new odyns_fury_t           ( this, options_str );
-  if ( name == "warbreaker"           ) return new warbreaker_t           ( this, options_str );
-  if ( name == "rampage"              ) return new rampage_parent_t       ( this, options_str );
+  if ( name == "overpower"            ) return new overpower_t            ( this, options_str );
+  if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
-  if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
+  if ( name == "rampage"              ) return new rampage_parent_t       ( this, options_str );
   if ( name == "ravager"              ) return new ravager_t              ( this, options_str );
-  if ( name == "battle_cry"           ) return new battle_cry_t           ( this, options_str );
   if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
   if ( name == "revenge"              ) return new revenge_t              ( this, options_str );
   if ( name == "shield_block"         ) return new shield_block_t         ( this, options_str );
@@ -3571,6 +3570,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
   if ( name == "victory_rush"         ) return new victory_rush_t         ( this, options_str );
   if ( name == "vigilance"            ) return new vigilance_t            ( this, options_str );
+  if ( name == "warbreaker"           ) return new warbreaker_t           ( this, options_str );
   if ( name == "whirlwind" )
   {
     if ( specialization() == WARRIOR_FURY )
