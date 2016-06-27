@@ -1203,15 +1203,7 @@ void player_t::init_defense()
   }
 
   // Armor Coefficient
-  // TODO: Danger, danger, hardcode K value for 103 targets so we can have wod mitigation to "compare things", since we don't know armor values in legion.
-  if ( level() == 100 )
-  {
-    initial.armor_coeff = 3610;
-  }
-  else
-  {
-    initial.armor_coeff = dbc.armor_mitigation_constant( level() );
-  }
+  initial.armor_coeff = dbc.armor_mitigation_constant( level() );
   if ( sim -> debug )
     sim -> out_debug.printf( "%s: Initial Armor Coeff set to %.4f", name(), initial.armor_coeff );
 
@@ -4607,7 +4599,6 @@ void player_t::recalculate_resource_max( resource_e resource_type )
   resources.max[ resource_type ]  = resources.base[ resource_type ];
   resources.max[ resource_type ] *= resources.base_multiplier[ resource_type ];
   resources.max[ resource_type ] += total_gear.resource[ resource_type ];
-  resources.max[ resource_type ] *= resources.initial_multiplier[ resource_type ];
 
   switch ( resource_type )
   {
@@ -4624,6 +4615,8 @@ void player_t::recalculate_resource_max( resource_e resource_type )
     default: break;
   }
   resources.max[ resource_type ] += resources.temporary[ resource_type ];
+
+  resources.max[ resource_type ] *= resources.initial_multiplier[ resource_type ];
   // Sanity check on current values
   resources.current[ resource_type ] = std::min( resources.current[ resource_type ], resources.max[ resource_type ] );
 }

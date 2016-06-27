@@ -4,7 +4,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=2111122
+talents=1210021
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.

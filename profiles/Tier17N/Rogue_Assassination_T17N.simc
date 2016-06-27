@@ -3,7 +3,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=3000032
+talents=2110131
 spec=assassination
 
 # This default action priority list is automatically created based on your character.
@@ -26,27 +26,28 @@ actions.precombat+=/marked_for_death
 # Executed every time the actor is available.
 
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40|debuff.vendetta.up
-actions+=/use_item,slot=trinket2,if=spell_targets.fan_of_knives>1|(debuff.vendetta.up&spell_targets.fan_of_knives=1)
-actions+=/blood_fury
-actions+=/berserking
-actions+=/arcane_torrent,if=energy<60
-actions+=/vanish,if=time>10&energy>13&!buff.stealth.up&energy.time_to_max>gcd*2&(combo_points<8|(!talent.anticipation.enabled&combo_points<=1))
-actions+=/mutilate,if=buff.stealth.up|buff.vanish.up|combo_points<combo_points.max
-actions+=/rupture,if=((combo_points>=4&!talent.anticipation.enabled)|combo_points=5)&ticks_remain<3
+actions+=/use_item,slot=trinket2,if=buff.bloodlust.react|target.time_to_die<40|debuff.vendetta.up
+actions+=/blood_fury,if=debuff.vendetta.up
+actions+=/berserking,if=debuff.vendetta.up
+actions+=/arcane_torrent,if=debuff.vendetta.up&energy<60
+actions+=/vendetta,if=energy<30|time<10&combo_points>4&energy<60
+actions+=/exsanguinate,if=dot.rupture.remains>21
+actions+=/pool_resource,if=energy<90&cooldown.kingsbane.remains<3.5
+actions+=/pool_resource,for_next=1,extra_amount=90
+actions+=/kingsbane
+actions+=/vanish,if=energy>25&dot.rupture.refreshable&combo_points>5
+actions+=/rupture,if=buff.vanish.up&combo_points>5&refreshable
+actions+=/garrote,if=refreshable&combo_points<6&!dot.garrote.exsanguinated
+actions+=/hemorrhage,if=debuff.hemorrhage.down&combo_points<6
+actions+=/mutilate,if=combo_points<5
+actions+=/rupture,if=!exsanguinated&refreshable&combo_points>4
+actions+=/pool_resource,for_next=1,extra_amount=25
+actions+=/death_from_above,if=combo_points>4
+actions+=/pool_resource,for_next=1,extra_amount=80
+actions+=/envenom,if=combo_points>=5&energy>80&buff.envenom.remains<0.5&buff.elaborate_planning.remains<2
 actions+=/rupture,cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&combo_points=5
 actions+=/marked_for_death,if=combo_points=0
-actions+=/vendetta,if=target.time_to_die<=20|(target.time_to_die<=30&glyph.vendetta.enabled)
 actions+=/rupture,cycle_targets=1,if=combo_points=5&remains<=duration*0.3&spell_targets.fan_of_knives>1
-actions+=/call_action_list,name=finishers,if=combo_points=5&((!cooldown.death_from_above.remains&talent.death_from_above.enabled)|buff.envenom.down|!talent.anticipation.enabled|combo_points>=6)
-actions+=/call_action_list,name=finishers,if=dot.rupture.remains<2
-
-actions.finishers=rupture,cycle_targets=1,if=(remains<2|(combo_points=5&remains<=(duration*0.3)))
-actions.finishers+=/pool_resource,for_next=1
-actions.finishers+=/death_from_above,if=(cooldown.vendetta.remains>10|debuff.vendetta.up|target.time_to_die<=25)
-actions.finishers+=/envenom,cycle_targets=1,if=dot.deadly_poison_dot.remains<4&target.health.pct<=35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>45))|buff.bloodlust.up|debuff.vendetta.up
-actions.finishers+=/envenom,cycle_targets=1,if=dot.deadly_poison_dot.remains<4&target.health.pct>35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>55))|buff.bloodlust.up|debuff.vendetta.up
-actions.finishers+=/envenom,if=target.health.pct<=35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>45))|buff.bloodlust.up|debuff.vendetta.up
-actions.finishers+=/envenom,if=target.health.pct>35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>55))|buff.bloodlust.up|debuff.vendetta.up
 
 head=poisoners_helmet,id=115572
 neck=darklight_necklace,id=113865,enchant_id=5319

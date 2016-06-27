@@ -11,8 +11,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=3000032
-#glyphs=vendetta/energy/disappearance
+talents=2110131
 spec=assassination
 head=spireflame_hood,id=114449,bonus_id=488
 neck=chainwrecker_gorget,id=114480,bonus_id=488,enchant_id=5319
@@ -41,7 +40,6 @@ role=attack
 position=back
 talents=3000021
 spec=outlaw
-#glyphs=energy/disappearance
 head=crystalbinder_helm,id=109977,bonus_id=524
 neck=windseal_necklace,id=109953,bonus_id=524,enchant=gift_of_haste
 shoulders=crystalbinder_shoulderpads,id=109936,bonus_id=524
@@ -68,8 +66,7 @@ timeofday=night
 role=attack
 position=back
 spec=subtlety
-talents=2111122
-#glyphs=energy/hemorrhaging_veins/vanish
+talents=1210021
 head=bloodfeather_cowl,id=109976,bonus_id=524
 neck=fireblade_collar,id=109951,bonus_id=524,enchant=gift_of_multistrike
 shoulders=crystalbinder_shoulderpads,id=109936,bonus_id=524

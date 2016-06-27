@@ -1,9 +1,11 @@
-rogue="Rogue_Assassination_T17H"
-level=100
-race=blood_elf
+rogue="Rogue_Assassination_T19P"
+level=110
+race=night_elf
+timeofday=night
 role=attack
 position=back
 talents=2110131
+artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
 # This default action priority list is automatically created based on your character.
@@ -26,7 +28,6 @@ actions.precombat+=/marked_for_death
 # Executed every time the actor is available.
 
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40|debuff.vendetta.up
-actions+=/use_item,slot=trinket1,if=buff.bloodlust.react|target.time_to_die<40|debuff.vendetta.up
 actions+=/blood_fury,if=debuff.vendetta.up
 actions+=/berserking,if=debuff.vendetta.up
 actions+=/arcane_torrent,if=debuff.vendetta.up&energy<60
@@ -49,31 +50,28 @@ actions+=/rupture,cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&comb
 actions+=/marked_for_death,if=combo_points=0
 actions+=/rupture,cycle_targets=1,if=combo_points=5&remains<=duration*0.3&spell_targets.fan_of_knives>1
 
-head=poisoners_helmet,id=115572,bonus_id=566
-neck=darklight_necklace,id=113865,bonus_id=566,enchant_id=5319
-shoulders=poisoners_spaulders,id=115574,bonus_id=566
-back=drape_of_the_dark_hunt,id=113971,bonus_id=566,enchant_id=5312
-chest=poisoners_tunic,id=115570,bonus_id=566
-wrists=bracers_of_shattered_stalactites,id=113935,bonus_id=566
-hands=cannonball_loaders_grips,id=113949,bonus_id=566
-waist=conductors_multipocket_girdle,id=113964,bonus_id=566
-legs=poisoners_legguards,id=115573,bonus_id=566
-feet=treads_of_the_dark_hunt,id=113974,bonus_id=566
-finger1=spellbound_solium_band_of_fatal_strikes,id=118302,enchant=gift_of_mastery
-finger2=unexploded_explosive_shard,id=113877,bonus_id=566,enchant_id=5326
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=566
-trinket2=humming_blackiron_trigger,id=113985,bonus_id=566
-main_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=566,enchant=mark_of_bleeding_hollow
-off_hand=oregorgers_acidetched_gutripper,id=113874,bonus_id=566,enchant=mark_of_bleeding_hollow
+head=gaze_of_fleeting_hours,id=137415,bonus_id=1727,ilevel=840
+neck=erratically_ticking_talisman,id=137418,bonus_id=1727,ilevel=840
+shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727,ilevel=840
+back=putrid_carapace,id=134408,bonus_id=1727,ilevel=840
+chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727,ilevel=840
+wrists=thermal_bindings,id=134461,bonus_id=1727,ilevel=840
+hands=ravens_veil_gloves,id=139242,bonus_id=1727,ilevel=840
+waist=manafang_waistguard,id=137409,bonus_id=1727,ilevel=840
+legs=charskin_legguards,id=137353,bonus_id=1727,ilevel=840
+feet=shellshock_footguards,id=134441,bonus_id=1727,ilevel=840
+finger1=empowered_ring_of_the_kirin_tor,id=139599
+finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727,ilevel=840
+trinket1=ranulfs_hunting_horn,id=133748,bonus_id=1727,ilevel=840,stats=933agi_933mastery
+trinket2=spiked_counterweight,id=136715,bonus_id=1727,ilevel=840
+main_hand=anguish,id=128870,bonus_id=741,ilevel=840
+off_hand=sorrow,id=128869,ilevel=840
 
 # Gear Summary
-# gear_ilvl=685.31
-# gear_agility=3262
-# gear_stamina=4054
-# gear_crit_rating=1472
-# gear_haste_rating=1136
-# gear_mastery_rating=1136
-# gear_versatility_rating=101
-# gear_armor=1086
-# set_bonus=tier17_2pc=1
-# set_bonus=tier17_4pc=1
+# gear_ilvl=841.56
+# gear_agility=10556
+# gear_stamina=17401
+# gear_crit_rating=5970
+# gear_haste_rating=898
+# gear_mastery_rating=10661
+# gear_armor=1957

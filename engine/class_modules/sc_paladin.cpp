@@ -664,6 +664,10 @@ namespace buffs {
       debuff_t( buff_creator_t( p, name, p -> find_spell( 25771 ) ) ), paladin( p )
     { }
 
+    forbearance_t( paladin_t* p, paladin_td_t *ap, const char *name ) :
+      debuff_t( buff_creator_t( *ap, name, p -> find_spell( 25771 ) ) ), paladin( p )
+    { }
+
     void execute( int stacks, double value, timespan_t duration ) override
     {
       debuff_t::execute( stacks, value, duration );
@@ -860,9 +864,6 @@ struct paladin_ground_aoe_t : public ground_aoe_event_t
   {
     auto it = range::find( paladin -> active_consecrations, this );
     paladin -> active_consecrations.erase( it );
-
-    bool test = may_pulse();
-
     ground_aoe_event_t::execute();
   }
 };
@@ -1054,6 +1055,8 @@ struct bastion_of_light_t : public paladin_spell_t
   bastion_of_light_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "bastion_of_light", p, p -> find_talent_spell( "Bastion of Light" ) )
   {
+    parse_options( options_str );
+
     charges = data().effectN( 1 ).base_value();
 
     harmful = false;
@@ -1369,15 +1372,6 @@ struct consecration_tick_t : public paladin_spell_t
     may_crit    = true;
     ground_aoe = true;
   }
-
-  virtual void execute() override
-  {
-    // TODO: check if this is needed anymore, because it causes errors!
-    //if ( target -> debuffs.flying -> check() )
-    //  if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), target -> name() );
-    //else
-      paladin_spell_t::execute();
-  }
 };
 
 // healing tick from Consecrated Ground talent
@@ -1412,6 +1406,8 @@ struct consecration_t : public paladin_spell_t
 
     dot_duration = timespan_t::zero(); // the periodic event is handled by ground_aoe_event_t
     may_miss       = false;
+
+    add_child( damage_tick );
 
     // Consecrated In Flame extends duration
     ground_effect_duration += timespan_t::from_millis( p -> artifact.consecration_in_flame.value() );
@@ -2942,6 +2938,9 @@ struct blade_of_wrath_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
+
+    // TODO: this shouldn't be necessary next build
+    tick_may_crit = true;
   }
 };
 
@@ -3826,7 +3825,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
-  buffs.forbearant_faithful = new buffs::forbearance_t( paladin, "forbearant_faithful" );
+  buffs.forbearant_faithful = new buffs::forbearance_t( paladin, this, "forbearant_faithful" );
   buffs.blessed_hammer_debuff = buff_creator_t( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
 }
 
@@ -4373,6 +4372,7 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_talent( this, "Holy Wrath" );
   def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Crusade", "sync=judgment,if=holy_power>=3" );
+  def -> add_action( this, "Wake of Ashes", "if=holy_power>=0&time<2" );
   def -> add_talent( this, "Execution Sentence", "if=cooldown.judgment.remains<gcd*5&(holy_power>=3|buff.divine_purpose.react|buff.the_fires_of_justice.react)" );
 
   std::vector<std::string> racial_actions = get_racial_actions();
@@ -4383,28 +4383,38 @@ void paladin_t::generate_action_prio_list_ret()
 
   single -> add_action( this, "judgment" );
   single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&debuff.judgment.remains<gcd" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&buff.divine_purpose.react" );
   single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5" );
-  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react" );
   single -> add_action( this, "Divine Storm", "if=spell_targets.divine_storm>=2&cooldown.wake_of_ashes.remains<gcd*2" );
+  single -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.up&debuff.judgment.remains<gcd" );
+  single -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
+  single -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react" );
   single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&debuff.judgment.remains<gcd" );
+  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
+  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react" );
   single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5" );
-  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
-  single -> add_action( this, "Templar's Verdict", "if=cooldown.wake_of_ashes.remains<gcd*2" );
+  single -> add_talent( this, "Justicar's Vengeance", "if=holy_power>=3&buff.divine_purpose.up&cooldown.wake_of_ashes.remains<gcd*2" );
+  single -> add_action( this, "Templar's Verdict", "if=holy_power>=3&cooldown.wake_of_ashes.remains<gcd*2" );
   single -> add_action( this, "Wake of Ashes", "if=cooldown.judgment.remains>gcd*2" );
   single -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
   single -> add_action( this, "Crusader Strike", "if=charges=2&!talent.the_fires_of_justice.enabled" );
   single -> add_action( this, "Blade of Justice", "if=holy_power<=3" );
   single -> add_talent( this, "Blade of Wrath", "if=holy_power<=3" );
-  single -> add_talent( this, "Divine Hammer", "if=holy_power<=4" );
+  single -> add_talent( this, "Divine Hammer", "if=holy_power<=3" );
   single -> add_action( this, "Crusader Strike", "if=charges=2&talent.the_fires_of_justice.enabled" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react" );
+  single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.the_fires_of_justice.up" );
   single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=4" );
+  single -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react" );
+  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
+  single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.the_fires_of_justice.up" );
   single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=4" );
   single -> add_talent( this, "Consecration" );
   single -> add_talent( this, "Zeal", "if=holy_power<=4" );
   single -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
   single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=3" );
   single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3" );
-  single -> add_talent( this, "Blinding Light" );
 }
 
 // ==========================================================================

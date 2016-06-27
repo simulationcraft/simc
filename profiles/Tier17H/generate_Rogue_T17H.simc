@@ -16,8 +16,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=3000032
-#glyphs=vendetta/energy/disappearance
+talents=2110131
 spec=assassination
 head=poisoners_helmet,id=115572,bonus_id=566
 neck=darklight_necklace,id=113865,bonus_id=566,enchant_id=5319
@@ -46,7 +45,6 @@ role=attack
 position=back
 talents=3000031
 spec=outlaw
-#glyphs=energy/disappearance
 head=sorkas_nightshade_cowl,id=113978,bonus_id=566
 neck=engineers_grounded_gorget,id=113892,bonus_id=566,enchant=gift_of_haste
 shoulders=poisoners_spaulders,id=115574,bonus_id=566
@@ -73,8 +71,7 @@ timeofday=night
 role=attack
 position=back
 spec=subtlety
-talents=2111122
-#glyphs=energy/hemorrhaging_veins/vanish
+talents=1210021
 head=poisoners_helmet,id=115572,bonus_id=566
 neck=engineers_grounded_gorget,id=113892,bonus_id=566,enchant=gift_of_multistrike
 shoulders=poisoners_spaulders,id=115574,bonus_id=566

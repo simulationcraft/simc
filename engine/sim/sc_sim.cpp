@@ -2090,7 +2090,6 @@ bool sim_t::init()
   event_mgr.init();
 
   unique_gear::register_target_data_initializers( this );
-  unique_gear::register_target_data_initializers_x7( this );
 
   // Seed RNG
   if ( seed == 0 )

@@ -13,28 +13,25 @@ using namespace unique_gear;
 
 namespace enchants
 {
-  void mark_of_the_loyal_druid( special_effect_t& );
-  void mark_of_the_trickster( special_effect_t& );
-  void mark_of_the_fallen_sentinels( special_effect_t& );
-
-  const unsigned binding_of_crit    = 5427;
-  const unsigned binding_of_haste   = 5428;
-  const unsigned binding_of_mastery = 5429;
-  const unsigned binding_of_vers    = 5430;
-  const unsigned binding_of_str     = 5434;
-  const unsigned binding_of_agi     = 5435;
-  const unsigned binding_of_int     = 5436;
+  void mark_of_the_claw( special_effect_t& );
+  void mark_of_the_hidden_satyr( special_effect_t& );
+  void mark_of_the_distant_army( special_effect_t& );
+  void mark_of_the_heavy_hide( special_effect_t& );
+  void mark_of_the_ancient_priestess( special_effect_t& );
 }
 
 namespace item
 {
+  void caged_horror( special_effect_t& );
   void chaos_talisman( special_effect_t& );
+  void corrupted_starlight( special_effect_t& );
+  void darkmoon_deck( special_effect_t& );
+  void elementium_bomb_squirrel( special_effect_t& );
   void figurehead_of_the_naglfar( special_effect_t& );
   void giant_ornamental_pearl( special_effect_t& );
   void horn_of_valor( special_effect_t& );
   void impact_tremor( special_effect_t& );
   void memento_of_angerboda( special_effect_t& );
-  void nightmare_egg_shell( special_effect_t& );
   void obelisk_of_the_void( special_effect_t& );
   void shivermaws_jawbone( special_effect_t& );
   void spiked_counterweight( special_effect_t& );
@@ -47,419 +44,6 @@ namespace set_bonus
 {
   // Generic passive stat aura adder for set bonuses
   void passive_stat_aura( special_effect_t& );
-}
-
-
-static bool player_has_binding( player_t* player, unsigned binding )
-{
-  // TOCHECK: Does this work with enchants specified by name?
-  player = player -> get_owner_or_self();
-
-  for ( size_t i = 0; i < player -> items.size(); i++ )
-  {
-    if ( player -> items[ i ].parsed.enchant_id == binding )
-      return true;
-  }
-  return false;
-}
-
-struct loyal_druid_pet_t : public pet_t
-{
-  struct auto_attack_t : public melee_attack_t
-  {
-    struct melee_t: public melee_attack_t
-    {
-      melee_t( pet_t* p ) :
-        melee_attack_t( "melee", p, spell_data_t::nil() )
-      {
-        school = SCHOOL_PHYSICAL;
-        special = false;
-        weapon = &( p -> main_hand_weapon );
-        base_execute_time = weapon -> swing_time;
-        background = repeating = auto_attack = may_glance = true;
-        trigger_gcd = timespan_t::zero();
-      }
-    };
-
-    melee_t* melee;
-
-    auto_attack_t( pet_t* p, const std::string& options_str ) :
-      melee_attack_t( "auto_attack", p, spell_data_t::nil() )
-    {
-      parse_options( options_str );
-
-      ignore_false_positive = true;
-      range                 = 5;
-      trigger_gcd           = timespan_t::zero();
-      melee                 = new melee_t( p );
-    }
-
-    void execute() override
-    { melee -> schedule_execute(); }
-
-    bool ready() override
-    {
-      bool ready = melee_attack_t::ready();
-
-      if ( ready && melee -> execute_event == nullptr )
-        return ready;
-
-      return false;
-    }
-  };
-
-  struct thrash_t : public melee_attack_t
-  {
-    buff_t* cat_form;
-    buff_t* bear_form;
-
-    thrash_t( loyal_druid_pet_t* p, const std::string& option_str ) :
-      melee_attack_t( "thrash", p, p -> find_spell( 191121 ) )
-    {
-      parse_options( option_str );
-
-      cooldown -> duration = timespan_t::from_seconds( 6.0 );
-      cooldown -> hasted = true;
-      cat_form = p -> cat_form;
-      bear_form = p -> bear_form;
-    }
-
-    bool init_finished() override
-    {
-      if ( ! player_has_binding( player, enchants::binding_of_crit ) )
-        background = true;
-
-      return melee_attack_t::init_finished();
-    }
-
-    bool ready() override
-    {
-      if ( ! ( cat_form -> check() || bear_form -> check() ) )
-        return false;
-
-      return melee_attack_t::ready();
-    }
-  };
-
-  struct wrath_t : public spell_t
-  {
-    wrath_t( pet_t* p, const std::string& option_str ) :
-      spell_t( "wrath", p, p -> find_spell( 191146 ) )
-    {
-      parse_options( option_str );
-    }
-  };
-
-  struct rejuvenation_t : public heal_t
-  {
-    rejuvenation_t( pet_t* p, const std::string& option_str ) :
-      heal_t( "rejuvenation", p, p -> find_spell( 191122 ) )
-    {
-      parse_options( option_str );
-      target = p -> owner;
-    }
-
-    bool init_finished() override
-    {
-      if ( ! player_has_binding( player, enchants::binding_of_haste ) )
-        background = true;
-
-      return heal_t::init_finished();
-    }
-  };
-
-  struct entangling_roots_t : public spell_t
-  {
-    entangling_roots_t( pet_t* p, const std::string& option_str ) :
-      spell_t( "entangling_roots", p, p -> find_spell( 191123 ) )
-    {
-      parse_options( option_str );
-    }
-
-    bool init_finished() override
-    {
-      if ( ! player_has_binding( player, enchants::binding_of_mastery ) )
-        background = true;
-
-      return spell_t::init_finished();
-    }
-
-    bool ready() override
-    {
-      bool r = spell_t::ready();
-
-      // Will not cast on immune targets. Let's assume bosses are immune.
-      if ( ! target -> is_add() )
-        return false;
-
-      return r;
-    }
-  };
-
-  struct invigorating_roar_t : public spell_t
-  {
-    invigorating_roar_t( pet_t* p, const std::string& option_str ) :
-      spell_t( "invigorating_roar", p, p -> find_spell( 191124 ) )
-    {
-      parse_options( option_str );
-
-      callbacks = may_crit = may_miss = harmful = false;
-    }
-
-    bool init_finished() override
-    {
-      if ( ! player_has_binding( player, enchants::binding_of_vers ) )
-        background = true;
-
-      return spell_t::init_finished();
-    }
-
-    void execute() override
-    {
-      spell_t::execute();
-
-      player -> buffs.invigorating_roar -> trigger();
-      debug_cast<pet_t*>( player ) -> owner -> buffs.invigorating_roar -> trigger();
-    }
-
-    bool ready() override
-    {
-      if ( player -> buffs.invigorating_roar -> check() )
-        return false;
-
-      return spell_t::ready();
-    }
-  };
-
-  struct cat_form_t : public spell_t
-  {
-    buff_t* buff;
-
-    cat_form_t( loyal_druid_pet_t* p, const std::string& option_str ) :
-      spell_t( "cat_form", p, p -> find_spell( 191118 ) )
-    {
-      parse_options( option_str );
-      
-      callbacks = may_crit = may_miss = harmful = false;
-      buff = p -> cat_form;
-    }
-
-    bool init_finished() override
-    {
-      if ( ! player_has_binding( player, enchants::binding_of_agi ) )
-        background = true;
-
-      return spell_t::init_finished();
-    }
-
-    void execute() override
-    {
-      spell_t::execute();
-
-      buff -> trigger();
-    }
-
-    bool ready() override
-    {
-      if ( buff -> check() )
-        return false;
-
-      return spell_t::ready();
-    }
-  };
-
-  struct moonkin_form_t : public spell_t
-  {
-    buff_t* buff;
-
-    moonkin_form_t( loyal_druid_pet_t* p, const std::string& option_str ) :
-      spell_t( "moonkin_form", p, p -> find_spell( 191119 ) )
-    {
-      parse_options( option_str );
-      
-      callbacks = may_crit = may_miss = harmful = false;
-      buff = p -> moonkin_form;
-    }
-
-    bool init_finished() override
-    {
-      if ( ! player_has_binding( player, enchants::binding_of_int ) )
-        background = true;
-
-      return spell_t::init_finished();
-    }
-
-    void execute() override
-    {
-      spell_t::execute();
-
-      buff -> trigger();
-    }
-
-    bool ready() override
-    {
-      if ( buff -> check() )
-        return false;
-
-      return spell_t::ready();
-    }
-  };
-
-  struct bear_form_t : public spell_t
-  {
-    buff_t* buff;
-
-    bear_form_t( loyal_druid_pet_t* p, const std::string& option_str ) :
-      spell_t( "bear_form", p, p -> find_spell( 191091 ) )
-    {
-      parse_options( option_str );
-      
-      callbacks = may_crit = may_miss = harmful = false;
-      buff = p -> bear_form;
-    }
-
-    bool init_finished() override
-    {
-      if ( ! player_has_binding( player, enchants::binding_of_str ) )
-        background = true;
-
-      return spell_t::init_finished();
-    }
-
-    void execute() override
-    {
-      spell_t::execute();
-
-      buff -> trigger();
-    }
-
-    bool ready() override
-    {
-      if ( buff -> check() )
-        return false;
-
-      return spell_t::ready();
-    }
-  };
-
-  buff_t* cat_form;
-  buff_t* moonkin_form;
-  buff_t* bear_form;
-
-  loyal_druid_pet_t( player_t* owner ) :
-    pet_t( owner -> sim, owner, "loyal_druid", true, true )
-  {
-    main_hand_weapon.type = WEAPON_BEAST;
-    owner_coeff.ap_from_ap = 1.0; // TOCHECK
-    owner_coeff.sp_from_sp = 1.0; // TOCHECK
-
-    // Magical constants for base damage
-    double damage_range = 0.4;
-    double base_dps = owner -> dbc.spell_scaling( PLAYER_SPECIAL_SCALE, owner -> level() ) * 4.725;
-    double min_dps = base_dps * ( 1 - damage_range / 2.0 );
-    double max_dps = base_dps * ( 1 + damage_range / 2.0 );
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg =  min_dps * main_hand_weapon.swing_time.total_seconds();
-    main_hand_weapon.max_dmg =  max_dps * main_hand_weapon.swing_time.total_seconds();
-    // FIXME: Melee damage is definitely wrong.
-
-    cat_form     = buff_creator_t( this, "cat_form", find_spell( 191118 ) );
-    moonkin_form = buff_creator_t( this, "moonkin_form", find_spell( 191119 ) )
-                   .default_value( find_spell( 191119 ) -> effectN( 2 ).percent() )
-                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    bear_form    = buff_creator_t( this, "bear_form", find_spell( 191091 ) );
-  }
-
-  double composite_player_multiplier( school_e s ) const override
-  {
-    double pm = pet_t::composite_player_multiplier( s );
-
-    if ( dbc::is_school( s, SCHOOL_NATURE ) )
-      pm *= 1.0 + moonkin_form -> value();
-
-    return pm;
-  }
-
-  void dismiss( bool expired = false ) override
-  {
-    pet_t::dismiss( expired );
-
-    owner -> buffs.invigorating_roar -> expire();
-  }
-
-  void init_action_list() override
-  {
-    // TOCHECK: Exact priorities.
-    action_list_str = "auto_attack";
-    action_list_str += "/cat_form";
-    action_list_str += "/moonkin_form";
-    action_list_str += "/bear_form";
-    action_list_str += "/invigorating_roar";
-    action_list_str += "/wrath,if=buff.moonkin_form.up";
-    action_list_str += "/rejuvenation";
-    action_list_str += "/entangling_roots";
-    action_list_str += "/thrash";
-
-    pet_t::init_action_list();
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str ) override
-  {
-    if ( name == "auto_attack"       ) return       new auto_attack_t( this, options_str );
-    if ( name == "bear_form"         ) return         new bear_form_t( this, options_str );
-    if ( name == "cat_form"          ) return          new cat_form_t( this, options_str );
-    if ( name == "entangling_roots"  ) return  new entangling_roots_t( this, options_str );
-    if ( name == "invigorating_roar" ) return new invigorating_roar_t( this, options_str );
-    if ( name == "moonkin_form"      ) return      new moonkin_form_t( this, options_str );
-    if ( name == "rejuvenation"      ) return      new rejuvenation_t( this, options_str );
-    if ( name == "thrash"            ) return            new thrash_t( this, options_str );
-    if ( name == "wrath"             ) return             new wrath_t( this, options_str );
-
-    return pet_t::create_action( name, options_str );
-  }
-};
-
-struct summon_loyal_druid_t : public spell_t
-{
-  pet_t* pet;
-  timespan_t duration;
-
-  summon_loyal_druid_t( player_t* p, const spell_data_t* s ) :
-    spell_t( s -> name_cstr(), p, s ), duration( s -> duration() )
-  {
-    background = true;
-    may_miss = may_crit = callbacks = harmful = false;
-    pet = new loyal_druid_pet_t( p );
-  }
-
-  void execute() override
-  {
-    spell_t::execute();
-
-    pet -> summon( duration );
-  }
-};
-
-void enchants::mark_of_the_loyal_druid( special_effect_t& effect )
-{
-  const spell_data_t* summon_spell = effect.driver() -> effectN( 1 ).trigger();
-
-  action_t* action = effect.player -> find_action( summon_spell -> name_cstr() );
-  if ( ! action )
-  {
-    action = effect.player -> create_proc_action( summon_spell -> name_cstr(), effect );
-  }
-
-  if ( ! action )
-  {
-    action = new summon_loyal_druid_t( effect.player, summon_spell );
-  }
-
-  effect.execute_action = action;
-  effect.type = SPECIAL_EFFECT_EQUIP;
-
-  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // TODO: Ratings
@@ -495,73 +79,40 @@ void set_bonus::passive_stat_aura( special_effect_t& effect )
   effect.player -> initial.stats.add_stat( stat, amount );
 }
 
-// Custom buff to model a 5 seconds of climbing + 5 seconds of full stacks + 5 seconds of decreasing
-struct down_draft_t : public stat_buff_t
+struct random_combat_enhancement_callback_t : public dbc_proc_callback_t
 {
-  struct dd_event_t : public event_t
-  {
-    down_draft_t* buff;
+  stat_buff_t* crit, *haste, *mastery;
 
-    dd_event_t( down_draft_t* b, const timespan_t& d ) :
-      event_t( *b -> player ), buff( b )
+  random_combat_enhancement_callback_t( const item_t* i,
+                       const special_effect_t& effect,
+                       stat_buff_t* cb,
+                       stat_buff_t* hb,
+                       stat_buff_t* mb ) :
+                 dbc_proc_callback_t( i, effect ),
+    crit( cb ), haste( hb ), mastery( mb )
+  {}
+
+  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
+  {
+    stat_buff_t* buff;
+
+    int p_type = ( int ) ( listener -> sim -> rng().real() * 3.0 );
+    switch ( p_type )
     {
-      add_event( d );
+      case 0: buff = haste; break;
+      case 1: buff = crit; break;
+      case 2:
+      default:
+        buff = mastery; break;
     }
 
-    void execute() override
-    {
-      if ( sim().debug )
-      {
-        sim().out_debug.printf( "%s buff %s swap to decreasing",
-            buff -> player -> name(), buff -> name() );
-      }
-      buff -> reverse = true;
-      buff -> event = nullptr;
-    }
-  };
-
-  event_t* event;
-
-  down_draft_t( const special_effect_t& effect ) :
-    stat_buff_t( stat_buff_creator_t( effect.player, "down_draft", effect.player -> find_spell( 214342 ), effect.item )
-      // Double the duration, in reality this should not be doubled but rather increased by
-      // max_stack * period
-      .duration( effect.player -> find_spell( 214342 ) -> duration() * 2 ) ), event( nullptr )
-  { }
-
-  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
-  {
-    stat_buff_t::execute( stacks, value, duration );
-
-    if ( event )
-    {
-      event_t::cancel( event );
-    }
-
-    // Allow 5 seconds of full buff, and then start the decrease
-    event = new ( *sim ) dd_event_t( this, timespan_t::from_seconds( 10.001 ) );
-    reverse = false;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    stat_buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    event_t::cancel( event );
-    reverse = false;
-  }
-
-  void reset() override
-  {
-    stat_buff_t::reset();
-    event_t::cancel( event );
-    reverse = false;
+    buff -> trigger();
   }
 };
 
-void item::nightmare_egg_shell( special_effect_t& effect )
+void enchants::mark_of_the_claw( special_effect_t& effect )
 {
-  effect.custom_buff = new down_draft_t( effect );
+  effect.custom_buff = stat_buff_creator_t( effect.player, "mark_of_the_claw", effect.player -> find_spell( 190909 ), effect.item );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -629,47 +180,14 @@ void item::impact_tremor( special_effect_t& effect )
     stampede = new devilsaurs_stampede_t( effect );
   }
 
-  buff_t* b = buff_creator_t( effect.player, "devilsaurs_stampede", effect.driver() -> effectN( 1 ).trigger(), effect.item )
+  effect.custom_buff = buff_creator_t( effect.player, "devilsaurs_stampede", effect.driver() -> effectN( 1 ).trigger(), effect.item )
     .tick_zero( true )
     .tick_callback( [ stampede ]( buff_t*, int, const timespan_t& ) {
       stampede -> schedule_execute();
     } );
 
-  effect.custom_buff = b;
-
   new dbc_proc_callback_t( effect.item, effect );
 }
-
-struct random_combat_enhancement_callback_t : public dbc_proc_callback_t
-{
-  stat_buff_t* crit, *haste, *mastery;
-
-  random_combat_enhancement_callback_t( const item_t* i,
-                       const special_effect_t& effect,
-                       stat_buff_t* cb,
-                       stat_buff_t* hb,
-                       stat_buff_t* mb ) :
-                 dbc_proc_callback_t( i, effect ),
-    crit( cb ), haste( hb ), mastery( mb )
-  {}
-
-  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
-  {
-    stat_buff_t* buff;
-
-    int p_type = ( int ) ( listener -> sim -> rng().real() * 3.0 );
-    switch ( p_type )
-    {
-      case 0: buff = haste; break;
-      case 1: buff = crit; break;
-      case 2:
-      default:
-        buff = mastery; break;
-    }
-
-    buff -> trigger();
-  }
-};
 
 void item::memento_of_angerboda( special_effect_t& effect )
 {
@@ -797,21 +315,21 @@ struct slicing_maelstrom_t : public spell_t
 
 void item::windscar_whetstone( special_effect_t& effect )
 {
-  action_t* slicing_maelstrom = effect.player -> find_action( "slicing_maelstrom" );
-  if ( ! slicing_maelstrom )
+  action_t* maelstrom = effect.player -> find_action( "slicing_maelstrom" );
+  if ( ! maelstrom )
   {
-    slicing_maelstrom = effect.player -> create_proc_action( "slicing_maelstrom", effect );
+    maelstrom = effect.player -> create_proc_action( "slicing_maelstrom", effect );
   }
 
-  if ( ! slicing_maelstrom )
+  if ( ! maelstrom )
   {
-    slicing_maelstrom = new slicing_maelstrom_t( effect );
+    maelstrom = new slicing_maelstrom_t( effect );
   }
 
   effect.custom_buff = buff_creator_t( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
     .tick_zero( true )
-    .tick_callback( [ slicing_maelstrom ]( buff_t*, int, const timespan_t& ) {
-      slicing_maelstrom -> schedule_execute();
+    .tick_callback( [ maelstrom ]( buff_t*, int, const timespan_t& ) {
+      maelstrom -> schedule_execute();
     } );
 }
 
@@ -1227,25 +745,249 @@ void item::chaos_talisman( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+struct dark_blast_t : public spell_t
+{
+  dark_blast_t( special_effect_t& effect ) : 
+    spell_t( "dark_blast", effect.player, effect.player -> find_spell( 215407 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    item = effect.item;
+    aoe = -1;
+
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( item );
+  }
+};
+
+void item::caged_horror( special_effect_t& effect )
+{
+  effect.execute_action = new dark_blast_t( effect );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+struct nightfall_t : public spell_t
+{
+  spell_t* damage_spell;
+
+  nightfall_t( special_effect_t& effect ) : 
+    spell_t( "nightfall", effect.player, effect.player -> find_spell( 213785 ) )
+  {
+    background = true;
+    callbacks = false;
+    item = effect.item;
+
+    const spell_data_t* tick_spell = effect.player -> find_spell( 213786 );
+    spell_t* t = new spell_t( "nightfall_tick", effect.player, tick_spell );
+    t -> aoe = -1;
+    t -> background = t -> dual = t -> ground_aoe = t -> may_crit = true;
+    t -> callbacks = false;
+    t -> item = effect.item;
+    t -> base_dd_min = t -> base_dd_max = tick_spell -> effectN( 1 ).average( item );
+    t -> stats = stats;
+    damage_spell = t;
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    new ( *sim ) ground_aoe_event_t( player, ground_aoe_params_t()
+      .target( execute_state -> target )
+      .x( execute_state -> target -> x_position )
+      .y( execute_state -> target -> y_position )
+      .duration( data().duration() )
+      .start_time( sim -> current_time() )
+      .action( damage_spell )
+      .pulse_time( data().duration() / 10 ) );
+  }
+};
+
+void item::corrupted_starlight( special_effect_t& effect )
+{
+  effect.execute_action = effect.player -> find_action( "nightfall" );
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "nightfall", effect );
+  }
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = new nightfall_t( effect );
+  }
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+struct darkmoon_deck_t
+{
+  player_t* player;
+  std::array<stat_buff_t*, 8> cards;
+  buff_t* top_card;
+  timespan_t shuffle_period;
+
+  darkmoon_deck_t( special_effect_t& effect, std::array<unsigned, 8> c ) : 
+    player( effect.player ), top_card( nullptr ),
+    shuffle_period( effect.driver() -> effectN( 1 ).period() )
+  {
+    for ( unsigned i = 0; i < 8; i++ )
+    {
+      const spell_data_t* s = player -> find_spell( c[ i ] );
+      assert( s -> found() );
+
+      std::string n = s -> name_cstr();
+      util::tokenize( n );
+
+      cards[ i ] = stat_buff_creator_t( player, n, s, effect.item );
+    }
+  }
+
+  void shuffle()
+  {
+    if ( top_card )
+      top_card -> expire();
+
+    top_card = cards[ ( int ) player -> rng().range( 0, 8 ) ];
+
+    top_card -> trigger();
+  }
+};
+
+struct shuffle_event_t : public event_t
+{
+  darkmoon_deck_t* deck;
+
+  shuffle_event_t( darkmoon_deck_t* d, bool initial = false ) : 
+    event_t( *d -> player ), deck( d )
+  {
+    /* Shuffle when we schedule an event instead of when it executes.
+    This will assure the deck starts shuffled */
+    deck -> shuffle();
+
+    if ( initial )
+    {
+      add_event( deck -> shuffle_period * rng().real() );
+    }
+    else
+    {
+      add_event( deck -> shuffle_period );
+    }
+  }
+  
+  const char* name() const override
+  { return "shuffle_event"; }
+
+  void execute() override
+  {
+    new ( sim() ) shuffle_event_t( deck );
+  }
+};
+
+// TODO: The sim could use an "arise" and "demise" callback, it's kinda wasteful to call these
+// things per every player actor shifting in the non-sleeping list. Another option would be to make
+// (yet another list) that holds active, non-pet players.
+// TODO: Also, the darkmoon_deck_t objects are not cleaned up at the end
+void item::darkmoon_deck( special_effect_t& effect )
+{
+  std::array<unsigned, 8> cards;
+  switch( effect.spell_id )
+  {
+  case 191632: // Immortality
+    cards = { { 191624, 191625, 191626, 191627, 191628, 191629, 191630, 191631 } };
+    break;
+  case 191611: // Hellfire
+    cards = { { 191603, 191604, 191605, 191606, 191607, 191608, 191609, 191610 } };
+    break;
+  case 191563: // Dominion
+    cards = { { 191545, 191548, 191549, 191550, 191551, 191552, 191553, 191554 } };
+    break;
+  default:
+    assert( false );
+  }
+
+  darkmoon_deck_t* d = new darkmoon_deck_t( effect, cards );
+
+  effect.player -> sim -> player_non_sleeping_list.register_callback([ d, &effect ]( player_t* player ) {
+    // Arise time gets set to timespan_t::min() in demise, before the actor is removed from the 
+    // non-sleeping list. In arise, the arise_time is set to current time before the actor is added
+    // to the non-sleeping list.
+    if ( player != effect.player || player -> arise_time < timespan_t::zero() )
+    {
+      return;
+    }
+
+    new ( *effect.player -> sim ) shuffle_event_t( d, true );
+  });
+}
+
+struct aw_nuts_t : public spell_t
+{
+  aw_nuts_t( special_effect_t& effect ) : 
+    spell_t( "aw_nuts", effect.player, effect.player -> find_spell( 216099 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    aoe = -1;
+    item = effect.item;
+    travel_speed = 7.0; // "Charge"!
+
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( item );
+  }
+   
+  void init() override
+  {
+    spell_t::init();
+
+    snapshot_flags &= ~( STATE_MUL_DA | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
+  }
+};
+
+void item::elementium_bomb_squirrel( special_effect_t& effect )
+{
+  effect.execute_action = effect.player -> find_action( "aw_nuts" );
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "aw_nuts", effect );
+  }
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = new aw_nuts_t( effect );
+  }
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 void unique_gear::register_special_effects_x7()
 {
   /* Legion 7.0 */
+  register_special_effect( 215444, item::caged_horror                   );
   register_special_effect( 214829, item::chaos_talisman                 );
+  register_special_effect( 213782, item::corrupted_starlight            );
+  register_special_effect( 191563, item::darkmoon_deck                  );
+  register_special_effect( 191611, item::darkmoon_deck                  );
+  register_special_effect( 191632, item::darkmoon_deck                  );
   register_special_effect( 215670, item::figurehead_of_the_naglfar      );
   register_special_effect( 214971, item::giant_ornamental_pearl         );
   register_special_effect( 215956, item::horn_of_valor                  );
   register_special_effect( 224059, item::impact_tremor                  );
   register_special_effect( 214798, item::memento_of_angerboda           );
-  register_special_effect( 214340, item::nightmare_egg_shell            );
   register_special_effect( 215467, item::obelisk_of_the_void            );
   register_special_effect( 214584, item::shivermaws_jawbone             );
   register_special_effect( 214168, item::spiked_counterweight           );
   register_special_effect( 215127, item::tiny_oozeling_in_a_jar         );
   register_special_effect( 215658, item::tirathons_betrayal             );
   register_special_effect( 214980, item::windscar_whetstone             );
+  register_special_effect( 216085, item::elementium_bomb_squirrel       );
 
   /* Legion Enchants */
-  register_special_effect( 190888, enchants::mark_of_the_loyal_druid    );
+  register_special_effect( 190888, "190909trigger" );
+  register_special_effect( 190889, "191380trigger" );
+  register_special_effect( 190890, "191259trigger" );
+  register_special_effect( 228398, "228399trigger" );
+  register_special_effect( 228400, "228401trigger" );
 
   /* T19 Generic Order Hall set bonuses */
   register_special_effect( 221533, set_bonus::passive_stat_aura     );

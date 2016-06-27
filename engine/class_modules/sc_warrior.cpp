@@ -1727,6 +1727,7 @@ struct hamstring_t: public warrior_attack_t
     warrior_attack_t( "hamstring", p, p -> spec.hamstring )
   {
     parse_options( options_str );
+    use_off_gcd = true;
     weapon = &( p -> main_hand_weapon );
   }
 };
@@ -2195,7 +2196,7 @@ struct raging_blow_t: public warrior_attack_t
     mh_attack = new raging_blow_attack_t( p, "raging_blow_mh", p -> spec.raging_blow -> effectN( 3 ).trigger() );
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
-    cooldown -> duration += p -> talents.inner_rage -> effectN( 1 ).time_value();
+    cooldown -> duration = p -> talents.inner_rage -> effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -2218,12 +2219,7 @@ struct raging_blow_t: public warrior_attack_t
       return false;
     }
 
-    if ( p() -> talents.inner_rage -> ok() )
-    {
-      return warrior_attack_t::ready();
-    }
-
-    if ( !p() -> buff.enrage -> check() )
+    if ( !p() -> buff.enrage -> check() && !p() -> talents.inner_rage -> ok() )
     {
       return false;
     }
@@ -2322,11 +2318,6 @@ struct warbreaker_t: public warrior_attack_t
 
     p() -> buff.shattered_defenses -> trigger();
     p() -> buff.precise_strikes -> trigger();
-
-    if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
-    {
-      p() -> proc.t17_2pc_arms -> occur();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -3199,6 +3190,7 @@ struct avatar_t: public warrior_spell_t
     warrior_spell_t( "avatar", p, p -> talents.avatar )
   {
     parse_options( options_str );
+    use_off_gcd = true;
   }
 
   void execute() override
@@ -3218,6 +3210,7 @@ struct berserker_rage_t: public warrior_spell_t
   {
     parse_options( options_str );
     callbacks = false;
+    use_off_gcd = true;
     range = -1;
   }
 
@@ -3241,6 +3234,7 @@ struct bloodbath_t: public warrior_spell_t
     warrior_spell_t( "bloodbath", p, p -> talents.bloodbath )
   {
     parse_options( options_str );
+    use_off_gcd = true;
   }
 
   void execute() override
@@ -3387,6 +3381,7 @@ struct battle_cry_t: public warrior_spell_t
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
     callbacks = false;
+    use_off_gcd = true;
     cooldown -> duration += p -> artifact.helyas_wrath.time_value();
 
     if ( p -> talents.reckless_abandon -> ok() )
@@ -3524,6 +3519,7 @@ action_t* warrior_t::create_action( const std::string& name,
 {
   if ( name == "auto_attack"          ) return new auto_attack_t          ( this, options_str );
   if ( name == "avatar"               ) return new avatar_t               ( this, options_str );
+  if ( name == "battle_cry"           ) return new battle_cry_t           ( this, options_str );
   if ( name == "berserker_rage"       ) return new berserker_rage_t       ( this, options_str );
   if ( name == "bladestorm"           ) return new bladestorm_t           ( this, options_str );
   if ( name == "bloodbath"            ) return new bloodbath_t            ( this, options_str );
@@ -3531,6 +3527,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "cleave"               ) return new cleave_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
+  if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
   if ( name == "corrupted_rage"       ) return new corrupted_rage_t       ( this, options_str );
   if ( name == "defensive_stance"     ) return new defensive_stance_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
@@ -3549,15 +3546,12 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "intervene"            ) return new intervene_t            ( this, options_str );
   if ( name == "last_stand"           ) return new last_stand_t           ( this, options_str );
   if ( name == "mortal_strike"        ) return new mortal_strike_t        ( this, options_str );
-  if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
-  if ( name == "overpower"            ) return new overpower_t            ( this, options_str );
   if ( name == "odyns_fury"           ) return new odyns_fury_t           ( this, options_str );
-  if ( name == "warbreaker"           ) return new warbreaker_t           ( this, options_str );
-  if ( name == "rampage"              ) return new rampage_parent_t       ( this, options_str );
+  if ( name == "overpower"            ) return new overpower_t            ( this, options_str );
+  if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
-  if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
+  if ( name == "rampage"              ) return new rampage_parent_t       ( this, options_str );
   if ( name == "ravager"              ) return new ravager_t              ( this, options_str );
-  if ( name == "battle_cry"           ) return new battle_cry_t           ( this, options_str );
   if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
   if ( name == "revenge"              ) return new revenge_t              ( this, options_str );
   if ( name == "shield_block"         ) return new shield_block_t         ( this, options_str );
@@ -3571,6 +3565,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
   if ( name == "victory_rush"         ) return new victory_rush_t         ( this, options_str );
   if ( name == "vigilance"            ) return new vigilance_t            ( this, options_str );
+  if ( name == "warbreaker"           ) return new warbreaker_t           ( this, options_str );
   if ( name == "whirlwind" )
   {
     if ( specialization() == WARRIOR_FURY )
@@ -4324,7 +4319,7 @@ struct enrage_t: public warrior_buff_t < buff_t >
 {
   int health_gain;
   enrage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s ).duration( p.spec.enrage -> duration() + p.sets.set(WARRIOR_FURY, T19, B4 )->effectN( 1 ).time_value() ).can_cancel( false ).add_invalidate( CACHE_ATTACK_SPEED ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
+    base_t( p, buff_creator_t( &p, n, s ).duration( p.spec.enrage -> effectN( 2 ).trigger() -> duration() + p.sets.set(WARRIOR_FURY, T19, B4 )->effectN( 1 ).time_value() ).can_cancel( false ).add_invalidate( CACHE_ATTACK_SPEED ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
   {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -4774,7 +4769,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
   }
   // Arms no longer has enrage, so no need to check for it.
-  else if ( buff.enrage -> check() && mastery.unshackled_fury -> ok() )
+  else if ( ( buff.enrage -> check() || ( bugs && buff.berserker_rage -> check() ) ) && mastery.unshackled_fury -> ok() ) // Currently berserker rage grants damage bonus from enrage, but not attack speed. Prob a bug.
   {
     m *= 1.0 + artifact.raging_berserker.percent();
     m *= 1.0 + cache.mastery_value();

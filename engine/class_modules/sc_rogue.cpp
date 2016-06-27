@@ -5,23 +5,16 @@
 
 // TODO + BlizzardFeatures + Bugs
 // Subtlety
-// - Shuriken Storm
 // - Second Shuriken [artifact power]
 // - Does Weaponmaster attempt to proc per target or per cast?
-// - Weaponmaster interaction with Death from Above (double finisher or not?)
 //
 // Assassination
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
 // - Poisoned Knives [artifact power] does the damage doubledip in any way?
 // - Does Kingsbane debuff get procced 2x on Mutilate? (If both hands apply lethal poison).
-// - Agonizing poison does not proc kingsbane stacks in game?
-// - Bag of Tricks double dips in haste (RPPM is hasted, tick-time is hasted), intended?
 //
 // Outlaw:
 // - Blunderbuss [artifact power]
-// - Blurred Time is kind of confusing, it is not as tooltip advertises. In reality, it seems to be
-//   using the trigger spell's value in a "non standard" way (compared to how haste works in general
-//   with cooldown recharge).
 // - For some reason, Between the Eyes is not affected by Blurred Time
 
 #include "simulationcraft.hpp"
@@ -3582,11 +3575,8 @@ struct shuriken_storm_t: public rogue_attack_t
 struct shuriken_toss_t : public rogue_attack_t
 {
   shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shuriken_toss", p, p -> find_talent_spell( "Shuriken Toss" ), options_str )
-  {}
-
-  bool procs_poison() const override
-  { return true; }
+    rogue_attack_t( "shuriken_toss", p, p -> find_specialization_spell( "Shuriken Toss" ), options_str )
+  { }
 };
 
 // Slice and Dice ===========================================================
@@ -3831,6 +3821,8 @@ struct death_from_above_t : public rogue_attack_t
     affected_by.relentless_strikes = false;
     affected_by.deepening_shadows = false;
     affected_by.alacrity = false;
+    // 06/26/2016 Weaponmaster won't proc a second DFA, however the finisher can weaponmaster proc
+    affected_by.weaponmaster = false;
   }
 
   void adjust_attack( attack_t* attack, const timespan_t& oor_delay )
@@ -3876,13 +3868,6 @@ struct death_from_above_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-
-    // Don't allow Weaponmastered DFA to trigger another Eviscerate
-    // TODO: Is this true in game?
-    if ( secondary_trigger )
-    {
-      return;
-    }
 
     p() -> buffs.death_from_above -> trigger();
 
@@ -5571,39 +5556,38 @@ void rogue_t::init_action_list()
   if ( specialization() == ROGUE_ASSASSINATION )
   {
     precombat -> add_talent( this, "Marked for Death" );
-    precombat -> add_action( this, "Slice and Dice", "if=talent.marked_for_death.enabled" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      def -> add_action( item_actions[i] + ",if=spell_targets.fan_of_knives>1|(debuff.vendetta.up&spell_targets.fan_of_knives=1)" );
+      def -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<40|debuff.vendetta.up" );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        def -> add_action( racial_actions[i] + ",if=energy<60" );
+        def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up&energy<60" );
       else
-        def -> add_action( racial_actions[i] );
+        def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
 
     action_priority_list_t* finishers = get_action_priority_list( "finishers" );
 
-    def -> add_action( this, "Vanish", "if=time>10&energy>13&!buff.stealth.up&energy.time_to_max>gcd*2&(combo_points<8|(!talent.anticipation.enabled&combo_points<=1))" );
-    def -> add_action( this, "Mutilate", "if=buff.stealth.up|buff.vanish.up|combo_points<combo_points.max" );
-    def -> add_action( this, "Rupture", "if=((combo_points>=4&!talent.anticipation.enabled)|combo_points=5)&ticks_remain<3" );
+    def -> add_action( this, "Vendetta", "if=energy<30|time<10&combo_points>4&energy<60" );
+    def -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>21" );
+    def -> add_action( "pool_resource,if=energy<90&cooldown.kingsbane.remains<3.5" );
+    def -> add_action( "pool_resource,for_next=1,extra_amount=90" );
+    def -> add_action( this, "Kingsbane" );
+    def -> add_action( this, "Vanish", "if=energy>25&dot.rupture.refreshable&combo_points>5" );
+    def -> add_action( this, "Rupture", "if=buff.vanish.up&combo_points>5&refreshable" );
+    def -> add_action( this, "Garrote", "if=refreshable&combo_points<6&!dot.garrote.exsanguinated" );
+    def -> add_talent( this, "Hemorrhage", "if=debuff.hemorrhage.down&combo_points<6" );
+    def -> add_action( this, "Mutilate", "if=combo_points<5" );
+    def -> add_action( this, "Rupture", "if=!exsanguinated&refreshable&combo_points>4" );
+    def -> add_action( "pool_resource,for_next=1,extra_amount=25" );
+    def -> add_talent( this, "Death from Above", "if=combo_points>4");
+    def -> add_action( "pool_resource,for_next=1,extra_amount=80" );
+    def -> add_action( this, "Envenom", "if=combo_points>=5&energy>80&buff.envenom.remains<0.5&buff.elaborate_planning.remains<2" );
     def -> add_action( this, "Rupture", "cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&combo_points=5" );
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
-    def -> add_talent( this, "Shadow Reflection", "if=combo_points>4|target.time_to_die<=20" );
-    def -> add_action( this, "Vendetta", "if=target.time_to_die<=20|(target.time_to_die<=30&glyph.vendetta.enabled)" );
     def -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points=5&remains<=duration*0.3&spell_targets.fan_of_knives>1" );
-    def -> add_action( "call_action_list,name=finishers,if=combo_points=5&((!cooldown.death_from_above.remains&talent.death_from_above.enabled)|buff.envenom.down|!talent.anticipation.enabled|combo_points>=6)" );
-    def -> add_action( "call_action_list,name=finishers,if=dot.rupture.remains<2" );
-
-    finishers -> add_action( this, "Rupture", "cycle_targets=1,if=(remains<2|(combo_points=5&remains<=(duration*0.3)))" );
-    finishers -> add_action( "pool_resource,for_next=1" );
-    finishers -> add_talent( this, "Death from Above", "if=(cooldown.vendetta.remains>10|debuff.vendetta.up|target.time_to_die<=25)" );
-    finishers -> add_action( this, "Envenom", "cycle_targets=1,if=dot.deadly_poison_dot.remains<4&target.health.pct<=35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>45))|buff.bloodlust.up|debuff.vendetta.up" );
-    finishers -> add_action( this, "Envenom", "cycle_targets=1,if=dot.deadly_poison_dot.remains<4&target.health.pct>35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>55))|buff.bloodlust.up|debuff.vendetta.up" );
-    finishers -> add_action( this, "Envenom", "if=target.health.pct<=35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>45))|buff.bloodlust.up|debuff.vendetta.up" );
-    finishers -> add_action( this, "Envenom", "if=target.health.pct>35&(energy+energy.regen*cooldown.vendetta.remains>=105&(buff.envenom.remains<=1.8|energy>55))|buff.bloodlust.up|debuff.vendetta.up" );
   }
 
   else if ( specialization() == ROGUE_OUTLAW )
@@ -5845,7 +5829,7 @@ void rogue_t::init_spells()
   spec.shadowstep           = find_specialization_spell( "Shadowstep" );
 
   // Generic
-  spec.subtlety_rogue       = find_spell( 137035 );
+  spec.subtlety_rogue       = find_specialization_spell( "Subtlety Rogue" );
 
   // Assassination
   spec.assassins_resolve    = find_specialization_spell( "Assassin's Resolve" );
