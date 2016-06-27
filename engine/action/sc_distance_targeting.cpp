@@ -112,8 +112,22 @@
 
   player_t* action_t::select_target_if_target()
   {
-    if ( target_if_mode == TARGET_IF_NONE || target_list().size() == 1 )
+    if ( target_if_mode == TARGET_IF_NONE )
+    {
+      return nullptr;
+    }
+
+
+    if ( target_list().size() == 1 )
+    {
+      // If first is used, don't return a valid target unless the target_if evaluates to non-zero
+      if ( target_if_mode == TARGET_IF_FIRST )
+      {
+        return target_if_expr -> evaluate() > 0  ? target : nullptr;
+      }
+      // For the rest (min/max), return the target
       return target;
+    }
 
     std::vector<player_t*> master_list;
     if ( sim -> distance_targeting_enabled )
