@@ -2219,11 +2219,7 @@ struct raging_blow_t: public warrior_attack_t
       return false;
     }
 
-    if ( p() -> talents.inner_rage -> ok() )
-    {
-      return warrior_attack_t::ready();
-    }
-    else if ( !p() -> buff.enrage -> check() )
+    if ( !p() -> buff.enrage -> check() && !p() -> talents.inner_rage -> ok() )
     {
       return false;
     }
