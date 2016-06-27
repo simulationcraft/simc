@@ -2581,8 +2581,8 @@ struct item_t
     unsigned                 enchant_id;
     unsigned                 addon_id;
     int                      armor;
-    std::array<int, 3>       gem_id;
-    std::array<int, 3>       gem_color;
+    std::array<int, 4>       gem_id;
+    std::array<int, 4>       gem_color;
     std::vector<int>         bonus_id;
     std::vector<stat_pair_t> gem_stats, meta_gem_stats, socket_bonus_stats;
     std::string              encoded_enchant;
@@ -2595,6 +2595,7 @@ struct item_t
     std::vector<std::string> source_list;
     timespan_t               initial_cd;
     unsigned                 drop_level;
+    std::array<std::vector<unsigned>, 4> relic_data;
 
     parsed_input_t() :
       item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
@@ -2639,6 +2640,7 @@ struct item_t
   std::string option_bonus_id_str;
   std::string option_initial_cd_str;
   std::string option_drop_level_str;
+  std::string option_relic_id_str;
   double option_initial_cd;
 
   // Extracted data
