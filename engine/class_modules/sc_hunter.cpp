@@ -2857,7 +2857,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
   virtual double cost() const override
   {
-    return energize_amount > 0 ? 0 : hunter_ranged_attack_t::cost();
+    return p() -> specialization() == HUNTER_MARKSMANSHIP ? 0 : hunter_ranged_attack_t::cost();
   }
 
   virtual double action_multiplier() const override
@@ -6040,14 +6040,14 @@ void hunter_t::apl_bm()
 
   default_list -> add_action( this, "Aspect of the Wild" );
   default_list -> add_talent( this, "Stampede" );
+  default_list -> add_action( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>2" );
+  default_list -> add_talent( this, "Dire Frenzy", "if=cooldown.bestial_wrath.remains>2" );
   default_list -> add_action( this, "Titan's Thunder", "if=buff.dire_beast.remains>6" );
   default_list -> add_action( this, "Multi-shot", "if=spell_targets.multi_shot>1&pet.cat.buff.beast_cleave.remains<0.5" );
   default_list -> add_action( this, "Bestial Wrath" );
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Chimaera Shot" );
-  default_list -> add_action( this, "Dire Beast" );
-  default_list -> add_talent( this, "Dire Frenzy" );
   default_list -> add_talent( this, "Barrage", "if=cooldown.kill_command.remains>1" );
   default_list -> add_action( this, "Cobra Shot", "if=focus>90" );
 }
@@ -6056,26 +6056,51 @@ void hunter_t::apl_bm()
 
 void hunter_t::apl_mm()
 {
-  action_priority_list_t* default_list        = get_action_priority_list( "default" );
+  action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* patientless  = get_action_priority_list( "patientless" );
+  action_priority_list_t* careful_aim  = get_action_priority_list( "careful_aim" );
 
   default_list -> add_action( "auto_shot" );
 
   add_item_actions( default_list );
   add_racial_actions( default_list );
 
-  default_list -> add_action( this, "Trueshot", "if=!artifact.bullseye.enabled|target.time_to_die>cooldown.trueshot.duration+15|target.time_to_die<18|buff.bullseye.stack>15" );
+  default_list -> add_action( this, "Trueshot", "if=(target.time_to_die>195|target.health.pct<5)|buff.bullseye.stack>15" );
+  default_list -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&prev_gcd.sentinel&debuff.hunters_mark.up" );
+  default_list -> add_action( this, "call_action_list", "name=careful_aim,if=(talent.careful_aim.enabled&target.health.pct>80)&spell_targets.barrage=1" );
   default_list -> add_talent( this, "A Murder of Crows" );
-  default_list -> add_talent( this, "Barrage");
-  default_list -> add_talent( this, "Piercing Shot" );
-  default_list -> add_talent( this, "Explosive Shot" );
-  default_list -> add_talent( this, "Black Arrow" );
+  default_list -> add_talent( this, "Barrage" );
+  default_list -> add_talent( this, "Piercing Shot ", "if=!talent.patient_sniper.enabled&focus>50" );
   default_list -> add_action( this, "Windburst" );
-  default_list -> add_action( this, "Marked Shot", "if=!talent.patient_sniper.enabled|debuff.vulnerability.remains<2" );
-  default_list -> add_action( this, "Aimed Shot", "if=cast_time<debuff.vulnerability.remains&(focus+cast_regen>80|!debuff.hunters_mark.up)" );
-  default_list -> add_action( this, "Multi-shot", "if=spell_targets.multishot>1" );
-  default_list -> add_action( this, "Arcane Shot" );
-  default_list -> add_talent( this, "Sidewinders", "if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2)" );
-  default_list -> add_action( this, "Aimed Shot", "if=focus+cast_regen>80" );
+  default_list -> add_action( this, "call_action_list ", "name=patientless,if=!talent.patient_sniper.enabled" );
+  default_list -> add_action( this, "Arcane Shot ", "if=(talent.steady_focus.enabled&buff.steady_focus.down&focus.time_to_max>=2)|(talent.true_aim.enabled&(debuff.true_aim.stack<1&focus.time_to_max>=2|debuff.true_aim.remains<2))" );
+  default_list -> add_talent( this, "Sidewinders ", "if=spell_targets.sidewinders>1&(!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5)))" );
+  default_list -> add_talent( this, "Explosive Shot" );
+  default_list -> add_talent( this, "Piercing Shot ", "if=talent.patient_sniper.enabled&focus>80" );
+  default_list -> add_action( this, "Marked Shot ", "if=talent.sidewinders.enabled&(!talent.patient_sniper.enabled|debuff.vulnerability.remains<2)|!talent.sidewinders.enabled" );
+  default_list -> add_action( this, "Aimed Shot ", "if=cast_time<debuff.vulnerability.remains&(focus+cast_regen>80|debuff.hunters_mark.down)" );
+  default_list -> add_talent( this, "Black Arrow" );
+  default_list -> add_action( this, "Multi-shot ", " if=spell_targets.multishot>1&(!debuff.hunters_mark.up&buff.marking_targets.up&cast_regen+action.aimed_shot.cast_regen<=focus.deficit)" );
+  default_list -> add_action( this, "Arcane Shot ", " if=(!debuff.hunters_mark.up&buff.marking_targets.up)|focus.time_to_max>=2" );
+  default_list -> add_talent( this, "Sidewinders ", " if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5))" );
+      
+  patientless -> add_action( this, "Arcane Shot", "if=debuff.vulnerability.stack<3&buff.marking_targets.up&debuff.hunters_mark.down" );
+  patientless -> add_action( this, "Marked Shot", "if=debuff.vulnerability.stack<3|debuff.hunters_mark.remains<5|(focus<50|focus>80)" );
+  patientless -> add_talent( this, "Sentinel", "if=!talent.sidewinders.enabled&debuff.hunters_mark.down&spell_targets.sentinel>1" );
+  patientless -> add_talent( this, "Explosive Shot" );
+  patientless -> add_action( this, "Aimed Shot", "if=debuff.hunters_mark.down&cast_time<debuff.vulnerability.remains" );
+  patientless -> add_action( this, "Marked Shot", "if=debuff.hunters_mark.remains>5" );
+  patientless -> add_talent( this, "Black Arrow" );
+  patientless -> add_action( this, "Multi-shot", "if=spell_targets.multishot>1&(cast_regen+action.aimed_shot.cast_regen<=focus.deficit)" );
+  patientless -> add_action( this, "Arcane Shot", "if=cast_regen+action.aimed_shot.cast_regen<=focus.deficit" );
+
+  careful_aim -> add_action( this, "Windburst" );
+  careful_aim -> add_action( this, "Arcane Shot", "if=(talent.steady_focus.enabled&buff.steady_focus.down)|(talent.true_aim.enabled&(debuff.true_aim.stack<1&focus.time_to_max>=2|debuff.true_aim.remains<2))" );
+  careful_aim -> add_action( this, "Marked Shot", "if=talent.sidewinders.enabled&(!talent.patient_sniper.enabled|debuff.vulnerability.remains<2)|!talent.sidewinders.enabled" );
+  careful_aim -> add_action( this, "Aimed Shot", "if=debuff.hunters_mark.down&cast_time<debuff.vulnerability.remains" );
+  careful_aim -> add_action( this, "Multi-shot", "if=spell_targets.multishot>1&(buff.marking_targets.up|focus.time_to_max>=2)" );
+  careful_aim -> add_action( this, "Arcane Shot", "if=buff.marking_targets.up|focus.time_to_max>=2" );
+  careful_aim -> add_talent( this, "Sidewinders", "if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5))" );
 }
 
 // Survival Action List ===================================================================
@@ -6083,7 +6108,6 @@ void hunter_t::apl_mm()
 void hunter_t::apl_surv()
 {
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
-  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   default_list -> add_action( "auto_shot" );
 
