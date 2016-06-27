@@ -4769,7 +4769,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
   }
   // Arms no longer has enrage, so no need to check for it.
-  else if ( buff.enrage -> check() && mastery.unshackled_fury -> ok() )
+  else if ( ( buff.enrage -> check() || ( bugs && buff.berserker_rage -> check() ) ) && mastery.unshackled_fury -> ok() ) // Currently berserker rage grants damage bonus from enrage, but not attack speed. Prob a bug.
   {
     m *= 1.0 + artifact.raging_berserker.percent();
     m *= 1.0 + cache.mastery_value();
