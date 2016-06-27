@@ -2059,12 +2059,12 @@ struct fire_elemental_t : public primal_elemental_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
 
-    def -> add_action( "fire_blast" );
     def -> add_action( "fire_nova", "if=spell_targets.fire_nova>=3" );
     if ( o() -> talent.primal_elementalist -> ok() )
     {
       def -> add_action( "immolate", "if=!ticking" );
     }
+    def -> add_action( "fire_blast" );
   }
 
   action_t* create_action( const std::string& name,
