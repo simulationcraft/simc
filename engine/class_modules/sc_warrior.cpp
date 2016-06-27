@@ -1157,7 +1157,7 @@ struct bloodthirst_t: public warrior_attack_t
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
     bloodthirst_heal( nullptr ),
-    fresh_meat_crit_chance( p -> talents.endless_rage -> effectN( 1 ).percent() ),
+    fresh_meat_crit_chance( p -> talents.fresh_meat -> effectN( 1 ).percent() ),
     rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
     aoe_targets( p -> spec.meat_cleaver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
   {
@@ -2659,7 +2659,7 @@ struct shield_slam_t: public warrior_attack_t
     }
     if ( p -> level() >= 85 )
     {
-      attack_power_mod.direct += 3.46; // Adds another 246% ap at level 85
+      attack_power_mod.direct += 3.46; // Adds another 346% ap at level 85
     }
     //Shield slam is just the best.
   }
