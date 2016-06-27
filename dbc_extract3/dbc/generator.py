@@ -1107,7 +1107,12 @@ class SpellDataGenerator(DataGenerator):
          191124, 191146,
          214802, 214803,            # Momento of Angerboda trinket
          215476,                    # Obelisk of the Void trinket
-         215695                     # Figurehead of the Naglfar trinket 
+         215695,                    # Figurehead of the Naglfar trinket 
+         215407,                    # Caged Horror trinket
+         191545, 191548, 191549, 191550, 191551, 191552, 191553, 191554, # Darkmoon Deck: Dominion
+         191603, 191604, 191605, 191606, 191607, 191608, 191609, 191610, # Darkmoon Deck: Hellfire
+         191624, 191625, 191626, 191627, 191628, 191629, 191630, 191631, # Darkmoon Deck: Immortality
+         216099                     # Elementium Bomb Squirrel Generator trinket
         ),
 
         # Warrior:
