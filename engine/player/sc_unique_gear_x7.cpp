@@ -825,7 +825,7 @@ void item::corrupted_starlight( special_effect_t& effect )
 struct darkmoon_deck_t
 {
   player_t* player;
-  std::array<buff_t*, 8> cards;
+  std::array<stat_buff_t*, 8> cards;
   buff_t* top_card;
   timespan_t shuffle_period;
 
@@ -838,7 +838,7 @@ struct darkmoon_deck_t
       const spell_data_t* s = player -> find_spell( c[ i ] );
       assert( s -> found() );
 
-      std::string& n = std::string( s -> name_cstr() );
+      std::string n = s -> name_cstr();
       util::tokenize( n );
 
       cards[ i ] = stat_buff_creator_t( player, n, s, effect.item );
