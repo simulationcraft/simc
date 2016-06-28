@@ -19,13 +19,10 @@
 // Haunt reset
 // Soul Effigy
 // Destruction -
-// DEMO TALENTS: (all)
-// T1: Shadowy Inspiration
-// T4: Powertrip
-// T7: Summon FOTMDemon, Demonbolt
+// Demonology -
 //
 // Artifacts -
-// Affliction/Demonology
+// Affliction/Demonology (see below)
 // 
 // ==========================================================================
 namespace { // unnamed namespace
@@ -217,21 +214,21 @@ public:
     artifact_power_t soulharvester;
 
     // Demonology
-    artifact_power_t thalkeils_consumption;  //NYI
+    artifact_power_t thalkeils_consumption;
     artifact_power_t breath_of_thalkiel;
     artifact_power_t the_doom_of_azeroth;
     artifact_power_t sharpened_dreadfangs;
-    artifact_power_t fel_skin;//NYI
-    artifact_power_t firm_resolve;//NYI
-    artifact_power_t thalkiels_discord;//NYI
-    artifact_power_t legionwrath;//NYI
+    artifact_power_t fel_skin; //NYI
+    artifact_power_t firm_resolve; //NYI
+    artifact_power_t thalkiels_discord; //NYI
+    artifact_power_t legionwrath; //NYI
     artifact_power_t dirty_hands;
-    artifact_power_t doom_doubled;//NYI
+    artifact_power_t doom_doubled;
     artifact_power_t infernal_furnace;
-    artifact_power_t the_expendables;//NYI
+    artifact_power_t the_expendables; //NYI
     artifact_power_t maw_of_shadows;
-    artifact_power_t open_link;//NYI
-    artifact_power_t stolen_power;//NYI
+    artifact_power_t open_link; //NYI
+    artifact_power_t stolen_power; //NYI
     artifact_power_t imperator;
     artifact_power_t summoners_prowess;
     artifact_power_t thalkiels_lingering_power;//NYI
@@ -2370,17 +2367,32 @@ struct doom_t: public warlock_spell_t
     return timespan_t::from_millis( 100 );
   }
 
+  virtual double action_multiplier()const override
+  {
+      double m = warlock_spell_t::action_multiplier();
+      if( p()->artifact.doom_doubled.rank() )
+      {
+          if( rng().roll(0.25) )
+          {
+              m += 1;
+          }
+      }
+      return m;
+  }
+
   virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
-    //p()->sim->errorf("Testing a tick");
-
-    if( ( d -> state -> result == RESULT_HIT ) && p() -> talents.impending_doom -> ok() )
+    if(  d -> state -> result == RESULT_HIT || result_is_hit( d->state->result) )
     { 
-      trigger_wild_imp( p() );
-      p() -> procs.impending_doom -> occur();
+        if(p() -> talents.impending_doom -> ok())
+        {
+            trigger_wild_imp( p() );
+            p() -> procs.impending_doom -> occur();
+        }
+
     }
-  }
+    }
 };
 
 struct demonic_empowerment_t: public warlock_spell_t
@@ -4271,7 +4283,7 @@ void warlock_t::init_spells()
   artifact.thalkiels_discord = find_artifact_spell( "Thal'kiel's Discord" );
   artifact.legionwrath = find_artifact_spell( "Legionwrath" );
   artifact.dirty_hands = find_artifact_spell( "Dirty Hands" );
-  artifact.doom_doubled = find_artifact_spell( "Doom Doubled" );
+  artifact.doom_doubled = find_artifact_spell( "Doom, Doubled" );
   artifact.infernal_furnace = find_artifact_spell( "Infernal Furnace" );
   artifact.the_expendables = find_artifact_spell( "The Expendables" );
   artifact.maw_of_shadows = find_artifact_spell( "Maw of Shadows" );
