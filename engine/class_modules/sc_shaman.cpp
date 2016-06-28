@@ -6241,10 +6241,16 @@ void shaman_t::moving()
 
 double shaman_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( attr == ATTR_AGILITY || attr == ATTR_INTELLECT )
-    return constant.matching_gear_multiplier;
-
-  return 0.0;
+  switch ( specialization() )
+  {
+    case SHAMAN_ENHANCEMENT:
+      return attr == ATTR_AGILITY ? constant.matching_gear_multiplier : 0;
+    case SHAMAN_RESTORATION:
+    case SHAMAN_ELEMENTAL:
+      return attr == ATTR_INTELLECT ? constant.matching_gear_multiplier : 0;
+    default:
+      return 0.0;
+  }
 }
 
 // shaman_t::composite_spell_haste ==========================================
