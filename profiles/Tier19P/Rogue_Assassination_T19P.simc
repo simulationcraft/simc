@@ -64,8 +64,8 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=anguish,id=128870,bonus_id=741,ilevel=840
-off_hand=sorrow,id=128869,ilevel=840
+main_hand=anguish,id=128870,bonus_id=741,ilevel=750
+off_hand=sorrow,id=128869,ilevel=750
 
 # Gear Summary
 # gear_ilvl=841.56

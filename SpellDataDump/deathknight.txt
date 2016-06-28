@@ -237,7 +237,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
 Category         : 18
-Affecting spells : Death Knight (137005), Blood Death Knight (137008), Rapid Decomposition (194662)
+Affecting spells : Crimson Scourge (81141), Death Knight (137005), Blood Death Knight (137008), Rapid Decomposition (194662)
 Attributes       : ........ ........ ........ ..x.....   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x..x. 
@@ -1875,6 +1875,26 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self(1)
 Description      : Your auto attacks on targets infected with your Blood Plague have a chance to make your next Death and Decay cost no runes and reset its cooldown.
 
+Name             : Crimson Scourge (id=81141) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Duration         : 15 seconds
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=68645)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
+                   Affected Spells: Death and Decay (43265), Death and Decay (143375), Defile (152280)
+#2 (id=312580)   : Apply Aura (6) | Add Percent Modifier (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 34 | Target: Self(1)
+                   Affected Spells: Death and Decay (43265), Death and Decay (143375), Defile (152280)
+Description      : $@spelldesc81136
+Tooltip          : Your next Death and Decay costs no Runes and generates no Runic Power.
+
 Name             : Runic Empowerment (id=81229) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
@@ -2753,7 +2773,7 @@ Spell Level      : 60
 Range            : 100 yards
 Duration         : 10 seconds
 Mechanic         : Unknown(88)
-Affecting spells : Blood Death Knight (137008), Rapid Decomposition (194662)
+Affecting spells : Crimson Scourge (81141), Blood Death Knight (137008), Rapid Decomposition (194662)
 Attributes       : ........ ........ ........ ..x.....   ...x...x ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x..x. 
@@ -2995,7 +3015,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Affecting spells : Death Knight (137005), Blood Death Knight (137008), Rapid Decomposition (194662)
+Affecting spells : Crimson Scourge (81141), Death Knight (137005), Blood Death Knight (137008), Rapid Decomposition (194662)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ..x..... 

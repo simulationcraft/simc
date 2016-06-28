@@ -2932,7 +2932,7 @@ Class            : Hunter
 School           : Nature
 Resource         : 1000% Base Mana (0 @Level 110)
 Spell Level      : 30
-Max Scaling Level: 23040
+Max Scaling Level: 90
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -2945,7 +2945,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=181839)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 15875.46 - 23813.18 (avg=11.68, dl=0.4) | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 626.048 - 939.072 (avg=11.68, dl=0.4) | Target: Enemy(6)
 Description      : Blasts a target for $s1 Nature damage.
 
 Name             : Ancient Zandalari Knowledge (id=138430) [Hidden] 

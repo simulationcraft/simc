@@ -72,8 +72,8 @@ finger1=spellblades_gemmed_signet,id=140895,bonus_id=1807
 finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1807
 trinket1=nightblooming_frond,id=140802,bonus_id=1807
 trinket2=convergence_of_fates,id=140806,bonus_id=1807
-main_hand=fate,id=128872,bonus_id=742,ilevel=850
-off_hand=fortune,id=134552,ilevel=850
+main_hand=fate,id=128872,bonus_id=742,ilevel=750
+off_hand=fortune,id=134552,ilevel=750
 
 # Gear Summary
 # gear_ilvl=850.00
