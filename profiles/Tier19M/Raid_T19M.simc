@@ -1,0 +1,9 @@
+# T19M
+# Tier 19 Mythic
+# * Ilvl Cap: 880
+# * Standard Mythic Emerald Nightmare Loot Only.
+
+optimal_raid=1
+# tmi_boss=TMI_Standard_Boss_T17L
+
+Rogue_T19M.simc
