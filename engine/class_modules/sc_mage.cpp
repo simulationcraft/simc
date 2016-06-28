@@ -1518,7 +1518,7 @@ struct arcane_missiles_buff_t : public buff_t
 struct chilled_t : public buff_t
 {
   chilled_t( mage_td_t* td ) :
-    buff_t( buff_creator_t( *td, "chilled",
+    buff_t( buff_creator_t( td -> target, "chilled",
                             td -> source -> find_spell( 205708 ) ) )
   {}
 
@@ -1641,7 +1641,7 @@ struct touch_of_the_magi_buff_t : public buff_t
   double accumulated_damage;
 
   touch_of_the_magi_buff_t( mage_td_t* td ) :
-    buff_t( buff_creator_t( *td, "touch_of_the_magi",
+    buff_t( buff_creator_t( td -> target, "touch_of_the_magi",
                             td -> source -> find_spell( 210824 ) ) ),
     mage( static_cast<mage_t*>( td -> source ) ),
     accumulated_damage( 0.0 )
@@ -6389,8 +6389,10 @@ void mage_t::init_spells()
     unstable_magic_explosion = new actions::unstable_magic_explosion_t( this );
 
   if ( artifact.touch_of_the_magi.rank() )
+  {
     touch_of_the_magi_explosion =
       new actions::touch_of_the_magi_explosion_t( this );
+  }
 }
 
 // mage_t::init_base ========================================================
