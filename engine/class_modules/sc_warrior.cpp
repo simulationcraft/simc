@@ -2788,6 +2788,7 @@ struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrio
 
     state -> result_raw = amount;
 
+    state -> result = RESULT_HIT; // Reset result to hit, as it has already been rolled inside tick().
     if ( rng().roll( crit_chance_of_last_ability ) )
       state -> result = RESULT_CRIT;
 
