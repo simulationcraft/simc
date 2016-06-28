@@ -1830,7 +1830,7 @@ static stat_data_t __gt_race_stats[] =
   {   5, -4,  1, -1, -1 }, // Dwarf
   {  -4,  4,  0,  0,  0 }, // Night Elf
   {  -1, -2,  0, -2,  5 }, // Undead
-  {   5, -4,  1, -4,  2 }, // Tauren
+  {  -1, -2,  1, -2,  0 }, // Tauren
   {  -5,  2,  0,  3,  0 }, // Gnome
   {   1,  2,  0, -4,  1 }, // Troll
   {  -3,  2,  0,  3, -2 }, // Goblin
