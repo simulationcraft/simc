@@ -1112,7 +1112,8 @@ class SpellDataGenerator(DataGenerator):
          191545, 191548, 191549, 191550, 191551, 191552, 191553, 191554, # Darkmoon Deck: Dominion
          191603, 191604, 191605, 191606, 191607, 191608, 191609, 191610, # Darkmoon Deck: Hellfire
          191624, 191625, 191626, 191627, 191628, 191629, 191630, 191631, # Darkmoon Deck: Immortality
-         216099                     # Elementium Bomb Squirrel Generator trinket
+         216099,                    # Elementium Bomb Squirrel Generator trinket
+         211309, 213428, 219655, 226829, # Artifact passive boosts
         ),
 
         # Warrior:
