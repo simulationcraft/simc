@@ -58,20 +58,20 @@ actions.generator=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly
 actions.generator+=/pistol_shot,if=buff.opportunity.up
 actions.generator+=/saber_slash
 
-head=doomblade_cowl,id=138332,bonus_id=1806,ilevel=880
-neck=belerons_choker_of_misery,id=140899,bonus_id=1806,ilevel=880
-shoulders=doomblade_spaulders,id=138338,bonus_id=1806,ilevel=880
-back=doomblade_shadowwrap,id=138371,bonus_id=1806,ilevel=880
-chest=doomblade_tunic,id=138326,bonus_id=1806,ilevel=880
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=1806,ilevel=880
-hands=doomblade_gauntlets,id=138329,bonus_id=1806,ilevel=880
-waist=girdle_of_nefarious_strategy,id=140859,bonus_id=1806,ilevel=880
-legs=doomblade_pants,id=138335,bonus_id=1806,ilevel=880
-feet=grove_tenders_moccasins,id=140861,bonus_id=1806,ilevel=880
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=1806,ilevel=880
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1806,ilevel=880
-trinket1=nightblooming_frond,id=140802,bonus_id=1806,ilevel=880
-trinket2=convergence_of_fates,id=140806,bonus_id=1806,ilevel=880
+head=doomblade_cowl,id=138332,bonus_id=1806
+neck=belerons_choker_of_misery,id=140899,bonus_id=1806
+shoulders=doomblade_spaulders,id=138338,bonus_id=1806
+back=doomblade_shadowwrap,id=138371,bonus_id=1806
+chest=doomblade_tunic,id=138326,bonus_id=1806
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=1806
+hands=doomblade_gauntlets,id=138329,bonus_id=1806
+waist=girdle_of_nefarious_strategy,id=140859,bonus_id=1806
+legs=doomblade_pants,id=138335,bonus_id=1806
+feet=grove_tenders_moccasins,id=140861,bonus_id=1806
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=1806
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1806
+trinket1=nightblooming_frond,id=140802,bonus_id=1806
+trinket2=convergence_of_fates,id=140806,bonus_id=1806
 main_hand=fate,id=128872,bonus_id=742,ilevel=880
 off_hand=fortune,id=134552,ilevel=880
 

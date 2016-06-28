@@ -50,20 +50,20 @@ actions+=/rupture,cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&comb
 actions+=/marked_for_death,if=combo_points=0
 actions+=/rupture,cycle_targets=1,if=combo_points=5&remains<=duration*0.3&spell_targets.fan_of_knives>1
 
-head=doomblade_cowl,id=138332,bonus_id=1805,ilevel=865
-neck=belerons_choker_of_misery,id=140899,bonus_id=1805,ilevel=865
-shoulders=doomblade_spaulders,id=138338,bonus_id=1805,ilevel=865
-back=doomblade_shadowwrap,id=138371,bonus_id=1805,ilevel=865
-chest=doomblade_tunic,id=138326,bonus_id=1805,ilevel=865
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=1805,ilevel=865
-hands=doomblade_gauntlets,id=138329,bonus_id=1805,ilevel=865
-waist=girdle_of_nefarious_strategy,id=140859,bonus_id=1805,ilevel=865
-legs=doomblade_pants,id=138335,bonus_id=1805,ilevel=865
-feet=grove_tenders_moccasins,id=140861,bonus_id=1805,ilevel=865
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=1805,ilevel=865
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1805,ilevel=865
-trinket1=nightblooming_frond,id=140802,bonus_id=1805,ilevel=865
-trinket2=convergence_of_fates,id=140806,bonus_id=1805,ilevel=865
+head=doomblade_cowl,id=138332,bonus_id=1805
+neck=belerons_choker_of_misery,id=140899,bonus_id=1805
+shoulders=doomblade_spaulders,id=138338,bonus_id=1805
+back=doomblade_shadowwrap,id=138371,bonus_id=1805
+chest=doomblade_tunic,id=138326,bonus_id=1805
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=1805
+hands=doomblade_gauntlets,id=138329,bonus_id=1805
+waist=girdle_of_nefarious_strategy,id=140859,bonus_id=1805
+legs=doomblade_pants,id=138335,bonus_id=1805
+feet=grove_tenders_moccasins,id=140861,bonus_id=1805
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=1805
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1805
+trinket1=nightblooming_frond,id=140802,bonus_id=1805
+trinket2=convergence_of_fates,id=140806,bonus_id=1805
 main_hand=anguish,id=128870,bonus_id=741,ilevel=865
 off_hand=sorrow,id=128869,ilevel=865
 
