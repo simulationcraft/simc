@@ -666,7 +666,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // Adjust required level of the item. Value in 'value_1'
     case ITEM_BONUS_REQ_LEVEL:
       if ( item.sim -> debug )
-        item.player -> sim -> out_debug.printf( "Player %s item '%s' required level by %d (old=%d new=%d)",
+        item.player -> sim -> out_debug.printf( "Player %s item '%s' adjusting required level by %d (old=%d new=%d)",
             item.player -> name(), item.name(), entry.value_1, item.parsed.data.req_level, item.parsed.data.req_level + entry.value_1 );
       item.parsed.data.req_level += entry.value_1;
       break;
@@ -707,6 +707,12 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       }
       break;
     }
+    case ITEM_BONUS_SET_ILEVEL:
+      if ( item.sim -> debug )
+        item.player -> sim -> out_debug.printf( "Player %s item '%s' setting ilevel to %d (old=%d)",
+            item.player -> name(), item.name(), entry.value_1, item.parsed.data.level );
+      item.parsed.data.level = entry.value_1;
+      break;
     default:
       break;
   }
@@ -1393,6 +1399,19 @@ static int get_bonus_id_ilevel( const std::vector<const item_bonus_entry_t*>& en
   return 0;
 }
 
+static int get_bonus_id_base_ilevel( const std::vector<const item_bonus_entry_t*>& entries )
+{
+  for ( size_t i = 0; i < entries.size(); ++i )
+  {
+    if ( entries[ i ] -> type == ITEM_BONUS_SET_ILEVEL )
+    {
+      return entries[ i ] -> value_1;
+    }
+  }
+
+  return 0;
+}
+
 static std::string get_bonus_id_quality( const std::vector<const item_bonus_entry_t*>& entries )
 {
   for ( auto& entry : entries )
@@ -1462,7 +1481,7 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     // Need at least one "relevant" type for us
     if ( e -> type != ITEM_BONUS_ILEVEL && e -> type != ITEM_BONUS_MOD &&
          e -> type != ITEM_BONUS_SOCKET && e -> type != ITEM_BONUS_SCALING &&
-         e -> type != ITEM_BONUS_SCALING_2 )
+         e -> type != ITEM_BONUS_SCALING_2 && e -> type != ITEM_BONUS_SET_ILEVEL )
     {
       e++;
       continue;
@@ -1489,12 +1508,18 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     std::string quality = get_bonus_id_quality( entries );
     int ilevel = get_bonus_id_ilevel( entries );
     int sockets = get_bonus_id_sockets( entries );
+    int base_ilevel = get_bonus_id_base_ilevel( entries );
     std::vector<std::pair<item_mod_type, double> > stats = get_bonus_id_stats( entries );
     std::pair< std::pair<int, double>, std::pair<int, double> > scaling = get_bonus_id_scaling( dbc, entries );
 
     std::vector<std::string> fields;
 
     fields.push_back( "bonus_id={ " + util::to_string( bonus_ids[ i ] ) + " }" );
+    if ( base_ilevel != 0 )
+    {
+      fields.push_back( "base_ilevel={ " + util::to_string( base_ilevel ) + " }" );
+    }
+
     if ( ! desc.empty() )
     {
       fields.push_back( "desc={ " + desc + " }" );
