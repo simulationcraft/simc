@@ -4702,15 +4702,6 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     triggers_ignite = true;
   }
 
-  virtual double composite_crit_multiplier() const override
-  {
-    double m = fire_mage_spell_t::composite_crit_multiplier();
-
-    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual void impact( action_state_t* s ) override
   {
     // PF cleave does not impact main target
@@ -4721,6 +4712,9 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
 
     fire_mage_spell_t::impact( s );
   }
+  // Phoenixs Flames always crits
+  virtual double composite_crit() const override
+  { return 1.0; }
 };
 
 struct phoenixs_flames_t : public fire_mage_spell_t
@@ -4748,20 +4742,15 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     }
   }
 
-  virtual double composite_crit_multiplier() const override
-  {
-    double m = fire_mage_spell_t::composite_crit_multiplier();
-
-    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual timespan_t travel_time() const override
   {
     timespan_t t = fire_mage_spell_t::travel_time();
     return std::min( t, timespan_t::from_seconds( 0.75 ) );
   }
+
+  // Phoenixs Flames always crits
+  virtual double composite_crit() const override
+  { return 1.0; }
 };
 
 
