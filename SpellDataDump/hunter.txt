@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22053)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -424,9 +424,9 @@ Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=6178)     : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=6179)     : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc191433
 Tooltip          : $w2 Fire damage every $t2 seconds.
 
@@ -924,7 +924,7 @@ Effects          :
                    Base Value: 83381 | Scaled Value: 83381 | Target: Active Pet(5)
 Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to its target. 25 yard range.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$damage=${1.5*($83381m1+($RAP*2.5))*$<bmMastery>*(1+$@versadmg)}
+$damage=${1.5*($83381m1+($RAP*3))*$<bmMastery>*(1+$@versadmg)}
 
 
 Name             : Misdirection (id=34477) [Spell Family (9)] 
@@ -1407,7 +1407,7 @@ School           : Physical
 Range            : 50000 yards
 Duration         : 600 seconds
 Attributes       : ........ ........ ........ ..x..x..   ...x.x.x ........ .x...... ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ....x... ......x. 
                  : ..x....x ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2932,7 +2932,6 @@ Class            : Hunter
 School           : Nature
 Resource         : 1000% Base Mana (0 @Level 110)
 Spell Level      : 30
-Max Scaling Level: 90
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -2945,7 +2944,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=181839)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 626.048 - 939.072 (avg=11.68, dl=0.4) | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 15875.46 - 23813.18 (avg=11.68, dl=0.4) | Target: Enemy(6)
 Description      : Blasts a target for $s1 Nature damage.
 
 Name             : Ancient Zandalari Knowledge (id=138430) [Hidden] 
@@ -3021,7 +3020,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215686)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
-Description      : Increases your damage by $s1%, but you no longer have a pet.
+Description      : Increases your damage by $s1%, but you can no longer use Call Pet.
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight, Shaman
@@ -3513,7 +3512,7 @@ Effects          :
 #1 (id=243431)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=243432)   : Weapon Damage% (31)
-                   Base Value: 265 | Scaled Value: 2.65 | Target: Enemy(6)
+                   Base Value: 180 | Scaled Value: 1.8 | Target: Enemy(6)
 #3 (id=309451)   : Trigger Spell: Chimaera Shot (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204304 | Target: Self(1)
 Description      : $@spelldesc53209
@@ -3536,7 +3535,7 @@ Effects          :
 #1 (id=243435)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=243436)   : Weapon Damage% (31)
-                   Base Value: 265 | Scaled Value: 2.65 | Target: Enemy(6)
+                   Base Value: 180 | Scaled Value: 1.8 | Target: Enemy(6)
 #3 (id=309452)   : Trigger Spell: Chimaera Shot (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204304 | Target: Self(1)
 Description      : $@spelldesc53209
@@ -3674,7 +3673,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=270149)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.96600 | Mechanic: Bleed | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.80000 | Mechanic: Bleed | Target: Enemy(6)
 Description      : Tears a bleeding wound in the target, dealing $o1 Physical damage over $d.
 Tooltip          : Bleeding for $s1 damage every $t1 sec.
 
@@ -4012,7 +4011,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=273748)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187699 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-Description      : Hurls a tar trap to the target location that creates a $13810s1 yd radius pool of tar around itself for $13810d when the first enemy approaches. All enemies have $135299s1% reduced movement speed while in the area of effect. Trap will exist for $13809d.
+Description      : Hurls a tar trap to the target location that creates a $187699s1 yd radius pool of tar around itself for $13810d when the first enemy approaches. All enemies have $135299s1% reduced movement speed while in the area of effect. Trap will exist for $13809d.
 
 Name             : Tar Trap (Frost) (id=187699) [Spell Family (9)] 
 Class            : Hunter
@@ -4032,6 +4031,8 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=273749)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4435 | Target: Unknown(87)
+#2 (id=344394)   : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc187698
 
 Name             : Muzzle (id=187707) [Spell Family (9)] 
@@ -4239,7 +4240,7 @@ Effects          :
 #1 (id=279992)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=279997)   : Weapon Damage% (31)
-                   Base Value: 315 | Scaled Value: 3.15 | Target: Enemy(6)
+                   Base Value: 250 | Scaled Value: 2.5 | Target: Enemy(6)
 Description      : Attempts to sever the target's limbs with a brutal attack that deals $sw1 Physical damage and grants you Mongoose Fury.
 
 Mongoose Fury increases Mongoose Bite damage by $?a134735[$190931s2][$190931s1]% for $190931d, stacking up to $190931u times. Successive attacks do not increase duration.
@@ -4546,10 +4547,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=283926)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 8 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 8 | Target: Self(1)
                    Affected Spells: Dire Beast (120694)
 #2 (id=323518)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Dire Frenzy (217200)
 Description      : $?s217200[Dire Frenzy][Dire Beast] generates $s2 additional Focus$?s217200[][ over its duration].
 
@@ -4584,7 +4585,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283928)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 2 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 2 | Target: Self(1)
 Description      : $@spelldesc193533
 Tooltip          : Focus regeneration increased by $w1%.
 
@@ -4790,7 +4791,7 @@ Name             : Lock and Load (id=194595) [Spell Family (9), Passive, Hidden]
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 10%
+Proc Chance      : 8%
 Proc Flags       : ......x. x....... ........ ........ 
                  : White Ranged, Yellow Ranged
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4868,7 +4869,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286030)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=286031)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc194855
@@ -5059,7 +5060,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=293624)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 18 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Wild Call (185789), Wild Call (185791)
 Description      : Grants Wild Call $s1% increased chance to reset the cooldown on Dire $?s217200[Frenzy][Beast].
 
@@ -5094,7 +5095,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=293627)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-Description      : While Bestial Wrath is active, Cobra Shot has a 25% chance to reset the cooldown on Kill Command.
+Description      : While Bestial Wrath is active, Cobra Shot resets the cooldown on Kill Command.
 
 Name             : Expert Trapper (id=199543) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -5264,7 +5265,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294656)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.50000 | Target: Enemy(6)
 Description      : $@spelldesc200163
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -5308,7 +5309,7 @@ Name             : Snake Hunter (id=201078) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
-Cooldown         : 60 seconds
+Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5482,7 +5483,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299019)   : Weapon Damage% (31)
-                   Base Value: 250 | Scaled Value: 2.5 | Target: Enemy(6)
+                   Base Value: 200 | Scaled Value: 2 | Target: Enemy(6)
 #2 (id=299020)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=299021)   : Dummy (3)
@@ -5839,7 +5840,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Discharge a massive jolt of electricity from |cFFFFCC99Titanstrike|r into all your pets$?s217200[][ and Dire Beasts], causing them to deal up to ${$RAP*1.15*0.5*$<bmMastery>} Nature damage to their target every $207094t sec. for $207094d.$?s217200[ Also causes your next Dire Frenzy to deal $218635s1 additional Nature damage on each of the 5 Dire Frenzy attacks.][]
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$damage=${1.5*($83381m1+($RAP*2.5))*$<bmMastery>*(1+$@versadmg)}
+$damage=${1.5*($83381m1+($RAP*3))*$<bmMastery>*(1+$@versadmg)}
 
 
 Name             : Titan's Thunder (id=207081) [Spell Family (9), Passive, Hidden] 
@@ -5902,10 +5903,10 @@ Cooldown         : 30 seconds
 Affecting spells : Improved Feign Death (24432), Hunter (137014)
 Triggered by     : Wake Up (210000)
 Attributes       : ........ x....... x.x.x... .x......   ........ ..x..... .xx..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=310880)   : Apply Aura (6) | Feign Death (66)
@@ -5925,10 +5926,10 @@ Range            : 100 yards
 Cooldown         : 30 seconds
 Affecting spells : Improved Feign Death (24432), Hunter (137014)
 Attributes       : ........ x....... x.x.x... .x......   ........ ..x..... .xx..... ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=310886)   : Unknown effect type (203)

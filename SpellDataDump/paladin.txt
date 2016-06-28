@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22053)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -507,7 +507,7 @@ Cooldown         : 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........ 
                  : AOE Heal, Heal, Trap Triggered
-Affecting spells : Templar of the Light (200311)
+Affecting spells : Item - Paladin WoD PvP Holy 2P Bonus (170860), Templar of the Light (200311)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2875,12 +2875,12 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=265677)   : Apply Raid Aura (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 40 yards | Target: Self(1)
-Description      : When any party or raid member within $a1 yards dies, you gain $183436s1% increased damage for $183436d.
+Description      : When any party or raid member within $a1 yards dies, you gain $183436s1% increased damage done and $183436s2% reduced damage taken for $183436d.
 
 Name             : Retribution (id=183436) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
-Duration         : 10 seconds
+Duration         : 20 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2889,9 +2889,11 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=265678)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
+#2 (id=344380)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self(1)
 Description      : $@spelldesc183435
-Tooltip          : Dealing $s1% increased damage.
+Tooltip          : Dealing $s1% increased damage and taking $s2% reduced damage.
 
 Name             : Judgment of Light (id=183778) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -3006,7 +3008,7 @@ Effects          :
 #1 (id=267535)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=267536)   : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 | Target: Enemy(6)
+                   Base Value: 340 | Scaled Value: 3.4 | Target: Enemy(6)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 Description      : Strikes an enemy with the Blade of Justice, dealing $sw2 Physical damage.
@@ -3598,7 +3600,7 @@ Attributes       : ........ ........ x.x..... ....x...   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=300186)   : Unknown effect type (202) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 1792 | Radius: 100 yards | Target: Friend(21)
@@ -3622,7 +3624,7 @@ Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x
 Affecting spells : Lucidity (137288)
 Attributes       : ........ ........ x.x..... ....x...   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ....x... ........   ........ xx...... ........ ........ 
+                 : ........ ........ ........ ........   ........ xx...... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ x...x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4263,9 +4265,9 @@ Effects          :
 #2 (id=318764)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=318934)   : Dummy (3)
-                   Base Value: 150 | Scaled Value: 150 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 200 | Scaled Value: 200 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #4 (id=335387)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Deals Holy damage to up to $s2 enemies within $A1 yards equal to $s3% of your missing health.
 
 Deals $s4% of missing health against enemy players.
@@ -4492,7 +4494,7 @@ Effects          :
 #1 (id=322914)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=322915)   : Weapon Damage% (31)
-                   Base Value: 320 | Scaled Value: 3.2 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 280 | Scaled Value: 2.8 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=322916)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
 #4 (id=322917)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
@@ -4606,7 +4608,7 @@ Class            : Paladin
 School           : Physical
 Spell Level      : 1
 Internal Cooldown: 0.1 seconds
-Proc Chance      : 15%
+Proc Chance      : 20%
 Proc Flags       : ....x... ..x.x.x. x.x..... ........ 
                  : Yellow Melee, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -4674,7 +4676,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=335615)   : Weapon Damage% (31)
-                   Base Value: 420 | Scaled Value: 4.2 | Target: Enemy(6)
+                   Base Value: 390 | Scaled Value: 3.9 | Target: Enemy(6)
 #2 (id=335616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=335617)   : Dummy (3)
@@ -4702,15 +4704,15 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=336351)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=336352)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
-Description      : Increases your damage and haste by $s1% for $d.
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+Description      : Increases your damage and haste by ${$s1/10}.1% for $d.
 
-Each Holy Power spent during Crusade increases damage and haste by an additional $s1%.
+Each Holy Power spent during Crusade increases damage and haste by an additional ${$s1/10}.1%.
 
 Maximum $u stacks.
-Tooltip          : Damage and haste increased by $s1%.
+Tooltip          : Damage and haste increased by ${$s1/10}.1%.
 
 Name             : Light of Dawn (id=225311) [Spell Family (10)] 
 Class            : Paladin

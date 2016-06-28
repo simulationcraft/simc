@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22053)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -215,7 +215,7 @@ Attributes       : ........ ........ x.x.x... ........   ..x..... .....x.. .x...
 Effects          :
 #2 (id=248)      : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy(6)
-Description      : Controls a mind up to 1 level above yours for $d. Does not work versus Mechanical beings. Shares diminishing returns with other disorienting effects.
+Description      : Controls a mind up to 1 level above yours for $d. Does not work versus Demonic, Mechanical, or Undead beings. Shares diminishing returns with other disorienting effects.
 Tooltip          : Under the command of the Priest.
 
 Name             : Levitate (id=1706) [Spell Family (6)] 
@@ -3177,6 +3177,7 @@ School           : Shadow
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
+Mechanic         : Unknown(88)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -4003,7 +4004,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy(6)
 #3 (id=344258)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
-Description      : Controls a mind up to 1 level above yours for $d while still controlling your own mind.  Does not work versus Mechanical beings$?a205477[][ or players]. This spell shares diminishing returns with other disorienting effects.
+Description      : Controls a mind up to 1 level above yours for $d while still controlling your own mind. Does not work versus Demonic, Mechanical, or Undead beings$?a205477[][ or players]. This spell shares diminishing returns with other disorienting effects.
 Tooltip          : Under the control of the Priest.
 
 Name             : Dominant Mind (id=205367) [Spell Family (6), Passive] 
@@ -4066,7 +4067,7 @@ Description      : Each time your $?s73510[Mind Spike][Mind Flay] or Mind Sear d
 Name             : Void Ray (id=205372) [Spell Family (6)] 
 Class            : Priest
 School           : Physical
-Duration         : 4 seconds
+Duration         : 6 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered by     : Void Ray (205371)
@@ -4510,7 +4511,6 @@ Resource         : 10000 Insanity
 Spell Level      : 10
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Velocity         : 20 yards/sec
 Cooldown         : 3 seconds
 Category         : 1660
 Affecting spells : Priest (137030), Legacy of the Void (193225), Voidform (194249)
@@ -4521,8 +4521,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=343555)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000 | Radius: 0 - 100 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+#1 (id=343555)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 100 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : Releases an explosive blast of pure void energy, activating Voidform and causing $s1 Shadow damage to all enemies afflicted by your Shadow Word: Pain or Vampiric Touch.
 
 During Voidform, this ability is replaced by Void Bolt.

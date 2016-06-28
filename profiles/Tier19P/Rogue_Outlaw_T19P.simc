@@ -76,10 +76,10 @@ main_hand=fate,id=128872,bonus_id=742,ilevel=750
 off_hand=fortune,id=134552,ilevel=750
 
 # Gear Summary
-# gear_ilvl=841.56
+# gear_ilvl=840.63
 # gear_agility=9432
-# gear_stamina=17401
-# gear_crit_rating=5970
+# gear_stamina=17237
+# gear_crit_rating=5932
 # gear_haste_rating=1796
-# gear_mastery_rating=9537
+# gear_mastery_rating=9469
 # gear_armor=1957

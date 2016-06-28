@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 21796)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22053)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -1491,9 +1491,9 @@ Effects          :
 #1 (id=45151)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=45152)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #3 (id=159999)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : Finishing move that grants $62071s1% increased damage to your Cat Form attacks for their full duration. Lasts longer per combo point:
 
    1 point  : 8 seconds
@@ -1676,7 +1676,7 @@ Attributes       : ....x..x x....... ..x..... .....x..   .....x.. ..x..... .....
                  : Hidden (7)
 Effects          :
 #1 (id=56034)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self(1)
 Description      : $@spelldesc52610
 Tooltip          : Damage done increased by $w1%.
 
@@ -2702,7 +2702,7 @@ Duration         : 8 seconds
 Cooldown         : 120 seconds
 Category         : 1257
 Proc Chance      : 101%
-Affecting spells : Guttural Roars (204012), 
+Affecting spells : Astral Influence (197524), Guttural Roars (204012), 
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ........   ........ ........ ........ .......x 
@@ -4045,7 +4045,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Empowerment (202464)
+Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Item - Druid WoD PvP Balance 2P Bonus (165701), Empowerment (202464)
 Triggered by     : Starsurge (78674), Starsurge (197626)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4074,7 +4074,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Empowerment (202464)
+Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Item - Druid WoD PvP Balance 2P Bonus (165701), Empowerment (202464)
 Triggered by     : Starsurge (78674), Starsurge (197626)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4868,7 +4868,7 @@ Effects          :
                    Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self(1)
-                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Brambles (213709), Swipe (213771)
+                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Brambles (213709), Swipe (213771)
 #4 (id=340874)   : Apply Aura (6) | Unknown effect sub type (188)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
                    Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Brambles (213709), Swipe (213771)
@@ -6388,7 +6388,7 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=313366)   : School Damage: astral (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Radius: 0 - 3 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.45000 | Radius: 0 - 3 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc202770
 
 Name             : Fury of Elune (id=211547) [Spell Family (7)] 
