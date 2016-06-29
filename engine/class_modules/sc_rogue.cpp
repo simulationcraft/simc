@@ -775,8 +775,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
     affected_by.weaponmaster = ! background && harmful &&
                                ( weapon_multiplier > 0 || attack_power_mod.direct > 0 );
-    affected_by.agonizing_poison = p() -> talent.agonizing_poison -> ok() &&
-                                   data().affected_by( p() -> find_spell( 200803 ) -> effectN( 1 ) );
+    affected_by.agonizing_poison = p() -> talent.agonizing_poison -> ok();
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
   }
 
@@ -962,6 +961,7 @@ struct rogue_attack_t : public melee_attack_t
     if ( affected_by.agonizing_poison )
     {
       double stack_value = tdata -> debuffs.agonizing_poison -> stack_value();
+      stack_value *= 1.0 + p() -> talent.master_poisoner -> effectN( 3 ).percent();
       stack_value *= 1.0 + p() -> cache.mastery() * p() -> mastery.potent_poisons -> effectN( 4 ).mastery_value();
       stack_value *= 1.0 + p() -> artifact.master_alchemist.percent() / 2.0;
       m *= 1.0 + stack_value;
@@ -3334,6 +3334,14 @@ struct saber_slash_t : public rogue_attack_t
     return rogue_attack_t::cost();
   }
 
+  double saber_slash_proc_chance() const
+  {
+    double opportunity_proc_chance = data().effectN( 5 ).percent();
+    opportunity_proc_chance += p() -> talent.swordmaster -> effectN( 1 ).percent();
+    opportunity_proc_chance += p() -> buffs.jolly_roger -> stack_value();
+    return opportunity_proc_chance;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3343,7 +3351,8 @@ struct saber_slash_t : public rogue_attack_t
       return;
     }
 
-    if ( p() -> buffs.opportunity -> trigger() || p() -> buffs.hidden_blade -> up() )
+    if ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), saber_slash_proc_chance() ) ||
+         p() -> buffs.hidden_blade -> up() )
     {
       saberslash_proc_event = new ( *sim ) saberslash_proc_event_t( p(), this, execute_state -> target );
     }
@@ -3567,6 +3576,18 @@ struct shuriken_storm_t: public rogue_attack_t
     energize_type = ENERGIZE_PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> buffs.stealth -> up() || p() -> buffs.shadow_dance -> up() || p() -> buffs.vanish -> up() )
+    {
+      m *= 1.0 + data().effectN( 3 ).percent();
+    }
+
+    return m;
   }
 };
 
@@ -4530,12 +4551,8 @@ void rogue_t::trigger_deepening_shadows( const action_state_t* state )
   if ( s -> cp == 0 )
     return;
 
-  double cp_chance = spec.deepening_shadows -> effectN( 1 ).pp_combo_points() * s -> cp / 100.0;
-  if ( rng().roll( cp_chance ) )
-  {
-    cooldowns.shadow_dance -> reset( true );
-    procs.deepening_shadows -> occur();
-  }
+  timespan_t adjustment = timespan_t::from_seconds( -1 * spec.deepening_shadows -> effectN( 2 ).base_value() * s -> cp );
+  cooldowns.shadow_dance -> adjust( adjustment, s -> cp >= 5 );
 }
 
 void rogue_t::trigger_shadow_techniques( const action_state_t* state )
@@ -5568,7 +5585,7 @@ void rogue_t::init_action_list()
         def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
 
-    action_priority_list_t* finishers = get_action_priority_list( "finishers" );
+    //action_priority_list_t* finishers = get_action_priority_list( "finishers" );
 
     def -> add_action( this, "Vendetta", "if=energy<30|time<10&combo_points>4&energy<60" );
     def -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>21" );
@@ -6173,8 +6190,7 @@ void rogue_t::create_buffs()
                               .affects_regen( true )
                               .add_invalidate( CACHE_ATTACK_SPEED )
                               .add_invalidate( sets.has_set_bonus( ROGUE_OUTLAW, T18, B4 ) ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE );
-  buffs.opportunity    = buff_creator_t( this, "opportunity", find_spell( 195627 ) )
-                              .chance( spec.saber_slash -> effectN( 5 ).percent() + talent.swordmaster -> effectN( 1 ).percent() );
+  buffs.opportunity         = buff_creator_t( this, "opportunity", find_spell( 195627 ) );
   buffs.feint               = buff_creator_t( this, "feint", find_specialization_spell( "Feint" ) )
     .duration( find_class_spell( "Feint" ) -> duration() );
   buffs.master_of_subtlety_passive = buff_creator_t( this, "master_of_subtlety_passive", talent.master_of_subtlety )
@@ -6274,8 +6290,10 @@ void rogue_t::create_buffs()
     .default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
     .chance( talent.alacrity -> ok() );
 
-  buffs.jolly_roger = buff_creator_t( this, "jolly_roger", find_spell( 199603 ) );
+  buffs.jolly_roger = buff_creator_t( this, "jolly_roger", find_spell( 199603 ) )
+                      .default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
   buffs.grand_melee = haste_buff_creator_t( this, "grand_melee", find_spell( 193358 ) )
+                      .add_invalidate( CACHE_ATTACK_SPEED )
                       .default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
   buffs.shark_infested_waters = buff_creator_t( this, "shark_infested_waters", find_spell( 193357 ) )
                                 .default_value( find_spell( 193357 ) -> effectN( 1 ).percent() )
