@@ -520,6 +520,7 @@ public:
     const spell_data_t* soothing_mist_statue;
     const spell_data_t* spirit_of_the_crane;
     const spell_data_t* teachings_of_the_monastery_buff;
+    const spell_data_t* totm_bok_proc;
     const spell_data_t* the_mists_of_sheilun_heal;
     const spell_data_t* uplifting_trance;
     const spell_data_t* zen_pulse_heal;
@@ -2414,14 +2415,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
 
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-    {
-      am *= 1 + p() -> passives.aura_mistweaver_monk->effectN( 9 ).percent();
-
-      if ( p() -> buff.teachings_of_the_monastery -> up() )
-        am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
-    }
-
     return am;
   }
 
@@ -2512,9 +2505,78 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 // Blackout Kick
 // ==========================================================================
 
+// Blackout Kick Proc from Teachings of the Monastery =======================
+struct blackout_kick_totm_proc : public monk_melee_attack_t
+{
+  blackout_kick_totm_proc( monk_t* p ) :
+    monk_melee_attack_t( "blackout_kick_totm_proc", p, p -> passives.totm_bok_proc )
+  {
+    cooldown -> duration = timespan_t::zero();
+    background = dual = true;
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+    trigger_gcd = timespan_t::zero();
+  }
+
+  bool init_finished()
+  {
+    bool ret = monk_melee_attack_t::init_finished();
+    action_t* bok = player -> find_action( "blackout_kick" );
+    if ( bok )
+    {
+      base_multiplier = bok -> base_multiplier;
+      spell_power_mod.direct = bok -> spell_power_mod.direct;
+
+      bok -> add_child( this );
+    }
+
+    return ret;
+  }
+
+  // Force 100 milliseconds for the animation, but not delay the overall GCD
+  timespan_t execute_time() const override
+  {
+    return timespan_t::from_millis( 100 );
+  }
+
+  virtual double action_multiplier() const
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
+
+    return am;
+  }
+
+  virtual double cost() const override
+  {
+    return 0;
+  }
+
+  virtual void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    if ( result_is_miss( execute_state -> result ) )
+      return;
+
+    if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 1 ).percent() ) )
+        p() -> cooldown.rising_sun_kick -> reset( true );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p() -> talent.spirit_of_the_crane -> ok() )
+      p() -> resource_gain( RESOURCE_MANA, ( p() -> resources.max[RESOURCE_MANA] * p() -> passives.spirit_of_the_crane -> effectN( 1 ).percent() ), p() -> gain.spirit_of_the_crane );
+  }
+};
+
 struct blackout_kick_t: public monk_melee_attack_t
 {
   rising_sun_kick_proc_t* rsk_proc;
+  blackout_kick_totm_proc* bok_totm_proc;
 
   blackout_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "blackout_kick", p, ( p -> specialization() == MONK_BREWMASTER ? spell_data_t::nil() : p -> spec.blackout_kick ) )
@@ -2526,10 +2588,21 @@ struct blackout_kick_t: public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
     spell_power_mod.direct = 0.0;
     cooldown -> duration = data().cooldown();
-    if ( p -> specialization() == MONK_WINDWALKER )
+    switch ( p -> specialization() )
     {
-      cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
-      rsk_proc = new rising_sun_kick_proc_t( p );
+      case MONK_MISTWEAVER:
+      {
+        bok_totm_proc = new blackout_kick_totm_proc( p );
+        break;
+      }
+      case MONK_WINDWALKER:
+      {
+        cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
+        rsk_proc = new rising_sun_kick_proc_t( p );
+        break;
+      }
+      default:
+        break;
     }
 
     sef_ability = SEF_BLACKOUT_KICK;
@@ -2552,8 +2625,6 @@ struct blackout_kick_t: public monk_melee_attack_t
       case MONK_MISTWEAVER:
       {
         am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 10 ).percent();
-        if ( p() -> buff.teachings_of_the_monastery -> up() )
-          am *= 1 + p() -> buff.teachings_of_the_monastery -> value();
         break;
       }
       case MONK_WINDWALKER:
@@ -2606,11 +2677,8 @@ struct blackout_kick_t: public monk_melee_attack_t
     {
       case MONK_MISTWEAVER:
       {
-        if ( p() -> buff.teachings_of_the_monastery -> up() )
-        {
-          if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 1 ).percent() ) )
-            p() -> cooldown.rising_sun_kick -> reset( true );
-        }
+        if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 1 ).percent() ) )
+          p() -> cooldown.rising_sun_kick -> reset( true );
         break;
       }
       case MONK_WINDWALKER:
@@ -2641,12 +2709,12 @@ struct blackout_kick_t: public monk_melee_attack_t
 
       if ( p() -> buff.teachings_of_the_monastery -> up() )
       {
+        int stacks = p() -> buff.teachings_of_the_monastery -> current_stack;
         p() -> buff.teachings_of_the_monastery -> expire();
-        // Spirit of the Crane does not have a buff associated with it. Since
-        // this is tied somewhat with Teachings of the Monastery, tacking
-        // this onto the removal of that buff.
-        if ( p() -> talent.spirit_of_the_crane -> ok() )
-          p() -> resource_gain( RESOURCE_MANA, ( p() -> resources.max[RESOURCE_MANA] * p() -> passives.spirit_of_the_crane -> effectN( 1 ).percent() ), p() -> gain.spirit_of_the_crane );
+
+        for (int i = 0; i < stacks; i++ )
+          bok_totm_proc -> execute();
+
       }
     }
   }
@@ -2979,7 +3047,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
   // N full ticks, but never additional ones.
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return dot_duration;
+    return dot_duration * ( tick_time( s ) / base_tick_time );;
   }
 
   virtual double action_multiplier() const override
@@ -6271,6 +6339,7 @@ void monk_t::init_spells()
 
   // Mistweaver
   passives.aura_mistweaver_monk             = find_spell( 137024 );
+  passives.totm_bok_proc                    = find_spell( 228649 );
   passives.blessings_of_yulon               = find_spell( 199671 );
   passives.celestial_breath_heal            = find_spell( 199565 ); // artifact.celestial_breath.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger()
   passives.lifecycles_enveloping_mist       = find_spell( 197919 );

@@ -1325,12 +1325,13 @@ class SpellDataGenerator(DataGenerator):
           ( 124503, 0 ), # Gift of the Ox Orb Left
           ( 124506, 0 ), # Gift of the Ox Orb Right
           ( 178173, 0 ), # Gift of the Ox Explosion
-          ( 124275, 0 ), # Light Stagger
-          ( 124274, 0 ), # Medium Stagger
-          ( 124273, 0 ), # Heavy Stagger
+          ( 124275, 1 ), # Light Stagger
+          ( 124274, 1 ), # Medium Stagger
+          ( 124273, 1 ), # Heavy Stagger
           ( 216521, 1 ), # Celestial Fortune Heal
           # Mistweaver
           ( 167732, 0 ), # Tier 17 2-piece Healer Buff
+          ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
           # Windwalker
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
           ( 121283, 0 ), # Chi Sphere from Power Strikes
