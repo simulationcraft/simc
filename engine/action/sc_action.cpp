@@ -2273,6 +2273,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( name_str == "cast_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
+  else if ( name_str == "cost" )
+    return make_mem_fn_expr( name_str, *this, &action_t::cost );
   else if ( name_str == "target" )
   {
     struct target_expr_t : public action_expr_t
