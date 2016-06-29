@@ -2388,9 +2388,6 @@ struct finality_eviscerate_t : public eviscerate_base_t
   finality_eviscerate_t( rogue_t* p ) :
     eviscerate_base_t( p, "finality_eviscerate", p -> find_spell( 197393 ) )
   { background = true; }
-
-  void init() override
-  { eviscerate_base_t::init(); affected_by.weaponmaster = true; }
 };
 
 struct eviscerate_action_t : public eviscerate_base_t
@@ -2398,9 +2395,6 @@ struct eviscerate_action_t : public eviscerate_base_t
   eviscerate_action_t( rogue_t* p ) :
     eviscerate_base_t( p, "eviscerate", p -> find_specialization_spell( "Eviscerate" ) )
   { background = true; }
-
-  void init() override
-  { eviscerate_base_t::init(); affected_by.weaponmaster = true; }
 };
 
 // Eviscerate action itself is just a "button press". The damage is done by eviscerate_action_t or
@@ -2432,6 +2426,9 @@ struct eviscerate_t : public eviscerate_base_t
 
     // Don't proc anything rogue-specific Eviscerate stuff
     memset( &affected_by, 0, sizeof( affected_by ) );
+
+    // .. except weaponmaster, so we can have finality swap correctly
+    affected_by.weaponmaster = true;
   }
 
   // Don't consume anything
@@ -3126,19 +3123,6 @@ struct nightblade_base_t : public rogue_attack_t
     }
   }
 
-  // Currently, the finality buff vs normal overwrite eachother, causing a dot cancel
-  // TODO: Check later if this will get fixed
-  void trigger_dot( action_state_t* s ) override
-  {
-    dot_t* d = td( s -> target ) -> dots.nightblade;
-    if ( d -> is_ticking() && d -> current_action -> id != s -> action -> id )
-    {
-      d -> cancel();
-    }
-
-    rogue_attack_t::trigger_dot( s );
-  }
-
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t base_per_tick = data().effectN( 1 ).period();
@@ -3155,7 +3139,6 @@ struct finality_nightblade_t : public nightblade_base_t
   { }
 };
 
-// TODO: Does Finality version share dot or not?
 struct nightblade_t : public nightblade_base_t
 {
   finality_nightblade_t* finality;
