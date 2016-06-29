@@ -2403,6 +2403,7 @@ struct conflagration_t : public fire_mage_spell_t
 //Phoenix Reborn Spell
 struct phoenix_reborn_t : public fire_mage_spell_t
 {
+  cooldown_t* icd;
   phoenix_reborn_t( mage_t* p ) :
     fire_mage_spell_t( "phoenix_reborn", p, p -> artifact.phoenix_reborn )
   {
@@ -2411,11 +2412,13 @@ struct phoenix_reborn_t : public fire_mage_spell_t
     base_costs[ RESOURCE_MANA ] = 0;
     callbacks = false;
     background = true;
+    icd = p -> get_cooldown( "phoenix_reborn_icd" );
+    icd -> duration = p -> find_spell( 215773 ) -> internal_cooldown();
   }
-
   virtual void execute() override
   {
     fire_mage_spell_t::execute();
+    icd -> start();
     p() -> cooldowns.phoenixs_flames -> adjust( -1000 * p() -> artifact.phoenix_reborn.data()
                                                  .effectN( 1 ).time_value() );
   }
@@ -2458,7 +2461,8 @@ struct ignite_t : public residual_action_t
     }
 
     if ( p() -> artifact.phoenix_reborn.rank() &&
-         rng().roll( p() -> artifact.phoenix_reborn.data().proc_chance() ) )
+         rng().roll( p() -> artifact.phoenix_reborn.data().proc_chance() ) 
+         && phoenix_reborn -> icd -> up() )
     {
       phoenix_reborn -> target = dot -> target;
       phoenix_reborn -> execute();
