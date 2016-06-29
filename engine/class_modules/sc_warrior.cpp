@@ -4434,6 +4434,7 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .cd( timespan_t::zero() );
 
   buff.bloodbath = buff_creator_t( this, "bloodbath", talents.bloodbath )
