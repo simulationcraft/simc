@@ -1749,14 +1749,14 @@ struct kill_command_t: public hunter_main_pet_attack_t
       background = true;
       proc = true;
       school = SCHOOL_NATURE;
-      attack_power_mod.direct = 2.5;
+      attack_power_mod.direct = 3.0;
       base_multiplier = p -> o() -> artifacts.jaws_of_thunder.data().effectN( 2 ).percent();
     }
   };
 
   jaws_of_thunder_t* jaws_of_thunder;
   kill_command_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "kill_command", p, p -> find_spell( 83381 ) )
+    hunter_main_pet_attack_t( "kill_command", p, p -> find_spell( 83381 ) ), jaws_of_thunder( nullptr )
   {
     background = true;
     proc = true;
@@ -1765,7 +1765,7 @@ struct kill_command_t: public hunter_main_pet_attack_t
 
     // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
     // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
-    attack_power_mod.direct  = 2.5; // Hard-coded in tooltip.
+    attack_power_mod.direct  = 3.0; // Hard-coded in tooltip.
 
     if ( o() -> talents.aspect_of_the_beast -> ok() )
       impact_action = new bestial_ferocity_t( p );
@@ -1811,7 +1811,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   flanking_strike_t( hunter_main_pet_t* p ):
     hunter_main_pet_attack_t( "flanking_strike", p, p -> find_spell( 204740 ) )
   {
-    attack_power_mod.direct = 2.5; //data is in the tooltip
+    attack_power_mod.direct = 2.0; //data is in the tooltip
     background = true;
 
     if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
@@ -2301,7 +2301,7 @@ struct hati_t: public hunter_secondary_pet_t
         background = true;
         proc = true;
         school = SCHOOL_NATURE;
-        attack_power_mod.direct = 2.5;
+        attack_power_mod.direct = 3.0;
         base_multiplier = p.o() -> artifacts.jaws_of_thunder.data().effectN( 2 ).percent();
       }
     };
@@ -2314,7 +2314,7 @@ struct hati_t: public hunter_secondary_pet_t
       proc = true;
       school = SCHOOL_PHYSICAL;
       range = 25;
-      attack_power_mod.direct  = 2.5;
+      attack_power_mod.direct  = 3.0;
       if ( o() -> artifacts.jaws_of_thunder.rank() )
         jaws_of_thunder = new jaws_of_thunder_t( p );
     }
@@ -3103,8 +3103,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    // Cobra Shot has a chance to reset Kill Command when Bestial Wrath is up w/ Killer Cobra talent
-    if ( p() -> talents.killer_cobra -> ok() && p() -> buffs.bestial_wrath -> up() && rng().roll( p() -> talents.killer_cobra -> effectN( 1 ).percent() ) )
+    if ( p() -> talents.killer_cobra -> ok() && p() -> buffs.bestial_wrath -> up() )
       p() -> cooldowns.kill_command -> reset( true );
 
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) )
