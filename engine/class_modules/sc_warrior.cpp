@@ -1157,7 +1157,7 @@ struct bloodthirst_t: public warrior_attack_t
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
     bloodthirst_heal( nullptr ),
-    fresh_meat_crit_chance( p -> talents.endless_rage -> effectN( 1 ).percent() ),
+    fresh_meat_crit_chance( p -> talents.fresh_meat -> effectN( 1 ).percent() ),
     rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
     aoe_targets( p -> spec.meat_cleaver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
   {
@@ -2659,7 +2659,7 @@ struct shield_slam_t: public warrior_attack_t
     }
     if ( p -> level() >= 85 )
     {
-      attack_power_mod.direct += 3.46; // Adds another 246% ap at level 85
+      attack_power_mod.direct += 3.46; // Adds another 346% ap at level 85
     }
     //Shield slam is just the best.
   }
@@ -2767,10 +2767,50 @@ struct slam_t: public warrior_attack_t
 
 struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
 {
+  double crit_chance_of_last_ability;
   trauma_dot_t( warrior_t* p ):
-    base_t( "trauma", p, p -> find_spell( 215537 ) )
+    base_t( "trauma", p, p -> find_spell( 215537 ) ),
+    crit_chance_of_last_ability( 0 )
   {
     dual = true;
+    tick_may_crit = true;
+  }
+
+  double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
+  {
+    double amount = 0.0;
+
+    if ( dot_t* d = find_dot( state -> target ) )
+    {
+      residual_action::residual_periodic_state_t* dot_state = debug_cast<residual_action::residual_periodic_state_t*>(d -> state);
+      amount += dot_state -> tick_amount;
+    }
+
+    state -> result_raw = amount;
+
+    state -> result = RESULT_HIT; // Reset result to hit, as it has already been rolled inside tick().
+    if ( rng().roll( crit_chance_of_last_ability ) )
+      state -> result = RESULT_CRIT;
+
+    if ( state -> result == RESULT_CRIT )
+      amount *= 1.0 + total_crit_bonus();
+
+    amount *= dmg_multiplier;
+
+    state -> result_total = amount;
+
+    return amount;
+  }
+
+  double composite_crit() const override
+  {
+    return crit_chance_of_last_ability;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    residual_periodic_action_t::impact( s );
+    crit_chance_of_last_ability = p() -> composite_melee_crit();
   }
 };
 

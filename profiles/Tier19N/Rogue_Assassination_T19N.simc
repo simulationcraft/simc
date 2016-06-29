@@ -1,0 +1,79 @@
+rogue="Rogue_Assassination_T19N"
+level=110
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=2110131
+artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1
+spec=assassination
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=sleeper_sushi
+actions.precombat+=/apply_poison,lethal=deadly
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/stealth
+actions.precombat+=/marked_for_death
+
+# Executed every time the actor is available.
+
+actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40|debuff.vendetta.up
+actions+=/blood_fury,if=debuff.vendetta.up
+actions+=/berserking,if=debuff.vendetta.up
+actions+=/arcane_torrent,if=debuff.vendetta.up&energy<60
+actions+=/vendetta,if=energy<30|time<10&combo_points>4&energy<60
+actions+=/exsanguinate,if=dot.rupture.remains>21
+actions+=/pool_resource,if=energy<90&cooldown.kingsbane.remains<3.5
+actions+=/pool_resource,for_next=1,extra_amount=90
+actions+=/kingsbane
+actions+=/vanish,if=energy>25&dot.rupture.refreshable&combo_points>5
+actions+=/rupture,if=buff.vanish.up&combo_points>5&refreshable
+actions+=/garrote,if=refreshable&combo_points<6&!dot.garrote.exsanguinated
+actions+=/hemorrhage,if=debuff.hemorrhage.down&combo_points<6
+actions+=/mutilate,if=combo_points<5
+actions+=/rupture,if=!exsanguinated&refreshable&combo_points>4
+actions+=/pool_resource,for_next=1,extra_amount=25
+actions+=/death_from_above,if=combo_points>4
+actions+=/pool_resource,for_next=1,extra_amount=80
+actions+=/envenom,if=combo_points>=5&energy>80&buff.envenom.remains<0.5&buff.elaborate_planning.remains<2
+actions+=/rupture,cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&combo_points=5
+actions+=/marked_for_death,if=combo_points=0
+actions+=/rupture,cycle_targets=1,if=combo_points=5&remains<=duration*0.3&spell_targets.fan_of_knives>1
+
+head=doomblade_cowl,id=138332,bonus_id=1807
+neck=belerons_choker_of_misery,id=140899,bonus_id=1807
+shoulders=doomblade_spaulders,id=138338,bonus_id=1807
+back=doomblade_shadowwrap,id=138371,bonus_id=1807
+chest=doomblade_tunic,id=138326,bonus_id=1807
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=1807
+hands=doomblade_gauntlets,id=138329,bonus_id=1807
+waist=girdle_of_nefarious_strategy,id=140859,bonus_id=1807
+legs=doomblade_pants,id=138335,bonus_id=1807
+feet=grove_tenders_moccasins,id=140861,bonus_id=1807
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=1807
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1807
+trinket1=nightblooming_frond,id=140802,bonus_id=1807
+trinket2=convergence_of_fates,id=140806,bonus_id=1807
+main_hand=anguish,id=128870,bonus_id=741,ilevel=750
+off_hand=sorrow,id=128869,ilevel=750
+
+# Gear Summary
+# gear_ilvl=850.00
+# gear_agility=10353
+# gear_stamina=18809
+# gear_crit_rating=6513
+# gear_haste_rating=2605
+# gear_mastery_rating=8659
+# gear_armor=2022
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1

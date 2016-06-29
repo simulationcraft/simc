@@ -1,0 +1,9 @@
+# T19H
+# Tier 19 Heroic
+# * Ilvl Cap: 865
+# * Standard Heroic Emerald Nightmare Loot Only.
+
+optimal_raid=1
+# tmi_boss=TMI_Standard_Boss_T17L
+
+Rogue_T19H.simc

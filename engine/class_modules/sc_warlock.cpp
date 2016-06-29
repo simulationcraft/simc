@@ -19,13 +19,10 @@
 // Haunt reset
 // Soul Effigy
 // Destruction -
-// DEMO TALENTS: (all)
-// T1: Shadowy Inspiration
-// T4: Powertrip
-// T7: Summon FOTMDemon, Demonbolt
+// Demonology -
 //
 // Artifacts -
-// Affliction/Demonology
+// Affliction/Demonology (see below)
 // 
 // ==========================================================================
 namespace { // unnamed namespace
@@ -217,21 +214,21 @@ public:
     artifact_power_t soulharvester;
 
     // Demonology
-    artifact_power_t thalkiels_consumption;  //NYI
+    artifact_power_t thalkeils_consumption;
     artifact_power_t breath_of_thalkiel;
     artifact_power_t the_doom_of_azeroth;
     artifact_power_t sharpened_dreadfangs;
-    artifact_power_t fel_skin;//NYI
-    artifact_power_t firm_resolve;//NYI
-    artifact_power_t thalkiels_discord;//NYI
-    artifact_power_t legionwrath;//NYI
+    artifact_power_t fel_skin; //NYI
+    artifact_power_t firm_resolve; //NYI
+    artifact_power_t thalkiels_discord; //NYI
+    artifact_power_t legionwrath; //NYI
     artifact_power_t dirty_hands;
-    artifact_power_t doom_doubled;//NYI
+    artifact_power_t doom_doubled;
     artifact_power_t infernal_furnace;
-    artifact_power_t the_expendables;//NYI
+    artifact_power_t the_expendables; //NYI
     artifact_power_t maw_of_shadows;
-    artifact_power_t open_link;//NYI
-    artifact_power_t stolen_power;//NYI
+    artifact_power_t open_link; //NYI
+    artifact_power_t stolen_power; //NYI
     artifact_power_t imperator;
     artifact_power_t summoners_prowess;
     artifact_power_t thalkiels_lingering_power;//NYI
@@ -2370,17 +2367,32 @@ struct doom_t: public warlock_spell_t
     return timespan_t::from_millis( 100 );
   }
 
+  virtual double action_multiplier()const override
+  {
+      double m = warlock_spell_t::action_multiplier();
+      if( p()->artifact.doom_doubled.rank() )
+      {
+          if( rng().roll(0.25) )
+          {
+              m += 1;
+          }
+      }
+      return m;
+  }
+
   virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
-    //p()->sim->errorf("Testing a tick");
-
-    if( ( d -> state -> result == RESULT_HIT ) && p() -> talents.impending_doom -> ok() )
+    if(  d -> state -> result == RESULT_HIT || result_is_hit( d->state->result) )
     { 
-      trigger_wild_imp( p() );
-      p() -> procs.impending_doom -> occur();
+        if(p() -> talents.impending_doom -> ok())
+        {
+            trigger_wild_imp( p() );
+            p() -> procs.impending_doom -> occur();
+        }
+
     }
-  }
+    }
 };
 
 struct demonic_empowerment_t: public warlock_spell_t
@@ -2794,7 +2806,7 @@ struct dimensional_rift_t : public warlock_spell_t
 struct thalkeils_consumption_t : public warlock_spell_t
 {
     thalkeils_consumption_t( warlock_t* p ):
-        warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
+        warlock_spell_t( "thalkeils_consumption", p, p -> artifact.thalkeils_consumption )
     {
 
     }
@@ -2802,6 +2814,20 @@ struct thalkeils_consumption_t : public warlock_spell_t
     void execute() override
     {
         warlock_spell_t::execute();
+        double damage = 0;
+        for( auto& pet : p() -> pet_list )
+        {
+            pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
+            if( lock_pet != NULL )
+            {
+                if( !lock_pet->is_sleeping() )
+                {
+                    damage += (double)(lock_pet->resources.max[RESOURCE_HEALTH]) * 0.1;
+                }
+            }
+        }
+        this->base_dd_min = damage;
+        this->base_dd_max = damage;
         //do other stuff
     }
 };
@@ -4013,6 +4039,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "shadowburn"            ) a = new                        shadowburn_t( this );
   else if ( action_name == "unstable_affliction"   ) a = new               unstable_affliction_t( this );
   else if ( action_name == "hand_of_guldan"        ) a = new                    hand_of_guldan_t( this );
+  else if ( action_name == "thalkeils_consumption" ) a = new             thalkeils_consumption_t( this );
   else if ( action_name == "implosion"             ) a = new                         implosion_t( this );
   else if ( action_name == "havoc"                 ) a = new                             havoc_t( this );
   else if ( action_name == "seed_of_corruption"    ) a = new                seed_of_corruption_t( this );
@@ -4031,12 +4058,12 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "summon_voidwalker"     ) a = new     summon_main_pet_t( "voidwalker", this );
   else if ( action_name == "summon_imp"            ) a = new            summon_main_pet_t( "imp", this );
   else if ( action_name == "summon_pet"            ) a = new      summon_main_pet_t( default_pet, this );
-  else if ( action_name == "service_felguard"      ) a = new   grimoire_of_service_t( this, "felguard" );
-  else if ( action_name == "service_felhunter"     ) a = new  grimoire_of_service_t( this, "felhunter" );
-  else if ( action_name == "service_imp"           ) a = new        grimoire_of_service_t( this, "imp" );
-  else if ( action_name == "service_succubus"      ) a = new   grimoire_of_service_t( this, "succubus" );
-  else if ( action_name == "service_voidwalker"    ) a = new grimoire_of_service_t( this, "voidwalker" );
-  else if ( action_name == "service_pet"           ) a = new grimoire_of_service_t( this,  talents.grimoire_of_supremacy -> ok() ? "doomguard" : default_pet );
+  else if ( action_name == "service_felguard"      ) a = new               grimoire_of_service_t( this, "felguard" );
+  else if ( action_name == "service_felhunter"     ) a = new               grimoire_of_service_t( this, "felhunter" );
+  else if ( action_name == "service_imp"           ) a = new               grimoire_of_service_t( this, "imp" );
+  else if ( action_name == "service_succubus"      ) a = new               grimoire_of_service_t( this, "succubus" );
+  else if ( action_name == "service_voidwalker"    ) a = new               grimoire_of_service_t( this, "voidwalker" );
+  else if ( action_name == "service_pet"           ) a = new               grimoire_of_service_t( this,  talents.grimoire_of_supremacy -> ok() ? "doomguard" : default_pet );
   else return player_t::create_action( action_name, options_str );
 
   a -> parse_options( options_str );
@@ -4247,7 +4274,7 @@ void warlock_t::init_spells()
   artifact.compound_interest = find_artifact_spell( "Compound Interest" );
   artifact.soulharvester = find_artifact_spell( "Soulharvester" );
 
-  artifact.thalkiels_consumption = find_artifact_spell( "Thal'kiel's Consumption" );
+  artifact.thalkeils_consumption = find_artifact_spell( "Thal'kiel's Consumption" );
   artifact.breath_of_thalkiel = find_artifact_spell( "Breath of Thal'kiel" );
   artifact.the_doom_of_azeroth = find_artifact_spell( "The Doom of Azeroth" );
   artifact.sharpened_dreadfangs = find_artifact_spell( "Sharpened Dreadfangs" );
@@ -4256,7 +4283,7 @@ void warlock_t::init_spells()
   artifact.thalkiels_discord = find_artifact_spell( "Thal'kiel's Discord" );
   artifact.legionwrath = find_artifact_spell( "Legionwrath" );
   artifact.dirty_hands = find_artifact_spell( "Dirty Hands" );
-  artifact.doom_doubled = find_artifact_spell( "Doom Doubled" );
+  artifact.doom_doubled = find_artifact_spell( "Doom, Doubled" );
   artifact.infernal_furnace = find_artifact_spell( "Infernal Furnace" );
   artifact.the_expendables = find_artifact_spell( "The Expendables" );
   artifact.maw_of_shadows = find_artifact_spell( "Maw of Shadows" );

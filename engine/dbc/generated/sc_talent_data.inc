@@ -1,6 +1,6 @@
 #define TALENT_SIZE (610)
 
-// 610 talents, wow build 22045
+// 610 talents, wow build 22053
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -169,7 +169,7 @@ static struct talent_data_t __talent_data[] = {
   { "Improved Dreadstalkers"            , 21694, 0x00, 0x0100, 266,   1,   1,  196272,       0,  0 },
   { "Cataclysm"                         , 21695, 0x00, 0x0100, 267,   1,   1,  152108,       0,  0 },
   { "Savage Roar"                       , 21702, 0x00, 0x0400, 103,   2,   4,   52610,       0,  0 },
-  { "Germination"                       , 21704, 0x00, 0x0400, 105,   2,   4,  155675,       0,  0 },
+  { "Cultivation"                       , 21704, 0x00, 0x0400, 105,   2,   4,  200390,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Incarnation: King of the Jungle"   , 21705, 0x00, 0x0400, 103,   1,   4,  102543,  106951,  0 },
   { "Incarnation: Guardian of Ursoc"    , 21706, 0x00, 0x0400, 104,   1,   4,  102558,       0,  0 },
@@ -327,7 +327,7 @@ static struct talent_data_t __talent_data[] = {
   { "Lightning Shield"                  , 22162, 0x00, 0x0040, 263,   0,   3,  192106,       0,  0 },
   { "Balance Affinity"                  , 22163, 0x00, 0x0400,   0,   0,   2,  197488,       0,  0 },
   { "Holy Prism"                        , 22164, 0x00, 0x0002,  65,   2,   4,  114165,       0,  0 },
-  { "Cultivation"                       , 22165, 0x00, 0x0400, 105,   2,   5,  200390,       0,  0 },
+  { "Germination"                       , 22165, 0x00, 0x0400, 105,   2,   5,  155675,       0,  0 },
   { "Mist Wrap"                         , 22166, 0x00, 0x0200, 270,   2,   2,  197900,       0,  0 },
   { "Spirit of the Crane"               , 22167, 0x00, 0x0200, 270,   1,   2,  210802,       0,  0 },
   { "Lifecycles"                        , 22168, 0x00, 0x0200, 270,   0,   2,  197915,       0,  0 },

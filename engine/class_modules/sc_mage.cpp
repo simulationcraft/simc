@@ -108,7 +108,8 @@ struct mage_td_t : public actor_target_data_t
   struct debuffs_t
   {
     buff_t* erosion,
-          * slow;
+          * slow,
+          * touch_of_the_magi;
 
     buff_t* firestarter;
 
@@ -171,6 +172,7 @@ public:
   event_t* ignite_spread_event;
 
   // Active
+  action_t* touch_of_the_magi_explosion;
   action_t* unstable_magic_explosion;
   player_t* last_bomb_target;
 
@@ -453,7 +455,7 @@ public:
                      rule_of_threes,
                      slooow_down, // NYI
                      torrential_barrage,
-                     touch_of_the_magi; // NYI
+                     touch_of_the_magi;
 
     // Fire
     artifact_power_t aftershocks,
@@ -502,6 +504,7 @@ public:
     icicle_event( nullptr ),
     ignite( nullptr ),
     ignite_spread_event( nullptr ),
+    touch_of_the_magi_explosion( nullptr ),
     unstable_magic_explosion( nullptr ),
     last_bomb_target( nullptr ),
     scorched_earth_counter( 0 ),
@@ -579,6 +582,7 @@ public:
   virtual void      init_procs() override;
   virtual void      init_benefits() override;
   virtual void      init_stats() override;
+  virtual void      init_assessors() override;
   virtual void      invalidate_cache( cache_e c ) override;
   void init_resources( bool force ) override;
   virtual void      recalculate_resource_max( resource_e rt ) override;
@@ -617,6 +621,8 @@ public:
   // Public mage functions:
   icicle_data_t get_icicle_object();
   void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
+
+  void trigger_touch_of_the_magi( buff_t* touch_of_the_magi_buff );
 
   void              apl_precombat();
   void              apl_arcane();
@@ -1512,7 +1518,7 @@ struct arcane_missiles_buff_t : public buff_t
 struct chilled_t : public buff_t
 {
   chilled_t( mage_td_t* td ) :
-    buff_t( buff_creator_t( *td, "chilled",
+    buff_t( buff_creator_t( td -> target, "chilled",
                             td -> source -> find_spell( 205708 ) ) )
   {}
 
@@ -1624,6 +1630,67 @@ void erosion_event_t::execute()
     erosion_debuff -> decay_event = nullptr;
   }
 }
+}
+
+
+// Touch of the Magi debuff ===================================================
+
+struct touch_of_the_magi_buff_t : public buff_t
+{
+  mage_t* mage;
+  double accumulated_damage;
+
+  touch_of_the_magi_buff_t( mage_td_t* td ) :
+    buff_t( buff_creator_t( td -> target, "touch_of_the_magi",
+                            td -> source -> find_spell( 210824 ) ) ),
+    mage( static_cast<mage_t*>( td -> source ) ),
+    accumulated_damage( 0.0 )
+  { }
+
+  virtual void reset() override
+  {
+    buff_t::reset();
+    accumulated_damage = 0.0;
+  }
+
+  virtual void aura_loss() override
+  {
+    buff_t::aura_loss();
+
+    mage -> trigger_touch_of_the_magi( this );
+
+    accumulated_damage = 0.0;
+  }
+
+  double accumulate_damage( action_state_t* state )
+  {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf(
+        "%s's %s accumulates %f additional damage: %f -> %f",
+        player -> name(), name(), state -> result_amount,
+        accumulated_damage, accumulated_damage + state -> result_amount
+      );
+    }
+
+    accumulated_damage += state -> result_amount;
+
+    return accumulated_damage;
+  }
+};
+
+
+// Touch of the Magi explosion trigger
+
+void mage_t::trigger_touch_of_the_magi( buff_t* touch_of_the_magi_buff )
+{
+  touch_of_the_magi_buff_t* touch =
+    static_cast<touch_of_the_magi_buff_t*>( touch_of_the_magi_buff);
+
+  touch_of_the_magi_explosion -> target = touch -> player;
+  touch_of_the_magi_explosion -> base_dd_max = touch -> accumulated_damage;
+  touch_of_the_magi_explosion -> base_dd_min = touch -> accumulated_damage;
+  touch_of_the_magi_explosion -> execute();
 }
 
 
@@ -2506,6 +2573,37 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 struct arcane_blast_t : public arcane_mage_spell_t
 {
   double wild_arcanist_effect;
+  struct touch_of_the_magi_t
+  {
+    mage_t* mage;
+    const spell_data_t* data;
+    cooldown_t* icd;
+
+    touch_of_the_magi_t( mage_t* p ) :
+      mage( p ),
+      data( p -> find_spell( 210725 ) ),
+      icd( p -> get_cooldown( "touch_of_the_magi_icd" ) )
+    {}
+
+    bool trigger_if_up( action_state_t* s )
+    {
+      if ( icd -> down() )
+      {
+        return false;
+      }
+
+      buff_t* touch = mage -> get_target_data( s -> target ) -> debuffs.touch_of_the_magi;
+      bool triggered = touch -> trigger( 1, buff_t::DEFAULT_VALUE(),
+                                         data -> proc_chance() );
+
+      if ( triggered )
+      {
+        icd -> start( data -> internal_cooldown() );
+      }
+
+      return triggered;
+    }
+  } * touch_of_the_magi;
 
   arcane_blast_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_blast", p,
@@ -2521,6 +2619,11 @@ struct arcane_blast_t : public arcane_mage_spell_t
       const spell_data_t* data = p -> wild_arcanist -> driver();
       wild_arcanist_effect = std::fabs( data -> effectN( 1 ).average( p -> wild_arcanist -> item ) );
       wild_arcanist_effect /= 100.0;
+    }
+
+    if ( p -> artifact.touch_of_the_magi.rank() )
+    {
+      touch_of_the_magi = new touch_of_the_magi_t( p );
     }
   }
 
@@ -2640,6 +2743,12 @@ struct arcane_blast_t : public arcane_mage_spell_t
       if ( p() -> talents.unstable_magic -> ok() )
       {
         trigger_unstable_magic( s );
+      }
+
+      if ( p() -> artifact.touch_of_the_magi.rank() &&
+           touch_of_the_magi -> icd -> up() )
+      {
+        touch_of_the_magi -> trigger_if_up( s );
       }
     }
   }
@@ -4234,7 +4343,7 @@ struct fire_blast_t : public fire_mage_spell_t
     cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
     cooldown -> hasted = true;
-    //TODO: What is this..?
+    // Fire Blast has a small ICD to prevent it from being double casted
     icd = p -> get_cooldown( "fire_blast_icd" );
 
     triggers_hot_streak = true;
@@ -4702,15 +4811,6 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     triggers_ignite = true;
   }
 
-  virtual double composite_crit_multiplier() const override
-  {
-    double m = fire_mage_spell_t::composite_crit_multiplier();
-
-    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual void impact( action_state_t* s ) override
   {
     // PF cleave does not impact main target
@@ -4721,6 +4821,9 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
 
     fire_mage_spell_t::impact( s );
   }
+  // Phoenixs Flames always crits
+  virtual double composite_crit() const override
+  { return 1.0; }
 };
 
 struct phoenixs_flames_t : public fire_mage_spell_t
@@ -4748,20 +4851,15 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     }
   }
 
-  virtual double composite_crit_multiplier() const override
-  {
-    double m = fire_mage_spell_t::composite_crit_multiplier();
-
-    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual timespan_t travel_time() const override
   {
     timespan_t t = fire_mage_spell_t::travel_time();
     return std::min( t, timespan_t::from_seconds( 0.75 ) );
   }
+
+  // Phoenixs Flames always crits
+  virtual double composite_crit() const override
+  { return 1.0; }
 };
 
 
@@ -5272,8 +5370,44 @@ struct shard_of_the_exodar_warp_t : public mage_spell_t
     mage_spell_t::execute();
     p() -> buffs.shard_time_warp -> trigger();
   }
-
 };
+
+
+// Touch of the Magi ==========================================================
+
+struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
+{
+  touch_of_the_magi_explosion_t( mage_t* p ) :
+    arcane_mage_spell_t( "touch_of_the_magi", p, p -> find_spell( 210833 ) )
+  {
+    background = true;
+    ignore_false_positive = true;
+    trigger_gcd = timespan_t::zero();
+    may_miss = may_crit = callbacks = false;
+
+    may_proc_missiles = false;
+
+    aoe = -1;
+  }
+
+  virtual void init() override
+  {
+    mage_spell_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  virtual void execute() override
+  {
+    base_dd_max *= data().effectN( 1 ).percent();
+    base_dd_min *= data().effectN( 1 ).percent();
+
+    mage_spell_t::execute();
+  }
+};
+
+
 // ============================================================================
 // Mage Custom Actions
 // ============================================================================
@@ -5580,6 +5714,7 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
   }
 }
 
+
 // Proxy cast Water Jet Action ================================================
 
 struct water_jet_t : public action_t
@@ -5725,6 +5860,7 @@ struct nithramus_t : public mage_spell_t
 };
 
 } // namespace actions
+
 
 namespace events {
 struct icicle_event_t : public event_t
@@ -5944,6 +6080,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.erosion     = new erosion_debuff_t( this );
   debuffs.slow        = buff_creator_t( *this, "slow",
                                         mage -> find_spell( 31589 ) );
+  debuffs.touch_of_the_magi = new touch_of_the_magi_buff_t( this );
 
   debuffs.firestarter = buff_creator_t( *this, "firestarter" )
                           .chance( 1.0 )
@@ -6250,6 +6387,12 @@ void mage_t::init_spells()
     icicle = new actions::icicle_t( this );
   if ( talents.unstable_magic -> ok() )
     unstable_magic_explosion = new actions::unstable_magic_explosion_t( this );
+
+  if ( artifact.touch_of_the_magi.rank() )
+  {
+    touch_of_the_magi_explosion =
+      new actions::touch_of_the_magi_explosion_t( this );
+  }
 }
 
 // mage_t::init_base ========================================================
@@ -6314,6 +6457,7 @@ struct incanters_flow_t : public buff_t
       reverse = false;
   }
 };
+
 
 struct ray_of_frost_buff_t : public buff_t
 {
@@ -6575,6 +6719,37 @@ void mage_t::init_stats()
   // constructor) so older GCCs are happy
   sim -> target_non_sleeping_list.register_callback( current_target_reset_cb_t( this ) );
 }
+
+
+// mage_t::init_assessors =====================================================
+
+void mage_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  if ( artifact.touch_of_the_magi.rank() )
+  {
+    mage_t* mage = this;
+    assessor_out_damage.add(
+      assessor::TARGET_DAMAGE - 1,
+      [ mage ]( dmg_e, action_state_t* state ) {
+        buff_t* buff = mage -> get_target_data( state -> target )
+                            -> debuffs.touch_of_the_magi;
+
+        if ( buff -> check() )
+        {
+          touch_of_the_magi_buff_t* touch_of_the_magi =
+            static_cast<touch_of_the_magi_buff_t*>( buff );
+
+          touch_of_the_magi -> accumulate_damage( state );
+        }
+
+        return assessor::CONTINUE;
+      }
+    );
+  }
+}
+
 
 // mage_t::init_actions =====================================================
 

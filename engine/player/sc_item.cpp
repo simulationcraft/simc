@@ -657,6 +657,7 @@ bool item_t::parse_options()
   options.push_back(opt_string("bonus_id", option_bonus_id_str));
   options.push_back(opt_string("initial_cd", option_initial_cd_str));
   options.push_back(opt_string("drop_level", option_drop_level_str));
+  options.push_back(opt_string("relic_id", option_relic_id_str));
 
   try
   {
@@ -696,6 +697,29 @@ bool item_t::parse_options()
 
       parsed.gem_id[ i ] = gem_id;
     }
+  }
+
+  if ( ! option_relic_id_str.empty() )
+  {
+    std::vector<std::string> relic_split = util::string_split( option_relic_id_str, "/" );
+    size_t relic_slot = 0;
+    for ( const auto& relic_str : relic_split )
+    {
+      if ( relic_str == "0" )
+      {
+        relic_slot++;
+        continue;
+      }
+
+      std::vector<std::string> bonus_id_split = util::string_split( relic_str, ":" );
+      for ( const auto& bonus_id_str : bonus_id_split )
+      {
+        parsed.relic_data[ relic_slot ].push_back( util::to_unsigned( bonus_id_str ) );
+      }
+
+      relic_slot++;
+    }
+
   }
 
   if ( ! option_enchant_id_str.empty() )

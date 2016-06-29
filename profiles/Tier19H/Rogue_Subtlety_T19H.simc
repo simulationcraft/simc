@@ -1,0 +1,87 @@
+rogue="Rogue_Subtlety_T19H"
+level=110
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=1210021
+artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1
+spec=subtlety
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=sleeper_sushi
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/stealth
+actions.precombat+=/marked_for_death
+actions.precombat+=/symbols_of_death
+
+# Executed every time the actor is available.
+
+actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40
+actions+=/blood_fury,if=buff.shadow_dance.up
+actions+=/berserking,if=buff.shadow_dance.up
+actions+=/arcane_torrent,if=energy.deficit>20
+actions+=/shadow_blades,if=!buff.shadow_blades.up&energy.deficit<20&(buff.shadow_dance.up|buff.vanish.up)
+actions+=/goremaws_bite,if=(combo_points.max-combo_points>=2&energy.deficit>55&time<10)|(combo_points.max-combo_points>=4&energy.deficit>45)|target.time_to_die<8
+actions+=/symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=10.5
+actions+=/pool_resource,for_next=1
+actions+=/shadowstrike,if=combo_points.max-combo_points>=2
+actions+=/pool_resource,for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30
+actions+=/vanish,if=energy.deficit<talent.master_of_shadows.enabled*30&combo_points.max-combo_points>=3&cooldown.shadow_dance.charges<2|target.time_to_die<8
+actions+=/pool_resource,for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30
+actions+=/shadow_dance,if=combo_points.max-combo_points>=2&((cooldown.vanish.remains&buff.symbols_of_death.remains<=10.5&energy.deficit<talent.master_of_shadows.enabled*30)|cooldown.shadow_dance.charges>=2|target.time_to_die<25)
+actions+=/enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&((buff.enveloping_shadows.remains<=10.8+talent.deeper_strategem.enabled*1.8&combo_points>=5+talent.deeper_strategem.enabled)|buff.enveloping_shadows.remains<=6)
+actions+=/marked_for_death,if=combo_points.max-combo_points>=4
+actions+=/run_action_list,name=finisher,if=combo_points>=5
+actions+=/run_action_list,name=generator,if=combo_points<5
+
+# Combo point finishers
+
+actions.finisher=nightblade,if=!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3
+actions.finisher+=/nightblade,cycle_targets=1,target_if=max:target.time_to_die,if=spell_targets.shuriken_storm<8&active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3)
+actions.finisher+=/death_from_above
+actions.finisher+=/eviscerate
+
+# Combo point generators
+
+actions.generator=shuriken_storm,if=spell_targets.shuriken_storm>2
+actions.generator+=/gloomblade,if=energy.time_to_max<2.5
+actions.generator+=/backstab,if=energy.time_to_max<2.5
+
+head=doomblade_cowl,id=138332,bonus_id=1805
+neck=belerons_choker_of_misery,id=140899,bonus_id=1805
+shoulders=doomblade_spaulders,id=138338,bonus_id=1805
+back=doomblade_shadowwrap,id=138371,bonus_id=1805
+chest=doomblade_tunic,id=138326,bonus_id=1805
+wrists=bracers_of_impossible_choices,id=140889,bonus_id=1805
+hands=doomblade_gauntlets,id=138329,bonus_id=1805
+waist=girdle_of_nefarious_strategy,id=140859,bonus_id=1805
+legs=doomblade_pants,id=138335,bonus_id=1805
+feet=grove_tenders_moccasins,id=140861,bonus_id=1805
+finger1=spellblades_gemmed_signet,id=140895,bonus_id=1805
+finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1805
+trinket1=nightblooming_frond,id=140802,bonus_id=1805
+trinket2=convergence_of_fates,id=140806,bonus_id=1805
+main_hand=gorefang,id=128476,bonus_id=743,ilevel=750
+off_hand=akaaris_will,id=128479,ilevel=750
+
+# Gear Summary
+# gear_ilvl=865.00
+# gear_agility=11905
+# gear_stamina=21631
+# gear_crit_rating=6888
+# gear_haste_rating=2754
+# gear_mastery_rating=9161
+# gear_armor=2126
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1

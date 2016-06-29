@@ -2279,6 +2279,108 @@ bool player_t::init_actions()
   return true;
 }
 
+// player_t::init_assessors =================================================
+void player_t::init_assessors()
+{
+  // Resolve assessor, only needed for tank role(?)
+  // TODO: Resolve is gone anyhow, so this should be removed too?
+  if ( ! is_enemy() && role == ROLE_TANK )
+  {
+    assessor_out_damage.add( assessor::RESOLVE, []( dmg_e dmg_type, action_state_t* state )
+    {
+      state -> action -> update_resolve( dmg_type, state );
+      return assessor::CONTINUE;
+    } );
+  }
+
+  // Target related mitigation
+  assessor_out_damage.add( assessor::TARGET_MITIGATION, []( dmg_e dmg_type, action_state_t* state )
+  {
+    state -> target -> assess_damage( state -> action -> get_school(), dmg_type, state );
+    return assessor::CONTINUE;
+  } );
+
+  // Target damage
+  assessor_out_damage.add( assessor::TARGET_DAMAGE, []( dmg_e, action_state_t* state )
+  {
+    state -> target -> do_damage( state );
+    return assessor::CONTINUE;
+  } );
+
+  // Logging and debug .. Technically, this should probably be in action_t::assess_damage, but we
+  // don't need this piece of code for the vast majority of sims, so it makes sense to yank it out
+  // completely from there, and only conditionally include it if logging/debugging is enabled.
+  if ( sim -> log || sim -> debug )
+  {
+    assessor_out_damage.add( assessor::LOG, [ this ]( dmg_e type, action_state_t* state )
+    {
+      if ( sim -> debug )
+      {
+        state -> debug();
+      }
+
+      if ( sim -> log )
+      {
+        if ( type == DMG_DIRECT )
+        {
+          sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
+                         name(), state -> action -> name(),
+                         state -> target -> name(), state -> result_amount,
+                         util::school_type_string( state -> action -> get_school() ),
+                         util::result_type_string( state -> result ) );
+        }
+        else // DMG_OVER_TIME
+        {
+          dot_t* dot = state -> action -> get_dot( state -> target );
+          sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+                         name(), state -> action -> name(),
+                         dot -> current_tick, dot -> num_ticks,
+                         state -> target -> name(), state -> result_amount,
+                         util::school_type_string( state -> action -> get_school() ),
+                         util::result_type_string( state -> result ) );
+        }
+      }
+      return assessor::CONTINUE;
+    } );
+  }
+
+  // Leech, if the player has leeching enabled (disabled by default)
+  if ( spell.leech )
+  {
+    assessor_out_damage.add( assessor::LEECH, [ this ]( dmg_e, action_state_t* state )
+    {
+      // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
+      // break in the future if we ever decide to not separate heal and damage assessing.
+      double leech_pct = 0;
+      if ( ( state -> result_type == DMG_DIRECT || state -> result_type == DMG_OVER_TIME ) &&
+        state -> result_amount > 0 &&
+        ( leech_pct = state -> action -> composite_leech( state ) ) > 0 )
+      {
+        double leech_amount = leech_pct * state -> result_amount;
+        spell.leech -> base_dd_min = spell.leech -> base_dd_max = leech_amount;
+        spell.leech -> schedule_execute();
+      }
+      return assessor::CONTINUE;
+    } );
+  }
+
+  // Generic actor callbacks
+  assessor_out_damage.add( assessor::CALLBACKS, [ this ]( dmg_e, action_state_t* state )
+  {
+    if ( ! state -> action -> callbacks )
+    {
+      return assessor::CONTINUE;
+    }
+
+    proc_types pt = state -> proc_type();
+    proc_types2 pt2 = state -> impact_proc_type2();
+    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+      action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], state -> action, state );
+
+    return assessor::CONTINUE;
+  } );
+}
+
 // player_t::init_finished ==================================================
 
 bool player_t::init_finished()
@@ -2315,6 +2417,9 @@ bool player_t::init_finished()
       dynamic_cooldown_list.push_back( c );
     }
   } );
+
+  // Sort outbound assessors
+  assessor_out_damage.sort();
 
   return ret;
 }
@@ -5112,7 +5217,7 @@ bool absorb_sort( absorb_buff_t* a, absorb_buff_t* b )
   return a -> current_value < b -> current_value;
 }
 
-double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
+void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
 {
   /* ABSORB BUFFS
 
@@ -5128,10 +5233,6 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
      function.
 
   */
-
-  /* Initialize result ignoring external absorbs for raw TMI tracking purposes. Each
-     effective absorb caused by the player should subtract from this value */
-  double result_ignoring_external_absorbs = s -> result_amount;
 
   if ( ! ( p.absorb_buff_list.empty() && p.instant_absorb_list.empty() ) )
   {
@@ -5150,7 +5251,6 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
         double absorbed = ab -> consume( s );
 
         s -> result_amount -= absorbed;
-        result_ignoring_external_absorbs -= absorbed;
         s -> self_absorb_amount += absorbed;
 
         if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && absorbed != 0 )
@@ -5174,7 +5274,6 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
               double absorbed = ab -> consume( s -> result_amount );
 
               s -> result_amount -= absorbed;
-              result_ignoring_external_absorbs -= absorbed;
 
               // track result using only self-absorbs separately
               if ( ab -> source == &p || p.is_my_pet( ab -> source ) )
@@ -5225,7 +5324,6 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
         double absorbed = ab -> consume( s -> result_amount );
 
         s -> result_amount -= absorbed;
-        result_ignoring_external_absorbs -= absorbed;
 
         // track result using only self-absorbs separately
         if ( ab -> source == &p || p.is_my_pet( ab -> source ) )
@@ -5259,8 +5357,6 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
   p.iteration_absorb_taken += s -> self_absorb_amount;
 
   s -> result_absorbed = s -> result_amount;
-
-  return result_ignoring_external_absorbs;
 }
 
 void account_legendary_tank_cloak( player_t& p, action_state_t* s )
@@ -5287,7 +5383,7 @@ void account_legendary_tank_cloak( player_t& p, action_state_t* s )
 
 /* Statistical data collection
  */
-void collect_dmg_taken_data( player_t& p, action_state_t* s, double result_ignoring_external_absorbs )
+void collect_dmg_taken_data( player_t& p, const action_state_t* s, double result_ignoring_external_absorbs )
 {
   p.iteration_dmg_taken += s -> result_amount;
 
@@ -5362,41 +5458,41 @@ void player_t::assess_damage( school_e school,
 
   assess_damage_imminent_pre_absorb( school, type, s );
 
-  double result_ignoring_external_absorbs = account_absorb_buffs( *this, s, school );
+  account_absorb_buffs( *this, s, school );
 
   assess_damage_imminent( school, type, s );
 
   account_legendary_tank_cloak( *this, s );
+}
+
+void player_t::do_damage( action_state_t* incoming_state )
+{
+  using namespace assess_dmg_helper_functions;
 
   double actual_amount = 0.0;
-  // Prevent double-dipping on damage if the source has a spirit shift trinket up. Cthulhu save us
-  // all from this kludge.
-  if ( ! s -> action -> player -> buffs.spirit_shift ||
-       ! s -> action -> player -> buffs.spirit_shift -> check() )
-  {
-    collect_dmg_taken_data( *this, s, result_ignoring_external_absorbs );
+  collect_dmg_taken_data( *this, incoming_state,
+    incoming_state -> result_mitigated - incoming_state -> self_absorb_amount );
 
-    if ( s -> result_amount > 0.0 )
-      actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, nullptr, s -> action );
+  if ( incoming_state -> result_amount > 0.0 )
+  {
+    actual_amount = resource_loss( RESOURCE_HEALTH, incoming_state -> result_amount, nullptr,
+      incoming_state -> action );
   }
 
   // New callback system; proc abilities on incoming events.
   // TODO: How to express action causing/not causing incoming callbacks?
-  if ( s -> action )
+  if ( incoming_state -> action && incoming_state -> action -> callbacks )
   {
-    if ( s -> action -> callbacks )
-    {
-      proc_types pt = s -> proc_type();
-      proc_types2 pt2 = s -> execute_proc_type2();
-      // For incoming landed abilities, get the impact type for the proc.
-      //if ( pt2 == PROC2_LANDED )
-      //  pt2 = s -> impact_proc_type2();
+    proc_types pt = incoming_state -> proc_type();
+    proc_types2 pt2 = incoming_state -> execute_proc_type2();
+    // For incoming landed abilities, get the impact type for the proc.
+    //if ( pt2 == PROC2_LANDED )
+    //  pt2 = s -> impact_proc_type2();
 
-      // On damage/heal in. Proc flags are arranged as such that the "incoming"
-      // version of the primary proc flag is always follows the outgoing version.
-      if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-        action_callback_t::trigger( callbacks.procs[pt + 1][pt2], s -> action, s );
-    }
+    // On damage/heal in. Proc flags are arranged as such that the "incoming"
+    // version of the primary proc flag is always follows the outgoing version.
+    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+      action_callback_t::trigger( callbacks.procs[pt + 1][pt2], incoming_state -> action, incoming_state );
   }
 
   // Check if target is dying

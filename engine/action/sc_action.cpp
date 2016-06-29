@@ -1543,122 +1543,20 @@ void action_t::update_resolve( dmg_e type,
 
 // action_t::assess_damage ==================================================
 
-void action_t::assess_damage( dmg_e    type,
-                              action_state_t* s )
+void action_t::assess_damage( dmg_e type, action_state_t* s )
 {
-  // hook up resolve here, before armor mitigation, avoidance, and dmg reduction effects, etc.
-  update_resolve( type, s );
+  assert( s -> action == this );
 
-  s -> target -> assess_damage( get_school(), type, s );
+  // Execute outbound damage assessor pipeline on the state object
+  player -> assessor_out_damage.execute( type, s );
 
-  if ( sim -> debug )
-    s -> debug();
-
-  if ( ! player -> buffs.spirit_shift || ! player -> buffs.spirit_shift -> check() || ! target -> is_enemy() )
+  // TODO: Should part of this move to assessing, priority_iteration_damage for example?
+  if ( s -> result_amount > 0 || result_is_miss( s -> result ) )
   {
-    if ( type == DMG_DIRECT )
-    {
-      if ( sim -> log )
-      {
-        sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
-                       player -> name(), name(),
-                       s -> target -> name(), s -> result_amount,
-                       util::school_type_string( get_school() ),
-                       util::result_type_string( s -> result ) );
-      }
-    }
-    else // DMG_OVER_TIME
-    {
-      if ( sim -> log )
-      {
-        dot_t* dot = get_dot( s -> target );
-        sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
-                       player -> name(), name(),
-                       dot -> current_tick, dot -> num_ticks,
-                       s -> target -> name(), s -> result_amount,
-                       util::school_type_string( get_school() ),
-                       util::result_type_string( s -> result ) );
-      }
-    }
-
-    if ( ( s -> target == player -> sim -> target ) && s -> result_amount > 0 )
+    if ( s -> target == sim -> target )
     {
       player -> priority_iteration_dmg += s -> result_amount;
     }
-
-    if ( target -> is_enemy() )
-    {
-      if ( player -> buffs.legendary_aoe_ring && player -> buffs.legendary_aoe_ring -> check() )
-      {
-        player -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
-        if ( sim -> debug )
-        {
-          sim -> out_debug.printf( "%s %s stores %.2f damage from %s on %s, new stored amount = %.2f",
-                           player -> name(),
-                           player -> buffs.legendary_aoe_ring -> name(),
-                           s -> result_amount, name(), s -> target -> name(),
-                           player -> buffs.legendary_aoe_ring -> current_value );
-        }
-      }
-      // (All?) pets contribute towards the owner's legendary ring.
-      // TODO: Check if this is all pets, or just "class pets/guardians".
-      else if ( player -> is_pet() && player -> cast_pet() -> affects_wod_legendary_ring )
-      {
-        player_t* owner = player -> cast_pet() -> owner;
-        if ( owner -> buffs.legendary_aoe_ring && owner -> buffs.legendary_aoe_ring -> check() )
-        {
-          owner -> buffs.legendary_aoe_ring -> current_value += s -> result_amount;
-          if ( sim -> debug )
-          {
-            sim -> out_debug.printf( "%s %s stores %.2f damage from %s %s on %s, new stored amount = %.2f",
-                             owner -> name(),
-                             owner -> buffs.legendary_aoe_ring -> name(),
-                             s -> result_amount, player -> name(), name(),
-                             s -> target -> name(),
-                             owner -> buffs.legendary_aoe_ring -> current_value );
-          }
-        }
-      }
-    }
-
-    if ( player -> spell.leech )
-    {
-      // Leeching .. sanity check that the result type is a damaging one, so things hopefully don't
-      // break in the future if we ever decide to not separate heal and damage assessing.
-      double leech_pct = 0;
-      if ( ( s -> result_type == DMG_DIRECT || s -> result_type == DMG_OVER_TIME ) &&
-        s -> result_amount > 0 &&
-        ( leech_pct = composite_leech( s ) ) > 0 )
-      {
-        double leech_amount = leech_pct * s -> result_amount;
-        player -> spell.leech -> base_dd_min = player -> spell.leech -> base_dd_max = leech_amount;
-        player -> spell.leech -> schedule_execute();
-      }
-    }
-  }
-  else if ( s -> result_amount > 0 && player -> buffs.spirit_shift -> check() )
-  {
-    if ( sim -> debug )
-    {
-      player -> sim -> out_debug.printf( "%s spirit_shift accumulates %.0f damage.",
-          player -> name(), s -> result_amount );
-    }
-
-    player -> buffs.spirit_shift -> current_value += s -> result_amount;
-  }
-
-  // New callback system; proc spells on impact.
-
-  if ( callbacks )
-  {
-    proc_types pt = s -> proc_type();
-    proc_types2 pt2 = s -> impact_proc_type2();
-    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, s );
-  }
-
-  if ( ! player -> buffs.spirit_shift || ! player -> buffs.spirit_shift -> check() )
-  {
     record_data( s );
   }
 }

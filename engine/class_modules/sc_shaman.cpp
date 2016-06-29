@@ -1589,7 +1589,9 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 
   pet_spell_t( shaman_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     pet_action_t<T_PET, spell_t>( pet, name, spell, options )
-  { }
+  {
+    this -> parse_options( options );
+  }
 };
 
 // ==========================================================================
@@ -2059,10 +2061,10 @@ struct fire_elemental_t : public primal_elemental_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
 
-    def -> add_action( "fire_nova", "if=spell_targets.fire_nova>=3" );
+    def -> add_action( "fire_nova" );
     if ( o() -> talent.primal_elementalist -> ok() )
     {
-      def -> add_action( "immolate", "if=!ticking" );
+      def -> add_action( "immolate,target_if=!ticking" );
     }
     def -> add_action( "fire_blast" );
   }
@@ -6239,10 +6241,16 @@ void shaman_t::moving()
 
 double shaman_t::matching_gear_multiplier( attribute_e attr ) const
 {
-  if ( attr == ATTR_AGILITY || attr == ATTR_INTELLECT )
-    return constant.matching_gear_multiplier;
-
-  return 0.0;
+  switch ( specialization() )
+  {
+    case SHAMAN_ENHANCEMENT:
+      return attr == ATTR_AGILITY ? constant.matching_gear_multiplier : 0;
+    case SHAMAN_RESTORATION:
+    case SHAMAN_ELEMENTAL:
+      return attr == ATTR_INTELLECT ? constant.matching_gear_multiplier : 0;
+    default:
+      return 0.0;
+  }
 }
 
 // shaman_t::composite_spell_haste ==========================================

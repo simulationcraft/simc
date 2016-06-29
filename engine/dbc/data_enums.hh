@@ -27,6 +27,7 @@ enum item_bonus_type
   ITEM_BONUS_REQ_LEVEL = 8,
   ITEM_BONUS_SCALING   = 11, // Scaling based on ScalingStatDistribution.db2
   ITEM_BONUS_SCALING_2 = 13, // Scaling based on ScalingStatDistribution.db2
+  ITEM_BONUS_SET_ILEVEL= 14
 };
 
 enum proc_types
