@@ -6417,7 +6417,7 @@ struct icy_veins_buff_t : public buff_t
 {
   mage_t* p;
   icy_veins_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "icy_veins_buff", p -> find_spell( 12472 ) )
+    buff_t( buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) )
             .add_invalidate( CACHE_SPELL_HASTE ) ),p( p )
   {}
 
