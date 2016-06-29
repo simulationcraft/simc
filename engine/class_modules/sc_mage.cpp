@@ -4897,8 +4897,8 @@ struct pyroblast_t : public fire_mage_spell_t
 
   pyroblast_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "pyroblast", p, p -> find_class_spell( "Pyroblast" ) ),
-    marquee_bindings_of_the_sun_king_proc_chance( 0.0 ),
-    conjure_phoenix( nullptr )
+    conjure_phoenix( nullptr ),
+    marquee_bindings_of_the_sun_king_proc_chance( 0.0 )
   {
     parse_options( options_str );
 
