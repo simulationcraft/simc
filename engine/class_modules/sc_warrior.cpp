@@ -1098,6 +1098,8 @@ struct bladestorm_t: public warrior_attack_t
     channeled = tick_zero = true;
     callbacks = interrupt_auto_attack = false;
 
+    travel_speed = 0;
+
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
 
