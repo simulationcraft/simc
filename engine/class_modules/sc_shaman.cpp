@@ -4223,16 +4223,6 @@ struct earth_shock_t : public shaman_spell_t
       p() -> resource_gain( RESOURCE_MAELSTROM, resource_consumed, p() -> gain.t18_2pc_elemental, this );
     }
   }
-
-  bool ready() override
-  {
-    if ( p() -> buff.ascendance -> check() )
-    {
-      return false;
-    }
-
-    return shaman_spell_t::ready();
-  }
 };
 
 // Flame Shock Spell ========================================================
