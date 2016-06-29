@@ -12,8 +12,6 @@
 // Legion TODO
 // Elemental
 // - Verification
-// - Magnitude
-// - Fury of the Storms Lightning Elemental Chain Lightning
 // - Path of Flame spread mechanism (would be good to generalize this "nearby" spreading)
 // - At what point does Greater Lighting Elemental start aoeing?
 

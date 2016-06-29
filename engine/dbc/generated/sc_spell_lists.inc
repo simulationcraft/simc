@@ -872,7 +872,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       126892, // Zen Pilgrimage
            0,
     },
-    // Brewmaster tree, 13 abilities
+    // Brewmaster tree, 16 abilities
     {
       205523, // Blackout Strike
       115181, // Breath of Fire
@@ -882,15 +882,19 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       195630, // Elusive Brawler
       115072, // Expel Harm
       115203, // Fortifying Brew
+      124273, // Heavy Stagger
       115308, // Ironskin Brew
       121253, // Keg Smash
+      124275, // Light Stagger
+      124274, // Moderate Stagger
       119582, // Purifying Brew
       116705, // Spear Hand Strike
       115176, // Zen Meditation
            0,
     },
-    // Mistweaver tree, 12 abilities
+    // Mistweaver tree, 13 abilities
     {
+      228649, // Blackout Kick
       115450, // Detox
       116694, // Effuse
       124682, // Enveloping Mist
