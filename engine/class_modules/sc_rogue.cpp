@@ -3374,6 +3374,7 @@ struct shadow_blade_t : public rogue_attack_t
     background = true;
     may_glance = false;
     base_execute_time = w -> swing_time;
+    affected_by.weaponmaster = true;
   }
 };
 
