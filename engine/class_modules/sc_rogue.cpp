@@ -773,7 +773,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.deepening_shadows = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.ghostly_strike = data().affected_by( p() -> talent.ghostly_strike -> effectN( 5 ) );
     affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
-    affected_by.weaponmaster = ! background && harmful &&
+    affected_by.weaponmaster = p() -> talent.weaponmaster -> ok() && harmful && ! special &&
                                ( weapon_multiplier > 0 || attack_power_mod.direct > 0 );
     affected_by.agonizing_poison = p() -> talent.agonizing_poison -> ok();
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
@@ -1186,6 +1186,7 @@ struct soul_rip_t : public rogue_attack_t
   {
     rogue_attack_t::init();
 
+    // Soul Rip in game is done by the pet, so presume it procs nothing
     memset( &affected_by, 0, sizeof( affected_by ) );
   }
 };
