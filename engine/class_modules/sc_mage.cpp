@@ -1518,7 +1518,7 @@ struct arcane_missiles_buff_t : public buff_t
 struct chilled_t : public buff_t
 {
   chilled_t( mage_td_t* td ) :
-    buff_t( buff_creator_t( td -> target, "chilled",
+    buff_t( buff_creator_t( *td, "chilled",
                             td -> source -> find_spell( 205708 ) ) )
   {}
 
@@ -4250,14 +4250,10 @@ struct ice_lance_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
+    //TODO: Fix hardcoding of this value/
     if ( frozen )
     {
-      am *= 1.0 + data().effectN( 2 ).percent();
-    }
-
-    if ( p() -> buffs.fingers_of_frost -> check() )
-    {
-      am *= 1.0 + p() -> buffs.fingers_of_frost -> data().effectN( 2 ).percent();
+      am *= 3.0;
     }
 
     if ( p() -> buffs.shatterlance -> check() )
