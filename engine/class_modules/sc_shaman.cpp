@@ -239,7 +239,6 @@ public:
   struct
   {
     double matching_gear_multiplier;
-    double speed_attack_ancestral_swiftness;
     double haste_ancestral_swiftness;
   } constant;
 
@@ -586,6 +585,7 @@ public:
   double    composite_melee_haste() const override;
   double    composite_melee_speed() const override;
   double    composite_attack_power_multiplier() const override;
+  double    composite_attribute_multiplier( attribute_e ) const override;
   double    composite_spell_crit() const override;
   double    composite_spell_haste() const override;
   double    composite_spell_power( school_e school ) const override;
@@ -5323,10 +5323,9 @@ void shaman_t::init_spells()
   spell.eruption                     = find_spell( 168556 );
   spell.maelstrom_melee_gain         = find_spell( 187890 );
   spell.fury_of_the_storms_driver    = find_spell( 191716 );
-  spell.feral_spirit_summon          = find_spell( 198506 );
+  spell.feral_spirit_summon          = find_spell( 228562 );
 
   // Constants
-  constant.speed_attack_ancestral_swiftness = 1.0 / ( 1.0 + talent.ancestral_swiftness -> effectN( 2 ).percent() );
   constant.haste_ancestral_swiftness  = 1.0 / ( 1.0 + talent.ancestral_swiftness -> effectN( 1 ).percent() );
 
   player_t::init_spells();
@@ -5612,7 +5611,6 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     a -> target = state -> target;
     a -> schedule_execute();
     a -> schedule_execute();
-    a -> schedule_execute();
     if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, PVP, B4 ) )
     {
       a -> schedule_execute();
@@ -5770,7 +5768,7 @@ void shaman_t::create_buffs()
                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                         .add_invalidate( CACHE_CRIT );
   buff.rockbiter = buff_creator_t( this, "rockbiter", find_spell( 202004 ) )
-                   .add_invalidate( CACHE_ATTACK_POWER )
+                   .add_invalidate( CACHE_AGILITY )
                    .chance( talent.landslide -> ok() )
                    .default_value( find_spell( 202004 ) -> effectN( 1 ).percent() );
   buff.doom_winds = buff_creator_t( this, "doom_winds", &( artifact.doom_winds.data() ) )
@@ -6347,9 +6345,6 @@ double shaman_t::composite_melee_speed() const
 {
   double speed = player_t::composite_melee_speed();
 
-  if ( talent.ancestral_swiftness -> ok() )
-    speed *= constant.speed_attack_ancestral_swiftness;
-
   if ( buff.windsong -> up() )
   {
     speed *= buff.windsong -> check_value();
@@ -6393,9 +6388,22 @@ double shaman_t::composite_attack_power_multiplier() const
 {
   double m = player_t::composite_attack_power_multiplier();
 
-  if ( buff.rockbiter -> up() )
+  return m;
+}
+
+// shaman_t::composite_attribute_multiplier =================================
+
+double shaman_t::composite_attribute_multiplier( attribute_e attribute ) const
+{
+  double m = player_t::composite_attribute_multiplier( attribute );
+
+  switch ( attribute )
   {
-    m *= 1.0 + buff.rockbiter -> check_value();
+    case ATTR_AGILITY:
+      m *= 1.0 + buff.rockbiter -> stack_value();
+      break;
+    default:
+      break;
   }
 
   return m;
