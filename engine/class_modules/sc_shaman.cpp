@@ -2984,13 +2984,13 @@ struct windstrike_t : public stormstrike_base_t
     cd( data().cooldown() )
   {
     // Actual damaging attacks are done by stormstrike_attack_t
-    mh = new windstrike_attack_t( "windstrike_mh", player, data().effectN( 2 ).trigger(), &( player -> main_hand_weapon ) );
+    mh = new windstrike_attack_t( "windstrike_mh", player, data().effectN( 1 ).trigger(), &( player -> main_hand_weapon ) );
     add_child( mh );
     add_child( mh -> cl );
 
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
-      oh = new windstrike_attack_t( "windstrike_offhand", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
+      oh = new windstrike_attack_t( "windstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
       add_child( oh );
       add_child( oh -> cl );
     }
