@@ -1487,6 +1487,11 @@ struct valkyr_pet_t : public death_knight_pet_t
 
   void increase_power( double rp_spent )
   {
+    if ( is_sleeping() )
+    {
+      return;
+    }
+
     double increase = rp_spent * shadow_empowerment -> data().effectN( 1 ).percent();
 
     if ( ! shadow_empowerment -> check() )
@@ -1687,8 +1692,7 @@ struct death_knight_action_t : public Base
 
     // Dark arbiter
     if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> resource_consumed > 0 &&
-         p() -> talent.dark_arbiter -> ok() &&
-         p() -> pets.dark_arbiter && ! p() -> pets.dark_arbiter -> is_sleeping() )
+         p() -> talent.dark_arbiter -> ok() && p() -> pets.dark_arbiter )
     {
       p() -> pets.dark_arbiter -> increase_power( this -> resource_consumed );
     }
@@ -1790,7 +1794,7 @@ struct death_knight_action_t : public Base
           }
 
           if ( dk -> talent.pestilent_pustules -> ok() &&
-               ++dk -> pestilent_pustules == 5 ) // TODO: Sigh, really? Hardcoded?
+               ++dk -> pestilent_pustules == dk -> talent.pestilent_pustules -> effectN( 1 ).base_value() )
           {
             dk -> replenish_rune( 1, dk -> gains.pestilent_pustules );
             dk -> pestilent_pustules = 0;
@@ -2840,8 +2844,6 @@ struct defile_t : public death_knight_spell_t
 // Death Coil ===============================================================
 
 // TODO: Conveert to mimic blizzard spells
-// TODO: As of 06/26/2016, Val'kyr does not benefit from Sudden Doomed Death Coils, check later if
-// this is fixed
 struct death_coil_t : public death_knight_spell_t
 {
 
@@ -2864,6 +2866,12 @@ struct death_coil_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+
+    // Sudden Doomed Death Coils will now generate power for Val'Kyr
+    if ( p() -> buffs.sudden_doom -> check() && p() -> pets.dark_arbiter )
+    {
+      p() -> pets.dark_arbiter -> increase_power( base_costs[ RESOURCE_RUNIC_POWER ] );
+    }
 
     p() -> buffs.sudden_doom -> decrement();
 
