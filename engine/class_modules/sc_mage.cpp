@@ -4442,6 +4442,7 @@ struct living_bomb_t : public fire_mage_spell_t
   virtual timespan_t composite_dot_duration( const action_state_t* s )
     const override;
   virtual void last_tick( dot_t* d ) override;
+  virtual void init() override;
 };
 
 living_bomb_explosion_t::
@@ -4456,6 +4457,7 @@ living_bomb_explosion_t::
   if ( parent_lb -> casted )
   {
     child_lb = new living_bomb_t( p, std::string( "" ), false );
+    child_lb -> background = true;
   }
 }
 
@@ -4471,9 +4473,9 @@ void living_bomb_explosion_t::impact( action_state_t* s )
     if ( sim -> debug )
     {
       sim -> out_debug.printf(
-        "living_bomb_explosion on %s applies living_bomb on %s",
-        s -> action -> target -> name(),
-        s -> target -> name() );
+        "%s %s on %s applies %s on %s",
+        p() -> name(), name(), s -> action -> target -> name(),
+        child_lb -> name(), s -> target -> name() );
     }
 
     child_lb -> target = s -> target;
@@ -4483,13 +4485,20 @@ void living_bomb_explosion_t::impact( action_state_t* s )
 
 living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str,
                               bool _casted = true ) :
-  fire_mage_spell_t( "living_bomb", p, p -> find_spell( 217694 ) ),
+  fire_mage_spell_t( "living_bomb", p, p -> talents.living_bomb ),
   casted( _casted ),
   explosion( new living_bomb_explosion_t( p, this ) )
 {
   parse_options( options_str );
 
-  snapshot_flags = STATE_HASTE;
+  // Why in Azeroth would they put DOT spell data in a separate spell??
+  const spell_data_t* dot_data = p -> find_spell( 217694 );
+  dot_duration = dot_data -> duration();
+  for ( size_t i = 1; i <= dot_data -> effect_count(); i++ )
+  {
+    parse_effect_data( dot_data -> effectN( i ) );
+  }
+
   cooldown -> hasted = true;
   hasted_ticks       = true;
 }
@@ -4507,6 +4516,13 @@ void living_bomb_t::last_tick( dot_t* d )
 
   explosion -> target = d -> target;
   explosion -> execute();
+}
+
+void living_bomb_t::init()
+{
+  fire_mage_spell_t::init();
+
+  update_flags &= ~STATE_HASTE;
 }
 
 
