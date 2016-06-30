@@ -26,7 +26,6 @@ namespace { // UNNAMED NAMESPACE
   Feral =====================================================================
   Predator vs. adds
   Artifact utility traits
-  Brutal Slash hasted recharge
   Check Luffa-Wrapped Grips (what procs it)
   Check Blood Scent crit
 
@@ -36,7 +35,6 @@ namespace { // UNNAMED NAMESPACE
   Shooting Stars AsP react
   Check Fury of Elune
   Moonfire and Sunfire mana costs (see action_t::parse_spell_data)
-  Rewrite dmg_spell actions
 
   Touch of the Moon
   Light of the Sun
@@ -70,6 +68,7 @@ struct stalwart_guardian_t;
 namespace spells {
 struct moonfire_t;
 struct starshards_t;
+struct shooting_stars_t;
 }
 namespace heals {
 struct cenarion_ward_hot_t;
@@ -290,11 +289,12 @@ public:
     cat_attacks::gushing_wound_t*   gushing_wound;
     heals::cenarion_ward_hot_t*     cenarion_ward_hot;
     heals::yseras_tick_t*           yseras_gift;
-    spells::moonfire_t*             galactic_guardian;
+    spell_t*                        galactic_guardian;
     spell_t*                        starfall;
     spell_t*                        echoing_stars;
     spells::starshards_t*           starshards;
-    attack_t*                        ashamanes_rip;
+    attack_t*                       ashamanes_rip;
+    spell_t*                        shooting_stars;
   } active;
 
   // Pets
@@ -1751,6 +1751,9 @@ public:
 
   virtual void trigger_balance_tier18_2pc()
   {
+    if ( ! p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
+      return;
+
     if ( ! p() -> rppm.balance_tier18_2pc -> trigger() )
       return;
 
@@ -1763,20 +1766,28 @@ public:
       }
     }
   }
+
+  virtual void trigger_shooting_stars( action_state_t* s )
+  {
+    if ( ! p() -> talent.shooting_stars -> ok() )
+      return;
+
+    if ( rng().roll( p() -> talent.shooting_stars -> effectN( 1 ).percent() ) )
+    {
+      p() -> active.shooting_stars -> target = s -> target;
+      p() -> active.shooting_stars -> execute();
+    }
+  }
 }; // end druid_spell_t
 
 // Shooting Stars ===========================================================
-// TOCHECK: Can it proc from direct damage now?
 
 struct shooting_stars_t : public druid_spell_t
 {
-  double proc_chance;
-
   shooting_stars_t( druid_t* player ) :
     druid_spell_t( "shooting_stars", player, player -> find_spell( 202497 ) )
   {
     background = true;
-    proc_chance = player -> talent.shooting_stars -> effectN( 1 ).percent();
   }
 };
 
@@ -1784,62 +1795,67 @@ struct shooting_stars_t : public druid_spell_t
 
 struct moonfire_t : public druid_spell_t
 {
-  shooting_stars_t* shooting_stars;
-  bool gore;
+  struct moonfire_damage_t : public druid_spell_t
+  {
+    moonfire_damage_t( druid_t* p ) : 
+      druid_spell_t( "moonfire_dmg", p, p -> find_spell( 164812 ) )
+    {
+      if ( p -> talent.shooting_stars -> ok() && ! p -> active.shooting_stars )
+      {
+        p -> active.shooting_stars = new shooting_stars_t( p );
+      }
+
+      may_miss = false;
+      dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
+      base_multiplier    *= 1.0 + p -> spec.guardian -> effectN( 4 ).percent();
+      base_dd_multiplier *= 1.0 + p -> spec.feral_overrides -> effectN( 1 ).percent();
+      base_td_multiplier *= 1.0 + p -> spec.feral_overrides -> effectN( 2 ).percent();
+
+      base_multiplier    *= 1.0 + p -> artifact.twilight_glow.percent();
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double tm = druid_spell_t::composite_target_multiplier( t );
+
+      if ( td( t ) -> debuff.stellar_empowerment -> up() )
+        tm *= 1.0 + ( td( t ) -> debuff.stellar_empowerment -> check_value()
+              + p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() ) * ( 1.0 + p() -> artifact.falling_star.percent() );
+
+      return tm;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      druid_spell_t::tick( d );
+
+      trigger_shooting_stars( d -> state );
+
+      trigger_balance_tier18_2pc();
+    }
+  };
 
   moonfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonfire", player, player -> find_spell( 8921 ), options_str ),
-    gore( true )
+    druid_spell_t( "moonfire", player, player -> find_spell( 8921 ), options_str )
   {
-    const spell_data_t* dmg_spell = player -> find_spell( 164812 );
-    
-    dot_duration           = dmg_spell -> duration();
-    dot_duration          += player -> spec.balance_overrides -> effectN( 4 ).time_value();
-    base_tick_time         = dmg_spell -> effectN( 2 ).period();
-    spell_power_mod.tick   = dmg_spell -> effectN( 2 ).sp_coeff();
-    spell_power_mod.direct = dmg_spell -> effectN( 1 ).sp_coeff();
-    base_multiplier       *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
-    base_dd_multiplier    *= 1.0 + player -> spec.feral_overrides -> effectN( 1 ).percent();
-    base_td_multiplier    *= 1.0 + player -> spec.feral_overrides -> effectN( 2 ).percent();
-
     if ( player -> specialization() == DRUID_BALANCE )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount  += player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_amount   = player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
-      energize_type = ENERGIZE_NONE;
-
-    if ( player -> talent.shooting_stars -> ok() )
-      shooting_stars = new shooting_stars_t( player );
-
-    base_multiplier *= 1.0 + player -> artifact.twilight_glow.percent();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = druid_spell_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> debuff.stellar_empowerment -> up() )
-      tm *= 1.0 + ( td( t ) -> debuff.stellar_empowerment -> check_value()
-            + p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() ) * ( 1.0 + p() -> artifact.falling_star.percent() );
-
-    return tm;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    druid_spell_t::tick( d );
-
-    if ( p() -> talent.shooting_stars -> ok() && rng().roll( shooting_stars -> proc_chance ) )
     {
-      shooting_stars -> target = d -> target;
-      shooting_stars -> execute();
+      energize_type = ENERGIZE_NONE;
     }
 
-    if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
-      trigger_balance_tier18_2pc();
+    impact_action = new moonfire_damage_t( player );
+    impact_action -> stats = stats;
+
+    // Add damage modifiers in moonfire_damage_t, not here.
   }
+
+  dot_t* get_dot( player_t* t ) override
+  { return impact_action -> get_dot( t ); }
 
   void impact( action_state_t* s ) override
   {
@@ -1847,25 +1863,14 @@ struct moonfire_t : public druid_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( gore && ! background )
-        trigger_gore();
+      trigger_gore();
 
-      if ( p() -> talent.galactic_guardian -> ok() && ! background && p() -> buff.galactic_guardian -> check() )
+      if ( p() -> buff.galactic_guardian -> check() )
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
         p() -> buff.galactic_guardian -> expire();
       } 
     }
-  }
-};
-
-struct galactic_guardian_t : public moonfire_t
-{
-  galactic_guardian_t( druid_t* p ) :
-    moonfire_t( p, "" )
-  {
-    background = proc = true;
-    gore = false;
   }
 };
 
@@ -2531,6 +2536,7 @@ struct brutal_slash_t : public cat_attack_t
     energize_amount = data().effectN( 1 ).base_value();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type = ENERGIZE_ON_HIT;
+    cooldown -> hasted = true;
 
     base_multiplier *= 1.0 + p -> artifact.sharpened_claws.percent();
   }
@@ -3544,6 +3550,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     use_off_gcd = quiet = true;
     may_crit = false;
     target = p;
+    cooldown -> hasted = true;
 
     heal_pct = data().effectN( 2 ).percent(); // base heal percent
     time_window = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
@@ -3605,6 +3612,9 @@ struct healing_touch_t : public druid_heal_t
 
     init_living_seed();
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
+    base_multiplier *= 1.0 + p -> spec.feral -> effectN( 2 ).percent()
+      + p -> spec.balance -> effectN( 2 ).percent()
+      + p -> spec.guardian -> effectN( 2 ).percent();
 
     // redirect to self if not specified
     if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
@@ -4823,53 +4833,65 @@ struct new_moon_t : public druid_spell_t
 
 struct sunfire_t : public druid_spell_t
 {
-  shooting_stars_t* shooting_stars;
+  struct sunfire_damage_t : public druid_spell_t
+  {
+    sunfire_damage_t( druid_t* p ) : 
+      druid_spell_t( "sunfire_dmg", p, p -> find_spell( 164815 ) )
+    {
+      if ( p -> talent.shooting_stars -> ok() && ! p -> active.shooting_stars )
+      {
+        p -> active.shooting_stars = new shooting_stars_t( p );
+      }
+      
+      aoe = -1;
+      dot_duration += p -> spec.balance_overrides -> effectN( 4 ).time_value();
+
+      base_multiplier *= 1.0 + p -> artifact.sunfire_burns.percent();
+      radius += p -> artifact.sunblind.value();
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double tm = druid_spell_t::composite_target_multiplier( t );
+
+      if ( td( t ) -> debuff.stellar_empowerment -> up() )
+        tm *= 1.0 + ( td( t ) -> debuff.stellar_empowerment -> check_value()
+              + p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() ) * ( 1.0 + p() -> artifact.falling_star.percent() );
+
+      return tm;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      druid_spell_t::tick( d );
+
+      trigger_shooting_stars( d -> state );
+
+      trigger_balance_tier18_2pc();
+    }
+  };
 
   sunfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "sunfire", player, player -> find_specialization_spell( "Sunfire" ), options_str ),
-    shooting_stars( new shooting_stars_t( player ) )
+    druid_spell_t( "sunfire", player, player -> find_specialization_spell( "Sunfire" ), options_str )
   {
-    const spell_data_t* dmg_spell = player -> find_spell( 164815 );
-
-    dot_duration           = dmg_spell -> duration();
-    dot_duration          += player -> spec.balance_overrides -> effectN( 4 ).time_value();
-    base_tick_time         = dmg_spell -> effectN( 2 ).period();
-    spell_power_mod.direct = dmg_spell -> effectN( 1 ).sp_coeff();
-    spell_power_mod.tick   = dmg_spell -> effectN( 2 ).sp_coeff();
-    aoe                    = -1;
-    energize_amount           += player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-
-    base_multiplier *= 1.0 + player -> artifact.sunfire_burns.percent();
-    radius += player -> artifact.sunblind.value();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double tm = druid_spell_t::composite_target_multiplier( t );
-
-    if ( td( t ) -> debuff.stellar_empowerment -> up() )
-      tm *= 1.0 + ( td( t ) -> debuff.stellar_empowerment -> check_value()
-            + p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() ) * ( 1.0 + p() -> artifact.falling_star.percent() );
-
-    return tm;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    druid_spell_t::tick( d );
-
-    if ( result_is_hit( d -> state -> result ) )
+    if ( player -> specialization() == DRUID_BALANCE )
     {
-      if ( p() -> talent.shooting_stars -> ok() && rng().roll( shooting_stars -> proc_chance ) )
-      {
-        shooting_stars -> target = d -> target;
-        shooting_stars -> execute();
-      }
-
-      if ( p() -> sets.has_set_bonus( DRUID_BALANCE, T18, B2 ) )
-        trigger_balance_tier18_2pc();
+      energize_resource = RESOURCE_ASTRAL_POWER;
+      energize_amount   = player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
     }
+    else
+    {
+      energize_type = ENERGIZE_NONE;
+    }
+
+    impact_action = new sunfire_damage_t( player );
+    impact_action -> stats = stats;
+
+    // Add damage modifiers in sunfire_damage_t, not here.
   }
+
+  dot_t* get_dot( player_t* t ) override
+  { return impact_action -> get_dot( t ); }
 };
 
 // Moonkin Form Spell =======================================================
@@ -5401,7 +5423,7 @@ struct survival_instincts_t : public druid_spell_t
 
     // Spec-based cooldown modifiers
     cooldown -> duration += player -> spec.feral_overrides2 -> effectN( 6 ).time_value();
-    cooldown -> duration += player -> spec.guardian_overrides -> effectN( 5 ).time_value();
+    cooldown -> duration *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
 
     cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
 
@@ -5937,7 +5959,7 @@ void druid_t::init_spells()
     active.brambles_pulse     = new bear_attacks::brambles_pulse_t( this );
   }
   if ( talent.galactic_guardian -> ok() )
-    active.galactic_guardian  = new spells::galactic_guardian_t( this );
+    active.galactic_guardian  = new spells::moonfire_t::moonfire_damage_t( this );
   if ( artifact.rage_of_the_sleeper.rank() )
     active.rage_of_the_sleeper = new bear_attacks::rage_of_the_sleeper_reflect_t( this );
   if ( artifact.ashamanes_bite.rank() )
