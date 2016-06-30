@@ -1,4 +1,4 @@
-demonhunter="DH_Vengeance_PvP"
+demonhunter="Demon_Hunter_Vengeance_PvP"
 level=110
 race=night_elf
 timeofday=night
@@ -40,29 +40,29 @@ actions+=/fel_devastation
 actions+=/soul_carver
 actions+=/shear
 
-head=vindictive_combatants_felskin_helm,id=136297,bonus_id=1695
-neck=vindictive_combatants_necklace,id=135907
-shoulders=vindictive_combatants_felskin_spaulders,id=136300,bonus_id=1710
-back=vindictive_combatants_demonthread_cloak,id=136893,bonus_id=1678
-chest=vindictive_combatants_felskin_tunic,id=136299,bonus_id=1679
-wrists=vindictive_combatants_felskin_wristguards,id=136302,bonus_id=1680
-hands=vindictive_combatants_felskin_gloves,id=136296,bonus_id=1681
-waist=vindictive_combatants_felskin_belt,id=136301,bonus_id=1682
-legs=vindictive_combatants_felskin_legguards,id=136298,bonus_id=1704
-feet=vindictive_combatants_felskin_boots,id=136295,bonus_id=1710
-finger1=vindictive_combatants_band,id=135912
-finger2=vindictive_combatants_signet,id=135916
-trinket1=vindictive_combatants_emblem_of_meditation,id=135922
-trinket2=vindictive_combatants_insignia_of_conquest,id=135919
-main_hand=aldrachi_warblades,id=128832,bonus_id=721
-off_hand=aldrachi_warblades,id=128831
+head=hood_of_the_blind_executioner,id=137511
+neck=pendant_of_the_moon_temple,id=139605,enchant_id=5439
+shoulders=charskin_mantle,id=137510
+back=cloak_of_manaspun_silk,id=134410,enchant_id=5435
+chest=vest_of_rupturing_diamonds,id=137336
+wrists=shorn_batbrood_cuffs,id=136979
+hands=frostcarver_grips,id=134445
+waist=sinister_ashfall_cord,id=134455
+legs=snaggles_favorite_pants,id=140594
+feet=footpads_of_the_swift_balestra,id=137497
+finger1=band_of_the_wyrm_matron,id=134524
+finger2=utgarde_royal_signet,id=133637
+trinket1=chaos_talisman,id=137459
+trinket2=horn_of_valor,id=133642
+main_hand=twinblades_of_the_deceiver,id=127829,ilevel=750,enchant_id=5427
+off_hand=twinblades_of_the_deceiver,id=127830,ilevel=750,enchant_id=5427
 
 # Gear Summary
-# gear_ilvl=802.50
-# gear_agility=6806
-# gear_stamina=12466
-# gear_crit_rating=3156
-# gear_haste_rating=2640
-# gear_mastery_rating=916
-# gear_versatility_rating=8222
-# gear_armor=1769
+# gear_ilvl=820.00
+# gear_agility=8531
+# gear_stamina=14228
+# gear_crit_rating=10141
+# gear_haste_rating=834
+# gear_mastery_rating=1633
+# gear_versatility_rating=4695
+# gear_armor=1830

@@ -30,14 +30,14 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/aspect_of_the_wild
 actions+=/stampede
+actions+=/dire_beast,if=cooldown.bestial_wrath.remains>2
+actions+=/dire_frenzy,if=cooldown.bestial_wrath.remains>2
 actions+=/titans_thunder,if=buff.dire_beast.remains>6
 actions+=/multishot,if=spell_targets.multi_shot>1&pet.cat.buff.beast_cleave.remains<0.5
 actions+=/bestial_wrath
 actions+=/kill_command
 actions+=/a_murder_of_crows
 actions+=/chimaera_shot
-actions+=/dire_beast
-actions+=/dire_frenzy
 actions+=/barrage,if=cooldown.kill_command.remains>1
 actions+=/cobra_shot,if=focus>90
 

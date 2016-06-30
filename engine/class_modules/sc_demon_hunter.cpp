@@ -5403,10 +5403,10 @@ void demon_hunter_t::apl_havoc()
 
   def -> add_action( "potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25" );
   def -> add_action( this, spec.death_sweep, "death_sweep", "if=death_sweep_worth_using",
-    "Use Death Sweep if its damage per fury is greater than Annihilation. See the Demon Hunter section of the wiki for how this is calculated." );
+    "Use Death Sweep if it is more effective than Annihilation. See the Demon Hunter section of the wiki for how this is calculated." );
   def -> add_action( this, "Demon's Bite", "if=buff.metamorphosis.remains>gcd&cooldown.blade_dance.remains<gcd&fury<70&death_sweep_worth_using" );
-  def -> add_action( this, "Blade Dance", "if=blade_dance_worth_using"
-    "Use Blade Dance if its damage per fury is greater than Annihilation. See the Demon Hunter section of the wiki for how this is calculated." );
+  def -> add_action( this, "Blade Dance", "if=blade_dance_worth_using",
+    "Use Blade Dance if it is more effective than Chaos Strike. See the Demon Hunter section of the wiki for how this is calculated." );
   def -> add_talent( this, "Fel Barrage", "if=charges>=5" );
   def -> add_action( this, artifact.fury_of_the_illidari, "fury_of_the_illidari", "if=buff.metamorphosis.down|spell_targets.fury_of_the_illidari_tick>2+talent.chaos_cleave.enabled" );
   def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&spell_targets>=2+talent.chaos_cleave.enabled" );
