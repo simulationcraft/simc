@@ -17,6 +17,11 @@ namespace { // UNNAMED NAMESPACE
   Affinity active components
   Artifact 20 rank traits?
   Ekowraith, Creator of Worlds legendary
+  Cinidaria, the Symbiote
+  Promise of Elune, the Moon Goddess rework
+  Ailuro Invigorators -> Ailuro Pouncers
+  Sephuz's Secret
+  Impeccable Fel Essence rework
 
   Feral =====================================================================
   Predator vs. adds
@@ -31,6 +36,7 @@ namespace { // UNNAMED NAMESPACE
   Shooting Stars AsP react
   Check Fury of Elune
   Moonfire and Sunfire mana costs (see action_t::parse_spell_data)
+  Rewrite dmg_spell actions
 
   Touch of the Moon
   Light of the Sun
@@ -694,7 +700,6 @@ public:
     const special_effect_t* impeccable_fel_essence;
 
     // Feral
-    const special_effect_t* ph_bite_refreshes_bleeds;
     const special_effect_t* the_wildshapers_clutch;
     const special_effect_t* chatoyant_signet;
     const special_effect_t* ailuro_invigorators;
@@ -2550,8 +2555,6 @@ struct ferocious_bite_t : public cat_attack_t
 {
   double excess_energy;
   double max_excess_energy;
-  timespan_t sabertooth_total;
-  timespan_t sabertooth_base;
   bool max_energy;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
@@ -2566,12 +2569,6 @@ struct ferocious_bite_t : public cat_attack_t
     energize_type      = ENERGIZE_NONE; // disable negative energy gain in spell data
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent(); // TOCHECK
-
-    if ( p -> talent.sabertooth -> ok() )
-    {
-      sabertooth_base =
-        timespan_t::from_seconds( p -> talent.sabertooth -> effectN( 1 ).base_value() );
-    }
   } 
 
   double maximum_energy() const
@@ -2604,8 +2601,6 @@ struct ferocious_bite_t : public cat_attack_t
     excess_energy = std::min( max_excess_energy,
       ( p() -> resources.current[ RESOURCE_ENERGY ] - cat_attack_t::cost() ) );
 
-    sabertooth_total = p() -> resources.current[ RESOURCE_COMBO_POINT ] * sabertooth_base;
-
     cat_attack_t::execute();
 
     max_excess_energy = -1 * data().effectN( 2 ).base_value();
@@ -2617,20 +2612,10 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( s -> target -> health_percentage() <= 25 )
+      if ( s -> target -> health_percentage() <= 25 || p() -> talent.sabertooth -> ok() )
       {
         td( s -> target ) -> dots.rip -> refresh_duration( 0 );
-
-        if ( p() -> legendary.ph_bite_refreshes_bleeds )
-        {
-          // TOCHECK
-          td( s -> target ) -> dots.rake -> refresh_duration( 0 );
-          td( s -> target ) -> dots.thrash_cat -> refresh_duration( 0 );
-        }
       }
-
-      if ( sabertooth_total > timespan_t::zero() )
-        td( s -> target ) -> dots.rip -> extend_duration( sabertooth_total, p() -> spec.rip -> duration() * 1.3 ); // TOCHECK: Sabertooth before or after BitW?
     }
   }
 
@@ -5185,7 +5170,7 @@ struct starfall_t : public druid_spell_t
 
     if ( p -> artifact.echoing_stars.rank() && ! p -> active.echoing_stars )
     {
-      assert( p -> find_spell( 213666 ) -> effectN( 1 ).base_value() == 2 );
+      // assert( p -> find_spell( 213666 ) -> effectN( 1 ).base_value() == 2 );
 
       /* Create echoing stars action. If distance targeting is off, we'll just cheat a bit and
       trigger a repeat AoE that hits for less damage. If it's on, then we'll do real chaining
@@ -7911,12 +7896,6 @@ static void oneths_intuition( special_effect_t& effect )
     .chance( effect.proc_chance() );
 }
 
-static void ph_bite_refreshes_bleeds( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.ph_bite_refreshes_bleeds, effect );
-}
-
 static void chatoyant_signet( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
@@ -8013,7 +7992,6 @@ struct druid_module_t : public module_t
     unique_gear::register_special_effect( 208199, impeccable_fel_essence );
     unique_gear::register_special_effect( 208319, the_wildshapers_clutch );
     unique_gear::register_special_effect( 209405, oneths_intuition );
-    // unique_gear::register_special_effect( , ph_bite_refreshes_bleeds );
     unique_gear::register_special_effect( 207523, chatoyant_signet );
     unique_gear::register_special_effect( 208209, ailuro_invigorators );
     unique_gear::register_special_effect( 208283, promise_of_elune_the_moon_goddess );
