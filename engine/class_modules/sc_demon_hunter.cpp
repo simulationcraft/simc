@@ -20,11 +20,8 @@ namespace
    Demon Soul buff
    Fel Blade movement mechanics
    Darkness
-   Confirm min GCD (all specs)
-   Set bonuses
 
    Havoc --------------------------------------------------------------------
-   Demonic Appetite fury from spell data
    Change Nemesis to be race specific instead of generic
    Nemesis buffs for each race?
    Defensive talent tier
@@ -49,8 +46,6 @@ namespace
    Pain from damage taken
 
    Needs Documenting --------------------------------------------------------
-   Vengeful Retreat / Fel Rush "jump_cancel" option
-   soul_fragments expressions
 */
 
 /* Forward declarations
@@ -887,7 +882,7 @@ class demon_hunter_action_t : public Base
 {
 public:
   bool metamorphosis_gcd;
-  bool hasted_gcd, hasted_cd;
+  bool hasted_gcd;
   bool demonic_presence;
   bool havoc_t19_2pc;
 
@@ -897,11 +892,10 @@ public:
     : ab( n, p, s ),
       metamorphosis_gcd( p -> specialization() == DEMON_HUNTER_HAVOC &&
         ab::data().affected_by( p -> spec.metamorphosis_buff -> effectN( 7 ) ) ),
-      hasted_gcd( false ),
-      hasted_cd( false ),
       demonic_presence( ab::data().affected_by(
         p -> mastery_spell.demonic_presence -> effectN( 1 ) ) ),
-      havoc_t19_2pc( ab::data().affected_by( p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) )
+      havoc_t19_2pc( ab::data().affected_by( p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) ),
+      hasted_gcd( false )
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -4176,6 +4170,9 @@ private:
   double weapon_damage_multiplier;
   double crit_bonus_damage;
   double first_blood; // First Blood talent multiplier, if relevant to the action.
+#ifndef NDEBUG
+  std::vector<attack_t*> attacks_;
+#endif
 
 public:
   damage_calc_helper_t( std::vector<attack_t*> attacks ) : 
@@ -4214,6 +4211,10 @@ public:
     {
       first_blood = debug_cast<actions::attacks::blade_dance_attack_t*>( action ) -> first_blood_multiplier;
     }
+
+#ifndef NDEBUG
+    attacks_ = attacks;
+#endif
   }
 
   double total()
@@ -4236,6 +4237,8 @@ public:
 private:
   double calculate()
   {
+    assert( crit_bonus_damage == action -> composite_player_critical_multiplier() );
+
     return get_raw_amount() * calculate_target_multiplier();
   }
 
@@ -4955,12 +4958,12 @@ void demon_hunter_t::init_procs()
   proc.delayed_aa_channel     = get_proc( "delayed_swing__channeling" );
   proc.soul_fragment          = get_proc( "soul_fragment" );
   proc.soul_fragment_lesser   = get_proc( "soul_fragment_lesser" );
+  proc.felblade_reset         = get_proc( "felblade_reset" );
 
   // Havoc
   proc.demon_blades_wasted    = get_proc( "demon_blades_wasted" );
   proc.demonic_appetite       = get_proc( "demonic_appetite" );
   proc.demons_bite_in_meta    = get_proc( "demons_bite_in_meta" );
-  proc.felblade_reset         = get_proc( "felblade_reset" );
   proc.fel_barrage            = get_proc( "fel_barrage" );
 
   // Vengeance
