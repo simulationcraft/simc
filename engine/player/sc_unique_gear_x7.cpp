@@ -79,6 +79,30 @@ void set_bonus::passive_stat_aura( special_effect_t& effect )
   effect.player -> initial.stats.add_stat( stat, amount );
 }
 
+void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
+{
+  effect.execute_action = effect.player -> find_action( "mark_of_the_hidden_satyr" );
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "mark_of_the_hidden_satyr", effect );
+  }
+
+  if ( ! effect.execute_action )
+  {
+    action_t* a = new spell_t( "mark_of_the_hidden_satyr",
+      effect.player, effect.player -> find_spell( 191259 ) );
+    a -> background = a -> may_crit = true;
+    a -> callbacks = false;
+    a -> spell_power_mod.direct = 1.0; // Jun 27 2016
+    a -> item = effect.item;
+
+    effect.execute_action = a;
+  }
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 struct random_combat_enhancement_callback_t : public dbc_proc_callback_t
 {
   stat_buff_t* crit, *haste, *mastery;
@@ -761,7 +785,17 @@ struct dark_blast_t : public spell_t
 
 void item::caged_horror( special_effect_t& effect )
 {
-  effect.execute_action = new dark_blast_t( effect );
+  effect.execute_action = effect.player -> find_action( "dark_blast" );
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "dark_blast", effect );
+  }
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = new dark_blast_t( effect );
+  }
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -985,7 +1019,7 @@ void unique_gear::register_special_effects_x7()
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );
   register_special_effect( 190889, "191380trigger" );
-  register_special_effect( 190890, "191259trigger" );
+  register_special_effect( 190890, enchants::mark_of_the_hidden_satyr );
   register_special_effect( 228398, "228399trigger" );
   register_special_effect( 228400, "228401trigger" );
 
