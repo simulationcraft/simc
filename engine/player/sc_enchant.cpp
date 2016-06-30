@@ -535,7 +535,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
     return SOCKET_COLOR_NONE;
   }
 
-  for ( auto i = 0LU, end = sizeof_array( data.ench_type ); i < end; ++i )
+  for ( size_t i = 0, end = sizeof_array( data.ench_type ); i < end; ++i )
   {
     switch ( data.ench_type[ i ] )
     {
