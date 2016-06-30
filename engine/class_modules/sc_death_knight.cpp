@@ -1781,7 +1781,9 @@ struct death_knight_action_t : public Base
           dk -> active_spells.festering_wound -> target = target;
           dk -> active_spells.festering_wound -> execute();
 
-          if ( dk -> talent.bursting_sores -> ok() )
+          // Don't unnecessarily call bursting sores in single target scenarios
+          if ( dk -> talent.bursting_sores -> ok() &&
+               dk -> active_spells.bursting_sores -> target_list().size() > 0 )
           {
             dk -> active_spells.bursting_sores -> target = target;
             dk -> active_spells.bursting_sores -> execute();
@@ -2116,6 +2118,20 @@ struct bursting_sores_t : public death_knight_spell_t
   {
     background = true;
     aoe = -1;
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    death_knight_spell_t::available_targets( tl );
+
+    // Does not hit the main target
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
   }
 };
 
