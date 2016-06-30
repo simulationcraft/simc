@@ -4770,6 +4770,20 @@ struct blade_dance_expr_t : public expr_t
   }
 };
 
+struct damage_calc_expr_t : public expr_t
+{
+  damage_calc_helper_t* calc;
+
+   damage_calc_expr_t( const std::string& name_str, damage_calc_helper_t* c ) : 
+    expr_t( name_str ), calc( c )
+   {}
+
+   double evaluate() override
+   {
+     return calc -> total();
+   }
+};
+
 // demon_hunter_t::create_expression ========================================
 
 expr_t* demon_hunter_t::create_expression( action_t* a, const std::string& name_str )
@@ -4822,6 +4836,33 @@ expr_t* demon_hunter_t::create_expression( action_t* a, const std::string& name_
       if ( action )
       {
         return new blade_dance_expr_t( action );
+      }
+    }
+  }
+  else if ( util::str_in_str_ci( name_str, "_damage" ) )
+  {
+    const std::string& action_str =
+      parse_abbreviation( std::string( name_str.begin(), name_str.end() - 7 ) );
+    
+    action_t* action = find_action( action_str );
+
+    if ( action )
+    {
+      if ( util::str_compare_ci( action_str, "blade_dance" ) )
+      {
+        return new damage_calc_expr_t( name_str, blade_dance_dmg );
+      }
+      else if ( util::str_compare_ci( action_str, "death_sweep" ) )
+      {
+        return new damage_calc_expr_t( name_str, death_sweep_dmg );
+      }
+      else if ( util::str_compare_ci( action_str, "chaos_strike" ) )
+      {
+        return new damage_calc_expr_t( name_str, chaos_strike_dmg );
+      }
+      else if ( util::str_compare_ci( action_str, "annihilation" ) )
+      {
+        return new damage_calc_expr_t( name_str, annihilation_dmg );
       }
     }
   }
