@@ -1012,6 +1012,7 @@ public:
   virtual void analyze();
   virtual void datacollection_begin();
   virtual void datacollection_end();
+  virtual void set_max_stack( unsigned stack );
 
   virtual timespan_t refresh_duration( const timespan_t& new_duration ) const;
   virtual timespan_t tick_time() const;
@@ -7074,6 +7075,52 @@ namespace unique_gear
 
     // Overridable method to manipulate the action. Must be implemented.
     virtual void manipulate( T_ACTION* action, const special_effect_t& e ) = 0;
+  };
+
+  // Manipulate the buff somehow (using an overridden manipulate method)
+  template<typename T_BUFF = buff_t>
+  struct scoped_buff_callback_t : public class_scoped_callback_t
+  {
+    typedef scoped_buff_callback_t<T_BUFF> super;
+
+    const std::string name;
+    const int spell_id;
+
+    scoped_buff_callback_t( player_e c, const std::string& n ) :
+      class_scoped_callback_t( c ), name( n ), spell_id( -1 )
+    { }
+
+    scoped_buff_callback_t( specialization_e s, const std::string& n ) :
+      class_scoped_callback_t( s ), name( n ), spell_id( -1 )
+    { }
+
+    scoped_buff_callback_t( player_e c, unsigned sid ) :
+      class_scoped_callback_t( c ), spell_id( sid )
+    { }
+
+    scoped_buff_callback_t( specialization_e s, unsigned sid ) :
+      class_scoped_callback_t( s ), spell_id( sid )
+    { }
+
+    // Initialize the callback by manipulating the action(s)
+    void initialize( special_effect_t& e ) override
+    {
+      range::for_each( e.player -> buff_list, [ this, e ]( buff_t* b ) {
+        if ( ( ! name.empty() && util::str_compare_ci( name, b -> name_str ) ) ||
+             ( spell_id > 0 && spell_id == as<int>( b -> data().id() ) ) )
+        {
+          if ( b -> sim -> debug )
+          {
+            e.player -> sim -> out_debug.printf( "Player %s manipulating buff %s",
+                e.player -> name(), b -> name() );
+          }
+          manipulate( debug_cast<T_BUFF*>( b ), e );
+        }
+      });
+    }
+
+    // Overridable method to manipulate the action. Must be implemented.
+    virtual void manipulate( T_BUFF* buff, const special_effect_t& e ) = 0;
   };
 
   struct special_effect_db_item_t

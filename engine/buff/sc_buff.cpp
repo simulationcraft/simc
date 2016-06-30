@@ -499,6 +499,22 @@ void buff_t::datacollection_end()
   avg_overflow_total.add( overflow_total );
 }
 
+// buff_t::set_max_stack ====================================================
+
+void buff_t::set_max_stack( unsigned stack )
+{
+  _max_stack = stack;
+
+  stack_occurrence.resize( _max_stack + 1 );
+  stack_react_time.resize( _max_stack + 1 );
+  stack_react_ready_triggers.resize( _max_stack + 1 );
+
+  if ( as<int>( stack_uptime.size() ) < _max_stack )
+  {
+    stack_uptime.resize( _max_stack + 1 );
+  }
+}
+
 // buff_t:: refresh_duration ================================================
 
 timespan_t buff_t::refresh_duration( const timespan_t& new_duration ) const
