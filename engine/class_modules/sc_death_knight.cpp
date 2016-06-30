@@ -7,6 +7,7 @@
 // Unholy
 // - Does Festering Wound (generation|consumption) require a positive hit result?
 // - Festering Strike Festering Wound generation probability distribution
+// - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // Blood
 // - Crimson Scourge seems to be inhibited from even attempting to proc, if there's an on-going
 // Death and Decay? .. weird
@@ -225,7 +226,7 @@ public:
   double antimagic_shell_absorbed;
 
   // Counters
-  size_t pestilent_pustules;
+  int pestilent_pustules;
 
   stats_t*  antimagic_shell;
 
@@ -413,6 +414,7 @@ public:
     pets::dt_pet_t* ghoul_pet; // Covers both Ghoul and Sludge Belcher
     pet_t* gargoyle;
     pets::valkyr_pet_t* dark_arbiter;
+    pet_t* risen_skulker;
   } pets;
 
   // Procs
@@ -880,30 +882,19 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
   pet_melee_attack_t( T_PET* pet, const std::string& name,
     const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     pet_action_t<T_PET, melee_attack_t>( pet, name, spell, options )
-  {
-    this -> trigger_gcd = timespan_t::from_seconds( 1.5 );
-    if ( this -> school == SCHOOL_NONE )
-      this -> school = SCHOOL_PHYSICAL;
-  }
+  { }
 
   void init() override
   {
     pet_action_t<T_PET, melee_attack_t>::init();
 
-    if ( ! this -> special )
+    if ( ! this -> background && this -> trigger_gcd == timespan_t::zero() )
     {
-      this -> weapon = &( this -> p() -> main_hand_weapon );
-      this -> base_execute_time = this -> weapon -> swing_time;
+      this -> trigger_gcd = timespan_t::from_seconds( 1.5 );
     }
-  }
 
-  void execute() override
-  {
-    // If we're casting, we should clip a swing
-    if ( this -> time_to_execute > timespan_t::zero() && this -> player -> executing )
-      this -> schedule_execute();
-    else
-      pet_action_t<T_PET, melee_attack_t>::execute();
+    if ( this -> school == SCHOOL_NONE )
+      this -> school = SCHOOL_PHYSICAL;
   }
 };
 
@@ -1027,6 +1018,17 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
   {
     this -> background = this -> auto_attack = this -> repeating = true;
     this -> special = false;
+    this -> weapon = &( player -> main_hand_weapon );
+    this -> base_execute_time = this -> weapon -> swing_time;
+  }
+
+  void execute() override
+  {
+    // If we're casting, we should clip a swing
+    if ( this -> player -> executing )
+      this -> schedule_execute();
+    else
+      pet_melee_attack_t<T>::execute();
   }
 };
 
@@ -1506,6 +1508,49 @@ struct valkyr_pet_t : public death_knight_pet_t
       }
       shadow_empowerment -> current_value += increase;
     }
+  }
+};
+
+// ==========================================================================
+// Risen Skulker (All Will Serve skelebro)
+// ==========================================================================
+
+struct risen_skulker_pet_t : public death_knight_pet_t
+{
+  struct skulker_shot_t : public pet_action_t<risen_skulker_pet_t, ranged_attack_t>
+  {
+    skulker_shot_t( risen_skulker_pet_t* player, const std::string& options_str ) :
+      super( player, "skulker_shot", player -> find_spell( 212423 ), options_str )
+    { weapon = &( player -> main_hand_weapon ); }
+  };
+
+  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "Risen_Skulker", true, false )
+  {
+    regen_type = REGEN_DISABLED;
+    main_hand_weapon.type = WEAPON_BEAST_2H;
+  }
+
+  void init_base_stats() override
+  {
+    death_knight_pet_t::init_base_stats();
+
+    // As per Blizzard
+    owner_coeff.ap_from_ap = 1.35;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "Skulker Shot" );
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "skulker_shot" ) return new skulker_shot_t( this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
   }
 };
 
@@ -3793,6 +3838,10 @@ struct raise_dead_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> pets.ghoul_pet -> summon( timespan_t::zero() );
+    if ( p() -> talent.all_will_serve -> ok() )
+    {
+      p() -> pets.risen_skulker -> summon( timespan_t::zero() );
+    }
   }
 
   bool ready() override
@@ -4681,6 +4730,11 @@ void death_knight_t::create_pets()
       else
       {
         pets.ghoul_pet = new pets::ghoul_pet_t( this );
+      }
+
+      if ( talent.all_will_serve -> ok() )
+      {
+        pets.risen_skulker = new pets::risen_skulker_pet_t( this );
       }
     }
 

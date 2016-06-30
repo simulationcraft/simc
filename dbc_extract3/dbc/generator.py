@@ -1229,6 +1229,8 @@ class SpellDataGenerator(DataGenerator):
           ( 198715, 5 ),    # Val'kyr Strike for Dark Arbiter
           ( 211947, 0 ),    # Shadow Empowerment for Dark Arbiter
           ( 81141, 0 ),     # Crimson Scourge buff
+          ( 212423, 5 ),    # Skulker Shot for All Will Serve
+          ( 207260, 5 ),    # Arrow Spray for All Will Serve
         ),
 
         # Shaman:

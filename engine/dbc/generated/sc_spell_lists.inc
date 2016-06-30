@@ -553,8 +553,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 8 abilities
+    // Pet tree, 10 abilities
     {
+      207260, // Arrow Spray
        81280, // Blood Burst
        47468, // Claw
       212333, // Cleaver
@@ -562,6 +563,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        47481, // Gnaw
        47484, // Huddle
        47482, // Leap
+      212423, // Skulker Shot
       198715, // Val'kyr Strike
            0,
     },
