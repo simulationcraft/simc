@@ -299,9 +299,15 @@ std::string item_t::to_string() const
 
   s << "name=" << name_str;
   s << " id=" << parsed.data.id;
-  s << " slot=" << slot_name();
+  if ( slot != SLOT_INVALID )
+  {
+    s << " slot=" << slot_name();
+  }
   s << " quality=" << util::item_quality_string( parsed.data.quality );
-  s << " upgrade_level=" << upgrade_level();
+  if ( upgrade_level() > 0 )
+  {
+    s << " upgrade_level=" << upgrade_level();
+  }
   s << " ilevel=" << item_level();
   if ( parent_slot == SLOT_INVALID )
   {
@@ -1192,6 +1198,11 @@ bool item_t::init()
   if ( name_str.empty() || name_str == "empty" || name_str == "none" )
     return true;
 
+  // Determine Parent - Child relationship. Note that this presumes items are initialized in the
+  // order parent - child, for now. A safer option would be to split item initialization up more so
+  // that the ordering does not matter
+  parent_slot = player -> parent_item_slot( *this );
+
   // Process basic stats
   if ( ! decode_warforged()                        ) return false;
   if ( ! decode_lfr()                              ) return false;
@@ -1206,8 +1217,10 @@ bool item_t::init()
                    player -> name(), name(), slot_name() );
 
   // Process complex input, and initialize item in earnest
-  if ( ! decode_stats()                            ) return false;
+
+  // Gems need to be processed first, because in Legion, they may affect the item level of the item
   if ( ! decode_gems()                             ) return false;
+  if ( ! decode_stats()                            ) return false;
   if ( ! decode_weapon()                           ) return false;
   if ( ! decode_random_suffix()                    ) return false;
   if ( ! decode_equip_effect()                     ) return false;
@@ -1339,7 +1352,7 @@ bool item_t::decode_quality()
 
 bool item_t::decode_stats()
 {
-  if ( ! option_stats_str.empty() || option_stats_str == "none" )
+  if ( ! option_stats_str.empty() && option_stats_str != "none" )
   {
     // First, clear any stats in current data
     parsed.armor = 0;
@@ -1539,13 +1552,28 @@ bool item_t::decode_gems()
   if ( sim -> challenge_mode )
     return true;
 
-  // Parse user given gems= string. Stats are parsed as is, meta gem through
-  // DBC data
   if ( option_gems_str.empty() || option_gems_str == "none" )
   {
+    // Gems
+    for ( size_t i = 0, end = parsed.gem_id.size(); i < end; i++ )
+      parsed.gem_color[ i ] = enchant::initialize_gem( *this, parsed.gem_id[ i ] );
+
+    // Socket bonus
+    if ( socket_color_match() )
+    {
+      const item_enchantment_data_t& socket_bonus = player -> dbc.item_enchantment( parsed.data.id_socket_bonus );
+      if ( ! enchant::initialize_item_enchant( *this, parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, socket_bonus ) )
+      {
+        return false;
+      }
+    }
+
     return true;
   }
 
+  // Parse user given gems= string. Stats are parsed as is, meta gem through
+  // DBC data
+  //
   // Detect meta gem through DBC data, instead of clunky prefix matching
   const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( player -> dbc, option_gems_str );
   meta_gem_e meta_gem = enchant::meta_gem_type( player -> dbc, meta_gem_enchant );
@@ -1998,20 +2026,6 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
 bool item_t::init_special_effects()
 {
   special_effect_t proxy_effect( this );
-
-  // Gems
-  for ( size_t i = 0, end = parsed.gem_id.size(); i < end; i++ )
-    parsed.gem_color[ i ] = enchant::initialize_gem( *this, parsed.gem_id[ i ] );
-
-  // Socket bonus
-  if ( socket_color_match() )
-  {
-    const item_enchantment_data_t& socket_bonus = player -> dbc.item_enchantment( parsed.data.id_socket_bonus );
-    if ( ! enchant::initialize_item_enchant( *this, parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, socket_bonus ) )
-    {
-      return false;
-    }
-  }
 
   // Enchant
   const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.enchant_id );

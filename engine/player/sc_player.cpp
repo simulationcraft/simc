@@ -1079,26 +1079,12 @@ bool player_t::init_items()
 
   init_meta_gem();
 
-  // Determine item relationships (parent vs child). Needs to be done after the item init loop,
-  // because we don't perform two-phase init of items.
-  range::for_each( items, [ this ]( item_t& i ) { i.parent_slot = parent_item_slot( i ); } );
-
   // Needs to be initialized after old set bonus system
   sets.initialize();
 
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
   init_weapon( off_hand_weapon );
-
-  if ( sim -> debug )
-  {
-    range::for_each( items, [ this ]( const item_t& i ) {
-      if ( i.active() )
-      {
-        sim -> out_debug.printf( "%s", i.to_string().c_str() );
-      }
-    } );
-  }
 
   return true;
 }

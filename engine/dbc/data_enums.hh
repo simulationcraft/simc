@@ -352,7 +352,8 @@ enum item_enchantment
     ITEM_ENCHANTMENT_USE_SPELL        = 7,
     ITEM_ENCHANTMENT_PRISMATIC_SOCKET = 8,
     ITEM_ENCHANTMENT_RELIC_RANK       = 9,
-    ITEM_ENCHANTMENT_APPLY_BONUS      = 11
+    ITEM_ENCHANTMENT_APPLY_BONUS      = 11,
+    ITEM_ENCHANTMENT_RELIC_EVIL       = 12, // Scaling relic +ilevel, see enchant::initialize_relic
 };
 
 enum item_spell_trigger_type
@@ -391,7 +392,11 @@ enum item_socket_color
   SOCKET_COLOR_LIFE                 = 16384,
   SOCKET_COLOR_WIND                 = 32768,
   SOCKET_COLOR_HOLY                 = 65536,
-  SOCKET_COLOR_MAX
+  SOCKET_COLOR_MAX,
+  SOCKET_COLOR_RELIC                = SOCKET_COLOR_IRON | SOCKET_COLOR_BLOOD  | SOCKET_COLOR_SHADOW |
+                                      SOCKET_COLOR_FEL  | SOCKET_COLOR_ARCANE | SOCKET_COLOR_FROST |
+                                      SOCKET_COLOR_FIRE | SOCKET_COLOR_WATER  | SOCKET_COLOR_LIFE |
+                                      SOCKET_COLOR_WIND | SOCKET_COLOR_HOLY
 };
 
 enum item_bind_type

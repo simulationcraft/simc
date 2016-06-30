@@ -520,6 +520,41 @@ item_data_t* item_data_t::find( unsigned id, bool ptr )
   return i;
 }
 
+double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value )
+{
+  auto curve_data = dbc.curve_point( curve_id, point_value );
+
+  double scaled_result = 0;
+  // Lands on a value, use data
+  if ( curve_data.first -> val1 == point_value )
+  {
+    scaled_result = curve_data.first -> val2;
+  }
+  // Below lower bound, use lower bound value
+  else if ( curve_data.first -> val1 > point_value )
+  {
+    scaled_result = curve_data.first -> val1;
+  }
+  // Above upper bound, use upper bound value
+  else if ( curve_data.second -> val1 < point_value )
+  {
+    scaled_result = curve_data.second -> val2;
+  }
+  else if ( curve_data.second -> val1 == point_value )
+  {
+    // Should never happen
+    assert( 0 );
+  }
+  else
+  {
+    // Linear interpolation
+    scaled_result = curve_data.first -> val2 + ( curve_data.second -> val2 - curve_data.first -> val2 ) *
+      ( point_value - curve_data.first -> val1 ) / ( curve_data.second -> val1 - curve_data.first -> val1 );
+  }
+
+  return scaled_result;
+}
+
 // TODO: Needs some way to figure what value to pass, for now presume min of player level, max
 // level. Also presumes we are only scaling itemlevel for now, this is almost certainly not 100%
 // true in all cases for the use of curve data.
@@ -555,48 +590,17 @@ bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id )
   double base_value = std::min( static_cast<double>( used_level ),
                                 static_cast<double>( data -> max_level ) );
 
-  std::pair<const curve_point_t*, const curve_point_t*> curve_data = item.player -> dbc.curve_point( data -> curve_id, base_value );
-  // No data found, this really should not happen.
-  if ( ! curve_data.first || ! curve_data.second )
-  {
-    item.sim -> errorf( "%s: Unable to find scaling information for %s curve_id %u",
-        item.player -> name(), item.name(), data -> curve_id );
-    return false;
-  }
-
-  double scaled_result = 0;
-  // Lands on a value, use data
-  if ( curve_data.first -> val1 == base_value )
-  {
-    scaled_result = curve_data.first -> val2;
-  }
-  // Scaling value goes past the curve data, use the maximum value
-  else if ( curve_data.second -> val1 < base_value )
-  {
-    scaled_result = curve_data.second -> val2;
-  }
-  else if ( curve_data.second -> val1 == base_value )
-  {
-    // Should never happen
-    assert( 0 );
-  }
-  else
-  {
-    // Linear interpolation
-    scaled_result = curve_data.first -> val2 + ( curve_data.second -> val2 - curve_data.first -> val2 ) *
-      ( base_value - curve_data.first -> val1 ) / ( curve_data.second -> val1 - curve_data.first -> val1 );
-  }
-
-  item.parsed.data.level = static_cast<unsigned>( util::round( scaled_result, 0 ) );
+  double scaled_result = curve_point_value( item.player -> dbc, data -> curve_id, base_value );
 
   if ( item.sim -> debug )
   {
-    item.sim -> out_debug.printf( "%s: Scaling %s to ilevel %u (%.3f), curve data: x=%.3f, x0=%.3f, y0=%.3f, x1=%.3f, y1=%.3f",
+    item.sim -> out_debug.printf( "%s: Scaling %s from ilevel %d to %u (%.3f) using player level %.0f",
         item.player -> name(), item.name(), item.parsed.data.level,
-        scaled_result, base_value,
-        curve_data.first -> val1, curve_data.first -> val2,
-        curve_data.second -> val1, curve_data.second -> val2 );
+        static_cast<unsigned>( util::round( scaled_result, 0 ) ),
+        scaled_result, base_value );
   }
+
+  item.parsed.data.level = static_cast<unsigned>( util::round( scaled_result, 0 ) );
 
   return true;
 }

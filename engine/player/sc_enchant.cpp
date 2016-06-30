@@ -447,9 +447,15 @@ item_socket_color enchant::initialize_gem( item_t& item, unsigned gem_id )
   if ( ! gem_prop.id )
     return SOCKET_COLOR_NONE;
 
+  // Relics get handled elsewhere, because they are .. complicated
+  if ( gem_prop.color & SOCKET_COLOR_RELIC )
+  {
+    return initialize_relic( item, gem_id, gem_prop );
+  }
+
   const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_prop.enchant_id );
 
-  if ( ! enchant::initialize_item_enchant( item, 
+  if ( ! enchant::initialize_item_enchant( item,
                                            gem_prop.color != SOCKET_COLOR_META ? item.parsed.gem_stats : item.parsed.meta_gem_stats,
                                            SPECIAL_EFFECT_SOURCE_GEM,
                                            data ) )
@@ -464,3 +470,103 @@ item_socket_color enchant::initialize_gem( item_t& item, unsigned gem_id )
   return static_cast< item_socket_color >( gem_prop.color );
 }
 
+static int compute_ilevel_upgrade( item_t& source_item, size_t gem_idx, const item_data_t* gem )
+{
+  item_t relic( source_item.player, "" );
+
+  relic.parsed.data = *gem;
+  relic.name_str = gem -> name;
+  util::tokenize( relic.name_str );
+
+  // Apply some specific bonus id types to relics to get to the "real" item level of the relic
+  for ( auto bonus_id : source_item.parsed.relic_data[ gem_idx ] )
+  {
+    auto item_bonuses = source_item.player -> dbc.item_bonus( bonus_id );
+
+    // First, look for the set base ilevel bonus id, if found, apply it first
+    auto it = range::find_if( item_bonuses, []( const item_bonus_entry_t* entry ) {
+      return entry -> type == ITEM_BONUS_SET_ILEVEL;
+    } );
+
+    if ( it != item_bonuses.end() )
+    {
+      item_database::apply_item_bonus( relic, **it );
+    }
+
+    // Next, on top of that, apply any ilevel adjustments
+    range::for_each( item_bonuses, [ &relic ]( const item_bonus_entry_t* entry ) {
+      if ( entry -> type == ITEM_BONUS_ILEVEL )
+      {
+        item_database::apply_item_bonus( relic, *entry );
+      }
+    } );
+  }
+
+  // Then, use a (seemingly) hard-coded curve point to figure out a scaled value for the +item level
+  // increase
+  double ilevel_value = item_database::curve_point_value( source_item.player -> dbc,
+      RELIC_ILEVEL_BONUS_CURVE,
+      relic.parsed.data.level );
+
+  if ( source_item.player -> sim -> debug )
+  {
+    std::string debug_str = "relic: " + relic.to_string();
+    debug_str += " ilevel_increase=+" + util::to_string( util::floor( ilevel_value ) );
+
+    source_item.player -> sim -> out_debug << debug_str;
+  }
+
+  return util::floor( ilevel_value );
+}
+
+item_socket_color enchant::initialize_relic( item_t&                    item,
+                                             unsigned                   gem_id,
+                                             const gem_property_data_t& gem_property )
+{
+  const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_property.enchant_id );
+  if ( data.id != gem_property.enchant_id )
+  {
+    return SOCKET_COLOR_NONE;
+  }
+
+  const item_data_t* gem = item.player -> dbc.item( gem_id );
+  if ( ! gem )
+  {
+    return SOCKET_COLOR_NONE;
+  }
+
+  for ( auto i = 0LU, end = sizeof_array( data.ench_type ); i < end; ++i )
+  {
+    switch ( data.ench_type[ i ] )
+    {
+      case ITEM_ENCHANTMENT_RELIC_EVIL:
+      {
+        // First, figure out which gem slot we are using
+        size_t gem_idx = std::distance( item.parsed.gem_id.begin(), range::find( item.parsed.gem_id, gem_id ) );
+        // .. and make sure we have relic_id data for it, if not, break out early
+        if ( item.parsed.relic_data[ gem_idx ].size() == 0 )
+        {
+          return SOCKET_COLOR_NONE;
+        }
+
+        // Then, compute the item level increase for the relic
+        int ilevel_delta = compute_ilevel_upgrade( item, gem_idx, gem );
+        item.parsed.data.level += ilevel_delta;
+        break;
+      }
+      case ITEM_ENCHANTMENT_APPLY_BONUS:
+      {
+        auto bonuses = item.player -> dbc.item_bonus( data.ench_prop[ i ] );
+        for ( auto bonus : bonuses )
+        {
+          item_database::apply_item_bonus( item, *bonus );
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  return SOCKET_COLOR_RELIC;
+}

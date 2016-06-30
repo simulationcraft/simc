@@ -6820,6 +6820,7 @@ inline bool mythic( unsigned f ) { return ( f & RAID_TYPE_MYTHIC ) == RAID_TYPE_
 
 bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
 
+double curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value );
 bool apply_item_scaling( item_t& item, unsigned scaling_id );
 
 struct token_t
@@ -6861,6 +6862,7 @@ namespace enchant
 
   bool initialize_item_enchant( item_t& item, std::vector< stat_pair_t >& stats, special_effect_source_e source, const item_enchantment_data_t& enchant );
   item_socket_color initialize_gem( item_t& item, unsigned gem_id );
+  item_socket_color initialize_relic( item_t& item, unsigned gem_id, const gem_property_data_t& gem_property );
 }
 
 // Unique Gear ==============================================================
