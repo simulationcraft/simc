@@ -1377,6 +1377,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 209406, 1 ),       # Oneth's Intuition buff
 		  ( 209407, 1 ),       # Oneth's Overconfidence buff
       ( 213666, 1 ),       # Echoing Stars artifact spell
+      ( 69369,  2 ),       # Predatory Swiftness buff
         ),
 		
 		# Demon Hunter:

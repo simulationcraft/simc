@@ -358,7 +358,6 @@ public:
     buff_t* elunes_guidance;
     buff_t* feral_instinct;
     buff_t* incarnation_cat;
-    buff_t* ailuro_invigorators; // Legion Legendary
     buff_t* predatory_swiftness;
     buff_t* protection_of_ashamane;
     buff_t* savage_roar;
@@ -429,7 +428,6 @@ public:
     gain_t* energy_refund;
     gain_t* elunes_guidance;
     gain_t* moonfire;
-    gain_t* ailuro_invigorators; // Legion Legendary
     gain_t* rake;
     gain_t* shred;
     gain_t* swipe_cat;
@@ -689,20 +687,18 @@ public:
   struct legendary_t
   {
     // General
-    const special_effect_t* luffa_wrappings;
-    const special_effect_t* ekowraith_creator_of_worlds; // NYI
+    const special_effect_t* ekowraith_creator_of_worlds;
     const special_effect_t* dual_determination;
 
     // Balance
     const special_effect_t* the_emerald_dreamcatcher;
     const special_effect_t* oneths_intuition;
-    const special_effect_t* promise_of_elune_the_moon_goddess; // NYI
+    const special_effect_t* promise_of_elune_the_moon_goddess;
     const special_effect_t* impeccable_fel_essence;
 
     // Feral
-    const special_effect_t* the_wildshapers_clutch;
-    const special_effect_t* chatoyant_signet;
-    const special_effect_t* ailuro_invigorators;
+    double the_wildshapers_clutch;
+    timespan_t ailuro_pouncers;
 
     // Guardian
     const special_effect_t* elizes_everlasting_encasement;
@@ -721,6 +717,9 @@ public:
     form( NO_FORM ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
+    caster_melee_attack( nullptr ),
+    cat_melee_attack( nullptr ),
+    bear_melee_attack( nullptr ),
     fangs_of_ashamane(),
     initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
@@ -740,9 +739,6 @@ public:
     talent( talents_t() ),
     legendary( legendary_t() )
   {
-    t16_2pc_starfall_bolt = nullptr;
-    t16_2pc_sun_bolt      = nullptr;
-
     cooldown.berserk             = get_cooldown( "berserk"             );
     cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
     cooldown.growl               = get_cooldown( "growl"               );
@@ -757,9 +753,7 @@ public:
 
     cooldown.wod_pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
 
-    caster_melee_attack = nullptr;
-    cat_melee_attack = nullptr;
-    bear_melee_attack = nullptr;
+    legendary.the_wildshapers_clutch = 0.0;
 
     equipped_weapon_dps = 0;
 
@@ -784,7 +778,6 @@ public:
   virtual void      create_buffs() override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      arise() override;
-  virtual void      combat_begin() override;
   virtual void      reset() override;
   virtual void      merge( player_t& other ) override;
   virtual timespan_t available() const override;
@@ -2315,7 +2308,7 @@ public:
 
   void trigger_wildshapers_clutch( action_state_t* s )
   {
-    if ( ! p() -> legendary.the_wildshapers_clutch )
+    if ( p() -> legendary.the_wildshapers_clutch == 0.0 )
       return;
     if ( ! dbc::is_school( school, SCHOOL_PHYSICAL ) ) // bleeds only
       return;
@@ -2324,7 +2317,7 @@ public:
     if ( s -> result_amount <= 0 )
       return;
 
-    if ( p() -> rng().roll( p() -> legendary.the_wildshapers_clutch -> driver() -> proc_chance() ) )
+    if ( p() -> rng().roll( p() -> legendary.the_wildshapers_clutch ) )
     {
       p() -> proc.the_wildshapers_clutch -> occur();
       trigger_primal_fury();
@@ -3004,8 +2997,6 @@ struct tigers_fury_t : public cat_attack_t
     p() -> buff.tigers_fury -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
 
     p() -> buff.ashamanes_energy -> trigger();
-    
-    p() -> buff.ailuro_invigorators -> trigger();
   }
 };
 
@@ -3058,12 +3049,6 @@ struct thrash_cat_t : public cat_attack_t
     {
       shadow_thrash = new shadow_thrash_t( p );
       add_child( shadow_thrash );
-    }
-
-    if ( p -> legendary.luffa_wrappings )
-    {
-      radius          *= 1.0 + p -> legendary.luffa_wrappings -> driver() -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p -> legendary.luffa_wrappings -> driver() -> effectN( 2 ).percent();
     }
   }
 
@@ -3406,12 +3391,6 @@ struct thrash_bear_t : public bear_attack_t
     if ( p -> legendary.elizes_everlasting_encasement )
       dot_max_stack += p -> legendary.elizes_everlasting_encasement
         -> driver() -> effectN( 1 ).base_value();
-
-    if ( p -> legendary.luffa_wrappings )
-    {
-      radius          *= 1.0 + p -> legendary.luffa_wrappings -> driver() -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p -> legendary.luffa_wrappings -> driver() -> effectN( 2 ).percent();
-    }
   }
 
   virtual void tick( dot_t* d ) override
@@ -5603,6 +5582,36 @@ struct persistent_buff_delay_event_t : public event_t
   { buff -> trigger(); }
 };
 
+// Ailuro Pouncers Event ====================================================
+
+struct ailuro_pouncers_event_t : public event_t
+{
+  druid_t* druid;
+
+  ailuro_pouncers_event_t( druid_t* p, timespan_t set_delay = timespan_t::zero() ) :
+    event_t( *p ), druid( p )
+  {
+    if ( set_delay > timespan_t::zero() )
+    {
+      add_event( set_delay );
+    }
+    else
+    {
+      add_event( p -> legendary.ailuro_pouncers );
+    }
+  }
+
+  const char* name() const override
+  { return "ailuro_pouncers"; }
+
+  void execute() override
+  {
+    druid -> buff.predatory_swiftness -> trigger();
+
+    new ( sim() ) ailuro_pouncers_event_t( druid );
+  }
+};
+
 // ==========================================================================
 // Druid Character Definition
 // ==========================================================================
@@ -5985,9 +5994,7 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
   resources.base[ RESOURCE_ENERGY       ] = 100
       + sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 2 ).resource( RESOURCE_ENERGY )
-      + talent.moment_of_clarity -> effectN( 3 ).percent()
-      + ( legendary.chatoyant_signet ? legendary.chatoyant_signet
-          -> driver() -> effectN( 1 ).resource( RESOURCE_ENERGY ) : 0.0 );
+      + talent.moment_of_clarity -> effectN( 3 ).percent();
 
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
   resources.active_resource[ RESOURCE_HEALTH       ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
@@ -6020,9 +6027,9 @@ void druid_t::create_buffs()
 
   // Generic / Multi-spec druid buffs
 
-  buff.bear_form             = new bear_form_t( *this );
+  buff.bear_form             = new buffs::bear_form_t( *this );
 
-  buff.cat_form              = new cat_form_t( *this );
+  buff.cat_form              = new buffs::cat_form_t( *this );
 
   buff.clearcasting          = buff_creator_t( this, "clearcasting", spec.omen_of_clarity -> effectN( 1 ).trigger() )
                                .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
@@ -6107,7 +6114,7 @@ void druid_t::create_buffs()
                                  + talent.soul_of_the_forest -> effectN( 1 ).percent()
                                  + artifact.empowerment.percent() );
 
-  buff.moonkin_form          = new moonkin_form_t( *this );
+  buff.moonkin_form          = new buffs::moonkin_form_t( *this );
 
   buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) )
                                .default_value( find_spell( 164545 ) -> effectN( 1 ).percent()
@@ -6705,7 +6712,6 @@ void druid_t::init_gains()
   gain.elunes_guidance       = get_gain( "elunes_guidance"       );
   gain.moonfire              = get_gain( "moonfire"              );
   gain.clearcasting          = get_gain( "clearcasting"          );
-  gain.ailuro_invigorators   = get_gain( "ailuro_invigorators"   );
   gain.primal_fury           = get_gain( "primal_fury"           );
   gain.rake                  = get_gain( "rake"                  );
   gain.shred                 = get_gain( "shred"                 );
@@ -6745,11 +6751,6 @@ void druid_t::init_gains()
   {
     buff.the_emerald_dreamcatcher = buff_creator_t( this, "the_emerald_dreamcatcher" )
                                     .chance( 0 );
-  }
-  if ( ! legendary.ailuro_invigorators )
-  {
-    buff.ailuro_invigorators = buff_creator_t( this, "ailuro_invigorators" )
-                               .chance( 0 );
   }
 }
 
@@ -6922,13 +6923,6 @@ void druid_t::arise()
 
   if ( talent.earthwarden -> ok() )
     buff.earthwarden -> trigger( buff.earthwarden -> max_stack() );
-}
-
-// druid_t::combat_begin ====================================================
-
-void druid_t::combat_begin()
-{
-  player_t::combat_begin();
 
   // Trigger persistent buffs
   if ( buff.yseras_gift )
@@ -6939,6 +6933,18 @@ void druid_t::combat_begin()
 
   if ( spec.bladed_armor -> ok() )
     buff.bladed_armor -> trigger();
+
+  if ( legendary.ailuro_pouncers > timespan_t::zero() )
+  {
+    timespan_t preproc = legendary.ailuro_pouncers * rng().real();
+    if ( preproc < buff.predatory_swiftness -> buff_duration )
+    {
+      buff.predatory_swiftness -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
+        buff.predatory_swiftness -> buff_duration - preproc );
+    }
+
+    new ( *sim ) ailuro_pouncers_event_t( this, timespan_t::from_seconds( 15 ) - preproc );
+  }
 }
 
 // druid_t::recalculate_resource_max ========================================
@@ -7763,6 +7769,73 @@ private:
   druid_t& p;
 };
 
+// ==========================================================================
+// Druid Special Effects
+// ==========================================================================
+
+using namespace unique_gear;
+using namespace spells;
+using namespace cat_attacks;
+using namespace bear_attacks;
+
+// Legion Legendaries =======================================================
+
+// Generic
+
+template<typename T>
+struct luffa_wrappings_t : public scoped_action_callback_t<T>
+{
+  luffa_wrappings_t( const std::string& name ) :
+    scoped_action_callback_t<T>( DRUID, name )
+  {}
+
+  void manipulate( T* a, const special_effect_t& e )
+  {
+    a -> radius *= 1.0 + e.driver() -> effectN( 1 ).percent();
+    a -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
+  }
+};
+
+// Feral
+
+struct ailuro_pouncers_t : public scoped_buff_callback_t<buff_t>
+{
+  ailuro_pouncers_t() : super( DRUID_FERAL, "predatory_swiftness" )
+  {}
+
+  void manipulate( buff_t* b, const special_effect_t& e ) override
+  {
+    b -> set_max_stack( b -> max_stack() + e.driver() -> effectN( 1 ).base_value() );
+  
+    druid_t* p = debug_cast<druid_t*>( b -> player );
+    p -> legendary.ailuro_pouncers = e.driver() -> effectN( 2 ).period();
+  }
+};
+
+struct chatoyant_signet_t : public scoped_actor_callback_t<druid_t>
+{
+  chatoyant_signet_t() : super( DRUID )
+  {}
+
+  void manipulate( druid_t* p, const special_effect_t& e ) override
+  {
+    p -> resources.base[ RESOURCE_ENERGY ] += e.driver() -> effectN( 1 ).resource( RESOURCE_ENERGY );
+  }
+};
+
+struct the_wildshapers_clutch_t : public scoped_actor_callback_t<druid_t>
+{
+  the_wildshapers_clutch_t() : super( DRUID )
+  {}
+
+  void manipulate( druid_t* p, const special_effect_t& e ) override
+  {
+    p -> legendary.the_wildshapers_clutch = e.driver() -> proc_chance();
+  }
+};
+
+
+
 // Druid Special Effects ====================================================
 
 static void init_special_effect( druid_t*                 player,
@@ -7898,12 +7971,6 @@ static void impeccable_fel_essence( special_effect_t& effect )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
-static void the_wildshapers_clutch( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_FERAL, s -> legendary.the_wildshapers_clutch, effect );
-}
-
 static void oneths_intuition( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
@@ -7916,25 +7983,6 @@ static void oneths_intuition( special_effect_t& effect )
   s -> buff.oneths_overconfidence =
     buff_creator_t( s, "oneths_overconfidence", s -> find_spell( 209407 ) )
     .chance( effect.proc_chance() );
-}
-
-static void chatoyant_signet( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.chatoyant_signet, effect );
-}
-
-static void ailuro_invigorators( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_FERAL, s -> legendary.ailuro_invigorators, effect );
-
-  s -> buff.ailuro_invigorators =
-    buff_creator_t( s, "ailuro_invigorators", effect.driver() -> effectN( 1 ).trigger() )
-    .tick_callback( [ s ]( buff_t* b, int, const timespan_t& ) {
-      b -> player -> resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).resource( RESOURCE_ENERGY ),
-        debug_cast<druid_t*>( b -> player ) -> gain.ailuro_invigorators );
-    } );
 }
 
 static void promise_of_elune_the_moon_goddess( special_effect_t& effect )
@@ -7972,12 +8020,6 @@ static void the_emerald_dreamcatcher( special_effect_t& effect )
       -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ) );
 }
 
-static void luffa_wrappings( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.luffa_wrappings, effect );
-}
-
 // DRUID MODULE INTERFACE ===================================================
 
 struct druid_module_t : public module_t
@@ -8000,28 +8042,29 @@ struct druid_module_t : public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184876, starshards );
-    unique_gear::register_special_effect( 184877, wildcat_celerity );
-    unique_gear::register_special_effect( 184878, stalwart_guardian );
-    unique_gear::register_special_effect( 184879, flourish );
-    unique_gear::register_special_effect( 214843, fangs_of_ashamane );
-    unique_gear::register_special_effect( 208220, amanthuls_wisdom );
-    unique_gear::register_special_effect( 208228, dual_determination );
-    unique_gear::register_special_effect( 207943, edraith_bonds_of_aglaya );
-    unique_gear::register_special_effect( 210667, ekowraith_creator_of_worlds );
-    unique_gear::register_special_effect( 208342, elizes_everlasting_encasement );
-    unique_gear::register_special_effect( 208191, essence_of_infusion );
-    unique_gear::register_special_effect( 208199, impeccable_fel_essence );
-    unique_gear::register_special_effect( 208319, the_wildshapers_clutch );
-    unique_gear::register_special_effect( 209405, oneths_intuition );
-    unique_gear::register_special_effect( 207523, chatoyant_signet );
-    unique_gear::register_special_effect( 208209, ailuro_invigorators );
-    unique_gear::register_special_effect( 208283, promise_of_elune_the_moon_goddess );
-    unique_gear::register_special_effect( 208219, skysecs_hold );
-    unique_gear::register_special_effect( 207932, tearstone_of_elune );
-    unique_gear::register_special_effect( 207271, the_dark_titans_advice );
-    unique_gear::register_special_effect( 208190, the_emerald_dreamcatcher );
-    unique_gear::register_special_effect( 208681, luffa_wrappings );
+    register_special_effect( 184876, starshards );
+    register_special_effect( 184877, wildcat_celerity );
+    register_special_effect( 184878, stalwart_guardian );
+    register_special_effect( 184879, flourish );
+    register_special_effect( 214843, fangs_of_ashamane );
+    register_special_effect( 208220, amanthuls_wisdom );
+    register_special_effect( 208228, dual_determination );
+    register_special_effect( 207943, edraith_bonds_of_aglaya );
+    register_special_effect( 210667, ekowraith_creator_of_worlds );
+    register_special_effect( 208342, elizes_everlasting_encasement );
+    register_special_effect( 208191, essence_of_infusion );
+    register_special_effect( 208199, impeccable_fel_essence );
+    register_special_effect( 208319, the_wildshapers_clutch_t() );
+    register_special_effect( 209405, oneths_intuition );
+    register_special_effect( 207523, chatoyant_signet_t() );
+    register_special_effect( 208209, ailuro_pouncers_t() );
+    register_special_effect( 208283, promise_of_elune_the_moon_goddess );
+    register_special_effect( 208219, skysecs_hold );
+    register_special_effect( 207932, tearstone_of_elune );
+    register_special_effect( 207271, the_dark_titans_advice );
+    register_special_effect( 208190, the_emerald_dreamcatcher );
+    register_special_effect( 208681, luffa_wrappings_t<thrash_cat_t>( "thrash_cat" ) );
+    register_special_effect( 208681, luffa_wrappings_t<thrash_bear_t>( "thrash_bear" ) );
   }
 
   virtual void register_hotfixes() const override {}
