@@ -339,33 +339,34 @@ elif options.type == 'view':
             else:
                 print('No record for DBC ID %d found', id)
 elif options.type == 'csv':
-    path = os.path.abspath(os.path.join(options.path, args[0]))
+    path = os.path.abspath(os.path.join(options.path, options.args[0]))
     id = None
-    if len(args) > 1:
-        id = int(args[1])
+    if len(options.args) > 1:
+        id = int(options.args[1])
 
-    dbc_file = dbc.parser.DBCParser(options, path)
-    if not dbc_file.open_dbc():
+    dbc_file = dbc.file.DBCFile(options, path)
+    if not dbc_file.open():
         sys.exit(1)
 
     first = True
+    logging.debug(dbc_file)
     if id == None:
-        record = dbc_file.next_record()
-        while record != None:
-            #mo = re.findall(r'(\$(?:{.+}|[0-9]*(?:<.+>|[^l][A-z:;]*)[0-9]?))', str(record))
-            #if mo:
-            #    print record, set(mo)
-            #if (record.flags_1 & 0x00000040) == 0:
+        for record in dbc_file:
             if first:
                 sys.stdout.write('%s\n' % record.field_names(options.delim))
 
             sys.stdout.write('%s\n' % record.csv(options.delim, first))
-            record = dbc_file.next_record()
             first = False
     else:
-        record = dbc_file.find(id)
-        record.parse()
-        print(record.csv(options.delim, first))
+        if options.raw and not dbc_file.searchable():
+            logging.error('DBC file %s is not searchable in raw mode', path)
+            sys.exit(1)
+        else:
+            record = dbc_file.find(id)
+            if record:
+                print(record.csv(options.delim, first))
+            else:
+                print('No record for DBC ID %d found', id)
 
 elif options.type == 'scale':
     g = dbc.generator.CSVDataGenerator(options, {
