@@ -18,10 +18,7 @@ namespace { // UNNAMED NAMESPACE
   Artifact 20 rank traits?
   Ekowraith, Creator of Worlds legendary
   Cinidaria, the Symbiote
-  Promise of Elune, the Moon Goddess rework
-  Ailuro Invigorators -> Ailuro Pouncers
   Sephuz's Secret
-  Impeccable Fel Essence rework
 
   Feral =====================================================================
   Predator vs. adds
@@ -341,10 +338,10 @@ public:
     buff_t* fury_of_elune_up; // Tracking buff for APL
     buff_t* incarnation_moonkin;
     buff_t* lunar_empowerment;
-    buff_t* manipulated_fel_energy; // Legion Legendary Impeccable Fel Essence
     buff_t* moonkin_form;
     buff_t* oneths_intuition; // Legion Legendary
     buff_t* oneths_overconfidence; // Legion Legendary
+    buff_t* power_of_elune; // Legion Legendary
     buff_t* solar_empowerment;
     buff_t* star_power; // Moon and Stars artifact medal
     buff_t* the_emerald_dreamcatcher; // Legion Legendary
@@ -417,7 +414,6 @@ public:
     gain_t* astral_communion;
     gain_t* blessing_of_anshe;
     gain_t* lunar_strike;
-    gain_t* promise_of_elune; // Legion Legendary
     gain_t* shooting_stars;
     gain_t* solar_wrath;
 
@@ -693,8 +689,7 @@ public:
     // Balance
     const special_effect_t* the_emerald_dreamcatcher;
     const special_effect_t* oneths_intuition;
-    const special_effect_t* promise_of_elune_the_moon_goddess;
-    const special_effect_t* impeccable_fel_essence;
+    timespan_t impeccable_fel_essence;
 
     // Feral
     double the_wildshapers_clutch;
@@ -1690,6 +1685,13 @@ public:
     return e;
   }
 
+  virtual void consume_resource() override
+  {
+    ab::consume_resource();
+
+    trigger_impeccable_fel_essence();
+  }
+
   virtual void execute() override
   {
     // Adjust buffs and cooldowns if we're in precombat.
@@ -1714,19 +1716,6 @@ public:
       p() -> buff.star_power -> trigger();
   }
 
-  virtual void impact( action_state_t* s ) override
-  {
-    ab::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      // Benefit tracking
-      if ( p() -> legendary.impeccable_fel_essence && dbc::is_school( school, SCHOOL_NATURE ) &&
-          s -> result_amount > 0 )
-        p() -> buff.manipulated_fel_energy -> up();
-    }
-  }
-
   virtual void tick( dot_t* d ) override
   {
     ab::tick( d );
@@ -1736,9 +1725,6 @@ public:
     {
       if ( hasted_ticks )
         p() -> buff.star_power -> up();
-
-      if ( p() -> legendary.impeccable_fel_essence && dbc::is_school( school, SCHOOL_NATURE ) )
-        p() -> buff.manipulated_fel_energy -> up();
     }
   }
 
@@ -1771,6 +1757,20 @@ public:
       p() -> active.shooting_stars -> execute();
     }
   }
+
+  virtual void trigger_impeccable_fel_essence()
+  {
+    if ( p() -> legendary.impeccable_fel_essence == timespan_t::zero() )
+      return;
+    if ( resource_current != RESOURCE_ASTRAL_POWER )
+      return;
+    if ( resource_consumed <= 0.0 )
+      return;
+
+    timespan_t reduction = resource_consumed * p() -> legendary.impeccable_fel_essence;
+    p() -> cooldown.celestial_alignment -> adjust( reduction );
+    p() -> cooldown.incarnation -> adjust( reduction );
+  }
 }; // end druid_spell_t
 
 // Shooting Stars ===========================================================
@@ -1799,6 +1799,7 @@ struct moonfire_t : public druid_spell_t
       }
 
       may_miss = false;
+      dual = background = true;
       dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
       base_multiplier    *= 1.0 + p -> spec.guardian -> effectN( 4 ).percent();
       base_dd_multiplier *= 1.0 + p -> spec.feral_overrides -> effectN( 1 ).percent();
@@ -3624,7 +3625,22 @@ struct healing_touch_t : public druid_heal_t
     if ( p() -> buff.predatory_swiftness -> check() )
       return timespan_t::zero();
 
-    return druid_heal_t::execute_time();
+    timespan_t et = druid_heal_t::execute_time();
+
+    et *= 1.0 + p() -> buff.power_of_elune -> current_stack
+      * p() -> buff.power_of_elune -> data().effectN( 2 ).percent();
+
+    return et;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = druid_heal_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.power_of_elune -> current_stack
+      * p() -> buff.power_of_elune -> data().effectN( 1 ).percent();
+
+    return am;
   }
 
   virtual void impact( action_state_t* state ) override
@@ -3656,6 +3672,9 @@ struct healing_touch_t : public druid_heal_t
       p() -> buff.bloodtalons -> trigger( 2 );
 
     p() -> buff.predatory_swiftness -> expire();
+
+    if ( p() -> buff.power_of_elune -> up() )
+      p() -> buff.power_of_elune -> expire();
   }
 };
 
@@ -4501,84 +4520,9 @@ struct incarnation_t : public druid_spell_t
 
 struct innervate_t : public druid_spell_t
 {
-  struct virtual_promise_of_elune_event_t : public event_t
-  {
-    druid_t* druid;
-    timespan_t end;
-
-    virtual_promise_of_elune_event_t( druid_t* p, timespan_t e, bool first_cast = false ) :
-      event_t( *p ), druid( p ), end( e )
-    {
-      timespan_t d = interval();
-
-      // If this is the first event, the target's cast can already be in progress.
-      if ( first_cast )
-        d *= druid -> rng().real();
-
-      if ( sim().current_time() + d <= end )
-        add_event( d );
-    }
-
-    double target_haste()
-    {
-      double haste_rating = 4192;
-
-      haste_rating *= item_database::approx_scale_coefficient( 810, druid -> avg_item_level() );
-      haste_rating *= druid -> dbc.combat_rating_multiplier( druid -> avg_item_level() ) /
-        druid -> dbc.combat_rating_multiplier( 810 );
-
-      double haste = 1.0 / ( 1.0 + haste_rating / druid -> current_rating().spell_haste );
-
-      // Apply Bloodlust.
-      if ( druid -> buffs.bloodlust -> check() )
-        haste /= 1.0 + druid -> buffs.bloodlust -> data().effectN( 1 ).percent();
-
-      return haste;
-    }
-
-    timespan_t interval()
-    {
-      double roll = druid -> rng().real();
-      timespan_t base_execute_time;
-      
-      // Simulate the target's cast time, picking a base cast time at random.
-      if ( roll <= 0.5 ) // 50% chance
-        base_execute_time = timespan_t::from_seconds( 1.5 );
-      else if ( roll <= 0.75 ) // 25% chance
-        base_execute_time = timespan_t::from_seconds( 2.0 );
-      else // 25% chance
-        base_execute_time = timespan_t::from_seconds( 2.5 );
-
-      return std::max( base_execute_time * target_haste(), timespan_t::from_seconds( 1.0 ) );
-    }
-
-    const char* name() const override
-    { return "virtual_promise_of_elune"; }
-
-    void execute() override
-    {
-      druid -> resource_gain( RESOURCE_ASTRAL_POWER,
-        druid -> legendary.promise_of_elune_the_moon_goddess -> driver() -> effectN( 1 ).base_value(),
-        druid -> gain.promise_of_elune );
-
-      new ( sim() ) virtual_promise_of_elune_event_t( druid, end );
-    }
-  };
-
   innervate_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "innervate", p, p -> find_specialization_spell( "Innervate" ), options_str )
   {}
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    if ( p() -> legendary.promise_of_elune_the_moon_goddess )
-    {
-      new ( *sim ) virtual_promise_of_elune_event_t( p(),
-        sim -> current_time() + data().duration(), true );
-    }
-  };
 };
 
 // Ironfur ==================================================================
@@ -4744,6 +4688,8 @@ struct lunar_strike_t : public druid_spell_t
 
     p() -> buff.lunar_empowerment -> decrement();
     p() -> buff.warrior_of_elune -> decrement();
+
+    p() -> buff.power_of_elune -> trigger();
   }
 };
 
@@ -4822,6 +4768,7 @@ struct sunfire_t : public druid_spell_t
         p -> active.shooting_stars = new shooting_stars_t( p );
       }
       
+      dual = background = true;
       aoe = -1;
       dot_duration += p -> spec.balance_overrides -> effectN( 4 ).time_value();
 
@@ -5027,8 +4974,7 @@ struct solar_wrath_t : public druid_spell_t
 
     p() -> buff.solar_empowerment -> decrement();
 
-    if ( p() -> legendary.impeccable_fel_essence ) 
-      p() -> buff.manipulated_fel_energy -> trigger();
+    p() -> buff.power_of_elune -> trigger();
   }
 };
 
@@ -6700,7 +6646,6 @@ void druid_t::init_gains()
   gain.astral_communion      = get_gain( "astral_communion"      );
   gain.blessing_of_anshe     = get_gain( "blessing_of_anshe"     );
   gain.lunar_strike          = get_gain( "lunar_strike"          );
-  gain.promise_of_elune      = get_gain( "promise_of_elune"      );
   gain.shooting_stars        = get_gain( "shooting_stars"        );
   gain.solar_wrath           = get_gain( "solar_wrath"           );
 
@@ -6735,11 +6680,6 @@ void druid_t::init_gains()
   gain.guardian_tier17_2pc   = get_gain( "guardian_tier17_2pc"   );
   gain.guardian_tier18_2pc   = get_gain( "guardian_tier18_2pc"   );
 
-  if ( ! legendary.impeccable_fel_essence )
-  {
-    buff.manipulated_fel_energy = buff_creator_t( this, "manipulated_fel_energy" )
-                                  .chance( 0 );
-  }
   if ( ! legendary.oneths_intuition )
   {
     buff.oneths_intuition       = buff_creator_t( this, "oneths_intuition" )
@@ -6751,6 +6691,12 @@ void druid_t::init_gains()
   {
     buff.the_emerald_dreamcatcher = buff_creator_t( this, "the_emerald_dreamcatcher" )
                                     .chance( 0 );
+  }
+
+  if ( ! buff.power_of_elune )
+  {
+    buff.power_of_elune = buff_creator_t( this, "power_of_elune_the_moon_goddess" )
+                          .chance( 0 );
   }
 }
 
@@ -7049,9 +6995,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
     if ( buff.moonkin_form -> check() )
       m *= 1.0 + buff.moonkin_form -> data().effectN( 8 ).percent();
   }
-
-  if ( dbc::is_school( school, SCHOOL_NATURE ) && legendary.impeccable_fel_essence )
-    m *= 1.0 + buff.manipulated_fel_energy -> check_stack_value();
 
   // Tiger's Fury and Savage Roar are player multipliers. Their "snapshotting" for cat abilities is handled in cat_attack_t.
   m *= 1.0 + buff.tigers_fury -> check_value();
@@ -7834,7 +7777,31 @@ struct the_wildshapers_clutch_t : public scoped_actor_callback_t<druid_t>
   }
 };
 
+// Balance
 
+struct impeccable_fel_essence_t : public scoped_actor_callback_t<druid_t>
+{
+  impeccable_fel_essence_t() : super( DRUID )
+  {}
+
+  void manipulate( druid_t* p, const special_effect_t& e ) override
+  {
+    p -> legendary.impeccable_fel_essence =
+      - timespan_t::from_seconds( e.driver() -> effectN( 1 ).base_value() ) / e.driver() -> effectN( 2 ).base_value();
+  }
+};
+
+struct promise_of_elune_t : public scoped_actor_callback_t<druid_t>
+{
+  promise_of_elune_t() : super( DRUID )
+  {}
+
+  void manipulate( druid_t* p, const special_effect_t& e ) override
+  {
+    p -> buff.power_of_elune = buff_creator_t( p, "power_of_elune_the_moon_goddess",
+      e.driver() -> effectN( 1 ).trigger(), e.item );
+  }
+};
 
 // Druid Special Effects ====================================================
 
@@ -7960,17 +7927,6 @@ static void essence_of_infusion( special_effect_t& effect )
   init_special_effect( s, DRUID_RESTORATION, s -> legendary.essence_of_infusion, effect );
 }
 
-static void impeccable_fel_essence( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.impeccable_fel_essence, effect );
-
-  s -> buff.manipulated_fel_energy =
-    buff_creator_t( s, "manipulated_fel_energy", effect.driver() -> effectN( 1 ).trigger() )
-    .default_value( effect.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-}
-
 static void oneths_intuition( special_effect_t& effect )
 {
   druid_t* s = debug_cast<druid_t*>( effect.player );
@@ -7983,12 +7939,6 @@ static void oneths_intuition( special_effect_t& effect )
   s -> buff.oneths_overconfidence =
     buff_creator_t( s, "oneths_overconfidence", s -> find_spell( 209407 ) )
     .chance( effect.proc_chance() );
-}
-
-static void promise_of_elune_the_moon_goddess( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_BALANCE, s -> legendary.promise_of_elune_the_moon_goddess, effect );
 }
 
 static void skysecs_hold( special_effect_t& effect )
@@ -8053,12 +8003,12 @@ struct druid_module_t : public module_t
     register_special_effect( 210667, ekowraith_creator_of_worlds );
     register_special_effect( 208342, elizes_everlasting_encasement );
     register_special_effect( 208191, essence_of_infusion );
-    register_special_effect( 208199, impeccable_fel_essence );
+    register_special_effect( 208199, impeccable_fel_essence_t() );
     register_special_effect( 208319, the_wildshapers_clutch_t() );
     register_special_effect( 209405, oneths_intuition );
     register_special_effect( 207523, chatoyant_signet_t() );
     register_special_effect( 208209, ailuro_pouncers_t() );
-    register_special_effect( 208283, promise_of_elune_the_moon_goddess );
+    register_special_effect( 208283, promise_of_elune_t() );
     register_special_effect( 208219, skysecs_hold );
     register_special_effect( 207932, tearstone_of_elune );
     register_special_effect( 207271, the_dark_titans_advice );
