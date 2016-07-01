@@ -2316,7 +2316,8 @@ struct crash_lightning_attack_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
+    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = false;
+    may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
   }
 };
 
@@ -2334,7 +2335,8 @@ struct hailstorm_attack_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
+    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = false;
+    may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
   }
 };
 
@@ -3034,14 +3036,13 @@ struct sundering_t : public shaman_attack_t
     parse_options( options_str );
 
     aoe = -1; // TODO: This is likely not going to affect all enemies but it will do for now
-    may_proc_stormbringer = true;
   }
 
   void init() override
   {
     shaman_attack_t::init();
 
-    may_proc_lightning_shield = true;
+    may_proc_stormbringer = may_proc_lightning_shield = true;
   }
 };
 
