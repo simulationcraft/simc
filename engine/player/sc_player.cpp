@@ -6691,14 +6691,16 @@ struct use_item_t : public action_t
 
       item = &( player -> items[ s ] );
 
-      if ( ! item -> active() )
+      if ( ! item || ! item -> active() )
       {
         sim -> errorf( "Player %s attempting 'use_item' action with invalid item '%s' in slot '%s'.", player -> name(), item -> name(), item_slot.c_str() );
         item = 0;
         background = true;
       }
-
-      name_str = name_str + "_" + item -> name();
+      else
+      {
+        name_str = name_str + "_" + item -> name();
+      }
     }
     else
     {
@@ -6710,6 +6712,9 @@ struct use_item_t : public action_t
   void init() override
   {
     action_t::init();
+
+    if ( ! item )
+      return;
 
     // Parse Special Effect
     const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
