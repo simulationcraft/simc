@@ -3111,13 +3111,6 @@ struct nightblade_base_t : public rogue_attack_t
     affected_by.weaponmaster = true;
   }
 
-  action_state_t* get_state( const action_state_t* o = nullptr ) override
-  {
-    auto state = rogue_attack_t::get_state( o );
-    state -> action = this;
-    return state;
-  }
-
   // Nightblade dots overwrite eachother
   dot_t* get_dot( player_t* t = nullptr )
   { return td( t ? t : target ) -> dots.nightblade; }
