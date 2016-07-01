@@ -1811,7 +1811,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   flanking_strike_t( hunter_main_pet_t* p ):
     hunter_main_pet_attack_t( "flanking_strike", p, p -> find_spell( 204740 ) )
   {
-    attack_power_mod.direct = 2.0; //data is in the tooltip
+    attack_power_mod.direct = 3.0; //data is in the tooltip
     background = true;
 
     if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
