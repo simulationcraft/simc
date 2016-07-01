@@ -212,7 +212,7 @@ public:
   spell_t*  lightning_shield;
   spell_t*  earthen_rage;
   spell_t* crashing_storm;
-  spell_t* doom_vortex;
+  spell_t* doom_vortex_ll, * doom_vortex_lb;
   action_t* lightning_rod;
 
   // Pets
@@ -2830,7 +2830,7 @@ struct lava_lash_t : public shaman_attack_t
     add_child( cl );
     if ( player -> artifact.doom_vortex.rank() )
     {
-      add_child( player -> doom_vortex );
+      add_child( player -> doom_vortex_ll );
     }
   }
 
@@ -5269,7 +5269,8 @@ bool shaman_t::create_actions()
 
   if ( artifact.doom_vortex.rank() )
   {
-    doom_vortex = new ground_aoe_spell_t( this, "doom_vortex", find_spell( 199116 ) );
+    doom_vortex_ll = new ground_aoe_spell_t( this, "doom_vortex_ll", find_spell( 199116 ) );
+    doom_vortex_lb = new ground_aoe_spell_t( this, "doom_vortex_lb", find_spell( 199116 ) );
   }
 
   if ( artifact.volcanic_inferno.rank() )
@@ -5593,7 +5594,7 @@ void shaman_t::trigger_doom_vortex( const action_state_t* state )
       .y( state -> target -> y_position )
       .duration( find_spell( 199121 ) -> duration() )
       .start_time( sim -> current_time() )
-      .action( doom_vortex ) );
+      .action( state -> action -> id == 187837 ? doom_vortex_lb : doom_vortex_ll ) );
 }
 
 void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
