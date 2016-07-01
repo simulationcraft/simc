@@ -149,7 +149,7 @@ void dot_t::refresh_duration( uint32_t state_flags )
 void dot_t::reset()
 {
   if ( ticking )
-    source -> remove_active_dot( current_action -> internal_id );
+    source -> remove_active_dot( state -> action -> internal_id );
 
   event_t::cancel( tick_event );
   event_t::cancel( end_event );
