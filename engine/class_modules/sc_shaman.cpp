@@ -829,6 +829,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   dot.flame_shock       = target -> get_dot( "flame_shock", p );
 
   debuff.earthen_spike  = buff_creator_t( *this, "earthen_spike", p -> talent.earthen_spike )
+                          .cd( timespan_t::zero() ) // Handled by the action
                           // -10% resistance in spell data, treat it as a multiplier instead
                           .default_value( 1.0 + p -> talent.earthen_spike -> effectN( 2 ).percent() );
   debuff.lightning_rod = new lightning_rod_debuff_t( *this );
