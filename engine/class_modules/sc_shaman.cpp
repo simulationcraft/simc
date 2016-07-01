@@ -5610,7 +5610,7 @@ void shaman_t::trigger_unleash_doom( const action_state_t* state )
   }
 
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
-  if ( attack -> may_proc_unleash_doom )
+  if ( ! attack -> may_proc_unleash_doom )
   {
     return;
   }
