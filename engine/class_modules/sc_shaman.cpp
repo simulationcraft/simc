@@ -3810,6 +3810,11 @@ struct lightning_bolt_t : public shaman_spell_t
       overload = new lightning_bolt_overload_t( player );
       add_child( overload );
     }
+
+    if ( p() -> artifact.doom_vortex.rank() )
+    {
+      add_child( p() -> doom_vortex_lb );
+    }
   }
 
   double overload_chance( const action_state_t* s ) const override
