@@ -3786,7 +3786,10 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     base_multiplier *= 1.0 + player -> artifact.surge_of_power.percent();
 
-    maelstrom_gain = player -> find_spell( 214815 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
+    if ( player -> specialization() == SHAMAN_ELEMENTAL )
+    {
+      maelstrom_gain = player -> find_spell( 214815 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
+    }
 
     if ( player -> talent.overcharge -> ok() )
     {
@@ -4159,6 +4162,13 @@ struct feral_lunge_t : public shaman_spell_t
     unshift_ghost_wolf = false;
 
     impact_action = new feral_lunge_attack_t( player );
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_unleash_doom = false;
   }
 
   bool ready() override
