@@ -478,7 +478,6 @@ public:
     const spell_data_t* eruption;
     const spell_data_t* maelstrom_melee_gain;
     const spell_data_t* fury_of_the_storms_driver;
-    const spell_data_t* feral_spirit_summon;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -3911,16 +3910,28 @@ struct shamanistic_rage_t : public shaman_spell_t
 
 struct feral_spirit_spell_t : public shaman_spell_t
 {
+  const spell_data_t* feral_spirit_summon;
+  const spell_data_t* doom_wolves;
+
   feral_spirit_spell_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "feral_spirit", player,
-        player -> artifact.doom_wolves.rank()
-        ? player -> find_spell( 198506 )
-        : player -> find_specialization_spell( "Feral Spirit" ), options_str )
+    shaman_spell_t( "feral_spirit", player, player -> find_specialization_spell( "Feral Spirit" ), options_str ),
+      feral_spirit_summon( player -> find_spell( 228562 ) ),
+      doom_wolves( player -> artifact.doom_wolves.rank() ? player -> find_spell( 198506 ) : spell_data_t::not_found() )
   {
     harmful = false;
   }
 
-  virtual void execute() override
+  timespan_t summon_duration() const
+  {
+    if ( doom_wolves -> ok() )
+    {
+      return doom_wolves -> duration();
+    }
+
+    return feral_spirit_summon -> duration();
+  }
+
+  void execute() override
   {
     shaman_spell_t::execute();
 
@@ -3935,14 +3946,14 @@ struct feral_spirit_spell_t : public shaman_spell_t
           continue;
         }
 
-        p() -> pet.doom_wolves[ idx ] -> summon( p() -> spell.feral_spirit_summon -> duration() );
+        p() -> pet.doom_wolves[ idx ] -> summon( summon_duration() );
         n--;
       }
     }
     else
     {
       range::for_each( p() -> pet.spirit_wolves, [ this ]( pet_t* p ) {
-        p -> summon( this -> p() -> spell.feral_spirit_summon -> duration() );
+        p -> summon( summon_duration() );
       } );
       p() -> buff.feral_spirit -> trigger();
     }
@@ -5321,7 +5332,6 @@ void shaman_t::init_spells()
   spell.eruption                     = find_spell( 168556 );
   spell.maelstrom_melee_gain         = find_spell( 187890 );
   spell.fury_of_the_storms_driver    = find_spell( 191716 );
-  spell.feral_spirit_summon          = find_spell( 228562 );
 
   // Constants
   constant.haste_ancestral_swiftness  = 1.0 / ( 1.0 + talent.ancestral_swiftness -> effectN( 1 ).percent() );
