@@ -7111,9 +7111,15 @@ namespace unique_gear
     // Initialize the callback by manipulating the action(s)
     void initialize( special_effect_t& e ) override
     {
-      range::for_each( e.player -> buff_list, [ this, e ]( buff_t* b ) {
+      // "Snapshot" size's value so we don't attempt to manipulate any buffs created during the loop.
+      size_t size = e.player -> buff_list.size();
+
+      for ( size_t i = 0; i < size; i++ )
+      {
+        buff_t* b = e.player -> buff_list[ i ];
+
         if ( ( ! name.empty() && util::str_compare_ci( name, b -> name_str ) ) ||
-             ( spell_id > 0 && spell_id == as<int>( b -> data().id() ) ) )
+              ( spell_id > 0 && spell_id == as<int>( b -> data().id() ) ) )
         {
           if ( b -> sim -> debug )
           {
@@ -7122,7 +7128,7 @@ namespace unique_gear
           }
           manipulate( debug_cast<T_BUFF*>( b ), e );
         }
-      });
+      }
     }
 
     // Overridable method to manipulate the action. Must be implemented.
