@@ -305,7 +305,6 @@ public:
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
-    cooldown_t* lightning_shield;
     cooldown_t* storm_elemental;
     cooldown_t* strike;
   } cooldown;
@@ -523,7 +522,6 @@ public:
     cooldown.feral_spirits        = get_cooldown( "feral_spirit"          );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
-    cooldown.lightning_shield     = get_cooldown( "lightning_shield"      );
     cooldown.strike               = get_cooldown( "strike"                );
 
     melee_mh = nullptr;
@@ -1056,6 +1054,7 @@ public:
   bool may_proc_frostbrand;
   bool may_proc_maelstrom_weapon;
   bool may_proc_stormbringer;
+  bool may_proc_lightning_shield;
 
   shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
     base_t( token, p, s ),
@@ -1063,7 +1062,8 @@ public:
     may_proc_flametongue( p -> spec.flametongue -> ok() ),
     may_proc_frostbrand( p -> spec.frostbrand -> ok() ),
     may_proc_maelstrom_weapon( false ), // Change to whitelisting
-    may_proc_stormbringer( p -> spec.stormbringer -> ok() )
+    may_proc_stormbringer( p -> spec.stormbringer -> ok() ),
+    may_proc_lightning_shield( false )
   {
     special = true;
     may_glance = false;
@@ -1077,6 +1077,8 @@ public:
     {
       may_proc_stormbringer = ab::weapon && ab::weapon -> slot == SLOT_MAIN_HAND;
     }
+
+    may_proc_lightning_shield = p() -> talent.lightning_shield -> ok() && weapon && weapon_multiplier > 0;
   }
 
   void impact( action_state_t* state ) override
@@ -2308,7 +2310,13 @@ struct crash_lightning_attack_t : public shaman_attack_t
     callbacks = false;
     aoe = -1;
     cooldown -> duration = timespan_t::zero();
-    callbacks = may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = false;
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
   }
 };
 
@@ -2319,7 +2327,14 @@ struct hailstorm_attack_t : public shaman_attack_t
   {
     weapon = w;
     background = true;
-    callbacks = may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_stormbringer = false;
+    callbacks = false;
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
   }
 };
 
@@ -3021,6 +3036,13 @@ struct sundering_t : public shaman_attack_t
     aoe = -1; // TODO: This is likely not going to affect all enemies but it will do for now
     may_proc_stormbringer = true;
   }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_lightning_shield = true;
+  }
 };
 
 // Rockbiter Spell =========================================================
@@ -3105,6 +3127,11 @@ struct crash_lightning_t : public shaman_attack_t
 
     aoe = -1;
     weapon = &( p() -> main_hand_weapon );
+
+    if ( player -> crashing_storm )
+    {
+      add_child( player -> crashing_storm );
+    }
   }
 
   void execute() override
@@ -5436,16 +5463,6 @@ void shaman_t::trigger_elemental_focus( const action_state_t* state )
 
 void shaman_t::trigger_lightning_shield( const action_state_t* state )
 {
-  if ( ! talent.lightning_shield -> ok() )
-  {
-    return;
-  }
-
-  if ( cooldown.lightning_shield -> down() )
-  {
-    return;
-  }
-
   if ( ! buff.lightning_shield -> up() )
   {
     return;
@@ -5456,15 +5473,19 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
     return;
   }
 
+  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
+  if ( ! attack -> may_proc_lightning_shield )
+  {
+    return;
+  }
+
   if ( ! rng().roll( talent.lightning_shield -> proc_chance() ) )
   {
     return;
   }
 
   lightning_shield -> target = state -> target;
-  lightning_shield -> schedule_execute();
-
-  cooldown.lightning_shield -> start( talent.lightning_shield -> internal_cooldown() );
+  lightning_shield -> execute();
 }
 
 // TODO: Target swaps
