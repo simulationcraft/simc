@@ -5390,7 +5390,7 @@ void demon_hunter_t::apl_default()
 
 // demon_hunter_t::apl_havoc ================================================
 
-void havoc_add_use_items( demon_hunter_t* p, action_priority_list_t* apl )
+void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 {
   // On-Use Items
   for ( size_t i = 0; i < p -> items.size(); i++ )
@@ -5443,7 +5443,7 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( this, "Metamorphosis", "if=buff.metamorphosis.down&fury.deficit<25&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(cooldown.chaos_blades.ready|buff.chaos_blades.up|!talent.demon_reborn.enabled)" );
   def -> add_action( this, "Demon's Bite", "if=buff.metamorphosis.down&cooldown.metamorphosis.ready" );
 
-  havoc_add_use_items( this, def );
+  add_havoc_use_items( this, def );
 
   def -> add_action( "potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25" );
   def -> add_action( this, spec.death_sweep, "death_sweep", "if=death_sweep_worth_using",
