@@ -773,7 +773,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.deepening_shadows = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.ghostly_strike = data().affected_by( p() -> talent.ghostly_strike -> effectN( 5 ) );
     affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
-    affected_by.weaponmaster = p() -> talent.weaponmaster -> ok() && harmful && ! special &&
+    affected_by.weaponmaster = p() -> talent.weaponmaster -> ok() && harmful && special &&
                                ( weapon_multiplier > 0 || attack_power_mod.direct > 0 );
     affected_by.agonizing_poison = p() -> talent.agonizing_poison -> ok();
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
@@ -1061,11 +1061,17 @@ struct secondary_ability_trigger_t : public event_t
   void execute() override
   {
     actions::rogue_attack_t* attack = rogue_t::cast_attack( state -> action );
+    auto bg = attack -> background, d = attack -> dual, r = attack -> repeating;
+
     attack -> background = attack -> dual = attack -> secondary_trigger = true;
+    attack -> repeating = false;
     attack -> target = state -> target;
     attack -> pre_execute_state = state;
     attack -> execute();
-    attack -> background = attack -> dual = attack -> secondary_trigger = false;
+    attack -> secondary_trigger = false;
+    attack -> background = bg;
+    attack -> dual = d;
+    attack -> repeating = r;
     state = nullptr;
   }
 
@@ -3098,6 +3104,20 @@ struct nightblade_base_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.demons_kiss.percent();
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    affected_by.weaponmaster = true;
+  }
+
+  action_state_t* get_state( const action_state_t* o = nullptr ) override
+  {
+    auto state = rogue_attack_t::get_state( o );
+    state -> action = this;
+    return state;
+  }
+
   // Nightblade dots overwrite eachother
   dot_t* get_dot( player_t* t = nullptr )
   { return td( t ? t : target ) -> dots.nightblade; }
@@ -3151,6 +3171,11 @@ struct nightblade_t : public nightblade_base_t
     if ( finality )
     {
       add_child( finality );
+    }
+
+    if ( p -> talent.weaponmaster -> ok() )
+    {
+      add_child( p -> weaponmaster_dot_strike );
     }
   }
 
@@ -3374,6 +3399,12 @@ struct shadow_blade_t : public rogue_attack_t
     background = true;
     may_glance = false;
     base_execute_time = w -> swing_time;
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
     affected_by.weaponmaster = true;
   }
 };
@@ -4578,7 +4609,8 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
   }
 
   actions::rogue_attack_t* attack = cast_attack( s -> action );
-  if ( ! s -> action -> result_is_hit( s -> result ) || ! attack -> affected_by.weaponmaster )
+  if ( ! s -> action -> result_is_hit( s -> result ) || s -> result_amount <= 0 ||
+       ! attack -> affected_by.weaponmaster )
   {
     return;
   }
