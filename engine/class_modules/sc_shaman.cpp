@@ -860,6 +860,9 @@ public:
   double      maelstrom_gain;
   double      maelstrom_gain_coefficient;
 
+  // Generic procs
+  bool may_proc_unleash_doom;
+
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
@@ -867,7 +870,8 @@ public:
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr ),
     unshift_ghost_wolf( true ),
     gain( player -> get_gain( s -> id() > 0 ? s -> name_cstr() : n ) ),
-    maelstrom_gain( 0 ), maelstrom_gain_coefficient( 1.0 )
+    maelstrom_gain( 0 ), maelstrom_gain_coefficient( 1.0 ),
+    may_proc_unleash_doom( false )
   {
     ab::may_crit = true;
 
@@ -905,6 +909,9 @@ public:
     {
       ab::gcd_haste = HASTE_ATTACK;
     }
+
+    may_proc_unleash_doom = p() -> artifact.unleash_doom.rank() && ! ab::callbacks && ! ab::background && ab::harmful &&
+      ( ab::weapon_multiplier > 0 || ab::attack_power_mod.direct > 0 || ab::spell_power_mod.direct > 0 );
   }
 
   shaman_t* p()
@@ -2357,6 +2364,13 @@ struct stormstrike_attack_t : public shaman_attack_t
     base_multiplier *= 1.0 + player -> artifact.hammer_of_storms.percent();
   }
 
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_unleash_doom = true;
+  }
+
   double action_multiplier() const
   {
     double m = shaman_attack_t::action_multiplier();
@@ -2914,6 +2928,9 @@ struct stormstrike_base_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      // Proc unleash doom before the actual damage strikes, they already benefit from the buff
+      p() -> buff.unleash_doom -> trigger();
+
       mh -> stormflurry = stormflurry;
       mh -> execute();
       if ( oh )
@@ -2921,8 +2938,6 @@ struct stormstrike_base_t : public shaman_attack_t
         oh -> stormflurry = stormflurry;
         oh -> execute();
       }
-
-      p() -> buff.unleash_doom -> trigger();
 
       if ( p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B2 ) )
       {
@@ -3231,6 +3246,13 @@ struct windsong_t : public shaman_spell_t
     shaman_spell_t( "windsong", player, player -> talent.windsong, options_str )
   { }
 
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_unleash_doom = false;
+  }
+
   void execute() override
   {
     shaman_spell_t::execute();
@@ -3243,7 +3265,14 @@ struct boulderfist_t : public shaman_spell_t
 {
   boulderfist_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "boulderfist", player, player -> talent.boulderfist, options_str )
+  { }
+
+  void init() override
   {
+    shaman_spell_t::init();
+
+    may_proc_unleash_doom = false;
+
     // TODO: SpellCategory + SpellEffect based detection
     cooldown -> hasted = true;
   }
@@ -5575,22 +5604,13 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
 
 void shaman_t::trigger_unleash_doom( const action_state_t* state )
 {
-  if ( ! state -> action -> special )
-  {
-    return;
-  }
-
-  if ( state -> action -> background )
-  {
-    return;
-  }
-
   if ( ! buff.unleash_doom -> up() )
   {
     return;
   }
 
-  if ( ! state -> action -> callbacks )
+  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
+  if ( attack -> may_proc_unleash_doom )
   {
     return;
   }
