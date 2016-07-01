@@ -552,7 +552,6 @@ public:
   void trigger_t18_4pc_elemental();
   void trigger_t19_oh_8pc( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state );
-  void trigger_unleash_doom( const action_state_t* state );
   void trigger_elemental_focus( const action_state_t* state );
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_earthen_rage( const action_state_t* state );
@@ -936,6 +935,13 @@ public:
     trigger_maelstrom_gain( ab::execute_state );
   }
 
+  void impact( action_state_t* state ) override
+  {
+    ab::impact( state );
+
+    trigger_unleash_doom( state );
+  }
+
   void schedule_execute( action_state_t* execute_state = nullptr ) override
   {
     if ( ! ab::background && unshift_ghost_wolf )
@@ -1046,6 +1052,28 @@ public:
     ab::player -> resource_gain( RESOURCE_MAELSTROM, g, gain, this );
   }
 
+  void trigger_unleash_doom( const action_state_t* state )
+  {
+    if ( ! ab::result_is_hit( state -> result ) )
+    {
+      return;
+    }
+
+    if ( ! p() -> buff.unleash_doom -> up() )
+    {
+      return;
+    }
+
+    if ( ! may_proc_unleash_doom )
+    {
+      return;
+    }
+
+    size_t spell_idx = ab::rng().range( 0, p() -> unleash_doom.size() );
+    p() -> unleash_doom[ spell_idx ] -> target = state -> target;
+    p() -> unleash_doom[ spell_idx ] -> schedule_execute();
+  }
+
 };
 
 // ==========================================================================
@@ -1102,7 +1130,6 @@ public:
     p() -> trigger_stormbringer( state );
     p() -> trigger_flametongue_weapon( state );
     p() -> trigger_hailstorm( state );
-    p() -> trigger_unleash_doom( state );
     p() -> trigger_lightning_shield( state );
     p() -> trigger_stormlash( state );
   }
@@ -1232,18 +1259,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     trigger_elemental_overload( s );
 
     base_t::schedule_travel( s );
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    base_t::impact( state );
-
-    if ( ! result_is_hit( state -> result ) )
-    {
-      return;
-    }
-
-    p() -> trigger_unleash_doom( state );
   }
 
   virtual bool usable_moving() const override
@@ -5600,24 +5615,6 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
     lightning_rod -> target = t;
     lightning_rod -> execute();
   } );
-}
-
-void shaman_t::trigger_unleash_doom( const action_state_t* state )
-{
-  if ( ! buff.unleash_doom -> up() )
-  {
-    return;
-  }
-
-  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
-  if ( ! attack -> may_proc_unleash_doom )
-  {
-    return;
-  }
-
-  size_t spell_idx = rng().range( 0, unleash_doom.size() );
-  unleash_doom[ spell_idx ] -> target = state -> target;
-  unleash_doom[ spell_idx ] -> schedule_execute();
 }
 
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
