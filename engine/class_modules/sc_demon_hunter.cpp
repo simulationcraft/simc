@@ -6167,12 +6167,12 @@ struct raddons_cascading_eyes_t : public scoped_actor_callback_t<demon_hunter_t>
   { actor -> legendary.raddons_cascading_eyes = -e.driver() -> effectN( 1 ).time_value(); }
 };
 
-struct loramus_thalipedes_sacrifice_t : public scoped_action_callback_t<fel_rush_t>
+struct loramus_thalipedes_sacrifice_t : public scoped_action_callback_t<fel_rush_t::fel_rush_damage_t>
 {
-  loramus_thalipedes_sacrifice_t() : super( DEMON_HUNTER_HAVOC, "fel_rush" )
+  loramus_thalipedes_sacrifice_t() : super( DEMON_HUNTER_HAVOC, "fel_rush_dmg" )
   { }
 
-  void manipulate( actions::spells::fel_rush_t* action, const special_effect_t& e ) override
+  void manipulate( fel_rush_t::fel_rush_damage_t* action, const special_effect_t& e ) override
   { action -> base_add_multiplier *= 1.0 + e.driver() -> effectN( 1 ).percent(); }
 };
 
