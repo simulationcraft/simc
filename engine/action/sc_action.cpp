@@ -1547,8 +1547,6 @@ void action_t::update_resolve( dmg_e type,
 
 void action_t::assess_damage( dmg_e type, action_state_t* s )
 {
-  assert( s -> action -> internal_id == internal_id );
-
   // Execute outbound damage assessor pipeline on the state object
   player -> assessor_out_damage.execute( type, s );
 
