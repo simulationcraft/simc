@@ -257,9 +257,7 @@ public:
   action_t* t16_2pc_starfall_bolt;
   action_t* t16_2pc_sun_bolt;
 
-  // Artifacts
-  const special_effect_t* fangs_of_ashamane;
-  // no need to initialize special effects for the other artifacts
+  double starshards;
 
   // RPPM objects
   struct rppms_t
@@ -289,7 +287,7 @@ public:
     spell_t*                        galactic_guardian;
     spell_t*                        starfall;
     spell_t*                        echoing_stars;
-    spells::starshards_t*           starshards;
+    spell_t*                        starshards;
     attack_t*                       ashamanes_rip;
     spell_t*                        shooting_stars;
   } active;
@@ -306,12 +304,6 @@ public:
   melee_attack_t* bear_melee_attack;
 
   double equipped_weapon_dps;
-
-  // T18 (WoD 6.2) class specific trinket effects
-  const special_effect_t* starshards;
-  const special_effect_t* wildcat_celerity;
-  const special_effect_t* stalwart_guardian;
-  const special_effect_t* flourish;
 
   // Druid Events
   std::vector<event_t*> persistent_buff_delay;
@@ -682,29 +674,12 @@ public:
 
   struct legendary_t
   {
-    // General
-    const special_effect_t* ekowraith_creator_of_worlds;
-    const special_effect_t* dual_determination;
-
     // Balance
-    const special_effect_t* the_emerald_dreamcatcher;
-    const special_effect_t* oneths_intuition;
     timespan_t impeccable_fel_essence;
 
     // Feral
     double the_wildshapers_clutch;
     timespan_t ailuro_pouncers;
-
-    // Guardian
-    const special_effect_t* elizes_everlasting_encasement;
-    const special_effect_t* skysecs_hold;
-
-    // Resto (NYI)
-    const special_effect_t* tearstone_of_elune;
-    const special_effect_t* amanthuls_wisdom;
-    const special_effect_t* the_dark_titans_advice;
-    const special_effect_t* edraith_bonds_of_aglaya;
-    const special_effect_t* essence_of_infusion;
   } legendary;
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -715,16 +690,12 @@ public:
     caster_melee_attack( nullptr ),
     cat_melee_attack( nullptr ),
     bear_melee_attack( nullptr ),
-    fangs_of_ashamane(),
+    starshards( 0.0 ),
     initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
     active( active_actions_t() ),
     pet_fey_moonwing(),
     caster_form_weapon(),
-    starshards(),
-    wildcat_celerity(),
-    stalwart_guardian(),
-    flourish(),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -810,7 +781,6 @@ public:
   virtual void      recalculate_resource_max( resource_e ) override;
   virtual void      create_options() override;
   virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
-  virtual bool      has_t18_class_trinket() const override;
   virtual druid_td_t* get_target_data( player_t* target ) const override;
 
   form_e get_form() const { return form; };
@@ -941,12 +911,12 @@ struct stalwart_guardian_t : public absorb_t
 
   void init() override
   {
-    if ( p() -> stalwart_guardian )
+    /* if ( p() -> stalwart_guardian )
     {
       const spell_data_t* trinket = p() -> stalwart_guardian -> driver();
       attack_power_mod.direct     = trinket -> effectN( 1 ).average( p() -> stalwart_guardian -> item ) / 100.0;
       absorb_limit                = trinket -> effectN( 2 ).percent();
-    }
+    } */
 
     absorb_t::init();
 
@@ -1147,11 +1117,11 @@ private:
 
 // Berserk Buff Template ====================================================
 
-struct berserk_buff_template_t : public druid_buff_t<buff_t>
+struct berserk_buff_base_t : public druid_buff_t<buff_t>
 {
   double increased_max_energy;
 
-  berserk_buff_template_t( druid_t& p, const std::string& name, const spell_data_t* spell ) :
+  berserk_buff_base_t( druid_t& p, const std::string& name, const spell_data_t* spell ) :
     druid_buff_t<buff_t>( p, buff_creator_t( &p, name, spell )
                           .cd( timespan_t::from_seconds( 0.0 ) ) ) // Cooldown handled by ability
   {}
@@ -1180,32 +1150,22 @@ struct berserk_buff_template_t : public druid_buff_t<buff_t>
 
 // Berserk Buff =============================================================
 
-struct berserk_buff_t : public berserk_buff_template_t
+struct berserk_buff_t : public berserk_buff_base_t
 {
   berserk_buff_t( druid_t& p ) :
-    berserk_buff_template_t( p, "berserk", p.find_spell( 106951 ) )
+    berserk_buff_base_t( p, "berserk", p.find_spell( 106951 ) )
   {
     default_value        = data().effectN( 1 ).percent(); // cost modifier
     increased_max_energy = data().effectN( 3 ).resource( RESOURCE_ENERGY );
-  }
-
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Berserk duration
-       based on spell data of the special effect. */
-    if ( druid.wildcat_celerity )
-      duration *= 1.0 + druid.wildcat_celerity -> driver() -> effectN( 1 ).average( druid.wildcat_celerity -> item ) / 100.0;
-
-    return berserk_buff_template_t::trigger( stacks, value, chance, duration );
   }
 };
 
 // Incarnation: King of the Jungle ==========================================
 
-struct incarnation_cat_buff_t : public berserk_buff_template_t
+struct incarnation_cat_buff_t : public berserk_buff_base_t
 {
   incarnation_cat_buff_t( druid_t& p ) :
-    berserk_buff_template_t( p, "incarnation_king_of_the_jungle", p.talent.incarnation_cat )
+    berserk_buff_base_t( p, "incarnation_king_of_the_jungle", p.talent.incarnation_cat )
   {
     default_value        = data().effectN( 2 ).percent(); // cost modifier
     increased_max_energy = data().effectN( 3 ).resource( RESOURCE_ENERGY );
@@ -2981,14 +2941,6 @@ struct tigers_fury_t : public cat_attack_t
     harmful = consumes_clearcasting = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
     energize_type = ENERGIZE_ON_CAST;
-
-    /* If Druid Tier 18 (WoD 6.2) trinket effect is in use, adjust Tiger's Fury duration
-       based on spell data of the special effect. */
-    if ( p -> wildcat_celerity )
-    {
-      duration *= 1.0 + p -> wildcat_celerity -> driver() ->
-        effectN( 1 ).average( p -> wildcat_celerity -> item ) / 100.0;
-    }
   }
 
   void execute() override
@@ -3388,10 +3340,6 @@ struct thrash_bear_t : public bear_attack_t
 
     if ( p -> talent.blood_frenzy -> ok() )
       blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
-
-    if ( p -> legendary.elizes_everlasting_encasement )
-      dot_max_stack += p -> legendary.elizes_everlasting_encasement
-        -> driver() -> effectN( 1 ).base_value();
   }
 
   virtual void tick( dot_t* d ) override
@@ -3498,34 +3446,15 @@ struct frenzied_regeneration_t : public druid_heal_t
     }
   };
 
-  struct skysecs_hold_t : public druid_heal_t
-  {
-    skysecs_hold_t( druid_t* p ) :
-      druid_heal_t( "skysecs_hold", p,
-        p -> legendary.skysecs_hold -> driver() -> effectN( 1 ).trigger() )
-    {
-      background = true;
-      hasted_ticks = may_crit = tick_may_crit = false;
-      target = p;
-      tick_pct_heal = data().effectN( 1 ).percent();
-    }
-
-    void init() override
-    {
-      druid_heal_t::init();
-
-      snapshot_flags = update_flags = 0;
-    }
-  };
-
   double heal_pct, min_pct;
   timespan_t time_window;
   frenzied_regeneration_ignite_t* ignite;
-  skysecs_hold_t* skysecs_hold;
+  heal_t* skysecs_hold;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "frenzied_regeneration_driver", p,
-      p -> find_specialization_spell( "Frenzied Regeneration" ), options_str )
+      p -> find_specialization_spell( "Frenzied Regeneration" ), options_str ),
+      skysecs_hold( nullptr )
   {
     use_off_gcd = quiet = true;
     may_crit = false;
@@ -3537,9 +3466,6 @@ struct frenzied_regeneration_t : public druid_heal_t
     min_pct = data().effectN( 4 ).percent();
     ignite = new frenzied_regeneration_ignite_t( p, &data() );
     dot_duration = timespan_t::zero();
-
-    if ( p -> legendary.skysecs_hold )
-      skysecs_hold = new skysecs_hold_t( p );
   }
 
   void init() override
@@ -3553,7 +3479,7 @@ struct frenzied_regeneration_t : public druid_heal_t
   {
     druid_heal_t::execute();
 
-    if ( p() -> legendary.skysecs_hold )
+    if ( skysecs_hold )
       skysecs_hold -> schedule_execute();
 
     if ( p() -> buff.guardian_of_elune -> up() )
@@ -5143,7 +5069,7 @@ struct starfall_t : public druid_spell_t
 
   double cost() const override
   {
-    if ( p() -> legendary.oneths_intuition && p() -> buff.oneths_overconfidence -> check() )
+    if ( p() -> buff.oneths_overconfidence -> check() )
       return 0;
 
     return druid_spell_t::cost();
@@ -5175,25 +5101,21 @@ struct starfall_t : public druid_spell_t
       }
     }
     
-    if ( p() -> legendary.oneths_intuition )
-    {
-      if ( p() -> buff.oneths_overconfidence -> up() ) // benefit tracking
-        p() -> buff.oneths_overconfidence -> decrement();
+    if ( p() -> buff.oneths_overconfidence -> up() ) // benefit tracking
+      p() -> buff.oneths_overconfidence -> decrement();
 
-      p() -> buff.oneths_intuition -> trigger();
-    }
+    p() -> buff.oneths_intuition -> trigger();
   }
 };
 
 struct starshards_t : public starfall_t
 {
   starshards_t( druid_t* player ) :
-    starfall_t( player, std::string( "" ) )
+    starfall_t( player, "" )
   {
     background = true;
     target = sim -> target;
     radius = 40;
-    cooldown = player -> get_cooldown( "starshards" );
   }
 
   // Allow the action to execute even when Starfall is already active.
@@ -5217,17 +5139,12 @@ struct starsurge_t : public druid_spell_t
     }
   };
 
-  double starshards_chance;
   goldrinns_fang_t* goldrinns_fang;
 
   starsurge_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starsurge", player, player -> find_specialization_spell( "Starsurge" ), options_str ),
-    starshards_chance( 0.0 )
+    druid_spell_t( "starsurge", player, player -> find_specialization_spell( "Starsurge" ), options_str )
   {
     crit_bonus_multiplier *= 1.0 + player -> artifact.scythe_of_the_stars.percent();
-
-    if ( player -> starshards )
-      starshards_chance = player -> starshards -> driver() -> effectN( 1 ).average( player -> starshards -> item ) / 100.0;
 
     if ( player -> artifact.power_of_goldrinn.rank() )
     {
@@ -5238,13 +5155,12 @@ struct starsurge_t : public druid_spell_t
 
   double cost() const override
   {
-    if ( p() -> legendary.oneths_intuition && p() -> buff.oneths_intuition -> check() )
+    if ( p() -> buff.oneths_intuition -> check() )
       return 0;
 
     double c = druid_spell_t::cost();
 
-    if ( p() -> legendary.the_emerald_dreamcatcher )
-      c += p() -> buff.the_emerald_dreamcatcher -> check_stack_value();
+    c += p() -> buff.the_emerald_dreamcatcher -> check_stack_value();
 
     return c;
   }
@@ -5270,7 +5186,7 @@ struct starsurge_t : public druid_spell_t
       p() -> buff.lunar_empowerment -> trigger();
     }
 
-    if ( p() -> starshards && rng().roll( starshards_chance ) )
+    if ( rng().roll( p() -> starshards ) )
     {
       p() -> proc.starshards -> occur();
       p() -> active.starshards -> execute();
@@ -5283,19 +5199,13 @@ struct starsurge_t : public druid_spell_t
       goldrinns_fang -> execute();
     }
 
-    if ( p() -> legendary.the_emerald_dreamcatcher )
-    {
-      p() -> buff.the_emerald_dreamcatcher -> up(); // benefit tracking
-      p() -> buff.the_emerald_dreamcatcher -> trigger();
-    }
+    p() -> buff.the_emerald_dreamcatcher -> up(); // benefit tracking
+    p() -> buff.the_emerald_dreamcatcher -> trigger();
     
-    if ( p() -> legendary.oneths_intuition )
-    {
-      if ( p() -> buff.oneths_intuition -> up() ) // benefit tracking
-        p() -> buff.oneths_intuition -> decrement();
+    if ( p() -> buff.oneths_intuition -> up() ) // benefit tracking
+      p() -> buff.oneths_intuition -> decrement();
 
-      p() -> buff.oneths_overconfidence -> trigger();
-    }
+    p() -> buff.oneths_overconfidence -> trigger();
   }
 };
 
@@ -5351,19 +5261,6 @@ struct survival_instincts_t : public druid_spell_t
     cooldown -> duration *= 1.0 + player -> spec.guardian -> effectN( 3 ).percent();
 
     cooldown -> duration *= 1.0 + player -> talent.survival_of_the_fittest -> effectN( 1 ).percent();
-
-    if ( player -> legendary.dual_determination )
-      cooldown -> charges += player -> legendary.dual_determination -> driver() -> effectN( 1 ).base_value();
-  }
-
-  double recharge_multiplier() const override
-  {
-    double rm = druid_spell_t::recharge_multiplier();
-
-    if ( p() -> legendary.dual_determination )
-      rm *= 1.0 + p() -> legendary.dual_determination -> driver() -> effectN( 2 ).percent();
-
-    return rm;
   }
 
   void execute() override
@@ -5901,10 +5798,6 @@ void druid_t::init_spells()
     active.yseras_gift        = new heals::yseras_tick_t( this );
   if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new cat_attacks::gushing_wound_t( this );
-  if ( specialization() == DRUID_BALANCE )
-    active.starshards         = new spells::starshards_t( this );
-  if ( specialization() == DRUID_GUARDIAN )
-    active.stalwart_guardian  = new stalwart_guardian_t( this );
   if ( talent.brambles -> ok() )
   {
     active.brambles           = new brambles_t( this );
@@ -6679,25 +6572,6 @@ void druid_t::init_gains()
   gain.feral_tier19_2pc      = get_gain( "feral_tier19_2pc"      );
   gain.guardian_tier17_2pc   = get_gain( "guardian_tier17_2pc"   );
   gain.guardian_tier18_2pc   = get_gain( "guardian_tier18_2pc"   );
-
-  if ( ! legendary.oneths_intuition )
-  {
-    buff.oneths_intuition       = buff_creator_t( this, "oneths_intuition" )
-                                  .chance( 0 );
-    buff.oneths_overconfidence  = buff_creator_t( this, "oneths_overconfidence" )
-                                  .chance( 0 );
-  }
-  if ( ! legendary.the_emerald_dreamcatcher )
-  {
-    buff.the_emerald_dreamcatcher = buff_creator_t( this, "the_emerald_dreamcatcher" )
-                                    .chance( 0 );
-  }
-
-  if ( ! buff.power_of_elune )
-  {
-    buff.power_of_elune = buff_creator_t( this, "power_of_elune_the_moon_goddess" )
-                          .chance( 0 );
-  }
 }
 
 // druid_t::init_procs ======================================================
@@ -6776,25 +6650,6 @@ void druid_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
-}
-
-// druid_t::has_t18_class_trinket ===========================================
-
-bool druid_t::has_t18_class_trinket() const
-{
-  switch ( specialization() )
-  {
-  case DRUID_BALANCE:
-    return starshards != nullptr;
-  case DRUID_FERAL:
-    return wildcat_celerity != nullptr;
-  case DRUID_GUARDIAN:
-    return stalwart_guardian != nullptr;
-  case DRUID_RESTORATION:
-    return flourish != nullptr;
-  default:
-    return false;
-  }
 }
 
 // druid_t::reset ===========================================================
@@ -7720,10 +7575,91 @@ using namespace unique_gear;
 using namespace spells;
 using namespace cat_attacks;
 using namespace bear_attacks;
+using namespace heals;
+using namespace buffs;
+
+// Warlords of Draenor ======================================================
+
+struct wildcat_celerity_t : public scoped_buff_callback_t<buff_t>
+{
+  wildcat_celerity_t( const std::string& n ) :
+    super( DRUID_FERAL, n )
+  {}
+  
+  void manipulate( buff_t* b, const special_effect_t& e )
+  {
+    if ( b -> player -> true_level < 110 )
+    {
+      b -> buff_duration *= 1.0 + e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
+    }
+  }
+};
+
+struct starshards_callback_t : public scoped_actor_callback_t<druid_t>
+{
+  starshards_callback_t() : super( DRUID_BALANCE )
+  {}
+
+  void manipulate( druid_t* p, const special_effect_t& e )
+  {
+    p -> starshards = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
+    p -> active.starshards = new starshards_t( p );
+  }
+};
+
+
+struct stalwart_guardian_callback_t : public scoped_actor_callback_t<druid_t>
+{
+  stalwart_guardian_callback_t() : super( DRUID_GUARDIAN )
+  {}
+
+  static double stalwart_guardian_handler( const action_state_t* s )
+  {
+    druid_t* p = static_cast<druid_t*>( s -> target );
+    assert( p -> active.stalwart_guardian );
+    assert( s );
+
+    // Pass incoming damage value so the absorb can be calculated.
+    // TOCHECK: Does this use result_amount or result_mitigated?
+    p -> active.stalwart_guardian -> incoming_damage = s -> result_mitigated;
+    // Pass the triggering enemy so that the damage reflect has a target;
+    p -> active.stalwart_guardian -> triggering_enemy = s -> action -> player;
+    p -> active.stalwart_guardian -> execute();
+
+    return p -> active.stalwart_guardian -> absorb_size;
+  }
+
+  void manipulate( druid_t* p, const special_effect_t& e )
+  {
+    p -> active.stalwart_guardian = new stalwart_guardian_t( p );
+
+    p -> instant_absorb_list[ 184878 ] =
+      new instant_absorb_t( p, p -> find_spell( 184878 ), "stalwart_guardian", &stalwart_guardian_handler );
+  }
+};
+
+// Legion Artifacts =========================================================
+
+struct fangs_of_ashamane_t : public scoped_actor_callback_t<druid_t>
+{
+  fangs_of_ashamane_t() : super( DRUID )
+  {}
+
+  void manipulate( druid_t* p, const special_effect_t& ) override
+  {
+    // Fangs of Ashamane act as a 2 handed weapon when in Cat Form.
+    unsigned ilevel = p -> items[ SLOT_MAIN_HAND ].item_level();
+    double mod = p -> sim -> dbc.item_damage_2h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ]
+                / p -> sim -> dbc.item_damage_1h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ];
+    p -> cat_weapon.min_dmg *= mod;
+    p -> cat_weapon.max_dmg *= mod;
+    p -> cat_weapon.damage  *= mod;
+  }
+};
 
 // Legion Legendaries =======================================================
 
-// Generic
+// General
 
 template<typename T>
 struct luffa_wrappings_t : public scoped_action_callback_t<T>
@@ -7736,6 +7672,18 @@ struct luffa_wrappings_t : public scoped_action_callback_t<T>
   {
     a -> radius *= 1.0 + e.driver() -> effectN( 1 ).percent();
     a -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
+  }
+};
+
+struct dual_determination_t : public scoped_action_callback_t<survival_instincts_t>
+{
+  dual_determination_t() : super( DRUID, "survival_instincts" )
+  {}
+
+  void manipulate( survival_instincts_t* a, const special_effect_t& e )
+  {
+    a -> cooldown -> charges += e.driver() -> effectN( 1 ).base_value();
+    a -> base_recharge_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
   }
 };
 
@@ -7791,15 +7739,111 @@ struct impeccable_fel_essence_t : public scoped_actor_callback_t<druid_t>
   }
 };
 
-struct promise_of_elune_t : public scoped_actor_callback_t<druid_t>
+struct promise_of_elune_t : public class_buff_cb_t<druid_t>
 {
-  promise_of_elune_t() : super( DRUID )
+  promise_of_elune_t() : super( DRUID, "power_of_elune_the_moon_goddess" )
   {}
 
-  void manipulate( druid_t* p, const special_effect_t& e ) override
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.power_of_elune; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
   {
-    p -> buff.power_of_elune = buff_creator_t( p, "power_of_elune_the_moon_goddess",
-      e.driver() -> effectN( 1 ).trigger(), e.item );
+    return super::creator( e )
+      .spell( e.driver() -> effectN( 1 ).trigger() );
+  }
+};
+
+struct oneths_intuition_t : public class_buff_cb_t<druid_t>
+{
+  oneths_intuition_t() : super( DRUID, "oneths_intuition" )
+  {}
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.oneths_intuition; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.player -> find_spell( 209406 ) )
+      .chance( e.driver() -> proc_chance() );
+  }
+};
+
+struct oneths_overconfidence_t : public class_buff_cb_t<druid_t>
+{
+  oneths_overconfidence_t() : super( DRUID, "oneths_overconfidence" )
+  {}
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.oneths_overconfidence; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.player -> find_spell( 209407 ) )
+      .chance( e.driver() -> proc_chance() );
+  }
+};
+
+struct the_emerald_dreamcatcher_t : public class_buff_cb_t<druid_t>
+{
+  the_emerald_dreamcatcher_t() : super( DRUID, "the_emerald_dreamcatcher" )
+  {}
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return actor( e ) -> buff.the_emerald_dreamcatcher; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.driver() -> effectN( 1 ).trigger() )
+      .default_value( e.driver() -> effectN( 1 ).trigger()
+        -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ) );
+  }
+};
+
+// Guardian
+
+struct elizes_everlasting_encasement_t : public scoped_action_callback_t<thrash_bear_t>
+{
+  elizes_everlasting_encasement_t() : super( DRUID, "thrash_bear" )
+  {}
+
+  void manipulate( thrash_bear_t* a, const special_effect_t& e )
+  {
+    a -> dot_max_stack += e.driver() -> effectN( 1 ).base_value();
+  }
+};
+
+struct skysecs_hold_t : public scoped_action_callback_t<frenzied_regeneration_t>
+{
+  struct skysecs_hold_heal_t : public druid_heal_t
+  {
+    skysecs_hold_heal_t( const special_effect_t& effect ) :
+      druid_heal_t( "skysecs_hold", debug_cast<druid_t*>( effect.player ),
+      effect.driver() -> effectN( 1 ).trigger() )
+    {
+      background = true;
+      hasted_ticks = may_crit = tick_may_crit = false;
+      target = player;
+      tick_pct_heal = data().effectN( 1 ).percent();
+    }
+
+    void init() override
+    {
+      druid_heal_t::init();
+
+      snapshot_flags = update_flags = 0;
+    }
+  };
+
+  skysecs_hold_t() : super( DRUID, "frenzied_regeneration_driver" )
+  {}
+
+  void manipulate( frenzied_regeneration_t* a, const special_effect_t& e )
+  {
+    a -> skysecs_hold = new skysecs_hold_heal_t( e );
   }
 };
 
@@ -7820,154 +7864,6 @@ static void init_special_effect( druid_t*                 player,
 
   // Set pointer, module considers non-null pointer to mean the effect is "enabled"
   ptr = &( effect );
-}
-
-// Balance T18 (WoD 6.2) trinket effect
-static void starshards( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_BALANCE, s -> starshards, effect );
-}
-
-// Feral T18 (WoD 6.2) trinket effect
-static void wildcat_celerity( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_FERAL, s -> wildcat_celerity, effect );
-}
-
-// Guardian T18 (WoD 6.2) trinket effect
-static double stalwart_guardian_handler( const action_state_t* s )
-{
-  druid_t* p = static_cast<druid_t*>( s -> target );
-  assert( p -> active.stalwart_guardian );
-  assert( s );
-
-  // Pass incoming damage value so the absorb can be calculated.
-  // TOCHECK: Does this use result_amount or result_mitigated?
-  p -> active.stalwart_guardian -> incoming_damage = s -> result_mitigated;
-  // Pass the triggering enemy so that the damage reflect has a target;
-  p -> active.stalwart_guardian -> triggering_enemy = s -> action -> player;
-  p -> active.stalwart_guardian -> execute();
-
-  return p -> active.stalwart_guardian -> absorb_size;
-}
-
-static void stalwart_guardian( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_GUARDIAN, s -> stalwart_guardian, effect );
-
-  if ( !s -> stalwart_guardian )
-  {
-    return;
-  }
-
-  effect.player -> instant_absorb_list[ 184878 ] =
-    new instant_absorb_t( s, s -> find_spell( 184878 ), "stalwart_guardian", &stalwart_guardian_handler );
-}
-
-// Restoration T18 (WoD 6.2) trinket effect
-static void flourish( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_RESTORATION, s -> flourish, effect );
-}
-
-// Fangs of Ashamane
-static void fangs_of_ashamane( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_FERAL, s -> fangs_of_ashamane, effect );
-
-  // Fangs of Ashamane act as a 2 handed weapon when in Cat Form.
-  unsigned ilevel = s -> items[ SLOT_MAIN_HAND ].item_level();
-  double mod = s -> sim -> dbc.item_damage_2h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ]
-              / s -> sim -> dbc.item_damage_1h( ilevel ).values[ ITEM_QUALITY_ARTIFACT ];
-  s -> cat_weapon.min_dmg *= mod;
-  s -> cat_weapon.max_dmg *= mod;
-  s -> cat_weapon.damage  *= mod;
-}
-
-// Legion Legendaries
-
-static void amanthuls_wisdom( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.amanthuls_wisdom, effect );
-}
-
-static void dual_determination( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.dual_determination, effect );
-}
-
-static void edraith_bonds_of_aglaya( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.edraith_bonds_of_aglaya, effect );
-}
-
-static void ekowraith_creator_of_worlds( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.ekowraith_creator_of_worlds, effect );
-}
-
-static void elizes_everlasting_encasement( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.elizes_everlasting_encasement, effect );
-}
-
-static void essence_of_infusion( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_RESTORATION, s -> legendary.essence_of_infusion, effect );
-}
-
-static void oneths_intuition( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_BALANCE, s -> legendary.oneths_intuition, effect );
-
-  s -> buff.oneths_intuition =
-    buff_creator_t( s, "oneths_intuition", s -> find_spell( 209406 ) )
-    .chance( effect.proc_chance() );
-
-  s -> buff.oneths_overconfidence =
-    buff_creator_t( s, "oneths_overconfidence", s -> find_spell( 209407 ) )
-    .chance( effect.proc_chance() );
-}
-
-static void skysecs_hold( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.skysecs_hold, effect );
-}
-
-static void tearstone_of_elune( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_RESTORATION, s -> legendary.tearstone_of_elune, effect );
-}
-
-static void the_dark_titans_advice( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, DRUID_RESTORATION, s -> legendary.the_dark_titans_advice, effect );
-}
-
-static void the_emerald_dreamcatcher( special_effect_t& effect )
-{
-  druid_t* s = debug_cast<druid_t*>( effect.player );
-  init_special_effect( s, SPEC_NONE, s -> legendary.the_emerald_dreamcatcher, effect );
-
-  s -> buff.the_emerald_dreamcatcher =
-    buff_creator_t( s, "the_emerald_dreamcatcher", effect.driver() -> effectN( 1 ).trigger() )
-    .default_value( effect.driver() -> effectN( 1 ).trigger()
-      -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ) );
 }
 
 // DRUID MODULE INTERFACE ===================================================
@@ -7992,29 +7888,36 @@ struct druid_module_t : public module_t
 
   virtual void static_init() const override
   {
-    register_special_effect( 184876, starshards );
-    register_special_effect( 184877, wildcat_celerity );
-    register_special_effect( 184878, stalwart_guardian );
-    register_special_effect( 184879, flourish );
-    register_special_effect( 214843, fangs_of_ashamane );
-    register_special_effect( 208220, amanthuls_wisdom );
-    register_special_effect( 208228, dual_determination );
-    register_special_effect( 207943, edraith_bonds_of_aglaya );
-    register_special_effect( 210667, ekowraith_creator_of_worlds );
-    register_special_effect( 208342, elizes_everlasting_encasement );
-    register_special_effect( 208191, essence_of_infusion );
+    // Warlords of Draenor
+    register_special_effect( 184876, starshards_callback_t() );
+    register_special_effect( 184877, wildcat_celerity_t( "berserk" ) );
+    register_special_effect( 184877, wildcat_celerity_t( "tigers_fury" ) );
+    register_special_effect( 184878, stalwart_guardian_callback_t() );
+    // register_special_effect( 184879, flourish_t() );
+
+    // Legion Artifacts
+    register_special_effect( 214843, fangs_of_ashamane_t() );
+
+    // Legion Legendaries
+    register_special_effect( 208228, dual_determination_t() );
+    register_special_effect( 208342, elizes_everlasting_encasement_t() );
     register_special_effect( 208199, impeccable_fel_essence_t() );
     register_special_effect( 208319, the_wildshapers_clutch_t() );
-    register_special_effect( 209405, oneths_intuition );
+    register_special_effect( 209405, oneths_intuition_t(), true );
+    register_special_effect( 209405, oneths_overconfidence_t(), true );
     register_special_effect( 207523, chatoyant_signet_t() );
     register_special_effect( 208209, ailuro_pouncers_t() );
-    register_special_effect( 208283, promise_of_elune_t() );
-    register_special_effect( 208219, skysecs_hold );
-    register_special_effect( 207932, tearstone_of_elune );
-    register_special_effect( 207271, the_dark_titans_advice );
-    register_special_effect( 208190, the_emerald_dreamcatcher );
+    register_special_effect( 208283, promise_of_elune_t(), true );
+    register_special_effect( 208219, skysecs_hold_t() );
+    register_special_effect( 208190, the_emerald_dreamcatcher_t(), true );
     register_special_effect( 208681, luffa_wrappings_t<thrash_cat_t>( "thrash_cat" ) );
     register_special_effect( 208681, luffa_wrappings_t<thrash_bear_t>( "thrash_bear" ) );
+    // register_special_effect( 208220, amanthuls_wisdom );
+    // register_special_effect( 207943, edraith_bonds_of_aglaya );
+    // register_special_effect( 210667, ekowraith_creator_of_worlds );
+    // register_special_effect( 207932, tearstone_of_elune );
+    // register_special_effect( 207271, the_dark_titans_advice );
+    // register_special_effect( 208191, essence_of_infusion_t() );
   }
 
   virtual void register_hotfixes() const override {}
