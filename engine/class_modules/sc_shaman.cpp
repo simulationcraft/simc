@@ -4378,22 +4378,17 @@ struct wind_shear_t : public shaman_spell_t
 
 struct ascendance_t : public shaman_spell_t
 {
-  cooldown_t *strike_cd;
-
   ascendance_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "ascendance", player, player -> talent.ascendance, options_str )
   {
     harmful = false;
     // Periodic effect for Enhancement handled by the buff
     dot_duration = base_tick_time = timespan_t::zero();
-
-    strike_cd = p() -> cooldown.strike;
   }
 
   virtual void execute() override
   {
     shaman_spell_t::execute();
-    strike_cd -> reset( false );
 
     p() -> buff.ascendance -> trigger();
   }
