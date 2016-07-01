@@ -100,6 +100,8 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
     effect.execute_action = a;
   }
 
+  effect.proc_flags_ = PF_ALL_DAMAGE; // DBC says procs off heals. Let's not.
+
   new dbc_proc_callback_t( effect.item, effect );
 }
 
