@@ -513,6 +513,8 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   trigger_gcd          = spell_data.gcd();
   school               = spell_data.get_school_type();
 
+  cooldown -> duration = timespan_t::zero();
+
   if ( spell_data.charges() > 0 && spell_data.charge_cooldown() > timespan_t::zero() )
   {
     cooldown -> duration = spell_data.charge_cooldown();
