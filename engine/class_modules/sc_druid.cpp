@@ -894,16 +894,18 @@ struct stalwart_guardian_t : public absorb_t
   player_t* triggering_enemy;
   stalwart_guardian_reflect_t* reflect;
 
-  stalwart_guardian_t( druid_t* p ) :
-    absorb_t( "stalwart_guardian_bg", p, p -> find_spell( 185321 ) ),
-    incoming_damage( 0 ), absorb_limit( 0 ), absorb_size( 0 )
+  stalwart_guardian_t( const special_effect_t& effect ) :
+    absorb_t( "stalwart_guardian_bg", effect.player, effect.player -> find_spell( 185321 ) ),
+    incoming_damage( 0 ), absorb_size( 0 )
   {
     background = quiet = true;
     may_crit = false;
-    target = p;
+    target = player;
     harmful = false;
+    attack_power_mod.direct = effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0;
+    absorb_limit = effect.driver() -> effectN( 2 ).percent();
 
-    reflect = new stalwart_guardian_reflect_t( p );
+    reflect = new stalwart_guardian_reflect_t( p() );
   }
 
   druid_t* p() const
@@ -911,13 +913,6 @@ struct stalwart_guardian_t : public absorb_t
 
   void init() override
   {
-    /* if ( p() -> stalwart_guardian )
-    {
-      const spell_data_t* trinket = p() -> stalwart_guardian -> driver();
-      attack_power_mod.direct     = trinket -> effectN( 1 ).average( p() -> stalwart_guardian -> item ) / 100.0;
-      absorb_limit                = trinket -> effectN( 2 ).percent();
-    } */
-
     absorb_t::init();
 
     snapshot_flags &= ~STATE_VERSATILITY; // Is not affected by versatility.
@@ -925,8 +920,6 @@ struct stalwart_guardian_t : public absorb_t
 
   void execute() override
   {
-    assert( p() -> stalwart_guardian );
-
     absorb_t::execute();
 
     // Trigger damage reflect
