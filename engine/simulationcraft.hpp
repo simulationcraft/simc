@@ -7059,7 +7059,13 @@ namespace unique_gear
     // Initialize the callback by manipulating the action(s)
     void initialize( special_effect_t& e ) override
     {
-      range::for_each( e.player -> action_list, [ this, e ]( action_t* a ) {
+      // "Snapshot" size's value so we don't attempt to manipulate any actions created during the loop.
+      size_t size = e.player -> action_list.size();
+
+      for ( size_t i = 0; i < size; i++ )
+      {
+        action_t* a = e.player -> action_list[ i ];
+
         if ( ( ! name.empty() && util::str_compare_ci( name, a -> name_str ) ) ||
              ( spell_id > 0 && spell_id == as<int>( a -> id ) ) )
         {
@@ -7070,7 +7076,7 @@ namespace unique_gear
           }
           manipulate( debug_cast<T_ACTION*>( a ), e );
         }
-      });
+      }
     }
 
     // Overridable method to manipulate the action. Must be implemented.
