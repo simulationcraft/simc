@@ -1775,8 +1775,8 @@ bool action_t::ready()
     if ( potential_target )
     {
       // If the target changes, we need to regenerate the target cache to get the new primary target
-      // as the first element of target_list.
-      if ( potential_target != target )
+      // as the first element of target_list. Only do this for abilities that are aoe.
+      if ( n_targets() > 1 && potential_target != target )
       {
         target_cache.is_valid = false;
       }
@@ -1813,8 +1813,8 @@ bool action_t::ready()
     if ( found_ready )
     {
       // If the target changes, we need to regenerate the target cache to get the new primary target
-      // as the first element of target_list.
-      if ( target != saved_target )
+      // as the first element of target_list. Only do this for abilities that are aoe.
+      if ( n_targets() > 1 && target != saved_target )
       {
         target_cache.is_valid = false;
       }
