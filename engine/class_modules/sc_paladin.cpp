@@ -617,8 +617,10 @@ namespace buffs {
       damage_modifier( 0.0 ),
       haste_bonus( 0.0 )
     {
-      damage_modifier = data().effectN( 1 ).percent();
-      haste_bonus = data().effectN( 2 ).percent();
+      // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
+      //  values
+      damage_modifier = data().effectN( 1 ).percent() / 10.0;
+      haste_bonus = data().effectN( 2 ).percent() / 10.0;
 
       paladin_t* paladin = static_cast<paladin_t*>( player );
       if ( paladin -> artifact.wrath_of_the_ashbringer.rank() )
