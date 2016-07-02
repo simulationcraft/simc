@@ -4,7 +4,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=1210021
+talents=2210011
 artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1
 spec=subtlety
 
@@ -58,30 +58,29 @@ actions.generator=shuriken_storm,if=spell_targets.shuriken_storm>2
 actions.generator+=/gloomblade,if=energy.time_to_max<2.5
 actions.generator+=/backstab,if=energy.time_to_max<2.5
 
-head=doomblade_cowl,id=138332,bonus_id=1805
-neck=belerons_choker_of_misery,id=140899,bonus_id=1805
-shoulders=doomblade_spaulders,id=138338,bonus_id=1805
-back=doomblade_shadowwrap,id=138371,bonus_id=1805
-chest=doomblade_tunic,id=138326,bonus_id=1805
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=1805
-hands=doomblade_gauntlets,id=138329,bonus_id=1805
-waist=girdle_of_nefarious_strategy,id=140859,bonus_id=1805
-legs=doomblade_pants,id=138335,bonus_id=1805
-feet=grove_tenders_moccasins,id=140861,bonus_id=1805
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=1805
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1805
-trinket1=nightblooming_frond,id=140802,bonus_id=1805
-trinket2=convergence_of_fates,id=140806,bonus_id=1805
-main_hand=gorefang,id=128476,bonus_id=743,ilevel=750
-off_hand=akaaris_will,id=128479,ilevel=750
+head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1805
+shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1805
+back=gossamerspun_greatcloak,id=138221,bonus_id=1805
+chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1805
+wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1805
+hands=dreamsculptors_gloves,id=139202,bonus_id=1805
+waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
+legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
+feet=stained_maggot_squishers,id=139200,bonus_id=1805
+finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805
+finger2=mindrend_band,id=138220,bonus_id=1805
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
+trinket2=natures_call,id=139334,bonus_id=1805
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=139267/138226/139267
+off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
-# gear_ilvl=865.00
-# gear_agility=11905
-# gear_stamina=21631
-# gear_crit_rating=6888
-# gear_haste_rating=2754
-# gear_mastery_rating=9161
+# gear_ilvl=868.63
+# gear_agility=12303
+# gear_stamina=22227
+# gear_crit_rating=6927
+# gear_haste_rating=4139
+# gear_mastery_rating=7053
+# gear_versatility_rating=823
 # gear_armor=2126
-# set_bonus=tier19_2pc=1
-# set_bonus=tier19_4pc=1

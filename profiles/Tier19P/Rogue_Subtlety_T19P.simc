@@ -4,7 +4,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=1210021
+talents=2210011
 artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1
 spec=subtlety
 
@@ -72,14 +72,14 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=gorefang,id=128476,bonus_id=743,ilevel=750
-off_hand=akaaris_will,id=128479,ilevel=750
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=137476/137317/137476
+off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
-# gear_ilvl=840.63
-# gear_agility=9432
-# gear_stamina=17237
-# gear_crit_rating=5932
+# gear_ilvl=844.38
+# gear_agility=9760
+# gear_stamina=17727
+# gear_crit_rating=5996
 # gear_haste_rating=1796
-# gear_mastery_rating=9469
+# gear_mastery_rating=9531
 # gear_armor=1957

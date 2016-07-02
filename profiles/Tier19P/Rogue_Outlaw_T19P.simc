@@ -4,7 +4,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=3010022
+talents=3030021
 artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1
 spec=outlaw
 
@@ -72,14 +72,14 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=fate,id=128872,bonus_id=742,ilevel=750
-off_hand=fortune,id=134552,ilevel=750
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=137412/133763/137493
+off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=840.63
-# gear_agility=9432
-# gear_stamina=17237
-# gear_crit_rating=5932
+# gear_ilvl=844.38
+# gear_agility=9760
+# gear_stamina=17727
+# gear_crit_rating=5996
 # gear_haste_rating=1796
-# gear_mastery_rating=9469
+# gear_mastery_rating=9531
 # gear_armor=1957

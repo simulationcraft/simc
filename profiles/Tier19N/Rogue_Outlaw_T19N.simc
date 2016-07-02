@@ -4,7 +4,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=3010022
+talents=3030021
 artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1067:3:1348:1
 spec=outlaw
 
@@ -58,30 +58,29 @@ actions.generator=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly
 actions.generator+=/pistol_shot,if=buff.opportunity.up
 actions.generator+=/saber_slash
 
-head=doomblade_cowl,id=138332,bonus_id=1807
-neck=belerons_choker_of_misery,id=140899,bonus_id=1807
-shoulders=doomblade_spaulders,id=138338,bonus_id=1807
-back=doomblade_shadowwrap,id=138371,bonus_id=1807
-chest=doomblade_tunic,id=138326,bonus_id=1807
-wrists=bracers_of_impossible_choices,id=140889,bonus_id=1807
-hands=doomblade_gauntlets,id=138329,bonus_id=1807
-waist=girdle_of_nefarious_strategy,id=140859,bonus_id=1807
-legs=doomblade_pants,id=138335,bonus_id=1807
-feet=grove_tenders_moccasins,id=140861,bonus_id=1807
-finger1=spellblades_gemmed_signet,id=140895,bonus_id=1807
-finger2=ring_of_exclusive_servitude,id=140906,bonus_id=1807
-trinket1=nightblooming_frond,id=140802,bonus_id=1807
-trinket2=convergence_of_fates,id=140806,bonus_id=1807
-main_hand=fate,id=128872,bonus_id=742,ilevel=750
-off_hand=fortune,id=134552,ilevel=750
+head=mask_of_multitudinous_eyes,id=139204,bonus_id=1807
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1807
+shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1807
+back=gossamerspun_greatcloak,id=138221,bonus_id=1807
+chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1807
+wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1807
+hands=dreamsculptors_gloves,id=139202,bonus_id=1807
+waist=lifeless_buckled_girdle,id=139197,bonus_id=1807
+legs=splotched_bloodfur_leggings,id=139201,bonus_id=1807
+feet=stained_maggot_squishers,id=139200,bonus_id=1807
+finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1807
+finger2=mindrend_band,id=138220,bonus_id=1807
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1807
+trinket2=natures_call,id=139334,bonus_id=1807
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=139260/139261/139262
+off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=850.00
-# gear_agility=10353
-# gear_stamina=18809
-# gear_crit_rating=6513
-# gear_haste_rating=2605
-# gear_mastery_rating=8659
+# gear_ilvl=853.63
+# gear_agility=10697
+# gear_stamina=19327
+# gear_crit_rating=6547
+# gear_haste_rating=3913
+# gear_mastery_rating=6669
+# gear_versatility_rating=778
 # gear_armor=2022
-# set_bonus=tier19_2pc=1
-# set_bonus=tier19_4pc=1
