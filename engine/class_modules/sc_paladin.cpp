@@ -3060,6 +3060,9 @@ struct divine_storm_t: public holy_power_consumer_t
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
 
     aoe = -1;
+
+    // TODO: Okay, when did this get reset to 1?
+    weapon_multiplier = 0;
   }
 
   virtual double cost() const override
@@ -3577,6 +3580,9 @@ struct templars_verdict_t : public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
+
+    // Okay, when did this get reset to 1?
+    weapon_multiplier = 0;
   }
 
   void record_data( action_state_t* ) override {}
