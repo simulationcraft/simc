@@ -32,6 +32,7 @@ namespace { // UNNAMED NAMESPACE
   Shooting Stars AsP react
   Check Fury of Elune
   Moonfire and Sunfire mana costs (see action_t::parse_spell_data)
+  Review Artifact
 
   Touch of the Moon
   Light of the Sun
@@ -278,13 +279,13 @@ public:
 
   struct active_actions_t
   {
-    bear_attacks::bear_attack_t*    rage_of_the_sleeper;
     bear_attacks::brambles_pulse_t* brambles_pulse;
     brambles_t*                     brambles;
     stalwart_guardian_t*            stalwart_guardian;
     cat_attacks::gushing_wound_t*   gushing_wound;
     heals::cenarion_ward_hot_t*     cenarion_ward_hot;
     heals::yseras_tick_t*           yseras_gift;
+    spell_t*  rage_of_the_sleeper;
     spell_t*  galactic_guardian;
     spell_t*  starfall;
     spell_t*  echoing_stars;
@@ -365,6 +366,7 @@ public:
     buff_t* earthwarden;
     buff_t* earthwarden_driver;
     buff_t* galactic_guardian;
+    buff_t* gory_fur;
     buff_t* guardian_of_elune;
     buff_t* incarnation_bear;
     buff_t* ironfur;
@@ -627,12 +629,12 @@ public:
     artifact_power_t solar_stabbing;
     artifact_power_t sunfire_burns;
     artifact_power_t twilight_glow;
+    artifact_power_t echoing_stars;
+    artifact_power_t sunblind;
 
     // NYI
-    artifact_power_t echoing_stars;
     artifact_power_t light_of_the_sun;
     artifact_power_t rejuvenating_innervation;
-    artifact_power_t sunblind;
     artifact_power_t touch_of_the_moon;
 
     // Feral -- Fangs of Ashamane
@@ -661,20 +663,21 @@ public:
     artifact_power_t bear_hug;
     artifact_power_t embrace_of_the_nightmare;
     artifact_power_t rage_of_the_sleeper;
-
-    // NYI
     artifact_power_t reinforced_fur;
     artifact_power_t mauler;
     artifact_power_t jagged_claws;
-    artifact_power_t ion_cannon; // disabled
     artifact_power_t bestial_fortitude;
     artifact_power_t perpetual_spring;
     artifact_power_t ursocs_endurance;
     artifact_power_t sharpened_instincts;
     artifact_power_t vicious_bites;
-    artifact_power_t grasping_roots;
     artifact_power_t wildflesh;
     artifact_power_t gory_fur;
+    artifact_power_t iron_claws;
+
+    // NYI
+    artifact_power_t bloody_paws;
+    artifact_power_t roar_of_the_crowd;
   } artifact;
 
   struct legendary_t
@@ -1049,12 +1052,10 @@ public:
 struct adaptive_fur_t : public druid_buff_t< buff_t >
 {
   adaptive_fur_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "adaptive_fur", p.artifact.adaptive_fur.data().effectN( 1 ).trigger() )
-      .chance( p.artifact.adaptive_fur.data().proc_chance() ) )
+    base_t( p, buff_creator_t( &p, "adaptive_fur", p.find_spell( 200945 ) )
+      .chance( p.artifact.adaptive_fur.data().proc_chance() )
+      .default_value( p.find_spell( 200945 ) -> effectN( 1 ).percent() ) )
   {}
-
-  void benefits()
-  { up_count++; }
 
   void no_benefit()
   { down_count++; }
@@ -2994,9 +2995,6 @@ struct thrash_cat_t : public cat_attack_t
   {
     aoe = -1;
     spell_power_mod.direct = 0;
-
-    base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-    dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
     
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
@@ -3013,6 +3011,10 @@ struct thrash_cat_t : public cat_attack_t
       p -> active.shadow_thrash = new shadow_thrash_t( p );
       add_child( p -> active.shadow_thrash );
     }
+    
+    base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
+    dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
   }
 
   void execute() override
@@ -3189,6 +3191,8 @@ struct mangle_t : public bear_attack_t
       energize_amount += player -> talent.soul_of_the_forest -> effectN( 1 ).resource( RESOURCE_RAGE );
       base_multiplier *= 1.0 + player -> talent.soul_of_the_forest -> effectN( 2 ).percent();
     }
+
+    base_multiplier *= 1.0 + player -> artifact.vicious_bites.percent();
   }
 
   void update_ready( timespan_t ) override
@@ -3232,6 +3236,7 @@ struct mangle_t : public bear_attack_t
     bear_attack_t::execute();
 
     p() -> buff.guardian_tier19_4pc -> trigger();
+    p() -> buff.gory_fur -> trigger();
   }
 };
 
@@ -3243,8 +3248,9 @@ struct maul_t : public bear_attack_t
     bear_attack_t( "maul", player, player -> find_specialization_spell( "Maul" ), options_str )
   {
     weapon = &( player -> main_hand_weapon );
-
     use_off_gcd = true;
+
+    base_crit += player -> artifact.mauler.percent();
   }
 
   virtual void update_ready( timespan_t ) override
@@ -3289,38 +3295,6 @@ struct pulverize_t : public bear_attack_t
   }
 };
 
-// Rage of the Sleeper ======================================================
-
-struct rage_of_the_sleeper_t : public bear_attack_t
-{
-  rage_of_the_sleeper_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "rage_of_the_sleeper", p, &p -> artifact.rage_of_the_sleeper.data(), options_str )
-  {
-    use_off_gcd = true;
-    harmful = may_miss = may_parry = may_dodge = may_crit = false;
-  }
-
-  virtual void execute() override
-  {
-    bear_attack_t::execute();
-
-    p() -> buff.rage_of_the_sleeper -> trigger();
-  }
-};
-
-struct rage_of_the_sleeper_reflect_t : public bear_attack_t
-{
-  rage_of_the_sleeper_reflect_t( druid_t* p ) :
-    bear_attack_t( "rage_of_the_sleeper_reflect", p, spell_data_t::nil() )
-  {
-    background = true;
-    may_block = may_dodge = may_parry = may_miss = may_crit = false;
-    base_multiplier *= p -> artifact.rage_of_the_sleeper.data().effectN( 2 ).percent();
-    // school gets set on execute, but let's make it nature so the pie chart is pretty
-    school = SCHOOL_NATURE;
-  }
-};
-
 // Swipe (Bear) =============================================================
 
 struct swipe_bear_t : public bear_attack_t
@@ -3345,9 +3319,6 @@ struct thrash_bear_t : public bear_attack_t
     aoe                    = -1;
     spell_power_mod.direct = 0;
 
-    // Apply hidden passive damage multiplier
-    base_dd_multiplier *= 1.0 + p -> spec.guardian_overrides -> effectN( 6 ).percent();
-    
     gore = true;
 
     dot_duration = p -> spec.thrash_bear_dot -> duration();
@@ -3357,6 +3328,10 @@ struct thrash_bear_t : public bear_attack_t
 
     if ( p -> talent.blood_frenzy -> ok() )
       blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+
+    base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
+    // Apply hidden passive damage multiplier
+    base_dd_multiplier *= 1.0 + p -> spec.guardian_overrides -> effectN( 6 ).percent();
   }
 
   virtual void tick( dot_t* d ) override
@@ -3492,6 +3467,8 @@ struct frenzied_regeneration_t : public druid_heal_t
     min_pct = data().effectN( 4 ).percent();
     ignite = new frenzied_regeneration_ignite_t( p, &data() );
     dot_duration = timespan_t::zero();
+
+    base_multiplier *= 1.0 + p -> artifact.wildflesh.percent();
   }
 
   void init() override
@@ -3998,6 +3975,8 @@ struct barkskin_t : public druid_spell_t
 
     if ( player -> talent.brambles -> ok() )
       add_child( player -> active.brambles_pulse );
+
+    cooldown -> duration *= 1.0 + player -> artifact.perpetual_spring.percent();
   }
 
   void execute() override
@@ -4493,6 +4472,15 @@ struct ironfur_t : public druid_spell_t
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
   }
 
+  double cost() const override
+  {
+    double c = druid_spell_t::cost();
+
+    c *= 1.0 + p() -> buff.gory_fur -> check_value();
+
+    return c;
+  }
+
   timespan_t composite_buff_duration()
   {
     timespan_t bd = p() -> buff.ironfur -> buff_duration;
@@ -4514,6 +4502,9 @@ struct ironfur_t : public druid_spell_t
 
     if ( p() -> buff.guardian_tier19_4pc -> up() )
       p() -> buff.guardian_tier19_4pc -> expire();
+
+    if ( p() -> buff.gory_fur -> up() )
+      p() -> buff.gory_fur -> expire();
   }
 };
 
@@ -4688,6 +4679,15 @@ struct mark_of_ursol_t : public druid_spell_t
     may_crit = may_miss = false;
   }
 
+  double cost() const override
+  {
+    double c = druid_spell_t::cost();
+
+    c *= 1.0 + p() -> buff.gory_fur -> check_value();
+
+    return c;
+  }
+
   timespan_t composite_buff_duration()
   {
     return p() -> buff.mark_of_ursol -> buff_duration +
@@ -4702,6 +4702,9 @@ struct mark_of_ursol_t : public druid_spell_t
       -1, composite_buff_duration() );
 
     p() -> buff.guardian_of_elune -> expire();
+
+    if ( p() -> buff.gory_fur -> up() )
+      p() -> buff.gory_fur -> expire();
   }
 };
 
@@ -4734,6 +4737,39 @@ struct new_moon_t : public druid_spell_t
       return false;
 
     return druid_spell_t::ready();
+  }
+};
+
+// Rage of the Sleeper ======================================================
+
+struct rage_of_the_sleeper_t : public druid_spell_t
+{
+  struct rage_of_the_sleeper_reflect_t : public druid_spell_t
+  {
+    rage_of_the_sleeper_reflect_t( druid_t* p ) :
+      druid_spell_t( "rage_of_the_sleeper_reflect", p, p -> find_spell( 219432 ) )
+    {
+      background = true;
+      may_miss = may_crit = false;
+    }
+  };
+
+  rage_of_the_sleeper_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "rage_of_the_sleeper", p, &p -> artifact.rage_of_the_sleeper.data(), options_str )
+  {
+    use_off_gcd = true;
+    harmful = may_miss = may_crit = false;
+    base_dd_min = base_dd_max = 0;
+
+    if ( ! p -> active.rage_of_the_sleeper )
+      p -> active.rage_of_the_sleeper = new rage_of_the_sleeper_reflect_t( p );
+  }
+
+  virtual void execute() override
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.rage_of_the_sleeper -> trigger();
   }
 };
 
@@ -5538,12 +5574,12 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
   if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
-  if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
+  if ( name == "bear_form"              ) return new      spells::bear_form_t( this, options_str );
   if ( name == "blessing_of_anshe"      ) return new      blessing_of_anshe_t( this, options_str );
   if ( name == "blessing_of_elune"      ) return new      blessing_of_elune_t( this, options_str );
   if ( name == "brutal_slash"           ) return new           brutal_slash_t( this, options_str );
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
-  if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
+  if ( name == "cat_form"               ) return new       spells::cat_form_t( this, options_str );
   if ( name == "celestial_alignment" ||
        name == "ca"                     ) return new    celestial_alignment_t( this, options_str );
   if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
@@ -5572,7 +5608,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "move_fury_of_elune"     ) return new     fury_of_elune_move_t( this, options_str );
   if ( name == "new_moon"               ) return new               new_moon_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
-  if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
+  if ( name == "moonkin_form"           ) return new   spells::moonkin_form_t( this, options_str );
   if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
   if ( name == "rage_of_the_sleeper"    ) return new    rage_of_the_sleeper_t( this, options_str );
   if ( name == "rake"                   ) return new                   rake_t( this, options_str );
@@ -5840,16 +5876,16 @@ void druid_t::init_spells()
   artifact.reinforced_fur               = find_artifact_spell( "Reinforced Fur" );
   artifact.mauler                       = find_artifact_spell( "Mauler" );
   artifact.jagged_claws                 = find_artifact_spell( "Jagged Claws" );
-  artifact.ion_cannon                   = find_artifact_spell( "Ion Cannon" );
   artifact.bestial_fortitude            = find_artifact_spell( "Bestial Fortitude" );
   artifact.perpetual_spring             = find_artifact_spell( "Perpetual Spring" );
   artifact.bear_hug                     = find_artifact_spell( "Bear Hug" );
   artifact.ursocs_endurance             = find_artifact_spell( "Ursoc's Endurance" );
   artifact.sharpened_instincts          = find_artifact_spell( "Sharpened Instincts" );
   artifact.vicious_bites                = find_artifact_spell( "Vicious Bites" );
-  artifact.grasping_roots               = find_artifact_spell( "Grasping Roots" );
   artifact.wildflesh                    = find_artifact_spell( "Wildflesh" );
   artifact.gory_fur                     = find_artifact_spell( "Gory Fur" );
+  artifact.iron_claws                   = find_artifact_spell( "Iron Claws" );
+  artifact.roar_of_the_crowd            = find_artifact_spell( "Roar of the Crowd" );
 
   // Active Actions =========================================================
 
@@ -5874,8 +5910,6 @@ void druid_t::init_spells()
     active.galactic_guardian  = new spells::moonfire_t::moonfire_damage_t( this );
     active.galactic_guardian -> stats = get_stats( "moonfire" );
   }
-  if ( artifact.rage_of_the_sleeper.rank() )
-    active.rage_of_the_sleeper = new bear_attacks::rage_of_the_sleeper_reflect_t( this );
   if ( artifact.ashamanes_bite.rank() )
     active.ashamanes_rip = new cat_attacks::ashamanes_rip_t( this );
 }
@@ -5995,6 +6029,11 @@ void druid_t::create_buffs()
                                .chance( talent.galactic_guardian -> ok() )
                                .default_value( find_spell( 213708 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
+  buff.gory_fur              = buff_creator_t( this, "gory_fur", artifact.gory_fur.data().effectN( 1 ).trigger() )
+                               .trigger_spell( artifact.gory_fur )
+                               .chance( artifact.gory_fur.data().proc_chance() )
+                               .default_value( -artifact.gory_fur.data().effectN( 1 ).percent() );
+
   buff.guardian_of_elune     = buff_creator_t( this, "guardian_of_elune", talent.guardian_of_elune -> effectN( 1 ).trigger() )
                                .chance( talent.guardian_of_elune -> ok() )
                                .default_value( talent.guardian_of_elune -> effectN( 1 ).trigger() -> effectN( 1 ).time_value().total_seconds() );
@@ -6073,8 +6112,12 @@ void druid_t::create_buffs()
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
                                .cd( timespan_t::zero() )
                                .default_value( find_specialization_spell( "Barkskin" ) -> effectN( 2 ).percent() )
+                               .duration( find_specialization_spell( "Barkskin" ) -> duration() + artifact.ursocs_endurance.time_value() )
                                .tick_behavior( talent.brambles -> ok() ? BUFF_TICK_REFRESH : BUFF_TICK_NONE )
-                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { if ( talent.brambles -> ok() ) active.brambles_pulse -> execute(); } ); // Ugly fix, don't know why the tick behavior isn't set correctly...
+                               .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) {
+                                 if ( talent.brambles -> ok() )
+                                   active.brambles_pulse -> execute();
+                               } );
 
   buff.bladed_armor          = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
                                .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
@@ -6093,7 +6136,7 @@ void druid_t::create_buffs()
 
   buff.ironfur               = buff_creator_t( this, "ironfur", spec.ironfur )
                                .duration( spec.ironfur -> duration() + artifact.ursocs_endurance.time_value() )
-                               .default_value( spec.ironfur -> effectN( 1 ).percent() )
+                               .default_value( spec.ironfur -> effectN( 1 ).percent() + artifact.reinforced_fur.percent() )
                                .add_invalidate( CACHE_ARMOR )
                                .max_stack( 20 ) // many stacks, handle it
                                .stack_behavior( BUFF_STACK_ASYNCHRONOUS )
@@ -6102,21 +6145,21 @@ void druid_t::create_buffs()
   buff.mark_of_ursol         = buff_creator_t( this, "mark_of_ursol", find_specialization_spell( "Mark of Ursol" ) )
                                .default_value( find_specialization_spell( "Mark of Ursol" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() ) // cooldown handled by spell
-                               .duration( find_specialization_spell( "Mark of Ursol" ) -> duration() );
+                               .duration( find_specialization_spell( "Mark of Ursol" ) -> duration() + artifact.ursocs_endurance.time_value() );
 
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
                                .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   buff.rage_of_the_sleeper   = buff_creator_t( this, "rage_of_the_sleeper", &artifact.rage_of_the_sleeper.data() )
-                               .chance( 1.0 ) // spell data says 10% for no apparent reason
                                .cd( timespan_t::zero() )
+                               .default_value( -artifact.rage_of_the_sleeper.data().effectN( 1 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                .add_invalidate( CACHE_LEECH );
 
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
                                .cd( timespan_t::zero() )
-                               .default_value( 0.0 - find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() )
+                               .default_value( -find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() + artifact.sharpened_instincts.percent() )
                                .duration( find_specialization_spell( "Survival Instincts" ) -> duration() + artifact.honed_instincts.time_value() );
 
   // Restoration
@@ -6906,6 +6949,8 @@ double druid_t::composite_armor_multiplier() const
 
   a *= 1.0 + buff.protection_of_ashamane -> check() * buff.protection_of_ashamane -> data().effectN( 2 ).percent();
 
+  a *= 1.0 + artifact.iron_claws.percent();
+
   return a;
 }
 
@@ -6933,7 +6978,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.feral_instinct -> check_value();
 
   if ( artifact.embrace_of_the_nightmare.rank() )
-    m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 4 ).percent();
+    m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 5 ).percent();
 
   return m;
 }
@@ -7068,6 +7113,7 @@ double druid_t::composite_attribute_multiplier( attribute_e attr ) const
   case ATTR_STAMINA:
     if ( buff.bear_form -> check() )
       m *= 1.0 + spec.bear_form -> effectN( 2 ).percent();
+    m *= 1.0 + artifact.bestial_fortitude.percent();
     break;
   default:
     break;
@@ -7130,7 +7176,7 @@ double druid_t::composite_leech() const
   double l = player_t::composite_leech();
 
   if ( artifact.embrace_of_the_nightmare.rank() )
-    l += buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 5 ).percent();
+    l += buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 4 ).percent();
 
   return l;
 }
@@ -7328,6 +7374,8 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
   s -> result_amount *= 1.0 + buff.survival_instincts -> value();
 
   s -> result_amount *= 1.0 + buff.pulverize -> value();
+  
+  s -> result_amount *= 1.0 + buff.rage_of_the_sleeper -> value();
 
   if ( spec.thick_hide )
     s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 1 ).percent();
@@ -7337,28 +7385,20 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
       * get_target_data( s -> action -> player ) -> dots.thrash_bear -> current_stack();
 
   if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+  {
     s -> result_amount *= 1.0 + buff.mark_of_ursol -> value();
   
-  if ( buff.adaptive_fur -> check() && dbc::is_school( school, ( school_e ) ( int ) buff.adaptive_fur -> check_value() ) ) // TOCHECK
-  {
-    debug_cast<buffs::adaptive_fur_t*>( buff.adaptive_fur ) -> benefits();
-    s -> result_amount *= 1.0 + buff.adaptive_fur -> data().effectN( 1 ).percent();
-  }
-  else
-  {
-    debug_cast<buffs::adaptive_fur_t*>( buff.adaptive_fur ) -> no_benefit();
+    if ( buff.adaptive_fur -> check() && dbc::is_school( school, ( school_e ) ( int ) buff.adaptive_fur -> check_value() ) ) // TOCHECK
+    {
+      s -> result_amount *= 1.0 + buff.adaptive_fur -> value();
+    }
+    else
+    {
+      debug_cast<buffs::adaptive_fur_t*>( buff.adaptive_fur ) -> no_benefit();
+    }
   }
 
   player_t::target_mitigation( school, type, s );
-
-  if ( s -> action -> special && buff.rage_of_the_sleeper -> up() ) // TOCHECK
-  {
-    active.rage_of_the_sleeper -> base_dd_min = s -> result_amount;
-    active.rage_of_the_sleeper -> target = s -> action -> player;
-    active.rage_of_the_sleeper -> school = s -> action -> school; // TOCHECK
-    active.rage_of_the_sleeper -> execute();
-    s -> result_amount *= 1.0 - buff.rage_of_the_sleeper -> data().effectN( 2 ).percent();
-  }
 }
 
 // druid_t::assess_damage ===================================================
@@ -7372,9 +7412,10 @@ void druid_t::assess_damage( school_e school,
 
   player_t::assess_damage( school, dtype, s );
 
-  if ( artifact.adaptive_fur.rank() && ! dbc::is_school( school, SCHOOL_PHYSICAL ) ) // TOCHECK
+  if ( artifact.adaptive_fur.rank() && dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
   {
     buff.adaptive_fur -> trigger( 1, school );
+
     if ( sim -> log )
     {
       sim -> out_log.printf( "%s %s adapts to %s (%d).", name(), buff.adaptive_fur -> name(),
@@ -7389,15 +7430,27 @@ void druid_t::assess_damage( school_e school,
 
 void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s )
 {
-  if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
-    active.cenarion_ward_hot -> execute();
-
-  if ( s -> result_amount > 0 && buff.bristling_fur -> up() )
+  if ( action_t::result_is_hit( s -> result ) && s -> result_amount > 0 )
   {
-    // 1 rage per 1% of maximum health taken
-    resource_gain( RESOURCE_RAGE,
-                   s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100,
-                   gain.bristling_fur );
+    if ( buff.cenarion_ward -> up() )
+      active.cenarion_ward_hot -> execute();
+
+    if ( buff.bristling_fur -> up() )
+    {
+      // 1 rage per 1% of maximum health taken
+      resource_gain( RESOURCE_RAGE,
+                     s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100,
+                     gain.bristling_fur );
+    }
+
+    if ( buff.rage_of_the_sleeper -> up() )
+    {
+      assert( s -> action -> player != this );
+
+      active.rage_of_the_sleeper -> target = s -> action -> player;
+      // Don't schedule to make sure to respect the set target.
+      active.rage_of_the_sleeper -> execute();
+    }
   }
 }
 
