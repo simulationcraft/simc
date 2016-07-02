@@ -32,7 +32,6 @@ namespace { // UNNAMED NAMESPACE
   Shooting Stars AsP react
   Check Fury of Elune
   Moonfire and Sunfire mana costs (see action_t::parse_spell_data)
-  Review Artifact
 
   Touch of the Moon
   Light of the Sun
@@ -46,7 +45,6 @@ namespace { // UNNAMED NAMESPACE
   Check Galactic Guardian proc sources
   Fix rage generation from AAs
     http://us.battle.net/wow/en/forum/topic/20743504316?page=13#248
-  Review Artifact
 
   Resto =====================================================================
   All the things

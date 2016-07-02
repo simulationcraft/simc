@@ -1172,7 +1172,7 @@ struct consume_soul_t : public demon_hunter_heal_t
   struct demonic_appetite_t : public demon_hunter_spell_t
   {
     demonic_appetite_t( demon_hunter_t* p ) :
-      demon_hunter_spell_t( "demonic_appetite", p, p -> find_spell( 210041 ) )
+      demon_hunter_spell_t( "demonic_appetite_fury", p, p -> find_spell( 210041 ) )
     {
       may_miss = may_crit = callbacks = false;
       background = quiet = true;
