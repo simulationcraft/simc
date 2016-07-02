@@ -6195,6 +6195,7 @@ struct shadowmeld_t : public racial_spell_t
 
 // Arcane Torrent ===========================================================
 
+// TODO: this needs to give power on execute, not on hit!
 struct arcane_torrent_t : public racial_spell_t
 {
   resource_e resource;
@@ -6224,9 +6225,10 @@ struct arcane_torrent_t : public racial_spell_t
   virtual void execute() override
   {
     if ( resource == RESOURCE_MANA )
+    {
       gain = player -> resources.max [ RESOURCE_MANA ] * data().effectN( 2 ).resource( resource );
-
-    player -> resource_gain( resource, gain, player -> gains.arcane_torrent );
+      player -> resource_gain( resource, gain, player -> gains.arcane_torrent );
+    }
 
     racial_spell_t::execute();
   }
