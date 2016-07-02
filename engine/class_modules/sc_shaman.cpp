@@ -927,6 +927,19 @@ public:
   shaman_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = ab::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuff.earthen_spike -> up() &&
+         ( dbc::is_school( ab::school, SCHOOL_PHYSICAL ) || dbc::is_school( ab::school, SCHOOL_NATURE ) ) )
+    {
+      m *= td( target ) -> debuff.earthen_spike -> check_value();
+    }
+
+    return m;
+  }
+
   virtual double composite_maelstrom_gain_coefficient( const action_state_t* ) const
   {
     double m = maelstrom_gain_coefficient;
@@ -1283,19 +1296,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( p() -> buff.elemental_focus -> up() )
     {
       m *= p() -> buff.elemental_focus -> check_value();
-    }
-
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = base_t::composite_target_multiplier( target );
-
-    if ( td( target ) -> debuff.earthen_spike -> up() &&
-         ( dbc::is_school( school, SCHOOL_PHYSICAL ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
-    {
-      m *= td( target ) -> debuff.earthen_spike -> check_value();
     }
 
     return m;
