@@ -25,6 +25,8 @@ namespace { // UNNAMED NAMESPACE
   Artifact utility traits
   Check Luffa-Wrapped Grips (what procs it)
   Check Blood Scent crit
+  Review Artifact
+  Set Bonuses
 
   Balance ===================================================================
   Stellar Drift cast while moving
@@ -32,6 +34,8 @@ namespace { // UNNAMED NAMESPACE
   Shooting Stars AsP react
   Check Fury of Elune
   Moonfire and Sunfire mana costs (see action_t::parse_spell_data)
+  Review Artifact
+  Set Bonuses
 
   Touch of the Moon
   Light of the Sun
@@ -45,6 +49,8 @@ namespace { // UNNAMED NAMESPACE
   Check Galactic Guardian proc sources
   Fix rage generation from AAs
     http://us.battle.net/wow/en/forum/topic/20743504316?page=13#248
+  Review Artifact
+  Set Bonuses
 
   Resto =====================================================================
   All the things
@@ -6228,7 +6234,6 @@ void druid_t::apl_precombat()
   // Spec Specific Optimizations
   if ( specialization() == DRUID_BALANCE )
   {
-    precombat -> add_action( "incarnation" );
     precombat -> add_action( this, "Lunar Strike" );
   }
   else if ( specialization() == DRUID_GUARDIAN )
@@ -6401,35 +6406,37 @@ void druid_t::apl_balance()
     potion_action += "volcanic";
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
-  //action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
-  //action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
   if ( sim -> allow_potions && true_level >= 80 )
-    default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up" );
+    default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up" );
+    default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
-  default_list -> add_action( "warrior_of_elune,if=buff.lunar_empowerment.stack>=2" );
-  default_list -> add_action( "stellar_flare,if=remains<2" );
-  default_list -> add_action( this, "Moonfire", "if=remains<2" );
-  default_list -> add_action( this, "Sunfire", "if=remains<2" );
-  default_list -> add_action( this, "Innervate", "if=(buff.celestial_alignment.up|buff.incarnation.up)&equipped.promise_of_elune_the_moon_goddess" );
-  default_list -> add_action( "astral_communion,if=astral_power.deficit>=75" );
+  default_list -> add_action( this, spec.blessing_of_elune, "blessing_of_elune", "moving=0" );
+  default_list -> add_action( this, spec.blessing_of_anshe, "blessing_of_anshe", "moving=1" );
+  // default_list -> add_talent( this, "Force of Nature" );
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
-  default_list -> add_action( "fury_of_elune,if=astral_power.deficit<=10" );
-  default_list -> add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire.remains<5" );
-  default_list -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire.remains<5" );
+  default_list -> add_talent( this, "Stellar Flare", "cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<2&astral_power>=15" );
+  default_list -> add_action( this, "Sunfire", "cycle_targets=1,if=remains<2&active_enemies>1" );
+  default_list -> add_action( this, "Starfall", "if=active_enemies>=3&((talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains>12&buff.fury_of_elune_up.down)|!talent.fury_of_elune.enabled)" );
+  default_list -> add_talent( this, "Warrior of Elune", "if=buff.lunar_empowerment.stack>=2" );
+  default_list -> add_action( this, "New Moon", "if=astral_power<=90" );
+  default_list -> add_action( this, "Moonfire", "cycle_targets=1,max_cycle_targets=5,if=remains<4" );
+  default_list -> add_action( this, "Sunfire", "cycle_targets=1,if=remains<4" );
+  default_list -> add_talent( this, "Fury of Elune", "if=astral_power.deficit<=10" );
+  default_list -> add_action( this, "Half Moon", "if=astral_power<=80" );
+  default_list -> add_action( this, "Full Moon", "if=astral_power<=60" );
+  default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=75" );
+  default_list -> add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire.remains<4" );
+  default_list -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire.remains<4" );
   default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
-  default_list -> add_action( this, "Starsurge",
-                              "if=!talent.fury_of_elune.enabled|(buff.fury_of_elune_up.down&(cooldown.fury_of_elune.remains>10|astral_power.deficit<=10))" );
-  default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|buff.warrior_of_elune.up)" );
-  default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
-  default_list -> add_action( this, "Lunar Strike", "if=talent.full_moon.enabled|action.solar_wrath.cast_time<1" );
+  default_list -> add_action( this, "Starsurge", "if=active_enemies<3&(!talent.fury_of_elune.enabled|(buff.fury_of_elune_up.down&(cooldown.fury_of_elune.remains>10|astral_power.deficit<=10)))|active_enemies<3&astral_power>=40" );
+  default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|buff.warrior_of_elune.up)|active_enemies>1" );
   default_list -> add_action( this, "Solar Wrath" );
 }
 
