@@ -1906,22 +1906,18 @@ struct lightning_wolf_t : public doom_wolf_base_t
     { background = true; }
   };
 
-  haste_buff_t* crackling_surge;
+  buff_t* crackling_surge;
 
   lightning_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "lightning_wolf" )
   { }
 
-  // TODO: This really is haste, but treat it as speed for now
-  double composite_melee_speed() const override
+  double composite_player_multiplier( school_e s ) const override
   {
-    double s = shaman_pet_t::composite_melee_speed();
+    double m = shaman_pet_t::composite_player_multiplier( s );
 
-    if ( crackling_surge -> up() )
-    {
-      s *= crackling_surge -> check_value();
-    }
+    m *= 1.0 + crackling_surge -> stack_value();
 
-    return s;
+    return m;
   }
 
   void create_buffs() override
@@ -1929,7 +1925,7 @@ struct lightning_wolf_t : public doom_wolf_base_t
     shaman_pet_t::create_buffs();
 
     crackling_surge = haste_buff_creator_t( this, "crackling_surge", find_spell( 224127 ) )
-      .default_value( 1.0 / ( 1.0 + find_spell( 224127 ) -> effectN( 1 ).percent() ) );
+      .default_value( find_spell( 224127 ) -> effectN( 1 ).percent() );
   }
 
   bool create_actions() override
