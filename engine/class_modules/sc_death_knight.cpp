@@ -1543,6 +1543,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   {
     regen_type = REGEN_DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_2H;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.7 );
   }
 
   void init_base_stats() override
@@ -1550,7 +1551,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     // As per Blizzard
-    owner_coeff.ap_from_ap = 1.35;
+    owner_coeff.ap_from_ap = 1.0;
   }
 
   void init_action_list() override
