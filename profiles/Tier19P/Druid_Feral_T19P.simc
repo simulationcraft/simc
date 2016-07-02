@@ -1,0 +1,108 @@
+druid="Druid_Feral_T19P"
+level=110
+race=worgen
+role=attack
+position=back
+talents=3323323
+artifact=58:0:0:0:0:1153:1:1154:1:1155:1:1156:1:1157:1:1158:1:1159:1:1160:3:1161:3:1162:3:1163:3:1164:3:1165:3:1166:3:1167:3:1168:3:1327:1
+spec=feral
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=flask_of_the_seventh_demon
+actions.precombat+=/food,type=the_hungry_magister
+actions.precombat+=/healing_touch,if=talent.bloodtalons.enabled
+actions.precombat+=/cat_form
+actions.precombat+=/prowl
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+
+# Executed every time the actor is available.
+
+actions=cat_form
+actions+=/wild_charge
+actions+=/displacer_beast,if=movement.distance>10
+actions+=/dash,if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down
+actions+=/rake,if=buff.prowl.up
+actions+=/auto_attack
+actions+=/skull_bash
+actions+=/pool_resource,wait=0.1,for_next=1,extra_amount=50
+actions+=/elunes_guidance,if=combo_points=0&(!artifact.ashamanes_bite.enabled|!dot.ashamanes_rip.ticking)
+actions+=/berserk,if=buff.tigers_fury.up
+actions+=/incarnation,if=cooldown.tigers_fury.remains<gcd
+actions+=/use_item,slot=trinket2,if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.incarnation.up&time<10)
+actions+=/potion,name=draenic_agility,if=((buff.berserk.remains>10|buff.incarnation.remains>20)&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40
+actions+=/blood_fury,sync=tigers_fury
+actions+=/berserking,sync=tigers_fury
+actions+=/arcane_torrent,sync=tigers_fury
+actions+=/tigers_fury,if=(!buff.clearcasting.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)
+actions+=/tigers_fury,if=talent.sabertooth.enabled&time<10&combo_points=5
+actions+=/incarnation,if=energy.time_to_max>1
+# Keep Rip from falling off during execute range.
+actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
+actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)
+actions+=/savage_roar,if=buff.savage_roar.down
+actions+=/thrash_cat,if=set_bonus.tier18_4pc&buff.clearcasting.react&remains<=duration*0.3&combo_points+buff.bloodtalons.stack!=6
+actions+=/pool_resource,for_next=1
+actions+=/thrash_cat,cycle_targets=1,if=remains<=duration*0.3&(spell_targets.thrash_cat>=2&set_bonus.tier17_2pc|spell_targets.thrash_cat>=4)
+actions+=/call_action_list,name=finisher,if=combo_points=5
+actions+=/savage_roar,if=buff.savage_roar.remains<gcd
+actions+=/ashamanes_frenzy,if=time<10&dot.rake.ticking&!talent.elunes_guidance.enabled
+actions+=/call_action_list,name=maintain,if=combo_points<5
+actions+=/pool_resource,for_next=1
+actions+=/thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.thrash_cat>=2
+actions+=/call_action_list,name=generator,if=combo_points<5
+
+actions.finisher=rip,cycle_targets=1,if=remains<=duration*0.3&(target.health.pct>25|!dot.rip.ticking)
+actions.finisher+=/savage_roar,if=buff.savage_roar.remains<=7.2&(target.health.pct<25|energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|dot.rake.remains<1.5|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|(talent.moment_of_clarity.enabled&buff.clearcasting.react))
+actions.finisher+=/ferocious_bite,max_energy=1,cycle_targets=1,if=(target.health.pct<25|talent.sabertooth.enabled)&(cooldown.tigers_fury.remains<3|energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|dot.rake.remains<1.5|buff.elunes_guidance.up|(talent.moment_of_clarity.enabled&buff.clearcasting.react))
+actions.finisher+=/ferocious_bite,max_energy=1,if=buff.berserk.up|buff.incarnation.up|cooldown.tigers_fury.remains<3|buff.elunes_guidance.up
+actions.finisher+=/ferocious_bite,max_energy=1,if=energy.time_to_max<1
+
+actions.maintain=rake,cycle_targets=1,if=remains<=tick_time&((target.time_to_die-remains>3&spell_targets.swipe_cat<3)|target.time_to_die-remains>6)
+actions.maintain+=/rake,cycle_targets=1,if=remains<=duration*0.3&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe_cat<3)|target.time_to_die-remains>6)
+actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<=4.2&spell_targets.swipe_cat<=5&target.time_to_die-remains>tick_time*5
+
+actions.generator=ashamanes_frenzy,if=combo_points<=2&buff.elunes_guidance.down
+actions.generator+=/pool_resource,for_next=1
+actions.generator+=/brutal_slash,if=spell_targets.brutal_slash>desired_targets
+actions.generator+=/pool_resource,for_next=1
+actions.generator+=/brutal_slash,if=active_enemies>=2&raid_event.adds.exists&raid_event.adds.in>(1+max_charges-charges_fractional)*15
+actions.generator+=/pool_resource,for_next=1
+actions.generator+=/brutal_slash,if=active_enemies>=2&!raid_event.adds.exists&(charges_fractional>2.66&time>10)
+actions.generator+=/swipe_cat,if=spell_targets.swipe_cat>=4
+actions.generator+=/shred,if=spell_targets.swipe_cat<=3|talent.brutal_slash.enabled
+
+head=hood_of_the_blind_executioner,id=137511
+neck=pendant_of_the_moon_temple,id=139605,enchant_id=5439
+shoulders=charskin_mantle,id=137510
+back=cloak_of_manaspun_silk,id=134410,enchant_id=5435
+chest=vest_of_rupturing_diamonds,id=137336
+wrists=shorn_batbrood_cuffs,id=136979
+hands=frostcarver_grips,id=134445
+waist=sinister_ashfall_cord,id=134455
+legs=snaggles_favorite_pants,id=140594
+feet=footpads_of_the_swift_balestra,id=137497
+finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
+finger2=utgarde_royal_signet,id=133637,enchant_id=5427
+trinket1=chaos_talisman,id=137459
+trinket2=horn_of_valor,id=133642
+main_hand=fangs_of_ashamane,id=128860,bonus_id=723,ilevel=750
+off_hand=fangs_of_ashamane,id=128859,ilevel=750
+
+# Gear Summary
+# gear_ilvl=820.00
+# gear_agility=8531
+# gear_stamina=14228
+# gear_crit_rating=10141
+# gear_haste_rating=834
+# gear_mastery_rating=1633
+# gear_versatility_rating=4695
+# gear_armor=1830
