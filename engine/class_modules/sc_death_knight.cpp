@@ -901,7 +901,10 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
     }
 
     if ( this -> school == SCHOOL_NONE )
+    {
       this -> school = SCHOOL_PHYSICAL;
+      this -> stats -> school = SCHOOL_PHYSICAL;
+    }
   }
 };
 
@@ -2132,13 +2135,12 @@ struct avalanche_t : public death_knight_spell_t
 
 struct wandering_plague_t : public death_knight_spell_t
 {
-  wandering_plague_t( death_knight_t* p ) :
-    death_knight_spell_t( "wandering_plague", p )
+  wandering_plague_t( death_knight_t* p, const item_t* i ) :
+    death_knight_spell_t( "wandering_plague", p, p -> find_spell( 184899 ) )
   {
-    school = SCHOOL_SHADOW;
-
     background = split_aoe_damage = true;
     callbacks = may_miss = may_crit = false;
+    item = i;
 
     aoe = -1;
   }
@@ -2411,7 +2413,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
 struct disease_t : public death_knight_spell_t
 {
-
   disease_t( death_knight_t* p, const std::string& name, unsigned spell_id ) :
     death_knight_spell_t( name, p, p -> find_spell( spell_id ) )
   {
@@ -2420,16 +2421,6 @@ struct disease_t : public death_knight_spell_t
     may_miss         = false;
     may_crit         = false;
     hasted_ticks     = false;
-  }
-
-  // WODO-TOD: Crit suppression hijinks?
-  virtual double composite_crit() const override
-  { return action_t::composite_crit() + player -> cache.attack_crit(); }
-
-  void assess_damage( dmg_e type, action_state_t* s ) override
-  {
-    death_knight_spell_t::assess_damage( type, s );
-
   }
 };
 
@@ -2468,13 +2459,18 @@ struct virulent_plague_explosion_t : public death_knight_spell_t
 struct virulent_plague_t : public disease_t
 {
   virulent_plague_explosion_t* explosion;
+  wandering_plague_t* wandering_plague;
+  double wandering_plague_proc_chance;
 
   virulent_plague_t( death_knight_t* p ) :
     disease_t( p, "virulent_plague", 191587 ),
-    explosion( new virulent_plague_explosion_t( p ) )
+    explosion( new virulent_plague_explosion_t( p ) ),
+    wandering_plague( nullptr ), wandering_plague_proc_chance( 0 )
   {
     base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> talent.ebon_fever -> effectN( 2 ).percent();
+
+    add_child( explosion );
   }
 
   void tick( dot_t* dot ) override
@@ -2490,6 +2486,15 @@ struct virulent_plague_t : public disease_t
 
       explosion -> target = dot -> target;
       explosion -> schedule_execute();
+    }
+
+    // Target cache does not need invalidation, since all the targets will take equal damage
+    if ( dot -> state -> result_amount > 0 && rng().roll( wandering_plague_proc_chance ) )
+    {
+      wandering_plague -> base_dd_min = dot -> state -> result_amount;
+      wandering_plague -> base_dd_max = dot -> state -> result_amount;
+      wandering_plague -> target = dot -> target;
+      wandering_plague -> execute();
     }
   }
 };
@@ -3560,10 +3565,33 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
 
 // Marrowrend ===============================================================
 
+struct unholy_coil_t : public death_knight_heal_t
+{
+  unholy_coil_t( death_knight_t* p, const item_t* i ) :
+    death_knight_heal_t( "unholy_coil", p, p -> find_spell( 184968 ) )
+  {
+    background = true;
+    may_crit = callbacks = false;
+    target = p;
+    item = i;
+  }
+
+  void init() override
+  {
+    death_knight_heal_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
 struct marrowrend_t : public death_knight_melee_attack_t
 {
+  unholy_coil_t* unholy_coil;
+  double unholy_coil_coeff;
+
   marrowrend_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "marrowrend", p, p -> find_specialization_spell( "Marrowrend" ) )
+    death_knight_melee_attack_t( "marrowrend", p, p -> find_specialization_spell( "Marrowrend" ) ),
+    unholy_coil( nullptr ), unholy_coil_coeff( 0 )
   {
     parse_options( options_str );
 
@@ -3581,6 +3609,12 @@ struct marrowrend_t : public death_knight_melee_attack_t
     }
 
     p() -> buffs.bone_shield -> trigger( data().effectN( 3 ).base_value() );
+
+    if ( execute_state -> result_amount > 0 && unholy_coil )
+    {
+      unholy_coil -> base_dd_min = unholy_coil -> base_dd_max = execute_state -> result_amount * unholy_coil_coeff;
+      unholy_coil -> execute();
+    }
   }
 };
 
@@ -3608,16 +3642,52 @@ struct mind_freeze_t : public death_knight_spell_t
 
 // Obliterate ===============================================================
 
-struct obliterate_offhand_t : public death_knight_melee_attack_t
+struct frozen_obliteration_t : public death_knight_melee_attack_t
 {
+  double coeff;
 
-  obliterate_offhand_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "obliterate_offhand", p, p -> find_spell( 66198 ) )
+  frozen_obliteration_t( death_knight_t* p, const std::string& name, double coeff ) :
+    death_knight_melee_attack_t( name, p, p -> find_spell( 184982 ) ),
+    coeff( coeff )
   {
-    background       = true;
-    weapon           = &( p -> off_hand_weapon );
-    special          = true;
+    background = special = true;
+    callbacks = false;
+    may_crit = false;
+  }
 
+  void init() override
+  {
+    death_knight_melee_attack_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+
+  void proxy_execute( const action_state_t* source_state )
+  {
+    double m = coeff;
+    target = source_state -> target;
+
+    // Mastery has to be special cased here, since no other multipliers seem to work
+    if ( p() -> mastery.frozen_heart -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
+
+    base_dd_min = base_dd_max = source_state -> result_amount * m;
+
+    execute();
+  }
+};
+
+struct obliterate_strike_t : public death_knight_melee_attack_t
+{
+  frozen_obliteration_t* fo;
+
+  obliterate_strike_t( death_knight_t* p, const std::string& name, weapon_t* w, const spell_data_t* s ) :
+    death_knight_melee_attack_t( name, p, s ),
+    fo( nullptr )
+  {
+    background = special = true;
+    may_miss = false;
+    weapon = w;
   }
 
   double composite_crit() const override
@@ -3633,28 +3703,26 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    // TODO: Both hands, or just main hand?
-    trigger_icecap( execute_state );
-
-    // TODO: Both hands, or just main hand?
-    if ( execute_state -> result == RESULT_CRIT )
+    if ( result_is_hit( execute_state -> result ) && fo )
     {
-      p() -> buffs.t18_4pc_frost_haste -> trigger();
+      fo -> proxy_execute( execute_state );
     }
   }
 };
 
 struct obliterate_t : public death_knight_melee_attack_t
 {
-  obliterate_offhand_t* oh_attack;
+  obliterate_strike_t* mh, *oh;
 
   obliterate_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "obliterate", p, p -> find_class_spell( "Obliterate" ) ),
-    oh_attack( new obliterate_offhand_t( p ) )
+    mh( new obliterate_strike_t( p, "obliterate_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() ) ),
+    oh( new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() ) )
   {
     parse_options( options_str );
 
-    weapon = &( p -> main_hand_weapon );
+    add_child( mh );
+    add_child( oh );
   }
 
   void execute() override
@@ -3663,15 +3731,17 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( oh_attack )
-        oh_attack -> execute();
+      mh -> target = execute_state -> target;
+      mh -> execute();
+
+      oh -> target = execute_state -> target;
+      oh -> execute();
 
       p() -> buffs.rime -> trigger();
     }
 
     consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
 
-    // TODO: Both hands, or just main hand?
     trigger_icecap( execute_state );
 
     if ( execute_state -> result == RESULT_CRIT )
@@ -3695,15 +3765,6 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
 
     return c;
-  }
-
-  double composite_crit() const override
-  {
-    double cc = death_knight_melee_attack_t::composite_crit();
-
-    cc += p() -> buffs.killing_machine -> value();
-
-    return cc;
   }
 };
 
@@ -3780,9 +3841,6 @@ struct outbreak_t : public death_knight_spell_t
     spread( new outbreak_driver_t( p ) )
   {
     parse_options( options_str );
-
-    add_child( p -> active_spells.virulent_plague );
-    add_child( static_cast<virulent_plague_t*>( p -> active_spells.virulent_plague ) -> explosion );
   }
 
   void execute() override
@@ -5778,44 +5836,87 @@ private:
 
 // DEATH_KNIGHT MODULE INTERFACE ============================================
 
-static void do_trinket_init( death_knight_t*          player,
-                             specialization_e         spec,
-                             const special_effect_t*& ptr,
-                             const special_effect_t&  effect )
+struct reapers_harvest_frost_t : public scoped_action_callback_t<obliterate_strike_t>
 {
-  // Ensure we have the spell data. This will prevent the trinket effect from working on live
-  // Simulationcraft. Also ensure correct specialization.
-  if ( ! player -> find_spell( effect.spell_id ) -> ok() ||
-       player -> specialization() != spec )
-  {
-    return;
-  }
+  reapers_harvest_frost_t( const std::string& n ) :
+    super( DEATH_KNIGHT_FROST, n )
+  { }
 
-  // Set pointer, module considers non-null pointer to mean the effect is "enabled"
-  ptr = &( effect );
-}
+  void manipulate( obliterate_strike_t* action, const special_effect_t& e ) override
+  {
+    action_t* parent = action -> player -> find_action( "obliterate" );
+    double coeff = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
+    std::string n = "frozen_obliteration";
+    if ( action -> weapon == &( action -> player -> off_hand_weapon ) )
+    {
+      n += "_oh";
+    }
+
+    action -> fo = new frozen_obliteration_t( action -> p(), n, coeff );
+    if ( parent )
+    {
+      parent -> add_child( action -> fo );
+    }
+  }
+};
+
+struct reapers_harvest_unholy_t : public scoped_action_callback_t<virulent_plague_t>
+{
+  reapers_harvest_unholy_t() : super( DEATH_KNIGHT_UNHOLY, "virulent_plague" )
+  { }
+
+  void manipulate( virulent_plague_t* action, const special_effect_t& e ) override
+  {
+    double chance = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
+
+    action -> wandering_plague = new wandering_plague_t( action -> p(), e.item );
+    action -> wandering_plague_proc_chance = chance;
+    action -> add_child( action -> wandering_plague );
+  }
+};
+
+struct reapers_harvest_blood_t : public scoped_action_callback_t<marrowrend_t>
+{
+  reapers_harvest_blood_t() : super( DEATH_KNIGHT_BLOOD, "marrowrend" )
+  { }
+
+  void manipulate( marrowrend_t* action, const special_effect_t& e ) override
+  {
+    double coeff = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
+
+    action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).average( e.item ) / 100.0;
+    action -> unholy_coil_coeff = coeff;
+    action -> unholy_coil = new unholy_coil_t( action -> p(), e.item );
+  }
+};
 
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override {
+  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  {
     auto  p = new death_knight_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new death_knight_report_t( *p ) );
     return p;
   }
 
-  virtual void static_init() const override {
+  void static_init() const override
+  {
     unique_gear::register_special_effect(  50401,    runeforge::razorice_attack );
     unique_gear::register_special_effect(  51714,    runeforge::razorice_debuff );
     unique_gear::register_special_effect( 166441,    runeforge::fallen_crusader );
     unique_gear::register_special_effect(  62157, runeforge::stoneskin_gargoyle );
+    unique_gear::register_special_effect( 184898, reapers_harvest_frost_t( "obliterate_mh" ) );
+    unique_gear::register_special_effect( 184898, reapers_harvest_frost_t( "obliterate_offhand" ) );
+    unique_gear::register_special_effect( 184983, reapers_harvest_unholy_t() );
+    unique_gear::register_special_effect( 184897, reapers_harvest_blood_t()  );
   }
 
-  virtual void register_hotfixes() const override {}
-  virtual void init( player_t* ) const override {}
-  virtual bool valid() const override { return true; }
-  virtual void combat_begin( sim_t* ) const override {}
-  virtual void combat_end( sim_t* ) const override {}
+  void register_hotfixes() const override {}
+  void init( player_t* ) const override {}
+  bool valid() const override { return true; }
+  void combat_begin( sim_t* ) const override {}
+  void combat_end( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE
