@@ -3514,8 +3514,11 @@ struct chain_lightning_t: public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
+    if ( state -> chain_target == 0 )
+    {
+      td( state -> target ) -> debuff.lightning_rod -> trigger();
+    }
     p() -> trigger_lightning_rod_damage( state );
-    td( state -> target ) -> debuff.lightning_rod -> trigger();
   }
 
   bool ready() override
@@ -3871,14 +3874,18 @@ struct lightning_bolt_t : public shaman_spell_t
 
     p() -> trigger_t19_oh_8pc( execute_state );
     p() -> trigger_t18_4pc_elemental();
+
   }
 
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
 
+    if ( state -> chain_target == 0 )
+    {
+      td( state -> target ) -> debuff.lightning_rod -> trigger();
+    }
     p() -> trigger_lightning_rod_damage( state );
-    td( state -> target ) -> debuff.lightning_rod -> trigger();
   }
 };
 
@@ -5633,7 +5640,7 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
   double amount = state -> result_amount * td -> debuff.lightning_rod -> check_value();
   lightning_rod -> base_dd_min = lightning_rod -> base_dd_max = amount;
 
-  // Can't schedule_execute here, since Chain Lightning may tritter immediately on multiple
+  // Can't schedule_execute here, since Chain Lightning may trigger immediately on multiple
   // Lightning Rod targets, overriding base_dd_min/max with a different value (that would be used
   // for allt he scheduled damage execute events of Lightning Rod).
   range::for_each( lightning_rods, [ this, amount ]( player_t* t ) {
@@ -6078,7 +6085,7 @@ void shaman_t::init_action_list_elemental()
   single -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
   single -> add_action( this, "Earth Shock", "if=maelstrom>=86" );
   single -> add_action( this, "Lightning Bolt", "if=buff.stormkeeper.up&buff.power_of_the_maelstrom.up" );
-  single -> add_action( this, "Elemental Blast" );
+  single -> add_talent( this, "Elemental Blast" );
   single -> add_talent( this, "Icefury", "if=maelstrom<=76&raid_event.movement.in>30" );
   single -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single -> add_action( this, "Stormkeeper", "if=(talent.ascendance.enabled&cooldown.ascendance.remains>10)|"
@@ -6086,9 +6093,9 @@ void shaman_t::init_action_list_elemental()
   single -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|"
                                                "(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&"
                                                "cooldown.ascendance.remains<15)" );
-  single -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.up" );
+  single -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1,target_if=!debuff.lightning_rod.up" );
   single -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
-  single -> add_action( this, "Lightning Bolt", "target_if=debuff.lightning_rod.up" );
+  single -> add_action( this, "Lightning Bolt", "target_if=!debuff.lightning_rod.up" );
   single -> add_action( this, "Lightning Bolt" );
   single -> add_action( this, "Frost Shock", "if=maelstrom>=20&dot.flame_shock.remains>19" );
   single -> add_action( this, "Flame_shock" );
@@ -6096,7 +6103,7 @@ void shaman_t::init_action_list_elemental()
   // Aoe APL
   aoe -> add_talent( this, "Liquid Magma Totem" );
   aoe -> add_action( this, "Earthquake Totem" );
-  aoe -> add_action( this, "Chain Lightning", "target_if=debuff.lightning_rod.up" );
+  aoe -> add_action( this, "Chain Lightning", "target_if=!debuff.lightning_rod.up" );
   aoe -> add_action( this, "Chain Lightning" );
   aoe -> add_action( this, "Lava Burst", "moving=1" );
   aoe -> add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
