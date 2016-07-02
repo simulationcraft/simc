@@ -6195,42 +6195,52 @@ struct shadowmeld_t : public racial_spell_t
 
 // Arcane Torrent ===========================================================
 
-// TODO: this needs to give power on execute, not on hit!
 struct arcane_torrent_t : public racial_spell_t
 {
-  resource_e resource;
-  double gain;
+  double gain_pct;
 
   arcane_torrent_t( player_t* p, const std::string& options_str ) :
     racial_spell_t( p, "arcane_torrent", p -> find_racial_spell( "Arcane Torrent" ), options_str ),
-    resource( RESOURCE_NONE ), gain( 0 )
+    gain_pct( 0 )
   {
-    resource = util::translate_power_type( static_cast<power_e>( data().effectN( 2 ).misc_value1() ) );
-
-    switch ( resource )
+    energize_type = ENERGIZE_ON_CAST;
+    // Some specs need special handling here
+    switch ( p -> specialization() )
     {
-      case RESOURCE_ENERGY:
-      case RESOURCE_FOCUS:
-      case RESOURCE_RAGE:
-      case RESOURCE_RUNIC_POWER:
-      case RESOURCE_HOLY_POWER:
-      case RESOURCE_CHI:
-        gain = data().effectN( 2 ).resource( resource );
+      case MAGE_FROST:
+      case MAGE_FIRE:
+      case MAGE_ARCANE:
+      case WARLOCK_AFFLICTION:
+      case WARLOCK_DEMONOLOGY:
+      case WARLOCK_DESTRUCTION:
+        gain_pct = data().effectN( 2 ).percent();
+        break;
+      case MONK_MISTWEAVER:
+        gain_pct = data().effectN( 3 ).percent();
+        break;
+      case MONK_WINDWALKER:
+        parse_effect_data( data().effectN( 4 ) );
+        break;
+      case MONK_BREWMASTER:
+        parse_effect_data( data().effectN( 2 ) );
+        break;
+      case PALADIN_HOLY:
+        gain_pct = data().effectN( 3 ).percent();
         break;
       default:
         break;
     }
   }
 
-  virtual void execute() override
+  void execute() override
   {
-    if ( resource == RESOURCE_MANA )
-    {
-      gain = player -> resources.max [ RESOURCE_MANA ] * data().effectN( 2 ).resource( resource );
-      player -> resource_gain( resource, gain, player -> gains.arcane_torrent );
-    }
-
     racial_spell_t::execute();
+
+    if ( gain_pct > 0 )
+    {
+      double gain = player -> resources.max [ RESOURCE_MANA ] * gain_pct;
+      player -> resource_gain( RESOURCE_MANA, gain, player -> gains.arcane_torrent );
+    }
   }
 };
 
