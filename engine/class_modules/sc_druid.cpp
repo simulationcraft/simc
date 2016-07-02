@@ -26,7 +26,6 @@ namespace { // UNNAMED NAMESPACE
   Check Luffa-Wrapped Grips (what procs it)
   Check Blood Scent crit
   Review Artifact
-  Set Bonuses
 
   Balance ===================================================================
   Stellar Drift cast while moving
@@ -35,7 +34,6 @@ namespace { // UNNAMED NAMESPACE
   Check Fury of Elune
   Moonfire and Sunfire mana costs (see action_t::parse_spell_data)
   Review Artifact
-  Set Bonuses
 
   Touch of the Moon
   Light of the Sun
@@ -50,7 +48,6 @@ namespace { // UNNAMED NAMESPACE
   Fix rage generation from AAs
     http://us.battle.net/wow/en/forum/topic/20743504316?page=13#248
   Review Artifact
-  Set Bonuses
 
   Resto =====================================================================
   All the things
@@ -370,12 +367,13 @@ public:
     buff_t* galactic_guardian;
     buff_t* guardian_of_elune;
     buff_t* incarnation_bear;
+    buff_t* ironfur;
     buff_t* mark_of_ursol;
     buff_t* pulverize;
     buff_t* rage_of_the_sleeper;
     buff_t* survival_instincts;
     buff_t* guardian_tier17_4pc;
-    buff_t* ironfur;
+    buff_t* guardian_tier19_4pc;
 
     // Restoration
     buff_t* incarnation_tree;
@@ -511,6 +509,7 @@ public:
     const spell_data_t* celestial_alignment;
     const spell_data_t* moonkin_form;
     const spell_data_t* starfall;
+    const spell_data_t* balance_tier19_2pc;
 
     // Guardian
     const spell_data_t* guardian;
@@ -1292,18 +1291,22 @@ public:
 
   bool rend_and_tear;
   bool hasted_gcd;
+  double gore_chance;
 
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
     rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
-    hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) )
+    hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
+    gore_chance( player -> spec.gore -> proc_chance() )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
-
     ab::cooldown -> hasted = ab::data().affected_by( player -> spec.druid -> effectN( 3 ) );
+
+    gore_chance += p() -> artifact.bear_hug.percent();
+    gore_chance += p() -> sets.set( DRUID_GUARDIAN, T19, B2 ) -> effectN( 1 ).percent();
   }
 
   druid_t* p()
@@ -1397,7 +1400,7 @@ public:
 
   bool trigger_gore()
   {
-    if ( this -> rng().roll( p() -> spec.gore -> proc_chance() + p() -> artifact.bear_hug.percent() ) )
+    if ( ab::rng().roll( gore_chance ) )
     {
       p() -> proc.gore -> occur();
       p() -> cooldown.mangle -> reset( true );
@@ -2989,9 +2992,9 @@ struct thrash_cat_t : public cat_attack_t
     
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
-    // TODO: Get CP value from spell data when its available.
     if ( p -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
     {
+      // No value in spell data.
       energize_amount = 1;
       energize_resource = RESOURCE_COMBO_POINT;
       energize_type = ENERGIZE_ON_HIT;
@@ -3214,6 +3217,13 @@ struct mangle_t : public bear_attack_t
 
     if ( result_is_hit( s -> result ) )
       p() -> buff.guardian_of_elune -> trigger();
+  }
+
+  void execute() override
+  {
+    bear_attack_t::execute();
+
+    p() -> buff.guardian_tier19_4pc -> trigger();
   }
 };
 
@@ -3443,6 +3453,15 @@ struct frenzied_regeneration_t : public druid_heal_t
       base_tick_time = s -> effectN( 1 ).period();
       school = s -> get_school_type();
     }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      timespan_t t = residual_action::residual_periodic_action_t<druid_heal_t>::composite_dot_duration( s );
+
+      t += timespan_t::from_seconds( p() -> buff.guardian_tier19_4pc -> check_stack_value() );
+
+      return t;
+    }
   };
 
   double heal_pct, min_pct;
@@ -3483,6 +3502,9 @@ struct frenzied_regeneration_t : public druid_heal_t
 
     if ( p() -> buff.guardian_of_elune -> up() )
       p() -> buff.guardian_of_elune -> expire();
+
+    if ( p() -> buff.guardian_tier19_4pc -> up() )
+      p() -> buff.guardian_tier19_4pc -> expire();
   }
 
   double action_multiplier() const override
@@ -3491,6 +3513,8 @@ struct frenzied_regeneration_t : public druid_heal_t
 
     am *= 1.0 + p() -> buff.guardian_of_elune -> check()
       * p() -> buff.guardian_of_elune -> data().effectN( 2 ).percent();
+
+    am *= 1.0 + timespan_t::from_seconds( p() -> buff.guardian_tier19_4pc -> check_stack_value() ) / ignite -> dot_duration;
 
     return am;
   }
@@ -4461,14 +4485,27 @@ struct ironfur_t : public druid_spell_t
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
   }
 
+  timespan_t composite_buff_duration()
+  {
+    timespan_t bd = p() -> buff.ironfur -> buff_duration;
+
+    bd += timespan_t::from_seconds( p() -> buff.guardian_of_elune -> value() );
+    bd += timespan_t::from_seconds( p() -> buff.guardian_tier19_4pc -> check_stack_value() );
+
+    return bd;
+  }
+
   virtual void execute() override
   {
     druid_spell_t::execute();
 
-    p() -> buff.ironfur -> trigger( 1, p() -> buff.ironfur -> DEFAULT_VALUE(), -1,
-      p() -> buff.ironfur -> buff_duration + timespan_t::from_seconds( p() -> buff.guardian_of_elune -> value() ) );
+    p() -> buff.ironfur -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, composite_buff_duration() );
 
-    p() -> buff.guardian_of_elune -> expire();
+    if ( p() -> buff.guardian_of_elune -> up() )
+      p() -> buff.guardian_of_elune -> expire();
+
+    if ( p() -> buff.guardian_tier19_4pc -> up() )
+      p() -> buff.guardian_tier19_4pc -> expire();
   }
 };
 
@@ -4563,6 +4600,16 @@ struct lunar_strike_t : public druid_spell_t
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
   }
 
+  double composite_crit() const override
+  {
+    double cc = druid_spell_t::composite_crit();
+
+    if ( p() -> buff.lunar_empowerment -> check() )
+      cc += p() -> spec.balance_tier19_2pc -> effectN( 1 ).percent();
+
+    return cc;
+  }
+
   double action_multiplier() const override
   {
     double am = druid_spell_t::action_multiplier();
@@ -4615,6 +4662,9 @@ struct lunar_strike_t : public druid_spell_t
     p() -> buff.warrior_of_elune -> decrement();
 
     p() -> buff.power_of_elune -> trigger();
+
+    if ( rng().roll( p() -> sets.set( DRUID_BALANCE, T19, B4 ) -> effectN( 1 ).percent() ) )
+      p() -> buff.solar_empowerment -> trigger();
   }
 };
 
@@ -4848,6 +4898,16 @@ struct solar_wrath_t : public druid_spell_t
     base_multiplier   *= 1.0 + player -> artifact.solar_stabbing.percent();
   }
 
+  double composite_crit() const override
+  {
+    double cc = druid_spell_t::composite_crit();
+
+    if ( p() -> buff.solar_empowerment -> check() )
+      cc += p() -> spec.balance_tier19_2pc -> effectN( 1 ).percent();
+
+    return cc;
+  }
+
   double action_multiplier() const override
   {
     double am = druid_spell_t::action_multiplier();
@@ -4900,6 +4960,9 @@ struct solar_wrath_t : public druid_spell_t
     p() -> buff.solar_empowerment -> decrement();
 
     p() -> buff.power_of_elune -> trigger();
+
+    if ( rng().roll( p() -> sets.set( DRUID_BALANCE, T19, B4 ) -> effectN( 2 ).percent() ) )
+      p() -> buff.lunar_empowerment -> trigger();
   }
 };
 
@@ -5594,6 +5657,7 @@ void druid_t::init_spells()
   spec.celestial_alignment        = find_specialization_spell( "Celestial Alignment" );
   spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
   spec.starfall                   = find_specialization_spell( "Starfall" );
+  spec.balance_tier19_2pc         = sets.has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
 
   // Feral
   spec.cat_form                   = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
@@ -5806,7 +5870,10 @@ void druid_t::init_spells()
     active.brambles_pulse     = new bear_attacks::brambles_pulse_t( this );
   }
   if ( talent.galactic_guardian -> ok() )
+  {
     active.galactic_guardian  = new spells::moonfire_t::moonfire_damage_t( this );
+    active.galactic_guardian -> stats = get_stats( "moonfire" );
+  }
   if ( artifact.rage_of_the_sleeper.rank() )
     active.rage_of_the_sleeper = new bear_attacks::rage_of_the_sleeper_reflect_t( this );
   if ( artifact.ashamanes_bite.rank() )
@@ -6082,6 +6149,11 @@ void druid_t::create_buffs()
 
   buff.guardian_tier17_4pc   = buff_creator_t( this, "guardian_tier17_4pc", find_spell( 177969 ) )
                                .default_value( find_spell( 177969 ) -> effectN( 1 ).percent() );
+
+  buff.guardian_tier19_4pc   = buff_creator_t( this, "natural_defenses",
+                                 sets.set( DRUID_GUARDIAN, T19, B4 ) -> effectN( 1 ).trigger() )
+                               .trigger_spell( sets.set( DRUID_GUARDIAN, T19, B4 ) )
+                               .default_value( sets.set( DRUID_GUARDIAN, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() / 1000.0 );
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
@@ -6435,7 +6507,7 @@ void druid_t::apl_balance()
   default_list -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire.remains<4" );
   default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
-  default_list -> add_action( this, "Starsurge", "if=active_enemies<3&(!talent.fury_of_elune.enabled|(buff.fury_of_elune_up.down&(cooldown.fury_of_elune.remains>10|astral_power.deficit<=10)))|active_enemies<3&astral_power>=40" );
+  default_list -> add_action( this, "Starsurge", "if=active_enemies<3&(!talent.fury_of_elune.enabled|(buff.fury_of_elune_up.down&(cooldown.fury_of_elune.remains>10|astral_power.deficit<=10)))" );
   default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|buff.warrior_of_elune.up)|active_enemies>1" );
   default_list -> add_action( this, "Solar Wrath" );
 }
