@@ -43,7 +43,7 @@ actions.single+=/ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&
 actions.single+=/elemental_mastery
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
-actions.single+=/earth_shock,if=maelstrom>=20
+actions.single+=/earth_shock,if=maelstrom>=92
 actions.single+=/icefury,if=raid_event.movement.in<5
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
 actions.single+=/flame_shock,if=maelstrom>=20&refreshable

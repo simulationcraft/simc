@@ -6069,7 +6069,7 @@ void shaman_t::init_action_list_elemental()
   single -> add_action( this, "Flame Shock", "if=!ticking" );
   single -> add_action( this, "Flame Shock", "if=maelstrom>=20&remains<=buff.ascendance.duration&"
                                              "cooldown.ascendance.remains+buff.ascendance.duration<=duration" );
-  single -> add_action( this, "Earth Shock", "if=maelstrom>=20" );
+  single -> add_action( this, "Earth Shock", "if=maelstrom>=92" );
   single -> add_talent( this, "Icefury", "if=raid_event.movement.in<5" );
   single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&"
                                             "(cooldown_react|buff.ascendance.up)" );
