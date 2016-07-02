@@ -20,6 +20,8 @@ actions.precombat+=/food,type=salty_squid_roll
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/stormkeeper
+actions.precombat+=/totem_mastery
 
 # Executed every time the actor is available.
 
@@ -28,34 +30,45 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 # In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
 actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die<=30
-actions+=/berserking,if=!buff.bloodlust.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)
-actions+=/blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)
-actions+=/arcane_torrent
-actions+=/elemental_mastery,if=action.lava_burst.cast_time>=1.2
-# On multiple enemies, the priority follows the 'aoe' action list.
-actions+=/call_action_list,name=aoe,if=spell_targets.chain_lightning>(2+t18_class_trinket)
-# If one or two enemies, priority follows the 'single' action list.
+actions+=/call_action_list,name=aoe,if=active_enemies>2&spell_targets.chain_lightning>3
 actions+=/call_action_list,name=single
 
 # Single target action priority list
 
-actions.single=earth_shock,if=maelstrom>=88
-actions.single+=/earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
-actions.single+=/earth_shock,if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)
-actions.single+=/flame_shock,cycle_targets=1,if=dot.flame_shock.remains<=(dot.flame_shock.duration*0.3)
-actions.single+=/elemental_blast
-# After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff
-actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration
-actions.single+=/chain_lightning,if=spell_targets.chain_lightning>=2
+actions.single=berserking,if=!talent.ascendance.enabled|buff.ascendance.up
+actions.single+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions.single+=/totem_mastery,if=buff.resonance_totem.remains<2
+actions.single+=/fire_elemental
+actions.single+=/ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
+actions.single+=/elemental_mastery
+actions.single+=/flame_shock,if=!ticking
+actions.single+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
+actions.single+=/earth_shock,if=maelstrom>=20
+actions.single+=/icefury,if=raid_event.movement.in<5
+actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
+actions.single+=/flame_shock,if=maelstrom>=20&refreshable
+actions.single+=/frost_shock,if=maelstrom>=20&raid_event.movement.in>(1.5*spell_haste*buff.icefury.stack)
+actions.single+=/frost_shock,moving=1,if=buff.icefury.up
+actions.single+=/earth_shock,if=maelstrom>=86
+actions.single+=/lightning_bolt,if=buff.stormkeeper.up&buff.power_of_the_maelstrom.up
+actions.single+=/icefury,if=maelstrom<=76&raid_event.movement.in>30
+actions.single+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
+actions.single+=/stormkeeper,if=(talent.ascendance.enabled&cooldown.ascendance.remains>10)|!talent.ascendance.enabled
+actions.single+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
+actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.up
+actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
+actions.single+=/lightning_bolt,target_if=debuff.lightning_rod.up
 actions.single+=/lightning_bolt
-actions.single+=/earth_shock,moving=1
+actions.single+=/frost_shock,if=maelstrom>=20&dot.flame_shock.remains>19
 
 # Multi target action priority list
 
-actions.aoe=earth_shock,if=buff.lightning_shield.react=buff.lightning_shield.max_stack
-actions.aoe+=/chain_lightning,if=spell_targets.chain_lightning>=2
-actions.aoe+=/lightning_bolt
+actions.aoe=liquid_magma_totem
+actions.aoe+=/earthquake_totem
+actions.aoe+=/chain_lightning,target_if=debuff.lightning_rod.up
+actions.aoe+=/chain_lightning
+actions.aoe+=/lava_burst,moving=1
+actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 
 head=windspeakers_faceguard,id=115579,bonus_id=567
 neck=choker_of_bloody_flame,id=120077,bonus_id=567,enchant=gift_of_multistrike

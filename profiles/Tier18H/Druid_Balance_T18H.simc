@@ -46,7 +46,7 @@ actions+=/lunar_strike,if=talent.natures_balance.enabled&dot.moonfire.remains<4
 actions+=/solar_wrath,if=talent.natures_balance.enabled&dot.sunfire.remains<4
 actions+=/lunar_strike,if=buff.lunar_empowerment.stack=3
 actions+=/solar_wrath,if=buff.solar_empowerment.stack=3
-actions+=/starsurge,if=active_enemies<3&(!talent.fury_of_elune.enabled|(buff.fury_of_elune_up.down&(cooldown.fury_of_elune.remains>10|astral_power.deficit<=10)))|active_enemies<3&astral_power>=40
+actions+=/starsurge,if=active_enemies<3&(!talent.fury_of_elune.enabled|(buff.fury_of_elune_up.down&(cooldown.fury_of_elune.remains>10|astral_power.deficit<=10)))
 actions+=/lunar_strike,if=buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|buff.warrior_of_elune.up)|active_enemies>1
 actions+=/solar_wrath
 

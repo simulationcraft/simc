@@ -20,6 +20,7 @@ actions.precombat+=/food,type=buttered_sturgeon
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/lightning_shield
 
 # Executed every time the actor is available.
 
@@ -27,29 +28,29 @@ actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
-# In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly
-actions+=/potion,name=draenic_agility,if=(talent.storm_elemental_totem.enabled&(pet.storm_elemental_totem.remains>=25|(cooldown.storm_elemental_totem.remains>target.time_to_die&pet.fire_elemental_totem.remains>=25)))|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30
+actions+=/potion,name=draenic_agility,if=target.time_to_die<=30
+actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
 actions+=/blood_fury
-actions+=/arcane_torrent
-actions+=/berserking
+actions+=/doom_winds
+actions+=/windsong
+actions+=/ascendance,if=cooldown.strike.remains=0
 actions+=/feral_spirit
-actions+=/flametongue,if=!buff.flametongue.up
-# On multiple enemies, the priority follows the 'aoe' action list.
-actions+=/call_action_list,name=aoe,if=spell_targets.chain_lightning>1
-# If only one enemy, priority follows the 'single' action list.
-actions+=/call_action_list,name=single
-
-# Single target action priority list
-
-actions.single=stormstrike,if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.stormstrike.charges_fractional>1.75)|target.time_to_die<6))
-actions.single+=/lava_lash,if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.lava_lash.charges_fractional>1.8)|target.time_to_die<8))
-actions.single+=/lava_lash,if=talent.echo_of_the_elements.enabled
-actions.single+=/stormstrike,if=talent.echo_of_the_elements.enabled
-
-# Multi target action priority list
-
-actions.aoe=stormstrike
-actions.aoe+=/lava_lash
+actions+=/fury_of_air,if=!ticking
+actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<1.5
+actions+=/crash_lightning,if=active_enemies>=3
+actions+=/windstrike
+actions+=/stormstrike
+actions+=/lightning_bolt,if=talent.overcharge.enabled&maelstrom>=60
+actions+=/lava_lash,if=buff.hot_hand.react
+actions+=/boulderfist,if=charges_fractional>=1.5
+actions+=/earthen_spike
+actions+=/flametongue,if=buff.flametongue.remains<1.5
+actions+=/crash_lightning,if=active_enemies>1|talent.crashing_storm.enabled|(pet.feral_spirit.remains>5|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5)
+actions+=/sundering
+actions+=/lava_lash,if=maelstrom>=120
+actions+=/boulderfist
+actions+=/rockbiter
+actions+=/lightning_bolt,if=talent.boulderfist.enabled&!talent.overcharge.enabled
 
 head=crown_of_the_living_mountain,id=124297
 neck=chain_of_lidless_eyes,id=124209,enchant=gift_of_haste

@@ -568,7 +568,13 @@ public:
   bool      create_actions() override;
   void      init_gains() override;
   void      init_procs() override;
+
+  // APL releated methods
   void      init_action_list() override;
+  void      init_action_list_enhancement();
+  void      init_action_list_elemental();
+  std::string generate_bloodlust_options();
+
   void      init_rng() override;
   bool      init_special_effects() override;
 
@@ -5961,6 +5967,249 @@ bool shaman_t::init_special_effects()
   return ret;
 }
 
+// shaman_t::generate_bloodlust_options =====================================
+
+std::string shaman_t::generate_bloodlust_options()
+{
+  std::string bloodlust_options = "if=";
+
+  if ( sim -> bloodlust_percent > 0 )
+    bloodlust_options += "target.health.pct<" + util::to_string( sim -> bloodlust_percent ) + "|";
+
+  if ( sim -> bloodlust_time < timespan_t::zero() )
+    bloodlust_options += "target.time_to_die<" + util::to_string( - sim -> bloodlust_time.total_seconds() ) + "|";
+
+  if ( sim -> bloodlust_time > timespan_t::zero() )
+    bloodlust_options += "time>" + util::to_string( sim -> bloodlust_time.total_seconds() ) + "|";
+  bloodlust_options.erase( bloodlust_options.end() - 1 );
+
+  return bloodlust_options;
+}
+
+// shaman_t::init_action_list_elemental =====================================
+
+void shaman_t::init_action_list_elemental()
+{
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  action_priority_list_t* def       = get_action_priority_list( "default"   );
+  action_priority_list_t* single    = get_action_priority_list( "single", "Single target action priority list" );
+  action_priority_list_t* aoe       = get_action_priority_list( "aoe", "Multi target action priority list" );
+
+  std::string potion_name = ( true_level >= 90 ) ? "draenic_intellect" :
+                            ( true_level >= 85 ) ? "jade_serpent" :
+                            ( true_level >= 80 ) ? "volcanic" :
+                            "";
+  std::string flask_name  = ( true_level > 100 ) ? "whispered_pact" :
+                            ( true_level >= 90 ) ? "greater_draenic_intellect_flask" :
+                            ( true_level >= 85 ) ? "warm_sun" :
+                            ( true_level >= 80 ) ? "draconic_mind" :
+                            "";
+  std::string food_name   = ( true_level > 90  ) ? "salty_squid_roll" :
+                            ( true_level >= 85 ) ? "mogu_fish_stew" :
+                            ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                            "";
+
+  // Flask
+  if ( sim -> allow_flasks && true_level >= 80 )
+  {
+    precombat -> add_action( "flask,type=" + flask_name );
+  }
+
+  // Food
+  if ( sim -> allow_food && true_level >= 80 )
+  {
+    precombat -> add_action( "food,type=" + food_name );
+  }
+
+  // Snapshot stats
+  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  if ( sim -> allow_potions && true_level >= 80 )
+  {
+    precombat -> add_action( "potion,name=" + potion_name );
+  }
+
+  precombat -> add_action( this, "Stormkeeper" );
+  precombat -> add_talent( this, "Totem Mastery" );
+
+  // All Shamans Bloodlust and Wind Shear by default
+  def -> add_action( this, "Wind Shear" );
+
+  def -> add_action( this, "Bloodlust", generate_bloodlust_options(),
+    "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
+
+  // On-use items
+  for ( const auto& item : items )
+  {
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
+    }
+  }
+
+  // In-combat potion
+  if ( sim -> allow_potions && true_level >= 80  )
+  {
+    def -> add_action( "potion,name=" + potion_name + ",if=buff.ascendance.up|target.time_to_die<=30",
+        "In-combat potion is preferentially linked to Ascendance, unless combat will end shortly" );
+  }
+
+  def -> add_action( "call_action_list,name=aoe,if=active_enemies>2&spell_targets.chain_lightning>3" );
+  def -> add_action( "call_action_list,name=single" );
+
+  // Single target APL
+
+  // Racials
+  single -> add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
+  single -> add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+
+  single -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
+  single -> add_action( this, "Fire Elemental" );
+  single -> add_action( this, "Storm Elemental" );
+  single -> add_talent( this, "Ascendance", "if=dot.flame_shock.remains>buff.ascendance.duration&"
+                                            "(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&"
+                                            "!buff.stormkeeper.up" );
+  single -> add_talent( this, "Elemental Mastery" );
+  single -> add_action( this, "Flame Shock", "if=!ticking" );
+  single -> add_action( this, "Flame Shock", "if=maelstrom>=20&remains<=buff.ascendance.duration&"
+                                             "cooldown.ascendance.remains+buff.ascendance.duration<=duration" );
+  single -> add_action( this, "Earth Shock", "if=maelstrom>=20" );
+  single -> add_talent( this, "Icefury", "if=raid_event.movement.in<5" );
+  single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&"
+                                            "(cooldown_react|buff.ascendance.up)" );
+  single -> add_action( this, "Flame Shock", "if=maelstrom>=20&refreshable" );
+  single -> add_action( this, "Frost Shock", "if=maelstrom>=20&raid_event.movement.in>(1.5*spell_haste*buff.icefury.stack)" );
+  single -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
+  single -> add_action( this, "Earth Shock", "if=maelstrom>=86" );
+  single -> add_action( this, "Lightning Bolt", "if=buff.stormkeeper.up&buff.power_of_the_maelstrom.up" );
+  single -> add_action( this, "Elemental Blast" );
+  single -> add_talent( this, "Icefury", "if=maelstrom<=76&raid_event.movement.in>30" );
+  single -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
+  single -> add_action( this, "Stormkeeper", "if=(talent.ascendance.enabled&cooldown.ascendance.remains>10)|"
+                                             "!talent.ascendance.enabled" );
+  single -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|"
+                                               "(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&"
+                                               "cooldown.ascendance.remains<15)" );
+  single -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.up" );
+  single -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
+  single -> add_action( this, "Lightning Bolt", "target_if=debuff.lightning_rod.up" );
+  single -> add_action( this, "Lightning Bolt" );
+  single -> add_action( this, "Frost Shock", "if=maelstrom>=20&dot.flame_shock.remains>19" );
+  single -> add_action( this, "Flame_shock" );
+
+  // Aoe APL
+  aoe -> add_talent( this, "Liquid Magma Totem" );
+  aoe -> add_action( this, "Earthquake Totem" );
+  aoe -> add_action( this, "Chain Lightning", "target_if=debuff.lightning_rod.up" );
+  aoe -> add_action( this, "Chain Lightning" );
+  aoe -> add_action( this, "Lava Burst", "moving=1" );
+  aoe -> add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
+}
+
+// shaman_t::init_action_list_enhancement ===================================
+
+void shaman_t::init_action_list_enhancement()
+{
+  if ( main_hand_weapon.type == WEAPON_NONE )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
+    quiet = true;
+    return;
+  }
+
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  action_priority_list_t* def       = get_action_priority_list( "default"   );
+
+  std::string flask_name = ( true_level >  100 ) ? "seventh_demon" :
+                           ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
+                           ( true_level >= 85  ) ? "spring_blossoms" :
+                           ( true_level >= 80  ) ? "winds" :
+                           "";
+  std::string food_name = ( true_level >  90 ) ? "buttered_sturgeon" :
+                          ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+                          ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                          "";
+  std::string potion_name = ( true_level >= 90 ) ? "draenic_agility" :
+                            ( true_level >= 85 ) ? "virmens_bite" :
+                            ( true_level >= 80 ) ? "tolvir" :
+                            "";
+
+  // Flask
+  if ( sim -> allow_flasks && true_level >= 80 )
+  {
+    precombat -> add_action( "flask,type=" + flask_name );
+  }
+
+  // Food
+  if ( sim -> allow_food && true_level >= 80 )
+  {
+    precombat -> add_action( "food,type=" + food_name );
+  }
+
+  // Snapshot stats
+  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  // Precombat potion
+  if ( sim -> allow_potions && true_level >= 80 )
+  {
+    precombat -> add_action( "potion,name=" + potion_name );
+  }
+
+  // Lightning shield can be turned on pre-combat
+  precombat -> add_talent( this, "Lightning Shield" );
+
+  // All Shamans Bloodlust and Wind Shear by default
+  def -> add_action( this, "Wind Shear" );
+
+  def -> add_action( this, "Bloodlust", generate_bloodlust_options(),
+    "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
+
+  // Turn on auto-attack first thing
+  def -> add_action( "auto_attack" );
+
+  // On-use items
+  for ( const auto& item : items )
+  {
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
+    }
+  }
+
+  // In-combat potion
+  if ( sim -> allow_potions && true_level >= 80  )
+  {
+    def -> add_action( "potion,name=" + potion_name + ",if=target.time_to_die<=30" );
+  }
+
+  // Racials
+  def -> add_action( "berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100" );
+  def -> add_action( "blood_fury" );
+
+  def -> add_action( this, "Doom Winds" );
+  def -> add_talent( this, "Windsong" );
+  def -> add_talent( this, "Ascendance", "if=cooldown.strike.remains=0" );
+  def -> add_action( this, "Feral Spirit" );
+  def -> add_talent( this, "Fury of Air", "if=!ticking" );
+  def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<1.5" );
+  def -> add_action( this, "Crash Lightning", "if=active_enemies>=3" );
+  def -> add_action( this, "Windstrike" );
+  def -> add_action( this, "Stormstrike" );
+  def -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&maelstrom>=60" );
+  def -> add_action( this, "Lava Lash", "if=buff.hot_hand.react" );
+  def -> add_talent( this, "Boulderfist", "if=charges_fractional>=1.5" );
+  def -> add_talent( this, "Earthen Spike" );
+  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<1.5" );
+  def -> add_action( this, "Crash Lightning", "if=active_enemies>1|talent.crashing_storm.enabled|"
+                                              "(pet.feral_spirit.remains>5|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5)" );
+  def -> add_talent( this, "Sundering" );
+  def -> add_action( this, "Lava Lash", "if=maelstrom>=120" );
+  def -> add_talent( this, "Boulderfist" );
+  def -> add_action( this, "Rockbiter" );
+  def -> add_action( this, "Lightning Bolt", "if=talent.boulderfist.enabled&!talent.overcharge.enabled" );
+}
+
 // shaman_t::init_actions ===================================================
 
 void shaman_t::init_action_list()
@@ -5971,14 +6220,6 @@ void shaman_t::init_action_list()
     if ( ! quiet )
       sim -> errorf( "Player %s's role (%s) or spec(%s) isn't supported yet.",
                      name(), util::role_type_string( primary_role() ), dbc::specialization_string( specialization() ).c_str() );
-    quiet = true;
-    return;
-  }
-
-  if ( specialization() == SHAMAN_ENHANCEMENT && main_hand_weapon.type == WEAPON_NONE )
-  {
-    if ( ! quiet )
-      sim -> errorf( "Player %s has no weapon equipped at the Main-Hand slot.", name() );
     quiet = true;
     return;
   }
@@ -6022,221 +6263,16 @@ void shaman_t::init_action_list()
 
   clear_action_priority_lists();
 
-  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  action_priority_list_t* def       = get_action_priority_list( "default"   );
-  action_priority_list_t* single    = get_action_priority_list( "single", "Single target action priority list" );
-  action_priority_list_t* aoe       = get_action_priority_list( "aoe", "Multi target action priority list" );
-
-  // Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
+  switch ( specialization() )
   {
-    std::string flask_action = "flask,type=";
-    if ( primary_role() == ROLE_ATTACK )
-      flask_action += ( ( true_level > 90 ) ? "greater_draenic_agility_flask" : ( true_level >= 85 ) ? "spring_blossoms" : ( true_level >= 80 ) ? "winds" : "" );
-    else
-      flask_action += ( ( true_level > 90 ) ? "greater_draenic_intellect_flask" : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "" );
-
-    precombat -> add_action( flask_action );
-  }
-
-  // Food
-  if ( sim -> allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-    if ( specialization() == SHAMAN_ENHANCEMENT )
-      food_action += ( ( level() >= 100 ) ? "buttered_sturgeon" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
-    else
-      food_action += ( ( level() >= 100 ) ? "salty_squid_roll" : ( level() > 85 ) ? "mogu_fish_stew" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
-
-    precombat -> add_action( food_action );
-  }
-
-  // Active Shield, presume any non-restoration / healer wants lightning shield
-  if ( specialization() != SHAMAN_RESTORATION || primary_role() != ROLE_HEAL )
-    precombat -> add_action( this, "Lightning Shield", "if=!buff.lightning_shield.up" );
-
-  // Snapshot stats
-  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  std::string potion_name;
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    if ( primary_role() == ROLE_ATTACK )
-    {
-      if ( true_level > 90 )
-        potion_name = "draenic_agility";
-      else if ( true_level > 85 )
-        potion_name = "virmens_bite";
-      else
-        potion_name = "tolvir";
-    }
-    else
-    {
-      if ( true_level > 90 )
-        potion_name = "draenic_intellect";
-      else if ( true_level > 85 )
-        potion_name = "jade_serpent";
-      else
-        potion_name = "volcanic";
-    }
-
-    precombat -> add_action( "potion,name=" + potion_name );
-  }
-
-  // All Shamans Bloodlust and Wind Shear by default
-  def -> add_action( this, "Wind Shear" );
-
-  std::string bloodlust_options = "if=";
-
-  if ( sim -> bloodlust_percent > 0 )
-    bloodlust_options += "target.health.pct<" + util::to_string( sim -> bloodlust_percent ) + "|";
-
-  if ( sim -> bloodlust_time < timespan_t::zero() )
-    bloodlust_options += "target.time_to_die<" + util::to_string( - sim -> bloodlust_time.total_seconds() ) + "|";
-
-  if ( sim -> bloodlust_time > timespan_t::zero() )
-    bloodlust_options += "time>" + util::to_string( sim -> bloodlust_time.total_seconds() ) + "|";
-  bloodlust_options.erase( bloodlust_options.end() - 1 );
-
-  if ( action_priority_t* a = def -> add_action( this, "Bloodlust", bloodlust_options ) )
-    a -> comment( "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
-
-  // Melee turns on auto attack
-  if ( primary_role() == ROLE_ATTACK )
-    def -> add_action( "auto_attack" );
-
-  int num_items = (int)items.size();
-  for ( int i = 0; i < num_items; i++ )
-  {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      def -> add_action( "use_item,name=" + items[i].name_str );
-    }
-  }
-
-  if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
-  {
-    // In-combat potion
-    if ( sim -> allow_potions && true_level >= 80  )
-    {
-      std::string potion_action = "potion,name=" + potion_name + ",if=(talent.storm_elemental_totem.enabled&(pet.storm_elemental_totem.remains>=25|(cooldown.storm_elemental_totem.remains>target.time_to_die&pet.fire_elemental_totem.remains>=25)))|(!talent.storm_elemental_totem.enabled&pet.fire_elemental_totem.remains>=25)|target.time_to_die<=30";
-
-      def -> add_action( potion_action, "In-combat potion is preferentially linked to the Fire or Storm Elemental, depending on talents, unless combat will end shortly" );
-    }
-
-    def -> add_action( "blood_fury" );
-    def -> add_action( "arcane_torrent" );
-    def -> add_action( "berserking" );
-    def -> add_talent( this, "Elemental Mastery" );
-    def -> add_action( this, "Feral Spirit" );
-    def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>10|pet.magma_totem.remains>10|pet.fire_elemental_totem.remains>10" );
-    def -> add_action( this, "Ascendance" );
-    def -> add_action( this, "Flametongue", "if=!buff.flametongue.up" );
-
-    def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>1", "On multiple enemies, the priority follows the 'aoe' action list." );
-    def -> add_action( "call_action_list,name=single", "If only one enemy, priority follows the 'single' action list." );
-
-    single -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.windstrike.charges_fractional>1.75)|(charges=1&buff.ascendance.remains<1.5)))" );
-    single -> add_action( this, "Stormstrike", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.stormstrike.charges_fractional>1.75)|target.time_to_die<6))" );
-    single -> add_action( this, "Primal Strike" );
-    single -> add_action( this, "Lava Lash", "if=!talent.echo_of_the_elements.enabled|(talent.echo_of_the_elements.enabled&(charges=2|(action.lava_lash.charges_fractional>1.8)|target.time_to_die<8))" );
-    single -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike", "if=talent.echo_of_the_elements.enabled" );
-    single -> add_action( this, "Lava Lash", "if=talent.echo_of_the_elements.enabled" );
-    single -> add_action( this, "Stormstrike", "if=talent.echo_of_the_elements.enabled" );
-
-    // AoE
-    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "windstrike" );
-    aoe -> add_action( this, "Stormstrike" );
-    aoe -> add_action( this, "Lava Lash" );
-  }
-  else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
-  {
-    // In-combat potion
-    if ( sim -> allow_potions && true_level >= 80  )
-    {
-      std::string potion_action = "potion,name=" + potion_name + ",if=buff.ascendance.up|target.time_to_die<=30";
-
-      def -> add_action( potion_action, "In-combat potion is preferentially linked to Ascendance, unless combat will end shortly" );
-    }
-    // Sync berserking with ascendance as they share a cooldown, but making sure
-    // that no two haste cooldowns overlap, within reason
-    def -> add_action( "berserking,if=!buff.bloodlust.up&buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)" );
-    // Sync blood fury with ascendance or fire elemental as long as one is ready
-    // soon after blood fury is.
-    def -> add_action( "blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)" );
-    def -> add_action( "arcane_torrent" );
-
-    // Use Elemental Mastery on cooldown so long as it won't send you significantly under
-    // the GCD cap.
-    def -> add_talent( this, "Elemental Mastery", "if=action.lava_burst.cast_time>=1.2" );
-
-    def -> add_talent( this, "Storm Elemental Totem" );
-
-    // Use Ascendance preferably with a haste CD up, but dont overdo the
-    // delaying. Make absolutely sure that Ascendance can be used so that
-    // only Lava Bursts need to be cast during it's duration
-    std::string ascendance_opts = "if=spell_targets.chain_lightning>1|(dot.flame_shock.remains>buff.ascendance.duration&(target.time_to_die<20|buff.bloodlust.up";
-    if ( race == RACE_TROLL )
-      ascendance_opts += "|buff.berserking.up";
-    else
-      ascendance_opts += "|time>=60";
-    ascendance_opts += ")&cooldown.lava_burst.remains>0)";
-
-    def -> add_action( this, "Ascendance", ascendance_opts );
-
-    def -> add_talent( this, "Liquid Magma", "if=pet.searing_totem.remains>=15|pet.fire_elemental_totem.remains>=15" );
-
-    // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
-    def -> add_action( init_use_profession_actions().erase( 0, 1 ) );
-
-    def -> add_action( "call_action_list,name=aoe,if=spell_targets.chain_lightning>(2+t18_class_trinket)", "On multiple enemies, the priority follows the 'aoe' action list." );
-    def -> add_action( "call_action_list,name=single", "If one or two enemies, priority follows the 'single' action list." );
-
-    single -> add_action( this, "Unleash Flame", "moving=1" );
-    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=buff.ascendance.up" );
-    if ( find_item( "unerring_vision_of_lei_shen" ) )
-      single -> add_action( this, "Flame Shock", "if=buff.perfect_aim.react&crit_pct<100" );
-    single -> add_action( this, "Earth Shock", "if=maelstrom>=88");
-    single -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
-    single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)" );
-    single -> add_action( this, spec.fulmination, "earth_shock", "if=(set_bonus.tier17_4pc&buff.lightning_shield.react>=12&!buff.lava_surge.up)|(!set_bonus.tier17_4pc&buff.lightning_shield.react>15)" );
-    single -> add_action( this, "Flame Shock", "cycle_targets=1,if=dot.flame_shock.remains<=(dot.flame_shock.duration*0.3)" );
-    single -> add_talent( this, "Elemental Blast" );
-    single -> add_action( this, "Flame Shock", "if=time>60&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<duration",
-                          "After the initial Ascendance, use Flame Shock pre-emptively just before Ascendance to guarantee Flame Shock staying up for the full duration of the Ascendance buff" );
-    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))&cooldown.ascendance.remains>cooldown.spiritwalkers_grace.remains" );
-
-    single -> add_action( this, "Earthquake", "cycle_targets=1,if=buff.enhanced_chain_lightning.up" );
-    single -> add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>=2" );
-    single -> add_action( this, "Lightning Bolt" );
-    single -> add_action( this, "Earth Shock", "moving=1" );
-
-    // AoE
-    aoe -> add_action( this, "Earthquake", "cycle_targets=1,if=buff.enhanced_chain_lightning.up" );
-    aoe -> add_action( this, find_specialization_spell( "Ascendance" ), "lava_beam" );
-    aoe -> add_action( this, spec.fulmination, "earth_shock", "if=buff.lightning_shield.react=buff.lightning_shield.max_stack" );
-    aoe -> add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>=2" );
-    aoe -> add_action( this, "Lightning Bolt" );
-  }
-  else if ( primary_role() == ROLE_SPELL )
-  {
-    def -> add_action( this, "Spiritwalker's Grace", "moving=1" );
-    def -> add_talent( this, "Elemental Mastery" );
-    def -> add_talent( this, "Elemental Blast" );
-    def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react)&ticks_remain<3)" );
-    def -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time" );
-    def -> add_action( this, "Chain Lightning", "if=target.adds>2&mana.pct>25" );
-    def -> add_action( this, "Lightning Bolt" );
-  }
-  else if ( primary_role() == ROLE_ATTACK )
-  {
-    def -> add_action( this, "Spiritwalker's Grace", "moving=1" );
-    def -> add_talent( this, "Elemental Mastery" );
-    def -> add_talent( this, "Elemental Blast" );
-    def -> add_talent( this, "Primal Strike" );
-    def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react)&ticks_remain<3)" );
-    def -> add_action( this, "Earth Shock" );
-    def -> add_action( this, "Lightning Bolt", "moving=1" );
+    case SHAMAN_ENHANCEMENT:
+      init_action_list_enhancement();
+      break;
+    case SHAMAN_ELEMENTAL:
+      init_action_list_elemental();
+      break;
+    default:
+      break;
   }
 
   use_default_action_list = true;
