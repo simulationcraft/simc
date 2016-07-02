@@ -3691,7 +3691,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     weapon = w;
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
     double cc = death_knight_melee_attack_t::composite_crit_chance();
 
