@@ -23,7 +23,6 @@ namespace
 
    Havoc --------------------------------------------------------------------
    Change Nemesis to be race specific instead of generic
-   Nemesis buffs for each race?
    Defensive talent tier
    Second look at Momentum skills' timings
    Fury of the Illidari distance targeting support
@@ -31,6 +30,8 @@ namespace
    Defensive artifact traits
    Keep an eye out for Metamorphosis haste instead of flat GCD reductions
    More thorough caching on blade_dance_expr_t
+   Retest Fel Barrage proc mechanics in-game
+   Fix Nemesis
 
    Vengeance ----------------------------------------------------------------
    Infernal Strike
@@ -510,12 +511,12 @@ public:
   double  composite_crit_avoidance() const override;
   double  composite_dodge() const override;
   double  composite_leech() const override;
-  double  composite_melee_crit() const override;
+  double  composite_melee_crit_chance() const override;
   double  composite_melee_expertise( const weapon_t* ) const override;
   double  composite_parry() const override;
   double  composite_parry_rating() const override;
   double  composite_player_multiplier( school_e ) const override;
-  double  composite_spell_crit() const override;
+  double  composite_spell_crit_chance() const override;
   double  matching_gear_multiplier( attribute_e attr ) const override;
   double  passive_movement_modifier() const override;
   double  temporary_movement_modifier() const override;
@@ -1028,12 +1029,18 @@ public:
     accumulate_spirit_bomb( d -> state );
 
     // Benefit tracking
-    if ( d -> state -> result_amount > 0 )
+    if ( d -> state -> result_amount > 0  )
     {
-      td( d -> state -> target ) -> debuffs.nemesis -> up();
-      p() -> buff.momentum -> up();
-      p() -> buff.demon_soul -> up();
-      p() -> buff.chaos_blades -> up();
+      if ( ab::snapshot_flags & STATE_TGT_MUL_TA )
+      {
+        td( d -> state -> target ) -> debuffs.nemesis -> up();
+      }
+      if ( ab::snapshot_flags & STATE_MUL_TA )
+      {
+        p() -> buff.momentum -> up();
+        p() -> buff.demon_soul -> up();
+        p() -> buff.chaos_blades -> up();
+      }
     }
   }
 
@@ -1049,10 +1056,16 @@ public:
       // Benefit tracking
       if ( s -> result_amount > 0 )
       {
-        td( s -> target ) -> debuffs.nemesis -> up();
-        p() -> buff.momentum -> up();
-        p() -> buff.demon_soul -> up();
-        p() -> buff.chaos_blades -> up();
+        if ( ab::snapshot_flags & STATE_TGT_MUL_DA )
+        {
+          td( s -> target ) -> debuffs.nemesis -> up();
+        }
+        if ( ab::snapshot_flags & STATE_MUL_DA )
+        {
+          p() -> buff.momentum -> up();
+          p() -> buff.demon_soul -> up();
+          p() -> buff.chaos_blades -> up();
+        }
       }
     }
   }
@@ -3105,7 +3118,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
        result from the previous chain_target's state. */
     if ( cs -> chain_target == 0 )
     {
-      cs -> is_critical = p() -> rng().roll( cs -> composite_crit() );
+      cs -> is_critical = p() -> rng().roll( cs -> composite_crit_chance() );
     }
     else if ( execute_state )
     {
@@ -4268,9 +4281,9 @@ private:
 
   double get_target_crit_modifier( player_t* t )
   {
-    double crit_chance = clamp( state -> crit + action -> composite_target_crit( t ), 0.0, 1.0 );
+    double crit_chance = clamp( state -> crit_chance + action -> composite_target_crit_chance( t ), 0.0, 1.0 );
       
-    crit_chance *= action -> composite_crit_multiplier();
+    crit_chance *= action -> composite_crit_chance_multiplier();
 
     return 1.0 + ( crit_chance * crit_bonus_damage );
   }
@@ -4692,7 +4705,7 @@ struct db_ratio_expr_t : public expr_t
           
     if ( reduced_by_crit )
     {
-      eff_cost *= 1.0 - action -> composite_crit();
+      eff_cost *= 1.0 - action -> composite_crit_chance();
     }
 
     double db_gain = db -> energize_amount + ( 1 + db -> energize_die_sides ) / 2.0;
@@ -4735,7 +4748,7 @@ struct blade_dance_expr_t : public expr_t
   double dbs_per_spender()
   {
     double eff_cost = fury_spender -> base_costs[ RESOURCE_FURY ];
-    eff_cost -= dh.spec.chaos_strike_refund -> effectN( 1 ).resource( RESOURCE_FURY ) * fury_spender -> composite_crit();
+    eff_cost -= dh.spec.chaos_strike_refund -> effectN( 1 ).resource( RESOURCE_FURY ) * fury_spender -> composite_crit_chance();
 
     return eff_cost / db_fury;
   }
@@ -4747,7 +4760,7 @@ struct blade_dance_expr_t : public expr_t
     db_state -> target -> target_mitigation( demons_bite -> get_school(), DMG_DIRECT, db_state );
     double amount = db_state -> result_amount;
 
-    amount *= 1.0 + clamp( db_state -> crit + db_state -> target_crit, 0.0, 1.0 ) *
+    amount *= 1.0 + clamp( db_state -> crit_chance + db_state -> target_crit_chance, 0.0, 1.0 ) *
       demons_bite -> composite_player_critical_multiplier(); 
 
     return amount;
@@ -5283,7 +5296,7 @@ void demon_hunter_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_RUN_SPEED );
       }
       break;
-    case CACHE_CRIT:
+    case CACHE_CRIT_CHANCE:
       if ( spec.riposte -> ok() )
       {
         invalidate_cache( CACHE_PARRY );
@@ -5296,7 +5309,7 @@ void demon_hunter_t::invalidate_cache( cache_e c )
   switch( c )
   {
     case CACHE_ATTACK_POWER:
-    case CACHE_CRIT:
+    case CACHE_CRIT_CHANCE:
     case CACHE_DAMAGE_VERSATILITY:
     case CACHE_PLAYER_DAMAGE_MULTIPLIER:
       if ( blade_dance_dmg ) blade_dance_dmg -> invalidate();
@@ -5647,11 +5660,11 @@ double demon_hunter_t::composite_leech() const
   return l;
 }
 
-// demon_hunter_t::composite_melee_crit =====================================
+// demon_hunter_t::composite_melee_crit_chance =====================================
 
-double demon_hunter_t::composite_melee_crit() const
+double demon_hunter_t::composite_melee_crit_chance() const
 {
-  double mc = player_t::composite_melee_crit();
+  double mc = player_t::composite_melee_crit_chance();
 
   mc += spec.critical_strikes -> effectN( 1 ).percent();
 
@@ -5717,11 +5730,11 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-// demon_hunter_t::composite_spell_crit =====================================
+// demon_hunter_t::composite_spell_crit_chance =====================================
 
-double demon_hunter_t::composite_spell_crit() const
+double demon_hunter_t::composite_spell_crit_chance() const
 {
-  double sc = player_t::composite_spell_crit();
+  double sc = player_t::composite_spell_crit_chance();
 
   sc += spec.critical_strikes -> effectN( 1 ).percent();
 
@@ -6097,7 +6110,7 @@ struct moarg_bionic_stabilizers_t: public scoped_action_callback_t<throw_glaive_
   { }
 
   void manipulate( throw_glaive_t* action, const special_effect_t& e ) override
-  { action -> base_add_multiplier *= 1.0 + e.driver() -> effectN( 1 ).percent(); }
+  { action -> chain_bonus_damage += e.driver() -> effectN( 1 ).percent(); } // TOCHECK
 };
 
 // Vengeance-specific legendary items
@@ -6173,7 +6186,7 @@ struct loramus_thalipedes_sacrifice_t : public scoped_action_callback_t<fel_rush
   { }
 
   void manipulate( fel_rush_t::fel_rush_damage_t* action, const special_effect_t& e ) override
-  { action -> base_add_multiplier *= 1.0 + e.driver() -> effectN( 1 ).percent(); }
+  { action -> chain_bonus_damage += e.driver() -> effectN( 1 ).percent(); }
 };
 
 // MODULE INTERFACE ==================================================
