@@ -241,6 +241,8 @@ public:
     buff_t* gathering_storm;
     buff_t* icebound_fortitude;
     buff_t* killing_machine;
+    haste_buff_t* t18_4pc_frost_haste;
+    buff_t* t18_4pc_frost_crit;
     buff_t* obliteration;
     buff_t* pillar_of_frost;
     buff_t* rime;
@@ -1119,6 +1121,11 @@ struct dt_pet_t : public base_ghoul_pet_t
     if ( crazed_monstrosity -> up() )
     {
       m *= 1.0 + crazed_monstrosity -> data().effectN( 2 ).percent();
+    }
+
+    if ( owner -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B2 ) )
+    {
+      m *= 1.0 + owner -> sets.set( DEATH_KNIGHT_UNHOLY, T18, B2 ) -> effectN( 1 ).percent();
     }
 
     if ( o() -> buffs.dark_transformation -> up() )
@@ -3318,6 +3325,12 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
 
     // TODO: Both hands, or just main hand?
     trigger_icecap( execute_state );
+
+    // TODO: Both hands, or just main hand?
+    if ( execute_state -> result == RESULT_CRIT )
+    {
+      p() -> buffs.t18_4pc_frost_crit -> trigger();
+    }
   }
 };
 
@@ -3378,6 +3391,12 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
     // TODO: Both hands, or just main hand?
     trigger_icecap( execute_state );
+
+    // TODO: Both hands, or just main hand?
+    if ( execute_state -> result == RESULT_CRIT )
+    {
+      p() -> buffs.t18_4pc_frost_crit -> trigger();
+    }
   }
 };
 
@@ -3616,6 +3635,12 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
 
     // TODO: Both hands, or just main hand?
     trigger_icecap( execute_state );
+
+    // TODO: Both hands, or just main hand?
+    if ( execute_state -> result == RESULT_CRIT )
+    {
+      p() -> buffs.t18_4pc_frost_haste -> trigger();
+    }
   }
 };
 
@@ -3648,6 +3673,11 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     // TODO: Both hands, or just main hand?
     trigger_icecap( execute_state );
+
+    if ( execute_state -> result == RESULT_CRIT )
+    {
+      p() -> buffs.t18_4pc_frost_haste -> trigger();
+    }
   }
 
   double cost() const override
@@ -4780,10 +4810,10 @@ double death_knight_t::composite_melee_haste() const
     haste *= buffs.bone_shield -> value();
   }
 
-  //if ( buffs.obliteration -> up() )
-  //{
-  //  haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
-  //}
+  if ( buffs.t18_4pc_frost_haste -> up() )
+  {
+    haste *= buffs.t18_4pc_frost_haste -> check_value();
+  }
 
   return haste;
 }
@@ -4802,11 +4832,6 @@ double death_knight_t::composite_spell_haste() const
   {
     haste *= buffs.bone_shield -> value();
   }
-
-  /*if ( buffs.obliteration -> up() )
-  {
-    haste *= 1.0 / ( 1.0 + buffs.obliteration -> data().effectN( 1 ).percent() );
-  }*/
 
   return haste;
 }
@@ -5111,6 +5136,13 @@ void death_knight_t::create_buffs()
   buffs.soul_reaper = haste_buff_creator_t( this, "soul_reaper_haste", talent.soul_reaper -> effectN( 2 ).trigger() )
     .default_value( talent.soul_reaper -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
     .trigger_spell( talent.soul_reaper );
+  buffs.t18_4pc_frost_haste = haste_buff_creator_t( this, "obliteration_t18", find_spell( 187893 ) )
+    .add_invalidate( CACHE_ATTACK_HASTE )
+    .default_value( 1.0 / ( 1.0 + find_spell( 187893 ) -> effectN( 1 ).percent() ) )
+    .trigger_spell( sets.set( DEATH_KNIGHT_FROST, T18, B2 ) );
+  buffs.t18_4pc_frost_crit = buff_creator_t( this, "frozen_wake", find_spell( 187894 ) )
+    .default_value( find_spell( 187894 ) -> effectN( 1 ).percent() )
+    .trigger_spell( sets.set( DEATH_KNIGHT_FROST, T18, B2 ) );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -5417,6 +5449,8 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 double death_knight_t::composite_player_critical_damage_multiplier() const
 {
   double m = player_t::composite_player_critical_damage_multiplier();
+
+  m *= 1.0 + buffs.t18_4pc_frost_crit -> stack_value();
 
   return m;
 }
