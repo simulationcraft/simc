@@ -317,6 +317,7 @@ public:
     const spell_data_t* riposte;
 
     // Frost
+    const spell_data_t* ambidexterity; // Mega hidden passive?
     const spell_data_t* runic_empowerment;
     const spell_data_t* killing_machine;
     const spell_data_t* rime;
@@ -1893,6 +1894,11 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     special    = true;
     may_crit   = true;
     may_glance = false;
+
+    if ( data().affected_by( p -> spec.ambidexterity -> effectN( 1 ) ) )
+    {
+      base_multiplier *= 1.0 + p -> spec.ambidexterity -> effectN( 1 ).percent();
+    }
   }
 
   virtual void   consume_resource() override;
@@ -4848,6 +4854,7 @@ void death_knight_t::init_spells()
   spec.riposte                    = find_specialization_spell( "Riposte" );
 
   // Frost
+  spec.ambidexterity              = find_spell( 189092 );
   spec.runic_empowerment          = find_specialization_spell( "Runic Empowerment" );
   spec.rime                       = find_specialization_spell( "Rime" );
   spec.killing_machine            = find_specialization_spell( "Killing Machine" );
@@ -5097,7 +5104,7 @@ void death_knight_t::create_buffs()
   buffs.defile = stat_buff_creator_t( this, "defile", find_spell( 218100 ) )
     .trigger_spell( talent.defile );
 
-  buffs.soul_reaper = haste_buff_creator_t( this, "soul_reaper", talent.soul_reaper -> effectN( 2 ).trigger() )
+  buffs.soul_reaper = haste_buff_creator_t( this, "soul_reaper_haste", talent.soul_reaper -> effectN( 2 ).trigger() )
     .default_value( talent.soul_reaper -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
     .trigger_spell( talent.soul_reaper );
 }
