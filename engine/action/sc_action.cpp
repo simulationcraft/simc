@@ -1773,7 +1773,15 @@ bool action_t::ready()
   {
     player_t* potential_target = select_target_if_target();
     if ( potential_target )
+    {
+      // If the target changes, we need to regenerate the target cache to get the new primary target
+      // as the first element of target_list.
+      if ( potential_target != target )
+      {
+        target_cache.is_valid = false;
+      }
       target = potential_target;
+    }
     else
       return false;
   }
@@ -1802,7 +1810,16 @@ bool action_t::ready()
 
     cycle_targets = 1;
 
-    if ( found_ready ) return true;
+    if ( found_ready )
+    {
+      // If the target changes, we need to regenerate the target cache to get the new primary target
+      // as the first element of target_list.
+      if ( target != saved_target )
+      {
+        target_cache.is_valid = false;
+      }
+      return true;
+    }
 
     target = saved_target;
 
