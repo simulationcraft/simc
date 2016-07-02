@@ -827,6 +827,10 @@ struct death_knight_pet_t : public pet_t
     return m;
   }
 
+  // DK pets do not inherit owner attack speed apparently
+  double composite_melee_speed() const override
+  { return owner -> cache.attack_haste(); }
+
   virtual attack_t* create_auto_attack()
   { return nullptr; }
 };
