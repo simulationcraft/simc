@@ -344,7 +344,8 @@ action_t::action_t( action_e       ty,
   base_ta_adder                  = 0.0;
   weapon                         = NULL;
   weapon_multiplier              = 1.0;
-  base_add_multiplier            = 1.0;
+  chain_multiplier               = 1.0;
+  chain_bonus_damage             = 0.0;
   base_aoe_multiplier            = 1.0;
   split_aoe_damage               = false;
   normalize_weapon_speed         = false;
@@ -1037,8 +1038,11 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     amount *= 1 + delta_mod / 2 * sim -> averaged_range( -1.0, 1.0 );
 
   // AoE with decay per target
-  if ( state -> chain_target > 0 && base_add_multiplier != 1.0 )
-    amount *= pow( base_add_multiplier, state -> chain_target );
+  if ( state -> chain_target > 0 && chain_multiplier != 1.0 )
+    amount *= pow( chain_multiplier, state -> chain_target );
+
+  if ( state -> chain_target > 0 && chain_bonus_damage != 0.0 )
+    amount *= std::max( 1.0 + chain_bonus_damage * state -> chain_target, 0.0 );
 
   // AoE with static reduced damage per target
   if ( state -> chain_target > 0 )
@@ -1446,7 +1450,7 @@ void action_t::tick( dot_t* d )
   {
     d -> state -> result = RESULT_HIT;
 
-    if ( tick_may_crit && rng().roll( d -> state -> composite_crit() ) )
+    if ( tick_may_crit && rng().roll( d -> state -> composite_crit_chance() ) )
       d -> state -> result = RESULT_CRIT;
 
     d -> state -> result_amount = calculate_tick_amount( d -> state, d -> get_last_tick_factor() * d -> current_stack() );
@@ -2277,7 +2281,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
       if ( average_crit )
       {
-        a *= 1.0 + clamp( state -> crit + state -> target_crit, 0.0, 1.0 ) *
+        a *= 1.0 + clamp( state -> crit_chance + state -> target_crit_chance, 0.0, 1.0 ) *
           action.composite_player_critical_multiplier();
       }
 
@@ -2543,7 +2547,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         state -> target = action -> target;
         action -> snapshot_state( state, RESULT_TYPE_NONE );
 
-        return std::min( 100.0, state -> composite_crit() * 100.0 );
+        return std::min( 100.0, state -> composite_crit_chance() * 100.0 );
       }
 
       virtual ~crit_pct_current_expr_t()
@@ -2943,7 +2947,7 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, dmg_e r
   state -> result_type = rt;
 
   if ( flags & STATE_CRIT )
-    state -> crit = composite_crit() * composite_crit_multiplier();
+    state -> crit_chance = composite_crit_chance() * composite_crit_chance_multiplier();
 
   if ( flags & STATE_HASTE )
     state -> haste = composite_haste();
@@ -2973,7 +2977,7 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, dmg_e r
     state -> target_ta_multiplier = composite_target_ta_multiplier( state -> target );
 
   if ( flags & STATE_TGT_CRIT )
-    state -> target_crit = composite_target_crit( state -> target ) * composite_crit_multiplier();
+    state -> target_crit_chance = composite_target_crit_chance( state -> target ) * composite_crit_chance_multiplier();
 
   if ( flags & STATE_TGT_MITG_DA )
     state -> target_mitigation_da_multiplier = composite_target_mitigation( state -> target, get_school() );

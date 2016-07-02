@@ -1213,9 +1213,9 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_HIT:          return "hit";
     case CACHE_ATTACK_HIT:   return "attack_hit";
     case CACHE_SPELL_HIT:    return "spell_hit";
-    case CACHE_CRIT:         return "crit";
-    case CACHE_ATTACK_CRIT:  return "attack_crit";
-    case CACHE_SPELL_CRIT:   return "spell_crit";
+    case CACHE_CRIT_CHANCE:  return "crit_chance";
+    case CACHE_ATTACK_CRIT_CHANCE: return "attack_crit_chance";
+    case CACHE_SPELL_CRIT_CHANCE:  return "spell_crit_chance";
     case CACHE_HASTE:        return "haste";
     case CACHE_ATTACK_HASTE: return "attack_haste";
     case CACHE_SPELL_HASTE:  return "spell_haste";

@@ -82,7 +82,7 @@ result_e spell_base_t::calculate_result( action_state_t* s ) const
 
     if ( may_crit )
     {
-      if ( rng().roll( std::max( s -> composite_crit(), 0.0 ) ) )
+      if ( rng().roll( std::max( s -> composite_crit_chance(), 0.0 ) ) )
         result = RESULT_CRIT;
     }
   }

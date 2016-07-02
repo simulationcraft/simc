@@ -226,7 +226,7 @@ result_e attack_t::calculate_result( action_state_t* s ) const
   double miss     = may_miss ? miss_chance( composite_hit(), s -> target ) : 0;
   double dodge    = may_dodge ? dodge_chance( composite_expertise(), s -> target ) : 0;
   double parry    = may_parry && player -> position() == POSITION_FRONT ? parry_chance( composite_expertise(), s -> target ) : 0;
-  double crit     = may_crit ? std::max( s -> composite_crit() + s -> target -> cache.crit_avoidance(), 0.0 ) : 0;
+  double crit     = may_crit ? std::max( s -> composite_crit_chance() + s -> target -> cache.crit_avoidance(), 0.0 ) : 0;
 
   // Specials are 2-roll calculations, so only pass crit chance to
   // build_table for non-special attacks

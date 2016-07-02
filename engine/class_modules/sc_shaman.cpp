@@ -581,12 +581,12 @@ public:
   void      moving() override;
   void      invalidate_cache( cache_e c ) override;
   double    temporary_movement_modifier() const override;
-  double    composite_melee_crit() const override;
+  double    composite_melee_crit_chance() const override;
   double    composite_melee_haste() const override;
   double    composite_melee_speed() const override;
   double    composite_attack_power_multiplier() const override;
   double    composite_attribute_multiplier( attribute_e ) const override;
-  double    composite_spell_crit() const override;
+  double    composite_spell_crit_chance() const override;
   double    composite_spell_haste() const override;
   double    composite_spell_power( school_e school ) const override;
   double    composite_spell_power_multiplier() const override;
@@ -694,7 +694,7 @@ struct stormlash_spell_t : public spell_t
     // Add in versatility multiplier
     damage_pool *= 1.0 + source -> cache.damage_versatility();
     // Add in crit multiplier
-    damage_pool *= 1.0 + source -> cache.attack_crit();
+    damage_pool *= 1.0 + source -> cache.attack_crit_chance();
     // TODO: Add in crit damage multiplier
 
     previous_proc = sim -> current_time();
@@ -2211,7 +2211,7 @@ struct greater_lightning_elemental_t : public shaman_pet_t
     chain_lightning_t( greater_lightning_elemental_t* p ) :
       super( p, "chain_lightning", p -> find_spell( 191732 ) )
     {
-      base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+      chain_multiplier = data().effectN( 1 ).chain_multiplier();
       ability_lag         = timespan_t::from_millis( 300 );
       ability_lag_stddev  = timespan_t::from_millis( 25 );
     }
@@ -2410,9 +2410,9 @@ struct stormstrike_attack_t : public shaman_attack_t
     return m;
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double c = shaman_attack_t::composite_crit();
+    double c = shaman_attack_t::composite_crit_chance();
 
     if ( p() -> buff.stormbringer -> up() )
     {
@@ -3428,7 +3428,7 @@ struct chain_lightning_overload_t: public elemental_overload_spell_t
     elemental_overload_spell_t( p, "chain_lightning_overload", p -> find_spell( 45297 ) )
   {
     base_multiplier *= 1.0 + p -> artifact.electric_discharge.percent();
-    base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+    chain_multiplier = data().effectN( 1 ).chain_multiplier();
     maelstrom_gain = p -> find_spell( 218558 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
     radius = 10.0;
   }
@@ -3461,7 +3461,7 @@ struct chain_lightning_t: public shaman_spell_t
     shaman_spell_t( "chain_lightning", player, player -> find_specialization_spell( "Chain Lightning" ), options_str )
   {
     base_multiplier *= 1.0 + player -> artifact.electric_discharge.percent();
-    base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+    chain_multiplier = data().effectN( 1 ).chain_multiplier();
     radius = 10.0;
 
     maelstrom_gain = data().effectN( 2 ).base_value();
@@ -3543,7 +3543,7 @@ struct lava_beam_overload_t: public elemental_overload_spell_t
     elemental_overload_spell_t( p, "lava_beam_overload", p -> find_spell( 114738 ) )
   {
     base_multiplier *= 1.0 + p -> artifact.electric_discharge.percent();
-    base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+    chain_multiplier = data().effectN( 1 ).chain_multiplier();
     maelstrom_gain = p -> find_spell( 218559 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
     radius = 10.0;
   }
@@ -3575,7 +3575,7 @@ struct lava_beam_t : public shaman_spell_t
   lava_beam_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "lava_beam", player, player -> find_spell( 114074 ), options_str )
   {
-    base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+    chain_multiplier = data().effectN( 1 ).chain_multiplier();
     maelstrom_gain = data().effectN( 3 ).base_value();
     energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     radius = 10.0;
@@ -3629,15 +3629,15 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     if ( p() -> buff.ascendance -> up() )
     {
-      m *= 1.0 + p() -> cache.spell_crit();
+      m *= 1.0 + p() -> cache.spell_crit_chance();
     }
 
     return m;
   }
 
-  double composite_target_crit( player_t* t ) const override
+  double composite_target_crit_chance( player_t* t ) const override
   {
-    double m = shaman_spell_t::composite_target_crit ( t );
+    double m = shaman_spell_t::composite_target_crit_chance( t );
 
     if ( td( target ) -> dot.flame_shock -> is_ticking() )
     {
@@ -3684,15 +3684,15 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( p() -> buff.ascendance -> up() )
     {
-      m *= 1.0 + p() -> cache.spell_crit();
+      m *= 1.0 + p() -> cache.spell_crit_chance();
     }
 
     return m;
   }
 
-  double composite_target_crit( player_t* t ) const override
+  double composite_target_crit_chance( player_t* t ) const override
   {
-    double m = shaman_spell_t::composite_target_crit ( t );
+    double m = shaman_spell_t::composite_target_crit_chance( t );
 
     if ( td( target ) -> dot.flame_shock -> is_ticking() )
     {
@@ -3939,7 +3939,7 @@ struct elemental_blast_t : public shaman_spell_t
       else if ( b == 2 )
         p() -> buff.elemental_blast_mastery -> trigger();
 
-      if ( rng().roll( std::max( composite_crit() + composite_target_crit( s -> target ), 0.0 ) ) )
+      if ( rng().roll( std::max( composite_crit_chance() + composite_target_crit_chance( s -> target ), 0.0 ) ) )
         result = RESULT_CRIT;
     }
 
@@ -4523,9 +4523,9 @@ struct healing_surge_t : public shaman_heal_t
     resurgence_gain = 0.6 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double c = shaman_heal_t::composite_crit();
+    double c = shaman_heal_t::composite_crit_chance();
 
     if ( p() -> buff.tidal_waves -> up() )
     {
@@ -4695,8 +4695,8 @@ struct shaman_totem_pet_t : public pet_t
   virtual double composite_spell_hit() const override
   { return owner -> cache.spell_hit(); }
 
-  virtual double composite_spell_crit() const override
-  { return owner -> cache.spell_crit(); }
+  virtual double composite_spell_crit_chance() const override
+  { return owner -> cache.spell_crit_chance(); }
 
   virtual double composite_spell_power( school_e school ) const override
   { return owner -> cache.spell_power( school ); }
@@ -5841,7 +5841,7 @@ void shaman_t::create_buffs()
                   .default_value( 1.0 / ( 1.0 + talent.windsong -> effectN( 2 ).percent() ) );
   buff.boulderfist = buff_creator_t( this, "boulderfist", talent.boulderfist -> effectN( 3 ).trigger() )
                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                        .add_invalidate( CACHE_CRIT );
+                        .add_invalidate( CACHE_CRIT_CHANCE );
   buff.rockbiter = buff_creator_t( this, "rockbiter", find_spell( 202004 ) )
                    .add_invalidate( CACHE_AGILITY )
                    .chance( talent.landslide -> ok() )
@@ -6370,11 +6370,11 @@ double shaman_t::composite_spell_haste() const
   return h;
 }
 
-// shaman_t::composite_spell_crit ===========================================
+// shaman_t::composite_spell_crit_chance ===========================================
 
-double shaman_t::composite_spell_crit() const
+double shaman_t::composite_spell_crit_chance() const
 {
-  double m = player_t::composite_spell_crit();
+  double m = player_t::composite_spell_crit_chance();
 
   if ( buff.boulderfist -> up() )
   {
@@ -6406,11 +6406,11 @@ double shaman_t::temporary_movement_modifier() const
   return ms;
 }
 
-// shaman_t::composite_melee_crit ===========================================
+// shaman_t::composite_melee_crit_chance ===========================================
 
-double shaman_t::composite_melee_crit() const
+double shaman_t::composite_melee_crit_chance() const
 {
-  double m = player_t::composite_melee_crit();
+  double m = player_t::composite_melee_crit_chance();
 
   if ( buff.boulderfist -> up() )
   {

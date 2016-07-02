@@ -614,10 +614,10 @@ public:
   // player_t overrides
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
   virtual double    composite_armor_multiplier() const override;
-  virtual double    composite_melee_crit() const override;
-  virtual double    composite_melee_crit_multiplier() const override;
-  virtual double    composite_spell_crit() const override;
-  virtual double    composite_spell_crit_multiplier() const override;
+  virtual double    composite_melee_crit_chance() const override;
+  virtual double    composite_melee_crit_chance_multiplier() const override;
+  virtual double    composite_spell_crit_chance() const override;
+  virtual double    composite_spell_crit_chance_multiplier() const override;
   virtual double    energy_regen_per_second() const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
@@ -6025,7 +6025,7 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
   }
 
   // Attempt to proc the heal
-  if ( rng().roll( composite_melee_crit() ) )
+  if ( rng().roll( composite_melee_crit_chance() ) )
   {
     active_celestial_fortune_proc -> base_dd_max = active_celestial_fortune_proc -> base_dd_min = s -> result_amount;
     active_celestial_fortune_proc -> schedule_execute();
@@ -6554,7 +6554,7 @@ void monk_t::create_buffs()
 
   buff.gifted_student = buff_creator_t( this, "gifted_student", artifact.gifted_student.data().effectN( 1 ).trigger() )
     .default_value( artifact.gifted_student.rank() ? artifact.gifted_student.percent() : 0 )
-    .add_invalidate( CACHE_CRIT );
+    .add_invalidate( CACHE_CRIT_CHANCE );
 
   buff.greater_gift_of_the_ox = buff_creator_t( this, "greater_gift_of_the_ox" , passives.gift_of_the_ox_summon )
     .duration( passives.gift_of_the_ox_summon -> duration() )
@@ -6600,8 +6600,8 @@ void monk_t::create_buffs()
   buff.mistweaving = buff_creator_t(this, "mistweaving", passives.tier17_2pc_heal )
     .default_value( passives.tier17_2pc_heal -> effectN( 1 ).percent() )
     .max_stack( 7 )
-    .add_invalidate( CACHE_CRIT )
-    .add_invalidate( CACHE_SPELL_CRIT );
+    .add_invalidate( CACHE_CRIT_CHANCE )
+    .add_invalidate( CACHE_SPELL_CRIT_CHANCE );
 
   buff.chi_jis_guidance = buff_creator_t( this, "chi_jis_guidance", passives.tier17_4pc_heal )
     .default_value( passives.tier17_4pc_heal -> effectN( 1 ).percent() );
@@ -6629,8 +6629,8 @@ void monk_t::create_buffs()
 
   buff.forceful_winds = buff_creator_t( this, "forceful_winds", passives.tier17_4pc_melee )
     .default_value( passives.tier17_4pc_melee -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_CRIT )
-    .add_invalidate( CACHE_SPELL_CRIT );
+    .add_invalidate( CACHE_CRIT_CHANCE )
+    .add_invalidate( CACHE_SPELL_CRIT_CHANCE );
 
   buff.hit_combo = buff_creator_t( this, "hit_combo", passives.hit_combo )
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
@@ -6816,11 +6816,11 @@ double monk_t::clear_stagger()
 
 // monk_t::composite_attack_speed =========================================
 
-// monk_t::composite_melee_crit ============================================
+// monk_t::composite_melee_crit_chance ============================================
 
-double monk_t::composite_melee_crit() const
+double monk_t::composite_melee_crit_chance() const
 {
-  double crit = player_t::composite_melee_crit();
+  double crit = player_t::composite_melee_crit_chance();
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
 
@@ -6833,11 +6833,11 @@ double monk_t::composite_melee_crit() const
   return crit;
 }
 
-// monk_t::composite_melee_crit_multiplier===================================
+// monk_t::composite_melee_crit_chance_multiplier ===========================
 
-double monk_t::composite_melee_crit_multiplier() const
+double monk_t::composite_melee_crit_chance_multiplier() const
 {
-  double crit = player_t::composite_melee_crit_multiplier();
+  double crit = player_t::composite_melee_crit_chance_multiplier();
 
   if ( buff.forceful_winds -> check() )
     crit += buff.forceful_winds -> value();
@@ -6845,22 +6845,22 @@ double monk_t::composite_melee_crit_multiplier() const
   return crit;
 }
 
-// monk_t::composite_spell_crit ============================================
+// monk_t::composite_spell_crit_chance ============================================
 
-double monk_t::composite_spell_crit() const
+double monk_t::composite_spell_crit_chance() const
 {
-  double crit = player_t::composite_spell_crit();
+  double crit = player_t::composite_spell_crit_chance();
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
 
   return crit;
 }
 
-// monk_t::composte_spell_crit_multiplier===================================
+// monk_t::composte_spell_crit_chance_multiplier===================================
 
-double monk_t::composite_spell_crit_multiplier() const
+double monk_t::composite_spell_crit_chance_multiplier() const
 {
-  double crit = player_t::composite_spell_crit_multiplier();
+  double crit = player_t::composite_spell_crit_chance_multiplier();
 
   if ( buff.forceful_winds -> check() )
     crit += buff.forceful_winds -> value();

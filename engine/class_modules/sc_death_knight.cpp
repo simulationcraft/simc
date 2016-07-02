@@ -3291,9 +3291,9 @@ struct frostscythe_t : public death_knight_melee_attack_t
     trigger_icecap( execute_state );
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double cc = death_knight_melee_attack_t::composite_crit();
+    double cc = death_knight_melee_attack_t::composite_crit_chance();
 
     cc += p() -> buffs.killing_machine -> value();
 
@@ -3693,7 +3693,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
   double composite_crit() const override
   {
-    double cc = death_knight_melee_attack_t::composite_crit();
+    double cc = death_knight_melee_attack_t::composite_crit_chance();
 
     cc += p() -> buffs.killing_machine -> value();
 
@@ -5587,7 +5587,7 @@ void death_knight_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
-    case CACHE_CRIT:
+    case CACHE_CRIT_CHANCE:
       if ( spec.riposte -> ok() )
         player_t::invalidate_cache( CACHE_PARRY );
       break;

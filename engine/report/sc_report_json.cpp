@@ -321,7 +321,7 @@ js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
   }
   node.add( "spell_power", bs.spell_power );
   node.add( "spell_hit", bs.spell_hit );
-  node.add( "spell_crit", bs.spell_crit );
+  node.add( "spell_crit", bs.spell_crit_chance );
   node.add( "manareg_per_second", bs.manareg_per_second );
   node.add( "attack_power", bs.attack_power );
   node.add( "attack_hit", bs.attack_hit );

@@ -414,9 +414,9 @@ public:
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual void      invalidate_cache( cache_e ) override;
-  virtual double    composite_spell_crit() const override;
+  virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
-  virtual double    composite_melee_crit() const override;
+  virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_mastery() const override;
   virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   virtual double    mana_regen_per_second() const override;
@@ -510,8 +510,8 @@ namespace pets {
     virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
       bool   waiting = false ) override;
     virtual double composite_player_multiplier( school_e school ) const override;
-    virtual double composite_melee_crit() const override;
-    virtual double composite_spell_crit() const override;
+    virtual double composite_melee_crit_chance() const override;
+    virtual double composite_spell_crit_chance() const override;
     virtual double composite_melee_haste() const override;
     virtual double composite_spell_haste() const override;
     virtual double composite_melee_speed() const override;
@@ -722,7 +722,7 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
   }
 
   // Force spell to always crit
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
     return 1.0;
   }
@@ -734,7 +734,7 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
     // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
     // player spell crit instead. The state target crit chance of the state object is correct.
     // Targeted Crit debuffs function as a separate multiplier.
-    state -> result_total *= 1.0 + player -> cache.spell_crit() + state -> target_crit;
+    state -> result_total *= 1.0 + player -> cache.spell_crit_chance() + state -> target_crit_chance;
 
     return state -> result_total;
   }
@@ -1170,15 +1170,15 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double warlock_pet_t::composite_melee_crit() const
+double warlock_pet_t::composite_melee_crit_chance() const
 {
-  double mc = pet_t::composite_melee_crit();
+  double mc = pet_t::composite_melee_crit_chance();
   return mc;
 }
 
-double warlock_pet_t::composite_spell_crit() const
+double warlock_pet_t::composite_spell_crit_chance() const
 {
-  double sc = pet_t::composite_spell_crit();
+  double sc = pet_t::composite_spell_crit_chance();
 
   return sc;
 }
@@ -1671,17 +1671,17 @@ struct dreadstalker_t : public warlock_pet_t
     regen_type = REGEN_DISABLED;
   }
 
-  virtual double composite_melee_crit() const override
+  virtual double composite_melee_crit_chance() const override
   {
-      double pw = warlock_pet_t::composite_melee_crit();
+      double pw = warlock_pet_t::composite_melee_crit_chance();
       pw += o()->artifact.sharpened_dreadfangs.percent();
 
       return pw;
   }
 
-  virtual double composite_spell_crit() const override
+  virtual double composite_spell_crit_chance() const override
   {
-      double pw = warlock_pet_t::composite_spell_crit();
+      double pw = warlock_pet_t::composite_spell_crit_chance();
       pw += o()->artifact.sharpened_dreadfangs.percent();
       return pw;
   }
@@ -2009,9 +2009,9 @@ public:
     return spell_t::current_resource();
   }
 
-  virtual double composite_target_crit( player_t* target ) const override
+  virtual double composite_target_crit_chance( player_t* target ) const override
   {
-    double c = spell_t::composite_target_crit( target );
+    double c = spell_t::composite_target_crit_chance( target );
     if ( affected_by_flamelicked && p() -> destruction_trinket )
       c += td( target ) -> debuffs_flamelicked -> stack_value();
 
@@ -2592,9 +2592,9 @@ struct conflagrate_t: public warlock_spell_t
   }
 
   // Force spell to always crit
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double cc = warlock_spell_t::composite_crit();
+    double cc = warlock_spell_t::composite_crit_chance();
 
     if ( p() -> buffs.conflagration_of_chaos -> check() )
       cc = 1.0;
@@ -2610,7 +2610,7 @@ struct conflagrate_t: public warlock_spell_t
     // player spell crit instead. The state target crit chance of the state object is correct.
     // Targeted Crit debuffs function as a separate multiplier.
     if ( p() -> buffs.conflagration_of_chaos -> check() )
-      state -> result_total *= 1.0 + player -> cache.spell_crit() + state -> target_crit;
+      state -> result_total *= 1.0 + player -> cache.spell_crit_chance() + state -> target_crit_chance;
 
     return state -> result_total;
   }
@@ -2668,9 +2668,9 @@ struct incinerate_t: public warlock_spell_t
     }
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double cc = warlock_spell_t::composite_crit();
+    double cc = warlock_spell_t::composite_crit_chance();
 
     return cc;
   }
@@ -2724,7 +2724,7 @@ struct chaos_bolt_t: public warlock_spell_t
   }
 
   // Force spell to always crit
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
     return 1.0;
   }
@@ -2736,7 +2736,7 @@ struct chaos_bolt_t: public warlock_spell_t
     // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
     // player spell crit instead. The state target crit chance of the state object is correct.
     // Targeted Crit debuffs function as a separate multiplier.
-    state -> result_total *= 1.0 + player -> cache.spell_crit() + state -> target_crit;
+    state -> result_total *= 1.0 + player -> cache.spell_crit_chance() + state -> target_crit_chance;
 
     return state -> result_total;
   }
@@ -3932,9 +3932,9 @@ void warlock_t::invalidate_cache( cache_e c )
   }
 }
 
-double warlock_t::composite_spell_crit() const
+double warlock_t::composite_spell_crit_chance() const
 {
-  double sc = player_t::composite_spell_crit();
+  double sc = player_t::composite_spell_crit_chance();
 
   return sc;
 }
@@ -3946,9 +3946,9 @@ double warlock_t::composite_spell_haste() const
   return h;
 }
 
-double warlock_t::composite_melee_crit() const
+double warlock_t::composite_melee_crit_chance() const
 {
-  double mc = player_t::composite_melee_crit();
+  double mc = player_t::composite_melee_crit_chance();
 
   return mc;
 }

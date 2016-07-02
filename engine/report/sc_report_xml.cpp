@@ -343,9 +343,9 @@ void print_xml_player_stats( xml_writer_t& writer, player_t* p )
   print_xml_player_attribute( writer, "spellhit", 100 * p->cache.spell_hit(),
                               p->initial.stats.hit_rating,
                               100 * buffed_stats.spell_hit );
-  print_xml_player_attribute( writer, "spellcrit", 100 * p->cache.spell_crit(),
+  print_xml_player_attribute( writer, "spellcrit", 100 * p->cache.spell_crit_chance(),
                               p->initial.stats.crit_rating,
-                              100 * buffed_stats.spell_crit );
+                              100 * buffed_stats.spell_crit_chance );
   print_xml_player_attribute( writer, "spellhaste",
                               100 * ( 1 / p->cache.spell_haste() - 1 ),
                               p->initial.stats.haste_rating,
@@ -365,8 +365,8 @@ void print_xml_player_stats( xml_writer_t& writer, player_t* p )
                               p->initial.stats.hit_rating,
                               100 * buffed_stats.attack_hit );
   print_xml_player_attribute(
-      writer, "attackcrit", 100 * p->cache.attack_crit(),
-      p->initial.stats.crit_rating, 100 * buffed_stats.attack_crit );
+      writer, "attackcrit", 100 * p->cache.attack_crit_chance(),
+      p->initial.stats.crit_rating, 100 * buffed_stats.attack_crit_chance );
   print_xml_player_attribute(
       writer, "expertise",
       100 * p->composite_melee_expertise( &( p->main_hand_weapon ) ),

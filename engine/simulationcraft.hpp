@@ -2229,13 +2229,13 @@ inline cache_e cache_from_rating( rating_e r )
   {
     case RATING_SPELL_HASTE: return CACHE_SPELL_HASTE;
     case RATING_SPELL_HIT: return CACHE_SPELL_HIT;
-    case RATING_SPELL_CRIT: return CACHE_SPELL_CRIT;
+    case RATING_SPELL_CRIT: return CACHE_SPELL_CRIT_CHANCE;
     case RATING_MELEE_HASTE: return CACHE_ATTACK_HASTE;
     case RATING_MELEE_HIT: return CACHE_ATTACK_HIT;
-    case RATING_MELEE_CRIT: return CACHE_ATTACK_CRIT;
+    case RATING_MELEE_CRIT: return CACHE_ATTACK_CRIT_CHANCE;
     case RATING_RANGED_HASTE: return CACHE_ATTACK_HASTE;
     case RATING_RANGED_HIT: return CACHE_ATTACK_HIT;
-    case RATING_RANGED_CRIT: return CACHE_ATTACK_CRIT;
+    case RATING_RANGED_CRIT: return CACHE_ATTACK_CRIT_CHANCE;
     case RATING_EXPERTISE: return CACHE_EXP;
     case RATING_DODGE: return CACHE_DODGE;
     case RATING_PARRY: return CACHE_PARRY;
@@ -3110,7 +3110,7 @@ private:
   mutable double _spell_power[SCHOOL_MAX + 1], _attack_power;
   mutable double _attack_expertise;
   mutable double _attack_hit, _spell_hit;
-  mutable double _attack_crit, _spell_crit;
+  mutable double _attack_crit_chance, _spell_crit_chance;
   mutable double _attack_haste, _spell_haste;
   mutable double _attack_speed, _spell_speed;
   mutable double _dodge, _parry, _block, _crit_block, _armor, _bonus_armor;
@@ -3135,11 +3135,11 @@ public:
   double attack_power() const;
   double attack_expertise() const;
   double attack_hit() const;
-  double attack_crit() const;
+  double attack_crit_chance() const;
   double attack_haste() const;
   double attack_speed() const;
   double spell_hit() const;
-  double spell_crit() const;
+  double spell_crit_chance() const;
   double spell_haste() const;
   double spell_speed() const;
   double dodge() const;
@@ -3171,11 +3171,11 @@ public:
   double attack_power() const            { return _player -> composite_melee_attack_power();   }
   double attack_expertise() const { return _player -> composite_melee_expertise(); }
   double attack_hit() const       { return _player -> composite_melee_hit();       }
-  double attack_crit() const      { return _player -> composite_melee_crit();      }
+  double attack_crit_chance() const      { return _player -> composite_melee_crit_chance();      }
   double attack_haste() const     { return _player -> composite_melee_haste();     }
   double attack_speed() const     { return _player -> composite_melee_speed();     }
   double spell_hit() const        { return _player -> composite_spell_hit();       }
-  double spell_crit() const       { return _player -> composite_spell_crit();      }
+  double spell_crit_chance() const       { return _player -> composite_spell_crit_chance();      }
   double spell_haste() const      { return _player -> composite_spell_haste();     }
   double spell_speed() const      { return _player -> composite_spell_speed();     }
   double dodge() const            { return _player -> composite_dodge();      }
@@ -3356,8 +3356,8 @@ struct player_collected_data_t
     std::array< double, ATTRIBUTE_MAX > attribute;
     std::array< double, RESOURCE_MAX > resource;
 
-    double spell_power, spell_hit, spell_crit, manareg_per_second;
-    double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
+    double spell_power, spell_hit, spell_crit_chance, manareg_per_second;
+    double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit_chance;
     double armor, miss, crit, dodge, parry, block, bonus_armor;
     double spell_haste, spell_speed, attack_haste, attack_speed;
     double mastery_value;
@@ -3711,7 +3711,7 @@ struct player_t : public actor_t
     std::array<double, SCHOOL_MAX> resource_reduction;
     double miss, dodge, parry, block;
     double hit, expertise;
-    double spell_crit, attack_crit, block_reduction, mastery;
+    double spell_crit_chance, attack_crit_chance, block_reduction, mastery;
     double skill, skill_debuff, distance;
     double distance_to_move;
     double moving_away;
@@ -4138,15 +4138,15 @@ struct player_t : public actor_t
   virtual double composite_melee_speed() const;
   virtual double composite_melee_attack_power() const;
   virtual double composite_melee_hit() const;
-  virtual double composite_melee_crit() const;
-  virtual double composite_melee_crit_multiplier() const { return 1.0; }
+  virtual double composite_melee_crit_chance() const;
+  virtual double composite_melee_crit_chance_multiplier() const { return 1.0; }
   virtual double composite_melee_expertise( const weapon_t* w = nullptr ) const;
 
   virtual double composite_spell_haste() const; //This is the subset of the old_spell_haste that applies to RPPM
   virtual double composite_spell_speed() const; //This is the old spell_haste and incorporates everything that buffs cast speed
   virtual double composite_spell_power( school_e school ) const;
-  virtual double composite_spell_crit() const;
-  virtual double composite_spell_crit_multiplier() const { return 1.0; }
+  virtual double composite_spell_crit_chance() const;
+  virtual double composite_spell_crit_chance_multiplier() const { return 1.0; }
   virtual double composite_spell_hit() const;
   virtual double composite_mastery() const;
   virtual double composite_mastery_value() const;
@@ -4801,9 +4801,9 @@ public:
 
   double pet_crit() const;
 
-  virtual double composite_melee_crit() const override
+  virtual double composite_melee_crit_chance() const override
   { return pet_crit(); }
-  virtual double composite_spell_crit() const override
+  virtual double composite_spell_crit_chance() const override
   { return pet_crit(); }
 
   virtual double composite_melee_speed() const override
@@ -4998,8 +4998,8 @@ struct action_state_t : private noncopyable
   double          self_absorb_amount;     // The amount of damage reduced via personal absorbs such as shield_barrier.
   // Snapshotted stats during execution
   double          haste;
-  double          crit;
-  double          target_crit;
+  double          crit_chance;
+  double          target_crit_chance;
   double          attack_power;
   double          spell_power;
   // Snapshotted multipliers
@@ -5027,8 +5027,8 @@ struct action_state_t : private noncopyable
   virtual std::ostringstream& debug_str( std::ostringstream& debug_str );
   virtual void debug();
 
-  virtual double composite_crit() const
-  { return crit + target_crit; }
+  virtual double composite_crit_chance() const
+  { return crit_chance + target_crit_chance; }
 
   virtual double composite_attack_power() const
   { return attack_power; }
@@ -5327,8 +5327,11 @@ public:
   /// Weapon damage for the ability.
   double weapon_multiplier;
 
-  /// Damage reduction for chained/AoE, exponentially increased by number of target hit.
-  double base_add_multiplier;
+  /// Damage modifier for chained/AoE, exponentially increased by number of target hit.
+  double chain_multiplier;
+
+  /// Damage modifier for chained/AoE, linearly increasing with each target hit.
+  double chain_bonus_damage;
 
   /// Static reduction of damage for AoE
   double base_aoe_multiplier;
@@ -5666,10 +5669,10 @@ public:
   virtual double composite_hit() const
   { return base_hit; }
 
-  virtual double composite_crit() const
+  virtual double composite_crit_chance() const
   { return base_crit; }
 
-  virtual double composite_crit_multiplier() const
+  virtual double composite_crit_chance_multiplier() const
   { return 1.0; }
 
   virtual double composite_haste() const
@@ -5681,7 +5684,7 @@ public:
   virtual double composite_spell_power() const
   { return player -> cache.spell_power( get_school() ); }
 
-  virtual double composite_target_crit( player_t* /* target */ ) const
+  virtual double composite_target_crit_chance( player_t* /* target */ ) const
   { return 0.0; }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -5948,11 +5951,11 @@ struct attack_t : public action_t
   virtual double composite_hit() const override
   { return action_t::composite_hit() + player -> cache.attack_hit(); }
 
-  virtual double composite_crit() const override
-  { return action_t::composite_crit() + player -> cache.attack_crit(); }
+  virtual double composite_crit_chance() const override
+  { return action_t::composite_crit_chance() + player -> cache.attack_crit_chance(); }
 
-  virtual double composite_crit_multiplier() const override
-  { return action_t::composite_crit_multiplier() * player -> composite_melee_crit_multiplier(); }
+  virtual double composite_crit_chance_multiplier() const override
+  { return action_t::composite_crit_chance_multiplier() * player -> composite_melee_crit_chance_multiplier(); }
 
   virtual double composite_haste() const override
   { return action_t::composite_haste() * player -> cache.attack_haste(); }
@@ -6049,14 +6052,14 @@ struct spell_base_t : public action_t
   virtual void   execute() override;
   virtual void   schedule_execute( action_state_t* execute_state = nullptr ) override;
 
-  virtual double composite_crit() const override
-  { return action_t::composite_crit() + player -> cache.spell_crit(); }
+  virtual double composite_crit_chance() const override
+  { return action_t::composite_crit_chance() + player -> cache.spell_crit_chance(); }
 
   virtual double composite_haste() const override
   { return action_t::composite_haste() * player -> cache.spell_speed(); }
 
-  virtual double composite_crit_multiplier() const override
-  { return action_t::composite_crit_multiplier() * player -> composite_spell_crit_multiplier(); }
+  virtual double composite_crit_chance_multiplier() const override
+  { return action_t::composite_crit_chance_multiplier() * player -> composite_spell_crit_chance_multiplier(); }
 
   double recharge_multiplier() const override
   {
@@ -7589,7 +7592,7 @@ inline double real_ppm_t::proc_chance( player_t*         player,
   // cases. In any case, the client data does not offer information which crit it is (attack or
   // spell).
   if ( scales_with == RPPM_CRIT )
-    coeff *= 1.0 + std::max( player -> cache.attack_crit(), player -> cache.spell_crit() );
+    coeff *= 1.0 + std::max( player -> cache.attack_crit_chance(), player -> cache.spell_crit_chance() );
 
   double real_ppm = PPM * coeff;
   double old_rppm_chance = real_ppm * ( seconds / 60.0 );

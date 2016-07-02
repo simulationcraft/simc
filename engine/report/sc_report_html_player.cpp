@@ -1108,7 +1108,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           p.initial.stats.spell_power );
       j++;
     }
-    if ( p.composite_melee_crit() == p.composite_spell_crit() )
+    if ( p.composite_melee_crit_chance() == p.composite_spell_crit_chance() )
     {
       os.format(
           "<tr%s>\n"
@@ -1118,7 +1118,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
           ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-          100 * buffed_stats.attack_crit, 100 * p.composite_melee_crit(),
+          100 * buffed_stats.attack_crit_chance, 100 * p.composite_melee_crit_chance(),
           p.composite_melee_crit_rating() );
       j++;
     }
@@ -1132,7 +1132,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
           ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-          100 * buffed_stats.attack_crit, 100 * p.composite_melee_crit(),
+          100 * buffed_stats.attack_crit_chance, 100 * p.composite_melee_crit_chance(),
           p.composite_melee_crit_rating() );
       j++;
       os.format(
@@ -1142,8 +1142,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
-          ( j % 2 == 1 ) ? " class=\"odd\"" : "", 100 * buffed_stats.spell_crit,
-          100 * p.composite_spell_crit(), p.composite_spell_crit_rating() );
+          ( j % 2 == 1 ) ? " class=\"odd\"" : "", 100 * buffed_stats.spell_crit_chance,
+          100 * p.composite_spell_crit_chance(), p.composite_spell_crit_rating() );
       j++;
     }
     if ( p.composite_melee_haste() == p.composite_spell_haste() )

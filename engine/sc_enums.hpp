@@ -868,9 +868,9 @@ enum cache_e
   CACHE_HIT,
   CACHE_ATTACK_HIT,
   CACHE_SPELL_HIT,
-  CACHE_CRIT,
-  CACHE_ATTACK_CRIT,
-  CACHE_SPELL_CRIT,
+  CACHE_CRIT_CHANCE,
+  CACHE_ATTACK_CRIT_CHANCE,
+  CACHE_SPELL_CRIT_CHANCE,
   CACHE_HASTE,
   CACHE_ATTACK_HASTE,
   CACHE_SPELL_HASTE,
@@ -933,7 +933,7 @@ inline cache_e cache_from_stat( stat_e st )
       case STAT_HIT_RATING2:
         return CACHE_HIT;
       case STAT_CRIT_RATING:
-        return CACHE_CRIT;
+        return CACHE_CRIT_CHANCE;
       case STAT_HASTE_RATING:
         return CACHE_HASTE;
       case STAT_MASTERY_RATING:

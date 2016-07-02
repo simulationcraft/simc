@@ -705,8 +705,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   block( 0 ),
   hit( 0 ),
   expertise( 0 ),
-  spell_crit(),
-  attack_crit(),
+  spell_crit_chance(),
+  attack_crit_chance(),
   block_reduction(),
   mastery(),
   skill( 1.0 ),
@@ -747,8 +747,8 @@ std::string player_t::base_initial_current_t::to_string()
   s << " dodge=" << dodge;
   s << " parry=" << parry;
   s << " block=" << block;
-  s << " spell_crit=" << spell_crit;
-  s << " attack_crit=" << attack_crit;
+  s << " spell_crit_chance=" << spell_crit_chance;
+  s << " attack_crit_chance=" << attack_crit_chance;
   s << " block_reduction=" << block_reduction;
   s << " mastery=" << mastery;
   s << " skill=" << skill;
@@ -868,8 +868,8 @@ void player_t::init_base_stats()
     // so is endurance. Can't tell if this is floored, ends in 0.055 @ L100. Assuming based on symmetry w/ heroic pres.
     base.stats.attribute[ STAT_STAMINA   ] += util::floor( racials.endurance -> effectN( 1 ).average( this ) );
 
-    base.spell_crit               = dbc.spell_crit_base( type, level() );
-    base.attack_crit              = dbc.melee_crit_base( type, level() );
+    base.spell_crit_chance        = dbc.spell_crit_base( type, level() );
+    base.attack_crit_chance       = dbc.melee_crit_base( type, level() );
     base.spell_crit_per_intellect = dbc.spell_crit_scaling( type, level() );
     base.attack_crit_per_agility  = dbc.melee_crit_scaling( type, level() );
     base.mastery = 8.0;
@@ -2758,11 +2758,11 @@ double player_t::composite_attack_power_multiplier() const
   return current.attack_power_multiplier;
 }
 
-// player_t::composite_attack_crit ==========================================
+// player_t::composite_attack_crit_chance ==========================================
 
-double player_t::composite_melee_crit() const
+double player_t::composite_melee_crit_chance() const
 {
-  double ac = current.attack_crit + composite_melee_crit_rating() / current.rating.attack_crit;
+  double ac = current.attack_crit_chance + composite_melee_crit_rating() / current.rating.attack_crit;
 
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
@@ -3015,11 +3015,11 @@ double player_t::composite_spell_power_multiplier() const
   return current.spell_power_multiplier;
 }
 
-// player_t::composite_spell_crit ===========================================
+// player_t::composite_spell_crit_chance ===========================================
 
-double player_t::composite_spell_crit() const
+double player_t::composite_spell_crit_chance() const
 {
-  double sc = current.spell_crit + composite_spell_crit_rating() / current.rating.spell_crit;
+  double sc = current.spell_crit_chance + composite_spell_crit_rating() / current.rating.spell_crit;
 
   if ( current.spell_crit_per_intellect > 0 )
   {
@@ -3481,9 +3481,9 @@ void player_t::invalidate_cache( cache_e c )
       invalidate_cache( CACHE_ATTACK_HIT );
       invalidate_cache( CACHE_SPELL_HIT  );
       break;
-    case CACHE_CRIT:
-      invalidate_cache( CACHE_ATTACK_CRIT );
-      invalidate_cache( CACHE_SPELL_CRIT  );
+    case CACHE_CRIT_CHANCE:
+      invalidate_cache( CACHE_ATTACK_CRIT_CHANCE );
+      invalidate_cache( CACHE_SPELL_CRIT_CHANCE  );
       break;
     case CACHE_HASTE:
       invalidate_cache( CACHE_ATTACK_HASTE );
@@ -6503,14 +6503,14 @@ struct snapshot_stats_t : public action_t
 
     buffed_stats.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     buffed_stats.spell_hit    = p -> cache.spell_hit();
-    buffed_stats.spell_crit   = p -> cache.spell_crit();
+    buffed_stats.spell_crit_chance = p -> cache.spell_crit_chance();
     buffed_stats.manareg_per_second          = p -> mana_regen_per_second();
 
     buffed_stats.attack_power = p -> cache.attack_power() * p -> composite_attack_power_multiplier();
     buffed_stats.attack_hit   = p -> cache.attack_hit();
     buffed_stats.mh_attack_expertise = p -> composite_melee_expertise( &( p -> main_hand_weapon ) );
     buffed_stats.oh_attack_expertise = p -> composite_melee_expertise( &( p -> off_hand_weapon ) );
-    buffed_stats.attack_crit  = p -> cache.attack_crit();
+    buffed_stats.attack_crit_chance  = p -> cache.attack_crit_chance();
 
     buffed_stats.armor        = p -> composite_armor();
     buffed_stats.miss         = p -> composite_miss();
@@ -10006,17 +10006,17 @@ double player_stat_cache_t::attack_hit() const
   return _attack_hit;
 }
 
-// player_stat_cache_t::attack_crit =========================================
+// player_stat_cache_t::attack_crit_chance =========================================
 
-double player_stat_cache_t::attack_crit() const
+double player_stat_cache_t::attack_crit_chance() const
 {
-  if ( ! active || ! valid[ CACHE_ATTACK_CRIT ] )
+  if ( ! active || ! valid[ CACHE_ATTACK_CRIT_CHANCE ] )
   {
-    valid[ CACHE_ATTACK_CRIT ] = true;
-    _attack_crit = player -> composite_melee_crit();
+    valid[ CACHE_ATTACK_CRIT_CHANCE ] = true;
+    _attack_crit_chance = player -> composite_melee_crit_chance();
   }
-  else assert( _attack_crit == player -> composite_melee_crit() );
-  return _attack_crit;
+  else assert( _attack_crit_chance == player -> composite_melee_crit_chance() );
+  return _attack_crit_chance;
 }
 
 // player_stat_cache_t::attack_haste ========================================
@@ -10058,17 +10058,17 @@ double player_stat_cache_t::spell_hit() const
   return _spell_hit;
 }
 
-// player_stat_cache_t::spell_crit ==========================================
+// player_stat_cache_t::spell_crit_chance ==========================================
 
-double player_stat_cache_t::spell_crit() const
+double player_stat_cache_t::spell_crit_chance() const
 {
-  if ( ! active || ! valid[ CACHE_SPELL_CRIT ] )
+  if ( ! active || ! valid[ CACHE_SPELL_CRIT_CHANCE ] )
   {
-    valid[ CACHE_SPELL_CRIT ] = true;
-    _spell_crit = player -> composite_spell_crit();
+    valid[ CACHE_SPELL_CRIT_CHANCE ] = true;
+    _spell_crit_chance = player -> composite_spell_crit_chance();
   }
-  else assert( _spell_crit == player -> composite_spell_crit() );
-  return _spell_crit;
+  else assert( _spell_crit_chance == player -> composite_spell_crit_chance() );
+  return _spell_crit_chance;
 }
 
 // player_stat_cache_t::spell_haste =========================================

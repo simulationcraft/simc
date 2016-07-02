@@ -123,8 +123,8 @@ void pet_t::init_base_stats()
   //mp5_per_spirit = dbc.mp5_per_spirit( pet_type, level );
 
   // Pets have inherent 5% critical strike chance if not overridden.
-  base.spell_crit  = 0.05;
-  base.attack_crit = 0.05;
+  base.spell_crit_chance  = 0.05;
+  base.attack_crit_chance = 0.05;
 
 }
 
@@ -285,8 +285,8 @@ double pet_t::hit_exp() const
 
 double pet_t::pet_crit() const
 {
-  return std::max( owner -> cache.attack_crit(),
-                   owner -> cache.spell_crit() );
+  return std::max( owner -> cache.attack_crit_chance(),
+                   owner -> cache.spell_crit_chance() );
 }
 
 double pet_t::composite_melee_attack_power() const

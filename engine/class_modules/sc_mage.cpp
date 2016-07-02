@@ -596,7 +596,7 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    mana_regen_per_second() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_spell_crit() const override;
+  virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_mastery_rating() const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
@@ -1779,9 +1779,9 @@ public:
     return spell_t::usable_moving();
   }
 
-  virtual double composite_crit_multiplier() const override
+  virtual double composite_crit_chance_multiplier() const override
   {
-    double m = spell_t::composite_crit_multiplier();
+    double m = spell_t::composite_crit_chance_multiplier();
 
     if ( frozen && p() -> spec.shatter -> ok() )
     {
@@ -1813,7 +1813,7 @@ public:
     // Shatter's +50% crit bonus needs to be added after multipliers etc
     if ( ( flags & STATE_CRIT ) && frozen && p() -> spec.shatter -> ok() )
     {
-      s -> crit += p() -> spec.shatter -> effectN( 2 ).percent();
+      s -> crit_chance += p() -> spec.shatter -> effectN( 2 ).percent();
     }
   }
 
@@ -3124,9 +3124,9 @@ struct blizzard_shard_t : public frost_mage_spell_t
 
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double c = frost_mage_spell_t::composite_crit();
+    double c = frost_mage_spell_t::composite_crit_chance();
     if ( p() -> artifact.the_storm_rages.rank() )
     {
       c+= p() -> artifact.the_storm_rages.percent();
@@ -3570,9 +3570,9 @@ struct fireball_t : public fire_mage_spell_t
     }
   }
 
-  double composite_target_crit( player_t* target ) const override
+  double composite_target_crit_chance( player_t* target ) const override
   {
-    double c = fire_mage_spell_t::composite_target_crit( target );
+    double c = fire_mage_spell_t::composite_target_crit_chance( target );
 
     // Fire PvP 4pc set bonus
     if ( td( target ) -> debuffs.firestarter -> check() )
@@ -3588,9 +3588,9 @@ struct fireball_t : public fire_mage_spell_t
     return c;
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double c = fire_mage_spell_t::composite_crit();
+    double c = fire_mage_spell_t::composite_crit_chance();
 
       c += p() -> buffs.enhanced_pyrotechnics -> stack() *
            p() -> buffs.enhanced_pyrotechnics -> data().effectN( 1 ).percent();
@@ -3599,9 +3599,9 @@ struct fireball_t : public fire_mage_spell_t
   }
 
 
-  virtual double composite_crit_multiplier() const override
+  virtual double composite_crit_chance_multiplier() const override
   {
-    double m = fire_mage_spell_t::composite_crit_multiplier();
+    double m = fire_mage_spell_t::composite_crit_chance_multiplier();
 
     m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
@@ -3915,9 +3915,9 @@ struct frostbolt_t : public frost_mage_spell_t
     return am;
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double c = frost_mage_spell_t::composite_crit();
+    double c = frost_mage_spell_t::composite_crit_chance();
 
     if ( p() -> artifact.shattering_bolts.rank() )
     {
@@ -4414,7 +4414,7 @@ struct fire_blast_t : public fire_mage_spell_t
   }
 
   // Fire Blast always crits
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   { return 1.0; }
 };
 
@@ -4838,7 +4838,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     fire_mage_spell_t::impact( s );
   }
   // Phoenixs Flames always crits
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   { return 1.0; }
 };
 
@@ -4874,7 +4874,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
   }
 
   // Phoenixs Flames always crits
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   { return 1.0; }
 };
 
@@ -5028,18 +5028,18 @@ struct pyroblast_t : public fire_mage_spell_t
     }
   }
 
-  virtual double composite_crit_multiplier() const override
+  virtual double composite_crit_chance_multiplier() const override
   {
-    double m = fire_mage_spell_t::composite_crit_multiplier();
+    double m = fire_mage_spell_t::composite_crit_chance_multiplier();
 
     m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
     return m;
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double c = fire_mage_spell_t::composite_crit();
+    double c = fire_mage_spell_t::composite_crit_chance();
 
     if ( p() -> buffs.pyromaniac -> check() )
     {
@@ -5146,9 +5146,9 @@ struct scorch_t : public fire_mage_spell_t
     consumes_ice_floes = false;
   }
 
-  double composite_crit_multiplier() const override
+  double composite_crit_chance_multiplier() const override
   {
-    double m = fire_mage_spell_t::composite_crit_multiplier();
+    double m = fire_mage_spell_t::composite_crit_chance_multiplier();
 
     m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
 
@@ -6538,13 +6538,13 @@ void mage_t::create_buffs()
   // Fire
   buffs.combustion            = buff_creator_t( this, "combustion", find_spell( 190319 ) )
                                   .cd( timespan_t::zero() )
-                                  .add_invalidate( CACHE_SPELL_CRIT )
+                                  .add_invalidate( CACHE_SPELL_CRIT_CHANCE )
                                   .add_invalidate( CACHE_MASTERY );
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
   buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak            = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
   buffs.molten_armor          = buff_creator_t( this, "molten_armor", find_spell( 30482 ) )
-                                  .add_invalidate( CACHE_SPELL_CRIT );
+                                  .add_invalidate( CACHE_SPELL_CRIT_CHANCE );
   buffs.icarus_uprising       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .add_invalidate( CACHE_SPELL_HASTE );
@@ -7578,11 +7578,11 @@ double mage_t::composite_mastery_rating() const
  return m;
 }
 
-// mage_t::composite_spell_crit ===============================================
+// mage_t::composite_spell_crit_chance ===============================================
 
-double mage_t::composite_spell_crit() const
+double mage_t::composite_spell_crit_chance() const
 {
-  double c = player_t::composite_spell_crit();
+  double c = player_t::composite_spell_crit_chance();
 
   if ( buffs.molten_armor -> check() )
   {

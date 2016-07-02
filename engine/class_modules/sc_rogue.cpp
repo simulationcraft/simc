@@ -571,8 +571,8 @@ struct rogue_t : public player_t
 
   double    composite_melee_speed() const override;
   double    composite_melee_haste() const override;
-  double    composite_melee_crit() const override;
-  double    composite_spell_crit() const override;
+  double    composite_melee_crit_chance() const override;
+  double    composite_spell_crit_chance() const override;
   double    composite_spell_haste() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_attack_power_multiplier() const override;
@@ -3055,9 +3055,9 @@ struct mutilate_t : public rogue_attack_t
     add_child( oh_strike );
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double c = rogue_attack_t::composite_crit();
+    double c = rogue_attack_t::composite_crit_chance();
 
     if ( p() -> buffs.envenom -> check() )
     {
@@ -3234,9 +3234,9 @@ struct rupture_t : public rogue_attack_t
     base_crit += p -> artifact.serrated_edge.percent();
   }
 
-  double composite_target_crit( player_t* target ) const override
+  double composite_target_crit_chance( player_t* target ) const override
   {
-    double m = rogue_attack_t::composite_target_crit( target );
+    double m = rogue_attack_t::composite_target_crit_chance( target );
 
     if ( target -> health_percentage() < 35 )
     {
@@ -3551,14 +3551,14 @@ struct shadowstrike_t : public rogue_attack_t
     }
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
     if ( p() -> buffs.death -> up() )
     {
       return 1.0;
     }
 
-    return rogue_attack_t::composite_crit();
+    return rogue_attack_t::composite_crit_chance();
   }
 
   // TODO: Distance movement support, should teleport up to 30 yards, with distance targeting, next
@@ -5372,11 +5372,11 @@ double rogue_t::composite_melee_haste() const
   return h;
 }
 
-// rogue_t::composite_melee_crit =========================================
+// rogue_t::composite_melee_crit_chance =========================================
 
-double rogue_t::composite_melee_crit() const
+double rogue_t::composite_melee_crit_chance() const
 {
-  double crit = player_t::composite_melee_crit();
+  double crit = player_t::composite_melee_crit_chance();
 
   crit += spell.critical_strikes -> effectN( 1 ).percent();
 
@@ -5399,11 +5399,11 @@ double rogue_t::composite_spell_haste() const
   return h;
 }
 
-// rogue_t::composite_spell_crit =========================================
+// rogue_t::composite_spell_crit_chance =========================================
 
-double rogue_t::composite_spell_crit() const
+double rogue_t::composite_spell_crit_chance() const
 {
-  double crit = player_t::composite_spell_crit();
+  double crit = player_t::composite_spell_crit_chance();
 
   crit += spell.critical_strikes -> effectN( 1 ).percent();
 
@@ -6307,7 +6307,7 @@ void rogue_t::create_buffs()
                       .default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
   buffs.shark_infested_waters = buff_creator_t( this, "shark_infested_waters", find_spell( 193357 ) )
                                 .default_value( find_spell( 193357 ) -> effectN( 1 ).percent() )
-                                .add_invalidate( CACHE_CRIT );
+                                .add_invalidate( CACHE_CRIT_CHANCE );
   buffs.true_bearing = buff_creator_t( this, "true_bearing", find_spell( 193359 ) )
                        .default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() );
   buffs.broadsides = buff_creator_t( this, "broadsides", find_spell( 193356 ) );

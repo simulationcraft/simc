@@ -1145,7 +1145,7 @@ void enemy_t::init_base_stats()
     race_str = util::race_type_string( race );
   }
 
-  base.attack_crit = 0.05;
+  base.attack_crit_chance = 0.05;
 
   if ( sim -> overrides.target_health.size() > 0 )
   {

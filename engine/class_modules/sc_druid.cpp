@@ -762,11 +762,11 @@ public:
   virtual double    composite_dodge() const override;
   virtual double    composite_leech() const override;
   virtual double    composite_melee_attack_power() const override;
-  virtual double    composite_melee_crit() const override;
+  virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_parry() const override { return 0; }
   virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_spell_crit() const override;
+  virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_spell_power( school_e school ) const override;
   virtual double    temporary_movement_modifier() const override;
@@ -2120,9 +2120,9 @@ public:
     }
   }
 
-  virtual double composite_target_crit( player_t* t ) const override
+  virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double tc = base_t::composite_target_crit( t );
+    double tc = base_t::composite_target_crit_chance( t );
 
     if ( special && t -> debuffs.bleeding -> check() )
       tc += p() -> talent.blood_scent -> effectN( 1 ).percent();
@@ -2857,9 +2857,9 @@ struct shred_t : public cat_attack_t
     return tm;
   }
 
-  double composite_crit_multiplier() const override
+  double composite_crit_chance_multiplier() const override
   {
-    double cm = cat_attack_t::composite_crit_multiplier();
+    double cm = cat_attack_t::composite_crit_chance_multiplier();
 
     if ( stealthed() )
       cm *= 2.0;
@@ -4597,9 +4597,9 @@ struct lunar_strike_t : public druid_spell_t
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double cc = druid_spell_t::composite_crit();
+    double cc = druid_spell_t::composite_crit_chance();
 
     if ( p() -> buff.lunar_empowerment -> check() )
       cc += p() -> spec.balance_tier19_2pc -> effectN( 1 ).percent();
@@ -4940,9 +4940,9 @@ struct solar_wrath_t : public druid_spell_t
     base_multiplier   *= 1.0 + player -> artifact.solar_stabbing.percent();
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double cc = druid_spell_t::composite_crit();
+    double cc = druid_spell_t::composite_crit_chance();
 
     if ( p() -> buff.solar_empowerment -> check() )
       cc += p() -> spec.balance_tier19_2pc -> effectN( 1 ).percent();
@@ -7004,11 +7004,11 @@ double druid_t::composite_melee_attack_power() const
   return ap;
 }
 
-// druid_t::composite_melee_crit ============================================
+// druid_t::composite_melee_crit_chance ============================================
 
-double druid_t::composite_melee_crit() const
+double druid_t::composite_melee_crit_chance() const
 {
-  double crit = player_t::composite_melee_crit();
+  double crit = player_t::composite_melee_crit_chance();
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
 
@@ -7047,11 +7047,11 @@ double druid_t::passive_movement_modifier() const
   return ms;
 }
 
-// druid_t::composite_spell_crit ============================================
+// druid_t::composite_spell_crit_chance ============================================
 
-double druid_t::composite_spell_crit() const
+double druid_t::composite_spell_crit_chance() const
 {
-  double crit = player_t::composite_spell_crit();
+  double crit = player_t::composite_spell_crit_chance();
 
   crit += spec.critical_strikes -> effectN( 1 ).percent();
 

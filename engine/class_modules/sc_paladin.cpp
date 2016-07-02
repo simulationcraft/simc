@@ -415,11 +415,11 @@ public:
   virtual double    composite_armor_multiplier() const override;
   virtual double    composite_bonus_armor() const override;
   virtual double    composite_melee_attack_power() const override;
-  virtual double    composite_melee_crit() const override;
+  virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_melee_expertise( const weapon_t* weapon ) const override;
   virtual double    composite_melee_haste() const override;
   virtual double    composite_melee_speed() const override;
-  virtual double    composite_spell_crit() const override;
+  virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
@@ -561,7 +561,7 @@ namespace buffs {
         // holy shock cooldown reduction handled in holy_shock_t
 
         // invalidate crit
-        add_invalidate( CACHE_CRIT );
+        add_invalidate( CACHE_CRIT_CHANCE );
 
         // Lengthen duration if Sanctified Wrath is taken
         buff_duration *= 1.0 + paladin -> talents.sanctified_wrath -> effectN( 1 ).percent();
@@ -2007,9 +2007,9 @@ struct holy_shock_damage_t : public paladin_spell_t
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double cc = paladin_spell_t::composite_crit();
+    double cc = paladin_spell_t::composite_crit_chance();
 
     // effect 1 doubles crit chance
     cc *= crit_chance_multiplier;
@@ -2034,9 +2034,9 @@ struct holy_shock_heal_t : public paladin_heal_t
     crit_chance_multiplier = p -> find_class_spell( "Holy Shock" ) -> effectN( 1 ).base_value() / 10.0;
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double cc = paladin_heal_t::composite_crit();
+    double cc = paladin_heal_t::composite_crit_chance();
 
     // effect 1 doubles crit chance
     cc *= crit_chance_multiplier;
@@ -2886,7 +2886,7 @@ struct zeal_t : public holy_power_generator_t
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit += p -> artifact.sharpened_edge.percent();
-    base_add_multiplier = data().effectN( 1 ).chain_multiplier();
+    chain_multiplier = data().effectN( 1 ).chain_multiplier();
 
     // TODO: remove this once it's back in the spelldata.
     hasted_cd = true;
@@ -3345,9 +3345,9 @@ struct judgment_t : public paladin_melee_attack_t
     }
   }
 
-  virtual double composite_target_crit( player_t* t ) const override
+  virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double cc = paladin_melee_attack_t::composite_target_crit( t );
+    double cc = paladin_melee_attack_t::composite_target_crit_chance( t );
 
     if ( p() -> talents.greater_judgment -> ok() )
     {
@@ -3362,9 +3362,9 @@ struct judgment_t : public paladin_melee_attack_t
     return cc;
   }  
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double cc = paladin_melee_attack_t::composite_crit();
+    double cc = paladin_melee_attack_t::composite_crit_chance();
 
     // Stern Judgment increases crit chance by 10% - assume additive
     cc += p() -> artifact.stern_judgment.percent( 1 );
@@ -4903,11 +4903,11 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
 
 };
 
-// paladin_t::composite_melee_crit =========================================
+// paladin_t::composite_melee_crit_chance =========================================
 
-double paladin_t::composite_melee_crit() const
+double paladin_t::composite_melee_crit_chance() const
 {
-  double m = player_t::composite_melee_crit();
+  double m = player_t::composite_melee_crit_chance();
 
   // This should only give a nonzero boost for Holy
   if ( buffs.avenging_wrath -> check() )
@@ -4947,11 +4947,11 @@ double paladin_t::composite_melee_speed() const
   return player_t::composite_melee_speed();
 }
 
-// paladin_t::composite_spell_crit ==========================================
+// paladin_t::composite_spell_crit_chance ==========================================
 
-double paladin_t::composite_spell_crit() const
+double paladin_t::composite_spell_crit_chance() const
 {
-  double m = player_t::composite_spell_crit();
+  double m = player_t::composite_spell_crit_chance();
 
   // This should only give a nonzero boost for Holy
   if ( buffs.avenging_wrath -> check() )
@@ -5371,7 +5371,7 @@ void paladin_t::invalidate_cache( cache_e c )
     player_t::invalidate_cache( CACHE_SPELL_POWER );
   }
 
-  if ( c == CACHE_ATTACK_CRIT && specialization() == PALADIN_PROTECTION )
+  if ( c == CACHE_ATTACK_CRIT_CHANCE && specialization() == PALADIN_PROTECTION )
     player_t::invalidate_cache( CACHE_PARRY );
 
   if ( c == CACHE_BONUS_ARMOR && passives.bladed_armor -> ok() )

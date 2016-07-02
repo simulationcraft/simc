@@ -464,8 +464,8 @@ public:
   double composite_spell_speed() const override;
   double composite_spell_power( school_e school ) const override;
   double composite_spell_power_multiplier() const override;
-  double composite_spell_crit() const override;
-  double composite_melee_crit() const override;
+  double composite_spell_crit_chance() const override;
+  double composite_melee_crit_chance() const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_absorb_multiplier(
       const action_state_t* s ) const override;
@@ -1492,7 +1492,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       assert( s->result != RESULT_CRIT );
       base_dd_min = base_dd_max = s->result_amount;
       target                  = s->target;
-      trigger_crit_multiplier = s->composite_crit();
+      trigger_crit_multiplier = s->composite_crit_chance();
       execute();
     }
   };
@@ -1527,9 +1527,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double cc = base_t::composite_crit();
+    double cc = base_t::composite_crit_chance();
 
     if ( priest.buffs.chakra_serenity->up() )
       cc += priest.buffs.chakra_serenity->data().effectN( 1 ).percent();
@@ -1537,9 +1537,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
     return cc;
   }
 
-  double composite_target_crit( player_t* t ) const override
+  double composite_target_crit_chance( player_t* t ) const override
   {
-    double ctc = base_t::composite_target_crit( t );
+    double ctc = base_t::composite_target_crit_chance( t );
 
     if ( get_td( t ).buffs.holy_word_serenity->check() )
       ctc +=
@@ -6014,18 +6014,18 @@ double priest_t::composite_spell_power_multiplier() const
   return base_t::composite_spell_power_multiplier();
 }
 
-// priest_t::composite_spell_crit ===============================
+// priest_t::composite_spell_crit_chance ===============================
 
-double priest_t::composite_spell_crit() const
+double priest_t::composite_spell_crit_chance() const
 {
-  return base_t::composite_spell_crit();
+  return base_t::composite_spell_crit_chance();
 }
 
-// priest_t::composite_melee_crit ===============================
+// priest_t::composite_melee_crit_chance ===============================
 
-double priest_t::composite_melee_crit() const
+double priest_t::composite_melee_crit_chance() const
 {
-  return base_t::composite_melee_crit();
+  return base_t::composite_melee_crit_chance();
 }
 
 // priest_t::composite_player_multiplier ====================================

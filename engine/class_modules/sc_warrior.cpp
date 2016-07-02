@@ -419,8 +419,8 @@ public:
   virtual double    composite_crit_block() const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_melee_speed() const override;
-  virtual double    composite_melee_crit() const override;
-  virtual double    composite_spell_crit() const override;
+  virtual double    composite_melee_crit_chance() const override;
+  virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_player_critical_damage_multiplier() const override;
   virtual double    composite_leech() const override;
   virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
@@ -615,7 +615,7 @@ public:
         "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
         p() -> cache.strength(),
         p() -> cache.attack_power() * p() -> composite_attack_power_multiplier(),
-        p() -> cache.attack_crit() * 100,
+        p() -> cache.attack_crit_chance() * 100,
         p() -> composite_player_critical_damage_multiplier(),
         p() -> cache.mastery_value() * 100,
         ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
@@ -637,7 +637,7 @@ public:
         "Strength: %4.4f, AP: %4.4f, Crit: %4.4f%%, Crit Dmg Mult: %4.4f,  Mastery: %4.4f%%, Haste: %4.4f%%, Versatility: %4.4f%%, Bonus Armor: %4.4f, Tick Multiplier: %4.4f, Direct Multiplier: %4.4f, Action Multiplier: %4.4f",
         p() -> cache.strength(),
         p() -> cache.attack_power() * p() -> composite_attack_power_multiplier(),
-        p() -> cache.attack_crit() * 100,
+        p() -> cache.attack_crit_chance() * 100,
         p() -> composite_player_critical_damage_multiplier(),
         p() -> cache.mastery_value() * 100,
         ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
@@ -1184,9 +1184,9 @@ struct bloodthirst_t: public warrior_attack_t
     return 1;
   }
 
-  double composite_target_crit( player_t* target ) const override
+  double composite_target_crit_chance( player_t* target ) const override
   {
-    double tc = warrior_attack_t::composite_target_crit( target );
+    double tc = warrior_attack_t::composite_target_crit_chance( target );
 
     if ( fresh_meat_crit_chance > 0 && target -> health_percentage() >= 80.0 )
     {
@@ -1196,9 +1196,9 @@ struct bloodthirst_t: public warrior_attack_t
     return tc;
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double c = warrior_attack_t::composite_crit();
+    double c = warrior_attack_t::composite_crit_chance();
 
     c += p() -> buff.taste_for_blood -> check_value();
 
@@ -1549,7 +1549,7 @@ struct dragon_roar_t: public warrior_attack_t
 
   double target_armor( player_t* ) const override { return 0; }
 
-  double composite_crit() const override { return 1.0; }
+  double composite_crit_chance() const override { return 1.0; }
 };
 
 // Execute ==================================================================
@@ -1634,9 +1634,9 @@ struct execute_t: public warrior_attack_t
     return am;
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double cc = warrior_attack_t::composite_crit();
+    double cc = warrior_attack_t::composite_crit_chance();
 
     if ( p() -> buff.shattered_defenses -> check() )
     {
@@ -2059,9 +2059,9 @@ struct mortal_strike_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double cc = warrior_attack_t::composite_crit();
+    double cc = warrior_attack_t::composite_crit_chance();
 
     if ( p() -> buff.shattered_defenses -> check() )
     {
@@ -2244,9 +2244,9 @@ struct overpower_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
-    double c = warrior_attack_t::composite_crit();
+    double c = warrior_attack_t::composite_crit_chance();
 
     c += crit_chance;
 
@@ -2804,7 +2804,7 @@ struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrio
     return amount;
   }
 
-  double composite_crit() const override
+  double composite_crit_chance() const override
   {
     return crit_chance_of_last_ability;
   }
@@ -2812,7 +2812,7 @@ struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrio
   void impact( action_state_t* s ) override
   {
     residual_periodic_action_t::impact( s );
-    crit_chance_of_last_ability = p() -> composite_melee_crit();
+    crit_chance_of_last_ability = p() -> composite_melee_crit_chance();
   }
 };
 
@@ -4530,7 +4530,7 @@ void warrior_t::create_buffs()
 
   buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
     .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
-    .add_invalidate( CACHE_CRIT )
+    .add_invalidate( CACHE_CRIT_CHANCE )
     .cd( timespan_t::zero() );
 
   buff.shattered_defenses = buff_creator_t( this, "shattered_defenses", artifact.shattered_defenses.data().effectN( 1 ).trigger() )
@@ -4553,7 +4553,7 @@ void warrior_t::create_buffs()
 
   buff.tier17_4pc_fury = buff_creator_t( this, "rampage", sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
     .add_invalidate( CACHE_ATTACK_SPEED )
-    .add_invalidate( CACHE_CRIT );
+    .add_invalidate( CACHE_CRIT_CHANCE );
 
   buff.tier17_4pc_fury_driver = buff_creator_t( this, "rampage_driver", sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() )
     .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.tier17_4pc_fury -> trigger( 1 ); } );
@@ -4564,7 +4564,7 @@ void warrior_t::create_buffs()
   buff.berserking = buff_creator_t( this, "berserking", artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
       .default_value( artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
       .add_invalidate( CACHE_ATTACK_SPEED )
-      .add_invalidate( CACHE_CRIT );
+      .add_invalidate( CACHE_CRIT_CHANCE );
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5062,11 +5062,11 @@ double warrior_t::composite_melee_speed() const
   return s;
 }
 
-// warrior_t::composite_melee_crit =========================================
+// warrior_t::composite_melee_crit_chance =========================================
 
-double warrior_t::composite_melee_crit() const
+double warrior_t::composite_melee_crit_chance() const
 {
-  double c = player_t::composite_melee_crit();
+  double c = player_t::composite_melee_crit_chance();
 
   if ( buff.tier17_4pc_fury -> check() )
   {
@@ -5093,11 +5093,11 @@ double warrior_t::composite_player_critical_damage_multiplier() const
   return cdm;
 }
 
-// warrior_t::composite_spell_crit =========================================
+// warrior_t::composite_spell_crit_chance =========================================
 
-double warrior_t::composite_spell_crit() const
+double warrior_t::composite_spell_crit_chance() const
 {
-  return composite_melee_crit();
+  return composite_melee_crit_chance();
 }
 
 // warrior_t::composite_leech ==============================================
@@ -5159,7 +5159,7 @@ void warrior_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( c == CACHE_ATTACK_CRIT && mastery.critical_block -> ok() )
+  if ( c == CACHE_ATTACK_CRIT_CHANCE && mastery.critical_block -> ok() )
   {
     player_t::invalidate_cache( CACHE_PARRY );
   }

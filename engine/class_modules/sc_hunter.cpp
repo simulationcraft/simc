@@ -504,8 +504,8 @@ public:
 
   virtual void      regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) ) override;
   virtual double    composite_attack_power_multiplier() const override;
-  virtual double    composite_melee_crit() const override;
-  virtual double    composite_spell_crit() const override;
+  virtual double    composite_melee_crit_chance() const override;
+  virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_melee_haste() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_mastery_value() const override;
@@ -1253,9 +1253,9 @@ public:
     base_t::init_action_list();
   }
 
-  virtual double composite_melee_crit() const override
+  virtual double composite_melee_crit_chance() const override
   {
-    double ac = base_t::composite_melee_crit();
+    double ac = base_t::composite_melee_crit_chance();
     ac += specs.spiked_collar -> effectN( 3 ).percent();
 
     if ( buffs.aspect_of_the_wild -> check() )
@@ -1500,9 +1500,9 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
     }
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double cc = base_t::composite_crit();
+    double cc = base_t::composite_crit_chance();
 
     if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
       cc += p() -> o() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
@@ -1821,9 +1821,9 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     }
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double cc = hunter_main_pet_attack_t::composite_crit();
+    double cc = hunter_main_pet_attack_t::composite_crit_chance();
 
     if ( p() -> o() -> artifacts.my_beloved_monster.rank() )
       cc += p() -> o() -> artifacts.my_beloved_monster.percent();
@@ -2527,9 +2527,9 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
     may_block = false;
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double cc = base_t::composite_crit();
+    double cc = base_t::composite_crit_chance();
 
     if ( p() -> buffs.aspect_of_the_eagle -> up() )
       cc += p() -> specs.aspect_of_the_eagle -> effectN( 1 ).percent();
@@ -2713,9 +2713,9 @@ struct auto_shot_t: public ranged_t
     }
   }
 
-  virtual double composite_target_crit( player_t* t ) const override
+  virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double cc= ranged_t::composite_target_crit( t );
+    double cc= ranged_t::composite_target_crit_chance( t );
 
     cc += p() -> buffs.big_game_hunter -> value();
 
@@ -3110,9 +3110,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       p() -> buffs.t18_2p_dire_longevity -> trigger();
   }
 
-  virtual double composite_target_crit( player_t* t ) const override
+  virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
 
     cc += p() -> buffs.big_game_hunter -> value();
 
@@ -3235,9 +3235,9 @@ struct trick_shot_t: public hunter_ranged_attack_t
     }
   }
 
-  virtual double composite_target_crit( player_t* t ) const override
+  virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
 
     cc += p() -> buffs.careful_aim -> value();
     if ( td( t ) -> debuffs.vulnerable -> up() )
@@ -3306,9 +3306,9 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
   }
 
 
-  virtual double composite_target_crit( player_t* t ) const override
+  virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
 
     cc += p() -> buffs.careful_aim -> value();
     if ( td( t ) -> debuffs.vulnerable -> up() )
@@ -3342,9 +3342,9 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
     return am;
   }
 
-  virtual double composite_crit_multiplier() const override
+  virtual double composite_crit_chance_multiplier() const override
   {
-    double cm = hunter_ranged_attack_t::composite_crit_multiplier();
+    double cm = hunter_ranged_attack_t::composite_crit_chance_multiplier();
 
     if ( p() -> artifacts.deadly_aim.rank() )
       cm *= 1.0 + p() -> artifacts.deadly_aim.percent();
@@ -3392,9 +3392,9 @@ struct aimed_shot_t: public hunter_ranged_attack_t
       base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
   }
 
-  virtual double composite_target_crit( player_t* t ) const override
+  virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
 
     cc += p() -> buffs.careful_aim -> value();
     if ( td( t ) -> debuffs.vulnerable -> up() )
@@ -3550,9 +3550,9 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     trigger_true_aim( p(), s -> target );
   }
 
-  virtual double composite_target_crit( player_t* t ) const override
+  virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
 
     cc += p() -> buffs.careful_aim -> value();
 
@@ -3688,9 +3688,9 @@ struct marked_shot_t: public hunter_ranged_attack_t
     return false;
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double cc = hunter_ranged_attack_t::composite_crit();
+    double cc = hunter_ranged_attack_t::composite_crit_chance();
 
     if ( p() -> artifacts.precision.rank() )
       cc += p() -> artifacts.precision.percent();
@@ -3698,9 +3698,9 @@ struct marked_shot_t: public hunter_ranged_attack_t
     return cc;
   }
 
-  virtual double composite_target_crit( player_t* t ) const override
+  virtual double composite_target_crit_chance( player_t* t ) const override
   {
-    double cc = hunter_ranged_attack_t::composite_target_crit( t );
+    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
 
     cc += p() -> buffs.careful_aim -> value();
 
@@ -4100,9 +4100,9 @@ struct flanking_strike_t: hunter_melee_attack_t
     }
   }
 
-  virtual double composite_crit() const override
+  virtual double composite_crit_chance() const override
   {
-    double cc = hunter_melee_attack_t::composite_crit();
+    double cc = hunter_melee_attack_t::composite_crit_chance();
 
     if ( p() -> artifacts.my_beloved_monster.rank() )
       cc += p() -> artifacts.my_beloved_monster.percent();
@@ -5700,7 +5700,7 @@ void hunter_t::create_buffs()
 
   buffs.aspect_of_the_wild           = buff_creator_t( this, 193530, "aspect_of_the_wild" )
     .affects_regen( true )
-    .add_invalidate( CACHE_CRIT )
+    .add_invalidate( CACHE_CRIT_CHANCE )
     .default_value( find_spell( 193530 ) -> effectN( 1 ).percent() );
 
   if ( artifacts.wilderness_expert.rank() )
@@ -5763,7 +5763,7 @@ void hunter_t::create_buffs()
   buffs.bullseye                    = buff_creator_t( this, 204090, "bullseye" )
     .default_value( find_spell( 204090 ) -> effectN( 1 ).percent() )
     .max_stack( 30 )
-    .add_invalidate( CACHE_CRIT );
+    .add_invalidate( CACHE_CRIT_CHANCE );
 
   buffs.stampede = buff_creator_t( this, 130201, "stampede" ) // To allow action lists to react to stampede, rather than doing it in a roundabout way.
     .activated( true )
@@ -6196,11 +6196,11 @@ double hunter_t::composite_attack_power_multiplier() const
   return mult;
 }
 
-// hunter_t::composite_melee_crit ===========================================
+// hunter_t::composite_melee_crit_chance ===========================================
 
-double hunter_t::composite_melee_crit() const
+double hunter_t::composite_melee_crit_chance() const
 {
-  double crit = player_t::composite_melee_crit();
+  double crit = player_t::composite_melee_crit_chance();
 
   if ( buffs.bullseye -> check() )
     crit += buffs.bullseye -> check_stack_value();
@@ -6213,11 +6213,11 @@ double hunter_t::composite_melee_crit() const
   return crit;
 }
 
-// hunter_t::composite_spell_crit ===========================================
+// hunter_t::composite_spell_crit_chance ===========================================
 
-double hunter_t::composite_spell_crit() const
+double hunter_t::composite_spell_crit_chance() const
 {
-  double crit = player_t::composite_spell_crit();
+  double crit = player_t::composite_spell_crit_chance();
 
   if ( buffs.bullseye -> check() )
     crit += buffs.bullseye -> check_stack_value();

@@ -80,8 +80,8 @@ void action_state_t::copy_state( const action_state_t* o )
   blocked_amount = o -> blocked_amount;
   self_absorb_amount = o -> self_absorb_amount;
   haste = o -> haste;
-  crit = o -> crit;
-  target_crit = o -> target_crit;
+  crit_chance = o -> crit_chance;
+  target_crit_chance = o -> target_crit_chance;
   attack_power = o -> attack_power;
   spell_power = o -> spell_power;
 
@@ -105,7 +105,7 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   result_type( RESULT_TYPE_NONE ), result( RESULT_NONE ), block_result( BLOCK_RESULT_UNKNOWN ),
   result_raw( 0 ), result_total( 0 ), result_mitigated( 0 ),
   result_absorbed( 0 ), result_amount( 0 ), blocked_amount( 0 ), self_absorb_amount( 0 ),
-  haste( 0 ), crit( 0 ), target_crit( 0 ),
+  haste( 0 ), crit_chance( 0 ), target_crit_chance( 0 ),
   attack_power( 0 ), spell_power( 0 ),
   resolve( 1.0 ), versatility( 1.0 ), da_multiplier( 1.0 ), ta_multiplier( 1.0 ), persistent_multiplier( 1.0 ),
   target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 ),
@@ -169,8 +169,8 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s.precision( 4 );
 
   s << " haste=" << haste;
-  s << " crit=" << crit;
-  s << " tgt_crit=" << target_crit;
+  s << " crit=" << crit_chance;
+  s << " tgt_crit=" << target_crit_chance;
   s << " versatility=" << versatility;
   s << " da_mul=" << da_multiplier;
   s << " ta_mul=" << ta_multiplier;

@@ -1480,9 +1480,9 @@ void item::unerring_vision_of_leishen( special_effect_t& effect )
     {
       if ( current_stack == 0 )
       {
-        player -> current.spell_crit  += data().effectN( 1 ).percent();
-        player -> current.attack_crit += data().effectN( 1 ).percent();
-        player -> invalidate_cache( CACHE_CRIT );
+        player -> current.spell_crit_chance  += data().effectN( 1 ).percent();
+        player -> current.attack_crit_chance += data().effectN( 1 ).percent();
+        player -> invalidate_cache( CACHE_CRIT_CHANCE );
       }
 
       buff_t::execute( stacks, value, duration );
@@ -1492,9 +1492,9 @@ void item::unerring_vision_of_leishen( special_effect_t& effect )
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
 
-      player -> current.spell_crit  -= data().effectN( 1 ).percent();
-      player -> current.attack_crit -= data().effectN( 1 ).percent();
-      player -> invalidate_cache( CACHE_CRIT );
+      player -> current.spell_crit_chance  -= data().effectN( 1 ).percent();
+      player -> current.attack_crit_chance -= data().effectN( 1 ).percent();
+      player -> invalidate_cache( CACHE_CRIT_CHANCE );
     }
   };
 
