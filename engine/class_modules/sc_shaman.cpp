@@ -3337,6 +3337,13 @@ struct earthen_spike_t : public shaman_attack_t
     parse_options( options_str );
   }
 
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_unleash_doom = false;
+  }
+
   void impact( action_state_t* s ) override
   {
     shaman_attack_t::impact( s );
