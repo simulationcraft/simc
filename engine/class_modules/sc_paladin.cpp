@@ -141,6 +141,9 @@ public:
     buff_t* wings_of_liberty;     // Most roleplay name. T18 4P Ret bonus
     buffs::wings_of_liberty_driver_t* wings_of_liberty_driver;
     buff_t* retribution_trinket; // 6.2 Spec-Specific Trinket
+
+    // artifact
+    buff_t* painful_truths;
   } buffs;
 
   // Gains
@@ -996,6 +999,9 @@ struct ardent_defender_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p() -> buffs.ardent_defender -> trigger();
+
+    if ( p() -> artifact.painful_truths.rank() )
+      p() -> buffs.painful_truths -> trigger();
   }
 };
 
@@ -1303,6 +1309,7 @@ struct blessed_hammer_tick_t : public paladin_spell_t
     background = dual = direct_tick = true;
     callbacks = false;
     radius = 9.0; // Guess, must be > 8 (cons) but < 10 (HoJ)
+    may_crit = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -1334,6 +1341,8 @@ struct blessed_hammer_t : public paladin_spell_t
     dot_duration = timespan_t::zero(); // The periodic event is handled by ground_aoe_event_t
     may_miss = false;
     base_tick_time = timespan_t::from_seconds( 1.667 ); // Rough estimation based on stopwatch testing
+
+    tick_may_crit = true;
 
     add_child( hammer );
   }
@@ -1846,6 +1855,7 @@ struct painful_truths_proc_t : public paladin_spell_t
     background = true;
     proc = true;
     may_miss = false;
+    may_crit = true;
   }
 
 };
@@ -1861,6 +1871,7 @@ struct tyrs_enforcer_proc_t : public paladin_spell_t
     proc = true;
     may_miss = false;
     aoe = -1;
+    may_crit = true;
   }
 };
 
@@ -2459,6 +2470,7 @@ struct eye_of_tyr_t : public paladin_spell_t
     parse_options( options_str );
 
     aoe = -1;
+    may_crit = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3935,6 +3947,9 @@ void paladin_t::trigger_painful_truths( action_state_t* s )
   if ( ! s -> action -> player -> is_enemy() )
     return;
 
+  if ( ! buffs.painful_truths -> up() )
+    return;
+
   active_painful_truths_proc -> target = s -> action -> player;
   active_painful_truths_proc -> schedule_execute();
 }
@@ -4144,6 +4159,7 @@ void paladin_t::create_buffs()
                                           .chance( passives.grand_crusader -> proc_chance() * ( 1.0 + talents.first_avenger -> effectN( 3 ).percent() ) );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
+  buffs.painful_truths                 = buff_creator_t( this, "painful_truths", find_spell( 209332 ) );
   buffs.aegis_of_light                 = buff_creator_t( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
   buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
                                           .add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
@@ -4294,7 +4310,6 @@ void paladin_t::generate_action_prio_list_prot()
   surv -> action_list = def -> action_list;
 
   // TODO: Create this.
-
 }
 
 // ==========================================================================
