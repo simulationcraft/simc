@@ -1542,7 +1542,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "Risen_Skulker", true, false )
   {
     regen_type = REGEN_DISABLED;
-    main_hand_weapon.type = WEAPON_BEAST_2H;
+    main_hand_weapon.type = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.7 );
   }
 
