@@ -3050,6 +3050,7 @@ struct blast_furance_t : public fire_mage_spell_t
     background = true;
     callbacks = false;
     hasted_ticks = false;
+    may_crit = false;
   }
 };
 // Blast Wave Spell ==========================================================
