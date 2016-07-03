@@ -6031,22 +6031,21 @@ void shaman_t::init_action_list_elemental()
         "In-combat potion is preferentially linked to Ascendance, unless combat will end shortly" );
   }
 
-  def -> add_action( "call_action_list,name=aoe,if=active_enemies>2&spell_targets.chain_lightning>3" );
-  def -> add_action( "call_action_list,name=single" );
+  def -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
+  def -> add_action( this, "Fire Elemental" );
+  def -> add_action( this, "Storm Elemental" );
+  def -> add_talent( this, "Elemental Mastery" );
+  def -> add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
+  def -> add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
+  def -> add_action( "run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)" );
+  def -> add_action( "run_action_list,name=single" );
 
   // Single target APL
 
   // Racials
-  single -> add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
-  single -> add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
-
-  single -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
-  single -> add_action( this, "Fire Elemental" );
-  single -> add_action( this, "Storm Elemental" );
   single -> add_talent( this, "Ascendance", "if=dot.flame_shock.remains>buff.ascendance.duration&"
                                             "(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&"
                                             "!buff.stormkeeper.up" );
-  single -> add_talent( this, "Elemental Mastery" );
   single -> add_action( this, "Flame Shock", "if=!ticking" );
   single -> add_action( this, "Flame Shock", "if=maelstrom>=20&remains<=buff.ascendance.duration&"
                                              "cooldown.ascendance.remains+buff.ascendance.duration<=duration" );
@@ -6067,6 +6066,8 @@ void shaman_t::init_action_list_elemental()
   single -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|"
                                                "(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&"
                                                "cooldown.ascendance.remains<15)" );
+  single -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1,target_if=!debuff.lightning_rod.up" );
+  single -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
   single -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1,target_if=!debuff.lightning_rod.up" );
   single -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
   single -> add_action( this, "Lightning Bolt", "target_if=!debuff.lightning_rod.up" );
@@ -6075,8 +6076,12 @@ void shaman_t::init_action_list_elemental()
   single -> add_action( this, "Flame_shock" );
 
   // Aoe APL
+  aoe -> add_action( this, "Stormkeeper" );
+  aoe -> add_talent( this, "Ascendance" );
   aoe -> add_talent( this, "Liquid Magma Totem" );
   aoe -> add_action( this, "Earthquake Totem" );
+  aoe -> add_action( this, "Lava Beam", "target_if=!debuff.lightning_rod.up" );
+  aoe -> add_action( this, "Lava Beam" );
   aoe -> add_action( this, "Chain Lightning", "target_if=!debuff.lightning_rod.up" );
   aoe -> add_action( this, "Chain Lightning" );
   aoe -> add_action( this, "Lava Burst", "moving=1" );

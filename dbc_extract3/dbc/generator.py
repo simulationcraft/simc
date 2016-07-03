@@ -1236,7 +1236,7 @@ class SpellDataGenerator(DataGenerator):
 
         # Shaman:
         ( (  77451, 0 ), (  45284, 0 ), (  45297, 0 ),  #  Overloads
-          ( 114074, 0 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
+          ( 114074, 1 ), ( 114738, 0 ),                 # Ascendance: Lava Beam, Lava Beam overload
           ( 120687, 0 ), ( 120588, 0 ),                 # Stormlash, Elemental Blast overload
           ( 121617, 0 ),                                # Ancestral Swiftness 5% haste passive
           ( 25504, 0, False ), ( 33750, 0, False ),     # Windfury passives are not directly activatable
@@ -1254,7 +1254,6 @@ class SpellDataGenerator(DataGenerator):
           ( 198300, 0 ),                                # Gathering Storms buff
           ( 198830, 0 ), ( 199019, 0 ), ( 198933, 0 ),  # Doomhammer procs
           ( 197576, 0 ),                                # Magnitude ground? effect
-          ( 206442, 0 ),                                # Lava Shock
           ( 191635, 0 ), ( 191634, 0 ),                 # Static Overload spells
           ( 202045, 0 ), ( 202044, 0 ),                 # Feral Swipe, Stomp
           ( 33750, 0 ),                                 # Offhand Windfury Attack

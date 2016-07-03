@@ -591,7 +591,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115356, // Windstrike
            0,
     },
-    // Elemental tree, 13 abilities
+    // Elemental tree, 14 abilities
     {
       188443, // Chain Lightning
        51886, // Cleanse Spirit
@@ -602,6 +602,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       188389, // Flame Shock
       196840, // Frost Shock
         8004, // Healing Surge
+      114074, // Lava Beam
        51505, // Lava Burst
       188196, // Lightning Bolt
        51490, // Thunderstorm
