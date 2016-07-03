@@ -497,13 +497,13 @@ expr_t* dot_t::create_expression( action_t* action,
       {
         dot_t* d = dot();
         // No dot up, thus it'll be refreshable (to full duration)
-        if ( d == nullptr )
+        if ( d == nullptr || ! d -> is_ticking() )
         {
           return 1;
         }
 
         action -> snapshot_state( state, DMG_OVER_TIME );
-        timespan_t new_duration = action -> composite_dot_duration( state );
+        timespan_t new_duration = d -> current_action -> composite_dot_duration( state );
 
         return action -> dot_refreshable( d, new_duration );
       }
@@ -947,8 +947,10 @@ void dot_t::refresh( timespan_t duration )
   num_ticks = current_tick + as<int>(std::ceil(remains() / current_action->tick_time(state) ) );
 
   if ( sim.debug )
-    sim.out_debug.printf( "%s refreshes dot %s (%d) on %s. duration=%.3f",
+    sim.out_debug.printf( "%s refreshes dot %s (%d) on %s%s. old_remains=%.3f refresh_duration=%.3f duration=%.3f",
                           source -> name(), name(), stack, target -> name(),
+                          current_action -> dot_refreshable( this, duration ) ? " (no penalty)" : "",
+                          remaining_duration.total_seconds(), duration.total_seconds(),
                           current_duration.total_seconds() );
 
   // Ensure that the ticker is running when dots are refreshed. It is possible
