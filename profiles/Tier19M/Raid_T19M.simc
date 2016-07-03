@@ -1,7 +1,12 @@
 # T19M
 # Tier 19 Mythic
 # * Ilvl Cap: 880
-# * Standard Mythic Emerald Nightmare Loot Only.
+# * No items from Nighthold (including set bonuses)
+# * Only One Legendary can be used
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Warforged/Titanforged)
+# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
 
 optimal_raid=1
 # tmi_boss=TMI_Standard_Boss_T17L

@@ -1,7 +1,11 @@
 # T19P
 # Tier 19 Pre-Raid
-# * Ilvl Cap: 820
-# * Standard Heroic 5 Man Loot Only.
+# * Ilvl Cap: 840
+# * Standard Mythic 5 Man Loot Only
+# * No Legendaries
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Warforged/Titanforged)
 
 optimal_raid=1
 # tmi_boss=TMI_Standard_Boss_T17L
