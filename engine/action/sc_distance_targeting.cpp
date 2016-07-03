@@ -169,7 +169,6 @@
         continue;
 
       double v = target_if_expr -> evaluate();
-      
 
       // Don't swap to targets that evaluate to identical value than the current target
       if ( v == current_target_v )
@@ -177,6 +176,7 @@
 
       if ( target_if_mode == TARGET_IF_FIRST && v != 0 )
       {
+        current_target_v = v;
         proposed_target = target;
         break;
       }
@@ -190,6 +190,12 @@
         min_ = v;
         proposed_target = target;
       }
+    }
+
+    // If "first available target" did not find anything useful, don't execute the action
+    if ( target_if_mode == TARGET_IF_FIRST && current_target_v == 0 )
+    {
+      return nullptr;
     }
 
     if ( sim -> log )
