@@ -54,8 +54,8 @@ finger1=band_of_the_wyrm_matron,id=134524
 finger2=utgarde_royal_signet,id=133637
 trinket1=chaos_talisman,id=137459
 trinket2=horn_of_valor,id=133642
-main_hand=twinblades_of_the_deceiver,id=127829,ilevel=750,enchant_id=5427
-off_hand=twinblades_of_the_deceiver,id=127830,ilevel=750,enchant_id=5427
+main_hand=twinblades_of_the_deceiver,id=127829,ilevel=820,enchant_id=5427
+off_hand=twinblades_of_the_deceiver,id=127830,ilevel=820,enchant_id=5427
 
 # Gear Summary
 # gear_ilvl=820.00

@@ -42,6 +42,7 @@ actions+=/slice_and_dice,if=talent.slice_and_dice.enabled&combo_points>=5+talent
 actions+=/roll_the_bones,if=!talent.slice_and_dice.enabled&combo_points>=5+talent.deeper_strategem.enabled&buff.roll_the_bones.remains<6
 actions+=/killing_spree,if=energy.time_to_max>5|energy<15
 actions+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=2
+actions+=/curse_of_the_dreadblades,if=combo_points.max-combo_points>=4
 actions+=/marked_for_death,if=combo_points.max-combo_points>=4
 actions+=/call_action_list,name=finisher,if=combo_points>=5+talent.deeper_strategem.enabled
 actions+=/call_action_list,name=generator,if=combo_points<5+talent.deeper_strategem.enabled
@@ -49,13 +50,12 @@ actions+=/call_action_list,name=generator,if=combo_points<5+talent.deeper_strate
 # Combo Point Finishers
 
 actions.finisher=death_from_above
-actions.finisher+=/between_the_eyes
 actions.finisher+=/run_through
 
 # Combo Point Generators
 
 actions.generator=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<4.5
-actions.generator+=/pistol_shot,if=buff.opportunity.up
+actions.generator+=/pistol_shot,if=buff.opportunity.up&energy<60
 actions.generator+=/saber_slash
 
 head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
@@ -72,7 +72,7 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=137412/133763/137493
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=137412/133763/137493,relic_id=1727/1727/1727
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary

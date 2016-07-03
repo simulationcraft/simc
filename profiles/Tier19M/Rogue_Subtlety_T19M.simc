@@ -30,57 +30,59 @@ actions.precombat+=/symbols_of_death
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40
 actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
-actions+=/arcane_torrent,if=energy.deficit>20
+actions+=/arcane_torrent,if=energy.deficit>15&(buff.shadow_dance.up|buff.vanish.up)
 actions+=/shadow_blades,if=!buff.shadow_blades.up&energy.deficit<20&(buff.shadow_dance.up|buff.vanish.up)
 actions+=/goremaws_bite,if=(combo_points.max-combo_points>=2&energy.deficit>55&time<10)|(combo_points.max-combo_points>=4&energy.deficit>45)|target.time_to_die<8
 actions+=/symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=10.5
-actions+=/pool_resource,for_next=1
+actions+=/shuriken_storm,if=buff.stealth.up&talent.premeditation.enabled&artifact.precision_strike.rank<=3&combo_points.max-combo_points>=3&spell_targets.shuriken_storm>=7
+actions+=/shuriken_storm,if=buff.stealth.up&!buff.death.up&combo_points.max-combo_points>=2&((!talent.premeditation.enabled&((artifact.precision_strike.rank<=3&spell_targets.shuriken_storm>=4)|spell_targets.shuriken_storm>=5))|spell_targets.shuriken_storm>=8)
 actions+=/shadowstrike,if=combo_points.max-combo_points>=2
 actions+=/pool_resource,for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30
 actions+=/vanish,if=energy.deficit<talent.master_of_shadows.enabled*30&combo_points.max-combo_points>=3&cooldown.shadow_dance.charges<2|target.time_to_die<8
 actions+=/pool_resource,for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30
 actions+=/shadow_dance,if=combo_points.max-combo_points>=2&((cooldown.vanish.remains&buff.symbols_of_death.remains<=10.5&energy.deficit<talent.master_of_shadows.enabled*30)|cooldown.shadow_dance.charges>=2|target.time_to_die<25)
 actions+=/enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&((buff.enveloping_shadows.remains<=10.8+talent.deeper_strategem.enabled*1.8&combo_points>=5+talent.deeper_strategem.enabled)|buff.enveloping_shadows.remains<=6)
-actions+=/marked_for_death,if=combo_points.max-combo_points>=4
+actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.max-combo_points>=4
 actions+=/run_action_list,name=finisher,if=combo_points>=5
 actions+=/run_action_list,name=generator,if=combo_points<5
 
 # Combo point finishers
 
-actions.finisher=nightblade,if=!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3
-actions.finisher+=/nightblade,cycle_targets=1,target_if=max:target.time_to_die,if=spell_targets.shuriken_storm<8&active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3)
+actions.finisher=death_from_above,if=spell_targets.death_from_above>=10
+actions.finisher+=/nightblade,if=!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3
+actions.finisher+=/nightblade,cycle_targets=1,target_if=max:target.time_to_die,if=active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3)
 actions.finisher+=/death_from_above
 actions.finisher+=/eviscerate
 
 # Combo point generators
 
-actions.generator=shuriken_storm,if=spell_targets.shuriken_storm>2
+actions.generator=shuriken_storm,if=spell_targets.shuriken_storm>=2
 actions.generator+=/gloomblade,if=energy.time_to_max<2.5
 actions.generator+=/backstab,if=energy.time_to_max<2.5
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1806
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=gossamerspun_greatcloak,id=138221,bonus_id=1806
-chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806
+back=the_dreadlords_deceit,id=137021
+chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1806
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=stained_maggot_squishers,id=139200,bonus_id=1806
 finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1806
-finger2=mindrend_band,id=138220,bonus_id=1806
+finger2=grubby_silver_ring,id=139236,bonus_id=1806
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=natures_call,id=139334,bonus_id=1806
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=139267/138226/139267
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=139267/138226/139267,relic_id=1806/1806/1806
 off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
-# gear_ilvl=883.25
-# gear_agility=14097
-# gear_stamina=25488
-# gear_crit_rating=7320
-# gear_haste_rating=4380
-# gear_mastery_rating=7456
-# gear_versatility_rating=871
-# gear_armor=2236
+# gear_ilvl=884.19
+# gear_agility=14242
+# gear_stamina=25705
+# gear_crit_rating=11012
+# gear_haste_rating=3288
+# gear_mastery_rating=4022
+# gear_versatility_rating=1751
+# gear_armor=2244
