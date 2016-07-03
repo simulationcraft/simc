@@ -22,6 +22,7 @@ namespace enchants
 
 namespace item
 {
+  // 7.0 Dungeon
   void caged_horror( special_effect_t& );
   void chaos_talisman( special_effect_t& );
   void corrupted_starlight( special_effect_t& );
@@ -38,6 +39,9 @@ namespace item
   void tiny_oozeling_in_a_jar( special_effect_t& );
   void tirathons_betrayal( special_effect_t& );
   void windscar_whetstone( special_effect_t& );
+
+  // 7.0 Raid
+  void natures_call( special_effect_t& );
 }
 
 namespace set_bonus
@@ -218,6 +222,7 @@ void item::impact_tremor( special_effect_t& effect )
 void item::memento_of_angerboda( special_effect_t& effect )
 {
   double rating_amount = effect.driver() -> effectN( 2 ).average( effect.item );
+  rating_amount *= effect.item -> sim -> dbc.combat_rating_multiplier( effect.item -> item_level() );
 
   stat_buff_t* crit_buff =
     stat_buff_creator_t( effect.player, "howl_of_ingvar", effect.player -> find_spell( 214802 ) )
@@ -996,9 +1001,30 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+void item::natures_call( special_effect_t& effect )
+{
+  double rating_amount = effect.driver() -> effectN( 2 ).average( effect.item );
+  rating_amount *= effect.item -> sim -> dbc.combat_rating_multiplier( effect.item -> item_level() );
+
+  stat_buff_t* crit_buff =
+    stat_buff_creator_t( effect.player, "cleansed_ancients_blessing", effect.player -> find_spell( 222517 ) )
+      .activated( false )
+      .add_stat( STAT_CRIT_RATING, rating_amount );
+  stat_buff_t* haste_buff =
+    stat_buff_creator_t( effect.player, "cleansed_sisters_blessing", effect.player -> find_spell( 222519 ) )
+      .activated( false )
+      .add_stat( STAT_HASTE_RATING, rating_amount );
+  stat_buff_t* mastery_buff =
+    stat_buff_creator_t( effect.player, "cleansed_wisps_blessing", effect.player -> find_spell( 222518 ) )
+      .activated( false )
+      .add_stat( STAT_MASTERY_RATING, rating_amount );
+
+  new random_combat_enhancement_callback_t( effect.item, effect, crit_buff, haste_buff, mastery_buff );
+}
+
 void unique_gear::register_special_effects_x7()
 {
-  /* Legion 7.0 */
+  /* Legion 7.0 Dungeon */
   register_special_effect( 215444, item::caged_horror                   );
   register_special_effect( 214829, item::chaos_talisman                 );
   register_special_effect( 213782, item::corrupted_starlight            );
@@ -1017,6 +1043,9 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 215658, item::tirathons_betrayal             );
   register_special_effect( 214980, item::windscar_whetstone             );
   register_special_effect( 216085, item::elementium_bomb_squirrel       );
+
+  /* Legion 7.0 Raid */
+  register_special_effect( 222512, item::natures_call );
 
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );
