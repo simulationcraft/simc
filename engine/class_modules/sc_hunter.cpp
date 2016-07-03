@@ -1538,13 +1538,104 @@ struct titans_thunder_t: public hunter_pet_action_t < hunter_pet_t, spell_t >
     tick_action = new titans_thunder_tick_t( p );
   }
 };
+  
+struct jaws_of_thunder_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
+{
+  jaws_of_thunder_t( hunter_pet_t* p ):
+    hunter_pet_action_t< hunter_pet_t, attack_t>( "jaws_of_thunder", *p, p -> find_spell( 197162 ) )
+  {
+    background = true;
+    callbacks = false;
+    may_crit = false;
+    proc = true;
+    school = SCHOOL_NATURE;
+    weapon_multiplier = 0.0;
+  }  
+};
+
+// Bestial Ferocity (Aspect of the Beast) ===================================
+
+struct bestial_ferocity_t: public hunter_main_pet_attack_t
+{
+  bestial_ferocity_t( hunter_main_pet_t* p ):
+    hunter_main_pet_attack_t( "bestial_ferocity", p, p -> find_spell( 191413 ) )
+  {
+    background = true;
+  }
+};
+
+// Kill Command (pet) =======================================================
+
+struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
+{
+  jaws_of_thunder_t* jaws_of_thunder;
+  kill_command_t( hunter_pet_t* p ):
+    hunter_pet_action_t < hunter_pet_t, attack_t >( "kill_command", *p, p -> find_spell( 83381 ) ), jaws_of_thunder( nullptr )
+  {
+    background = true;
+    may_crit = true;
+    proc = true;
+    school = SCHOOL_PHYSICAL;
+    range = 25;
+
+    // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
+    // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
+    attack_power_mod.direct  = 3.0; // Hard-coded in tooltip.
+
+    if ( o() -> artifacts.jaws_of_thunder.rank() )
+      jaws_of_thunder = new jaws_of_thunder_t( p );
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    hunter_pet_action_t < hunter_pet_t, attack_t >::impact( s );
+
+    if ( rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
+    {
+      jaws_of_thunder -> base_dd_min = o() -> find_spell( 197163 ) -> effectN( 2 ).percent() * s -> result_amount;
+      jaws_of_thunder -> base_dd_max = o() -> find_spell( 197163 ) -> effectN( 2 ).percent() * s -> result_amount;
+      jaws_of_thunder -> execute();
+    }
+  }
+
+  // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
+  double composite_attack_power() const override
+  {
+    return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
+  }
+
+  bool usable_moving() const override
+  {
+    return true;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_pet_action_t < hunter_pet_t, attack_t >::action_multiplier();
+
+    if ( p() -> o() -> artifacts.pack_leader.rank() )
+      am *= 1.0 + p() -> o() -> artifacts.pack_leader.percent();
+
+    return am;
+  }
+};
+
+struct main_pet_kill_command_t: public kill_command_t
+{
+  main_pet_kill_command_t( hunter_main_pet_t* p ):
+    kill_command_t( p )
+  {
+    if ( o() -> talents.aspect_of_the_beast -> ok() )
+      impact_action = new bestial_ferocity_t( p );
+  }
+};
 
 // Beast Cleave ==============================================================
 
-struct beast_cleave_attack_t: public hunter_main_pet_attack_t
+struct beast_cleave_attack_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 {
-  beast_cleave_attack_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "beast_cleave", p, p -> find_spell( 118455 ) )
+  beast_cleave_attack_t( hunter_pet_t* p ):
+    hunter_pet_action_t < hunter_pet_t, attack_t >( "beast_cleave", *p, p -> find_spell( 118455 ) )
   {
     may_miss = false;
     may_crit = false;
@@ -1561,7 +1652,7 @@ struct beast_cleave_attack_t: public hunter_main_pet_attack_t
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
-    hunter_main_pet_attack_t::available_targets( tl );
+    hunter_pet_action_t < hunter_pet_t, attack_t >::available_targets( tl );
 
     for ( size_t i = 0; i < tl.size(); i++ )
     {
@@ -1721,86 +1812,6 @@ struct monstrous_bite_t: public hunter_main_pet_attack_t
     parse_options( options_str );
     school = SCHOOL_PHYSICAL;
     stats -> school = SCHOOL_PHYSICAL;
-  }
-};
-
-
-// Bestial Ferocity (Aspect of the Beast) ===================================
-
-struct bestial_ferocity_t: public hunter_main_pet_attack_t
-{
-  bestial_ferocity_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "bestial_ferocity", p, p -> find_spell( 191413 ) )
-  {
-    background = true;
-  }
-};
-
-// Kill Command (pet) =======================================================
-
-struct kill_command_t: public hunter_main_pet_attack_t
-{
-
-  struct jaws_of_thunder_t: public hunter_main_pet_attack_t
-  {
-    jaws_of_thunder_t( hunter_main_pet_t* p ):
-      hunter_main_pet_attack_t( "jaws_of_thunder", p, p -> find_spell( 197162 ) )
-    {
-      background = true;
-      proc = true;
-      school = SCHOOL_NATURE;
-      attack_power_mod.direct = 3.0;
-      base_multiplier = p -> o() -> artifacts.jaws_of_thunder.data().effectN( 2 ).percent();
-    }
-  };
-
-  jaws_of_thunder_t* jaws_of_thunder;
-  kill_command_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "kill_command", p, p -> find_spell( 83381 ) ), jaws_of_thunder( nullptr )
-  {
-    background = true;
-    proc = true;
-    school = SCHOOL_PHYSICAL;
-    range = 25;
-
-    // The hardcoded parameter is taken from the $damage value in teh tooltip. e.g., 1.36 below
-    // $damage = ${ 1.5*($83381m1 + ($RAP*  1.632   ))*$<bmMastery> }
-    attack_power_mod.direct  = 3.0; // Hard-coded in tooltip.
-
-    if ( o() -> talents.aspect_of_the_beast -> ok() )
-      impact_action = new bestial_ferocity_t( p );
-
-    if ( o() -> artifacts.jaws_of_thunder.rank() )
-      jaws_of_thunder = new jaws_of_thunder_t( p );
-  }
-
-  virtual void execute() override
-  {
-    hunter_main_pet_attack_t::execute();
-
-    if ( rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
-      jaws_of_thunder -> execute();
-  }
-
-  // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
-  double composite_attack_power() const override
-  {
-    return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
-  }
-
-  bool usable_moving() const override
-  {
-    return true;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_main_pet_attack_t::action_multiplier();
-
-    if ( p() -> o() -> artifacts.pack_leader.rank() )
-      am *= 1.0 + p() -> o() -> artifacts.pack_leader.percent();
-
-    return am;
   }
 };
 
@@ -2004,7 +2015,7 @@ void hunter_main_pet_t::init_spells()
   base_t::init_spells();
 
   // ferocity
-  active.kill_command = new actions::kill_command_t( this );
+  active.kill_command = new actions::main_pet_kill_command_t( this );
   specs.hearth_of_the_phoenix = spell_data_t::not_found();
   specs.spiked_collar = spell_data_t::not_found();
   // tenacity
@@ -2025,9 +2036,7 @@ void hunter_main_pet_t::init_spells()
   specs.wild_hunt = find_spell( 62762 );
   specs.combat_experience = find_specialization_spell( "Combat Experience" );
   if ( o() -> specs.beast_cleave -> ok() )
-  {
     active.beast_cleave = new actions::beast_cleave_attack_t( this );
-  }
 
   if ( o() -> talents.dire_frenzy -> ok() )
     active.dire_frenzy = new actions::dire_frenzy_t( this );
@@ -2154,6 +2163,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
   {
     action_t* stomp;
     action_t* titans_thunder;
+    action_t* jaws_of_thunder;
   } active;
 
   struct buffs_t
@@ -2217,41 +2227,6 @@ struct dire_critter_t: public hunter_secondary_pet_t
 
 struct hati_t: public hunter_secondary_pet_t
 {
-  struct hati_beast_cleave_attack_t: public hunter_secondary_pet_action_t
-  {
-    hati_beast_cleave_attack_t( hati_t& p ):
-      hunter_secondary_pet_action_t( "beast_cleave", p, p.find_spell( 118455 ) )
-    {
-      may_miss = false;
-      may_crit = false;
-      proc = false;
-      callbacks = false;
-      background = true;
-      school = SCHOOL_PHYSICAL;
-      aoe = -1;
-      range = -1.0;
-      radius = 10.0;
-      // The starting damage includes all the buffs
-      weapon_multiplier = 0;
-    }
-
-    size_t available_targets( std::vector< player_t* >& tl ) const override
-    {
-      hunter_secondary_pet_action_t::available_targets( tl );
-
-      for ( size_t i = 0; i < tl.size(); i++ )
-      {
-        if ( tl[i] == target ) // Cannot hit the original target.
-        {
-          tl.erase( tl.begin() + i );
-          break;
-        }
-      }
-
-      return tl.size();
-    }
-  };
-
   static void trigger_beast_cleave( action_state_t* s )
   {
     if ( !s -> action -> result_is_hit( s -> result ) )
@@ -2291,68 +2266,12 @@ struct hati_t: public hunter_secondary_pet_t
     }
   };
 
-  struct hati_kill_command_t: public hunter_secondary_pet_action_t
-  {
-    struct jaws_of_thunder_t: public hunter_secondary_pet_action_t
-    {
-      jaws_of_thunder_t( hunter_secondary_pet_t& p ):
-        hunter_secondary_pet_action_t( "jaws_of_thunder", p, p.find_spell( 197162 ) )
-      {
-        background = true;
-        proc = true;
-        school = SCHOOL_NATURE;
-        attack_power_mod.direct = 3.0;
-        base_multiplier = p.o() -> artifacts.jaws_of_thunder.data().effectN( 2 ).percent();
-      }
-    };
-
-    jaws_of_thunder_t* jaws_of_thunder;
-    hati_kill_command_t( hunter_secondary_pet_t &p ):
-      hunter_secondary_pet_action_t( "kill_command", p, p.find_spell( 83381 ) ), jaws_of_thunder( nullptr )
-    {
-      background = true;
-      proc = true;
-      school = SCHOOL_PHYSICAL;
-      range = 25;
-      attack_power_mod.direct  = 3.0;
-      if ( o() -> artifacts.jaws_of_thunder.rank() )
-        jaws_of_thunder = new jaws_of_thunder_t( p );
-    }
-
-    virtual void execute() override
-    {
-      hunter_secondary_pet_action_t::execute();
-
-      if ( rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
-        jaws_of_thunder -> execute();
-    }
-
-    virtual double composite_attack_power() const override
-    {
-      return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
-    }
-
-    virtual bool usable_moving() const override
-    {
-      return true;
-    }
-
-    virtual double action_multiplier() const override
-    {
-      double am = hunter_secondary_pet_action_t::action_multiplier();
-
-      if ( p() -> o() -> artifacts.pack_leader.rank() )
-        am *= 1.0 + p() -> o() -> artifacts.pack_leader.percent();
-
-      return am;
-    }
-  };
-
   struct actives_t
   {
     action_t* kill_command;
     action_t* beast_cleave;
     action_t* titans_thunder;
+    action_t* jaws_of_thunder;
   } active;
 
   struct buffs_t
@@ -2379,12 +2298,15 @@ struct hati_t: public hunter_secondary_pet_t
 
     if ( o() -> artifacts.master_of_beasts.rank() )
     {
-      active.kill_command = new hati_kill_command_t( *this );
-      active.beast_cleave = new hati_beast_cleave_attack_t( *this );
+      active.kill_command = new actions::kill_command_t( this );
+      active.beast_cleave = new actions::beast_cleave_attack_t( this );
     }
 
     if ( o() -> artifacts.titans_thunder.rank() )
       active.titans_thunder = new actions::titans_thunder_t( this );
+
+    if ( o() -> artifacts.jaws_of_thunder.rank() )
+      active.jaws_of_thunder = new actions::jaws_of_thunder_t( this );
   }
 
   virtual void create_buffs() override
