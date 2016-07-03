@@ -1263,7 +1263,7 @@ struct charge_t: public warrior_attack_t
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
     energize_type = ENERGIZE_ON_CAST;
-    energize_amount += p -> artifact.uncontrolled_rage.value();
+    energize_amount += p -> artifact.uncontrolled_rage.value() / 10;
     cooldown -> duration = data().cooldown();
     if ( p -> talents.warbringer -> ok() )
     {
