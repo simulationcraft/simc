@@ -1232,6 +1232,7 @@ class SpellDataGenerator(DataGenerator):
           ( 81141, 0 ),     # Crimson Scourge buff
           ( 212423, 5 ),    # Skulker Shot for All Will Serve
           ( 207260, 5 ),    # Arrow Spray for All Will Serve
+          ( 45470, 0 ),     # Death Strike heal
         ),
 
         # Shaman:
