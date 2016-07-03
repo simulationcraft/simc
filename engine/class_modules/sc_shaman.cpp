@@ -3420,20 +3420,20 @@ struct bloodlust_t : public shaman_spell_t
   }
 };
 
-// Chain Lightning Spell ====================================================
+// Chain Lightning and Lava Beam Spells =========================================
 
-struct chain_lightning_overload_t: public elemental_overload_spell_t
+struct chained_overload_base_t: public elemental_overload_spell_t
 {
-  chain_lightning_overload_t( shaman_t* p ) :
-    elemental_overload_spell_t( p, "chain_lightning_overload", p -> find_spell( 45297 ) )
+  chained_overload_base_t( shaman_t* p, const std::string& name, const spell_data_t* spell, double mg ) :
+    elemental_overload_spell_t( p, name, spell )
   {
     base_multiplier *= 1.0 + p -> artifact.electric_discharge.percent();
     chain_multiplier = data().effectN( 1 ).chain_multiplier();
-    maelstrom_gain = p -> find_spell( 218558 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
+    energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
+    maelstrom_gain = mg;
     radius = 10.0;
   }
 
-  // Make Chain Lightning a single target spell for procs
   proc_types proc_type() const override
   { return PROC1_SPELL; }
 
@@ -3455,23 +3455,34 @@ struct chain_lightning_overload_t: public elemental_overload_spell_t
   }
 };
 
-struct chain_lightning_t: public shaman_spell_t
+struct chain_lightning_overload_t : public chained_overload_base_t
 {
-  chain_lightning_t( shaman_t* player, const std::string& options_str ):
-    shaman_spell_t( "chain_lightning", player, player -> find_specialization_spell( "Chain Lightning" ), options_str )
+  chain_lightning_overload_t( shaman_t* p ) :
+    chained_overload_base_t( p, "chain_lightning_overload", p -> find_spell( 45297 ),
+        p -> find_spell( 218558 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM ) )
+  { }
+};
+
+
+struct lava_beam_overload_t: public chained_overload_base_t
+{
+  lava_beam_overload_t( shaman_t* p ) :
+    chained_overload_base_t( p, "lava_beam_overload", p -> find_spell( 114738 ),
+        p -> find_spell( 218559 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM ) )
+  { }
+};
+
+struct chained_base_t : public shaman_spell_t
+{
+  chained_base_t( shaman_t* player, const std::string& name, const spell_data_t* spell, double mg, const std::string& options_str ):
+    shaman_spell_t( name, player, spell, options_str )
   {
     base_multiplier *= 1.0 + player -> artifact.electric_discharge.percent();
     chain_multiplier = data().effectN( 1 ).chain_multiplier();
     radius = 10.0;
 
-    maelstrom_gain = data().effectN( 2 ).base_value();
+    maelstrom_gain = mg;
     energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
-
-    if ( player -> mastery.elemental_overload -> ok() )
-    {
-      overload = new chain_lightning_overload_t( player );
-      add_child( overload );
-    }
   }
 
   // Make Chain Lightning a single target spell for procs
@@ -3521,6 +3532,25 @@ struct chain_lightning_t: public shaman_spell_t
     p() -> trigger_lightning_rod_damage( state );
   }
 
+  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
+  {
+    return __check_distance_targeting( this, tl );
+  }
+};
+
+struct chain_lightning_t: public chained_base_t
+{
+  chain_lightning_t( shaman_t* player, const std::string& options_str ):
+    chained_base_t( player, "chain_lightning", player -> find_specialization_spell( "Chain Lightning" ),
+      player -> find_specialization_spell( "Chain Lightning" ) -> effectN( 2 ).base_value(), options_str )
+  {
+    if ( player -> mastery.elemental_overload -> ok() )
+    {
+      overload = new chain_lightning_overload_t( player );
+      add_child( overload );
+    }
+  }
+
   bool ready() override
   {
     if ( p() -> specialization() == SHAMAN_ELEMENTAL && p() -> buff.ascendance -> check() )
@@ -3528,72 +3558,19 @@ struct chain_lightning_t: public shaman_spell_t
 
     return shaman_spell_t::ready();
   }
-
-  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
-  {
-    return __check_distance_targeting( this, tl );
-  }
 };
 
-// Lava Beam Spell ==========================================================
-
-struct lava_beam_overload_t: public elemental_overload_spell_t
-{
-  lava_beam_overload_t( shaman_t* p ) :
-    elemental_overload_spell_t( p, "lava_beam_overload", p -> find_spell( 114738 ) )
-  {
-    base_multiplier *= 1.0 + p -> artifact.electric_discharge.percent();
-    chain_multiplier = data().effectN( 1 ).chain_multiplier();
-    maelstrom_gain = p -> find_spell( 218559 ) -> effectN( 1 ).resource( RESOURCE_MAELSTROM );
-    radius = 10.0;
-  }
-
-  // Make Chain Lightning a single target spell for procs
-  proc_types proc_type() const override
-  { return PROC1_SPELL; }
-
-  double action_multiplier() const override
-  {
-    double m = elemental_overload_spell_t::action_multiplier();
-
-    if ( p() -> buff.stormkeeper -> up() )
-    {
-      m *= 1.0 + p() -> buff.stormkeeper -> data().effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
-  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
-  {
-    return __check_distance_targeting( this, tl );
-  }
-};
-
-struct lava_beam_t : public shaman_spell_t
+struct lava_beam_t : public chained_base_t
 {
   lava_beam_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "lava_beam", player, player -> find_spell( 114074 ), options_str )
+    chained_base_t( player, "lava_beam", player -> find_spell( 114074 ),
+        player -> find_spell( 114074 ) -> effectN( 3 ).base_value(), options_str )
   {
-    chain_multiplier = data().effectN( 1 ).chain_multiplier();
-    maelstrom_gain = data().effectN( 3 ).base_value();
-    energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
-    radius = 10.0;
-
     if ( player -> mastery.elemental_overload -> ok() )
     {
       overload = new lava_beam_overload_t( player );
       add_child( overload );
     }
-  }
-
-  // TODO: Does Lava Beam trigger Lightning Rod?
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    p() -> trigger_lightning_rod_damage( state );
-    td( state -> target ) -> debuff.lightning_rod -> trigger();
   }
 
   bool ready() override
@@ -3602,11 +3579,6 @@ struct lava_beam_t : public shaman_spell_t
       return false;
 
     return shaman_spell_t::ready();
-  }
-
-  std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const override
-  {
-    return __check_distance_targeting( this, tl );
   }
 };
 
@@ -5659,9 +5631,11 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   if ( ! attack -> weapon )
     return;
 
+  // If doom winds is not up, block all off-hand weapon attacks
   if ( ! buff.doom_winds -> check() && attack -> weapon -> slot != SLOT_MAIN_HAND )
     return;
-  else if ( buff.doom_winds -> check() && attack -> special )
+  // If doom winds is up, block all off-hand special weapon attacks
+  else if ( buff.doom_winds -> check() && attack -> special && attack -> weapon -> slot != SLOT_MAIN_HAND )
     return;
 
   double proc_chance = spec.windfury -> proc_chance();
