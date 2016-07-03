@@ -211,7 +211,8 @@ class DBCRecord(RawDBCRecord):
 
     def csv(self, delim = ',', header = False):
         s = ''
-        s += '%u%c' % (self._id, delim)
+        if self._dbcp.id_block_offset > 0:
+            s += '%u%c' % (self._id, delim)
 
         for i in range(0, len(self._fi)):
             field = self._fi[i]
