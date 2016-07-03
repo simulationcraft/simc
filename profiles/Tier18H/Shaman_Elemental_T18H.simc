@@ -30,17 +30,17 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 # In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
 actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die<=30
-actions+=/totem_mastery,if=buff.resonance_totem.remains<2
-actions+=/fire_elemental
-actions+=/elemental_mastery
-actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
-actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
-actions+=/run_action_list,name=single
+actions+=/call_action_list,name=aoe,if=active_enemies>2&spell_targets.chain_lightning>3
+actions+=/call_action_list,name=single
 
 # Single target action priority list
 
-actions.single=ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
+actions.single=berserking,if=!talent.ascendance.enabled|buff.ascendance.up
+actions.single+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions.single+=/totem_mastery,if=buff.resonance_totem.remains<2
+actions.single+=/fire_elemental
+actions.single+=/ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
+actions.single+=/elemental_mastery
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
 actions.single+=/earth_shock,if=maelstrom>=92
@@ -56,8 +56,6 @@ actions.single+=/icefury,if=maelstrom<=76&raid_event.movement.in>30
 actions.single+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
 actions.single+=/stormkeeper,if=(talent.ascendance.enabled&cooldown.ascendance.remains>10)|!talent.ascendance.enabled
 actions.single+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
-actions.single+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1,target_if=!debuff.lightning_rod.up
-actions.single+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
 actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=!debuff.lightning_rod.up
 actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
 actions.single+=/lightning_bolt,target_if=!debuff.lightning_rod.up
@@ -66,12 +64,8 @@ actions.single+=/frost_shock,if=maelstrom>=20&dot.flame_shock.remains>19
 
 # Multi target action priority list
 
-actions.aoe=stormkeeper
-actions.aoe+=/ascendance
-actions.aoe+=/liquid_magma_totem
+actions.aoe=liquid_magma_totem
 actions.aoe+=/earthquake_totem
-actions.aoe+=/lava_beam,target_if=!debuff.lightning_rod.up
-actions.aoe+=/lava_beam
 actions.aoe+=/chain_lightning,target_if=!debuff.lightning_rod.up
 actions.aoe+=/chain_lightning
 actions.aoe+=/lava_burst,moving=1
