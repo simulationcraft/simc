@@ -1792,7 +1792,8 @@ double rogue_attack_t::cost() const
   if ( p() -> talent.shadow_focus -> ok() &&
        ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.shadow_dance -> check() ) )
   {
-    c *= 1.0 + p() -> spell.shadow_focus -> effectN( 1 ).percent();
+    c *= 1.0 + ( p() -> spell.shadow_focus -> effectN( 1 ).percent() +
+                 p() -> spec.subtlety_rogue -> effectN( 3 ).percent() );
   }
 
   if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
@@ -5914,7 +5915,7 @@ void rogue_t::init_spells()
 
   talent.nightstalker       = find_talent_spell( "Nightstalker" );
   talent.subterfuge         = find_talent_spell( "Subterfuge" );
-  talent.shadow_focus       = find_talent_spell( "Shadow Focu" );
+  talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
 
   talent.master_poisoner    = find_talent_spell( "Master Poisoner" );
   talent.elaborate_planning = find_talent_spell( "Elaborate Planning" );
