@@ -149,6 +149,9 @@ public:
   double spirit_bomb; // Spirit Bomb healing accumulator
   event_t* spirit_bomb_driver;
 
+  // Option to cause Fel Rush and Vengeful Retreat to not invoke any movement (abusing terrain).
+  bool prevent_movement; 
+
   // Buffs
   struct
   {
@@ -478,6 +481,7 @@ public:
   bool    create_actions() override;
   void    create_buffs() override;
   expr_t* create_expression( action_t*, const std::string& ) override;
+  void    create_options() override;
   pet_t*  create_pet( const std::string& name, const std::string& type = std::string() ) override;
   std::string create_profile( save_e = SAVE_ALL ) override;
   bool    has_t18_class_trinket() const override;
@@ -886,6 +890,7 @@ public:
   bool hasted_gcd;
   bool demonic_presence;
   bool havoc_t19_2pc;
+  bool may_proc_fel_barrage;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil(),
@@ -896,7 +901,7 @@ public:
       demonic_presence( ab::data().affected_by(
         p -> mastery_spell.demonic_presence -> effectN( 1 ) ) ),
       havoc_t19_2pc( ab::data().affected_by( p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) ),
-      hasted_gcd( false )
+      hasted_gcd( false ), may_proc_fel_barrage( false )
   {
     ab::parse_options( o );
     ab::may_crit      = true;
@@ -1024,7 +1029,8 @@ public:
   virtual void tick( dot_t* d ) override
   {
     ab::tick( d );
-
+    
+    trigger_fel_barrage( d -> state );
     trigger_charred_warblades( d -> state );
     accumulate_spirit_bomb( d -> state );
 
@@ -1050,6 +1056,7 @@ public:
 
     if ( ab::result_is_hit( s -> result ) )
     {
+      trigger_fel_barrage( s );
       trigger_charred_warblades( s );
       accumulate_spirit_bomb( s );
 
@@ -1135,6 +1142,31 @@ public:
     }
 
     p() -> spirit_bomb += s -> result_amount * td( s -> target ) -> debuffs.frailty -> value();
+  }
+
+  void trigger_fel_barrage( action_state_t* s )
+  {
+    if ( ! p() -> talent.fel_barrage -> ok() )
+      return;
+
+    if ( ! may_proc_fel_barrage )
+      return;
+
+    if ( ! ab::result_is_hit( s -> result ) )
+      return;
+
+    if ( s -> result_amount <= 0 )
+      return;
+
+    if ( p() -> cooldown.fel_barrage_proc -> down() )
+      return;
+
+    if ( ! p() -> rng().roll( p() -> spec.fel_barrage_proc -> proc_chance() ) )
+      return;
+
+    p() -> proc.fel_barrage -> occur();
+    p() -> cooldown.fel_barrage -> reset( true );
+    p() -> cooldown.fel_barrage_proc -> start();
   }
 
 protected:
@@ -1410,7 +1442,7 @@ struct consume_magic_t : public demon_hunter_spell_t
   consume_magic_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "consume_magic", p, p -> spec.consume_magic, options_str )
   {
-    use_off_gcd = ignore_false_positive = true;
+    /* use_off_gcd = */ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = may_crit = false;
 
     const spelleffect_data_t effect = p -> find_spell( 218903 ) -> effectN(
@@ -2213,8 +2245,9 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     parse_options( options_str );
 
     trigger_gcd = timespan_t::zero();
-    use_off_gcd = true;
+    // use_off_gcd = true;
     may_miss = may_crit = callbacks = harmful = false;
+    range = 5.0; // Disallow use outside of melee.
   }
 
   void parse_mode( const std::string& value )
@@ -2486,12 +2519,10 @@ struct spirit_bomb_t : public demon_hunter_spell_t
 
 struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
 {
-  bool may_proc_fel_barrage;
-
   demon_hunter_attack_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil(),
                          const std::string& o = std::string() )
-    : base_t( n, p, s, o ), may_proc_fel_barrage( true )
+    : base_t( n, p, s, o )
   {
     special = true;
 
@@ -2506,38 +2537,6 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
     {
       weapon = &( p() -> off_hand_weapon );
     }
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    base_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      trigger_fel_barrage( s );
-    }
-  }
-
-  void trigger_fel_barrage( action_state_t* s )
-  {
-    if ( ! p() -> talent.fel_barrage -> ok() )
-      return;
-
-    if ( ! may_proc_fel_barrage )
-      return;
-
-    if ( p() -> cooldown.fel_barrage_proc -> down() )
-      return;
-
-    if ( s -> result_amount <= 0 )
-      return;
-
-    if ( ! p() -> rng().roll( p() -> spec.fel_barrage_proc -> proc_chance() ) )
-      return;
-
-    p() -> proc.fel_barrage -> occur();
-    p() -> cooldown.fel_barrage -> reset( true );
-    p() -> cooldown.fel_barrage_proc -> start();
   }
 };
 
@@ -2565,7 +2564,6 @@ struct melee_t : public demon_hunter_attack_t
     school     = SCHOOL_PHYSICAL;
     special    = false;
     background = repeating = auto_attack = may_glance = true;
-    may_proc_fel_barrage = false; // Apr 22 2016
     trigger_gcd = timespan_t::zero();
 
     status.main_hand = status.off_hand = LOST_CONTACT_RANGE;
@@ -2849,6 +2847,8 @@ struct blade_dance_base_t : public demon_hunter_attack_t
   {
     may_miss = may_crit = may_parry = may_block = may_dodge = false;
     cooldown = p -> get_cooldown( "blade_dance" );  // shared cooldown
+    // Disallow use outside of melee range.
+    range = 5.0;
 
     base_costs[ RESOURCE_FURY ] +=
       p -> talent.first_blood -> effectN( 2 ).resource( RESOURCE_FURY );
@@ -3282,6 +3282,7 @@ struct demons_bite_t : public demon_hunter_attack_t
       p -> find_class_spell( "Demon's Bite" ), options_str )
   {
     energize_die_sides = data().effectN( 3 ).die_sides();
+    may_proc_fel_barrage = true; // Jun 2 2016
 
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
   }
@@ -3336,7 +3337,6 @@ struct demon_blades_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "demon_blades", p, p -> find_spell( 203796 ) )
   {
     background           = true;
-    may_proc_fel_barrage = false; // Apr 22 2016
     cooldown -> duration = p -> talent.demon_blades -> internal_cooldown();
     energize_die_sides   = data().effectN( 3 ).die_sides();
   }
@@ -3375,6 +3375,7 @@ struct felblade_t : public demon_hunter_attack_t
     {
       dual = background = true;
       may_miss = may_dodge = may_parry = false;
+      may_proc_fel_barrage = true; // Jun 2 2016
 
       // Clear energize and then manually pick which effect to parse.
       energize_type = ENERGIZE_NONE;
@@ -3397,6 +3398,14 @@ struct felblade_t : public demon_hunter_attack_t
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
   { assert( s -> result_amount == 0.0 ); }
+
+  void execute() override
+  {
+    demon_hunter_attack_t::execute();
+
+    // Cancel Vengeful Retreat movement.
+    p() -> buffs.self_movement -> expire();
+  }
 };
 
 // Fracture =================================================================
@@ -3488,6 +3497,7 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     {
       background = dual = ground_aoe = true;
       aoe = -1;
+      may_proc_fel_barrage = true; // Jun 2 2016
     }
 
     void impact( action_state_t* s ) override
@@ -3525,6 +3535,8 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
 
     // Set MH to tick action. OH is executed in tick().
     tick_action = mh;
+    // Disallow use outside of melee range.
+    range = 5.0;
 
     // Silly reporting things
     school    = mh -> school;
@@ -3779,8 +3791,9 @@ struct throw_glaive_t : public demon_hunter_attack_t
   {
     cooldown -> charges +=
       p -> talent.master_of_the_glaive -> effectN( 2 ).base_value();
-    aoe                = 3;     // Ricochets to 2 additional enemies
-    radius             = 10.0;  // with 10 yards.
+    aoe = 3; // Ricochets to 2 additional enemies
+    radius = 10.0; // with 10 yards.
+    may_proc_fel_barrage = true; // Jun 2 2016
 
     if ( p -> talent.bloodlet -> ok() )
     {
@@ -3815,30 +3828,26 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     {
       background = dual = true;
       aoe = -1;
-      may_proc_fel_barrage = false; // Apr 22 2016
     }
   };
 
-  bool jump_cancel;
+  timespan_t disruption;
 
   vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str ) : 
     demon_hunter_attack_t( "vengeful_retreat", p,
       p -> find_class_spell( "Vengeful Retreat" ) ),
-    jump_cancel( false )
+      disruption( timespan_t::from_seconds( 2.0 ) )
   {
-    add_option( opt_bool( "jump_cancel", jump_cancel ) );
+    add_option( opt_timespan( "disruption_sec", disruption ) );
     parse_options( options_str );
 
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
     impact_action = new vengeful_retreat_damage_t( p );
     impact_action -> stats = stats;
-    if ( ! jump_cancel )
-    {
-      base_teleport_distance  = 20.0;
-      movement_directionality = MOVEMENT_OMNI;
-    }
     ignore_false_positive = true;
-    use_off_gcd           = true;
+    // use_off_gcd           = true;
+    base_teleport_distance  = 20.0;
+    movement_directionality = MOVEMENT_OMNI;
 
     cooldown -> duration += p -> talent.prepared -> effectN( 2 ).time_value();
     
@@ -3860,25 +3869,16 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
     p() -> buff.momentum -> trigger();
 
-    if ( jump_cancel )
-    {
-      // Prevents use of casted/channeled actions.
-      p() -> buff.jump_cancel -> trigger();
-    }
-    else
+    if ( ! p() -> prevent_movement && disruption > timespan_t::zero() )
     {
       // Buff to track the movement. This lets us delay autoattacks and other things.
-      p() -> buffs.self_movement -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-        timespan_t::from_seconds( 1.0 ) );
+      p() -> buffs.self_movement -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, disruption );
     }
   }
 
   bool ready() override
   {
     if ( p() -> buffs.self_movement -> check() )
-      return false;
-    // Don't let the player try to jump cancel while out of range.
-    if ( jump_cancel && p() -> current.distance_to_move > 5 )
       return false;
 
     return demon_hunter_attack_t::ready();
@@ -4367,6 +4367,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     next_fragment_spawn( 0 ),
     soul_fragments(),
     sigil_cooldowns( 0 ),
+    prevent_movement( false ),
     buff(),
     talent(),
     spec(),
@@ -4881,6 +4882,15 @@ expr_t* demon_hunter_t::create_expression( action_t* a, const std::string& name_
   }
 
   return player_t::create_expression( a, name_str );
+}
+
+// demon_hunter_t::create_options ==================================================
+
+void demon_hunter_t::create_options()
+{
+  player_t::create_options();
+
+  add_option( opt_bool( "prevent_movement", prevent_movement ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
