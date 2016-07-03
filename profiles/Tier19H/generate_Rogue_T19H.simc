@@ -8,17 +8,17 @@ artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:
 spec=assassination
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1805
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1805
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1805
 back=gossamerspun_greatcloak,id=138221,bonus_id=1805
-chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1805
+chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1805
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1805
 hands=dreamsculptors_gloves,id=139202,bonus_id=1805
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
 feet=stained_maggot_squishers,id=139200,bonus_id=1805
 finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805
-finger2=mindrend_band,id=138220,bonus_id=1805
+finger2=grubby_silver_ring,id=139236,bonus_id=1805
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
 trinket2=natures_call,id=139334,bonus_id=1805
 main_hand=,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1805/1805/1805
@@ -35,17 +35,17 @@ artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:1058:1:1059:3:1060
 spec=outlaw
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1805
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1805
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1805
 back=gossamerspun_greatcloak,id=138221,bonus_id=1805
-chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1805
+chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1805
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1805
 hands=dreamsculptors_gloves,id=139202,bonus_id=1805
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
 feet=stained_maggot_squishers,id=139200,bonus_id=1805
 finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805
-finger2=mindrend_band,id=138220,bonus_id=1805
+finger2=grubby_silver_ring,id=139236,bonus_id=1805
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
 trinket2=natures_call,id=139334,bonus_id=1805
 main_hand=,id=128872,bonus_id=742,gem_id=139260/139261/139262,relic_id=1805/1805/1805
@@ -62,17 +62,17 @@ artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:
 spec=subtlety
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1805
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1805
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1805
 back=gossamerspun_greatcloak,id=138221,bonus_id=1805
-chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1805
+chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1805
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1805
 hands=dreamsculptors_gloves,id=139202,bonus_id=1805
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
 feet=stained_maggot_squishers,id=139200,bonus_id=1805
 finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805
-finger2=mindrend_band,id=138220,bonus_id=1805
+finger2=grubby_silver_ring,id=139236,bonus_id=1805
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
 trinket2=natures_call,id=139334,bonus_id=1805
 main_hand=,id=128476,bonus_id=743,gem_id=139267/138226/139267,relic_id=1805/1805/1805
