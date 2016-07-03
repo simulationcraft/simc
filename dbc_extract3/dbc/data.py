@@ -126,7 +126,12 @@ class DBCRecord(RawDBCRecord):
         return v
 
     def field_names(self, delim):
-        return delim.join(self._cd)
+        fields = [ None ] * len(self._cd)
+        for i in self._cd.keys():
+            fields[self._cd[i]] = i
+        if self._dbcp.id_block_offset > 0:
+            fields = [ 'id', ] + fields
+        return delim.join(fields)
 
     # Customize data access, this gets only called on fields that do not exist in the object. If the
     # format of the field is 'S', the value is an offset to the stringblock giving the string
