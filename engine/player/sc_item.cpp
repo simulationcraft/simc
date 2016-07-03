@@ -823,7 +823,7 @@ std::string item_t::encoded_item() const
   }
 
   if ( ! option_ilevel_str.empty() )
-    s << ",ilevel=" << parsed.data.level;
+    s << ",ilevel=" << option_ilevel_str;
 
   if ( ! option_armor_type_str.empty() )
     s << ",type=" << util::armor_type_string( parsed.data.item_subclass );
@@ -868,6 +868,9 @@ std::string item_t::encoded_item() const
 
   if ( ! option_gem_id_str.empty() )
     s << ",gem_id=" << option_gem_id_str;
+
+  if ( ! option_relic_id_str.empty() )
+    s << ",relic_id=" << option_relic_id_str;
 
   if ( ! option_enchant_str.empty() )
     s << ",enchant=" << encoded_enchant();
