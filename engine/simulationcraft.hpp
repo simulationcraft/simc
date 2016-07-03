@@ -6432,6 +6432,8 @@ public:
 
   timespan_t remains() const;
   timespan_t time_to_next_tick() const;
+  timespan_t duration() const
+  { return ! is_ticking() ? timespan_t::zero() : current_duration; }
   int    ticks_left() const;
   const char* name() const
   { return name_str.c_str(); }
