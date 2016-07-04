@@ -2289,6 +2289,7 @@ struct odyns_fury_t: public warrior_attack_t
     parse_options( options_str );
     mh = new odyns_damage_t( p, p -> artifact.odyns_fury.data().effectN( 1 ).trigger(), "odyns_fury_mh" );
     mh -> weapon = &( p -> main_hand_weapon );
+    mh -> tick_may_crit = true;
     oh =  new odyns_damage_t( p, p -> artifact.odyns_fury.data().effectN( 2 ).trigger(), "odyns_fury_oh" );
     oh -> weapon = &( p -> off_hand_weapon );
     add_child( mh );
