@@ -5472,7 +5472,7 @@ struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buf
 
 struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
 {
-  ayalas_stone_heart_t(): super( WARRIOR, "ayalas_stone_heart" )
+  ayalas_stone_heart_t(): super( WARRIOR, "stone_heart" )
   {}
 
   buff_t*& buff_ptr( const special_effect_t& e ) override
@@ -5483,6 +5483,7 @@ struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
   buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
+      .rppm_scale( RPPM_HASTE )
       .spell( e.driver() -> effectN( 1 ).trigger() )
       .trigger_spell( e.driver() );
   }
