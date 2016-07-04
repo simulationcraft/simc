@@ -14,6 +14,8 @@
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
 // Move imp spawn to hog impact
+// HoG doesn't trigger soul conduit???
+// Fix Darkglare
 //
 // Affliction -
 // Haunt reset
@@ -793,8 +795,7 @@ struct legion_strike_t: public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
     aoe = -1;
-    split_aoe_damage = true;
-    weapon           = &( p -> main_hand_weapon );
+    weapon = &( p -> main_hand_weapon );
   }
 
   virtual bool ready() override
@@ -2323,15 +2324,15 @@ struct shadow_bolt_t: public warlock_spell_t
     base_crit += p->artifact.maw_of_shadows.percent();
   }
 
-//  virtual timespan_t execute_time() const override
-//  {
-//    if ( p() -> buffs.shadowy_inspiration-> check() )
-//    {
-//      return timespan_t::zero();
-//    }
-//
-//    return warlock_spell_t::execute_time();
-//  }
+  virtual timespan_t execute_time() const override
+  {
+    if ( p() -> buffs.shadowy_inspiration -> check() )
+    {
+      return timespan_t::zero();
+    }
+
+    return warlock_spell_t::execute_time();
+  }
 
   void execute() override
   {
@@ -2426,8 +2427,8 @@ struct demonic_empowerment_t: public warlock_spell_t
     if ( p() -> talents.power_trip -> ok() && rng().roll( power_trip_rng ) )
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.power_trip );
 
-    //if ( p() -> talents.shadowy_inspiration -> ok() )
-    //  p() -> buffs.shadowy_inspiration -> trigger();
+    if ( p() -> talents.shadowy_inspiration -> ok() )
+      p() -> buffs.shadowy_inspiration -> trigger();
 	}
 };
 
@@ -4383,7 +4384,7 @@ void warlock_t::create_buffs()
     .chance( find_spell( 205145 ) -> proc_chance() );
 
   //demonology buffs
-  //buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
+  buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
 }
 
 void warlock_t::init_rng()
