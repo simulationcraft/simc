@@ -58,7 +58,7 @@ public:
   const special_effect_t* archavons_heavy_hand, *groms_wartorn_pauldrons, *bindings_of_kakushan,
     *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_girdle, *kazzalax_fujiedas_fury, *the_walls_fell,
     *destiny_driver, *prydaz_xavarics_magnum_opus, *verjas_protectors_of_the_berserker_king,
-    *najentuss_vertebrae, *ayalas_stone_heart, *aggramars_stride, *manacles_of_mannoroth_the_flayer, *weight_of_the_earth;
+    *najentuss_vertebrae, *ayalas_stone_heart, *aggramars_stride, *weight_of_the_earth;
 
   // Active
   struct active_t
@@ -174,7 +174,6 @@ public:
 
     // Legendarys
     gain_t* ceannar_rage;
-    gain_t* manacles_of_mannoroth_the_flayer;
   } gain;
 
   // Spells
@@ -387,7 +386,7 @@ public:
     arms_trinket = prot_trinket = nullptr;
     archavons_heavy_hand = groms_wartorn_pauldrons = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
       ceannar_girdle = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = verjas_protectors_of_the_berserker_king =
-      najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = manacles_of_mannoroth_the_flayer = weight_of_the_earth = nullptr;
+      najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = weight_of_the_earth = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -1806,7 +1805,7 @@ struct heroic_leap_t: public warrior_attack_t
 
   timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( 0.25 );
+    return timespan_t::from_seconds( 0.5 );
   }
 
   void execute() override
@@ -4611,7 +4610,6 @@ void warrior_t::init_gains()
 
   gain.tier17_4pc_arms = get_gain( "tier17_4pc_arms" );
   gain.ceannar_rage = get_gain( "ceannar_rage" );
-  gain.manacles_of_mannoroth_the_flayer = get_gain( "manacles_of_mannoroth_the_flayer" );
 }
 
 // warrior_t::init_position ====================================================
@@ -5445,12 +5443,6 @@ static void aggramars_stride( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> aggramars_stride, effect );
 }
 
-static void manacles_of_mannoroth_the_flayer( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> manacles_of_mannoroth_the_flayer, effect );
-}
-
 static void weight_of_the_earth( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>(effect.player);
@@ -5492,7 +5484,7 @@ struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
   {
     return super::creator( e )
       .spell( e.driver() -> effectN( 1 ).trigger() )
-      .trigger_spell( e.driver() -> effectN( 1 ).trigger() );
+      .trigger_spell( e.driver() );
   }
 };
 
@@ -5589,7 +5581,7 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
     unique_gear::register_special_effect( 209579, stromkar_the_warbreaker );
-    unique_gear::register_special_effect( 207326, archavons_heavy_hand );
+    unique_gear::register_special_effect( 205144, archavons_heavy_hand );
     unique_gear::register_special_effect( 205597, groms_wartorn_pauldrons );
     unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
     unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), true );
@@ -5603,7 +5595,6 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 215096, najentuss_vertebrae );
     unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
     unique_gear::register_special_effect( 207438, aggramars_stride );
-    unique_gear::register_special_effect( 205144, manacles_of_mannoroth_the_flayer );
     unique_gear::register_special_effect( 208177, weight_of_the_earth );
   }
 
