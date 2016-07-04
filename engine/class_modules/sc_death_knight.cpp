@@ -3460,14 +3460,13 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
 // Frost Strike =============================================================
 
-struct frost_strike_offhand_t : public death_knight_melee_attack_t
+struct frost_strike_strike_t : public death_knight_melee_attack_t
 {
-  frost_strike_offhand_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "frost_strike_offhand", p, p -> find_spell( 66196 ) )
+  frost_strike_strike_t( death_knight_t* p, const std::string& n, weapon_t* w, const spell_data_t* s ) :
+    death_knight_melee_attack_t( n, p, s )
   {
-    background       = true;
-    weapon           = &( p -> off_hand_weapon );
-    special          = true;
+    background = special = true;
+    weapon           = w;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3499,27 +3498,19 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
 
 struct frost_strike_t : public death_knight_melee_attack_t
 {
-  frost_strike_offhand_t* oh_attack;
+  frost_strike_strike_t *mh, *oh;
 
   frost_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "frost_strike", p, p -> find_specialization_spell( "Frost Strike" ) ),
-    oh_attack( new frost_strike_offhand_t( p ) )
+    mh( nullptr ), oh( nullptr )
   {
     parse_options( options_str );
+    may_crit = false;
 
-    weapon = &( p -> main_hand_weapon );
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
-
-    if ( td( target ) -> debuff.razorice -> stack() == 5 ) // TODO: Hardcoded, sad face
-    {
-      m *= 1.0 + p() -> talent.shattering_strikes -> effectN( 1 ).percent();
-    }
-
-    return m;
+    mh = new frost_strike_strike_t( p, "frost_strike_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
+    add_child( mh );
+    oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+    add_child( oh );
   }
 
   void execute() override
@@ -3528,8 +3519,10 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( oh_attack )
-        oh_attack -> execute();
+      mh -> target = execute_state -> target;
+      mh -> execute();
+      oh -> target = execute_state -> target;
+      oh -> execute();
 
       p() -> trigger_runic_empowerment( resource_consumed );
     }
@@ -3550,15 +3543,6 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       //p() -> buffs.killing_machine -> trigger_attempts++;
       p() -> buffs.killing_machine -> execute();
-    }
-
-    // TODO: Both hands, or just main hand?
-    trigger_icecap( execute_state );
-
-    // TODO: Both hands, or just main hand?
-    if ( execute_state -> result == RESULT_CRIT )
-    {
-      p() -> buffs.t18_4pc_frost_crit -> trigger();
     }
   }
 };
@@ -3868,6 +3852,13 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       fo -> proxy_execute( execute_state );
     }
+
+    trigger_icecap( execute_state );
+
+    if ( execute_state -> result == RESULT_CRIT )
+    {
+      p() -> buffs.t18_4pc_frost_haste -> trigger();
+    }
   }
 };
 
@@ -3902,13 +3893,6 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
 
     consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
-
-    trigger_icecap( execute_state );
-
-    if ( execute_state -> result == RESULT_CRIT )
-    {
-      p() -> buffs.t18_4pc_frost_haste -> trigger();
-    }
   }
 
   double cost() const override
