@@ -1806,7 +1806,7 @@ struct moonfire_t : public druid_spell_t
     if ( player -> specialization() == DRUID_BALANCE )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount   = player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_amount   = player -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
     {
@@ -4820,7 +4820,7 @@ struct sunfire_t : public druid_spell_t
     if ( player -> specialization() == DRUID_BALANCE )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount   = player -> spec.balance -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_amount   = player -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
     {
