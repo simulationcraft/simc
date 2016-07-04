@@ -382,6 +382,7 @@ action_t::action_t( action_e       ty,
   starved_proc                   = NULL;
   action_skill                   = player -> base.skill;
   energize_type                  = ENERGIZE_NONE;
+  energize_amount                = 0;
 
   // New Stuff
   snapshot_flags = 0;
