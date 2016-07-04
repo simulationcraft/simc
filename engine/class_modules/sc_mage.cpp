@@ -188,8 +188,7 @@ public:
   state_switch_t burn_phase;
 
   // Miscellaneous
-  double cinder_count,
-         distance_from_rune,
+  double distance_from_rune,
          incanters_flow_stack_mult,
          iv_haste,
          pet_multiplier;
@@ -511,7 +510,6 @@ public:
     wild_arcanist( nullptr ),
     pyrosurge( nullptr ),
     shatterlance( nullptr ),
-    cinder_count( 6.0 ),
     distance_from_rune( 0.0 ),
     incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
     iv_haste( 1.0 ),
@@ -577,7 +575,6 @@ public:
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
   virtual void      create_buffs() override;
-  virtual void      create_options() override;
   virtual void      init_gains() override;
   virtual void      init_procs() override;
   virtual void      init_benefits() override;
@@ -1536,6 +1533,32 @@ struct chilled_t : public buff_t
     return buff_t::trigger( stacks, value, chance, duration );
   }
 };
+
+
+// Cinderstorm impact helper event ============================================
+namespace events {
+struct cinder_impact_event_t : public event_t
+{
+  action_t* cinder;
+  player_t* target;
+
+  cinder_impact_event_t( actor_t& m, action_t* c, player_t* t,
+                         timespan_t impact_time ) :
+    event_t( m ), cinder( c ), target( t )
+  {
+    add_event( impact_time );
+  }
+
+  virtual const char* name() const override
+  { return "cinder_impact_event"; }
+
+  void execute() override
+  {
+    cinder -> target = target;
+    cinder -> execute();
+  }
+};
+}
 
 
 // Erosion debuff =============================================================
@@ -3212,63 +3235,114 @@ struct charged_up_t : public arcane_mage_spell_t
 
 };
 
-// Cinderstorm Spell ========================================================
-// NOTE: Due to the akward pathing of cinderstorm in game, Cinderstorm here is
-//       just a driver for the "cinders" which actually deal damage. By altering
-//       the loop inside cinderstorm_t execute() you can customize the number of
-//       cinder impacts.
-// TODO: Fix the extremly hack-ish way that the increased damage on ignite targets
-//       is done.
-struct cinders_t : public fire_mage_spell_t
+
+// Cinderstorm Spell ==========================================================
+// Cinderstorm travel mechanism:
+// http://blue.mmo-champion.com/topic/409203-theorycrafting-questions/#post114
+// For simplicity, we assume they converge on average at 31 yards.
+// "9.17 degrees" is assumed to be a rounded value of 0.16 radians.
+// For distance k and deviation angle x, the arclength is k * x / sin(x).
+// From testing, cinders have a variable velocity, averaging ~30 yards/second.
+
+struct cinder_t : public fire_mage_spell_t
 {
-  cinders_t( mage_t* p ) :
-    fire_mage_spell_t( "cinders", p )
+  cinder_t( mage_t* p ) :
+    fire_mage_spell_t( "cinder", p, p -> find_spell( 198928 ) )
   {
     background = true;
     aoe = -1;
     triggers_ignite = true;
-    spell_power_mod.direct = p -> find_spell( 198928 ) -> effectN( 1 ).sp_coeff();
-    school = SCHOOL_FIRE;
   }
-  virtual void execute() override
-  {
-    bool ignite_exists = p() -> ignite -> get_dot( p() -> target ) -> is_ticking();
 
-    if ( ignite_exists )
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = fire_mage_spell_t::composite_target_multiplier( target );
+
+    if ( p() -> ignite -> get_dot( target ) -> is_ticking() )
     {
-      base_dd_multiplier *= 1.0 + p() -> talents.cinderstorm -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> talents.cinderstorm -> effectN( 1 ).percent();
     }
-    fire_mage_spell_t::execute();
-    base_dd_multiplier = 1.0;
+
+    return m;
   }
 };
 
 
 struct cinderstorm_t : public fire_mage_spell_t
 {
-  cinders_t* cinder;
+  cinder_t* cinder;
+  int cinder_count;
+
+  const double cinder_velocity = 31.0; // Yards per second
+  const double cinder_converge_distance = 31.0; // Yards
+  const double cinder_angle = 0.16; // Radians
 
   cinderstorm_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "cinderstorm", p, p -> talents.cinderstorm ),
-    cinder( new cinders_t( p ) )
+    cinder( new cinder_t( p ) ),
+    cinder_count( 6 )
   {
+    add_option( opt_int( "cinders", cinder_count ) );
     parse_options( options_str );
-    triggers_ignite = false;
+
     cooldown -> hasted = true;
+    add_child(cinder);
   }
-  virtual void impact( action_state_t* s ) override
+
+  virtual void execute() override
   {
-    fire_mage_spell_t::impact( s );
+    fire_mage_spell_t::execute();
 
-    cinder -> target = s -> target;
+    double target_dist = player -> current.distance;
 
-    for ( int i = 0; i < p() -> cinder_count; i++ )
+    // When cinder_count < 6, we assume "curviest" cinders are first to miss
+    for ( int i = 1; i <= cinder_count; i++ )
     {
-      cinder -> execute();
+      // TODO: Optimize this code by caching constants: theta, radius, arc_time
+      timespan_t travel_time;
+
+      // Cinder deviation angle from "forward"
+      double theta = cinder_angle * i;
+      // Radius of arc drawn by cinder
+      double radius = cinder_converge_distance / ( 2.0 * sin( theta ) );
+
+      if ( target_dist > cinder_converge_distance )
+      {
+        // Time spent "curving around"
+        timespan_t arc_time =
+          timespan_t::from_seconds( radius * 2 * theta / cinder_velocity );
+        // Time spent travelling straight at an angle, after curving
+        timespan_t straight_time = timespan_t::from_seconds(
+          // Residual distance beyond point of convergence
+          ( target_dist - cinder_converge_distance ) /
+          // Divided by magnitude of velocity in forward direction
+          ( cinder_velocity * cos( theta ) )
+        );
+        // Travel time is equal to the sum of traversing arc and straight path
+        travel_time = arc_time + straight_time;
+      }
+      else
+      {
+        // Use Cinderstorm's arc's symmetry to simplify calculations
+        // First calculate the offset distance and angle from halfway
+        double offset_dist = target_dist - ( cinder_converge_distance / 2.0 );
+        double offset_angle = asin( offset_dist / radius );
+        // Using this offset, we calculate the arc angle traced before impact,
+        // which also gives us arc length
+        double arc_angle = theta + offset_angle;
+        double arc_dist = radius * arc_angle;
+        // Divide by cinder velocity to obtain travel time
+        travel_time = timespan_t::from_seconds( arc_dist / cinder_velocity );
+      }
+
+      new ( *sim ) events::cinder_impact_event_t( *p(), cinder, target,
+                                                  travel_time);
     }
   }
 };
-// Combustion Spell =========================================================
+
+
+// Combustion Spell ===========================================================
 
 struct combustion_t : public fire_mage_spell_t
 {
@@ -6608,14 +6682,6 @@ void mage_t::create_buffs()
   buffs.shard_time_warp   = buff_creator_t( this, "shard_time_warp", find_spell( 2825 ) )
                                             .add_invalidate( CACHE_SPELL_HASTE );
   buffs.kaelthas_ultimate_ability = buff_creator_t( this, "kaelthas_ultimate_ability", find_spell( 209455 ) );
-}
-
-// mage_t::create_options ===================================================
-void mage_t::create_options()
-{
-  add_option( opt_float( "cinderstorm_cinder_count", cinder_count ) );
-
-  player_t::create_options();
 }
 
 // mage_t::init_gains =======================================================
