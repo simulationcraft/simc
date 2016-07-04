@@ -3974,7 +3974,7 @@ int paladin_t::get_local_enemies( double distance ) const
   for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
   {
     player_t* p = sim -> target_non_sleeping_list[ i ];
-    if ( p -> is_enemy() && get_player_distance( *p ) <= distance )
+    if ( p -> is_enemy() && get_player_distance( *p ) <= distance + p -> combat_reach )
       num_nearby += 1;
   }
   return num_nearby;

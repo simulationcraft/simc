@@ -897,7 +897,7 @@ timespan_t action_t::travel_time() const
     distance = player -> current.distance;
 
   if ( execute_state && execute_state -> target )
-    distance += execute_state -> target -> size;
+    distance += execute_state -> target -> height;
 
   if ( distance == 0 ) return timespan_t::zero();
 
@@ -1884,7 +1884,8 @@ bool action_t::ready()
     return false;
   }
 
-  if ( sim -> distance_targeting_enabled && range > 0 && target -> get_player_distance( *player ) > range )
+  if ( sim -> distance_targeting_enabled && range > 0 &&
+    target -> get_player_distance( *player ) > range + target -> combat_reach )
     return false;
 
   if ( target -> debuffs.invulnerable -> check() && harmful )

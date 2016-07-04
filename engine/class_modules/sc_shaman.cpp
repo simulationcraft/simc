@@ -66,7 +66,7 @@ static std::vector<player_t*> __check_distance_targeting( const action_t* action
       possibletarget = targets_left_to_try[rng_target];
 
       double distance_from_last_chain = last_chain -> get_player_distance( *possibletarget );
-      if ( distance_from_last_chain <= radius )
+      if ( distance_from_last_chain <= radius + possibletarget -> combat_reach )
       {
         last_chain = possibletarget;
         current_attempt.push_back( last_chain );
@@ -77,7 +77,7 @@ static std::vector<player_t*> __check_distance_targeting( const action_t* action
       {
         // If there is no hope of this target being chained to, there's no need to test it again
         // for other possibilities.
-        if ( distance_from_last_chain > ( radius * ( aoe - chain_number ) ) )
+        if ( distance_from_last_chain > ( ( radius + possibletarget -> combat_reach ) * ( aoe - chain_number ) ) )
           targets_left_to_try.erase( targets_left_to_try.begin() + rng_target );
         local_attempts++; // Only count failures towards the limit-cap.
       }

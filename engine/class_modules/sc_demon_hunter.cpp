@@ -109,6 +109,20 @@ const char* get_soul_fragment_str( soul_fragment_e type )
   }
 }
 
+struct movement_buff_t : public buff_t
+{
+  double yards_from_melee;
+  demon_hunter_t& dh;
+
+  movement_buff_t( demon_hunter_t* p, const buff_creator_basics_t& b ) :
+    buff_t( b ), dh( *p )
+  {}
+
+  void expire_override( int, timespan_t ) override;
+};
+
+static double VENGEFUL_RETREAT_DISTANCE = 20.0;
+
 /* Demon Hunter class definition
  *
  * Derived from player_t. Contains everything that defines the Demon Hunter
@@ -124,6 +138,8 @@ public:
   std::vector<attack_t*> death_sweep_attacks;
   std::vector<attack_t*> chaos_strike_attacks;
   std::vector<attack_t*> annihilation_attacks;
+
+  std::vector<damage_calc_helper_t*> damage_calcs;
   damage_calc_helper_t* blade_dance_dmg;
   damage_calc_helper_t* death_sweep_dmg;
   damage_calc_helper_t* chaos_strike_dmg;
@@ -149,8 +165,9 @@ public:
   double spirit_bomb; // Spirit Bomb healing accumulator
   event_t* spirit_bomb_driver;
 
-  // Option to cause Fel Rush and Vengeful Retreat to not invoke any movement (abusing terrain).
-  bool prevent_movement; 
+  // Override for target's hitbox size, relevant for Fel Rush and Vengeful Retreat.
+  double target_reach;
+  event_t* exiting_melee; // Event to disable melee abilities mid-VR.
 
   // Buffs
   struct
@@ -164,11 +181,13 @@ public:
     buff_t* blur;
     buff_t* chaos_blades;
     buff_t* death_sweep;
-    buff_t* jump_cancel;
+    movement_buff_t* fel_rush;
     buff_t* momentum;
+    buff_t* out_of_range;
     buff_t* nemesis;
     buff_t* prepared;
     buff_t* rage_of_the_illidari;
+    movement_buff_t* vengeful_retreat;
 
     // Vengeance
     buff_t* blade_turning;
@@ -270,6 +289,8 @@ public:
     const spell_data_t* death_sweep;
     const spell_data_t* demonic_appetite_fury;
     const spell_data_t* fel_barrage_proc;
+    const spell_data_t* fel_rush_damage;
+    const spell_data_t* vengeful_retreat;
 
     // Vengeance
     const spell_data_t* vengeance;
@@ -539,10 +560,26 @@ public:
   unsigned get_active_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
   unsigned get_total_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
   void     spawn_soul_fragment( soul_fragment_e, unsigned = 1 );
+  void     invalidate_damage_calcs();
+  double   get_target_reach() const
+  { return target_reach >= 0 ? target_reach : sim -> target -> combat_reach; }
 
 private:
   target_specific_t<demon_hunter_td_t> _target_data;
 };
+
+// Movement Buff definition =================================================
+
+void movement_buff_t::expire_override( int s, timespan_t d )
+{
+  buff_t::expire_override( s, d );
+
+  if ( d == timespan_t::zero() && yards_from_melee > 0 )
+  {
+    dh.buff.out_of_range -> trigger( 1, dh.cache.run_speed(), -1.0,
+      timespan_t::from_seconds( yards_from_melee / dh.cache.run_speed() ) );
+  }
+}
 
 // Delayed Execute Event ====================================================
 
@@ -1087,15 +1124,20 @@ public:
     }
   }
 
-  virtual bool usable_moving() const override
+  virtual bool ready() override
   {
-    if ( ab::execute_time() > timespan_t::zero() &&
-      ( p() -> buff.jump_cancel -> up() || p() -> soul_fragment_pick_up ) )
+    if ( ( ab::execute_time() > timespan_t::zero() || ab::channeled ) &&
+      ( p() -> buff.out_of_range -> check() || p() -> soul_fragment_pick_up ) )
     {
       return false;
     }
 
-    return ab::usable_moving();
+    if ( p() -> buff.out_of_range -> check() && range <= 5.0 )
+    {
+      return false;
+    }
+
+    return ab::ready();
   }
 
   void trigger_refund()
@@ -1394,8 +1436,7 @@ struct blur_t : public demon_hunter_spell_t
 
     if ( p() -> artifact.demon_speed.rank() )
     {
-      p() -> cooldown.fel_rush -> reset( false );
-      p() -> cooldown.fel_rush -> reset( false );
+      p() -> cooldown.fel_rush -> reset( false, true );
     }
   }
 };
@@ -1714,7 +1755,7 @@ struct fel_rush_t : public demon_hunter_spell_t
   struct fel_rush_damage_t : public demon_hunter_spell_t
   {
     fel_rush_damage_t( demon_hunter_t* p ) :
-      demon_hunter_spell_t( "fel_rush_dmg", p, p -> find_spell( 192611 ) )
+      demon_hunter_spell_t( "fel_rush_dmg", p, p -> spec.fel_rush_damage )
     {
       aoe = -1;
       dual = background = true;
@@ -1731,26 +1772,27 @@ struct fel_rush_t : public demon_hunter_spell_t
     }
   };
 
-  bool jump_cancel;
+  bool a_cancel;
 
   fel_rush_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_spell_t( "fel_rush", p, p -> find_class_spell( "Fel Rush" ) ),
-    jump_cancel( false )
+    a_cancel( false )
   {
-    add_option( opt_bool( "jump_cancel", jump_cancel ) );
+    add_option( opt_bool( "animation_cancel", a_cancel ) );
     parse_options( options_str );
 
     may_block = may_crit = false;
     min_gcd = trigger_gcd;
-    if ( ! jump_cancel )
-    {
-      base_teleport_distance  = p -> find_spell( 192611 ) -> effectN( 1 ).radius();
-      movement_directionality = MOVEMENT_OMNI;
-      ignore_false_positive   = true;
-    }
 
     impact_action = new fel_rush_damage_t( p );
     impact_action -> stats = stats;
+
+    if ( ! a_cancel )
+    {
+      base_teleport_distance  = impact_action -> radius;
+      movement_directionality = MOVEMENT_OMNI;
+      ignore_false_positive   = true;
+    }
 
     // Add damage modifiers in fel_rush_damage_t, not here.
   }
@@ -1772,37 +1814,35 @@ struct fel_rush_t : public demon_hunter_spell_t
 
   void execute() override
   {
+    // If we're out of range already, then don't invoke out of range after the movement ends.
+    bool towards = p() -> current.distance_to_move || p() -> buff.out_of_range -> check() ||
+      p() -> buff.vengeful_retreat -> check();
+
     demon_hunter_spell_t::execute();
 
+    // "Move" back into range if we're out.
+    p() -> buff.vengeful_retreat -> expire();
+    p() -> buff.out_of_range -> expire();
+    event_t::cancel( p() -> exiting_melee );
+
+    if ( ! a_cancel )
+    {
+      p() -> buff.fel_rush -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
+        p() -> gcd_ready - sim -> current_time() );
+
+      p() -> buff.fel_rush -> yards_from_melee = towards ? 0 : 
+        std::max( 0.0, base_teleport_distance - ( p() -> get_target_reach() + 5.0 ) * 2.0 );
+    }
+
     p() -> buff.momentum -> trigger();
-
-    if ( jump_cancel )
-    {
-      // Prevents use of casted/channeled actions.
-      p() -> buff.jump_cancel -> trigger();
-    }
-    else
-    {
-      // Buff to track the rush's movement. This lets us delay autoattacks.
-      p() -> buffs.self_movement -> trigger( 1, 0, -1.0, data().gcd() );
-
-      // Adjust new distance from target.
-      p() -> current.distance =
-        std::abs( p() -> current.distance - composite_teleport_distance( execute_state ) );
-
-      // If new distance after rushing is too far away to melee from, then trigger
-      // movement back into melee range.
-      if ( p() -> current.distance > 5.0 )
-      {
-        p() -> trigger_movement( p() -> current.distance - 5.0, MOVEMENT_TOWARDS );
-      }
-    }
   }
 
   bool ready() override
   {
-    if ( p() -> buffs.self_movement -> check() )
+    if ( p() -> buff.vengeful_retreat -> check() )
+    {
       return false;
+    }
 
     return demon_hunter_spell_t::ready();
   }
@@ -2000,6 +2040,9 @@ struct fiery_brand_t : public demon_hunter_spell_t
        automatically copy this state to the dot state. */
     debug_cast<fiery_brand_state_t*>( s ) -> primary = true;
   }
+
+  dot_t* get_dot( player_t* t ) override
+  { return impact_action -> get_dot( t ); }
 };
 
 // Immolation Aura ==========================================================
@@ -2141,35 +2184,30 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
     if ( p() -> talent.demon_reborn -> ok() )
     {
-      p() -> cooldown.blade_dance -> reset( false );
-      p() -> cooldown.blur -> reset( false );
-      p() -> cooldown.chaos_blades -> reset( false );
-      p() -> cooldown.chaos_nova -> reset( false );
-      p() -> cooldown.consume_magic -> reset( false );
-      p() -> cooldown.death_sweep -> reset( false );
-      p() -> cooldown.eye_beam -> reset( false );
-      p() -> cooldown.felblade -> reset( false );
-      p() -> cooldown.fel_barrage -> reset( false );
-      p() -> cooldown.fel_eruption -> reset( false );
-      p() -> cooldown.fel_rush -> reset( false );
-      p() -> cooldown.fel_rush -> reset( false );
-      p() -> cooldown.nemesis -> reset( false );
-      p() -> cooldown.netherwalk -> reset( false );
-      p() -> cooldown.fury_of_the_illidari -> reset( false );
-      p() -> cooldown.throw_glaive -> reset( false );
-      if ( p() -> talent.master_of_the_glaive -> ok() )
-      {
-        p() -> cooldown.throw_glaive -> reset( false );
-      }
-      p() -> cooldown.vengeful_retreat -> reset( false );
+      p() -> cooldown.blade_dance -> reset( false, true );
+      p() -> cooldown.blur -> reset( false, true );
+      p() -> cooldown.chaos_blades -> reset( false, true );
+      p() -> cooldown.chaos_nova -> reset( false, true );
+      p() -> cooldown.consume_magic -> reset( false, true );
+      p() -> cooldown.death_sweep -> reset( false, true );
+      p() -> cooldown.eye_beam -> reset( false, true );
+      p() -> cooldown.felblade -> reset( false, true );
+      p() -> cooldown.fel_barrage -> reset( false, true );
+      p() -> cooldown.fel_eruption -> reset( false, true );
+      p() -> cooldown.fel_rush -> reset( false, true );
+      p() -> cooldown.nemesis -> reset( false, true );
+      p() -> cooldown.netherwalk -> reset( false, true );
+      p() -> cooldown.fury_of_the_illidari -> reset( false, true );
+      p() -> cooldown.throw_glaive -> reset( false, true );
+      p() -> cooldown.vengeful_retreat -> reset( false, true );
     }
 
     if ( p() -> legendary.runemasters_pauldrons )
     {
-      p() -> cooldown.sigil_of_chains -> reset( false );
-      p() -> cooldown.sigil_of_flame -> reset( false );
-      p() -> cooldown.sigil_of_misery -> reset( false );
-      p() -> cooldown.sigil_of_silence -> reset( false );
+      p() -> cooldown.sigil_of_chains -> reset( false, true );
+      p() -> cooldown.sigil_of_flame -> reset( false, true );
+      p() -> cooldown.sigil_of_misery -> reset( false, true );
+      p() -> cooldown.sigil_of_silence -> reset( false, true );
     }
   }
 };
@@ -2375,11 +2413,6 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     }
 
     if ( ! p() -> get_active_soul_fragments( type ) )
-    {
-      return false;
-    }
-
-    if ( p() -> buff.jump_cancel -> check() )
     {
       return false;
     }
@@ -2621,7 +2654,7 @@ struct melee_t : public demon_hunter_attack_t
   void execute() override
   {
     if ( p() -> current.distance_to_move > 5 || p() -> channeling || 
-      p() -> buffs.self_movement -> check() )
+      p() -> buff.out_of_range -> check() )
     {
       status_e s;
 
@@ -2800,9 +2833,7 @@ struct blade_dance_event_t : public event_t
   }
 
   const char* name() const override
-  {
-    return "Blade Dance";
-  }
+  { return "Blade Dance"; }
 
   timespan_t next_execute() const
   {
@@ -3404,7 +3435,8 @@ struct felblade_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     // Cancel Vengeful Retreat movement.
-    p() -> buffs.self_movement -> expire();
+    p() -> buff.vengeful_retreat -> expire();
+    p() -> buff.out_of_range -> expire();
   }
 };
 
@@ -3821,6 +3853,32 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
 struct vengeful_retreat_t : public demon_hunter_attack_t
 {
+  struct exit_melee_event_t : public event_t
+  {
+    demon_hunter_t& dh;
+
+    exit_melee_event_t( demon_hunter_t* p, timespan_t d ) :
+      event_t( *p ), dh( *p )
+    {
+      assert( d > timespan_t::zero() );
+      add_event( d );
+    }
+
+    const char* name() const override
+    { return "exit_melee_event"; }
+
+    void execute() override
+    {
+      if ( ! dh.buff.out_of_range -> check() )
+      {
+        // Trigger out of range with no duration. This will get overridden once the movement completes.
+        dh.buff.out_of_range -> trigger( 1, dh.cache.run_speed() );
+      }
+
+      dh.exiting_melee = nullptr;
+    }
+  };
+
   struct vengeful_retreat_damage_t : public demon_hunter_attack_t
   {
     vengeful_retreat_damage_t( demon_hunter_t* p ) :
@@ -3831,22 +3889,17 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     }
   };
 
-  timespan_t disruption;
-
   vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str ) : 
-    demon_hunter_attack_t( "vengeful_retreat", p,
-      p -> find_class_spell( "Vengeful Retreat" ) ),
-      disruption( timespan_t::from_seconds( 2.0 ) )
+    demon_hunter_attack_t( "vengeful_retreat", p, p -> spec.vengeful_retreat )
   {
-    add_option( opt_timespan( "disruption_sec", disruption ) );
     parse_options( options_str );
 
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
     impact_action = new vengeful_retreat_damage_t( p );
     impact_action -> stats = stats;
     ignore_false_positive = true;
-    // use_off_gcd           = true;
-    base_teleport_distance  = 20.0;
+    use_off_gcd           = true;
+    base_teleport_distance  = VENGEFUL_RETREAT_DISTANCE;
     movement_directionality = MOVEMENT_OMNI;
 
     cooldown -> duration += p -> talent.prepared -> effectN( 2 ).time_value();
@@ -3860,7 +3913,20 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
   void execute() override
   {
+    double dtm = p() -> current.distance_to_move;
+
     demon_hunter_attack_t::execute();
+
+    p() -> buff.vengeful_retreat -> trigger();
+    
+    double yards_from_melee = std::max( 0.0, base_teleport_distance - ( p() -> get_target_reach() + 5.0 ) * 2.0 );
+    p() -> buff.vengeful_retreat -> yards_from_melee = yards_from_melee;
+
+    if ( yards_from_melee > 0.0 )
+    {
+      p() -> exiting_melee = new ( *sim ) exit_melee_event_t( p(), 
+        data().duration() * ( 1.0 - ( yards_from_melee / base_teleport_distance ) ) );
+    }
 
     if ( hit_any_target )
     {
@@ -3868,17 +3934,11 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     }
 
     p() -> buff.momentum -> trigger();
-
-    if ( ! p() -> prevent_movement && disruption > timespan_t::zero() )
-    {
-      // Buff to track the movement. This lets us delay autoattacks and other things.
-      p() -> buffs.self_movement -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, disruption );
-    }
   }
 
   bool ready() override
   {
-    if ( p() -> buffs.self_movement -> check() )
+    if ( p() -> buff.fel_rush -> check() )
       return false;
 
     return demon_hunter_attack_t::ready();
@@ -3894,25 +3954,49 @@ namespace buffs
 template <typename BuffBase>
 struct demon_hunter_buff_t : public BuffBase
 {
-protected:
-  typedef demon_hunter_buff_t base_t;
   demon_hunter_t& dh;
+  bool invalidates_damage_calcs;
 
-public:
   demon_hunter_buff_t( demon_hunter_t& p, const buff_creator_basics_t& params )
-    : BuffBase( params ), dh( p )
+    : BuffBase( params ), dh( p ), invalidates_damage_calcs( false )
   {
   }
 
   demon_hunter_buff_t( demon_hunter_t& p, const absorb_buff_creator_t& params )
-    : BuffBase( params ), dh( p )
+    : BuffBase( params ), dh( p ), invalidates_damage_calcs( false )
   {
   }
 
   demon_hunter_t& p() const
+  { return dh; }
+
+  virtual void start( int stacks, double value, timespan_t duration ) override
   {
-    return dh;
+    bb::start( stacks, value, duration );
+    
+    if ( invalidates_damage_calcs )
+    {
+      p().invalidate_damage_calcs();
+    }
   }
+
+  virtual void expire_override( int expiration_stacks,
+                                timespan_t remaining_duration ) override
+  {
+    bb::expire_override( expiration_stacks,
+      remaining_duration );
+    
+    if ( invalidates_damage_calcs )
+    {
+      p().invalidate_damage_calcs();
+    }
+  }
+
+protected:
+  typedef demon_hunter_buff_t base_t;
+
+private:
+  typedef BuffBase bb;
 };
 
 // Anguish ==================================================================
@@ -4022,7 +4106,9 @@ struct nemesis_debuff_t : public demon_hunter_buff_t<debuff_t>
         *p, buff_creator_t( actor_pair_t( target, p ), "nemesis", p -> talent.nemesis )
         .default_value( p -> talent.nemesis -> effectN( 1 ).percent() )
         .cd( timespan_t::zero() ) )
-  {}
+  {
+    invalidates_damage_calcs = true;
+  }
 
   virtual void expire_override( int expiration_stacks,
                                 timespan_t remaining_duration ) override
@@ -4123,7 +4209,6 @@ struct soul_barrier_t : public demon_hunter_buff_t<absorb_buff_t>
     return amount;
   }
 };
-
 }  // end namespace buffs
 
 // ==========================================================================
@@ -4192,6 +4277,8 @@ public:
     valid( false ), action( attacks.at( 0 ) ),
     state( action -> get_state() ), first_blood( 1.0 )
   {
+    debug_cast<demon_hunter_t*>( action -> player ) -> damage_calcs.push_back( this );
+
     // Always calculate the damage of a hit.
     state -> result = RESULT_HIT;
 
@@ -4239,7 +4326,10 @@ public:
       valid = true;
     }
 
-    assert( cached_amount == calculate() );
+#ifndef NDEBUG
+    double c = calculate();
+    assert( cached_amount == c );
+#endif
 
     return cached_amount;
   }
@@ -4322,12 +4412,7 @@ struct damage_calc_invalidate_callback_t
   {};
 
   void operator() ( player_t* )
-  {
-    if ( dh -> blade_dance_dmg ) dh -> blade_dance_dmg -> invalidate();
-    if ( dh -> death_sweep_dmg ) dh -> death_sweep_dmg -> invalidate();
-    if ( dh -> chaos_strike_dmg ) dh -> chaos_strike_dmg -> invalidate();
-    if ( dh -> annihilation_dmg ) dh -> annihilation_dmg -> invalidate();
-  }
+  { dh -> invalidate_damage_calcs(); }
 };
 
 // ==========================================================================
@@ -4358,16 +4443,18 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     death_sweep_attacks( 0 ),  death_sweep_dmg( nullptr ),
     chaos_strike_attacks( 0 ), chaos_strike_dmg( nullptr ),
     annihilation_attacks( 0 ), annihilation_dmg( nullptr ),
+    damage_calcs( 0 ),
     melee_main_hand( nullptr ),
     melee_off_hand( nullptr ),
     chaos_blade_main_hand( nullptr ),
     chaos_blade_off_hand( nullptr ),
     spirit_bomb_driver( nullptr ),
+    exiting_melee( nullptr ),
     spirit_bomb( 0.0 ),
     next_fragment_spawn( 0 ),
     soul_fragments(),
     sigil_cooldowns( 0 ),
-    prevent_movement( false ),
+    target_reach( -1.0 ),
     buff(),
     talent(),
     spec(),
@@ -4597,11 +4684,19 @@ void demon_hunter_t::create_buffs()
       .default_value( spec.death_sweep -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_DODGE );
 
+  buff.fel_rush =
+    new movement_buff_t( this, buff_creator_t( this, "fel_rush_movement", spell_data_t::nil() )
+      .chance( 1.0 ) );
+
   buff.momentum =
     buff_creator_t( this, "momentum", find_spell( 208628 ) )
       .default_value( find_spell( 208628 ) -> effectN( 1 ).percent() )
       .trigger_spell( talent.momentum )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.out_of_range = 
+    buff_creator_t( this, "out_of_range", spell_data_t::nil() )
+      .chance( 1.0 );
 
   // TODO: Buffs for each race?
   buff.nemesis = buff_creator_t( this, "nemesis", find_spell( 208605 ) )
@@ -4619,10 +4714,10 @@ void demon_hunter_t::create_buffs()
   buff.rage_of_the_illidari =
     buff_creator_t( this, "rage_of_the_illidari", find_spell( 217060 ) );
 
-  buff.jump_cancel =
-    buff_creator_t( this, "jump_cancel", spell_data_t::nil() )
+  buff.vengeful_retreat = 
+    new movement_buff_t( this, buff_creator_t( this, "vengeful_retreat_movement", spell_data_t::nil() )
       .chance( 1.0 )
-      .duration( timespan_t::from_millis( 750 ) );
+      .duration( spec.vengeful_retreat -> duration() ) );
 
   // Vengeance
   buff.blade_turning =
@@ -4890,7 +4985,7 @@ void demon_hunter_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_bool( "prevent_movement", prevent_movement ) );
+  add_option( opt_float( "target_reach", target_reach ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -5114,6 +5209,8 @@ void demon_hunter_t::init_spells()
   spec.chaos_strike        = find_class_spell( "Chaos Strike" );
   spec.chaos_strike_refund = find_spell( 197125 );
   spec.death_sweep         = find_spell( 210152 );
+  spec.fel_rush_damage     = find_spell( 192611 );
+  spec.vengeful_retreat    = find_class_spell( "Vengeful Retreat" );
 
   // Vengeance
   spec.vengeance          = find_specialization_spell( "Vengeance Demon Hunter" );
@@ -5301,16 +5398,27 @@ void demon_hunter_t::invalidate_cache( cache_e c )
   switch ( c )
   {
     case CACHE_MASTERY:
-      if ( mastery_spell.demonic_presence -> ok() )
-      {
-        invalidate_cache( CACHE_RUN_SPEED );
-      }
+      if ( mastery_spell.demonic_presence -> ok() ) invalidate_cache( CACHE_RUN_SPEED );
       break;
     case CACHE_CRIT_CHANCE:
-      if ( spec.riposte -> ok() )
+      if ( spec.riposte -> ok() ) invalidate_cache( CACHE_PARRY );
+      break;
+    case CACHE_RUN_SPEED:
+      if ( buff.out_of_range -> check() && buff.out_of_range -> remains_gt( timespan_t::zero() ) )
       {
-        invalidate_cache( CACHE_PARRY );
+        // Recalculate movement duration.
+        assert( buff.out_of_range -> value() > 0 );
+        assert( buff.out_of_range -> expiration.size() );
+
+        timespan_t remains = buff.out_of_range -> remains();
+        remains *= buff.out_of_range -> check_value() / cache.run_speed();
+        
+        /* Adjust the remaining duration on movement for the new run speed.
+        Expire and re-trigger because we can't reschedule backwards. */
+        buff.out_of_range -> expire();
+        buff.out_of_range -> trigger( 1, cache.run_speed(), -1.0, remains );
       }
+      break;
     default:
       break;
   }
@@ -5458,8 +5566,9 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( "pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=30" );
   def -> add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=active_enemies>desired_targets|raid_event.adds.in>60" );
   def -> add_action( this, "Consume Magic" );
-  def -> add_action( this, "Vengeful Retreat", "if=gcd.remains&((talent.momentum.enabled&buff.momentum.down)|!talent.momentum.enabled)&buff.prepared.down" );
-  def -> add_action( this, "Fel Rush", "jump_cancel=1,if=talent.momentum.enabled&buff.momentum.down&raid_event.movement.in>charges*10&(charges=2|cooldown.vengeful_retreat.remains>4)" );
+  def -> add_action( this, "Vengeful Retreat", "if=gcd.remains&((talent.momentum.enabled&buff.momentum.down)|!talent.momentum.enabled)&buff.prepared.down",
+    "Vengeful Retreat backwards through the target to minimize downtime." );
+  def -> add_action( this, "Fel Rush", "animation_cancel=1,if=talent.momentum.enabled&buff.momentum.down&raid_event.movement.in>charges*10&(charges=2|cooldown.vengeful_retreat.remains>4)" );
   def -> add_action( this, "Eye Beam", "if=talent.demonic.enabled&buff.metamorphosis.down&(!talent.first_blood.enabled|fury>=80|fury.deficit<30)" );
   def -> add_talent( this, "Chaos Blades", "if=buff.chaos_blades.down&cooldown.metamorphosis.remains>100" );
   def -> add_talent( this, "Chaos Blades", "sync=metamorphosis" );
@@ -5488,7 +5597,7 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( this, "Throw Glaive", "if=buff.metamorphosis.down&(talent.bloodlet.enabled|spell_targets>=3)" );
   def -> add_action( this, "Chaos Strike", "if=!talent.momentum.enabled|buff.momentum.up|fury.deficit<=30+buff.prepared.up*12" );
   def -> add_talent( this, "Fel Barrage", "if=charges=4&buff.metamorphosis.down" );
-  def -> add_action( this, "Fel Rush", "jump_cancel=1,if=!talent.momentum.enabled&raid_event.movement.in>charges*10" );
+  def -> add_action( this, "Fel Rush", "animation_cancel=1,if=!talent.momentum.enabled&raid_event.movement.in>charges*10" );
   def -> add_action( this, "Demon's Bite" );
   def -> add_action( this, "Felblade", "if=movement.distance" );
   def -> add_action( this, "Fel Rush", "if=movement.distance>15" );
@@ -5888,6 +5997,7 @@ void demon_hunter_t::reset()
   blade_dance_driver = nullptr;
   soul_fragment_pick_up = nullptr;
   spirit_bomb_driver = nullptr;
+  exiting_melee = nullptr;
   next_fragment_spawn = 0;
   shear_counter = 0;
   metamorphosis_health = 0;
@@ -6055,6 +6165,16 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment_e type, unsigned n )
     sim -> out_debug.printf( "%s creates %u %ss. active=%u total=%u", name(), n,
       get_soul_fragment_str( type ), get_active_soul_fragments( type ),
       get_total_soul_fragments( type ) );
+  }
+}
+
+// demon_hunter_t::invalidate_damage_calcs ==================================
+
+void demon_hunter_t::invalidate_damage_calcs()
+{
+  for ( size_t i = 0; i < damage_calcs.size(); i++ )
+  {
+    damage_calcs[ i ] -> invalidate();
   }
 }
 

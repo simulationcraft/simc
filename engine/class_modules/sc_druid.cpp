@@ -4571,8 +4571,11 @@ struct lunar_beam_t : public druid_spell_t
     {
       last_tick = d -> current_tick;
 
-      if ( ! sim -> distance_targeting_enabled || p() -> get_ground_aoe_distance( *d -> state ) <= radius )
+      if ( ! sim -> distance_targeting_enabled ||
+        p() -> get_ground_aoe_distance( *d -> state ) <= radius + d -> target -> combat_reach )
+      {
         heal -> execute();
+      }
     }
   }
 };
@@ -5117,7 +5120,7 @@ struct starfall_t : public druid_spell_t
         player_t* t = sim -> target_non_sleeping_list[ i ];
 
         if ( t -> is_enemy() && t != s -> target &&
-          t -> get_ground_aoe_distance( *s ) <= p() -> active.echoing_stars -> radius )
+          t -> get_ground_aoe_distance( *s ) <= p() -> active.echoing_stars -> radius + t -> combat_reach )
           targets.push_back( t );
       }
         
@@ -5195,7 +5198,7 @@ struct starfall_t : public druid_spell_t
       player_t* t = sim -> target_non_sleeping_list[ i ];
 
       if ( t -> is_enemy() && ( ! sim -> distance_targeting_enabled ||
-        t -> get_player_distance( *execute_state -> target ) <= p() -> active.starfall -> radius ) )
+        t -> get_player_distance( *execute_state -> target ) <= p() -> active.starfall -> radius + t -> combat_reach ) )
       {
         td( t ) -> debuff.stellar_empowerment -> trigger();
       }
@@ -5434,12 +5437,9 @@ struct wild_charge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( p() -> current.distance_to_move > data().min_range() )
-    {
-      p() -> buff.wild_charge_movement -> trigger( 1, movement_speed_increase, 1,
-          timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() +
-                                    movement_speed_increase ) ) ) );
-    }
+    p() -> buff.wild_charge_movement -> trigger( 1, movement_speed_increase, 1,
+        timespan_t::from_seconds( p() -> current.distance_to_move / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() +
+                                  movement_speed_increase ) ) ) );
 
     druid_spell_t::execute();
   }

@@ -3009,7 +3009,7 @@ struct cooldown_t
   // the user would react to rather than plan ahead for.
   void adjust( timespan_t, bool requires_reaction = true );
   void adjust_recharge_multiplier(); // Reacquire cooldown recharge multiplier from the action to adjust the cooldown time
-  void reset( bool require_reaction );
+  void reset( bool require_reaction, bool all_charges = false );
   void start( action_t* action, timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
   void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
 
@@ -3632,9 +3632,10 @@ struct player_t : public actor_t
   specialization_e  _spec;
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
   int          disable_hotfixes;
-  bool scale_player;
-  double death_pct; // Player will die if he has equal or less than this value as health-pct
-  double size; // Actor size, only used for enemies. Affects the travel distance calculation for spells.
+  bool         scale_player;
+  double       death_pct; // Player will die if he has equal or less than this value as health-pct
+  double       height; // Actor height, only used for enemies. Affects the travel distance calculation for spells.
+  double       combat_reach; // AKA hitbox size, for enemies.
   int          timewalk;
 
   // dynamic attributes - things which change during combat

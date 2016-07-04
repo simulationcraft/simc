@@ -484,7 +484,8 @@ player_t::player_t( sim_t*             s,
   disable_hotfixes( 0 ),
   scale_player( true ),
   death_pct( 0.0 ),
-  size( 0 ),
+  height( 0 ),
+  combat_reach( 1.0 ),
 
   // dynamic stuff
   target( 0 ),

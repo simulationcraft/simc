@@ -204,12 +204,12 @@ struct death_knight_td_t : public actor_target_data_t {
       if ( dot.defile -> is_ticking() )
       {
         return source -> get_ground_aoe_distance( *dot.defile -> state ) <=
-               dot.defile -> current_action -> radius;
+               dot.defile -> current_action -> radius + target -> combat_reach;
       }
       else if ( dot.death_and_decay -> is_ticking() )
       {
         return source -> get_ground_aoe_distance( *dot.death_and_decay -> state ) <=
-               dot.death_and_decay -> current_action -> radius;
+               dot.death_and_decay -> current_action -> radius + target -> combat_reach;
       }
       return false;
     }

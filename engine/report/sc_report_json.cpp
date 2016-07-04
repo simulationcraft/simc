@@ -567,7 +567,8 @@ js::sc_js_t to_json( const player_t& p )
   node.set( "bugs", p.bugs );
   node.set( "scale_player", p.scale_player );
   node.set( "death_pct", p.death_pct );
-  node.set( "size", p.size );
+  node.set( "height", p.height );
+  node.set( "combat_reach", p.combat_reach );
   node.set( "potion_used", p.potion_used );
   node.set( "timeofday", ( p.timeofday == player_t::NIGHT_TIME ? "NIGHT_TIME"
                                                                : "DAY_TIME" ) );

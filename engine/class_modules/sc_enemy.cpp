@@ -52,6 +52,7 @@ struct enemy_t : public player_t
     s -> target_list.push_back( this );
     position_str = "front";
     //level = 0;
+    combat_reach = 4.0;
   }
 
   virtual role_e primary_role() const override
@@ -1462,7 +1463,8 @@ void enemy_t::create_options()
   add_option( opt_float( "enemy_initial_health_percentage", initial_health_percentage ) );
   add_option( opt_float( "enemy_fixed_health_percentage", fixed_health_percentage ) );
   add_option( opt_float( "health_recalculation_dampening_exponent", health_recalculation_dampening_exponent ) );
-  add_option( opt_float( "enemy_size", size ) );
+  add_option( opt_float( "enemy_height", height ) );
+  add_option( opt_float( "enemy_reach", combat_reach ) );
   add_option( opt_string( "enemy_tank", target_str ) );
   add_option( opt_int( "apply_debuff", apply_damage_taken_debuff ) );
 

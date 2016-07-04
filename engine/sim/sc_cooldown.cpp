@@ -274,13 +274,13 @@ void cooldown_t::reset_init()
   ready_trigger_event = nullptr;
 }
 
-void cooldown_t::reset( bool require_reaction )
+void cooldown_t::reset( bool require_reaction, bool all_charges )
 {
   bool was_down = down();
   ready = ready_init();
   if ( last_start > sim.current_time() )
     last_start = timespan_t::zero();
-  if ( charges == 1 )
+  if ( charges == 1 || all_charges )
     current_charge = charges;
   else if ( current_charge < charges )
     current_charge ++;

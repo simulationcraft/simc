@@ -27,7 +27,7 @@
       }
       if ( action -> time_to_execute > timespan_t::zero() && action -> range > 0.0 )
       { // No need to recheck if the execute time was zero.
-        if ( action -> target -> get_player_distance( *action -> player ) > action -> range )
+        if ( action -> target -> get_player_distance( *action -> player ) > action -> range + action -> target -> combat_reach )
         { // Target is now out of range, we cannot finish the cast.
           return false;
         }
@@ -74,20 +74,20 @@
           { // We need to check the parents dot for location.
             if ( sim -> log )
               sim -> out_debug.printf( "parent_dot location: x=%.3f,y%.3f", parent_dot -> state -> original_x, parent_dot -> state -> original_y );
-            if ( t -> get_ground_aoe_distance( *parent_dot -> state ) > radius )
+            if ( t -> get_ground_aoe_distance( *parent_dot -> state ) > radius + t -> combat_reach )
               tl.erase( tl.begin() + i );
           }
           else if ( ground_aoe && execute_state )
           {
-            if ( t -> get_ground_aoe_distance( *execute_state ) > radius )
+            if ( t -> get_ground_aoe_distance( *execute_state ) > radius + t -> combat_reach )
               tl.erase( tl.begin() + i ); // We should just check the child.
           }
           else if ( t -> get_player_distance( *target ) > radius )
             tl.erase( tl.begin() + i );
         } // If they do not have a range, they are likely based on the distance from the player.
-        else if ( radius > 0 && t -> get_player_distance( *player ) > radius )
+        else if ( radius > 0 && t -> get_player_distance( *player ) > radius + t -> combat_reach )
           tl.erase( tl.begin() + i );
-        else if ( range > 0 && t -> get_player_distance( *player ) > range )
+        else if ( range > 0 && t -> get_player_distance( *player ) > range + t -> combat_reach )
           tl.erase( tl.begin() + i ); // If they only have a range, then they are a single target ability, or are also based on the distance from the player.
       }
     }
