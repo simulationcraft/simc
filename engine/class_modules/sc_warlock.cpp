@@ -21,7 +21,21 @@
 // Haunt reset
 // Soul Effigy
 // Destruction -
-// Demonology -
+// TODO:
+// Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
+// Add wild imp spawn delay
+// Double check all up()/check() usage.
+// Remove manatap/soul harvest pet multiplier bugs when they get fixed.
+// Check resource generation execute/impact and hit requirement
+// Report which spells triggered soul conduit
+// Move imp spawn to hog impact
+// HoG doesn't trigger soul conduit???
+// Fix Darkglare
+// condition to track minimum pet duration
+// condition to track # of buffs active on pets
+// condition to track # of active pets
+// condition to track time since last spell -
+// save current_time in timespan_t on execute, return current_time - timespan_t on call
 //
 // Artifacts -
 // Affliction/Demonology (see below)
@@ -48,6 +62,7 @@ namespace pets {
   struct doomguard_t;
   struct lord_of_flames_infernal_t;
   struct darkglare_t;
+  struct thal_kiel_t;
 }
 
 struct warlock_td_t: public actor_target_data_t
@@ -106,6 +121,7 @@ public:
     static const int DOOMGUARD_LIMIT = 1;
     static const int LORD_OF_FLAMES_INFERNAL_LIMIT = 3;
     static const int DARKGLARE_LIMIT = 1;
+    static const int THALKIEL_LIMIT = 1;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
@@ -117,6 +133,7 @@ public:
     std::array<pets::infernal_t*, INFERNAL_LIMIT> infernal;
     std::array<pets::doomguard_t*, DOOMGUARD_LIMIT> doomguard;
     std::array<pets::lord_of_flames_infernal_t*, LORD_OF_FLAMES_INFERNAL_LIMIT> lord_of_flames_infernal;
+    std::array<pets::thal_kiel_t*, THALKIEL_LIMIT> thalkiel;
     std::array<pets::darkglare_t*, DARKGLARE_LIMIT> darkglare;
   } warlock_pet_list;
 
@@ -222,7 +239,7 @@ public:
     artifact_power_t sharpened_dreadfangs;
     artifact_power_t fel_skin; //NYI
     artifact_power_t firm_resolve; //NYI
-    artifact_power_t thalkiels_discord; //NYI
+    artifact_power_t thalkiels_discord;
     artifact_power_t legionwrath; //NYI
     artifact_power_t dirty_hands;
     artifact_power_t doom_doubled;
@@ -1065,6 +1082,55 @@ struct eye_laser_t : public warlock_pet_spell_t
   }
 };
 
+struct thalkiels_discord_t : public warlock_pet_spell_t
+{
+    struct thalkeils_discord_tick_t : public warlock_pet_spell_t
+    {
+        thalkeils_discord_tick_t( warlock_pet_t* p /*, const spell_data_t& s */):
+            warlock_pet_spell_t( "thalkeils_discord_tick", p, p->find_spell( 211727 ) )
+        {
+            spell_power_mod.tick = data().effectN(1).sp_coeff();
+            aoe = -1;
+            background = true;
+            may_crit = true;
+        }
+    };
+
+    thalkeils_discord_tick_t* tick;
+
+    thalkiels_discord_t( warlock_pet_t* p, const std::string& options_str ):
+      warlock_pet_spell_t( "thalkiels_discord", p, p -> find_spell( 211720 ) )
+    {
+      parse_options( options_str );
+      base_tick_time = timespan_t::from_millis(1500);
+      tick_action = new thalkeils_discord_tick_t( p/*, data()*/ );
+    }
+
+    void init() override
+    {
+      warlock_pet_spell_t::init();
+
+      // Explicitly snapshot haste, as the spell actually has no duration in spell data
+      snapshot_flags |= STATE_HASTE;
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* ) const override
+    {
+      return player -> sim -> expected_iteration_time * 2;
+    }
+
+    virtual void cancel() override
+    {
+      dot_t* dot = find_dot( target );
+      if ( dot && dot -> is_ticking() )
+      {
+        dot -> cancel();
+      }
+      action_t::cancel();
+    }
+};
+
+
 } // pets::actions
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
@@ -1719,6 +1785,23 @@ struct dreadstalker_t : public warlock_pet_t
   }
 };
 
+struct thal_kiel_t : public warlock_pet_t
+{
+    thal_kiel_t( sim_t* sim, warlock_t* owner ) :
+      warlock_pet_t( sim, owner, "thal'keil", PET_THAL_KIEL )
+    {
+        action_list_str = "thal_kiel_discord,if=!ticking";
+        regen_type = REGEN_DISABLED;
+    }
+
+    virtual action_t* create_action(const std::__1::string &name, const std::__1::string &options_str) override
+    {
+        if( name == "thal_kiel_discord" ) return new actions::thalkiels_discord_t(this, options_str);
+        return warlock_pet_t::create_action( name, options_str );
+    }
+
+};
+
 struct darkglare_t : public warlock_pet_t
 {
   darkglare_t( sim_t* sim, warlock_t* owner ) :
@@ -1742,6 +1825,7 @@ struct darkglare_t : public warlock_pet_t
     return warlock_pet_t::create_action( name, options_str );
   }
 };
+
 
 } // end namespace pets
 
@@ -2314,6 +2398,7 @@ struct life_tap_t: public warlock_spell_t
 // Demonology Spells
 struct shadow_bolt_t: public warlock_spell_t
 {
+    //thalkeils_discord_t discord;
   shadow_bolt_t( warlock_t* p ):
     warlock_spell_t( p, "Shadow Bolt" )
   {
@@ -2340,6 +2425,23 @@ struct shadow_bolt_t: public warlock_spell_t
 
     if ( p() -> talents.demonic_calling -> ok() )
       p() -> buffs.demonic_calling -> trigger();
+    if( p()->artifact.thalkiels_discord.rank())
+    {
+        if( rng().roll(0.15) )
+        {
+            timespan_t thalkiels_duration = timespan_t::from_millis(6000);
+            int j = 0;
+            for ( size_t i = 0; i < p() -> warlock_pet_list.thalkiel.size(); i++ )
+            {
+                if ( p() -> warlock_pet_list.thalkiel[i] -> is_sleeping() )
+                {
+                    p() -> warlock_pet_list.thalkiel[i] -> summon( thalkiels_duration );
+                    p()->procs.thalkiels_discord->occur();
+                    if ( ++j == 1 ) break;
+                }
+            }
+        }
+    }
   }
 };
 
@@ -2393,7 +2495,7 @@ struct doom_t: public warlock_spell_t
         }
 
     }
-    }
+  }
 };
 
 struct demonic_empowerment_t: public warlock_spell_t
@@ -2831,6 +2933,48 @@ struct thalkeils_consumption_t : public warlock_spell_t
         this->base_dd_max = damage;
         //do other stuff
     }
+};
+
+struct thalkeils_discord_t : public warlock_spell_t
+{
+    //implementation needs to change
+    //generate a thalkeil pet
+    // create a hellfire like spell called thalkeil's discord
+    // have thalkeil pulse the hellfire thalkeil's discord.
+    // pls gahddo you're our only hope.
+    //thalkeils_discord_tick_t* tick;
+    timespan_t thalkeils_duration;
+
+    thalkeils_discord_t( warlock_t* p ):
+        warlock_spell_t( "thalkeils_discord", p, p -> artifact.thalkeils_consumption )
+    {
+        thalkeils_duration = p->find_spell( 211720 ) -> duration();
+        //tick = new thalkeils_discord_tick_t(p);
+        //add_child(tick);
+    }
+
+    virtual void execute() override
+    {
+        warlock_spell_t::execute();
+        int j = 0;
+        for ( size_t i = 0; i < p() -> warlock_pet_list.thalkiel.size(); i++ )
+        {
+            if ( p() -> warlock_pet_list.thalkiel[i] -> is_sleeping() )
+            {
+                p() -> warlock_pet_list.thalkiel[i] -> summon( thalkeils_duration );
+                //p() -> procs.dreadstalker_debug -> occur();
+                if ( ++j == 1 ) break;
+            }
+        }
+    }
+
+/*
+    void tick( dot_t* d ) override
+    {
+      tick -> execute();
+      warlock_spell_t::tick( d );
+    }*/
+
 };
 
 // AOE SPELLS
@@ -3344,7 +3488,23 @@ struct demonbolt_t: public warlock_spell_t
 
         if ( p() -> talents.demonic_calling -> ok() )
           p() -> buffs.demonic_calling -> trigger();
-
+        if( p()->artifact.thalkiels_discord.rank())
+        {
+            if( rng().roll(0.15) )
+            {
+                timespan_t thalkiels_duration = timespan_t::from_millis(6000);
+                int j = 0;
+                for ( size_t i = 0; i < p() -> warlock_pet_list.thalkiel.size(); i++ )
+                {
+                    if ( p() -> warlock_pet_list.thalkiel[i] -> is_sleeping() )
+                    {
+                        p()->procs.thalkiels_discord->occur();
+                        p() -> warlock_pet_list.thalkiel[i] -> summon( thalkiels_duration );
+                        if ( ++j == 1 ) break;
+                    }
+                }
+            }
+        }
       }
 };
 
@@ -4151,6 +4311,10 @@ void warlock_t::create_pets()
     for ( size_t i = 0; i < warlock_pet_list.darkglare.size(); i++ )
     {
       warlock_pet_list.darkglare[i] = new pets::darkglare_t( sim, this );
+    }    
+    for( size_t i = 0; i < warlock_pet_list.thalkiel.size(); i++)
+    {
+        warlock_pet_list.thalkiel[i] = new pets::thal_kiel_t( sim, this );
     }
     if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
     {
