@@ -147,7 +147,7 @@ bool parse_talent_override( sim_t* sim,
   return true;
 }
 
-// parse_talent_override ====================================================
+// parse_artifact_override ====================================================
 
 bool parse_artifact_override( sim_t* sim,
                             const std::string& name,
@@ -7739,6 +7739,18 @@ bool parse_min_gcd( sim_t* sim,
 
 void player_t::override_artifact( std::string override_str )
 {
+  if ( ! artifact_enabled() )
+  {
+    return;
+  }
+
+  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
+
+  if ( artifact_id == 0 )
+  {
+    return;
+  }
+
   std::string::size_type split = override_str.find( ':' );
 
   if ( split == std::string::npos )
@@ -7757,8 +7769,7 @@ void player_t::override_artifact( std::string override_str )
 
   std::string name = override_str.substr( 0, split );
   util::tokenize( name );
-  
-  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
+
   std::vector<const artifact_power_data_t*> powers = dbc.artifact_powers( artifact_id );
   const artifact_power_data_t* power_data = nullptr;
   size_t power_index = 0;
