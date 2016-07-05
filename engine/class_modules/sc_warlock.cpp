@@ -7,20 +7,11 @@
 
 // ==========================================================================
 //
-// TODO:
-// Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
-// Double check all up()/check() usage.
-// Remove manatap/soul harvest pet multiplier bugs when they get fixed.
-// Check resource generation execute/impact and hit requirement
-// Report which spells triggered soul conduit
-// Move imp spawn to hog impact
-// HoG doesn't trigger soul conduit???
-// Fix Darkglare
-//
+// TODO
 // Affliction -
 // Haunt reset
 // Soul Effigy
-// Destruction -
+// Demonology -
 // TODO:
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
 // Add wild imp spawn delay
@@ -36,10 +27,10 @@
 // condition to track # of active pets
 // condition to track time since last spell -
 // save current_time in timespan_t on execute, return current_time - timespan_t on call
-//
+// Destruction -
 // Artifacts -
 // Affliction/Demonology (see below)
-// 
+//
 // ==========================================================================
 namespace { // unnamed namespace
 
