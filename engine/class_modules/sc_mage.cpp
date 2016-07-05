@@ -2002,12 +2002,14 @@ struct ignite_spell_state_t : action_state_t
 
 struct fire_mage_spell_t : public mage_spell_t
 {
-  bool triggers_hot_streak,
+  bool triggers_pyretic_incantation,
+       triggers_hot_streak,
        triggers_ignite;
 
   fire_mage_spell_t( const std::string& n, mage_t* p,
                      const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s ),
+    triggers_pyretic_incantation( false ),
     triggers_hot_streak( false ),
     triggers_ignite( false )
   {
@@ -2030,16 +2032,13 @@ struct fire_mage_spell_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT
                       && p() -> artifact.pyretic_incantation.rank()
-                      && harmful == true
-                      && background == false )
+                      && triggers_pyretic_incantation )
     {
-
       p() -> buffs.pyretic_incantation -> trigger();
     }
     else if ( result_is_hit( s -> result ) && s -> result != RESULT_CRIT
                       && p() -> artifact.pyretic_incantation.rank()
-                      && harmful == true
-                      && background == false )
+                      && triggers_pyretic_incantation )
     {
       p() -> buffs.pyretic_incantation -> expire();
     }
@@ -2484,7 +2483,7 @@ struct ignite_t : public residual_action_t
     }
 
     if ( p() -> artifact.phoenix_reborn.rank() &&
-         rng().roll( p() -> artifact.phoenix_reborn.data().proc_chance() ) 
+         rng().roll( p() -> artifact.phoenix_reborn.data().proc_chance() )
          && phoenix_reborn -> icd -> up() )
     {
       phoenix_reborn -> target = dot -> target;
@@ -3062,8 +3061,6 @@ struct arcane_power_t : public arcane_mage_spell_t
 };
 
 // Blast Furance Spell =======================================================
-// TODO: Assume this will be fixed and be pandmic extended like normal. If not,
-//       fix to be the old DoT style
 struct blast_furance_t : public fire_mage_spell_t
 {
   blast_furance_t( mage_t* p, const std::string& options_str ) :
@@ -3084,7 +3081,7 @@ struct blast_wave_t : public fire_mage_spell_t
      fire_mage_spell_t( "blast_wave", p, p -> talents.blast_wave )
   {
     parse_options( options_str );
-
+    triggers_pyretic_incantation = true;
     aoe = -1;
 
     double bw_mult = 1.0 + p -> talents.blast_wave -> effectN( 1 ).percent();
@@ -3252,6 +3249,8 @@ struct cinder_t : public fire_mage_spell_t
     background = true;
     aoe = -1;
     triggers_ignite = true;
+    //TODO: Revisit this once skullflower confirms intended behavior.
+    triggers_pyretic_incantation = true;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3470,6 +3469,7 @@ struct dragons_breath_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+    triggers_pyretic_incantation = true;
   }
 
   virtual double action_multiplier() const override
@@ -3585,7 +3585,7 @@ struct fireball_t : public fire_mage_spell_t
     conflagration_dot( new conflagration_dot_t( p, options_str ) )
   {
     parse_options( options_str );
-
+    triggers_pyretic_incantation = true;
     triggers_hot_streak = true;
     triggers_ignite = true;
     base_multiplier *= 1.0 + p -> artifact.great_balls_of_fire.percent();
@@ -3728,6 +3728,7 @@ struct flamestrike_t : public fire_mage_spell_t
 
     base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
     triggers_ignite = true;
+    triggers_pyretic_incantation = true;
     aoe = -1;
 
     if ( p -> artifact.aftershocks.rank() )
@@ -4423,6 +4424,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
     triggers_hot_streak = true;
     triggers_ignite = true;
+    triggers_pyretic_incantation = true;
 
     // TODO: Is the spread range still 10 yards?
     radius = 10;
@@ -4702,7 +4704,7 @@ struct meteor_impact_t: public fire_mage_spell_t
     split_aoe_damage = true;
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     ground_aoe = true;
-
+    //TODO: Revisit PI behavior once Skullflower confirms behavior.
     triggers_ignite = true;
   }
 
@@ -4929,6 +4931,7 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 
     triggers_hot_streak = true;
     triggers_ignite = true;
+    triggers_pyretic_incantation = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4991,6 +4994,7 @@ struct pyroblast_t : public fire_mage_spell_t
 
     triggers_ignite = true;
     triggers_hot_streak = true;
+    triggers_pyretic_incantation = true;
 
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T18, B2 ) )
     {
@@ -5217,6 +5221,7 @@ struct scorch_t : public fire_mage_spell_t
 
     triggers_hot_streak = true;
     triggers_ignite = true;
+    triggers_pyretic_incantation = true;
 
     consumes_ice_floes = false;
   }
