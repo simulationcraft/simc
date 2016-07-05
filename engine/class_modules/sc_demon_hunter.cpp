@@ -1132,7 +1132,7 @@ public:
       return false;
     }
 
-    if ( p() -> buff.out_of_range -> check() && range <= 5.0 )
+    if ( p() -> buff.out_of_range -> check() && ab::range <= 5.0 )
     {
       return false;
     }
