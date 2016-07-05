@@ -76,8 +76,8 @@ stopwatch_t::time_point_t windows_user_cpu_time()
   //  Returns total user time in 100-ns ticks
   //  Can be tweaked to include kernel times as well.
   ULARGE_INTEGER t;
-  t.u.LowPart = lpUserTime.dwLowDateTime;
-  t.u.HighPart = lpUserTime.dwHighDateTime;
+  t.LowPart = lpUserTime.dwLowDateTime;
+  t.HighPart = lpUserTime.dwHighDateTime;
 
   stopwatch_t::time_point_t out;
   out.sec = t.QuadPart / 10000000;
@@ -97,8 +97,8 @@ stopwatch_t::time_point_t windows_user_thread_time()
   //  Returns total user time in 100-ns ticks
   //  Can be tweaked to include kernel times as well.
   ULARGE_INTEGER t;
-  t.u.LowPart = lpUserTime.dwLowDateTime;
-  t.u.HighPart = lpUserTime.dwHighDateTime;
+  t.LowPart = lpUserTime.dwLowDateTime;
+  t.HighPart = lpUserTime.dwHighDateTime;
 
   stopwatch_t::time_point_t out;
   out.sec = t.QuadPart / 10000000;
