@@ -5614,7 +5614,7 @@ void demon_hunter_t::apl_havoc()
   def -> add_talent( this, "Felblade", "if=fury.deficit>=30+buff.prepared.up*8" );
   def -> add_action( this, spec.annihilation, "annihilation", "if=!talent.momentum.enabled|buff.momentum.up|fury.deficit<=30+buff.prepared.up*8|buff.metamorphosis.remains<2" );
   def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled" );
-  def -> add_action( this, "Eye Beam", "if=!talent.demonic.enabled&(spell_targets.eye_beam_tick>desired_targets|(raid_event.adds.in>45&buff.metamorphosis.down))" );
+  def -> add_action( this, "Eye Beam", "if=!talent.demonic.enabled&(spell_targets.eye_beam_tick>desired_targets|(raid_event.adds.in>45&buff.metamorphosis.down&(artifact.anguish_of_the_deceiver.enabled|active_enemies>1)))" );
   def -> add_action( this, "Demon's Bite", "if=buff.metamorphosis.down&cooldown.blade_dance.remains<gcd&fury<55&blade_dance_worth_using",
     "Pool fury for various different upcoming abilities." );
   def -> add_action( this, "Demon's Bite", "if=talent.demonic.enabled&buff.metamorphosis.down&cooldown.eye_beam.remains<gcd&fury.deficit>=20" );
