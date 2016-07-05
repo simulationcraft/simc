@@ -2400,6 +2400,7 @@ struct conflagration_dot_t : public fire_mage_spell_t
     parse_options( options_str );
     //TODO: Check callbacks
     callbacks = false;
+    hasted_ticks = false;
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
