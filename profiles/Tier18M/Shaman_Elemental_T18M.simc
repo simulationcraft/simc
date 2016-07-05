@@ -51,7 +51,6 @@ actions.single+=/flame_shock,if=maelstrom>=20&refreshable
 actions.single+=/frost_shock,if=maelstrom>=20&raid_event.movement.in>(1.5*spell_haste*buff.icefury.stack)
 actions.single+=/frost_shock,moving=1,if=buff.icefury.up
 actions.single+=/earth_shock,if=maelstrom>=86
-actions.single+=/lightning_bolt,if=buff.stormkeeper.up&buff.power_of_the_maelstrom.up
 actions.single+=/elemental_blast
 actions.single+=/icefury,if=maelstrom<=76&raid_event.movement.in>30
 actions.single+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50

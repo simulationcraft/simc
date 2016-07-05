@@ -3863,11 +3863,32 @@ struct lightning_bolt_t : public shaman_spell_t
 
 // Elemental Blast Spell ====================================================
 
+void trigger_elemental_blast_proc( shaman_t* p )
+{
+  unsigned b = static_cast< unsigned >( p -> rng().range( 0, 3 ) );
+
+  if ( b == 0 )
+    p -> buff.elemental_blast_crit -> trigger();
+  else if ( b == 1 )
+    p -> buff.elemental_blast_haste -> trigger();
+  else if ( b == 2 )
+    p -> buff.elemental_blast_mastery -> trigger();
+}
+
 struct elemental_blast_overload_t : public elemental_overload_spell_t
 {
   elemental_blast_overload_t( shaman_t* p ) :
     elemental_overload_spell_t( p, "elemental_blast_overload", p -> find_spell( 120588 ) )
   { }
+
+  void execute() override
+  {
+    // Trigger buff before executing the spell, because apparently the buffs affect the cast result
+    // itself.
+    trigger_elemental_blast_proc( p() );
+
+    shaman_spell_t::execute();
+  }
 };
 
 struct elemental_blast_t : public shaman_spell_t
@@ -3882,49 +3903,13 @@ struct elemental_blast_t : public shaman_spell_t
     }
   }
 
-  result_e calculate_result( action_state_t* s ) const override
+  void execute() override
   {
-    if ( ! s -> target )
-      return RESULT_NONE;
+    // Trigger buff before executing the spell, because apparently the buffs affect the cast result
+    // itself.
+    trigger_elemental_blast_proc( p() );
 
-    result_e result = RESULT_NONE;
-
-    if ( rng().roll( miss_chance( composite_hit(), s -> target ) ) )
-      result = RESULT_MISS;
-
-    if ( result == RESULT_NONE )
-    {
-      result = RESULT_HIT;
-      unsigned max_buffs = 3;
-
-      unsigned b = static_cast< unsigned >( rng().range( 0, max_buffs ) );
-      assert( b < max_buffs );
-
-      p() -> buff.elemental_blast_crit -> expire();
-      p() -> buff.elemental_blast_haste -> expire();
-      p() -> buff.elemental_blast_mastery -> expire();
-
-      if ( b == 0 )
-        p() -> buff.elemental_blast_crit -> trigger();
-      else if ( b == 1 )
-        p() -> buff.elemental_blast_haste -> trigger();
-      else if ( b == 2 )
-        p() -> buff.elemental_blast_mastery -> trigger();
-
-      if ( rng().roll( std::max( composite_crit_chance() + composite_target_crit_chance( s -> target ), 0.0 ) ) )
-        result = RESULT_CRIT;
-    }
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
-
-    // Re-snapshot state here, after we have procced a buff spell. The new state
-    // is going to be used to calculate the damage of this spell already
-    const_cast<elemental_blast_t*>(this) -> snapshot_state( s, DMG_DIRECT );
-    if ( sim -> debug )
-      s -> debug();
-
-    return result;
+    shaman_spell_t::execute();
   }
 };
 
@@ -6057,7 +6042,6 @@ void shaman_t::init_action_list_elemental()
   single -> add_action( this, "Frost Shock", "if=maelstrom>=20&raid_event.movement.in>(1.5*spell_haste*buff.icefury.stack)" );
   single -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
   single -> add_action( this, "Earth Shock", "if=maelstrom>=86" );
-  single -> add_action( this, "Lightning Bolt", "if=buff.stormkeeper.up&buff.power_of_the_maelstrom.up" );
   single -> add_talent( this, "Elemental Blast" );
   single -> add_talent( this, "Icefury", "if=maelstrom<=76&raid_event.movement.in>30" );
   single -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
