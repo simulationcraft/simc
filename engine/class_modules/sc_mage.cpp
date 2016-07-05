@@ -6413,6 +6413,7 @@ void mage_t::init_spells()
   artifact.torrential_barrage      = find_artifact_spell( "Torrential Barrage"     );
   artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"     );
   artifact.ethereal_sensitivity    = find_artifact_spell( "Ethereal Sensitivity"   );
+  artifact.touch_of_the_magi       = find_artifact_spell( "Touch of the Magi"      );
   //Fire
   artifact.aftershocks             = find_artifact_spell( "Aftershocks"            );
   artifact.scorched_earth          = find_artifact_spell( "Scorched Earth"         );

@@ -1289,6 +1289,7 @@ class SpellDataGenerator(DataGenerator):
           ( 194432, 0 ),                            # Felo'melorn - Aftershocks
           ( 194466, 0 ),                            # Phoenix's Flames
           ( 205235, 5 ),                            # Arcane Familiar attack, Arcane Assault
+          ( 210833, 0 ),                            # Touch of the Magi
         ),
 
         # Warlock:
