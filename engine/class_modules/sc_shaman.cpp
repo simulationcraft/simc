@@ -5625,7 +5625,8 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 
   double proc_chance = spec.windfury -> proc_chance();
   proc_chance += cache.mastery() * mastery.enhanced_elements -> effectN( 4 ).mastery_value();
-  if ( buff.doom_winds -> up() )
+  // Only autoattacks are guaranteed windfury procs during doom winds
+  if ( buff.doom_winds -> up() && ! attack -> special )
   {
     proc_chance = 1.0;
   }
