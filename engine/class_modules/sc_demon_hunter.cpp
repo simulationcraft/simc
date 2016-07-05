@@ -112,11 +112,15 @@ const char* get_soul_fragment_str( soul_fragment_e type )
 struct movement_buff_t : public buff_t
 {
   double yards_from_melee;
-  demon_hunter_t& dh;
+  double distance_moved;
+  demon_hunter_t* dh;
 
   movement_buff_t( demon_hunter_t* p, const buff_creator_basics_t& b ) :
-    buff_t( b ), dh( *p )
+    buff_t( b ), dh( p )
   {}
+
+  bool trigger( int s = 1, double v = DEFAULT_VALUE(),
+    double c = -1.0, timespan_t d = timespan_t::min() ) override;
 
   void expire_override( int, timespan_t ) override;
 };
@@ -181,13 +185,13 @@ public:
     buff_t* blur;
     buff_t* chaos_blades;
     buff_t* death_sweep;
-    movement_buff_t* fel_rush;
+    movement_buff_t* fel_rush_move;
     buff_t* momentum;
     buff_t* out_of_range;
     buff_t* nemesis;
     buff_t* prepared;
     buff_t* rage_of_the_illidari;
-    movement_buff_t* vengeful_retreat;
+    movement_buff_t* vengeful_retreat_move;
 
     // Vengeance
     buff_t* blade_turning;
@@ -570,14 +574,85 @@ private:
 
 // Movement Buff definition =================================================
 
+struct exit_melee_event_t : public event_t
+{
+  demon_hunter_t& dh;
+
+  exit_melee_event_t( demon_hunter_t* p, timespan_t d ) :
+    event_t( *p ), dh( *p )
+  {
+    assert( d > timespan_t::zero() );
+    add_event( d );
+  }
+
+  const char* name() const override
+  { return "exit_melee_event"; }
+
+  void execute() override
+  {
+    if ( ! dh.buff.out_of_range -> check() )
+    {
+      // Trigger out of range with no duration. This will get overridden once the movement completes.
+      dh.buff.out_of_range -> trigger( 1, dh.cache.run_speed() );
+    }
+
+    dh.exiting_melee = nullptr;
+  }
+};
+
+bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
+{
+  assert( distance_moved > 0 );
+  assert( buff_duration > timespan_t::zero() );
+
+  // Check if we're moving towards or away from the target.
+  if ( dh -> current.distance_to_move || dh -> buff.out_of_range -> check() ||
+      dh -> buff.vengeful_retreat_move -> check() )
+  { // Towards
+    // Cancel any in progress movement.
+    dh -> buff.fel_rush_move -> expire();
+    dh -> buff.vengeful_retreat_move -> expire();
+    event_t::cancel( dh -> exiting_melee );
+
+    // "Move" back into melee range.
+    dh -> buff.out_of_range -> expire();
+
+    // We're not moving out, so don't trigger out of range at the end of this movement.
+    yards_from_melee = 0.0;
+  }
+  else
+  { // Away
+    // Calculate the number of yards away from melee this will send us.
+    yards_from_melee =
+      std::max( 0.0, distance_moved - ( dh -> get_target_reach() + 5.0 ) * 2.0 );
+  }
+
+  if ( yards_from_melee > 0.0 )
+  {
+    assert( ! dh -> exiting_melee );
+
+    // Calculate the amount of time it will take for the movement to carry us out of melee range.
+    timespan_t time = buff_duration * ( 1.0 - ( yards_from_melee / distance_moved ) );
+
+    assert( time > timespan_t::zero() );
+
+    // Schedule event to set us out of melee.
+    dh -> exiting_melee = new ( *sim ) exit_melee_event_t( dh, time );
+  }
+
+  return buff_t::trigger( s, v, c, d );
+}
+
 void movement_buff_t::expire_override( int s, timespan_t d )
 {
   buff_t::expire_override( s, d );
 
+  // If we reached the end of the movement without it being canceled...
   if ( d == timespan_t::zero() && yards_from_melee > 0 )
   {
-    dh.buff.out_of_range -> trigger( 1, dh.cache.run_speed(), -1.0,
-      timespan_t::from_seconds( yards_from_melee / dh.cache.run_speed() ) );
+    // Then trigger out_of_range with a duration equal to the time it will take us to get back.
+    dh -> buff.out_of_range -> trigger( 1, dh -> cache.run_speed(), -1.0,
+      timespan_t::from_seconds( yards_from_melee / dh -> cache.run_speed() ) );
   }
 }
 
@@ -1133,6 +1208,11 @@ public:
     }
 
     if ( p() -> buff.out_of_range -> check() && ab::range <= 5.0 )
+    {
+      return false;
+    }
+
+    if ( p() -> buff.fel_rush_move -> check() )
     {
       return false;
     }
@@ -1792,6 +1872,8 @@ struct fel_rush_t : public demon_hunter_spell_t
       base_teleport_distance  = impact_action -> radius;
       movement_directionality = MOVEMENT_OMNI;
       ignore_false_positive   = true;
+
+      p -> buff.fel_rush_move -> distance_moved = base_teleport_distance;
     }
 
     // Add damage modifiers in fel_rush_damage_t, not here.
@@ -1814,24 +1896,11 @@ struct fel_rush_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    // If we're out of range already, then don't invoke out of range after the movement ends.
-    bool towards = p() -> current.distance_to_move || p() -> buff.out_of_range -> check() ||
-      p() -> buff.vengeful_retreat -> check();
-
     demon_hunter_spell_t::execute();
-
-    // "Move" back into range if we're out.
-    p() -> buff.vengeful_retreat -> expire();
-    p() -> buff.out_of_range -> expire();
-    event_t::cancel( p() -> exiting_melee );
 
     if ( ! a_cancel )
     {
-      p() -> buff.fel_rush -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-        p() -> gcd_ready - sim -> current_time() );
-
-      p() -> buff.fel_rush -> yards_from_melee = towards ? 0 : 
-        std::max( 0.0, base_teleport_distance - ( p() -> get_target_reach() + 5.0 ) * 2.0 );
+      p() -> buff.fel_rush_move -> trigger();
     }
 
     p() -> buff.momentum -> trigger();
@@ -1839,7 +1908,7 @@ struct fel_rush_t : public demon_hunter_spell_t
 
   bool ready() override
   {
-    if ( p() -> buff.vengeful_retreat -> check() )
+    if ( p() -> buff.vengeful_retreat_move -> check() )
     {
       return false;
     }
@@ -3435,7 +3504,7 @@ struct felblade_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     // Cancel Vengeful Retreat movement.
-    p() -> buff.vengeful_retreat -> expire();
+    p() -> buff.vengeful_retreat_move -> expire();
     p() -> buff.out_of_range -> expire();
   }
 };
@@ -3853,32 +3922,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
 struct vengeful_retreat_t : public demon_hunter_attack_t
 {
-  struct exit_melee_event_t : public event_t
-  {
-    demon_hunter_t& dh;
-
-    exit_melee_event_t( demon_hunter_t* p, timespan_t d ) :
-      event_t( *p ), dh( *p )
-    {
-      assert( d > timespan_t::zero() );
-      add_event( d );
-    }
-
-    const char* name() const override
-    { return "exit_melee_event"; }
-
-    void execute() override
-    {
-      if ( ! dh.buff.out_of_range -> check() )
-      {
-        // Trigger out of range with no duration. This will get overridden once the movement completes.
-        dh.buff.out_of_range -> trigger( 1, dh.cache.run_speed() );
-      }
-
-      dh.exiting_melee = nullptr;
-    }
-  };
-
   struct vengeful_retreat_damage_t : public demon_hunter_attack_t
   {
     vengeful_retreat_damage_t( demon_hunter_t* p ) :
@@ -3898,8 +3941,9 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     impact_action = new vengeful_retreat_damage_t( p );
     impact_action -> stats = stats;
     ignore_false_positive = true;
-    use_off_gcd           = true;
+    // use_off_gcd           = true;
     base_teleport_distance  = VENGEFUL_RETREAT_DISTANCE;
+    p -> buff.vengeful_retreat_move -> distance_moved = base_teleport_distance;
     movement_directionality = MOVEMENT_OMNI;
 
     cooldown -> duration += p -> talent.prepared -> effectN( 2 ).time_value();
@@ -3913,20 +3957,9 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    double dtm = p() -> current.distance_to_move;
-
     demon_hunter_attack_t::execute();
 
-    p() -> buff.vengeful_retreat -> trigger();
-    
-    double yards_from_melee = std::max( 0.0, base_teleport_distance - ( p() -> get_target_reach() + 5.0 ) * 2.0 );
-    p() -> buff.vengeful_retreat -> yards_from_melee = yards_from_melee;
-
-    if ( yards_from_melee > 0.0 )
-    {
-      p() -> exiting_melee = new ( *sim ) exit_melee_event_t( p(), 
-        data().duration() * ( 1.0 - ( yards_from_melee / base_teleport_distance ) ) );
-    }
+    p() -> buff.vengeful_retreat_move -> trigger();
 
     if ( hit_any_target )
     {
@@ -3934,14 +3967,6 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     }
 
     p() -> buff.momentum -> trigger();
-  }
-
-  bool ready() override
-  {
-    if ( p() -> buff.fel_rush -> check() )
-      return false;
-
-    return demon_hunter_attack_t::ready();
   }
 };
 
@@ -4684,9 +4709,10 @@ void demon_hunter_t::create_buffs()
       .default_value( spec.death_sweep -> effectN( 2 ).percent() )
       .add_invalidate( CACHE_DODGE );
 
-  buff.fel_rush =
+  buff.fel_rush_move =
     new movement_buff_t( this, buff_creator_t( this, "fel_rush_movement", spell_data_t::nil() )
-      .chance( 1.0 ) );
+      .chance( 1.0 )
+      .duration( find_class_spell( "Fel Rush" ) -> gcd() ) );
 
   buff.momentum =
     buff_creator_t( this, "momentum", find_spell( 208628 ) )
@@ -4714,7 +4740,7 @@ void demon_hunter_t::create_buffs()
   buff.rage_of_the_illidari =
     buff_creator_t( this, "rage_of_the_illidari", find_spell( 217060 ) );
 
-  buff.vengeful_retreat = 
+  buff.vengeful_retreat_move = 
     new movement_buff_t( this, buff_creator_t( this, "vengeful_retreat_movement", spell_data_t::nil() )
       .chance( 1.0 )
       .duration( spec.vengeful_retreat -> duration() ) );
