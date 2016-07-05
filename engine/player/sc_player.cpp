@@ -154,8 +154,11 @@ bool parse_artifact_override( sim_t* sim,
                             const std::string& override_str )
 {
   assert( name == "artifact_override" ); ( void )name;
-  assert( sim -> active_player );
+
   player_t* p = sim -> active_player;
+
+  if ( ! p )
+    return false;
 
   if ( ! p -> artifact_overrides_str.empty() ) p -> artifact_overrides_str += "/";
     p -> artifact_overrides_str += override_str;
@@ -1662,7 +1665,7 @@ struct override_talent_t : action_t
   }
 };
 
-void player_t::override_talent( std::string override_str )
+void player_t::override_talent( std::string& override_str )
 {
   std::string::size_type cut_pt = override_str.find( ',' );
 
@@ -1766,15 +1769,29 @@ void player_t::init_talents()
 
 void player_t::init_artifact()
 {
+  if ( ! artifact_enabled() )
+  {
+    return;
+  }
+
+  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
+
+  if ( artifact_id == 0 )
+  {
+    return;
+  }
+
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing artifact for player (%s)", name() );
+  
+  std::vector<const artifact_power_data_t*> powers = dbc.artifact_powers( artifact_id );
 
   if ( ! artifact_overrides_str.empty() )
   {
     std::vector<std::string> splits = util::string_split( artifact_overrides_str, "/" );
     for ( size_t i = 0; i < splits.size(); i++ )
     {
-      override_artifact( splits[ i ] );
+      override_artifact( powers, splits[ i ] );
     }
   }
 }
@@ -7737,20 +7754,8 @@ bool parse_min_gcd( sim_t* sim,
 
 // player_t::override_artifact ==============================================
 
-void player_t::override_artifact( std::string override_str )
+void player_t::override_artifact( std::vector<const artifact_power_data_t*> powers, std::string& override_str )
 {
-  if ( ! artifact_enabled() )
-  {
-    return;
-  }
-
-  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
-
-  if ( artifact_id == 0 )
-  {
-    return;
-  }
-
   std::string::size_type split = override_str.find( ':' );
 
   if ( split == std::string::npos )
@@ -7759,7 +7764,7 @@ void player_t::override_artifact( std::string override_str )
     return;
   }
 
-  std::string override_rank_str = override_str.substr( split + 1, override_str.size() );
+  const std::string& override_rank_str = override_str.substr( split + 1, override_str.size() );
 
   if ( override_rank_str.empty() )
   {
@@ -7767,10 +7772,9 @@ void player_t::override_artifact( std::string override_str )
     return;
   }
 
-  std::string name = override_str.substr( 0, split );
+  std::string& name = override_str.substr( 0, split );
   util::tokenize( name );
 
-  std::vector<const artifact_power_data_t*> powers = dbc.artifact_powers( artifact_id );
   const artifact_power_data_t* power_data = nullptr;
   size_t power_index = 0;
 

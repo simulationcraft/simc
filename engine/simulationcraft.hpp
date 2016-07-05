@@ -4075,8 +4075,8 @@ struct player_t : public actor_t
   virtual const char* name() const override { return name_str.c_str(); }
 
   virtual void init();
-  virtual void override_talent( std::string override_str );
-  virtual void override_artifact( std::string override_str );
+  virtual void override_talent( std::string& override_str );
+  virtual void override_artifact( std::vector<const artifact_power_data_t*> powers, std::string& override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
