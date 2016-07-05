@@ -3594,14 +3594,14 @@ struct fireball_t : public fire_mage_spell_t
 
   virtual timespan_t execute_time() const override
   {
-    timespan_t t = fire_mage_spell_t::execute_time();
+    timespan_t cast_time = fire_mage_spell_t::execute_time();
 
     if ( p() -> artifact.fire_at_will.rank() )
     {
-      t += p() -> artifact.fire_at_will.time_value();
+      cast_time *= 1.0 + p() -> artifact.fire_at_will.percent();
     }
 
-    return t;
+    return cast_time;
   }
 
   virtual timespan_t travel_time() const override
