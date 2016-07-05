@@ -275,6 +275,7 @@
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BrowseInformation>false</BrowseInformation>
+      <DisableLanguageExtensions>true</DisableLanguageExtensions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;Q_OS_WIN;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -327,6 +328,7 @@
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <BrowseInformation>false</BrowseInformation>
+      <DisableLanguageExtensions>true</DisableLanguageExtensions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;Q_OS_WIN;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -583,6 +585,7 @@
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableLanguageExtensions>true</DisableLanguageExtensions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;Q_OS_WIN;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -631,6 +634,7 @@
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableLanguageExtensions>true</DisableLanguageExtensions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;Q_OS_WIN;QT_DLL;QT_WEBKIT_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_DECLARATIVE_DEBUG;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

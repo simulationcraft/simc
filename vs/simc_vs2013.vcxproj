@@ -322,6 +322,7 @@
       <FloatingPointModel>Precise</FloatingPointModel>
       <BrowseInformation>false</BrowseInformation>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DisableLanguageExtensions>true</DisableLanguageExtensions>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
@@ -359,6 +360,7 @@
       <SmallerTypeCheck>false</SmallerTypeCheck>
       <FloatingPointModel>Precise</FloatingPointModel>
       <BrowseInformation>false</BrowseInformation>
+      <DisableLanguageExtensions>true</DisableLanguageExtensions>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
@@ -395,6 +397,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DisableLanguageExtensions>true</DisableLanguageExtensions>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
@@ -423,6 +426,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DisableLanguageExtensions>true</DisableLanguageExtensions>
     </ClCompile>
     <Link>
       <AdditionalOptions>wininet.lib %(AdditionalOptions)</AdditionalOptions>
