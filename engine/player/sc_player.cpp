@@ -7754,7 +7754,7 @@ bool parse_min_gcd( sim_t* sim,
 
 // player_t::override_artifact ==============================================
 
-void player_t::override_artifact( std::vector<const artifact_power_data_t*> powers, std::string& override_str )
+void player_t::override_artifact( const std::vector<const artifact_power_data_t*>& powers, const std::string& override_str )
 {
   std::string::size_type split = override_str.find( ':' );
 
@@ -7772,7 +7772,7 @@ void player_t::override_artifact( std::vector<const artifact_power_data_t*> powe
     return;
   }
 
-  std::string& name = override_str.substr( 0, split );
+  std::string name = override_str.substr( 0, split );
   util::tokenize( name );
 
   const artifact_power_data_t* power_data = nullptr;
