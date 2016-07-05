@@ -147,6 +147,22 @@ bool parse_talent_override( sim_t* sim,
   return true;
 }
 
+// parse_talent_override ====================================================
+
+bool parse_artifact_override( sim_t* sim,
+                            const std::string& name,
+                            const std::string& override_str )
+{
+  assert( name == "artifact_override" ); ( void )name;
+  assert( sim -> active_player );
+  player_t* p = sim -> active_player;
+
+  if ( ! p -> artifact_overrides_str.empty() ) p -> artifact_overrides_str += "/";
+    p -> artifact_overrides_str += override_str;
+
+  return true;
+}
+
 // parse_timeofday ====================================================
 
 bool parse_timeofday( sim_t* sim,
@@ -820,6 +836,7 @@ void player_t::init_character_properties()
 {
   init_race();
   init_talents();
+  init_artifact();
   init_glyphs();
   replace_spells();
   init_position();
@@ -1727,6 +1744,7 @@ void player_t::override_talent( std::string override_str )
     }
   }
 }
+
 // player_t::init_talents ===================================================
 
 void player_t::init_talents()
@@ -1744,6 +1762,22 @@ void player_t::init_talents()
   }
 }
 
+// player_t::init_artifact ==================================================
+
+void player_t::init_artifact()
+{
+  if ( sim -> debug )
+    sim -> out_debug.printf( "Initializing artifact for player (%s)", name() );
+
+  if ( ! artifact_overrides_str.empty() )
+  {
+    std::vector<std::string> splits = util::string_split( artifact_overrides_str, "/" );
+    for ( size_t i = 0; i < splits.size(); i++ )
+    {
+      override_artifact( splits[ i ] );
+    }
+  }
+}
 
 // player_t::init_glyphs ====================================================
 
@@ -7701,6 +7735,82 @@ bool parse_min_gcd( sim_t* sim,
   return true;
 }
 
+// player_t::override_artifact ==============================================
+
+void player_t::override_artifact( std::string override_str )
+{
+  std::string::size_type split = override_str.find( ':' );
+
+  if ( split == std::string::npos )
+  {
+    sim -> errorf( "artifact_override: Invalid override_str %s for player %s.\n", override_str.c_str(), name() );
+    return;
+  }
+
+  std::string override_rank_str = override_str.substr( split + 1, override_str.size() );
+
+  if ( override_rank_str.empty() )
+  {
+    sim -> errorf( "artifact_override: Invalid override_str %s for player %s.\n", override_str.c_str(), name() );
+    return;
+  }
+
+  std::string name = override_str.substr( 0, split );
+  util::tokenize( name );
+  
+  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
+  std::vector<const artifact_power_data_t*> powers = dbc.artifact_powers( artifact_id );
+  const artifact_power_data_t* power_data = nullptr;
+  size_t power_index = 0;
+
+  // Find the power by name
+  for ( power_index = 0; power_index < powers.size(); ++power_index )
+  {
+    const artifact_power_data_t* power = powers[ power_index ];
+    if ( power -> name == 0 )
+    {
+      continue;
+    }
+
+    std::string power_name = power -> name;
+    util::tokenize( power_name );
+
+    if ( util::str_compare_ci( name, power_name ) )
+    {
+      power_data = power;
+      break;
+    }
+  }
+
+  if ( ! power_data )
+  {
+    sim -> errorf( "artifact_override: Override artifact power %s not found for player %s.\n", override_str.c_str(), this -> name() );
+    return;
+  }
+  
+  unsigned override_rank = util::to_unsigned( override_rank_str );
+
+  // 1 rank powers use the zeroth (only) entry, multi-rank spells have 0 -> max rank entries
+  std::vector<const artifact_power_rank_t*> ranks = dbc.artifact_power_ranks( power_data -> id );
+
+  // Rank data missing for the power
+  if ( override_rank > ranks.size() )
+  {
+    sim -> errorf( "artifact_override: %s too high rank (%u/%u) given for artifact power %s",
+        this -> name(), override_rank, ranks.size(),
+        power_data -> name ? power_data -> name : "Unknown");
+    return;
+  }
+
+  if ( sim -> debug )
+  {
+    sim -> out_log.printf( "artifact_override: Player %s overrides power %s to rank %u.",
+      this -> name(), name.c_str(), override_rank );
+  }
+
+  artifact_points[ power_index ] = override_rank;
+}
+
 // player_t::replace_spells =================================================
 
 // TODO: HOTFIX handling
@@ -7973,7 +8083,7 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
   {
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s (index %u)",
+      sim -> out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s (iondex %u)",
           this -> name(), artifact_points[ power_index ], ranks.size(),
           power_data -> name ? power_data -> name : "Unknown", power_index );
     }
@@ -9221,6 +9331,15 @@ std::string player_t::create_profile( save_e stype )
       }
     }
 
+    if ( artifact_overrides_str.size() > 0 )
+    {
+      std::vector<std::string> splits = util::string_split( artifact_overrides_str, "/" );
+      for ( size_t i = 0; i < splits.size(); i++ )
+      {
+        profile_str += "artifact_override=" + splits[ i ] + term;
+      }
+    }
+
     if ( glyphs_str.size() > 0 )
     {
       profile_str += "glyphs=" + glyphs_str + term;
@@ -9414,6 +9533,7 @@ void player_t::copy_from( player_t* source )
   parse_talent_url( sim, "talents", source -> talents_str );
   parse_artifact( sim, "artifact", source -> artifact_str );
   talent_overrides_str = source -> talent_overrides_str;
+  artifact_overrides_str = source -> artifact_overrides_str;
   glyphs_str = source -> glyphs_str;
   action_list_str = source -> action_list_str;
   alist_map = source -> alist_map;
@@ -9448,6 +9568,7 @@ void player_t::create_options()
     add_option( opt_func( "talents", parse_talent_url ) );
     add_option( opt_func( "talent_override", parse_talent_override ) );
     add_option( opt_func( "artifact", parse_artifact ) );
+    add_option( opt_func( "artifact_override", parse_artifact_override ) );
     add_option( opt_string( "glyphs", glyphs_str ) );
     add_option( opt_string( "race", race_str ) );
     add_option( opt_func( "timeofday", parse_timeofday ) );

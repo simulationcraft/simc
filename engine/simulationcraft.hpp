@@ -3682,6 +3682,9 @@ struct player_t : public actor_t
   player_talent_points_t talent_points;
   std::string talent_overrides_str;
 
+  // Artifact Parsing
+  std::string artifact_overrides_str;
+
   // Glyph Parsing
   std::vector<const spell_data_t*> glyph_list;
 
@@ -4073,6 +4076,7 @@ struct player_t : public actor_t
 
   virtual void init();
   virtual void override_talent( std::string override_str );
+  virtual void override_artifact( std::string override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
@@ -4090,6 +4094,7 @@ struct player_t : public actor_t
   void init_character_properties();
   virtual void init_race();
   virtual void init_talents();
+  virtual void init_artifact();
   virtual void init_glyphs();
   virtual void replace_spells();
   virtual void init_position();
