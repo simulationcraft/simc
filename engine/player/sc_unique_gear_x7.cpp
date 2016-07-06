@@ -275,8 +275,142 @@ void item::shivermaws_jawbone( special_effect_t& effect )
   effect.execute_action = new ice_bomb_t( effect );
 }
 
+// Spiked Counterweight =====================================================
+
+struct haymaker_damage_t : public spell_t
+{
+  haymaker_damage_t( const special_effect_t& effect ) :
+    spell_t( "brutal_haymaker_vulnerability", effect.player, effect.driver() -> effectN( 2 ).trigger() )
+  {
+    background = true;
+    callbacks = may_crit = may_miss = false;
+    dot_duration = timespan_t::zero();
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
+struct haymaker_driver_t : public dbc_proc_callback_t
+{
+  struct haymaker_event_t;
+  
+  debuff_t* debuff;
+  const special_effect_t& effect;
+  double multiplier;
+  haymaker_event_t* accumulator;
+  haymaker_damage_t* action;
+
+  struct haymaker_event_t : public event_t
+  {
+    haymaker_damage_t* action;
+    haymaker_driver_t* callback;
+    debuff_t* debuff;
+    double damage;
+
+    haymaker_event_t( haymaker_driver_t* cb, haymaker_damage_t* a, debuff_t* d ) :
+      event_t( *a -> player ), action( a ), debuff( d ),
+      damage( 0 ), callback( cb )
+    {
+      add_event( a -> data().effectN( 1 ).period() );
+    }
+
+    const char* name() const override
+    { return "brutal_haymaker_damage"; }
+
+    void execute() override
+    {
+      if ( damage > 0 )
+      {
+        action -> target = debuff -> player;
+        damage = std::min( damage, debuff -> current_value );
+        action -> base_dd_min = action -> base_dd_max = damage;
+        action -> schedule_execute();
+        debuff -> current_value -= damage;
+      }
+      
+      if ( debuff -> current_value > 0 && debuff -> check() )
+        callback -> accumulator = new ( *action -> player -> sim ) haymaker_event_t( callback, action, debuff );
+      else
+      {
+        callback -> accumulator = nullptr;
+        debuff -> expire();
+      }
+    }
+  };
+
+  haymaker_driver_t( const special_effect_t& e, double m, debuff_t* d ) :
+    dbc_proc_callback_t( e.player, e ), debuff( d ), effect( e ), multiplier( m ),
+    action( debug_cast<haymaker_damage_t*>( e.player -> find_action( "brutal_haymaker_vulnerability" ) ) )
+  {}
+
+  void activate() override
+  {
+    dbc_proc_callback_t::activate();
+
+    accumulator = new ( *effect.player -> sim ) haymaker_event_t( this, action, debuff );
+  }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  {
+    if ( trigger_state -> result_amount <= 0 )
+      return;
+
+    actor_target_data_t* td = effect.player -> get_target_data( trigger_state -> target );
+    
+    if ( td && td -> debuff.brutal_haymaker -> check() )
+      accumulator -> damage += trigger_state -> result_amount * multiplier;
+  }
+};
+
 struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
 {
+  struct haymaker_debuff_t : public debuff_t
+  {
+    haymaker_driver_t* callback;
+
+    haymaker_debuff_t( const special_effect_t& effect, actor_target_data_t& td ) :
+      debuff_t( buff_creator_t( td, "brutal_haymaker", effect.driver() -> effectN( 1 ).trigger() ) 
+      .default_value( effect.driver() -> effectN( 1 ).trigger() -> effectN( 3 ).average( effect.item ) ) )
+    {
+      // Damage transfer effect & callback. We'll enable this callback whenever the debuff is active.
+      special_effect_t* effect2 = new special_effect_t( effect.player );
+      effect2 -> name_str = "brutal_haymaker_accumulator";
+      effect2 -> proc_chance_ = 1.0;
+      effect2 -> proc_flags_ = PF_ALL_DAMAGE;
+      effect2 -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+      effect.player -> special_effects.push_back( effect2 );
+
+      callback = new haymaker_driver_t( *effect2, data().effectN( 2 ).percent(), this );
+      callback -> initialize();
+    }
+
+    void start( int stacks, double value, timespan_t duration ) override
+    {
+      debuff_t::start( stacks, value, duration );
+
+      callback -> activate();
+    }
+
+    void expire_override( int stacks, timespan_t remaining ) override
+    {
+      debuff_t::expire_override( stacks, remaining );
+    
+      callback -> deactivate();
+    }
+
+    void reset() override
+    {
+      debuff_t::reset();
+
+      callback -> deactivate();
+    }
+  };
+
   spiked_counterweight_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
     item_targetdata_initializer_t( iid, s )
   {}
@@ -292,16 +426,15 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
     {
       assert( ! td -> debuff.brutal_haymaker );
 
-      td -> debuff.brutal_haymaker = buff_creator_t( td -> target, "brutal_haymaker", td -> source -> find_spell( 214169 ) )
-        .default_value( td -> source -> find_spell( 214169 ) -> effectN( 2 ).percent() );
+      td -> debuff.brutal_haymaker = new haymaker_debuff_t( *effect, *td );
       td -> debuff.brutal_haymaker -> reset();
     }
   }
 };
 
-struct brutal_haymaker_t : public spell_t
+struct brutal_haymaker_initial_t : public spell_t
 {
-  brutal_haymaker_t( special_effect_t& effect ) :
+  brutal_haymaker_initial_t( special_effect_t& effect ) :
     spell_t( "brutal_haymaker", effect.player, effect.driver() -> effectN( 1 ).trigger() )
   {
     background = may_crit = true;
@@ -324,10 +457,13 @@ struct brutal_haymaker_t : public spell_t
 
 void item::spiked_counterweight( special_effect_t& effect )
 {
-  effect.execute_action = new brutal_haymaker_t( effect );
+  effect.execute_action = new brutal_haymaker_initial_t( effect );
+  effect.execute_action -> add_child( new haymaker_damage_t( effect ) );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
+
+// Windscar Whetstone =======================================================
 
 struct slicing_maelstrom_t : public spell_t
 {

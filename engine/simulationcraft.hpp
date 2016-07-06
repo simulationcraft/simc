@@ -5706,13 +5706,6 @@ public:
       m *= 1.0 + player -> buffs.demon_damage_buff -> data().effectN( 2 ).percent();
     }
 
-    actor_target_data_t* td = player -> get_target_data( target );
-
-    if ( td )
-    {
-      m *= 1.0 + td -> debuff.brutal_haymaker -> value();
-    }
-
     return m;
   }
 
