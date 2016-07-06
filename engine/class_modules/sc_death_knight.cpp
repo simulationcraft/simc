@@ -5145,6 +5145,7 @@ void death_knight_t::init_base_stats()
   base.attack_power_per_agility = 0.0;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
+  resources.base[ RESOURCE_RUNIC_POWER ] += spec.veteran_of_the_third_war -> effectN( 10 ).resource( RESOURCE_RUNIC_POWER );
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
 
   base_gcd = timespan_t::from_seconds( 1.0 );
