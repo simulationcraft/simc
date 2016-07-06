@@ -3477,7 +3477,6 @@ struct charged_up_t : public arcane_mage_spell_t
 // Cinderstorm Spell ==========================================================
 // Cinderstorm travel mechanism:
 // http://blue.mmo-champion.com/topic/409203-theorycrafting-questions/#post114
-// For simplicity, we assume they converge on average at 31 yards.
 // "9.17 degrees" is assumed to be a rounded value of 0.16 radians.
 // For distance k and deviation angle x, the arclength is k * x / sin(x).
 // From testing, cinders have a variable velocity, averaging ~30 yards/second.
@@ -3513,8 +3512,10 @@ struct cinderstorm_t : public fire_mage_spell_t
   cinder_t* cinder;
   int cinder_count;
 
-  const double cinder_velocity = 31.0; // Yards per second
-  const double cinder_converge_distance = 31.0; // Yards
+  const double cinder_velocity_mean = 30.0; // Yards per second
+  const double cinder_velocity_range = 6.0; // Yards per second
+  const double cinder_converge_mean = 31.0; // Yards
+  const double cinder_converge_range = 2.0; // Yards
   const double cinder_angle = 0.16; // Radians
 
   cinderstorm_t( mage_t* p, const std::string& options_str ) :
@@ -3538,17 +3539,24 @@ struct cinderstorm_t : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     double target_dist = player -> current.distance;
+    double cinder_converge_distance =
+      rng().range( cinder_converge_mean - cinder_converge_range,
+                   cinder_converge_mean + cinder_converge_range );
 
     // When cinder_count < 6, we assume "curviest" cinders are first to miss
     for ( int i = 1; i <= cinder_count; i++ )
     {
-      // TODO: Optimize this code by caching constants: theta, radius, arc_time
+      // TODO: Optimize this code by caching theta and trig functions
       timespan_t travel_time;
 
       // Cinder deviation angle from "forward"
       double theta = cinder_angle * i;
       // Radius of arc drawn by cinder
       double radius = cinder_converge_distance / ( 2.0 * sin( theta ) );
+      // Randomized cinder velocity
+      double cinder_velocity =
+        rng().range( cinder_velocity_mean - cinder_converge_range,
+                     cinder_converge_mean + cinder_converge_range );
 
       if ( target_dist > cinder_converge_distance )
       {
