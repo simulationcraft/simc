@@ -961,6 +961,11 @@ struct rogue_attack_t : public melee_attack_t
     if ( affected_by.agonizing_poison )
     {
       double stack_value = tdata -> debuffs.agonizing_poison -> stack_value();
+      if ( tdata -> debuffs.surge_of_toxins -> up() )
+      {
+        stack_value += tdata -> debuffs.surge_of_toxins -> data().effectN( 1 ) * .0001 *
+                       tdata -> debuffs.agonizing_poison -> check();
+      }
       stack_value *= 1.0 + p() -> talent.master_poisoner -> effectN( 3 ).percent();
       stack_value *= 1.0 + p() -> cache.mastery() * p() -> mastery.potent_poisons -> effectN( 4 ).mastery_value();
       stack_value *= 1.0 + p() -> artifact.master_alchemist.percent();
