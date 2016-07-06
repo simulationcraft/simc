@@ -963,7 +963,7 @@ struct rogue_attack_t : public melee_attack_t
       double stack_value = tdata -> debuffs.agonizing_poison -> stack_value();
       stack_value *= 1.0 + p() -> talent.master_poisoner -> effectN( 3 ).percent();
       stack_value *= 1.0 + p() -> cache.mastery() * p() -> mastery.potent_poisons -> effectN( 4 ).mastery_value();
-      stack_value *= 1.0 + p() -> artifact.master_alchemist.percent() / 2.0;
+      stack_value *= 1.0 + p() -> artifact.master_alchemist.percent();
       m *= 1.0 + stack_value;
     }
 
