@@ -3492,6 +3492,7 @@ struct felblade_t : public demon_hunter_attack_t
     // Cancel Vengeful Retreat movement.
     p() -> buff.vengeful_retreat_move -> expire();
     p() -> buff.out_of_range -> expire();
+    event_t::cancel( p() -> exiting_melee );
   }
 };
 
