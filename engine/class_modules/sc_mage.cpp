@@ -1496,6 +1496,10 @@ struct arcane_missiles_buff_t : public buff_t
       am_proc_chance += p -> artifact.ethereal_sensitivity.percent();
     }
 
+    if ( p -> sets.has_set_bonus( MAGE_ARCANE, T19, B2 ) )
+    {
+      am_proc_chance += p -> sets.set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
+    }
     return am_proc_chance;
   }
 
@@ -3679,6 +3683,11 @@ struct fireball_t : public fire_mage_spell_t
       c += p() -> buffs.enhanced_pyrotechnics -> stack() *
            p() -> buffs.enhanced_pyrotechnics -> data().effectN( 1 ).percent();
 
+      if ( p() -> sets.has_set_bonus( MAGE_FIRE, T19, B2 ) )
+      {
+        c += p() -> buffs.enhanced_pyrotechnics -> stack() *
+             p() -> sets.set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent();
+      }
     return c;
   }
 
@@ -3939,6 +3948,11 @@ struct frostbolt_t : public frost_mage_spell_t
       double bf_proc_chance = p() -> spec.brain_freeze
                                   -> effectN( 1 ).percent();
 
+      if ( p() -> sets.has_set_bonus( MAGE_FROST, T19, B2 ) )
+      {
+        bf_proc_chance += p() -> sets.set( MAGE_FROST, T19, B2 ) 
+                              -> effectN( 1 ).percent();
+      }
       if ( p() -> artifact.clarity_of_thought.rank() )
       {
         bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
