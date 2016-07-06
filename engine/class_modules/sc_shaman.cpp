@@ -3620,11 +3620,141 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   }
 };
 
-// TODO: Add Path of Flame Flame Shock spreading mechanism
+struct flame_shock_spreader_t : public shaman_spell_t
+{
+  flame_shock_spreader_t( shaman_t* p ) :
+    shaman_spell_t( "flame_shock_spreader", p )
+  {
+    quiet = background = true;
+    may_miss = may_crit = callbacks = false;
+  }
+
+  player_t* shortest_duration_target() const
+  {
+    player_t* copy_target = nullptr;
+    timespan_t min_remains = timespan_t::zero();
+
+    for ( auto t : sim -> target_non_sleeping_list )
+    {
+      // Skip source target
+      if ( t == target )
+      {
+        continue;
+      }
+
+      // Skip targets that are further than 8 yards from the original target
+      if ( sim -> distance_targeting_enabled &&
+           t -> get_player_distance( *target ) > 8 + t -> combat_reach )
+      {
+        continue;
+      }
+
+      shaman_td_t* target_td = td( t );
+      if ( min_remains == timespan_t::zero() || min_remains > target_td -> dot.flame_shock -> remains() )
+      {
+        min_remains =  target_td -> dot.flame_shock -> remains();
+        copy_target = t;
+      }
+    }
+
+    if ( copy_target && sim -> debug )
+    {
+      sim -> out_debug.printf( "%s path_of_flame spreads flame_shock from %s to shortest remaining target %s (remains=%.3f)",
+        player -> name(), target -> name(), copy_target -> name(), min_remains.total_seconds() );
+    }
+
+    return copy_target;
+  }
+
+  player_t* closest_target() const
+  {
+    player_t* copy_target = nullptr;
+    double min_distance = -1;
+
+    for ( auto t : sim -> target_non_sleeping_list )
+    {
+      // Skip source target
+      if ( t == target )
+      {
+        continue;
+      }
+
+      double distance = 0;
+      if ( sim -> distance_targeting_enabled )
+      {
+        distance = t -> get_player_distance( *target );
+      }
+
+      // Skip targets that are further than 8 yards from the original target
+      if ( sim -> distance_targeting_enabled && distance > 8 + t -> combat_reach )
+      {
+        continue;
+      }
+
+      shaman_td_t* target_td = td( t );
+      if ( target_td -> dot.flame_shock -> is_ticking() )
+      {
+        continue;
+      }
+
+      // If we are not using distance-based targeting, just return the first available target
+      if ( ! sim -> distance_targeting_enabled )
+      {
+        copy_target = t;
+        break;
+      }
+      else if ( min_distance < 0 || min_distance > distance )
+      {
+        min_distance = distance;
+        copy_target = t;
+      }
+    }
+
+    if ( copy_target && sim -> debug )
+    {
+      sim -> out_debug.printf( "%s path_of_flame spreads flame_shock from %s to closest target %s (distance=%.3f)",
+        player -> name(), target -> name(), copy_target -> name(), min_distance );
+    }
+
+    return copy_target;
+  }
+
+  void execute() override
+  {
+    shaman_td_t* source_td = td( target );
+    player_t* copy_target = nullptr;
+    if ( ! source_td -> dot.flame_shock -> is_ticking() )
+    {
+      return;
+    }
+
+    // If all targets have flame shock, pick the shortest remaining time
+    if ( player -> get_active_dots( source_td -> dot.flame_shock -> current_action -> internal_id ) ==
+         sim -> target_non_sleeping_list.size() )
+    {
+      copy_target = shortest_duration_target();
+    }
+    // Pick closest target without Flame Shock
+    else
+    {
+      copy_target = closest_target();
+    }
+
+    // With distance targeting it is possible that no target will be around to spread flame shock to
+    if ( copy_target )
+    {
+      source_td -> dot.flame_shock -> copy( copy_target, DOT_COPY_CLONE );
+    }
+  }
+};
+
 struct lava_burst_t : public shaman_spell_t
 {
+  flame_shock_spreader_t* spreader;
+
   lava_burst_t( shaman_t* player, const std::string& options_str ):
-    shaman_spell_t( "lava_burst", player, player -> find_specialization_spell( "Lava Burst" ), options_str )
+    shaman_spell_t( "lava_burst", player, player -> find_specialization_spell( "Lava Burst" ), options_str ),
+    spreader( player -> talent.path_of_flame -> ok() ? new flame_shock_spreader_t( player ) : nullptr )
   {
     base_multiplier *= 1.0 + player -> artifact.lava_imbued.percent();
     base_multiplier *= 1.0 + player -> talent.path_of_flame -> effectN( 1 ).percent();
@@ -3721,6 +3851,12 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( result_is_hit( state -> result ) )
     {
+      if ( spreader && sim -> target_non_sleeping_list.size() > 1 )
+      {
+        spreader -> target = state -> target;
+        spreader -> execute();
+      }
+
       if ( rng().roll( p() -> artifact.volcanic_inferno.data().proc_chance() ) )
       {
         new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
