@@ -2137,18 +2137,19 @@ struct fire_mage_spell_t : public mage_spell_t
     }
     return bonus;
   }
+
+  virtual double composite_ignite_multiplier( const action_state_t* s ) const
+  { return 1.0; }
+
   void trigger_ignite( action_state_t* s )
   {
     mage_t* p = this -> p();
 
     double amount = s -> result_amount * p -> cache.mastery_value();
 
-    ignite_spell_state_t* is = static_cast<ignite_spell_state_t*>( s );
-    if ( is -> hot_streak )
-    {
-      // TODO: Use client data from hot streak
-      amount *= 2.0;
-    }
+    // TODO: Use client data from hot streak
+    amount *= composite_ignite_multiplier( s );
+
 
     amount *= 1.0 + p -> artifact.everburning_consumption.percent();
 
@@ -3780,8 +3781,20 @@ struct flamestrike_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::snapshot_state( s, rt );
 
-    ignite_spell_state_t* is = static_cast<ignite_spell_state_t*>( s );
+    ignite_spell_state_t* is = debug_cast<ignite_spell_state_t*>( s );
     is -> hot_streak = ( p() -> buffs.hot_streak -> check() != 0 );
+  }
+
+   double composite_ignite_multiplier( const action_state_t* s ) const override
+  {
+   const ignite_spell_state_t* is = debug_cast<const ignite_spell_state_t*>( s );
+
+    if ( is -> hot_streak )
+    {
+      return 2.0;
+    }
+
+    return 1.0;
   }
 };
 
@@ -5069,7 +5082,7 @@ struct pyroblast_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::snapshot_state( s, rt );
 
-    ignite_spell_state_t* is = static_cast<ignite_spell_state_t*>( s );
+    ignite_spell_state_t* is = debug_cast<ignite_spell_state_t*>( s );
     is -> hot_streak = ( p() -> buffs.hot_streak -> check() != 0 );
   }
 
@@ -5127,6 +5140,17 @@ struct pyroblast_t : public fire_mage_spell_t
     }
 
     return c;
+  }
+   double composite_ignite_multiplier( const action_state_t* s ) const override
+  {
+    const ignite_spell_state_t* is = debug_cast<const ignite_spell_state_t*>( s );
+
+    if ( is -> hot_streak )
+    {
+      return 2.0;
+    }
+
+    return 1.0;
   }
 };
 
