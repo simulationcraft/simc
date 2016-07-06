@@ -1785,7 +1785,7 @@ struct thal_kiel_t : public warlock_pet_t
         regen_type = REGEN_DISABLED;
     }
 
-    virtual action_t* create_action(const std::__1::string &name, const std::__1::string &options_str) override
+    virtual action_t* create_action(const std::string &name, const std::string &options_str) override
     {
         if( name == "thal_kiel_discord" ) return new actions::thalkiels_discord_t(this, options_str);
         return warlock_pet_t::create_action( name, options_str );
