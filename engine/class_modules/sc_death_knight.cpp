@@ -1337,7 +1337,7 @@ struct army_pet_t : public base_ghoul_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 0.0415;
+    owner_coeff.ap_from_ap = 0.30;
   }
 
   void init_action_list() override
