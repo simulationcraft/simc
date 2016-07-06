@@ -293,7 +293,7 @@ Name             : Judgment (id=20271) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Resource         : 3% Base Mana (6600 @Level 110) w/ Holy Paladin (id=137029)
-Spell Level      : 1
+Spell Level      : 3
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
@@ -307,7 +307,7 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11347)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Target: Enemy(6)
 #2 (id=336161)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=343343)   : Dummy (3)
@@ -676,7 +676,7 @@ Tooltip          : Interrupted.
 Name             : Crusader Strike (id=35395) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
-Spell Level      : 3
+Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 2 (4.5 seconds cooldown)
@@ -692,7 +692,7 @@ Effects          :
 #1 (id=25579)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=25580)    : Weapon Damage% (31)
-                   Base Value: 180 | Scaled Value: 1.8 | Target: Enemy(6)
+                   Base Value: 210 | Scaled Value: 2.1 | Target: Enemy(6)
 #3 (id=91108)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
 Description      : Strike the target for $sw2 Physical damage. Maximum 2 charges.$?s85256[
@@ -905,7 +905,7 @@ Effects          :
 #1 (id=46249)    : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self(1)
 #2 (id=46250)    : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value 2: 0x4 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value 2: 0x4 | Target: Self(1)
 #3 (id=87654)    : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self(1)
 #4 (id=134929)   : Apply Aura (6) | Modify Block% (51)
@@ -1451,8 +1451,8 @@ School           : Holy
 Resource         : 14% Base Mana (30800 @Level 110)
 Spell Level      : 58
 GCD              : 1.5 seconds
-Cooldown         : 10 seconds
-Affecting spells : Beacon of Light (53563), Beacon of Faith (156910), Beacon of the Lightbringer (197446), Expel the Darkness (200296), Rule of Law (214202), 
+Cooldown         : 12 seconds
+Affecting spells : Beacon of Light (53563), Paladin (137026), Beacon of Faith (156910), Beacon of the Lightbringer (197446), Expel the Darkness (200296), Rule of Law (214202), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1718,13 +1718,12 @@ Spell Level      : 87
 Duration         : 6 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Unknown(10)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ..x.x... ......x.   ...x...x ........ ..x..... ........ 
                  : ........ ........ ........ ........   x....... ........ x....... ..x..... 
                  : x....... ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ .......x ........   ........ ........ ........ ......x. 
+                 : ........ ........ .....x.x ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112)
@@ -2164,10 +2163,10 @@ Effects          :
                    Base Value: 220 | Scaled Value: 220 | Target: Self(1)
 #2 (id=191096)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Divine Hammer (198137), Blade of Wrath (202270), Consecration (205228), Hand of the Protector (213652), Execution Sentence (213757), Judgment (214222)
+                   Affected Spells: Judgment (20271), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Divine Hammer (198137), Blade of Wrath (202270), Consecration (205228), Hand of the Protector (213652), Execution Sentence (213757), Judgment (214222), Light of Dawn (225311)
 #3 (id=191097)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Holy Shock (20473), Holy Shock (25912), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Blade of Wrath (202270), Hand of the Protector (213652), Execution Sentence (213757), Judgment (214222), Zeal (217020)
+                   Affected Spells: Judgment (20271), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Blade of Wrath (202270), Hand of the Protector (213652), Judgment (214222), Zeal (217020)
 #4 (id=191098)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 1543 | Target: Self(1)
 #5 (id=191099)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -2996,7 +2995,7 @@ School           : Physical
 Spell Level      : 16
 Range            : 12 yards
 GCD              : 1.5 seconds
-Cooldown         : 8 seconds
+Cooldown         : 10.5 seconds
 Affecting spells : Paladin (137026), Deliver the Justice (186927), Virtue's Blade (202271), 
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3008,7 +3007,7 @@ Effects          :
 #1 (id=267535)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=267536)   : Weapon Damage% (31)
-                   Base Value: 340 | Scaled Value: 3.4 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 4 | Target: Enemy(6)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 Description      : Strikes an enemy with the Blade of Justice, dealing $sw2 Physical damage.
@@ -3240,8 +3239,8 @@ Name             : Divine Hammer (id=198034) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 GCD              : 1.5 seconds
-Duration         : 10 seconds
-Cooldown         : 10 seconds
+Duration         : 12 seconds
+Cooldown         : 12 seconds
 Affecting spells : Paladin (137026), Deliver the Justice (186927)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3467,7 +3466,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=295448)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : $@spelldesc200474 
 Tooltip          : $s1% of all effective healing done will be added onto your next Holy Shock.
 
@@ -3497,13 +3496,13 @@ Spell Level      : 1
 Range            : 12 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Cooldown         : 7 seconds
+Cooldown         : 7.5 seconds
 Affecting spells : Paladin (137026), Deliver the Justice (186927)
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298131)   : Normalized Weapon Damage (121)
@@ -3565,7 +3564,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 GCD              : 1.5 seconds
-Proc Chance      : 20%
+Proc Chance      : 15%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3579,9 +3578,9 @@ Effects          :
 #1 (id=299834)   : Apply Aura (6) | Proc Trigger Spell: The Fires of Justice (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 209785 | Target: Self(1)
 #2 (id=323063)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -1500 | Scaled Value: -1500 | Misc Value: 1627 | Target: Self(1)
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1627 | Target: Self(1)
 #3 (id=341689)   : Apply Aura (6) | Unknown effect sub type (454)
-                   Base Value: -33 | Scaled Value: -33 | Misc Value: 1627 | Target: Self(1)
+                   Base Value: -22 | Scaled Value: -22 | Misc Value: 1627 | Target: Self(1)
 Description      : Reduces the cooldown of Crusader Strike by ${$m2/-1000}.1 sec and gives it a $h% chance to reduce the cost of your next damaging or healing Holy Power ability by $209785s1.
 
 Name             : Greater Blessing of Might (id=203528) [Spell Family (10)] 
@@ -3807,7 +3806,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301049)   : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -70000000 | Scaled Value: -7e+07 | Misc Value: 127 | Target: Unknown(57)
+                   Base Value: -70000000 | Scaled Value: -7e+007 | Misc Value: 127 | Target: Unknown(57)
 Description      : Places a blessing on a party or raid member, temporarily removing all threat from the target and causing all additional threat generated to be transferred to you. Lasts $d.
 Tooltip          : All threat temporarily removed and additional threat transferred to the casting Paladin.
 
@@ -4090,8 +4089,8 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 GCD              : 1.5 seconds
-Duration         : 9 seconds
-Cooldown         : 9 seconds
+Duration         : 12 seconds
+Cooldown         : 12 seconds
 Category         : 932
 Affecting spells : Paladin (137026), Lucidity (137288), Consecration in Flame (209218)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
@@ -4240,7 +4239,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=311218)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 6.00000 | Radius: 0 - 15 yards | Target: At Caster(22) -> AOE friendly(30)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.00000 | Radius: 0 - 15 yards | Target: At Caster(22) -> AOE friendly(30)
 #2 (id=315457)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE friendly(30)
 #3 (id=319269)   : Dummy (3)
@@ -4326,7 +4325,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=316419)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 99999999 | Scaled Value: 1e+08 - 1.9e+08 | Value Range: 90000001 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 99999999 | Scaled Value: 1e+008 - 1.9e+008 | Value Range: 90000001 | Misc Value: 127 | Target: Self(1)
 #2 (id=316420)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #3 (id=316427)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
@@ -4386,7 +4385,7 @@ School           : Holy
 Resource         : 3 Holy Power
 Range            : 20 yards
 GCD              : 1.5 seconds
-Duration         : 8 seconds
+Duration         : 7 seconds
 Cooldown         : 20 seconds
 Affecting spells : Paladin (137026), Judgment (197277), The Fires of Justice (209785), Item - Paladin T19 Retribution 2P Bonus (211444), Divine Purpose (223819)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4396,7 +4395,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=317188)   : Apply Aura (6) | Periodic Damage: holy every 8 seconds (3)
+#1 (id=317188)   : Apply Aura (6) | Periodic Damage: holy every 7 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 12.00000 | Target: Enemy(6)
 Description      : A hammer slowly falls from the sky, dealing $s2 Holy damage after $d.
 Tooltip          : Taking $s2 Holy damage when this expires.
@@ -4494,7 +4493,7 @@ Effects          :
 #1 (id=322914)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=322915)   : Weapon Damage% (31)
-                   Base Value: 280 | Scaled Value: 2.8 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 330 | Scaled Value: 3.3 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=322916)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
 #4 (id=322917)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
@@ -4540,7 +4539,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=324834)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 11 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 11 | Target: Self(1)
 #2 (id=343344)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self(1)
 Description      : Your Judgment ability hits $s2 additional nearby enemies, and always deals a critical strike against targets above $s1% health.
@@ -4704,9 +4703,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=336351)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=336352)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 Description      : Increases your damage and haste by ${$s1/10}.1% for $d.
 
 Each Holy Power spent during Crusade increases damage and haste by an additional ${$s1/10}.1%.
@@ -4719,7 +4718,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 58
 Range            : 100 yards
-Affecting spells : Beacon of Light (53563), Beacon of Faith (156910), Beacon of the Lightbringer (197446), Expel the Darkness (200296), Rule of Law (214202), 
+Affecting spells : Beacon of Light (53563), Paladin (137026), Beacon of Faith (156910), Beacon of the Lightbringer (197446), Expel the Darkness (200296), Rule of Law (214202), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

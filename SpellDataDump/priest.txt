@@ -84,7 +84,6 @@ Spell Level      : 26
 Range            : 30 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -134,7 +133,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=237)      : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self(1)
+                   Base Value: -90000000 | Scaled Value: -9e+007 | Target: Self(1)
 Description      : Fade out, removing all your threat for $d.
 Tooltip          : Reduced threat level.
 
@@ -476,7 +475,7 @@ Effects          :
 #1 (id=6990)     : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Enemy(6)
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage: holy every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33000 | Target: Enemy(6)
 Description      : Consumes the enemy in Holy flames that cause $s1 Holy damage and an additional $o2 Holy damage over $d. Stacks up to $u times.
 Tooltip          : $w2 Holy damage every $t2 seconds.
 
@@ -608,7 +607,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1500000000 | Scaled Value: 1.5e+09 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1500000000 | Scaled Value: 1.5e+009 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -953,7 +952,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.70000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.77000 | Target: Enemy(6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self(1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals the Priest for ${$e2*100}% of damage dealt.
@@ -1277,7 +1276,7 @@ Effects          :
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Friend(21)
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
 
 Massive damage amounts will kill the target despite this effect.
@@ -1704,7 +1703,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=66820)    : School Damage: shadowfrost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.35000 | Target: Enemy(6)
 #2 (id=66821)    : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
 #3 (id=323988)   : Energize Power (30)
@@ -1910,7 +1909,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=91044)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.00000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Target: Enemy(6)
 Description      : Chastises the target for $s1 Holy damage and $?s200199[stuns][incapacitates] them for $?s200199[$200200d][$200196d].
 
 Name             : Mysticism (Passive) (id=89745) [Passive, Hidden] 
@@ -2525,7 +2524,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179714)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Affected Spells: Power Word: Shield (17), Shadow Word: Death (32379), Prayer of Mending (33076), Power Word: Solace (129250), Circle of Healing (204883), Void Bolt (205448), Void Eruption (228260)
+                   Affected Spells: Power Word: Shield (17), Shadow Word: Death (32379), Prayer of Mending (33076), Power Word: Solace (129250), Circle of Healing (204883), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
 #2 (id=191080)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1602 | Target: Self(1)
                    Affected Spells: Mind Blast (8092), Void Bolt (205448)
@@ -2796,7 +2795,7 @@ Duration         : 20 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -3165,7 +3164,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283483)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Void Eruption (228260)
+                   Affected Spells: Void Eruption (228260), Void Eruption (228360)
 #2 (id=325209)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Voidform (185916)
@@ -3177,7 +3176,6 @@ School           : Shadow
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 15 seconds
-Mechanic         : Unknown(88)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3234,7 +3232,7 @@ Effects          :
                    Base Value: 218413 | Scaled Value: 218413 | Trigger Spell: 218413 | Target: Self(1)
 #12 (id=343559)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 205448 | Scaled Value: 205448 | Target: Self(1)
-                   Affected Spells: Void Eruption (228260)
+                   Affected Spells: Void Eruption (228260), Void Eruption (228360)
 Description      : $@spelldesc228264
 Tooltip          : Cooldown on Mind Blast reduced by ${$w6/1000} sec.
 Shadow damage dealt increased by $w1%.
@@ -3264,7 +3262,7 @@ Spell Level      : 1
 Range            : 60 yards
 Duration         : 15 seconds
 Affecting spells : Contrition (197419), Grace (200309)
-Attributes       : ........ ........ x.x..... .....x..   ........ ........ .x...... ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -4408,7 +4406,7 @@ Effects          :
 #11 (id=320871)   : Apply Aura (6) | Unknown effect sub type (40)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 #12 (id=320872)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 145000000 | Scaled Value: 1.45e+08 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 145000000 | Scaled Value: 1.45e+008 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : The Priest becomes the Spirit of Redemption for $d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. 
 Tooltip          : You have become more powerful than anyone can possibly imagine.
 
@@ -4523,7 +4521,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=343555)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 100 yards | Target: Custom(18) -> AOE enemy (instant)(16)
-Description      : Releases an explosive blast of pure void energy, activating Voidform and causing $s1 Shadow damage to all enemies afflicted by your Shadow Word: Pain or Vampiric Touch.
+Description      : Releases an explosive blast of pure void energy, activating Voidform and causing $228360s1 Shadow damage to all enemies afflicted by your Shadow Word: Pain or Vampiric Touch.
 
 During Voidform, this ability is replaced by Void Bolt.
 
@@ -4568,5 +4566,23 @@ Effects          :
 Description      : For the duration of Voidform, your Void Eruption ability is replaced by Voidbolt:
 
 $@spelltooltip205448
+
+Name             : Void Eruption (id=228360) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Level      : 10
+Range            : 100 yards
+Velocity         : 18 yards/sec
+Affecting spells : Priest (137030), Legacy of the Void (193225), Voidform (194249)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=343748)   : School Damage: shadow (2)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Target: Enemy(6)
+Description      : $@spelldesc228260
 
 

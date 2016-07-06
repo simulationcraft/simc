@@ -486,7 +486,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=622)      : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85000 | Target: Enemy(6)
 Description      : Lunging finishing move that causes damage per combo point and has increased range:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -643,7 +643,7 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1833)     : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 75 | Scaled Value: 75 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #2 (id=127877)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
 Description      : Finishing move that consumes combo points to increase attack speed by $s1%. Lasts longer per combo point.
@@ -1232,7 +1232,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=20803)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 500000000 | Scaled Value: 5e+08 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 500000000 | Scaled Value: 5e+008 | Misc Value: 127 | Target: Self(1)
 Description      : Fatal attacks instead reduce you to 7% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
 
 Name             : Master of Subtlety (id=31666) [Spell Family (8), Hidden] 
@@ -2427,10 +2427,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179719)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: -35 | Scaled Value: -35 | Misc Value: 12 | Target: Self(1)
+                   Base Value: -38 | Scaled Value: -38 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Nightstalker (14062)
 #2 (id=191060)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
-                   Base Value: -35 | Scaled Value: -35 | Misc Value: 8 | Target: Self(1)
+                   Base Value: -38 | Scaled Value: -38 | Misc Value: 8 | Target: Self(1)
 #3 (id=191061)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self(1)
                    Affected Spells: Shadow Focus (112942)
@@ -2893,7 +2893,7 @@ Attributes       : ........ ........ ..x..... ...x...x   ....x... ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=269037)   : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -10000000 | Scaled Value: -1e+07 | SP Coefficient: 1.00000 | Target: Self(1)
+                   Base Value: -10000000 | Scaled Value: -1e+007 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=317950)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283), Death (227151)
@@ -3059,7 +3059,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=270001)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.4) | AP Coefficient: 1.00000 | Radius: 3 - 9 yards | Target: Unknown(91) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.4) | AP Coefficient: 1.20000 | Radius: 3 - 9 yards | Target: Unknown(91) -> AOE enemy (instant)(16)
 Description      : $@spelldesc185767
 Tooltip          : $@spellaura185767
 
@@ -3112,7 +3112,8 @@ Effects          :
                    Affected Spells: Agonizing Poison (200803)
 Description      : When Fan of Knives strikes targets poisoned with your Deadly Poison, Deadly Poison instantly deals $s1% of its remaining damage.$?s200802[
 
-Increases the effect of Agonizing Poison's damage bonus by ${$m1*1}.1%][]
+Increases the effect of Agonizing Poison's damage bonus by ${$m2/$<agonizingratio>}.1%][]
+Variables        : $agonizingratio = ${2}
 
 Name             : Poison Knives (id=192380) [Spell Family (8)] 
 Class            : Rogue
@@ -3147,7 +3148,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=282814)   : Dummy (3)
@@ -3157,7 +3158,7 @@ Effects          :
 #3 (id=318298)   : Trigger Spell: Kingsbane (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 50 | Trigger Spell: 192760 | Target: Enemy(6)
 #4 (id=318299)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
-                   Base Value: 5 | Scaled Value: 5 | AP Coefficient: 0.75000 | Target: Enemy(6)
+                   Base Value: 5 | Scaled Value: 5 | AP Coefficient: 0.45000 | Target: Enemy(6)
 #5 (id=318312)   : Apply Aura (6) | Proc Trigger Spell: Kingsbane (42)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 192853 | Target: Self(1)
 Description      : Releases lethal poison within |cFFFFCC99The Kingslayers|r and injects it into your target, dealing ${$222062sw1+$192760sw1} Nature damage instantly and an additional $o4 Nature damage over $d. 
@@ -3179,7 +3180,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=282815)   : Weapon Damage% (31)
-                   Base Value: 500 | Scaled Value: 5 | Target: Enemy(6)
+                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
 #2 (id=318311)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc192759
@@ -3201,7 +3202,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Hidden (7)
 Effects          :
 #1 (id=282942)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Kingsbane (192759), Kingsbane (192760), Kingsbane (222062)
 Description      : $@spelldesc192759
 Tooltip          : Kingsbane Damage increased by $s1%.
@@ -3228,7 +3229,7 @@ Effects          :
 #2 (id=283620)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #3 (id=283621)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
+                   Base Value: 285 | Scaled Value: 2.85 | Target: Enemy(6)
 #4 (id=283622)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Saber Slash (193315)
@@ -3324,9 +3325,9 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283682)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #2 (id=344594)   : Apply Aura (6) | Unknown effect sub type (443)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
 Description      : Increases your attack speed by $s1% and your Leech by $s2% for the duration of Roll the Bones.
 Tooltip          : Attack speed increased by $s1%.
 Leech increased by $s2%.
@@ -3400,7 +3401,7 @@ Name             : Weaponmaster (id=193537) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Internal Cooldown: 0.5 seconds
-Proc Chance      : 12%
+Proc Chance      : 6%
 Proc Flags       : ....x... x...x... x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3412,7 +3413,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=283933)   : Apply Aura (6) | Unknown effect sub type (360)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self(1)
 Description      : Your abilities have a $h% chance to hit the target twice each time they deal damage.
 
 Name             : Alacrity (id=193538) [Spell Family (8)] 
@@ -3420,7 +3421,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Duration         : 20 seconds
-Stacks           : 25 maximum
+Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered by     : Alacrity (193539)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -3507,7 +3508,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=284088)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 0x7f | Target: Self(1)
 Description      : Increases damage done by $s1% for $d.
 Tooltip          : Increases damage done by $s1%.
 
@@ -3760,7 +3761,7 @@ Effects          :
 #4 (id=289168)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
 #5 (id=289169)   : Apply Aura (6) | Unknown effect sub type (270)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 127 | Target: Enemy(6)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Enemy(6)
 #6 (id=297629)   : Apply Aura (6) | Periodic Dummy: every 3 seconds (226)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
 Description      : Strikes an enemy with your cursed weapon, dealing $sw2 Physical damage and causing the target to take $s5% increased damage from your abilities for $d.
@@ -4138,7 +4139,6 @@ Resource         : 1 - 5 Combo Points
 Spell Level      : 25
 Range            : 20 yards
 GCD              : 1 seconds
-Duration         : 5 seconds
 Cooldown         : 20 seconds
 Affecting spells : Adrenaline Rush (13750), Outlaw Rogue (137036), Deeper Stratagem (193531), Fatebringer (202524), Black Powder (216230)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
@@ -4175,7 +4175,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=295581)   : Apply Aura (6) | Add Flat Modifier (107)
-                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000 | Misc Value: 33 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 1.00000 | Misc Value: 33 | Target: Self(1)
                    Affected Spells: Saber Slash (193315)
 Description      : Saber Slash has a $s1% increased chance to strike an additional time.
 
@@ -4762,7 +4762,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=331411)   : Weapon Damage% (31)
-                   Base Value: 500 | Scaled Value: 5 | Target: Enemy(6)
+                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
 #2 (id=331412)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc192759

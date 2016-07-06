@@ -21,7 +21,7 @@ School           : Physical
 Resource         : 10 Rage
 Spell Level      : 18
 Cooldown         : 1 seconds
-Charges          : 2 (15 seconds cooldown)
+Charges          : 2 (13 seconds cooldown)
 Category         : 1385
 Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -456,7 +456,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=108857)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.90000 | Target: Enemy(6)
 #2 (id=134420)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: chi | Target: Self(1)
 #3 (id=281299)   : Dummy (3)
@@ -498,7 +498,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=108867)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.25000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.35000 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Kick with a blast of Chi energy, dealing $s1 Physical damage.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -635,7 +635,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Radius: 10 yards | Target: Self(1)
 #6 (id=214834)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649)
 #7 (id=257979)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
 Description      : Increases all damage dealt by $s3%.
@@ -755,7 +755,7 @@ Effects          :
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=303680)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.00000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.25000
 Description      : Pummels all targets in front of you, dealing ${5*$s5} damage over $113656d. Can be channeled while moving.
 Tooltip          : $w3 damage every $t3 sec. $?s125671[Parrying all attacks.][]
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -838,7 +838,7 @@ Effects          :
 #5 (id=140824)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self(1)
 #6 (id=141322)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value 2: 0x4 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value 2: 0x4 | Target: Self(1)
 #7 (id=153830)   : Apply Aura (6) | Threat (10)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 127 | Target: Self(1)
 #8 (id=157383)   : Apply Aura (6) | Unknown effect sub type (197)
@@ -849,7 +849,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
 #11 (id=218370)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Zen Pulse (124081), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Zen Pulse (198487), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649)
 #12 (id=235531)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #13 (id=255479)   : Dummy (3)
@@ -858,7 +858,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self(1)
 #15 (id=281298)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Blackout Strike (205523), Dragonfire Brew (227681)
+                   Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Blackout Strike (205523), Dragonfire Brew (227681), Blackout Kick (228649)
 #16 (id=287166)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780)
@@ -937,7 +937,7 @@ Effects          :
 #1 (id=128742)   : Apply Aura (6) | Periodic Damage: physical every 8 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=162038)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
+                   Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
 Description      : Use ancient Pandaren knowledge of anatomy to inflict mortal damage on an enemy. After $d, the target will take damage equal to your maximum health, reduced against players.
 Tooltip          : Taking $w1 damage when this effect expires.
 
@@ -1074,7 +1074,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128879)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 2.00000 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.80000 | Radius: 8 yards | Target: Cone Front(104)
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Targets affected by Keg Smash will also burn for $123725o1 Fire damage over $123725d$?s123394[ and become Incapacitated for $123393d][].
 Tooltip          : If Dizzying Haze is on the target, they will burn for an additional $123725o1 damage over $123725d$?s123394[ and become Disoriented for $123393d.][.]
 
@@ -1189,10 +1189,10 @@ Class            : Monk
 School           : Physical
 Spell Level      : 1
 Range            : 40 yards
-GCD              : 1 seconds
+GCD              : 1.5 seconds
 Duration         : 900 seconds
 Cooldown         : 10 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
+Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1221,7 +1221,7 @@ Effects          :
 #1 (id=129188)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
 #2 (id=177614)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self(1)
 Description      : Increases your maximum Chi by $s1, and your Energy regeneration by $s2%.
 
 Name             : Black Ox Brew (id=115399) [Spell Family (53)] 
@@ -1568,13 +1568,13 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=131945)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523)
+                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 #2 (id=135586)   : Apply Aura (6) | Unknown effect sub type (262)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523)
+                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 #3 (id=196421)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523)
+                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 Description      : $@spelldesc137384
 Tooltip          : Your next Blackout Kick costs no Chi.
 
@@ -2094,7 +2094,7 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=150037)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 9.00000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 6.75000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #2 (id=229522)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #3 (id=283420)   : Dummy (3)
@@ -2313,7 +2313,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=156180)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27000 | Target: Enemy(6)
 #2 (id=342380)   : Apply Aura (6) | Unknown effect sub type (269)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Enemy(6)
 Description      : $@spelldesc115181
@@ -2962,7 +2962,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self(1)
 #2 (id=289259)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523)
+                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 Description      : Your Blackout Kick now also deals an additional $m1% damage over $128531d if behind the target or heals you for $m1% of the damage done if in front of the target.
 
 Additionally, your Rising Sun Kick now also causes Mortal Wounds to the primary target.
@@ -3265,10 +3265,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self(1)
 #4 (id=191106)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 917504 | Target: Self(1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Touch of Death (115080), Disable (116095), Rushing Jade Wind (116847), Leg Sweep (119381), Transcendence: Transfer (119996), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Blackout Strike (205523)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Paralysis (115078), Touch of Death (115080), Disable (116095), Rushing Jade Wind (116847), Leg Sweep (119381), Transcendence: Transfer (119996), Rushing Jade Wind (148187), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Blackout Strike (205523), Blackout Kick (228649)
 #5 (id=191107)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Blackout Strike (205523)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725), Blackout Strike (205523), Blackout Kick (228649)
 #6 (id=260827)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: -20 | Scaled Value: -20 | Target: Self(1)
 #7 (id=260828)   : Apply Aura (6) | Unknown effect sub type (179)
@@ -3281,7 +3281,7 @@ Effects          :
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
 #10 (id=260831)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
-                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523)
+                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 #11 (id=260832)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Tiger Palm (100780)
@@ -3485,17 +3485,17 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=210678)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Blackout Strike (205523)
+                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Blackout Strike (205523), Blackout Kick (228649)
 #2 (id=303755)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 0x7f | Misc Value 2: 0x1b | Target: Self(1)
 #3 (id=303756)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Target: Self(1)
 #4 (id=303757)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Blackout Strike (205523)
+                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Blackout Strike (205523), Blackout Kick (228649)
 #5 (id=330099)   : Apply Aura (6) | Unknown effect sub type (454)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1518 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Blackout Strike (205523)
+                   Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Strike of the Windlord (205320), Blackout Strike (205523), Blackout Kick (228649)
 Description      : Enter an elevated state of mental and physical serenity for $?s115069[$s1 sec][$d]. While in this state, you deal $s2% increased damage and healing, and all Chi consumers are free and have $s4% reduced cooldown.
 Tooltip          : Damage dealt increased by $s2%.
 All Chi consumers are free, and have $s4% reduced cooldown.
@@ -3830,7 +3830,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=268390)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 7.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 7.90000 | Target: Enemy(6)
 Description      : $@spelldesc107428
 
 Name             : Hunting Companion (id=191335) [Spell Family (9)] 
@@ -4796,7 +4796,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=303663)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.87500 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.15000 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Strike with a blast of Chi energy, dealing $s1 Physical damage.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -4943,7 +4943,7 @@ Name             : Exploding Keg (Artifact) (id=214326) [Spell Family (53)]
 Class            : Monk
 School           : Fire
 Range            : 40 yards
-GCD              : 1.5 seconds
+GCD              : 1 seconds
 Velocity         : 15 yards/sec
 Duration         : 3 seconds
 Cooldown         : 75 seconds
@@ -5107,5 +5107,32 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 Description      : $@spelldesc196736
 Tooltip          : Your next ability is empowered.
+
+Name             : Blackout Kick (id=228649) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Level      : 3
+Range            : 5 yards
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
+Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+Effects          :
+#1 (id=344387)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.25000 | Chain Targets: 1 | Target: Enemy(6)
+Description      : Kick with a blast of Chi energy, dealing $s1 Physical damage.
+Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
+$dwm=$?a108561|a115697[${1}][${0.857143}]
+$offm=$?a108561|a115697[${0}][${1}]
+
+$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]
+$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
+
+$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
+$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
+
 
 
