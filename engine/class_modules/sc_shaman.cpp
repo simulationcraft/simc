@@ -429,6 +429,7 @@ public:
 
     const spell_data_t* earthen_spike;
     const spell_data_t* fury_of_air;
+    const spell_data_t* empowered_stormlash;
   } talent;
 
   // Artifact
@@ -674,46 +675,11 @@ struct ascendance_buff_t : public buff_t
 
 struct stormlash_spell_t : public spell_t
 {
-  double damage_pool;
-  timespan_t previous_proc, buff_duration;
-
-  stormlash_spell_t( player_t* p ) :
-    spell_t( "stormlash", p, p -> find_spell( 213307 ) ),
-    damage_pool( 0 ), previous_proc( timespan_t::zero() ),
-    buff_duration( p -> find_spell( 195222 ) -> duration() )
+  stormlash_spell_t( player_t* p ) : spell_t( "stormlash", p, p -> find_spell( 213307 ) )
   {
     background = true;
     callbacks = may_crit = may_miss = false;
   }
-
-  void setup( player_t* source )
-  {
-    damage_pool = source -> cache.attack_power() * data().effectN( 1 ).ap_coeff();
-    // Add in mastery multiplier
-    damage_pool *= 1.0 + source -> cache.mastery_value();
-    // Add in versatility multiplier
-    damage_pool *= 1.0 + source -> cache.damage_versatility();
-    // Add in crit multiplier
-    damage_pool *= 1.0 + source -> cache.attack_crit_chance();
-    // TODO: Add in crit damage multiplier
-
-    previous_proc = sim -> current_time();
-  }
-
-  double base_da_min( const action_state_t* ) const override
-  {
-    timespan_t interval = sim -> current_time() - previous_proc;
-    double multiplier = interval / buff_duration;
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s stormlash damage_pool=%.1f previous=%.3f interval=%.3f multiplier=%.3f damage=%.3f",
-          player -> name(), damage_pool, previous_proc.total_seconds(), interval.total_seconds(), multiplier, damage_pool * multiplier );
-    }
-    return damage_pool * multiplier;
-  }
-
-  double base_da_max( const action_state_t* state ) const override
-  { return base_da_min( state ); }
 
   void init() override
   {
@@ -721,47 +687,107 @@ struct stormlash_spell_t : public spell_t
 
     snapshot_flags = update_flags = 0;
   }
-
-  void execute() override
-  {
-    spell_t::execute();
-    previous_proc = sim -> current_time();
-  }
-
-  void reset() override
-  {
-    spell_t::reset();
-
-    previous_proc = timespan_t::zero();
-  }
 };
 
 struct stormlash_callback_t : public dbc_proc_callback_t
 {
+  struct damage_pool_t
+  {
+    double damage_pool;
+    timespan_t previous_proc;
+
+    damage_pool_t() : damage_pool( 0 ), previous_proc( timespan_t::zero() )
+    { }
+
+    damage_pool_t( double p, const timespan_t& t ) : damage_pool( p ), previous_proc( t )
+    { }
+  };
+
+  timespan_t buff_duration;
+  double coefficient;
+  std::vector<damage_pool_t> damage_pool;
+  size_t n_buffs;
+
   stormlash_spell_t* spell;
 
   stormlash_callback_t( player_t* p, const special_effect_t& effect ) :
     dbc_proc_callback_t( p, effect ),
+    buff_duration( p -> find_spell( 195222 ) -> duration() ),
+    coefficient( p -> find_spell( 213307 ) -> effectN( 1 ).ap_coeff() ),
+    n_buffs( as<size_t>( shaman() -> spec.stormlash -> effectN( 1 ).base_value() +
+            shaman() -> talent.empowered_stormlash -> effectN( 1 ).base_value() ) ),
     spell( new stormlash_spell_t( p ) )
   { }
 
-  void execute( action_t* /* a */, action_state_t* state ) override
+  shaman_t* shaman() const
+  { return debug_cast<shaman_t*>( listener ); }
+
+  void add_pool()
   {
-    // This can occur if the stormlash buff on the actor refreshes. Otherwise, the 100ms ICD will
-    // take care of things.
-    if ( spell -> previous_proc == listener -> sim -> current_time() )
+    double pool = listener -> cache.attack_power() * coefficient;
+    // Add in mastery multiplier
+    pool *= 1.0 + listener -> cache.mastery_value();
+    // Add in versatility multiplier
+    pool *= 1.0 + listener -> cache.damage_versatility();
+    // Add in crit multiplier
+    pool *= 1.0 + listener -> cache.attack_crit_chance();
+    // TODO: Add in crit damage multiplier
+
+    pool *= 1.0 + shaman() -> talent.empowered_stormlash -> effectN( 2 ).percent();
+
+    damage_pool.push_back( damage_pool_t( pool, listener -> sim -> current_time() ) );
+    if ( listener -> sim -> debug )
     {
-      return;
+      listener -> sim -> out_debug.printf( "%s stormlash adding a new pool: pool=%.1f, n_pools=%u",
+          listener -> name(), pool, damage_pool.size() );
     }
 
-    spell -> target = state -> target;
-    spell -> schedule_execute();
+    // Remove oldest pool
+    if ( damage_pool.size() > n_buffs )
+    {
+      damage_pool.erase( damage_pool.begin() );
+    }
+  }
+
+  void remove_pool()
+  {
+    assert( damage_pool.size() > 0 );
+    if ( listener -> sim -> debug )
+    {
+      listener -> sim -> out_debug.printf( "%s stormlash removing oldest pool: pool=%.1f, n_pools=%u",
+          listener -> name(), damage_pool.front().damage_pool, damage_pool.size() );
+    }
+    damage_pool.erase( damage_pool.begin() );
+  }
+
+  double pool_damage( damage_pool_t& pool )
+  {
+    timespan_t interval = listener -> sim -> current_time() - pool.previous_proc;
+    double multiplier = interval / buff_duration;
+    if ( listener -> sim -> debug )
+    {
+      listener -> sim -> out_debug.printf( "%s stormlash damage_pool=%.1f previous=%.3f interval=%.3f multiplier=%.3f damage=%.3f",
+          listener -> name(), pool.damage_pool, pool.previous_proc.total_seconds(),
+          interval.total_seconds(), multiplier, pool.damage_pool * multiplier );
+    }
+    pool.previous_proc = listener -> sim -> current_time();
+    return pool.damage_pool * multiplier;
+  }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
+  {
+    range::for_each( damage_pool, [ this, &state ]( damage_pool_t& pool ) {
+      spell -> base_dd_min = spell -> base_dd_max = pool_damage( pool );
+      spell -> target = state -> target;
+      spell -> execute();
+    } );
   }
 
   void reset() override
   {
     dbc_proc_callback_t::reset();
 
+    damage_pool.clear();
     deactivate();
   }
 };
@@ -770,28 +796,32 @@ struct stormlash_buff_t : public buff_t
 {
   stormlash_callback_t* callback;
 
-  stormlash_buff_t( player_t* p ) :
-    buff_t( buff_creator_t( p, "stormlash", p -> find_spell( 195222 ) ).activated( false ).cd( timespan_t::zero() ) )
+  stormlash_buff_t( const buff_creator_t& creator ) : buff_t( creator )
   { }
 
-  void trigger_stormlash( player_t* source_actor )
+  void increment( int stacks, double value, timespan_t duration ) override
   {
-    callback -> spell -> setup( source_actor );
-
-    trigger();
-  }
-
-  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
-  {
-    buff_t::execute( stacks, value, duration );
+    buff_t::increment( stacks, value, duration );
+    callback -> add_pool();
     callback -> activate();
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  void decrement( int stacks, double value ) override
   {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    bool is_up = check() != 0;
 
-    callback -> deactivate();
+    buff_t::decrement( stacks, value );
+
+    if ( is_up )
+    {
+      callback -> remove_pool();
+    }
+
+    if ( check() == 0 )
+    {
+      callback -> deactivate();
+      assert( callback -> damage_pool.size() == 0 );
+    }
   }
 };
 
@@ -3282,7 +3312,9 @@ struct boulderfist_t : public shaman_spell_t
 {
   boulderfist_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "boulderfist", player, player -> talent.boulderfist, options_str )
-  { }
+  {
+    maelstrom_gain += player -> artifact.gathering_of_the_maelstrom.value();
+  }
 
   void init() override
   {
@@ -5471,17 +5503,18 @@ void shaman_t::init_spells()
   talent.feral_lunge                 = find_talent_spell( "Feral Lunge"          );
 
   talent.lightning_shield            = find_talent_spell( "Lightning Shield"     );
-  talent.landslide                   = find_talent_spell( "Landslide"            );
-
-  talent.tempest                     = find_talent_spell( "Tempest"              );
-  talent.sundering                   = find_talent_spell( "Sundering"            );
-  talent.overcharge                  = find_talent_spell( "Overcharge"           );
-
-  talent.fury_of_air                 = find_talent_spell( "Fury of Air"          );
   talent.hailstorm                   = find_talent_spell( "Hailstorm"            );
 
-  talent.earthen_spike               = find_talent_spell( "Earthen Spike"        );
+  talent.tempest                     = find_talent_spell( "Tempest"              );
+  talent.overcharge                  = find_talent_spell( "Overcharge"           );
+  talent.empowered_stormlash         = find_talent_spell( "Empowered Stormlash"  );
+
   talent.crashing_storm              = find_talent_spell( "Crashing Storm"       );
+  talent.fury_of_air                 = find_talent_spell( "Fury of Air"          );
+  talent.sundering                   = find_talent_spell( "Sundering"            );
+
+  talent.landslide                   = find_talent_spell( "Landslide"            );
+  talent.earthen_spike               = find_talent_spell( "Earthen Spike"        );
 
   // Artifact
 
@@ -5690,8 +5723,7 @@ void shaman_t::trigger_stormlash( const action_state_t* )
     sim -> out_debug.printf( "%s triggers stormlash", name() );
   }
 
-  // TODO: Pick someone, maybe, perhaps?
-  buff.stormlash -> trigger_stormlash( this );
+  buff.stormlash -> trigger();
 }
 
 void shaman_t::trigger_doom_vortex( const action_state_t* state )
@@ -5991,7 +6023,11 @@ void shaman_t::create_buffs()
     .cd( timespan_t::zero() ) // Handled by the action
     .default_value( talent.icefury -> effectN( 3 ).percent() );
 
-  buff.stormlash = new stormlash_buff_t( this );
+  buff.stormlash = new stormlash_buff_t( buff_creator_t( this, "stormlash", find_spell( 195222 ) )
+            .activated( false )
+            .max_stack( spec.stormlash -> effectN( 1 ).base_value() + talent.empowered_stormlash -> effectN( 1 ).base_value() )
+            .stack_behavior( BUFF_STACK_ASYNCHRONOUS )
+            .cd( timespan_t::zero() ) );
 
   buff.hot_hand = buff_creator_t( this, "hot_hand", talent.hot_hand -> effectN( 1 ).trigger() )
                   .trigger_spell( talent.hot_hand );
@@ -6059,6 +6095,8 @@ bool shaman_t::init_special_effects()
 
   special_effect_t* effect = new special_effect_t( this );
   effect -> type = SPECIAL_EFFECT_EQUIP;
+  effect -> proc_flags_ = PF_ALL_DAMAGE;
+  effect -> proc_flags2_ = PF2_ALL_HIT;
   effect -> spell_id = 195222;
   special_effects.push_back( effect );
 
