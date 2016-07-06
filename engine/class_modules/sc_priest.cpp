@@ -296,6 +296,7 @@ public:
     cooldown_t* mind_blast;
     cooldown_t* shadow_word_death;
     cooldown_t* shadow_word_void;
+    cooldown_t* void_bolt;
   } cooldowns;
 
   // Gains
@@ -2272,7 +2273,7 @@ struct power_infusion_t final : public priest_spell_t
 struct void_eruption_t final : public priest_spell_t
 {
   void_eruption_t(priest_t& p, const std::string& options_str)
-    : priest_spell_t( "void_eruption", p, p.specs.void_eruption )
+    : priest_spell_t("void_eruption", p, p.find_spell(228360))
   {
     parse_options( options_str );
     base_costs[RESOURCE_INSANITY] = 0.0;
@@ -2282,35 +2283,186 @@ struct void_eruption_t final : public priest_spell_t
     range = 0.0;
     radius = 100.0;
     school = SCHOOL_SHADOW;
-  }
-
-  double calculate_direct_amount(action_state_t* state) const override
-  {
-    double cda = priest_spell_t::calculate_direct_amount(state);
-
-    dot_t* swp = state->target->get_dot("shadow_word_pain", &priest);
-    dot_t* vt = state->target->get_dot("vampiric_touch", &priest);
-
-    if (swp || vt)  // Shadow Word: Pain or Vampiric Touch is ticking on the target; deal damage
-    {
-      return cda;
-    }
-    else
-    {
-      return 0.0;
-    }
+    cooldown = priest.cooldowns.void_bolt;
   }
 
   void execute() override
   {
-    priest_spell_t::execute();
+    //priest_spell_t::execute();
+
+
+    /*** Begin copypasta (with edits) of execute() */
+
+#ifndef NDEBUG
+    if (!initialized)
+    {
+      sim->errorf("action_t::execute: action %s from player %s is not initialized.\n", name(), player->name());
+      assert(0);
+    }
+#endif
+
+    if (&data() == &spell_data_not_found_t::singleton)
+    {
+      sim->errorf("Player %s could not find spell data for action %s\n", player->name(), name());
+      sim->cancel();
+    }
+
+    if (n_targets() == 0 && target->is_sleeping())
+      return;
+
+    if (!execute_targeting(this))
+    {
+      cancel(); // This cancels the cast if the target moves out of range while the spell is casting.
+      return;
+    }
+
+    if (sim->log && !dual)
+    {
+      sim->out_log.printf("%s performs %s (%.0f)", player->name(), name(),
+        player->resources.current[player->primary_resource()]);
+    }
+
+    hit_any_target = false;
+    num_targets_hit = 0;
+
+    if (harmful)
+    {
+      if (player->in_combat == false && sim->debug)
+        sim->out_debug.printf("%s enters combat.", player->name());
+
+      player->in_combat = true;
+    }
+
+    size_t num_targets;
+    std::vector< player_t* >& tl = target_list();
+    num_targets = (n_targets() < 0) ? tl.size() : n_targets();
+    if (num_targets < 1)
+    {
+      cancel(); // AoE Children who get automatically executed from a parent spell will sometimes run into situations where they do not deal damage to the
+      return;   // original target, but one nearby, and that one nearby is out range. This will catch it before the sim crashes.
+    }
+
+    for (size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++)
+    {
+      action_state_t* s = get_state(pre_execute_state);
+      s->target = tl[t];
+      s->n_targets = std::min(num_targets, tl.size());
+      s->chain_target = as<int>(t);
+      
+      dot_t* swp = s->target->get_dot("shadow_word_pain", &priest);
+
+      if (swp) // Shadow Word: Pain is ticking on the target; deal damage
+      {
+        if (!pre_execute_state) snapshot_state(s, amount_type(s));
+        s->result = calculate_result(s);
+        s->block_result = calculate_block_result(s);
+
+        s->result_amount = calculate_direct_amount(s);
+
+        if (sim->debug)
+          s->debug();
+
+        schedule_travel(s);
+      }
+      
+      action_state_t* s2 = get_state(pre_execute_state);
+      s2->target = tl[t];
+      s2->n_targets = std::min(num_targets, tl.size());
+      s2->chain_target = as<int>(t);
+
+      dot_t* vt = s2->target->get_dot("vampiric_touch", &priest);
+
+      if (vt) // Vampiric Touch is ticking on the target; deal damage
+      {
+        if (!pre_execute_state) snapshot_state(s2, amount_type(s2));
+        s2->result = calculate_result(s2);
+        s2->block_result = calculate_block_result(s2);
+
+        s2->result_amount = calculate_direct_amount(s2);
+
+        if (sim->debug)
+          s2->debug();
+
+        schedule_travel(s2);
+      }
+    }
+
+    if (player->regen_type == REGEN_DYNAMIC)
+    {
+      player->do_dynamic_regen();
+    }
+
+    consume_resource();
+
+    update_ready();
+
+    if (!dual) stats->add_execute(time_to_execute, target);
+
+    if (pre_execute_state)
+      action_state_t::release(pre_execute_state);
+
+    // The rest of the execution depends on actually executing on target
+    if (num_targets > 0)
+    {
+      if (composite_teleport_distance(execute_state) > 0)
+        do_teleport(execute_state);
+
+      if (execute_action && result_is_hit(execute_state->result))
+      {
+        assert(!execute_action->pre_execute_state);
+        execute_action->schedule_execute(execute_action->get_state(execute_state));
+      }
+
+      // Proc generic abilities on execute.
+      proc_types pt;
+      if (callbacks && (pt = execute_state->proc_type()) != PROC1_INVALID)
+      {
+        proc_types2 pt2;
+
+        // "On spell cast", only performed for foreground actions
+        if ((pt2 = execute_state->cast_proc_type2()) != PROC2_INVALID)
+        {
+          action_callback_t::trigger(player->callbacks.procs[pt][pt2], this, execute_state);
+        }
+
+        // "On an execute result"
+        if ((pt2 = execute_state->execute_proc_type2()) != PROC2_INVALID)
+        {
+          action_callback_t::trigger(player->callbacks.procs[pt][pt2], this, execute_state);
+        }
+      }
+    }
+
+    // Restore the default target after execution. This is required so that
+    // target caches do not get into an inconsistent state, if the target of this
+    // action (defined by a number) spawns/despawns dynamically during an
+    // iteration.
+    if (target_number > 0 && target != default_target)
+    {
+      target = default_target;
+    }
+
+    if (energize_type_() == ENERGIZE_ON_CAST || (energize_type_() == ENERGIZE_ON_HIT && hit_any_target))
+    {
+      player->resource_gain(energize_resource_(),
+        composite_energize_amount(execute_state), gain, this);
+    }
+    else if (energize_type_() == ENERGIZE_PER_HIT)
+    {
+      player->resource_gain(energize_resource_(),
+        composite_energize_amount(execute_state) * num_targets_hit, gain, this);
+    }
+
+    if (repeating && !proc) schedule_execute();
+
+    /*** End copypasta (with edits) of execute() */
 
     priest.buffs.voidform->trigger();
-
     
     if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B4 ) )
     {
       priest.buffs.shadow_t19_4p->trigger();
+      priest.cooldowns.void_bolt->reset(true);
     }
 
     if ( priest.artifact.sphere_of_insanity.rank() )
@@ -5718,6 +5870,7 @@ void priest_t::create_cooldowns()
   cooldowns.mind_blast        = get_cooldown( "mind_blast" );
   cooldowns.shadow_word_death = get_cooldown( "shadow_word_death" );
   cooldowns.shadow_word_void  = get_cooldown( "shadow_word_void" );
+  cooldowns.void_bolt         = get_cooldown( "void_bolt" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
