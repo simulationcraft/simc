@@ -539,6 +539,8 @@ public:
   double  composite_attribute_multiplier( attribute_e attr ) const override;
   double  composite_crit_avoidance() const override;
   double  composite_dodge() const override;
+  double  composite_melee_haste() const override;
+  double  composite_spell_haste() const override;
   double  composite_leech() const override;
   double  composite_melee_crit_chance() const override;
   double  composite_melee_expertise( const weapon_t* ) const override;
@@ -998,7 +1000,6 @@ template <typename Base>
 class demon_hunter_action_t : public Base
 {
 public:
-  bool metamorphosis_gcd;
   bool hasted_gcd;
   bool demonic_presence;
   bool havoc_t19_2pc;
@@ -1008,8 +1009,6 @@ public:
                          const spell_data_t* s = spell_data_t::nil(),
                          const std::string& o = std::string() )
     : ab( n, p, s ),
-      metamorphosis_gcd( p -> specialization() == DEMON_HUNTER_HAVOC &&
-        ab::data().affected_by( p -> spec.metamorphosis_buff -> effectN( 7 ) ) ),
       demonic_presence( ab::data().affected_by(
         p -> mastery_spell.demonic_presence -> effectN( 1 ) ) ),
       havoc_t19_2pc( ab::data().affected_by( p -> sets.set( DEMON_HUNTER_HAVOC, T19, B2 ) ) ),
@@ -1064,15 +1063,6 @@ public:
             demonic_presence = ! demonic_presence;
         }
       }
-
-      if ( ab::trigger_gcd >= timespan_t::from_seconds( 1.0 ) && ! metamorphosis_gcd )
-      {
-        if ( p() -> bugs )
-          ab::sim -> errorf( "%s (%u) does not benefit from metamorphosis!",
-            ab::name_str.c_str(), ab::data().id() );
-        else
-          metamorphosis_gcd = true;
-      }
     }
   }
 
@@ -1082,11 +1072,6 @@ public:
 
     if ( g == timespan_t::zero() )
       return g;
-
-    if ( metamorphosis_gcd && p() -> buff.metamorphosis -> check() )
-    {
-      g += p() -> spec.metamorphosis_buff -> effectN( 7 ).time_value();
-    }
 
     if ( hasted_gcd )
     {
@@ -3097,6 +3082,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       dual = background = true;
       aoe = data().effectN( 1 ).chain_target()
         + p -> talent.chaos_cleave -> effectN( 1 ).base_value();
+      chain_multiplier = data().effectN( 1 ).chain_multiplier();
       may_refund = weapon == &( p -> off_hand_weapon );
 
       // Do not put crit chance modifiers here!
@@ -4682,7 +4668,9 @@ void demon_hunter_t::create_buffs()
       buff_creator_t( this, "metamorphosis", spec.metamorphosis_buff )
         .cd( timespan_t::zero() )
         .add_invalidate( CACHE_LEECH )
-        .tick_behavior( BUFF_TICK_NONE );
+        .add_invalidate( CACHE_HASTE )
+        .tick_behavior( BUFF_TICK_NONE )
+        .default_value( spec.metamorphosis_buff -> effectN( 7 ).percent() );
   }
   else
   {
@@ -5793,6 +5781,34 @@ double demon_hunter_t::composite_dodge() const
   d += buff.blur -> check() * buff.blur -> data().effectN( 2 ).percent();
 
   return d;
+}
+
+// demon_hunter_t::composite_melee_haste ==========================================
+
+double demon_hunter_t::composite_melee_haste() const
+{
+  double mh = player_t::composite_melee_haste();
+
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+  {
+    mh /= 1.0 + buff.metamorphosis -> check_value();
+  }
+
+  return mh;
+}
+
+// demon_hunter_t::composite_spell_haste ==========================================
+
+double demon_hunter_t::composite_spell_haste() const
+{
+  double sh = player_t::composite_spell_haste();
+
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+  {
+    sh /= 1.0 + buff.metamorphosis -> check_value();
+  }
+
+  return sh;
 }
 
 // demon_hunter_t::composite_leech ==========================================
