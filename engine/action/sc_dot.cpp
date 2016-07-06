@@ -249,11 +249,13 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
   // well as the remaining duration, and the remaining ongoing tick time.
   else
   {
-    timespan_t new_duration;
+    timespan_t new_duration, old_remains = timespan_t::zero();
 
     // Other dot is ticking, the cloning process will be a refresh
     if ( other_dot -> is_ticking() )
     {
+      old_remains = other_dot -> remains();
+
       // The new duration is computed through our normal refresh duration
       // method. End result (by default) will be source_remains + min(
       // target_remains, 0.3 * source_remains )
@@ -277,7 +279,7 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type )
     if ( sim.debug )
       sim.out_debug.printf( "%s cloning %s from %s to %s: source_remains=%.3f target_remains=%.3f target_duration=%.3f",
         current_action -> player -> name(), current_action -> name(), target -> name(), other_target -> name(),
-        remains().total_seconds(), other_dot -> remains().total_seconds(), new_duration.total_seconds() );
+        remains().total_seconds(), old_remains.total_seconds(), new_duration.total_seconds() );
 
     // To compute new number of ticks, we use the new duration, plus the
     // source's ongoing remaining tick time, since we are copying the ongoing
