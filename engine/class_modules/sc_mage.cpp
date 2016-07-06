@@ -2407,6 +2407,12 @@ struct conflagration_dot_t : public fire_mage_spell_t
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
   }
+  void init() override
+  {
+    fire_mage_spell_t::init();
+    snapshot_flags &= ~STATE_HASTE;
+    update_flags &= ~STATE_HASTE;
+  }
 };
 
 struct conflagration_t : public fire_mage_spell_t
