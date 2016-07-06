@@ -44,6 +44,9 @@ struct expiration_t : public buff_event_t
     buff_event_t( b, d ), stack( s )
   {}
 
+  const char* name() const override
+  { return "buff_expiration"; }
+
   expiration_t( buff_t* b, timespan_t d ) :
     buff_event_t( b, d )
   {
@@ -74,6 +77,9 @@ struct tick_t : public buff_event_t
   tick_t( buff_t* b, timespan_t d, double value, int stacks ) :
     buff_event_t( b, d ), current_value( value ), current_stacks( stacks ), tick_time( d )
   { }
+
+  const char* name() const override
+  { return "buff_tick"; }
 
   void execute() override
   {
