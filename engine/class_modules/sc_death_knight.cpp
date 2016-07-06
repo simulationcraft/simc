@@ -5464,7 +5464,8 @@ void death_knight_t::create_buffs()
   buffs.t18_4pc_frost_crit = buff_creator_t( this, "frozen_wake", find_spell( 187894 ) )
     .default_value( find_spell( 187894 ) -> effectN( 1 ).percent() )
     .trigger_spell( sets.set( DEATH_KNIGHT_FROST, T18, B2 ) );
-  buffs.soulgorge = buff_creator_t( this, "soulgorge", find_spell( 213003 ) );
+  buffs.soulgorge = buff_creator_t( this, "soulgorge", find_spell( 213003 ) )
+    .affects_regen( true );
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
 }
 
