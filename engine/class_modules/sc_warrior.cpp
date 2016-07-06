@@ -420,7 +420,7 @@ public:
   virtual double    composite_melee_speed() const override;
   virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_spell_crit_chance() const override;
-  virtual double    composite_player_critical_damage_multiplier() const override;
+  virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double    composite_leech() const override;
   virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   virtual void      teleport( double yards, timespan_t duration ) override;
@@ -615,7 +615,7 @@ public:
         p() -> cache.strength(),
         p() -> cache.attack_power() * p() -> composite_attack_power_multiplier(),
         p() -> cache.attack_crit_chance() * 100,
-        p() -> composite_player_critical_damage_multiplier(),
+        p() -> composite_player_critical_damage_multiplier( s ),
         p() -> cache.mastery_value() * 100,
         ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
         p() -> cache.damage_versatility() * 100,
@@ -637,7 +637,7 @@ public:
         p() -> cache.strength(),
         p() -> cache.attack_power() * p() -> composite_attack_power_multiplier(),
         p() -> cache.attack_crit_chance() * 100,
-        p() -> composite_player_critical_damage_multiplier(),
+        p() -> composite_player_critical_damage_multiplier( d -> state ),
         p() -> cache.mastery_value() * 100,
         ( ( 1 / ( p() -> cache.attack_haste() ) ) - 1 ) * 100,
         p() -> cache.damage_versatility() * 100,
@@ -2795,7 +2795,7 @@ struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrio
       state -> result = RESULT_CRIT;
 
     if ( state -> result == RESULT_CRIT )
-      amount *= 1.0 + total_crit_bonus();
+      amount *= 1.0 + total_crit_bonus( state );
 
     amount *= dmg_multiplier;
 
@@ -5070,9 +5070,9 @@ double warrior_t::composite_melee_crit_chance() const
 
 // warrior_t::composite_player_critical_damage_multiplier ==================
 
-double warrior_t::composite_player_critical_damage_multiplier() const
+double warrior_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
-  double cdm = player_t::composite_player_critical_damage_multiplier();
+  double cdm = player_t::composite_player_critical_damage_multiplier( s );
   
   if ( buff.battle_cry -> check() )
   {

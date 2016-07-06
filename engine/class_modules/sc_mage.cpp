@@ -593,6 +593,7 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    mana_regen_per_second() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_mastery_rating() const override;
@@ -1495,6 +1496,10 @@ struct arcane_missiles_buff_t : public buff_t
       am_proc_chance += p -> artifact.ethereal_sensitivity.percent();
     }
 
+    if ( p -> sets.has_set_bonus( MAGE_ARCANE, T19, B2 ) )
+    {
+      am_proc_chance += p -> sets.set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
+    }
     return am_proc_chance;
   }
 
@@ -2013,7 +2018,6 @@ struct fire_mage_spell_t : public mage_spell_t
     triggers_hot_streak( false ),
     triggers_ignite( false )
   {
-    base_multiplier *= 1.0 + p -> artifact.burning_gaze.percent();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2121,10 +2125,10 @@ struct fire_mage_spell_t : public mage_spell_t
     }
   }
 
-  double total_crit_bonus() const override
+  double total_crit_bonus( action_state_t* s ) const override
   {
     // TODO: Only apply bonus to hardcast spells?
-    double bonus = mage_spell_t::total_crit_bonus();
+    double bonus = mage_spell_t::total_crit_bonus( s );
     if ( background == true )
     {
       return bonus;
@@ -2402,9 +2406,16 @@ struct conflagration_dot_t : public fire_mage_spell_t
     //TODO: Check callbacks
     callbacks = false;
     hasted_ticks = false;
+    tick_may_crit = may_crit = false;
     background = true;
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
+  }
+  void init() override
+  {
+    fire_mage_spell_t::init();
+    snapshot_flags &= ~STATE_HASTE;
+    update_flags &= ~STATE_HASTE;
   }
 };
 
@@ -3072,7 +3083,7 @@ struct blast_furance_t : public fire_mage_spell_t
     background = true;
     callbacks = false;
     hasted_ticks = false;
-    may_crit = false;
+    may_crit = tick_may_crit = false;
   }
 };
 // Blast Wave Spell ==========================================================
@@ -3672,6 +3683,11 @@ struct fireball_t : public fire_mage_spell_t
       c += p() -> buffs.enhanced_pyrotechnics -> stack() *
            p() -> buffs.enhanced_pyrotechnics -> data().effectN( 1 ).percent();
 
+      if ( p() -> sets.has_set_bonus( MAGE_FIRE, T19, B2 ) )
+      {
+        c += p() -> buffs.enhanced_pyrotechnics -> stack() *
+             p() -> sets.set( MAGE_FIRE, T19, B2 ) -> effectN( 1 ).percent();
+      }
     return c;
   }
 
@@ -3932,6 +3948,11 @@ struct frostbolt_t : public frost_mage_spell_t
       double bf_proc_chance = p() -> spec.brain_freeze
                                   -> effectN( 1 ).percent();
 
+      if ( p() -> sets.has_set_bonus( MAGE_FROST, T19, B2 ) )
+      {
+        bf_proc_chance += p() -> sets.set( MAGE_FROST, T19, B2 ) 
+                              -> effectN( 1 ).percent();
+      }
       if ( p() -> artifact.clarity_of_thought.rank() )
       {
         bf_proc_chance += p() -> artifact.clarity_of_thought.percent();
@@ -7609,7 +7630,19 @@ void mage_t::recalculate_resource_max( resource_e rt )
     }
   }
 }
+// mage_t::composite_player_critical_damage_multiplier ===================
 
+double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_critical_damage_multiplier( s );
+
+  if ( artifact.burning_gaze.rank() && s -> action -> school == SCHOOL_FIRE )
+  {
+  m *= 1.0 + artifact.burning_gaze.percent();
+  }
+
+  return m;
+}
 // mage_t::composite_player_multiplier =======================================
 
 double mage_t::composite_player_multiplier( school_e school ) const

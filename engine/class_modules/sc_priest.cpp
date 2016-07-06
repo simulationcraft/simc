@@ -1633,7 +1633,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     if ( can_trigger_divine_aegis( s ) )
     {
-      double crit_bonus       = total_crit_bonus();
+      double crit_bonus       = total_crit_bonus( s );
       double non_crit_portion = s->result_total / ( 1.0 + crit_bonus );
       s->result_total =
           non_crit_portion;  // remove crit portion from source spell
@@ -1644,7 +1644,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     if ( can_trigger_divine_aegis( s ) )
     {
-      double crit_bonus  = total_crit_bonus();
+      double crit_bonus  = total_crit_bonus( s );
       double crit_amount = s->result_total * crit_bonus;
       da->trigger( s, crit_amount );
     }
@@ -1798,7 +1798,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       return m;
     }
 
-    double total_crit_bonus() const override
+    double total_crit_bonus( action_state_t* s ) const override
     {
       return 0;
     }

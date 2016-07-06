@@ -913,9 +913,9 @@ timespan_t action_t::travel_time() const
 
 // action_t::total_crit_bonus ===============================================
 
-double action_t::total_crit_bonus() const
+double action_t::total_crit_bonus( action_state_t* state ) const
 {
-  double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier();
+  double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier( state );
   double base_crit_bonus = crit_bonus;
   if ( sim -> pvp_crit )
     base_crit_bonus -= 0.5; // Players in pvp take 150% critical hits baseline.
@@ -985,7 +985,7 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   state -> result_raw = amount;
 
   if ( state -> result == RESULT_CRIT )
-    amount *= 1.0 + total_crit_bonus();
+    amount *= 1.0 + total_crit_bonus( state );
 
   amount *= dot_multiplier;
 
@@ -1094,7 +1094,7 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   }
   else if ( state -> result == RESULT_CRIT )
   {
-    amount *= 1.0 + total_crit_bonus();
+    amount *= 1.0 + total_crit_bonus( state );
   }
 
   if ( ! sim -> average_range ) amount = floor( amount + rng().real() );
@@ -2284,7 +2284,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       if ( average_crit )
       {
         a *= 1.0 + clamp( state -> crit_chance + state -> target_crit_chance, 0.0, 1.0 ) *
-          action.composite_player_critical_multiplier();
+          action.composite_player_critical_multiplier( state );
       }
 
       return a;

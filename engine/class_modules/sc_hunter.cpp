@@ -509,7 +509,7 @@ public:
   virtual double    composite_melee_haste() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_mastery_value() const override;
-  virtual double    composite_player_critical_damage_multiplier() const override;
+  virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
@@ -6190,9 +6190,9 @@ double hunter_t::composite_spell_haste() const
 
 // hunter_t::composite_player_critical_damage_multiplier ====================
 
-double hunter_t::composite_player_critical_damage_multiplier() const
+double hunter_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
-  double cdm = player_t::composite_player_critical_damage_multiplier();
+  double cdm = player_t::composite_player_critical_damage_multiplier( s );
 
   // we use check() for rapid_fire becuase it's usage is reported from value() above
   if ( sets.has_set_bonus( HUNTER_MARKSMANSHIP, T17, B4 ) && buffs.trueshot -> check() )
