@@ -1676,10 +1676,6 @@ struct eye_beam_t : public demon_hunter_spell_t
   void record_data( action_state_t* s ) override
   { assert( s -> result_amount == 0.0 ); }
 
-  // Channel is not hasted.
-  timespan_t tick_time( const action_state_t* ) const override
-  { return base_tick_time; }
-
   void tick( dot_t* d ) override
   {
     demon_hunter_spell_t::tick( d );
