@@ -310,7 +310,7 @@ double heal_t::calculate_direct_amount( action_state_t* state ) const
 
     if ( state -> result == RESULT_CRIT )
     {
-      amount *= 1.0 + total_crit_bonus();
+      amount *= 1.0 + total_crit_bonus( state );
     }
 
     amount *= state -> composite_da_multiplier();
@@ -337,7 +337,7 @@ double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multipli
 
     if ( state -> result == RESULT_CRIT )
     {
-      amount *= 1.0 + total_crit_bonus();
+      amount *= 1.0 + total_crit_bonus( state );
     }
 
     amount *= state -> composite_ta_multiplier();

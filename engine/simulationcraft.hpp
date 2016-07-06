@@ -4195,7 +4195,7 @@ struct player_t : public actor_t
 
   virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
 
-  virtual double composite_player_critical_damage_multiplier() const;
+  virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
   virtual double composite_player_critical_healing_multiplier() const;
 
   virtual double composite_mitigation_multiplier( school_e ) const;
@@ -5603,7 +5603,7 @@ public:
   virtual double crit_block_chance( action_state_t* /* state */  ) const
   { return 0; }
 
-  virtual double total_crit_bonus() const; // Check if we want to move this into the stateless system.
+  virtual double total_crit_bonus( action_state_t* /* state */ ) const; // Check if we want to move this into the stateless system.
 
   virtual int num_targets() const;
 
@@ -5763,8 +5763,8 @@ public:
   virtual double composite_target_mitigation( player_t* t, school_e s ) const
   { return t -> composite_mitigation_multiplier( s ); }
 
-  virtual double composite_player_critical_multiplier() const
-  { return player -> composite_player_critical_damage_multiplier(); }
+  virtual double composite_player_critical_multiplier( const action_state_t* s ) const
+  { return player -> composite_player_critical_damage_multiplier( s ); }
 
   /// Action proc type, needed for dynamic aoe stuff and such.
   virtual proc_types proc_type() const
@@ -6142,7 +6142,7 @@ public:
     return m;
   }
 
-  virtual double composite_player_critical_multiplier() const override
+  virtual double composite_player_critical_multiplier( const action_state_t* s ) const override
   { return player -> composite_player_critical_healing_multiplier(); }
 
   virtual double composite_versatility( const action_state_t* state ) const override

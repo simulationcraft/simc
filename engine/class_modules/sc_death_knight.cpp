@@ -525,7 +525,7 @@ public:
   virtual double    composite_leech() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_player_critical_damage_multiplier() const override;
+  virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    passive_movement_modifier() const override;
   virtual void      regen( timespan_t periodicity ) override;
@@ -5770,9 +5770,9 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 
 // death_knight_t::composite_player_critical_damage_multiplier ===================
 
-double death_knight_t::composite_player_critical_damage_multiplier() const
+double death_knight_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
-  double m = player_t::composite_player_critical_damage_multiplier();
+  double m = player_t::composite_player_critical_damage_multiplier( s );
 
   m *= 1.0 + buffs.t18_4pc_frost_crit -> stack_value();
 

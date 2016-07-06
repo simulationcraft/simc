@@ -593,6 +593,7 @@ public:
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
   virtual double    mana_regen_per_second() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_mastery_rating() const override;
@@ -2013,7 +2014,6 @@ struct fire_mage_spell_t : public mage_spell_t
     triggers_hot_streak( false ),
     triggers_ignite( false )
   {
-    base_multiplier *= 1.0 + p -> artifact.burning_gaze.percent();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2121,10 +2121,10 @@ struct fire_mage_spell_t : public mage_spell_t
     }
   }
 
-  double total_crit_bonus() const override
+  double total_crit_bonus( action_state_t* s ) const override
   {
     // TODO: Only apply bonus to hardcast spells?
-    double bonus = mage_spell_t::total_crit_bonus();
+    double bonus = mage_spell_t::total_crit_bonus( s );
     if ( background == true )
     {
       return bonus;
@@ -7609,7 +7609,19 @@ void mage_t::recalculate_resource_max( resource_e rt )
     }
   }
 }
+// mage_t::composite_player_critical_damage_multiplier ===================
 
+double mage_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_critical_damage_multiplier( s );
+
+  if ( artifact.burning_gaze.rank() && s -> action -> school == SCHOOL_FIRE )
+  {
+  m *= 1.0 + artifact.burning_gaze.percent();
+  }
+
+  return m;
+}
 // mage_t::composite_player_multiplier =======================================
 
 double mage_t::composite_player_multiplier( school_e school ) const

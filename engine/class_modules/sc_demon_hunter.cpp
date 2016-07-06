@@ -4311,7 +4311,7 @@ public:
     that attack benefits from all the same modifiers this saves us a lot of calculation. */
     weapon_damage_multiplier = total_wdmg / action -> weapon_multiplier;
 
-    crit_bonus_damage = action -> total_crit_bonus();
+    crit_bonus_damage = action -> total_crit_bonus( state );
 
     // Check if the action benefits from First Blood.
     if ( util::str_prefix_ci( action -> name_str, "blade_dance" )
@@ -4348,7 +4348,7 @@ public:
 private:
   double calculate()
   {
-    assert( crit_bonus_damage == action -> total_crit_bonus() );
+    assert( crit_bonus_damage == action -> total_crit_bonus( state ) );
 
     return get_raw_amount() * calculate_target_multiplier();
   }
@@ -4868,7 +4868,7 @@ struct blade_dance_expr_t : public expr_t
     double amount = db_state -> result_amount;
 
     amount *= 1.0 + clamp( db_state -> crit_chance + db_state -> target_crit_chance, 0.0, 1.0 ) *
-      demons_bite -> composite_player_critical_multiplier(); 
+      demons_bite -> composite_player_critical_multiplier( db_state ); 
 
     return amount;
   }
