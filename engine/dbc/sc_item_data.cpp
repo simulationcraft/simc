@@ -587,8 +587,7 @@ bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id )
   if ( used_level == 0 )
     used_level = item.player -> level();
 
-  double base_value = std::min( static_cast<double>( used_level ),
-                                static_cast<double>( data -> max_level ) );
+  unsigned base_value = std::min( used_level, data -> max_level );
 
   double scaled_result = curve_point_value( item.player -> dbc, data -> curve_id, base_value );
 
