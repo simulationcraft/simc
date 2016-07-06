@@ -963,7 +963,7 @@ struct rogue_attack_t : public melee_attack_t
       double stack_value = tdata -> debuffs.agonizing_poison -> stack_value();
       if ( tdata -> debuffs.surge_of_toxins -> up() )
       {
-        stack_value += tdata -> debuffs.surge_of_toxins -> data().effectN( 1 ) * .0001 *
+        stack_value += tdata -> debuffs.surge_of_toxins -> data().effectN( 1 ).percent() * .0001 *
                        tdata -> debuffs.agonizing_poison -> check();
       }
       stack_value *= 1.0 + p() -> talent.master_poisoner -> effectN( 3 ).percent();
