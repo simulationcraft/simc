@@ -2924,7 +2924,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
 
     if ( p() -> buff.wrecking_ball -> check() )
     {
-      am *= 1.0 + p() -> buff.wrecking_ball -> data().effectN( 2 ).percent();
+      am *= 1.0 + p() -> buff.wrecking_ball -> data().effectN( 1 ).percent();
     }
 
     return am;
@@ -2948,7 +2948,7 @@ struct fury_whirlwind_mh_t: public warrior_attack_t
 
     if ( p() -> buff.wrecking_ball -> up() )
     {
-      am *= 1.0 + p() -> buff.wrecking_ball -> data().effectN( 2 ).percent();
+      am *= 1.0 + p() -> buff.wrecking_ball -> data().effectN( 1 ).percent();
     }
 
     return am;
@@ -2989,16 +2989,6 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
     callbacks = hasted_ticks = false;
     base_tick_time = spin_time;
     dot_duration = base_tick_time * 2;
-  }
-
-  double cost() const override
-  {
-    if ( p() -> buff.wrecking_ball -> check() )
-    {
-      return 0;
-    }
-
-    return warrior_attack_t::cost();
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
