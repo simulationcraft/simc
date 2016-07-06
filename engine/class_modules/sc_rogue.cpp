@@ -3269,12 +3269,18 @@ struct rupture_t : public rogue_attack_t
     return duration;
   }
 
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    td( execute_state -> target ) -> debuffs.blood_of_the_assassinated -> trigger();
+  }
+
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
 
     p() -> trigger_venomous_wounds( d -> state );
-    td( d -> target ) -> debuffs.blood_of_the_assassinated -> trigger();
   }
 };
 
