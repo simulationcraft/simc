@@ -235,6 +235,11 @@ heal_t::heal_t( const std::string&  token,
   tick_may_crit     = true;
 
   stats -> type = STATS_HEAL;
+
+  for ( size_t i = 1; i <= data().effect_count(); i++ )
+  {
+    parse_effect_data( data().effectN( i ) );
+  }
 }
 
 void heal_t::init_target_cache()
