@@ -5425,7 +5425,7 @@ void demon_hunter_t::invalidate_cache( cache_e c )
       if ( spec.riposte -> ok() ) invalidate_cache( CACHE_PARRY );
       break;
     case CACHE_RUN_SPEED:
-      if ( buff.out_of_range -> check() && buff.out_of_range -> remains_gt( timespan_t::zero() ) )
+      if ( buff.out_of_range -> check() && buff.out_of_range -> remains() > timespan_t::zero() )
       {
         // Recalculate movement duration.
         assert( buff.out_of_range -> value() > 0 );
