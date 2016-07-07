@@ -1,0 +1,63 @@
+paladin="Paladin_Prot"
+level=110
+race=blood_elf
+timeofday=night
+role=tank
+position=front
+talents=1211221
+artifact=49:0:0:0:0:1120:1:1343:1:1129:3:1124:3:1128:3:1133:1:1130:1:1126:3:1135:1:1122:3:1121:3:1123:3:1127:3:1134:1:1132:1:1125:3:1131:1
+spec=protection
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=flask_of_the_seventh_demon
+actions.precombat+=/food,type=the_hungry_magister
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_strength_potion
+
+# Executed every time the actor is available.
+
+
+head=Head,stats=297armor_1340sta
+neck=Neck,stats=754sta
+shoulders=Shoulders,stats=274armor_1005sta
+back=Cloak,stats=113armor_754sta
+chest=Chest,stats=365armor_1340sta
+wrists=Bracers,stats=160armor_754sta
+hands=Hands,stats=228armor_1005sta
+waist=Waist,stats=205armor_1005sta
+legs=Legs,stats=320armor_1340sta
+feet=Feet,stats=251armor_1005sta
+finger1=Ring1,stats=754sta
+finger2=Ring2,stats=754sta
+trinket1=Trinket1,stats=6300crit_8000mastery_8000haste_7200vers_14000str_2800armor_30000sta
+trinket2=horn_of_valor,id=133642
+main_hand=oathseeker,id=128867,ilevel=750,enchant_id=5427
+off_hand=truthguard,id=128866,ilevel=750,enchant_id=5427
+
+# Gear Summary
+# gear_ilvl=820.00
+# gear_agility=8531
+# gear_stamina=14228
+# gear_crit_rating=10141
+# gear_haste_rating=834
+# gear_mastery_rating=1633
+# gear_versatility_rating=4695
+# gear_armor=1830
+
+
+enemy=MyCustomEnemy 
+enemy_tank=Paladin_Prot
+actions=auto_attack,damage=3300000,range=1000000,attack_speed=1.5 
+actions+=/spell_nuke,damage=3000000,cooldown=30 
+actions+=/spell_dot,damage=50000,cooldown=20
+
+raid_events+=/heal,cooldown=1,amount=100000
+raid_events+=/heal,cooldown=4,amount=1400000
