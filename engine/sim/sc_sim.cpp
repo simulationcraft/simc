@@ -3332,6 +3332,7 @@ void sim_t::enable_debug_seed()
     }
 
     debug = true;
+    log = 1;
   }
 }
 
@@ -3357,6 +3358,7 @@ void sim_t::disable_debug_seed()
   if ( enabled )
   {
     debug = false;
+    log = 0;
     static_cast<io::ofstream*>(out_std.get_stream()) -> close();
   }
 }
