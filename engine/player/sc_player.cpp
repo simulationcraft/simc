@@ -11492,6 +11492,8 @@ void player_t::adjust_global_cooldown( haste_type_e haste_type )
   {
     gcd_ready = sim -> current_time() + new_remains;
   }
+
+  gcd_current_haste_value = new_haste;
 }
 
 void player_t::adjust_auto_attack( haste_type_e haste_type )
