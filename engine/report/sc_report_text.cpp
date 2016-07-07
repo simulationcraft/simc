@@ -639,24 +639,24 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
   if ( sim->low_iteration_data.size() && sim->high_iteration_data.size() )
   {
     util::fprintf( file,
-                   ".-----------------------------------------------%s. "
-                   ".-----------------------------------------------%s.\n",
+                   ".--------------------------------------------------------%s. "
+                   ".--------------------------------------------------------%s.\n",
                    spacer_str_1.c_str(), spacer_str_1.c_str() );
     util::fprintf( file,
-                   "| Low Iteration Data                            %s| | High "
-                   "Iteration Data                           %s|\n",
+                   "| Low Iteration Data                                     %s| | High "
+                   "Iteration Data                                    %s|\n",
                    spacer_str_2.c_str(), spacer_str_2.c_str() );
     util::fprintf( file,
-                   "+-----------+----------------------+------------%s+ "
-                   "+-----------+----------------------+------------%s+\n",
+                   "+--------+-----------+----------------------+------------%s+ "
+                   "+--------+-----------+----------------------+------------%s+\n",
                    spacer_str_1.c_str(), spacer_str_1.c_str() );
     util::fprintf( file,
-                   "|    Metric |                 Seed |  %sHealth(s) | |    "
+                   "|  Iter# |    Metric |                 Seed |  %sHealth(s) | |  Iter# |    "
                    "Metric |                 Seed |  %sHealth(s) |\n",
                    spacer_str_2.c_str(), spacer_str_2.c_str() );
     util::fprintf( file,
-                   "+-----------+----------------------+------------%s+ "
-                   "+-----------+----------------------+------------%s+\n",
+                   "+--------+-----------+----------------------+------------%s+ "
+                   "+--------+-----------+----------------------+------------%s+\n",
                    spacer_str_1.c_str(), spacer_str_1.c_str() );
 
     for ( size_t i = 0; i < sim->low_iteration_data.size(); i++ )
@@ -680,15 +680,17 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
       }
 
       util::fprintf(
-          file, "| %9.1f | %20llu | %s | | %9.1f | %20llu | %s |\n",
+          file, "| %6llu | %9.1f | %20llu | %s | | %6llu | %9.1f | %20llu | %s |\n",
+          sim->low_iteration_data[ i ].iteration,
           sim->low_iteration_data[ i ].metric,
           sim->low_iteration_data[ i ].seed, low_health_s.str().c_str(),
+          sim->high_iteration_data[ i ].iteration,
           sim->high_iteration_data[ i ].metric,
           sim->high_iteration_data[ i ].seed, high_health_s.str().c_str() );
     }
     util::fprintf( file,
-                   "'-----------+----------------------+------------%s' "
-                   "'-----------+----------------------+------------%s'\n",
+                   "'--------+-----------+----------------------+------------%s' "
+                   "'--------+-----------+----------------------+------------%s'\n",
                    spacer_str_1.c_str(), spacer_str_1.c_str() );
   }
   else

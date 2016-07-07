@@ -1365,14 +1365,15 @@ struct iteration_data_entry_t
 {
   double   metric;
   uint64_t seed;
+  uint64_t iteration;
   std::vector <uint64_t> target_health;
 
-  iteration_data_entry_t( double m, uint64_t s, uint64_t h ) :
-    metric( m ), seed( s )
+  iteration_data_entry_t( double m, uint64_t s, uint64_t h, uint64_t i ) :
+    metric( m ), seed( s ), iteration( i )
   { target_health.push_back( h ); }
 
-  iteration_data_entry_t( double m, uint64_t s ) :
-    metric( m ), seed( s )
+  iteration_data_entry_t( double m, uint64_t s, uint64_t i ) :
+    metric( m ), seed( s ), iteration( i )
   { }
 
   void add_health( uint64_t h )
@@ -1663,6 +1664,7 @@ struct sim_t : private sc_thread_t
   bool        fixed_time, optimize_expressions;
   int         current_slot;
   int         optimal_raid, log, debug_each;
+  std::vector<uint64_t> debug_seed;
   int         save_profiles, default_actions;
   stat_e      normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str, save_suffix_str;
@@ -1950,6 +1952,8 @@ struct sim_t : private sc_thread_t
 private:
   void do_pause();
   void print_spell_query();
+  void enable_debug_seed();
+  void disable_debug_seed();
 };
 
 // Module ===================================================================

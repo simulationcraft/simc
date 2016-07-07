@@ -67,6 +67,32 @@ struct seed_predicate_t
   { return e.seed == seed; }
 };
 
+// parse_debug_seed =========================================================
+
+bool parse_debug_seed( sim_t* sim, const std::string&, const std::string& value )
+{
+  auto split = util::string_split( value, ":/," );
+
+  for ( const auto& seed_str : split )
+  {
+#if defined( SC_WINDOWS ) && defined( SC_VS )
+    uint64_t seed = _strtoui64( seed_str.c_str(), nullptr, 10 );
+#else
+    uint64_t seed = strtoull( seed_str.c_str(), nullptr, 10 );
+#endif
+    if ( seed == 0 )
+    {
+      continue;
+    }
+
+    sim -> debug_seed.push_back( seed );
+  }
+
+  range::sort( sim -> debug_seed );
+
+  return sim -> debug_seed.size() > 0;
+}
+
 // parse_ptr ================================================================
 
 bool parse_ptr( sim_t*             sim,
@@ -1551,6 +1577,13 @@ void sim_t::combat_begin()
 
   reset();
 
+  // Debug seed needs to be done _after_ sim reset, because deterministic=1 will reseed in
+  // sim_t::reset()
+  if ( debug_seed.size() > 0 )
+  {
+    enable_debug_seed();
+  }
+
   iteration_dmg = priority_iteration_dmg = iteration_heal = 0;
 
   // Always call begin() to ensure various counters are initialized.
@@ -1647,6 +1680,11 @@ void sim_t::combat_end()
 
   if ( debug_each && ! canceled )
     static_cast<io::ofstream*>(out_std.get_stream()) -> close();
+
+  if ( debug_seed.size() > 0 )
+  {
+    disable_debug_seed();
+  }
 }
 
 // sim_t::datacollection_begin ==============================================
@@ -1713,7 +1751,7 @@ void sim_t::datacollection_end()
   if ( deterministic && report_iteration_data > 0 && current_iteration > 0 && current_time() > timespan_t::zero() )
   {
     // TODO: Metric should be selectable
-    iteration_data_entry_t entry( iteration_dmg / current_time().total_seconds(), seed );
+    iteration_data_entry_t entry( iteration_dmg / current_time().total_seconds(), seed, current_iteration );
     for ( size_t i = 0, end = target_list.size(); i < end; ++i )
     {
       const player_t* t = target_list[ i ];
@@ -2728,6 +2766,7 @@ void sim_t::create_options()
   add_option( opt_bool( "default_actions", default_actions ) );
   add_option( opt_bool( "debug", debug ) );
   add_option( opt_bool( "debug_each", debug_each ) );
+  add_option( opt_func( "debug_seed", parse_debug_seed ) );
   add_option( opt_string( "html", html_file_str ) );
   add_option( opt_string( "json", json_file_str ) );
   add_option( opt_bool( "hosted_html", hosted_html ) );
@@ -3250,4 +3289,69 @@ sim_ostream_t& sim_ostream_t::printf( const char* fmt, ... )
   _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " " << buffer << "\n";
 
   return *this;
+}
+
+void sim_t::enable_debug_seed()
+{
+  auto enabled = false;
+
+  if ( debug_seed.size() == 1 && seed == debug_seed[ 0 ] )
+  {
+    enabled = true;
+  }
+  else
+  {
+    auto it = std::lower_bound( debug_seed.begin(), debug_seed.end(), seed );
+    enabled = it != debug_seed.end() && *it == seed;
+  }
+
+  if ( enabled )
+  {
+    if ( output_file_str.empty() )
+    {
+      errorf( "No 'output' option specified for debug_seed, not generating debug output ..." );
+      return;
+    }
+
+    std::shared_ptr<io::ofstream> o(new io::ofstream());
+    std::string fname = output_file_str + "." + util::to_string( seed );
+    o -> open( fname );
+    if ( o -> is_open() )
+    {
+      out_std = o;
+      out_debug = o;
+      out_log = o;
+
+      out_std.printf( "------ Iteration #%i (seed=%llu) ------", current_iteration, seed );
+      std::flush( *out_std.get_stream() );
+    }
+    else
+    {
+      errorf( "Unable to open output file '%s'\n", fname.c_str() );
+      return;
+    }
+
+    debug = true;
+  }
+}
+
+void sim_t::disable_debug_seed()
+{
+  auto enabled = false;
+
+  if ( debug_seed.size() == 1 && seed == debug_seed[ 0 ] )
+  {
+    enabled = true;
+  }
+  else
+  {
+    auto it = std::lower_bound( debug_seed.begin(), debug_seed.end(), seed );
+    enabled = it != debug_seed.end() && *it == seed;
+  }
+
+  if ( enabled )
+  {
+    debug = false;
+    static_cast<io::ofstream*>(out_std.get_stream()) -> close();
+  }
 }
