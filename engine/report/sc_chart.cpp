@@ -1343,7 +1343,6 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
   bc.set_title( "Raid Damage per Execute Time" );
   bc.set( "plotOptions.bar.pointWidth", 30 );
   bc.set( "xAxis.labels.y", -4 );
-  bc.set( "yAxis.title.text", "Damage per Execute Time" );
 
   // Prepare stats list
   std::vector<stats_t*> stats_list;
@@ -1359,6 +1358,17 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
   if ( stats_list.size() > 30 )
   {
     stats_list.erase( stats_list.begin() + 30, stats_list.end() );
+  }
+
+  if ( stats_list.front() -> apet / stats_list.back() -> apet >= 100 )
+  {
+    bc.set( "yAxis.type", "logarithmic" );
+    bc.set_yaxis_title( "Damage per Execute Time (log)" );
+    bc.set( "yAxis.minorTickInterval", .1 );
+  }
+  else
+  {
+    bc.set_yaxis_title( "Damage per Execute Time" );
   }
 
   bool ret = generate_apet( bc, stats_list );
