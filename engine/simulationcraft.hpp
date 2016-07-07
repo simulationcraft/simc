@@ -6146,7 +6146,7 @@ public:
     return m;
   }
 
-  virtual double composite_player_critical_multiplier( const action_state_t* s ) const override
+  virtual double composite_player_critical_multiplier( const action_state_t* /* s */ ) const override
   { return player -> composite_player_critical_healing_multiplier(); }
 
   virtual double composite_versatility( const action_state_t* state ) const override

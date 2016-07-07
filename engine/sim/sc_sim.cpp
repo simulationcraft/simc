@@ -3337,6 +3337,11 @@ void sim_t::enable_debug_seed()
 
 void sim_t::disable_debug_seed()
 {
+  if ( output_file_str.empty() )
+  {
+    return;
+  }
+
   auto enabled = false;
 
   if ( debug_seed.size() == 1 && seed == debug_seed[ 0 ] )
