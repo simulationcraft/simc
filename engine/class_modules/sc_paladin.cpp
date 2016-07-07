@@ -3221,6 +3221,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       cooldown -> charges = 1;
       cooldown -> duration = timespan_t::zero();
     }
+    if ( p -> talents.blessed_hammer -> ok() )
+      background = true;
 
     hotr_aoe = new hammer_of_the_righteous_aoe_t( p );
     // Attach AoE proc as a child
