@@ -238,7 +238,8 @@ public:
           * icarus_uprising;       // T18 4pc Fire
 
     // Frost
-    buff_t* fingers_of_frost,
+    buff_t* brain_freeze,
+          * fingers_of_frost,
           * frost_armor,
           * icy_veins,
           * ice_shard,             // T17 2pc Frost
@@ -3837,6 +3838,47 @@ struct flame_on_t : public fire_mage_spell_t
   }
 };
 
+// Flurry Spell ===============================================================
+
+struct flurry_bolt_t : public frost_mage_spell_t
+{
+  flurry_bolt_t( mage_t* p ) :
+    frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) )
+  {
+  }
+};
+struct flurry_t : public frost_mage_spell_t
+{
+  flurry_t( mage_t* p, const std::string& options_str ) :
+    frost_mage_spell_t( "flurry", p, p -> find_spell( 44614 ) )
+  {
+    parse_options( options_str );
+    hasted_ticks = false;
+    //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
+    dot_duration = timespan_t::from_seconds( 0.6 );
+    base_tick_time = timespan_t::from_seconds( 0.2 );
+    dynamic_tick_action = true;
+    tick_action = new flurry_bolt_t( p );
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    if ( p() -> buffs.brain_freeze -> check() )
+    {
+      return timespan_t::zero();
+    }
+
+    return frost_mage_spell_t::execute_time();
+  }
+
+
+  virtual void execute() override
+  {
+    frost_mage_spell_t::execute();
+
+    p() -> buffs.brain_freeze -> expire();
+  }
+};
 // Frost Bomb Spell ===========================================================
 
 struct frost_bomb_explosion_t : public frost_mage_spell_t
@@ -3960,7 +4002,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
       if( rng().roll( bf_proc_chance ) )
       {
-        p() -> cooldowns.frozen_orb -> reset( false );
+        p() -> buffs.brain_freeze -> trigger();
       }
 
       trigger_fof( "Frostbolt", fof_proc_chance );
@@ -6280,6 +6322,7 @@ action_t* mage_t::create_action( const std::string& name,
   // Frost
   if ( name == "blizzard"          ) return new                blizzard_t( this, options_str );
   if ( name == "comet_storm"       ) return new             comet_storm_t( this, options_str );
+  if ( name == "flurry"            ) return new                  flurry_t( this, options_str );
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
@@ -6680,6 +6723,9 @@ void mage_t::create_buffs()
                                   .trigger_spell( sets.set( MAGE_FIRE, T17, B4 ) );
 
   // Frost
+  //TODO: Remove hardcoded duration once spelldata contains the value
+  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190447 ) )
+                                  .duration( timespan_t::from_seconds( 15.0 ) ); 
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
