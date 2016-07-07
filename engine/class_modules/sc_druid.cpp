@@ -693,15 +693,15 @@ public:
     form( NO_FORM ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
-    caster_melee_attack( nullptr ),
-    cat_melee_attack( nullptr ),
-    bear_melee_attack( nullptr ),
     starshards( 0.0 ),
     initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
     active( active_actions_t() ),
     pet_fey_moonwing(),
     caster_form_weapon(),
+    caster_melee_attack( nullptr ),
+    cat_melee_attack( nullptr ),
+    bear_melee_attack( nullptr ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
     gain( gains_t() ),
@@ -2013,8 +2013,8 @@ public:
     consumes_combo_points( false ),
     consumes_clearcasting( true ),
     trigger_tier17_2pc( false ),
-    snapshots_sr( true ),
-    snapshots_tf( true )
+    snapshots_tf( true ),
+    snapshots_sr( true )
   {
     parse_options( options );
     
@@ -2432,7 +2432,7 @@ struct ashamanes_frenzy_t : public cat_attack_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 };
 
 // Ashamane's Rip ===========================================================
@@ -7752,7 +7752,7 @@ struct stalwart_guardian_callback_t : public scoped_actor_callback_t<druid_t>
     return p -> active.stalwart_guardian -> absorb_size;
   }
 
-  void manipulate( druid_t* p, const special_effect_t& e )
+  void manipulate( druid_t* p, const special_effect_t& /* e */ )
   {
     p -> active.stalwart_guardian = new stalwart_guardian_t( p );
 
@@ -7972,6 +7972,7 @@ struct skysecs_hold_t : public scoped_action_callback_t<frenzied_regeneration_t>
 
 // Druid Special Effects ====================================================
 
+#if 0
 static void init_special_effect( druid_t*                 player,
                                  specialization_e         spec,
                                  const special_effect_t*& ptr,
@@ -7988,6 +7989,7 @@ static void init_special_effect( druid_t*                 player,
   // Set pointer, module considers non-null pointer to mean the effect is "enabled"
   ptr = &( effect );
 }
+#endif
 
 // DRUID MODULE INTERFACE ===================================================
 

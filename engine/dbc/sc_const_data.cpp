@@ -964,9 +964,10 @@ double dbc_t::spell_scaling( player_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::melee_crit_scaling( player_e t, unsigned level ) const
+double dbc_t::melee_crit_scaling( player_e t, unsigned /* level */ ) const
 {
   uint32_t class_id = util::class_id( t );
+  ( void ) class_id;
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
   /*
@@ -985,9 +986,10 @@ double dbc_t::melee_crit_scaling( pet_e t, unsigned level ) const
   return melee_crit_scaling( util::pet_class_type( t ), level );
 }
  
-double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
+double dbc_t::spell_crit_scaling( player_e t, unsigned /* level */ ) const
 {
   uint32_t class_id = util::class_id( t );
+  ( void ) class_id;
 
   assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
   /*
@@ -1057,9 +1059,10 @@ double dbc_t::avoid_per_str_agi_by_level( unsigned level ) const
 #endif
 }
 
-double dbc_t::health_base( player_e t, unsigned level ) const
+double dbc_t::health_base( player_e t, unsigned /* level */ ) const
 {
   uint32_t class_id = util::class_id( t );
+  ( void ) class_id;
 
   assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
   /*

@@ -2142,7 +2142,7 @@ struct fire_mage_spell_t : public mage_spell_t
     return bonus;
   }
 
-  virtual double composite_ignite_multiplier( const action_state_t* s ) const
+  virtual double composite_ignite_multiplier( const action_state_t* /* s */ ) const
   { return 1.0; }
 
   void trigger_ignite( action_state_t* s )

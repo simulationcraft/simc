@@ -1443,11 +1443,6 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
   }
 }
 
-// print_html_artifacts_player ==============================================
-
-void print_html_artifact( report::sc_html_stream& os, const player_t& p )
-{
-}
 
 // print_html_talents_player ================================================
 

@@ -41,17 +41,6 @@ std::string narrow( const wchar_t* first, const wchar_t* last )
   return result;
 }
 
-bool contains_non_ascii( const std::string& s )
-{
-  for (const auto & elem : s)
-  {
-    if ( elem < 0 || ! isprint( elem ) )
-      return true;
-  }
-
-  return false;
-}
-
 } // anonymous namespace ====================================================
 
 std::string narrow( const wchar_t* wstr )
@@ -69,6 +58,17 @@ std::wstring widen( const std::string& str )
 // Latin-1 which is a subset of Unicode.
 
 #if 0
+
+bool contains_non_ascii( const std::string& s )
+{
+  for (const auto & elem : s)
+  {
+    if ( elem < 0 || ! isprint( elem ) )
+      return true;
+  }
+
+  return false;
+}
 
 static const uint32_t invalid_character_replacement = '?';
 

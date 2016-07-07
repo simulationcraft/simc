@@ -2564,7 +2564,7 @@ struct volley_tick_t: hunter_ranged_attack_t
 
 struct volley_t: hunter_ranged_attack_t
 {
-  volley_t( hunter_t* p, const std::string& options_str ):
+  volley_t( hunter_t* p, const std::string& /* options_str */ ):
     hunter_ranged_attack_t( "volley", p, p -> talents.volley )
   {
     harmful = false;
@@ -3135,7 +3135,7 @@ struct trick_shot_t: public hunter_ranged_attack_t
 
     int count = 0;
     std::vector<player_t*> trick_shot_targets = execute_state -> action -> target_list();
-    for( int i = 0; i < trick_shot_targets.size(); i++ )
+    for( size_t i = 0; i < trick_shot_targets.size(); i++ )
     {
       if ( trick_shot_targets[i] != p() -> target && td( trick_shot_targets[i] ) -> debuffs.vulnerable -> up() )
         count++;
@@ -3285,7 +3285,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
-    legacy_of_the_windrunners( nullptr ), trick_shot( nullptr )
+    trick_shot( nullptr ), legacy_of_the_windrunners( nullptr )
   {
     parse_options( options_str );
 
@@ -4129,11 +4129,11 @@ struct carve_t: public hunter_melee_attack_t
       // Once all targets have been checked, apply the new debuffs.
       std::unordered_map<int, timespan_t> new_lacerate_targets;
       std::vector<player_t*> carve_targets = execute_state -> action -> target_list();
-      for ( int i = 0; i < carve_targets.size(); i++ )
+      for ( size_t i = 0; i < carve_targets.size(); i++ )
       {
         if ( td( carve_targets[ i ] ) -> debuffs.lacerate -> up() )
         {
-          int new_target_index = rand() % carve_targets.size();
+          size_t new_target_index = rand() % carve_targets.size();
           while( new_target_index == i ) new_target_index = rand() % carve_targets.size();
           if ( td( carve_targets[ i ] ) -> debuffs.lacerate -> remains() > td( carve_targets[ new_target_index ] ) -> debuffs.lacerate -> remains() )
             new_lacerate_targets[ new_target_index ] = td ( carve_targets[ i ] ) -> debuffs.lacerate -> remains();
@@ -4258,11 +4258,11 @@ struct butchery_t: public hunter_melee_attack_t
       // Once all targets have been checked, apply the new debuffs.
       std::unordered_map<int, timespan_t> new_lacerate_targets;
       std::vector<player_t*> butchery_targets = execute_state -> action -> target_list();
-      for ( int i = 0; i < butchery_targets.size(); i++ )
+      for ( size_t i = 0; i < butchery_targets.size(); i++ )
       {
         if ( td( butchery_targets[ i ] ) -> debuffs.lacerate -> up() )
         {
-          int new_target_index = rand() % butchery_targets.size();
+          size_t new_target_index = rand() % butchery_targets.size();
           while( new_target_index == i ) new_target_index = rand() % butchery_targets.size();
           if ( td( butchery_targets[ i ] ) -> debuffs.lacerate -> remains() > td( butchery_targets[ new_target_index ] ) -> debuffs.lacerate -> remains() )
             new_lacerate_targets[ new_target_index ] = td ( butchery_targets[ i ] ) -> debuffs.lacerate -> remains();

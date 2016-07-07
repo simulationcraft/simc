@@ -7692,7 +7692,7 @@ void monk_t::apl_combat_windwalker()
   action_priority_list_t* opener = get_action_priority_list("opener");
   action_priority_list_t* st = get_action_priority_list("st");
   action_priority_list_t* aoe_nosef = get_action_priority_list("aoe_nosef");
-  action_priority_list_t* aoe_sef = get_action_priority_list("aoe_sef");
+  //action_priority_list_t* aoe_sef = get_action_priority_list("aoe_sef");
 
   def -> add_action( "auto_attack" );
 

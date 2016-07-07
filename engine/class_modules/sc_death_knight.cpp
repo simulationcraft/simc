@@ -611,6 +611,7 @@ static void log_rune_status( const death_knight_t* p, bool debug = false ) {
     p -> sim -> out_debug.printf( "%s runes: %s", p -> name(), rune_string.c_str() );
 }
 
+#if 0
 static std::pair<int, double> rune_ready_in( const death_knight_t* p )
 {
   // Return the (slot, time) for the next rune to come up.
@@ -632,7 +633,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p )
 
   return std::pair<int, double>( fastest_remaining, t);
 }
-
+#endif
 
 static double ready_in( const death_knight_t* p, int n_runes )
 {
@@ -652,28 +653,6 @@ static double ready_in( const death_knight_t* p, int n_runes )
   std::sort(ready_times.begin(), ready_times.end());
 
   return ready_times[n_runes];
-}
-
-// Select a "random" fully depleted rune ====================================
-
-static int random_depleted_rune( death_knight_t* p )
-{
-  // TODO: mrdmnd - implement
-  int num_depleted = 0;
-  int depleted_runes[ MAX_RUNES ] = { 0 };
-
-  for ( size_t j = 0; j < MAX_RUNES; ++j ) {
-
-  }
-
-  if ( num_depleted > 0 )
-  {
-    if ( p -> sim -> debug ) log_rune_status( p, true );
-
-    return depleted_runes[ ( int ) p -> rng().range( 0, num_depleted ) ];
-  }
-
-  return -1;
 }
 
 inline void runes_t::consume( unsigned runes )
@@ -4976,6 +4955,7 @@ static expr_t* create_ready_in_expression( death_knight_t* player, const std::st
   return new ability_ready_expr_t( action );
 }
 
+#if 0
 static expr_t* create_rune_expression( death_knight_t* player, const std::string& rune_type_operation = std::string() )
 {
   struct rune_inspection_expr_t : public expr_t
@@ -5018,6 +4998,7 @@ static expr_t* create_rune_expression( death_knight_t* player, const std::string
 
   return new rune_inspection_expr_t( player, op );
 }
+#endif
 
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str ) {
   std::vector<std::string> splits = util::string_split( name_str, "." );

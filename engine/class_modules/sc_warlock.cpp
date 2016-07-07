@@ -619,7 +619,7 @@ public:
         if( p()->o()->artifact.stolen_power.rank())
         {
             p()->o()->buffs.stolen_power_stacks->bump(1);
-            p()->o()->procs.stolen_power_stack;
+            //p()->o()->procs.stolen_power_stack;
             if(p()->o()->buffs.stolen_power_stacks->stack() == 100)
             {
                 p()->o()->buffs.stolen_power_stacks->reset();
@@ -3451,7 +3451,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
 {
   timespan_t dreadstalker_duration;
   int dreadstalker_count;
-  int improved_dreadstalkers;
+  size_t improved_dreadstalkers;
 
   call_dreadstalkers_t( warlock_t* p ) :
     warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) )

@@ -1009,9 +1009,9 @@ template <typename Base>
 class demon_hunter_action_t : public Base
 {
 public:
-  bool hasted_gcd;
   bool demonic_presence;
   bool havoc_t19_2pc;
+  bool hasted_gcd;
   bool may_proc_fel_barrage;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
@@ -1683,7 +1683,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   void tick( dot_t* d ) override
   {
@@ -1736,7 +1736,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
 
   // Hide direct results in report.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   timespan_t travel_time() const override
   { return timespan_t::zero(); } 
@@ -1802,7 +1802,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   // Channel is not hasted.
   timespan_t tick_time( const action_state_t* ) const override
@@ -1871,7 +1871,7 @@ struct fel_rush_t : public demon_hunter_spell_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   timespan_t gcd() const override
   {
@@ -1938,7 +1938,7 @@ struct fel_eruption_t : public demon_hunter_spell_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 };
 
 // Fiery Brand ==============================================================
@@ -2015,10 +2015,12 @@ struct fiery_brand_t : public demon_hunter_spell_t
       {
         demon_hunter_spell_t::record_data( s );
       }
+#ifndef NDEBUG
       else
       {
         assert( s -> result_amount == 0.0 );
       }
+#endif
     }
 
     void tick( dot_t* d ) override
@@ -2168,7 +2170,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   void execute() override
   {
@@ -2527,7 +2529,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   void execute() override
   {
@@ -2577,7 +2579,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   void consume_resource() override
   {
@@ -2958,7 +2960,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
   // Don't record data for this action.
   virtual void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   virtual double action_multiplier() const override
   {
@@ -3080,7 +3082,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     chaos_strike_damage_t( demon_hunter_t* p, const spelleffect_data_t& eff,
         chaos_strike_base_t* a ) :
       demon_hunter_attack_t( "chaos_strike_dmg", p, eff.trigger() ),
-      parent( a ), delay( timespan_t::from_millis( eff.misc_value1() ) )
+      delay( timespan_t::from_millis( eff.misc_value1() ) ), parent( a )
     {
       assert( eff.type() == E_TRIGGER_SPELL );
 
@@ -3188,7 +3190,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   /* Determines whether the OH hit should trigger a refund. Leaving this as a virtual
   function in case the two skills have different refund mechanics again.*/
@@ -3488,7 +3490,7 @@ struct felblade_t : public demon_hunter_attack_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   void execute() override
   {
@@ -3530,7 +3532,7 @@ struct fracture_t : public demon_hunter_attack_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   void impact( action_state_t* s ) override
   {
@@ -3681,7 +3683,7 @@ struct shear_t : public demon_hunter_attack_t
     base_multiplier *= 1.0 + p -> artifact.honed_warblades.percent();
   }
 
-  void shatter( action_state_t* s )
+  void shatter( action_state_t* /* s */ )
   {
     assert( p() -> shear_counter < 8 );
 
@@ -3828,7 +3830,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   void execute() override
   {
@@ -3945,7 +3947,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
-  { assert( s -> result_amount == 0.0 ); }
+  { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
   void execute() override
   {
@@ -4456,22 +4458,26 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
   : player_t( sim, DEMON_HUNTER, name, r ),
     blade_dance_driver( nullptr ),
-    blade_dance_attacks( 0 ),  blade_dance_dmg( nullptr ),
-    death_sweep_attacks( 0 ),  death_sweep_dmg( nullptr ),
-    chaos_strike_attacks( 0 ), chaos_strike_dmg( nullptr ),
-    annihilation_attacks( 0 ), annihilation_dmg( nullptr ),
+    blade_dance_attacks( 0 ),
+    death_sweep_attacks( 0 ),
+    chaos_strike_attacks( 0 ),
+    annihilation_attacks( 0 ),
     damage_calcs( 0 ),
+    blade_dance_dmg( nullptr ),
+    death_sweep_dmg( nullptr ),
+    chaos_strike_dmg( nullptr ),
+    annihilation_dmg( nullptr ),
     melee_main_hand( nullptr ),
     melee_off_hand( nullptr ),
     chaos_blade_main_hand( nullptr ),
     chaos_blade_off_hand( nullptr ),
-    spirit_bomb_driver( nullptr ),
-    exiting_melee( nullptr ),
-    spirit_bomb( 0.0 ),
     next_fragment_spawn( 0 ),
     soul_fragments(),
     sigil_cooldowns( 0 ),
+    spirit_bomb( 0.0 ),
+    spirit_bomb_driver( nullptr ),
     target_reach( -1.0 ),
+    exiting_melee( nullptr ),
     buff(),
     talent(),
     spec(),

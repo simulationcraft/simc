@@ -2991,9 +2991,10 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
     dot_duration = base_tick_time * 2;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if ( p() -> najentuss_vertebrae && target_list().size() >= p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
+    if ( as<int>( p() -> najentuss_vertebrae && target_list().size() ) >=
+         p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
       return base_tick_time * 4.0;
 
     return dot_duration;
@@ -3170,9 +3171,10 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
     dot_duration = base_tick_time * 2;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if ( p() -> najentuss_vertebrae && target_list().size() >= p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
+    if ( as<int>( p() -> najentuss_vertebrae && target_list().size() ) >=
+         p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
       return base_tick_time * 4.0;
 
     return dot_duration;
@@ -5421,11 +5423,13 @@ static void najentuss_vertebrae( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> najentuss_vertebrae, effect );
 }
 
+/*
 static void ayalas_stone_heart( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
   do_trinket_init( s, SPEC_NONE, s -> ayalas_stone_heart, effect );
 }
+*/
 
 static void aggramars_stride( special_effect_t& effect )
 {

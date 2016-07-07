@@ -3229,7 +3229,7 @@ double player_t::composite_player_absorb_multiplier( const action_state_t* ) con
   return 1.0;
 }
 
-double player_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+double player_t::composite_player_critical_damage_multiplier( const action_state_t* /* s */ ) const
 {
   double m = 1.0;
 

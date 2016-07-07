@@ -305,8 +305,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
     double damage;
 
     haymaker_event_t( haymaker_driver_t* cb, haymaker_damage_t* a, debuff_t* d ) :
-      event_t( *a -> player ), action( a ), debuff( d ),
-      damage( 0 ), callback( cb )
+      event_t( *a -> player ), action( a ), callback( cb ), debuff( d ), damage( 0 )
     {
       add_event( a -> data().effectN( 1 ).period() );
     }
@@ -1212,11 +1211,11 @@ void item::natures_call( special_effect_t& effect )
 
 // March of the Legion ======================================================
 
-void set_bonus::march_of_the_legion( special_effect_t& effect ) {}
+void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
 
 // Journey Through Time =====================================================
 
-void set_bonus::journey_through_time( special_effect_t& effect ) {}
+void set_bonus::journey_through_time( special_effect_t& /* effect */ ) {}
 
 void unique_gear::register_special_effects_x7()
 {

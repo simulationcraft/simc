@@ -1798,7 +1798,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       return m;
     }
 
-    double total_crit_bonus( action_state_t* s ) const override
+    double total_crit_bonus( action_state_t* /* s */ ) const override
     {
       return 0;
     }
