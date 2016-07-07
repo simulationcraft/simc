@@ -649,12 +649,21 @@ void movement_buff_t::expire_override( int s, timespan_t d )
 {
   buff_t::expire_override( s, d );
 
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s debug, d=%f y=%.3f", name_str.c_str(), d.total_millis(), yards_from_melee );
+
   // If we reached the end of the movement without it being canceled...
-  if ( d == timespan_t::zero() && yards_from_melee > 0 )
+  if ( d == timespan_t::zero() && yards_from_melee > 0.0 )
   {
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s triggers out of range value=%.3f dur=%.3f", name_str.c_str(), dh -> cache.run_speed(), yards_from_melee / dh -> cache.run_speed() );
+
     // Then trigger out_of_range with a duration equal to the time it will take us to get back.
-    dh -> buff.out_of_range -> trigger( 1, dh -> cache.run_speed(), -1.0,
+    bool s = dh -> buff.out_of_range -> trigger( 1, dh -> cache.run_speed(), -1.0,
       timespan_t::from_seconds( yards_from_melee / dh -> cache.run_speed() ) );
+    
+    if ( !s && sim -> debug )
+      sim -> out_debug.printf( "%s fails to trigger out of range", name_str.c_str() );
   }
 }
 
@@ -1694,10 +1703,10 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     if ( p() -> talent.demonic -> ok() )
     {
-      timespan_t duration = timespan_t::from_seconds( 5.0 )
-        + std::max( gcd(), composite_dot_duration( execute_state ) );
-      p() -> buff.metamorphosis -> trigger(
-        1, p() -> buff.metamorphosis -> default_value, -1.0, duration );
+      /* Buff starts when the channel does and lasts for 5 seconds +
+      base channel duration. No duration data for demonic. */
+      p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> default_value,
+        -1.0, timespan_t::from_seconds( 5.0 ) + dot_duration );
     }
   }
 };
@@ -4667,6 +4676,7 @@ void demon_hunter_t::create_buffs()
         .add_invalidate( CACHE_LEECH )
         .add_invalidate( CACHE_HASTE )
         .tick_behavior( BUFF_TICK_NONE )
+        .period( timespan_t::zero() )
         .default_value( spec.metamorphosis_buff -> effectN( 7 ).percent() );
   }
   else
@@ -5427,7 +5437,12 @@ void demon_hunter_t::invalidate_cache( cache_e c )
         /* Adjust the remaining duration on movement for the new run speed.
         Expire and re-trigger because we can't reschedule backwards. */
         buff.out_of_range -> expire();
-        buff.out_of_range -> trigger( 1, cache.run_speed(), -1.0, remains );
+
+        // Catch edge case where new duration rounds to zero and makes buff infinite.
+        if ( remains > timespan_t::zero() )
+        {
+          buff.out_of_range -> trigger( 1, cache.run_speed(), -1.0, remains );
+        }
       }
       break;
     default:
@@ -6064,10 +6079,7 @@ void demon_hunter_t::reset()
 
   soul_fragments.clear();
 
-  if ( blade_dance_dmg ) blade_dance_dmg -> invalidate();
-  if ( death_sweep_dmg ) death_sweep_dmg -> invalidate();
-  if ( chaos_strike_dmg ) chaos_strike_dmg -> invalidate();
-  if ( annihilation_dmg ) annihilation_dmg -> invalidate();
+  invalidate_damage_calcs();
 }
 
 // demon_hunter_t::target_mitigation ========================================
