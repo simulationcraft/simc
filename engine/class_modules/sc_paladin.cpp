@@ -4280,37 +4280,93 @@ void paladin_t::generate_action_prio_list_prot()
   // Action Priority List
   ///////////////////////
 
-  action_priority_list_t* def = get_action_priority_list( "default" );
-  action_priority_list_t* dps = get_action_priority_list( "max_dps" );
-  action_priority_list_t* surv = get_action_priority_list( "max_survival" );
+  action_priority_list_t* def = get_action_priority_list("default");
+  action_priority_list_t* prot = get_action_priority_list("prot");
+  action_priority_list_t* prot_aoe = get_action_priority_list("prot_aoe");
+  action_priority_list_t* dps = get_action_priority_list("max_dps");
+  action_priority_list_t* surv = get_action_priority_list("max_survival");
 
-  dps -> action_list_comment_str = "This is a high-DPS (but low-survivability) configuration.\n# Invoke by adding \"actions+=/run_action_list,name=max_dps\" to the beginning of the default APL.";
-  surv -> action_list_comment_str = "This is a high-survivability (but low-DPS) configuration.\n# Invoke by adding \"actions+=/run_action_list,name=max_survival\" to the beginning of the default APL.";
+  dps->action_list_comment_str = "This is a high-DPS (but low-survivability) configuration.\n# Invoke by adding \"actions+=/run_action_list,name=max_dps\" to the beginning of the default APL.";
+  surv->action_list_comment_str = "This is a high-survivability (but low-DPS) configuration.\n# Invoke by adding \"actions+=/run_action_list,name=max_survival\" to the beginning of the default APL.";
 
-  def -> add_action( "auto_attack" );
+  def->add_action("auto_attack");
 
   // usable items
-  int num_items = ( int ) items.size();
-  for ( int i = 0; i < num_items; i++ )
-    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      def -> add_action ( "use_item,name=" + items[ i ].name_str );
+  int num_items = (int)items.size();
+  for (int i = 0; i < num_items; i++)
+	  if (items[i].has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
+		  def->add_action("use_item,name=" + items[i].name_str);
 
   // profession actions
   std::vector<std::string> profession_actions = get_profession_actions();
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    def -> add_action( profession_actions[ i ] );
+  for (size_t i = 0; i < profession_actions.size(); i++)
+	  def->add_action(profession_actions[i]);
 
   // racial actions
   std::vector<std::string> racial_actions = get_racial_actions();
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    def -> add_action( racial_actions[ i ] );
+  for (size_t i = 0; i < racial_actions.size(); i++)
+	  def->add_action(racial_actions[i]);
 
   // clone all of the above to the other two action lists
-  dps -> action_list = def -> action_list;
-  surv -> action_list = def -> action_list;
+  dps->action_list = def->action_list;
+  surv->action_list = def->action_list;
 
   // TODO: Create this.
+
+  //threshold for defensive abilities
+  std::string threshold = "incoming_damage_2500ms>health.max*0.3";
+
+
+  for (size_t i = 0; i < racial_actions.size(); i++)
+	  def->add_action(racial_actions[i]);
+  def->add_action("call_action_list,name=prot");
+
+  //defensive
+  prot->add_action(this, "Shield of the Righteous", "if=!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  prot->add_action(this, "Light of the Protector", "if=health.pct<25");
+  prot->add_action(this, "Divine Steed", "if=talent.knight_templar.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Eye of Tyr", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Light of the Protector", "if=health.pct<50");
+  prot->add_talent(this, "Aegis of Light", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Guardian of Ancient Kings", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Ardent Defender", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+
+
+  //potion
+  if (sim->allow_potions)
+  {
+	  if (true_level > 90)
+	  {
+		  prot->add_action("potion,name=draenic_strength,if=" + threshold + "&&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
+	  }
+	  else if (true_level >= 80)
+	  {
+		  prot->add_action("potion,name=mountains,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
+	  }
+  }
+
+  //stoneform
+  prot->add_action("stoneform,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+
+  //dps-single-target
+  prot->add_action(this, "Avenging Wrath");
+  //prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.avenger_shield>3" );
+  prot->add_action(this, "Judgment");
+  prot->add_talent(this, "Blessed Hammer");
+  prot->add_action(this, "Avenger's Shield");
+  prot -> add_action( this, "Consecration" );
+  prot->add_action(this, "Hammer of the Righteous");
+
+
+  //dps-aoe
+  prot_aoe->add_action(this, "Avenger's Shield");
+  prot_aoe->add_talent(this, "Blessed Hammer");
+  prot_aoe->add_action(this, "Judgment");
+  prot_aoe->add_action(this, "Consecration");
+  prot_aoe->add_action(this, "Hammer of the Righteous");
 }
+
+
 
 // ==========================================================================
 // Action Priority List Generation - Retribution
