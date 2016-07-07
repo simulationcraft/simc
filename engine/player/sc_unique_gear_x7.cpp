@@ -118,34 +118,18 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-struct random_combat_enhancement_callback_t : public dbc_proc_callback_t
+struct random_buff_callback_t : public dbc_proc_callback_t
 {
-  stat_buff_t* crit, *haste, *mastery;
+  std::vector<buff_t*> buffs;
 
-  random_combat_enhancement_callback_t( const item_t* i,
-                       const special_effect_t& effect,
-                       stat_buff_t* cb,
-                       stat_buff_t* hb,
-                       stat_buff_t* mb ) :
-                 dbc_proc_callback_t( i, effect ),
-    crit( cb ), haste( hb ), mastery( mb )
+  random_buff_callback_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+    dbc_proc_callback_t( effect.item, effect ), buffs( b )
   {}
 
   void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
   {
-    stat_buff_t* buff;
-
-    int p_type = ( int ) ( listener -> sim -> rng().real() * 3.0 );
-    switch ( p_type )
-    {
-      case 0: buff = haste; break;
-      case 1: buff = crit; break;
-      case 2:
-      default:
-        buff = mastery; break;
-    }
-
-    buff -> trigger();
+    int roll = ( int ) ( listener -> sim -> rng().real() * buffs.size() );
+    buffs[ roll ] -> trigger();
   }
 };
 
@@ -233,20 +217,19 @@ void item::memento_of_angerboda( special_effect_t& effect )
   double rating_amount = effect.driver() -> effectN( 2 ).average( effect.item );
   rating_amount *= effect.item -> sim -> dbc.combat_rating_multiplier( effect.item -> item_level() );
 
-  stat_buff_t* crit_buff =
-    stat_buff_creator_t( effect.player, "howl_of_ingvar", effect.player -> find_spell( 214802 ) )
-      .activated( false )
-      .add_stat( STAT_CRIT_RATING, rating_amount );
-  stat_buff_t* haste_buff =
-    stat_buff_creator_t( effect.player, "wail_of_svala", effect.player -> find_spell( 214803 ) )
-     .activated( false )
-      .add_stat( STAT_HASTE_RATING, rating_amount );
-  stat_buff_t* mastery_buff =
-    stat_buff_creator_t( effect.player, "dirge_of_angerboda", effect.player -> find_spell( 214807 ) )
-      .activated( false )
-      .add_stat( STAT_MASTERY_RATING, rating_amount );
+  std::vector<buff_t*> buffs;
 
-  new random_combat_enhancement_callback_t( effect.item, effect, crit_buff, haste_buff, mastery_buff );
+  buffs.push_back( stat_buff_creator_t( effect.player, "howl_of_ingvar", effect.player -> find_spell( 214802 ) )
+      .activated( false )
+      .add_stat( STAT_CRIT_RATING, rating_amount ) );
+  buffs.push_back( stat_buff_creator_t( effect.player, "wail_of_svala", effect.player -> find_spell( 214803 ) )
+     .activated( false )
+      .add_stat( STAT_HASTE_RATING, rating_amount ) );
+  buffs.push_back( stat_buff_creator_t( effect.player, "dirge_of_angerboda", effect.player -> find_spell( 214807 ) )
+      .activated( false )
+      .add_stat( STAT_MASTERY_RATING, rating_amount ) );
+
+  new random_buff_callback_t( effect, buffs );
 }
 
 void item::obelisk_of_the_void( special_effect_t& effect )
@@ -509,6 +492,8 @@ void item::windscar_whetstone( special_effect_t& effect )
     } );
 }
 
+// Tirathon's Betrayal ======================================================
+
 struct darkstrikes_absorb_t : public absorb_t
 {
   darkstrikes_absorb_t( const special_effect_t& effect ) :
@@ -639,11 +624,15 @@ void item::tirathons_betrayal( special_effect_t& effect )
   effect.custom_buff = new darkstrikes_buff_t( effect );
 }
 
+// Horn of Valor ============================================================
+
 void item::horn_of_valor( special_effect_t& effect )
 {
   effect.custom_buff = stat_buff_creator_t( effect.player, "valarjars_path", effect.driver(), effect.item )
     .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver() -> effectN( 1 ).average( effect.item ) );
 }
+
+// Tiny Oozeling in a Jar ===================================================
 
 struct fetid_regurgitation_t : public spell_t
 {
@@ -736,6 +725,8 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
 
   effect.custom_buff = new fetid_regurgitation_buff_t( effect, fetid_regurgitation, charges );
 };
+
+// Figurehead of the Naglfar ================================================
 
 struct taint_of_the_sea_t : public spell_t
 {
@@ -909,6 +900,8 @@ void item::figurehead_of_the_naglfar( special_effect_t& effect )
   effect.execute_action = new apply_debuff_t( effect );
 }
 
+// Chaos Talisman ===========================================================
+
 void item::chaos_talisman( special_effect_t& effect )
 {
   // TODO: Stack decay
@@ -920,6 +913,8 @@ void item::chaos_talisman( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.item, effect );
 }
+
+// Caged Horror =============================================================
 
 struct dark_blast_t : public spell_t
 {
@@ -951,6 +946,8 @@ void item::caged_horror( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.item, effect );
 }
+
+// Corrupted Starlight ======================================================
 
 struct nightfall_t : public spell_t
 {
@@ -1005,6 +1002,8 @@ void item::corrupted_starlight( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.item, effect );
 }
+
+// Darkmoon Decks ===========================================================
 
 struct darkmoon_deck_t
 {
@@ -1107,6 +1106,8 @@ void item::darkmoon_deck( special_effect_t& effect )
   });
 }
 
+// Elementium Bomb Squirrel =================================================
+
 struct aw_nuts_t : public spell_t
 {
   aw_nuts_t( special_effect_t& effect ) : 
@@ -1146,28 +1147,74 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Nature's Call ============================================================
+
+struct natures_call_callback_t : public dbc_proc_callback_t
+{
+  std::vector<stat_buff_t*> buffs;
+  action_t* breath;
+
+  natures_call_callback_t( const special_effect_t& effect, std::vector<stat_buff_t*> b, action_t* a ) :
+    dbc_proc_callback_t( effect.item, effect ), buffs( b ), breath( a )
+  {}
+
+  void execute( action_t*, action_state_t* trigger_state ) override
+  {
+    int roll = ( int ) ( listener -> sim -> rng().real() * ( buffs.size() + 1 ) );
+    switch ( roll )
+    {
+      case 3:
+        breath -> target = trigger_state -> target;
+        breath -> schedule_execute();
+        break;
+      default:
+        buffs[ roll ] -> trigger();
+        break;
+    }
+  }
+};
+
 void item::natures_call( special_effect_t& effect )
 {
   double rating_amount = effect.driver() -> effectN( 2 ).average( effect.item );
   rating_amount *= effect.item -> sim -> dbc.combat_rating_multiplier( effect.item -> item_level() );
 
-  stat_buff_t* crit_buff =
-    stat_buff_creator_t( effect.player, "cleansed_ancients_blessing", effect.player -> find_spell( 222517 ) )
+  std::vector<stat_buff_t*> buffs;
+  buffs.push_back( stat_buff_creator_t( effect.player, "cleansed_ancients_blessing", effect.player -> find_spell( 222517 ) )
       .activated( false )
-      .add_stat( STAT_CRIT_RATING, rating_amount );
-  stat_buff_t* haste_buff =
-    stat_buff_creator_t( effect.player, "cleansed_sisters_blessing", effect.player -> find_spell( 222519 ) )
+      .add_stat( STAT_CRIT_RATING, rating_amount ) );
+  buffs.push_back( stat_buff_creator_t( effect.player, "cleansed_sisters_blessing", effect.player -> find_spell( 222519 ) )
       .activated( false )
-      .add_stat( STAT_HASTE_RATING, rating_amount );
-  stat_buff_t* mastery_buff =
-    stat_buff_creator_t( effect.player, "cleansed_wisps_blessing", effect.player -> find_spell( 222518 ) )
+      .add_stat( STAT_HASTE_RATING, rating_amount ) );
+  buffs.push_back( stat_buff_creator_t( effect.player, "cleansed_wisps_blessing", effect.player -> find_spell( 222518 ) )
       .activated( false )
-      .add_stat( STAT_MASTERY_RATING, rating_amount );
+      .add_stat( STAT_MASTERY_RATING, rating_amount ) );
 
-  new random_combat_enhancement_callback_t( effect.item, effect, crit_buff, haste_buff, mastery_buff );
+  action_t* breath = effect.player -> find_action( "cleansed_drakes_breath" );
+
+  if ( ! breath )
+  {
+    breath = effect.player -> create_proc_action( "cleansed_drakes_breath", effect );
+  }
+
+  if ( ! breath )
+  {
+    breath = new spell_t( "cleansed_drakes_breath", effect.player, effect.player -> find_spell( 222520 ) );
+    breath -> callbacks = false;
+    breath -> background = breath -> may_crit = true;
+    breath -> aoe = -1;
+    breath -> base_dd_min = breath -> base_dd_max =
+      effect.driver() -> effectN( 1 ).average( effect.item );
+  }
+
+  new natures_call_callback_t( effect, buffs, breath );
 }
 
+// March of the Legion ======================================================
+
 void set_bonus::march_of_the_legion( special_effect_t& effect ) {}
+
+// Journey Through Time =====================================================
 
 void set_bonus::journey_through_time( special_effect_t& effect ) {}
 

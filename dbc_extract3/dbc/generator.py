@@ -1114,8 +1114,7 @@ class SpellDataGenerator(DataGenerator):
          191624, 191625, 191626, 191627, 191628, 191629, 191630, 191631, # Darkmoon Deck: Immortality
          216099,                    # Elementium Bomb Squirrel Generator trinket
          211309, 213428, 219655, 226829, # Artifact passive boosts
-         222517, 222518, 222519, 222520, # Nature's Call trinket
-         224148                     # Jacin's Ruse (Legion Dungeon 2 set)
+         222517, 222518, 222519, 222520  # Nature's Call trinket
         ),
 
         # Warrior:
