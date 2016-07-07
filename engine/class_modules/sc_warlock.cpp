@@ -238,7 +238,7 @@ public:
     artifact_power_t the_expendables;
     artifact_power_t maw_of_shadows;
     artifact_power_t open_link; //NYI
-    artifact_power_t stolen_power; //NYI
+    artifact_power_t stolen_power;
     artifact_power_t imperator;
     artifact_power_t summoners_prowess;
     artifact_power_t thalkiels_lingering_power;//NYI
@@ -329,6 +329,8 @@ public:
 
     //demonology buffs
     buff_t* shadowy_inspiration;
+    buff_t* stolen_power_stacks;
+    buff_t* stolen_power;
   } buffs;
 
   // Gains
@@ -375,6 +377,8 @@ public:
     proc_t* thalkiels_discord;
     proc_t* demonic_calling;
     proc_t* power_trip;
+    proc_t* stolen_power_stack;
+    proc_t* stolen_power_used;
   } procs;
 
   struct spells_t
@@ -605,10 +609,23 @@ public:
   {
     ab::execute();
 
-    if ( ab::result_is_hit( ab::execute_state -> result ) && p() -> o() -> talents.grimoire_of_synergy -> ok() )
+    if ( ab::result_is_hit( ab::execute_state -> result ) )
     {
-      bool procced = p() -> o() -> grimoire_of_synergy_pet -> trigger(); //check for RPPM
-      if ( procced ) p() -> o() -> buffs.demonic_synergy -> trigger(); //trigger the buff
+        if( p() -> o() -> talents.grimoire_of_synergy -> ok())
+        {
+            bool procced = p() -> o() -> grimoire_of_synergy_pet -> trigger(); //check for RPPM
+            if ( procced ) p() -> o() -> buffs.demonic_synergy -> trigger(); //trigger the buff
+        }
+        if( p()->o()->artifact.stolen_power.rank())
+        {
+            p()->o()->buffs.stolen_power_stacks->bump(1);
+            p()->o()->procs.stolen_power_stack;
+            if(p()->o()->buffs.stolen_power_stacks->stack() == 100)
+            {
+                p()->o()->buffs.stolen_power_stacks->reset();
+                p()->o()->buffs.stolen_power->trigger();
+            }
+        }
     }
   }
 
@@ -616,6 +633,8 @@ public:
   {
     return p() -> o() -> get_target_data( t );
   }
+
+
 };
 
 struct warlock_pet_melee_t: public melee_attack_t
@@ -2440,8 +2459,19 @@ struct shadow_bolt_t: public warlock_spell_t
     {
       return timespan_t::zero();
     }
-
     return warlock_spell_t::execute_time();
+  }
+
+  virtual double action_multiplier()const override
+  {
+      double m = warlock_spell_t::action_multiplier();
+      if(p()->buffs.stolen_power->up())
+      {
+          p()->procs.stolen_power_used->occur();
+          m *= 1.0 + p()->buffs.stolen_power->data().effectN( 1 ).percent();
+          p()->buffs.stolen_power->reset();
+      }
+      return m;
   }
 
   void execute() override
@@ -3504,6 +3534,12 @@ struct demonbolt_t: public warlock_spell_t
         }
       }
     }
+    if(p()->buffs.stolen_power->up())
+    {
+        p()->procs.stolen_power_used->occur();
+        pm *= 1.0 + p()->buffs.stolen_power->data().effectN( 1 ).percent();
+        p()->buffs.stolen_power->reset();
+    }
     return pm;
   }
 
@@ -4478,7 +4514,7 @@ void warlock_t::init_spells()
   artifact.the_expendables = find_artifact_spell( "The Expendables" );
   artifact.maw_of_shadows = find_artifact_spell( "Maw of Shadows" );
   artifact.open_link = find_artifact_spell( "Open Link" );
-  //artifact.stolen_power = find_artifact_spell( "" );
+  artifact.stolen_power = find_artifact_spell( "Stolen Power" );
   artifact.imperator = find_artifact_spell( "Imp-erator" );
   artifact.summoners_prowess = find_artifact_spell( "Summoner's Prowess" );
   artifact.thalkiels_lingering_power = find_artifact_spell( "Thal'kiel's Lingering Power" );
@@ -4571,6 +4607,9 @@ void warlock_t::create_buffs()
     .tick_behavior( BUFF_TICK_NONE );
   buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() )
     .chance( find_spell( 205145 ) -> proc_chance() );
+  buffs.stolen_power_stacks = buff_creator_t( this, "stolen_power_stacks", find_spell(211529));
+  buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell(211583) )
+          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   //demonology buffs
   buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
@@ -4631,6 +4670,8 @@ void warlock_t::init_procs()
   procs.thalkiels_discord = get_proc( "thalkiels_discord" );
   procs.demonic_calling = get_proc( "demonic_calling" );
   procs.power_trip = get_proc( "power_trip" );
+  procs.stolen_power_stack = get_proc( "stolen_power_proc" );
+  procs.stolen_power_used = get_proc( "stolen_power_used" );
 }
 
 void warlock_t::apl_precombat()
