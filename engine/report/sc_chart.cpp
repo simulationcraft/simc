@@ -1435,8 +1435,18 @@ bool chart::generate_action_dpet( highchart::bar_chart_t& bc,
   if ( stats_list.size() == 0 )
     return false;
 
+  if ( stats_list.front() -> apet / stats_list.back() -> apet >= 100 )
+  {
+    bc.set( "yAxis.type", "logarithmic" );
+    bc.set_yaxis_title( "Damage per Execute Time (log)" );
+    bc.set( "yAxis.minorTickInterval", .1 );
+  }
+  else
+  {
+    bc.set_yaxis_title( "Damage per Execute Time" );
+  }
+
   bc.set_title( p.name_str + " Damage per Execute Time" );
-  bc.set_yaxis_title( "Damage per Execute Time" );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
     bc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
