@@ -962,7 +962,14 @@ void buff_t::start( int        stacks,
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
 
   if ( d > timespan_t::zero() )
+  {
     expiration.push_back( new ( *sim ) expiration_t( this, stacks, d ) );
+    if ( stack() == before_stacks && stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+    {
+      event_t::cancel( expiration.front() );
+      expiration.erase( expiration.begin() );
+    }
+  }
 
   timespan_t period = tick_time();
   if ( tick_behavior != BUFF_TICK_NONE && period > timespan_t::zero()
@@ -1092,16 +1099,16 @@ void buff_t::bump( int stacks, double value )
         while ( overflow > 0 )
         {
           event_t* e = expiration.front();
-          int exp_stacks = debug_cast<expiration_t*>( expiration.front() ) -> stack;
+          int exp_stacks = debug_cast<expiration_t*>( e ) -> stack;
 
           if ( exp_stacks > overflow )
           {
-            debug_cast<expiration_t*>( expiration.front() ) -> stack -= overflow;
+            debug_cast<expiration_t*>( e ) -> stack -= overflow;
             break;
           }
           else
           {
-            event_t::cancel( expiration.front() );
+            event_t::cancel( e );
             expiration.erase( expiration.begin() );
             overflow -= exp_stacks;
           }
