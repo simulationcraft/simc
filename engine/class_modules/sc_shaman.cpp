@@ -737,6 +737,7 @@ struct stormlash_callback_t : public dbc_proc_callback_t
       listener -> sim -> out_debug.printf( "%s stormlash adding a new pool: pool=%.1f, n_pools=%u",
           listener -> name(), pool, damage_pool.size() );
     }
+    last_proc = listener -> sim -> current_time();
   }
 
   // Callback executes all generated pools
