@@ -1114,7 +1114,8 @@ class SpellDataGenerator(DataGenerator):
          191624, 191625, 191626, 191627, 191628, 191629, 191630, 191631, # Darkmoon Deck: Immortality
          216099,                    # Elementium Bomb Squirrel Generator trinket
          211309, 213428, 219655, 226829, # Artifact passive boosts
-         222517, 222518, 222519     # Nature's Call trinket
+         222517, 222518, 222519, 222520, # Nature's Call trinket
+         224148                     # Jacin's Ruse (Legion Dungeon 2 set)
         ),
 
         # Warrior:
@@ -3106,6 +3107,42 @@ class SetBonusListGenerator(DataGenerator):
         {
             'name'   : 'tier19oh',
             'bonuses': [ 1269, 1270, 1271, 1272, 1273, 1274, 1275, 1276, 1277, 1278, 1279, 1280 ],
+            'tier'   : 19
+        },
+        # Legion Dungeon, March of the Legion
+        {
+            'name'   : 'march_of_the_legion',
+            'bonuses': [ 1293 ],
+            'tier'   : 19
+        },
+        # Legion Dungeon, Journey Through Time
+        {
+            'name'   : 'journey_through_time',
+            'bonuses': [ 1294 ],
+            'tier'   : 19
+        },
+        # Legion Dungeon, Cloth
+        {
+            'name'   : 'tier19p_cloth',
+            'bonuses': [ 1295 ],
+            'tier'   : 19
+        },
+        # Legion Dungeon, Leather
+        {
+            'name'   : 'tier19p_leather',
+            'bonuses': [ 1296 ],
+            'tier'   : 19
+        },
+        # Legion Dungeon, Mail
+        {
+            'name'   : 'tier19p_mail',
+            'bonuses': [ 1297 ],
+            'tier'   : 19
+        },
+        # Legion Dungeon, Plate
+        {
+            'name'   : 'tier19p_plate',
+            'bonuses': [ 1298 ],
             'tier'   : 19
         },
         {

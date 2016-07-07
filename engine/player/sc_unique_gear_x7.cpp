@@ -46,8 +46,14 @@ namespace item
 
 namespace set_bonus
 {
+  // 7.0 Dungeon
+  void march_of_the_legion( special_effect_t& ); // NYI
+  void journey_through_time( special_effect_t& ); // NYI
+
   // Generic passive stat aura adder for set bonuses
   void passive_stat_aura( special_effect_t& );
+  // Simple callback creator for set bonuses
+  void simple_callback( special_effect_t& );
 }
 
 // TODO: Ratings
@@ -82,6 +88,9 @@ void set_bonus::passive_stat_aura( special_effect_t& effect )
 
   effect.player -> initial.stats.add_stat( stat, amount );
 }
+
+void set_bonus::simple_callback( special_effect_t& effect )
+{ new dbc_proc_callback_t( effect.player, effect ); }
 
 void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
 {
@@ -1158,6 +1167,10 @@ void item::natures_call( special_effect_t& effect )
   new random_combat_enhancement_callback_t( effect.item, effect, crit_buff, haste_buff, mastery_buff );
 }
 
+void set_bonus::march_of_the_legion( special_effect_t& effect ) {}
+
+void set_bonus::journey_through_time( special_effect_t& effect ) {}
+
 void unique_gear::register_special_effects_x7()
 {
   /* Legion 7.0 Dungeon */
@@ -1194,6 +1207,14 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 221533, set_bonus::passive_stat_aura     );
   register_special_effect( 221534, set_bonus::passive_stat_aura     );
   register_special_effect( 221535, set_bonus::passive_stat_aura     );
+
+  /* 7.0 Dungeon 2 Set Bonuses */
+  register_special_effect( 228445, set_bonus::march_of_the_legion );
+  register_special_effect( 228447, set_bonus::journey_through_time );
+  register_special_effect( 224146, set_bonus::simple_callback );
+  register_special_effect( 224148, set_bonus::simple_callback );
+  register_special_effect( 224150, set_bonus::simple_callback );
+  register_special_effect( 228448, set_bonus::simple_callback );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
