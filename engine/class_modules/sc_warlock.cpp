@@ -235,7 +235,7 @@ public:
     artifact_power_t dirty_hands;
     artifact_power_t doom_doubled;
     artifact_power_t infernal_furnace;
-    artifact_power_t the_expendables; //NYI
+    artifact_power_t the_expendables;
     artifact_power_t maw_of_shadows;
     artifact_power_t open_link; //NYI
     artifact_power_t stolen_power; //NYI
@@ -375,7 +375,6 @@ public:
     proc_t* thalkiels_discord;
     proc_t* demonic_calling;
     proc_t* power_trip;
-
   } procs;
 
   struct spells_t
@@ -540,7 +539,13 @@ namespace pets {
     {
       buff_t* demonic_synergy;
       buff_t* demonic_empowerment;
+      buff_t* the_expendables;
     } buffs;
+
+    struct procs_t
+    {
+      proc_t* the_expendable;
+    } procs;
 
     bool is_grimoire_of_service = false;
     bool is_lord_of_flames = false;
@@ -560,6 +565,10 @@ namespace pets {
       if ( name == "travel" ) return new travel_t( this );
 
       return pet_t::create_action( name, options_str );
+    }
+    void init_procs()
+    {
+        procs.the_expendable = get_proc( "the_expendables" );
     }
   };
 
@@ -1187,6 +1196,10 @@ void warlock_pet_t::create_buffs()
   buffs.demonic_empowerment = buff_creator_t( this, "demonic_empowerment", find_spell(193396))
 	  .add_invalidate( CACHE_HASTE )
 	  .chance(1);
+
+  buffs.the_expendables = buff_creator_t( this, "the_expendables", find_spell(211218))
+          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+          .chance(1);
 }
 
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
@@ -1211,6 +1224,11 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.demonic_synergy -> up() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
+
+  if( buffs.the_expendables -> up() )
+  {
+      m*= 1.0 + buffs.the_expendables->stack_value();
+  }
 
   if ( !o() -> bugs )
   {
@@ -1685,8 +1703,24 @@ struct wild_imp_pet_t: public warlock_pet_t
 
     resources.base[RESOURCE_ENERGY] = 1000;
     base_energy_regen_per_second = 0;
+  }
 
-
+  void dismiss( bool expired ) override
+  {
+      if(expired & o()->artifact.the_expendables.rank())
+      {
+          for( auto& pet : o()->pet_list )
+          {
+              pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
+              if(!lock_pet->is_sleeping() && lock_pet != this )
+              {
+                  lock_pet->buffs.the_expendables->bump(1,
+                        buffs.the_expendables->data().effectN( 1 ).percent());
+                  lock_pet->procs.the_expendable->occur();
+              }
+          }
+      }
+      pet_t::dismiss( expired );
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -3533,7 +3567,7 @@ struct implosion_t : public warlock_spell_t
         if( !imp -> is_sleeping() )
         {
           explosion -> execute();
-          imp -> dismiss();
+          imp -> dismiss(false);
         }
       }
     }
