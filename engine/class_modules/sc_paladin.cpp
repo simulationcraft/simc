@@ -4072,6 +4072,7 @@ void paladin_t::reset()
 {
   player_t::reset();
 
+  active_consecrations.clear();
   last_retribution_trinket_target = nullptr;
   last_extra_regen = timespan_t::zero();
 }
