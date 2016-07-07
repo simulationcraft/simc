@@ -1341,6 +1341,7 @@ struct blessed_hammer_t : public paladin_spell_t
     dot_duration = timespan_t::zero(); // The periodic event is handled by ground_aoe_event_t
     may_miss = false;
     base_tick_time = timespan_t::from_seconds( 1.667 ); // Rough estimation based on stopwatch testing
+    cooldown -> hasted = true;
 
     tick_may_crit = true;
 
