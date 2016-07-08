@@ -419,40 +419,49 @@ namespace {
 
 struct proc_spell_t : public spell_t
 {
-
   proc_spell_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
     spell_t( token, p, s )
   {
     background = true;
     // Periodic procs shouldnt ever haste ticks, probably
-    hasted_ticks = false;
-
+    callbacks = hasted_ticks = false;
     item = i;
+    if ( ! data().flags( SPELL_ATTR_EX2_CANT_CRIT ) )
+      may_crit = tick_may_crit = true;
+    if ( radius > 0 )
+      aoe = -1;
   }
 };
 
 struct proc_heal_t : public heal_t
 {
-
   proc_heal_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
     heal_t( token, p, s )
   {
     background = true;
     // Periodic procs shouldnt ever haste ticks, probably
-    hasted_ticks = false;
-
+    callbacks = hasted_ticks = false;
     item = i;
+    if ( ! data().flags( SPELL_ATTR_EX2_CANT_CRIT ) )
+      may_crit = tick_may_crit = true;
+    if ( radius > 0 )
+      aoe = -1;
   }
 };
 
 struct proc_attack_t : public attack_t
 {
-
   proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
     attack_t( token, p, s )
   {
     background = true;
+    // Periodic procs shouldnt ever haste ticks, probably
+    callbacks = hasted_ticks = false;
     item = i;
+    if ( ! data().flags( SPELL_ATTR_EX2_CANT_CRIT ) )
+      may_crit = tick_may_crit = true;
+    if ( radius > 0 )
+      aoe = -1;
   }
 };
 
