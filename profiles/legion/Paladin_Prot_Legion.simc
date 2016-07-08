@@ -37,20 +37,11 @@ legs=Legs,stats=320armor_1340sta
 feet=Feet,stats=251armor_1005sta
 finger1=Ring1,stats=754sta
 finger2=Ring2,stats=754sta
-trinket1=Trinket1,stats=6300crit_8000mastery_8000haste_7200vers_14000str_2800armor_30000sta
+trinket1=Trinket1,stats=5300crit_5700mastery_6000haste_6000vers_14000str_2800armor_17000sta
 trinket2=horn_of_valor,id=133642
 main_hand=oathseeker,id=128867,ilevel=750,enchant_id=5427
 off_hand=truthguard,id=128866,ilevel=750,enchant_id=5427
 
-# Gear Summary
-# gear_ilvl=820.00
-# gear_agility=8531
-# gear_stamina=14228
-# gear_crit_rating=10141
-# gear_haste_rating=834
-# gear_mastery_rating=1633
-# gear_versatility_rating=4695
-# gear_armor=1830
 
 
 enemy=MyCustomEnemy 
