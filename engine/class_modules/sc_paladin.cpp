@@ -3335,17 +3335,15 @@ struct judgment_t : public paladin_melee_attack_t
         aoe += p -> talents.greater_judgment -> effectN( 2 ).base_value();
       }
     }
-
     else if ( p -> specialization() == PALADIN_HOLY )
     {
       base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 6 ).percent();
     }
-
     else if ( p -> specialization() == PALADIN_PROTECTION )
     {
-	  cooldown->duration -= timespan_t::from_millis(6000);
+      cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
-      sotr_cdr = -2.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+      sotr_cdr = -1.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
     }
   }
 
