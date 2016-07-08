@@ -775,7 +775,7 @@ double special_effect_t::rppm_modifier() const
 // reality, there should not be any (single) driver, that includes both.
 timespan_t special_effect_t::cooldown() const
 {
-  if ( cooldown_ > timespan_t::zero() )
+  if ( cooldown_ >= timespan_t::zero() )
     return cooldown_;
 
   // First, check item cooldowns, since they override (in simc) whatever the
