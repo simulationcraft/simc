@@ -13,11 +13,8 @@ using namespace unique_gear;
 
 namespace enchants
 {
-  void mark_of_the_claw( special_effect_t& );
   void mark_of_the_hidden_satyr( special_effect_t& );
-  void mark_of_the_distant_army( special_effect_t& );
-  void mark_of_the_heavy_hide( special_effect_t& );
-  void mark_of_the_ancient_priestess( special_effect_t& );
+  void mark_of_the_ancient_priestess( special_effect_t& ); // NYI
 }
 
 namespace item
@@ -28,14 +25,20 @@ namespace item
   void corrupted_starlight( special_effect_t& );
   void darkmoon_deck( special_effect_t& );
   void elementium_bomb_squirrel( special_effect_t& );
+  void eye_of_skovald( special_effect_t& );
+  void faulty_countermeasures( special_effect_t& );
   void figurehead_of_the_naglfar( special_effect_t& );
   void giant_ornamental_pearl( special_effect_t& );
   void horn_of_valor( special_effect_t& );
   void impact_tremor( special_effect_t& );
   void memento_of_angerboda( special_effect_t& );
+  void moonlit_prism( special_effect_t& );
   void obelisk_of_the_void( special_effect_t& );
+  void portable_manacracker( special_effect_t& );
   void shivermaws_jawbone( special_effect_t& );
   void spiked_counterweight( special_effect_t& );
+  void stormsinger_fulmination_charge( special_effect_t& );
+  void terrorbound_nexus( special_effect_t& ); // NYI
   void tiny_oozeling_in_a_jar( special_effect_t& );
   void tirathons_betrayal( special_effect_t& );
   void windscar_whetstone( special_effect_t& );
@@ -92,6 +95,8 @@ void set_bonus::passive_stat_aura( special_effect_t& effect )
 void set_bonus::simple_callback( special_effect_t& effect )
 { new dbc_proc_callback_t( effect.player, effect ); }
 
+// Mark of the Hidden Satyr =================================================
+
 void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
 {
   effect.execute_action = effect.player -> find_action( "mark_of_the_hidden_satyr" );
@@ -133,12 +138,7 @@ struct random_buff_callback_t : public dbc_proc_callback_t
   }
 };
 
-void enchants::mark_of_the_claw( special_effect_t& effect )
-{
-  effect.custom_buff = stat_buff_creator_t( effect.player, "mark_of_the_claw", effect.player -> find_spell( 190909 ), effect.item );
-
-  new dbc_proc_callback_t( effect.item, effect );
-}
+// Giant Ornamental Pearl ===================================================
 
 struct gaseous_bubble_t : public absorb_buff_t
 {
@@ -176,6 +176,8 @@ void item::giant_ornamental_pearl( special_effect_t& effect )
   effect.custom_buff = new gaseous_bubble_t( effect );
 }
 
+// Impact Tremor ============================================================
+
 struct devilsaurs_stampede_t : public spell_t
 {
   devilsaurs_stampede_t( special_effect_t& effect ) : 
@@ -212,6 +214,8 @@ void item::impact_tremor( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Momento of Angerboda =====================================================
+
 void item::memento_of_angerboda( special_effect_t& effect )
 {
   double rating_amount = effect.driver() -> effectN( 2 ).average( effect.item );
@@ -232,11 +236,15 @@ void item::memento_of_angerboda( special_effect_t& effect )
   new random_buff_callback_t( effect, buffs );
 }
 
+// Obelisk of the Void ======================================================
+
 void item::obelisk_of_the_void( special_effect_t& effect )
 {
   effect.custom_buff = stat_buff_creator_t( effect.player, "collapsing_shadow", effect.player -> find_spell( 215476 ), effect.item )
     .add_stat( effect.player -> convert_hybrid_stat( STAT_AGI_INT ), effect.driver() -> effectN( 2 ).average( effect.item ) );
 }
+
+// Shivermaws Jawbone =======================================================
 
 struct ice_bomb_t : public spell_t
 {
@@ -900,15 +908,16 @@ void item::figurehead_of_the_naglfar( special_effect_t& effect )
 }
 
 // Chaos Talisman ===========================================================
+// TODO: Stack decay
 
 void item::chaos_talisman( special_effect_t& effect )
 {
-  // TODO: Stack decay
   effect.proc_flags_ = PF_MELEE;
   effect.proc_flags2_ = PF_ALL_DAMAGE;
   const spell_data_t* buff_spell = effect.driver() -> effectN( 1 ).trigger();
   effect.custom_buff = stat_buff_creator_t( effect.player, "chaotic_energy", buff_spell, effect.item )
-    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ), buff_spell -> effectN( 1 ).average( effect.item ) );
+    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ), buff_spell -> effectN( 1 ).average( effect.item ) )
+    .period( timespan_t::zero() ); // disable ticking
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -1209,6 +1218,292 @@ void item::natures_call( special_effect_t& effect )
   new natures_call_callback_t( effect, buffs, breath );
 }
 
+// Eye of Skovald ===========================================================
+// FIXME: There's almost certainly a travel time on this. Not sure how much.
+
+void item::eye_of_skovald( special_effect_t& effect )
+{
+  action_t* a = effect.player -> find_action( "fel_meteor" );
+
+  if ( ! a )
+  {
+    a = effect.player -> create_proc_action( "fel_meteor", effect );
+  }
+
+  if ( ! a )
+  {
+    const spell_data_t* s = effect.player -> find_spell( 214052 );
+    a = new spell_t( "fel_meteor", effect.player, s );
+    a -> callbacks = false;
+    a -> background = a -> may_crit = true;
+    a -> aoe = -1;
+    a -> base_dd_min = a -> base_dd_max =
+      s -> effectN( 1 ).average( effect.item );
+  }
+
+  effect.execute_action = a;
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Moonlit Prism ============================================================
+// TOCHECK: Proc mechanics
+
+struct moonlit_prism_buff_t : public stat_buff_t
+{
+  dbc_proc_callback_t* callback;
+
+  moonlit_prism_buff_t( const special_effect_t& effect ) :
+    stat_buff_t( stat_buff_creator_t( effect.player, "elunes_light", effect.driver(), effect.item )
+    .cd( timespan_t::zero() )
+    .refresh_behavior( BUFF_REFRESH_DISABLED ) )
+  {
+    // Stack gain effect
+    special_effect_t* effect2 = new special_effect_t( effect.player );
+    effect2 -> name_str     = "moonlit_prism_driver";
+    effect2 -> proc_chance_ = 1.0;
+    effect2 -> spell_id = effect.driver() -> id();
+    effect2 -> cooldown_ = timespan_t::from_millis( 1 ); // Ugly fix to override 90s cooldown.
+    effect2 -> custom_buff  = this;
+    effect.player -> special_effects.push_back( effect2 );
+
+    callback = new dbc_proc_callback_t( effect.player, *effect2 );
+    callback -> initialize();
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    stat_buff_t::start( stacks, value, duration );
+
+    callback -> activate();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    stat_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    callback -> deactivate();
+  }
+
+  void reset() override
+  {
+    stat_buff_t::reset();
+
+    callback -> deactivate();
+  }
+};
+
+void item::moonlit_prism( special_effect_t& effect )
+{
+  effect.custom_buff = new moonlit_prism_buff_t( effect );
+}
+
+// Faulty Countermeasures ===================================================
+
+struct faulty_countermeasures_t : public buff_t
+{
+  dbc_proc_callback_t* callback;
+
+  faulty_countermeasures_t( const special_effect_t& effect, action_t* a ) :
+    buff_t( buff_creator_t( effect.player, "sheathed_in_frost", effect.driver(), effect.item )
+      .cd( timespan_t::zero() )
+      .activated( false ) )
+  {
+    // Create effect & callback for the damage proc
+    special_effect_t* effect2 = new special_effect_t( effect.player );
+    effect2 -> name_str       = "brittle_driver";
+    effect2 -> spell_id       = effect.driver() -> id();
+    // Ugly hack to override 120s CD. Proc is RPPM so this shouldn't have any adverse effects anyway.
+    effect2 -> cooldown_      = timespan_t::from_millis( 1 );
+    effect2 -> execute_action = a;
+    effect.player -> special_effects.push_back( effect2 );
+
+    callback = new dbc_proc_callback_t( effect.player, *effect2 );
+    callback -> initialize();
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+
+    callback -> activate();
+  }
+
+  void expire_override( int stacks, timespan_t remaining ) override
+  {
+    buff_t::expire_override( stacks, remaining );
+    
+    callback -> deactivate();
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+
+    callback -> deactivate();
+  }
+};
+
+void item::faulty_countermeasures( special_effect_t& effect )
+{
+  action_t* a = effect.player -> find_action( "brittle" );
+
+  if ( ! a )
+  {
+    a = effect.player -> create_proc_action( "brittle", effect );
+  }
+
+  if ( ! a )
+  {
+    a = new spell_t( "brittle", effect.player, effect.trigger() );
+    a -> callbacks = false;
+    a -> background = a -> may_crit = true;
+    a -> base_dd_min = a -> base_dd_max = effect.trigger() -> effectN( 1 ).average( effect.item );
+  }
+
+  effect.custom_buff = new faulty_countermeasures_t( effect, a );
+}
+
+// Stormsinger Fulmination Charge ===========================================
+
+// 9 seconds ascending, 2 seconds at max stacks, 9 seconds descending. TOCHECK
+struct focused_lightning_t : public stat_buff_t
+{
+  focused_lightning_t( const special_effect_t& effect ) :
+    stat_buff_t( stat_buff_creator_t( effect.player, "focused_lightning", effect.trigger() -> effectN( 1 ).trigger(), effect.item )
+      .duration( timespan_t::from_seconds( 20.0 ) ) )
+  { }
+
+  void bump( int stacks, double value ) override
+  {
+    bool waste = current_stack == max_stack();
+
+    stat_buff_t::bump( stacks, value );
+
+    if ( waste )
+    {
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s buff %s changes to reverse.", player -> name(), name() );
+
+      reverse = true;
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    stat_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    reverse = false;
+  }
+
+  void reset() override
+  {
+    stat_buff_t::reset();
+
+    reverse = false;
+  }
+};
+
+void item::stormsinger_fulmination_charge( special_effect_t& effect )
+{
+  effect.custom_buff = new focused_lightning_t( effect );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Portable Manacracker =====================================================
+
+struct withering_consumption_t : public spell_t
+{
+  withering_consumption_t( const special_effect_t& effect ) : 
+    spell_t( "withering_consumption", effect.player, effect.player -> find_spell( 215884 ) )
+  {
+    background = tick_zero = true;
+    callbacks = false;
+    item = effect.item;
+    base_td = effect.trigger() -> effectN( 1 ).average( effect.item );
+  }
+};
+
+struct volatile_magic_debuff_t : public debuff_t
+{
+  action_t* damage;
+
+  volatile_magic_debuff_t( const special_effect_t& effect, actor_target_data_t& td ) :
+    debuff_t( buff_creator_t( td, "volatile_magic", effect.trigger() ) ),
+    damage( effect.player -> find_action( "withering_consumption" ) )
+  {}
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    bool s = debuff_t::trigger( stacks, value, chance, duration );
+
+    if ( current_stack == max_stack() )
+    {
+      damage -> target = player;
+      damage -> schedule_execute();
+      expire();
+    }
+
+    return s;
+  }
+};
+
+struct portable_manacracker_constructor_t : public item_targetdata_initializer_t
+{
+  portable_manacracker_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if ( effect == 0 )
+    {
+      td -> debuff.volatile_magic = buff_creator_t( *td, "volatile_magic" );
+    }
+    else
+    {
+      assert( ! td -> debuff.volatile_magic );
+
+      td -> debuff.volatile_magic = new volatile_magic_debuff_t( *effect, *td );
+      td -> debuff.volatile_magic -> reset();
+    }
+  }
+};
+
+struct volatile_magic_callback_t : public dbc_proc_callback_t
+{
+  volatile_magic_callback_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect )
+  {}
+
+  void execute( action_t* a, action_state_t* s ) override
+  {
+    actor_target_data_t* td = a -> player -> get_target_data( s -> target );
+
+    if ( ! td ) return;
+
+    td -> debuff.volatile_magic -> trigger();
+  }
+};
+
+void item::portable_manacracker( special_effect_t& effect )
+{
+  action_t* a = effect.player -> find_action( "withering_consumption" );
+
+  if ( ! a )
+  {
+    a = effect.player -> create_proc_action( "withering_consumption", effect );
+  }
+
+  if ( ! a )
+  {
+    a = new withering_consumption_t( effect );
+  }
+
+  new volatile_magic_callback_t( effect );
+}
+
 // March of the Legion ======================================================
 
 void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
@@ -1223,24 +1518,34 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 215444, item::caged_horror                   );
   register_special_effect( 214829, item::chaos_talisman                 );
   register_special_effect( 213782, item::corrupted_starlight            );
-  register_special_effect( 191563, item::darkmoon_deck                  );
-  register_special_effect( 191611, item::darkmoon_deck                  );
-  register_special_effect( 191632, item::darkmoon_deck                  );
+  register_special_effect( 216085, item::elementium_bomb_squirrel       );
+  register_special_effect( 214054, item::eye_of_skovald                 );
+  register_special_effect( 214962, item::faulty_countermeasures         );
   register_special_effect( 215670, item::figurehead_of_the_naglfar      );
   register_special_effect( 214971, item::giant_ornamental_pearl         );
   register_special_effect( 215956, item::horn_of_valor                  );
   register_special_effect( 224059, item::impact_tremor                  );
   register_special_effect( 214798, item::memento_of_angerboda           );
+  register_special_effect( 215648, item::moonlit_prism                  );
   register_special_effect( 215467, item::obelisk_of_the_void            );
+  register_special_effect( 215857, item::portable_manacracker           );
   register_special_effect( 214584, item::shivermaws_jawbone             );
   register_special_effect( 214168, item::spiked_counterweight           );
+  register_special_effect( 215630, item::stormsinger_fulmination_charge );
   register_special_effect( 215127, item::tiny_oozeling_in_a_jar         );
   register_special_effect( 215658, item::tirathons_betrayal             );
   register_special_effect( 214980, item::windscar_whetstone             );
-  register_special_effect( 216085, item::elementium_bomb_squirrel       );
+  register_special_effect( 215813, "ProcOn/Hit_1Tick_215816Trigger"     );
+  register_special_effect( 214492, "ProcOn/Hit_1Tick_214494Trigger"     );
+  register_special_effect( 214340, "ProcOn/Hit_1Tick_214342Trigger"     );
 
   /* Legion 7.0 Raid */
   register_special_effect( 222512, item::natures_call );
+
+  /* Legion 7.0 Misc */
+  register_special_effect( 191563, item::darkmoon_deck                  );
+  register_special_effect( 191611, item::darkmoon_deck                  );
+  register_special_effect( 191632, item::darkmoon_deck                  );
 
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );
@@ -1271,5 +1576,6 @@ void unique_gear::register_target_data_initializers_x7( sim_t* sim )
 
   sim -> register_target_data_initializer( spiked_counterweight_constructor_t( 136715, trinkets ) );
   sim -> register_target_data_initializer( figurehead_of_the_naglfar_constructor_t( 137329, trinkets ) );
+  sim -> register_target_data_initializer( portable_manacracker_constructor_t( 137398, trinkets ) );
 }
 
