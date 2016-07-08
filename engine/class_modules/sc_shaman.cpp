@@ -3451,6 +3451,13 @@ struct chained_overload_base_t: public elemental_overload_spell_t
   {
     return __check_distance_targeting( this, tl );
   }
+
+  void impact( action_state_t* state ) override
+  {
+    elemental_overload_spell_t::impact( state );
+
+    p() -> trigger_lightning_rod_damage( state );
+  }
 };
 
 struct chain_lightning_overload_t : public chained_overload_base_t
@@ -3891,6 +3898,13 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     }
 
     return m;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    elemental_overload_spell_t::impact( state );
+
+    p() -> trigger_lightning_rod_damage( state );
   }
 };
 
