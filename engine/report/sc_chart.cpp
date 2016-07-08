@@ -1360,7 +1360,7 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
     stats_list.erase( stats_list.begin() + 30, stats_list.end() );
   }
 
-  if ( stats_list.front() -> apet / stats_list.back() -> apet >= 100 )
+  if ( stats_list.size() > 0 && ( stats_list.front() -> apet / stats_list.back() -> apet >= 100 ) )
   {
     bc.set( "yAxis.type", "logarithmic" );
     bc.set_yaxis_title( "Damage per Execute Time (log)" );
