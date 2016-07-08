@@ -8015,6 +8015,7 @@ struct druid_module_t : public module_t
   {
     // Warlords of Draenor
     register_special_effect( 184876, starshards_callback_t() );
+    register_special_effect( 184877, wildcat_celerity_t( "incarnation_king_of_the_jungle" ) );
     register_special_effect( 184877, wildcat_celerity_t( "berserk" ) );
     register_special_effect( 184877, wildcat_celerity_t( "tigers_fury" ) );
     register_special_effect( 184878, stalwart_guardian_callback_t() );
