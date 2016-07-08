@@ -1262,7 +1262,7 @@ struct moonlit_prism_buff_t : public stat_buff_t
     effect2 -> name_str     = "moonlit_prism_driver";
     effect2 -> proc_chance_ = 1.0;
     effect2 -> spell_id = effect.driver() -> id();
-    effect2 -> cooldown_ = timespan_t::from_millis( 1 ); // Ugly fix to override 90s cooldown.
+    effect2 -> cooldown_ = timespan_t::zero();
     effect2 -> custom_buff  = this;
     effect.player -> special_effects.push_back( effect2 );
 
@@ -1312,8 +1312,7 @@ struct faulty_countermeasures_t : public buff_t
     special_effect_t* effect2 = new special_effect_t( effect.player );
     effect2 -> name_str       = "brittle_driver";
     effect2 -> spell_id       = effect.driver() -> id();
-    // Ugly hack to override 120s CD. Proc is RPPM so this shouldn't have any adverse effects anyway.
-    effect2 -> cooldown_      = timespan_t::from_millis( 1 );
+    effect2 -> cooldown_      = timespan_t::zero();
     effect2 -> execute_action = a;
     effect.player -> special_effects.push_back( effect2 );
 
