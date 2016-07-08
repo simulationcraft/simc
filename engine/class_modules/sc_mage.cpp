@@ -115,7 +115,8 @@ struct mage_td_t : public actor_target_data_t
 
     buff_t* chilled,
           * frost_bomb,
-          * water_jet; // Proxy Water Jet to compensate for expression system
+          * water_jet, // Proxy Water Jet to compensate for expression system
+          * winters_chill;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -3723,6 +3724,7 @@ struct flame_patch_t : public fire_mage_spell_t
 };
 // Flamestrike Spell ==========================================================
 
+//TODO: This needs to have an execute time of 0.75s, not 2s as spelldata suggests.
 struct aftershocks_t : public fire_mage_spell_t
 {
   aftershocks_t( mage_t* p ) :
@@ -3845,6 +3847,12 @@ struct flurry_bolt_t : public frost_mage_spell_t
   flurry_bolt_t( mage_t* p ) :
     frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) )
   {
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::execute();
+    td( s -> target ) -> debuffs.winters_chill -> trigger();
   }
 };
 struct flurry_t : public frost_mage_spell_t
@@ -3992,7 +4000,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
       if ( p() -> sets.has_set_bonus( MAGE_FROST, T19, B2 ) )
       {
-        bf_proc_chance += p() -> sets.set( MAGE_FROST, T19, B2 ) 
+        bf_proc_chance += p() -> sets.set( MAGE_FROST, T19, B2 )
                               -> effectN( 1 ).percent();
       }
       if ( p() -> artifact.clarity_of_thought.rank() )
@@ -6277,6 +6285,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                         mage -> find_spell( 135029 ) )
                           .quiet( true )
                           .cd( timespan_t::zero() );
+  //TODO: Find spelldata for this!
+  debuffs.winters_chill = buff_creator_t( *this, "winters_chill" )
+                          .duration( timespan_t::from_seconds( 1.0 ) );
 }
 
 // mage_t::create_action ====================================================
@@ -6725,7 +6736,7 @@ void mage_t::create_buffs()
   // Frost
   //TODO: Remove hardcoded duration once spelldata contains the value
   buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190447 ) )
-                                  .duration( timespan_t::from_seconds( 15.0 ) ); 
+                                  .duration( timespan_t::from_seconds( 15.0 ) );
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
