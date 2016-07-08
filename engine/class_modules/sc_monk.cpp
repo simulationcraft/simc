@@ -3509,6 +3509,8 @@ struct touch_of_death_t: public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
+    am *= p() -> spec.touch_of_death -> effectN( 2 ).percent(); // 50% HP
+
     am *= combo_strikes_multiplier();
 
     return am;
@@ -7472,8 +7474,6 @@ void monk_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
 
   player_t::assess_heal( school, dmg_type, s );
 }
-
-
 
 // Brewmaster Pre-Combat Action Priority List ============================
 
