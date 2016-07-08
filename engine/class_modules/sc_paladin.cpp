@@ -3343,8 +3343,9 @@ struct judgment_t : public paladin_melee_attack_t
 
     else if ( p -> specialization() == PALADIN_PROTECTION )
     {
+	  cooldown->duration -= timespan_t::from_millis(6000);
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
-      sotr_cdr = -1.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+      sotr_cdr = -2.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
     }
   }
 
