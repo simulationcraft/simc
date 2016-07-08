@@ -1417,7 +1417,7 @@ struct withering_consumption_t : public spell_t
   withering_consumption_t( const special_effect_t& effect ) : 
     spell_t( "withering_consumption", effect.player, effect.player -> find_spell( 215884 ) )
   {
-    background = tick_zero = true;
+    background = tick_zero = tick_may_crit = true;
     callbacks = false;
     item = effect.item;
     base_td = effect.trigger() -> effectN( 1 ).average( effect.item );
