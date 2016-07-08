@@ -20,12 +20,10 @@ namespace enchants
 namespace item
 {
   // 7.0 Dungeon
-  void caged_horror( special_effect_t& );
   void chaos_talisman( special_effect_t& );
   void corrupted_starlight( special_effect_t& );
   void darkmoon_deck( special_effect_t& );
   void elementium_bomb_squirrel( special_effect_t& );
-  void eye_of_skovald( special_effect_t& );
   void faulty_countermeasures( special_effect_t& );
   void figurehead_of_the_naglfar( special_effect_t& );
   void giant_ornamental_pearl( special_effect_t& );
@@ -142,25 +140,11 @@ struct random_buff_callback_t : public dbc_proc_callback_t
 
 struct gaseous_bubble_t : public absorb_buff_t
 {
-  struct gaseous_explosion_t : public spell_t
-  {
-    gaseous_explosion_t( special_effect_t& effect ) : 
-      spell_t( "gaseous_explosion", effect.player, effect.player -> find_spell( 214972 ) )
-    {
-      background = may_crit = true;
-      callbacks = false;
-      aoe = -1;
-      item = effect.item;
+  action_t* explosion;
 
-      base_dd_min = base_dd_max = effect.driver() -> effectN( 2 ).average( item );
-    }
-  };
-
-  gaseous_explosion_t* explosion;
-
-  gaseous_bubble_t( special_effect_t& effect ) : 
+  gaseous_bubble_t( special_effect_t& effect, action_t* a ) : 
     absorb_buff_t( absorb_buff_creator_t( effect.player, "gaseous_bubble", effect.driver(), effect.item ) ),
-    explosion( new gaseous_explosion_t( effect ) )
+    explosion( a )
   {}
 
   void expire_override( int stacks, timespan_t remaining ) override
@@ -173,43 +157,28 @@ struct gaseous_bubble_t : public absorb_buff_t
 
 void item::giant_ornamental_pearl( special_effect_t& effect )
 {
-  effect.custom_buff = new gaseous_bubble_t( effect );
+  effect.trigger_spell_id = 214972;
+
+  effect.custom_buff = new gaseous_bubble_t( effect, effect.create_action() );
+
+  // Reset trigger_spell_id so it does not create an execute action.
+  effect.trigger_spell_id = 0;
 }
 
 // Impact Tremor ============================================================
 
-struct devilsaurs_stampede_t : public spell_t
-{
-  devilsaurs_stampede_t( special_effect_t& effect ) : 
-    spell_t( "devilsaurs_stampede", effect.player, effect.player -> find_spell( 224061 ) )
-  {
-    background = may_crit = true;
-    callbacks = false;
-    aoe = -1;
-    item = effect.item;
-
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( item );
-  }
-};
-
 void item::impact_tremor( special_effect_t& effect )
 {
-  action_t* stampede = effect.player -> find_action( "devilsaurs_stampede" );
-  if ( ! stampede )
-  {
-    stampede = effect.player -> create_proc_action( "devilsaurs_stampede", effect );
-  }
-
-  if ( ! stampede )
-  {
-    stampede = new devilsaurs_stampede_t( effect );
-  }
+  action_t* stampede = effect.create_action();
 
   effect.custom_buff = buff_creator_t( effect.player, "devilsaurs_stampede", effect.driver() -> effectN( 1 ).trigger(), effect.item )
     .tick_zero( true )
     .tick_callback( [ stampede ]( buff_t*, int, const timespan_t& ) {
       stampede -> schedule_execute();
     } );
+
+  // Disable automatic creation of a trigger spell.
+  effect.trigger_spell_id = 1;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -464,39 +433,19 @@ void item::spiked_counterweight( special_effect_t& effect )
 
 // Windscar Whetstone =======================================================
 
-struct slicing_maelstrom_t : public spell_t
-{
-  slicing_maelstrom_t( special_effect_t& effect ) : 
-    spell_t( "slicing_maelstrom", effect.player, effect.driver() -> effectN( 1 ).trigger() )
-  {
-    background = may_crit = true;
-    callbacks = false;
-    aoe = -1;
-    item = effect.item;
-    cooldown -> duration = timespan_t::zero(); // damage spell has erroneous cooldown
-
-    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( item );
-  }
-};
-
 void item::windscar_whetstone( special_effect_t& effect )
 {
-  action_t* maelstrom = effect.player -> find_action( "slicing_maelstrom" );
-  if ( ! maelstrom )
-  {
-    maelstrom = effect.player -> create_proc_action( "slicing_maelstrom", effect );
-  }
-
-  if ( ! maelstrom )
-  {
-    maelstrom = new slicing_maelstrom_t( effect );
-  }
+  action_t* maelstrom = effect.create_action();
+  maelstrom -> cooldown -> duration = timespan_t::zero(); // damage spell has erroneous cooldown
 
   effect.custom_buff = buff_creator_t( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
     .tick_zero( true )
     .tick_callback( [ maelstrom ]( buff_t*, int, const timespan_t& ) {
       maelstrom -> schedule_execute();
     } );
+
+  // Disable automatic creation of a trigger spell.
+  effect.trigger_spell_id = 1;
 }
 
 // Tirathon's Betrayal ======================================================
@@ -887,10 +836,10 @@ void item::figurehead_of_the_naglfar( special_effect_t& effect )
     damage_spell = new taint_of_the_sea_t( effect );
   }
 
-  struct apply_debuff_t : public spell_t
+  struct apply_debuff_t : public action_t
   {
     apply_debuff_t( special_effect_t& effect ) :
-      spell_t( "apply_taint_of_the_sea", effect.player, spell_data_t::nil() )
+      action_t( ACTION_OTHER, "apply_taint_of_the_sea", effect.player, spell_data_t::nil() )
     {
       background = quiet = true;
       callbacks = false;
@@ -898,7 +847,7 @@ void item::figurehead_of_the_naglfar( special_effect_t& effect )
 
     void execute() override
     {
-      spell_t::execute();
+      action_t::execute();
 
       player -> get_target_data( target ) -> debuff.taint_of_the_sea -> trigger();
     }
@@ -918,39 +867,6 @@ void item::chaos_talisman( special_effect_t& effect )
   effect.custom_buff = stat_buff_creator_t( effect.player, "chaotic_energy", buff_spell, effect.item )
     .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ), buff_spell -> effectN( 1 ).average( effect.item ) )
     .period( timespan_t::zero() ); // disable ticking
-
-  new dbc_proc_callback_t( effect.item, effect );
-}
-
-// Caged Horror =============================================================
-
-struct dark_blast_t : public spell_t
-{
-  dark_blast_t( special_effect_t& effect ) : 
-    spell_t( "dark_blast", effect.player, effect.player -> find_spell( 215407 ) )
-  {
-    background = may_crit = true;
-    callbacks = false;
-    item = effect.item;
-    aoe = -1;
-
-    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( item );
-  }
-};
-
-void item::caged_horror( special_effect_t& effect )
-{
-  effect.execute_action = effect.player -> find_action( "dark_blast" );
-
-  if ( ! effect.execute_action )
-  {
-    effect.execute_action = effect.player -> create_proc_action( "dark_blast", effect );
-  }
-
-  if ( ! effect.execute_action )
-  {
-    effect.execute_action = new dark_blast_t( effect );
-  }
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -1198,51 +1114,14 @@ void item::natures_call( special_effect_t& effect )
       .activated( false )
       .add_stat( STAT_MASTERY_RATING, rating_amount ) );
 
-  action_t* breath = effect.player -> find_action( "cleansed_drakes_breath" );
+  // Set trigger spell so we can automatically create the breath action.
+  effect.trigger_spell_id = 222520;
+  action_t* breath = effect.create_action();
 
-  if ( ! breath )
-  {
-    breath = effect.player -> create_proc_action( "cleansed_drakes_breath", effect );
-  }
-
-  if ( ! breath )
-  {
-    breath = new spell_t( "cleansed_drakes_breath", effect.player, effect.player -> find_spell( 222520 ) );
-    breath -> callbacks = false;
-    breath -> background = breath -> may_crit = true;
-    breath -> aoe = -1;
-    breath -> base_dd_min = breath -> base_dd_max =
-      effect.driver() -> effectN( 1 ).average( effect.item );
-  }
+  // Disable trigger spell again
+  effect.trigger_spell_id = 0;
 
   new natures_call_callback_t( effect, buffs, breath );
-}
-
-// Eye of Skovald ===========================================================
-// FIXME: There's almost certainly a travel time on this. Not sure how much.
-
-void item::eye_of_skovald( special_effect_t& effect )
-{
-  action_t* a = effect.player -> find_action( "fel_meteor" );
-
-  if ( ! a )
-  {
-    a = effect.player -> create_proc_action( "fel_meteor", effect );
-  }
-
-  if ( ! a )
-  {
-    const spell_data_t* s = effect.player -> find_spell( 214052 );
-    a = new spell_t( "fel_meteor", effect.player, s );
-    a -> callbacks = false;
-    a -> background = a -> may_crit = true;
-    a -> aoe = -1;
-    a -> base_dd_min = a -> base_dd_max =
-      s -> effectN( 1 ).average( effect.item );
-  }
-
-  effect.execute_action = a;
-  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // Moonlit Prism ============================================================
@@ -1303,17 +1182,16 @@ struct faulty_countermeasures_t : public buff_t
 {
   dbc_proc_callback_t* callback;
 
-  faulty_countermeasures_t( const special_effect_t& effect, action_t* a ) :
+  faulty_countermeasures_t( const special_effect_t& effect ) :
     buff_t( buff_creator_t( effect.player, "sheathed_in_frost", effect.driver(), effect.item )
       .cd( timespan_t::zero() )
       .activated( false ) )
   {
     // Create effect & callback for the damage proc
     special_effect_t* effect2 = new special_effect_t( effect.player );
-    effect2 -> name_str       = "brittle_driver";
+    effect2 -> name_str       = "brittle";
     effect2 -> spell_id       = effect.driver() -> id();
     effect2 -> cooldown_      = timespan_t::zero();
-    effect2 -> execute_action = a;
     effect.player -> special_effects.push_back( effect2 );
 
     callback = new dbc_proc_callback_t( effect.player, *effect2 );
@@ -1344,22 +1222,7 @@ struct faulty_countermeasures_t : public buff_t
 
 void item::faulty_countermeasures( special_effect_t& effect )
 {
-  action_t* a = effect.player -> find_action( "brittle" );
-
-  if ( ! a )
-  {
-    a = effect.player -> create_proc_action( "brittle", effect );
-  }
-
-  if ( ! a )
-  {
-    a = new spell_t( "brittle", effect.player, effect.trigger() );
-    a -> callbacks = false;
-    a -> background = a -> may_crit = true;
-    a -> base_dd_min = a -> base_dd_max = effect.trigger() -> effectN( 1 ).average( effect.item );
-  }
-
-  effect.custom_buff = new faulty_countermeasures_t( effect, a );
+  effect.custom_buff = new faulty_countermeasures_t( effect );
 }
 
 // Stormsinger Fulmination Charge ===========================================
@@ -1410,18 +1273,6 @@ void item::stormsinger_fulmination_charge( special_effect_t& effect )
 }
 
 // Portable Manacracker =====================================================
-
-struct withering_consumption_t : public spell_t
-{
-  withering_consumption_t( const special_effect_t& effect ) : 
-    spell_t( "withering_consumption", effect.player, effect.player -> find_spell( 215884 ) )
-  {
-    background = tick_zero = tick_may_crit = true;
-    callbacks = false;
-    item = effect.item;
-    base_td = effect.trigger() -> effectN( 1 ).average( effect.item );
-  }
-};
 
 struct volatile_magic_debuff_t : public debuff_t
 {
@@ -1488,17 +1339,13 @@ struct volatile_magic_callback_t : public dbc_proc_callback_t
 
 void item::portable_manacracker( special_effect_t& effect )
 {
-  action_t* a = effect.player -> find_action( "withering_consumption" );
-
-  if ( ! a )
-  {
-    a = effect.player -> create_proc_action( "withering_consumption", effect );
-  }
-
-  if ( ! a )
-  {
-    a = new withering_consumption_t( effect );
-  }
+  // Set spell so we can create the DoT action.
+  effect.trigger_spell_id = 215884;
+  action_t* dot = effect.create_action();
+  // Disable trigger spell again.
+  effect.trigger_spell_id = 0;
+  dot -> base_td = effect.trigger() -> effectN( 1 ).average( effect.item );
+  dot -> tick_zero = true;
 
   new volatile_magic_callback_t( effect );
 }
@@ -1514,11 +1361,9 @@ void set_bonus::journey_through_time( special_effect_t& /* effect */ ) {}
 void unique_gear::register_special_effects_x7()
 {
   /* Legion 7.0 Dungeon */
-  register_special_effect( 215444, item::caged_horror                   );
   register_special_effect( 214829, item::chaos_talisman                 );
   register_special_effect( 213782, item::corrupted_starlight            );
   register_special_effect( 216085, item::elementium_bomb_squirrel       );
-  register_special_effect( 214054, item::eye_of_skovald                 );
   register_special_effect( 214962, item::faulty_countermeasures         );
   register_special_effect( 215670, item::figurehead_of_the_naglfar      );
   register_special_effect( 214971, item::giant_ornamental_pearl         );
@@ -1534,6 +1379,8 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 215127, item::tiny_oozeling_in_a_jar         );
   register_special_effect( 215658, item::tirathons_betrayal             );
   register_special_effect( 214980, item::windscar_whetstone             );
+  register_special_effect( 214054, "214052Trigger"                      );
+  register_special_effect( 215444, "215407Trigger"                      );
   register_special_effect( 215813, "ProcOn/Hit_1Tick_215816Trigger"     );
   register_special_effect( 214492, "ProcOn/Hit_1Tick_214494Trigger"     );
   register_special_effect( 214340, "ProcOn/Hit_1Tick_214342Trigger"     );
