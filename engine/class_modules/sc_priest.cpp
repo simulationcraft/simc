@@ -2458,13 +2458,19 @@ struct void_eruption_t final : public priest_spell_t
     /*** End copypasta (with edits) of execute() */
 
     priest.buffs.voidform->trigger();
+    priest.cooldowns.void_bolt->reset(true);
     
     if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B4 ) )
     {
       priest.buffs.shadow_t19_4p->trigger();
-      priest.cooldowns.void_bolt->reset(true);
+    }
+    else
+    {
+      priest.cooldowns.void_bolt->start();
+      priest.cooldowns.void_bolt->adjust(-timespan_t::from_millis(2000 * (1.5 * priest.composite_spell_speed())), true);
     }
 
+    
     if ( priest.artifact.sphere_of_insanity.rank() )
     {
       priest.buffs.sphere_of_insanity->trigger();
