@@ -630,7 +630,7 @@
     { "data_type": "H", "field": "id",                  "formats": { "cpp": "%5u" } },
     { "data_type": "B", "field": "unk_6" },
     { "data_type": "H", "field": "cost_per_second" },
-    { "data_type": "B", "field": "cost_max",            "formats": { "cpp": "%4u" } },
+    { "data_type": "h", "field": "cost_max",            "formats": { "cpp": "%4u" } },
     { "data_type": "H", "field": "unk_3" },
     { "data_type": "H", "field": "unk_4" }
   ],
