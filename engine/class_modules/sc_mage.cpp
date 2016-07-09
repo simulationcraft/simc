@@ -4594,6 +4594,10 @@ struct glacial_spike_t : public frost_mage_spell_t
       sim -> out_debug.printf("Add %u icicles to glacial_spike for %f damage",
                               icicle_count, icicle_damage_sum);
     }
+
+    base_dd_min = icicle_damage_sum;
+    base_dd_max = icicle_damage_sum;
+
     // Swap our flag to allow damage calculation again
     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
     fss -> impact_override = true;
@@ -4603,8 +4607,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
     // Sum icicle damage
-    base_dd_min = icicle_damage_sum;
-    base_dd_max = icicle_damage_sum;
+
 
     frost_mage_spell_t::impact( s );
   }
