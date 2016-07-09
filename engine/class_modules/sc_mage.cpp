@@ -4084,6 +4084,17 @@ struct flurry_bolt_t : public frost_mage_spell_t
     frost_mage_spell_t::impact( s );
     td( s -> target ) -> debuffs.winters_chill -> trigger();
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    if ( p() -> artifact.ice_age.rank() )
+    {
+      am *= 1.0 + p() -> artifact.ice_age.percent();
+    }
+    return am;
+  }
 };
 struct flurry_t : public frost_mage_spell_t
 {
@@ -4423,16 +4434,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     return DMG_OVER_TIME;
   }
 
-  double calculate_direct_amount( action_state_t* s ) const override
-  {
-    frost_mage_spell_t::calculate_direct_amount( s );
-
-    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
-    {
-      s -> result_total *= 1.0 + p() -> artifact.ice_age.percent();
-    }
-    return s -> result_total;
-  }
 };
 
 struct frozen_orb_t : public frost_mage_spell_t
