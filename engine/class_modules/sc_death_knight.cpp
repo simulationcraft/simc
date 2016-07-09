@@ -9,9 +9,7 @@
 // - Festering Strike Festering Wound generation probability distribution
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // Blood
-// - Crimson Scourge seems to be inhibited from even attempting to proc, if there's an on-going
-// Death and Decay? .. weird
-
+//
 
 #include "simulationcraft.hpp"
 
@@ -564,6 +562,8 @@ public:
   void      default_apl_blood();
   void      default_apl_frost();
   void      default_apl_unholy();
+
+  double    bone_shield_handler( const action_state_t* ) const;
 
   unsigned  replenish_rune( unsigned n, gain_t* gain = nullptr );
 
@@ -5702,14 +5702,53 @@ void death_knight_t::init_resources( bool force )
 
 // death_knight_t::init_absorb_priority =====================================
 
+double death_knight_t::bone_shield_handler( const action_state_t* state ) const
+{
+  if ( ! buffs.bone_shield -> up() )
+  {
+    return 0;
+  }
+
+  if ( ! cooldown.bone_shield_icd -> up() )
+  {
+    return 0;
+  }
+
+  double absorbed = 0;
+  double absorb_pct = buffs.bone_shield -> data().effectN( 5 ).percent();
+  int n_stacks = 1;
+
+  if ( talent.spectral_deflection -> ok() && state -> result_raw >
+       resources.max[ RESOURCE_HEALTH ] * talent.spectral_deflection -> effectN( 1 ).percent() &&
+       buffs.bone_shield -> check() > 1 )
+  {
+    absorb_pct *= 2;
+    n_stacks *= 2;
+  }
+
+  absorbed = absorb_pct * state -> result_amount;
+
+  buffs.bone_shield -> decrement( n_stacks );
+  cooldown.bone_shield_icd -> start();
+
+  return absorbed;
+}
+
 void death_knight_t::init_absorb_priority()
 {
   player_t::init_absorb_priority();
 
-  //absorb_priority.push_back( 195181 ); // Bone Shield (NYI)
-  absorb_priority.push_back( 77535  ); // Blood Shield
-  absorb_priority.push_back( 206977 ); // Blood Mirror
-  absorb_priority.push_back( 219809 ); // Tombstone
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
+    instant_absorb_list[ 195181 ] = new instant_absorb_t( this, find_spell( 195181 ), "bone_shield",
+      std::bind( &death_knight_t::bone_shield_handler, this, std::placeholders::_1 ) );
+
+    // TODO: What is the absorb ordering for blood dks?
+    absorb_priority.push_back( 77535  ); // Blood Shield
+    absorb_priority.push_back( 195181 ); // Bone Shield (NYI)
+    absorb_priority.push_back( 206977 ); // Blood Mirror
+    absorb_priority.push_back( 219809 ); // Tombstone
+  }
 }
 
 // death_knight_t::reset ====================================================
@@ -5783,16 +5822,6 @@ void death_knight_t::assess_damage( school_e     school,
                                     action_state_t* s )
 {
   player_t::assess_damage( school, dtype, s );
-  // Bone shield will only decrement, if someone did damage to the dk
-  if ( s -> result_amount > 0 )
-  {
-    if ( cooldown.bone_shield_icd -> up() )
-    {
-      buffs.bone_shield -> decrement();
-      cooldown.bone_shield_icd -> start();
-    }
-  }
-
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
   {
     buffs.riposte -> stats[ 0 ].amount = ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent();
