@@ -2022,7 +2022,7 @@ void action_t::init()
   initialized = true;
 
 #ifndef NDEBUG
-  if ( sim -> distance_targeting_enabled )
+  if ( sim -> debug && sim -> distance_targeting_enabled )
     sim -> out_debug.printf( "%s - radius %.1f - range - %.1f", name(), radius, range );
 #endif
 
