@@ -4584,16 +4584,20 @@ struct glacial_spike_t : public frost_mage_spell_t
     double icicle_damage_sum = 0;
     int icicle_count = as<int>( p() -> icicles.size() );
     assert( icicle_count == p() -> spec.icicles -> effectN( 2 ).base_value() );
-    for ( size_t i = 0; i < p() -> icicles.size(); i++ )
+    for ( int i = 0; i < icicle_count; i++ )
     {
       icicle_data_t d = p() -> get_icicle_object();
       icicle_damage_sum += d.first;
     }
+
     if ( sim -> debug )
-    {
+    {      
       sim -> out_debug.printf("Add %u icicles to glacial_spike for %f damage",
                               icicle_count, icicle_damage_sum);
+    
     }
+
+
 
     base_dd_min = icicle_damage_sum;
     base_dd_max = icicle_damage_sum;
