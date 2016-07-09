@@ -6542,8 +6542,8 @@ void druid_t::apl_balance()
   default_list -> add_action( this, "Half Moon", "if=(charges=2&recharge_time<5)|charges=3|(target.time_to_die<15&charges=2)");
   default_list -> add_action( this, "Full Moon", "if=(charges=2&recharge_time<5)|charges=3|target.time_to_die<15");
   default_list -> add_talent( this, "Stellar Flare", "if=remains<7.2");
-  default_list -> add_action( this, "Moonfire", "if=(talent.natures_balance.enabled&remains<3)|remains<6.6" );
-  default_list -> add_action( this, "Sunfire", "if=(talent.natures_balance.enabled&remains<3)|remains<5.4" );
+	default_list -> add_action( this, "Moonfire", "if=(talent.natures_balance.enabled&remains<3)|(remains<6.6&!talent.natures_balance.enabled)" );
+	default_list -> add_action( this, "Sunfire", "if=(talent.natures_balance.enabled&remains<3)|(remains<5.4&!talent.natures_balance.enabled)" );
   default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=75" );
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
@@ -6558,8 +6558,8 @@ void druid_t::apl_balance()
   CA -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up" );
   CA -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
   CA -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up" );
-  CA -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire.remains<5&cast_time<dot.sunfire.remains" );
-  CA -> add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire.remains<5&cast_time<dot.moonfire.remains" );  
+  CA -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire_dmg.remains<5&cast_time<dot.sunfire_dmg.remains" );
+	CA -> add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire_dmg.remains<5&cast_time<dot.moonfire_dmg.remains" );  
   CA -> add_action( this, "Solar Wrath" );
   
   ST -> add_action( this, "New Moon", "if=astral_power<=90" );
@@ -6570,8 +6570,8 @@ void druid_t::apl_balance()
   ST -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up" );
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up" );
-  ST -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire.remains<5&cast_time<dot.sunfire.remains" );
-  ST -> add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire.remains<5&cast_time<dot.moonfire.remains" );  
+  ST->  add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire_dmg.remains<5&cast_time<dot.sunfire_dmg.remains" );
+	ST->  add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire_dmg.remains<5&cast_time<dot.moonfire_dmg.remains" );
   ST -> add_action( this, "Solar Wrath" );
   
   FoE -> add_action( "incarnation,if=astral_power>=95&cooldown.fury_of_elune.remains<=gcd" );
