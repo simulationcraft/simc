@@ -4354,6 +4354,7 @@ struct frostbolt_t : public frost_mage_spell_t
       if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
       {
         p() -> cooldowns.icy_veins -> adjust( p() -> artifact.frozen_veins.time_value() );
+        p() -> buffs.icy_veins -> cooldown -> adjust( p() -> artifact.frozen_veins.time_value() );
       }
 
       if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
@@ -7029,6 +7030,7 @@ struct icy_veins_buff_t : public buff_t
   icy_veins_buff_t( mage_t* p ) :
     buff_t( buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) )
             .add_invalidate( CACHE_SPELL_HASTE ) ),p( p )
+            
   {}
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
