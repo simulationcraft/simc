@@ -279,6 +279,11 @@ void attack_t::init()
 
 void attack_t::reschedule_auto_attack( double old_swing_haste )
 {
+  if ( player -> cache.attack_speed() == old_swing_haste )
+  {
+    return;
+  }
+
   // Note that if attack -> swing_haste() > old_swing_haste, this could
   // probably be handled by rescheduling, but the code is slightly simpler if
   // we just cancel the event and make a new one.
@@ -286,6 +291,11 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
   {
     timespan_t time_to_hit = execute_event -> occurs() - sim -> current_time();
     timespan_t new_time_to_hit = time_to_hit * player -> cache.attack_speed() / old_swing_haste;
+
+    if ( time_to_hit == new_time_to_hit )
+    {
+      return;
+    }
 
     if ( sim -> debug )
     {
