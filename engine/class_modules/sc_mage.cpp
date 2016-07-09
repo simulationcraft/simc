@@ -4130,13 +4130,14 @@ struct frostbolt_t : public frost_mage_spell_t
     // Swap our flag to allow damage calculation again
     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
     fss -> impact_override = true;
+
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
-    sim -> out_debug.printf("TEST_ended_impact_calls, %f", fss -> impact_override);
+
     frost_mage_spell_t::impact( s );
-    sim -> out_debug.printf("TEST_post_impact_super");
+
     if ( result_is_hit( s -> result ) )
     {
       if ( p() -> talents.unstable_magic -> ok() )
@@ -4421,7 +4422,7 @@ struct ice_lance_t : public frost_mage_spell_t
     magtheridons_banished_bracers_multiplier( 0.0 )
   {
     parse_options( options_str );
-
+    spell_power_mod.direct = p -> find_spell( 228598 ) -> effectN( 1 ).sp_coeff();
     if ( p -> shatterlance )
     {
       const spell_data_t* data = p -> shatterlance -> driver();
@@ -4465,34 +4466,45 @@ struct ice_lance_t : public frost_mage_spell_t
     // in impact(), where it will then be true upon checking for the parent call.
     if ( fss -> impact_override = true )
     {
-      frost_mage_spell_t::snapshot_state( s, rt );
+       return frost_mage_spell_t::snapshot_state( s, rt );
     }
-    
-    // Snapshot FoF state before the flag is set - meaning during the execute() call
-    // If anything else needs to be snapshot during execute() and carried onto impact()
-    // it should be done here.
-
-    if ( p() -> buffs.fingers_of_frost -> check() &&
-      fss -> impact_override == true )
-    {
-      fss -> fingers_of_frost_buffed = true;
-    }
+    else 
+      return;
   }
-  double calculate_direct_amount( action_state_t* s ) const override
+  virtual double calculate_direct_amount( action_state_t* s ) const override
   {
-    frost_mage_spell_t::calculate_direct_amount( s );
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+    if ( fss -> impact_override == true )
+    {
+      return frost_mage_spell_t::calculate_direct_amount( s );
+    }
+    else 
+      return s -> result_amount;
 
     //TODO: Move this to the appropriate crit override.
-    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
-    {
-      s -> result_total *= 1.0 + p() -> artifact.let_it_go.percent();
-    }
+    // if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
+    //{
+    //  s -> result_total *= 1.0 + p() -> artifact.let_it_go.percent();
+    // }
 
     return s -> result_total;
   }
+
+  virtual result_e calculate_result( action_state_t* s ) const override
+  {
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+    if ( fss -> impact_override == true )
+    {
+      return frost_mage_spell_t::calculate_result( s );
+    }
+    else
+      return s -> result;
+  }
   virtual void execute() override
   {
-    // Ice Lance treats the target as frozen with FoF up
+    // Ice Lance treats the target as frozen with FoF up, this is snapshot on execute.
     frozen = ( p() -> buffs.fingers_of_frost -> up() != 0 );
 
     p() -> buffs.shatterlance -> up();
@@ -4504,13 +4516,7 @@ struct ice_lance_t : public frost_mage_spell_t
     {
       p() -> buffs.magtheridons_might -> trigger();
     }
-    if ( p() -> talents.thermal_void -> ok() &&
-         p() -> buffs.icy_veins -> check() )
-    {
-      timespan_t tv_extension = p() -> talents.thermal_void
-                                    -> effectN( 1 ).time_value() * 1000;
-      p() -> buffs.icy_veins -> extend_duration( p(), tv_extension);
-    }
+
 
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B2 ) &&
          frozen_orb_action_id >= 0 &&
@@ -4535,8 +4541,25 @@ struct ice_lance_t : public frost_mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    frost_mage_spell_t::impact( s );
+    // Swap our flag to allow damage calculation again
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+    fss -> impact_override = true;
 
+    // Re-call functions here, before the impact call to do the damage calculations as we impact.
+    snapshot_state( s, amount_type ( s ) );
+    s -> result = calculate_result( s );
+    s -> result_amount = calculate_direct_amount( s );
+
+
+    frost_mage_spell_t::impact( s );
+    if ( p() -> talents.thermal_void -> ok() &&
+         p() -> buffs.icy_veins -> check() &&
+         frozen )
+    {
+      timespan_t tv_extension = p() -> talents.thermal_void
+                                    -> effectN( 1 ).time_value() * 1000;
+      p() -> buffs.icy_veins -> extend_duration( p(), tv_extension);
+    }
     if ( result_is_hit( s -> result ) && frozen &&
          td( s -> target ) -> debuffs.frost_bomb -> check() )
     {
@@ -4554,9 +4577,10 @@ struct ice_lance_t : public frost_mage_spell_t
 
   virtual double action_multiplier() const override
   {
+
     double am = frost_mage_spell_t::action_multiplier();
 
-    //TODO: Fix hardcoding of this value/
+    //TODO: Fix hardcoding of this value
     if ( frozen )
     {
       am *= 3.0;
