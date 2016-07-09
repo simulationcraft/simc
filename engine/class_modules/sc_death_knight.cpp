@@ -5744,10 +5744,10 @@ void death_knight_t::init_absorb_priority()
       std::bind( &death_knight_t::bone_shield_handler, this, std::placeholders::_1 ) );
 
     // TODO: What is the absorb ordering for blood dks?
-    absorb_priority.push_back( 77535  ); // Blood Shield
-    absorb_priority.push_back( 195181 ); // Bone Shield (NYI)
     absorb_priority.push_back( 206977 ); // Blood Mirror
-    absorb_priority.push_back( 219809 ); // Tombstone
+    absorb_priority.push_back( 195181 ); // Bone Shield (NYI)
+    //absorb_priority.push_back( 77535  ); // Blood Shield
+    //absorb_priority.push_back( 219809 ); // Tombstone
   }
 }
 
