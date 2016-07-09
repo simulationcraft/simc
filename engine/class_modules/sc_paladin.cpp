@@ -3711,7 +3711,7 @@ struct templars_verdict_t : public holy_power_consumer_t
 struct justicars_vengeance_t : public holy_power_consumer_t
 {
   justicars_vengeance_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "justicars_vengeance", p, p -> find_spell( 215661 ), true )
+    : holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance, true )
   {
     parse_options( options_str );
   }
