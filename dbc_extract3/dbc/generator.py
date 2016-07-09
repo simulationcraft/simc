@@ -1233,6 +1233,8 @@ class SpellDataGenerator(DataGenerator):
           ( 212423, 5 ),    # Skulker Shot for All Will Serve
           ( 207260, 5 ),    # Arrow Spray for All Will Serve
           ( 45470, 0 ),     # Death Strike heal
+          ( 196545, 0 ),    # Bonestorm heal
+          ( 221847, 0 ),    # Blood Mirror damage
         ),
 
         # Shaman:
