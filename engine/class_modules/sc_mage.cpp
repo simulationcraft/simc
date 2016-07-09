@@ -4353,10 +4353,7 @@ struct frostbolt_t : public frost_mage_spell_t
       }
       if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
       {
-        //TODO: Remove harcode one spelldata is being parsed correctly
-        p() -> cooldowns.icy_veins -> adjust( timespan_t::from_seconds( -0.5 *
-                                             p() -> artifact.frozen_veins.rank() ) );
-
+        p() -> cooldowns.icy_veins -> adjust( p() -> artifact.frozen_veins.time_value() );
       }
 
       if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
