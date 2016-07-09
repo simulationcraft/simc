@@ -4345,8 +4345,9 @@ struct frostbolt_t : public frost_mage_spell_t
         }
       }
 
+      //TODO: Fix hardcode once spelldata has value for proc rate.
       if ( p() -> artifact.ice_nine.rank() &&
-           rng().roll( p() -> artifact.ice_nine.percent() ) )
+           rng().roll( 0.2 ) )
       {
         trigger_icicle_gain( s, icicle );
       }
