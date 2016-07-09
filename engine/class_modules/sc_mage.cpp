@@ -4690,6 +4690,19 @@ struct ice_lance_t : public frost_mage_spell_t
     return new frost_spell_state_t( this, target );
   }
 
+  double total_crit_bonus( action_state_t* s ) const override
+  {
+    // TODO: Only apply bonus to hardcast spells?
+    double bonus = frost_mage_spell_t::total_crit_bonus( s );
+
+
+    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
+    {
+      s -> result_total *= 1.0 + p() -> artifact.let_it_go.percent();
+    }
+    return bonus;
+  }
+
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
     // Cast action_state_t* onto frost_spell_state_t* to let us manipulate flags
@@ -4779,6 +4792,10 @@ struct ice_lance_t : public frost_mage_spell_t
     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
     fss -> impact_override = true;
 
+    if ( td( s -> target ) -> debuffs.winters_chill -> up() )
+    {
+      frozen = true;
+    }
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
