@@ -4512,6 +4512,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike )
   {
     parse_options( options_str );
+    spell_power_mod.direct = p -> find_spell( 228600 ) -> effectN( 1 ).sp_coeff();
   }
 
   virtual bool ready() override
