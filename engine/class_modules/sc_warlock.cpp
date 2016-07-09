@@ -20,7 +20,6 @@
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
 // Move imp spawn to hog impact
-// HoG doesn't trigger soul conduit???
 // Fix Darkglare
 // condition to track minimum pet duration
 // condition to track # of buffs active on pets
@@ -367,6 +366,7 @@ public:
     proc_t* chaos_portal;
     proc_t* dreadstalker_debug;
     proc_t* dimension_ripper;
+    proc_t* soul_conduit;
     proc_t* one_shard_hog;
     proc_t* two_shard_hog;
     proc_t* three_shard_hog;
@@ -2070,6 +2070,7 @@ public:
         if ( rng().roll( soul_conduit_rng ) )
         {
           p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.soul_conduit );
+          p()->procs.soul_conduit->occur();
         }
       }
     }
@@ -2626,7 +2627,7 @@ struct hand_of_guldan_t: public warlock_spell_t
 
   void consume_resource() override
   {
-    spell_t::consume_resource();
+    warlock_spell_t::consume_resource();
 
     for ( int i = 0; i < resource_consumed; i++ )
     {
@@ -4629,7 +4630,7 @@ void warlock_t::init_gains()
   player_t::init_gains();
 
   gains.life_tap            = get_gain( "life_tap" );
-  gains.agony           = get_gain( "agony" );
+  gains.agony               = get_gain( "agony" );
   gains.conflagrate         = get_gain( "conflagrate" );
   gains.immolate            = get_gain( "immolate" );
   gains.shadowburn_shard    = get_gain( "shadowburn_shard" );
@@ -4672,6 +4673,7 @@ void warlock_t::init_procs()
   procs.power_trip = get_proc( "power_trip" );
   procs.stolen_power_stack = get_proc( "stolen_power_proc" );
   procs.stolen_power_used = get_proc( "stolen_power_used" );
+  procs.soul_conduit = get_proc( "soul_conduit" );
 }
 
 void warlock_t::apl_precombat()
