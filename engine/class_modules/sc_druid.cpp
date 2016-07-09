@@ -7585,7 +7585,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.fury_of_elune    = target.get_dot( "fury_of_elune",    &source );
   dots.gushing_wound    = target.get_dot( "gushing_wound",    &source );
   dots.lifebloom        = target.get_dot( "lifebloom",        &source );
-  dots.moonfire         = target.get_dot( "moonfire",         &source );
+  dots.moonfire         = target.get_dot( "moonfire_dmg",     &source );
   dots.stellar_flare    = target.get_dot( "stellar_flare",    &source );
   dots.rake             = target.get_dot( "rake",             &source );
   dots.regrowth         = target.get_dot( "regrowth",         &source );
@@ -7594,7 +7594,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.shadow_rake      = target.get_dot( "ashamanes_rake",   &source );
   dots.shadow_rip       = target.get_dot( "ashamanes_rip",    &source );
   dots.shadow_thrash    = target.get_dot( "shadow_thrash",    &source );
-  dots.sunfire          = target.get_dot( "sunfire",          &source );
+  dots.sunfire          = target.get_dot( "sunfire_dmg",      &source );
   dots.starfall         = target.get_dot( "starfall",         &source );
   dots.thrash_bear      = target.get_dot( "thrash_bear",      &source );
   dots.thrash_cat       = target.get_dot( "thrash_cat",       &source );
