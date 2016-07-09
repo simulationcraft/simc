@@ -4353,8 +4353,10 @@ struct frostbolt_t : public frost_mage_spell_t
       }
       if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
       {
-        p() -> cooldowns.icy_veins -> adjust( -1000 *
-                                             p() -> artifact.frozen_veins.time_value() );
+        //TODO: Remove harcode one spelldata is being parsed correctly
+        p() -> cooldowns.icy_veins -> adjust( timespan_t::from_seconds( -0.5 *
+                                             p() -> artifact.frozen_veins.rank() ) );
+
       }
 
       if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
@@ -4803,7 +4805,7 @@ struct ice_lance_t : public frost_mage_spell_t
     {
       timespan_t tv_extension = p() -> talents.thermal_void
                                     -> effectN( 1 ).time_value() * 1000;
-      p() -> buffs.icy_veins -> extend_duration( p(), tv_extension);
+      p() -> buffs.icy_veins -> extend_duration( p(), tv_extension );
     }
     if ( result_is_hit( s -> result ) && frozen &&
          td( s -> target ) -> debuffs.frost_bomb -> check() )
