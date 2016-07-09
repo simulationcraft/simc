@@ -2191,26 +2191,17 @@ struct fire_mage_spell_t : public mage_spell_t
 // Fingers of Frost snapshots.
 struct frost_spell_state_t : action_state_t
 {
-  bool fingers_of_frost_buffed,
-       impact_override;
+  bool impact_override;
 
   frost_spell_state_t( action_t* action, player_t* target ) :
     action_state_t( action, target ),
-    fingers_of_frost_buffed( false ),
     impact_override( false )
   { }
 
   virtual void initialize() override
   {
     action_state_t:: initialize();
-    fingers_of_frost_buffed = false;
     impact_override = false;
-  }
-
-  virtual std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    action_state_t::debug_str( s ) << " fingers_of_frost_buffed=" << fingers_of_frost_buffed;
-    return s;
   }
 
   virtual void copy_state( const action_state_t* s ) override
@@ -2218,7 +2209,6 @@ struct frost_spell_state_t : action_state_t
     action_state_t::copy_state( s );
     const frost_spell_state_t* fss =
       debug_cast<const frost_spell_state_t*>( s );
-    fingers_of_frost_buffed = fss -> fingers_of_frost_buffed;
     impact_override = fss -> impact_override;
   }
 };
@@ -3205,10 +3195,11 @@ struct blizzard_shard_t : public frost_mage_spell_t
     }
     return c;
   }
-  double calculate_direct_amount( action_state_t* s ) const override
+  virtual double calculate_direct_amount( action_state_t* s ) const override
   {
     frost_mage_spell_t::calculate_direct_amount( s );
 
+    //TODO: This should *probably* by an action_multiplier?
     if ( p() -> legendary.zannesu_journey )
     {
       s -> result_total *= 1.0 + p() -> legendary.zannesu_journey_multiplier;
@@ -4125,6 +4116,11 @@ struct flurry_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    if ( p() -> legendary.zannesu_journey == true )
+    {
+      p() -> buffs.zannesu_journey -> trigger();
+    }
+
     p() -> buffs.brain_freeze -> expire();
   }
 };
@@ -4473,11 +4469,6 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( p() -> sets.has_set_bonus( MAGE_FROST, T17, B4 ) )
     {
       p() -> buffs.frost_t17_4pc -> trigger();
-    }
-
-    if ( p() -> legendary.zannesu_journey == true )
-    {
-      p() -> buffs.zannesu_journey -> trigger();
     }
   }
 
