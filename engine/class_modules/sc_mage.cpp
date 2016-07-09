@@ -4464,7 +4464,7 @@ struct ice_lance_t : public frost_mage_spell_t
     // Check that the impact_override flag is set. snapshot_state is called twice:
     // Once in execute(), where the flag is false but then set to true. And then again
     // in impact(), where it will then be true upon checking for the parent call.
-    if ( fss -> impact_override = true )
+    if ( fss -> impact_override == true )
     {
        return frost_mage_spell_t::snapshot_state( s, rt );
     }
