@@ -13,6 +13,7 @@
     - BoK/BoW
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
+	- If J's sotr effect changes, fix up hardcode multiplier.
     - Breastplate of the Golden Val'kyr (leg)
     - Chain of Thrayn (leg)
     - Tyelca, Ferren Marcus' Stature (leg)
@@ -22,9 +23,6 @@
     - Tyr's Hand of Faith (leg)
     - Heathcliff's Immortality (leg)
     - Ilterendi, Crown Jewel of Silvermoon (leg - Holy?)
-    - Action Priority List
-    - Sample Profile (for testing)
-    - Bugfix: check Guarded by the Light's block contribution once spell data is corrected
     - Aegis of Light: Convert from self-buff to totem/pet with area buff? (low priority)
 
     - Everything below this line is super-low priority and can probably be ignored ======
@@ -1147,6 +1145,57 @@ struct blessing_of_protection_t : public paladin_spell_t
 
     return cdr;
   }
+
+};
+
+// Blessing of Spellwarding =====================================================
+
+struct blessing_of_spellwarding_t : public paladin_spell_t
+{
+	blessing_of_spellwarding_t(paladin_t* p, const std::string& options_str)
+		: paladin_spell_t("blessing_of_spellwarding", p, p -> find_talent_spell("Blessing of Spellwarding")) 
+	{
+		parse_options(options_str);
+	}
+
+	bool init_finished() override
+	{
+		p()->forbearant_faithful_cooldowns.push_back(cooldown);
+
+		return paladin_spell_t::init_finished();
+	}
+
+	virtual void execute() override
+	{
+		paladin_spell_t::execute();
+
+		if (p()->artifact.endless_resolve.rank())
+			// Don't trigger forbearance with endless resolve
+			return;
+
+		// apply forbearance, track locally for forbearant faithful & force recharge recalculation
+		target->debuffs.forbearance->trigger();
+		td(target)->buffs.forbearant_faithful->trigger();
+		p()->update_forbearance_recharge_multipliers();
+	}
+
+	virtual bool ready() override
+	{
+		if (target->debuffs.forbearance->check())
+			return false;
+
+		return paladin_spell_t::ready();
+	}
+
+	double recharge_multiplier() const override
+	{
+		double cdr = paladin_spell_t::recharge_multiplier();
+
+		// BoP is bugged on beta - doesnot benefit from this, but the forbearance debuff it applies does affect LoH/DS.
+		// cdr *= p() -> get_forbearant_faithful_recharge_multiplier();
+
+		return cdr;
+	}
 
 };
 
@@ -3343,7 +3392,7 @@ struct judgment_t : public paladin_melee_attack_t
     {
       cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
-      sotr_cdr = -1.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+      sotr_cdr = -2.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
     }
   }
 
@@ -3865,6 +3914,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "blessed_hammer"            ) return new blessed_hammer_t           ( this, options_str );
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "blessing_of_protection"    ) return new blessing_of_protection_t   ( this, options_str );
+  if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t (this, options_str);
   if ( name == "blinding_light"            ) return new blinding_light_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
