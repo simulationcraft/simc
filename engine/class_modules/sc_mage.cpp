@@ -2036,15 +2036,15 @@ struct fire_mage_spell_t : public mage_spell_t
       handle_hot_streak( s );
     }
 
-    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT
+    if ( triggers_pyretic_incantation
                       && p() -> artifact.pyretic_incantation.rank()
-                      && triggers_pyretic_incantation )
+                      && result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
     {
       p() -> buffs.pyretic_incantation -> trigger();
     }
-    else if ( result_is_hit( s -> result ) && s -> result != RESULT_CRIT
+    else if ( triggers_pyretic_incantation 
                       && p() -> artifact.pyretic_incantation.rank()
-                      && triggers_pyretic_incantation )
+                      && result_is_hit( s -> result ) && s -> result != RESULT_CRIT )
     {
       p() -> buffs.pyretic_incantation -> expire();
     }
@@ -2186,6 +2186,42 @@ struct fire_mage_spell_t : public mage_spell_t
 // Frost Mage Spell
 // ============================================================================
 //
+
+// Custom Frost Mage spell state to help with Impact damage calc and
+// Fingers of Frost snapshots.
+struct frost_spell_state_t : action_state_t
+{
+  bool fingers_of_frost_buffed,
+       impact_override;
+
+  frost_spell_state_t( action_t* action, player_t* target ) :
+    action_state_t( action, target ),
+    fingers_of_frost_buffed( false ),
+    impact_override( false )
+  { }
+
+  virtual void initialize() override
+  {
+    action_state_t:: initialize();
+    fingers_of_frost_buffed = false;
+    impact_override = false;
+  }
+
+  virtual std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s ) << " fingers_of_frost_buffed=" << fingers_of_frost_buffed;
+    return s;
+  }
+
+  virtual void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+    const frost_spell_state_t* fss =
+      debug_cast<const frost_spell_state_t*>( s );
+    fingers_of_frost_buffed = fss -> fingers_of_frost_buffed;
+    impact_override = fss -> impact_override;
+  }
+};
 
 struct frost_mage_spell_t : public mage_spell_t
 {
@@ -3420,6 +3456,11 @@ struct comet_storm_t : public frost_mage_spell_t
     add_child( projectile );
   }
 
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
+  }
+
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
@@ -3514,6 +3555,11 @@ struct ebonbolt_t : public frost_mage_spell_t
 
     // Doesn't apply chill debuff but benefits from Bone Chilling somehow
     chills = true;
+  }
+
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
   }
 
   virtual void execute() override
@@ -3851,7 +3897,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    frost_mage_spell_t::execute();
+    frost_mage_spell_t::impact( s );
     td( s -> target ) -> debuffs.winters_chill -> trigger();
   }
 };
@@ -3867,6 +3913,11 @@ struct flurry_t : public frost_mage_spell_t
     base_tick_time = timespan_t::from_seconds( 0.2 );
     dynamic_tick_action = true;
     tick_action = new flurry_bolt_t( p );
+  }
+
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
   }
 
   virtual timespan_t execute_time() const override
@@ -3958,6 +4009,7 @@ struct frostbolt_t : public frost_mage_spell_t
     icicle( p -> get_stats( "icicle" ) )
   {
     parse_options( options_str );
+    spell_power_mod.direct = p -> find_spell( 228597 ) -> effectN( 1 ).sp_coeff();
     stats -> add_child( icicle );
     icicle -> school = school;
     icicle -> action_list.push_back( p -> icicle );
@@ -3968,6 +4020,56 @@ struct frostbolt_t : public frost_mage_spell_t
     }
     base_multiplier *= 1.0 + p -> artifact.icy_caress.percent();
     chills = true;
+  }
+
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
+  }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+    if ( fss -> impact_override == true )
+    {
+      return frost_mage_spell_t::snapshot_state( s, rt );
+    }
+    else
+    {
+      return;
+    }
+  }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  {
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+    if ( fss -> impact_override == true )
+    {
+      return frost_mage_spell_t::calculate_direct_amount( s );
+    }
+    else
+    {
+      return s -> result_amount;
+    }
+  }
+
+
+  virtual result_e calculate_result( action_state_t* s ) const override
+  {
+     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+     if ( fss -> impact_override == true )
+     {
+       return frost_mage_spell_t::calculate_result( s );
+     }
+     else
+     {
+       return s -> result;
+     }
+
   }
 
   virtual timespan_t execute_time() const override
@@ -3984,12 +4086,13 @@ struct frostbolt_t : public frost_mage_spell_t
 
     return cast;
   }
-
   virtual void execute() override
   {
     p() -> buffs.ice_shard -> up();
 
     frost_mage_spell_t::execute();
+
+    sim -> out_debug.printf("TEST_executed");
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -4024,8 +4127,16 @@ struct frostbolt_t : public frost_mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
+    // Swap our flag to allow damage calculation again
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+    fss -> impact_override = true;
+    // Re-call functions here, before the impact call to do the damage calculations as we impact.
+    snapshot_state( s, amount_type ( s ) );
+    s -> result = calculate_result( s );
+    s -> result_amount = calculate_direct_amount( s );
+    sim -> out_debug.printf("TEST_ended_impact_calls, %f", fss -> impact_override);
     frost_mage_spell_t::impact( s );
-
+    sim -> out_debug.printf("TEST_post_impact_super");
     if ( result_is_hit( s -> result ) )
     {
       if ( p() -> talents.unstable_magic -> ok() )
@@ -4241,6 +4352,11 @@ struct glacial_spike_t : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
+  }
+
   virtual void execute() override
   {
     double icicle_damage_sum = 0;
@@ -4334,10 +4450,39 @@ struct ice_lance_t : public frost_mage_spell_t
     }
   }
 
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
+  }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+    // Cast action_state_t* onto frost_spell_state_t* to let us manipulate flags
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+    // Check that the impact_override flag is set. snapshot_state is called twice:
+    // Once in execute(), where the flag is false but then set to true. And then again
+    // in impact(), where it will then be true upon checking for the parent call.
+    if ( fss -> impact_override = true )
+    {
+      frost_mage_spell_t::snapshot_state( s, rt );
+    }
+    
+    // Snapshot FoF state before the flag is set - meaning during the execute() call
+    // If anything else needs to be snapshot during execute() and carried onto impact()
+    // it should be done here.
+
+    if ( p() -> buffs.fingers_of_frost -> check() &&
+      fss -> impact_override == true )
+    {
+      fss -> fingers_of_frost_buffed = true;
+    }
+  }
   double calculate_direct_amount( action_state_t* s ) const override
   {
     frost_mage_spell_t::calculate_direct_amount( s );
 
+    //TODO: Move this to the appropriate crit override.
     if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
     {
       s -> result_total *= 1.0 + p() -> artifact.let_it_go.percent();

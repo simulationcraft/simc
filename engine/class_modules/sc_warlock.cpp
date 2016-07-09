@@ -1726,7 +1726,7 @@ struct wild_imp_pet_t: public warlock_pet_t
 
   void dismiss( bool expired ) override
   {
-      if(expired & o()->artifact.the_expendables.rank())
+      if(expired && o()->artifact.the_expendables.rank())
       {
           for( auto& pet : o()->pet_list )
           {
