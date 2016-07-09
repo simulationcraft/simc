@@ -1797,15 +1797,18 @@ bool action_t::ready()
     cycle_targets = 0;
     bool found_ready = false;
 
-    std::vector< player_t* >& tl = target_list();
-    size_t num_targets = tl.size();
+    // Note, need to take a copy of the original target list here, instead of a reference. Otherwise
+    // if spell_targets (or any expression that uses the target list) modifies it, the loop below
+    // may break, since the number of elements on the vector is not the same as it originally was
+    std::vector< player_t* > ctl = target_list();
+    size_t num_targets = ctl.size();
 
     if ( ( max_cycle_targets > 0 ) && ( ( size_t ) max_cycle_targets < num_targets ) )
       num_targets = max_cycle_targets;
 
     for ( size_t i = 0; i < num_targets; i++ )
     {
-      target = tl[i];
+      target = ctl[i];
       if ( ready() )
       {
         found_ready = true;
