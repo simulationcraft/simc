@@ -4719,6 +4719,7 @@ struct new_moon_t : public druid_spell_t
     cooldown = player -> cooldown.moon_cd;
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges  = data().charges();
+    trigger_gcd = timespan_t::from_seconds(1);
   }
 
   void execute() override
@@ -6519,6 +6520,9 @@ void druid_t::apl_balance()
     potion_action += "volcanic";
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
+  action_priority_list_t* FoE                 = get_action_priority_list( "fury_of_elune"  );
+  action_priority_list_t* CA                  = get_action_priority_list( "celestial_alignment_phase");
+  action_priority_list_t* ST                  = get_action_priority_list( "single_target" );
 
   if ( sim -> allow_potions && true_level >= 80 )
     default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
@@ -6528,29 +6532,68 @@ void druid_t::apl_balance()
   for ( size_t i = 0; i < item_actions.size(); i++ )
     default_list -> add_action( item_actions[i] );
 
+  
+
   default_list -> add_action( this, spec.blessing_of_elune, "blessing_of_elune", "moving=0" );
   default_list -> add_action( this, spec.blessing_of_anshe, "blessing_of_anshe", "moving=1" );
   // default_list -> add_talent( this, "Force of Nature" );
+  default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elue.remains<target.time_to_die" );
+  default_list -> add_action( this, "New Moon", "if=(charges=2&recharge_time<5)|charges=3" );
+  default_list -> add_action( this, "Half Moon", "if=(charges=2&recharge_time<5)|charges=3|(target.time_to_die<15&charges=2)");
+  default_list -> add_action( this, "Full Moon", "if=(charges=2&recharge_time<5)|charges=3|target.time_to_die<15");
+  default_list -> add_talent( this, "Stellar Flare", "if=remains<7.2");
+  default_list -> add_action( this, "Moonfire", "if=(talent.natures_balance.enabled&remains<3)|remains<6.6" );
+  default_list -> add_action( this, "Sunfire", "if=(talent.natures_balance.enabled&remains<3)|remains<5.4" );
+  default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=75" );
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
-  default_list -> add_talent( this, "Stellar Flare", "cycle_targets=1,max_cycle_targets=4,if=active_enemies<4&remains<2&astral_power>=15" );
-  default_list -> add_action( this, "Sunfire", "cycle_targets=1,if=remains<2&active_enemies>1" );
-  default_list -> add_action( this, "Starfall", "if=active_enemies>=3&((talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains>12&buff.fury_of_elune_up.down)|!talent.fury_of_elune.enabled)" );
-  default_list -> add_talent( this, "Warrior of Elune", "if=buff.lunar_empowerment.stack>=2" );
-  default_list -> add_action( this, "New Moon", "if=astral_power<=90" );
-  default_list -> add_action( this, "Moonfire", "cycle_targets=1,max_cycle_targets=5,if=remains<4" );
-  default_list -> add_action( this, "Sunfire", "cycle_targets=1,if=remains<4" );
-  default_list -> add_talent( this, "Fury of Elune", "if=astral_power.deficit<=10" );
-  default_list -> add_action( this, "Half Moon", "if=astral_power<=80" );
-  default_list -> add_action( this, "Full Moon", "if=astral_power<=60" );
-  default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=75" );
-  default_list -> add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire.remains<4" );
-  default_list -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire.remains<4" );
-  default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
   default_list -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3" );
-  default_list -> add_action( this, "Starsurge", "if=active_enemies<3&(!talent.fury_of_elune.enabled|(buff.fury_of_elune_up.down&(cooldown.fury_of_elune.remains>10|astral_power.deficit<=10)))" );
-  default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|buff.warrior_of_elune.up)|active_enemies>1" );
-  default_list -> add_action( this, "Solar Wrath" );
+  default_list -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3" );
+  
+  default_list -> add_action( "call_action_list,name=celestial_alignment_phase,if=buff.celestial_alignment.up|buff.incarnation.up" );
+  default_list -> add_action( "call_action_list,name=single_target" );
+  
+  CA -> add_action( this, "Starsurge" );
+  CA -> add_talent( this, "Warrior of Elune", "if=buff.lunar_empowerment.stack>=2&((astral_power<=70&buff.blessing_of_elune.down)|(astral_power<=58&buff.blessing_of_elune.up))" );
+  CA -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up" );
+  CA -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
+  CA -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up" );
+  CA -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire.remains<5&cast_time<dot.sunfire.remains" );
+  CA -> add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire.remains<5&cast_time<dot.moonfire.remains" );  
+  CA -> add_action( this, "Solar Wrath" );
+  
+  ST -> add_action( this, "New Moon", "if=astral_power<=90" );
+  ST -> add_action( this, "Half Moon", "if=astral_power<=80" );
+  ST -> add_action( this, "Full Moon", "if=astral_power<=60" );
+  ST -> add_action( this, "Starsurge" );
+  ST -> add_talent( this, "Warrior of Elune", "if=buff.lunar_empowerment.stack>=2&((astral_power<=80&buff.blessing_of_elune.down)|(astral_power<=72&buff.blessing_of_elune.up))" );
+  ST -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up" );
+  ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
+  ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up" );
+  ST -> add_action( this, "Solar Wrath", "if=talent.natures_balance.enabled&dot.sunfire.remains<5&cast_time<dot.sunfire.remains" );
+  ST -> add_action( this, "Lunar Strike", "if=talent.natures_balance.enabled&dot.moonfire.remains<5&cast_time<dot.moonfire.remains" );  
+  ST -> add_action( this, "Solar Wrath" );
+  
+  FoE -> add_action( "incarnation,if=astral_power>=95&cooldown.fury_of_elune.remains<=gcd" );
+  FoE -> add_action( this, "astral_power>=95&cooldown.fury_of_elune.remains<=gcd" );
+  FoE -> add_talent( this, "Fury of Elune", "if=astral_power>=95" );
+  FoE -> add_action( this, "New Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune_up.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=90))" );
+  FoE -> add_action( this, "Half Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune_up.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=80))" );
+  FoE -> add_action( this, "Full Moon", "if=((charges=2&recharge_time<5)|charges=3)&&(buff.fury_of_elune_up.up|(cooldown.fury_of_elune.remains>gcd*3&astral_power<=60))" );
+  FoE -> add_talent( this, "Astral Communion", "if=buff.fury_of_elune_up.up&astral_power<=25" );
+  FoE -> add_talent( this, "Warrior of Elune", "if=buff.fury_of_elune_up.up|(cooldown.fury_of_elune.remains>=35&buff.lunar_empowerment.up)" );
+  FoE -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up&(astral_power<=90|(astral_power<=85&buff.incarnation.up))" );
+  FoE -> add_action( this, "New Moon", "if=astral_power<=90&buff.fury_of_elune_up.up" );
+  FoE -> add_action( this, "Half Moon", "if=astral_power<=80&buff.fury_of_elune_up.up&astral_power>cast_time*12" );
+  FoE -> add_action( this, "Full Moon", "if=astral_power<=60&buff.fury_of_elune_up.up&astral_power>cast_time*12" );
+  FoE -> add_action( this, "Moonfire", "if=buff.fury_of_elune_up.down&remains<=6.6" );
+  FoE -> add_action( this, "Sunfire", "if=buff.fury_of_elune_up.down&remains<=5.4" );
+  FoE -> add_talent( this, "Stellar Flare", "if=remains<7.2" );
+  FoE -> add_action( this, "Starsurge", "if=buff.fury_of_elune_up.down&((astral_power>=92&cooldown.fury_of_elune.remains>gcd*3)|(cooldown.warrior_of_elune.remains<=5&cooldown.fury_of_elune.remains>=35&buff.lunar_empowerment.stack<2))" );
+  FoE -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up" );
+  FoE -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3|(buff.lunar_empowerment.remains<5&buff.lunar_empowerment.up)" );
+  FoE -> add_action( this, "Solar Wrath" );
+  
 }
 
 // Guardian Combat Action Priority List =====================================
