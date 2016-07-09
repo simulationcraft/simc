@@ -189,7 +189,9 @@ struct death_knight_td_t : public actor_target_data_t {
   {
     debuff_t* razorice;
     debuff_t* festering_wound;
+    debuff_t* mark_of_blood;
     debuff_t* soul_reaper;
+    debuff_t* blood_mirror;
   } debuff;
 
   // Check if DnD or Defile are up for ScS/CS AOE
@@ -264,6 +266,7 @@ public:
     haste_buff_t* soul_reaper;
     buff_t* soulgorge;
     buff_t* antimagic_barrier;
+    absorb_buff_t* tombstone;
   } buffs;
 
   struct runeforge_t {
@@ -289,6 +292,7 @@ public:
     action_t* festering_wound;
     action_t* virulent_plague;
     action_t* bursting_sores;
+    action_t* mark_of_blood;
   } active_spells;
 
   // Gains
@@ -306,6 +310,7 @@ public:
     gain_t* empower_rune_weapon;
     gain_t* blood_tap;
     gain_t* pestilent_pustules;
+    gain_t* tombstone;
   } gains;
 
   // Specialization
@@ -430,7 +435,7 @@ public:
     // Tier 7
     const spell_data_t* bonestorm;
     const spell_data_t* blood_mirror;
-    const spell_data_t* purgatory;
+    const spell_data_t* purgatory; // Not Yet Implemented
   } talent;
 
   // Spells
@@ -511,6 +516,7 @@ public:
   virtual void      init_gains() override;
   virtual void      init_procs() override;
   virtual void      init_resources( bool force ) override;
+  void              init_absorb_priority() override;
   virtual double    composite_armor_multiplier() const override;
   virtual double    composite_melee_attack_power() const override;
   virtual double    composite_attack_power_multiplier() const override;
@@ -535,6 +541,7 @@ public:
   virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  void              do_damage( action_state_t* ) override;
   virtual void      combat_begin() override;
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
   virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
@@ -591,9 +598,12 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   debuff.festering_wound = buff_creator_t( *this, "festering_wound" )
                            .spell( death_knight -> find_spell( 194310 ) )
                            .trigger_spell( death_knight -> spec.festering_wound );
-  debuff.soul_reaper     = buff_creator_t( *this, "soul_reaper", death_knight -> talent.soul_reaper ).
-                           cd( timespan_t::zero() ); // Handled by the action
-
+  debuff.mark_of_blood   = buff_creator_t( *this, "mark_of_blood", death_knight -> talent.mark_of_blood )
+                           .cd( timespan_t::zero() ); // Handled by the action
+  debuff.soul_reaper     = buff_creator_t( *this, "soul_reaper", death_knight -> talent.soul_reaper )
+                           .cd( timespan_t::zero() ); // Handled by the action
+  debuff.blood_mirror = buff_creator_t( *this, "blood_mirror", death_knight -> talent.blood_mirror )
+                        .cd( timespan_t::zero() ); // Handled by the action
 }
 
 // ==========================================================================
@@ -1800,11 +1810,19 @@ struct death_knight_action_t : public Base
       }
     }
 
-    // Dark arbiter
-    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> resource_consumed > 0 &&
-         p() -> talent.dark_arbiter -> ok() && p() -> pets.dark_arbiter )
+    if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> resource_consumed > 0 )
     {
-      p() -> pets.dark_arbiter -> increase_power( this -> resource_consumed );
+      if ( p() -> talent.dark_arbiter -> ok() && p() -> pets.dark_arbiter )
+      {
+        p() -> pets.dark_arbiter -> increase_power( this -> resource_consumed );
+      }
+
+      if ( p() -> talent.red_thirst -> ok() )
+      {
+        timespan_t sec = timespan_t::from_seconds( p() -> talent.red_thirst -> effectN( 1 ).base_value() ) *
+          this -> resource_consumed / p() -> talent.red_thirst -> effectN( 2 ).base_value();
+        p() -> cooldown.vampiric_blood -> adjust( -sec );
+      }
     }
   }
 
@@ -2547,29 +2565,6 @@ struct virulent_plague_t : public disease_t
   }
 };
 
-// Soul Reaper ==============================================================
-
-struct soul_reaper_t : public death_knight_melee_attack_t
-{
-  soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "soul_reaper", p, p ->  talent.soul_reaper )
-  {
-    parse_options( options_str );
-
-    weapon = &( p -> main_hand_weapon );
-  }
-
-  void execute() override
-  {
-    death_knight_melee_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      td( execute_state -> target ) -> debuff.soul_reaper -> trigger();
-    }
-  }
-};
-
 // Blighted Rune Weapon =====================================================
 
 struct blighted_rune_weapon_t : public death_knight_spell_t
@@ -2621,6 +2616,77 @@ struct blood_boil_t : public death_knight_spell_t
     {
       p() -> apply_diseases( state, DISEASE_BLOOD_PLAGUE );
     }
+  }
+};
+
+// Blood Mirror =============================================================
+
+struct blood_mirror_damage_t : public death_knight_spell_t
+{
+  blood_mirror_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "blood_mirror_damage", p, p -> find_spell( 221847 ) )
+  {
+    background = true;
+    may_miss = may_crit = false;
+    callbacks = false;
+  }
+
+  void init() override
+  {
+    death_knight_spell_t::init();
+    snapshot_flags = update_flags = 0;
+  }
+};
+
+struct blood_mirror_t : public death_knight_spell_t
+{
+  blood_mirror_damage_t* damage;
+
+  blood_mirror_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "blood_mirror", p, p -> talent.blood_mirror ),
+    damage( new blood_mirror_damage_t( p ) )
+  {
+    parse_options( options_str );
+    may_crit = may_miss = false;
+
+    add_child( damage );
+  }
+
+  double mirror_handler( const action_state_t* state ) const
+  {
+    if ( ! td( state -> action -> player ) -> debuff.blood_mirror -> up() )
+    {
+      return 0;
+    }
+
+    double absorbed = 0;
+    absorbed = state -> result_amount * data().effectN( 2 ).percent();
+
+    damage -> base_dd_min = damage -> base_dd_max = absorbed;
+    damage -> target = state -> action -> player;
+    damage -> execute();
+
+    return absorbed;
+  }
+
+  void init() override
+  {
+    death_knight_spell_t::init();
+
+    if ( player -> instant_absorb_list.find( id ) != player -> instant_absorb_list.end() )
+    {
+      return;
+    }
+
+    p() -> instant_absorb_list[ id ] = new instant_absorb_t( player, &data(), "blood_mirror",
+      std::bind( &blood_mirror_t::mirror_handler, this, std::placeholders::_1 ) );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    td( state -> target ) -> debuff.blood_mirror -> trigger();
   }
 };
 
@@ -2692,6 +2758,59 @@ struct blooddrinker_t : public death_knight_spell_t
 
   timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
+};
+
+// Bonestorm ================================================================
+
+struct bonestorm_heal_t : public death_knight_heal_t
+{
+  bonestorm_heal_t( death_knight_t* p ) :
+    death_knight_heal_t( "bonestorm_heal", p, p -> find_spell( 196545 ) )
+  {
+    background = true;
+    target = p;
+  }
+};
+
+struct bonestorm_aoe_t : public death_knight_spell_t
+{
+  bonestorm_heal_t* heal;
+
+  bonestorm_aoe_t( death_knight_t* p, bonestorm_heal_t* heal ) :
+    death_knight_spell_t( "bonestorm", p, p -> find_spell( 196528 ) ),
+    heal( heal )
+  {
+    background = true;
+    aoe = -1;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      heal -> execute();
+    }
+  }
+};
+
+struct bonestorm_t : public death_knight_spell_t
+{
+  bonestorm_heal_t* heal;
+
+  bonestorm_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "bonestorm", p, p -> talent.bonestorm ),
+    heal( new bonestorm_heal_t( p ) )
+  {
+    parse_options( options_str );
+    hasted_ticks = false;
+    tick_action = new bonestorm_aoe_t( p, heal );
+    add_child( heal );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* ) const
+  { return base_tick_time * resource_consumed / 10; }
 };
 
 // Chains of Ice ============================================================
@@ -3689,6 +3808,36 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
   }
 };
 
+// Mark of Blood ============================================================
+
+struct mark_of_blood_heal_t : public death_knight_heal_t
+{
+  mark_of_blood_heal_t( death_knight_t* p ) :
+    death_knight_heal_t( "mark_of_blood", p, p -> find_spell( 206945 ) )
+  {
+    may_crit = callbacks = false;
+    background = dual = true;
+    target = p;
+  }
+};
+
+struct mark_of_blood_t : public death_knight_spell_t
+{
+  mark_of_blood_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "mark_of_blood", p, p -> talent.mark_of_blood )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    td( execute_state -> target ) -> debuff.mark_of_blood -> trigger();
+  }
+};
+
+
 // Marrowrend ===============================================================
 
 struct unholy_coil_t : public death_knight_heal_t
@@ -4158,6 +4307,29 @@ struct scourge_strike_t : public death_knight_melee_attack_t
   }
 };
 
+// Soul Reaper ==============================================================
+
+struct soul_reaper_t : public death_knight_melee_attack_t
+{
+  soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_melee_attack_t( "soul_reaper", p, p ->  talent.soul_reaper )
+  {
+    parse_options( options_str );
+
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      td( execute_state -> target ) -> debuff.soul_reaper -> trigger();
+    }
+  }
+};
+
 // Soulgorge ================================================================
 
 struct soulgorge_t : public death_knight_spell_t
@@ -4249,6 +4421,31 @@ struct summon_gargoyle_t : public death_knight_spell_t
     }
 
     return death_knight_spell_t::ready();
+  }
+};
+
+// Tombstone ================================================================
+
+struct tombstone_t : public death_knight_spell_t
+{
+  tombstone_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "tombstone", p, p -> talent.tombstone )
+  {
+    parse_options( options_str );
+
+    harmful = may_crit = false;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    double power = p() -> buffs.bone_shield -> stack() * data().effectN( 3 ).base_value();
+    double shield = p() -> buffs.bone_shield -> check() * data().effectN( 4 ).percent();
+
+    p() -> resource_gain( RESOURCE_RUNIC_POWER, power, p() -> gains.tombstone, this );
+    p() -> buffs.tombstone -> trigger( 1, shield * p() -> resources.max[ RESOURCE_HEALTH ] );
+    p() -> buffs.bone_shield -> expire();
   }
 };
 
@@ -4499,32 +4696,18 @@ struct icebound_fortitude_t : public death_knight_spell_t
 
 struct rune_tap_t : public death_knight_spell_t
 {
-  cooldown_t* ability_cooldown;
   rune_tap_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "rune_tap", p, p -> find_specialization_spell( "Rune Tap" ) )
+    death_knight_spell_t( "rune_tap", p, p -> talent.rune_tap )
   {
     parse_options( options_str );
-    cooldown -> charges = data().charges();
-    cooldown -> duration = data().charge_cooldown();
-    ability_cooldown = p -> get_cooldown( "Rune Tap Ability Cooldown" );
-    ability_cooldown -> duration = data().cooldown(); // Can only use it once per second.
     use_off_gcd = true;
   }
 
   void execute() override
   {
     death_knight_spell_t::execute();
-    ability_cooldown -> start();
 
     p() -> buffs.rune_tap -> trigger();
-  }
-
-  bool ready() override
-  {
-    if ( ability_cooldown -> up() )
-      return death_knight_spell_t::ready();
-
-    return false;
   }
 };
 
@@ -4884,7 +5067,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "deaths_caress"            ) return new deaths_caress_t            ( this, options_str );
   if ( name == "heart_strike"             ) return new heart_strike_t             ( this, options_str );
   if ( name == "marrowrend"               ) return new marrowrend_t               ( this, options_str );
-  if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
 
   // Frost Actions
@@ -4915,14 +5097,19 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
   // Talents
   if ( name == "blighted_rune_weapon"     ) return new blighted_rune_weapon_t     ( this, options_str );
+  if ( name == "blood_mirror"             ) return new blood_mirror_t             ( this, options_str );
   if ( name == "blooddrinker"             ) return new blooddrinker_t             ( this, options_str );
+  if ( name == "bonestorm"                ) return new bonestorm_t                ( this, options_str );
   if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
   if ( name == "clawing_shadows"          ) return new clawing_shadows_t          ( this, options_str );
   if ( name == "dark_arbiter"             ) return new dark_arbiter_t             ( this, options_str );
   if ( name == "death_pact"               ) return new death_pact_t               ( this, options_str );
   if ( name == "defile"                   ) return new defile_t                   ( this, options_str );
   if ( name == "epidemic"                 ) return new epidemic_t                 ( this, options_str );
+  if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
+  if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
   if ( name == "soulgorge"                ) return new soulgorge_t                ( this, options_str );
+  if ( name == "tombstone"                ) return new tombstone_t                ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -5283,6 +5470,11 @@ void death_knight_t::init_spells()
   {
     active_spells.bursting_sores = new bursting_sores_t( this );
   }
+
+  if ( talent.mark_of_blood -> ok() )
+  {
+    active_spells.mark_of_blood = new mark_of_blood_heal_t( this );
+  }
 }
 
 // death_knight_t::default_apl_blood ========================================
@@ -5362,12 +5554,20 @@ void death_knight_t::create_buffs()
   buffs.army_of_the_dead    = buff_creator_t( this, "army_of_the_dead", find_class_spell( "Army of the Dead" ) )
                               .cd( timespan_t::zero() );
   buffs.blood_shield        = new blood_shield_buff_t( this );
-  buffs.rune_tap            = buff_creator_t( this, "rune_tap", find_specialization_spell( "Rune Tap" ) -> effectN( 1 ).trigger() );
+  buffs.rune_tap            = buff_creator_t( this, "rune_tap", talent.rune_tap )
+                              .cd( timespan_t::zero() );
 
   buffs.antimagic_shell     = new antimagic_shell_buff_t( this );
 
   buffs.bone_shield         = haste_buff_creator_t( this, "bone_shield", find_spell( 195181 ) )
-                              .default_value( 1.0 / ( 1.0 + find_spell( 195181 ) -> effectN( 4 ).percent() ) );
+                              .default_value( 1.0 / ( 1.0 + find_spell( 195181 ) -> effectN( 4 ).percent() ) )
+                              .stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks ) {
+                                double old = old_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
+                                double new_ = new_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
+                                resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + old;
+                                resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + new_;
+                                recalculate_resource_max( RESOURCE_HEALTH );
+                              } : buff_stack_change_callback_t() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" )
                               .spell( find_spell( 81141 ) )
                               .trigger_spell( spec.crimson_scourge );
@@ -5448,6 +5648,8 @@ void death_knight_t::create_buffs()
   buffs.soulgorge = buff_creator_t( this, "soulgorge", find_spell( 213003 ) )
     .affects_regen( true );
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
+  buffs.tombstone = absorb_buff_creator_t( this, "tombstone", talent.tombstone )
+    .cd( timespan_t::zero() ); // Handled by the action
 }
 
 // death_knight_t::init_gains ===============================================
@@ -5471,6 +5673,7 @@ void death_knight_t::init_gains()
   // gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
   //gains.blood_tap_blood          -> type = ( resource_e ) RESOURCE_RUNE_BLOOD   ;
   gains.pestilent_pustules               = get_gain( "Pestilent Pustules"         );
+  gains.tombstone                        = get_gain( "Tombstone"                  );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -5495,6 +5698,18 @@ void death_knight_t::init_resources( bool force )
 
   resources.current[ RESOURCE_RUNIC_POWER ] = 0;
   resources.current[ RESOURCE_RUNE        ] = resources.max[ RESOURCE_RUNE ];
+}
+
+// death_knight_t::init_absorb_priority =====================================
+
+void death_knight_t::init_absorb_priority()
+{
+  player_t::init_absorb_priority();
+
+  //absorb_priority.push_back( 195181 ); // Bone Shield (NYI)
+  absorb_priority.push_back( 77535  ); // Blood Shield
+  absorb_priority.push_back( 206977 ); // Blood Mirror
+  absorb_priority.push_back( 219809 ); // Tombstone
 }
 
 // death_knight_t::reset ====================================================
@@ -5582,6 +5797,19 @@ void death_knight_t::assess_damage( school_e     school,
   {
     buffs.riposte -> stats[ 0 ].amount = ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent();
     buffs.riposte -> trigger();
+  }
+}
+
+// death_knight_t::do_damage ================================================
+
+void death_knight_t::do_damage( action_state_t* state )
+{
+  player_t::do_damage( state );
+
+  if ( state -> result_amount > 0 && talent.mark_of_blood -> ok() && ! state -> action -> special &&
+       get_target_data( state -> action -> player ) -> debuff.mark_of_blood -> up() )
+  {
+    active_spells.mark_of_blood -> execute();
   }
 }
 
