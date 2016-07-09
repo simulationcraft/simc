@@ -3614,6 +3614,7 @@ struct ebonbolt_t : public frost_mage_spell_t
       background=true;
     }
 
+    spell_power_mod.direct = p -> find_spell( 228599 ) -> effectN( 1 ).sp_coeff();
     // Doesn't apply chill debuff but benefits from Bone Chilling somehow
     chills = true;
   }
