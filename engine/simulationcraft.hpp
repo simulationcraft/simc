@@ -607,6 +607,7 @@ struct buff_uptime_t : public uptime_common_t
 typedef std::function<void(buff_t*, int, const timespan_t&)> buff_tick_callback_t;
 typedef std::function<timespan_t(const buff_t*, unsigned)> buff_tick_time_callback_t;
 typedef std::function<timespan_t(const buff_t*, const timespan_t&)> buff_refresh_duration_callback_t;
+typedef std::function<void(buff_t*, int, int)> buff_stack_change_callback_t;
 
 // Buff Creation ====================================================================
 namespace buff_creation {
@@ -634,6 +635,7 @@ protected:
   buff_stack_behavior_e _stack_behavior;
   buff_tick_callback_t _tick_callback;
   buff_refresh_duration_callback_t _refresh_duration_callback;
+  buff_stack_change_callback_t _stack_change_callback;
   double _rppm_freq, _rppm_mod;
   rppm_scale_e _rppm_scale;
   const spell_data_t* _trigger_data;
@@ -720,6 +722,8 @@ public:
   { _rppm_scale = s; return *( static_cast<bufftype*>( this ) ); }
   bufftype& trigger_spell( const spell_data_t* s )
   { _trigger_data = s; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& stack_change_callback( const buff_stack_change_callback_t& cb )
+  { _stack_change_callback = cb; return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -882,6 +886,7 @@ public:
   buff_refresh_behavior_e refresh_behavior;
   buff_refresh_duration_callback_t refresh_duration_callback;
   buff_stack_behavior_e stack_behavior;
+  buff_stack_change_callback_t stack_change_callback;
 
   // Ticking buff values
   unsigned current_tick;

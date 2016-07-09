@@ -791,39 +791,6 @@ struct stormlash_buff_t : public buff_t
   }
 };
 
-struct lightning_rod_debuff_t : public buff_t
-{
-  shaman_t* p;
-
-  lightning_rod_debuff_t( shaman_td_t& td ) :
-    buff_t( buff_creator_t( td, "lightning_rod", td.actor() -> find_spell( 197209 ) )
-                         .chance( td.actor() -> talent.lightning_rod -> effectN( 1 ).percent() )
-                         .default_value( td.actor() -> talent.lightning_rod -> effectN( 2 ).percent() ) ),
-    p( td.actor() )
-  { }
-
-  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
-  {
-    bool was_up = check() != 0;
-
-    buff_t::execute( stacks, value, duration );
-    if ( ! was_up )
-    {
-      p -> lightning_rods.push_back( player );
-    }
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    auto it = range::find( p -> lightning_rods, player );
-    if ( it != p -> lightning_rods.end() )
-    {
-      p -> lightning_rods.erase( it );
-    }
-  }
-};
-
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   actor_target_data_t( target, p )
 {
@@ -833,7 +800,21 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           .cd( timespan_t::zero() ) // Handled by the action
                           // -10% resistance in spell data, treat it as a multiplier instead
                           .default_value( 1.0 + p -> talent.earthen_spike -> effectN( 2 ).percent() );
-  debuff.lightning_rod = new lightning_rod_debuff_t( *this );
+  debuff.lightning_rod = buff_creator_t( *this, "lightning_rod", p -> find_spell( 197209 ) )
+                         .chance( p -> talent.lightning_rod -> effectN( 1 ).percent() )
+                         .default_value( p -> talent.lightning_rod -> effectN( 2 ).percent() )
+                         .stack_change_callback( [ target, p ]( buff_t*, int, int new_stacks ) {
+                            // down -> up
+                            if ( new_stacks == 1 )
+                              p -> lightning_rods.push_back( target );
+                            // up -> down
+                            else
+                            {
+                              auto it = range::find( p -> lightning_rods, target );
+                              if ( it != p -> lightning_rods.end() )
+                                p -> lightning_rods.erase( it );
+                            }
+                          } );
 }
 
 // ==========================================================================

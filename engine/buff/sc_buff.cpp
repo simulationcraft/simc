@@ -422,6 +422,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   if ( player && ! player -> cache.active ) requires_invalidation = false;
 
+  stack_change_callback = params._stack_change_callback;
+
   if ( _max_stack < 1 )
   {
     sim -> errorf( "buff %s: initialized with max_stack < 1 (%d). Setting max_stack to 1.\n", name_str.c_str(), _max_stack );
@@ -831,6 +833,8 @@ void buff_t::decrement( int    stacks,
   }
   else
   {
+    int old_stack = current_stack;
+
     if ( requires_invalidation ) invalidate_cache();
 
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
@@ -849,7 +853,13 @@ void buff_t::decrement( int    stacks,
     if ( sim -> debug )
       sim -> out_debug.printf( "buff %s decremented by %d to %d stacks",
                      name_str.c_str(), stacks, current_stack );
+
+    if ( old_stack != current_stack && stack_change_callback )
+    {
+      stack_change_callback( this, old_stack, current_stack );
+    }
   }
+
 }
 
 // buff_t::extend_duration ==================================================
@@ -1072,6 +1082,8 @@ void buff_t::bump( int stacks, double value )
 
   if ( requires_invalidation ) invalidate_cache();
 
+  int old_stack = current_stack;
+
   if ( max_stack() < 0 )
   {
     current_stack += stacks;
@@ -1164,6 +1176,11 @@ void buff_t::bump( int stacks, double value )
     overflow_total += stacks;
   }
 
+  if ( old_stack != current_stack && stack_change_callback )
+  {
+    stack_change_callback( this, old_stack, current_stack );
+  }
+
   if ( player ) player -> trigger_ready();
 }
 
@@ -1246,6 +1263,8 @@ void buff_t::expire( timespan_t delay )
     }
   }
 
+  int old_stack = current_stack;
+
   current_stack = 0;
   if ( requires_invalidation ) invalidate_cache();
   if ( last_start >= timespan_t::zero() )
@@ -1290,6 +1309,10 @@ void buff_t::expire( timespan_t delay )
   }
 
   expire_override( expiration_stacks, remaining_duration ); // virtual expire call
+  if ( stack_change_callback )
+  {
+    stack_change_callback( this, old_stack, current_stack );
+  }
 
   current_value = 0;
   aura_loss();
