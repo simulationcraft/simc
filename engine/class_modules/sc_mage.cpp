@@ -4278,7 +4278,6 @@ struct frostbolt_t : public frost_mage_spell_t
 
     frost_mage_spell_t::execute();
 
-    sim -> out_debug.printf("TEST_executed");
 
     if ( result_is_hit( execute_state -> result ) )
     {
