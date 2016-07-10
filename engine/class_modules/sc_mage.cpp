@@ -4523,14 +4523,17 @@ struct glacial_spike_t : public frost_mage_spell_t
 
   virtual bool ready() override
   {
-    if ( as<int>( p() -> icicles.size() ) <
-         p() -> spec.icicles -> effectN( 2 ).base_value()
+    if ( ( as<int>( p() -> icicles.size() ) <
+         p() -> spec.icicles -> effectN( 2 ).base_value() ) 
          || sequestered_icicles == true )
     {
       return false;
     }
 
+
     return frost_mage_spell_t::ready();
+   // let GS we've now got icicles que'd up in a GS.
+    sequestered_icicles = true;
   }
 
   virtual action_state_t* new_state() override
@@ -4583,8 +4586,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 
   virtual void execute() override
   {
-    // let GS we've now got icicles que'd up in a GS.
-    sequestered_icicles = true;
+
     frost_mage_spell_t::execute();
 
   }
