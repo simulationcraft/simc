@@ -4508,34 +4508,31 @@ struct frozen_touch_t : public frost_mage_spell_t
 
 struct glacial_spike_t : public frost_mage_spell_t
 {
-  // Helper variable to say if the 5 icicles that the mage has have already been
-  // claimed by a previous GS cast - let's us preserve impact() snapshotting
-  // while avoiding another GS being cast due to icicles still technicaly existing.
-  bool sequestered_icicles;
 
   glacial_spike_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike ),
-    sequestered_icicles( false )
+    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike )
   {
     parse_options( options_str );
     spell_power_mod.direct = p -> find_spell( 228600 ) -> effectN( 1 ).sp_coeff();
+    cooldown -> duration = timespan_t::from_seconds( 1.5 );
   }
 
   virtual bool ready() override
   {
     if ( ( as<int>( p() -> icicles.size() ) <
          p() -> spec.icicles -> effectN( 2 ).base_value() ) 
-         || sequestered_icicles == true )
+         )
     {
       return false;
     }
-
-
     return frost_mage_spell_t::ready();
-   // let GS we've now got icicles que'd up in a GS.
-    sequestered_icicles = true;
+
   }
 
+  virtual void update_ready( timespan_t cd ) override
+  {
+    frost_mage_spell_t::update_ready( cd );
+  }
   virtual action_state_t* new_state() override
   {
     return new frost_spell_state_t( this, target );
@@ -4586,9 +4583,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 
   virtual void execute() override
   {
-
     frost_mage_spell_t::execute();
-
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4615,15 +4610,12 @@ struct glacial_spike_t : public frost_mage_spell_t
     // Swap our flag to allow damage calculation again
     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
     fss -> impact_override = true;
-
+    
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
-
     frost_mage_spell_t::impact( s );
-    // Free up icicles for another GS.
-    sequestered_icicles = false;
   }
 };
 
