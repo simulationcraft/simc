@@ -2268,12 +2268,97 @@ struct power_infusion_t final : public priest_spell_t
   }
 };
 
+
+
+// Void Bolt Spell =========================================================
+
+struct void_bolt_t final : public priest_spell_t
+{
+  double insanity_gain;
+
+  void_bolt_t(priest_t& player, const std::string& options_str)
+    : priest_spell_t("void_bolt", player,
+    player.find_spell(205448)),
+    insanity_gain(data().effectN(3).resource(RESOURCE_INSANITY))
+  {
+    parse_options(options_str);
+    use_off_gcd = true;
+    is_sphere_of_insanity_spell = true;
+    energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
+
+    if (player.artifact.sinister_thoughts.rank())
+    {
+      base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
+    }
+
+    cooldown->hasted = true;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    generate_insanity(insanity_gain, priest.gains.insanity_void_bolt);
+
+    if (priest.buffs.shadow_t19_4p->up())
+    {
+      cooldown->reset(false);
+    }
+  }
+
+  void impact(action_state_t* s) override
+  {
+    priest_spell_t::impact(s);
+
+    priest_td_t& td = get_td(s->target);
+    // timespan_t extend_duration =
+    //    timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+    // extend_duration *= composite_haste(); FIXME Check is it is reduced by
+    // haste or not.
+    if (td.dots.shadow_word_pain->is_ticking())
+    {
+      td.dots.shadow_word_pain->refresh_duration();
+    }
+
+    if (td.dots.vampiric_touch->is_ticking())
+    {
+      td.dots.vampiric_touch->refresh_duration();
+    }
+  }
+
+  bool ready() override
+  {
+    if (!priest.buffs.voidform->check())
+      return false;
+
+    return priest_spell_t::ready();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    if (priest.mastery_spells.madness->ok())
+      m *= 1.0 + priest.cache.mastery_value();
+
+    if (priest.buffs.anunds_last_breath->check())
+    {
+      m *= 1.0 + (priest.buffs.anunds_last_breath->data().effectN(1).percent() * priest.buffs.anunds_last_breath->stack());
+      priest.buffs.anunds_last_breath->expire();
+    }
+    return m;
+  }
+};
+
 // Void Eruption Spell ========================================================
 
 struct void_eruption_t final : public priest_spell_t
 {
+  action_t* void_bolt;
+
   void_eruption_t(priest_t& p, const std::string& options_str)
-    : priest_spell_t("void_eruption", p, p.find_spell(228360))
+    : priest_spell_t("void_eruption", p, p.find_spell(228360)),
+    void_bolt(nullptr)
   {
     parse_options( options_str );
     base_costs[RESOURCE_INSANITY] = 0.0;
@@ -2284,6 +2369,12 @@ struct void_eruption_t final : public priest_spell_t
     radius = 100.0;
     school = SCHOOL_SHADOW;
     cooldown = priest.cooldowns.void_bolt;
+  }
+
+  void init() override
+  {
+    priest_spell_t::init();
+    void_bolt = player->find_action("void_bolt");
   }
 
   void execute() override
@@ -2466,10 +2557,10 @@ struct void_eruption_t final : public priest_spell_t
     }
     else
     {
-      priest.cooldowns.void_bolt->start();
-      priest.cooldowns.void_bolt->adjust(-timespan_t::from_millis(2000 * (1.5 * priest.composite_spell_speed())), true);
-    }
 
+      priest.cooldowns.void_bolt->start(void_bolt);
+      priest.cooldowns.void_bolt->adjust(-timespan_t::from_millis(1000 * (1.5 * priest.composite_spell_speed())), true);
+    }
     
     if ( priest.artifact.sphere_of_insanity.rank() )
     {
@@ -3645,86 +3736,6 @@ struct vampiric_touch_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
-    return m;
-  }
-};
-
-// Void Bolt Spell =========================================================
-
-struct void_bolt_t final : public priest_spell_t
-{
-  double insanity_gain;
-
-  void_bolt_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "void_bolt", player,
-                      player.find_spell(205448)),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
-  {
-    parse_options( options_str );
-    use_off_gcd = true;
-    is_sphere_of_insanity_spell = true;
-    energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
-
-    if ( player.artifact.sinister_thoughts.rank() )
-    {
-      base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
-    }
-
-    cooldown -> hasted = true;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    generate_insanity( insanity_gain, priest.gains.insanity_void_bolt );
-
-    if ( priest.buffs.shadow_t19_4p->up() )
-    {
-      cooldown->reset( false );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    priest_td_t& td = get_td( s->target );
-    // timespan_t extend_duration =
-    //    timespan_t::from_seconds( data().effectN( 2 ).base_value() );
-    // extend_duration *= composite_haste(); FIXME Check is it is reduced by
-    // haste or not.
-    if ( td.dots.shadow_word_pain->is_ticking() )
-    {
-      td.dots.shadow_word_pain->refresh_duration();
-    }
-
-    if ( td.dots.vampiric_touch->is_ticking() )
-    {
-      td.dots.vampiric_touch->refresh_duration();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !priest.buffs.voidform->check() )
-      return false;
-
-    return priest_spell_t::ready();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    if ( priest.mastery_spells.madness->ok() )
-      m *= 1.0 + priest.cache.mastery_value();
-
-    if (priest.buffs.anunds_last_breath->check())
-    {
-      m *= 1.0 + (priest.buffs.anunds_last_breath->data().effectN(1).percent() * priest.buffs.anunds_last_breath->stack());
-      priest.buffs.anunds_last_breath->expire();
-    }
     return m;
   }
 };
