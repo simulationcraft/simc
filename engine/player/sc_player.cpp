@@ -839,7 +839,6 @@ void player_t::init_character_properties()
 {
   init_race();
   init_talents();
-  init_artifact();
   init_glyphs();
   replace_spells();
   init_position();
