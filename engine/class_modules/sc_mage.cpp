@@ -4090,16 +4090,17 @@ struct flurry_bolt_t : public frost_mage_spell_t
 };
 struct flurry_t : public frost_mage_spell_t
 {
+  flurry_bolt_t* flurry_bolt;
   flurry_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "flurry", p, p -> find_spell( 44614 ) )
+    frost_mage_spell_t( "flurry", p, p -> find_spell( 44614 ) ),
+    flurry_bolt( new flurry_bolt_t( p ) )
   {
     parse_options( options_str );
     hasted_ticks = false;
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
     dot_duration = timespan_t::from_seconds( 0.6 );
     base_tick_time = timespan_t::from_seconds( 0.2 );
-    dynamic_tick_action = true;
-    tick_action = new flurry_bolt_t( p );
+
   }
 
   virtual timespan_t execute_time() const override
@@ -4121,8 +4122,15 @@ struct flurry_t : public frost_mage_spell_t
     {
       p() -> buffs.zannesu_journey -> trigger();
     }
-
     p() -> buffs.brain_freeze -> expire();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    frost_mage_spell_t::tick( d );
+
+    flurry_bolt -> target = d -> target;
+    flurry_bolt -> execute();
   }
 };
 // Frost Bomb Spell ===========================================================
