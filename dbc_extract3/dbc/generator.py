@@ -1235,6 +1235,7 @@ class SpellDataGenerator(DataGenerator):
           ( 45470, 0 ),     # Death Strike heal
           ( 196545, 0 ),    # Bonestorm heal
           ( 221847, 0 ),    # Blood Mirror damage
+          ( 205164, 0 ),    # Crystalline Swords damage
         ),
 
         # Shaman:
@@ -2365,7 +2366,7 @@ class SpellDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join( effect.field('class_mask_1', 'class_mask_2', 'class_mask_3', 'class_mask_4' ) ) ]
             fields += effect.field('trigger_spell', 'dmg_multiplier', 'points_per_combo_points', 'real_ppl', 'die_sides')
             fields += self._spellmechanic_db[effect.id_mechanic].field('mechanic')
-            fields += effect.field('chain_target', 'implicit_target_1', 'implicit_target_2')
+            fields += effect.field('chain_target', 'implicit_target_1', 'implicit_target_2', 'val_mul')
             # Pad struct with empty pointers for direct spell data access
             fields += [ '0', '0' ]
 

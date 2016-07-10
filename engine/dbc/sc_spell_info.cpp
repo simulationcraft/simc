@@ -521,6 +521,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << " | Value Range: " << e -> die_sides();
   }
 
+  if ( e -> m_value() != 0 )
+  {
+    s << " | Value Multiplier: " << e -> m_value();
+  }
+
   if ( e -> sp_coeff() != 0 )
   {
     snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> sp_coeff() );

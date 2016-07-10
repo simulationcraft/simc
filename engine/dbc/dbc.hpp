@@ -374,6 +374,11 @@ inline spellpower_data_t* spellpower_data_t::nil()
 // Spell Effect Data - SpellEffect.dbc
 // ==========================================================================
 
+#ifdef __OpenBSD__
+#pragma pack(1)
+#else
+#pragma pack( push, 1 )
+#endif
 struct spelleffect_data_t
 {
 public:
@@ -408,6 +413,7 @@ public:
   unsigned         _chain_target;    // Number of targets (for chained spells)
   unsigned         _targeting_1;     // Targeting related field 1
   unsigned         _targeting_2;     // 2
+  double           _m_value;         // Misc multiplier used for some spells(?)
 
   // Pointers for runtime linking
   spell_data_t* _spell;
@@ -524,6 +530,9 @@ public:
   unsigned target_2() const
   { return _targeting_2; }
 
+  double m_value() const
+  { return _m_value; }
+
   bool class_flag( unsigned flag ) const
   {
     unsigned index = flag / 32;
@@ -578,11 +587,6 @@ private:
 // Spell Data
 // ==========================================================================
 
-#ifdef __OpenBSD__
-#pragma pack(1)
-#else
-#pragma pack( push, 1 )
-#endif
 struct spell_data_t
 {
 private:
