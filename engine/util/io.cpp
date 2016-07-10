@@ -41,6 +41,19 @@ std::string narrow( const wchar_t* first, const wchar_t* last )
   return result;
 }
 
+#if defined( SC_MINGW )
+bool contains_non_ascii( const std::string& s )
+{
+  for (const auto & elem : s)
+  {
+    if ( elem < 0 || ! isprint( elem ) )
+      return true;
+  }
+
+  return false;
+}
+#endif
+
 } // anonymous namespace ====================================================
 
 std::string narrow( const wchar_t* wstr )

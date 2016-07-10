@@ -2408,7 +2408,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     case SOUL_FRAGMENT_SELECT_NEAREST:
     {
       double dist = std::numeric_limits<double>::max();
-      soul_fragment_t* candidate;
+      soul_fragment_t* candidate = nullptr;
 
       for ( it = p() -> soul_fragments.begin(); it != p() -> soul_fragments.end(); it++ )
       {
