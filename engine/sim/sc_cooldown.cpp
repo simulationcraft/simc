@@ -149,6 +149,7 @@ void cooldown_t::adjust_recharge_multiplier()
   }
 
   double old_multiplier = recharge_multiplier;
+  assert( action && "Only cooldowns with associated action can have their recharge multiplier adjusted.");
   recharge_multiplier = action -> recharge_multiplier();
   if ( old_multiplier == recharge_multiplier )
   {
