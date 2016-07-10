@@ -2042,7 +2042,7 @@ struct fire_mage_spell_t : public mage_spell_t
     {
       p() -> buffs.pyretic_incantation -> trigger();
     }
-    else if ( triggers_pyretic_incantation 
+    else if ( triggers_pyretic_incantation
                       && p() -> artifact.pyretic_incantation.rank()
                       && result_is_hit( s -> result ) && s -> result != RESULT_CRIT )
     {
@@ -3526,7 +3526,7 @@ struct comet_storm_t : public frost_mage_spell_t
     s -> result_amount = calculate_direct_amount( s );
 
     frost_mage_spell_t::impact( s );
-  
+
   }
   void tick( dot_t* d ) override
   {
@@ -3685,7 +3685,7 @@ struct ebonbolt_t : public frost_mage_spell_t
     s -> result_amount = calculate_direct_amount( s );
 
     frost_mage_spell_t::impact( s );
-  
+
   }
 };
 // Evocation Spell ==========================================================
@@ -4504,12 +4504,18 @@ struct frozen_touch_t : public frost_mage_spell_t
 };
 
 
-// Glacial Spike ==============================================================
+// Glacial Spike Spell ==============================================================
 
 struct glacial_spike_t : public frost_mage_spell_t
 {
+  // Helper variable to say if the 5 icicles that the mage has have already been
+  // claimed by a previous GS cast - let's us preserve impact() snapshotting
+  // while avoiding another GS being cast due to icicles still technicaly existing.
+  bool sequestered_icicles;
+
   glacial_spike_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike )
+    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike ),
+    sequestered_icicles( false )
   {
     parse_options( options_str );
     spell_power_mod.direct = p -> find_spell( 228600 ) -> effectN( 1 ).sp_coeff();
@@ -4518,7 +4524,8 @@ struct glacial_spike_t : public frost_mage_spell_t
   virtual bool ready() override
   {
     if ( as<int>( p() -> icicles.size() ) <
-         p() -> spec.icicles -> effectN( 2 ).base_value() )
+         p() -> spec.icicles -> effectN( 2 ).base_value()
+         || sequestered_icicles == true )
     {
       return false;
     }
@@ -4576,7 +4583,10 @@ struct glacial_spike_t : public frost_mage_spell_t
 
   virtual void execute() override
   {
+    // let GS we've now got icicles que'd up in a GS.
+    sequestered_icicles = true;
     frost_mage_spell_t::execute();
+
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4591,12 +4601,10 @@ struct glacial_spike_t : public frost_mage_spell_t
     }
 
     if ( sim -> debug )
-    {      
+    {
       sim -> out_debug.printf("Add %u icicles to glacial_spike for %f damage",
                               icicle_count, icicle_damage_sum);
-    
     }
-
 
 
     base_dd_min = icicle_damage_sum;
@@ -4610,10 +4618,10 @@ struct glacial_spike_t : public frost_mage_spell_t
     snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
-    // Sum icicle damage
-
 
     frost_mage_spell_t::impact( s );
+    // Free up icicles for another GS.
+    sequestered_icicles = false;
   }
 };
 
@@ -4716,7 +4724,7 @@ struct ice_lance_t : public frost_mage_spell_t
     {
        return frost_mage_spell_t::snapshot_state( s, rt );
     }
-    else 
+    else
       return;
   }
   virtual double calculate_direct_amount( action_state_t* s ) const override
@@ -4727,7 +4735,7 @@ struct ice_lance_t : public frost_mage_spell_t
     {
       return frost_mage_spell_t::calculate_direct_amount( s );
     }
-    else 
+    else
       return s -> result_amount;
 
     //TODO: Move this to the appropriate crit override.
@@ -7037,7 +7045,7 @@ struct icy_veins_buff_t : public buff_t
   icy_veins_buff_t( mage_t* p ) :
     buff_t( buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) )
             .add_invalidate( CACHE_SPELL_HASTE ) ),p( p )
-            
+
   {}
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
