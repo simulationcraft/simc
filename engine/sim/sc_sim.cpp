@@ -2611,6 +2611,12 @@ expr_t* sim_t::create_expression( action_t* a,
   if ( name_str == "time" )
     return make_ref_expr( name_str, event_mgr.current_time );
 
+  if ( name_str == "channel_lag" )
+    return make_ref_expr( name_str, channel_lag );
+
+  if ( name_str == "channel_lag_stddev" )
+    return make_ref_expr( name_str, channel_lag_stddev );
+
   if ( util::str_compare_ci( name_str, "enemies" ) )
     return make_ref_expr( name_str, enemy_targets );
 
