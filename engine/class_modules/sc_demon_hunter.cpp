@@ -562,6 +562,7 @@ public:
   void   target_mitigation( school_e, dmg_e, action_state_t* ) override;
   
   // custom demon_hunter_t functions
+  void     adjust_movement();
   unsigned consume_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL, bool heal = true );
   unsigned get_active_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
   unsigned get_total_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL ) const;
@@ -5426,30 +5427,13 @@ void demon_hunter_t::invalidate_cache( cache_e c )
   {
     case CACHE_MASTERY:
       if ( mastery_spell.demonic_presence -> ok() ) invalidate_cache( CACHE_RUN_SPEED );
+      if ( buff.chaos_blades -> check() ) invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       break;
     case CACHE_CRIT_CHANCE:
       if ( spec.riposte -> ok() ) invalidate_cache( CACHE_PARRY );
       break;
     case CACHE_RUN_SPEED:
-      if ( buff.out_of_range -> check() && buff.out_of_range -> remains() > timespan_t::zero() )
-      {
-        // Recalculate movement duration.
-        assert( buff.out_of_range -> value() > 0 );
-        assert( buff.out_of_range -> expiration.size() );
-
-        timespan_t remains = buff.out_of_range -> remains();
-        remains *= buff.out_of_range -> check_value() / cache.run_speed();
-        
-        /* Adjust the remaining duration on movement for the new run speed.
-        Expire and re-trigger because we can't reschedule backwards. */
-        buff.out_of_range -> expire();
-
-        // Catch edge case where new duration rounds to zero and makes buff infinite.
-        if ( remains > timespan_t::zero() )
-        {
-          buff.out_of_range -> trigger( 1, cache.run_speed(), -1.0, remains );
-        }
-      }
+      adjust_movement();
       break;
     default:
       break;
@@ -6132,7 +6116,32 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt,
 // custom demon_hunter_t functions
 // ==========================================================================
 
-// demon_hunter_t::consume_soul_fragments ====================================
+// demon_hunter_t::adjust_movement ==========================================
+
+void demon_hunter_t::adjust_movement()
+{
+  if ( buff.out_of_range -> check() && buff.out_of_range -> remains() > timespan_t::zero() )
+  {
+    // Recalculate movement duration.
+    assert( buff.out_of_range -> value() > 0 );
+    assert( buff.out_of_range -> expiration.size() );
+
+    timespan_t remains = buff.out_of_range -> remains();
+    remains *= buff.out_of_range -> check_value() / cache.run_speed();
+        
+    /* Adjust the remaining duration on movement for the new run speed.
+    Expire and re-trigger because we can't reschedule backwards. */
+    buff.out_of_range -> expire();
+
+    // Catch edge case where new duration rounds to zero and makes buff infinite.
+    if ( remains > timespan_t::zero() )
+    {
+      buff.out_of_range -> trigger( 1, cache.run_speed(), -1.0, remains );
+    }
+  }
+}
+
+// demon_hunter_t::consume_soul_fragments ===================================
 
 unsigned demon_hunter_t::consume_soul_fragments( soul_fragment_e type, bool heal )
 {
