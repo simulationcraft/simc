@@ -46,28 +46,23 @@ namespace item
 
   // 7.0 Raid
   void natures_call( special_effect_t& );
-  // WIP
-  void bloodthirsty_instinct( special_effect_t& );
-  void bough_of_corruption( special_effect_t& );
-  void ravaged_seed_pod( special_effect_t& );
   void spontaneous_appendages( special_effect_t& );
-  void twisting_wind( special_effect_t& );
-  void unstable_horrorslime( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
 
   /* NYI
+  void bloodthirsty_instinct( special_effect_t& );
+  void bough_of_corruption( special_effect_t& );
+  void ravaged_seed_pod( special_effect_t& );
+  void twisting_wind( special_effect_t& );
+  void unstable_horrorslime( special_effect_t& );
+
   cocoon_of_enforced_solitude
   goblet_of_nightmarish_ichor
   grotesque_statuette
   horn_of_cenarius
   phantasmal_echo
   vial_of_nightmare_fog
-  */
-
-  /* check
   heightened_senses
-  swarming_plaguehive
-  ursocs_rending_paw
   */
 }
 
@@ -1389,6 +1384,156 @@ void item::infernal_alchemist_stone( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Spontaneous Appendages ===================================================
+
+void item::spontaneous_appendages( special_effect_t& effect )
+{
+  // Set trigger spell so we can create an action from it.
+  effect.trigger_spell_id = effect.trigger() -> effectN( 1 ).trigger() -> id();
+  action_t* slam = effect.create_action();
+  // Spell data has no radius, so manually make it an AoE.
+  slam -> radius = 8.0;
+  slam -> aoe = -1;
+
+  // Reset trigger spell, we don't want the proc to trigger an action.
+  effect.trigger_spell_id = 0;
+
+  effect.custom_buff = buff_creator_t( effect.player, "horrific_appendages", effect.trigger(), effect.item )
+    .tick_callback( [ slam ]( buff_t*, int, const timespan_t& ) {
+      slam -> schedule_execute();
+    } );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Wriggling Sinew ==========================================================
+
+struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
+{
+  struct maddening_whispers_debuff_t : public debuff_t
+  {
+    action_t* action;
+
+    maddening_whispers_debuff_t( const special_effect_t& effect, actor_target_data_t& td ) : 
+      debuff_t( buff_creator_t( td, "maddening_whispers", effect.trigger(), effect.item ) ),
+      action( effect.player -> find_action( "maddening_whispers" ) )
+    {}
+
+    void expire_override( int stacks, timespan_t dur ) override
+    {
+      debuff_t::expire_override( stacks, dur );
+
+      // Schedule an execute, but snapshot state right now so we can apply the stack multiplier.
+      action_state_t* s   = action -> get_state();
+      s -> target         = player;
+      action -> snapshot_state( s, DMG_DIRECT );
+      s -> target_da_multiplier *= stacks;
+      action -> schedule_execute( s );
+    }
+  };
+
+  wriggling_sinew_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if ( effect == 0 )
+    {
+      td -> debuff.maddening_whispers = buff_creator_t( *td, "maddening_whispers" );
+    }
+    else
+    {
+      assert( ! td -> debuff.maddening_whispers );
+
+      td -> debuff.maddening_whispers = new maddening_whispers_debuff_t( *effect, *td );
+      td -> debuff.maddening_whispers -> reset();
+    }
+  }
+};
+
+struct maddening_whispers_cb_t : public dbc_proc_callback_t
+{
+  buff_t* buff;
+
+  maddening_whispers_cb_t( const special_effect_t& effect, buff_t* b ) : 
+    dbc_proc_callback_t( effect.player, effect ), buff( b )
+  {}
+
+  void execute( action_t*, action_state_t* s ) override
+  {
+    if ( s -> target == s -> action -> player ) return;
+    if ( s -> result_amount <= 0 ) return;
+
+    actor_target_data_t* td = s -> action -> player -> get_target_data( s -> target );
+
+    if ( ! td ) return;
+
+    td -> debuff.maddening_whispers -> trigger();
+    buff -> decrement();
+  }
+};
+
+struct maddening_whispers_t : public buff_t
+{
+  dbc_proc_callback_t* callback;
+
+  maddening_whispers_t( const special_effect_t& effect ) : 
+    buff_t( buff_creator_t( effect.player, "maddening_whispers", effect.driver(), effect.item ) )
+  {
+    // Stack gain effect
+    special_effect_t* effect2 = new special_effect_t( effect.player );
+    effect2 -> name_str     = "maddening_whispers_driver";
+    effect2 -> proc_chance_ = 1.0;
+    effect2 -> proc_flags_  = PF_SPELL | PF_AOE_SPELL;
+    effect2 -> proc_flags2_  = PF2_ALL_HIT;
+    effect.player -> special_effects.push_back( effect2 );
+
+    callback = new maddening_whispers_cb_t( *effect2, this );
+    callback -> initialize();
+  }
+  
+  void start( int, double value, timespan_t duration ) override
+  {
+    // Always start at max stacks.
+    buff_t::start( max_stack(), value, duration );
+
+    callback -> activate();
+  }
+
+  void expire_override( int stacks, timespan_t remaining ) override
+  {
+    buff_t::expire_override( stacks, remaining );
+    
+    callback -> deactivate();
+
+    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ ) {
+      player_t* t = sim -> target_non_sleeping_list[ i ];
+      player -> get_target_data( t ) -> debuff.maddening_whispers -> expire();
+    }
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+
+    callback -> deactivate();
+  }
+};
+
+void item::wriggling_sinew( special_effect_t& effect )
+{
+  // Set triggered spell so we can create an action from it.
+  effect.trigger_spell_id = 222050;
+  action_t* a = effect.initialize_offensive_spell_action();
+  a -> base_dd_min = a -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+  // Reset triggered spell; we don't want to trigger a spell on use.
+  effect.trigger_spell_id = 0;
+
+  effect.custom_buff = new maddening_whispers_t( effect );
+}
+
 // March of the Legion ======================================================
 
 void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
@@ -1425,7 +1570,10 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 214340, "ProcOn/Hit_1Tick_214342Trigger"     );
 
   /* Legion 7.0 Raid */
-  register_special_effect( 222512, item::natures_call );
+  register_special_effect( 222512, item::natures_call           );
+  register_special_effect( 222167, item::spontaneous_appendages );
+  register_special_effect( 222046, item::wriggling_sinew        );
+  register_special_effect( 221767, "ProcOn/crit" );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
@@ -1463,5 +1611,6 @@ void unique_gear::register_target_data_initializers_x7( sim_t* sim )
   sim -> register_target_data_initializer( spiked_counterweight_constructor_t( 136715, trinkets ) );
   sim -> register_target_data_initializer( figurehead_of_the_naglfar_constructor_t( 137329, trinkets ) );
   sim -> register_target_data_initializer( portable_manacracker_constructor_t( 137398, trinkets ) );
+  sim -> register_target_data_initializer( wriggling_sinew_constructor_t( 139326, trinkets ) );
 }
 

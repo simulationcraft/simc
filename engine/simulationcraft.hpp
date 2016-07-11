@@ -540,6 +540,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     debuff_t* brutal_haymaker;
     debuff_t* taint_of_the_sea;
     debuff_t* volatile_magic;
+    debuff_t* maddening_whispers;
   } debuff;
 
   struct atd_dot_t
