@@ -536,7 +536,8 @@ struct darkstrikes_buff_t : public buff_t
   special_effect_t* dmg_effect;
 
   darkstrikes_buff_t( const special_effect_t& effect ) :
-    buff_t( buff_creator_t( effect.player, "darkstrikes", effect.driver(), effect.item ).activated( false ) )
+    buff_t( buff_creator_t( effect.player, "darkstrikes", effect.driver(), effect.item )
+            .chance( 1 ).activated( false ) )
   {
     // Special effect to drive the AOE damage callback
     dmg_effect = new special_effect_t( effect.player );
@@ -1206,7 +1207,8 @@ struct faulty_countermeasures_t : public buff_t
   faulty_countermeasures_t( const special_effect_t& effect ) :
     buff_t( buff_creator_t( effect.player, "sheathed_in_frost", effect.driver(), effect.item )
       .cd( timespan_t::zero() )
-      .activated( false ) )
+      .activated( false )
+      .chance( 1 ) )
   {
     // Create effect & callback for the damage proc
     special_effect_t* effect2 = new special_effect_t( effect.player );
