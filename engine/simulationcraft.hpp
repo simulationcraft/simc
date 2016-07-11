@@ -251,7 +251,7 @@ struct artifact_power_t
 
   double value( size_t idx = 1 ) const
   {
-    if ( rank() == 1 || rank_data_ -> value == 0.0 )
+    if ( ( rank() == 1 && rank_data_ -> value == 0.0 ) || rank_data_ -> value == 0.0 )
     {
       return spell_ -> effectN( idx ).base_value();
     }

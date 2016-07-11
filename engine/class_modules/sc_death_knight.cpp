@@ -42,6 +42,11 @@ namespace runeforge {
 enum disease_type { DISEASE_NONE = 0, DISEASE_BLOOD_PLAGUE, DISEASE_FROST_FEVER, DISEASE_VIRULENT_PLAGUE = 4 };
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
+enum {
+  // http://us.battle.net/wow/en/forum/topic/20743504316?page=9#163
+  CRYSTALLINE_SWORDS_MAX = 9
+};
+
 const double RUNIC_POWER_REFUND = 0.9;
 const double RUNE_REGEN_BASE = 10;
 const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
@@ -227,6 +232,7 @@ public:
 
   // Counters
   int pestilent_pustules;
+  int crystalline_swords;
 
   stats_t*  antimagic_shell;
 
@@ -243,6 +249,7 @@ public:
     buff_t* killing_machine;
     haste_buff_t* t18_4pc_frost_haste;
     buff_t* t18_4pc_frost_crit;
+    haste_buff_t* t18_4pc_unholy;
     buff_t* obliteration;
     buff_t* pillar_of_frost;
     buff_t* rime;
@@ -291,6 +298,7 @@ public:
     action_t* virulent_plague;
     action_t* bursting_sores;
     action_t* mark_of_blood;
+    action_t* crystalline_swords;
   } active_spells;
 
   // Gains
@@ -309,6 +317,7 @@ public:
     gain_t* blood_tap;
     gain_t* pestilent_pustules;
     gain_t* tombstone;
+    gain_t* overpowered;
   } gains;
 
   // Specialization
@@ -324,7 +333,6 @@ public:
     const spell_data_t* riposte;
 
     // Frost
-    const spell_data_t* ambidexterity; // Mega hidden passive?
     const spell_data_t* runic_empowerment;
     const spell_data_t* killing_machine;
     const spell_data_t* rime;
@@ -435,6 +443,28 @@ public:
     const spell_data_t* blood_mirror;
     const spell_data_t* purgatory; // Not Yet Implemented
   } talent;
+
+  struct artifact_t {
+    // Frost
+    artifact_power_t crystalline_swords;
+    artifact_power_t blades_of_frost;
+    artifact_power_t nothing_but_the_boots;
+    artifact_power_t frozen_core;
+    artifact_power_t frozen_skin;
+    artifact_power_t dead_of_winter;
+    artifact_power_t sindragosas_fury;
+    artifact_power_t blast_radius;
+    artifact_power_t chill_of_the_grave;
+    artifact_power_t ice_in_your_veins;
+    artifact_power_t overpowered;
+    artifact_power_t frozen_soul;
+    artifact_power_t cold_as_ice;
+    artifact_power_t ambidexterity;
+    artifact_power_t bad_to_the_bone;
+    artifact_power_t hypothermia;
+    artifact_power_t soulbiter;
+
+  } artifact;
 
   // Spells
   struct spells_t {
@@ -1975,9 +2005,14 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     may_crit   = true;
     may_glance = false;
 
-    if ( data().affected_by( p -> spec.ambidexterity -> effectN( 1 ) ) )
+    if ( data().affected_by( p -> artifact.ambidexterity.data().effectN( 1 ) ) )
     {
-      base_multiplier *= 1.0 + p -> spec.ambidexterity -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> artifact.ambidexterity.percent();
+    }
+
+    if ( data().affected_by( p -> artifact.nothing_but_the_boots.data().effectN( 1 ) ) )
+    {
+      crit_bonus_multiplier *= 1.0 + p -> artifact.nothing_but_the_boots.percent();
     }
   }
 
@@ -1989,6 +2024,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   void consume_killing_machine( const action_state_t* state, proc_t* proc ) const;
   void trigger_icecap( const action_state_t* state ) const;
   void trigger_avalanche( const action_state_t* state ) const;
+  void trigger_crystalline_swords( const action_state_t* state ) const;
 };
 
 // ==========================================================================
@@ -2053,6 +2089,7 @@ void death_knight_melee_attack_t::execute()
 
   if ( ! result_is_hit( execute_state -> result ) && resource_consumed > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
+  trigger_crystalline_swords( execute_state );
 }
 
 // death_knight_melee_attack_t::impact() ====================================
@@ -2143,6 +2180,43 @@ void death_knight_melee_attack_t::trigger_avalanche( const action_state_t* state
   p() -> active_spells.avalanche -> schedule_execute();
 }
 
+// death_knight_melee_attack_t::trigger_crystalline_swords ==================
+
+void death_knight_melee_attack_t::trigger_crystalline_swords( const action_state_t* state ) const
+{
+  if ( ! p() -> artifact.crystalline_swords.rank() )
+  {
+    return;
+  }
+
+  if ( ! weapon || ! callbacks )
+  {
+    return;
+  }
+
+  if ( ! result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  if ( ! rng().roll( p() -> artifact.crystalline_swords.data().proc_chance() ) )
+  {
+    return;
+  }
+
+  if ( ++p() -> crystalline_swords < CRYSTALLINE_SWORDS_MAX )
+  {
+    return;
+  }
+
+  p() -> active_spells.crystalline_swords -> target = state -> target;
+  // Two executes
+  p() -> active_spells.crystalline_swords -> execute();
+  p() -> active_spells.crystalline_swords -> execute();
+
+  p() -> crystalline_swords = 0;
+}
+
 // ==========================================================================
 // Death Knight Spell Methods
 // ==========================================================================
@@ -2172,6 +2246,17 @@ void death_knight_spell_t::impact( action_state_t* state )
 // ==========================================================================
 // Death Knight Secondary Abilities
 // ==========================================================================
+
+// Crystalline Swords =======================================================
+
+struct crystalline_swords_t : public death_knight_spell_t
+{
+  crystalline_swords_t( death_knight_t* player ) :
+    death_knight_spell_t( "crystalline_swords", player, player -> find_spell( 205165 ) )
+  {
+    background = true;
+  }
+};
 
 // Frozen Pulse =============================================================
 
@@ -2501,12 +2586,40 @@ struct blood_plague_t : public disease_t
 
 // Frost Fever ==============================================================
 
+struct hypothermia_t : public death_knight_spell_t
+{
+  hypothermia_t( death_knight_t* p ) :
+    death_knight_spell_t( "hypothermia", p, p -> find_spell( 228322 ) )
+  {
+    background = true;
+  }
+};
+
 struct frost_fever_t : public disease_t
 {
-  frost_fever_t( death_knight_t* p ) :
-    disease_t( p, "frost_fever", 55095 )
+  hypothermia_t* hypothermia;
+
+  frost_fever_t( death_knight_t* p ) : disease_t( p, "frost_fever", 55095 ),
+    hypothermia( p -> artifact.hypothermia.rank() ? new hypothermia_t( p ) : nullptr )
   {
     base_multiplier *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
+
+    if ( hypothermia )
+    {
+      add_child( hypothermia );
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    disease_t::tick( d );
+
+    if ( p() -> artifact.hypothermia.rank() &&
+         rng().roll( p() -> artifact.hypothermia.data().proc_chance() ) )
+    {
+      hypothermia -> target = d -> target;
+      hypothermia -> execute();
+    }
   }
 };
 
@@ -2970,15 +3083,16 @@ struct dark_transformation_t : public death_knight_spell_t
     harmful = false;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     death_knight_spell_t::execute();
 
     p() -> buffs.dark_transformation -> trigger();
+    p() -> buffs.t18_4pc_unholy -> trigger();
     p() -> pets.ghoul_pet -> crazed_monstrosity -> trigger();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( p() -> pets.ghoul_pet -> is_sleeping() )
     {
@@ -3268,6 +3382,13 @@ struct death_strike_heal_t : public death_knight_heal_t
     target     = p;
   }
 
+  void init() override
+  {
+    death_knight_heal_t::init();
+
+    snapshot_flags |= STATE_MUL_DA;
+  }
+
   double base_da_min( const action_state_t* ) const override
   {
     return std::max( player -> resources.max[ RESOURCE_HEALTH ] * ds_data -> effectN( 5 ).percent(),
@@ -3278,6 +3399,17 @@ struct death_strike_heal_t : public death_knight_heal_t
   {
     return std::max( player -> resources.max[ RESOURCE_HEALTH ] * ds_data -> effectN( 5 ).percent(),
       player -> compute_incoming_damage( interval ) );
+  }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_heal_t::action_multiplier();
+
+    if ( p() -> buffs.icebound_fortitude -> up() )
+    {
+      m *= 1.0 + p() -> artifact.ice_in_your_veins.percent();
+    }
+    return m;
   }
 
   void impact( action_state_t* state ) override
@@ -3566,7 +3698,8 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( n, p, s )
   {
     background = special = true;
-    weapon           = w;
+    weapon = w;
+    range += p -> artifact.chill_of_the_grave.value();
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3606,6 +3739,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     may_crit = false;
+    range += p -> artifact.chill_of_the_grave.value();
 
     mh = new frost_strike_strike_t( p, "frost_strike_mh", &( p -> main_hand_weapon ), data().effectN( 2 ).trigger() );
     add_child( mh );
@@ -3740,6 +3874,7 @@ struct howling_blast_t : public death_knight_spell_t
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
+    base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
   }
 
   double action_multiplier() const override
@@ -4022,6 +4157,12 @@ struct obliterate_t : public death_knight_melee_attack_t
       p() -> buffs.rime -> trigger();
     }
 
+    if ( rng().roll( p() -> artifact.overpowered.data().proc_chance() ) )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> artifact.overpowered.value() / 10.0,
+          p() -> gains.overpowered, this );
+    }
+
     consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
   }
 
@@ -4193,25 +4334,85 @@ struct raise_dead_t : public death_knight_spell_t
 
 // Remorseless Winter =======================================================
 
-struct remorseless_winter_damage_t : public death_knight_spell_t
+struct frozen_soul_t : public death_knight_spell_t
 {
-  remorseless_winter_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "remorseless_winter_damage", p, p -> find_spell( 196771 ) )
+  const std::vector<player_t*>& targets;
+
+  frozen_soul_t( death_knight_t* p, std::vector<player_t*>& t ) :
+    death_knight_spell_t( "frozen_soul", p, p -> find_spell( 204959 ) ),
+    targets( t )
   {
     background = true;
     aoe = -1;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> artifact.frozen_soul.data().effectN( 2 ).percent() * targets.size();
+
+    return m;
+  }
+};
+
+struct remorseless_winter_damage_t : public death_knight_spell_t
+{
+  std::vector<player_t*>& targets;
+
+  remorseless_winter_damage_t( death_knight_t* p, std::vector<player_t*>& t ) :
+    death_knight_spell_t( "remorseless_winter_damage", p, p -> find_spell( 196771 ) ),
+    targets( t )
+  {
+    background = true;
+    aoe = -1;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( p() -> artifact.frozen_soul.rank() &&
+         range::find( targets, state -> target ) == targets.end() )
+    {
+      targets.push_back( state -> target );
+    }
   }
 };
 
 // LEGION-TODO: Proper targeting
 struct remorseless_winter_t : public death_knight_spell_t
 {
+  std::vector<player_t*> targets;
+  frozen_soul_t* frozen_soul;
+
   remorseless_winter_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "remorseless_winter", p, p -> find_specialization_spell( "Remorseless Winter" ) )
+    death_knight_spell_t( "remorseless_winter", p, p -> find_specialization_spell( "Remorseless Winter" ) ),
+    frozen_soul( p -> artifact.frozen_soul.rank() ? new frozen_soul_t( p, targets ) : nullptr )
   {
     parse_options( options_str );
 
-    tick_action = new remorseless_winter_damage_t( p );
+    hasted_ticks = false;
+    base_multiplier *= 1.0 + p -> artifact.dead_of_winter.percent();
+    tick_action = new remorseless_winter_damage_t( p, targets );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    death_knight_spell_t::last_tick( d );
+
+    if ( p() -> artifact.frozen_soul.rank() && targets.size() > 0 )
+    {
+      frozen_soul -> target = target;
+      frozen_soul -> execute();
+      targets.clear();
+    }
+  }
+
+  void reset() override
+  {
+    death_knight_spell_t::reset();
+    targets.clear();
   }
 };
 
@@ -4304,6 +4505,22 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     }
 
     return death_knight_melee_attack_t::ready();
+  }
+};
+
+// Sindragosa's Fury ========================================================
+
+// TODO: Fancy targeting
+struct sindragosas_fury_t : public death_knight_spell_t
+{
+  sindragosas_fury_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "sindragosas_fury", p, p -> artifact.sindragosas_fury )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+
+    parse_effect_data( p -> find_spell( 190780 ) -> effectN( 1 ) );
   }
 };
 
@@ -4900,6 +5117,7 @@ void runeforge::razorice_attack( special_effect_t& effect )
       school      = SCHOOL_FROST;
       may_miss    = callbacks = false;
       background  = proc = true;
+      base_multiplier *= 1.0 + player -> artifact.bad_to_the_bone.percent();
 
       weapon = &( player -> main_hand_weapon );
     }
@@ -4927,8 +5145,7 @@ void runeforge::razorice_debuff( special_effect_t& effect )
   {
     razorice_callback_t( const special_effect_t& effect ) :
      dbc_proc_callback_t( effect.item, effect )
-    { 
-    }
+    { }
 
     void execute( action_t* a, action_state_t* state ) override
     {
@@ -5110,6 +5327,9 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
   if ( name == "soulgorge"                ) return new soulgorge_t                ( this, options_str );
   if ( name == "tombstone"                ) return new tombstone_t                ( this, options_str );
+
+  // Artifact
+  if ( name == "sindragosas_fury"         ) return new sindragosas_fury_t         ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -5345,7 +5565,6 @@ void death_knight_t::init_spells()
   spec.riposte                    = find_specialization_spell( "Riposte" );
 
   // Frost
-  spec.ambidexterity              = find_spell( 189092 );
   spec.runic_empowerment          = find_specialization_spell( "Runic Empowerment" );
   spec.rime                       = find_specialization_spell( "Rime" );
   spec.killing_machine            = find_specialization_spell( "Killing Machine" );
@@ -5443,6 +5662,27 @@ void death_knight_t::init_spells()
   talent.blood_mirror          = find_talent_spell( "Blood Mirror" );
   talent.purgatory             = find_talent_spell( "Purgatory" );
 
+  // Artifacts
+
+  // Frost
+  artifact.crystalline_swords  = find_artifact_spell( "Crystalline Swords" );
+  artifact.blades_of_frost     = find_artifact_spell( "Blades of Frost" );
+  artifact.nothing_but_the_boots = find_artifact_spell( "Nothing but the Boots" );
+  artifact.frozen_core         = find_artifact_spell( "Frozen Core" );
+  artifact.frozen_skin         = find_artifact_spell( "Frozen Skin" );
+  artifact.dead_of_winter      = find_artifact_spell( "Dead of Winter" );
+  artifact.sindragosas_fury    = find_artifact_spell( "Sindragosa's Fury" );
+  artifact.blast_radius        = find_artifact_spell( "Blast Radius" );
+  artifact.chill_of_the_grave  = find_artifact_spell( "Chill of the Grave" );
+  artifact.ice_in_your_veins   = find_artifact_spell( "Ice in Your Veins" );
+  artifact.overpowered         = find_artifact_spell( "Over-Powered" );
+  artifact.frozen_soul         = find_artifact_spell( "Frozen Soul" );
+  artifact.cold_as_ice         = find_artifact_spell( "Cold as Ice" );
+  artifact.ambidexterity       = find_artifact_spell( "Ambidexterity" );
+  artifact.bad_to_the_bone     = find_artifact_spell( "Bad to the Bone" );
+  artifact.hypothermia         = find_artifact_spell( "Hypothermia" );
+  artifact.soulbiter           = find_artifact_spell( "Soulbiter" );
+
   // Generic spells
   spell.antimagic_shell        = find_class_spell( "Anti-Magic Shell" );
   spell.blood_rites            = find_spell( 163948 );
@@ -5474,6 +5714,11 @@ void death_knight_t::init_spells()
   if ( talent.mark_of_blood -> ok() )
   {
     active_spells.mark_of_blood = new mark_of_blood_heal_t( this );
+  }
+
+  if ( artifact.crystalline_swords.rank() )
+  {
+    active_spells.crystalline_swords = new crystalline_swords_t( this );
   }
 }
 
@@ -5595,7 +5840,8 @@ void death_knight_t::create_buffs()
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
                               .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() )
-                              .add_invalidate( CACHE_STRENGTH );
+                              .add_invalidate( CACHE_STRENGTH )
+                              .add_invalidate( artifact.frozen_core.rank() ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE );
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.rime );
   buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
@@ -5645,6 +5891,9 @@ void death_knight_t::create_buffs()
   buffs.t18_4pc_frost_crit = buff_creator_t( this, "frozen_wake", find_spell( 187894 ) )
     .default_value( find_spell( 187894 ) -> effectN( 1 ).percent() )
     .trigger_spell( sets.set( DEATH_KNIGHT_FROST, T18, B2 ) );
+  buffs.t18_4pc_unholy = haste_buff_creator_t( this, "crazed_monstrosity", find_spell( 187981 ) )
+    .add_invalidate( CACHE_ATTACK_SPEED )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.soulgorge = buff_creator_t( this, "soulgorge", find_spell( 213003 ) )
     .affects_regen( true );
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
@@ -5674,6 +5923,7 @@ void death_knight_t::init_gains()
   //gains.blood_tap_blood          -> type = ( resource_e ) RESOURCE_RUNE_BLOOD   ;
   gains.pestilent_pustules               = get_gain( "Pestilent Pustules"         );
   gains.tombstone                        = get_gain( "Tombstone"                  );
+  gains.overpowered                      = get_gain( "Over-Powered"               );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -5758,6 +6008,7 @@ void death_knight_t::reset() {
   runic_power_decay_rate = 1; // 1 RP per second decay
   antimagic_shell_absorbed = 0.0;
   pestilent_pustules = 0;
+  crystalline_swords = 0;
   _runes.reset();
 }
 
@@ -5879,6 +6130,8 @@ double death_knight_t::composite_armor_multiplier() const
   if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
     a *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
 
+  a *= 1.0 + artifact.frozen_skin.percent();
+
   return a;
 }
 
@@ -5993,15 +6246,25 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + cache.mastery_value();
   }
 
-  if ( mastery.frozen_heart -> ok() && dbc::is_school( school, SCHOOL_FROST )  )
-    m *= 1.0 + cache.mastery_value();
-
-  /*m *= 1.0 + spec.improved_blood_presence -> effectN( 2 ).percent();*/
-
-  /*if ( buffs.crazed_monstrosity -> up() )
+  if ( dbc::is_school( school, SCHOOL_FROST ) )
   {
-    m *= 1.0 + buffs.crazed_monstrosity -> data().effectN( 1 ).percent();
-  }*/
+    if ( mastery.frozen_heart -> ok() )
+      m *= 1.0 + cache.mastery_value();
+
+    if ( artifact.frozen_core.rank() && buffs.pillar_of_frost -> up() )
+    {
+      m *= 1.0 + artifact.frozen_core.percent();
+    }
+
+    m *= 1.0 + artifact.cold_as_ice.percent();
+  }
+
+  m *= 1.0 + artifact.soulbiter.percent();
+
+  if ( buffs.t18_4pc_unholy -> up() )
+  {
+    m *= 1.0 + buffs.t18_4pc_unholy -> data().effectN( 2 ).percent();
+  }
 
   return m;
 }
@@ -6049,6 +6312,13 @@ double death_knight_t::composite_melee_speed() const
   if ( buffs.unholy_frenzy -> up() )
   {
     haste *= buffs.unholy_frenzy -> check_value();
+  }
+
+  haste *= 1.0 / ( 1.0 + artifact.blades_of_frost.percent() );
+
+  if ( buffs.t18_4pc_unholy -> up() )
+  {
+    haste *= 1.0 / ( 1.0 + buffs.t18_4pc_unholy -> data().effectN( 1 ).percent() );
   }
 
   return haste;

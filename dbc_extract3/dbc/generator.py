@@ -1236,7 +1236,8 @@ class SpellDataGenerator(DataGenerator):
           ( 45470, 0 ),     # Death Strike heal
           ( 196545, 0 ),    # Bonestorm heal
           ( 221847, 0 ),    # Blood Mirror damage
-          ( 205164, 0 ),    # Crystalline Swords damage
+          ( 205164, 0 ),    # Crystalline Swords
+          ( 205165, 0 ),    # More crystalline swords stuff
         ),
 
         # Shaman:
