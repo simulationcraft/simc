@@ -4719,7 +4719,6 @@ struct new_moon_t : public druid_spell_t
     cooldown = player -> cooldown.moon_cd;
     cooldown -> duration = data().charge_cooldown();
     cooldown -> charges  = data().charges();
-    trigger_gcd = timespan_t::from_seconds(1);
   }
 
   void execute() override
