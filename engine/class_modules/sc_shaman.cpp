@@ -5137,7 +5137,7 @@ struct flametongue_buff_t : public buff_t
   shaman_t* p;
 
   flametongue_buff_t( shaman_t* p ) :
-    buff_t( buff_creator_t( p, "flametongue", p -> find_specialization_spell( "Flametongue" ) -> effectN( 1 ).trigger() ) ),
+    buff_t( buff_creator_t( p, "flametongue", p -> find_specialization_spell( "Flametongue" ) -> effectN( 1 ).trigger() ).refresh_behavior( BUFF_REFRESH_PANDEMIC ) ),
     p( p )
   { }
 
@@ -5920,7 +5920,8 @@ void shaman_t::create_buffs()
   buff.feral_spirit          = buff_creator_t( this, "t17_4pc_melee", sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() );
 
   buff.flametongue = new flametongue_buff_t( this );
-  buff.frostbrand = buff_creator_t( this, "frostbrand", spec.frostbrand );
+  buff.frostbrand = buff_creator_t( this, "frostbrand", spec.frostbrand )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buff.stormbringer = buff_creator_t( this, "stormbringer", find_spell( 201846 ) )
                    .activated( false ) // TODO: Need a delay on this
                    .max_stack( find_spell( 201846 ) -> initial_stacks() + talent.tempest -> effectN( 1 ).base_value() );
