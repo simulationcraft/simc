@@ -1379,7 +1379,8 @@ void item::infernal_alchemist_stone( special_effect_t& effect )
 
   effect.custom_buff = stat_buff_creator_t( effect.player, "infernal_alchemist_stone", effect.driver(), effect.item )
     .duration( stat_spell -> duration() )
-    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver() -> effectN( 1 ).average( effect.item ) );
+    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver() -> effectN( 1 ).average( effect.item ) )
+    .chance( 1 ); // RPPM is handled by the special effect, so make the buff always go up
 
   new dbc_proc_callback_t( effect.item, effect );
 }

@@ -320,6 +320,10 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
     creator.tick_behavior( BUFF_TICK_CLIP );
   }
 
+  // Make the buff always proc. The proc chance is handled by the proc callback, so the buff should
+  // always trigger.
+  creator.chance( 1 );
+
   creator.refresh_behavior( BUFF_REFRESH_DURATION );
 
   // If user given stat is defined, override whatever the spell would contain
@@ -378,6 +382,10 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
     creator.period( tick );
     creator.tick_behavior( BUFF_TICK_CLIP );
   }
+
+  // Make the buff always proc. The proc chance is handled by the proc callback, so the buff should
+  // always trigger.
+  creator.chance( 1 );
 
   creator.refresh_behavior( BUFF_REFRESH_DURATION );
 
