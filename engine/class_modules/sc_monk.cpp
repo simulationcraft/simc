@@ -709,6 +709,10 @@ public:
   const special_effect_t* fu_zan_the_wanderers_companion;
   const special_effect_t* sheilun_staff_of_the_mists;
   const special_effect_t* aburaq;
+
+  // Storm Earth and Fire targeting logic
+  std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
+  void retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets, size_t n_targets ) const;
 };
 
 // ==========================================================================
@@ -791,7 +795,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         action_t* a = o() -> action_list[ i ];
 
-        if ( util::str_compare_ci( this -> name_str, a -> name_str ) && this -> id == a -> id )
+        if ( this -> id == a -> id || util::str_compare_ci( this -> name_str, a -> name_str ) )
         {
           source_action = a;
           break;
@@ -891,20 +895,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
     int n_targets() const
     { return source_action ? source_action -> n_targets() : super_t::n_targets(); }
 
-    void schedule_execute( action_state_t* state = nullptr )
+    void execute()
     {
-      // Never execute an ability if there's no source action. Things will crash.
-      if ( ! source_action )
-      {
-        action_state_t::release( state );
-        return;
-      }
-
       // Target always follows the SEF clone's target, which is assigned during
       // summon time
       this -> target = this -> player -> target;
 
-      super_t::schedule_execute( state );
+      super_t::execute();
     }
 
     void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
@@ -1108,7 +1105,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( result_is_hit( state -> result ) )
       {
         o() -> trigger_cyclone_strikes( state );
-        state -> target = o() -> next_cyclone_strikes_target( state );
       }
     }
   };
@@ -1127,7 +1123,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( result_is_hit( state -> result ) )
       {
         o() -> trigger_cyclone_strikes( state );
-        state -> target = o() -> next_cyclone_strikes_target( state );
       }
     }
    };
@@ -1147,7 +1142,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         state -> target -> debuffs.mortal_wounds -> trigger();
         o() -> trigger_cyclone_strikes( state );
-        state -> target = o() -> next_cyclone_strikes_target( state );
       }
     }
   };
@@ -1247,7 +1241,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_rushing_jade_wind_t : public sef_melee_attack_t
   {
     sef_rushing_jade_wind_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "rushing_jade_wind", player, player -> o() -> talent.refreshing_jade_wind )
+      sef_melee_attack_t( "rushing_jade_wind", player, player -> o() -> talent.rushing_jade_wind )
     {
       tick_zero = hasted_ticks = true;
 
@@ -1255,7 +1249,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       weapon_power_mod = 0;
 
-      tick_action = new sef_tick_action_t( "rushing_jade_wind_tick", player, &( data() ) );
+      tick_action = new sef_tick_action_t( "rushing_jade_wind_tick", player,
+          player -> o() -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
     }
   };
 
@@ -1438,23 +1433,11 @@ public:
     pet_t::summon( duration );
 
     o() -> buff.storm_earth_and_fire -> trigger();
-    // Note, storm_earth_fire_t (the summoning spell) has already set the
-    // correct target
-    monk_td_t* owner_td = o() -> get_target_data( target );
-    assert( owner_td -> debuff.storm_earth_and_fire -> check() == 0 );
-    owner_td -> debuff.storm_earth_and_fire -> trigger();
   }
 
   void dismiss( bool expired = false ) override
   {
     pet_t::dismiss( expired );
-
-    if ( ! target -> is_sleeping() )
-    {
-      monk_td_t* owner_td = o() -> get_target_data( target );
-      assert( owner_td -> debuff.storm_earth_and_fire -> check() == 1 );
-      owner_td -> debuff.storm_earth_and_fire -> expire();
-    }
 
     o() -> buff.storm_earth_and_fire -> decrement();
   }
@@ -1466,22 +1449,15 @@ public:
       size_t spell = static_cast<size_t>( ability - SEF_SPELL_MIN );
       assert( spells[ spell ] );
 
-      // If the owner targeted this pet's target, don't mirror the ability
-      if ( source_action -> target != target )
-      {
-        spells[ spell ] -> source_action = source_action;
-        spells[ spell ] -> schedule_execute();
-      }
+      spells[ spell ] -> source_action = source_action;
+      spells[ spell ] -> execute();
     }
     else
     {
       assert( attacks[ ability ] );
 
-      if ( source_action -> target != target )
-      {
-        attacks[ ability ] -> source_action = source_action;
-        attacks[ ability ] -> schedule_execute();
-      }
+      attacks[ ability ] -> source_action = source_action;
+      attacks[ ability ] -> execute();
     }
   }
 };
@@ -1933,13 +1909,20 @@ public:
       return;
     }
 
-    for ( sef_pet_e i = SEF_FIRE; i < SEF_PET_MAX; i++ )
+    if ( ! p() -> buff.storm_earth_and_fire -> up() )
     {
-      if ( p() -> pet.sef[ i ] -> is_sleeping() )
-      {
-        continue;
-      }
-      p() -> pet.sef[ i ] -> trigger_attack( sef_ability, a );
+      return;
+    }
+
+    p() -> pet.sef[ SEF_EARTH ] -> trigger_attack( sef_ability, a );
+    p() -> pet.sef[ SEF_FIRE  ] -> trigger_attack( sef_ability, a );
+    if ( sef_ability == SEF_TIGER_PALM || sef_ability == SEF_BLACKOUT_KICK || 
+         sef_ability == SEF_RISING_SUN_KICK )
+    {
+      auto targets = p() -> create_storm_earth_and_fire_target_list();
+      auto n_targets = targets.size();
+      p() -> retarget_storm_earth_and_fire( p() -> pet.sef[ SEF_EARTH ], targets, n_targets );
+      p() -> retarget_storm_earth_and_fire( p() -> pet.sef[ SEF_FIRE  ], targets, n_targets );
     }
   }
 };
@@ -3829,74 +3812,23 @@ struct storm_earth_and_fire_t: public monk_spell_t
     return monk_spell_t::ready();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     monk_spell_t::execute();
 
-    // No clone on target, check if we can spawn one or not
-    if ( td( execute_state -> target ) -> debuff.storm_earth_and_fire -> check() == 0 )
-    {
-      // Already full clones, despawn both
-      if ( p() -> buff.storm_earth_and_fire -> check() == 2 )
-      {
-        // cannot dismiss clones any longer
-/*        for ( size_t i = 0; i < sizeof_array( p() -> pet.sef ); i++ )
-        {
-          if ( p() -> pet.sef[ i ] -> is_sleeping() )
-          {
-            continue;
-          }
+    auto targets = p() -> create_storm_earth_and_fire_target_list();
+    auto n_targets = targets.size();
 
-          p() -> pet.sef[ i ] -> dismiss();
-        }
-*/
-        assert( p() -> buff.storm_earth_and_fire -> check() == 0 );
-      }
-      // Can fit a clone on the target, randomize which clone is spawned
-      // TODO: Is this really random?
-      else
-      {
-        std::vector<size_t> sef_idx;
-        for ( size_t i = 0; i < sizeof_array( p() -> pet.sef ); i++ )
-        {
-          if ( ! p() -> pet.sef[ i ] -> is_sleeping() )
-          {
-            continue;
-          }
+    // Start targeting logic from "owner" always
+    p() -> pet.sef[ SEF_EARTH ] -> target = p() -> target;
+    p() -> retarget_storm_earth_and_fire( p() -> pet.sef[ SEF_EARTH ], targets, n_targets );
+    p() -> pet.sef[ SEF_EARTH ] -> summon( data().duration() );
 
-          sef_idx.push_back( i );
-        }
-
-        unsigned rng_idx = static_cast<unsigned>( rng().range( 0.0, static_cast<double>( sef_idx.size() ) ) );
-        assert( rng_idx < sef_idx.size() );
-        size_t idx = sef_idx[ rng_idx ];
-
-        p() -> pet.sef[ idx ] -> target = p() -> next_cyclone_strikes_target( execute_state );
-        p() -> pet.sef[ idx ] -> summon();
-      }
-    }
-    // Clone on target, despawn that specific clone
-    // Cannot Despawn
-    /*else
-    {
-      for ( size_t i = 0; i < sizeof_array( p() -> pet.sef ); i++ )
-      {
-        if ( p() -> pet.sef[ i ] -> is_sleeping() )
-        {
-          continue;
-        }
-
-        if ( p() -> pet.sef[ i ] -> target != execute_state -> target )
-        {
-          continue;
-        }
-
-        p() -> pet.sef[ i ] -> dismiss();
-      }
-    }
-    */
+    // Start targeting logic from "owner" always
+    p() -> pet.sef[ SEF_FIRE ] -> target = p() -> target;
+    p() -> retarget_storm_earth_and_fire( p() -> pet.sef[ SEF_FIRE ], targets, n_targets );
+    p() -> pet.sef[ SEF_FIRE ] -> summon( data().duration() );
   }
-
 };
 
 sef_despawn_cb_t::sef_despawn_cb_t( storm_earth_and_fire_t* a ) : action( a )
@@ -6654,6 +6586,7 @@ void monk_t::create_buffs()
 
   buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                              .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
                               .cd( timespan_t::zero() );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
@@ -6800,6 +6733,122 @@ void monk_t::recalculate_resource_max( resource_e r )
 bool monk_t::has_stagger()
 {
   return active_actions.stagger_self_damage -> stagger_ticking();
+}
+
+// monk_t::retarget_storm_earth_and_fire ====================================
+
+std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
+{
+  // Make a copy of the non sleeping target list
+  auto l = sim -> target_non_sleeping_list.data();
+
+  // Sort the list by selecting non-cyclone striked targets first, followed by ascending order of
+  // the debuff remaining duration
+  range::sort( l, [ this ]( player_t* l, player_t* r ) {
+    auto lcs = get_target_data( l ) -> debuff.cyclone_strikes;
+    auto rcs = get_target_data( r ) -> debuff.cyclone_strikes;
+    // Neither has cyclone strike
+    if ( ! lcs -> up() && ! rcs -> up() )
+    {
+      return false;
+    }
+    // Left side does not have cyclone strike, right side does
+    else if ( ! lcs -> up() && rcs -> up() )
+    {
+      return true;
+    }
+    // Left side has cyclone strike, right side does not
+    else if ( lcs -> up() && ! rcs -> up() )
+    {
+      return false;
+    }
+
+    // Both have cyclone strike, order by remaining duration
+    return lcs -> remains() < rcs -> remains();
+  } );
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s storm_earth_and_fire target list, n_targets=%u", name(), l.size() );
+    range::for_each( l, [ this ]( player_t* t ) {
+      sim -> out_debug.printf( "%s cs=%.3f",
+        t -> name(),
+        get_target_data( t ) -> debuff.cyclone_strikes -> remains().total_seconds() );
+    } );
+  }
+
+  return l;
+}
+
+// monk_t::retarget_storm_earth_and_fire ====================================
+
+void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets, size_t n_targets ) const
+{
+  player_t* original_target = pet -> target;
+
+  // Everyone attacks the same (single) target
+  if ( n_targets == 1 )
+  {
+    pet -> target = targets.front();
+  }
+  // Pets attack the target the owner is not attacking
+  else if ( n_targets == 2 )
+  {
+    pet -> target = targets.front() == pet -> owner -> target ? targets.back() : targets.front();
+  }
+  // 3 targets, split evenly by skipping the owner's target and picking the first available target
+  else if ( n_targets == 3 )
+  {
+    auto it = targets.begin();
+    while ( it != targets.end() )
+    {
+      // Don't attack owner's target
+      if ( *it == pet -> owner -> target )
+      {
+        it++;
+        continue;
+      }
+
+      pet -> target = *it;
+      // This target has been chosen, so remove from the list (so that the second pet can choose
+      // something else)
+      targets.erase( it );
+      break;
+    }
+  }
+  // More than 3 targets, choose suitable ones from the target list
+  else
+  {
+    auto it = targets.begin();
+    while ( it != targets.end() )
+    {
+      // Don't attack owner's target
+      if ( *it == pet -> owner -> target )
+      {
+        it++;
+        continue;
+      }
+
+      // Don't attack my own target
+      if ( *it == pet -> target )
+      {
+        it++;
+        continue;
+      }
+
+      pet -> target = *it;
+      // This target has been chosen, so remove from the list (so that the second pet can choose
+      // something else)
+      targets.erase( it );
+      break;
+    }
+  }
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s storm_earth_and_fire %s (re)target=%s old_target=%s", name(),
+        pet -> name(), pet -> target -> name(), original_target -> name() );
+  }
 }
 
 // monk_t::partial_clear_stagger ====================================================
