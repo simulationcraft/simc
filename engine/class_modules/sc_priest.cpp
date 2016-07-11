@@ -354,6 +354,10 @@ public:
     proc_t* t17_2pc_caster_mind_blast_reset_overflow_seconds;
     proc_t* t17_4pc_holy;
     proc_t* t17_4pc_holy_overflow;
+    proc_t* void_eruption_both_dots;
+    proc_t* void_eruption_no_dots;
+    proc_t* void_eruption_only_shadow_word_pain;
+    proc_t* void_eruption_only_vampiric_touch;
     proc_t* void_tendril;
   } procs;
 
@@ -2377,176 +2381,51 @@ struct void_eruption_t final : public priest_spell_t
     void_bolt = player->find_action("void_bolt");
   }
 
+  std::vector< player_t* >& target_list() const
+  {
+    std::vector< player_t* >& tl = priest_spell_t::target_list();
+
+    priest_spell_t::available_targets(tl);
+    
+    auto it = tl.begin();
+
+    while (it != tl.end())
+    {
+      int total = 0;
+
+      priest_td_t& td = priest_spell_t::get_td(*it);
+
+      if (!td.dots.shadow_word_pain->is_ticking() && !td.dots.vampiric_touch->is_ticking()) // Neither SWP nor VT
+      {
+        priest.procs.void_eruption_no_dots->occur();
+        it = tl.erase(it);
+      }
+      else if (td.dots.shadow_word_pain->is_ticking() && td.dots.vampiric_touch->is_ticking()) // Both SWP and VT
+      {
+        priest.procs.void_eruption_both_dots->occur();
+        it = tl.insert(it, *it);
+        it += 2;
+      }
+      else // SWP or VT
+      {
+        if (td.dots.shadow_word_pain->is_ticking())
+        {
+          priest.procs.void_eruption_only_shadow_word_pain->occur();
+        }
+        else
+        {
+          priest.procs.void_eruption_only_vampiric_touch->occur();
+        }
+        it++;
+      }
+    }
+
+    return tl;
+  }
+
   void execute() override
   {
-    //priest_spell_t::execute();
-
-
-    /*** Begin copypasta (with edits) of execute() */
-
-#ifndef NDEBUG
-    if (!initialized)
-    {
-      sim->errorf("action_t::execute: action %s from player %s is not initialized.\n", name(), player->name());
-      assert(0);
-    }
-#endif
-
-    if (&data() == &spell_data_not_found_t::singleton)
-    {
-      sim->errorf("Player %s could not find spell data for action %s\n", player->name(), name());
-      sim->cancel();
-    }
-
-    if (n_targets() == 0 && target->is_sleeping())
-      return;
-
-    if (!execute_targeting(this))
-    {
-      cancel(); // This cancels the cast if the target moves out of range while the spell is casting.
-      return;
-    }
-
-    if (sim->log && !dual)
-    {
-      sim->out_log.printf("%s performs %s (%.0f)", player->name(), name(),
-        player->resources.current[player->primary_resource()]);
-    }
-
-    hit_any_target = false;
-    num_targets_hit = 0;
-
-    if (harmful)
-    {
-      if (player->in_combat == false && sim->debug)
-        sim->out_debug.printf("%s enters combat.", player->name());
-
-      player->in_combat = true;
-    }
-
-    size_t num_targets;
-    std::vector< player_t* >& tl = target_list();
-    num_targets = (n_targets() < 0) ? tl.size() : n_targets();
-    if (num_targets < 1)
-    {
-      cancel(); // AoE Children who get automatically executed from a parent spell will sometimes run into situations where they do not deal damage to the
-      return;   // original target, but one nearby, and that one nearby is out range. This will catch it before the sim crashes.
-    }
-
-    for (size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++)
-    {
-      action_state_t* s = get_state(pre_execute_state);
-      s->target = tl[t];
-      s->n_targets = std::min(num_targets, tl.size());
-      s->chain_target = as<int>(t);
-      
-      dot_t* swp = s->target->get_dot("shadow_word_pain", &priest);
-
-      if (swp) // Shadow Word: Pain is ticking on the target; deal damage
-      {
-        if (!pre_execute_state) snapshot_state(s, amount_type(s));
-        s->result = calculate_result(s);
-        s->block_result = calculate_block_result(s);
-
-        s->result_amount = calculate_direct_amount(s);
-
-        if (sim->debug)
-          s->debug();
-
-        schedule_travel(s);
-      }
-      
-      action_state_t* s2 = get_state(pre_execute_state);
-      s2->target = tl[t];
-      s2->n_targets = std::min(num_targets, tl.size());
-      s2->chain_target = as<int>(t);
-
-      dot_t* vt = s2->target->get_dot("vampiric_touch", &priest);
-
-      if (vt) // Vampiric Touch is ticking on the target; deal damage
-      {
-        if (!pre_execute_state) snapshot_state(s2, amount_type(s2));
-        s2->result = calculate_result(s2);
-        s2->block_result = calculate_block_result(s2);
-
-        s2->result_amount = calculate_direct_amount(s2);
-
-        if (sim->debug)
-          s2->debug();
-
-        schedule_travel(s2);
-      }
-    }
-
-    if (player->regen_type == REGEN_DYNAMIC)
-    {
-      player->do_dynamic_regen();
-    }
-
-    consume_resource();
-
-    update_ready();
-
-    if (!dual) stats->add_execute(time_to_execute, target);
-
-    if (pre_execute_state)
-      action_state_t::release(pre_execute_state);
-
-    // The rest of the execution depends on actually executing on target
-    if (num_targets > 0)
-    {
-      if (composite_teleport_distance(execute_state) > 0)
-        do_teleport(execute_state);
-
-      if (execute_action && result_is_hit(execute_state->result))
-      {
-        assert(!execute_action->pre_execute_state);
-        execute_action->schedule_execute(execute_action->get_state(execute_state));
-      }
-
-      // Proc generic abilities on execute.
-      proc_types pt;
-      if (callbacks && (pt = execute_state->proc_type()) != PROC1_INVALID)
-      {
-        proc_types2 pt2;
-
-        // "On spell cast", only performed for foreground actions
-        if ((pt2 = execute_state->cast_proc_type2()) != PROC2_INVALID)
-        {
-          action_callback_t::trigger(player->callbacks.procs[pt][pt2], this, execute_state);
-        }
-
-        // "On an execute result"
-        if ((pt2 = execute_state->execute_proc_type2()) != PROC2_INVALID)
-        {
-          action_callback_t::trigger(player->callbacks.procs[pt][pt2], this, execute_state);
-        }
-      }
-    }
-
-    // Restore the default target after execution. This is required so that
-    // target caches do not get into an inconsistent state, if the target of this
-    // action (defined by a number) spawns/despawns dynamically during an
-    // iteration.
-    if (target_number > 0 && target != default_target)
-    {
-      target = default_target;
-    }
-
-    if (energize_type_() == ENERGIZE_ON_CAST || (energize_type_() == ENERGIZE_ON_HIT && hit_any_target))
-    {
-      player->resource_gain(energize_resource_(),
-        composite_energize_amount(execute_state), gain, this);
-    }
-    else if (energize_type_() == ENERGIZE_PER_HIT)
-    {
-      player->resource_gain(energize_resource_(),
-        composite_energize_amount(execute_state) * num_targets_hit, gain, this);
-    }
-
-    if (repeating && !proc) schedule_execute();
-
-    /*** End copypasta (with edits) of execute() */
+    priest_spell_t::execute();
 
     priest.buffs.voidform->trigger();
     priest.cooldowns.void_bolt->reset(true);
@@ -2557,7 +2436,6 @@ struct void_eruption_t final : public priest_spell_t
     }
     else
     {
-
       priest.cooldowns.void_bolt->start(void_bolt);
       priest.cooldowns.void_bolt->adjust(-timespan_t::from_millis(1000 * (1.5 * priest.composite_spell_speed())), true);
     }
@@ -5965,7 +5843,11 @@ void priest_t::create_procs()
       get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
   procs.t17_4pc_holy = get_proc( "Tier17 4pc Serendipity" );
   procs.t17_4pc_holy_overflow =
-      get_proc( "Tier17 4pc Serendipity lost to overflow" );
+    get_proc("Tier17 4pc Serendipity lost to overflow");
+  procs.void_eruption_both_dots = get_proc("Void Eruption casted when a target with both DoTs was up");
+  procs.void_eruption_no_dots = get_proc("Void Eruption casted when a target with no DoTs was up");
+  procs.void_eruption_only_shadow_word_pain = get_proc("Void Eruption casted when a target with only Shadow Word: Pain was up");
+  procs.void_eruption_only_vampiric_touch = get_proc("Void Eruption casted when a target with only Vampiric Touch was up");
   procs.void_tendril = get_proc( "Void Tendril spawned from Call to the Void" );
 
   procs.legendary_anunds_last_breath = get_proc("Legendary - Anund's Seared Shackles - Shadow Word: Pain refreshed by Mind Blast casts");
