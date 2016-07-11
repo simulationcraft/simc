@@ -3494,7 +3494,7 @@ struct chained_base_t : public shaman_spell_t
       return 1.0;
     }
 
-    return shaman_spell_t::overload_chance( s );
+    return shaman_spell_t::overload_chance( s ) * .2;
   }
 
   void execute() override
