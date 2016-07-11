@@ -1495,7 +1495,7 @@ struct pet_action_t : public T_ACTION
 
     this -> special = true;
     this -> may_crit = true;
-    this -> crit_bonus_multiplier *= 1.0 + p() -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
+    //this -> crit_bonus_multiplier *= 1.0 + p() -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
   }
 
   T_PET* p() const
