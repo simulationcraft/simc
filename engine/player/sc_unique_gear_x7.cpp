@@ -22,7 +22,6 @@ namespace item
   // 7.0 Dungeon
   void chaos_talisman( special_effect_t& );
   void corrupted_starlight( special_effect_t& );
-  void darkmoon_deck( special_effect_t& );
   void elementium_bomb_squirrel( special_effect_t& );
   void faulty_countermeasures( special_effect_t& );
   void figurehead_of_the_naglfar( special_effect_t& );
@@ -41,8 +40,35 @@ namespace item
   void tirathons_betrayal( special_effect_t& );
   void windscar_whetstone( special_effect_t& );
 
+  // 7.0 Misc
+  void darkmoon_deck( special_effect_t& );
+  void infernal_alchemist_stone( special_effect_t& ); // WIP
+
   // 7.0 Raid
   void natures_call( special_effect_t& );
+  // WIP
+  void bloodthirsty_instinct( special_effect_t& );
+  void bough_of_corruption( special_effect_t& );
+  void ravaged_seed_pod( special_effect_t& );
+  void spontaneous_appendages( special_effect_t& );
+  void twisting_wind( special_effect_t& );
+  void unstable_horrorslime( special_effect_t& );
+  void wriggling_sinew( special_effect_t& );
+
+  /* NYI
+  cocoon_of_enforced_solitude
+  goblet_of_nightmarish_ichor
+  grotesque_statuette
+  horn_of_cenarius
+  phantasmal_echo
+  vial_of_nightmare_fog
+  */
+
+  /* check
+  heightened_senses
+  swarming_plaguehive
+  ursocs_rending_paw
+  */
 }
 
 namespace set_bonus
@@ -1350,6 +1376,19 @@ void item::portable_manacracker( special_effect_t& effect )
   new volatile_magic_callback_t( effect );
 }
 
+// Infernal Alchemist Stone =================================================
+
+void item::infernal_alchemist_stone( special_effect_t& effect )
+{
+  const spell_data_t* stat_spell = effect.player -> find_spell( 60229 );
+
+  effect.custom_buff = stat_buff_creator_t( effect.player, "infernal_alchemist_stone", effect.driver(), effect.item )
+    .duration( stat_spell -> duration() )
+    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver() -> effectN( 1 ).average( effect.item ) );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 // March of the Legion ======================================================
 
 void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
@@ -1389,6 +1428,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 222512, item::natures_call );
 
   /* Legion 7.0 Misc */
+  register_special_effect( 188026, item::infernal_alchemist_stone       );
   register_special_effect( 191563, item::darkmoon_deck                  );
   register_special_effect( 191611, item::darkmoon_deck                  );
   register_special_effect( 191632, item::darkmoon_deck                  );
