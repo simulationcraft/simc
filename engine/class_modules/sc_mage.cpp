@@ -4103,6 +4103,12 @@ struct flurry_t : public frost_mage_spell_t
 
   }
 
+  virtual timespan_t travel_time() const override
+  {
+    // Approximate travel time from in game data.
+    return timespan_t::from_seconds( ( player -> current.distance / 31 ) );
+  }
+
   virtual timespan_t execute_time() const override
   {
     if ( p() -> buffs.brain_freeze -> check() )
