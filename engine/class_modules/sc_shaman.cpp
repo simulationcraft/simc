@@ -10,6 +10,8 @@
 // ==========================================================================
 
 // Legion TODO
+// Generic
+// - Clean up the "may proc" stuff
 // Elemental
 // - Verification
 // - Path of Flame spread mechanism (would be good to generalize this "nearby" spreading)
@@ -1107,7 +1109,12 @@ public:
 
     if ( may_proc_stormbringer )
     {
-      may_proc_stormbringer = ab::weapon && ab::weapon -> slot == SLOT_MAIN_HAND;
+      may_proc_stormbringer = ab::weapon && ab::weapon -> slot == SLOT_MAIN_HAND && n_targets() == 0;
+    }
+
+    if ( may_proc_windfury )
+    {
+      may_proc_stormbringer = n_targets() == 0;
     }
 
     may_proc_lightning_shield = p() -> talent.lightning_shield -> ok() && weapon && weapon_multiplier > 0;
