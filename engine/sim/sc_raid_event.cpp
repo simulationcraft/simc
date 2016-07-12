@@ -1165,6 +1165,11 @@ void raid_event_t::init( sim_t* sim )
       continue;
     }
 
+    if ( raid_event -> cooldown == timespan_t::zero() )
+    {
+      continue;
+    }
+
     assert( raid_event -> cooldown > timespan_t::zero() );
     assert( raid_event -> cooldown > raid_event -> cooldown_stddev );
 
