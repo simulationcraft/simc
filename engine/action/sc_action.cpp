@@ -717,7 +717,7 @@ void action_t::parse_options( const std::string& options_str )
       if ( p )
         target = p;
       else
-        sim -> errorf( "%s %s: Unable to locate target '%s'.\n", player -> name(), name(), options_str.c_str() );
+        sim -> errorf( "%s %s: Unable to locate target for action '%s'.\n", player -> name(), name(), options_str.c_str() );
     }
   }
 }
