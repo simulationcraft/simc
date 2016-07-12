@@ -1109,7 +1109,7 @@ public:
 
     if ( may_proc_stormbringer )
     {
-      may_proc_stormbringer = ab::weapon && ab::weapon -> slot == SLOT_MAIN_HAND && n_targets() == 0;
+      may_proc_stormbringer = ab::weapon && ab::weapon -> slot == SLOT_MAIN_HAND;
     }
 
     if ( may_proc_windfury )
@@ -2893,6 +2893,11 @@ struct stormstrike_base_t : public shaman_attack_t
     cooldown             = p() -> cooldown.strike;
     weapon_multiplier    = 0.0;
     may_crit             = false;
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
     may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = may_proc_frostbrand = false;
   }
 
@@ -3298,6 +3303,12 @@ struct fury_of_air_aoe_t : public shaman_attack_t
     background = true;
     aoe = -1;
     school = SCHOOL_NATURE;
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
     may_proc_windfury = may_proc_flametongue = may_proc_stormbringer = may_proc_frostbrand = false;
   }
 };
