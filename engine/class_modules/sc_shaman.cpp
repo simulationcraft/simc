@@ -462,7 +462,6 @@ public:
     artifact_power_t stormflurry;
     artifact_power_t hammer_of_storms;
     artifact_power_t forged_in_lava;
-    artifact_power_t surge_of_elements;
     artifact_power_t wind_strikes;
     artifact_power_t gathering_storms;
     artifact_power_t gathering_of_the_maelstrom;
@@ -471,6 +470,7 @@ public:
     artifact_power_t doom_wolves;
     artifact_power_t alpha_wolf;
     artifact_power_t earthshattering_blows;
+    artifact_power_t weapons_of_the_elements;
   } artifact;
 
   // Misc Spells
@@ -871,7 +871,6 @@ public:
       maelstrom_gain = effect.resource( RESOURCE_MAELSTROM );
       ab::energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     }
-
   }
 
   void init()
@@ -3076,7 +3075,7 @@ struct rockbiter_t : public shaman_spell_t
     shaman_spell_t( "rockbiter", player, player -> find_specialization_spell( "Rockbiter" ), options_str )
   {
     maelstrom_gain += player -> artifact.gathering_of_the_maelstrom.value();
-    base_multiplier *= 1.0 + player -> artifact.surge_of_elements.percent();
+    base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
   }
 
   void execute() override
@@ -3104,7 +3103,7 @@ struct flametongue_t : public shaman_spell_t
   flametongue_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "flametongue", player, player -> find_specialization_spell( "Flametongue" ), options_str )
   {
-    base_multiplier *= 1.0 + player -> artifact.surge_of_elements.percent();
+    base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
 
     add_child( player -> flametongue );
   }
@@ -3125,7 +3124,7 @@ struct frostbrand_t : public shaman_spell_t
   frostbrand_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "frostbrand", player, player -> find_specialization_spell( "Frostbrand" ), options_str )
   {
-    base_multiplier *= 1.0 + player -> artifact.surge_of_elements.percent();
+    base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
 
     if ( player -> hailstorm )
       add_child( player -> hailstorm );
@@ -3272,6 +3271,8 @@ struct boulderfist_t : public shaman_spell_t
   boulderfist_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "boulderfist", player, player -> talent.boulderfist, options_str )
   {
+    base_multiplier *= 1.0 + player -> artifact.weapons_of_the_elements.percent();
+
     maelstrom_gain += player -> artifact.gathering_of_the_maelstrom.value();
   }
 
@@ -5522,7 +5523,6 @@ void shaman_t::init_spells()
   artifact.stormflurry               = find_artifact_spell( "Stormflurry"        );
   artifact.hammer_of_storms          = find_artifact_spell( "Hammer of Storms"   );
   artifact.forged_in_lava            = find_artifact_spell( "Forged in Lava"     );
-  artifact.surge_of_elements         = find_artifact_spell( "Surge of the Elements" );
   artifact.wind_strikes              = find_artifact_spell( "Wind Strikes"       );
   artifact.gathering_storms          = find_artifact_spell( "Gathering Storms"   );
   artifact.gathering_of_the_maelstrom= find_artifact_spell( "Gathering of the Maelstrom" );
@@ -5531,6 +5531,7 @@ void shaman_t::init_spells()
   artifact.doom_wolves               = find_artifact_spell( "Doom Wolves"        );
   artifact.alpha_wolf                = find_artifact_spell( "Alpha Wolf"         );
   artifact.earthshattering_blows     = find_artifact_spell( "Earthshattering Blows" );
+  artifact.weapons_of_the_elements   = find_artifact_spell( "Weapons of the Elements" );
 
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
