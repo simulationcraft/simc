@@ -36,7 +36,6 @@ namespace item
   void spiked_counterweight( special_effect_t& );
   void stormsinger_fulmination_charge( special_effect_t& );
   void terrorbound_nexus( special_effect_t& ); // NYI
-  void the_devilsaurs_bite( special_effect_t& );
   void tiny_oozeling_in_a_jar( special_effect_t& );
   void tirathons_betrayal( special_effect_t& );
   void windscar_whetstone( special_effect_t& );
@@ -168,7 +167,9 @@ struct gaseous_bubble_t : public absorb_buff_t
     absorb_buff_t( absorb_buff_creator_t( effect.player, "gaseous_bubble", effect.driver(), effect.item ) ),
     explosion( a )
   {
-    a -> base_dd_min = a -> base_dd_max = effect.driver() -> effectN( 2 ).average( effect.item );
+    // Set correct damage amount for explosion.
+    a -> base_dd_min = effect.driver() -> effectN( 2 ).min( effect.item );
+    a -> base_dd_max = effect.driver() -> effectN( 2 ).max( effect.item );
   }
 
   void expire_override( int stacks, timespan_t remaining ) override
@@ -251,7 +252,9 @@ struct ice_bomb_t : public spell_t
     aoe = -1;
     item = effect.item;
 
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( item );
+    // Parse damage from item.
+    parse_effect_data( data().effectN( 1 ) );
+
     buff = stat_buff_creator_t( effect.player, "frigid_armor", effect.player -> find_spell( 214589 ), effect.item );
   }
 
@@ -433,7 +436,8 @@ struct brutal_haymaker_initial_t : public spell_t
     callbacks = false;
     item = effect.item;
 
-    base_dd_min = base_dd_min = data().effectN( 1 ).average( item );
+    // Parse damage from item.
+    parse_effect_data( data().effectN( 1 ) );
   }
 
   void impact( action_state_t* s ) override
@@ -460,8 +464,6 @@ void item::spiked_counterweight( special_effect_t& effect )
 void item::windscar_whetstone( special_effect_t& effect )
 {
   action_t* maelstrom = effect.create_action();
-  maelstrom -> base_dd_min = maelstrom -> base_dd_max = 
-    maelstrom -> data().effectN( 1 ).average( effect.item );
   maelstrom -> cooldown -> duration = timespan_t::zero(); // damage spell has erroneous cooldown
 
   effect.custom_buff = buff_creator_t( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
@@ -486,7 +488,8 @@ struct darkstrikes_absorb_t : public absorb_t
     item = effect.item;
     target = effect.player;
 
-    base_dd_min = base_dd_max = data().effectN( 2 ).average( item );
+    // Set correct absorb amount.
+    parse_effect_data( data().effectN( 2 ) );
   }
 };
 
@@ -501,7 +504,8 @@ struct darkstrikes_t : public spell_t
     callbacks = false;
     item = effect.item;
 
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( item );
+    // Set correct damage amount.
+    parse_effect_data( data().effectN( 1 ) );
   }
 
   void init() override
@@ -630,6 +634,7 @@ struct fetid_regurgitation_t : public spell_t
     aoe = -1;
     item = effect.item;
 
+    // Set damage amount.
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( item );
   }
 
@@ -923,7 +928,8 @@ struct nightfall_t : public spell_t
     t -> background = t -> dual = t -> ground_aoe = t -> may_crit = true;
     t -> callbacks = false;
     t -> item = effect.item;
-    t -> base_dd_min = t -> base_dd_max = tick_spell -> effectN( 1 ).average( item );
+    // Set correct damage value.
+    t -> parse_effect_data( tick_spell -> effectN( 1 ) );
     t -> stats = stats;
     damage_spell = t;
   }
@@ -1083,6 +1089,7 @@ struct aw_nuts_t : public spell_t
   {
     spell_t::init();
 
+    // Don't benefit from player multipliers, because in game the squirrel is dealing the damage, not you.
     snapshot_flags &= ~( STATE_MUL_DA | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
   }
 };
@@ -1548,17 +1555,6 @@ void item::wriggling_sinew( special_effect_t& effect )
   effect.custom_buff = new maddening_whispers_t( effect );
 }
 
-// The Devilsaur's Bite =====================================================
-
-void item::the_devilsaurs_bite( special_effect_t& effect )
-{
-  effect.execute_action = effect.create_action();
-  effect.execute_action -> base_dd_min = effect.execute_action -> base_dd_max =
-    effect.trigger() -> effectN( 1 ).average( effect.item );
-
-  new dbc_proc_callback_t( effect.item, effect );
-}
-
 // March of the Legion ======================================================
 
 void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
@@ -1585,7 +1581,6 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 214584, item::shivermaws_jawbone             );
   register_special_effect( 214168, item::spiked_counterweight           );
   register_special_effect( 215630, item::stormsinger_fulmination_charge );
-  register_special_effect( 224073, item::the_devilsaurs_bite            );
   register_special_effect( 215127, item::tiny_oozeling_in_a_jar         );
   register_special_effect( 215658, item::tirathons_betrayal             );
   register_special_effect( 214980, item::windscar_whetstone             );
