@@ -3038,6 +3038,7 @@ struct stormstrike_base_t : public shaman_attack_t
     }
 
     p() -> buff.stormbringer -> decrement();
+    p() -> buff.gathering_storms -> decrement();
     p() -> trigger_t19_oh_8pc( execute_state );
 
     // Don't try this at home, or anywhere else ..
