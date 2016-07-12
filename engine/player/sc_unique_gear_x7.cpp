@@ -128,12 +128,9 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
 
   if ( ! effect.execute_action )
   {
-    action_t* a = new spell_t( "mark_of_the_hidden_satyr",
-      effect.player, effect.player -> find_spell( 191259 ) );
-    a -> background = a -> may_crit = true;
-    a -> callbacks = false;
+    action_t* a = new proc_spell_t( "mark_of_the_hidden_satyr",
+      effect.player, effect.player -> find_spell( 191259 ), effect.item );
     a -> spell_power_mod.direct = 1.0; // Jun 27 2016
-    a -> item = effect.item;
 
     effect.execute_action = a;
   }
@@ -241,27 +238,19 @@ void item::obelisk_of_the_void( special_effect_t& effect )
 
 // Shivermaws Jawbone =======================================================
 
-struct ice_bomb_t : public spell_t
+struct ice_bomb_t : public proc_spell_t
 {
   buff_t* buff;
 
   ice_bomb_t( special_effect_t& effect ) : 
-    spell_t( "ice_bomb", effect.player, effect.driver() )
+    proc_spell_t( "ice_bomb", effect.player, effect.driver(), effect.item )
   {
-    background = may_crit = true;
-    callbacks = false;
-    aoe = -1;
-    item = effect.item;
-
-    // Parse damage from item.
-    parse_effect_data( data().effectN( 1 ) );
-
     buff = stat_buff_creator_t( effect.player, "frigid_armor", effect.player -> find_spell( 214589 ), effect.item );
   }
 
   void execute() override
   {
-    spell_t::execute();
+    proc_spell_t::execute();
 
     buff -> trigger( num_targets_hit );
   }
@@ -274,19 +263,18 @@ void item::shivermaws_jawbone( special_effect_t& effect )
 
 // Spiked Counterweight =====================================================
 
-struct haymaker_damage_t : public spell_t
+struct haymaker_damage_t : public proc_spell_t
 {
   haymaker_damage_t( const special_effect_t& effect ) :
-    spell_t( "brutal_haymaker_vulnerability", effect.player, effect.driver() -> effectN( 2 ).trigger() )
+    proc_spell_t( "brutal_haymaker_vulnerability", effect.player, effect.driver() -> effectN( 2 ).trigger(), effect.item )
   {
-    background = true;
-    callbacks = may_crit = may_miss = false;
+    may_crit = may_miss = false;
     dot_duration = timespan_t::zero();
   }
 
   void init() override
   {
-    spell_t::init();
+    proc_spell_t::init();
 
     snapshot_flags = update_flags = 0;
   }
@@ -428,22 +416,15 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
   }
 };
 
-struct brutal_haymaker_initial_t : public spell_t
+struct brutal_haymaker_initial_t : public proc_spell_t
 {
   brutal_haymaker_initial_t( special_effect_t& effect ) :
-    spell_t( "brutal_haymaker", effect.player, effect.driver() -> effectN( 1 ).trigger() )
-  {
-    background = may_crit = true;
-    callbacks = false;
-    item = effect.item;
-
-    // Parse damage from item.
-    parse_effect_data( data().effectN( 1 ) );
-  }
+    proc_spell_t( "brutal_haymaker", effect.player, effect.driver() -> effectN( 1 ).trigger(), effect.item )
+  {}
 
   void impact( action_state_t* s ) override
   {
-    spell_t::impact( s );
+    proc_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -494,31 +475,27 @@ struct darkstrikes_absorb_t : public absorb_t
   }
 };
 
-struct darkstrikes_t : public spell_t
+struct darkstrikes_t : public proc_spell_t
 {
   action_t* absorb;
 
   darkstrikes_t( const special_effect_t& effect ) :
-    spell_t( "darkstrikes", effect.player, effect.player -> find_spell( 215659 ) )
+    proc_spell_t( "darkstrikes", effect.player, effect.player -> find_spell( 215659 ), effect.item )
   {
-    background = may_crit = true;
-    callbacks = false;
-    item = effect.item;
-
-    // Set correct damage amount.
+    // Set correct damage amount (can accidentally pick up absorb amount instead).
     parse_effect_data( data().effectN( 1 ) );
   }
 
   void init() override
   {
-    spell_t::init();
+    proc_spell_t::init();
 
     absorb = player -> find_action( "darkstrikes_absorb" );
   }
 
   void execute() override
   {
-    spell_t::execute();
+    proc_spell_t::execute();
 
     absorb -> schedule_execute();
   }
@@ -622,26 +599,21 @@ void item::horn_of_valor( special_effect_t& effect )
 
 // Tiny Oozeling in a Jar ===================================================
 
-struct fetid_regurgitation_t : public spell_t
+struct fetid_regurgitation_t : public proc_spell_t
 {
   buff_t* driver_buff;
 
   fetid_regurgitation_t( special_effect_t& effect, buff_t* b ) :
-    spell_t( "fetid_regurgitation", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
+    proc_spell_t( "fetid_regurgitation", effect.player, effect.driver() -> effectN( 1 ).trigger(), effect.item ),
     driver_buff( b )
   {
-    background = may_crit = true;
-    callbacks = false;
-    aoe = -1;
-    item = effect.item;
-
-    // Set damage amount.
+    // Set damage amount, since the scaled amount is not in the damage spell.
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( item );
   }
 
   double action_multiplier() const override
   {
-    double am = spell_t::action_multiplier();
+    double am = proc_spell_t::action_multiplier();
 
     am *= driver_buff -> check_value();
 
@@ -723,26 +695,24 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
 
 // Figurehead of the Naglfar ================================================
 
-struct taint_of_the_sea_t : public spell_t
+struct taint_of_the_sea_t : public proc_spell_t
 {
   taint_of_the_sea_t( const special_effect_t& effect ) :
-    spell_t( "taint_of_the_sea", effect.player, effect.player -> find_spell( 215695 ) )
+    proc_spell_t( "taint_of_the_sea", effect.player, effect.player -> find_spell( 215695 ), effect.item )
   {
-    background = true;
-    callbacks = may_crit = false;
-    item = effect.item;
-
     base_multiplier = effect.driver() -> effectN( 1 ).percent();
   }
 
   void init() override
   {
-    spell_t::init();
+    proc_spell_t::init();
 
+    // Allow DA multipliers so base_multiplier may take effect.
     snapshot_flags = STATE_MUL_DA;
     update_flags = 0;
   }
 
+  // Override so ONLY base_multiplier takes effect.
   double composite_da_multiplier( const action_state_t* ) const override
   { return base_multiplier; }
 
@@ -754,7 +724,7 @@ struct taint_of_the_sea_t : public spell_t
 
     base_dd_min = base_dd_max = std::min( base_dd_min, d -> current_value / base_multiplier );
 
-    spell_t::execute();
+    proc_spell_t::execute();
 
     d -> current_value -= execute_state -> result_amount;
 
@@ -912,32 +882,23 @@ void item::chaos_talisman( special_effect_t& effect )
 
 // Corrupted Starlight ======================================================
 
-struct nightfall_t : public spell_t
+struct nightfall_t : public proc_spell_t
 {
-  spell_t* damage_spell;
+  proc_spell_t* damage_spell;
 
   nightfall_t( special_effect_t& effect ) : 
-    spell_t( "nightfall", effect.player, effect.player -> find_spell( 213785 ) )
+    proc_spell_t( "nightfall", effect.player, effect.player -> find_spell( 213785 ), effect.item )
   {
-    background = true;
-    callbacks = false;
-    item = effect.item;
-
     const spell_data_t* tick_spell = effect.player -> find_spell( 213786 );
-    spell_t* t = new spell_t( "nightfall_tick", effect.player, tick_spell );
-    t -> aoe = -1;
-    t -> background = t -> dual = t -> ground_aoe = t -> may_crit = true;
-    t -> callbacks = false;
-    t -> item = effect.item;
-    // Set correct damage value.
-    t -> parse_effect_data( tick_spell -> effectN( 1 ) );
+    proc_spell_t* t = new proc_spell_t( "nightfall_tick", effect.player, tick_spell, effect.item );
+    t -> dual = t -> ground_aoe = true;
     t -> stats = stats;
     damage_spell = t;
   }
 
   void execute() override
   {
-    spell_t::execute();
+    proc_spell_t::execute();
 
     new ( *sim ) ground_aoe_event_t( player, ground_aoe_params_t()
       .target( execute_state -> target )
@@ -1072,25 +1033,22 @@ void item::darkmoon_deck( special_effect_t& effect )
 
 // Elementium Bomb Squirrel =================================================
 
-struct aw_nuts_t : public spell_t
+struct aw_nuts_t : public proc_spell_t
 {
   aw_nuts_t( special_effect_t& effect ) : 
-    spell_t( "aw_nuts", effect.player, effect.player -> find_spell( 216099 ) )
+    proc_spell_t( "aw_nuts", effect.player, effect.player -> find_spell( 216099 ), effect.item )
   {
-    background = may_crit = true;
-    callbacks = false;
-    aoe = -1;
-    item = effect.item;
     travel_speed = 7.0; // "Charge"!
 
+    // Set damage amount, as the scaled value isn't stored in the damage spell.
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( item );
   }
    
   void init() override
   {
-    spell_t::init();
+    proc_spell_t::init();
 
-    // Don't benefit from player multipliers, because in game the squirrel is dealing the damage, not you.
+    // Don't benefit from player multipliers because, in game, the squirrel is dealing the damage, not you.
     snapshot_flags &= ~( STATE_MUL_DA | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
   }
 };

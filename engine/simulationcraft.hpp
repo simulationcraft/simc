@@ -7225,6 +7225,12 @@ struct proc_spell_t : public spell_t
       may_crit = tick_may_crit = true;
     if ( radius > 0 )
       aoe = -1;
+    
+    // Reparse effect data for any item-dependent variables.
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
+    {
+      parse_effect_data( data().effectN( i ) );
+    }
   }
 };
 
@@ -7241,6 +7247,12 @@ struct proc_heal_t : public heal_t
       may_crit = tick_may_crit = true;
     if ( radius > 0 )
       aoe = -1;
+    
+    // Reparse effect data for any item-dependent variables.
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
+    {
+      parse_effect_data( data().effectN( i ) );
+    }
   }
 };
 
@@ -7257,6 +7269,12 @@ struct proc_attack_t : public attack_t
       may_crit = tick_may_crit = true;
     if ( radius > 0 )
       aoe = -1;
+    
+    // Reparse effect data for any item-dependent variables.
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
+    {
+      parse_effect_data( data().effectN( i ) );
+    }
   }
 };
 
