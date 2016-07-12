@@ -498,13 +498,14 @@ expr_t* dot_t::create_expression( action_t* action,
       double evaluate() override
       {
         dot_t* d = dot();
+
         // No dot up, thus it'll be refreshable (to full duration)
         if ( d == nullptr || ! d -> is_ticking() )
         {
           return 1;
         }
 
-        action -> snapshot_state( state, DMG_OVER_TIME );
+        d -> current_action -> snapshot_state( state, DMG_OVER_TIME );
         timespan_t new_duration = d -> current_action -> composite_dot_duration( state );
 
         return action -> dot_refreshable( d, new_duration );
