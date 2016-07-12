@@ -685,19 +685,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 }
 
 // action_t::parse_options ==================================================
-
-void action_t::parse_options( const std::string& options_str )
+void action_t::parse_target_str()
 {
-  try
-  {
-    opts::parse( sim, name(), options, options_str );
-  }
-  catch ( const std::exception& e )
-  {
-    sim -> errorf( "%s %s: Unable to parse options str '%s': %s", player -> name(), name(), options_str.c_str(), e.what() );
-    sim -> cancel();
-  }
-
   // FIXME: Move into constructor when parse_action is called from there.
   if ( ! target_str.empty() )
   {
@@ -717,9 +706,26 @@ void action_t::parse_options( const std::string& options_str )
       if ( p )
         target = p;
       else
-        sim -> errorf( "%s %s: Unable to locate target for action '%s'.\n", player -> name(), name(), options_str.c_str() );
+        sim -> errorf( "%s %s: Unable to locate target for action '%s'.\n", player -> name(), name(), signature_str.c_str() );
     }
   }
+}
+
+// action_t::parse_options ==================================================
+
+void action_t::parse_options( const std::string& options_str )
+{
+  try
+  {
+    opts::parse( sim, name(), options, options_str );
+  }
+  catch ( const std::exception& e )
+  {
+    sim -> errorf( "%s %s: Unable to parse options str '%s': %s", player -> name(), name(), options_str.c_str(), e.what() );
+    sim -> cancel();
+  }
+
+  parse_target_str();
 }
 
 bool action_t::verify_actor_level() const
