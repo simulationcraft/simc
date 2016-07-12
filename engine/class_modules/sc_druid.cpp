@@ -1764,6 +1764,16 @@ struct moonfire_t : public druid_spell_t
     moonfire_damage_t( druid_t* p ) : 
       druid_spell_t( "moonfire_dmg", p, p -> find_spell( 164812 ) )
     {
+      if ( p -> spec.balance -> ok() )
+      {
+        energize_resource = RESOURCE_ASTRAL_POWER;
+        energize_amount   = p -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+      }
+      else
+      {
+        energize_type = ENERGIZE_NONE;
+      }
+
       if ( p -> talent.shooting_stars -> ok() && ! p -> active.shooting_stars )
       {
         p -> active.shooting_stars = new shooting_stars_t( p );
@@ -1790,6 +1800,22 @@ struct moonfire_t : public druid_spell_t
       return tm;
     }
 
+    void impact( action_state_t* s ) override
+    {
+      druid_spell_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+      {
+        trigger_gore();
+
+        if ( p() -> buff.galactic_guardian -> check() )
+        {
+          p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
+          p() -> buff.galactic_guardian -> expire();
+        } 
+      }
+    }
+
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
@@ -1800,43 +1826,28 @@ struct moonfire_t : public druid_spell_t
     }
   };
 
+  moonfire_damage_t* damage;
+
   moonfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "moonfire", player, player -> find_spell( 8921 ), options_str )
   {
-    if ( player -> specialization() == DRUID_BALANCE )
-    {
-      energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount   = player -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-    }
-    else
-    {
-      energize_type = ENERGIZE_NONE;
-    }
-
-    impact_action = new moonfire_damage_t( player );
-    impact_action -> stats = stats;
+    may_miss = false;
+    damage = new moonfire_damage_t( player );
+    damage -> stats = stats;
 
     // Add damage modifiers in moonfire_damage_t, not here.
   }
 
-  dot_t* get_dot( player_t* t ) override
-  { return impact_action -> get_dot( t ); }
-
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    druid_spell_t::impact( s );
+    druid_spell_t::execute();
 
-    if ( result_is_hit( s -> result ) )
-    {
-      trigger_gore();
-
-      if ( p() -> buff.galactic_guardian -> check() )
-      {
-        p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
-        p() -> buff.galactic_guardian -> expire();
-      } 
-    }
+    damage -> target = execute_state -> target;
+    damage -> schedule_execute();
   }
+
+  dot_t* get_dot( player_t* t ) override
+  { return damage -> get_dot( t ); }
 };
 
 }
@@ -4783,6 +4794,16 @@ struct sunfire_t : public druid_spell_t
     sunfire_damage_t( druid_t* p ) : 
       druid_spell_t( "sunfire_dmg", p, p -> find_spell( 164815 ) )
     {
+      if ( p -> spec.balance -> ok() )
+      {
+        energize_resource = RESOURCE_ASTRAL_POWER;
+        energize_amount   = p -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+      }
+      else
+      {
+        energize_type = ENERGIZE_NONE;
+      }
+
       if ( p -> talent.shooting_stars -> ok() && ! p -> active.shooting_stars )
       {
         p -> active.shooting_stars = new shooting_stars_t( p );
@@ -4817,27 +4838,28 @@ struct sunfire_t : public druid_spell_t
     }
   };
 
+  sunfire_damage_t* damage;
+
   sunfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "sunfire", player, player -> find_specialization_spell( "Sunfire" ), options_str )
   {
-    if ( player -> specialization() == DRUID_BALANCE )
-    {
-      energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount   = player -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-    }
-    else
-    {
-      energize_type = ENERGIZE_NONE;
-    }
-
-    impact_action = new sunfire_damage_t( player );
-    impact_action -> stats = stats;
+    may_miss = false;
+    damage = new sunfire_damage_t( player );
+    damage -> stats = stats;
 
     // Add damage modifiers in sunfire_damage_t, not here.
   }
 
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    damage -> target = execute_state -> target;
+    damage -> schedule_execute();
+  }
+
   dot_t* get_dot( player_t* t ) override
-  { return impact_action -> get_dot( t ); }
+  { return damage -> get_dot( t ); }
 };
 
 // Moonkin Form Spell =======================================================

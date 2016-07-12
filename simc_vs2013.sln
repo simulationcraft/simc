@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31206.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimcGUI", "vs\simcqt_vs2013.vcxproj", "{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimcGUI_qt5.5.0", "vs\simcqt_vs2013.vcxproj", "{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simc", "vs\simc_vs2013.vcxproj", "{D963926C-4A85-4600-8626-51FA12FDF5C1}"
 EndProject
@@ -24,7 +24,6 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|Win32.ActiveCfg = Debug-WebEngine|Win32
-		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|Win32.Build.0 = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|x64.ActiveCfg = Debug-WebEngine|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|x64.Build.0 = Debug-WebEngine|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|Win32.ActiveCfg = Debug-WebEngine|Win32
@@ -34,7 +33,6 @@ Global
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine|Win32.ActiveCfg = WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine|Win32.Build.0 = WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine|x64.ActiveCfg = WebEngine|x64
-		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine|x64.Build.0 = WebEngine|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine-PGO|Win32.ActiveCfg = WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine-PGO|x64.ActiveCfg = WebEngine-PGO|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebEngine-PGO|x64.Build.0 = WebEngine-PGO|x64
