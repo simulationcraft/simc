@@ -123,6 +123,8 @@ stat_e stat_buff_type( const spelleffect_data_t& effect )
 
 } // UNNAMED NAMESPACE
 
+using namespace unique_gear;
+
 special_effect_t::special_effect_t( const item_t* item ) :
     item( item ),
     player( item -> player )
@@ -423,110 +425,6 @@ buff_t* special_effect_t::create_buff() const
   }
 }
 
-namespace {
-
-struct proc_spell_t : public spell_t
-{
-  proc_spell_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
-    spell_t( token, p, s )
-  {
-    background = true;
-    // Periodic procs shouldnt ever haste ticks, probably
-    callbacks = hasted_ticks = false;
-    item = i;
-    if ( ! data().flags( SPELL_ATTR_EX2_CANT_CRIT ) )
-      may_crit = tick_may_crit = true;
-    if ( radius > 0 )
-      aoe = -1;
-  }
-};
-
-struct proc_heal_t : public heal_t
-{
-  proc_heal_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
-    heal_t( token, p, s )
-  {
-    background = true;
-    // Periodic procs shouldnt ever haste ticks, probably
-    callbacks = hasted_ticks = false;
-    item = i;
-    if ( ! data().flags( SPELL_ATTR_EX2_CANT_CRIT ) )
-      may_crit = tick_may_crit = true;
-    if ( radius > 0 )
-      aoe = -1;
-  }
-};
-
-struct proc_attack_t : public attack_t
-{
-  proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i ) :
-    attack_t( token, p, s )
-  {
-    background = true;
-    // Periodic procs shouldnt ever haste ticks, probably
-    callbacks = hasted_ticks = false;
-    item = i;
-    if ( ! data().flags( SPELL_ATTR_EX2_CANT_CRIT ) )
-      may_crit = tick_may_crit = true;
-    if ( radius > 0 )
-      aoe = -1;
-  }
-};
-
-struct proc_resource_t : public spell_t
-{
-  gain_t* gain;
-  double gain_da, gain_ta;
-  resource_e gain_resource;
-
-  proc_resource_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* item_ ) :
-    spell_t( token, p, s ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )
-  {
-    callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = false;
-    background = true;
-    target = player;
-    item = item_;
-
-    for ( size_t i = 1; i <= s -> effect_count(); i++ )
-    {
-      const spelleffect_data_t& effect = s -> effectN( i );
-      if ( effect.type() == E_ENERGIZE )
-      {
-        gain_da = effect.average( item );
-        gain_resource = effect.resource_gain_type();
-      }
-      else if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_ENERGIZE )
-      {
-        gain_ta = effect.average( item );
-      }
-    }
-
-    gain = player -> get_gain( token );
-  }
-
-  void init() override
-  {
-    spell_t::init();
-
-    snapshot_flags = update_flags = 0;
-  }
-
-  void execute() override
-  {
-    spell_t::execute();
-
-    player -> resource_gain( gain_resource, gain_da, gain );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    spell_t::tick( d );
-
-    player -> resource_gain( gain_resource, gain_ta, gain );
-  }
-};
-
-}
 action_t* special_effect_t::create_action() const
 {
   // Custom actions have done their create_proc_action() call in the second phase init of the
