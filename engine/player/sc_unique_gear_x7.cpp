@@ -632,7 +632,7 @@ struct fetid_regurgitation_t : public spell_t
   {
     double am = spell_t::action_multiplier();
 
-    am *= driver_buff -> value();
+    am *= driver_buff -> check_value();
 
     return am;
   }
@@ -670,38 +670,44 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
   struct fetid_regurgitation_buff_t : public buff_t
   {
     buff_t* congealing_goo;
+    action_t* damage;
 
-    fetid_regurgitation_buff_t( special_effect_t& effect, action_t* ds, buff_t* cg ) : 
+    fetid_regurgitation_buff_t( special_effect_t& effect, buff_t* cg ) : 
       buff_t( buff_creator_t( effect.player, "fetid_regurgitation", effect.driver(), effect.item )
         .activated( false )
         .tick_zero( true )
-        .tick_callback( [ ds ] ( buff_t*, int, const timespan_t& ) {
-          ds -> schedule_execute();
+        .tick_callback( [ = ] ( buff_t*, int, const timespan_t& ) {
+          damage -> schedule_execute();
         } ) ), congealing_goo( cg )
-    {}
+    {
+      damage = effect.player -> find_action( "fetid_regurgitation" );
+      if ( ! damage )
+      {
+        damage = effect.player -> create_proc_action( "fetid_regurgitation", effect );
+      }
+
+      if ( ! damage )
+      {
+        damage = new fetid_regurgitation_t( effect, this );
+      }
+    }
 
     bool trigger( int stack, double, double chance, timespan_t duration ) override
     {
-      bool s = buff_t::trigger( stack, congealing_goo -> stack(), chance, duration );
+      if ( congealing_goo -> stack() > 0 )
+      {
+        bool s = buff_t::trigger( stack, congealing_goo -> stack(), chance, duration );
 
-      congealing_goo -> expire();
+        congealing_goo -> expire();
 
-      return s;
+        return s;
+      }
+
+      return false;
     }
   };
 
-  action_t* fetid_regurgitation = effect.player -> find_action( "fetid_regurgitation" );
-  if ( ! fetid_regurgitation )
-  {
-    fetid_regurgitation = effect.player -> create_proc_action( "fetid_regurgitation", effect );
-  }
-
-  if ( ! fetid_regurgitation )
-  {
-    fetid_regurgitation = new fetid_regurgitation_t( effect, charges );
-  }
-
-  effect.custom_buff = new fetid_regurgitation_buff_t( effect, fetid_regurgitation, charges );
+  effect.custom_buff = new fetid_regurgitation_buff_t( effect, charges );
 };
 
 // Figurehead of the Naglfar ================================================
