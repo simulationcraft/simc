@@ -460,6 +460,8 @@ void item::spiked_counterweight( special_effect_t& effect )
 void item::windscar_whetstone( special_effect_t& effect )
 {
   action_t* maelstrom = effect.create_action();
+  maelstrom -> base_dd_min = maelstrom -> base_dd_max = 
+    maelstrom -> data().effectN( 1 ).average( effect.item );
   maelstrom -> cooldown -> duration = timespan_t::zero(); // damage spell has erroneous cooldown
 
   effect.custom_buff = buff_creator_t( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
