@@ -1680,7 +1680,7 @@ void action_t::reschedule_execute( timespan_t time )
 void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 {
   if ( ( cd_duration > timespan_t::zero() ||
-         ( cd_duration == timespan_t::min() && cooldown -> duration > timespan_t::zero() ) ) &
+         ( cd_duration == timespan_t::min() && cooldown -> duration > timespan_t::zero() ) ) &&
        ! dual )
   {
     timespan_t delay = timespan_t::zero();
