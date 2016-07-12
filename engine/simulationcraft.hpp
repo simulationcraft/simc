@@ -5509,6 +5509,7 @@ public:
   void parse_spell_data( const spell_data_t& );
   void parse_effect_data( const spelleffect_data_t& );
   virtual void parse_options( const std::string& options_str );
+  void parse_target_str();
   void add_option( std::unique_ptr<option_t> new_option )
   { options.insert( options.begin(), std::move(new_option) ); }
   void   check_spec( specialization_e );
