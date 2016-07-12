@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22053)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22133)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -133,7 +133,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=237)      : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+007 | Target: Self(1)
+                   Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self(1)
 Description      : Fade out, removing all your threat for $d.
 Tooltip          : Reduced threat level.
 
@@ -156,9 +156,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Target: Enemy(6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Target: Enemy(6)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: insanity | Target: Self(1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?s137033[
@@ -257,7 +257,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=611)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 20.00000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 20.00000 | Target: Friend(21)
 Description      : Perform a miracle, healing an ally for $s1.
 
 Name             : Heal (id=2060) [Spell Family (6)] 
@@ -278,7 +278,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=612)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.75000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 4.75000 | Target: Friend(21)
 Description      : A slow but efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -300,7 +300,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=613)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.75000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 4.75000 | Target: Friend(21)
 Description      : A fast but expensive spell that heals an ally for $s1.
 
 Name             : Mind Vision (id=2096) [Spell Family (6)] 
@@ -466,7 +466,7 @@ Stacks           : 2 maximum
 Proc Chance      : 101%
 Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
@@ -607,7 +607,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1500000000 | Scaled Value: 1.5e+009 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1500000000 | Scaled Value: 1.5e+09 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -769,7 +769,7 @@ Effects          :
 #1 (id=22313)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
 #2 (id=22314)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Radius: 0 - 20 yards | Target: Unknown(132) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 3.00000 | Radius: 0 - 20 yards | Target: Unknown(132) -> AOE friendly(31)
 #3 (id=191249)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Target: Self(1)
 #4 (id=325998)   : Dummy (3)
@@ -952,7 +952,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.77000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.87000 | Target: Enemy(6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self(1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals the Priest for ${$e2*100}% of damage dealt.
@@ -1134,7 +1134,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 120 seconds
 Affecting spells : From the Shadows (193642)
-Attributes       : ....x... ........ ..x..... x.......   .....x.. ..x....x .x...... ........ 
+Attributes       : ........ ........ ..x..... x.......   .....x.. ..x....x .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1258,7 +1258,7 @@ Name             : Guardian Spirit (id=47788) [Spell Family (6)]
 Class            : Holy Priest
 School           : Holy
 Resource         : 0.9% Base Mana (9900 @Level 110)
-Spell Level      : 65
+Spell Level      : 54
 Range            : 40 yards
 Duration         : 10 seconds
 Cooldown         : 240 seconds
@@ -1276,7 +1276,7 @@ Effects          :
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Friend(21)
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
 
 Massive damage amounts will kill the target despite this effect.
@@ -2496,7 +2496,7 @@ Name             : Holy Nova (id=132157) [Spell Family (6)]
 Class            : Holy Priest
 School           : Holy
 Resource         : 1.6% Base Mana (17600 @Level 110)
-Spell Level      : 54
+Spell Level      : 65
 GCD              : 1.5 seconds
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2787,7 +2787,7 @@ Description      : $@spelldesc78203
 Name             : Clarity of Will (id=152118) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 3.15% Base Mana (34650 @Level 110)
+Resource         : 2.8% Base Mana (30799 @Level 110)
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
@@ -2943,7 +2943,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.00000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 7.50000 | Target: Friend(21)
 Description      : Wraps an ally in shadows which heal for $m1, but at a price.
 
 The ally will take ${$m1/20} damage every $187464t1 sec, until they have taken ${$m1/2} total damage from all sources, or leave combat.
@@ -3800,7 +3800,7 @@ Spell Level      : 7
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Atonement (194384), Power Word: Shield (211558), Plea (212100)
+Affecting spells : Atonement (194384), Power Word: Shield (211558), Plea (212100), 
 Triggered by     : Plea (212100)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3810,7 +3810,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=295730)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.25000 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 2.25000 | Target: Friend(21)
 Description      : A quick, efficient plea to heal an ally for $s1.$?s81749[ Mana cost increased by $212100s1% for each Atonement you have active.][]
 
 Name             : Shadow Covenant (id=204065) [Spell Family (6)] 
@@ -3941,7 +3941,7 @@ Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=302733)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000 | Target: Enemy(6)
 #2 (id=302734)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : Raise your dagger into the sky, channeling a torrent of void energy into the target for $o Shadow damage over $d. Insanity does not drain during this channel.
@@ -4029,7 +4029,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 30 seconds
-Attributes       : ........ ........ x....... ........   ...x...x ........ .x...... ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4281,6 +4281,9 @@ Effects          :
                    Affected Spells: Plea (200829)
 #2 (id=314443)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 200829 | Target: Self(1)
+#3 (id=345183)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
+                   Affected Spells: Plea (200829)
 Description      : Mana cost of Plea increased by $s1% for each target affected by your Atonement.
 Tooltip          : Plea cost increased $s1%.
 
@@ -4406,7 +4409,7 @@ Effects          :
 #11 (id=320871)   : Apply Aura (6) | Unknown effect sub type (40)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 #12 (id=320872)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 145000000 | Scaled Value: 1.45e+008 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 145000000 | Scaled Value: 1.45e+08 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : The Priest becomes the Spirit of Redemption for $d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. 
 Tooltip          : You have become more powerful than anyone can possibly imagine.
 
@@ -4483,7 +4486,7 @@ Effects          :
 Description      : $@spelldesc204065
 Tooltip          : Absorbs $w1 healing.
 
-Name             : Mind Bomb (id=226943) [Spell Family (5)] 
+Name             : Mind Bomb (id=226943) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
 Spell Level      : 1

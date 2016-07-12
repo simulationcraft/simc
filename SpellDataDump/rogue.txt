@@ -1,10 +1,10 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22053)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22133)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
 School           : Physical
 Resource         : 35 Energy
-Spell Level      : 10
+Spell Level      : 10 (max 20)
 Range            : 5 yards
 GCD              : 1 seconds
 Affecting spells : Vendetta (79140), Shadow Blades (121471), Sleight of Hand (145211), The Quiet Knife (197231)
@@ -18,7 +18,7 @@ Effects          :
 #1 (id=30)       : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=31)       : Weapon Damage% (31)
-                   Base Value: 370 | Scaled Value: 3.7 | SP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 260 | Scaled Value: 3.7 | Points Per Level: 11 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #3 (id=32)       : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #4 (id=297239)   : Dummy (3)
@@ -486,7 +486,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=622)      : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20000 | Target: Enemy(6)
 Description      : Lunging finishing move that causes damage per combo point and has increased range:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -643,7 +643,7 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1833)     : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+                   Base Value: 90 | Scaled Value: 90 | Target: Self(1)
 #2 (id=127877)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
 Description      : Finishing move that consumes combo points to increase attack speed by $s1%. Lasts longer per combo point.
@@ -702,7 +702,7 @@ Tooltip          : Dodge chance increased by $s1%.
 Name             : Mutilate (id=5374) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Spell Level      : 1 (max 80)
+Spell Level      : 1 (max 20)
 Range            : 5 yards
 Affecting spells : Envenom (32645), Vendetta (79140), Cold Blood (170882), Balanced Blades (192326), Assassin's Blades (214368)
 Triggered by     : Mutilate (1329)
@@ -717,7 +717,7 @@ Effects          :
 #1 (id=1920)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=99543)    : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 | Target: Enemy(6)
+                   Base Value: 170 | Scaled Value: 3.6 | Points Per Level: 10 | Target: Enemy(6)
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Sap (id=6770) [Spell Family (8)] 
@@ -894,7 +894,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Target: Self(1)
 #2 (id=136652)   : Apply Aura (6) | Add Percent Modifier: Spell Proc Chance (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18 | Target: Self(1)
-                   Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961)
+                   Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961), Goremaw's Bite (220901)
 #3 (id=180823)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
 #4 (id=181788)   : Dummy (3)
@@ -1037,11 +1037,11 @@ Effects          :
 #1 (id=8231)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=8232)     : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 | Target: Enemy(6)
+                   Base Value: 100 | Scaled Value: 4.27 | Points Per Level: 3 | Target: Enemy(6)
 #3 (id=8233)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #4 (id=134070)   : Apply Aura (6) | Unknown effect sub type (271)
-                   Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
+                   Base Value: 25 | Scaled Value: 25 | Target: Enemy(6)
                    Affected Spells: Garrote (703), Rupture (1943), Internal Bleeding (154953)
 #5 (id=334438)   : Apply Aura (6) | Periodic Dummy: every 20 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
@@ -1146,7 +1146,7 @@ Tooltip          : Silenced.
 Name             : Mutilate Off-Hand (id=27576) [Scaling Spell (9), Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Spell Level      : 1 (max 80)
+Spell Level      : 1 (max 20)
 Range            : 5 yards
 Affecting spells : Envenom (32645), Vendetta (79140), Cold Blood (170882), Balanced Blades (192326), Assassin's Blades (214368)
 Triggered by     : Mutilate (1329)
@@ -1161,7 +1161,7 @@ Effects          :
 #1 (id=17065)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.25) | Target: Enemy(6)
 #2 (id=99544)    : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 | Target: Enemy(6)
+                   Base Value: 170 | Scaled Value: 3.6 | Points Per Level: 10 | Target: Enemy(6)
 Description      : Instantly attacks for $5374sw2 Physical damage.  Awards 2 combo points.
 
 Name             : Fleet Footed (Passive) (id=31209) [Spell Family (8), Passive] 
@@ -1232,7 +1232,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=20803)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 500000000 | Scaled Value: 5e+008 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 500000000 | Scaled Value: 5e+08 | Misc Value: 127 | Target: Self(1)
 Description      : Fatal attacks instead reduce you to 7% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
 
 Name             : Master of Subtlety (id=31666) [Spell Family (8), Hidden] 
@@ -1802,10 +1802,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Knives (192380), Agonizing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Knives (192380), Agonizing Poison (200803), Goremaw's Bite (220901)
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Knives (192380), Agonizing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Knives (192380), Agonizing Poison (200803), Goremaw's Bite (220901)
 #3 (id=92122)    : Apply Aura (6) | Dummy (4)
                    Base Value: 350 | Scaled Value: 350 | Target: Self(1)
 #4 (id=322527)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
@@ -1908,7 +1908,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Poison Knives (192380), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Poison Knives (192380), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Goremaw's Bite (220901)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -1961,7 +1961,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=81807)    : Parry (22)
-                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Misc Value: 90
+                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | Value Multiplier: 1 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
 Name             : Assassin's Resolve (id=84601) [Spell Family (8), Passive] 
@@ -2297,6 +2297,9 @@ Effects          :
 #4 (id=150621)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Backstab (53), Ambush (8676), Hemorrhage (16511), Backstab (173458), Shadowstrike (185438), Gloomblade (200758)
+#5 (id=345005)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Goremaw's Bite (220901)
 Description      : Draws upon surrounding shadows to empower your weapons, causing auto attacks to deal Shadow damage and abilities that generate combo points to generate 1 additional combo point. Lasts $d.
 Tooltip          : Autoattacks deal pure Shadow damage.
 Combo-point-generating attacks generate $s2 additional combo point.
@@ -2893,7 +2896,7 @@ Attributes       : ........ ........ ..x..... ...x...x   ....x... ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=269037)   : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -10000000 | Scaled Value: -1e+007 | SP Coefficient: 1.00000 | Target: Self(1)
+                   Base Value: -10000000 | Scaled Value: -1e+07 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=317950)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283), Death (227151)
@@ -3211,7 +3214,7 @@ Name             : Saber Slash (id=193315) [Spell Family (8)]
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 50 Energy
-Spell Level      : 10
+Spell Level      : 10 (max 20)
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 0.5 seconds
@@ -3229,7 +3232,7 @@ Effects          :
 #2 (id=283620)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #3 (id=283621)   : Weapon Damage% (31)
-                   Base Value: 285 | Scaled Value: 2.85 | Target: Enemy(6)
+                   Base Value: 190 | Scaled Value: 2.6 | Points Per Level: 7 | Target: Enemy(6)
 #4 (id=283622)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Saber Slash (193315)
@@ -3325,9 +3328,9 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283682)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-#2 (id=344594)   : Apply Aura (6) | Unknown effect sub type (443)
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+#2 (id=344594)   : Apply Aura (6) | Unknown effect sub type (443)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Increases your attack speed by $s1% and your Leech by $s2% for the duration of Roll the Bones.
 Tooltip          : Attack speed increased by $s1%.
 Leech increased by $s2%.
@@ -3372,10 +3375,10 @@ Effects          :
 #3 (id=297518)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 4 | Target: Self(1)
 #4 (id=315625)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
                    Affected Spells: Run Through (2098), Envenom (32645), Death from Above (152150), Eviscerate (196819), Finality: Eviscerate (197393), Between the Eyes (199804)
 #5 (id=315626)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Rupture (1943), Internal Bleeding (154953), Weaponmaster (193536), Nightblade (195452), Finality: Nightblade (197395)
 Description      : You may have a maximum of $s3 combo points, your finishing moves consume up to $s3 combo points, and your finishing moves deal $s4% increased damage.
 
@@ -3654,10 +3657,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=289047)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Knives (192380), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Knives (192380), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
 #3 (id=289049)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self(1)
@@ -3757,7 +3760,7 @@ Effects          :
 #2 (id=289166)   : Weapon Damage% (31)
                    Base Value: 176 | Scaled Value: 1.76 | Target: Enemy(6)
 #3 (id=289167)   : Normalized Weapon Damage (121)
-                   Base Value: 176 | Scaled Value: 176 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #4 (id=289168)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
 #5 (id=289169)   : Apply Aura (6) | Unknown effect sub type (270)
@@ -3781,7 +3784,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=289173)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Opportunity (195627)
 #2 (id=294102)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Self(1)
@@ -4149,7 +4152,7 @@ Attributes       : ....x... ........ x.....x. ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=294039)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000 | Target: Enemy(6)
 #2 (id=294040)   : Apply Aura (6) | Stun (12)
                    Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(95) | Target: Enemy(6)
 #3 (id=344382)   : Apply Aura (6) | Dummy (4)
@@ -4216,7 +4219,7 @@ Effects          :
 #1 (id=295616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=295617)   : Weapon Damage% (31)
-                   Base Value: 450 | Scaled Value: 4.5 | Target: Enemy(6)
+                   Base Value: 425 | Scaled Value: 4.25 | Target: Enemy(6)
 #3 (id=295618)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 Description      : Punctures your target with your shadow-infused blade for $sw2 Shadow damage.
@@ -4288,7 +4291,7 @@ School           : Nature
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Stacks           : 5 maximum
+Stacks           : 4 maximum
 Proc Chance      : 101%
 Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Poison Knives (192376), Surge of Toxins (192425), Master Poisoner (196864), 
 Triggered by     : Agonizing Poison (200802)
@@ -4408,23 +4411,17 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299182)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.30000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.55000 | Target: Enemy(6)
 #2 (id=299183)   : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points | Target: Self(1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #3 (id=299184)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #4 (id=299185)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.10000 | Target: Enemy(6)
 #5 (id=299186)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.10000 | Target: Enemy(6)
 #6 (id=299187)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Target: Enemy(6)
-#7 (id=299188)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Target: Enemy(6)
-#8 (id=299189)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Target: Enemy(6)
-#9 (id=299190)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.10000 | Target: Enemy(6)
 Description      : Draws a concealed blunderbuss and fires a quick shot at the target, dealing ${$m1*7} damage and reducing movement speed by $s3% for $d.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -4701,6 +4698,7 @@ Class            : Rogue
 School           : Shadow
 Range            : 8 yards
 Duration         : 6 seconds
+Affecting spells : Blade Flurry (13877), Mastery: Potent Poisons (76803), Vendetta (79140), Shadow Blades (121471)
 Triggered by     : Goremaw's Bite (209782)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 

@@ -1,6 +1,6 @@
 #define TALENT_SIZE (610)
 
-// 610 talents, wow build 22172
+// 610 talents, wow build 22201
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -93,7 +93,7 @@ static struct talent_data_t __talent_data[] = {
   { "Posthaste"                         , 19347, 0x00, 0x0004,   0,   0,   2,  109215,       0,  0 },
   { "Farstrider"                        , 19348, 0x00, 0x0004,   0,   1,   2,  199523,       0,  0 },
   { "A Murder of Crows"                 , 19357, 0x00, 0x0004,   0,   0,   5,  131894,       0,  0 },
-  { "Mortal Wounds"                     , 19361, 0x00, 0x0004, 255,   1,   3,  201075,       0,  0 },
+  { "Improved Traps"                    , 19361, 0x00, 0x0004, 255,   1,   3,  199518,       0,  0 },
   { "Impending Victory"                 , 19676, 0x00, 0x0001,  73,   0,   1,  202168,   34428,  0 },
   { "Trail of Light"                    , 19752, 0x00, 0x0010, 257,   0,   0,  200128,       0,  0 },
   { "Castigation"                       , 19753, 0x00, 0x0010,   0,   1,   0,  193134,       0,  0 },
@@ -354,7 +354,7 @@ static struct talent_data_t __talent_data[] = {
   { "Mana Tea"                          , 22218, 0x00, 0x0200, 270,   0,   6,  197908,       0,  0 },
   { "Song of Chi-Ji"                    , 22219, 0x00, 0x0200, 270,   1,   3,  198898,  175697,  0 },
   { "Cinderstorm"                       , 22220, 0x00, 0x0080,  63,   1,   6,  198929,       0,  0 },
-  { "Improved Traps"                    , 22266, 0x00, 0x0004, 255,   1,   1,  199518,       0,  0 },
+  { "Mortal Wounds"                     , 22266, 0x00, 0x0004, 255,   1,   1,  201075,       0,  0 },
   { "Explosive Shot"                    , 22267, 0x00, 0x0004, 254,   0,   3,  212431,       0,  0 },
   { "Sticky Bomb"                       , 22268, 0x00, 0x0004, 255,   0,   4,  191241,  175686,  0 },
   { "Blink Strikes"                     , 22269, 0x00, 0x0004, 253,   2,   3,  130392,       0,  0 },
@@ -365,7 +365,7 @@ static struct talent_data_t __talent_data[] = {
   { "Sidewinders"                       , 22274, 0x00, 0x0004, 254,   0,   6,  214579,  185358,  0 },
   { "Animal Instincts"                  , 22275, 0x00, 0x0004, 255,   0,   0,  204315,       0,  0 },
   { "Wyvern Sting"                      , 22276, 0x00, 0x0004,   0,   1,   4,   19386,  175686,  0 },
-  { "A Murder of Crows"                 , 22277, 0x00, 0x0004, 255,   0,   3,  206505,       0,  0 },
+  { "Caltrops"                          , 22277, 0x00, 0x0004, 255,   0,   3,  194277,  187698,  0 },
   { "Dragonsfire Grenade"               , 22278, 0x00, 0x0004, 255,   1,   5,  194855,       0,  0 },
   { "Lone Wolf"                         , 22279, 0x00, 0x0004, 254,   0,   0,  155228,       0,  0 },
   { "Way of the Cobra"                  , 22280, 0x00, 0x0004, 253,   1,   0,  194397,       0,  0 },
@@ -382,9 +382,9 @@ static struct talent_data_t __talent_data[] = {
   { "Aspect of the Beast"               , 22295, 0x00, 0x0004,   0,   2,   6,  191384,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Way of the Mok'Nathal"             , 22296, 0x00, 0x0004, 255,   2,   0,  201082,       0,  0 },
-  { "Steel Trap"                        , 22297, 0x00, 0x0004, 255,   2,   1,  162488,  187650,  0 },
+  { "Snake Hunter"                      , 22297, 0x00, 0x0004, 255,   2,   1,  201078,       0,  0 },
   { "Camouflage"                        , 22298, 0x00, 0x0004, 255,   2,   4,  199483,  175686,  0 },
-  { "Snake Hunter"                      , 22299, 0x00, 0x0004, 255,   2,   3,  201078,       0,  0 },
+  { "Steel Trap"                        , 22299, 0x00, 0x0004, 255,   2,   3,  162488,  187650,  0 },
   { "Butchery"                          , 22300, 0x00, 0x0004, 255,   0,   5,  212436,  187708,  0 },
   { "Expert Trapper"                    , 22301, 0x00, 0x0004, 255,   1,   6,  199543,       0,  0 },
   { "Piercing Shot"                     , 22308, 0x00, 0x0004, 254,   1,   6,  198670,       0,  0 },
@@ -558,7 +558,7 @@ static struct talent_data_t __talent_data[] = {
   { "Black Arrow"                       , 22497, 0x00, 0x0004, 254,   1,   1,  194599,       0,  0 },
   { "True Aim"                          , 22498, 0x00, 0x0004, 254,   2,   1,  199527,       0,  0 },
   { "Camouflage"                        , 22499, 0x00, 0x0004, 254,   2,   4,  199483,  175686,  0 },
-  { "Caltrops"                          , 22500, 0x00, 0x0004, 255,   0,   1,  194277,  187698,  0 },
+  { "A Murder of Crows"                 , 22500, 0x00, 0x0004, 255,   0,   1,  206505,       0,  0 },
   { "Steady Focus"                      , 22501, 0x00, 0x0004, 254,   1,   0,  193533,       0,  0 },
   { "Abyssal Strike"                    , 22502, 0x00, 0x0800, 581,   0,   0,  207550,       0,  0 },
   { "Agonizing Flames"                  , 22503, 0x00, 0x0800, 581,   1,   0,  207548,       0,  0 },
@@ -642,6 +642,6 @@ static struct talent_data_t __talent_data[] = {
   { "Safeguard"                         , 22789, 0x00, 0x0001,  73,   2,   1,  223657,       0,  0 },
   { "Demonic Appetite"                  , 22799, 0x00, 0x0800, 577,   2,   1,  206478,       0,  0 },
   { "Focused Rage"                      , 22800, 0x00, 0x0001,  71,   2,   4,  207982,       0,  0 },
-  { "Ravager"                           , 22801, 0x00, 0x0001,  73,   2,   6,  152277,       0,  0 },
+  { "Ravager"                           , 22801, 0x00, 0x0001,  73,   2,   6,  228920,       0,  0 },
   { 0                                   ,     0, 0x00, 0x0000,   0,   0,   0,       0,       0,  0 },
 };
