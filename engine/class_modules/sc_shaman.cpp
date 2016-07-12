@@ -773,7 +773,7 @@ struct stormlash_callback_t : public dbc_proc_callback_t
   {
     double pool = listener -> cache.attack_power() * coefficient;
     // Add in global damage multipliers
-    pool *= 1.0 + listener -> composite_player_multiplier( SCHOOL_NATURE );
+    pool *= listener -> composite_player_multiplier( SCHOOL_NATURE );
     // Add in versatility multiplier
     pool *= 1.0 + listener -> cache.damage_versatility();
     // Add in crit multiplier
@@ -822,6 +822,14 @@ struct stormlash_callback_t : public dbc_proc_callback_t
   {
     range::for_each( damage_pool, [ this, &state ]( damage_pool_t* pool ) {
       timespan_t interval = listener -> sim -> current_time() - pool -> last_proc;
+      // Enforce the 100ms limit here too, since new procs in simc can bypass teh damage icd,
+      // resulting in really low damage values. This does not cost any relevant damage, since on the
+      // next proc attempt, the interval will be higher, resulting in higher damage.
+      if ( interval <= timespan_t::from_millis( 100 ) )
+      {
+        return;
+      }
+
       double multiplier = interval / buff_duration;
       if ( listener -> sim -> debug )
       {
