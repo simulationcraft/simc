@@ -1830,7 +1830,6 @@ struct fel_rush_t : public demon_hunter_spell_t
     {
       aoe = -1;
       dual = background = true;
-      may_miss = may_dodge = may_block = false;
 
       base_multiplier *= 1.0 + p -> talent.fel_mastery -> effectN( 2 ).percent();
 
@@ -1843,6 +1842,7 @@ struct fel_rush_t : public demon_hunter_spell_t
     }
   };
 
+  fel_rush_damage_t* damage;
   bool a_cancel;
 
   fel_rush_t( demon_hunter_t* p, const std::string& options_str ) :
@@ -1852,15 +1852,15 @@ struct fel_rush_t : public demon_hunter_spell_t
     add_option( opt_bool( "animation_cancel", a_cancel ) );
     parse_options( options_str );
 
-    may_block = may_crit = false;
+    may_miss = may_block = may_crit = false;
     min_gcd = trigger_gcd;
 
-    impact_action = new fel_rush_damage_t( p );
-    impact_action -> stats = stats;
+    damage = new fel_rush_damage_t( p );
+    damage -> stats = stats;
 
     if ( ! a_cancel )
     {
-      base_teleport_distance  = impact_action -> radius;
+      base_teleport_distance  = damage -> radius;
       movement_directionality = MOVEMENT_OMNI;
       ignore_false_positive   = true;
 
@@ -1888,6 +1888,8 @@ struct fel_rush_t : public demon_hunter_spell_t
   void execute() override
   {
     demon_hunter_spell_t::execute();
+
+    damage -> schedule_execute();
 
     if ( ! a_cancel )
     {
@@ -1925,16 +1927,29 @@ struct fel_eruption_t : public demon_hunter_spell_t
     }
   };
 
+  fel_eruption_damage_t* damage;
+
   fel_eruption_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_spell_t( "fel_eruption", p, p -> talent.fel_eruption, options_str )
   {
     may_crit = false;
     resource_current = p -> specialization() == DEMON_HUNTER_HAVOC ? RESOURCE_FURY : RESOURCE_PAIN;
 
-    impact_action = new fel_eruption_damage_t( p );
-    impact_action -> stats = stats;
+    damage = new fel_eruption_damage_t( p );
+    damage -> stats = stats;
 
     // Add damage modifiers in fel_eruption_damage_t, not here.
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    if ( hit_any_target )
+    {
+      damage -> target = execute_state -> target;
+      damage -> schedule_execute();
+    }
   }
 
   // Don't record data for this action.
@@ -2216,6 +2231,8 @@ struct metamorphosis_t : public demon_hunter_spell_t
     }
   };
 
+  metamorphosis_impact_t* damage;
+
   metamorphosis_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_spell_t( "metamorphosis", p,
                              p -> find_class_spell( "Metamorphosis" ), options_str )
@@ -2224,7 +2241,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
     dot_duration = timespan_t::zero();
     base_teleport_distance  = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
-    impact_action = new metamorphosis_impact_t( p );
+    damage = new metamorphosis_impact_t( p );
     min_gcd = timespan_t::from_seconds( 1.0 ); // cannot use skills during travel time
     travel_speed = 1.0; // allows use precombat
 
@@ -2240,6 +2257,8 @@ struct metamorphosis_t : public demon_hunter_spell_t
   void execute() override
   {
     demon_hunter_spell_t::execute();
+
+    damage -> schedule_execute();
 
     // Buff is gained at the start of the leap.
     p() -> buff.metamorphosis -> trigger();
@@ -3476,13 +3495,15 @@ struct felblade_t : public demon_hunter_attack_t
       parse_effect_data( data().effectN( p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
     }
   };
+  
+  felblade_damage_t* damage;
 
   felblade_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_attack_t( "felblade", p, p -> talent.felblade, options_str )
   {
     may_crit = may_block = false;
-    impact_action = new felblade_damage_t( p );
-    impact_action -> stats = stats;
+    damage = new felblade_damage_t( p );
+    damage -> stats = stats;
 
     movement_directionality = MOVEMENT_TOWARDS;
 
@@ -3496,6 +3517,12 @@ struct felblade_t : public demon_hunter_attack_t
   void execute() override
   {
     demon_hunter_attack_t::execute();
+
+    if ( hit_any_target )
+    {
+      damage -> target = execute_state -> target;
+      damage -> schedule_execute();
+    }
 
     // Cancel Vengeful Retreat movement.
     p() -> buff.vengeful_retreat_move -> expire();
@@ -3763,8 +3790,8 @@ struct soul_carver_t : public demon_hunter_attack_t
   soul_carver_t( demon_hunter_t* p, const std::string& options_str ) :
     demon_hunter_attack_t( "soul_carver", p, p -> artifact.soul_carver, options_str )
   {
-    impact_action = new soul_carver_oh_t( p );
-    impact_action -> stats = stats;
+    oh = new soul_carver_oh_t( p );
+    oh -> stats = stats;
   }
 
   void impact( action_state_t* s ) override
@@ -3773,6 +3800,9 @@ struct soul_carver_t : public demon_hunter_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
+      oh -> target = s -> target;
+      oh -> schedule_execute();
+
       p() -> spawn_soul_fragment( SOUL_FRAGMENT_LESSER, 2 );
     }
   }
@@ -3927,14 +3957,16 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     }
   };
 
+  vengeful_retreat_damage_t* damage;
+
   vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str ) : 
     demon_hunter_attack_t( "vengeful_retreat", p, p -> spec.vengeful_retreat )
   {
     parse_options( options_str );
 
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
-    impact_action = new vengeful_retreat_damage_t( p );
-    impact_action -> stats = stats;
+    damage = new vengeful_retreat_damage_t( p );
+    damage -> stats = stats;
     ignore_false_positive = true;
     // use_off_gcd           = true;
     base_teleport_distance  = VENGEFUL_RETREAT_DISTANCE;
@@ -3958,6 +3990,12 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
 
     if ( hit_any_target )
     {
+      // Jul 11 2016: Does not benefit from its on momentum, so snapshot now.
+      action_state_t* s = damage -> get_state();
+      s -> target       = target;
+      damage -> snapshot_state( s, DMG_DIRECT );
+      damage -> schedule_execute( s );
+
       p() -> buff.prepared -> trigger();
     }
 
