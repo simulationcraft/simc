@@ -1114,7 +1114,7 @@ public:
 
     if ( may_proc_windfury )
     {
-      may_proc_stormbringer = n_targets() == 0;
+      may_proc_windfury = n_targets() == 0;
     }
 
     may_proc_lightning_shield = p() -> talent.lightning_shield -> ok() && weapon && weapon_multiplier > 0;
