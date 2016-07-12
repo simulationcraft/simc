@@ -3506,7 +3506,7 @@ struct touch_of_death_t: public monk_spell_t
 
   virtual bool ready() override
   {
-    // Cannot be used on a target that has Touch of Death on them
+    // Cannot be used on a target that has Touch of Death on them already
     if ( td( p() -> target ) -> dots.touch_of_death -> is_ticking() )
       return false;
 
@@ -5422,7 +5422,7 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     monk_heal_t( name, p, p.passives.chi_wave_heal )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.750; // Hard code 06/21/16
+    attack_power_mod.direct = 0.867; // Hard code 07/12/16
     target = player;
   }
 
