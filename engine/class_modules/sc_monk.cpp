@@ -713,6 +713,7 @@ public:
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
   void retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets, size_t n_targets ) const;
+  void retarget_storm_earth_and_fire_pets() const;
 };
 
 // ==========================================================================
@@ -1348,9 +1349,12 @@ public:
     debuff_t* dizzing_kicks;
   } debuffs;
 
+  bool sticky_target; // When enabled, SEF pets will stick to the target they have
+
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
-    attacks( SEF_ATTACK_MAX ), spells( SEF_SPELL_MAX - SEF_SPELL_MIN )
+    attacks( SEF_ATTACK_MAX ), spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
+    sticky_target( false )
   {
     // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
     // around some sanity checks in the action execution code, that prevents
@@ -1368,6 +1372,13 @@ public:
     }
 
     owner_coeff.ap_from_ap = 1.0;
+  }
+
+  // Reset SEF target to default settings
+  void reset_targeting()
+  {
+    target = owner -> target;
+    sticky_target = false;
   }
 
   timespan_t available() const override
@@ -1824,9 +1835,14 @@ public:
     return c;
   }
 
-  virtual void update_ready( timespan_t ) override
+  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    timespan_t cd = ab::cooldown -> duration;
+    timespan_t cd = cd_duration;
+    // Only adjust cooldown (through serenity) if it's non zero.
+    if ( cd_duration == timespan_t::min() )
+    {
+      cd = ab::cooldown -> duration;
+    }
 
     // Update the cooldown while Serenity is active
     if ( p() -> buff.serenity -> check() && ab::data().affected_by( p() -> talent.serenity -> effectN( 4 ) ) )
@@ -1916,13 +1932,13 @@ public:
 
     p() -> pet.sef[ SEF_EARTH ] -> trigger_attack( sef_ability, a );
     p() -> pet.sef[ SEF_FIRE  ] -> trigger_attack( sef_ability, a );
-    if ( sef_ability == SEF_TIGER_PALM || sef_ability == SEF_BLACKOUT_KICK || 
-         sef_ability == SEF_RISING_SUN_KICK )
+    // Trigger pet retargeting if sticky target is not defined, and the Monk used one of the Cyclone
+    // Strike triggering abilities
+    if ( ! p() -> pet.sef[ SEF_EARTH ] -> sticky_target &&
+         ( sef_ability == SEF_TIGER_PALM || sef_ability == SEF_BLACKOUT_KICK ||
+         sef_ability == SEF_RISING_SUN_KICK ) )
     {
-      auto targets = p() -> create_storm_earth_and_fire_target_list();
-      auto n_targets = targets.size();
-      p() -> retarget_storm_earth_and_fire( p() -> pet.sef[ SEF_EARTH ], targets, n_targets );
-      p() -> retarget_storm_earth_and_fire( p() -> pet.sef[ SEF_FIRE  ], targets, n_targets );
+      p() -> retarget_storm_earth_and_fire_pets();
     }
   }
 };
@@ -3777,15 +3793,6 @@ struct xuen_spell_t: public summon_pet_t
 
 struct storm_earth_and_fire_t;
 
-struct sef_despawn_cb_t
-{
-  storm_earth_and_fire_t* action;
-
-  sef_despawn_cb_t( storm_earth_and_fire_t* a );
-
-  void operator()(player_t*);
-};
-
 struct storm_earth_and_fire_t: public monk_spell_t
 {
   storm_earth_and_fire_t( monk_t* p, const std::string& options_str ):
@@ -3797,11 +3804,15 @@ struct storm_earth_and_fire_t: public monk_spell_t
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
   }
 
-  void init() override
+  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    monk_spell_t::init();
+    // While pets are up, don't trigger cooldown since the sticky targeting does not consume charges
+    if ( p() -> buff.storm_earth_and_fire -> check() )
+    {
+      cd_duration = timespan_t::zero();
+    }
 
-    sim -> target_non_sleeping_list.register_callback( sef_despawn_cb_t( this ) );
+    monk_spell_t::update_ready( cd_duration );
   }
 
   bool ready() override
@@ -3809,49 +3820,117 @@ struct storm_earth_and_fire_t: public monk_spell_t
     if ( p() -> talent.serenity -> ok() )
       return false;
 
+    // Don't let user needlessly trigger SEF sticky targeting mode, if the user would just be
+    // triggering it on the same sticky target
+    if ( p() -> buff.storm_earth_and_fire -> check() &&
+         p() -> pet.sef[ SEF_EARTH ] -> sticky_target &&
+         target == p() -> pet.sef[ SEF_EARTH ] -> target )
+    {
+      return false;
+    }
+
     return monk_spell_t::ready();
+  }
+
+  // Normal summon that summons the pets, they seek out proper targeets
+  void normal_summon()
+  {
+    auto targets = p() -> create_storm_earth_and_fire_target_list();
+    auto n_targets = targets.size();
+
+    // Start targeting logic from "owner" always
+    p() -> pet.sef[ SEF_EARTH ] -> reset_targeting();
+    p() -> pet.sef[ SEF_EARTH ] -> target = p() -> target;
+    p() -> retarget_storm_earth_and_fire( p() -> pet.sef[ SEF_EARTH ], targets, n_targets );
+    p() -> pet.sef[ SEF_EARTH ] -> summon( data().duration() );
+
+    // Start targeting logic from "owner" always
+    p() -> pet.sef[ SEF_FIRE ] -> reset_targeting();
+    p() -> pet.sef[ SEF_FIRE ] -> target = p() -> target;
+    p() -> retarget_storm_earth_and_fire( p() -> pet.sef[ SEF_FIRE ], targets, n_targets );
+    p() -> pet.sef[ SEF_FIRE ] -> summon( data().duration() );
+  }
+
+  // Monk used SEF while pets are up to sticky target them into an enemy
+  void sticky_targeting()
+  {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s storm_earth_and_fire sticky target %s to %s (old=%s)",
+        player -> name(), p() -> pet.sef[ SEF_EARTH ] -> name(), target -> name(),
+        p() -> pet.sef[ SEF_EARTH ] -> target -> name() );
+    }
+
+    p() -> pet.sef[ SEF_EARTH ] -> target = target;
+    p() -> pet.sef[ SEF_EARTH ] -> sticky_target = true;
+
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s storm_earth_and_fire sticky target %s to %s (old=%s)",
+        player -> name(), p() -> pet.sef[ SEF_FIRE ] -> name(), target -> name(),
+        p() -> pet.sef[ SEF_FIRE ] -> target -> name() );
+    }
+
+    p() -> pet.sef[ SEF_FIRE ] -> target = target;
+    p() -> pet.sef[ SEF_FIRE ] -> sticky_target = true;
   }
 
   void execute() override
   {
     monk_spell_t::execute();
 
-    auto targets = p() -> create_storm_earth_and_fire_target_list();
-    auto n_targets = targets.size();
-
-    // Start targeting logic from "owner" always
-    p() -> pet.sef[ SEF_EARTH ] -> target = p() -> target;
-    p() -> retarget_storm_earth_and_fire( p() -> pet.sef[ SEF_EARTH ], targets, n_targets );
-    p() -> pet.sef[ SEF_EARTH ] -> summon( data().duration() );
-
-    // Start targeting logic from "owner" always
-    p() -> pet.sef[ SEF_FIRE ] -> target = p() -> target;
-    p() -> retarget_storm_earth_and_fire( p() -> pet.sef[ SEF_FIRE ], targets, n_targets );
-    p() -> pet.sef[ SEF_FIRE ] -> summon( data().duration() );
+    if ( ! p() -> buff.storm_earth_and_fire -> check() )
+    {
+      normal_summon();
+    }
+    else
+    {
+      sticky_targeting();
+    }
   }
 };
 
-sef_despawn_cb_t::sef_despawn_cb_t( storm_earth_and_fire_t* a ) : action( a )
-{ assert( action ); }
-
-void sef_despawn_cb_t::operator()(player_t*)
+// Callback to retarget Storm Earth and Fire pets when new target appear, or old targets depsawn
+// (i.e., die).
+struct sef_despawn_cb_t
 {
-  for ( size_t i = 0; i < sizeof_array( action -> p() -> pet.sef ); i++ )
+  monk_t* monk;
+
+  sef_despawn_cb_t( monk_t* m ) : monk( m )
+  { }
+
+  void operator()( player_t* )
   {
-    pets::storm_earth_and_fire_pet_t* sef = action -> p() -> pet.sef[ i ];
-    // Dormant clones don't care
-    if ( sef -> is_sleeping() )
+    // No pets up, don't do anything
+    if ( ! monk -> buff.storm_earth_and_fire -> check() )
     {
-      continue;
+      return;
     }
 
-    // If the active clone's target is sleeping, lets despawn it.
-    if ( sef -> target -> is_sleeping() )
-    {
-      sef -> dismiss();
-    }
+    auto targets = monk -> create_storm_earth_and_fire_target_list();
+    auto n_targets = targets.size();
+
+    // If the active clone's target is sleeping, reset it's targeting, and jump it to a new target.
+    // Note that if sticky targeting is used, both targets will jump (since both are going to be
+    // stickied to the dead target)
+    range::for_each( monk -> pet.sef, [ this, &targets, &n_targets ]( pets::storm_earth_and_fire_pet_t* pet ) {
+
+      // Arise time went negative, so the target is sleeping. Can't check "is_sleeping" here, because
+      // the callback is called before the target goes to sleep.
+      if ( pet -> target -> arise_time < timespan_t::zero() )
+      {
+        pet -> reset_targeting();
+        monk -> retarget_storm_earth_and_fire( pet, targets, n_targets );
+      }
+      else
+      {
+        // Retarget pets otherwise (a new target has appeared). Note that if the pets are sticky
+        // targeted, this will do nothing.
+        monk -> retarget_storm_earth_and_fire( pet, targets, n_targets );
+      }
+    } );
   }
-}
+};
 
 // ==========================================================================
 // Crackling Jade Lightning
@@ -6049,6 +6128,8 @@ void monk_t::create_pets()
 
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
+    sim -> target_non_sleeping_list.register_callback( actions::sef_despawn_cb_t( this ) );
+
     pet.sef[ SEF_FIRE ] = new pets::storm_earth_and_fire_pet_t( "fire_spirit", sim, this, true );
     // The player BECOMES the Storm Spirit
 //    pet.sef[ SEF_STORM ] = new pets::storm_earth_and_fire_pet_t( "storm_spirit", sim, this, true );
@@ -6849,6 +6930,21 @@ void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& 
     sim -> out_debug.printf( "%s storm_earth_and_fire %s (re)target=%s old_target=%s", name(),
         pet -> name(), pet -> target -> name(), original_target -> name() );
   }
+}
+
+// monk_t::retarget_storm_earth_and_fire_pets =======================================
+
+void monk_t::retarget_storm_earth_and_fire_pets() const
+{
+  if ( pet.sef[ SEF_EARTH ] -> sticky_target == true )
+  {
+    return;
+  }
+
+  auto targets = create_storm_earth_and_fire_target_list();
+  auto n_targets = targets.size();
+  retarget_storm_earth_and_fire( pet.sef[ SEF_EARTH ], targets, n_targets );
+  retarget_storm_earth_and_fire( pet.sef[ SEF_FIRE  ], targets, n_targets );
 }
 
 // monk_t::partial_clear_stagger ====================================================
