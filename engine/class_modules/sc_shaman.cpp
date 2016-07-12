@@ -201,6 +201,9 @@ public:
   std::vector<player_t*> lightning_rods;
   int t18_4pc_elemental_counter;
 
+  // Options
+  unsigned stormlash_targets;
+
   // Data collection for cooldown waste
   auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose< std::vector<simple_data_t*> > cd_waste_iter;
@@ -498,6 +501,7 @@ public:
     player_t( sim, SHAMAN, name, r ),
     lava_surge_during_lvb( false ),
     t18_4pc_elemental_counter( 0 ),
+    stormlash_targets( 17 ), // Default to 2 tanks + 15 dps
     ancestral_awakening( nullptr ),
     pet_fire_elemental( nullptr ),
     guardian_fire_elemental( nullptr ),
@@ -569,6 +573,7 @@ public:
   void      init_scaling() override;
   void      create_buffs() override;
   bool      create_actions() override;
+  void      create_options() override;
   void      init_gains() override;
   void      init_procs() override;
 
@@ -691,11 +696,61 @@ struct stormlash_spell_t : public spell_t
   }
 };
 
+struct damage_pool_t
+{
+  double damage;
+  // Technically this implementation shares last proc between all of the pools, but keep it here in
+  // case we complicate the model in the future.
+  timespan_t last_proc;
+  // Keep track of expiration so we can properly null it out in the (very rare) case where maximum
+  // number of targets have a stormlash buff already
+  event_t* expiration;
+
+  damage_pool_t( player_t* pl, double d, std::vector<damage_pool_t*>& p, const timespan_t& duration );
+};
+
+struct stormlash_expiration_t : public player_event_t
+{
+  std::vector<damage_pool_t*>& damage_pool;
+  damage_pool_t* pool;
+
+  stormlash_expiration_t( player_t* pl, damage_pool_t* pool, std::vector<damage_pool_t*>& pools,
+                          const timespan_t duration ) :
+    player_event_t( *pl ), damage_pool( pools ), pool( pool )
+  {
+    add_event( duration );
+  }
+
+  void execute() override
+  {
+    // Yank out this pool from the list of damage pools
+    auto it = range::find( damage_pool, pool );
+    assert( it != damage_pool.end() );
+
+    damage_pool.erase( it );
+    if ( sim().debug )
+    {
+      sim().out_debug.printf( "%s stormlash removing a pool: pool=%.1f, n_pools=%u",
+          p() -> name(), pool -> damage, damage_pool.size() );
+    }
+
+    delete pool;
+  }
+};
+
+damage_pool_t::damage_pool_t( player_t* pl, double d, std::vector<damage_pool_t*>& p,
+                              const timespan_t& duration ) :
+  damage( d ), last_proc( pl -> sim -> current_time() )
+{
+  expiration = new ( *pl -> sim ) stormlash_expiration_t( pl, this, p, duration );
+  p.push_back( this );
+}
+
 struct stormlash_callback_t : public dbc_proc_callback_t
 {
-  timespan_t buff_duration, last_proc;
+  timespan_t buff_duration;
   double coefficient;
-  std::vector<double> damage_pool;
+  std::vector<damage_pool_t*> damage_pool;
   size_t n_buffs;
 
   stormlash_spell_t* spell;
@@ -703,7 +758,6 @@ struct stormlash_callback_t : public dbc_proc_callback_t
   stormlash_callback_t( player_t* p, const special_effect_t& effect ) :
     dbc_proc_callback_t( p, effect ),
     buff_duration( p -> find_spell( 195222 ) -> duration() ),
-    last_proc( timespan_t::zero() ),
     coefficient( p -> find_spell( 213307 ) -> effectN( 1 ).ap_coeff() ),
     n_buffs( as<size_t>( shaman() -> spec.stormlash -> effectN( 1 ).base_value() +
             shaman() -> talent.empowered_stormlash -> effectN( 1 ).base_value() ) ),
@@ -718,54 +772,79 @@ struct stormlash_callback_t : public dbc_proc_callback_t
   void add_pool()
   {
     double pool = listener -> cache.attack_power() * coefficient;
-    // Add in mastery multiplier
-    pool *= 1.0 + listener -> cache.mastery_value();
+    // Add in global damage multipliers
+    pool *= 1.0 + listener -> composite_player_multiplier( SCHOOL_NATURE );
     // Add in versatility multiplier
     pool *= 1.0 + listener -> cache.damage_versatility();
     // Add in crit multiplier
     pool *= 1.0 + listener -> cache.attack_crit_chance();
     // TODO: Add in crit damage multiplier
 
+    // Apply Empowered Stormlash damage bonus
     pool *= 1.0 + shaman() -> talent.empowered_stormlash -> effectN( 2 ).percent();
 
-    damage_pool.clear();
-    for ( size_t i = 0; i < n_buffs; ++i )
+    int replace_buffs = ( damage_pool.size() + n_buffs ) - shaman() -> stormlash_targets;
+    if ( replace_buffs < 0 )
     {
-      damage_pool.push_back( pool );
+      replace_buffs = 0;
     }
 
-    if ( listener -> sim -> debug )
+    // New buffs
+    for ( size_t i = 0; i < n_buffs - replace_buffs; ++i )
     {
-      listener -> sim -> out_debug.printf( "%s stormlash adding a new pool: pool=%.1f, n_pools=%u",
-          listener -> name(), pool, damage_pool.size() );
+      new damage_pool_t( listener, pool, damage_pool, buff_duration );
+      if ( listener -> sim -> debug )
+      {
+        listener -> sim -> out_debug.printf( "%s stormlash adding new pool: pool=%.1f, n_pools=%u",
+            listener -> name(), pool, damage_pool.size() );
+      }
     }
-    last_proc = listener -> sim -> current_time();
+
+    // Replace buffs
+    for ( int i = 0; i < replace_buffs; ++i )
+    {
+      auto old_pool = damage_pool.front();
+      if ( listener -> sim -> debug )
+      {
+        listener -> sim -> out_debug.printf( "%s stormlash replacing old pool %.1f -> %.1f, n_pools=%u",
+            listener -> name(), old_pool -> damage, pool, damage_pool.size() );
+      }
+      damage_pool.erase( damage_pool.begin() );
+      event_t::cancel( old_pool -> expiration );
+      delete old_pool;
+
+      new damage_pool_t( listener, pool, damage_pool, buff_duration );
+    }
   }
 
   // Callback executes all generated pools
   void execute( action_t* /* a */, action_state_t* state ) override
   {
-    timespan_t interval = listener -> sim -> current_time() - last_proc;
-    double multiplier = interval / buff_duration;
-    if ( listener -> sim -> debug )
-    {
-      listener -> sim -> out_debug.printf( "%s stormlash damage_pool=%.1f previous=%.3f interval=%.3f multiplier=%.3f damage=%.3f",
-          listener -> name(), damage_pool.front(), last_proc.total_seconds(),
-          interval.total_seconds(), multiplier, damage_pool.front() * multiplier );
-    }
+    range::for_each( damage_pool, [ this, &state ]( damage_pool_t* pool ) {
+      timespan_t interval = listener -> sim -> current_time() - pool -> last_proc;
+      double multiplier = interval / buff_duration;
+      if ( listener -> sim -> debug )
+      {
+        listener -> sim -> out_debug.printf( "%s stormlash damage_pool=%.1f previous=%.3f interval=%.3f multiplier=%.3f damage=%.3f",
+            listener -> name(), pool -> damage, pool -> last_proc.total_seconds(),
+            interval.total_seconds(), multiplier, pool -> damage * multiplier );
+      }
 
-    range::for_each( damage_pool, [ this, &state, &multiplier ]( const double& pool ) {
-      spell -> base_dd_min = spell -> base_dd_max = pool * multiplier;
+      pool -> last_proc = listener -> sim -> current_time();
+      spell -> base_dd_min = spell -> base_dd_max = pool -> damage * multiplier;
       spell -> target = state -> target;
       spell -> execute();
     } );
-
-    last_proc = listener -> sim -> current_time();
   }
 
   void reset() override
   {
     dbc_proc_callback_t::reset();
+
+    // Any dangling events at the end of the previous iteration are cancelled alrady, so just delete
+    // the leftover stormlash objects in the damage pool, and clear the pool.
+    range::dispose( damage_pool );
+    damage_pool.clear();
 
     deactivate();
   }
@@ -5405,6 +5484,15 @@ bool shaman_t::create_actions()
   }
 
   return player_t::create_actions();
+}
+
+// shaman_t::create_options =================================================
+
+void shaman_t::create_options()
+{
+  player_t::create_options();
+
+  add_option( opt_uint( "stormlash_targets", stormlash_targets ) );
 }
 
 // shaman_t::init_spells ====================================================
