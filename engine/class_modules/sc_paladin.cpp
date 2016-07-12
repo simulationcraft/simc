@@ -3392,7 +3392,7 @@ struct judgment_t : public paladin_melee_attack_t
     {
       cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
-      sotr_cdr = -2.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+      sotr_cdr = -1.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
     }
   }
 
@@ -4367,7 +4367,7 @@ void paladin_t::generate_action_prio_list_prot()
   // TODO: Create this.
 
   //threshold for defensive abilities
-  std::string threshold = "incoming_damage_2500ms>health.max*0.3";
+  std::string threshold = "incoming_damage_2500ms>health.max*0.4";
 
 
   for (size_t i = 0; i < racial_actions.size(); i++)
@@ -4376,14 +4376,16 @@ void paladin_t::generate_action_prio_list_prot()
 
   //defensive
   prot->add_action(this, "Shield of the Righteous", "if=!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  prot->add_talent(this, "Bastion of Light", "if=talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1");
   prot->add_action(this, "Light of the Protector", "if=health.pct<25");
   prot->add_action(this, "Divine Steed", "if=talent.knight_templar.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_action(this, "Eye of Tyr", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_action(this, "Light of the Protector", "if=health.pct<50");
   prot->add_talent(this, "Aegis of Light", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_action(this, "Guardian of Ancient Kings", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Divine Shield", "if=talent.final_stand.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_action(this, "Ardent Defender", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-
+  prot->add_action(this, "Lay on Hands", "if=health.pct<10");
 
   //potion
   if (sim->allow_potions)
@@ -4407,8 +4409,9 @@ void paladin_t::generate_action_prio_list_prot()
   prot->add_action(this, "Judgment");
   prot->add_talent(this, "Blessed Hammer");
   prot->add_action(this, "Avenger's Shield");
-  prot -> add_action( this, "Consecration" );
+  prot->add_action(this, "Consecration" );
   prot->add_action(this, "Hammer of the Righteous");
+ 
 
 
   //dps-aoe
