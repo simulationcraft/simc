@@ -1120,7 +1120,7 @@ struct berserk_buff_base_t : public druid_buff_t<buff_t>
 
   berserk_buff_base_t( druid_t& p, const std::string& name, const spell_data_t* spell ) :
     druid_buff_t<buff_t>( p, buff_creator_t( &p, name, spell )
-                          .cd( timespan_t::from_seconds( 0.0 ) ) ) // Cooldown handled by ability
+                          .cd( timespan_t::zero() ) ) // Cooldown handled by ability
   {}
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override

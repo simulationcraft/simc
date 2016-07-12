@@ -6032,7 +6032,8 @@ void shaman_t::create_buffs()
 
   buff.focus_of_the_elements = buff_creator_t( this, "focus_of_the_elements", find_spell( 167205 ) )
                                .chance( static_cast< double >( sets.has_set_bonus( SHAMAN_ELEMENTAL, T17, B2 ) ) );
-  buff.feral_spirit          = buff_creator_t( this, "t17_4pc_melee", sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() );
+  buff.feral_spirit          = buff_creator_t( this, "t17_4pc_melee", sets.set( SHAMAN_ENHANCEMENT, T17, B4 ) -> effectN( 1 ).trigger() )
+                               .cd( timespan_t::zero() );
 
   buff.flametongue = new flametongue_buff_t( this );
   buff.frostbrand = buff_creator_t( this, "frostbrand", spec.frostbrand )

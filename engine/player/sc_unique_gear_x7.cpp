@@ -45,6 +45,7 @@ namespace item
   void infernal_alchemist_stone( special_effect_t& ); // WIP
 
   // 7.0 Raid
+  void convergence_of_fates( special_effect_t& );
   void natures_call( special_effect_t& );
   void spontaneous_appendages( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
@@ -1555,6 +1556,89 @@ void item::wriggling_sinew( special_effect_t& effect )
   effect.custom_buff = new maddening_whispers_t( effect );
 }
 
+// Convergence of Fates =====================================================
+
+struct convergence_cd_t
+{
+  specialization_e spec;
+  const char* cooldowns[3];
+};
+
+static const convergence_cd_t convergence_cds[] =
+{
+  /* !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!!
+
+    Spells that trigger buffs must have the cooldown of their buffs removed
+    if they have one, or this trinket may cause undesirable results.
+
+  !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! */
+  { DEATH_KNIGHT_FROST,   { "pillar_of_frost" } },
+  { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle" } },
+  { DRUID_FERAL,          { "berserk", "incarnation_king_of_the_jungle" } },
+  { HUNTER_BEAST_MASTERY, { "aspect_of_the_wild" } },
+  { HUNTER_MARKSMANSHIP,  { "trueshot" } },
+  { HUNTER_SURVIVAL,      { "aspect_of_the_eagle" } },
+  { MONK_WINDWALKER,      { "storm_earth_and_fire" } },
+  { PALADIN_RETRIBUTION,  { "avenging_wrath" } },
+  { ROGUE_SUBTLETY,       { "vendetta" } },
+  { ROGUE_OUTLAW,         { "adrenaline_rush" } },
+  { ROGUE_ASSASSINATION,  { "shadow_blades" } },
+  { SHAMAN_ENHANCEMENT,   { "feral_spirit" } },
+  { WARRIOR_ARMS,         { "battle_cry" } },
+  { WARRIOR_FURY,         { "battle_cry" } },
+  { DEMON_HUNTER_HAVOC,   { "metamorphosis" } },
+  { SPEC_NONE,            { 0 } }
+};
+
+struct convergence_of_fates_callback_t : public dbc_proc_callback_t
+{
+  std::vector<cooldown_t*> cooldowns;
+  timespan_t amount;
+
+  convergence_of_fates_callback_t( const special_effect_t& effect ) : 
+    dbc_proc_callback_t( effect.item, effect ),
+    amount( timespan_t::from_seconds( -effect.driver() -> effectN( 1 ).base_value() ) )
+  {
+    const convergence_cd_t* cd = &( convergence_cds[ 0 ] );
+    do
+    {
+      if ( effect.player -> specialization() != cd -> spec )
+      {
+        cd++;
+        continue;
+      }
+      
+      for ( size_t i = 0; i < 3; i++ )
+      {
+        if ( ! cd -> cooldowns[ i ] )
+          continue;
+
+        cooldown_t* c = effect.player -> get_cooldown( cd -> cooldowns[ i ] );
+
+        if ( c )
+          cooldowns.push_back( c );
+      }
+
+      break;
+    } while ( cd -> spec != SPEC_NONE );
+  }
+
+  void execute( action_t*, action_state_t* ) override
+  {
+    assert( cooldowns.size() > 0 );
+
+    for ( size_t i = 0; i < cooldowns.size(); i++ )
+    {
+      cooldowns[ i ] -> adjust( amount );
+    }
+  }
+};
+
+void item::convergence_of_fates( special_effect_t& effect )
+{
+  new convergence_of_fates_callback_t( effect );
+}
+
 // March of the Legion ======================================================
 
 void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
@@ -1591,6 +1675,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 214340, "ProcOn/Hit_1Tick_214342Trigger"     );
 
   /* Legion 7.0 Raid */
+  register_special_effect( 225139, item::convergence_of_fates   );
   register_special_effect( 222512, item::natures_call           );
   register_special_effect( 222167, item::spontaneous_appendages );
   register_special_effect( 222046, item::wriggling_sinew        );
