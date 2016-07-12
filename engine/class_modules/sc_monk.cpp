@@ -230,6 +230,9 @@ public:
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
     buff_t* transfer_the_power;
+
+    // Legendaries
+    buff_t* hidden_masters_forbidden_touch;
   } buff;
 
 public:
@@ -508,6 +511,7 @@ public:
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
     const spell_data_t* tier17_2pc_tank;
+
     // Mistweaver
     const spell_data_t* aura_mistweaver_monk;
     const spell_data_t* blessings_of_yulon;
@@ -527,6 +531,7 @@ public:
     const spell_data_t* tier17_2pc_heal;
     const spell_data_t* tier17_4pc_heal;
     const spell_data_t* tier18_2pc_heal;
+
     // Windwalker
     const spell_data_t* aura_windwalker_monk;
     const spell_data_t* chi_orbit;
@@ -543,6 +548,8 @@ public:
     const spell_data_t* tier18_2pc_melee;
     const spell_data_t* tier19_4pc_melee;
 
+    // Legendaries
+    const spell_data_t* hidden_masters_forbidden_touch;
   } passives;
 
   struct pets_t
@@ -3497,25 +3504,32 @@ struct touch_of_death_t: public monk_spell_t
       add_child( gale_burst );
   }
 
+  virtual bool ready() override
+  {
+    // Cannot be used on a target that has Touch of Death on them
+    if ( td( p() -> target ) -> dots.touch_of_death -> is_ticking() )
+      return false;
+
+    if ( p() -> buff.hidden_masters_forbidden_touch -> up() )
+      return true;
+
+    return monk_spell_t::ready();
+  }
+
   virtual double target_armor( player_t* ) const override { return 0; }
 
   virtual double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const
   {
-    return p() -> resources.max[RESOURCE_HEALTH];
+    double amount = p() -> resources.max[RESOURCE_HEALTH];
+
+    amount *= p() -> spec.touch_of_death -> effectN( 2 ).percent(); // 50% HP
+
+    amount *= combo_strikes_multiplier();
+
+    return amount;
   }
 
-  virtual double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    am *= p() -> spec.touch_of_death -> effectN( 2 ).percent(); // 50% HP
-
-    am *= combo_strikes_multiplier();
-
-    return am;
-  }
-
-  void last_tick( dot_t* dot ) override
+ void last_tick( dot_t* dot ) override
   {
     monk_spell_t::last_tick( dot );
 
@@ -6388,6 +6402,9 @@ void monk_t::init_spells()
   passives.tier18_2pc_melee                 = find_spell( 216172 );
   passives.tier19_4pc_melee                 = find_spell( 211432 );
 
+  // Legendaries
+  passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
+
   // Mastery spells =========================================
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler            = find_mastery_spell( MONK_BREWMASTER );
@@ -6673,6 +6690,9 @@ void monk_t::create_buffs()
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
   // The proc gives 1%; even though tooltip and datamining say 5% per stack
     .default_value( artifact.transfer_the_power.rank() ?  0.1 /* artifact.transfer_the_power.percent() */ : 0 ); 
+
+  // Legendaries
+  buff.hidden_masters_forbidden_touch = buff_creator_t( this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
 }
 
 // monk_t::init_gains =======================================================
