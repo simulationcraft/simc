@@ -36,6 +36,7 @@ namespace item
   void spiked_counterweight( special_effect_t& );
   void stormsinger_fulmination_charge( special_effect_t& );
   void terrorbound_nexus( special_effect_t& ); // NYI
+  void the_devilsaurs_bite( special_effect_t& );
   void tiny_oozeling_in_a_jar( special_effect_t& );
   void tirathons_betrayal( special_effect_t& );
   void windscar_whetstone( special_effect_t& );
@@ -166,7 +167,9 @@ struct gaseous_bubble_t : public absorb_buff_t
   gaseous_bubble_t( special_effect_t& effect, action_t* a ) : 
     absorb_buff_t( absorb_buff_creator_t( effect.player, "gaseous_bubble", effect.driver(), effect.item ) ),
     explosion( a )
-  {}
+  {
+    a -> base_dd_min = a -> base_dd_max = effect.driver() -> effectN( 2 ).average( effect.item );
+  }
 
   void expire_override( int stacks, timespan_t remaining ) override
   {
@@ -1543,6 +1546,17 @@ void item::wriggling_sinew( special_effect_t& effect )
   effect.custom_buff = new maddening_whispers_t( effect );
 }
 
+// The Devilsaur's Bite =====================================================
+
+void item::the_devilsaurs_bite( special_effect_t& effect )
+{
+  effect.execute_action = effect.create_action();
+  effect.execute_action -> base_dd_min = effect.execute_action -> base_dd_max =
+    effect.trigger() -> effectN( 1 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 // March of the Legion ======================================================
 
 void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
@@ -1569,6 +1583,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 214584, item::shivermaws_jawbone             );
   register_special_effect( 214168, item::spiked_counterweight           );
   register_special_effect( 215630, item::stormsinger_fulmination_charge );
+  register_special_effect( 224073, item::the_devilsaurs_bite            );
   register_special_effect( 215127, item::tiny_oozeling_in_a_jar         );
   register_special_effect( 215658, item::tirathons_betrayal             );
   register_special_effect( 214980, item::windscar_whetstone             );
