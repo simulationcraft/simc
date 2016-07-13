@@ -2458,6 +2458,16 @@ bool player_t::init_finished()
   // Sort outbound assessors
   assessor_out_damage.sort();
 
+  if ( sim -> debug )
+  {
+    range::for_each( items, [ this ]( const item_t& item ) {
+      if ( item.active() )
+      {
+        sim -> out_debug << item.to_string();
+      }
+    } );
+  }
+
   return ret;
 }
 
