@@ -7,7 +7,7 @@
 
 // ==========================================================================
 // TODO
-// General 
+// General
 //   - Cleanup old spells
 //
 // Beast Mastery
@@ -1527,7 +1527,7 @@ struct titans_thunder_t: public hunter_pet_action_t < hunter_pet_t, spell_t >
     tick_action = new titans_thunder_tick_t( p );
   }
 };
-  
+
 struct jaws_of_thunder_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 {
   jaws_of_thunder_t( hunter_pet_t* p ):
@@ -1539,7 +1539,7 @@ struct jaws_of_thunder_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
     proc = true;
     school = SCHOOL_NATURE;
     weapon_multiplier = 0.0;
-  }  
+  }
 };
 
 // Bestial Ferocity (Aspect of the Beast) ===================================
@@ -3347,7 +3347,7 @@ struct aimed_shot_t: public hunter_ranged_attack_t
     }
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false ); 
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
   }
 
   virtual timespan_t execute_time() const override
@@ -4178,7 +4178,7 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     if ( p() -> buffs.mongoose_fury -> up() )
     {
       p() -> buffs.mongoose_fury -> extend_duration( p(), timespan_t::from_seconds( 5.0 ) );
-      
+
       // Tracking purposes
       p() -> buffs.fury_of_the_eagle -> trigger( p() -> buffs.mongoose_fury -> stack(), p() -> buffs.fury_of_the_eagle -> DEFAULT_VALUE(), -1.0,
         this -> composite_dot_duration( execute_state ) );
@@ -4217,8 +4217,8 @@ struct butchery_t: public hunter_melee_attack_t
       am *= 1.0 + num_targets() * p() -> artifacts.hellcarver.percent();
 
     return am;
-  }  
-  
+  }
+
   virtual void execute() override
   {
     hunter_melee_attack_t::execute();
@@ -5188,6 +5188,7 @@ struct dragonsfire_grenade_t: public hunter_spell_t
     parse_options( options_str );
 
     impact_action = new dragonsfire_grenade_tick_t( p );
+    cooldown -> duration = p -> find_spell( 194855 ) -> cooldown();
   }
 };
 
@@ -5975,7 +5976,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Multi-shot ", " if=spell_targets.multishot>1&(!debuff.hunters_mark.up&buff.marking_targets.up&cast_regen+action.aimed_shot.cast_regen<=focus.deficit)" );
   default_list -> add_action( this, "Arcane Shot ", " if=(!debuff.hunters_mark.up&buff.marking_targets.up)|focus.time_to_max>=2" );
   default_list -> add_talent( this, "Sidewinders ", " if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5))" );
-      
+
   patientless -> add_action( this, "Arcane Shot", "if=debuff.vulnerability.stack<3&buff.marking_targets.up&debuff.hunters_mark.down" );
   patientless -> add_action( this, "Marked Shot", "if=debuff.vulnerability.stack<3|debuff.hunters_mark.remains<5|(focus<50|focus>80)" );
   patientless -> add_talent( this, "Sentinel", "if=!talent.sidewinders.enabled&debuff.hunters_mark.down&spell_targets.sentinel>1" );
