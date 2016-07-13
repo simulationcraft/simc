@@ -565,6 +565,7 @@ public:
   void trigger_stormlash( const action_state_t* state );
   void trigger_doom_vortex( const action_state_t* state );
   void trigger_lightning_rod_damage( const action_state_t* state );
+  void trigger_hot_hand( const action_state_t* state );
 
   // Character Definition
   void      init_spells() override;
@@ -1175,6 +1176,7 @@ public:
   bool may_proc_maelstrom_weapon;
   bool may_proc_stormbringer;
   bool may_proc_lightning_shield;
+  bool may_proc_hot_hand;
 
   shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
     base_t( token, p, s ),
@@ -1183,7 +1185,8 @@ public:
     may_proc_frostbrand( p -> spec.frostbrand -> ok() ),
     may_proc_maelstrom_weapon( false ), // Change to whitelisting
     may_proc_stormbringer( p -> spec.stormbringer -> ok() ),
-    may_proc_lightning_shield( false )
+    may_proc_lightning_shield( false ),
+    may_proc_hot_hand( p -> talent.hot_hand -> ok() )
   {
     special = true;
     may_glance = false;
@@ -1205,7 +1208,12 @@ public:
 
     if ( may_proc_frostbrand )
     {
-      may_proc_frostbrand = ab::weapon != 0;
+      may_proc_frostbrand = ab::weapon != nullptr;
+    }
+
+    if ( may_proc_hot_hand )
+    {
+      may_proc_hot_hand = ab::weapon != nullptr;
     }
 
     may_proc_lightning_shield = p() -> talent.lightning_shield -> ok() && weapon && weapon_multiplier > 0;
@@ -1226,6 +1234,7 @@ public:
     p() -> trigger_hailstorm( state );
     p() -> trigger_lightning_shield( state );
     p() -> trigger_stormlash( state );
+    p() -> trigger_hot_hand( state );
   }
 
   void trigger_maelstrom_weapon( const action_state_t* source_state, double amount = 0 )
@@ -2420,7 +2429,7 @@ struct crash_lightning_attack_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = false;
+    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
   }
 };
@@ -2439,7 +2448,7 @@ struct hailstorm_attack_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = false;
+    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
   }
 };
@@ -3160,7 +3169,7 @@ struct sundering_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = may_proc_lightning_shield = may_proc_frostbrand = true;
+    may_proc_stormbringer = may_proc_lightning_shield = may_proc_frostbrand = may_proc_hot_hand = true;
   }
 };
 
@@ -3210,7 +3219,6 @@ struct flametongue_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.flametongue -> trigger();
-    p() -> buff.hot_hand -> trigger();
   }
 };
 
@@ -5692,7 +5700,8 @@ void shaman_t::init_scaling()
 
 void shaman_t::trigger_stormbringer( const action_state_t* state )
 {
-  assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Stormbringer called on invalid action type" );
+  assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr &&
+          "Stormbringer called on invalid action type" );
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
 
   if ( ! attack -> may_proc_stormbringer )
@@ -5706,6 +5715,25 @@ void shaman_t::trigger_stormbringer( const action_state_t* state )
     cooldown.strike -> reset( true );
     buff.wind_strikes -> trigger();
   }
+}
+
+void shaman_t::trigger_hot_hand( const action_state_t* state )
+{
+  assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr &&
+          "Hot Hand called on invalid action type" );
+  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
+
+  if ( ! attack -> may_proc_hot_hand )
+  {
+    return;
+  }
+
+  if ( ! buff.flametongue -> up() )
+  {
+    return;
+  }
+
+  buff.hot_hand -> trigger();
 }
 
 void shaman_t::trigger_elemental_focus( const action_state_t* state )
