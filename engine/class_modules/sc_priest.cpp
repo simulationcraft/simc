@@ -230,7 +230,7 @@ public:
     artifact_power_t deaths_embrace;
     artifact_power_t from_the_shadows;
     artifact_power_t mass_hysteria;
-    artifact_power_t mental_fortitude;  // NYI
+    artifact_power_t mental_fortitude;
     artifact_power_t mind_shattering;
     artifact_power_t sinister_thoughts;
     artifact_power_t sphere_of_insanity;
@@ -5384,7 +5384,7 @@ struct clarity_of_purpose_t final : public priest_heal_t
 
 void spells::vampiric_touch_t::init_mental_fortitude()
 {
-  if ( !priest.active_spells.mental_fortitude )
+  if ( !priest.active_spells.mental_fortitude && priest.artifact.mental_fortitude.rank() )
   {
     priest.active_spells.mental_fortitude =
         new heals::mental_fortitude_t( priest );
