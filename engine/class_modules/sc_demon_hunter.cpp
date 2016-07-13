@@ -33,6 +33,7 @@ namespace
    Retest Fel Barrage proc mechanics in-game
    Fix Nemesis
    Figure out Fel Barrage mechanics
+   AA disruption polling (500ms)
 
    Vengeance ----------------------------------------------------------------
    Infernal Strike
@@ -2727,14 +2728,10 @@ struct melee_t : public demon_hunter_attack_t
 
     switch ( s )
     {
-      /* Autoattacks after a channel occur around 350ms later. channel_lag
-         takes care of the first 250, but add an extra 100 here. */
+      // Start 500ms polling for being "back in range".
       case LOST_CONTACT_CHANNEL:
-        return timespan_t::from_millis( 100 );
-      // Position lag stuff
       case LOST_CONTACT_RANGE:
-        return rng().gauss( timespan_t::from_millis( 250 ),
-                            timespan_t::from_millis( 62 ) );
+        return timespan_t::from_millis( 500 );
       default:
         return demon_hunter_attack_t::execute_time();
     }

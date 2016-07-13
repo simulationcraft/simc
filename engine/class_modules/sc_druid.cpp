@@ -25,6 +25,7 @@ namespace { // UNNAMED NAMESPACE
   Artifact utility traits
   Check Luffa-Wrapped Grips (what procs it)
   Check Blood Scent crit
+  Fix Ashamane's Rip (CP, BT, SR, and TF? state)
 
   Balance ===================================================================
   Stellar Drift cast while moving
