@@ -1323,6 +1323,7 @@ class SpellDataGenerator(DataGenerator):
           ( 215409, 3 ),
           ( 215276, 3 ),
           ( 187385, 3 ),
+          ( 205260, 0 ),        # Soul effigy damage
         ),
 
         # Monk:
