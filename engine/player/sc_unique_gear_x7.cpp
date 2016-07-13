@@ -382,11 +382,11 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
       haymaker_driver_t* callback =
         new haymaker_driver_t( *effect2, effect -> trigger() -> effectN( 2 ).percent() );
       callback -> initialize();
-      callback -> active = false;
+      callback -> deactivate();
 
       // Create debuff with stack callback.
       td -> debuff.brutal_haymaker = buff_creator_t( *td, "brutal_haymaker", effect -> trigger() )
-        .stack_change_callback( [ = ]( buff_t*, int old, int new_ )
+        .stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
         {
           if ( old == 0 ) {
             assert( ! callback -> active );
@@ -538,12 +538,12 @@ void item::tirathons_betrayal( special_effect_t& effect )
   // And create, initialized and deactivate the callback
   dbc_proc_callback_t* callback = new darkstrikes_driver_t( *dmg_effect );
   callback -> initialize();
-  callback -> active = false;
+  callback -> deactivate();
 
   effect.custom_buff = buff_creator_t( effect.player, "darkstrikes", effect.driver(), effect.item )
     .chance( 1 ) // overrride RPPM
     .activated( false )
-    .stack_change_callback( [ = ]( buff_t*, int old, int new_ )
+    .stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
     {
       if ( old == 0 ) {
         assert( ! callback -> active );
@@ -623,7 +623,7 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
       buff_t( buff_creator_t( effect.player, "fetid_regurgitation", effect.driver(), effect.item )
         .activated( false )
         .tick_zero( true )
-        .tick_callback( [ = ] ( buff_t*, int, const timespan_t& ) {
+        .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) {
           damage -> schedule_execute();
         } ) ), congealing_goo( cg )
     {
@@ -757,11 +757,11 @@ struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initiali
       // Create callback; we'll enable this callback whenever the debuff is active.
       taint_of_the_sea_driver_t* callback = new taint_of_the_sea_driver_t( *effect2 );
       callback -> initialize();
-      callback -> active = false;
+      callback -> deactivate();
 
       td -> debuff.taint_of_the_sea = buff_creator_t( *td, "taint_of_the_sea", effect -> driver() )
       .default_value( effect -> driver() -> effectN( 2 ).trigger() -> effectN( 2 ).average( effect -> item ) )
-      .stack_change_callback( [ = ]( buff_t* b, int old, int new_ )
+      .stack_change_callback( [ callback ]( buff_t* b, int old, int new_ )
       {
         if ( old == 0 )
         {
@@ -1091,13 +1091,13 @@ void item::moonlit_prism( special_effect_t& effect )
   // Create callback; it will be enabled when the buff is active.
   dbc_proc_callback_t* callback = new dbc_proc_callback_t( effect.player, *effect2 );
   callback -> initialize();
-  callback -> active = false;
+  callback -> deactivate();
 
   // Create buff.
   effect.custom_buff = stat_buff_creator_t( effect.player, "elunes_light", effect.driver(), effect.item )
     .cd( timespan_t::zero() )
     .refresh_behavior( BUFF_REFRESH_DISABLED )
-    .stack_change_callback( [ = ]( buff_t*, int old, int new_ )
+    .stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
     {
       if ( old == 0 ) {
         assert( ! callback -> active );
@@ -1123,13 +1123,13 @@ void item::faulty_countermeasures( special_effect_t& effect )
 
   dbc_proc_callback_t* callback = new dbc_proc_callback_t( effect.player, *effect2 );
   callback -> initialize();
-  callback -> active = false;
+  callback -> deactivate();
 
   effect.custom_buff = buff_creator_t( effect.player, "sheathed_in_frost", effect.driver(), effect.item )
     .cd( timespan_t::zero() )
     .activated( false )
     .chance( 1 )
-    .stack_change_callback( [ = ]( buff_t*, int old, int new_ )
+    .stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
     {
       if ( old == 0 ) {
         assert( ! callback -> active );
