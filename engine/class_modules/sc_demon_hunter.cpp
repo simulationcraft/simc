@@ -1547,6 +1547,7 @@ struct chaos_nova_t : public demon_hunter_spell_t
     cooldown -> duration += p -> talent.unleashed_power -> effectN( 1 ).time_value();
     base_costs[ RESOURCE_FURY ] *= 1.0 + p -> talent.unleashed_power -> effectN( 2 ).percent();
     school = SCHOOL_CHAOS; // Jun 27 2016: Spell data states Chromatic damage, just override it.
+    may_proc_fel_barrage = true; // Jul 12 2016
   }
 };
 
@@ -1637,6 +1638,7 @@ struct eye_beam_t : public demon_hunter_spell_t
       aoe  = -1;
       dual = background = true;
       base_crit += p -> spec.havoc -> effectN( 3 ).percent();
+      may_proc_fel_barrage = true; // Jul 12 2016
       
       school = SCHOOL_CHAOS; // Jun 27 2016: Spell data states Chromatic damage, just override it.
 
@@ -1720,6 +1722,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe = -1;
+      may_proc_fel_barrage = false; // Can't proc itself, that would be silly!
     }
   };
 
@@ -1827,6 +1830,7 @@ struct fel_rush_t : public demon_hunter_spell_t
     {
       aoe = -1;
       dual = background = true;
+      may_proc_fel_barrage = true; // Jul 12 2016
 
       base_multiplier *= 1.0 + p -> talent.fel_mastery -> effectN( 2 ).percent();
 
@@ -1921,6 +1925,7 @@ struct fel_eruption_t : public demon_hunter_spell_t
       // Assume the target is stun immune.
       base_multiplier *= 1.0 + p -> talent.fel_eruption -> effectN( 1 ).percent(); 
       school = SCHOOL_CHAOS; // Jun 27 2016: Spell data states Chromatic damage, just override it.
+      may_proc_fel_barrage = true; // Jul 12 2016
     }
   };
 
@@ -2225,6 +2230,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       aoe = -1;
       dot_duration = timespan_t::zero();
       school = SCHOOL_CHAOS; // Jun 27 2016: Spell data states Chromatic damage, just override it.
+      may_proc_fel_barrage = true; // Jul 12 2016
     }
   };
 
@@ -2854,6 +2860,7 @@ struct blade_dance_attack_t : public demon_hunter_attack_t
     dual = background = true;
     aoe = -1;
     first_blood_multiplier = 1.0 + p -> talent.first_blood -> effectN( 1 ).percent();
+    may_proc_fel_barrage = true; // Jul 12 2016
   }
 
   double action_multiplier() const override
@@ -3095,6 +3102,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         + p -> talent.chaos_cleave -> effectN( 1 ).base_value();
       chain_multiplier = data().effectN( 1 ).chain_multiplier();
       may_refund = weapon == &( p -> off_hand_weapon );
+      may_proc_fel_barrage = true; // Jul 12 2016
 
       // Do not put crit chance modifiers here!
       base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
@@ -3379,7 +3387,7 @@ struct demons_bite_t : public demon_hunter_attack_t
       p -> find_class_spell( "Demon's Bite" ), options_str )
   {
     energize_die_sides = data().effectN( 3 ).die_sides();
-    may_proc_fel_barrage = true; // Jun 2 2016
+    may_proc_fel_barrage = true; // Jul 12 2016
 
     base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
   }
@@ -3424,7 +3432,6 @@ struct demons_bite_t : public demon_hunter_attack_t
 };
 
 // Demon Blade ==============================================================
-// TOCHECK: Anger of the Half-Giants interaction.
 
 struct demon_blades_t : public demon_hunter_attack_t
 {
@@ -3436,6 +3443,9 @@ struct demon_blades_t : public demon_hunter_attack_t
     background           = true;
     cooldown -> duration = p -> talent.demon_blades -> internal_cooldown();
     energize_die_sides   = data().effectN( 3 ).die_sides();
+    may_proc_fel_barrage = true; // Jul 12 2016
+    
+    base_multiplier *= 1.0 + p -> artifact.demon_rage.percent();
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -3472,7 +3482,7 @@ struct felblade_t : public demon_hunter_attack_t
     {
       dual = background = true;
       may_miss = may_dodge = may_parry = false;
-      may_proc_fel_barrage = true; // Jun 2 2016
+      may_proc_fel_barrage = true; // Jul 12 2016
 
       // Clear energize and then manually pick which effect to parse.
       energize_type = ENERGIZE_NONE;
@@ -3604,7 +3614,7 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     {
       background = dual = ground_aoe = true;
       aoe = -1;
-      may_proc_fel_barrage = true; // Jun 2 2016
+      may_proc_fel_barrage = true; // Jul 12 2016
     }
 
     void impact( action_state_t* s ) override
@@ -3938,6 +3948,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     {
       background = dual = true;
       aoe = -1;
+      may_proc_fel_barrage = true; // Jul 12 2016
     }
   };
 
