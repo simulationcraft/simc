@@ -5,15 +5,13 @@
 
 #include "simulationcraft.hpp"
 /*
-TODO - Updated 2016/04/09 by Twintop:
+TODO - Updated 2016-07-13 by scamille:
 
 Disc / Holy
  Everything
 
 Shadow
   - Finish ("required") Artifacts Traits:
-      - Mental Fortitude
-          - Need to create a new absorb and track it.
       - Thoughts of Insanity
           - Need to implement Shadowmend first.
       - Thrive in the Shadows
@@ -5045,6 +5043,40 @@ struct mental_fortitude_t final : public priest_absorb_t
 
   }
 
+  void assess_damage( dmg_e, action_state_t* s ) override
+  {
+    // Add stacking of buff value, and limit by players health factor.
+    auto& buff            = target_specific[ s->target ];
+    double stacked_amount = s->result_amount;
+    if ( buff && buff->check() )
+    {
+      stacked_amount += buff->current_value;
+
+    }
+    double limit   = priest.resources.max[ RESOURCE_HEALTH ] * 0.08;
+    stacked_amount = std::min( stacked_amount, limit );
+    if ( sim->log )
+    {
+      sim ->out_log.printf("%s %s stacked amount: %.2f",player->name(), name(), stacked_amount);
+    }
+
+    // Trigger Absorb Buff
+    if ( buff == nullptr )
+      buff = create_buff( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      buff->trigger( 1, stacked_amount );
+      if ( sim->log )
+        sim->out_log.printf( "%s %s applies absorb on %s for %.0f (%.0f) (%s)",
+                             player->name(), name(), s->target->name(),
+                             s->result_amount, stacked_amount,
+                             util::result_type_string( s->result ) );
+    }
+
+    stats->add_result( 0.0, s->result_total, ABSORB, s->result, s->block_result,
+                       s->target );
+  }
 };
 
 // Prayer of Healing Spell ==================================================
