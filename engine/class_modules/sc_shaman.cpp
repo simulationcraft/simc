@@ -1203,6 +1203,11 @@ public:
       may_proc_windfury = n_targets() == 0;
     }
 
+    if ( may_proc_frostbrand )
+    {
+      may_proc_frostbrand = ab::weapon != 0;
+    }
+
     may_proc_lightning_shield = p() -> talent.lightning_shield -> ok() && weapon && weapon_multiplier > 0;
   }
 
@@ -3151,7 +3156,7 @@ struct sundering_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = may_proc_lightning_shield = true;
+    may_proc_stormbringer = may_proc_lightning_shield = may_proc_frostbrand = true;
   }
 };
 
@@ -5960,11 +5965,6 @@ void shaman_t::trigger_hailstorm( const action_state_t* state )
   }
 
   if ( ! talent.hailstorm -> ok() )
-  {
-    return;
-  }
-
-  if ( ! attack -> weapon )
   {
     return;
   }
