@@ -1582,7 +1582,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
     if ( rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
     {
       jaws_of_thunder -> base_dd_min = o() -> find_spell( 197163 ) -> effectN( 2 ).percent() * s -> result_amount;
-      jaws_of_thunder -> base_dd_max = o() -> find_spell( 197163 ) -> effectN( 2 ).percent() * s -> result_amount;
+      jaws_of_thunder -> base_dd_max = jaws_of_thunder -> base_dd_min;
       jaws_of_thunder -> execute();
     }
   }
@@ -3196,7 +3196,7 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    trigger_true_aim( p(), s -> target, 6 );
+    trigger_true_aim( p(), s -> target );
   }
 
 
@@ -6001,7 +6001,7 @@ void hunter_t::apl_surv()
 {
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
 
-  default_list -> add_action( "auto_shot" );
+  default_list -> add_action( "auto_attack" );
 
   add_racial_actions( default_list );
   add_item_actions( default_list );
