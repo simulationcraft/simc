@@ -6427,7 +6427,7 @@ void shaman_t::init_action_list_enhancement()
 
   def -> add_action( this, "Doom Winds" );
   def -> add_talent( this, "Windsong" );
-  def -> add_talent( this, "Ascendance", "if=cooldown.strike.remains=0" );
+  def -> add_talent( this, "Ascendance" );
   def -> add_action( this, "Feral Spirit" );
   def -> add_talent( this, "Fury of Air", "if=!ticking" );
   def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8" );
