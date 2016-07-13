@@ -32,6 +32,7 @@ namespace
    More thorough caching on blade_dance_expr_t
    Retest Fel Barrage proc mechanics in-game
    Fix Nemesis
+   Figure out Fel Barrage mechanics
 
    Vengeance ----------------------------------------------------------------
    Infernal Strike
@@ -45,6 +46,7 @@ namespace
    Flame Crash
    Artificial Stamina
    Pain from damage taken
+   Soul Cleave variable consumption
 
    Needs Documenting --------------------------------------------------------
 */
@@ -1686,18 +1688,6 @@ struct eye_beam_t : public demon_hunter_spell_t
   void record_data( action_state_t* s ) override
   { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
-  void tick( dot_t* d ) override
-  {
-    demon_hunter_spell_t::tick( d );
-
-    // Until 400ms through the channel, it's just animation and doesn't actually
-    // deal damage.
-    if ( d -> current_tick >= 2 )
-    {
-      beam -> schedule_execute();
-    }
-  }
-
   void execute() override
   {
     demon_hunter_spell_t::execute();
@@ -2265,22 +2255,9 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
     if ( p() -> talent.demon_reborn -> ok() )
     {
-      p() -> cooldown.blade_dance -> reset( false, true );
       p() -> cooldown.blur -> reset( false, true );
-      p() -> cooldown.chaos_blades -> reset( false, true );
       p() -> cooldown.chaos_nova -> reset( false, true );
-      p() -> cooldown.consume_magic -> reset( false, true );
-      p() -> cooldown.death_sweep -> reset( false, true );
       p() -> cooldown.eye_beam -> reset( false, true );
-      p() -> cooldown.felblade -> reset( false, true );
-      p() -> cooldown.fel_barrage -> reset( false, true );
-      p() -> cooldown.fel_eruption -> reset( false, true );
-      p() -> cooldown.fel_rush -> reset( false, true );
-      p() -> cooldown.nemesis -> reset( false, true );
-      p() -> cooldown.netherwalk -> reset( false, true );
-      p() -> cooldown.fury_of_the_illidari -> reset( false, true );
-      p() -> cooldown.throw_glaive -> reset( false, true );
-      p() -> cooldown.vengeful_retreat -> reset( false, true );
     }
 
     if ( p() -> legendary.runemasters_pauldrons )
@@ -3591,7 +3568,7 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
       may_crit   = false;
       aoe        = -1;
       background = split_aoe_damage = true;
-      base_multiplier = 1.0;  // 100% of damage dealt; not in spell data
+      base_multiplier = p -> artifact.rage_of_the_illidari.data().effectN( 1 ).percent();
     }
 
     void init() override
