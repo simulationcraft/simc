@@ -2290,6 +2290,7 @@ struct hati_t: public hunter_secondary_pet_t
     if ( o() -> artifacts.master_of_beasts.rank() )
     {
       active.kill_command = new actions::kill_command_t( this );
+      active.kill_command -> base_multiplier *= 0.5;
       active.beast_cleave = new actions::beast_cleave_attack_t( this );
     }
 
