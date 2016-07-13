@@ -3284,6 +3284,12 @@ bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
   if ( cancel_action )
   {
     cancel();
+    range::for_each( sim -> target_non_sleeping_list, [ this ]( player_t* target ) {
+      if ( dot_t* d = find_dot( target ) )
+      {
+        d -> cancel();
+      }
+    } );
     return false;
   }
 
