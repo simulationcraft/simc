@@ -4655,10 +4655,11 @@ struct ascendance_t : public shaman_spell_t
     dot_duration = base_tick_time = timespan_t::zero();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     shaman_spell_t::execute();
 
+    p() -> cooldown.strike -> reset( false );
     p() -> buff.ascendance -> trigger();
   }
 };
