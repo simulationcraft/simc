@@ -1830,7 +1830,7 @@ public:
   {
     double c = 0.0;
 
-    if ( p() -> buff.mana_tea -> up() && ab::data().affected_by( p() -> talent.mana_tea -> effectN( 1 ) ) )
+    if ( p() -> buff.mana_tea -> up() && (ab::data().affected_by( p() -> talent.mana_tea -> effectN( 1 ) ) )
       c += p() -> buff.mana_tea -> value(); // saved as -50%
 
     if ( p() -> buff.serenity -> check() && ab::data().affected_by( p() -> talent.serenity -> effectN( 1 ) ) )
@@ -2417,6 +2417,9 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     am *= combo_strikes_multiplier();
+
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 9 ).percent();
 
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
