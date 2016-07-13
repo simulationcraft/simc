@@ -5575,7 +5575,7 @@ void hunter_t::init_base_stats()
 
   base_focus_regen_per_second = 10.0;
 
-  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resources.base[RESOURCE_FOCUS] = 120 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
   // Orc racial
   if ( race == RACE_ORC )
