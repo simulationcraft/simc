@@ -373,6 +373,7 @@ public:
     actions::spells::mind_spike_detonation_t* mind_spike_detonation;
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
     actions::spells::sphere_of_insanity_spell_t* sphere_of_insanity;
+    action_t* mental_fortitude;
   } active_spells;
 
   struct
@@ -3539,6 +3540,7 @@ struct vampiric_touch_t final : public priest_spell_t
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
+    init_mental_fortitude();
     may_crit = false;
     energize_type = ENERGIZE_NONE; // disable resource generation from spell data
 
@@ -3557,6 +3559,22 @@ struct vampiric_touch_t final : public priest_spell_t
           new shadowy_apparition_spell_t( p );
     }
   }
+  void init_mental_fortitude();
+
+  void trigger_heal( action_state_t* s )
+  {
+    double amount_to_heal =  s->result_amount * 0.5; // TODO: 50% factor not yer available through spelldata
+    double actual_amount = priest.resource_gain( RESOURCE_HEALTH, amount_to_heal,
+                          priest.gains.vampiric_touch_health );
+    double overheal = amount_to_heal - actual_amount;
+    if ( overheal > 0.0 )
+    {
+      priest.active_spells.mental_fortitude -> pre_execute_state = priest.active_spells.mental_fortitude -> get_state( s );
+      priest.active_spells.mental_fortitude -> base_dd_min = priest.active_spells.mental_fortitude -> base_dd_max = overheal;
+      priest.active_spells.mental_fortitude -> target = &priest;
+      priest.active_spells.mental_fortitude -> execute();
+    }
+  }
 
   void impact( action_state_t* s ) override
   {
@@ -3570,8 +3588,7 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    priest.resource_gain( RESOURCE_HEALTH, d->state->result_amount,
-                          priest.gains.vampiric_touch_health );
+    trigger_heal( d -> state );
 
     if ( priest.artifact.unleash_the_shadows.rank() )
     {
@@ -5011,6 +5028,25 @@ struct power_word_shield_t final : public priest_absorb_t
   }
 };
 
+// Power Word: Shield Spell =================================================
+
+struct mental_fortitude_t final : public priest_absorb_t
+{
+  mental_fortitude_t( priest_t& p )
+    : priest_absorb_t( "mental_fortitude", p,
+                       p.find_spell( 194018 ) )
+  {
+    background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_absorb_t::impact( s );
+
+  }
+
+};
+
 // Prayer of Healing Spell ==================================================
 
 struct prayer_of_healing_t final : public priest_heal_t
@@ -5244,6 +5280,13 @@ struct clarity_of_purpose_t final : public priest_heal_t
 
 }  // NAMESPACE heals
 
+void spells::vampiric_touch_t::init_mental_fortitude()
+{
+  if ( !priest.active_spells.mental_fortitude )
+  {
+    priest.active_spells.mental_fortitude = new heals::mental_fortitude_t(priest);
+  }
+}
 }  // NAMESPACE actions
 
 namespace buffs
