@@ -533,7 +533,7 @@ double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double p
   // Below lower bound, use lower bound value
   else if ( curve_data.first -> val1 > point_value )
   {
-    scaled_result = curve_data.first -> val1;
+    scaled_result = curve_data.first -> val2;
   }
   // Above upper bound, use upper bound value
   else if ( curve_data.second -> val1 < point_value )
