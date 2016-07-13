@@ -274,7 +274,7 @@ public:
     buff_t* crash_lightning;
     haste_buff_t* windsong;
     buff_t* boulderfist;
-    buff_t* rockbiter;
+    buff_t* landslide;
     buff_t* doom_winds;
     buff_t* unleash_doom;
     haste_buff_t* wind_strikes;
@@ -3186,7 +3186,7 @@ struct rockbiter_t : public shaman_spell_t
 
   void execute() override
   {
-    p() -> buff.rockbiter -> trigger();
+    p() -> buff.landslide-> trigger();
 
     shaman_spell_t::execute();
   }
@@ -3383,7 +3383,7 @@ struct boulderfist_t : public shaman_spell_t
 
   void execute() override
   {
-    p() -> buff.rockbiter -> trigger();
+    p() -> buff.landslide-> trigger();
 
     shaman_spell_t::execute();
 
@@ -6064,7 +6064,7 @@ void shaman_t::create_buffs()
   buff.boulderfist = buff_creator_t( this, "boulderfist", talent.boulderfist -> effectN( 3 ).trigger() )
                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                         .add_invalidate( CACHE_CRIT_CHANCE );
-  buff.rockbiter = buff_creator_t( this, "rockbiter", find_spell( 202004 ) )
+  buff.landslide = buff_creator_t( this, "landslide", find_spell( 202004 ) )
                    .add_invalidate( CACHE_AGILITY )
                    .chance( talent.landslide -> ok() )
                    .default_value( find_spell( 202004 ) -> effectN( 1 ).percent() );
@@ -6738,7 +6738,7 @@ double shaman_t::composite_attribute_multiplier( attribute_e attribute ) const
   switch ( attribute )
   {
     case ATTR_AGILITY:
-      m *= 1.0 + buff.rockbiter -> stack_value();
+      m *= 1.0 + buff.landslide -> stack_value();
       break;
     default:
       break;
