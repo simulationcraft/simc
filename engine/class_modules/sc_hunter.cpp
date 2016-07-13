@@ -10,11 +10,6 @@
 // General
 //   - Cleanup old spells
 //
-// Beast Mastery
-//  Artifacts
-//   - Cleanup duplicate code for Beast Cleave
-//   - Update T18 4pc
-//
 // Survival
 //   - Harpoon legendary
 //
@@ -5212,40 +5207,34 @@ struct dragonsfire_grenade_t: public hunter_spell_t
     }
   };
 
-  struct dragonsfire_grenade_tick_t: public hunter_spell_t
-  {
-    dragonsfire_conflagration_t* conflag;
-    dragonsfire_grenade_tick_t( hunter_t* p ):
-      hunter_spell_t( "dragonsfire_grenade", p, p -> find_spell( 194858 ) ), conflag( nullptr )
-    {
-      background = true;
-      dual = true;
-      hasted_ticks = false;
-      tick_may_crit = true;
-
-      conflag = new dragonsfire_conflagration_t( p );
-      add_child( conflag );
-    }
-
-    virtual void tick( dot_t* d ) override
-    {
-      hunter_spell_t::tick( d );
-
-      if ( conflag )
-      {
-        conflag -> source = d -> target;
-        conflag -> execute();
-      }
-    }
-  };
-
+  dragonsfire_conflagration_t* conflag;
   dragonsfire_grenade_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "dragonsfire_grenade", p, p -> talents.dragonsfire_grenade )
+    hunter_spell_t( "dragonsfire_grenade", p, p -> find_spell( 194858 ) ), conflag( nullptr )
   {
     parse_options( options_str );
 
-    impact_action = new dragonsfire_grenade_tick_t( p );
-    cooldown -> duration = p -> find_spell( 194855 ) -> cooldown();
+    cooldown -> duration = p -> talents.dragonsfire_grenade -> cooldown();
+    hasted_ticks = false;
+    harmful = true;
+    tick_may_crit = true;
+    trigger_gcd = p -> talents.dragonsfire_grenade -> gcd();
+
+    if ( num_targets() > 1 )
+    {
+      conflag = new dragonsfire_conflagration_t( p );
+      add_child( conflag );
+    }
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    hunter_spell_t::tick( d );
+
+    if ( conflag )
+    {
+      conflag -> source = d -> target;
+      conflag -> execute();
+    }
   }
 };
 
