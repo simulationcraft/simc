@@ -680,12 +680,12 @@ struct food_t : public action_t
       // Legion Feasts
       // *************************
       case FOOD_HEARTY_FEAST:
-        if ( gain_amount <= 0.0 ) gain_amount = 450;
+        if ( gain_amount <= 0.0 ) gain_amount = 150;
       case FOOD_LAVISH_SURAMAR_FEAST:
-        if ( gain_amount <= 0.0 ) gain_amount = 725;
+        if ( gain_amount <= 0.0 ) gain_amount = 200;
 
         gain_amount *= food_stat_multiplier;
-        stats.push_back( stat_buff_t::buff_stat_t( get_highest_secondary(), gain_amount ) );
+        stats.push_back( stat_buff_t::buff_stat_t( get_mop_feast_stat(), gain_amount ) );
         break;
    
       default:
