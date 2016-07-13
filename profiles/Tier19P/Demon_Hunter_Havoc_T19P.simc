@@ -7,7 +7,7 @@ position=back
 talents=1130131
 talent_override=blind_fury,if=desired_targets+raid_event.adds.count>=4
 talent_override=chaos_cleave,if=desired_targets>1|raid_event.adds.exists
-artifact=3:0:0:0:0:1000:3:1002:1:1004:3:1005:3:1006:3:1010:1:1012:1:1013:1:1015:1:1016:1:1330:1
+artifact=3:0:0:0:0:1001:3:1002:3:1003:3:1005:2:1006:3:1010:1:1012:1:1013:1:1016:1:1330:1
 spec=havoc
 
 # This default action priority list is automatically created based on your character.
@@ -72,29 +72,30 @@ actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.
 actions.cooldown+=/metamorphosis,if=buff.metamorphosis.down&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready)&(!talent.nemesis.enabled|debuff.nemesis.up|cooldown.nemesis.ready)
 actions.cooldown+=/potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25
 
-head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
-neck=pendant_of_the_moon_temple,id=139605,bonus_id=1727,enchant_id=5439
-shoulders=charskin_mantle,id=137510,bonus_id=1727
+head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727
+neck=breathless_choker,id=137461,bonus_id=1727,enchant_id=5439
+shoulders=crashing_oceantide_mantle,id=137364,bonus_id=1727
 back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant_id=5435
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
-wrists=shorn_batbrood_cuffs,id=136979,bonus_id=1727
-hands=frostcarver_grips,id=134445,bonus_id=1727
-waist=sinister_ashfall_cord,id=134455,bonus_id=1727
-legs=snaggles_favorite_pants,id=140594,bonus_id=1727
-feet=footpads_of_the_swift_balestra,id=137497,bonus_id=1727
-finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant_id=5427
+wrists=adorned_guardians_bracers,id=133621,bonus_id=1727
+hands=guileful_intruder_handguards,id=137480,bonus_id=1727
+waist=ravens_veil_belt,id=139243,bonus_id=1727
+legs=ashen_satyr_leggings,id=134448,bonus_id=1727
+feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
+finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,bonus_id=1727,enchant_id=5427
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=darkmoon_deck_dominion,id=128705
-main_hand=twinblades_of_the_deceiver,id=127829,gem_id=133764/133684/137476,relic_id=1727/1727/1727
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=133764/133684/137476,relic_id=1727/1727/1727
 off_hand=twinblades_of_the_deceiver,id=127830
 
 # Gear Summary
 # gear_ilvl=842.19
 # gear_agility=10850
-# gear_stamina=17629
-# gear_crit_rating=9879
-# gear_haste_rating=898
-# gear_mastery_rating=1822
-# gear_versatility_rating=4159
+# gear_stamina=17630
+# gear_crit_rating=10618
+# gear_haste_rating=4358
+# gear_mastery_rating=588
+# gear_versatility_rating=1193
 # gear_armor=1957
+# set_bonus=tier19p_leather_2pc=1

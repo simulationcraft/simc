@@ -1688,6 +1688,13 @@ struct eye_beam_t : public demon_hunter_spell_t
   void record_data( action_state_t* s ) override
   { ( void ) s; assert( s -> result_amount == 0.0 ); }
 
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::tick( d );
+
+    beam -> schedule_execute();
+  }
+
   void execute() override
   {
     demon_hunter_spell_t::execute();
