@@ -963,7 +963,12 @@ struct augmentation_t : public action_t
 
     add_option( opt_string( "type", type_str ) );
     parse_options( options_str );
-    if ( util::str_compare_ci( type_str, "focus" ) )
+    if ( util::str_compare_ci( type_str, "defiled" ) )
+    {
+      player -> consumables.augmentation = stat_buff_creator_t( player, "defiled_augmentation" )
+          .spell( player -> find_spell( 224001 ) );
+    }
+    else if ( util::str_compare_ci( type_str, "focus" ) )
     {
       player -> consumables.augmentation = stat_buff_creator_t( player, "focus_augmentation" )
           .spell( player -> find_spell( 175457 ) );
