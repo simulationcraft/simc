@@ -816,7 +816,7 @@ std::string special_effect_t::to_string() const
 
   if ( is_stat_buff() )
   {
-    s << " stat=" << util::stat_type_abbrev( stat );
+    s << " stat=" << util::stat_type_abbrev( stat == STAT_NONE ? stat_type() : stat );
     s << " amount=" << stat_amount;
     s << " duration=" << duration().total_seconds();
     if ( tick_time() != timespan_t::zero() )

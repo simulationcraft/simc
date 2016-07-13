@@ -4426,7 +4426,6 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", find_class_spell( "Berserker Rage" ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .cd( timespan_t::zero() );
 
   buff.bloodbath = buff_creator_t( this, "bloodbath", talents.bloodbath )
@@ -4803,7 +4802,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
   }
   // Arms no longer has enrage, so no need to check for it.
-  else if ( ( buff.enrage -> check() || ( bugs && buff.berserker_rage -> check() ) ) && mastery.unshackled_fury -> ok() ) // Currently berserker rage grants damage bonus from enrage, but not attack speed. Prob a bug.
+  else if ( buff.enrage -> check() && mastery.unshackled_fury -> ok() )
   {
     m *= 1.0 + artifact.raging_berserker.percent();
     m *= 1.0 + cache.mastery_value();

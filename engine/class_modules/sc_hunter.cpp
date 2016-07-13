@@ -93,6 +93,7 @@ public:
 
   pets::hati_t* hati;
   std::array< pets::hunter_secondary_pet_t*, 2 > dark_minion;
+  std::array< pets::hunter_secondary_pet_t*, 10 > felboars;
 
   // Tier 15 4-piece bonus
   attack_t* action_lightning_arrow_aimed_shot;
@@ -206,6 +207,7 @@ public:
     proc_t* hunters_mark;
     proc_t* wild_call;
     proc_t* tier17_2pc_bm;
+    proc_t* tier18_4pc_bm;
     proc_t* black_arrow_trinket_reset;
     proc_t* tier18_2pc_mm_wasted_proc;
     proc_t* tier18_2pc_mm_wasted_overwrite;
@@ -433,6 +435,7 @@ public:
     thunderhawk(),
     hati(),
     dark_minion(),
+    felboars(),
     action_lightning_arrow_aimed_shot(),
     action_lightning_arrow_arcane_shot(),
     action_lightning_arrow_multi_shot(),
@@ -1582,7 +1585,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
     if ( rng().roll( o() -> artifacts.jaws_of_thunder.percent() ) )
     {
       jaws_of_thunder -> base_dd_min = o() -> find_spell( 197163 ) -> effectN( 2 ).percent() * s -> result_amount;
-      jaws_of_thunder -> base_dd_max = o() -> find_spell( 197163 ) -> effectN( 2 ).percent() * s -> result_amount;
+      jaws_of_thunder -> base_dd_max = jaws_of_thunder -> base_dd_min;
       jaws_of_thunder -> execute();
     }
   }
@@ -2214,6 +2217,10 @@ struct dire_critter_t: public hunter_secondary_pet_t
   }
 };
 
+// ==========================================================================
+// Hati
+// ==========================================================================
+
 struct hati_t: public hunter_secondary_pet_t
 {
   static void trigger_beast_cleave( action_state_t* s )
@@ -2326,6 +2333,41 @@ struct hati_t: public hunter_secondary_pet_t
       m *= 1.0 + buffs.bestial_wrath -> current_value;
 
     return m;
+  }
+};
+
+// ==========================================================================
+// BM T18 4P Fel Boar
+// ==========================================================================
+struct bm_t18_4pc_felboar: public hunter_secondary_pet_t
+{  
+  struct felboar_melee_t: public secondary_pet_melee_t
+  {
+    felboar_melee_t( bm_t18_4pc_felboar& p ):
+      secondary_pet_melee_t( "felboar_melee", p )
+    {
+    }
+
+    bool init_finished() override
+    {
+      if ( p() -> o() -> felboars[ 0 ] )
+        stats = p() -> o() -> felboars[ 0 ] -> get_stats( "felboar_melee" );
+
+      return secondary_pet_melee_t::init_finished();
+    }
+  };
+
+  bm_t18_4pc_felboar( hunter_t& owner ):
+    hunter_secondary_pet_t( owner, std::string( "felboar" ) )
+  {
+    owner_coeff.ap_from_ap = 1.38;
+  }
+
+  virtual void init_base_stats() override
+  {
+    hunter_secondary_pet_t::init_base_stats();
+
+    main_hand_attack = new felboar_melee_t( *this );
   }
 };
 
@@ -3196,7 +3238,7 @@ struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    trigger_true_aim( p(), s -> target, 6 );
+    trigger_true_aim( p(), s -> target );
   }
 
 
@@ -4625,6 +4667,7 @@ struct dire_beast_t: public hunter_spell_t
     for (auto pet : p() -> pet_list)
     {
       stats -> add_child( pet -> get_stats( "dire_beast_melee" ) );
+      stats -> add_child( pet -> get_stats( "felboar_melee" ) );
       stats -> add_child( pet -> get_stats( "stomp" ) );
     }
 
@@ -4682,6 +4725,20 @@ struct dire_beast_t: public hunter_spell_t
     timespan_t summon_duration = base_attacks_per_summon * swing_time;
     assert( beast );
     beast -> summon( summon_duration );
+
+    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) && rng().roll( 0.20 ) )
+    {
+      p() -> procs.tier18_4pc_bm -> occur();
+
+      for( int i = 0; i < p() -> felboars.size(); i++ )
+      {
+        if ( p() -> felboars[ i ] -> is_sleeping() )
+        {
+          p() -> felboars[ i ] -> summon( p() -> find_spell( 188507 ) -> duration() );
+          break;
+        }
+      }
+    }
   }
 
   virtual bool ready() override
@@ -5359,7 +5416,7 @@ void hunter_t::create_pets()
   {
     for ( size_t i = 0; i < pet_dire_beasts.size(); ++i )
     {
-      pet_dire_beasts[i] = new pets::dire_critter_t( *this, i + 1 );
+      pet_dire_beasts[ i ] = new pets::dire_critter_t( *this, i + 1 );
     }
   }
 
@@ -5368,8 +5425,14 @@ void hunter_t::create_pets()
 
   if ( talents.black_arrow -> ok() )
   {
-    dark_minion[0] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion" ) );
-    dark_minion[1] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion_2" ) );
+    dark_minion[ 0 ] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion" ) );
+    dark_minion[ 1 ] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion_2" ) );
+  }
+
+  if ( sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) )
+  {
+    for ( size_t i = 0; i < felboars.size(); i++ )
+      felboars[ i ] = new pets::bm_t18_4pc_felboar( *this );
   }
 }
 
@@ -5576,7 +5639,7 @@ void hunter_t::init_base_stats()
 
   base_focus_regen_per_second = 10.0;
 
-  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resources.base[RESOURCE_FOCUS] = 120 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
   // Orc racial
   if ( race == RACE_ORC )
@@ -5779,6 +5842,7 @@ void hunter_t::init_procs()
   procs.hunters_mark                 = get_proc( "hunters_mark" );
   procs.wild_call                    = get_proc( "wild_call" );
   procs.tier17_2pc_bm                = get_proc( "tier17_2pc_bm" );
+  procs.tier18_4pc_bm                = get_proc( "tier18_4pc_bm" );
   procs.black_arrow_trinket_reset    = get_proc( "black_arrow_trinket_reset" );
   procs.tier18_2pc_mm_wasted_proc    = get_proc( "tier18_2pc_mm_wasted_proc" );
   procs.tier18_2pc_mm_wasted_overwrite     = get_proc ( "tier18_2pc_mm_wasted_overwrite" );
@@ -6002,7 +6066,7 @@ void hunter_t::apl_surv()
 {
   action_priority_list_t* default_list  = get_action_priority_list( "default" );
 
-  default_list -> add_action( "auto_shot" );
+  default_list -> add_action( "auto_attack" );
 
   add_racial_actions( default_list );
   add_item_actions( default_list );
