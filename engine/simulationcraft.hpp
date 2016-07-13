@@ -6838,7 +6838,7 @@ inline bool mythic( unsigned f ) { return ( f & RAID_TYPE_MYTHIC ) == RAID_TYPE_
 bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
 
 double curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value );
-bool apply_item_scaling( item_t& item, unsigned scaling_id );
+bool apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level );
 
 struct token_t
 {

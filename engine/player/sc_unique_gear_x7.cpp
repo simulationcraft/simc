@@ -1386,7 +1386,7 @@ struct maddening_whispers_t : public buff_t
 
     callback = new maddening_whispers_cb_t( *effect2, this );
     callback -> initialize();
-    callback -> active = false;
+    callback -> deactivate();
   }
   
   void start( int, double value, timespan_t duration ) override
