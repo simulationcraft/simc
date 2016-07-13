@@ -1830,7 +1830,7 @@ public:
   {
     double c = 0.0;
 
-    if ( p() -> buff.mana_tea -> up() && (ab::data().affected_by( p() -> talent.mana_tea -> effectN( 1 ) ) )
+    if ( p() -> buff.mana_tea -> up() && ab::data().affected_by( p() -> talent.mana_tea -> effectN( 1 ) ) )
       c += p() -> buff.mana_tea -> value(); // saved as -50%
 
     if ( p() -> buff.serenity -> check() && ab::data().affected_by( p() -> talent.serenity -> effectN( 1 ) ) )
