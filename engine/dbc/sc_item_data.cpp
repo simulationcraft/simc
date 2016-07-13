@@ -558,7 +558,7 @@ double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double p
 // TODO: Needs some way to figure what value to pass, for now presume min of player level, max
 // level. Also presumes we are only scaling itemlevel for now, this is almost certainly not 100%
 // true in all cases for the use of curve data.
-bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id )
+bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level )
 {
   // No scaling needed
   if ( scaling_id == 0 )
@@ -577,23 +577,18 @@ bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id )
 
   // Player level lower than item minimum scaling level, shouldnt happen but let item init go
   // through
-  if ( static_cast<unsigned>( item.player -> level() ) < data -> min_level )
+  if ( player_level < data -> min_level )
   {
     return true;
   }
 
-  // Use drop_level parameter in gear if it's specified, if not, use player level
-  unsigned used_level = item.parsed.drop_level;
-  if ( used_level == 0 )
-    used_level = item.player -> level();
-
-  unsigned base_value = std::min( used_level, data -> max_level );
+  unsigned base_value = std::min( player_level, data -> max_level );
 
   double scaled_result = curve_point_value( item.player -> dbc, data -> curve_id, base_value );
 
   if ( item.sim -> debug )
   {
-    item.sim -> out_debug.printf( "%s: Scaling %s from ilevel %d to %u (%.3f) using player level %.0f",
+    item.sim -> out_debug.printf( "%s: Scaling %s from ilevel %d to %u (%.3f) using player level %u",
         item.player -> name(), item.name(), item.parsed.data.level,
         static_cast<unsigned>( util::round( scaled_result, 0 ) ),
         scaled_result, base_value );
@@ -698,11 +693,12 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       break;
     }
     // This is backed up by some unknown (to us) client data at the moment. Just hardcode the values
-    // based on the given bonus IDs, and hope for the best.
+    // based on the given bonus IDs, and hope for the best. Also note that this bonus id type
+    // statically uses the current character's level to do the ilevel scaling (differs from
+    // ITEM_BONUS_SCALING_2).
     case ITEM_BONUS_SCALING:
-    case ITEM_BONUS_SCALING_2:
     {
-      if ( ! item_database::apply_item_scaling( item, entry.value_1 ) )
+      if ( ! item_database::apply_item_scaling( item, entry.value_1, item.player -> level() ) )
       {
         item.player -> sim -> errorf( "Player %s item '%s' unable to initialize item scaling for bonus id %u",
             item.player -> name(), item.name(), entry.id );
@@ -710,11 +706,34 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       }
       break;
     }
+    // This bonus type uses a curve point to scale the base item level, however it seems to also
+    // require that there's a drop level associated with the item. Drop levels are included in
+    // itemstrings nowadays for items where they matter.
+    //
+    // Note that relics do seem to also include item bonuses that use this bonus type, but item
+    // string information associated with a relic does not give out drop level for the relic. Thus,
+    // Simulationcraft will scale relics purely by using the (seemingly often) present item level
+    // adjustment bonus type.
+    case ITEM_BONUS_SCALING_2:
+      if ( item.parsed.drop_level > 0 &&
+           ! item_database::apply_item_scaling( item, entry.value_1, item.parsed.drop_level ) )
+      {
+        item.player -> sim -> errorf( "Player %s item '%s' unable to initialize item scaling for bonus id %u",
+            item.player -> name(), item.name(), entry.id );
+        return false;
+      }
+      break;
+    // A new bonus type that sets the base item level of items, used in Legion for things like the
+    // Heroic or Mythic X tags in items. Seems like the base ilevel is not actually set through this
+    // in game, because all the items also include a normal ilevel adjustment bonus that increases
+    // the item level to the correct value.
     case ITEM_BONUS_SET_ILEVEL:
+      /*
       if ( item.sim -> debug )
         item.player -> sim -> out_debug.printf( "Player %s item '%s' setting ilevel to %d (old=%d)",
             item.player -> name(), item.name(), entry.value_1, item.parsed.data.level );
       item.parsed.data.level = entry.value_1;
+      */
       break;
     default:
       break;

@@ -1392,7 +1392,7 @@ bool item_t::decode_stats()
   // wrong.
   if ( ! has_scaling_stat_bonus_id() )
   {
-    if ( ! item_database::apply_item_scaling( *this, parsed.data.id_scaling_distribution ) )
+    if ( ! item_database::apply_item_scaling( *this, parsed.data.id_scaling_distribution, player -> level() ) )
     {
       return false;
     }
