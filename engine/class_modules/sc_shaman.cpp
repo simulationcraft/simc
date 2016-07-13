@@ -1766,7 +1766,7 @@ struct spirit_wolf_t : public shaman_pet_t
     shaman_pet_t( owner, "spirit_wolf" ), alpha_wolf( nullptr )
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
-    owner_coeff.ap_from_ap      = 1.33;
+    owner_coeff.ap_from_ap      = 2.00;
   }
 
   bool create_actions() override
