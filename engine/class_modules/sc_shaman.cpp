@@ -1960,7 +1960,7 @@ struct lightning_wolf_t : public doom_wolf_base_t
   {
     crackling_surge_t( lightning_wolf_t* player, const std::string& options ) :
       super( player, "crackling_surge", player -> find_spell( 224127 ), options )
-    { p() -> special_ability_cd = cooldown; }
+    { }
 
     void execute() override
     {
@@ -3338,13 +3338,6 @@ struct windsong_t : public shaman_spell_t
     shaman_spell_t( "windsong", player, player -> talent.windsong, options_str )
   { }
 
-  void init() override
-  {
-    shaman_spell_t::init();
-
-    may_proc_unleash_doom = false;
-  }
-
   void execute() override
   {
     shaman_spell_t::execute();
@@ -3366,8 +3359,6 @@ struct boulderfist_t : public shaman_spell_t
   void init() override
   {
     shaman_spell_t::init();
-
-    may_proc_unleash_doom = false;
 
     // TODO: SpellCategory + SpellEffect based detection
     cooldown -> hasted = true;
@@ -3422,13 +3413,6 @@ struct earthen_spike_t : public shaman_attack_t
     shaman_attack_t( "earthen_spike", player, player -> talent.earthen_spike )
   {
     parse_options( options_str );
-  }
-
-  void init() override
-  {
-    shaman_attack_t::init();
-
-    may_proc_unleash_doom = false;
   }
 
   void impact( action_state_t* s ) override
