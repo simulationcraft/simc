@@ -5194,7 +5194,6 @@ struct dragonsfire_grenade_t: public hunter_spell_t
       hunter_spell_t( "dragonsfire_conflagration", p, p -> find_spell( 194859 ) ), source( nullptr )
     {
       aoe = -1;
-      attack_power_mod.direct = 1.0;
       background = true;
       may_crit = true;
       radius = 8.0;
