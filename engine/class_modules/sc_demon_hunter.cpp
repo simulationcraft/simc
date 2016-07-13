@@ -2642,6 +2642,41 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
       weapon = &( p() -> off_hand_weapon );
     }
   }
+
+  // Mechanics described at http://us.battle.net/wow/en/forum/topic/20743504316?page=26#520
+  void trigger_demon_blades( action_state_t* s )
+  {
+    if ( ! p() -> talent.demon_blades -> ok() )
+      return;
+
+    if ( ! result_is_hit( s -> result ) )
+      return;
+
+    // All hits have an x% chance to generate 1 charge.
+    if ( rng().roll( p() -> talent.demon_blades -> effectN( 1 ).percent() ) )
+    {
+      if ( p() -> demon_blades_charges < 10 )
+      {
+        p() -> demon_blades_charges++;
+      }
+      else
+      {
+        p() -> proc.demon_blades_wasted -> occur();
+      }
+    }
+    
+    // Hits not during a GCD can expend up to 2 charges.
+    if ( ! p() -> in_gcd() )
+    {
+      for ( unsigned i = 0; i < p() -> demon_blades_charges && i < 2; i++ )
+      {
+        p() -> active.demon_blades -> target = s -> target;
+        p() -> active.demon_blades -> schedule_execute();
+      }
+
+      p() -> demon_blades_charges -= std::min( (unsigned) 2, p() -> demon_blades_charges );
+    }
+  }
 };
 
 namespace attacks
@@ -2756,41 +2791,6 @@ struct melee_t : public demon_hunter_attack_t
     }
 
     demon_hunter_attack_t::execute();
-  }
-
-  // Mechanics described at http://us.battle.net/wow/en/forum/topic/20743504316?page=26#520
-  void trigger_demon_blades( action_state_t* s )
-  {
-    if ( ! p() -> talent.demon_blades -> ok() )
-      return;
-
-    if ( ! result_is_hit( s -> result ) )
-      return;
-
-    // All hits have an x% chance to generate 1 charge.
-    if ( rng().roll( p() -> talent.demon_blades -> effectN( 1 ).percent() ) )
-    {
-      if ( p() -> demon_blades_charges < 10 )
-      {
-        p() -> demon_blades_charges++;
-      }
-      else
-      {
-        p() -> proc.demon_blades_wasted -> occur();
-      }
-    }
-    
-    // Hits not during a GCD can expend up to 2 charges.
-    if ( ! p() -> in_gcd() )
-    {
-      for ( unsigned i = 0; i < p() -> demon_blades_charges && i < 2; i++ )
-      {
-        p() -> active.demon_blades -> target = s -> target;
-        p() -> active.demon_blades -> schedule_execute();
-      }
-
-      p() -> demon_blades_charges -= std::min( (unsigned) 2, p() -> demon_blades_charges );
-    }
   }
 };
 
@@ -3051,6 +3051,13 @@ struct chaos_blade_t : public demon_hunter_attack_t
     base_execute_time = weapon -> swing_time;
     special = true; // Apr 12 2016: Cannot miss.
     repeating = background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_attack_t::impact( s );
+
+    trigger_demon_blades( s );
   }
 };
 
