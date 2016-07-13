@@ -327,8 +327,8 @@ struct haymaker_driver_t : public dbc_proc_callback_t
     }
   };
 
-  haymaker_driver_t( const special_effect_t& e, double m, debuff_t* d ) :
-    dbc_proc_callback_t( e.player, e ), debuff( d ), effect( e ), multiplier( m ),
+  haymaker_driver_t( const special_effect_t& e, double m ) :
+    dbc_proc_callback_t( e.player, e ), effect( e ), multiplier( m ),
     action( debug_cast<haymaker_damage_t*>( e.player -> find_action( "brutal_haymaker_vulnerability" ) ) )
   {}
 
@@ -353,48 +353,6 @@ struct haymaker_driver_t : public dbc_proc_callback_t
 
 struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
 {
-  struct haymaker_debuff_t : public debuff_t
-  {
-    haymaker_driver_t* callback;
-
-    haymaker_debuff_t( const special_effect_t& effect, actor_target_data_t& td ) :
-      debuff_t( buff_creator_t( td, "brutal_haymaker", effect.driver() -> effectN( 1 ).trigger() ) 
-      .default_value( effect.driver() -> effectN( 1 ).trigger() -> effectN( 3 ).average( effect.item ) ) )
-    {
-      // Damage transfer effect & callback. We'll enable this callback whenever the debuff is active.
-      special_effect_t* effect2 = new special_effect_t( effect.player );
-      effect2 -> name_str = "brutal_haymaker_accumulator";
-      effect2 -> proc_chance_ = 1.0;
-      effect2 -> proc_flags_ = PF_ALL_DAMAGE;
-      effect2 -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
-      effect.player -> special_effects.push_back( effect2 );
-
-      callback = new haymaker_driver_t( *effect2, data().effectN( 2 ).percent(), this );
-      callback -> initialize();
-    }
-
-    void start( int stacks, double value, timespan_t duration ) override
-    {
-      debuff_t::start( stacks, value, duration );
-
-      callback -> activate();
-    }
-
-    void expire_override( int stacks, timespan_t remaining ) override
-    {
-      debuff_t::expire_override( stacks, remaining );
-    
-      callback -> deactivate();
-    }
-
-    void reset() override
-    {
-      debuff_t::reset();
-
-      callback -> deactivate();
-    }
-  };
-
   spiked_counterweight_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
     item_targetdata_initializer_t( iid, s )
   {}
@@ -409,9 +367,38 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
     else
     {
       assert( ! td -> debuff.brutal_haymaker );
+      
+      // Vulnerability: Deal x% of the damage dealt to the debuffed target, up to the limit.
 
-      td -> debuff.brutal_haymaker = new haymaker_debuff_t( *effect, *td );
+      // Create effect for the callback.
+      special_effect_t* effect2 = new special_effect_t( effect -> player );
+      effect2 -> name_str = "brutal_haymaker_accumulator";
+      effect2 -> proc_chance_ = 1.0;
+      effect2 -> proc_flags_ = PF_ALL_DAMAGE;
+      effect2 -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+      effect -> player -> special_effects.push_back( effect2 );
+
+      // Create callback. We'll enable this callback whenever the debuff is active.
+      haymaker_driver_t* callback =
+        new haymaker_driver_t( *effect2, effect -> trigger() -> effectN( 2 ).percent() );
+      callback -> initialize();
+      callback -> active = false;
+
+      // Create debuff with stack callback.
+      td -> debuff.brutal_haymaker = buff_creator_t( *td, "brutal_haymaker", effect -> trigger() )
+        .stack_change_callback( [ = ]( buff_t*, int old, int new_ )
+        {
+          if ( old == 0 ) {
+            assert( ! callback -> active );
+            callback -> activate();
+          } else if ( new_ == 0 )
+            callback -> deactivate();
+        } )
+        .default_value( effect -> driver() -> effectN( 1 ).trigger() -> effectN( 3 ).average( effect -> item ) );
       td -> debuff.brutal_haymaker -> reset();
+
+      // Set pointer to debuff so the callback can do its thing.
+      callback -> debuff = td -> debuff.brutal_haymaker;
     }
   }
 };
@@ -517,51 +504,6 @@ struct darkstrikes_driver_t : public dbc_proc_callback_t
   }
 };
 
-struct darkstrikes_buff_t : public buff_t
-{
-  darkstrikes_driver_t* dmg_callback;
-  special_effect_t* dmg_effect;
-
-  darkstrikes_buff_t( const special_effect_t& effect ) :
-    buff_t( buff_creator_t( effect.player, "darkstrikes", effect.driver(), effect.item )
-            .chance( 1 ).activated( false ) )
-  {
-    // Special effect to drive the AOE damage callback
-    dmg_effect = new special_effect_t( effect.player );
-    dmg_effect -> name_str = "darkstrikes_driver";
-    dmg_effect -> ppm_ = -effect.driver() -> real_ppm();
-    dmg_effect -> rppm_scale_ = RPPM_HASTE;
-    dmg_effect -> proc_flags_ = PF_MELEE | PF_RANGED | PF_MELEE_ABILITY | PF_RANGED_ABILITY;
-    dmg_effect -> proc_flags2_ = PF2_ALL_HIT;
-    effect.player -> special_effects.push_back( dmg_effect );
-
-    // And create, initialized and deactivate the callback
-    dmg_callback = new darkstrikes_driver_t( *dmg_effect );
-    dmg_callback -> initialize();
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::start( stacks, value, duration );
-
-    dmg_callback -> activate();
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    dmg_callback -> deactivate();
-  }
-
-  void reset() override
-  {
-    buff_t::reset();
-
-    dmg_callback -> deactivate();
-  }
-};
-
 void item::tirathons_betrayal( special_effect_t& effect )
 {
   action_t* darkstrikes = effect.player -> find_action( "darkstrikes" );
@@ -586,7 +528,29 @@ void item::tirathons_betrayal( special_effect_t& effect )
     absorb = new darkstrikes_absorb_t( effect );
   }
 
-  effect.custom_buff = new darkstrikes_buff_t( effect );
+  // Special effect to drive the AOE damage callback
+  special_effect_t* dmg_effect = new special_effect_t( effect.player );
+  dmg_effect -> name_str = "darkstrikes_driver";
+  dmg_effect -> spell_id = effect.driver() -> id();
+  dmg_effect -> cooldown_ = timespan_t::zero();
+  effect.player -> special_effects.push_back( dmg_effect );
+
+  // And create, initialized and deactivate the callback
+  dbc_proc_callback_t* callback = new darkstrikes_driver_t( *dmg_effect );
+  callback -> initialize();
+  callback -> active = false;
+
+  effect.custom_buff = buff_creator_t( effect.player, "darkstrikes", effect.driver(), effect.item )
+    .chance( 1 ) // overrride RPPM
+    .activated( false )
+    .stack_change_callback( [ = ]( buff_t*, int old, int new_ )
+    {
+      if ( old == 0 ) {
+        assert( ! callback -> active );
+        callback -> activate();
+      } else if ( new_ == 0 )
+        callback -> deactivate();
+    } );
 }
 
 // Horn of Valor ============================================================
@@ -700,6 +664,7 @@ struct taint_of_the_sea_t : public proc_spell_t
   taint_of_the_sea_t( const special_effect_t& effect ) :
     proc_spell_t( "taint_of_the_sea", effect.player, effect.player -> find_spell( 215695 ), effect.item )
   {
+    base_dd_min = base_dd_max = 0;
     base_multiplier = effect.driver() -> effectN( 1 ).percent();
   }
 
@@ -764,51 +729,6 @@ struct taint_of_the_sea_driver_t : public dbc_proc_callback_t
   }
 };
 
-struct taint_of_the_sea_debuff_t : public debuff_t
-{
-  taint_of_the_sea_driver_t* callback;
-
-  taint_of_the_sea_debuff_t( player_t* target, const special_effect_t* effect ) : 
-    debuff_t( buff_creator_t( actor_pair_t( target, effect -> player ), "taint_of_the_sea", effect -> driver() )
-      .default_value( effect -> driver() -> effectN( 2 ).trigger() -> effectN( 2 ).average( effect -> item ) ) )
-  {
-    // Damage transfer effect & callback. We'll enable this callback whenever the debuff is active.
-    special_effect_t* effect2 = new special_effect_t( effect -> player );
-    effect2 -> name_str = "taint_of_the_sea_driver";
-    effect2 -> proc_chance_ = 1.0;
-    effect2 -> proc_flags_ = PF_ALL_DAMAGE;
-    effect2 -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
-    effect -> player -> special_effects.push_back( effect2 );
-
-    callback = new taint_of_the_sea_driver_t( *effect2 );
-    callback -> initialize();
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    debuff_t::start( stacks, value, duration );
-
-    callback -> active_target = player;
-    callback -> activate();
-  }
-
-  void expire_override( int stacks, timespan_t remaining ) override
-  {
-    debuff_t::expire_override( stacks, remaining );
-    
-    callback -> active_target = nullptr;
-    callback -> deactivate();
-  }
-
-  void reset() override
-  {
-    debuff_t::reset();
-
-    callback -> active_target = nullptr;
-    callback -> deactivate();
-  }
-};
-
 struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initializer_t
 {
   figurehead_of_the_naglfar_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
@@ -826,7 +746,35 @@ struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initiali
     {
       assert( ! td -> debuff.taint_of_the_sea );
 
-      td -> debuff.taint_of_the_sea = new taint_of_the_sea_debuff_t( td -> target, effect );
+      // Create special effect for the damage transferral.
+      special_effect_t* effect2 = new special_effect_t( effect -> player );
+      effect2 -> name_str = "taint_of_the_sea_driver";
+      effect2 -> proc_chance_ = 1.0;
+      effect2 -> proc_flags_ = PF_ALL_DAMAGE;
+      effect2 -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+      effect -> player -> special_effects.push_back( effect2 );
+
+      // Create callback; we'll enable this callback whenever the debuff is active.
+      taint_of_the_sea_driver_t* callback = new taint_of_the_sea_driver_t( *effect2 );
+      callback -> initialize();
+      callback -> active = false;
+
+      td -> debuff.taint_of_the_sea = buff_creator_t( *td, "taint_of_the_sea", effect -> driver() )
+      .default_value( effect -> driver() -> effectN( 2 ).trigger() -> effectN( 2 ).average( effect -> item ) )
+      .stack_change_callback( [ = ]( buff_t* b, int old, int new_ )
+      {
+        if ( old == 0 )
+        {
+          assert( ! callback -> active );
+          callback -> active_target = b -> player;
+          callback -> activate();
+        }
+        else if ( new_ == 0 )
+        {
+          callback -> active_target = nullptr;
+          callback -> deactivate();
+        }
+      } );
       td -> debuff.taint_of_the_sea -> reset();
     }
   }
@@ -853,6 +801,10 @@ void item::figurehead_of_the_naglfar( special_effect_t& effect )
       background = quiet = true;
       callbacks = false;
     }
+
+    // Suppress assertion
+    result_e calculate_result( action_state_t* ) const override
+    { return RESULT_NONE; }
 
     void execute() override
     {
@@ -1126,103 +1078,65 @@ void item::natures_call( special_effect_t& effect )
 // Moonlit Prism ============================================================
 // TOCHECK: Proc mechanics
 
-struct moonlit_prism_buff_t : public stat_buff_t
-{
-  dbc_proc_callback_t* callback;
-
-  moonlit_prism_buff_t( const special_effect_t& effect ) :
-    stat_buff_t( stat_buff_creator_t( effect.player, "elunes_light", effect.driver(), effect.item )
-    .cd( timespan_t::zero() )
-    .refresh_behavior( BUFF_REFRESH_DISABLED ) )
-  {
-    // Stack gain effect
-    special_effect_t* effect2 = new special_effect_t( effect.player );
-    effect2 -> name_str     = "moonlit_prism_driver";
-    effect2 -> proc_chance_ = 1.0;
-    effect2 -> spell_id = effect.driver() -> id();
-    effect2 -> cooldown_ = timespan_t::zero();
-    effect2 -> custom_buff  = this;
-    effect.player -> special_effects.push_back( effect2 );
-
-    callback = new dbc_proc_callback_t( effect.player, *effect2 );
-    callback -> initialize();
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    stat_buff_t::start( stacks, value, duration );
-
-    callback -> activate();
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    stat_buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    callback -> deactivate();
-  }
-
-  void reset() override
-  {
-    stat_buff_t::reset();
-
-    callback -> deactivate();
-  }
-};
-
 void item::moonlit_prism( special_effect_t& effect )
 {
-  effect.custom_buff = new moonlit_prism_buff_t( effect );
+  // Create stack gain driver
+  special_effect_t* effect2 = new special_effect_t( effect.player );
+  effect2 -> name_str     = "moonlit_prism_driver";
+  effect2 -> proc_chance_ = 1.0;
+  effect2 -> spell_id = effect.driver() -> id();
+  effect2 -> cooldown_ = timespan_t::zero();
+  effect.player -> special_effects.push_back( effect2 );
+
+  // Create callback; it will be enabled when the buff is active.
+  dbc_proc_callback_t* callback = new dbc_proc_callback_t( effect.player, *effect2 );
+  callback -> initialize();
+  callback -> active = false;
+
+  // Create buff.
+  effect.custom_buff = stat_buff_creator_t( effect.player, "elunes_light", effect.driver(), effect.item )
+    .cd( timespan_t::zero() )
+    .refresh_behavior( BUFF_REFRESH_DISABLED )
+    .stack_change_callback( [ = ]( buff_t*, int old, int new_ )
+    {
+      if ( old == 0 ) {
+        assert( ! callback -> active );
+        callback -> activate();
+      } else if ( new_ == 0 )
+        callback -> deactivate();
+    } );
+
+  // Assign buff to our stack gain driver.
+  effect2 -> custom_buff = effect.custom_buff;
 }
 
 // Faulty Countermeasures ===================================================
 
-struct faulty_countermeasures_t : public buff_t
-{
-  dbc_proc_callback_t* callback;
-
-  faulty_countermeasures_t( const special_effect_t& effect ) :
-    buff_t( buff_creator_t( effect.player, "sheathed_in_frost", effect.driver(), effect.item )
-      .cd( timespan_t::zero() )
-      .activated( false )
-      .chance( 1 ) )
-  {
-    // Create effect & callback for the damage proc
-    special_effect_t* effect2 = new special_effect_t( effect.player );
-    effect2 -> name_str       = "brittle";
-    effect2 -> spell_id       = effect.driver() -> id();
-    effect2 -> cooldown_      = timespan_t::zero();
-    effect.player -> special_effects.push_back( effect2 );
-
-    callback = new dbc_proc_callback_t( effect.player, *effect2 );
-    callback -> initialize();
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::start( stacks, value, duration );
-
-    callback -> activate();
-  }
-
-  void expire_override( int stacks, timespan_t remaining ) override
-  {
-    buff_t::expire_override( stacks, remaining );
-    
-    callback -> deactivate();
-  }
-
-  void reset() override
-  {
-    buff_t::reset();
-
-    callback -> deactivate();
-  }
-};
-
 void item::faulty_countermeasures( special_effect_t& effect )
 {
-  effect.custom_buff = new faulty_countermeasures_t( effect );
+  // Create effect & callback for the damage proc
+  special_effect_t* effect2 = new special_effect_t( effect.player );
+  effect2 -> name_str       = "brittle";
+  effect2 -> spell_id       = effect.driver() -> id();
+  effect2 -> cooldown_      = timespan_t::zero();
+  effect.player -> special_effects.push_back( effect2 );
+
+  dbc_proc_callback_t* callback = new dbc_proc_callback_t( effect.player, *effect2 );
+  callback -> initialize();
+  callback -> active = false;
+
+  effect.custom_buff = buff_creator_t( effect.player, "sheathed_in_frost", effect.driver(), effect.item )
+    .cd( timespan_t::zero() )
+    .activated( false )
+    .chance( 1 )
+    .stack_change_callback( [ = ]( buff_t*, int old, int new_ )
+    {
+      if ( old == 0 ) {
+        assert( ! callback -> active );
+        callback -> activate();
+      } else if ( new_ == 0 )
+        callback -> deactivate();
+    } );
 }
 
 // Stormsinger Fulmination Charge ===========================================
@@ -1472,6 +1386,7 @@ struct maddening_whispers_t : public buff_t
 
     callback = new maddening_whispers_cb_t( *effect2, this );
     callback -> initialize();
+    callback -> active = false;
   }
   
   void start( int, double value, timespan_t duration ) override
@@ -1492,13 +1407,6 @@ struct maddening_whispers_t : public buff_t
       player_t* t = sim -> target_non_sleeping_list[ i ];
       player -> get_target_data( t ) -> debuff.maddening_whispers -> expire();
     }
-  }
-
-  void reset() override
-  {
-    buff_t::reset();
-
-    callback -> deactivate();
   }
 };
 
