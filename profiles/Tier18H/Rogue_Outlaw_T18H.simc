@@ -16,11 +16,12 @@ spec=outlaw
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/augmentation,type=hyper
 actions.precombat+=/food,type=sleeper_sushi
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/stealth
+actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/marked_for_death
 
 # Executed every time the actor is available.

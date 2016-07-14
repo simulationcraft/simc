@@ -16,12 +16,13 @@ spec=outlaw
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=sleeper_sushi
+actions.precombat=flask,type=flask_of_the_seventh_demon
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/food,type=seedbattered_fish_plate
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/stealth
+actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/marked_for_death
 
 # Executed every time the actor is available.
@@ -76,10 +77,10 @@ main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=137412/133763/137493,rel
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=844.38
-# gear_agility=9760
-# gear_stamina=17727
-# gear_crit_rating=5996
-# gear_haste_rating=1796
-# gear_mastery_rating=9531
-# gear_armor=1957
+# gear_ilvl=826.25
+# gear_agility=8155
+# gear_stamina=14981
+# gear_crit_rating=5620
+# gear_haste_rating=1668
+# gear_mastery_rating=8945
+# gear_armor=1830
