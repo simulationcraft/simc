@@ -650,10 +650,14 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       break;
     }
     case ITEM_BONUS_QUALITY:
+      if ( item.sim -> debug )
+      {
+        item.player -> sim -> out_debug.printf( "Player %s item '%s' adjusting quality (old=%s new=%s)",
+            item.player -> name(), item.name(), util::item_quality_string( item.parsed.data.quality ),
+            util::item_quality_string( entry.value_1 ) );
+      }
       item.parsed.data.quality = entry.value_1;
       break;
-    // Item name description. We should do flagging here, I suppose. We don't
-    // have the name descriptions exported at the moment though ..
     case ITEM_BONUS_DESC:
       break;
     // WoD random suffix name string; stats are in other options for that item
@@ -727,14 +731,43 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // Heroic or Mythic X tags in items. Seems like the base ilevel is not actually set through this
     // in game, because all the items also include a normal ilevel adjustment bonus that increases
     // the item level to the correct value.
+    //
+    // As the behavior of this bonus type is unknown at the moment, simc allows the ilevel setting
+    // to happen only if there is only this ilevel adjusting bonus type in the item as a whole. This
+    // allows sample profiles to easily set the "basic" ilevel of items through a single bonus id,
+    // instead having to add two (base ilevel that sets the heroic/mythic tag, and adjust ilevel
+    // bonus id to change the ilevel of the item to the correct value).
     case ITEM_BONUS_SET_ILEVEL:
-      /*
-      if ( item.sim -> debug )
-        item.player -> sim -> out_debug.printf( "Player %s item '%s' setting ilevel to %d (old=%d)",
-            item.player -> name(), item.name(), entry.value_1, item.parsed.data.level );
-      item.parsed.data.level = entry.value_1;
-      */
+    {
+      // For all bonuses on the item, find ..
+      auto it = range::find_if( item.parsed.bonus_id, [ &item ]( int bonus_id ) {
+        auto item_bonuses = item.player -> dbc.item_bonus( bonus_id );
+        // a bonus type that adjusts the ilevel of the item
+        auto it = range::find_if( item_bonuses, []( const item_bonus_entry_t* entry ) {
+          switch ( entry -> type )
+          {
+            case ITEM_BONUS_SCALING:
+            case ITEM_BONUS_SCALING_2:
+            case ITEM_BONUS_ILEVEL:
+              return true;
+            default:
+              return false;
+          }
+        } );
+        return it != item_bonuses.end();
+      } );
+
+      // No ilevel adjusting item bonus found, but "base ilevel" bonus is there, so use it to set
+      // the base ilevel.
+      if ( it == item.parsed.bonus_id.end() )
+      {
+        if ( item.sim -> debug )
+          item.player -> sim -> out_debug.printf( "Player %s item '%s' setting ilevel to %d (old=%d)",
+              item.player -> name(), item.name(), entry.value_1, item.parsed.data.level );
+        item.parsed.data.level = entry.value_1;
+      }
       break;
+    }
     default:
       break;
   }
@@ -1230,11 +1263,11 @@ bool item_database::load_item_from_data( item_t& item )
   // something similar
   for ( size_t i = 0, end = item.parsed.bonus_id.size(); i < end; i++ )
   {
-    std::vector<const item_bonus_entry_t*> item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id[ i ] );
+    auto item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id[ i ] );
     // Apply bonuses
-    for (auto & item_bonuse : item_bonuses)
+    for ( const auto bonus : item_bonuses )
     {
-      if ( ! apply_item_bonus( item, *item_bonuse ) )
+      if ( ! apply_item_bonus( item, *bonus ) )
         return false;
     }
   }
