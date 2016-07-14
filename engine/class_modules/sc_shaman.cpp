@@ -6443,6 +6443,7 @@ void shaman_t::init_action_list_enhancement()
                                               "(pet.feral_spirit.remains>5|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5)" );
   def -> add_talent( this, "Sundering" );
   def -> add_action( this, "Lava Lash", "if=maelstrom>=120" );
+  def -> add_action( this, "Flametongue", "if=talent.boulderfist.enabled" );
   def -> add_talent( this, "Boulderfist" );
   def -> add_action( this, "Rockbiter" );
 }
