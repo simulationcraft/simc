@@ -4201,6 +4201,8 @@ struct player_t : public actor_t
   // Persistent multipliers that are snapshot at the beginning of the spell application/execution
   virtual double composite_persistent_multiplier( school_e ) const
   { return 1.0; }
+  virtual double composite_player_target_multiplier( const action_state_t* ) const
+  { return 1.0; }
 
   virtual double composite_player_heal_multiplier( const action_state_t* s ) const;
   virtual double composite_player_dh_multiplier( school_e /* school */ ) const { return 1; }
