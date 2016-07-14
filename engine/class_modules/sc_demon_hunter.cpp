@@ -6479,7 +6479,14 @@ public:
     register_special_effect( 210840, the_defilers_lost_vambraces_t() );
   }
 
-  void register_hotfixes() const override {}
+  void register_hotfixes() const override
+  {
+    hotfix::register_effect( "Demon Hunter", "2016-07-14", "Demon Blades damage reduced by about 38%.", 300652 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 126.5 )
+      .verification_value( 205 );
+  }
 
   void combat_begin( sim_t* ) const override {}
 

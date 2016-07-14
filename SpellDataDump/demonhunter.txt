@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22133)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22201)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2408,7 +2408,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=309716)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Self(1)
 #2 (id=309745)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 Description      : Sustaining fatal damage instead transforms you to Metamorphosis form, and returns you to $s2% health.

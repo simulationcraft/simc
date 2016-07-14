@@ -64,7 +64,8 @@ actions+=/demons_bite
 actions+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
 actions+=/vengeful_retreat,if=movement.distance>15
 
-actions.cooldown=nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
+actions.cooldown=use_item,slot=trinket2,if=buff.chaos_blades.up|!talent.chaos_blades.enabled
+actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(cooldown.metamorphosis.remains>100|target.time_to_die<70)
 actions.cooldown+=/nemesis,sync=metamorphosis,if=!raid_event.adds.exists
 actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.remains>100|target.time_to_die<20
@@ -72,28 +73,28 @@ actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.
 actions.cooldown+=/metamorphosis,if=buff.metamorphosis.down&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready)&(!talent.nemesis.enabled|debuff.nemesis.up|cooldown.nemesis.ready)
 actions.cooldown+=/potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25
 
-head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727
-neck=breathless_choker,id=137461,bonus_id=1727,enchant_id=5439
-shoulders=crashing_oceantide_mantle,id=137364,bonus_id=1727
-back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant_id=5435
-chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
-wrists=adorned_guardians_bracers,id=133621,bonus_id=1727
-hands=guileful_intruder_handguards,id=137480,bonus_id=1727
-waist=ravens_veil_belt,id=139243,bonus_id=1727
-legs=ashen_satyr_leggings,id=134448,bonus_id=1727
-feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
-finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant_id=5427
-finger2=utgarde_royal_signet,id=133637,bonus_id=1727,enchant_id=5427
-trinket1=chaos_talisman,id=137459,bonus_id=1727
-trinket2=darkmoon_deck_dominion,id=128705
-main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=133764/133684/137476,relic_id=1727/1727/1727
+head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727/1492
+neck=breathless_choker,id=137461,bonus_id=1727/1492,enchant_id=5439
+shoulders=crashing_oceantide_mantle,id=137364,bonus_id=1727/1492
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1727/1492,enchant_id=5435
+chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727/1492
+wrists=adorned_guardians_bracers,id=133621,bonus_id=1727/1492
+hands=guileful_intruder_handguards,id=137480,bonus_id=1727/1492
+waist=ravens_veil_belt,id=139243,bonus_id=1727/1492
+legs=ashen_satyr_leggings,id=134448,bonus_id=1727/1492
+feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1492
+finger1=band_of_callous_dominance,id=134528,bonus_id=1727/1492,enchant_id=5427
+finger2=utgarde_royal_signet,id=133637,bonus_id=1727/1492,enchant_id=5427
+trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
+trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=133764/133684/137476,relic_id=1727:1492/1727:1492/1727:1492
 off_hand=twinblades_of_the_deceiver,id=127830
 
 # Gear Summary
-# gear_ilvl=842.19
-# gear_agility=10850
+# gear_ilvl=843.75
+# gear_agility=9960
 # gear_stamina=17630
-# gear_crit_rating=10618
+# gear_crit_rating=11516
 # gear_haste_rating=4358
 # gear_mastery_rating=588
 # gear_versatility_rating=1193
