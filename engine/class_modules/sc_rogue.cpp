@@ -218,6 +218,7 @@ struct rogue_t : public player_t
     buff_t* blurred_time;
     buff_t* death;
     buff_t* t19_4pc_outlaw;
+    buff_t* t19oh_8pc;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -595,6 +596,7 @@ struct rogue_t : public player_t
   void trigger_combo_point_gain( int, gain_t* gain = nullptr, action_t* action = nullptr );
   void spend_combo_points( const action_state_t* );
   bool trigger_t17_4pc_combat( const action_state_t* );
+  void trigger_t19oh_8pc( const action_state_t* );
   void trigger_elaborate_planning( const action_state_t* );
   void trigger_alacrity( const action_state_t* );
   void trigger_deepening_shadows( const action_state_t* );
@@ -1857,6 +1859,7 @@ void rogue_attack_t::execute()
 
   p() -> trigger_elaborate_planning( execute_state );
   p() -> trigger_alacrity( execute_state );
+  p() -> trigger_t19oh_8pc( execute_state );
 
   if ( harmful && stealthed() )
   {
@@ -4816,6 +4819,21 @@ void rogue_t::trigger_relentless_strikes( const action_state_t* state )
   }
 }
 
+void rogue_t::trigger_t19oh_8pc( const action_state_t* state )
+{
+  if ( ! sets.has_set_bonus( specialization(), T19OH, B8 ) )
+  {
+    return;
+  }
+
+  if ( actions::rogue_attack_t::cast_state( state ) -> cp == 0 )
+  {
+    return;
+  }
+
+  buffs.t19oh_8pc -> trigger();
+}
+
 void rogue_t::spend_combo_points( const action_state_t* state )
 {
   if ( state -> action -> base_costs[ RESOURCE_COMBO_POINT ] == 0 )
@@ -6360,6 +6378,9 @@ void rogue_t::create_buffs()
   buffs.t19_4pc_outlaw = buff_creator_t( this, "swordplay" )
     .spell( sets.set( ROGUE_OUTLAW, T19, B4 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets.set( ROGUE_OUTLAW, T19, B4 ) );
+  buffs.t19oh_8pc = stat_buff_creator_t( this, "shadowstalkers_avidity" )
+    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
 }
 
 // rogue_t::create_options ==================================================
