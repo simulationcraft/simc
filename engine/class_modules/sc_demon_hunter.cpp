@@ -4335,7 +4335,7 @@ private:
   double crit_bonus_damage;
   double first_blood; // First Blood talent multiplier, if relevant to the action.
 #ifndef NDEBUG
-  std::vector<attack_t*> attacks_;
+  std::vector<actions::demon_hunter_attack_t*> attacks_;
 #endif
 
 public:
