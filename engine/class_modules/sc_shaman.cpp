@@ -2424,10 +2424,10 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
 
 struct crash_lightning_attack_t : public shaman_attack_t
 {
-  crash_lightning_attack_t( shaman_t* p, const std::string& n, weapon_t* w ) :
+  crash_lightning_attack_t( shaman_t* p, const std::string& n ) :
     shaman_attack_t( n, p, p -> find_spell( 195592 ) )
   {
-    weapon = w;
+    weapon = &( p -> main_hand_weapon );
     background = true;
     callbacks = false;
     aoe = -1;
@@ -2464,13 +2464,10 @@ struct hailstorm_attack_t : public shaman_attack_t
 
 struct stormstrike_attack_t : public shaman_attack_t
 {
-  crash_lightning_attack_t* cl;
   bool stormflurry;
 
   stormstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
-    shaman_attack_t( n, player, s ),
-    cl( new crash_lightning_attack_t( player, n + "_cl", w ) ),
-    stormflurry( false )
+    shaman_attack_t( n, player, s ), stormflurry( false )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
@@ -2524,17 +2521,6 @@ struct stormstrike_attack_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     stormflurry = false;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    shaman_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) && p() -> buff.crash_lightning -> up() )
-    {
-      cl -> target = s -> target;
-      cl -> schedule_execute();
-    }
   }
 };
 
@@ -2925,7 +2911,7 @@ struct lava_lash_t : public shaman_attack_t
   lava_lash_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "lava_lash", player, player -> find_specialization_spell( "Lava Lash" ) ),
     ft_bonus( data().effectN( 2 ).percent() ),
-    cl( new crash_lightning_attack_t( player, "lava_lash_cl", &( player -> off_hand_weapon ) ) )
+    cl( new crash_lightning_attack_t( player, "lava_lash_cl" ) )
   {
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
@@ -3003,13 +2989,16 @@ struct lava_lash_t : public shaman_attack_t
 
 struct stormstrike_base_t : public shaman_attack_t
 {
+  crash_lightning_attack_t* cl;
   stormstrike_attack_t* mh, *oh;
   bool stormflurry;
   bool background_action;
 
   stormstrike_base_t( shaman_t* player, const std::string& name,
                       const spell_data_t* spell, const std::string& options_str ) :
-    shaman_attack_t( name, player, spell ), mh( nullptr ), oh( nullptr ),
+    shaman_attack_t( name, player, spell ),
+    cl( new crash_lightning_attack_t( player, name + "_cl" ) ),
+    mh( nullptr ), oh( nullptr ),
     stormflurry( false ), background_action( false )
   {
     parse_options( options_str );
@@ -3018,6 +3007,8 @@ struct stormstrike_base_t : public shaman_attack_t
     cooldown             = p() -> cooldown.strike;
     weapon_multiplier    = 0.0;
     may_crit             = false;
+
+    add_child( cl );
   }
 
   void init() override
@@ -3070,6 +3061,12 @@ struct stormstrike_base_t : public shaman_attack_t
         oh -> execute();
       }
 
+      if ( ! stormflurry && p() -> buff.crash_lightning -> up() )
+      {
+        cl -> target = execute_state -> target;
+        cl -> execute();
+      }
+
       if ( p() -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B2 ) )
       {
         p() -> cooldown.feral_spirits -> adjust( - p() -> sets.set( SHAMAN_ENHANCEMENT, T17, B2 ) -> effectN( 1 ).time_value() );
@@ -3116,13 +3113,11 @@ struct stormstrike_t : public stormstrike_base_t
     // Actual damaging attacks are done by stormstrike_attack_t
     mh = new stormstrike_attack_t( "stormstrike_mh", player, data().effectN( 1 ).trigger(), &( player -> main_hand_weapon ) );
     add_child( mh );
-    add_child( mh -> cl );
 
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new stormstrike_attack_t( "stormstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
       add_child( oh );
-      add_child( oh -> cl );
     }
   }
 
@@ -3148,13 +3143,11 @@ struct windstrike_t : public stormstrike_base_t
     // Actual damaging attacks are done by stormstrike_attack_t
     mh = new windstrike_attack_t( "windstrike_mh", player, data().effectN( 1 ).trigger(), &( player -> main_hand_weapon ) );
     add_child( mh );
-    add_child( mh -> cl );
 
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
       oh = new windstrike_attack_t( "windstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
       add_child( oh );
-      add_child( oh -> cl );
     }
   }
 
