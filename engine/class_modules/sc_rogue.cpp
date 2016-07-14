@@ -577,6 +577,7 @@ struct rogue_t : public player_t
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_attack_power_multiplier() const override;
   double    composite_player_multiplier( school_e school ) const override;
+  double    composite_player_target_multiplier( const action_state_t* state ) const override;
   double    energy_regen_per_second() const override;
   double    passive_movement_modifier() const override;
   double    temporary_movement_modifier() const override;
@@ -956,25 +957,6 @@ struct rogue_attack_t : public melee_attack_t
     if ( affected_by.vendetta )
     {
       m *= 1.0 + tdata -> debuffs.vendetta -> value();
-    }
-
-    if ( affected_by.agonizing_poison )
-    {
-      double stack_value = tdata -> debuffs.agonizing_poison -> stack_value();
-      if ( tdata -> debuffs.surge_of_toxins -> up() )
-      {
-        stack_value += tdata -> debuffs.surge_of_toxins -> data().effectN( 1 ).percent() * .1 *
-                       tdata -> debuffs.agonizing_poison -> check();
-      }
-      stack_value *= 1.0 + p() -> talent.master_poisoner -> effectN( 3 ).percent();
-      stack_value *= 1.0 + p() -> cache.mastery() * p() -> mastery.potent_poisons -> effectN( 4 ).mastery_value();
-      stack_value *= 1.0 + p() -> artifact.master_alchemist.percent();
-      m *= 1.0 + stack_value;
-    }
-
-    if ( affected_by.ghostly_strike )
-    {
-      m *= 1.0 + tdata -> debuffs.ghostly_strike -> stack_value();
     }
 
     return m;
@@ -5497,6 +5479,33 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   {
     m *= buffs.symbols_of_death -> check_value();
   }
+
+  return m;
+}
+
+// rogue_t::composite_player_target_multiplier ==============================
+
+double rogue_t::composite_player_target_multiplier( const action_state_t* state ) const
+{
+  double m = player_t::composite_player_target_multiplier( state );
+
+  rogue_td_t* tdata = get_target_data( state -> target );
+
+  if ( tdata -> debuffs.agonizing_poison -> check() )
+  {
+    double stack_value = tdata -> debuffs.agonizing_poison -> stack_value();
+    if ( tdata -> debuffs.surge_of_toxins -> up() )
+    {
+      stack_value += tdata -> debuffs.surge_of_toxins -> data().effectN( 1 ).percent() * .1 *
+                     tdata -> debuffs.agonizing_poison -> check();
+    }
+    stack_value *= 1.0 + talent.master_poisoner -> effectN( 3 ).percent();
+    stack_value *= 1.0 + cache.mastery() * mastery.potent_poisons -> effectN( 4 ).mastery_value();
+    stack_value *= 1.0 + artifact.master_alchemist.percent();
+    m *= 1.0 + stack_value;
+  }
+
+  m *= 1.0 + tdata -> debuffs.ghostly_strike -> stack_value();
 
   return m;
 }
