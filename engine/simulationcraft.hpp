@@ -3743,8 +3743,10 @@ struct player_t : public actor_t
     position_e position;
   }
   base, // Base values, from some database or overridden by user
-  initial, // Base + Gear + Global Enchants
+  initial, // Base + Passive + Gear (overridden or items) + Player Enchants + Global Enchants
   current; // Current values, reset to initial before every iteration
+
+  gear_stats_t passive; // Passive stats from various passive auras (and similar effects)
 
   const rating_t& current_rating() const
   { return current.rating; }

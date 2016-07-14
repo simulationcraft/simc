@@ -1006,6 +1006,7 @@ void player_t::init_initial_stats()
 #endif
 
   initial = base;
+  initial.stats += passive;
 
   // Compute current "total from gear" into total gear. Per stat, this is either the amount of stats
   // the items for the actor gives, or the overridden value (player_t::gear + player_t::enchant +

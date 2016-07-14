@@ -109,7 +109,7 @@ void set_bonus::passive_stat_aura( special_effect_t& effect )
 
   double amount = util::round( spell -> effectN( 1 ).average( effect.player, std::min( MAX_LEVEL, effect.player -> level() ) ) );
 
-  effect.player -> initial.stats.add_stat( stat, amount );
+  effect.player -> passive.add_stat( stat, amount );
 }
 
 void set_bonus::simple_callback( special_effect_t& effect )

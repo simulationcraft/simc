@@ -5564,10 +5564,12 @@ void rogue_t::init_action_list()
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   if ( specialization() == ROGUE_ASSASSINATION )
+  {
     if ( talent.agonizing_poison -> ok() )
       precombat -> add_action( "apply_poison,lethal=agonizing" );
     else
       precombat -> add_action( "apply_poison,lethal=deadly" );
+  }
 
   // Stealth before entering in combat
   precombat -> add_action( this, "Stealth" );
