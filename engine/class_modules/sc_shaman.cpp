@@ -474,6 +474,7 @@ public:
     artifact_power_t alpha_wolf;
     artifact_power_t earthshattering_blows;
     artifact_power_t weapons_of_the_elements;
+    artifact_power_t wind_surge;
   } artifact;
 
   // Misc Spells
@@ -2383,6 +2384,7 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
     school           = SCHOOL_PHYSICAL;
     background       = true;
     callbacks        = false;
+    base_multiplier *= 1.0 + player -> artifact.wind_surge.percent();
 
     // Windfury can not proc itself
     may_proc_windfury = false;
@@ -5630,6 +5632,7 @@ void shaman_t::init_spells()
   artifact.alpha_wolf                = find_artifact_spell( "Alpha Wolf"         );
   artifact.earthshattering_blows     = find_artifact_spell( "Earthshattering Blows" );
   artifact.weapons_of_the_elements   = find_artifact_spell( "Weapons of the Elements" );
+  artifact.wind_surge                = find_artifact_spell( "Wind Surge" );
 
   // Misc spells
   spell.resurgence                   = find_spell( 101033 );
