@@ -4085,6 +4085,10 @@ struct lightning_bolt_t : public shaman_spell_t
     p() -> trigger_t19_oh_8pc( execute_state );
     p() -> trigger_t18_4pc_elemental();
 
+    if ( ! p() -> talent.overcharge -> ok() )
+    {
+      reset_swing_timers();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4096,6 +4100,21 @@ struct lightning_bolt_t : public shaman_spell_t
       td( state -> target ) -> debuff.lightning_rod -> trigger();
     }
     p() -> trigger_lightning_rod_damage( state );
+  }
+
+  void reset_swing_timers()
+  {
+    if ( player -> main_hand_attack -> execute_event )
+    {
+      event_t::cancel( player -> main_hand_attack -> execute_event );
+      player -> main_hand_attack -> schedule_execute();
+    }
+
+    if ( player -> off_hand_attack -> execute_event )
+    {
+      event_t::cancel( player -> off_hand_attack -> execute_event );
+      player -> off_hand_attack -> schedule_execute();
+    }
   }
 };
 
