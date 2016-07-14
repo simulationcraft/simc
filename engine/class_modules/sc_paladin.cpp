@@ -3716,6 +3716,8 @@ struct justicars_vengeance_t : public holy_power_consumer_t
     parse_options( options_str );
 
     hasted_gcd = true;
+
+    weapon_multiplier = 0; // why is this needed?
   }
 
   virtual double cost() const override
