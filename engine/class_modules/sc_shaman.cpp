@@ -209,29 +209,33 @@ public:
   auto_dispose< std::vector<simple_data_t*> > cd_waste_iter;
 
   // Cached actions
-  std::array<action_t*, 2> unleash_doom;
-  action_t* ancestral_awakening;
-  action_t* lightning_strike;
-  spell_t*  electrocute;
-  action_t* volcanic_inferno;
-  spell_t*  lightning_shield;
-  spell_t*  earthen_rage;
-  spell_t* crashing_storm;
-  spell_t* doom_vortex_ll, * doom_vortex_lb;
-  action_t* lightning_rod;
+  struct actions_t
+  {
+    std::array<action_t*, 2> unleash_doom;
+    action_t* ancestral_awakening;
+    action_t* lightning_strike;
+    spell_t*  electrocute;
+    action_t* volcanic_inferno;
+    spell_t*  lightning_shield;
+    spell_t*  earthen_rage;
+    spell_t* crashing_storm;
+    spell_t* doom_vortex_ll, * doom_vortex_lb;
+    action_t* lightning_rod;
+    action_t* ppsg; // Pristine Proto-Scale Girdle legendary dot
+  } action;
 
   // Pets
-  pet_t* pet_fire_elemental;
-  pet_t* guardian_fire_elemental;
-  pet_t* pet_storm_elemental;
-  pet_t* guardian_storm_elemental;
-  pet_t* pet_earth_elemental;
-  pet_t* guardian_earth_elemental;
-
-  pet_t* guardian_greater_lightning_elemental;
-
-  struct
+  struct pets_t
   {
+    pet_t* pet_fire_elemental;
+    pet_t* guardian_fire_elemental;
+    pet_t* pet_storm_elemental;
+    pet_t* guardian_storm_elemental;
+    pet_t* pet_earth_elemental;
+    pet_t* guardian_earth_elemental;
+
+    pet_t* guardian_greater_lightning_elemental;
+
     std::array<pet_t*, 2> spirit_wolves;
     std::array<pet_t*, 6> doom_wolves;
   } pet;
@@ -287,6 +291,9 @@ public:
     haste_buff_t* t18_4pc_elemental;
     buff_t* t18_4pc_enhancement;
 
+    // Legendary buffs
+    buff_t* echoes_of_the_great_sundering;
+    buff_t* emalons_charged_core;
 
     // Artifact related buffs
     buff_t* stormkeeper;
@@ -345,6 +352,11 @@ public:
     real_ppm_t* stormlash;
     real_ppm_t* doom_vortex;
   } real_ppm;
+
+  // Various legendary related values
+  struct legendary_t
+  {
+  } legendary;
 
   // Class Specializations
   struct
@@ -497,7 +509,6 @@ public:
   // Weapon Enchants
   shaman_attack_t* windfury_mh, * windfury_oh;
   shaman_spell_t*  flametongue;
-
   shaman_attack_t* hailstorm;
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
@@ -505,17 +516,15 @@ public:
     lava_surge_during_lvb( false ),
     t18_4pc_elemental_counter( 0 ),
     stormlash_targets( 17 ), // Default to 2 tanks + 15 dps
-    ancestral_awakening( nullptr ),
-    pet_fire_elemental( nullptr ),
-    guardian_fire_elemental( nullptr ),
-    pet_earth_elemental( nullptr ),
-    guardian_earth_elemental( nullptr ),
-    furious_winds( nullptr ),
+    action(),
+    pet(),
     constant(),
     buff(),
     cooldown(),
     gain(),
     proc(),
+    real_ppm(),
+    legendary(),
     spec(),
     mastery(),
     talent(),
@@ -543,10 +552,7 @@ public:
     windfury_mh = nullptr;
     windfury_oh = nullptr;
     flametongue = nullptr;
-
-    hailstorm = nullptr;
-    lightning_shield = nullptr;
-    earthen_rage = nullptr;
+    hailstorm   = nullptr;
 
     regen_type = REGEN_DISABLED;
   }
@@ -1157,11 +1163,10 @@ public:
       return;
     }
 
-    size_t spell_idx = ab::rng().range( 0, p() -> unleash_doom.size() );
-    p() -> unleash_doom[ spell_idx ] -> target = state -> target;
-    p() -> unleash_doom[ spell_idx ] -> schedule_execute();
+    size_t spell_idx = ab::rng().range( 0, p() -> action.unleash_doom.size() );
+    p() -> action.unleash_doom[ spell_idx ] -> target = state -> target;
+    p() -> action.unleash_doom[ spell_idx ] -> schedule_execute();
   }
-
 };
 
 // ==========================================================================
@@ -1264,11 +1269,11 @@ public:
 
     p() -> resource_gain( RESOURCE_MAELSTROM, amount, gain, this );
 
-    if ( p() -> electrocute &&
+    if ( p() -> action.electrocute &&
          rng().roll( p() -> sets.set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 1 ).percent() ) )
     {
-      p() -> electrocute -> target = source_state -> target;
-      p() -> electrocute -> schedule_execute();
+      p() -> action.electrocute -> target = source_state -> target;
+      p() -> action.electrocute -> schedule_execute();
     }
   }
 
@@ -2711,6 +2716,18 @@ struct lightning_rod_t : public spell_t
   }
 };
 
+struct pristine_protoscale_girdle_dot_t : public shaman_spell_t
+{
+  pristine_protoscale_girdle_dot_t( shaman_t* p ) :
+    shaman_spell_t( "pristine_protoscale_girdle", p, p -> find_spell( 224852 ) )
+  {
+    background = true;
+    callbacks = may_crit = hasted_ticks = false;
+
+    dot_max_stack = data().max_stacks();
+  }
+};
+
 // Elemental overloads
 
 struct elemental_overload_spell_t : public shaman_spell_t
@@ -2754,14 +2771,14 @@ void shaman_heal_t::impact( action_state_t* s )
 
     if ( p() -> spec.ancestral_awakening -> ok() )
     {
-      if ( ! p() -> ancestral_awakening )
+      if ( ! p() -> action.ancestral_awakening )
       {
-        p() -> ancestral_awakening = new ancestral_awakening_t( p() );
-        p() -> ancestral_awakening -> init();
+        p() -> action.ancestral_awakening = new ancestral_awakening_t( p() );
+        p() -> action.ancestral_awakening -> init();
       }
 
-      p() -> ancestral_awakening -> base_dd_min = s -> result_total;
-      p() -> ancestral_awakening -> base_dd_max = s -> result_total;
+      p() -> action.ancestral_awakening -> base_dd_min = s -> result_total;
+      p() -> action.ancestral_awakening -> base_dd_max = s -> result_total;
     }
   }
 
@@ -2924,7 +2941,7 @@ struct lava_lash_t : public shaman_attack_t
     add_child( cl );
     if ( player -> artifact.doom_vortex.rank() )
     {
-      add_child( player -> doom_vortex_ll );
+      add_child( player -> action.doom_vortex_ll );
     }
   }
 
@@ -3251,17 +3268,20 @@ struct frostbrand_t : public shaman_spell_t
 
 struct crash_lightning_t : public shaman_attack_t
 {
+  size_t ecc_min_targets;
+
   crash_lightning_t( shaman_t* player, const std::string& options_str ) :
-    shaman_attack_t( "crash_lightning", player, player -> find_specialization_spell( "Crash Lightning" ) )
+    shaman_attack_t( "crash_lightning", player, player -> find_specialization_spell( "Crash Lightning" ) ),
+    ecc_min_targets( 0 )
   {
     parse_options( options_str );
 
     aoe = -1;
     weapon = &( p() -> main_hand_weapon );
 
-    if ( player -> crashing_storm )
+    if ( player -> action.crashing_storm )
     {
-      add_child( player -> crashing_storm );
+      add_child( player -> action.crashing_storm );
     }
   }
 
@@ -3273,11 +3293,8 @@ struct crash_lightning_t : public shaman_attack_t
     {
       new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
           .target( execute_state -> target )
-          .x( player -> x_position )
-          .y( player -> y_position )
           .duration( p() -> find_spell( 205532 ) -> duration() )
-          .start_time( sim -> current_time() )
-          .action( p() -> crashing_storm ), true );
+          .action( p() -> action.crashing_storm ), true );
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -3291,6 +3308,11 @@ struct crash_lightning_t : public shaman_attack_t
       {
         double v = 1.0 + p() -> artifact.gathering_storms.percent() * execute_state -> n_targets;
         p() -> buff.gathering_storms -> trigger( 1, v );
+      }
+
+      if ( ecc_min_targets > 0 && execute_state -> n_targets >= ecc_min_targets )
+      {
+        p() -> buff.emalons_charged_core -> trigger();
       }
     }
 
@@ -3334,11 +3356,11 @@ struct fire_elemental_t : public shaman_spell_t
 
     if ( p() -> talent.primal_elementalist -> ok() )
     {
-      p() -> pet_fire_elemental -> summon( base_spell -> duration() );
+      p() -> pet.pet_fire_elemental -> summon( base_spell -> duration() );
     }
     else
     {
-      p() -> guardian_fire_elemental -> summon( base_spell -> duration() );
+      p() -> pet.guardian_fire_elemental -> summon( base_spell -> duration() );
     }
   }
 
@@ -3453,9 +3475,9 @@ struct lightning_shield_t : public shaman_spell_t
   {
     harmful = false;
 
-    if ( player -> lightning_shield )
+    if ( player -> action.lightning_shield )
     {
-      add_child( player -> lightning_shield );
+      add_child( player -> action.lightning_shield );
     }
   }
 
@@ -3960,12 +3982,15 @@ struct lava_burst_t : public shaman_spell_t
       {
         new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
             .target( state -> target )
-            // Spawn vortices at target instead of player (like with crashing storm)
-            .x( state -> target -> x_position )
-            .y( state -> target -> y_position )
             .duration( p() -> find_spell( 199121 ) -> duration() )
-            .start_time( sim -> current_time() )
-            .action( p() -> volcanic_inferno ) );
+            .action( p() -> action.volcanic_inferno ) );
+      }
+
+      // Pristine Proto-Scale Girdle legendary
+      if ( p() -> action.ppsg )
+      {
+        p() -> action.ppsg -> target = state -> target;
+        p() -> action.ppsg -> schedule_execute();
       }
     }
   }
@@ -4039,7 +4064,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( p() -> artifact.doom_vortex.rank() )
     {
-      add_child( p() -> doom_vortex_lb );
+      add_child( p() -> action.doom_vortex_lb );
     }
   }
 
@@ -4441,11 +4466,11 @@ struct storm_elemental_t : public shaman_spell_t
 
     if ( p() -> talent.primal_elementalist -> ok() )
     {
-      p() -> pet_storm_elemental -> summon( summon_spell -> duration() );
+      p() -> pet.pet_storm_elemental -> summon( summon_spell -> duration() );
     }
     else
     {
-      p() -> guardian_storm_elemental -> summon( summon_spell -> duration() );
+      p() -> pet.guardian_storm_elemental -> summon( summon_spell -> duration() );
     }
   }
 };
@@ -4466,6 +4491,18 @@ struct earthquake_totem_damage_t : public shaman_spell_t
 
   double target_armor( player_t* ) const override
   { return 0; }
+
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = shaman_spell_t::composite_persistent_multiplier( state );
+
+    if ( p() -> buff.echoes_of_the_great_sundering -> up() )
+    {
+      m *= 1.0 + p() -> buff.echoes_of_the_great_sundering -> data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
 };
 
 struct earthquake_totem_t : public shaman_spell_t
@@ -4480,18 +4517,29 @@ struct earthquake_totem_t : public shaman_spell_t
     add_child( rumble );
   }
 
+  double cost() const override
+  {
+    if ( p() -> buff.echoes_of_the_great_sundering -> check() )
+    {
+      return 0;
+    }
+
+    return shaman_spell_t::cost();
+  }
+
   void execute() override
   {
     shaman_spell_t::execute();
 
     new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
         .target( execute_state -> target )
-        .x( execute_state -> target -> x_position )
-        .y( execute_state -> target -> y_position )
         .duration( data().duration() )
-        .start_time( sim -> current_time() )
         .action( rumble )
         .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
+
+    // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
+    // buff multiplier as persistent.
+    p() -> buff.echoes_of_the_great_sundering -> decrement();
   }
 };
 
@@ -4524,10 +4572,11 @@ struct elemental_mastery_t : public shaman_spell_t
 struct earth_shock_t : public shaman_spell_t
 {
   double base_coefficient;
+  double eotgs_base_chance;
 
   earth_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "earth_shock", player, player -> find_specialization_spell( "Earth Shock" ), options_str ),
-    base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() )
+    base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ), eotgs_base_chance( 0 )
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
   }
@@ -4555,6 +4604,12 @@ struct earth_shock_t : public shaman_spell_t
          rng().roll( p() -> sets.set( SHAMAN_ELEMENTAL, T18, B2 ) -> effectN( 1 ).percent() ) )
     {
       p() -> resource_gain( RESOURCE_MAELSTROM, resource_consumed, p() -> gain.t18_2pc_elemental, this );
+    }
+
+    if ( eotgs_base_chance > 0 )
+    {
+      p() -> buff.echoes_of_the_great_sundering -> trigger( 1, buff_t::DEFAULT_VALUE(),
+          eotgs_base_chance * resource_consumed );
     }
   }
 };
@@ -4709,7 +4764,8 @@ struct stormkeeper_t : public shaman_spell_t
     p() -> buff.stormkeeper -> trigger( p() -> buff.stormkeeper -> data().initial_stacks() );
     if ( p() -> artifact.fury_of_the_storms.rank() )
     {
-      p() -> guardian_greater_lightning_elemental -> summon( p() -> spell.fury_of_the_storms_driver -> duration() );
+      p() -> pet.guardian_greater_lightning_elemental -> summon(
+          p() -> spell.fury_of_the_storms_driver -> duration() );
     }
   }
 };
@@ -5392,34 +5448,34 @@ void shaman_t::create_pets()
   {
     if ( find_action( "fire_elemental" )  )
     {
-      pet_fire_elemental = create_pet( "fire_elemental_pet" );
+      pet.pet_fire_elemental = create_pet( "fire_elemental_pet" );
     }
 
     if ( find_action( "earth_elemental" ) )
     {
-      pet_earth_elemental = create_pet( "earth_elemental_pet" );
+      pet.pet_earth_elemental = create_pet( "earth_elemental_pet" );
     }
 
     if ( talent.storm_elemental -> ok() && find_action( "storm_elemental" ) )
     {
-      pet_storm_elemental = create_pet( "storm_elemental_pet" );
+      pet.pet_storm_elemental = create_pet( "storm_elemental_pet" );
     }
   }
   else
   {
     if ( find_action( "fire_elemental" ) )
     {
-      guardian_fire_elemental = create_pet( "fire_elemental_guardian" );
+      pet.guardian_fire_elemental = create_pet( "fire_elemental_guardian" );
     }
 
     if ( find_action( "earth_elemental" ) )
     {
-      guardian_earth_elemental = create_pet( "earth_elemental_guardian" );
+      pet.guardian_earth_elemental = create_pet( "earth_elemental_guardian" );
     }
 
     if ( talent.storm_elemental -> ok() && find_action( "storm_elemental" ) )
     {
-      guardian_storm_elemental = create_pet( "storm_elemental_guardian" );
+      pet.guardian_storm_elemental = create_pet( "storm_elemental_guardian" );
     }
   }
 
@@ -5430,7 +5486,7 @@ void shaman_t::create_pets()
 
   if ( artifact.fury_of_the_storms.rank() && find_action( "stormkeeper" ) )
   {
-    guardian_greater_lightning_elemental = new pet::greater_lightning_elemental_t( this );
+    pet.guardian_greater_lightning_elemental = new pet::greater_lightning_elemental_t( this );
   }
 
   if ( specialization() == SHAMAN_ENHANCEMENT && find_action( "feral_spirit" ) &&
@@ -5486,39 +5542,44 @@ bool shaman_t::create_actions()
 {
   if ( talent.lightning_shield -> ok() )
   {
-    lightning_shield = new lightning_shield_damage_t( this );
+    action.lightning_shield = new lightning_shield_damage_t( this );
   }
 
   if ( talent.crashing_storm -> ok() )
   {
-    crashing_storm = new ground_aoe_spell_t( this, "crashing_storm", find_spell( 210801 ) );
+    action.crashing_storm = new ground_aoe_spell_t( this, "crashing_storm", find_spell( 210801 ) );
   }
 
   if ( talent.earthen_rage -> ok() )
   {
-    earthen_rage = new earthen_rage_driver_t( this );
+    action.earthen_rage = new earthen_rage_driver_t( this );
   }
 
   if ( talent.lightning_rod -> ok() )
   {
-    lightning_rod = new lightning_rod_t( this );
+    action.lightning_rod = new lightning_rod_t( this );
   }
 
   if ( artifact.unleash_doom.rank() )
   {
-    unleash_doom[ 0 ] = new unleash_doom_spell_t( "unleash_lava", this, find_spell( 199053 ) );
-    unleash_doom[ 1 ] = new unleash_doom_spell_t( "unleash_lightning", this, find_spell( 199054 ) );
+    action.unleash_doom[ 0 ] = new unleash_doom_spell_t( "unleash_lava", this, find_spell( 199053 ) );
+    action.unleash_doom[ 1 ] = new unleash_doom_spell_t( "unleash_lightning", this, find_spell( 199054 ) );
   }
 
   if ( artifact.doom_vortex.rank() )
   {
-    doom_vortex_ll = new ground_aoe_spell_t( this, "doom_vortex_ll", find_spell( 199116 ) );
-    doom_vortex_lb = new ground_aoe_spell_t( this, "doom_vortex_lb", find_spell( 199116 ) );
+    action.doom_vortex_ll = new ground_aoe_spell_t( this, "doom_vortex_ll", find_spell( 199116 ) );
+    action.doom_vortex_lb = new ground_aoe_spell_t( this, "doom_vortex_lb", find_spell( 199116 ) );
   }
 
   if ( artifact.volcanic_inferno.rank() )
   {
-    volcanic_inferno = new volcanic_inferno_t( this );
+    action.volcanic_inferno = new volcanic_inferno_t( this );
+  }
+
+  if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
+  {
+    action.electrocute = new electrocute_t( this );
   }
 
   return player_t::create_actions();
@@ -5810,8 +5871,8 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
     return;
   }
 
-  lightning_shield -> target = state -> target;
-  lightning_shield -> execute();
+  action.lightning_shield -> target = state -> target;
+  action.lightning_shield -> execute();
 }
 
 // TODO: Target swaps
@@ -5827,10 +5888,10 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
     return;
 
   // Molten earth does not trigger itself.
-  if ( state -> action == debug_cast<earthen_rage_driver_t*>( earthen_rage ) -> nuke )
+  if ( state -> action == debug_cast<earthen_rage_driver_t*>( action.earthen_rage ) -> nuke )
     return;
 
-  earthen_rage -> schedule_execute();
+  action.earthen_rage -> schedule_execute();
 }
 
 void shaman_t::trigger_stormlash( const action_state_t* )
@@ -5862,12 +5923,8 @@ void shaman_t::trigger_doom_vortex( const action_state_t* state )
 
   new ( *sim ) ground_aoe_event_t( this, ground_aoe_params_t()
       .target( state -> target )
-      // Spawn vortices at target instead of player (like with crashing storm)
-      .x( state -> target -> x_position )
-      .y( state -> target -> y_position )
       .duration( find_spell( 199121 ) -> duration() )
-      .start_time( sim -> current_time() )
-      .action( state -> action -> id == 187837 ? doom_vortex_lb : doom_vortex_ll ) );
+      .action( state -> action -> id == 187837 ? action.doom_vortex_lb : action.doom_vortex_ll ) );
 }
 
 void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
@@ -5890,14 +5947,14 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
   }
 
   double amount = state -> result_amount * td -> debuff.lightning_rod -> check_value();
-  lightning_rod -> base_dd_min = lightning_rod -> base_dd_max = amount;
+  action.lightning_rod -> base_dd_min = action.lightning_rod -> base_dd_max = amount;
 
   // Can't schedule_execute here, since Chain Lightning may trigger immediately on multiple
   // Lightning Rod targets, overriding base_dd_min/max with a different value (that would be used
   // for allt he scheduled damage execute events of Lightning Rod).
   range::for_each( lightning_rods, [ this, amount ]( player_t* t ) {
-    lightning_rod -> target = t;
-    lightning_rod -> execute();
+    action.lightning_rod -> target = t;
+    action.lightning_rod -> execute();
   } );
 }
 
@@ -6518,11 +6575,6 @@ void shaman_t::init_action_list()
     hailstorm = new hailstorm_attack_t( "hailstorm", this, &( main_hand_weapon ) );
   }
 
-  if ( sets.has_set_bonus( SHAMAN_ENHANCEMENT, T18, B2 ) )
-  {
-    electrocute = new electrocute_t( this );
-  }
-
   if ( ! action_list_str.empty() )
   {
     player_t::init_action_list();
@@ -6809,6 +6861,11 @@ double shaman_t::composite_player_multiplier( school_e school ) const
   if ( buff.t18_4pc_enhancement -> up() && dbc::is_school( school, SCHOOL_NATURE ) )
   {
     m *= 1.0 + buff.t18_4pc_enhancement -> check_value();
+  }
+
+  if ( buff.emalons_charged_core -> up() )
+  {
+    m *= 1.0 + buff.emalons_charged_core -> data().effectN( 1 ).percent();
   }
 
   return m;
@@ -7289,7 +7346,9 @@ private:
 
 // SHAMAN MODULE INTERFACE ==================================================
 
-struct elemental_bellows_t : public unique_gear::scoped_action_callback_t<flame_shock_t>
+using namespace unique_gear;
+
+struct elemental_bellows_t : public scoped_action_callback_t<flame_shock_t>
 {
   elemental_bellows_t() : super( SHAMAN_ELEMENTAL, "flame_shock" ) { }
 
@@ -7300,7 +7359,7 @@ struct elemental_bellows_t : public unique_gear::scoped_action_callback_t<flame_
   }
 };
 
-struct furious_winds_t : public unique_gear::scoped_action_callback_t<windfury_weapon_melee_attack_t>
+struct furious_winds_t : public scoped_action_callback_t<windfury_weapon_melee_attack_t>
 {
   furious_winds_t( const std::string& name_str ) : super( SHAMAN_ENHANCEMENT, name_str ) { }
 
@@ -7308,6 +7367,68 @@ struct furious_winds_t : public unique_gear::scoped_action_callback_t<windfury_w
   {
     action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0;
     action -> furious_winds_chance = effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0;
+  }
+};
+
+struct echoes_of_the_great_sundering_t : public scoped_action_callback_t<earth_shock_t>
+{
+  echoes_of_the_great_sundering_t() : super( SHAMAN_ELEMENTAL, "earth_shock" )
+  { }
+
+  void manipulate( earth_shock_t* action, const special_effect_t& e )
+  { action -> eotgs_base_chance = e.driver() -> effectN( 1 ).percent() / action -> base_cost(); }
+};
+
+struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
+{
+  echoes_of_the_great_sundering_buff_t() : super( SHAMAN_ELEMENTAL, "echoes_of_the_great_sundering" )
+  { }
+
+  buff_t*& buff_ptr( const special_effect_t& e )
+  { return debug_cast<shaman_t*>( e.player ) -> buff.echoes_of_the_great_sundering; }
+
+  buff_creator_t creator( const special_effect_t& e ) const
+  { return super::creator( e ).spell( e.player -> find_spell( 208723 ) ); }
+};
+
+// Note, Emalon's Charged Core needs to be SHAMAN scope (not SHAMAN_ENHANCEMENT) because otherwise
+// the fallback will not be created.
+struct emalons_charged_core_t : public scoped_action_callback_t<crash_lightning_t>
+{
+  emalons_charged_core_t() : super( SHAMAN, "crash_lightning" )
+  { }
+
+  void manipulate( crash_lightning_t* action, const special_effect_t& e )
+  { action -> ecc_min_targets = e.driver() -> effectN( 1 ).base_value(); }
+};
+
+struct emalons_charged_core_buff_t : public class_buff_cb_t<buff_t>
+{
+  emalons_charged_core_buff_t() : super( SHAMAN, "emalons_charged_core" )
+  { }
+
+  buff_t*& buff_ptr( const special_effect_t& e )
+  { return debug_cast<shaman_t*>( e.player ) -> buff.emalons_charged_core; }
+
+  buff_creator_t creator( const special_effect_t& e ) const
+  {
+    return super::creator( e )
+      .spell( e.player -> find_spell( 208742 ) )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+};
+
+struct pristine_protoscale_girdle_t : public scoped_action_callback_t<lava_burst_t>
+{
+  pristine_protoscale_girdle_t() : super( SHAMAN_ELEMENTAL, "lava_burst" )
+  { }
+
+  void manipulate( lava_burst_t* action, const special_effect_t& )
+  {
+    if ( ! action -> p() -> action.ppsg )
+    {
+      action -> p() -> action.ppsg = new pristine_protoscale_girdle_dot_t( action -> p() );
+    }
   }
 };
 
@@ -7337,9 +7458,14 @@ struct shaman_module_t : public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184919, elemental_bellows_t() );
-    unique_gear::register_special_effect( 184920, furious_winds_t( "windfury_attack" ) );
-    unique_gear::register_special_effect( 184920, furious_winds_t( "windfury_attack_oh" ) );
+    register_special_effect( 184919, elemental_bellows_t() );
+    register_special_effect( 184920, furious_winds_t( "windfury_attack" ) );
+    register_special_effect( 184920, furious_winds_t( "windfury_attack_oh" ) );
+    register_special_effect( 208722, echoes_of_the_great_sundering_t() );
+    register_special_effect( 208722, echoes_of_the_great_sundering_buff_t(), true );
+    register_special_effect( 208741, emalons_charged_core_t() );
+    register_special_effect( 208741, emalons_charged_core_buff_t(), true );
+    register_special_effect( 224837, pristine_protoscale_girdle_t() );
   }
 
   virtual void register_hotfixes() const override
