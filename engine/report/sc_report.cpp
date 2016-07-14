@@ -1073,14 +1073,21 @@ std::string report::decorated_buff_name( const buff_t* buff )
 {
   std::stringstream s;
 
+  std::string buff_name;
+  if ( buff -> player -> is_pet() )
+  {
+    buff_name += buff -> player -> name_str + ": ";
+  }
+  buff_name += buff -> name_str;
+
   if ( buff->sim->decorated_tooltips == false || buff->data().id() == 0 )
   {
-    s << "<a href=\"#\">" << buff->name_str << "</a>";
+    s << "<a href=\"#\">" << buff_name << "</a>";
   }
   else
   {
     std::string prefix, suffix;
-    find_affix( buff->name_str, buff->data().name_cstr(), prefix, suffix );
+    find_affix( buff -> name_str, buff->data().name_cstr(), prefix, suffix );
 
     s << prefix << "<a href=\"http://" << decoration_domain( *buff->sim )
       << ".wowdb.com/spells/" << buff->data().id();
@@ -1089,7 +1096,12 @@ std::string report::decorated_buff_name( const buff_t* buff )
     {
       s << "?itemLevel=" << buff->item->item_level();
     }
-    s << "\">" << buff->data().name_cstr() << "</a>" << suffix;
+    s << "\">";
+    if ( buff -> player -> is_pet() )
+    {
+      s << buff -> player -> name_str << ": ";
+    }
+    s << buff->data().name_cstr() << "</a>" << suffix;
   }
 
   return s.str();
