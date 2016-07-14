@@ -188,6 +188,10 @@ void cooldown_t::adjust_recharge_multiplier()
   }
 
   ready = sim.current_time() + new_remains;
+  if ( charges == 1 )
+  {
+    last_charged = ready;
+  }
 }
 
 void cooldown_t::adjust( timespan_t amount, bool require_reaction )
