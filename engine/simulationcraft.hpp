@@ -7909,13 +7909,12 @@ struct ground_aoe_event_t : public player_event_t
   // Pointer needed here, as simc event system cannot fit all params into event_t
   const ground_aoe_params_t* params;
   action_state_t* pulse_state;
-  bool first_pulse;
 
 protected:
   // Internal constructor to schedule next pulses, not to be used outside of the struct (or derived
   // structs)
   ground_aoe_event_t( player_t* p, const ground_aoe_params_t* param, action_state_t* ps, bool immediate_pulse = false ) :
-    player_event_t( *p ), params( param ), pulse_state( ps ), first_pulse( false )
+    player_event_t( *p ), params( param ), pulse_state( ps )
   {
     // Ensure we have enough information to start pulsing.
     assert( params -> target() != nullptr && "No target defined for ground_aoe_event_t" );
