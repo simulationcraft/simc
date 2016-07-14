@@ -318,6 +318,7 @@ public:
     gain_t* pestilent_pustules;
     gain_t* tombstone;
     gain_t* overpowered;
+    gain_t* t18_2pc_blood;
   } gains;
 
   // Specialization
@@ -3456,6 +3457,8 @@ struct death_strike_t : public death_knight_melee_attack_t
     may_parry = false;
     base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 1 ).percent();
 
+    base_costs[ RESOURCE_RUNIC_POWER ] += p -> sets.set( DEATH_KNIGHT_BLOOD, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+
     weapon = &( p -> main_hand_weapon );
   }
 
@@ -3833,6 +3836,13 @@ struct heart_strike_t : public death_knight_melee_attack_t
     {
       p() -> pets.dancing_rune_weapon -> ability.heart_strike -> target = execute_state -> target;
       p() -> pets.dancing_rune_weapon -> ability.heart_strike -> execute();
+    }
+
+    if ( rng().roll( p() -> sets.set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 1 ).percent() ) )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+          p() -> sets.set( DEATH_KNIGHT_BLOOD, T18, B2 ) -> effectN( 2 ).base_value() / 10,
+          p() -> gains.t18_2pc_blood, this );
     }
   }
 };
@@ -5924,6 +5934,7 @@ void death_knight_t::init_gains()
   gains.pestilent_pustules               = get_gain( "Pestilent Pustules"         );
   gains.tombstone                        = get_gain( "Tombstone"                  );
   gains.overpowered                      = get_gain( "Over-Powered"               );
+  gains.t18_2pc_blood                    = get_gain( "Tier18 Blood 2PC"           );
 }
 
 // death_knight_t::init_procs ===============================================
