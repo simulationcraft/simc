@@ -2993,9 +2993,10 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if ( as<int>( p() -> najentuss_vertebrae && target_list().size() ) >=
-         p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
+    if ( p() -> najentuss_vertebrae != 0 && as<int>( target_list().size() ) >= p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
+    {
       return base_tick_time * 4.0;
+    }
 
     return dot_duration;
   }
@@ -3173,9 +3174,10 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
 
   timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
   {
-    if ( as<int>( p() -> najentuss_vertebrae && target_list().size() ) >=
-         p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
+    if ( p() -> najentuss_vertebrae != 0 && as<int>( target_list().size() ) >= p() -> najentuss_vertebrae -> driver() -> effectN( 1 ).base_value() )
+    {
       return base_tick_time * 4.0;
+    }
 
     return dot_duration;
   }
