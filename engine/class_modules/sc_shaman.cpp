@@ -259,14 +259,10 @@ public:
     buff_t* tidal_waves;
     buff_t* focus_of_the_elements;
     buff_t* feral_spirit;
-    haste_buff_t* t18_4pc_elemental;
 
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
-
-    stat_buff_t* t19_oh_8pc;
-    buff_t* t18_4pc_enhancement;
 
     buff_t* flametongue;
     buff_t* frostbrand;
@@ -285,6 +281,12 @@ public:
     buff_t* icefury;
     buff_t* hot_hand;
     haste_buff_t* elemental_mastery;
+
+    // Set bonuses
+    stat_buff_t* t19_oh_8pc;
+    haste_buff_t* t18_4pc_elemental;
+    buff_t* t18_4pc_enhancement;
+
 
     // Artifact related buffs
     buff_t* stormkeeper;
@@ -5990,7 +5992,8 @@ void shaman_t::trigger_t18_4pc_elemental()
 
 void shaman_t::trigger_t19_oh_8pc( const action_state_t* )
 {
-  if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T19OH, B8 ) )
+  if ( ! sets.has_set_bonus( SHAMAN_ELEMENTAL, T19OH, B8 ) &&
+       ! sets.has_set_bonus( SHAMAN_ENHANCEMENT, T19OH, B8 ) )
   {
     return;
   }
