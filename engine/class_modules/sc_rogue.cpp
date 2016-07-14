@@ -5529,73 +5529,70 @@ void rogue_t::init_action_list()
   clear_action_priority_lists();
 
   // Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
+  if ( sim -> allow_flasks && true_level >= 85 )
   {
     std::string flask_action = "flask,type=";
-    if ( true_level > 90 )
-      flask_action += "greater_draenic_agility_flask";
-    else
-      flask_action += ( true_level >= 85 ) ? "spring_blossoms" : ( ( true_level >= 80 ) ? "winds" : "" );
+    flask_action += ( ( true_level >= 110 ) ? "flask_of_the_seventh_demon" : ( true_level >= 100 ) ? "greater_draenic_agility_flask" : ( true_level >= 90 ) ? "spring_blossoms" : ( true_level >= 85 ) ? "winds" : "" );
 
     precombat -> add_action( flask_action );
+
+    // Added Rune if Flask are allowed since there is no "allow_runes" bool.
+    if ( true_level >= 100 )
+    {
+      std::string rune_action = "augmentation,type=";
+      rune_action += ( ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "hyper" : "" );
+
+      precombat -> add_action( rune_action );
+    }
   }
 
   // Food
-  if ( sim -> allow_food && level() >= 80 )
+  if ( sim -> allow_food && level() >= 85 )
   {
     std::string food_action = "food,type=";
     if ( specialization() == ROGUE_ASSASSINATION )
-      food_action += ( ( level() >= 100 ) ? "sleeper_sushi" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "sleeper_sushi" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_OUTLAW )
-      food_action += ( ( level() >= 100 ) ? "sleeper_sushi" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "sleeper_sushi" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_SUBTLETY )
-      food_action += ( ( level() >= 100 ) ? "sleeper_sushi" : ( level() > 85 ) ? "sea_mist_rice_noodles" : ( level() > 80 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "sleeper_sushi" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
 
     precombat -> add_action( food_action );
   }
 
-  // Lethal poison
-  std::string poison_str = "apply_poison,lethal=deadly";
-
-  if ( specialization() == ROGUE_ASSASSINATION )
-    precombat -> add_action( poison_str );
-
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  std::string potion_name;
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    if ( true_level > 90 )
-      potion_name = "draenic_agility";
-    else if ( true_level > 85 )
-      potion_name = "virmens_bite";
-    else
-      potion_name = "tolvir";
+  if ( specialization() == ROGUE_ASSASSINATION )
+    precombat -> add_action( "apply_poison,lethal=deadly" );
 
-    precombat -> add_action( "potion,name=" + potion_name );
-  }
-
+  // Stealth before entering in combat
   precombat -> add_action( this, "Stealth" );
 
-  std::string potion_action_str = "potion,name=" + potion_name + ",if=buff.bloodlust.react|target.time_to_die<40";
+  // Potion
+  if ( sim -> allow_potions && true_level >= 85 )
+  {
+    std::string potion_action = "potion,name=";
+    // Potion of the Old War not supported yet
+    potion_action += ( /*( true_level >= 110 ) ? "old_war" : */( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
+
+    // Pre-Pot
+    precombat -> add_action( potion_action );
+
+    // In-Combat Potion
+    potion_action += ",if=buff.bloodlust.react|target.time_to_die<40";
+    if ( specialization() == ROGUE_ASSASSINATION )
+      potion_action += "|debuff.vendetta.up";
+    else if ( specialization() == ROGUE_OUTLAW )
+      potion_action += "|buff.adrenaline_rush.up";
+
+    def -> add_action( potion_action );
+  }
+
+  precombat -> add_talent( this, "Marked for Death" );
+
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    potion_action_str += "|debuff.vendetta.up";
-  }
-  else if ( specialization() == ROGUE_OUTLAW )
-  {
-    potion_action_str += "|buff.adrenaline_rush.up";
-  }
-
-  // In-combat potion
-  if ( sim -> allow_potions )
-    def -> add_action( potion_action_str );
-
-  if ( specialization() == ROGUE_ASSASSINATION )
-  {
-    precombat -> add_talent( this, "Marked for Death" );
-
     for ( size_t i = 0; i < item_actions.size(); i++ )
       def -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<40|debuff.vendetta.up" );
 
@@ -5607,29 +5604,27 @@ void rogue_t::init_action_list()
         def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
 
-    def -> add_action( this, "Vendetta", "if=energy<30&time>10|time<10&dot.rupture.ticking" );
-    def -> add_action( "pool_resource,if=energy<90&cooldown.kingsbane.remains<3.5&time>10" );
-    def -> add_action( "pool_resource,for_next=1,extra_amount=90" );
-    def -> add_action( this, "Kingsbane", "if=time<10&dot.rupture.ticking|time>10&energy>90" );
-    def -> add_talent( this, "Exsanguinate", "if=dot.rupture.remains>21&time>6&time<10&energy<80|dot.rupture.remains>21&time>10" );
-    def -> add_action( this, "Vanish", "if=dot.rupture.refreshable&combo_points>4" );
-    def -> add_action( this, "Rupture", "if=buff.vanish.up&combo_points>4&refreshable" );
+    def -> add_action( this, "Vendetta", "if=energy<30|cooldown.exsanguinate.remains<5&time>10|time<10&combo_points>4&energy<60" );
+    def -> add_talent( this, "Exsanguinate", "if=prev_gcd.rupture" );
+    def -> add_action( this, "Vanish", "if=cooldown.exsanguinate.remains<2&combo_points>5" );
+    def -> add_action( this, "Rupture", "if=cooldown.exsanguinate.remains<1&combo_points>5" );
     def -> add_action( this, "Garrote", "if=refreshable&combo_points<6&!dot.garrote.exsanguinated" );
     def -> add_talent( this, "Hemorrhage", "if=refreshable&combo_points<6" );
-    def -> add_action( this, "Mutilate", "if=combo_points<5" );
+    def -> add_action( this, "Kingsbane" );
+    def -> add_action( this, "Fan of Knives", "cycle_targets=1,if=spell_targets>4|(!dot.deadly_poison_dot.ticking&spell_targets>2)" );
+    def -> add_action( this, "Mutilate", "cycle_targets=1,target_if=!dot.deadly_poison_dot.ticking&spell_targets.fan_of_knives=2" );
+    def -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=spell_targets.fan_of_knives>1&dot.hemorrhage.refreshable&dot.rupture.remains>6" );
+    def -> add_action( this, "Mutilate", "if=combo_points<5|(combo_points=5&(cooldown.exsanguinate.remains<2|dot.rupture.refreshable))" );
     def -> add_action( this, "Rupture", "if=!exsanguinated&refreshable&combo_points>4" );
-    def -> add_action( "pool_resource,for_next=1,extra_amount=25" );
     def -> add_talent( this, "Death from Above", "if=combo_points>4");
-    def -> add_action( this, "Envenom", "if=combo_points>4&energy>70&refreshable&buff.elaborate_planning.remains<1|energy>110&combo_points>4" );
-    def -> add_action( this, "Rupture", "cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&combo_points=5" );
+    def -> add_action( this, "Rupture", "cycle_targets=1,if=spell_targets.fan_of_knives>1&!ticking&combo_points>4" );
+    def -> add_action( this, "Envenom", "if=combo_points>=5&(energy>80|dot.rupture.exsanguinated)&buff.envenom.remains<1&buff.elaborate_planning.remains<2" );
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
     def -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points=5&remains<=duration*0.3&spell_targets.fan_of_knives>1" );
   }
 
   else if ( specialization() == ROGUE_OUTLAW )
   {
-    precombat -> add_talent( this, "Marked for Death" );
-
     def -> add_action( this, "Blade Flurry", "if=(spell_targets.blade_flurry>=2&!buff.blade_flurry.up)|(spell_targets.blade_flurry<2&buff.blade_flurry.up)" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
@@ -5675,7 +5670,6 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    precombat -> add_talent( this, "Marked for Death" );
     precombat -> add_action( this, "Symbols of Death" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
@@ -5684,7 +5678,7 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        def -> add_action( racial_actions[i] + ",if=energy.deficit>15&(buff.shadow_dance.up|buff.vanish.up)" );
+        def -> add_action( racial_actions[i] + ",if=energy.deficit>70&(buff.shadow_dance.up|buff.vanish.up)" );
       else
         def -> add_action( racial_actions[i] + ",if=buff.shadow_dance.up" );
     }
@@ -5693,8 +5687,8 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Shadow Blades", "if=!buff.shadow_blades.up&energy.deficit<20&(buff.shadow_dance.up|buff.vanish.up)" );
     def -> add_action( this, "Goremaw's Bite", "if=(combo_points.max-combo_points>=2&energy.deficit>55&time<10)|(combo_points.max-combo_points>=4&energy.deficit>45)|target.time_to_die<8" );
     def -> add_action( this, "Symbols of Death", "if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=10.5" );
-    def -> add_action( this, "Shuriken Storm", "if=buff.stealth.up&talent.premeditation.enabled&artifact.precision_strike.rank<=3&combo_points.max-combo_points>=3&spell_targets.shuriken_storm>=7" );
-    def -> add_action( this, "Shuriken Storm", "if=buff.stealth.up&!buff.death.up&combo_points.max-combo_points>=2&((!talent.premeditation.enabled&((artifact.precision_strike.rank<=3&spell_targets.shuriken_storm>=4)|spell_targets.shuriken_storm>=5))|spell_targets.shuriken_storm>=8)" );
+    def -> add_action( this, "Shuriken Storm", "if=buff.stealth.up&talent.premeditation.enabled&combo_points.max-combo_points>=3&spell_targets.shuriken_storm>=7" );
+    def -> add_action( this, "Shuriken Storm", "if=buff.stealth.up&!buff.death.up&combo_points.max-combo_points>=2&((!talent.premeditation.enabled&spell_targets.shuriken_storm>=4)|spell_targets.shuriken_storm>=8)" );
     def -> add_action( this, "Shadowstrike", "if=combo_points.max-combo_points>=2" );
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30" );
     def -> add_action( this, "Vanish", "if=energy.deficit<talent.master_of_shadows.enabled*30&combo_points.max-combo_points>=3&cooldown.shadow_dance.charges<2|target.time_to_die<8" );
