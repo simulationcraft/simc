@@ -45,16 +45,16 @@ namespace item
   void infernal_alchemist_stone( special_effect_t& ); // WIP
 
   // 7.0 Raid
+  void bloodthirsty_instinct( special_effect_t& );
   void convergence_of_fates( special_effect_t& );
   void natures_call( special_effect_t& );
+  void ravaged_seed_pod( special_effect_t& );
   void spontaneous_appendages( special_effect_t& );
+  void twisting_wind( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
 
   /* NYI
-  void bloodthirsty_instinct( special_effect_t& );
   void bough_of_corruption( special_effect_t& );
-  void ravaged_seed_pod( special_effect_t& );
-  void twisting_wind( special_effect_t& );
   void unstable_horrorslime( special_effect_t& );
 
   cocoon_of_enforced_solitude
@@ -833,6 +833,7 @@ void item::chaos_talisman( special_effect_t& effect )
 }
 
 // Corrupted Starlight ======================================================
+// TOCHECK: Do these void zones stack?
 
 struct nightfall_t : public proc_spell_t
 {
@@ -859,7 +860,7 @@ struct nightfall_t : public proc_spell_t
       .duration( data().duration() )
       .start_time( sim -> current_time() )
       .action( damage_spell )
-      .pulse_time( data().duration() / 10 ) );
+      .pulse_time( timespan_t::from_seconds( 1.0 ) ) );
   }
 };
 
@@ -1505,6 +1506,141 @@ void item::convergence_of_fates( special_effect_t& effect )
   new convergence_of_fates_callback_t( effect );
 }
 
+// Twisting Wind ============================================================
+/* FIXME: How many times does this really hit? It has a small radius and
+  moves around so it doesn't hit every tick.
+   TOCHECK: Does this AoE stack? */
+
+struct tormenting_cyclone_t : public proc_spell_t
+{
+  proc_spell_t* damage_spell;
+
+  tormenting_cyclone_t( special_effect_t& effect ) : 
+    proc_spell_t( "tormenting_cyclone", effect.player, effect.trigger(), effect.item )
+  {
+    damage_spell = new proc_spell_t( "tormenting_cyclone_tick", effect.player, effect.player -> find_spell( 221865 ), effect.item );
+    damage_spell -> dual = true;
+    damage_spell -> stats = stats;
+    damage_spell -> base_dd_min = damage_spell -> base_dd_max = 
+      effect.driver() -> effectN( 1 ).average( effect.item );
+  }
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    new ( *sim ) ground_aoe_event_t( player, ground_aoe_params_t()
+      .target( execute_state -> target )
+      .x( execute_state -> target -> x_position )
+      .y( execute_state -> target -> y_position )
+      .duration( data().duration() )
+      .start_time( sim -> current_time() )
+      .action( damage_spell )
+      .pulse_time( timespan_t::from_seconds( 1.0 ) ) );
+  }
+};
+
+void item::twisting_wind( special_effect_t& effect )
+{
+  effect.execute_action = effect.player -> find_action( "tormenting_cyclone" );
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "tormenting_cyclone", effect );
+  }
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = new tormenting_cyclone_t( effect );
+  }
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Bloodthirsty Instinct ====================================================
+
+struct bloodthirsty_instinct_cb_t : public dbc_proc_callback_t
+{
+  bloodthirsty_instinct_cb_t( special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect )
+  {}
+
+  void trigger( action_t* a, void* call_data ) override
+  {
+    assert( rppm );
+
+    action_state_t* s = static_cast<action_state_t*>( call_data );
+
+    assert( s -> target );
+    
+    // Set RPPM modifier by target's health percentage. Linear chance increase from 0% to 100% health deficit.
+    double mod = ( 200.0 - s -> target -> health_percentage() ) / 100.0;
+
+    if ( effect.player -> sim -> debug )
+      effect.player -> sim -> out_debug.printf( "Player %s adjusts %s rppm modifier: old=%.3f new=%.3f",
+        effect.player -> name(), effect.name(), rppm -> get_modifier(), mod );
+
+    rppm -> set_modifier( mod );
+
+    dbc_proc_callback_t::trigger( a, call_data );
+  }
+};
+
+void item::bloodthirsty_instinct( special_effect_t& effect )
+{
+  new bloodthirsty_instinct_cb_t( effect );
+}
+
+// Ravaged Seed Pod =========================================================
+
+struct infested_ground_t : public proc_spell_t
+{
+  proc_spell_t* damage_spell;
+
+  infested_ground_t( special_effect_t& effect ) : 
+    proc_spell_t( "infested_ground", effect.player, effect.driver(), effect.item )
+  {
+    damage_spell = new proc_spell_t( "infested_ground_tick", effect.player, effect.player -> find_spell( 221804 ), effect.item );
+    damage_spell -> dual = damage_spell -> ground_aoe = true;
+    damage_spell -> stats = stats;
+    damage_spell -> base_dd_min = damage_spell -> base_dd_max = 
+      effect.driver() -> effectN( 2 ).average( effect.item );
+  }
+
+  void execute() override
+  {
+    proc_spell_t::execute();
+
+    new ( *sim ) ground_aoe_event_t( player, ground_aoe_params_t()
+      .target( execute_state -> target )
+      .x( player -> x_position )
+      .y( player -> y_position )
+      .duration( data().duration() )
+      .start_time( sim -> current_time() )
+      .action( damage_spell )
+      .pulse_time( timespan_t::from_seconds( 1.0 ) ) );
+  }
+};
+
+void item::ravaged_seed_pod( special_effect_t& effect )
+{
+  effect.execute_action = effect.player -> find_action( "infested_ground" );
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "infested_ground", effect );
+  }
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = new infested_ground_t( effect );
+  }
+
+  // FIXME: Only while in the area of effect.
+  effect.custom_buff = stat_buff_creator_t( effect.player, "leeching_pestilence", effect.player -> find_spell( 221805 ), effect.item )
+    .add_stat( STAT_LEECH_RATING, effect.driver() -> effectN( 3 ).average( effect.item ) );
+}
+
 // March of the Legion ======================================================
 
 void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
@@ -1541,9 +1677,12 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 214340, "ProcOn/Hit_1Tick_214342Trigger"     );
 
   /* Legion 7.0 Raid */
+  register_special_effect( 221786, item::bloodthirsty_instinct  );
   register_special_effect( 225139, item::convergence_of_fates   );
   register_special_effect( 222512, item::natures_call           );
   register_special_effect( 222167, item::spontaneous_appendages );
+  register_special_effect( 221803, item::ravaged_seed_pod       );
+  register_special_effect( 221845, item::twisting_wind          );
   register_special_effect( 222046, item::wriggling_sinew        );
   register_special_effect( 221767, "ProcOn/crit" );
 

@@ -1115,7 +1115,9 @@ class SpellDataGenerator(DataGenerator):
          216099,                    # Elementium Bomb Squirrel Generator trinket
          211309, 213428, 219655, 226829, # Artifact passive boosts
          222517, 222518, 222519, 222520, # Nature's Call trinket
-         222050                    # Wriggling Sinew trinket
+         222050,                   # Wriggling Sinew trinket
+         221865,                   # Twisting Wind trinket
+         221804, 221805            # Ravaged Seed Pod trinket
         ),
 
         # Warrior:
