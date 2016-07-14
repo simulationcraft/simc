@@ -30,10 +30,8 @@ namespace
    Defensive artifact traits
    Keep an eye out for Metamorphosis haste instead of flat GCD reductions
    More thorough caching on blade_dance_expr_t
-   Retest Fel Barrage proc mechanics in-game
    Fix Nemesis
    Figure out Fel Barrage mechanics
-   AA disruption polling (500ms)
 
    Vengeance ----------------------------------------------------------------
    Infernal Strike
@@ -42,7 +40,6 @@ namespace
    Infernal Force artifact trait
    Siphon Power artifact trait
      http://us.battle.net/wow/en/forum/topic/20743504316?page=15#282
-   Pain resource name
    True proc chance for Fallout
    Flame Crash
    Artificial Stamina
@@ -55,16 +52,18 @@ namespace
 /* Forward declarations
  */
 class demon_hunter_t;
-namespace actions
-{
-namespace attacks
-{
-struct melee_t;
-struct chaos_blade_t;
-}
-}
 struct soul_fragment_t;
 struct damage_calc_helper_t;
+
+namespace actions
+{
+  struct demon_hunter_attack_t;
+  namespace attacks
+  {
+    struct melee_t;
+    struct chaos_blade_t;
+  }
+}
 
 /**
  * Demon Hunter target data
@@ -141,10 +140,10 @@ public:
   typedef player_t base_t;
 
   event_t* blade_dance_driver;
-  std::vector<attack_t*> blade_dance_attacks;
-  std::vector<attack_t*> death_sweep_attacks;
-  std::vector<attack_t*> chaos_strike_attacks;
-  std::vector<attack_t*> annihilation_attacks;
+  std::vector<actions::demon_hunter_attack_t*> blade_dance_attacks;
+  std::vector<actions::demon_hunter_attack_t*> death_sweep_attacks;
+  std::vector<actions::demon_hunter_attack_t*> chaos_strike_attacks;
+  std::vector<actions::demon_hunter_attack_t*> annihilation_attacks;
 
   std::vector<damage_calc_helper_t*> damage_calcs;
   damage_calc_helper_t* blade_dance_dmg;
@@ -2857,7 +2856,6 @@ struct blade_dance_attack_t : public demon_hunter_attack_t
     dual = background = true;
     aoe = -1;
     first_blood_multiplier = 1.0 + p -> talent.first_blood -> effectN( 1 ).percent();
-    may_proc_fel_barrage = true; // Jul 12 2016
   }
 
   double action_multiplier() const override
@@ -2888,7 +2886,7 @@ struct blade_dance_event_t : public event_t
   size_t current;
   bool in_metamorphosis;
   const spell_data_t* timing_passive;
-  std::vector<attack_t*>* attacks;
+  std::vector<demon_hunter_attack_t*>* attacks;
 
   blade_dance_event_t( demon_hunter_t* p, size_t ca, bool meta = false )
     : event_t( *p -> sim ), dh( p ), current( ca ), in_metamorphosis( meta )
@@ -2938,7 +2936,7 @@ struct blade_dance_event_t : public event_t
 
 struct blade_dance_base_t : public demon_hunter_attack_t
 {
-  std::vector<attack_t*> attacks;
+  std::vector<demon_hunter_attack_t*> attacks;
   buff_t* dodge_buff;
 
   blade_dance_base_t( const std::string& n, demon_hunter_t* p,
@@ -3021,6 +3019,9 @@ struct blade_dance_t : public blade_dance_base_t
         p, data().effectN( 6 ).trigger(), "blade_dance3" ) );
       p -> blade_dance_attacks.push_back( new blade_dance_attack_t(
         p, data().effectN( 7 ).trigger(), "blade_dance4" ) );
+      
+      // Jul 12 2016: Only final attack procs Fel Barrage.
+      p -> blade_dance_attacks.back() -> may_proc_fel_barrage = true;
     }
 
     attacks    = p -> blade_dance_attacks;
@@ -3106,7 +3107,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         + p -> talent.chaos_cleave -> effectN( 1 ).base_value();
       chain_multiplier = data().effectN( 1 ).chain_multiplier();
       may_refund = weapon == &( p -> off_hand_weapon );
-      may_proc_fel_barrage = true; // Jul 12 2016
 
       // Do not put crit chance modifiers here!
       base_multiplier *= 1.0 + p -> artifact.warglaives_of_chaos.percent();
@@ -3176,7 +3176,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     }
   };
 
-  std::vector<attack_t*> attacks;
+  std::vector<demon_hunter_attack_t*> attacks;
 
   chaos_strike_base_t( const std::string& n, demon_hunter_t* p,
                        const spell_data_t* s, const std::string& options_str ) : 
@@ -3301,6 +3301,9 @@ struct chaos_strike_t : public chaos_strike_base_t
         new chaos_strike_damage_t( p, data().effectN( 2 ), this ) );
       p -> chaos_strike_attacks.push_back(
         new chaos_strike_damage_t( p, data().effectN( 3 ), this ) );
+      
+      // Jul 12 2016: Only first attack procs Fel Barrage.
+      p -> chaos_strike_attacks.front() -> may_proc_fel_barrage = true;
     }
 
     attacks = p -> chaos_strike_attacks;
@@ -3330,6 +3333,9 @@ struct annihilation_t : public chaos_strike_base_t
         new chaos_strike_damage_t( p, data().effectN( 2 ), this ) );
       p -> annihilation_attacks.push_back(
         new chaos_strike_damage_t( p, data().effectN( 3 ), this ) );
+      
+      // Jul 12 2016: Only first attack procs Fel Barrage.
+      p -> annihilation_attacks.front() -> may_proc_fel_barrage = true;
     }
 
     attacks = p -> annihilation_attacks;
@@ -3363,6 +3369,9 @@ struct death_sweep_t : public blade_dance_base_t
         p, data().effectN( 6 ).trigger(), "death_sweep3" ) );
       p -> death_sweep_attacks.push_back( new blade_dance_attack_t(
         p, data().effectN( 7 ).trigger(), "death_sweep4" ) );
+      
+      // Jul 12 2016: Only final attack procs Fel Barrage.
+      p -> death_sweep_attacks.back() -> may_proc_fel_barrage = true;
     }
 
     attacks    = p -> death_sweep_attacks;
@@ -4330,7 +4339,7 @@ private:
 #endif
 
 public:
-  damage_calc_helper_t( std::vector<attack_t*> attacks ) : 
+  damage_calc_helper_t( std::vector<actions::demon_hunter_attack_t*> attacks ) : 
     valid( false ), action( attacks.at( 0 ) ),
     state( action -> get_state() ), first_blood( 1.0 )
   {
@@ -5407,7 +5416,8 @@ void demon_hunter_t::init_spells()
   {
     spec.fel_barrage_proc = find_spell( 222703 );
     cooldown.fel_barrage_proc -> duration =
-      spec.fel_barrage_proc -> internal_cooldown();
+      spec.fel_barrage_proc -> internal_cooldown() + timespan_t::from_millis( 1 );
+    // In-game, events that happen the same millisecond as the ICD ending cannot trigger a proc.
   }
 
   using namespace actions::attacks;
