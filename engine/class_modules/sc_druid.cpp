@@ -2456,9 +2456,37 @@ struct ashamanes_rip_t : public cat_attack_t
   {
     background = true;
     may_miss = may_block = may_dodge = may_parry = false;
+    // Copies benefit from rip, so need to flag this as snapshotting so its damage doesn't get modified dynamically.
+    snapshots_tf = snapshots_sr = true;
       
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
+  }
+
+  action_state_t* new_state() override
+  { return new rip_state_t( p(), this, target ); }
+
+  void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+    assert( td( s -> target ) -> dots.rip -> is_ticking() );
+
+    cat_attack_t::snapshot_state( s, rt );
+
+    rip_state_t* shadow_rip = debug_cast<rip_state_t*>( s );
+    rip_state_t* rip = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
+
+    shadow_rip -> combo_points = rip -> combo_points;
+    shadow_rip -> persistent_multiplier = rip -> persistent_multiplier;
+  }
+
+  double attack_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    rip_state_t* s_rip = debug_cast<rip_state_t*>( td( s -> target ) -> dots.shadow_rip -> state );
+
+    if ( ! s_rip )
+      return 0;
+
+    return cat_attack_t::attack_tick_power_coefficient( s ) * s_rip -> combo_points;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
