@@ -3714,6 +3714,8 @@ struct justicars_vengeance_t : public holy_power_consumer_t
     : holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance, true )
   {
     parse_options( options_str );
+
+    hasted_gcd = true;
   }
 
   virtual double cost() const override
