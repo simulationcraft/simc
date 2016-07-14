@@ -952,8 +952,15 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc,
     sc_js_t e;
     e.set( "color", c.str() );
     e.set( "y", util::round( 100.0 * stats->portion_amount, 1 ) );
-    e.set( "name", report::decorate_html_string( stats->name_str, c ) );
+    std::string name_str;
+    if ( stats -> player -> is_pet() )
+    {
+      name_str += stats -> player -> name_str;
+      name_str += "<br/>";
+    }
+    name_str += report::decorate_html_string( stats->name_str, c );
 
+    e.set( "name", name_str );
     pc.add( "series.0.data", e );
   }
 
