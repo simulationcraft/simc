@@ -1578,7 +1578,7 @@ struct bloodthirsty_instinct_cb_t : public dbc_proc_callback_t
 
     if ( effect.player -> sim -> debug )
       effect.player -> sim -> out_debug.printf( "Player %s adjusts %s rppm modifier: old=%.3f new=%.3f",
-        effect.player -> name(), effect.name(), rppm -> get_modifier(), mod );
+        effect.player -> name(), effect.name().c_str(), rppm -> get_modifier(), mod );
 
     rppm -> set_modifier( mod );
 

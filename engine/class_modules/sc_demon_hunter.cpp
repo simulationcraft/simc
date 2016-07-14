@@ -4379,7 +4379,9 @@ public:
     }
 
 #ifndef NDEBUG
-    attacks_ = attacks;
+    range::for_each( attacks, [ this ]( actions::demon_hunter_attack_t* a ) {
+      attacks_.push_back( a );
+    } );
 #endif
   }
 

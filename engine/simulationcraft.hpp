@@ -7753,13 +7753,6 @@ inline bool real_ppm_t::trigger()
   if ( last_trigger_attempt == player -> sim -> current_time() )
     return false;
 
-#ifndef NDEBUG
-  if ( rppm > 3.0 )
-  {
-    bool foo = true;
-  }
-#endif
-
   bool success = player -> rng().roll( proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with ) );
 
   last_trigger_attempt = player -> sim -> current_time();
