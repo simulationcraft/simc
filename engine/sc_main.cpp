@@ -191,9 +191,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
   // Hotfixes are applies right before the sim context (control) is created, and simulator setup
   // begins
-#if SC_BETA == 0
   hotfix::apply();
-#endif
 
   bool setup_success = true;
   std::string errmsg;
