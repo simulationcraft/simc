@@ -7835,7 +7835,7 @@ struct ground_aoe_params_t
   timespan_t pulse_time_, start_time_, duration_;
 
   ground_aoe_params_t() :
-    target_( nullptr ), x_( 0 ), y_( 0 ), hasted_( NOTHING ), action_( nullptr ),
+    target_( nullptr ), x_( -1 ), y_( -1 ), hasted_( NOTHING ), action_( nullptr ),
     pulse_time_( timespan_t::from_seconds( 1.0 ) ), start_time_( timespan_t::min() ),
     duration_( timespan_t::zero() )
   { }
@@ -7850,7 +7850,36 @@ struct ground_aoe_params_t
   const timespan_t& duration() const { return duration_; }
 
   ground_aoe_params_t& target( player_t* p )
-  { target_ = p; return *this; }
+  {
+    target_ = p;
+    if ( start_time_ == timespan_t::min() )
+    {
+      start_time_ = target_ -> sim -> current_time();
+    }
+
+    if ( x_ == -1 )
+    {
+      x_ = target_ -> x_position;
+    }
+
+    if ( y_ == -1 )
+    {
+      y_ = target_ -> y_position;
+    }
+
+    return *this;
+  }
+
+  ground_aoe_params_t& action( action_t* a )
+  {
+    action_ = a;
+    if ( start_time_ == timespan_t::min() )
+    {
+      start_time_ = action_ -> sim -> current_time();
+    }
+
+    return *this;
+  }
 
   ground_aoe_params_t& x( double x )
   { x_ = x; return *this; }
@@ -7860,9 +7889,6 @@ struct ground_aoe_params_t
 
   ground_aoe_params_t& hasted( hasted_with state )
   { hasted_ = state; return *this; }
-
-  ground_aoe_params_t& action( action_t* a )
-  { action_ = a; return *this; }
 
   ground_aoe_params_t& pulse_time( const timespan_t& t )
   { pulse_time_ = t; return *this; }
@@ -7882,30 +7908,50 @@ struct ground_aoe_event_t : public player_event_t
 {
   // Pointer needed here, as simc event system cannot fit all params into event_t
   const ground_aoe_params_t* params;
+  action_state_t* pulse_state;
+  bool first_pulse;
 
-  // Make a copy of the parameters, and use that object until this event expires
-  ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, bool first_tick = false ) :
-    ground_aoe_event_t( p, new ground_aoe_params_t( param ), first_tick )
-  { }
-
-  ground_aoe_event_t( player_t* p, const ground_aoe_params_t* param, bool first_tick = false ) :
-    player_event_t( *p ), params( param )
+protected:
+  // Internal constructor to schedule next pulses, not to be used outside of the struct (or derived
+  // structs)
+  ground_aoe_event_t( player_t* p, const ground_aoe_params_t* param, action_state_t* ps, bool immediate_pulse = false ) :
+    player_event_t( *p ), params( param ), pulse_state( ps ), first_pulse( false )
   {
     // Ensure we have enough information to start pulsing.
-    assert( params -> target() != nullptr );
-    assert( params -> action() != nullptr );
-    assert( params -> pulse_time() > timespan_t::zero() );
-    assert( params -> start_time() >= timespan_t::zero() );
-    assert( params -> duration() > timespan_t::zero() );
+    assert( params -> target() != nullptr && "No target defined for ground_aoe_event_t" );
+    assert( params -> action() != nullptr && "No action defined for ground_aoe_event_t" );
+    assert( params -> pulse_time() > timespan_t::zero() &&
+            "Pulse time for ground_aoe_event_t must be a positive value" );
+    assert( params -> start_time() >= timespan_t::zero() &&
+            "Start time for ground_aoe_event must be defined" );
+    assert( params -> duration() > timespan_t::zero() &&
+            "Duration for ground_aoe_event_t must be defined" );
 
-    add_event( first_tick ? timespan_t::zero() : pulse_time() );
+    // Make a state object that persists for this ground aoe event throughout its lifetime
+    if ( ! pulse_state )
+    {
+      pulse_state = params -> action() -> get_state();
+      action_t* spell_ = params -> action();
+      spell_ -> snapshot_state( pulse_state, spell_ -> amount_type( pulse_state ) );
+    }
+
+    add_event( immediate_pulse ? timespan_t::zero() : pulse_time() );
   }
+public:
+  // Make a copy of the parameters, and use that object until this event expires
+  ground_aoe_event_t( player_t* p, const ground_aoe_params_t& param, bool immediate_pulse = false ) :
+    ground_aoe_event_t( p, new ground_aoe_params_t( param ), nullptr, immediate_pulse )
+  { }
 
   // Cleans up memory for any on-going ground aoe events when the iteration ends, or when the ground
   // aoe finishes during iteration.
   ~ground_aoe_event_t()
   {
     delete params;
+    if ( pulse_state )
+    {
+      action_state_t::release( pulse_state );
+    }
   }
 
   timespan_t pulse_time() const
@@ -7941,7 +7987,7 @@ struct ground_aoe_event_t : public player_event_t
   { return "ground_aoe_event"; }
 
   virtual void schedule_event()
-  { new ( sim() ) ground_aoe_event_t( _player, params ); }
+  { new ( sim() ) ground_aoe_event_t( _player, params, pulse_state ); }
 
   void execute() override
   {
@@ -7958,22 +8004,21 @@ struct ground_aoe_event_t : public player_event_t
     // Manually snapshot the state so we can adjust the x and y coordinates of the snapshotted
     // object. This is relevant if sim -> distance_targeting_enabled is set, since then we need to
     // use the ground object's x, y coordinates, instead of the source actor's.
-    action_state_t* state = spell_ -> get_state();
+    spell_ -> update_state( pulse_state, spell_ -> amount_type( pulse_state ) );
+    pulse_state -> target = params -> target();
+    pulse_state -> original_x = params -> x();
+    pulse_state -> original_y = params -> y();
 
-    spell_ -> snapshot_state( state, spell_ -> amount_type( state ) );
-    state -> target = params -> target();
-    state -> original_x = params -> x();
-    state -> original_y = params -> y();
-
-    spell_ -> schedule_execute( state );
+    spell_ -> schedule_execute( spell_ -> get_state( pulse_state ) );
 
     // Schedule next tick, if it can fit into the duration
     if ( may_pulse() )
     {
       schedule_event();
-      // Ugly hack-ish, but we want to re-use the parmas object while this ground aoe is pulsing, so
-      // nullptr the params from this (soon to be recycled) event.
+      // Ugly hack-ish, but we want to re-use the parmas and pulse state objects while this ground
+      // aoe is pulsing, so nullptr the params from this (soon to be recycled) event.
       params = nullptr;
+      pulse_state = nullptr;
     }
   }
 };

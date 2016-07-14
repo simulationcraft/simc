@@ -848,18 +848,20 @@ struct paladin_ground_aoe_t : public ground_aoe_event_t
   double radius;
   paladin_t* paladin;
 
+protected:
+  paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t* param, action_state_t* ps, bool first_tick = false ): 
+    ground_aoe_event_t( p, param, ps, first_tick ), radius( param -> action() -> radius ), paladin( p )
+  {}
+
+public:
   paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t& param, bool first_tick = false ) :
     ground_aoe_event_t( p, param, first_tick ), radius( param.action() -> radius ), paladin( p )
   {}
   
-  paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t* param, bool first_tick = false ): 
-    ground_aoe_event_t( p, param, first_tick ), radius( param -> action() -> radius ), paladin( p )
-  {}
-
   
   void schedule_event() override
   { 
-    paladin_ground_aoe_t* foo = new ( sim() ) paladin_ground_aoe_t( paladin, params );
+    paladin_ground_aoe_t* foo = new ( sim() ) paladin_ground_aoe_t( paladin, params, pulse_state );
     paladin -> active_consecrations.push_back( foo );
   }
 
