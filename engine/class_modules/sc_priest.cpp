@@ -2521,9 +2521,6 @@ struct surrender_to_madness_t final : public priest_spell_t
 
   virtual bool ready() override
   {
-    if ( !priest.buffs.voidform->check() )
-      return false;
-
     return priest_spell_t::ready();
   }
 };
