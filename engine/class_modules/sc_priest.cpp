@@ -84,6 +84,7 @@ struct priest_t final : public player_t
 {
 public:
   typedef player_t base_t;
+  bool shadowy_insight_during_mind_blast;
 
   // Buffs
   struct
@@ -1261,10 +1262,19 @@ public:
     {
       priest.cooldowns.mind_blast->reset( true );
 
-      if ( priest.buffs.shadowy_insight->check() == stack )
+      if (priest.buffs.shadowy_insight->check() == stack)
+      {
         priest.procs.shadowy_insight_overflow->occur();
+      }
       else
+      {
         priest.procs.shadowy_insight->occur();
+      }
+
+      if (priest.executing && priest.executing->id == 8092)
+      {
+        priest.shadowy_insight_during_mind_blast = true;
+      }
       return true;
     }
     return false;
@@ -2868,7 +2878,14 @@ public:
   {
     priest_spell_t::execute();
 
-    priest.buffs.shadowy_insight->expire();
+    // Shadowy Insight buff does not get eaten, if the Shadowy Insight proc happened
+    // during the Mind Blast cast
+    if (!priest.shadowy_insight_during_mind_blast && priest.buffs.shadowy_insight->check())
+    {
+      priest.buffs.shadowy_insight->expire();
+    }
+
+    priest.shadowy_insight_during_mind_blast = false;
 
     priest.buffs.power_overwhelming->trigger();
   }
@@ -2903,8 +2920,9 @@ public:
 
   void update_ready( timespan_t cd_duration ) override
   {
-    if ( cd_duration < timespan_t::zero() )
+    if (cd_duration < timespan_t::zero()) {
       cd_duration = cooldown->duration;
+    }
 
     // CD is now always reduced by haste. Documented in the WoD Alpha Patch
     // Notes, unfortunately not in any tooltip!
@@ -2913,6 +2931,14 @@ public:
                     priest.specs.voidform->effectN( 4 ).time_value() *
                         priest.buffs.voidform->up() ) *
                   composite_haste();
+
+    // Shadowy Insight has proc'd during the cast of Mind Blast, the cooldown
+    // reset is deferred to the finished cast, instead of "eating" it.
+    if (priest.shadowy_insight_during_mind_blast)
+    {
+      cd_duration = timespan_t::zero();
+      cooldown->last_charged = sim->current_time();
+    }
 
     priest_spell_t::update_ready( cd_duration );
   }
@@ -2989,6 +3015,12 @@ struct mind_spike_t final : public priest_spell_t
                   priest.talents.mind_spike->effectN( 2 ).percent(),
               td.buffs.mind_spike->current_value,
               td.buffs.mind_spike->stack() );
+      }
+
+      if (priest.active_items.mental_fatigue)
+      {
+        // Assumes trigger on hit, not on damage
+        td.buffs.mental_fatigue->trigger();
       }
     }
 
@@ -5851,6 +5883,7 @@ void priest_td_t::target_demise()
 
 priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
   : player_t( sim, PRIEST, name, r ),
+    shadowy_insight_during_mind_blast( false),
     buffs(),
     talents(),
     specs(),
