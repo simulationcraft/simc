@@ -4931,6 +4931,7 @@ struct fire_blast_t : public fire_mage_spell_t
     fire_mage_spell_t( "fire_blast", p,
                        p -> find_class_spell( "Fire Blast" ) ),
     pyrosurge_chance( 0.0 ),
+    pyrosurge_flamestrike( new flamestrike_t( p, options_str ) ),
     blast_furnace( nullptr )
   {
     parse_options( options_str );
@@ -4951,17 +4952,8 @@ struct fire_blast_t : public fire_mage_spell_t
     // TODO: Is the spread range still 10 yards?
     radius = 10;
 
-    if ( p -> pyrosurge )
-    {
-      const spell_data_t* data = p -> pyrosurge -> driver();
-      pyrosurge_chance = data -> effectN( 1 ).average( p -> pyrosurge -> item );
-      //sim -> out_debug.printf( "%f chance", pyrosurge_chance );
-      pyrosurge_chance /= 100.0;
-
-      pyrosurge_flamestrike = new flamestrike_t( p, options_str );
-      pyrosurge_flamestrike -> background = true;
-      pyrosurge_flamestrike -> callbacks = false;
-    }
+    pyrosurge_flamestrike -> background = true;
+    pyrosurge_flamestrike -> callbacks = false;
 
     if ( p -> artifact.blast_furnace.rank() )
     {
@@ -4981,7 +4973,6 @@ struct fire_blast_t : public fire_mage_spell_t
 
   virtual void execute() override
   {
-    //sim -> out_debug.printf( "%f chance", pyrosurge_chance );
     fire_mage_spell_t::execute();
 
     icd -> start( data().cooldown() );
@@ -4993,8 +4984,11 @@ struct fire_blast_t : public fire_mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> pyrosurge && p() -> rng().roll( pyrosurge_chance ) )
+
+      // FIX THIS TO SCALE WITH ITEMLEVEL
+      if ( p() -> rng().roll( pyrosurge_chance ) )
       {
+
         pyrosurge_flamestrike -> target = s -> target;
         pyrosurge_flamestrike -> execute();
       }
@@ -8758,6 +8752,17 @@ struct lady_vashjs_grasp_t : public scoped_actor_callback_t<mage_t>
   void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
   { actor -> legendary.lady_vashjs_grasp = true; }
 };
+
+// 6.2 Class Trinkets
+
+struct pyrosurge_t : public scoped_action_callback_t<fire_blast_t>
+{
+  pyrosurge_t() : super( MAGE_FIRE, "fire_blast" )
+  { }
+
+  void manipulate( fire_blast_t* action, const special_effect_t& e ) override
+  { action -> pyrosurge_chance = e.driver() -> effectN( 1 ).percent(); }
+};
 // MAGE MODULE INTERFACE ====================================================
 
 static void do_trinket_init( mage_t*                  p,
@@ -8807,7 +8812,7 @@ public:
   virtual void static_init() const override
   {
     unique_gear::register_special_effect( 184903, wild_arcanist );
-    unique_gear::register_special_effect( 184904, pyrosurge     );
+    unique_gear::register_special_effect( 184904, pyrosurge_t() );
     unique_gear::register_special_effect( 184905, shatterlance  );
     unique_gear::register_special_effect( 208099, koralons_burning_touch_t() );
     unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t() );
