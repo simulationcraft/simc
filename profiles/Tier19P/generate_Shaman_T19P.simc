@@ -3,7 +3,7 @@ level=110
 race=orc
 role=attack
 position=back
-talents=3002112
+talents=3003112
 artifact=41:0:0:0:0:899:1:901:1:902:1:903:1:904:1:905:1:909:3:910:3:911:3:912:3:1351:1
 spec=enhancement
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
