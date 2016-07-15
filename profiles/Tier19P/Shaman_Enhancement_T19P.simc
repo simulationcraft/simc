@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 talents=3002112
-artifact=41:0:0:0:0:899:1:900:1:901:1:902:1:903:1:904:1:905:3:906:3:907:3:908:3:909:3:910:3:911:3:912:3:913:3:930:1:1351:1
+artifact=41:0:0:0:0:899:1:901:1:902:1:903:1:904:1:905:1:909:3:910:3:911:3:912:3:1351:1
 spec=enhancement
 
 # This default action priority list is automatically created based on your character.
