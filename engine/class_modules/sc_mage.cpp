@@ -4534,7 +4534,7 @@ struct glacial_spike_t : public frost_mage_spell_t
   virtual bool ready() override
   {
     if ( ( as<int>( p() -> icicles.size() ) <
-         p() -> spec.icicles -> effectN( 2 ).base_value() ) 
+         p() -> spec.icicles -> effectN( 2 ).base_value() )
          )
     {
       return false;
@@ -4624,7 +4624,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     // Swap our flag to allow damage calculation again
     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
     fss -> impact_override = true;
-    
+
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
@@ -4955,6 +4955,7 @@ struct fire_blast_t : public fire_mage_spell_t
     {
       const spell_data_t* data = p -> pyrosurge -> driver();
       pyrosurge_chance = data -> effectN( 1 ).average( p -> pyrosurge -> item );
+      //sim -> out_debug.printf( "%f chance", pyrosurge_chance );
       pyrosurge_chance /= 100.0;
 
       pyrosurge_flamestrike = new flamestrike_t( p, options_str );
@@ -4980,6 +4981,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
   virtual void execute() override
   {
+    //sim -> out_debug.printf( "%f chance", pyrosurge_chance );
     fire_mage_spell_t::execute();
 
     icd -> start( data().cooldown() );
@@ -7712,154 +7714,45 @@ void mage_t::apl_fire()
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"           );
-  /*
-  action_priority_list_t* movement            = get_action_priority_list( "movement"         );
-  action_priority_list_t* crystal_sequence    = get_action_priority_list( "crystal_sequence"  );
-  action_priority_list_t* init_combust        = get_action_priority_list( "init_combust"      );
-  action_priority_list_t* combust_sequence    = get_action_priority_list( "combust_sequence"  );
+  action_priority_list_t* comb_prep           = get_action_priority_list( "comb_prep"         );
+  action_priority_list_t* combustion_phase    = get_action_priority_list( "combustion_phase"  );
   action_priority_list_t* active_talents      = get_action_priority_list( "active_talents"    );
-  action_priority_list_t* living_bomb         = get_action_priority_list( "living_bomb"       );
-  action_priority_list_t* aoe                 = get_action_priority_list( "aoe"               );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
 
-  */
-  default_list -> add_action( this, "Counterspell",
-                              "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Time Warp",
-                              "if=target.health.pct<25|time>5" );
-  default_list -> add_talent( this, "Rune of Power",
-                              "if=buff.rune_of_power.remains<cast_time" );
-  /*
-  default_list -> add_action( "call_action_list,name=combust_sequence,if=pyro_chain" );
-  default_list -> add_action( "call_action_list,name=crystal_sequence,if=talent.prismatic_crystal.enabled&pet.prismatic_crystal.active" );
-  default_list -> add_action( "call_action_list,name=init_combust,if=!pyro_chain" );
-  default_list -> add_talent( this, "Rune of Power",
-                              "if=buff.rune_of_power.remains<action.fireball.execute_time+gcd.max&!(buff.heating_up.up&action.fireball.in_flight)",
-                              "Utilize level 90 active talents while avoiding pyro munching" );
-  default_list -> add_talent( this, "Mirror Image",
-                              "if=!(buff.heating_up.up&action.fireball.in_flight)" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>10" );
-  default_list -> add_action( "call_action_list,name=single_target");
+  default_list -> add_action( this, "Counterspell", "if=target.debff.casting.react" );
+  default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
+  default_list -> add_action( this, "Shard of the Exodar Warp", "if=buff.bloodlust.down&time>=5" );
+  default_list -> add_action( this, "Rune of Power", "if=recharge_time<cooldown.combustion.remains&buff.combustion.down|((cooldown.combustion.remains+5)>target.time_to_die)" );
+  default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains=0&buff.hot_streak.up|buff.combustion.up" );
+  default_list -> add_action( "call_action_list,name=comb_prep,if=cooldown.combustion.remains<6&cooldown.flame_on.remains<6" );
+  default_list -> add_action( "call_action_list,name=single_target" );
 
-  movement -> add_action( this, "Blink",
-                          "if=movement.distance>10" );
-  movement -> add_talent( this, "Blazing Speed",
-                          "if=movement.remains>0" );
-  movement -> add_talent( this, "Ice Floes",
-                          "if=buff.ice_floes.down&(raid_event.movement.distance>0|raid_event.movement.in<action.fireball.cast_time)" );
+  combustion_phase -> add_action( this, "Rune of Power" );
+  combustion_phase -> add_action( this, "Combustion" );
+  combustion_phase -> add_action( "call_actin_list,name=active_talents" );
+  combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
+  combustion_phase -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast" );
+  combustion_phase -> add_action( this, "Phoenixs Flames", "if=!prev_gcd.phoenixs_flames" );
+  combustion_phase -> add_action( this, "Dragon's Breath", "if=buff.hot_streak.down&buff.heating_up.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
+  combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454" );
+  combustion_phase -> add_action( this, "Fireball" );
 
+  comb_prep -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
+  comb_prep -> add_action( this, "Fireball" );
 
-  // TODO: Add multi LB explosions on multitarget fights.
-  crystal_sequence -> add_action( "choose_target,name=prismatic_crystal",
-                                  "Action list while Prismatic Crystal is up" );
-  crystal_sequence -> add_action( this, "Inferno Blast",
-                                  "if=dot.combustion.ticking&active_dot.combustion<active_enemies+1",
-                                  "Spread Combustion from PC" );
-  crystal_sequence -> add_action( this, "Inferno Blast",
-                                  "cycle_targets=1,if=dot.combustion.ticking&active_dot.combustion<active_enemies",
-                                  "Spread Combustion on multitarget fights" );
-  crystal_sequence -> add_talent( this, "Cold Snap",
-                                  "if=!cooldown.dragons_breath.up" );
-  crystal_sequence -> add_action( this, "Dragon's Breath",
-                                  "if=glyph.dragons_breath.enabled" );
-  crystal_sequence -> add_talent( this, "Blast Wave" );
-  crystal_sequence -> add_action( this, "Pyroblast",
-                                  "if=execute_time=gcd.max&pet.prismatic_crystal.remains<gcd.max+travel_time&pet.prismatic_crystal.remains>travel_time",
-                                  "Use pyros before PC's expiration" );
-  crystal_sequence -> add_action( "call_action_list,name=single_target" );
+  active_talents -> add_action( this, "Flame On", "if=action.fire_blast.charges<1" );
+  active_talents -> add_action( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)" );
+  active_talents -> add_action( this, "Meteor", "if=cooldown.combustion.remains>10|(cooldown.combustion.remains>target.time_to_die)" );
+  active_talents -> add_action( this, "Cinderstorm", "if=buff.combustion.down" );
+  active_talents -> add_action( this, "Dragon's Breath", "if=equipped.132863" );
 
-
-  init_combust -> add_action( "start_pyro_chain,if=talent.meteor.enabled&cooldown.meteor.up&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*3&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
-                              "Combustion sequence initialization\n"
-                              "# This sequence lists the requirements for preparing a Combustion combo with each talent choice\n"
-                              "# Meteor Combustion" );
-  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&cooldown.prismatic_crystal.up&(legendary_ring.cooldown.remains<gcd.max|legendary_ring.cooldown.remains>target.time_to_die+15|!legendary_ring.has_cooldown)&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&(buff.heating_up.up^action.fireball.in_flight))|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
-                              "Prismatic Crystal Combustion" );
-  init_combust -> add_action( "start_pyro_chain,if=talent.prismatic_crystal.enabled&!glyph.combustion.enabled&cooldown.prismatic_crystal.remains>20&((cooldown.combustion.remains<gcd.max*2&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&(cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*gcd.max)))",
-                              "Unglyphed Combustions between Prismatic Crystals" );
-  init_combust -> add_action( "start_pyro_chain,if=!talent.prismatic_crystal.enabled&!talent.meteor.enabled&((cooldown.combustion.remains<gcd.max*4&buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight)|(buff.pyromaniac.up&cooldown.combustion.remains<ceil(buff.pyromaniac.remains%gcd.max)*(gcd.max+talent.kindling.enabled)))",
-                              "Kindling or Level 90 Combustion" );
-
-  combust_sequence -> add_talent( this, "Prismatic Crystal", "",
-                                  "Combustion Sequence" );
-  for( size_t i = 0; i < racial_actions.size(); i++ )
-    combust_sequence -> add_action( racial_actions[i] );
-  for( size_t i = 0; i < item_actions.size(); i++ )
-    combust_sequence -> add_action( item_actions[i] );
-  combust_sequence -> add_action( get_potion_action() );
-  combust_sequence -> add_talent( this, "Meteor",
-                                  "if=active_enemies<=2" );
-  combust_sequence -> add_action( this, "Pyroblast",
-                                  "if=set_bonus.tier17_4pc&buff.pyromaniac.up" );
-  combust_sequence -> add_action( this, "Inferno Blast",
-                                  "if=set_bonus.tier16_4pc_caster&(buff.pyroblast.up^buff.heating_up.up)" );
-  combust_sequence -> add_action( this, "Fireball",
-                                  "if=!dot.ignite.ticking&!in_flight" );
-  combust_sequence -> add_action( this, "Pyroblast",
-                                  "if=buff.pyroblast.up&dot.ignite.tick_dmg*(6-ceil(dot.ignite.remains-travel_time))<crit_damage*mastery_value" );
-  combust_sequence -> add_action( this, "Inferno Blast",
-                                  "if=talent.meteor.enabled&cooldown.meteor.duration-cooldown.meteor.remains<gcd.max*3",
-                                  "Meteor Combustions can run out of Pyro procs before impact. Use IB to delay Combustion" );
-  combust_sequence -> add_action( this, "Inferno Blast",
-                                  "if=dot.ignite.tick_dmg*(6-dot.ignite.ticks_remain)<crit_damage*mastery_value" );
-  combust_sequence -> add_action( this, "Combustion" );
-
-
-  active_talents -> add_talent( this, "Meteor",
-                                "if=active_enemies>=3|(glyph.combustion.enabled&(!talent.incanters_flow.enabled|buff.incanters_flow.stack+incanters_flow_dir>=4)&cooldown.meteor.duration-cooldown.combustion.remains<10)",
-                                "Active talents usage" );
-  active_talents -> add_action( "call_action_list,name=living_bomb,if=talent.living_bomb.enabled&(active_enemies>1|raid_event.adds.in<10)" );
-  active_talents -> add_talent( this, "Cold Snap",
-                                "if=glyph.dragons_breath.enabled&!talent.prismatic_crystal.enabled&!cooldown.dragons_breath.up" );
-  active_talents -> add_action( this, "Dragon's Breath",
-                                "if=glyph.dragons_breath.enabled&(!talent.prismatic_crystal.enabled|cooldown.prismatic_crystal.remains>8)" );
-  active_talents -> add_talent( this, "Blast Wave",
-                                "if=(!talent.incanters_flow.enabled|buff.incanters_flow.stack>=4)&(target.time_to_die<10|!talent.prismatic_crystal.enabled|(charges>=1&cooldown.prismatic_crystal.remains>recharge_time))" );
-
-
-  living_bomb -> add_action( this, "Inferno Blast",
-                             "cycle_targets=1,if=dot.living_bomb.ticking&active_enemies-active_dot.living_bomb>1",
-                             "Living Bomb application" );
-  living_bomb -> add_talent( this, "Living Bomb",
-                             "if=target!=pet.prismatic_crystal&(((!talent.incanters_flow.enabled|incanters_flow_dir<0|buff.incanters_flow.stack=5)&remains<3.6)|((incanters_flow_dir>0|buff.incanters_flow.stack=1)&remains<gcd.max))&target.time_to_die>remains+12" );
-
-
-  aoe -> add_action( this, "Inferno Blast",
-                     "cycle_targets=1,if=(dot.combustion.ticking&active_dot.combustion<active_enemies)|(dot.pyroblast.ticking&active_dot.pyroblast<active_enemies)",
-                     "AoE sequence" );
-  aoe -> add_action( "call_action_list,name=active_talents" );
-  aoe -> add_action( this, "Pyroblast",
-                     "if=buff.pyroblast.react|buff.pyromaniac.react" );
-  aoe -> add_talent( this, "Cold Snap",
-                     "if=!cooldown.dragons_breath.up" );
-  aoe -> add_action( this, "Dragon's Breath" );
-  aoe -> add_action( this, "Flamestrike",
-                     "if=mana.pct>10&remains<2.4"  );
-
-
-  single_target -> add_action( this, "Inferno Blast",
-                               "if=dot.combustion.ticking&active_dot.combustion<active_enemies",
-                               "Single target sequence" );
-  single_target -> add_action( this, "Pyroblast",
-                               "if=buff.pyroblast.up&buff.pyroblast.remains<action.fireball.execute_time",
-                               "Use Pyro procs before they run out" );
-  single_target -> add_action( this, "Pyroblast",
-                               "if=set_bonus.tier16_2pc_caster&buff.pyroblast.up&buff.potent_flames.up&buff.potent_flames.remains<gcd.max" );
-  single_target -> add_action( this, "Pyroblast",
-                               "if=set_bonus.tier17_4pc&buff.pyromaniac.react" );
-  single_target -> add_action( this, "Pyroblast",
-                               "if=buff.pyroblast.up&buff.heating_up.up&action.fireball.in_flight",
-                               "Pyro camp during regular sequence; Do not use Pyro procs without HU and first using fireball" );
-  single_target -> add_action( this, "Inferno Blast",
-                               "if=buff.pyroblast.down&buff.heating_up.up&!(dot.living_bomb.remains>10&active_enemies>1)",
-                               "Heating Up conversion to Pyroblast" );
+  single_target -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time" );
+  single_target -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
+  single_target -> add_action( this, "Phoenix's Flames", "if=(action.fire_blast.charges<1&(charges=3&cooldown.combustion.remains>recharge_time))|(target.time_to_die<cooldown.combustion.remains&action.fire_blast.charges<1)|(buff.rune_of_power.up&buff.heating_up.down&buff.hot_streak.down)" );
+  single_target -> add_action( this, "Phoenix's Flames", "if=artifact.phoenix_reborn.enabled&(cooldown.combustion.remains>7)&charges=3" );
+  single_target -> add_action( this, "Fire Blast", "if=buff.hot_streak.down&buff.heating_up.up" );
   single_target -> add_action( "call_action_list,name=active_talents" );
-  single_target -> add_action( this, "Inferno Blast",
-                               "if=buff.pyroblast.up&buff.heating_up.down&!action.fireball.in_flight&!(dot.living_bomb.remains>10&active_enemies>1)",
-                               "Adding Heating Up to Pyroblast" );
-  single_target -> add_action( this, "Fireball" );
-  single_target -> add_action( this, "Scorch", "moving=1" );
-  */
+  single_target -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454" );
 }
 
 // Frost Mage Action List ==============================================================================================================
