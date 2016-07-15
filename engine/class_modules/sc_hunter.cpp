@@ -5190,49 +5190,43 @@ struct dragonsfire_grenade_t: public hunter_spell_t
 {
   struct dragonsfire_conflagration_t: public hunter_spell_t
   {
-    player_t* source;
+    player_t* original_target;
     dragonsfire_conflagration_t( hunter_t* p ):
-      hunter_spell_t( "dragonsfire_conflagration", p, p -> find_spell( 194859 ) ), source( nullptr )
+      hunter_spell_t( "dragonsfire_conflagration", p, p -> find_spell( 194859 ) ), original_target( nullptr )
     {
       aoe = -1;
-      background = true;
-      may_crit = true;
-      radius = 8.0;
+      background = may_crit = true;
     }
 
-    virtual void impact( action_state_t* s ) override
+    void impact( action_state_t* s ) override
     {
-      if ( s -> target != source )
+      if ( s -> target != original_target )
         hunter_spell_t::impact( s );
     }
   };
 
   dragonsfire_conflagration_t* conflag;
   dragonsfire_grenade_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "dragonsfire_grenade", p, p -> find_spell( 194858 ) ), conflag( nullptr )
+	  hunter_spell_t( "dragonsfire_grenade", p, p -> talents.dragonsfire_grenade -> effectN( 1 ).trigger() ), conflag( nullptr )
   {
     parse_options( options_str );
+    school = SCHOOL_FIRE;
+    parse_spell_data( *p -> talents.dragonsfire_grenade );
 
-    cooldown -> duration = p -> talents.dragonsfire_grenade -> cooldown();
     hasted_ticks = false;
-    harmful = true;
-    tick_may_crit = true;
-    trigger_gcd = p -> talents.dragonsfire_grenade -> gcd();
-
-    if ( num_targets() > 1 )
-    {
-      conflag = new dragonsfire_conflagration_t( p );
-      add_child( conflag );
-    }
+    harmful = tick_may_crit = true;
+    conflag = new dragonsfire_conflagration_t( p );
+    add_child( conflag );
   }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     hunter_spell_t::tick( d );
 
-    if ( conflag )
+    if ( conflag && conflag -> target_list().size() > 1 )
     {
-      conflag -> source = d -> target;
+      conflag -> target = d -> target;
+	  conflag -> original_target = d -> target;
       conflag -> execute();
     }
   }
