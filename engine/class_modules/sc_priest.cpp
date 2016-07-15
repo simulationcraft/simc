@@ -1983,16 +1983,19 @@ struct priest_spell_t : public priest_action_t<spell_t>
       double amount_from_power_infusion       = 0.0;
       double amount_from_surrender_to_madness = 0.0;
 
-      if ( priest.buffs.power_infusion->check() )
+      if (priest.buffs.surrender_to_madness->check() && priest.buffs.power_infusion->check())
       {
-        amount_from_power_infusion =
-            ( amount *
-              ( 1.0 +
-                priest.buffs.power_infusion->data().effectN( 3 ).percent() ) ) -
-            amount;
-      }
+        double total_amount = amount * (1.0 + priest.buffs.power_infusion->data().effectN(3).percent()) * (1.0 + priest.talents.surrender_to_madness->effectN(1).percent());
+        
+        amount_from_surrender_to_madness = (amount * (1.0 + priest.talents.surrender_to_madness->effectN(1).percent())) - amount;
 
-      if ( priest.buffs.surrender_to_madness->check() )
+        // Since this effect is multiplicitive, we'll give the extra to Power Infusion since it does not last as long as Surrender to Madness
+        amount_from_power_infusion = total_amount - amount - (amount * (1.0 + priest.buffs.power_infusion->data().effectN(3).percent()));
+
+        // Make sure the maths line up.
+        assert(total_amount != amount + amount_from_power_infusion + amount_from_surrender_to_madness);
+      }
+      else if ( priest.buffs.surrender_to_madness->check() )
       {
         amount_from_surrender_to_madness =
             ( amount * ( 1.0 +
@@ -2000,8 +2003,16 @@ struct priest_spell_t : public priest_action_t<spell_t>
                              .percent() ) ) -
             amount;
       }
+      else if (priest.buffs.power_infusion->check())
+      {
+        amount_from_power_infusion =
+          (amount *
+          (1.0 +
+          priest.buffs.power_infusion->data().effectN(3).percent())) -
+          amount;
+      }
 
-      priest.resource_gain( RESOURCE_INSANITY, amount, g, this );
+      priest.resource_gain(RESOURCE_INSANITY, amount, g, this);
 
       if ( amount_from_power_infusion > 0.0 )
       {
