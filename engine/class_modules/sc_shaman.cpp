@@ -3050,9 +3050,6 @@ struct stormstrike_base_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      // Proc unleash doom before the actual damage strikes, they already benefit from the buff
-      p() -> buff.unleash_doom -> trigger();
-
       mh -> stormflurry = stormflurry;
       mh -> execute();
       if ( oh )
@@ -3107,9 +3104,6 @@ struct stormstrike_t : public stormstrike_base_t
   stormstrike_t( shaman_t* player, const std::string& options_str ) :
     stormstrike_base_t( player, "stormstrike", player -> find_specialization_spell( "Stormstrike" ), options_str )
   {
-    // Only set in stormstrike, windstrike still has bogus data
-    cooldown -> duration = data().cooldown();
-
     // Actual damaging attacks are done by stormstrike_attack_t
     mh = new stormstrike_attack_t( "stormstrike_mh", player, data().effectN( 1 ).trigger(), &( player -> main_hand_weapon ) );
     add_child( mh );
@@ -3119,6 +3113,14 @@ struct stormstrike_t : public stormstrike_base_t
       oh = new stormstrike_attack_t( "stormstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
       add_child( oh );
     }
+  }
+
+  void execute() override
+  {
+    // Proc unleash doom before the actual damage strikes, they already benefit from the buff
+    p() -> buff.unleash_doom -> trigger();
+
+    stormstrike_base_t::execute();
   }
 
   bool ready() override
@@ -3149,13 +3151,6 @@ struct windstrike_t : public stormstrike_base_t
       oh = new windstrike_attack_t( "windstrike_offhand", player, data().effectN( 2 ).trigger(), &( player -> off_hand_weapon ) );
       add_child( oh );
     }
-  }
-
-  // Need to override update_ready because Windstrike shares a cooldown with Stormstrike, and in
-  // legion it has a different CD from stormstrike (SS 16 sec, WS 8 sec)
-  void update_ready( timespan_t /* cooldown_ */ = timespan_t::min() ) override
-  {
-    stormstrike_base_t::update_ready( cd );
   }
 
   bool ready() override
