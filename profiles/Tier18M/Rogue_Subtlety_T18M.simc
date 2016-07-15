@@ -27,21 +27,23 @@ actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40
-actions+=/use_item,slot=finger1,if=buff.shadow_dance.up
-actions+=/blood_fury,if=buff.shadow_dance.up
-actions+=/berserking,if=buff.shadow_dance.up
-actions+=/arcane_torrent,if=energy.deficit>70&(buff.shadow_dance.up|buff.vanish.up)
-actions+=/shadow_blades,if=!buff.shadow_blades.up&energy.deficit<20&(buff.shadow_dance.up|buff.vanish.up)
+actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<30|buff.shadow_blades.up
+actions+=/use_item,slot=finger1,if=buff.shadow_dance.up|buff.vanish.up|buff.stealth.up|target.time_to_die<20
+actions+=/blood_fury,if=buff.shadow_dance.up|buff.vanish.up|buff.stealth.up
+actions+=/berserking,if=buff.shadow_dance.up|buff.vanish.up|buff.stealth.up
+actions+=/arcane_torrent,if=energy.deficit>70&(buff.shadow_dance.up|buff.vanish.up|buff.stealth.up)
+actions+=/shadow_blades,if=!buff.shadow_blades.up&energy.deficit<20&(buff.shadow_dance.up|buff.vanish.up|buff.stealth.up)
 actions+=/goremaws_bite,if=(combo_points.max-combo_points>=2&energy.deficit>55&time<10)|(combo_points.max-combo_points>=4&energy.deficit>45)|target.time_to_die<8
-actions+=/symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=10.5
+# Added buff.shadowmeld.down to avoid using it since it's not usable while shadowmelded yet
+actions+=/symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=10.5&buff.shadowmeld.down
 actions+=/shuriken_storm,if=buff.stealth.up&talent.premeditation.enabled&combo_points.max-combo_points>=3&spell_targets.shuriken_storm>=7
 actions+=/shuriken_storm,if=buff.stealth.up&!buff.death.up&combo_points.max-combo_points>=2&((!talent.premeditation.enabled&spell_targets.shuriken_storm>=4)|spell_targets.shuriken_storm>=8)
 actions+=/shadowstrike,if=combo_points.max-combo_points>=2
 actions+=/pool_resource,for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30
-actions+=/vanish,if=energy.deficit<talent.master_of_shadows.enabled*30&combo_points.max-combo_points>=3&cooldown.shadow_dance.charges<2|target.time_to_die<8
+actions+=/vanish,if=(energy.deficit<talent.master_of_shadows.enabled*30&combo_points.max-combo_points>=3&cooldown.shadow_dance.charges<2)|target.time_to_die<8
 actions+=/pool_resource,for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30
 actions+=/shadow_dance,if=combo_points.max-combo_points>=2&((cooldown.vanish.remains&buff.symbols_of_death.remains<=10.5&energy.deficit<talent.master_of_shadows.enabled*30)|cooldown.shadow_dance.charges>=2|target.time_to_die<25)
+actions+=/shadowmeld,if=energy>40&combo_points.max-combo_points>=3&!(buff.shadow_dance.up|buff.vanish.up|buff.stealth.up)
 actions+=/enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&((buff.enveloping_shadows.remains<=10.8+talent.deeper_strategem.enabled*1.8&combo_points>=5+talent.deeper_strategem.enabled)|buff.enveloping_shadows.remains<=6)
 actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.max-combo_points>=4
 actions+=/run_action_list,name=finisher,if=combo_points>=5

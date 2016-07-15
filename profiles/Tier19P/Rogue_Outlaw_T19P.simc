@@ -27,7 +27,7 @@ actions.precombat+=/marked_for_death
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<40|buff.adrenaline_rush.up
+actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<30|buff.adrenaline_rush.up
 actions+=/blade_flurry,if=(spell_targets.blade_flurry>=2&!buff.blade_flurry.up)|(spell_targets.blade_flurry<2&buff.blade_flurry.up)
 actions+=/blood_fury
 actions+=/berserking
@@ -44,7 +44,7 @@ actions+=/roll_the_bones,if=!talent.slice_and_dice.enabled&combo_points>=5+talen
 actions+=/killing_spree,if=energy.time_to_max>5|energy<15
 actions+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=2
 actions+=/curse_of_the_dreadblades,if=combo_points.max-combo_points>=4
-actions+=/marked_for_death,if=combo_points.max-combo_points>=4
+actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.max-combo_points>=4
 actions+=/call_action_list,name=finisher,if=combo_points>=5+talent.deeper_strategem.enabled
 actions+=/call_action_list,name=generator,if=combo_points<5+talent.deeper_strategem.enabled
 
@@ -77,10 +77,10 @@ main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=137412/133763/137493,rel
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=826.25
-# gear_agility=8155
-# gear_stamina=14981
-# gear_crit_rating=5620
-# gear_haste_rating=1668
-# gear_mastery_rating=8945
-# gear_armor=1830
+# gear_ilvl=844.38
+# gear_agility=9760
+# gear_stamina=17727
+# gear_crit_rating=5996
+# gear_haste_rating=1796
+# gear_mastery_rating=9531
+# gear_armor=1957
