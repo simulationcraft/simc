@@ -403,6 +403,7 @@ public:
   } spells;
 
   int initial_soul_shards;
+  double affliction_artifact_modifier;
   std::string default_pet;
 
   timespan_t shard_react;
@@ -2301,6 +2302,7 @@ public:
     {
       if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
       {
+
         p -> warlock_pet_list.wild_imps[i] -> trigger();
         p -> procs.wild_imp -> occur();
         return;
@@ -2763,8 +2765,46 @@ struct demonic_empowerment_t: public warlock_spell_t
 	}
 };
 
+
+
 struct hand_of_guldan_t: public warlock_spell_t
 {
+
+    struct trigger_imp_event_t: public player_event_t
+    {
+        bool initiator;
+        int count;
+        trigger_imp_event_t( warlock_t* p, int c, bool init = false):
+            player_event_t(  *p ) , initiator( init ), count( c )//Use original corruption until DBC acts more friendly.
+        {
+            add_event( rng().range(timespan_t::from_millis(500),
+                                 timespan_t::from_millis(1200)) );
+            //UPDATE THIS TO MULTIMODAL DISTRIBUTION
+            //player = p;
+        }
+
+        virtual const char* name() const override
+            { return  "trigger_imp"; }
+
+        virtual void execute() override
+        {
+            warlock_t* p = static_cast<warlock_t*>( player() );
+            for(int i = 0; i < p->warlock_pet_list.wild_imps.size(); i ++)
+            {
+                if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
+                {
+                    count --;
+                    p -> warlock_pet_list.wild_imps[i] -> trigger();
+                    p -> procs.wild_imp -> occur();
+                }
+                if(count == 0)
+                    return;
+            }
+        }
+    };
+
+  trigger_imp_event_t* imp_event;
+  int shards_used;
   double demonology_trinket_chance;
   doom_t* doom;
 
@@ -2774,6 +2814,7 @@ struct hand_of_guldan_t: public warlock_spell_t
     doom( new doom_t( p ) )
   {
     aoe = -1;
+    shards_used = 0;
 
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
 
@@ -2802,10 +2843,7 @@ struct hand_of_guldan_t: public warlock_spell_t
   {
     warlock_spell_t::consume_resource();
 
-    for ( int i = 0; i < resource_consumed; i++ )
-    {
-      trigger_wild_imp( p() );
-    }
+    shards_used = resource_consumed;
 
     if ( resource_consumed == 1.0 )
       p() -> procs.one_shard_hog -> occur();
@@ -2821,10 +2859,14 @@ struct hand_of_guldan_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> talents.hand_of_doom -> ok() )
+    if ( result_is_hit( s -> result ) )
     {
-      doom -> target = s -> target;
-      doom -> execute();
+        if( p() -> talents.hand_of_doom -> ok() )
+        {
+            doom -> target = s -> target;
+            doom -> execute();
+        }
+        imp_event =  new ( *sim ) trigger_imp_event_t( p(), shards_used, true);
     }
   }
 };
@@ -4351,6 +4393,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   regen_type = REGEN_DYNAMIC;
   regen_caches[CACHE_HASTE] = true;
   regen_caches[CACHE_SPELL_HASTE] = true;
+  affliction_artifact_modifier = 1.0;
 }
 
 
