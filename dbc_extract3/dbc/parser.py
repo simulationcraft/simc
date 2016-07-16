@@ -4,7 +4,7 @@ import dbc.fmt
 
 _BASE_HEADER = struct.Struct('IIII')
 _DB_HEADER_1 = struct.Struct('III')
-_DB_HEADER_2 = struct.Struct('IIII')
+_DB_HEADER_2 = struct.Struct('IIIHH')
 _ID          = struct.Struct('I')
 _CLONE       = struct.Struct('II')
 _ITEMRECORD  = struct.Struct('IH')
@@ -579,10 +579,10 @@ class WDB5Parser(LegionWDBParser):
         if not super().parse_header():
             return False
 
-        self.table_hash, self.build, self.first_id = _DB_HEADER_1.unpack_from(self.data, self.parse_offset)
+        self.table_hash, self.layout_hash, self.first_id = _DB_HEADER_1.unpack_from(self.data, self.parse_offset)
         self.parse_offset += _DB_HEADER_1.size
 
-        self.last_id, self.locale, self.clone_segment_size, self.flags = _DB_HEADER_2.unpack_from(self.data, self.parse_offset)
+        self.last_id, self.locale, self.clone_segment_size, self.flags, self.id_index = _DB_HEADER_2.unpack_from(self.data, self.parse_offset)
         self.parse_offset += _DB_HEADER_2.size
 
         # Setup offsets into file, first string block, skip field data information of WDB5 files
@@ -627,12 +627,12 @@ class WDB5Parser(LegionWDBParser):
         return True
 
     def __str__(self):
-        s = '%s::%s(byte_size=%u, build=%u, locale=%#.8x, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u, unk=%u, hash=%#.8x)' % (
-                self.full_name(), self.magic.decode('ascii'), len(self.data), self.build, self.locale,
+        s = '%s::%s(byte_size=%u, locale=%#.8x, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, id_index=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u, unk=%u, table_hash=%#.8x, layout_hash=%#.8x)' % (
+                self.full_name(), self.magic.decode('ascii'), len(self.data), self.locale,
                 self.records, self.n_cloned_records(), self.fields, self.record_size,
-                self.string_block_size, self.clone_segment_size, self.first_id,
+                self.string_block_size, self.clone_segment_size, self.id_index, self.first_id,
                 self.last_id, self.data_offset, self.string_block_offset, self.id_block_offset,
-                self.clone_block_offset, self.flags, self.table_hash)
+                self.clone_block_offset, self.flags, self.table_hash, self.layout_hash)
 
         fields = []
         for i in range(0, len(self.field_data)):
