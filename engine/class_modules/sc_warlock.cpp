@@ -1267,14 +1267,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
       m*= 1.0 + buffs.the_expendables->stack_value();
   }
 
-  if ( !o() -> bugs )
-  {
-    if ( o() -> buffs.mana_tap -> check() )
-      m *= 1.0 + o() -> talents.mana_tap -> effectN( 1 ).percent();
-
-    if ( o() -> buffs.soul_harvest -> check() )
-      m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
-  }
+  if ( o() -> buffs.soul_harvest -> check() )
+    m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
 
   if ( is_grimoire_of_service )
   {
