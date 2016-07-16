@@ -1,6 +1,6 @@
 warlock="Warlock_Destruction_T18M"
 level=100
-race=dwarf
+race=human
 role=spell
 position=back
 talents=2301032
@@ -55,7 +55,7 @@ actions+=/life_tap
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=75crit
 shoulders=deathrattle_shoulderpads,id=124179,bonus_id=567,upgrade=2
-back=shawl_of_sanguinary_ritual,id=124137,bonus_id=567,upgrade=2,enchant=100crit
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=100crit
 chest=deathrattle_robe,id=124173,bonus_id=567,upgrade=2
 wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 hands=deathrattle_gloves,id=124156,bonus_id=567,upgrade=2
@@ -63,20 +63,20 @@ waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
 legs=deathrattle_leggings,id=124167,bonus_id=567,upgrade=2
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
 finger1=nithramus_the_allseer,id=124635,bonus_id=641,upgrade=2,enchant=50crit
-finger2=loathful_encrusted_band,id=124192,bonus_id=567,upgrade=2,enchant=50crit
-trinket1=fragment_of_the_dark_star,id=124522,bonus_id=567,upgrade=2
-trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
+finger2=pompous_ceremonial_ring,id=124195,bonus_id=567,upgrade=2,enchant=50crit
+trinket1=sandmans_pouch,id=112320,bonus_id=618,upgrade=2
+trinket2=chipped_soul_prism,id=124545,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=742.67
-# gear_stamina=7078
-# gear_intellect=7377
-# gear_crit_rating=1797
-# gear_haste_rating=1696
-# gear_mastery_rating=3018
-# gear_versatility_rating=391
-# gear_armor=1199
+# gear_ilvl=740.67
+# gear_stamina=7096
+# gear_intellect=8032
+# gear_crit_rating=2011
+# gear_haste_rating=2008
+# gear_mastery_rating=2666
+# gear_versatility_rating=891
+# gear_armor=1203
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 default_pet=imp
