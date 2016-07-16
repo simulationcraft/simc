@@ -8761,7 +8761,7 @@ struct pyrosurge_t : public scoped_action_callback_t<fire_blast_t>
   { }
 
   void manipulate( fire_blast_t* action, const special_effect_t& e ) override
-  { action -> pyrosurge_chance = e.driver() -> effectN( 1 ).percent(); }
+  { action -> pyrosurge_chance = ( e.driver() -> effectN( 1 ).average( e.item ) ) / 100; }
 };
 // MAGE MODULE INTERFACE ====================================================
 
