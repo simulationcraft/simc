@@ -4558,7 +4558,7 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
   single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&buff.divine_purpose.react" );
   single -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5" );
-  single -> add_action( this, "Divine Storm", "if=spell_targets.divine_storm>=2&cooldown.wake_of_ashes.remains<gcd*2" );
+  single -> add_action( this, "Divine Storm", "if=spell_targets.divine_storm>=2&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled" );
   single -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.up&debuff.judgment.remains<gcd" );
   single -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
   single -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react" );
@@ -4566,8 +4566,8 @@ void paladin_t::generate_action_prio_list_ret()
   single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
   single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react" );
   single -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5" );
-  single -> add_talent( this, "Justicar's Vengeance", "if=holy_power>=3&buff.divine_purpose.up&cooldown.wake_of_ashes.remains<gcd*2" );
-  single -> add_action( this, "Templar's Verdict", "if=holy_power>=3&cooldown.wake_of_ashes.remains<gcd*2" );
+  single -> add_talent( this, "Justicar's Vengeance", "if=holy_power>=3&buff.divine_purpose.up&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled" );
+  single -> add_action( this, "Templar's Verdict", "if=holy_power>=3&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled" );
   single -> add_action( this, "Wake of Ashes", "if=cooldown.judgment.remains>gcd*2" );
   single -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
   single -> add_action( this, "Crusader Strike", "if=charges=2&!talent.the_fires_of_justice.enabled" );
