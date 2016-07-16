@@ -624,6 +624,7 @@ public:
   {
     ab::execute();
 
+
     if ( ab::result_is_hit( ab::execute_state -> result ) )
     {
         if( p() -> o() -> talents.grimoire_of_synergy -> ok())
@@ -1087,33 +1088,94 @@ struct eye_laser_t : public warlock_pet_spell_t
     add_child( eye_laser );
   }
 
-  //std::vector< player_t* >& target_list() const override
-  //{
-  //  target_cache.list = warlock_pet_spell_t::target_list();
+  size_t available_targets(std::vector<player_t *> &tl) const
+  {
+      warlock_pet_spell_t::available_targets( tl );
 
-  //  size_t i = target_cache.list.size();
-  //  while ( i > 0 )
-  //  {
-  //    i--;
-  //    player_t* target_ = target_cache.list[i];
-  //    if ( !td( target_ ) -> dots_doom -> is_ticking() )
-  //      target_cache.list.erase( target_cache.list.begin() + i );
-  //  }
-  //  return target_cache.list;
-  //}
+      auto it = tl.begin();
+      while ( it != tl.end() )
+      {
+        if ( ! td( *it ) -> dots_doom -> is_ticking())
+        {
+          it = tl.erase( it );
+        }
+        else
+        {
+          it++;
+        }
+      }
+      return tl.size();
+  }
 
-  virtual void impact( action_state_t* s ) override
+
+  std::vector< player_t* >& target_list() const override
+  {
+      target_cache.list = warlock_pet_spell_t::target_list();
+/*
+      auto it = target_cache.list.begin();
+      while( it != target_cache.list.end() )
+      {
+          if ( !td( *it ) -> dots_doom -> is_ticking() )
+          {
+              it = target_cache.list.erase( it );
+              //THIS CRASHES WHEN THE LAST TARGET IS REMOVED???
+          }
+          else
+          {
+              it++;
+          }
+      }
+
+
+      size_t i = target_cache.list.size();
+      while ( i > 0 )
+      {
+        i--;
+        player_t* target_ = target_cache.list[i];
+        if ( !td( target_ ) -> dots_doom -> is_ticking() )
+        {
+            target_cache.list.erase( target_cache.list.begin() + i );
+            //THIS CRASHES WHEN THE LAST TARGET IS REMOVED???
+        }
+      }*/
+      return target_cache.list;
+  }
+
+  virtual void execute() override
+  {
+      warlock_pet_spell_t::execute();
+
+      for( auto t : target_list())
+      {
+          eye_laser->target = t;
+          eye_laser->execute();
+
+      }
+      /*if(target_list().size() > 0)
+      {
+          std::vector<player_t*> targets = target_list();
+
+          for( auto &target : targets)
+          {
+              if(target != NULL)
+              {
+                  eye_laser->target = target;
+                  eye_laser->execute();
+              }
+          }
+      }*/
+  }
+
+  /*virtual void impact( action_state_t* s ) override
   {
     warlock_pet_spell_t::impact( s );
 
-    //std::vector<player_t*> targets = target_list();
-
-    //if ( targets.size() > 0 )
-    //{
-    //  eye_laser -> target = targets[static_cast<size_t>( rng().range( 0, targets.size() ) )];
+    if ( targets.size() > 0 )
+    {
+      eye_laser -> target = targets[static_cast<size_t>( rng().range( 0, targets.size() ) )];
       eye_laser -> execute();
-    //}
-  }
+    }
+  }*/
 };
 
 struct thalkiels_discord_t : public warlock_pet_spell_t
@@ -4851,8 +4913,6 @@ void warlock_t::init_base_stats()
   {
     if ( specialization() == WARLOCK_DEMONOLOGY )
       default_pet = "felguard";
-    if ( specialization() == WARLOCK_DESTRUCTION )
-      default_pet = "imp";
     else
       default_pet = "felhunter";
   }
@@ -4984,27 +5044,27 @@ void warlock_t::apl_precombat()
   std::string& precombat_list =
     get_action_priority_list( "precombat" )->action_list_str;
 
-  if ( sim -> allow_flasks )
-  {
-    // Flask
-    if ( true_level == 110 )
-      precombat_list = "flask,type=whispered_pact";
-    else if ( true_level >= 100 )
-      precombat_list = "flask,type=greater_draenic_intellect_flask";
-  }
+  //if ( sim -> allow_flasks )
+  //{
+  //  // Flask
+  //  if ( true_level == 110 )
+  //    precombat_list = "flask,type=whispered_pact";
+  //  else if ( true_level >= 100 )
+  //    precombat_list = "flask,type=greater_draenic_intellect_flask";
+  //}
 
-  if ( sim -> allow_food )
-  {
-    // Food
-    if ( true_level == 110 )
-      precombat_list += "/food,type=azshari_salad";
-    else if ( true_level >= 100 && specialization() == WARLOCK_DESTRUCTION )
-      precombat_list += "/food,type=pickled_eel";
-    else if ( true_level >= 100 && specialization() == WARLOCK_DEMONOLOGY)
-      precombat_list += "/food,type=sleeper_sushi";
-    else if ( true_level >= 100 && specialization() == WARLOCK_AFFLICTION )
-      precombat_list += "/food,type=felmouth_frenzy";
-  }
+  //if ( sim -> allow_food )
+  //{
+  //  // Food
+  //  if ( true_level == 110 )
+  //    precombat_list += "/food,type=azshari_salad";
+  //  else if ( true_level >= 100 && specialization() == WARLOCK_DESTRUCTION )
+  //    precombat_list += "/food,type=pickled_eel";
+  //  else if ( true_level >= 100 && specialization() == WARLOCK_DEMONOLOGY)
+  //    precombat_list += "/food,type=sleeper_sushi";
+  //  else if ( true_level >= 100 && specialization() == WARLOCK_AFFLICTION )
+  //    precombat_list += "/food,type=felmouth_frenzy";
+  //}
 
   precombat_list += "/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)";
   precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3";
@@ -5014,20 +5074,17 @@ void warlock_t::apl_precombat()
   if ( specialization() != WARLOCK_DEMONOLOGY )
     precombat_list += "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled";
 
-  if ( sim -> allow_potions )
-  {
-    // Pre-potion
-    if ( true_level == 110 )
-      precombat_list += "/potion,name=deadly_grace";
-    else if ( true_level >= 100 )
-      precombat_list += "/potion,name=draenic_intellect";
-  }
+  //if ( sim -> allow_potions )
+  //{
+  //  // Pre-potion
+  //  if ( true_level == 110 )
+  //    precombat_list += "/potion,name=deadly_grace";
+  //  else if ( true_level >= 100 )
+  //    precombat_list += "/potion,name=draenic_intellect";
+  //}
 
   if ( specialization() == WARLOCK_DESTRUCTION )
-  {
-    precombat_list += "/mana_tap,if=talent.mana_tap.enabled";
     precombat_list += "/incinerate";
-  }
 
   action_list_str += init_use_profession_actions();
 
@@ -5071,14 +5128,12 @@ void warlock_t::apl_destruction()
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
 
   // artifact check
-  if ( true_level >= 100 )
   add_action( "Dimensional Rift", "if=charges=3" );
 
   add_action( "Immolate", "if=remains<=tick_time" );
   add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<duration&action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&charges=2" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
-  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
   action_list_str += "/soul_harvest";
@@ -5086,8 +5141,7 @@ void warlock_t::apl_destruction()
   add_action( "Chaos Bolt", "if=soul_shard>3" );
 
   // artifact check
-  if ( true_level >= 100 )
-    add_action( "Dimensional Rift" );
+  add_action( "Dimensional Rift" );
 
   action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3";
   add_action( "Chaos Bolt" );
