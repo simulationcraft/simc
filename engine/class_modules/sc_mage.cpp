@@ -7727,11 +7727,10 @@ void mage_t::apl_fire()
 
   combustion_phase -> add_action( this, "Rune of Power" );
   combustion_phase -> add_action( this, "Combustion" );
-  combustion_phase -> add_action( "call_actin_list,name=active_talents" );
+  combustion_phase -> add_action( "call_action_list,name=active_talents" );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast" );
   combustion_phase -> add_action( this, "Phoenixs Flames", "if=!prev_gcd.phoenixs_flames" );
-  combustion_phase -> add_action( this, "Dragon's Breath", "if=buff.hot_streak.down&buff.heating_up.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
   combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454" );
   combustion_phase -> add_action( this, "Fireball" );
 
