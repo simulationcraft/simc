@@ -2504,6 +2504,17 @@ struct unstable_affliction_t : public warlock_spell_t
 
       update_flags = snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_HASTE;
     }
+
+    virtual void tick( dot_t* d ) override
+    {
+
+      if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
+      {
+        p() -> buffs.instability -> trigger();
+      }
+
+      warlock_spell_t::tick( d );
+    }
   };
 
   unstable_affliction_dot_t* ua_dot;
@@ -2535,22 +2546,9 @@ struct unstable_affliction_t : public warlock_spell_t
     if ( p() -> buffs.shard_instability -> check() )
     {
       return 0;
-      p() -> buffs.shard_instability -> expire();
-      p() -> procs.t18_2pc_affliction -> occur();
     }
 
     return c;
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-
-    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
-    {
-      p() -> buffs.instability -> trigger();
-    }
-
-    warlock_spell_t::tick( d );
   }
 
   void init() override
@@ -2567,8 +2565,6 @@ struct unstable_affliction_t : public warlock_spell_t
     // Does this snapshot on the base damage or apply to the DoT dynamically?
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
-    if ( p() -> buffs.instability -> check() )
-      m *= 1.0 + p() -> find_spell( 216472 ) -> effectN( 1 ).percent();
 
     return m;
   }
@@ -2577,6 +2573,14 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     if ( result_is_hit( s -> result ) )
       residual_action::trigger( ua_dot, s -> target, s -> result_amount );
+  }
+
+  virtual void execute() override
+  {
+    warlock_spell_t::execute();
+
+    p() -> buffs.shard_instability -> expire();
+    p() -> procs.t18_2pc_affliction -> occur();
   }
 };
 
@@ -3987,11 +3991,11 @@ struct drain_soul_t: public warlock_spell_t
 
   virtual void tick( dot_t* d ) override
   {
-
     if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) )
     {
       p() -> buffs.shard_instability -> trigger();
     }
+
     warlock_spell_t::tick( d );
   }
 };
@@ -4471,6 +4475,9 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.soul_harvest -> check() )
     m *= 1.0 + talents.soul_harvest -> effectN( 1 ).percent();
+
+  if ( buffs.instability -> check() )
+    m *= 1.0 + find_spell( 216472 ) -> effectN( 1 ).percent();
 
   if ( specialization() == WARLOCK_DESTRUCTION && ( dbc::is_school( SCHOOL_FIRE, school ) ) )
   {
