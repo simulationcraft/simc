@@ -25,3 +25,5 @@ actions.precombat+=/incinerate
 actions+=/incinerate
 
 default_pet=imp
+
+t18_4pc_destruction=1

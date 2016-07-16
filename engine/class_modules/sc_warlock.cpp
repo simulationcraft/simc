@@ -61,6 +61,7 @@ struct warlock_td_t: public actor_target_data_t
   dot_t* dots_agony;
   dot_t* dots_corruption;
   dot_t* dots_doom;
+  dot_t* dots_drain_life;
   dot_t* dots_drain_soul;
   dot_t* dots_immolate;
   dot_t* dots_seed_of_corruption;
@@ -281,6 +282,7 @@ public:
   } mastery_spells;
 
   //Procs and RNG
+  real_ppm_t* misery_rppm; // affliction t17 4pc
   real_ppm_t* demonic_power_rppm; // grimoire of sacrifice
   real_ppm_t* grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
   real_ppm_t* grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
@@ -317,22 +319,29 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* backdraft;
-    buff_t* demonic_synergy;
     buff_t* demonic_power;
-    buff_t* havoc;
     buff_t* mana_tap;
-    buff_t* conflagration_of_chaos;
     buff_t* soul_harvest;
-    buff_t* lord_of_flames;
-    buff_t* demonic_calling;
 
-    buff_t* tier18_2pc_demonology;
+    //affliction buffs
+    buff_t* shard_instability;
+    buff_t* instability;
+    buff_t* misery;
 
     //demonology buffs
+    buff_t* tier18_2pc_demonology;
+    buff_t* demonic_synergy;
     buff_t* shadowy_inspiration;
     buff_t* stolen_power_stacks;
     buff_t* stolen_power;
+    buff_t* demonic_calling;
+
+    //destruction_buffs
+    buff_t* backdraft;
+    buff_t* havoc;
+    buff_t* conflagration_of_chaos;
+    buff_t* lord_of_flames;
+
   } buffs;
 
   // Gains
@@ -353,6 +362,7 @@ public:
     gain_t* soul_conduit;
     gain_t* reverse_entropy;
     gain_t* soulsnatcher;
+    gain_t* t18_4pc_destruction;
   } gains;
 
   // Procs
@@ -360,6 +370,7 @@ public:
   {
     proc_t* wild_imp;
     proc_t* fragment_wild_imp;
+    proc_t* t18_2pc_affliction;
     proc_t* t18_4pc_destruction;
     proc_t* t18_illidari_satyr;
     proc_t* t18_vicious_hellhound;
@@ -2364,7 +2375,13 @@ struct agony_t: public warlock_spell_t
 
     if ( p() -> shard_accumulator > 1 )
     {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.agony );
+
+      if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T17, B2 ) && ( td( d -> state -> target ) -> dots_drain_soul -> is_ticking() || td( d -> state -> target ) -> dots_drain_life -> is_ticking() ) && td( d -> state -> target ) -> dots_corruption -> is_ticking() && td( d -> state-> target ) -> dots_agony -> is_ticking() && td( d -> state->target ) -> dots_unstable_affliction -> is_ticking() ) //Caster Has T17 2pc and UA/Agony are ticking as well on the target
+      {
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 2.0, p() -> gains.agony );
+      }
+      else
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.agony );
       p() -> shard_accumulator -= 1.0;
 
       // If going from 0 to 1 shard was a surprise, the player would have to react to it
@@ -2374,6 +2391,13 @@ struct agony_t: public warlock_spell_t
         p() -> shard_react = p() -> sim -> current_time();
       else
         p() -> shard_react = timespan_t::max();
+    }
+
+    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
+    {
+      bool procced = p() -> misery_rppm -> trigger(); //check for RPPM
+      if ( procced )
+        p() -> buffs.misery -> trigger(); //trigger the buff
     }
 
     warlock_spell_t::tick( d );
@@ -2408,16 +2432,6 @@ struct unstable_affliction_t : public warlock_spell_t
     {
       dual = true;
       tick_may_crit = hasted_ticks = true;
-
-      if ( p -> affliction_trinket )
-      {
-        const spell_data_t* data = p -> affliction_trinket -> driver();
-        double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
-        double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
-
-        base_tick_time *= 1.0 + period_value;
-        dot_duration *= 1.0 + duration_value;
-      }
     }
 
     void init() override
@@ -2437,6 +2451,42 @@ struct unstable_affliction_t : public warlock_spell_t
     spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
     base_multiplier *= dot_duration / base_tick_time;
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
+
+    if ( p -> affliction_trinket )
+    {
+      const spell_data_t* data = p -> affliction_trinket -> driver();
+      double period_value = data -> effectN( 1 ).average( p -> affliction_trinket->item ) / 100.0;
+      double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
+
+      base_tick_time *= 1.0 + period_value;
+      dot_duration *= 1.0 + duration_value;
+    }
+  }
+
+  double cost() const override
+  {
+    double c = warlock_spell_t::cost();
+
+
+    if ( p() -> buffs.shard_instability -> check() )
+    {
+      return 0;
+      p() -> buffs.shard_instability -> expire();
+      p() -> procs.t18_2pc_affliction -> occur();
+    }
+
+    return c;
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+
+    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
+    {
+      p() -> buffs.instability -> trigger();
+    }
+
+    warlock_spell_t::tick( d );
   }
 
   void init() override
@@ -2453,6 +2503,8 @@ struct unstable_affliction_t : public warlock_spell_t
     // Does this snapshot on the base damage or apply to the DoT dynamically?
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
+    if ( p() -> buffs.instability -> check() )
+      m *= 1.0 + p() -> find_spell( 216472 ) -> effectN( 1 ).percent();
 
     return m;
   }
@@ -2525,6 +2577,16 @@ struct drain_life_t: public warlock_spell_t
       return false;
 
     return warlock_spell_t::ready();
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+
+    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) )
+    {
+      p() -> buffs.shard_instability -> trigger();
+    }
+    warlock_spell_t::tick( d );
   }
 };
 
@@ -2839,10 +2901,20 @@ struct immolate_t: public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.3 ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-    else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.15 ) )
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+    if ( p() -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T17, B2 ) )
+    {
+      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.38 ) )
+        p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+      else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.19 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+    }
+    else
+    {
+      if ( d -> state -> result == RESULT_CRIT && rng().roll( 0.3 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+      else if ( d -> state -> result == RESULT_HIT && rng().roll( 0.15 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+    }
   }
 };
 
@@ -2969,6 +3041,10 @@ struct chaos_bolt_t: public warlock_spell_t
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
+
+    base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
+    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
+    base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
   }
 
   void impact( action_state_t* s ) override
@@ -3009,6 +3085,21 @@ struct chaos_bolt_t: public warlock_spell_t
     state -> result_total *= 1.0 + player -> cache.spell_crit_chance() + state -> target_crit_chance;
 
     return state -> result_total;
+  }
+
+  double cost() const override
+  {
+    double c = warlock_spell_t::cost();
+
+    double t18_4pc_rng = p() -> sets.set( WARLOCK_DESTRUCTION, T18, B4 ) -> effectN( 1 ).percent();
+
+    if ( rng().roll( t18_4pc_rng ) )
+    {
+      return 1;
+      p() -> procs.t18_4pc_destruction -> occur();
+    }
+
+    return c;
   }
 };
 
@@ -3789,6 +3880,16 @@ struct drain_soul_t: public warlock_spell_t
     hasted_ticks = false;
     may_crit = false;
   }
+
+  virtual void tick( dot_t* d ) override
+  {
+
+    if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B2 ) )
+    {
+      p() -> buffs.shard_instability -> trigger();
+    }
+    warlock_spell_t::tick( d );
+  }
 };
 
 struct cataclysm_t : public warlock_spell_t
@@ -4175,6 +4276,7 @@ warlock( p )
   dots_unstable_affliction = target -> get_dot( "unstable_affliction", &p );
   dots_agony = target -> get_dot( "agony", &p );
   dots_doom = target -> get_dot( "doom", &p );
+  dots_drain_life = target -> get_dot( "drain_life", &p );
   dots_drain_soul = target -> get_dot( "drain_soul", &p );
   dots_immolate = target -> get_dot( "immolate", &p );
   dots_shadowflame = target -> get_dot( "shadowflame", &p );
@@ -4732,37 +4834,48 @@ void warlock_t::create_buffs()
 {
   player_t::create_buffs();
 
-  buffs.backdraft = buff_creator_t( this, "backdraft", find_spell( 117828 ) );
   buffs.demonic_power = buff_creator_t( this, "demonic_power", talents.grimoire_of_sacrifice -> effectN( 2 ).trigger() );
-  buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .chance( 1 );
   buffs.mana_tap = buff_creator_t( this, "mana_tap", talents.mana_tap )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
     .tick_behavior( BUFF_TICK_NONE );
-  buffs.havoc = new havoc_buff_t( this );
-  buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
-    .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-  buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", artifact.conflagration_of_chaos.data().effectN( 1 ).trigger() )
-    .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) );
-  buffs.lord_of_flames = buff_creator_t( this, "lord_of_flames", find_spell( 226802 ) )
-    .tick_behavior( BUFF_TICK_NONE );
-  buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() )
-    .chance( find_spell( 205145 ) -> proc_chance() );
-  buffs.stolen_power_stacks = buff_creator_t( this, "stolen_power_stacks", find_spell(211529));
-  buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell(211583) )
-          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  //affliction buffs
+  buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
+    .chance( sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() );
+  buffs.instability = buff_creator_t( this, "instability", sets.set( WARLOCK_AFFLICTION, T18, B4 ) -> effectN( 1 ).trigger() )
+    .chance( sets.set( WARLOCK_AFFLICTION, T18, B4 ) -> proc_chance() );
+  buffs.misery = buff_creator_t( this, "misery", find_spell( 216412 ) );
 
   //demonology buffs
+  buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .chance( 1 );
+  buffs.tier18_2pc_demonology = buff_creator_t( this, "demon_rush", sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() )
+    .default_value( sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
+  buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() )
+    .chance( find_spell( 205145 ) -> proc_chance() );
+  buffs.stolen_power_stacks = buff_creator_t( this, "stolen_power_stacks", find_spell( 211529 ) );
+  buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell( 211583 ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+
+  //destruction buffs
+  buffs.backdraft = buff_creator_t( this, "backdraft", find_spell( 117828 ) );
+  buffs.havoc = new havoc_buff_t( this );
+  buffs.lord_of_flames = buff_creator_t( this, "lord_of_flames", find_spell( 226802 ) )
+    .tick_behavior( BUFF_TICK_NONE );
+  buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", artifact.conflagration_of_chaos.data().effectN( 1 ).trigger() )
+    .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
 }
 
 void warlock_t::init_rng()
 {
   player_t::init_rng();
 
+  misery_rppm = get_rppm( "misery", sets.set( WARLOCK_AFFLICTION, T17, B4 ) );
   demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
   grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
   grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
@@ -4786,6 +4899,7 @@ void warlock_t::init_gains()
   gains.reverse_entropy     = get_gain( "reverse_entropy" );
   gains.soulsnatcher        = get_gain( "soulsnatcher" );
   gains.power_trip          = get_gain( "power_trip" );
+  gains.t18_4pc_destruction = get_gain( "t18_4pc_destruction" );
 }
 
 // warlock_t::init_procs ===============================================
@@ -4796,6 +4910,7 @@ void warlock_t::init_procs()
 
   procs.wild_imp = get_proc( "wild_imp" );
   procs.fragment_wild_imp = get_proc( "fragment_wild_imp" );
+  procs.t18_2pc_affliction = get_proc( "t18_2pc_affliction" );
   procs.t18_4pc_destruction = get_proc( "t18_4pc_destruction" );
   procs.t18_prince_malchezaar = get_proc( "t18_prince_malchezaar" );
   procs.t18_vicious_hellhound = get_proc( "t18_vicious_hellhound" );
