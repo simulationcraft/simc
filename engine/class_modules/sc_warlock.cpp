@@ -4132,6 +4132,13 @@ struct channel_demonfire_t: public warlock_spell_t
     add_child( channel_demonfire );
   }
 
+  void init() override
+  {
+    warlock_spell_t::init();
+
+    cooldown -> hasted = true;
+  }
+
   std::vector< player_t* >& target_list() const override
   {
     target_cache.list = warlock_spell_t::target_list();
