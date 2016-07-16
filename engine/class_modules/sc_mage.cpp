@@ -3944,7 +3944,10 @@ struct flamestrike_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::execute();
 
-    p() -> buffs.hot_streak -> expire();
+    if ( triggers_hot_streak == true )
+    {
+      p() -> buffs.hot_streak -> expire();
+    }
   }
 
   virtual void impact( action_state_t* state ) override
@@ -4954,6 +4957,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
     pyrosurge_flamestrike -> background = true;
     pyrosurge_flamestrike -> callbacks = false;
+    pyrosurge_flamestrike -> triggers_hot_streak = false;
 
     if ( p -> artifact.blast_furnace.rank() )
     {
