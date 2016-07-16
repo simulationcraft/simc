@@ -98,7 +98,7 @@ public:
   {
     blessing_of_sacrifice_redirect_t* blessing_of_sacrifice_redirect;
   } active;
-  
+
   // Forbearant Faithful cooldown shenanigans
   std::vector<cooldown_t*> forbearant_faithful_cooldowns;
 
@@ -849,7 +849,7 @@ struct paladin_ground_aoe_t : public ground_aoe_event_t
   paladin_t* paladin;
 
 protected:
-  paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t* param, action_state_t* ps, bool first_tick = false ): 
+  paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t* param, action_state_t* ps, bool first_tick = false ):
     ground_aoe_event_t( p, param, ps, first_tick ), radius( param -> action() -> radius ), paladin( p )
   {}
 
@@ -857,10 +857,10 @@ public:
   paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t& param, bool first_tick = false ) :
     ground_aoe_event_t( p, param, first_tick ), radius( param.action() -> radius ), paladin( p )
   {}
-  
-  
+
+
   void schedule_event() override
-  { 
+  {
     paladin_ground_aoe_t* foo = new ( sim() ) paladin_ground_aoe_t( paladin, params, pulse_state );
     paladin -> active_consecrations.push_back( foo );
   }
@@ -1137,7 +1137,7 @@ struct blessing_of_protection_t : public paladin_spell_t
 
     return paladin_spell_t::ready();
   }
-  
+
   double recharge_multiplier() const override
   {
     double cdr = paladin_spell_t::recharge_multiplier();
@@ -1155,7 +1155,7 @@ struct blessing_of_protection_t : public paladin_spell_t
 struct blessing_of_spellwarding_t : public paladin_spell_t
 {
 	blessing_of_spellwarding_t(paladin_t* p, const std::string& options_str)
-		: paladin_spell_t("blessing_of_spellwarding", p, p -> find_talent_spell("Blessing of Spellwarding")) 
+		: paladin_spell_t("blessing_of_spellwarding", p, p -> find_talent_spell("Blessing of Spellwarding"))
 	{
 		parse_options(options_str);
 	}
@@ -1402,7 +1402,7 @@ struct blessed_hammer_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    
+
     timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : timespan_t::zero();;
 
     new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
@@ -1481,7 +1481,7 @@ struct consecration_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     // create a new ground aoe event
-    paladin_ground_aoe_t* alt_aoe = 
+    paladin_ground_aoe_t* alt_aoe =
       new ( *sim ) paladin_ground_aoe_t( p(), ground_aoe_params_t()
         .target( execute_state -> target )
         // spawn at feet of player
@@ -1593,7 +1593,7 @@ struct divine_shield_t : public paladin_spell_t
     // add ourselves to the target_data list for tracking of forbearant faithful
     td( p() ) -> buffs.forbearant_faithful -> trigger();
   }
-  
+
   double recharge_multiplier() const override
   {
     double cdr = paladin_spell_t::recharge_multiplier();
@@ -2236,7 +2236,7 @@ struct lay_on_hands_t : public paladin_heal_t
 
     return paladin_heal_t::ready();
   }
-  
+
   double recharge_multiplier() const override
   {
     double cdr = paladin_heal_t::recharge_multiplier();
@@ -2287,7 +2287,7 @@ struct light_of_the_protector_t : public paladin_heal_t
     // disable if Hand of the Protector talented
     if ( p -> talents.hand_of_the_protector -> ok() )
       background = true;
-    
+
     // light of the titans object attached to this
     titans_proc = new light_of_the_titans_t( p );
   }
@@ -3090,6 +3090,14 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
   {
     return 0;
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
+      am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
+    return am;
+  }
 };
 
 struct divine_storm_t: public holy_power_consumer_t
@@ -3413,7 +3421,7 @@ struct judgment_t : public paladin_melee_attack_t
     }
 
     return cc;
-  }  
+  }
 
   virtual double composite_crit_chance() const override
   {
@@ -3595,6 +3603,14 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
+      am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
+    return am;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -4047,7 +4063,7 @@ bool paladin_t::standing_in_consecration() const
     paladin_ground_aoe_t* cons_to_test = active_consecrations[ i ];
 
     double distance = get_position_distance( cons_to_test -> params -> x(), cons_to_test -> params -> y() );
-    
+
     // exit with true if we're in range of any one Cons center
     if ( distance <= cons_to_test -> radius )
       return true;
@@ -4432,7 +4448,7 @@ void paladin_t::generate_action_prio_list_prot()
   prot->add_action(this, "Consecration" );
   prot->add_talent(this, "Blinding Light");
   prot->add_action(this, "Hammer of the Righteous");
- 
+
 
 
   //dps-aoe
@@ -5394,8 +5410,8 @@ void paladin_t::target_mitigation( school_e school,
 
   // Other stuff
 
-  // Blessed Hammer 
-  if ( talents.blessed_hammer -> ok() )    
+  // Blessed Hammer
+  if ( talents.blessed_hammer -> ok() )
   {
     buff_t* b = get_target_data( s -> action -> player ) -> buffs.blessed_hammer_debuff;
 
