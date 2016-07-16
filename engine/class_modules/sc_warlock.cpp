@@ -16,7 +16,7 @@
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
 // Add wild imp spawn delay
 // Double check all up()/check() usage.
-// Remove manatap/soul harvest pet multiplier bugs when they get fixed.
+// Mana tap doesn't benefit pets?
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
 // Move imp spawn to hog impact
@@ -2489,6 +2489,7 @@ struct corruption_t: public warlock_spell_t
       dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
         2 * sim -> expected_iteration_time :
         2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
+      base_multiplier *= 1.0 + p -> talents.absolute_corruption -> effectN( 2 ).percent();
     }
   }
 
