@@ -1809,7 +1809,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   flanking_strike_t( hunter_main_pet_t* p ):
     hunter_main_pet_attack_t( "flanking_strike", p, p -> find_spell( 204740 ) )
   {
-    attack_power_mod.direct = 3.0; //data is in the tooltip
+    attack_power_mod.direct = 2.152; //data is in the tooltip
     background = true;
 
     if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
@@ -1827,6 +1827,21 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
       cc += p() -> o() -> artifacts.my_beloved_monster.percent();
 
     return cc;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_main_pet_attack_t::action_multiplier();
+
+    if ( p() -> target -> target == o() )
+      am *= 1.0 + p() -> o() -> specs.flanking_strike -> effectN( 3 ).percent();
+
+    return am;
+  }  
+  
+  virtual double composite_attack_power() const override
+  {
+    return o() -> cache.attack_power() * o()->composite_attack_power_multiplier();
   }
 };
 
@@ -4089,7 +4104,7 @@ struct lacerate_t: public hunter_melee_attack_t
   virtual void impact( action_state_t *s ) override
   {
     hunter_melee_attack_t::impact( s );
-
+     
     td( s -> target ) -> debuffs.lacerate -> trigger();
 
     if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T18, B2 ) )
