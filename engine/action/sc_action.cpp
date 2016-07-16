@@ -1317,12 +1317,7 @@ void action_t::execute()
   if ( is_aoe() ) // aoe
   {
     std::vector< player_t* >& tl = target_list();
-    num_targets = ( n_targets() < 0 ) ? tl.size() : n_targets();
-    if ( num_targets < 1 )
-    {
-      cancel(); // AoE Children who get automatically executed from a parent spell will sometimes run into situations where they do not deal damage to the
-      return;   // original target, but one nearby, and that one nearby is out range. This will catch it before the sim crashes.
-    }
+    num_targets = ( n_targets() < 0 ) ? tl.size() : std::min( tl.size(), as<size_t>( n_targets() ) );
     for ( size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++ )
     {
       action_state_t* s = get_state( pre_execute_state );

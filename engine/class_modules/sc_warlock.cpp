@@ -624,6 +624,12 @@ public:
   {
     ab::execute();
 
+    // Some aoe pet abilities can actually reduce to 0 targets, so bail out early if we hit that
+    // situation
+    if ( ab::n_targets() != 0 && ab::target_list().size() == 0 )
+    {
+      return;
+    }
 
     if ( ab::result_is_hit( ab::execute_state -> result ) )
     {
@@ -1105,40 +1111,6 @@ struct eye_laser_t : public warlock_pet_spell_t
         }
       }
       return tl.size();
-  }
-
-
-  std::vector< player_t* >& target_list() const override
-  {
-      target_cache.list = warlock_pet_spell_t::target_list();
-/*
-      auto it = target_cache.list.begin();
-      while( it != target_cache.list.end() )
-      {
-          if ( !td( *it ) -> dots_doom -> is_ticking() )
-          {
-              it = target_cache.list.erase( it );
-              //THIS CRASHES WHEN THE LAST TARGET IS REMOVED???
-          }
-          else
-          {
-              it++;
-          }
-      }
-
-
-      size_t i = target_cache.list.size();
-      while ( i > 0 )
-      {
-        i--;
-        player_t* target_ = target_cache.list[i];
-        if ( !td( target_ ) -> dots_doom -> is_ticking() )
-        {
-            target_cache.list.erase( target_cache.list.begin() + i );
-            //THIS CRASHES WHEN THE LAST TARGET IS REMOVED???
-        }
-      }*/
-      return target_cache.list;
   }
 
   virtual void execute() override
