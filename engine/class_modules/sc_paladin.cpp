@@ -4288,7 +4288,12 @@ void paladin_t::generate_action_prio_list_prot()
   //Flask
   if ( sim -> allow_flasks )
   {
-    if ( true_level > 90 )
+	if (true_level > 100)
+	{
+		precombat->add_action("flask,type=flask_of_ten_thousand_scars");
+		precombat->add_action("flask,type=flask_of_the_countless_armies,if=role.attack|using_apl.max_dps");
+	}
+    else if ( true_level > 90 )
     {
       precombat -> add_action( "flask,type=greater_draenic_stamina_flask" );
       precombat -> add_action( "flask,type=greater_draenic_strength_flask,if=role.attack|using_apl.max_dps" );
@@ -4302,7 +4307,12 @@ void paladin_t::generate_action_prio_list_prot()
   // Food
   if ( sim -> allow_food )
   {
-    if ( level() > 90 )
+	if (level() > 100)
+	{
+		precombat->add_action("food,type=seedbattered_fish_plate");
+		precombat->add_action("food,type=azshari_salad,if=role.attack|using_apl.max_dps");
+	}
+    else if ( level() > 90 )
     {
       precombat -> add_action( "food,type=whiptail_fillet" );
       precombat -> add_action( "food,type=pickled_eel,if=role.attack|using_apl.max_dps" );
@@ -4313,10 +4323,6 @@ void paladin_t::generate_action_prio_list_prot()
       precombat -> add_action( "food,type=seafood_magnifique_feast" );
   }
 
-  precombat -> add_action( this, "Seal of Insight" );
-  precombat -> add_action( this, "Seal of Righteousness", "if=role.attack|using_apl.max_dps" );
-  precombat -> add_talent( this, "Sacred Shield" );
-
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
@@ -4326,7 +4332,9 @@ void paladin_t::generate_action_prio_list_prot()
   {
     // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
     // and Mountains potion is pathetic at L90
-    if ( true_level > 90 )
+	if (true_level > 100)
+	  potion_type = "potion_of_deadly_grace";
+    else if ( true_level > 90 )
       potion_type = "draenic_strength";
     else if ( true_level >= 80 )
       potion_type = "mogu_power";
@@ -4397,6 +4405,11 @@ void paladin_t::generate_action_prio_list_prot()
   //potion
   if (sim->allow_potions)
   {
+	  if (level() > 100)
+	  {
+		  prot->add_action("potion,name=potion_of_the_old_war,if=role.attack|using_apl.max_dps");
+		  prot->add_action("potion,name=unbending_potion");
+	  }
 	  if (true_level > 90)
 	  {
 		  prot->add_action("potion,name=draenic_strength,if=" + threshold + "&&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
