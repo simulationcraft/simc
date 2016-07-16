@@ -1190,6 +1190,7 @@ struct bloodthirst_t: public warrior_attack_t
     if ( fresh_meat_crit_chance > 0 && target -> health_percentage() >= 80.0 )
     {
       tc += fresh_meat_crit_chance;
+      tc += 0.1; //FIXME
     }
 
     return tc;
@@ -2162,7 +2163,11 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
+    if ( p -> talents.inner_rage -> ok() )
+    {
+      weapon_multiplier *= 1.0 + 1.5; //FIXME
+    }
+    //weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
     weapon_multiplier *= 1.0 + p -> artifact.wrath_and_fury.percent();
   }
 
@@ -2733,7 +2738,9 @@ struct slam_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = 2.03; //FIXME
     weapon_multiplier *= 1.0 + p -> artifact.crushing_blows.percent();
+    base_costs[RESOURCE_RAGE] = 20; //FIXME
   }
 
   void assess_damage( dmg_e type, action_state_t* s ) override
@@ -2916,6 +2923,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     warrior_attack_t( "whirlwind_oh", p, whirlwind )
   {
     aoe = -1;
+    weapon_multiplier = 0.61; //FIXME
   }
 
   double action_multiplier() const override
@@ -4431,6 +4439,7 @@ void warrior_t::create_buffs()
     .cd( timespan_t::zero() );
 
   buff.bloodbath = buff_creator_t( this, "bloodbath", talents.bloodbath )
+    .duration( timespan_t::from_seconds( 10 ) )//FIXME
     .cd( timespan_t::zero() );
 
   buff.frothing_berserker = buff_creator_t( this, "frothing_berserker", talents.frothing_berserker -> effectN( 1 ).trigger() )
@@ -4478,7 +4487,8 @@ void warrior_t::create_buffs()
 
   buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy -> effectN( 1 ).trigger() )
     .add_invalidate( CACHE_HASTE )
-    .default_value( talents.frenzy -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+    .default_value( 0.05 );//FIXME
+    //.default_value( talents.frenzy -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
