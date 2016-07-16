@@ -53,11 +53,7 @@ level=100
 race=dwarf
 role=spell
 spec=destruction
-talents=0000311
-talent_override=charred_remains,if=enemies>=4
-talent_override=grimoire_of_sacrifice,if=enemies>1&enemies<4|(enemies=1&talent.charred_remains.enabled)
-talent_override=grimoire_of_supremacy,if=(enemies>=4&!raid_event.adds.exists&!talent.demonic_servitude.enabled)|(enemies>=5&!talent.demonic_servitude.enabled)|(enemies=1&talent.cataclysm.enabled)
-talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
+talents=2301032
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=75crit,upgrade=2
 shoulders=deathrattle_shoulderpads,id=124179,bonus_id=567,upgrade=2
