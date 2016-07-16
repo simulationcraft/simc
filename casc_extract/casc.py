@@ -370,21 +370,6 @@ class BuildCfg:
 
 			setattr(self, key, data)
 
-		self.parse_build_name()
-
-	def parse_build_name(self):
-		mobj = re.match('^WOW-([0-9]+)patch([0-9.]+)_([A-Za-z]+)', self.build_name)
-
-		self.build = int(mobj.group(1))
-		self.build_patch = mobj.group(2)
-		self.build_type = mobj.group(3).lower()
-
-	def __str__(self):
-		return '%s/%d' % (self.build_patch, self.build)
-
-	def __lt__(self, other):
-		return self.build > other.build
-
 class CDNIndex(CASCObject):
 	PATCH_BASE_URL = 'http://us.patch.battle.net:1119'
 
@@ -398,37 +383,21 @@ class CDNIndex(CASCObject):
 		self.cdn_hash = None
 		self.cdn_host = None
 		self.cdn_path = None
-		self.cdn_version = None
 		self.build_cfg_hash = []
 		self.archives = []
 		self.cdn_index = {}
 		self.builds = []
 
+		self.version = None
+		self.build_number = 0
+		self.build_version = 0
+
 	# TODO: (More) Option based selectors
 	def get_build_cfg(self):
-		for build_cfg in self.builds:
-			if self.options.beta and build_cfg.build_type == 'beta':
-				return build_cfg
-			elif self.options.ptr and build_cfg.build_type == 'ptr':
-				return build_cfg
-			elif not self.options.ptr and not self.options.beta and build_cfg.build_type == 'retail':
-				return build_cfg
-
-	def get_builds(self):
-		builds = []
-		for build_cfg in self.builds:
-			if self.options.beta and build_cfg.build_type == 'beta':
-				builds.append(build_cfg)
-			elif self.options.ptr and build_cfg.build_type == 'ptr':
-				builds.append(build_cfg)
-			elif not self.options.ptr and not self.options.beta and build_cfg.build_type == 'retail':
-				builds.append(build_cfg)
-
-		builds.sort()
-		return builds
+		return self.builds[0]
 
 	def build(self):
-		return self.get_build_cfg().build_name
+		return self.version
 
 	def root_file(self):
 		return self.get_build_cfg().root
@@ -475,24 +444,32 @@ class CDNIndex(CASCObject):
 		handle = self.get_url(version_url)
 
 		for line in handle.readlines():
-			split = line.decode('utf-8').split('|')
+			split = line.decode('utf-8').strip().split('|')
 			if split[0] != 'us':
 				continue
 
 			# The CDN hash name is what we want at this point
 			self.cdn_hash = split[2]
-			self.cdn_version = split[-1].strip()
+			self.version = split[-2]
+
+			version_split = self.version.split('.')
+			if len(version_split) != 4:
+				sys.stderr.write('Unable to parse version "%s" data' % self.version)
+				sys.exit(1)
+
+			self.build_number = int(version_split[-1])
+			self.build_version = '.'.join(version_split[0:-1])
 
 			# Also take build configuration information from the versions file
 			# nowadays, as the "CDN" file builds option may have things like
 			# background downloader builds in it
-			self.build_cfg_hash = split[1]
+			self.build_cfg_hash = [ split[1], ]
 
 		if not self.cdn_hash:
 			sys.stderr.write('Invalid version file\n')
 			sys.exit(1)
 
-		print('Current build version: %s' % self.cdn_version)
+		print('Current build version: %s' % self.version)
 
 	def open_cdn_build_cfg(self):
 		path = os.path.join(self.cache_dir('config'), self.cdn_hash)
@@ -516,9 +493,6 @@ class CDNIndex(CASCObject):
 			url = self.cdn_url('config', cfg)
 
 			self.builds.append(BuildCfg(self.cached_open(path, url)))
-
-		print('Current CDN version: %s' % self.build())
-		print('Available versions: %s' % ', '.join([str(x) for x in self.get_builds()]))
 
 	def open_archives(self):
 		sys.stdout.write('Parsing CDN index files ... ')
