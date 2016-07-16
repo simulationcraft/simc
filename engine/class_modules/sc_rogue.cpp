@@ -6005,7 +6005,7 @@ void rogue_t::init_spells()
 
   artifact.kingsbane        = find_artifact_spell( "Kingsbane" );
   artifact.assassins_blades = find_artifact_spell( "Assassin's Blades" );
-  artifact.toxic_blades     = find_artifact_spell( "Toxin Blades" );
+  artifact.toxic_blades     = find_artifact_spell( "Toxic Blades" );
   artifact.urge_to_kill     = find_artifact_spell( "Urge to Kill" );
   artifact.shadow_walker    = find_artifact_spell( "Shadow Walker" );
   artifact.bag_of_tricks    = find_artifact_spell( "Bag of Tricks" );
