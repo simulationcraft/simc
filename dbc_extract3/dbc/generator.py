@@ -45,7 +45,7 @@ def apply_hotfixes(opts, file_name, dbc_file, database):
     # cached data. This may also include adding new data.
     for cache_file in cache_dbc_files:
         for record in cache_file:
-            #try:
+            try:
                 # Add some additional information for debugging purposes
                 if opts.debug:
                     if database[record.id].id == record.id:
@@ -57,10 +57,10 @@ def apply_hotfixes(opts, file_name, dbc_file, database):
                         logging.debug('%s (%d) ADD: %s',
                             cache_file.file_name, cache_file.parser.timestamp, record)
                 database[record.id] = record
-            #except Exception as e:
-            #    logging.error('Error while parsing %s: record=%s, error=%s',
-            #        cache_file.class_name(), record, e)
-            #    sys.exit(1)
+            except Exception as e:
+                logging.error('Error while parsing %s: record=%s, error=%s',
+                    cache_file.class_name(), record, e)
+                sys.exit(1)
 
 # Generic linker
 def link(source_db, source_key, target_db, target_attr):
