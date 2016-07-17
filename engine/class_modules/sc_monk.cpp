@@ -803,7 +803,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         action_t* a = o() -> action_list[ i ];
 
-        if ( this -> id == a -> id || util::str_compare_ci( this -> name_str, a -> name_str ) )
+        if ( ( this -> id > 0 && this -> id == a -> id ) ||
+             util::str_compare_ci( this -> name_str, a -> name_str ) )
         {
           source_action = a;
           break;
@@ -1003,7 +1004,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       // TODO: Can't really assert here, need to figure out a fallback if the
       // windwalker does not use autoattacks (how likely is that?)
-      if ( sim -> debug )
+      if ( ! source_action && sim -> debug )
       {
         sim -> errorf( "%s has no auto_attack in APL, Storm, Earth, and Fire pets cannot auto-attack.",
             o() -> name() );
@@ -1037,7 +1038,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       return ap;
     }
 
-     void execute() override
+    void execute() override
     {
       if ( time_to_execute > timespan_t::zero() && player -> executing )
       {
