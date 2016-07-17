@@ -7710,7 +7710,7 @@ void mage_t::apl_fire()
   action_priority_list_t* active_talents      = get_action_priority_list( "active_talents"    );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
 
-  default_list -> add_action( this, "Counterspell", "if=target.debff.casting.react" );
+  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
   default_list -> add_action( this, "Shard of the Exodar Warp", "if=buff.bloodlust.down&time>=5" );
   default_list -> add_action( this, "Rune of Power", "if=recharge_time<cooldown.combustion.remains&buff.combustion.down|((cooldown.combustion.remains+5)>target.time_to_die)" );
