@@ -3741,11 +3741,6 @@ struct serenity_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.serenity -> trigger();
-
-    // Tigereye Brew increases your critical strike damage by 20% for 30 sec.
-    // Since Serenity takes replaces Tigereye Brew, placing this here for the time being.
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T17, B4 ) )
-      p() -> buff.forceful_winds -> trigger();
   }
 };
 
