@@ -588,7 +588,7 @@ public:
     furious_sun( nullptr ),
     fu_zan_the_wanderers_companion(nullptr),
     sheilun_staff_of_the_mists( nullptr ),
-    aburaq( nullptr )
+    fists_of_the_heavens( nullptr )
   {
     // actives
     active_celestial_fortune_proc = nullptr;
@@ -715,7 +715,7 @@ public:
   // Legion Artifact effects
   const special_effect_t* fu_zan_the_wanderers_companion;
   const special_effect_t* sheilun_staff_of_the_mists;
-  const special_effect_t* aburaq;
+  const special_effect_t* fists_of_the_heavens;
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
@@ -3227,9 +3227,9 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     parse_options( options_str );
     may_dodge = may_parry = may_block = true;
     aoe = -1;
-    weapon_multiplier = p -> artifact.strike_of_the_windlord.data().effectN( 2 ).percent();
+    weapon_multiplier = p -> artifact.strike_of_the_windlord.data().effectN( 3 ).percent();
 
-    oh_attack = new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 5 ).trigger() );
+    oh_attack = new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
     add_child( oh_attack );
   }
 
@@ -6669,7 +6669,6 @@ void monk_t::create_buffs()
 
   buff.hit_combo = buff_creator_t( this, "hit_combo", passives.hit_combo )
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
-    .refresh_behavior( BUFF_REFRESH_DURATION )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.masterful_strikes = buff_creator_t(this, "masterful_strikes", passives.tier18_2pc_melee )
@@ -7652,6 +7651,9 @@ void monk_t::apl_pre_brewmaster()
   // Flask
   if ( sim -> allow_flasks && true_level >= 80 )
   {
+    
+//    if ( true_level > 100)
+//      pre -> add_action( "flask, type=flask_of_the_seventh_demon" );
     if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
     else if ( true_level >= 85 )
@@ -7699,6 +7701,8 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_flasks )
   {
     // Flask
+//    if ( true_level > 100)
+//      pre -> add_action( "flask, type=flask_of_the_seventh_demon" );
     if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
     else if ( true_level >= 85 )
@@ -7751,6 +7755,9 @@ void monk_t::apl_pre_mistweaver()
 
   if ( sim -> allow_flasks )
   {
+    
+//    if ( true_level > 100)
+//      pre -> add_action( "flask, type=flask_of_the_whispered_pact" );
     if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_intellect_flask" );
     // Flask
@@ -7859,23 +7866,19 @@ void monk_t::apl_combat_windwalker()
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* opener = get_action_priority_list("opener");
   action_priority_list_t* st = get_action_priority_list("st");
-  action_priority_list_t* aoe_nosef = get_action_priority_list("aoe_nosef");
+  action_priority_list_t* aoe = get_action_priority_list("aoe");
   //action_priority_list_t* aoe_sef = get_action_priority_list("aoe_sef");
 
   def -> add_action( "auto_attack" );
 
   def -> add_action( "invoke_xuen" );
 
-// TODO: Will activate these lines once Storm, Earth, and Fire is finished; too spammy right now
-  def -> add_action( "storm_earth_and_fire,target=2,if=debuff.storm_earth_and_fire_target.down" );
-  def -> add_action( "storm_earth_and_fire,target=3,if=debuff.storm_earth_and_fire_target.down" );
- // def -> add_action( "chi_orbit,if=talent.chi_orbit.enabled" );
-  def -> add_action( "call_action_list,name=opener,if=talent.serenity.enabled&talent.chi_brew.enabled&cooldown.fists_of_fury.up&time<20" );
+//  def -> add_action( "call_action_list,name=opener,if=talent.serenity.enabled&talent.chi_brew.enabled&cooldown.fists_of_fury.up&time<20" );
 
   if ( sim -> allow_potions )
   {
     if ( true_level == 100 )
-      def -> add_action( "potion,name=draenic_agility,if=buff.serenity.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
+      def -> add_action( "potion,name=draenic_agility,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
     else if ( true_level >= 85 )
       def -> add_action( "potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
@@ -7894,10 +7897,14 @@ void monk_t::apl_combat_windwalker()
       def -> add_action( racial_actions[i]  );
   }
 
-  def -> add_action( this, "Touch of Death" );
-  def -> add_talent( this, "Serenity", "if=(artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up)&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
-  def -> add_talent( this, "Serenity", "if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
-  def -> add_talent( this, "Energizing Elixir", "if=energy<30&chi<2" );
+  def -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled" );
+  def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&!talent.serenity.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
+  def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&talent.serenity.enabled&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
+  def -> add_action( this, "Storm, Earth, and Fire", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
+  def -> add_action( this, "Storm, Earth, and Fire", "if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
+  def -> add_talent( this, "Serenity", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
+  def -> add_talent( this, "Serenity", "if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
+  def -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1&buff.serenity.down" );
   def -> add_talent( this, "Rising Sun Kick", "if=buff.serenity.up" );
   def -> add_talent( this, "Rushing Jade Wind", "if=buff.serenity.up&!prev_gcd.rushing_jade_wind" );
   def -> add_action( this, "Strike of the Windlord", "if=artifact.strike_of_the_windlord.enabled" );
@@ -7905,29 +7912,26 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( this, "Fists of Fury" );
   
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
-  def -> add_action( "call_action_list,name=aoe_nosef,if=active_enemies>=3" );
-//  def -> add_action( "call_action_list,name=aoe_sef,if=active_enemies>=3&talent.rushing_jade_wind.enabled" );
+  def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
   // Single Target & Non-Chi Explosion Cleave
-  st -> add_action( this, "Blackout Kick", "if=(set_bonus.tier18_2pc=1&buff.bok_proc.react)&!prev_gcd.blackout_kick" );
   st -> add_action( this, "Rising Sun Kick" );
-  st -> add_action( this, "Blackout Kick", "if=(buff.bok_proc.react|buff.serenity.up)&!prev_gcd.blackout_kick" );
-  st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
-  st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
-  st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi<=3&!prev_gcd.rushing_jade_wind" );
-  st -> add_action( this, "Blackout Kick", "if=chi.max-chi<=3&!prev_gcd.blackout_kick" );
-  st -> add_action( this, "Tiger Palm", "if=buff.power_strikes.up&chi.max-chi>=3&!prev_gcd.tiger_palm" );
-  st -> add_action( this, "Tiger Palm", "if=buff.power_strikes.down&chi.max-chi>=2&!prev_gcd.tiger_palm" );
+  st -> add_action( this, "Strike of the Windlord" );
+  st -> add_talent( this, "Rushing Jade Wind", "if=chi>1&!prev_gcd.rushing_jade_wind" );
+  st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2|buff.serenity.down" );
+  st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2|buff.serenity.down" );
+//  st -> add_action( this, "Spinning Crane Kick", "if=buff.serenity.up&!prev_gcd.spinning_crane_kick" );
+  st -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&buff.serenity.down&!prev_gcd.blackout_kick" );
+  st -> add_action( this, "Tiger Palm", "if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm" );
 
   // AoE while SEF is not up
   // TODO: Add tab targeting somehow
-  aoe_nosef -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
-  aoe_nosef -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
-  aoe_nosef -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
-  aoe_nosef -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi<=3&!prev_gcd.rushing_jade_wind" );
-  aoe_nosef -> add_action( this, "Blackout Kick", "if=chi.max-chi<=3&!prev_gcd.blackout_kick" );
-  aoe_nosef -> add_action( this, "Tiger Palm", "if=buff.power_strikes.up&chi.max-chi>=3&!prev_gcd.tiger_palm" );
-  aoe_nosef -> add_action( this, "Tiger Palm", "if=buff.power_strikes.down&chi.max-chi>=2&!prev_gcd.tiger_palm" );
+  aoe -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
+  aoe -> add_action( this, "Strike of the Windlord" );
+  aoe -> add_talent( this, "Rushing Jade Wind", "if=chi>=2&!prev_gcd.rushing_jade_wind" );
+  aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2|buff.serenity.down" );
+  aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2|buff.serenity.down" );
+  aoe -> add_action( this, "Tiger Palm", "if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm" );
 
   // Chi Brew & Serenity Opener
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -8369,10 +8373,10 @@ static void sheilun_staff_of_the_mists( special_effect_t& effect )
 }
 
 // Windwalker Legion Artifact
-static void aburaq( special_effect_t& effect )
+static void fists_of_the_heavens( special_effect_t& effect )
 {
   monk_t* monk = debug_cast<monk_t*> ( effect.player );
-  do_trinket_init( monk, MONK_WINDWALKER, monk -> aburaq, effect );
+  do_trinket_init( monk, MONK_WINDWALKER, monk -> fists_of_the_heavens, effect );
 }
 
 struct monk_module_t: public module_t
@@ -8395,9 +8399,9 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 184908, furious_sun );
 
     // Legion Artifacts
-    unique_gear::register_special_effect( 195599, aburaq );
-    unique_gear::register_special_effect( 199887, sheilun_staff_of_the_mists );
-    unique_gear::register_special_effect( 213386, fu_zan_the_wanderers_companion );
+    unique_gear::register_special_effect( 214854, fists_of_the_heavens );
+    unique_gear::register_special_effect( 214483, sheilun_staff_of_the_mists );
+    unique_gear::register_special_effect( 214852, fu_zan_the_wanderers_companion );
 
     // TODO: Add the Legion Legendary effects
   }
