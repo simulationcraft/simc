@@ -1812,9 +1812,7 @@ struct spirit_wolf_t : public base_wolf_t
   {
     spirit_bomb_t( spirit_wolf_t* player ) :
       super( player, "spirit_bomb", player -> find_spell( 198455 ) )
-    {
-      background = true;
-    }
+    { background = true; aoe = -1; }
   };
 
   spirit_wolf_t( shaman_t* owner ) : base_wolf_t( owner, "spirit_wolf" )
