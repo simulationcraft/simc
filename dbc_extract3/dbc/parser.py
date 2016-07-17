@@ -1,13 +1,15 @@
-import os, io, struct, sys, logging, math
+import os, io, struct, sys, logging, math, re
 
 import dbc.fmt
 
 _BASE_HEADER = struct.Struct('IIII')
 _DB_HEADER_1 = struct.Struct('III')
 _DB_HEADER_2 = struct.Struct('IIIHH')
+_WCH5_HEADER = struct.Struct('IIIIIII')
 _ID          = struct.Struct('I')
 _CLONE       = struct.Struct('II')
 _ITEMRECORD  = struct.Struct('IH')
+_WCH_ITEMRECORD = struct.Struct('IIH')
 
 # WDB5 field data, size (32 - size) // 8, offset tuples
 _FIELD_DATA  = struct.Struct('HH')
@@ -20,7 +22,7 @@ class DBCParserBase:
         raise Exception()
 
     def __init__(self, options, fname):
-        self.file_name = None
+        self.file_name_ = None
         self.options = options
 
         # Data format storage
@@ -46,14 +48,17 @@ class DBCParserBase:
 
         # See that file exists already
         normalized_path = os.path.abspath(fname)
-        for i in ['', '.db2', '.dbc']:
+        for i in ['', '.db2', '.dbc', '.adb']:
             if os.access(normalized_path + i, os.R_OK):
-                self.file_name = normalized_path + i
-                logging.debug('WDB file found at %s', self.file_name)
+                self.file_name_ = normalized_path + i
+                logging.debug('WDB file found at %s', self.file_name_)
 
-        if not self.file_name:
+        if not self.file_name_:
             logging.error('No WDB file found based on "%s"', fname)
             sys.exit(1)
+
+    def is_wch(self):
+        return False
 
     def id_format(self):
         if self.id_format_str:
@@ -107,7 +112,9 @@ class DBCParserBase:
         if len(format_str) > 1:
             self.unpackers.append((self.field_data[-1][1] == 3 and 0xFFFFFF or 0xFFFFFFFF, struct.Struct(format_str), field_offset))
 
-        logging.debug('Unpacking plan: %s', ', '.join(['%s (len=%d, offset=%d)' % (u.format.decode('utf-8'), u.size, o) for _, u, o in self.unpackers]))
+        logging.debug('Unpacking plan for %s: %s',
+            self.full_name(),
+            ', '.join(['%s (len=%d, offset=%d)' % (u.format.decode('utf-8'), u.size, o) for _, u, o in self.unpackers]))
         if len(self.unpackers) == 1:
             self.record_parser = lambda ro, rs: self.unpackers[0][1].unpack_from(self.data, ro)
         else:
@@ -132,16 +139,16 @@ class DBCParserBase:
         return False
 
     def full_name(self):
-        return os.path.basename(self.file_name)
+        return os.path.basename(self.file_name_)
 
     def file_name(self):
-        return os.path.basename(self.file_name).split('.')[0]
+        return os.path.basename(self.file_name_).split('.')[0]
 
     def class_name(self):
-        return os.path.basename(self.file_name).split('.')[0]
+        return os.path.basename(self.file_name_).split('.')[0]
 
     def name(self):
-        return os.path.basename(self.file_name).split('.')[0].replace('-', '_').lower()
+        return os.path.basename(self.file_name_).split('.')[0].replace('-', '_').lower()
 
     # Real record size is fields padded to powers of two
     def parsed_record_size(self):
@@ -172,6 +179,7 @@ class DBCParserBase:
     def build_field_data(self):
         types = self.fmt.types(self.class_name())
         field_offset = 0
+        self.field_data = []
         for t in types:
             if t in ['I', 'i', 'f', 'S']:
                 self.field_data.append((field_offset, 4, 1))
@@ -179,6 +187,14 @@ class DBCParserBase:
                 self.field_data.append((field_offset, 2, 1))
             elif t in ['B', 'b']:
                 self.field_data.append((field_offset, 1, 1))
+            else:
+                # If the format file has padding fields, add them as correct
+                # length fields to the data format. These are only currently
+                # used to align offset map files correctly, so data model
+                # validation will work.
+                m = re.match('([0-9]+)x', t)
+                if m:
+                    self.field_data.append((field_offset, int(m.group(1)), 1))
 
             field_offset += self.field_data[-1][1]
 
@@ -187,12 +203,12 @@ class DBCParserBase:
         # Sanity check the data
         try:
             unpacker = self.fmt.parser(self.class_name())
-        except:
+        except Exception as e:
             # We did not find a parser for the file, so then we need to figure
             # out if we can output it anyhow in some reduced form, since some
             # DBC versions are like that
             if not self.raw_outputtable():
-                logging.error("Unable to parse %s, no formatting data found", self.class_name())
+                logging.error("Unable to parse %s: %s", self.full_name(), e)
                 return False
 
         # Build auxilary structures to parse raw data out of the DBC file
@@ -208,11 +224,35 @@ class DBCParserBase:
                     self.class_name(), self.record_size, unpacker.size)
             return False
 
-        # Skip the native specifier
-        if not self.raw_outputtable() and len(unpacker.format[1:]) > self.n_fields():
-            logging.error("Record field count mismatch for %s, expected %u, format has %u",
-                    self.class_name(), self.n_fields(), len(unpacker.format[1:]))
-            return False
+        # Validate our json format file against the data we get from the file
+        if not self.is_wch():
+            str_base_incorrect = '[%03d/%03d] incorrect size for "%s" json-fmt="%s" dbc-length=%d json-length=%s file=%s'
+            fields = self.fmt.fields(self.class_name())
+            types = self.fmt.types(self.class_name())
+            fidx = 0
+            # Loop through all field data, validating each data type field (in
+            # WDB4/5 header) against the json format's field type. String
+            # fields are currently not validated as they can technically be of
+            # any length.
+            for fdidx in range(0, len(self.field_data)):
+                fd = self.field_data[fdidx]
+                for subidx in range(0, fd[2]):
+                    # Since the WDB files may have padding, we may actually go
+                    # past the number of json-format fields we have, so break
+                    # out early in that case.
+                    if fidx == len(fields):
+                        break
+
+                    if types[fidx] in ['I', 'i', 'f'] and fd[1] < 3:
+                        logging.warn(str_base_incorrect, fdidx, fidx, fields[fidx], types[fidx], fd[1], '3+', self.full_name())
+                    elif types[fidx] in ['H', 'h'] and fd[1] != 2:
+                        logging.warn(str_base_incorrect, fdidx, fidx, fields[fidx], types[fidx], fd[1], '2', self.full_name())
+                    elif types[fidx] in ['B', 'b'] and fd[1] != 1:
+                        logging.warn(str_base_incorrect, fdidx, fidx, fields[fidx], types[fidx], fd[1], '1', self.full_name())
+                    else:
+                        logging.debug('[%03d/%03d] field length ok for "%s" json-fmt="%s" dbc-length=%d',
+                            fdidx, fidx, fields[fidx], types[fidx], fd[1])
+                    fidx += 1
 
         # Figure out the position of the id column. This may be none if WDB4/5
         # and id_block_offset > 0
@@ -229,7 +269,7 @@ class DBCParserBase:
         if self.data:
             return True
 
-        f = io.open(self.file_name, mode = 'rb')
+        f = io.open(self.file_name_, mode = 'rb')
         self.data = f.read()
         f.close()
 
@@ -296,6 +336,7 @@ class InlineStringRecordParser:
         self.unpackers = []
         self.string_field_offset = 0
         self.n_string_fields = 0
+        self.n_pad_fields = 0
         try:
             self.types = self.parser.fmt.types(self.parser.class_name())
             self.n_string_fields = sum([field == 'S' for field in self.types])
@@ -310,11 +351,21 @@ class InlineStringRecordParser:
         # Need to build a two-split custom parser here
         format_str = '<'
         format_idx = 0
+        n_bytes = 0
         for field_idx in range(0, len(self.parser.field_data)):
+            # Don't parse past the record length
+            if n_bytes == self.parser.record_size:
+                break
+
             field_data = self.parser.field_data[field_idx]
             type_idx = min(format_idx, data_fmt and len(data_fmt) - 1 or format_idx)
             field_size = field_data[1]
             for sub_idx in range(0, field_data[2]):
+                n_bytes += field_size
+                # Don't parse past the record length
+                if n_bytes == self.parser.record_size:
+                    break
+
                 if data_fmt and data_fmt[type_idx] == 'S':
                     logging.debug('Unpacker has a inlined string field (name=%s pos=%d): terminating (%s), skipping all consecutive strings, and beginning a new unpacker',
                         field_names[type_idx], field_idx, format_str)
@@ -327,6 +378,17 @@ class InlineStringRecordParser:
                         format_idx += 1
                         type_idx += 1
                         field_idx += 1
+                    continue
+
+                # Padding fields need to be skipped here, and filled with dummy
+                # data on parsing. This way, our data model will not break on
+                # outputting (# of fields, # of data will stay consistent)
+                if data_fmt and 'x' in data_fmt[type_idx]:
+                    logging.debug('Skipping padding field (name=%s pos=%d) of type "%s"', field_names[type_idx], field_idx, data_fmt[type_idx])
+                    format_idx += 1
+                    type_idx += 1
+                    field_idx += 1
+                    self.n_pad_fields += 1
                     continue
 
                 if field_size == 1:
@@ -356,32 +418,32 @@ class InlineStringRecordParser:
         full_data = []
         field_offset = 0
         parsed_string_fields = 0
+
         for int24, unpacker in self.unpackers:
             full_data += unpacker.unpack_from(self.parser.data, offset + field_offset)
             field_offset += unpacker.size
 
             # String fields begin
             if field_offset == self.string_field_offset:
-                while self.parser.data[offset + field_offset] != 0 and parsed_string_fields < self.n_string_fields:
-                    #start, end = self.__getstring(self.parser.data, offset + field_offset, offset + size)
-                    end = self.parser.data.find(b'\x00', offset + field_offset, offset + size)
-                    full_data.append(offset + field_offset)
-                    if parsed_string_fields < self.n_string_fields - 1:
-                        field_offset = end - offset + 4
+                while parsed_string_fields < self.n_string_fields:
+                    if self.parser.data[offset + field_offset] != 0:
+                        end = self.parser.data.find(b'\x00', offset + field_offset, offset + size)
+                        full_data.append(offset + field_offset)
+                        if self.parser.data[end + 4] == 0:
+                            field_offset = end - offset + 1
+                        else:
+                            field_offset = end - offset + 4
                     else:
-                        field_offset = end - offset + 1
+                        full_data.append(0)
+                        field_offset += 4
+
                     parsed_string_fields += 1
 
-                # If some of the consecutive string fields are empty, append
-                # empty fields so we have enough fields in total
-                # (n_string_fields)
-                full_data += [0] * (self.n_string_fields - parsed_string_fields)
-                if parsed_string_fields < self.n_string_fields:
-                    field_offset += 1
+                # Append pad fields with zeros to fill up to correct length
+                full_data += [ 0, ] * self.n_pad_fields
 
             if int24:
                 full_data[-1] &= 0xFFFFFF
-                size_left += 1
 
         return full_data
 
@@ -395,6 +457,12 @@ class LegionWDBParser(DBCParserBase):
 
         self.id_table = []
 
+    def has_offset_map(self):
+        return self.flags & X_OFFSET_MAP
+
+    def has_id_block(self):
+        return self.flags & X_ID_BLOCK
+
     def n_cloned_records(self):
         return self.clone_segment_size // _CLONE.size
 
@@ -406,7 +474,7 @@ class LegionWDBParser(DBCParserBase):
 
     # Inline strings need some (very heavy) custom parsing
     def build_parser(self):
-        if self.flags & X_OFFSET_MAP:
+        if self.has_offset_map():
             self.record_parser = InlineStringRecordParser(self)
         else:
             super().build_parser()
@@ -420,7 +488,7 @@ class LegionWDBParser(DBCParserBase):
             return True
 
     def find_record_offset(self, id_):
-        if self.flags & X_ID_BLOCK:
+        if self.has_id_block():
             for record_id in range(0, self.n_records()):
                 if self.id_table[record_id][0] == id_:
                     return self.id_table[record_id]
@@ -428,7 +496,13 @@ class LegionWDBParser(DBCParserBase):
         else:
             return super().find_record_offset(id_)
 
-    def __build_id_table(self):
+    def offset_map_entry(self, offset):
+        return _ITEMRECORD.unpack_from(self.data, offset)
+
+    def offset_map_entry_size(self):
+        return _ITEMRECORD.size
+
+    def build_id_table(self):
         if self.id_block_offset == 0:
             return
 
@@ -446,10 +520,10 @@ class LegionWDBParser(DBCParserBase):
             # size needs to be fetched from the offset map. The offset map
             # contains sparse entries (i.e., it has last_id-first_id entries,
             # some of which are zeros if there is no dbc id for a given item.
-            if self.flags & X_OFFSET_MAP:
+            if self.has_offset_map():
                 record_index = dbc_id - self.first_id
-                record_data_offset = self.offset_map_offset + record_index * _ITEMRECORD.size
-                data_offset, size = _ITEMRECORD.unpack_from(self.data, record_data_offset)
+                record_data_offset = self.offset_map_offset + record_index * self.offset_map_entry_size()
+                data_offset, size = self.offset_map_entry(record_data_offset)
             else:
                 data_offset = self.data_offset + record_id * self.record_size
 
@@ -474,9 +548,9 @@ class LegionWDBParser(DBCParserBase):
         if not super().open():
             return False
 
-        self.__build_id_table()
+        self.build_id_table()
 
-        logging.debug('Opened %s' % self.file_name)
+        logging.debug('Opened %s' % self.full_name())
         return True
 
 class WDB4Parser(LegionWDBParser):
@@ -501,14 +575,14 @@ class WDB4Parser(LegionWDBParser):
             self.string_block_offset = self.parse_offset + self.records * self.record_size
 
         # Has ID block
-        if self.flags & X_ID_BLOCK:
+        if self.has_id_block():
             self.id_block_offset = self.parse_offset + self.records * self.record_size + self.string_block_size
 
         # Offset map contains offset into file, record size entries in a sparse structure
-        if self.flags & X_OFFSET_MAP:
+        if self.has_offset_map():
             self.offset_map_offset = self.string_block_size
             self.string_block_offset = 0
-            if self.flags & X_ID_BLOCK:
+            if self.has_id_block():
                 self.id_block_offset = self.string_block_size + ((self.last_id - self.first_id) + 1) * _ITEMRECORD.size
 
         # Has clone block
@@ -518,7 +592,7 @@ class WDB4Parser(LegionWDBParser):
         return True
 
     def __str__(self):
-        s = '%s::%s(byte_size=%u, build=%u, timestamp=%u, locale=%#.8x, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u, unk=%u, hash=%#.8x)' % (
+        s = '%s::%s(byte_size=%u, build=%u, timestamp=%u, locale=%#.8x, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u, flags=%u, hash=%#.8x)' % (
                 self.full_name(), self.magic.decode('ascii'), len(self.data), self.build, self.timestamp, self.locale,
                 self.records, self.n_cloned_records(), self.fields, self.record_size,
                 self.string_block_size, self.clone_segment_size, self.first_id,
@@ -591,15 +665,15 @@ class WDB5Parser(LegionWDBParser):
             self.string_block_offset += self.fields * 4
 
         # Has ID block, note that ID-block needs to skip the field data information on WDB5 files
-        if self.flags & X_ID_BLOCK:
+        if self.has_id_block():
             self.id_block_offset = self.parse_offset + self.records * self.record_size + self.string_block_size
             self.id_block_offset += self.fields * 4
 
         # Offset map contains offset into file, record size entries in a sparse structure
-        if self.flags & X_OFFSET_MAP:
+        if self.has_offset_map():
             self.offset_map_offset = self.string_block_size
             self.string_block_offset = 0
-            if self.flags & X_ID_BLOCK:
+            if self.has_id_block():
                 self.id_block_offset = self.string_block_size + ((self.last_id - self.first_id) + 1) * _ITEMRECORD.size
 
         # Has clone block
@@ -627,7 +701,7 @@ class WDB5Parser(LegionWDBParser):
         return True
 
     def __str__(self):
-        s = '%s::%s(byte_size=%u, locale=%#.8x, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, id_index=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u, unk=%u, table_hash=%#.8x, layout_hash=%#.8x)' % (
+        s = '%s::%s(byte_size=%u, locale=%#.8x, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, id_index=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u, flags=%#x, table_hash=%#.8x, layout_hash=%#.8x)' % (
                 self.full_name(), self.magic.decode('ascii'), len(self.data), self.locale,
                 self.records, self.n_cloned_records(), self.fields, self.record_size,
                 self.string_block_size, self.clone_segment_size, self.id_index, self.first_id,
@@ -644,6 +718,122 @@ class WDB5Parser(LegionWDBParser):
 
         if len(self.field_data):
             s += '\nField data: %s' % ', '.join(fields)
+
+        return s
+
+class LegionWCHParser(LegionWDBParser):
+    def is_magic(self): return self.magic == b'WCH5'
+
+    def __init__(self, options, wdb_parser, fname):
+        super().__init__(options, fname)
+
+        self.clone_segment_size = 0 # WCH files never have a clone segment
+        self.wdb_parser = wdb_parser
+
+    def has_id_block(self):
+        return self.wdb_parser.has_id_block()
+
+    def has_offset_map(self):
+        return self.wdb_parser.has_offset_map()
+
+    def parse_header(self):
+        if not super().parse_header():
+            return False
+
+        self.table_hash, self.layout_hash, self.build, self.timestamp, self.first_id, self.last_id, self.locale = _WCH5_HEADER.unpack_from(self.data, self.parse_offset)
+        self.parse_offset += _WCH5_HEADER.size
+
+        # Setup offsets into file, first string block
+        if self.string_block_size > 2:
+            self.string_block_offset = self.parse_offset + self.records * self.record_size
+
+        # Offset map contains offset into file, record size entries in a sparse structure
+        if self.has_offset_map():
+            self.offset_map_offset = self.parse_offset
+            self.string_block_offset = 0
+            self.id_block = 0
+
+        # Has ID block
+        if self.has_id_block():
+            self.id_block_offset = self.parse_offset + self.records * self.record_size + self.string_block_size
+
+        return True
+
+    def build_id_table(self):
+        if self.id_block_offset == 0 and self.offset_map_offset == 0:
+            return
+
+        record_id = 0
+        if self.has_offset_map():
+            while record_id < self.records:
+                ofs_offset_map_entry = self.offset_map_offset + record_id * _WCH_ITEMRECORD.size
+                dbc_id, data_offset, size = _WCH_ITEMRECORD.unpack_from(self.data, ofs_offset_map_entry)
+                self.id_table.append((dbc_id, data_offset, size))
+                record_id += 1
+        elif self.has_id_block():
+            unpacker = struct.Struct('%dI' % self.records)
+            for dbc_id in unpacker.unpack_from(self.data, self.id_block_offset):
+                size = self.record_size
+                data_offset = self.data_offset + record_id * self.record_size
+                self.id_table.append((dbc_id, data_offset, size))
+                record_id += 1
+
+        # If we have an idtable, just index directly to it
+        self.get_record_info = lambda record_id: self.id_table[record_id]
+
+    def is_wch(self):
+        return True
+
+    # WCH files may need a specialized parser building if the parent WDB file
+    # does not use an ID block. If ID block is used, the corresponding WCH file
+    # will also have dynamic width fields. As an interesting side note, the WCF
+    # files actually have record sizes at the correct length, and not padded.
+    def build_parser(self):
+        if self.wdb_parser.flags == 0:
+            self.build_parser_wch5()
+        else:
+            super().build_parser()
+
+    # If the corresponding WDB file does not use an ID block, all fields are 4 bytes long
+    def build_parser_wch5(self):
+        format_str = '<'
+
+        data_fmt = field_names = None
+        if not self.options.raw:
+            data_fmt = self.fmt.types(self.class_name())
+        field_idx = 0
+
+        field_offset = 0
+        for field_data_idx in range(0, len(self.field_data)):
+            field_data = self.field_data[field_data_idx]
+            type_idx = min(field_idx, data_fmt and len(data_fmt) - 1 or field_idx)
+            for sub_idx in range(0, field_data[2]):
+                if data_fmt[type_idx] in ['S', 'H', 'B']:
+                    format_str += 'I'
+                elif data_fmt[type_idx] in ['h', 'b']:
+                    format_str += 'i'
+                else:
+                    format_str += data_fmt[type_idx]
+                field_idx += 1
+
+        if len(format_str) > 1:
+            self.unpackers.append((0xFFFFFFFF, struct.Struct(format_str), field_offset))
+
+        logging.debug('Unpacking plan for %s: %s',
+            self.full_name(),
+            ', '.join(['%s (len=%d, offset=%d)' % (u.format.decode('utf-8'), u.size, o) for _, u, o in self.unpackers]))
+        if len(self.unpackers) == 1:
+            self.record_parser = lambda ro, rs: self.unpackers[0][1].unpack_from(self.data, ro)
+        else:
+            self.record_parser = self.__do_parse
+
+    def __str__(self):
+        s = '%s::%s(byte_size=%u, build=%u, timestamp=%u, locale=%#.8x, records=%u, fields=%u, record_size=%u, string_block_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, table_hash=%#.8x, layout_hash=%#.8x)' % (
+                self.full_name(), self.magic.decode('ascii'), len(self.data), self.build, self.timestamp, self.locale,
+                self.records, self.fields, self.record_size,
+                self.string_block_size, self.first_id,
+                self.last_id, self.data_offset, self.string_block_offset,
+                self.table_hash, self.layout_hash)
 
         return s
 

@@ -6,7 +6,8 @@ _PARSERS = {
     b'WDBC': None,
     b'WDB2': None,
     b'WDB4': dbc.parser.WDB4Parser,
-    b'WDB5': dbc.parser.WDB5Parser
+    b'WDB5': dbc.parser.WDB5Parser,
+    b'WCH5': dbc.parser.LegionWCHParser
 }
 
 class DBCFileIterator:
@@ -43,27 +44,49 @@ class DBCFile:
         self.options = options
         self.file_name = filename
 
-        self.parser = self.__parser()
+        self.parser = self.__parser(filename)
 
-    def __parser(self):
+    def __parser(self, file_name):
         f = None
         # See that file exists already
-        normalized_path = os.path.abspath(self.file_name)
-        for i in ['', '.db2', '.dbc']:
+        normalized_path = os.path.abspath(file_name)
+        for i in ['', '.db2', '.dbc', '.adb']:
             if os.access(normalized_path + i, os.R_OK):
                 f = open(normalized_path + i, 'rb')
                 break
 
         if not f:
-            logging.error('Unable to find DBC file through %s', self.file_name)
+            logging.error('Unable to find DBC file through %s', file_name)
             sys.exit(1)
 
         self.magic = f.read(4)
         f.close()
         parser = _PARSERS.get(self.magic, None)
-        if parser:
-            return parser(self.options, self.file_name)
-        return None
+        if not parser:
+            return None
+
+        parser_obj = None
+
+        # WCH files need special handling. If we are viewing one, we beed to
+        # find a "template wdb file" for the wch file to be able to properly
+        # parse the entries
+        if b'WCH' in self.magic:
+            if self.options.type == 'view' and not self.options.wdb_file:
+                logging.error('Unable to parse WCH file %s without --wdbfile parameter',
+                        self.file_name)
+                sys.exit(1)
+
+            logging.debug('Opening template wdb file %s', self.options.wdb_file)
+
+            wdb_parser = self.__parser(self.options.wdb_file)
+            if not wdb_parser.open():
+                return None
+
+            parser_obj = parser(self.options, wdb_parser, file_name)
+        else:
+            parser_obj = parser(self.options, file_name)
+
+        return parser_obj
 
     def wdb5(self):
         return self.magic == b'WDB5'

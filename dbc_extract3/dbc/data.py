@@ -196,7 +196,7 @@ class DBCRecord(RawDBCRecord):
             field = self._fi[i]
             fmt = self._ff[i]
             type_ = self._fo[i]
-            if not field:
+            if not field or 'x' in fmt:
                 continue
 
             if type_ == 'S' and self._d[i] > 0:

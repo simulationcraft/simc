@@ -50,7 +50,7 @@
     { "data_type": "B", "field": "spec_type",  "formats": { "cpp": "%-2u" } },
     { "data_type": "B", "field": "unk_6",      "formats": { } },
     { "data_type": "H", "field": "id",         "formats": { "cpp": "%-6u" } },
-    { "data_type": "B", "field": "unk_2",      "formats": { } },
+    { "data_type": "H", "field": "unk_2",      "formats": { } },
     { "data_type": "H", "field": "unk_3",      "formats": { } }
   ],
   "CurvePoint": [
@@ -125,6 +125,9 @@
 
     { "data_type": "S", "field": "name" },
     { "data_type": "S", "field": "desc" },
+    { "data_type": "4x", "field": "pad0" },
+    { "data_type": "4x", "field": "pad1" },
+    { "data_type": "4x", "field": "pad2" },
 
     { "data_type": "I", "field": "bag_family" },
     { "data_type": "f", "field": "item_damage_modifier" },
@@ -200,9 +203,7 @@
     { "data_type": "B", "field": "unk_6" },
     { "data_type": "B", "field": "unk_7" },
     { "data_type": "B", "field": "id_artifact" },
-    { "data_type": "B", "field": "unk_9" },
-    { "data_type": "B", "field": "unk_10" },
-    { "data_type": "B", "field": "unk_11" }
+    { "data_type": "B", "field": "unk_9" }
   ],
   "ItemArmorQuality": [
     { "data_type": "f", "field": "v_1",    "formats": { "cpp": "%6.3f" } },
@@ -379,7 +380,7 @@
     { "data_type": "B", "field": "flags_1" },
     { "data_type": "B", "field": "flags_2" },
     { "data_type": "B", "field": "unk_1" },
-    { "data_type": "H", "field": "id" }
+    { "data_type": "I", "field": "id" }
   ],
   "ManifestInterfaceData": [
     { "data_type": "S", "field": "unk" },
@@ -589,7 +590,7 @@
     { "data_type": "H", "field": "base_level" },
     { "data_type": "H", "field": "max_level" },
     { "data_type": "H", "field": "spell_level" },
-    { "data_type": "H", "field": "unk_1" }
+    { "data_type": "B", "field": "unk_1" }
   ],
   "SpellMechanic": [
     { "data_type": "I", "field": "mechanic", "formats": { "cpp": "%2u" } }
@@ -663,7 +664,7 @@
     { "data_type": "f", "field": "min_range_2" },
     { "data_type": "f", "field": "max_range" },
     { "data_type": "f", "field": "max_range_2" },
-    { "data_type": "H", "field": "unk_1" },
+    { "data_type": "I", "field": "unk_1" },
     { "data_type": "I", "field": "unk_2" },
     { "data_type": "B", "field": "unk_3" }
   ],

@@ -47,6 +47,8 @@ parser.add_argument("-p", "--path",  dest = "path",         default = '.',
                     help = "DBC input directory [cwd]")
 parser.add_argument("--cache",       dest = "cache_dir",    default = '',
                     help = "World of Warcraft Cache directory.")
+parser.add_argument("--wdbfile",     dest = "wdb_file",     default = '',
+                    help = "Path to WDB file to determine attributes when using 'view' type on adb files")
 parser.add_argument("args", metavar = "ARGS", type = str, nargs = argparse.REMAINDER)
 options = parser.parse_args()
 
