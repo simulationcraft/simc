@@ -350,7 +350,6 @@ public:
   struct
   {
     real_ppm_t* stormlash;
-    real_ppm_t* doom_vortex;
   } real_ppm;
 
   // Various legendary related values
@@ -5905,7 +5904,7 @@ void shaman_t::trigger_stormlash( const action_state_t* )
 
 void shaman_t::trigger_doom_vortex( const action_state_t* state )
 {
-  if ( ! real_ppm.doom_vortex -> trigger() )
+  if ( ! rng().roll( artifact.doom_vortex.data().proc_chance() ) )
   {
     return;
   }
@@ -6250,7 +6249,6 @@ void shaman_t::init_rng()
   player_t::init_rng();
 
   real_ppm.stormlash   = get_rppm( "stormlash", spec.stormlash );
-  real_ppm.doom_vortex = get_rppm( "doom_vortex", artifact.doom_vortex );
 }
 
 // shaman_t::init_special_effects ===========================================
