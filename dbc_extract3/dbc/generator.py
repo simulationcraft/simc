@@ -44,6 +44,7 @@ def apply_hotfixes(opts, file_name, dbc_file, database):
     # Then, overwrite any existing data in the parameter 'database' with the
     # cached data. This may also include adding new data.
     for cache_file in cache_dbc_files:
+        logging.debug('Applying hotfixes from %s', cache_file.file_name)
         for record in cache_file:
             try:
                 # Add some additional information for debugging purposes
