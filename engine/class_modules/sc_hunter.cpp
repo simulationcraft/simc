@@ -6035,9 +6035,9 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Marked Shot", "if=talent.sidewinders.enabled&(!talent.patient_sniper.enabled|debuff.vulnerability.remains<2)|!talent.sidewinders.enabled" );
   default_list -> add_action( this, "Aimed Shot", "if=cast_time<debuff.vulnerability.remains&(focus+cast_regen>80|debuff.hunters_mark.down)" );
   default_list -> add_talent( this, "Black Arrow" );
-  default_list -> add_action( this, "Multi-shot", " if=spell_targets.multishot>1&(!debuff.hunters_mark.up&buff.marking_targets.up&cast_regen+action.aimed_shot.cast_regen<=focus.deficit)" );
-  default_list -> add_action( this, "Arcane Shot", " if=(!debuff.hunters_mark.up&buff.marking_targets.up)|focus.time_to_max>=2" );
-  default_list -> add_talent( this, "Sidewinders", " if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5))" );
+  default_list -> add_action( this, "Multi-shot", "if=spell_targets.multishot>1&(!debuff.hunters_mark.up&buff.marking_targets.up&cast_regen+action.aimed_shot.cast_regen<=focus.deficit)" );
+  default_list -> add_action( this, "Arcane Shot", "if=(!debuff.hunters_mark.up&buff.marking_targets.up)|focus.time_to_max>=2" );
+  default_list -> add_talent( this, "Sidewinders", "if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5))" );
 
   patientless -> add_action( this, "Arcane Shot", "if=debuff.vulnerability.stack<3&buff.marking_targets.up&debuff.hunters_mark.down" );
   patientless -> add_action( this, "Marked Shot", "if=debuff.vulnerability.stack<3|debuff.hunters_mark.remains<5|(focus<50|focus>80)" );
