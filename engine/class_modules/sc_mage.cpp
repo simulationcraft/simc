@@ -3945,11 +3945,7 @@ struct flamestrike_t : public fire_mage_spell_t
   virtual void execute() override
   {
     fire_mage_spell_t::execute();
-
-    if ( triggers_hot_streak == true )
-    {
-      p() -> buffs.hot_streak -> expire();
-    }
+    p() -> buffs.hot_streak -> expire();
   }
 
   virtual void impact( action_state_t* state ) override
@@ -3988,7 +3984,54 @@ struct flamestrike_t : public fire_mage_spell_t
   }
 };
 
+// Pyrosurge Flamestrike Spell ==========================================================
 
+struct pyrosurge_flamestrike_t : public fire_mage_spell_t
+{
+  aftershocks_t* aftershocks;
+  flame_patch_t* flame_patch;
+
+  pyrosurge_flamestrike_t( mage_t* p, const std::string& options_str ) :
+    fire_mage_spell_t( "pyrosurge_flamestrike", p,
+                       p -> find_specialization_spell( "Flamestrike" ) ),
+                       flame_patch( new flame_patch_t( p, options_str ) )
+  {
+    parse_options( options_str );
+
+    base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
+    background = true;
+    triggers_ignite = true;
+    triggers_hot_streak = false;
+    triggers_pyretic_incantation = true;
+    aoe = -1;
+
+    if ( p -> artifact.aftershocks.rank() )
+    {
+      aftershocks = new aftershocks_t( p );
+      add_child( aftershocks );
+    }
+  }
+
+  virtual action_state_t* new_state() override
+  {
+    return new ignite_spell_state_t( this, target );
+  }
+
+  virtual void impact( action_state_t* state ) override
+  {
+    fire_mage_spell_t::impact( state );
+
+    if ( p() -> artifact.aftershocks.rank() )
+    {
+      aftershocks -> schedule_execute();
+    }
+
+    if ( p() -> talents.flame_patch -> ok() )
+    {
+      flame_patch -> execute();
+    }
+  }
+};
 // Flame On Spell =============================================================
 
 struct flame_on_t : public fire_mage_spell_t
@@ -4922,7 +4965,7 @@ struct icy_veins_t : public frost_mage_spell_t
 struct fire_blast_t : public fire_mage_spell_t
 {
   double pyrosurge_chance;
-  flamestrike_t* pyrosurge_flamestrike;
+  pyrosurge_flamestrike_t* pyrosurge_flamestrike;
   cooldown_t* icd;
   blast_furance_t* blast_furnace;
 
@@ -4930,7 +4973,7 @@ struct fire_blast_t : public fire_mage_spell_t
     fire_mage_spell_t( "fire_blast", p,
                        p -> find_class_spell( "Fire Blast" ) ),
     pyrosurge_chance( 0.0 ),
-    pyrosurge_flamestrike( new flamestrike_t( p, options_str ) ),
+    pyrosurge_flamestrike( new pyrosurge_flamestrike_t( p, options_str ) ),
     blast_furnace( nullptr )
   {
     parse_options( options_str );
@@ -4951,9 +4994,9 @@ struct fire_blast_t : public fire_mage_spell_t
     // TODO: Is the spread range still 10 yards?
     radius = 10;
 
-    pyrosurge_flamestrike -> background = true;
-    pyrosurge_flamestrike -> callbacks = false;
-    pyrosurge_flamestrike -> triggers_hot_streak = false;
+     pyrosurge_flamestrike -> background = true;
+     pyrosurge_flamestrike -> callbacks = false;
+     pyrosurge_flamestrike -> triggers_hot_streak = false;
 
     if ( p -> artifact.blast_furnace.rank() )
     {
