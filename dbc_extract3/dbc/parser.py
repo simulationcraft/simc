@@ -282,6 +282,11 @@ class DBCParserBase:
         # After headers begins data, always
         self.data_offset = self.parse_offset
 
+        # If this is an actual WDB file (or WCH file with -t view), setup the
+        # correct id format to the formatter
+        if not self.is_wch() or self.options.type == 'view':
+            dbc.data._FORMATDB.set_id_format(self.class_name(), self.id_format())
+
         return True
 
     def get_string(self, offset):
@@ -722,6 +727,11 @@ class WDB5Parser(LegionWDBParser):
         return s
 
 class LegionWCHParser(LegionWDBParser):
+    # For some peculiar reason, some WCH files are completely alien, compared
+    # to the rest, and expand all the dynamic width variables to 4 byte fields.
+    # Manually make a list here to support those files in build_parser.
+    __override_dbcs__ = [ 'SpellEffect' ]
+
     def is_magic(self): return self.magic == b'WCH5'
 
     def __init__(self, options, wdb_parser, fname):
@@ -789,12 +799,19 @@ class LegionWCHParser(LegionWDBParser):
     # will also have dynamic width fields. As an interesting side note, the WCF
     # files actually have record sizes at the correct length, and not padded.
     def build_parser(self):
-        if self.wdb_parser.flags == 0:
+        if self.class_name() in self.__override_dbcs__:
+            logging.debug('==NOTE== Overridden DBC: Expanding all record fields to 4 bytes ==NOTE==')
             self.build_parser_wch5()
         else:
             super().build_parser()
 
-    # If the corresponding WDB file does not use an ID block, all fields are 4 bytes long
+    # Override record parsing completely by making a unpacker that generates 4
+    # byte fields for the record. This is necessary in the case of SpellEffect
+    # (as of 2016/7/17 at least), since the actual client data file format is
+    # not honored at all. There does not seem to be an identifying marker in
+    # the client data (or the cache file) to automatically determine when to
+    # use the overridden builder, so __override_dbcs__ contains a list of files
+    # where it is used.
     def build_parser_wch5(self):
         format_str = '<'
 

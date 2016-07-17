@@ -41,6 +41,7 @@ class DBFormat(object):
                         'data-format': [],
                         'data-fields': [],
                         'cpp'        : [],
+                        'id-format'  : '%u',
                     }
 
                 fmt = field_conf.get('data_type', u'I')
@@ -56,6 +57,12 @@ class DBFormat(object):
                 self.data[dbcfile]['cpp'        ].append(field_conf.get('formats', {}).get('cpp', outfmt))
 
             self.data[dbcfile]['parser'] = struct.Struct('=' + ''.join(self.data[dbcfile]['data-format']).replace(u'S', u'I'))
+
+    def set_id_format(self, file_name, formatstr):
+        if file_name not in self.data:
+            raise Exception('Unable to find data format for %s' % file_name)
+
+        self.data[file_name]['id-format'] = formatstr
 
     def formats(self, file_name, formatstr):
         if file_name not in self.data:
@@ -80,4 +87,10 @@ class DBFormat(object):
             raise Exception('Unable to find data format for %s' % file_name)
 
         return self.data[file_name]['parser']
+
+    def id_format(self, file_name):
+        if file_name not in self.data:
+            raise Exception('Unable to find data format for %s' % file_name)
+
+        return self.data[file_name]['id-format']
 

@@ -1,6 +1,66 @@
-import sys, os, re, types, html.parser, urllib, datetime, signal, json, pdb, pathlib, csv, logging, io
+import sys, os, re, types, html.parser, urllib, datetime, signal, json, pdb, pathlib, csv, logging, io, fnmatch
 
 import dbc.db, dbc.data, dbc.constants, dbc.parser, dbc.file
+
+def apply_hotfixes(opts, file_name, dbc_file, database):
+    if not opts.cache_dir:
+        return
+
+    pattern = '%s.*' % dbc_file.class_name()
+    potential_files = []
+    # Get all cache files
+    for dirpath, dirnames, filenames in os.walk(opts.cache_dir):
+        for filename in filenames:
+            if fnmatch.fnmatch(filename, pattern):
+                potential_files.append(os.path.join(dirpath, filename))
+
+    cache_dbc_files = []
+    for potential_file in potential_files:
+        cache_dbc_file = dbc.file.DBCFile(opts, potential_file, dbc_file.parser)
+        if not cache_dbc_file.open():
+            logging.warn('Unable to open cache file %s', potential_file)
+            continue
+
+        # Sanity check table hash and layout hash against the actual client
+        # data file. They must match for the cache to be used
+        if cache_dbc_file.parser.table_hash != dbc_file.parser.table_hash or \
+            cache_dbc_file.parser.layout_hash != dbc_file.parser.layout_hash:
+            logging.debug('Table or Layout hashes do not match, table_hash: cache=%#.8x client_data=%#.8x, layout_hash: cache=%#.8x, client_data=%#.8x',
+                cache_dbc_file.parser.table_hash, dbc_file.parser.table_hash,
+                cache_dbc_file.parser.layout_hash, dbc_file.parser.layout_hash)
+            continue
+
+        # Empty cache files are kinda pointless
+        if cache_dbc_file.parser.n_records() == 0:
+            continue
+
+        cache_dbc_files.append(cache_dbc_file)
+
+    # We have a set of cache files parsed, sort them into ascending timestamp
+    # order. The timestamp in the cache file header defines the last time the
+    # cache file is written .. higher timestamps = more fresh caches.
+    cache_dbc_files.sort(key = lambda v: v.parser.timestamp)
+
+    # Then, overwrite any existing data in the parameter 'database' with the
+    # cached data. This may also include adding new data.
+    for cache_file in cache_dbc_files:
+        for record in cache_file:
+            #try:
+                # Add some additional information for debugging purposes
+                if opts.debug:
+                    if database[record.id].id == record.id:
+                        logging.debug('%s (%d) REPLACE OLD: %s',
+                            cache_file.file_name, cache_file.parser.timestamp, database[record.id])
+                        logging.debug('%s (%d) REPLACE NEW: %s',
+                            cache_file.file_name, cache_file.parser.timestamp, record)
+                    else:
+                        logging.debug('%s (%d) ADD: %s',
+                            cache_file.file_name, cache_file.parser.timestamp, record)
+                database[record.id] = record
+            #except Exception as e:
+            #    logging.error('Error while parsing %s: record=%s, error=%s',
+            #        cache_file.class_name(), record, e)
+            #    sys.exit(1)
 
 # Generic linker
 def link(source_db, source_key, target_db, target_attr):
@@ -253,48 +313,7 @@ class DataGenerator(object):
                         print(dbcf, record, type(record), record._fi)
                         sys.exit(1)
 
-        if not self._options.cache_dir:
-            return True
-
-        cache_files = []
-        files = os.listdir(self._options.cache_dir)
-        for f in files:
-            fn = f[:f.find('.')]
-            if fn in self._dbc:
-                cache_files.append((fn, os.path.abspath(os.path.join(self._options.cache_dir, f))))
-
-        cache_parsers = { }
-        for cache_file in cache_files:
-            if cache_file[0] not in cache_parsers:
-                cache_parsers[cache_file[0]] = { 'parsers': [], 'ids': [ ] }
-
-            p = dbc.parser.get_parser(self._options, cache_file[1])
-            if not p.open_dbc():
-                continue
-
-            cache_parsers[cache_file[0]]['parsers'].append(p)
-
-        for _, data in cache_parsers.items():
-            if len(data['parsers']) == 0:
-                continue
-
-            data['parsers'].sort(key = lambda v: -v._timestamp)
-            dbase = getattr(self, '_%s_db' % data['parsers'][0].name())
-
-            for cache_parser in data['parsers']:
-                if cache_parser._build != self._options.build:
-                    continue
-
-                record = cache_parser.next_record()
-                while record != None:
-                    if record.id not in data['ids']:
-                        if dbase.get(record.id):
-                            logging.debug('Overwrote id %d using cache %s', record.id, cache_parser._fname)
-                        else:
-                            logging.debug('Added id %d using cache %s', record.id, cache_parser._fname)
-                        dbase[record.id] = record
-                        data['ids'].append(record.id)
-                    record = cache_parser.next_record()
+                apply_hotfixes(self._options, self.file_path(i), dbcf, dbase)
 
         return True
 

@@ -5,13 +5,13 @@ import dbc.fmt
 _FORMATDB = None
 
 class RawDBCRecord:
-    __slots__ = ( '_id', '_d' )
+    __slots__ = ( '_id', '_d', '_dbcp' )
 
-    _dbcp = None
+    def dbc_name(self):
+        return self.__class__.__name__.replace('_', '-')
 
     def __init__(self, parser, dbc_id, data):
-        if not self.__class__._dbcp:
-            self.__class__._dbcp = parser
+        self._dbcp = parser
 
         self._id = dbc_id
         self._d = data
@@ -156,7 +156,7 @@ class DBCRecord(RawDBCRecord):
             field_idx = 0
             try:
                 if field == 'id' and self._id > -1:
-                    f.append(self._dbcp.id_format() % self._id)
+                    f.append(_FORMATDB.id_format(self.dbc_name()) % self._id)
                     continue
                 else:
                     field_idx = self._cd[field]
@@ -181,7 +181,7 @@ class DBCRecord(RawDBCRecord):
             else:
                 fmt = self._ff[field_idx]
                 if field == 'id':
-                    fmt = self._dbcp.id_format()
+                    fmt = _FORMATDB.id_format(self.dbc_name())
                 f.append(fmt % self._d[field_idx])
 
         return f
