@@ -18,15 +18,11 @@ spec=destruction
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=pickled_eel
-actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+actions.precombat=summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
 actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
-actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/mana_tap,if=talent.mana_tap.enabled
 actions.precombat+=/incinerate
 
 # Executed every time the actor is available.
@@ -40,7 +36,6 @@ actions+=/immolate,if=remains<=tick_time
 actions+=/immolate,if=talent.roaring_blaze.enabled&remains<duration&action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&charges=2
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&prev_gcd.conflagrate
-actions+=/conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
 actions+=/soul_harvest
@@ -82,4 +77,4 @@ main_hand=edict_of_argus,id=124382,enchant_id=5384
 # gear_armor=895
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
-default_pet=imp
+default_pet=felhunter

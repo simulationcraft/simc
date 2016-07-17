@@ -20,7 +20,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
 actions.precombat+=/mirror_image
 actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/pyroblast
+actions.precombat+=/pyroblast,!talent.mirror_image.enabled|!talent.rune_of_power.enabled
 
 # Executed every time the actor is available.
 
@@ -34,6 +34,10 @@ actions.comb_prep=fire_blast,if=buff.heating_up.up
 actions.comb_prep+=/fireball
 
 actions.combustion_phase=combustion
+actions.combustion_phase+=/use_item,slot=finger2
+actions.combustion_phase+=/blood_fury
+actions.combustion_phase+=/berserking
+actions.combustion_phase+=/arcane_torrent
 actions.combustion_phase+=/call_action_list,name=active_talents
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.up
 actions.combustion_phase+=/fire_blast,if=!prev_off_gcd.fire_blast

@@ -14,13 +14,10 @@ spec=demonology
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=sleeper_sushi
-actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+actions.precombat=summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
 actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_intellect
 
 # Executed every time the actor is available.
 
@@ -53,4 +50,4 @@ main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5384
 # gear_armor=991
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
-default_pet=felhunter
+default_pet=felguard
