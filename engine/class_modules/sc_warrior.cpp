@@ -4183,7 +4183,6 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list -> add_action( this, "Pummel", "if=buff.hammering_blows.up" );
   default_list -> add_action( this, "Heroic Leap", "if=buff.shattered_defenses.down" );
   default_list -> add_talent( this, "Rend", "if=remains<gcd" );
   default_list -> add_action( this, "Hamstring", "if=talent.deadly_calm.enabled&buff.battle_cry.up" );

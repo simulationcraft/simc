@@ -4,8 +4,8 @@ level=100
 race=tauren
 role=attack
 spec=fury
-talents=0021021
-#glyphs=unending_rage/raging_wind/heroic_leap
+talents=1102222
+
 head=faceguard_of_iron_wrath,id=124334,bonus_id=567,upgrade=2
 neck=choker_of_sneering_superiority,id=124219,bonus_id=567,enchant=gift_of_critical_strike,upgrade=2
 shoulders=doomcriers_shoulderplates,id=124343,bonus_id=567,upgrade=2
@@ -30,8 +30,8 @@ level=100
 race=tauren
 role=attack
 spec=fury
-talents=0021021
-#glyphs=unending_rage/raging_wind/heroic_leap
+talents=1102222
+
 head=faceguard_of_iron_wrath,id=124334,bonus_id=567,upgrade=2
 neck=choker_of_sneering_superiority,id=124219,bonus_id=567,enchant=gift_of_critical_strike,upgrade=2
 shoulders=doomcriers_shoulderplates,id=124343,bonus_id=567,upgrade=2
@@ -58,7 +58,7 @@ spec=Arms
 role=attack
 position=back
 talents=0011022
-#glyphs=unending_rage/bull_rush/sweeping_strikes
+
 head=faceguard_of_iron_wrath,id=124334,bonus_id=567,upgrade=2
 neck=choker_of_sneering_superiority,id=124219,bonus_id=567,enchant=gift_of_mastery,upgrade=2
 shoulders=doomcriers_shoulderplates,id=124343,bonus_id=567,upgrade=2

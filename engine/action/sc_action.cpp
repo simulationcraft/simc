@@ -2630,7 +2630,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         }
         virtual double evaluate() override
         {
-          if ( action.player -> last_gcd_action )
+          if ( previously_used != nullptr && action.player -> last_gcd_action )
             return action.player -> last_gcd_action -> internal_id == previously_used -> internal_id;
           return false;
         }
@@ -2648,7 +2648,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         }
         virtual double evaluate() override
         {
-          if ( action.player -> off_gcdactions.size() > 0 )
+          if ( previously_off_gcd != nullptr && action.player -> off_gcdactions.size() > 0 )
           {
             for ( size_t i = 0; i < action.player -> off_gcdactions.size(); i++ )
             {
