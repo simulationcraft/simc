@@ -7756,7 +7756,7 @@ void mage_t::apl_fire()
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
   default_list -> add_action( this, "Shard of the Exodar Warp", "if=buff.bloodlust.down&time>=5" );
-  default_list -> add_action( this, "Rune of Power", "if=recharge_time<cooldown.combustion.remains&buff.combustion.down|((cooldown.combustion.remains+5)>target.time_to_die)" );
+  default_list -> add_talent( this, "Rune of Power", "if=recharge_time<cooldown.combustion.remains&buff.combustion.down|((cooldown.combustion.remains+5)>target.time_to_die)" );
   default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains=0&buff.hot_streak.up|buff.combustion.up" );
   default_list -> add_action( "call_action_list,name=comb_prep,if=cooldown.combustion.remains<6&cooldown.flame_on.remains<6" );
   default_list -> add_action( "call_action_list,name=single_target" );
@@ -7782,11 +7782,11 @@ void mage_t::apl_fire()
   comb_prep -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
   comb_prep -> add_action( this, "Fireball" );
 
-  active_talents -> add_action( this, "Flame On", "if=action.fire_blast.charges<1" );
-  active_talents -> add_action( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)" );
-  active_talents -> add_action( this, "Meteor", "if=cooldown.combustion.remains>10|(cooldown.combustion.remains>target.time_to_die)" );
-  active_talents -> add_action( this, "Cinderstorm", "if=buff.combustion.down" );
-  active_talents -> add_action( this, "Dragon's Breath", "if=equipped.132863" );
+  active_talents -> add_talent( this, "Flame On", "if=action.fire_blast.charges<1" );
+  active_talents -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1)" );
+  active_talents -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>10|(cooldown.combustion.remains>target.time_to_die)" );
+  active_talents -> add_talent( this, "Cinderstorm", "if=buff.combustion.down" );
+  active_talents -> add_talent( this, "Dragon's Breath", "if=equipped.132863" );
 
   single_target -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time" );
   single_target -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
@@ -7795,6 +7795,7 @@ void mage_t::apl_fire()
   single_target -> add_action( this, "Fire Blast", "if=buff.hot_streak.down&buff.heating_up.up" );
   single_target -> add_action( "call_action_list,name=active_talents" );
   single_target -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454" );
+  single_target -> add_action( this, "Fireball" );
 }
 
 // Frost Mage Action List ==============================================================================================================
