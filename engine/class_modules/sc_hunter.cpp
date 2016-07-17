@@ -45,6 +45,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* true_aim;
     buff_t* lacerate;
     buff_t* t18_2pc_open_wounds;
+    buff_t* mark_of_helbrine;
   } debuffs;
 
   struct dots_t
@@ -776,6 +777,9 @@ public:
 
     if ( ab::school == SCHOOL_PHYSICAL )
       d *= 1.0 + td( t ) -> debuffs.t18_2pc_open_wounds -> value();
+
+    if ( td( t ) -> debuffs.mark_of_helbrine -> up() )
+      d *= 1.0 + td( t ) -> debuffs.mark_of_helbrine -> value();
 
     return d;
   }
@@ -4440,6 +4444,9 @@ struct harpoon_t: public hunter_melee_attack_t
 
     if ( on_the_trail )
       on_the_trail -> execute();
+
+    if ( p() -> legendary.sv_waist )
+      td( execute_state -> target ) -> debuffs.mark_of_helbrine -> trigger();
   }
 
   virtual bool ready() override
@@ -5288,6 +5295,10 @@ dots( dots_t() )
   debuffs.t18_2pc_open_wounds = buff_creator_t( *this, "open_wounds" )
                                 .spell( p -> find_spell( 188400 ) )
                                 .default_value( p -> find_spell( 188400 ) -> effectN( 1 ).percent() );
+
+  debuffs.mark_of_helbrine  = buff_creator_t( *this, "mark_of_helbrine" )
+                                .spell( p -> find_spell( 213156 ) )
+                                .default_value( p -> find_spell( 213154 ) -> effectN( 1 ).percent() );
 }
 
 
