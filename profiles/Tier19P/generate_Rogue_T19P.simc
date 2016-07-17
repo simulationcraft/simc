@@ -3,7 +3,7 @@ level=110
 race=night_elf
 role=attack
 position=back
-talents=2110131
+talents=3110131
 artifact=43:0:0:0:0:323:3:325:3:328:3:330:3:331:2:332:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
@@ -30,7 +30,7 @@ level=110
 race=night_elf
 role=attack
 position=back
-talents=3030021
+talents=2010021
 artifact=44:0:0:0:0:1052:1:1054:1:1057:1:1060:3:1061:3:1064:3:1065:3:1066:3:1348:1
 spec=outlaw
 

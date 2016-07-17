@@ -4,7 +4,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=1210021
+talents=1230011
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.
@@ -64,30 +64,30 @@ actions.generator+=/gloomblade,if=energy.time_to_max<2.5
 actions.generator+=/backstab,if=energy.time_to_max<2.5
 
 head=felblade_hood,id=124263,bonus_id=567,upgrade=2
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant_id=5320
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant_id=5321
 shoulders=felblade_spaulders,id=124274,bonus_id=567,upgrade=2
-back=cloak_of_desperate_temerity,id=124134,bonus_id=567,upgrade=2,enchant_id=5313
+back=cloak_of_desperate_temerity,id=124134,bonus_id=567,upgrade=2,enchant_id=5314
 chest=felblade_chestguard,id=124248,bonus_id=567,upgrade=2
 wrists=bloodcult_bracers,id=124279,bonus_id=567,upgrade=2
 hands=felblade_gloves,id=124257,bonus_id=567,upgrade=2
 waist=waistwrap_of_banishment,id=124276,bonus_id=567,upgrade=2
 legs=empowered_demonskin_kilt,id=124266,bonus_id=567,upgrade=2
 feet=jungle_assassins_footpads,id=124252,bonus_id=567,upgrade=2
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5327
-finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5327
-trinket1=soul_capacitor,id=124225,bonus_id=567,upgrade=2
+finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5328
+finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5328
+trinket1=stone_of_the_elements,id=128024,upgrade=2
 trinket2=bleeding_hollow_toxin_vessel,id=124520,bonus_id=567,upgrade=2
-main_hand=fang_of_the_pit,id=124367,bonus_id=567,upgrade=2,enchant_id=5334
-off_hand=hammer_of_wicked_infusion,id=124371,bonus_id=567,upgrade=2,enchant_id=5334
+main_hand=fang_of_the_pit,id=124367,bonus_id=567,upgrade=2,enchant_id=5330
+off_hand=fang_of_the_pit,id=124367,bonus_id=567,upgrade=2,enchant_id=5330
 
 # Gear Summary
-# gear_ilvl=741.88
-# gear_agility=4982
+# gear_ilvl=741.25
+# gear_agility=4589
 # gear_stamina=6888
-# gear_crit_rating=3282
-# gear_haste_rating=1516
-# gear_mastery_rating=1308
-# gear_versatility_rating=270
+# gear_crit_rating=3072
+# gear_haste_rating=1528
+# gear_mastery_rating=1231
+# gear_versatility_rating=930
 # gear_armor=1450
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

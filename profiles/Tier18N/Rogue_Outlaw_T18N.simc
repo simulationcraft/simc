@@ -4,7 +4,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=3000021
+talents=3010022
 spec=outlaw
 
 # This default action priority list is automatically created based on your character.
@@ -59,30 +59,30 @@ actions.generator+=/pistol_shot,if=buff.opportunity.up&energy<60
 actions.generator+=/saber_slash
 
 head=felblade_hood,id=124263
-neck=choker_of_the_great_betrayer,id=124210,enchant_id=5318
+neck=choker_of_the_great_betrayer,id=124210,enchant_id=5321
 shoulders=felblade_spaulders,id=124274
-back=cloak_of_tangible_dread,id=124135,enchant_id=5311
+back=cloak_of_desperate_temerity,id=124134,enchant_id=5314
 chest=felblade_chestguard,id=124248
-wrists=terrorweave_wristwraps,id=127982
-hands=felfinger_runegloves,id=124254
+wrists=bloodcult_bracers,id=124279
+hands=felblade_gloves,id=124257
 waist=waistwrap_of_banishment,id=124276
-legs=felblade_leggings,id=124269
-feet=oppressors_merciless_treads,id=124251
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5325
-finger2=portal_key_signet,id=124189,enchant_id=5325
-trinket1=soul_capacitor,id=124225
+legs=empowered_demonskin_kilt,id=124266
+feet=jungle_assassins_footpads,id=124252
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5328
+finger2=portal_key_signet,id=124189,enchant_id=5328
+trinket1=stone_of_the_elements,id=128024
 trinket2=bleeding_hollow_toxin_vessel,id=124520
-main_hand=demonblade_eviscerator,id=124368,enchant_id=5337
-off_hand=demonblade_eviscerator,id=124368,enchant_id=5337
+main_hand=fang_of_the_pit,id=124367,enchant_id=5330
+off_hand=fang_of_the_pit,id=124367,enchant_id=5330
 
 # Gear Summary
-# gear_ilvl=700.94
-# gear_agility=3383
-# gear_stamina=4670
-# gear_crit_rating=1395
-# gear_haste_rating=1803
-# gear_mastery_rating=1019
-# gear_versatility_rating=200
-# gear_armor=1170
+# gear_ilvl=700.63
+# gear_agility=3069
+# gear_stamina=4605
+# gear_crit_rating=2052
+# gear_haste_rating=1054
+# gear_mastery_rating=849
+# gear_versatility_rating=754
+# gear_armor=1157
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

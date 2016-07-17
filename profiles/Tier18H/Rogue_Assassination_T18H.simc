@@ -3,7 +3,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=2110131
+talents=3110131
 spec=assassination
 
 # This default action priority list is automatically created based on your character.
@@ -50,30 +50,30 @@ actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=c
 actions+=/rupture,cycle_targets=1,max_cycle_targets=3,if=combo_points>4&refreshable&spell_targets.fan_of_knives>1
 
 head=felblade_hood,id=124263,bonus_id=566
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5319
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5321
 shoulders=felblade_spaulders,id=124274,bonus_id=566
-back=cloak_of_tangible_dread,id=124135,bonus_id=566,enchant_id=5312
+back=cloak_of_desperate_temerity,id=124134,bonus_id=566,enchant_id=5314
 chest=felblade_chestguard,id=124248,bonus_id=566
-wrists=manacles_of_the_multitudes,id=124280,bonus_id=566
-hands=felfinger_runegloves,id=124254,bonus_id=566
+wrists=bloodcult_bracers,id=124279,bonus_id=566
+hands=felblade_gloves,id=124257,bonus_id=566
 waist=waistwrap_of_banishment,id=124276,bonus_id=566
-legs=felblade_leggings,id=124269,bonus_id=566
-feet=toxicologists_treated_boots,id=124250,bonus_id=566
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5326
-finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5326
-trinket1=bleeding_hollow_toxin_vessel,id=124520,bonus_id=566
+legs=empowered_demonskin_kilt,id=124266,bonus_id=566
+feet=jungle_assassins_footpads,id=124252,bonus_id=566
+finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant_id=5328
+finger2=portal_key_signet,id=124189,bonus_id=566,enchant_id=5328
+trinket1=stone_of_the_elements,id=128024
 trinket2=soul_capacitor,id=124225,bonus_id=566
-main_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5384
-off_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5384
+main_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5330
+off_hand=fang_of_the_pit,id=124367,bonus_id=566,enchant_id=5330
 
 # Gear Summary
-# gear_ilvl=714.38
-# gear_agility=3836
-# gear_stamina=5290
-# gear_crit_rating=1483
-# gear_haste_rating=1265
-# gear_mastery_rating=1949
-# gear_versatility_rating=266
-# gear_armor=1265
+# gear_ilvl=713.13
+# gear_agility=3809
+# gear_stamina=5248
+# gear_crit_rating=2337
+# gear_haste_rating=1212
+# gear_mastery_rating=975
+# gear_versatility_rating=754
+# gear_armor=1258
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
