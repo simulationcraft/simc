@@ -1833,10 +1833,10 @@ public:
     if ( p() -> buff.mana_tea -> up() && ab::data().affected_by( p() -> talent.mana_tea -> effectN( 1 ) ) )
       c += p() -> buff.mana_tea -> value(); // saved as -50%
 
-    if ( p() -> buff.serenity -> check() && ab::data().affected_by( p() -> talent.serenity -> effectN( 1 ) ) )
+    if ( p() -> buff.serenity -> up() && ab::data().affected_by( p() -> talent.serenity -> effectN( 1 ) ) )
       c += p() -> talent.serenity -> effectN( 1 ).percent(); // Saved as -100
 
-    if ( p() -> buff.bok_proc -> check() && ab::data().affected_by( p() -> passives.bok_proc -> effectN( 1 ) ) )
+    if ( p() -> buff.bok_proc -> up() && ab::data().affected_by( p() -> passives.bok_proc -> effectN( 1 ) ) )
       c += p() -> passives.bok_proc -> effectN ( 1 ).percent(); // Saved as -100
 
     return c;
@@ -1852,7 +1852,7 @@ public:
     }
 
     // Update the cooldown while Serenity is active
-    if ( p() -> buff.serenity -> check() && ab::data().affected_by( p() -> talent.serenity -> effectN( 4 ) ) )
+    if ( p() -> buff.serenity -> up() && ab::data().affected_by( p() -> talent.serenity -> effectN( 4 ) ) )
       cd *= 1 + p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50
 
     ab::update_ready( cd );
@@ -1899,7 +1899,7 @@ public:
       if ( td( s -> target ) -> dots.touch_of_death -> is_ticking() )
       {
         if ( s -> action -> harmful )
-          p() -> gale_burst_touch_of_death_bonus += ( p() -> artifact.gale_burst.value() * ( p() -> buff.storm_earth_and_fire -> up() ? 3 : 1 ) ) * s -> result_amount;
+          p() -> gale_burst_touch_of_death_bonus += ( p() -> artifact.gale_burst.percent() * ( p() -> buff.storm_earth_and_fire -> up() ? 3 : 1 ) ) * s -> result_amount;
       }
     }
     ab::impact( s );
@@ -3534,15 +3534,16 @@ struct touch_of_death_t: public monk_spell_t
 
  void last_tick( dot_t* dot ) override
   {
-    monk_spell_t::last_tick( dot );
-
     if ( p() -> artifact.gale_burst.rank() )
     {
       gale_burst -> base_dd_min = p() -> gale_burst_touch_of_death_bonus;
       gale_burst -> base_dd_max = p() -> gale_burst_touch_of_death_bonus;
       gale_burst -> execute();
+      p() -> gale_burst_touch_of_death_bonus = 0;
     }
-  }
+ 
+    monk_spell_t::last_tick( dot );
+ }
 
   virtual void execute() override
   {
