@@ -1898,7 +1898,7 @@ struct frost_wolf_t : public doom_wolf_base_t
   {
     snowstorm_t( frost_wolf_t* player ) :
       super( player, "snowstorm", player -> find_spell( 198483 ) )
-    { background = true; }
+    { background = true; aoe = -1; }
   };
 
   frost_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "frost_wolf" )
@@ -1945,7 +1945,7 @@ struct fire_wolf_t : public doom_wolf_base_t
   {
     fire_nova_t( fire_wolf_t* player ) :
       super( player, "fire_nova", player -> find_spell( 198480 ) )
-    { background = true; }
+    { background = true; aoe = -1; }
   };
 
   fire_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "fiery_wolf" )
@@ -1998,7 +1998,7 @@ struct lightning_wolf_t : public doom_wolf_base_t
   {
     thunder_bite_t( lightning_wolf_t* player ) :
       super( player, "thunder_bite", player -> find_spell( 198485 ) )
-    { background = true; }
+    { background = true; chain_multiplier = data().effectN( 1 ).chain_multiplier(); }
   };
 
   buff_t* crackling_surge;
