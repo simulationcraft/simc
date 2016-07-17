@@ -1166,7 +1166,7 @@ struct bloodthirst_t: public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     radius = 5;
-    weapon_multiplier = 2.17;//FIXME
+    weapon_multiplier *= 0.95;//FIXME
     weapon_multiplier *= 1.0 + p -> artifact.thirst_for_battle.percent();
     if ( p -> non_dps_mechanics )
     {
@@ -1237,7 +1237,7 @@ struct furious_slash_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> off_hand_weapon );
-    weapon_multiplier = 2.71; //FIXME
+    weapon_multiplier *= 0.95;//FIXME
     weapon_multiplier *= 1.0 + p -> artifact.wild_slashes.percent();
   }
 
@@ -2164,7 +2164,7 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    weapon_multiplier = 1.46; //FIXME
+    weapon_multiplier *= 0.95;//FIXME
     if ( p -> talents.inner_rage -> ok() )
     {
       weapon_multiplier *= 1.0 + 1.5; //FIXME
@@ -2350,6 +2350,7 @@ struct rampage_attack_t: public warrior_attack_t
     aoe_targets( p -> spec.meat_cleaver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
   {
     dual = true;
+    weapon_multiplier *= 0.95;//FIXME
     weapon_multiplier *= 1.0 + p -> artifact.unstoppable.percent();
   }
 
@@ -2740,7 +2741,7 @@ struct slam_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 2.01; //FIXME
+    weapon_multiplier *= 1.33;//FIXME
     weapon_multiplier *= 1.0 + p -> artifact.crushing_blows.percent();
     base_costs[RESOURCE_RAGE] = 20; //FIXME
   }
@@ -2925,7 +2926,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
     warrior_attack_t( "whirlwind_oh", p, whirlwind )
   {
     aoe = -1;
-    weapon_multiplier = 0.45; //FIXME
+    weapon_multiplier *= 0.95;//FIXME
   }
 
   double action_multiplier() const override
@@ -2950,7 +2951,7 @@ struct fury_whirlwind_mh_t: public warrior_attack_t
     warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
     aoe = -1;
-    weapon_multiplier = 0.45; //FIXME
+    weapon_multiplier *= 0.95;//FIXME
   }
 
   double action_multiplier() const override
@@ -3057,7 +3058,7 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
     aoe = -1;
-    weapon_multiplier = 0.61; //FIXME
+    weapon_multiplier *= 0.85;//FIXME
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
   }
 
@@ -3088,7 +3089,8 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
 
     if ( p() -> talents.fervor_of_battle -> ok() && t == target )
     {
-      am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
+      am *= 1.3; //FIXME
+      //am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
     }
 
     return am;
@@ -3107,7 +3109,7 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
     warrior_attack_t( "whirlwind_mh", p, whirlwind )
   {
     aoe = -1;
-    weapon_multiplier = 0.61; //FIXME
+    weapon_multiplier *= 0.85;//FIXME
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
   }
 
@@ -3148,7 +3150,8 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
 
     if ( p() -> talents.fervor_of_battle -> ok() && t == target )
     {
-      am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
+      am *= 1.3; //FIXME
+      //am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
     }
 
     return am;
@@ -3806,11 +3809,6 @@ void warrior_t::init_spells()
     third -> weapon = &( this -> main_hand_weapon );
     fourth -> weapon = &( this -> off_hand_weapon );
     fifth -> weapon = &( this -> main_hand_weapon );
-    first -> weapon_multiplier -= 0.08; //FIXME
-    second -> weapon_multiplier -= 0.08;
-    third -> weapon_multiplier -= 0.08;
-    fourth -> weapon_multiplier -= 0.08;
-    fifth -> weapon_multiplier -= 0.08;
     this -> rampage_attacks.push_back( first );
     this -> rampage_attacks.push_back( second );
     this -> rampage_attacks.push_back( third );
