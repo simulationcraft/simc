@@ -1858,7 +1858,7 @@ public:
 
     ab::update_ready( cd );
   }
-
+  
   virtual void consume_resource()
   {
     ab::consume_resource();
@@ -7041,7 +7041,7 @@ double monk_t::composite_spell_crit_chance_multiplier() const
 
 double monk_t::composite_player_multiplier( school_e school ) const
 {
-  double m = base_t::composite_player_multiplier( school );
+  double m = player_t::composite_player_multiplier( school );
 
   m *= 1.0 + spec.stance_of_the_fierce_tiger -> effectN( 3 ).percent();
 
@@ -7050,7 +7050,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
     double ser_mult = talent.serenity -> effectN( 2 ).percent();
     if ( artifact.spiritual_focus.rank() )
       ser_mult += artifact.spiritual_focus.data().effectN( 5 ).percent();
-    m *= ser_mult;
+    m *= 1 + ser_mult;
   }
 
   if ( buff.storm_earth_and_fire -> up() )
@@ -7074,7 +7074,7 @@ double monk_t::composite_player_multiplier( school_e school ) const
 
 double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 {
-  double cam = base_t::composite_attribute_multiplier( attr );
+  double cam = player_t::composite_attribute_multiplier( attr );
 
   if ( attr == ATTR_STAMINA )
     cam *= 1.0 + spec.stagger ->effectN( 6 ).percent();
@@ -7086,14 +7086,14 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 
 double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
-  double m = base_t::composite_player_heal_multiplier( s );
+  double m = player_t::composite_player_heal_multiplier( s );
 
   if ( buff.serenity -> up() )
   {
     double ser_mult = talent.serenity -> effectN( 3 ).percent();
     if ( artifact.spiritual_focus.rank() )
       ser_mult += artifact.spiritual_focus.data().effectN( 6 ).percent();
-    m *= ser_mult;
+    m *= 1+ ser_mult;
   }
 
   if ( buff.storm_earth_and_fire -> up() )
@@ -7111,7 +7111,7 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 
 double monk_t::composite_melee_expertise( const weapon_t* weapon ) const
 {
-  double e = base_t::composite_melee_expertise( weapon );
+  double e = player_t::composite_melee_expertise( weapon );
 
   e += spec.stagger -> effectN( 12 ).percent();
 
@@ -7148,7 +7148,7 @@ double monk_t::composite_attack_power_multiplier() const
 
 double monk_t::composite_parry() const
 {
-  double p = base_t::composite_parry();
+  double p = player_t::composite_parry();
 
   return p;
 }
@@ -7157,7 +7157,7 @@ double monk_t::composite_parry() const
 
 double monk_t::composite_dodge() const
 {
-  double d = base_t::composite_dodge();
+  double d = player_t::composite_dodge();
 
   if ( buff.brew_stache -> up() )
     d += buff.brew_stache -> value();
@@ -7181,7 +7181,7 @@ double monk_t::composite_dodge() const
 
 double monk_t::composite_crit_avoidance() const
 {
-  double c = base_t::composite_crit_avoidance();
+  double c = player_t::composite_crit_avoidance();
 
   c += spec.stagger -> effectN( 8 ).percent();
 
@@ -7216,7 +7216,7 @@ double monk_t::composite_mastery_rating() const
 
 double monk_t::composite_rating_multiplier( rating_e rating ) const
 {
-  double m = base_t::composite_rating_multiplier( rating );
+  double m = player_t::composite_rating_multiplier( rating );
 
   return m;
 }
