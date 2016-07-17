@@ -72,7 +72,7 @@ legs=empowered_demonskin_kilt,id=124266,bonus_id=567,upgrade=2
 feet=jungle_assassins_footpads,id=124252,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5328
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5328
-trinket1=stone_of_the_elements,id=128024,upgrade=2
+trinket1=soul_capacitor,id=124225,bonus_id=567,upgrade=2
 trinket2=bleeding_hollow_toxin_vessel,id=124520,bonus_id=567,upgrade=2
 main_hand=fang_of_the_pit,id=124367,bonus_id=567,upgrade=2,enchant_id=5330
 off_hand=fang_of_the_pit,id=124367,bonus_id=567,upgrade=2,enchant_id=5330
