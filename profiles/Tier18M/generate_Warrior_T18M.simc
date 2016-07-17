@@ -4,7 +4,7 @@ level=100
 race=tauren
 role=attack
 spec=fury
-talents=1102222
+talents=2313133
 
 head=faceguard_of_iron_wrath,id=124334,bonus_id=567,upgrade=2
 neck=choker_of_sneering_superiority,id=124219,bonus_id=567,enchant=gift_of_critical_strike,upgrade=2
@@ -30,7 +30,7 @@ level=100
 race=tauren
 role=attack
 spec=fury
-talents=1102222
+talents=2313133
 
 head=faceguard_of_iron_wrath,id=124334,bonus_id=567,upgrade=2
 neck=choker_of_sneering_superiority,id=124219,bonus_id=567,enchant=gift_of_critical_strike,upgrade=2
