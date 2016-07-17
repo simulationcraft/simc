@@ -3489,7 +3489,10 @@ struct gale_burst_t: public monk_spell_t
   {
     background = true;
     may_crit = false;
+    school = SCHOOL_PHYSICAL;
   }
+
+  virtual double target_armor( player_t* ) const override { return 0; }
 };
 
 struct touch_of_death_t: public monk_spell_t
