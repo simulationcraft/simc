@@ -1234,7 +1234,7 @@ struct ghoul_pet_t : public dt_pet_t
     }
   };
 
-  ghoul_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "Ghoul" )
+  ghoul_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "ghoul" )
   { }
 
   void init_base_stats() override
@@ -1305,7 +1305,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
     }
   };
 
-  sludge_belcher_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "Sludge_Belcher" )
+  sludge_belcher_pet_t( death_knight_t* owner ) : dt_pet_t( owner, "sludge_belcher" )
   { }
 
   void init_base_stats() override
@@ -1428,7 +1428,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     { }
   };
 
-  gargoyle_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "Gargoyle", true, false )
+  gargoyle_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "gargoyle", true, false )
   { regen_type = REGEN_DISABLED; }
 
   void init_base_stats() override
@@ -1510,7 +1510,7 @@ struct valkyr_pet_t : public death_knight_pet_t
 
   buff_t* shadow_empowerment;
 
-  valkyr_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "Val'kyr_Battlemaiden", true, false )
+  valkyr_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "valkyr_battlemaiden", true, false )
   { regen_type = REGEN_DISABLED; }
 
   double composite_player_multiplier( school_e s ) const override
@@ -5748,7 +5748,134 @@ void death_knight_t::default_apl_frost()
 
 void death_knight_t::default_apl_unholy()
 {
-    // TODO: mrdmnd - implement
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  action_priority_list_t* def       = get_action_priority_list( "default"   );
+  action_priority_list_t* valkyr    = get_action_priority_list( "valkyr"    );
+  action_priority_list_t* generic   = get_action_priority_list( "generic"   );
+  action_priority_list_t* aoe       = get_action_priority_list( "aoe"       );
+
+  std::string flask_name = ( true_level >  100 ) ? "countess_armies" :
+                           ( true_level >= 90  ) ? "greater_draenic_strength_flask" :
+                           ( true_level >= 85  ) ? "winters_bite" :
+                           ( true_level >= 80  ) ? "titanic_strength" :
+                           "";
+  std::string food_name = ( true_level >  90 ) ? "buttered_sturgeon" :
+                          ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+                          ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+                          "";
+  std::string potion_name = ( true_level >= 90 ) ? "draenic_strength" :
+                            ( true_level >= 85 ) ? "mogu_power" :
+                            ( true_level >= 80 ) ? "golemblood_potion" :
+                            "";
+
+  // Flask
+  if ( sim -> allow_flasks && true_level >= 80 )
+  {
+    precombat -> add_action( "flask,type=" + flask_name );
+  }
+
+  // Food
+  if ( sim -> allow_food && true_level >= 80 )
+  {
+    precombat -> add_action( "food,type=" + food_name );
+  }
+
+  // Snapshot stats
+  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  // Precombat potion
+  if ( sim -> allow_potions && true_level >= 80 )
+  {
+    precombat -> add_action( "potion,name=" + potion_name );
+  }
+
+  precombat -> add_action( this, "Raise Dead" );
+  precombat -> add_action( this, "Army of the Dead" );
+
+  def -> add_action( "auto_attack" );
+
+  // Racials
+  def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
+  def -> add_action( "blood_fury" );
+  def -> add_action( "berserking" );
+
+  // On-use items
+  for ( const auto& item : items )
+  {
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
+    }
+  }
+
+  // In-combat potion
+  if ( sim -> allow_potions && true_level >= 80  )
+  {
+    def -> add_action( "potion,name=" + potion_name + ",if=cooldown.summon_gargoyle.remains>165&!talent.dark_arbiter.enabled" );
+    def -> add_action( "potion,name=" + potion_name + ",if=cooldown.dark_arbiter.remains>165&talent.dark_arbiter.enabled" );
+  }
+
+  // Generic things that should be always done
+  def -> add_action( this, "Outbreak", "target_if=!dot.virulent_plague.ticking" );
+  def -> add_action( this, "Dark Transformation" );
+  def -> add_talent( this, "Blighted Rune Weapon" );
+
+  // Pick an APL to run
+  def -> add_action( "run_action_list,name=valkyr,if=pet.valkyr_battlemaiden.active" );
+  def -> add_action( "call_action_list,name=generic" );
+
+  // Default generic target APL
+
+  generic -> add_talent( this, "Dark Arbiter", "if=runic_power>80" );
+  generic -> add_action( this, "Summon Gargoyle" );
+
+  // Death coilage
+  generic -> add_action( this, "Death Coil", "if=runic_power>80" );
+  generic -> add_action( this, "Death Coil", "if=talent.dark_arbiter.enabled&buff.sudden_doom.react&cooldown.dark_arbiter.remains>5" );
+  generic -> add_action( this, "Death Coil", "if=!talent.dark_arbiter.enabled&buff.sudden_doom.react" );
+
+  // Soul reapering
+  generic -> add_talent( this, "Soul Reaper", "if=debuff.festering_wound.stack>=3" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.soul_reaper.up&!debuff.festering_wound.up" );
+  generic -> add_action( this, "Scourge Strike", "if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1" );
+  generic -> add_talent( this, "Clawing Shadows", "if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1" );
+
+  // Misc AOE things
+  generic -> add_talent( this, "Defile" );
+  generic -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
+
+  // Single target base rotation
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<=4" );
+  generic -> add_action( this, "Scourge Strike", "if=buff.necrosis.react" );
+  generic -> add_talent( this, "Clawing Shadows", "if=buff.necrosis.react" );
+  generic -> add_action( this, "Scourge Strike", "if=buff.unholy_strength.react" );
+  generic -> add_talent( this, "Clawing Shadows", "if=buff.unholy_strength.react" );
+  generic -> add_action( this, "Scourge Strike", "if=rune>=3" );
+  generic -> add_talent( this, "Clawing Shadows", "if=rune>=3" );
+
+  // Death coilage when nothing else to do
+  generic -> add_action( this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15" );
+  generic -> add_action( this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up" );
+  generic -> add_action( this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15" );
+  generic -> add_action( this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled" );
+
+  // Generic AOE actions to be done
+  aoe -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=2" );
+  aoe -> add_talent( this, "Epidemic", "if=spell_targets.epidemic>4" );
+  aoe -> add_action( this, "Scourge Strike", "if=spell_targets.scourge_strike>=2&(dot.death_and_decay.ticking|dot.defile.ticking)" );
+  aoe -> add_talent( this, "Clawing Shadows", "if=spell_targets.clawing_shadows>=2&(dot.death_and_decay.ticking|dot.defile.ticking)" );
+  aoe -> add_talent( this, "Epidemic", "if=spell_targets.epidemic>2" );
+
+  // Valkyr APL uses many a runic power
+  valkyr -> add_action( this, "Death Coil" );
+
+  // Misc AOE things
+  valkyr -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
+
+  // Single target base rotation when Valkyr is around
+  valkyr -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<=6" );
+  valkyr -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up" );
+  valkyr -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up" );
 }
 
 // death_knight_t::init_actions =============================================
@@ -5763,13 +5890,24 @@ void death_knight_t::init_action_list()
     return;
   }
 
-  if ( !action_list_str.empty() )
+  if ( ! action_list_str.empty() )
   {
     player_t::init_action_list();
     return;
   }
 
   clear_action_priority_lists();
+
+  switch ( specialization() )
+  {
+    case DEATH_KNIGHT_UNHOLY:
+      default_apl_unholy();
+      break;
+    default:
+      break;
+  }
+
+  use_default_action_list = true;
 
   player_t::init_action_list();
 }

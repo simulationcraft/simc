@@ -6,6 +6,12 @@ position=back
 talents=2001002
 spec=frost
 
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
 head=demongaze_helm,id=124332
 neck=corrupted_talonguard_pendant,id=124218,enchant=gift_of_mastery
 shoulders=demongaze_pauldrons,id=124344

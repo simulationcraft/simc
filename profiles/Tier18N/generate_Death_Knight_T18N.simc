@@ -56,7 +56,7 @@ race=blood_elf
 spec=unholy
 role=attack
 position=back
-talents=2001003
+talents=3330021
 #glyphs=
 head=demongaze_helm,id=124332
 neck=corrupted_talonguard_pendant,id=124218,enchant=gift_of_multistrike
