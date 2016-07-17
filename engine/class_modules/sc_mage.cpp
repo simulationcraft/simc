@@ -7770,7 +7770,7 @@ void mage_t::apl_frost()
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time>0" );
-  default_list -> add_action( this, "Rune of Power", "if=(charges_fractional>=2)|(buff.icy_veins.up&!talent.ray_of_frost.enabled)|(cooldown.icy_veins.remains>target.time_to_die)|cooldown.ray_of_frost.remains=0" );
+  default_list -> add_talent( this, "Rune of Power", "if=(charges_fractional>=2)|(buff.icy_veins.up&!talent.ray_of_frost.enabled)|(cooldown.icy_veins.remains>target.time_to_die)|cooldown.ray_of_frost.remains=0" );
   default_list -> add_action( "call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0" );
   default_list -> add_action( "call_action_list,name=single_target" );
 
@@ -7791,11 +7791,12 @@ void mage_t::apl_frost()
   {
     cooldowns -> add_action( racial_actions[i] );
   }
-  active_talents -> add_action( this, "Ray of Frost", "buff.rune_of_power.up|!talent.rune_of_power.enabled" );
-  active_talents -> add_action( this, "Ice Nova" );
-  active_talents -> add_action( this, "Frozen Touch", "if=buff.fingers_of_frost.stack=0" );
-  active_talents -> add_action( this, "Glacial Spike" );
-  active_talents -> add_action( this, "Comet Storm" );
+
+  active_talents -> add_talent( this, "Ray of Frost", "if=buff.rune_of_power.up|!talent.rune_of_power.enabled" );
+  active_talents -> add_talent( this, "Ice Nova" );
+  active_talents -> add_talent( this, "Frozen Touch", "if=buff.fingers_of_frost.stack=0" );
+  active_talents -> add_talent( this, "Glacial Spike" );
+  active_talents -> add_talent( this, "Comet Storm" );
 
   single_target -> add_action( "call_action_list,name=cooldowns" );
   single_target -> add_action( this, "Ice Lance", "if=(buff.fingers_of_frost.react&(buff.fingers_of_frost.remains<action.frostbolt.execute_time|buff.fingers_of_frost.remains<buff.fingers_of_frost.react*gcd.max))|prev_gcd.flurry" );
@@ -7806,7 +7807,7 @@ void mage_t::apl_frost()
   single_target -> add_action( "call_action_list,name=active_talents" );
   single_target -> add_action( "call_action_list,name=init_water_jet,if=!talent.lonely_winter.enabled&pet.water_elemental.cooldown.water_jet.remains<=gcd.max&buff.fingers_of_frost.react<2+artifact.icy_hand.enabled&!dot.frozen_orb.ticking" );
   single_target -> add_action( this, "Frozen Orb", "if=buff.fingers_of_frost.stack<2+artifact.icy_hand.enabled" );
-  single_target -> add_action( this, "Blizzard", "if=talent.arcic_gale.enabled" );
+  single_target -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled" );
   single_target -> add_action( this, "Ice Lance", "if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)" );
   single_target -> add_action( this, "Frostbolt" );
 }
