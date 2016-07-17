@@ -20,7 +20,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
 actions.precombat+=/mirror_image
 actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/pyroblast,!talent.mirror_image.enabled|!talent.rune_of_power.enabled
+actions.precombat+=/pyroblast,if=!talent.mirror_image.enabled|!talent.rune_of_power.enabled
 
 # Executed every time the actor is available.
 

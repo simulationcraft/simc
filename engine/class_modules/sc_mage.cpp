@@ -7493,7 +7493,7 @@ void mage_t::apl_precombat()
   if ( specialization() == MAGE_ARCANE )
     precombat -> add_action( this, "Arcane Blast" );
   else if ( specialization() == MAGE_FIRE )
-    precombat -> add_action( this, "Pyroblast", "!talent.mirror_image.enabled|!talent.rune_of_power.enabled" );
+    precombat -> add_action( this, "Pyroblast", "if=!talent.mirror_image.enabled|!talent.rune_of_power.enabled" );
   else
   {
     precombat -> add_action( this, "Frostbolt", "if=!talent.frost_bomb.enabled" );
@@ -8721,69 +8721,6 @@ public:
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Mage 7.0.3 prepatch hotfixes",
-                             "2016-07-15",
-                             "Might of the Guardians buffed 3% -> 5%",
-                             273100)
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 5 )
-      .verification_value( 3 );
-
-    hotfix::register_effect( "Mage 7.0.3 prepatch hotfixes",
-                             "2016-07-15",
-                             "Flame Patch buffed 200%",
-                             303428)
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 3.0 )
-      .verification_value( 0.20000 );
-
-    hotfix::register_effect( "Mage 7.0.3 prepatch hotfixes",
-                             "2016-07-15",
-                             "Mirror Image Fireball nerfed 11%",
-                             90295)
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.89 )
-      .verification_value( 0.81000 );
-
-    hotfix::register_spell( "Mage 7.0.3 prepatch hotfixes",
-                             "2016-07-15",
-                             "Flame On CD 40s -> 45s",
-                             205029)
-      .field( "cooldown" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 45000 )
-      .verification_value( 40000 );
-
-    hotfix::register_effect( "Mage 7.0.3 prepatch hotfixes",
-                             "2016-07-15",
-                             "Cinderstorm nerfed 11%",
-                             292756)
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.89 )
-      .verification_value( 0.65000 );
-
-    // NOTE: Hotfix notes say nerfed 4% -> 2%, but spell data old value is 3%
-    // TODO: Verify that this hotfix has been applied correctly
-    hotfix::register_effect( "Mage 7.0.3 prepatch hotfixes",
-                             "2016-07-15",
-                             "Jouster nerfed 4/8/12% -> 2/4/6%",
-                             286816)
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -2 )
-      .verification_value( -3 );
-    hotfix::register_effect( "Mage 7.0.3 prepatch hotfixes",
-                             "2016-07-15",
-                             "Jouster nerfed 4/8/12% -> 2/4/6%",
-                             318780)
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -2 )
-      .verification_value( -3 );
   }
 
   virtual bool valid() const override { return true; }

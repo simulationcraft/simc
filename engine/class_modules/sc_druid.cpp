@@ -8139,16 +8139,6 @@ struct druid_module_t : public module_t
   }
 
   virtual void register_hotfixes() const override {
-    hotfix::register_effect( "Druid", "2016-07-15", "Jagged Wounds tick modifier reduced to -33%.", 297732 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -33 )
-      .verification_value( -40 );
-    hotfix::register_effect( "Druid", "2016-07-15", "Jagged Wounds duration modifier reduced to -33%.", 297777 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -33 )
-      .verification_value( -40 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}

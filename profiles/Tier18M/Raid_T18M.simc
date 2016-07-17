@@ -4,9 +4,9 @@ max_time=240
 # Raid Tier18M
 
 # Death Knight
-#Death_Knight_Frost_1h_T18M.simc
-#Death_Knight_Frost_2h_T18M.simc
-#Death_Knight_Unholy_T18M.simc
+Death_Knight_Frost_1h_T18M.simc
+Death_Knight_Frost_2h_T18M.simc
+Death_Knight_Unholy_T18M.simc
 
 # Druid
 Druid_Balance_T18M.simc
@@ -20,7 +20,7 @@ Hunter_SV_T18M.simc
 
 # Mage
 Mage_Arcane_T18M.simc
-
+Mage_Fire_T18M.simc
 Mage_Frost_T18M.simc
 
 # Monk
