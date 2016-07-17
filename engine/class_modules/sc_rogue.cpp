@@ -1941,6 +1941,13 @@ struct melee_t : public rogue_attack_t
     p -> auto_attack = this;
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    affected_by.vendetta = true;
+  }
+
   void reset() override
   {
     rogue_attack_t::reset();
@@ -2987,11 +2994,27 @@ struct marked_for_death_t : public rogue_attack_t
 
 struct mutilate_strike_t : public rogue_attack_t
 {
-  mutilate_strike_t( rogue_t* p, const char* name, const spell_data_t* s ) :
-    rogue_attack_t( name, p, s )
+  const double& toxic_mutilator_crit_chance;
+
+  mutilate_strike_t( rogue_t* p, const char* name, const spell_data_t* s, double& tmcc ) :
+    rogue_attack_t( name, p, s ), toxic_mutilator_crit_chance( tmcc )
   {
     background  = true;
     may_miss = may_dodge = may_parry = false;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+
+    if ( p() -> buffs.envenom -> check() )
+    {
+      c += toxic_mutilator_crit_chance;
+    }
+
+    c += p() -> artifact.balanced_blades.percent();
+
+    return c;
   }
 
   void impact( action_state_t* state ) override
@@ -3037,27 +3060,13 @@ struct mutilate_t : public rogue_attack_t
       background = true;
     }
 
-    mh_strike = new mutilate_strike_t( p, "mutilate_mh", data().effectN( 3 ).trigger() );
+    mh_strike = new mutilate_strike_t( p, "mutilate_mh", data().effectN( 3 ).trigger(), toxic_mutilator_crit_chance );
     mh_strike -> weapon = &( p -> main_hand_weapon );
     add_child( mh_strike );
 
-    oh_strike = new mutilate_strike_t( p, "mutilate_oh", data().effectN( 4 ).trigger() );
+    oh_strike = new mutilate_strike_t( p, "mutilate_oh", data().effectN( 4 ).trigger(), toxic_mutilator_crit_chance );
     oh_strike -> weapon = &( p -> off_hand_weapon );
     add_child( oh_strike );
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = rogue_attack_t::composite_crit_chance();
-
-    if ( p() -> buffs.envenom -> check() )
-    {
-      c += toxic_mutilator_crit_chance;
-    }
-
-    c += p() -> artifact.balanced_blades.percent();
-
-    return c;
   }
 
   void execute() override
@@ -3066,13 +3075,11 @@ struct mutilate_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      action_state_t* s = mh_strike -> get_state( execute_state );
       mh_strike -> target = execute_state -> target;
-      mh_strike -> schedule_execute( s );
+      mh_strike -> execute();
 
-      s = oh_strike -> get_state( execute_state );
       oh_strike -> target = execute_state -> target;
-      oh_strike -> schedule_execute( s );
+      oh_strike -> execute();
     }
 
     if ( execute_state -> target -> health_percentage() < 35 &&
