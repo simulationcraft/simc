@@ -80,17 +80,17 @@ actions.bladestorm=battle_cry,sync=bladestorm,if=buff.enrage.remains>2&(raid_eve
 actions.bladestorm+=/bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
 
 head=faceguard_of_iron_wrath,id=124334,bonus_id=567,upgrade=2
-neck=choker_of_sneering_superiority,id=124219,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
+neck=choker_of_sneering_superiority,id=124219,bonus_id=567,upgrade=2,enchant=gift_of_haste
 shoulders=doomcriers_shoulderplates,id=124343,bonus_id=567,upgrade=2
-back=cloak_of_incendiary_wrath,id=124144,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
+back=cloak_of_incendiary_wrath,id=124144,bonus_id=567,upgrade=2,enchant=gift_of_haste
 chest=breastplate_of_iron_wrath,id=124319,bonus_id=567,upgrade=2
 wrists=breachscarred_wristplates,id=124353,bonus_id=567,upgrade=2
 hands=gauntlets_of_iron_wrath,id=124329,bonus_id=567,upgrade=2
 waist=annihilans_waistplate,id=124349,bonus_id=567,upgrade=2
 legs=legplates_of_iron_wrath,id=124340,bonus_id=567,upgrade=2
 feet=treads_of_the_defiler,id=124322,bonus_id=567,upgrade=2
-finger1=thorasus_the_stone_heart_of_draenor,id=124634,bonus_id=641,enchant=gift_of_critical_strike
-finger2=loop_of_beckoned_shadows,id=124199,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
+finger1=thorasus_the_stone_heart_of_draenor,id=124634,bonus_id=641,enchant=gift_of_haste
+finger2=loop_of_beckoned_shadows,id=124199,bonus_id=567,upgrade=2,enchant=gift_of_haste
 trinket1=empty_drinking_horn,id=124238,bonus_id=567,upgrade=2
 trinket2=worldbreakers_resolve,id=124523,bonus_id=567,upgrade=2
 main_hand=fiendsbreath_warmace,id=124374,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
@@ -100,8 +100,8 @@ off_hand=fiendsbreath_warmace,id=124374,bonus_id=567,upgrade=2,enchant=mark_of_t
 # gear_ilvl=743.44
 # gear_strength=5053
 # gear_stamina=6965
-# gear_crit_rating=2988
-# gear_haste_rating=1104
+# gear_crit_rating=2713
+# gear_haste_rating=1379
 # gear_mastery_rating=2353
 # gear_armor=2601
 # set_bonus=tier18_2pc=1

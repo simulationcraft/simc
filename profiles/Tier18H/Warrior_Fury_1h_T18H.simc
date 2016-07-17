@@ -79,17 +79,17 @@ actions.bladestorm=battle_cry,sync=bladestorm,if=buff.enrage.remains>2&(raid_eve
 actions.bladestorm+=/bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
 
 head=faceguard_of_iron_wrath,id=124334,bonus_id=566
-neck=choker_of_sneering_superiority,id=124219,bonus_id=566,enchant=gift_of_critical_strike
+neck=choker_of_sneering_superiority,id=124219,bonus_id=566,enchant=gift_of_haste
 shoulders=doomcriers_shoulderplates,id=124343,bonus_id=566
-back=cloak_of_incendiary_wrath,id=124144,bonus_id=566,enchant=gift_of_critical_strike
+back=cloak_of_incendiary_wrath,id=124144,bonus_id=566,enchant=gift_of_haste
 chest=breastplate_of_iron_wrath,id=124319,bonus_id=566
 wrists=breachscarred_wristplates,id=124353,bonus_id=566
 hands=gauntlets_of_iron_wrath,id=124329,bonus_id=566
 waist=annihilans_waistplate,id=124349,bonus_id=566
 legs=legplates_of_iron_wrath,id=124340,bonus_id=566
 feet=treads_of_the_defiler,id=124322,bonus_id=566
-finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_critical_strike
-finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_critical_strike
+finger1=spellbound_runic_band_of_elemental_power,id=118305,enchant=gift_of_haste
+finger2=loop_of_beckoned_shadows,id=124199,bonus_id=566,enchant=gift_of_haste
 trinket1=empty_drinking_horn,id=124238,bonus_id=566
 trinket2=worldbreakers_resolve,id=124523,bonus_id=566
 main_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=mark_of_the_thunderlord
@@ -99,8 +99,8 @@ off_hand=fiendsbreath_warmace,id=124374,bonus_id=566,enchant=mark_of_the_thunder
 # gear_ilvl=715.00
 # gear_strength=3864
 # gear_stamina=5309
-# gear_crit_rating=2326
-# gear_haste_rating=874
+# gear_crit_rating=2051
+# gear_haste_rating=1149
 # gear_mastery_rating=1779
 # gear_armor=2391
 # set_bonus=tier18_2pc=1
