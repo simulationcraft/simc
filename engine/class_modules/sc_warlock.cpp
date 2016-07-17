@@ -326,7 +326,7 @@ public:
     //affliction buffs
     buff_t* shard_instability;
     buff_t* instability;
-    buff_t* misery;
+    haste_buff_t* misery;
 
     //demonology buffs
     buff_t* tier18_2pc_demonology;
@@ -444,6 +444,7 @@ public:
   virtual void      invalidate_cache( cache_e ) override;
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
+  virtual double    composite_melee_haste() const override;
   virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_mastery() const override;
   virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
@@ -4489,6 +4490,23 @@ double warlock_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
+  if ( buffs.misery -> check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.misery -> stack_value() );
+  }
+
+  return h;
+}
+
+double warlock_t::composite_melee_haste() const
+{
+  double h = player_t::composite_melee_haste();
+
+  if ( buffs.misery->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.misery->stack_value() );
+  }
+
   return h;
 }
 
@@ -4923,14 +4941,17 @@ void warlock_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
     .tick_behavior( BUFF_TICK_NONE );
-  buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) );
+  buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   //affliction buffs
   buffs.shard_instability = buff_creator_t( this, "shard_instability", find_spell( 216457 ) )
     .chance( sets.set( WARLOCK_AFFLICTION, T18, B2 ) -> proc_chance() );
   buffs.instability = buff_creator_t( this, "instability", sets.set( WARLOCK_AFFLICTION, T18, B4 ) -> effectN( 1 ).trigger() )
-    .chance( sets.set( WARLOCK_AFFLICTION, T18, B4 ) -> proc_chance() );
-  buffs.misery = buff_creator_t( this, "misery", find_spell( 216412 ) );
+    .chance( sets.set( WARLOCK_AFFLICTION, T18, B4 ) -> proc_chance() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.misery = haste_buff_creator_t( this, "misery", find_spell( 216412 ) )
+    .default_value( find_spell( 216412 ) -> effectN( 1 ).percent() );
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
