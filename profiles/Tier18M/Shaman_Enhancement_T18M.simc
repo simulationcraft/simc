@@ -41,7 +41,7 @@ actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8
 actions+=/crash_lightning,if=active_enemies>=3
 actions+=/windstrike
 actions+=/stormstrike
-actions+=/lightning_bolt,if=talent.overcharge.enabled&maelstrom>=60
+actions+=/lightning_bolt,if=talent.overcharge.enabled&maelstrom>=45
 actions+=/lava_lash,if=buff.hot_hand.react
 actions+=/boulderfist,if=charges_fractional>=1.5
 actions+=/earthen_spike

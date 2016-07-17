@@ -6506,7 +6506,7 @@ void shaman_t::init_action_list_enhancement()
   def -> add_action( this, "Crash Lightning", "if=active_enemies>=3" );
   def -> add_action( this, "Windstrike" );
   def -> add_action( this, "Stormstrike" );
-  def -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&maelstrom>=60" );
+  def -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&maelstrom>=45" );
   def -> add_action( this, "Lava Lash", "if=buff.hot_hand.react" );
   def -> add_talent( this, "Boulderfist", "if=charges_fractional>=1.5" );
   def -> add_talent( this, "Earthen Spike" );
