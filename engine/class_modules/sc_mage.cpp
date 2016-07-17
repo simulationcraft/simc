@@ -8691,12 +8691,6 @@ static void wild_arcanist( special_effect_t& effect )
   do_trinket_init( p, MAGE_ARCANE, p -> wild_arcanist, effect );
 }
 
-static void pyrosurge( special_effect_t& effect )
-{
-  mage_t* p = debug_cast<mage_t*>( effect.player );
-  do_trinket_init( p, MAGE_FIRE, p -> pyrosurge, effect );
-}
-
 struct mage_module_t : public module_t
 {
 public:
