@@ -49,7 +49,7 @@ notifications:
 install:
   # Build SimulationCraft
   - cd engine
-  - make -j2
+  - make DEBUG=1 -j2
   - cd ..
 
 script:
