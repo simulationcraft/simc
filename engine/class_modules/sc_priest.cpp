@@ -882,10 +882,15 @@ struct fiend_melee_t : public priest_pet_melee_t
     double am = priest_pet_melee_t::action_multiplier();
 
     am *= 1.0 +
-          p().buffs.shadowcrawl->up() *
+          p().buffs.shadowcrawl->check() *
               p().buffs.shadowcrawl->data().effectN( 2 ).percent();
 
     return am;
+  }
+
+  void execute() override
+  {
+    p().buffs.shadowcrawl->up();  // uptime tracking
   }
 
   void impact( action_state_t* s ) override
@@ -1551,7 +1556,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     double cc = base_t::composite_crit_chance();
 
-    if ( priest.buffs.chakra_serenity->up() )
+    if ( priest.buffs.chakra_serenity->check() )
       cc += priest.buffs.chakra_serenity->data().effectN( 1 ).percent();
 
     return cc;
@@ -1572,7 +1577,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     double am = base_t::action_multiplier();
 
-    am *= 1.0 + priest.buffs.archangel->value();
+    am *= 1.0 + priest.buffs.archangel->current_value;
 
     return am;
   }
@@ -1588,6 +1593,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     if ( can_trigger_spirit_shell )
       may_crit = priest.buffs.spirit_shell->check() == 0;
+
+    priest.buffs.chakra_serenity->up(); // uptime tracking
+    priest.buffs.archangel->up(); // uptime tracking
 
     base_t::execute();
 
@@ -1874,7 +1882,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   bool ready() override
   {
     if ( priest.specialization() == PRIEST_SHADOW &&
-         priest.buffs.surrender_to_madness_death->up() )
+         priest.buffs.surrender_to_madness_death->check() )
     {
       return false;
     }
@@ -4598,7 +4606,7 @@ struct circle_of_healing_t final : public priest_heal_t
   {
     double am = priest_heal_t::action_multiplier();
 
-    if ( priest.buffs.chakra_sanctuary->up() )
+    if ( priest.buffs.chakra_sanctuary->check() )
       am *= 1.0 + priest.buffs.chakra_sanctuary->data().effectN( 1 ).percent();
 
     return am;
@@ -4651,7 +4659,7 @@ struct divine_hymn_t final : public priest_heal_t
   {
     double am = priest_heal_t::action_multiplier();
 
-    if ( priest.buffs.chakra_sanctuary->up() )
+    if ( priest.buffs.chakra_sanctuary->check() )
       am *= 1.0 + priest.buffs.chakra_sanctuary->data().effectN( 1 ).percent();
 
     return am;
@@ -4659,6 +4667,8 @@ struct divine_hymn_t final : public priest_heal_t
 
   void execute() override
   {
+    priest.buffs.chakra_sanctuary->up(); // uptime tracking
+
     priest_heal_t::execute();
 
     trigger_surge_of_light();
@@ -4867,11 +4877,17 @@ struct holy_word_sanctuary_t final : public priest_heal_t
     {
       double am = priest_heal_t::action_multiplier();
 
-      if ( priest.buffs.chakra_sanctuary->up() )
+      if ( priest.buffs.chakra_sanctuary->check() )
         am *=
             1.0 + priest.buffs.chakra_sanctuary->data().effectN( 1 ).percent();
 
       return am;
+    }
+
+    void execute() override
+    {
+      priest.buffs.chakra_sanctuary->up();  // uptime tracking
+      priest_heal_t::execute();
     }
   };
 
@@ -5240,6 +5256,7 @@ struct prayer_of_healing_t final : public priest_heal_t
 
   void execute() override
   {
+    priest.buffs.chakra_sanctuary->up(); // uptime tracking
     priest_heal_t::execute();
 
     consume_serendipity();
@@ -5257,7 +5274,7 @@ struct prayer_of_healing_t final : public priest_heal_t
   {
     double am = priest_heal_t::action_multiplier();
 
-    if ( priest.buffs.chakra_sanctuary->up() )
+    if ( priest.buffs.chakra_sanctuary->check() )
       am *= 1.0 + priest.buffs.chakra_sanctuary->data().effectN( 1 ).percent();
 
     return am;
@@ -5325,6 +5342,7 @@ struct prayer_of_mending_t final : public priest_heal_t
 
   void execute() override
   {
+    priest.buffs.chakra_sanctuary->up(); // uptime tracking
     priest_heal_t::execute();
 
     trigger_surge_of_light();
@@ -5335,7 +5353,7 @@ struct prayer_of_mending_t final : public priest_heal_t
   {
     double am = priest_heal_t::action_multiplier();
 
-    if ( priest.buffs.chakra_sanctuary->up() )
+    if ( priest.buffs.chakra_sanctuary->check() )
       am *= 1.0 + priest.buffs.chakra_sanctuary->data().effectN( 1 ).percent();
 
     return am;
@@ -5398,7 +5416,7 @@ struct renew_t final : public priest_heal_t
   {
     double am = priest_heal_t::action_multiplier();
 
-    if ( priest.buffs.chakra_sanctuary->up() )
+    if ( priest.buffs.chakra_sanctuary->check() )
       am *= 1.0 + priest.buffs.chakra_sanctuary->data().effectN( 1 ).percent();
 
     return am;
@@ -5406,6 +5424,7 @@ struct renew_t final : public priest_heal_t
 
   void impact( action_state_t* s ) override
   {
+    priest.buffs.chakra_sanctuary->up(); // uptime tracking
     priest_heal_t::impact( s );
 
     if ( rr )
