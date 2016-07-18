@@ -4118,7 +4118,10 @@ void warrior_t::apl_precombat()
   if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( true_level > 100 )
+    if ( true_level > 100 ) {
+      flask_action += "flask_of_the_countless_armies";
+    }
+    else if ( true_level > 90 )
     {
       if ( primary_role() == ROLE_ATTACK )
       {
@@ -4156,11 +4159,11 @@ void warrior_t::apl_precombat()
     std::string food_action = "food,type=";
     if ( specialization() == WARRIOR_FURY )
     {
-      if ( true_level > 100 )
+      if ( level() > 100 )
       {
         food_action += "azshari_salad";
       }
-      else if ( true_level > 90 )
+      else if ( level() > 90 )
       {
         food_action += "pickled_eel";
       }
@@ -4171,11 +4174,11 @@ void warrior_t::apl_precombat()
     }
     else if ( specialization() == WARRIOR_ARMS )
     {
-      if ( true_level > 100 )
+      if ( level() > 100 )
       {
-        food_action += "azshari_salad";
+        food_action += "nightborne_delicacy_platter";
       }
-      else if ( true_level > 90 )
+      else if ( level() > 90 )
       {
         food_action += "sleeper_sushi";
       }
@@ -4186,7 +4189,11 @@ void warrior_t::apl_precombat()
     }
     else
     {
-      if ( true_level > 90 )
+      if ( level() > 100 )
+      {
+        food_action += "azshari_salad";
+      }
+      else if ( level() > 90 )
       {
         food_action += "sleeper_sushi";
       }
@@ -4215,7 +4222,18 @@ void warrior_t::apl_precombat()
   //Pre-pot
   if ( sim -> allow_potions )
   {
-    if ( true_level > 90 )
+    if ( true_level > 100 )
+    {
+      if ( specialization() == WARRIOR_PROTECTION )
+      {
+        precombat -> add_action( "potion,name=unbending_potion" );
+      }
+      else
+      {
+        precombat -> add_action( "potion,name=potion_of_the_old_war" );
+      }
+    }
+    else if ( true_level > 90 )
     {
       if ( specialization() != WARRIOR_PROTECTION )
       {
@@ -4239,6 +4257,7 @@ void warrior_t::apl_precombat()
     }
   }
 }
+
 
 // Fury Warrior Action Priority List ========================================
 
