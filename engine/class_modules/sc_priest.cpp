@@ -44,6 +44,7 @@ struct void_tendril_pet_t;
 }
 }
 
+
 /**
  * Priest target data
  * Contains target specific things
@@ -388,7 +389,7 @@ public:
     const special_effect_t* mother_shahrazs_seduction;
     const special_effect_t* mangazas_madness;
     const special_effect_t* zenkaram_iridis_anadem;   // NYI
-    const special_effect_t* the_twins_painful_touch;  // NYI
+    const special_effect_t* the_twins_painful_touch;
   } active_items;
 
   // Pets
@@ -441,6 +442,7 @@ public:
   } glyphs;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
+  priest_td_t* find_target_data( player_t* target ) const;
 
   // player_t overrides
   void init_base_stats() override;
@@ -504,7 +506,6 @@ private:
   void apl_holy_dmg();
   void fixup_atonement_stats( const std::string& trigger_spell_name,
                               const std::string& atonement_spell_name );
-  priest_td_t* find_target_data( player_t* target ) const;
 
   target_specific_t<priest_td_t> _target_data;
 };
@@ -1233,6 +1234,11 @@ public:
   priest_td_t& get_td( player_t* t ) const
   {
     return *( priest.get_target_data( t ) );
+  }
+
+  const priest_td_t* find_td( player_t* t ) const
+  {
+    return priest.find_target_data( t );
   }
 
   void trigger_void_tendril()
@@ -3143,6 +3149,68 @@ struct mind_sear_t final : public priest_spell_t
     priest_spell_t::last_tick( d );
   }
 
+  /// Legendary the_twins_painful_touch
+  void spread_twins_painsful_dots( action_state_t* s )
+  {
+    const priest_td_t* td = find_td( s->target );
+    if ( !td )
+    {
+      // If we do not have targetdata, the target does not have any dots. bail
+      // out.
+      return;
+    }
+
+    std::array<dot_t*, 2> dots = {td->dots.shadow_word_pain,
+                                  td->dots.vampiric_touch};
+
+    // First check if there is even a dot active, otherwise we can bail out as
+    // well.
+    if ( range::find_if( dots, []( const dot_t* d ) {
+           return d->remains() > timespan_t::zero();
+         } ) == dots.end() )
+    {
+      if ( sim->debug )
+      {
+        sim->out_debug.printf(
+            "%s %s will not spread the_twins_painful_touch dots because no dot "
+            "is on the target.",
+            priest.name(), name() );
+      }
+      return;
+    }
+
+    // Now find 2 targets to spread dots to.
+    double max_distance = 10.0;
+    unsigned max_targets     = 2;
+    std::vector<player_t*> valid_targets;
+    range::remove_copy_if(
+        sim->target_list.data(), std::back_inserter( valid_targets ),
+        [s, max_distance]( const player_t* p ) {
+          return s->target->get_player_distance( *p ) > max_distance;
+        } );
+    // Just cut off to max_targets. No special selection.
+    if ( valid_targets.size() > max_targets )
+    {
+      valid_targets.resize( max_targets );
+    }
+    if ( sim->debug )
+    {
+      std::string targets;
+      sim->out_debug.printf(
+          "%s %s selected targets for the_twins_painful_touch dots: %s.",
+          priest.name(), name(), targets.c_str() );
+    }
+
+    // spread dots to targets
+    for ( dot_t* dot : dots )
+    {
+      for ( player_t* target : valid_targets )
+      {
+        dot->copy( target, DOT_COPY_CLONE );
+      }
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     // Mind Sear does on-hit damage only when there is a GCD of another ability
@@ -3161,6 +3229,13 @@ struct mind_sear_t final : public priest_spell_t
     }
 
     priest_spell_t::impact( s );
+
+    // Legendary the_twins_painful_touch
+    if ( priest.buffs.the_twins_painful_touch -> up())
+    {
+      spread_twins_painsful_dots( s );
+      priest.buffs.the_twins_painful_touch->expire();
+    }
   }
 };
 
@@ -3635,7 +3710,7 @@ struct vampiric_touch_t final : public priest_spell_t
     double actual_amount = priest.resource_gain(
         RESOURCE_HEALTH, amount_to_heal, priest.gains.vampiric_touch_health );
     double overheal = amount_to_heal - actual_amount;
-    if ( overheal > 0.0 )
+    if ( priest.active_spells.mental_fortitude && overheal > 0.0 )
     {
       priest.active_spells.mental_fortitude->pre_execute_state =
           priest.active_spells.mental_fortitude->get_state( s );
@@ -5619,6 +5694,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
     insanity_loss = new ( *sim ) insanity_loss_event_t( this );
 
     priest.buffs.insanity_drain_stacks->trigger();
+    priest.buffs.the_twins_painful_touch->trigger();
 
     return r;
   }
@@ -5633,9 +5709,14 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     priest.buffs.lingering_insanity->trigger( expiration_stacks );
 
+    priest.buffs.the_twins_painful_touch->expire();
+
     if ( priest.buffs.surrender_to_madness->check() )
     {
-      // You die. Horribly.
+      if (sim -> log )
+      {
+        sim -> out_log.printf("%s %s: Surrender to Madness kills you. You die. Horribly.", priest.name(), name());
+      }
       priest.demise();
       priest.arise();
       priest.buffs.surrender_to_madness_death->trigger();
@@ -6959,8 +7040,8 @@ void priest_t::create_buffs()
 
   buffs.the_twins_painful_touch =
       buff_creator_t( this, "the_twins_painful_touch" )
-          .spell( find_spell( 207721 ) );
-  //.chance(1.0)
+          .spell( find_spell( 207721 ) )
+          .chance( active_items.the_twins_painful_touch ? 1.0 : 0.0 );
   //.duration(timespan_t::from_seconds(10.0));
 }
 
