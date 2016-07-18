@@ -7900,6 +7900,12 @@ void mage_t::invalidate_cache( cache_e c )
         pets.water_elemental -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       }
       break;
+    case CACHE_SPELL_CRIT_CHANCE:
+      // Combustion makes mastery dependent on spell crit chance rating. Thus
+      // any spell_crit_chance invalidation (which should include any
+      // spell_crit_rating changes) will also invalidate mastery.
+      invalidate_cache( CACHE_MASTERY );
+      break;
     default:
       break;
   }
