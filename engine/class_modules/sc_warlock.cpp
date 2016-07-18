@@ -8,7 +8,6 @@
 // ==========================================================================
 //
 // TODO
-// Contagion is fucking fuckity fucked
 // Backdraft duration is reduced by haste
 // Channel demonfire + backdraft is fucking fuckity fucked
 // Mana tap is fucking fuckity fucked
@@ -3013,10 +3012,13 @@ struct immolate_t: public warlock_spell_t
 
 struct conflagrate_t: public warlock_spell_t
 {
+  timespan_t total_duration;
+  timespan_t base_duration;
   conflagrate_t( warlock_t* p ):
     warlock_spell_t( p, "Conflagrate" )
   {
     energize_type = ENERGIZE_PER_HIT;
+    base_duration = p -> find_spell( 117828 ) -> duration();
   }
 
   void init() override
@@ -3055,7 +3057,10 @@ struct conflagrate_t: public warlock_spell_t
     warlock_spell_t::execute();
 
     if ( p() -> talents.backdraft -> ok() )
-      p() -> buffs.backdraft -> trigger();
+    {
+      total_duration = base_duration * p() -> cache.spell_haste();
+      p() -> buffs.backdraft -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
+    }
 
     if ( p() -> buffs.conflagration_of_chaos -> up() )
       p() -> buffs.conflagration_of_chaos -> expire();
