@@ -311,6 +311,7 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
 
   size_t bonus_offset = 1;
 
+  try {
   std::regex bonus_regex( "^([0-9]+)pc$", std::regex::icase | std::regex::ECMAScript );
   std::smatch match;
   if ( std::regex_match( split[ bonus_offset ], match, bonus_regex ) && match.size() == 2 )
@@ -335,6 +336,12 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
       set_bonus = static_cast< set_bonus_type_e >( bonus.enum_id );
       break;
     }
+  }
+  }
+  catch(const std::regex_error& e )
+  {
+    actor -> sim -> errorf("Could not parse set bonus: regex_error: %s", e.what() );
+    return false;
   }
 
   return set_bonus != SET_BONUS_NONE && bonus != B_NONE;
