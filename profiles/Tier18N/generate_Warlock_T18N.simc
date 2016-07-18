@@ -5,10 +5,6 @@ level=100
 race=troll
 spec=affliction
 talents=0000311
-talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
-talent_override=soulburn_haunt,if=enemies=2
-talent_override=cataclysm,if=enemies>2
-talent_override=grimoire_of_supremacy,if=enemies>1
 head=deathrattle_mask,id=124162
 neck=vial_of_immiscible_liquid,id=124212,enchant_id=5318
 shoulders=mantle_of_the_eredar_lord,id=124176
@@ -51,14 +47,10 @@ save=Warlock_Demonology_T18N.simc
 
 warlock="Warlock_Destruction_T18N"
 level=100
-race=dwarf
+race=human
 role=spell
 spec=destruction
-talents=0000311
-talent_override=charred_remains,if=enemies>=4
-talent_override=grimoire_of_sacrifice,if=enemies>1&enemies<4|(enemies=1&talent.charred_remains.enabled)
-talent_override=grimoire_of_supremacy,if=(enemies>=4&!raid_event.adds.exists&!talent.demonic_servitude.enabled)|(enemies>=5&!talent.demonic_servitude.enabled)|(enemies=1&talent.cataclysm.enabled)
-talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
+talents=2301032
 head=demon_princes_ascendant_crown,id=124159
 neck=vial_of_immiscible_liquid,id=124212,enchant=75crit
 shoulders=deathrattle_shoulderpads,id=124179

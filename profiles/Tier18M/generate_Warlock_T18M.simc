@@ -5,10 +5,6 @@ level=100
 race=orc
 spec=affliction
 talents=0000311
-talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
-talent_override=soulburn_haunt,if=enemies=2
-talent_override=cataclysm,if=enemies>2
-talent_override=grimoire_of_supremacy,if=enemies>1
 head=deathrattle_mask,id=124162,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant_id=5318,upgrade=2
 shoulders=mantle_of_the_eredar_lord,id=124176,bonus_id=567,upgrade=2
