@@ -1,9 +1,9 @@
 monk="Monk_Windwalker_T18M"
 level=100
 race=blood_elf
-role=hybrid
+role=dps
 position=back
-talents=3020022
+talents=3030032
 spec=windwalker
 
 # This default action priority list is automatically created based on your character.
@@ -68,31 +68,31 @@ actions.aoe+=/chi_wave,if=energy.time_to_max>2|buff.serenity.down
 actions.aoe+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
 actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
 
-head=mask_of_the_hurricanes_eye,id=124262,bonus_id=567,upgrade=2
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant=gift_of_haste
+head=helm_of_imagined_horrors,id=124259,bonus_id=567,upgrade=2
+neck=world_enders_gorget,id=124222,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
 shoulders=mantle_of_the_hurricanes_eye,id=124273,bonus_id=567,upgrade=2
-back=cloak_of_desperate_temerity,id=124134,bonus_id=567,upgrade=2,enchant=gift_of_haste
-chest=tunic_of_the_soulbinder,id=124245,bonus_id=567,upgrade=2
+back=drape_of_gluttony,id=124146,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
+chest=robe_of_the_hurricanes_eye,id=124247,bonus_id=567,upgrade=2
 wrists=bloodcult_bracers,id=124279,bonus_id=567,upgrade=2
 hands=fistwraps_of_the_hurricanes_eye,id=124256,bonus_id=567,upgrade=2
-waist=waistwrap_of_banishment,id=124276,bonus_id=567,upgrade=2
+waist=flayed_demonskin_belt,id=124277,bonus_id=567,upgrade=2
 legs=legwraps_of_the_hurricanes_eye,id=124268,bonus_id=567,upgrade=2
-feet=oppressors_merciless_treads,id=124251,bonus_id=567,upgrade=2
-finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant=gift_of_haste
-finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant=gift_of_haste
+feet=toxicologists_treated_boots,id=124250,bonus_id=567,upgrade=2
+finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant=gift_of_versatility
+finger2=filigreed_loop_of_zealotry,id=124202,bonus_id=567,upgrade=2,enchant=gift_of_versatility
 trinket1=sacred_draenic_incense,id=124517,bonus_id=567,upgrade=2
-trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
+trinket2=stone_of_the_elements,id=128024,upgrade=2
 main_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant=mark_of_warsong
 off_hand=demonblade_eviscerator,id=124368,bonus_id=567,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=741.88
-# gear_agility=4977
-# gear_stamina=6881
-# gear_crit_rating=2636
-# gear_haste_rating=2505
-# gear_mastery_rating=960
-# gear_versatility_rating=270
-# gear_armor=1449
+# gear_ilvl=740.00
+# gear_agility=4523
+# gear_stamina=6791
+# gear_crit_rating=1712
+# gear_haste_rating=1512
+# gear_mastery_rating=1458
+# gear_versatility_rating=1993
+# gear_armor=1438
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

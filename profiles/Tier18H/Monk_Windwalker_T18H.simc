@@ -1,9 +1,9 @@
 monk="Monk_Windwalker_T18H"
 level=100
 race=blood_elf
-role=hybrid
+role=dps
 position=back
-talents=3020022
+talents=3030032
 spec=windwalker
 
 # This default action priority list is automatically created based on your character.
@@ -66,31 +66,32 @@ actions.aoe+=/chi_wave,if=energy.time_to_max>2|buff.serenity.down
 actions.aoe+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
 actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
 
-head=mask_of_the_hurricanes_eye,id=124262,bonus_id=566
-neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant=gift_of_haste
-shoulders=mantle_of_the_hurricanes_eye,id=124273,bonus_id=566
-back=cloak_of_desperate_temerity,id=124134,bonus_id=566,enchant=gift_of_haste
-chest=tunic_of_the_soulbinder,id=124245,bonus_id=566
-wrists=bloodcult_bracers,id=124279,bonus_id=566
-hands=fistwraps_of_the_hurricanes_eye,id=124256,bonus_id=566
-waist=waistwrap_of_banishment,id=124276,bonus_id=566
-legs=legwraps_of_the_hurricanes_eye,id=124268,bonus_id=566
-feet=oppressors_merciless_treads,id=124251,bonus_id=566
-finger1=spellbound_runic_band_of_unrelenting_slaughter,id=118307,enchant=gift_of_haste
-finger2=portal_key_signet,id=124189,bonus_id=566,enchant=gift_of_haste
-trinket1=sacred_draenic_incense,id=124517,bonus_id=566
-trinket2=soul_capacitor,id=124225,bonus_id=566
-main_hand=demonblade_eviscerator,id=124368,bonus_id=566,enchant=mark_of_warsong
-off_hand=demonblade_eviscerator,id=124368,bonus_id=566,enchant=mark_of_warsong
+head=helm_of_imagined_horrors,id=124259,bonus_id=566,upgrade=2
+neck=world_enders_gorget,id=124222,bonus_id=566,upgrade=2,enchant=gift_of_critical_strike
+shoulders=mantle_of_the_hurricanes_eye,id=124273,bonus_id=566,upgrade=2
+back=drape_of_gluttony,id=124146,bonus_id=566,upgrade=2,enchant=gift_of_critical_strike
+chest=robe_of_the_hurricanes_eye,id=124247,bonus_id=566,upgrade=2
+wrists=bloodcult_bracers,id=124279,bonus_id=566,upgrade=2
+hands=fistwraps_of_the_hurricanes_eye,id=124256,bonus_id=566,upgrade=2
+waist=flayed_demonskin_belt,id=124277,bonus_id=566,upgrade=2
+legs=legwraps_of_the_hurricanes_eye,id=124268,bonus_id=566,upgrade=2
+feet=toxicologists_treated_boots,id=124250,bonus_id=566,upgrade=2
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_versatility
+finger2=filigreed_loop_of_zealotry,id=124202,bonus_id=566,upgrade=2,enchant=gift_of_versatility
+trinket1=sacred_draenic_incense,id=124517,bonus_id=566,upgrade=2
+trinket2=stone_of_the_elements,id=128024,upgrade=2
+main_hand=demonblade_eviscerator,id=124368,bonus_id=566,upgrade=2,enchant=mark_of_warsong
+off_hand=demonblade_eviscerator,id=124368,bonus_id=566,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=713.44
-# gear_agility=3805
-# gear_stamina=5242
-# gear_crit_rating=1992
-# gear_haste_rating=2043
-# gear_mastery_rating=760
-# gear_versatility_rating=128
-# gear_armor=1257
+# gear_ilvl=721.88
+# gear_agility=3558
+# gear_stamina=5646
+# gear_intellect=207
+# gear_crit_rating=1247
+# gear_haste_rating=1315
+# gear_mastery_rating=1424
+# gear_versatility_rating=1671
+# gear_armor=1320
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
