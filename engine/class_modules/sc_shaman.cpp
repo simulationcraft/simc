@@ -1412,7 +1412,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       }
 
       ~elemental_overload_event_t()
-      { action_state_t::release( state ); }
+      { if ( state ) action_state_t::release( state ); }
 
       const char* name() const override
       { return "elemental_overload_event_t"; }
@@ -1420,6 +1420,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       void execute() override
       {
         state -> action -> schedule_execute( state );
+        state = nullptr;
       };
     };
 
