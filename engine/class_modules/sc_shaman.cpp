@@ -1411,6 +1411,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
         add_event( timespan_t::from_millis( 400 ) );
       }
 
+      ~elemental_overload_event_t()
+      { action_state_t::release( state ); }
+
       const char* name() const override
       { return "elemental_overload_event_t"; }
 
