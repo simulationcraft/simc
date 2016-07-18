@@ -5,6 +5,7 @@ language: cpp
 branches:
   only:
     - master
+    - legion-dev
     
 # Enable Trusty (Ubuntu 14.04 LTS) Beta
 sudo: required
@@ -34,6 +35,9 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo add-apt-repository ppa:duggan/bats -y && sudo apt-get update -qq && sudo apt-get install -qq bats; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install bats coreutils; fi
 
+  # Install valgrind on Linux
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install -qq valgrind; fi
+
 notifications:
   irc:
     channels:
@@ -49,10 +53,10 @@ install:
   - cd ..
 
 script:
+  # Valgrind a raid profile with Linux
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --tool=memcheck --show-reachable=yes --leak-check=summary ../engine/simc Raid_T18H.simc iterations=5 threads=1
+
   # Test SimulationCraft.
   - cd tests
   - ./run.sh enemies.bats
   - ./run.sh classes.bats
-  
-  # Valgrind
-  # - valgrind ../engine/simc Raid_T18M.simc iterations=4

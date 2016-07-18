@@ -2327,7 +2327,7 @@ struct envenom_t : public rogue_attack_t
       p() -> buffs.envenom -> extend_duration( player, extend_increase );
     }
 
-    if ( p() -> prng.bag_of_tricks -> trigger() )
+    if ( p() -> artifact.bag_of_tricks.rank() && p() -> prng.bag_of_tricks -> trigger() )
     {
       new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
           .target( execute_state -> target )
@@ -6594,7 +6594,10 @@ void rogue_t::init_rng()
 {
   player_t::init_rng();
 
-  prng.bag_of_tricks = new real_ppm_t( "bag_of_tricks", this, artifact.bag_of_tricks );
+  if ( artifact.bag_of_tricks.rank() )
+  {
+    prng.bag_of_tricks = get_rppm( "bag_of_tricks", artifact.bag_of_tricks );
+  }
 }
 
 // rogue_t::init_finished ===================================================

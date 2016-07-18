@@ -1256,6 +1256,7 @@ void item::portable_manacracker( special_effect_t& effect )
 {
   // Set spell so we can create the DoT action.
   effect.trigger_spell_id = 215884;
+  effect.proc_flags2_ = PF2_CRIT;
   action_t* dot = effect.create_action();
   // Disable trigger spell again.
   effect.trigger_spell_id = 0;

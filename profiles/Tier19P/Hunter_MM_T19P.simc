@@ -15,8 +15,8 @@ spec=marksmanship
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=nightborne_delicacy_platter
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -81,11 +81,11 @@ trinket2=stormsinger_fulmination_charge,id=137367,bonus_id=1727
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=137550/137350/137307,relic_id=1727/1727/1727
 
 # Gear Summary
-# gear_ilvl=842.00
-# gear_agility=11306
-# gear_stamina=17963
-# gear_crit_rating=715
+# gear_ilvl=840.00
+# gear_agility=10925
+# gear_stamina=17391
+# gear_crit_rating=639
 # gear_haste_rating=5767
-# gear_mastery_rating=10478
+# gear_mastery_rating=10405
 # gear_armor=2433
 summon_pet=cat

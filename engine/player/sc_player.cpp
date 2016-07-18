@@ -7118,6 +7118,11 @@ struct pool_resource_t : public action_t
     }
   }
 
+  ~pool_resource_t()
+  {
+    delete amount_expr;
+  }
+
   bool init_finished() override
   {
     if ( ! action_t::init_finished() )

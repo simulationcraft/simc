@@ -6087,72 +6087,32 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
 {
   if ( name_str == "primary_target" )
   {
-    struct primary_target_t : public expr_t
-    {
-      priest_t& player;
-      action_t& action;
-      primary_target_t( priest_t& p, action_t& act )
-        : expr_t( "primary_target" ), player( p ), action( act )
-      {
-      }
-
-      double evaluate() override
-      {
-        if ( player.target == action.target )
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-    };
-    return new primary_target_t( *this, *a );
+    return make_fn_expr( "primary_target",
+                         [this, a]() { return target == a->target; } );
   }
-  if ( name_str == "shadowy_apparitions_in_flight" )
+  else if ( name_str == "shadowy_apparitions_in_flight" )
   {
-    struct shadowy_apparitions_in_flight_t : public expr_t
-    {
-      priest_t& priest;
-      shadowy_apparitions_in_flight_t( priest_t& p )
-        : expr_t( "shadowy_apparitions_in_flight" ), priest( p )
-      {
-      }
+    return make_fn_expr( "shadowy_apparitions_in_flight", [this]() {
+      if ( !active_spells.shadowy_apparitions )
+        return 0.0;
 
-      double evaluate() override
-      {
-        if ( !priest.active_spells.shadowy_apparitions )
-          return 0.0;
-
-        return static_cast<double>(
-            priest.active_spells.shadowy_apparitions->get_num_travel_events() );
-      }
-    };
-    return new shadowy_apparitions_in_flight_t( *this );
+      return static_cast<double>(
+          active_spells.shadowy_apparitions->get_num_travel_events() );
+    } );
   }
-  // Current Insanity Drain for the next 1.0 sec.
-  // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
-  // Does not account for Dispersion or Void Torrent
-  if (name_str == "current_insanity_drain")
+  else if ( name_str == "current_insanity_drain" )
   {
-    struct current_insanity_drain_t : public expr_t
-    {
-      priest_t& priest;
-      current_insanity_drain_t(priest_t& p)
-        : expr_t("current_insanity_drain"), priest(p)
-      {
-      }
+    // Current Insanity Drain for the next 1.0 sec.
+    // Does not account for a new stack occurring in the middle and can be
+    // anywhere from 0.0 - 0.5 off the real value.
+    // Does not account for Dispersion or Void Torrent
+    return make_fn_expr( "current_insanity_drain", [this]() {
+      if ( !buffs.voidform->check() )
+        return 0.0;
 
-      double evaluate() override
-      {
-        if (!priest.buffs.voidform->check())
-          return 0.0;
-
-        return ((priest.buffs.voidform->data().effectN(2).base_value() / -500) + ((priest.buffs.insanity_drain_stacks->check() - 1) / 2));
-      }
-    };
-    return new current_insanity_drain_t(*this);
+      return ( ( buffs.voidform->data().effectN( 2 ).base_value() / -500.0 ) +
+               ( ( buffs.insanity_drain_stacks->check() - 1 ) / 2.0 ) );
+    } );
   }
   // Get the actor's raw initial haste percent
   if (name_str == "raw_haste_pct")

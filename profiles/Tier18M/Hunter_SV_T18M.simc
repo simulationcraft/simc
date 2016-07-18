@@ -28,7 +28,6 @@ actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
 actions+=/use_item,name=maalus_the_blood_drinker
-actions+=/use_item,name=beating_heart_of_the_mountain
 actions+=/fury_of_the_eagle,if=buff.mongoose_fury.stack>=4&buff.mongoose_fury.remains<action.mongoose_bite.gcd
 actions+=/raptor_strike,if=talent.way_of_the_moknathal.enabled&(buff.moknathal_tactics.stack>=3&(buff.moknathal_tactics.remains<gcd)|(buff.mongoose_fury.stack>=4&buff.mongoose_fury.remains<2*gcd&buff.moknathal_tactics.remains<action.fury_of_the_eagle.duration+gcd))
 actions+=/dragonsfire_grenade
@@ -57,18 +56,18 @@ legs=leggings_of_the_savage_hunt,id=124301,bonus_id=567,upgrade=2
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5327
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5327
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567,upgrade=2
-trinket2=malicious_censer,id=124226,bonus_id=567,upgrade=2
-main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5275
+trinket1=stone_of_the_elements,id=128024
+trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
+main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant_id=5330
 
 # Gear Summary
-# gear_ilvl=740.00
-# gear_agility=4980
+# gear_ilvl=740.67
+# gear_agility=5072
 # gear_stamina=7023
-# gear_crit_rating=3398
-# gear_haste_rating=1775
-# gear_mastery_rating=1465
-# gear_versatility_rating=270
+# gear_crit_rating=2796
+# gear_haste_rating=2218
+# gear_mastery_rating=1213
+# gear_versatility_rating=621
 # gear_armor=1773
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

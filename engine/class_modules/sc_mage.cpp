@@ -575,6 +575,8 @@ public:
     };
   }
 
+  ~mage_t();
+
   // Character Definition
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
@@ -691,6 +693,22 @@ struct buff_source_benefit_t
     trigger_count += stacks;
   }
 };
+
+mage_t::~mage_t()
+{
+  delete benefits.incanters_flow;
+  delete benefits.arcane_charge.arcane_barrage;
+  delete benefits.arcane_charge.arcane_blast;
+  delete benefits.arcane_charge.arcane_explosion;
+  delete benefits.arcane_charge.arcane_missiles;
+  delete benefits.arcane_charge.nether_tempest;
+  delete benefits.arcane_missiles;
+  delete benefits.fingers_of_frost;
+  delete benefits.ray_of_frost;
+
+  delete[] pets.temporal_heroes;
+  delete[] pets.mirror_images;
+}
 
 inline current_target_reset_cb_t::current_target_reset_cb_t( player_t* m ):
   mage( debug_cast<mage_t*>( m ) )
@@ -3534,6 +3552,10 @@ struct comet_storm_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::tick( d );
     projectile -> execute();
+  }
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
   }
 };
 
@@ -7589,6 +7611,7 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<2*spell_haste" );
   default_list -> add_talent( this, "Mirror Image" );
+  default_list -> add_action( this, "Arcane Blast" );
   /*
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
   default_list -> add_action( "call_action_list,name=init_burn,if=!burn_phase" );
@@ -7899,6 +7922,12 @@ void mage_t::invalidate_cache( cache_e c )
       {
         pets.water_elemental -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       }
+      break;
+    case CACHE_SPELL_CRIT_CHANCE:
+      // Combustion makes mastery dependent on spell crit chance rating. Thus
+      // any spell_crit_chance invalidation (which should include any
+      // spell_crit_rating changes) will also invalidate mastery.
+      invalidate_cache( CACHE_MASTERY );
       break;
     default:
       break;

@@ -2456,6 +2456,7 @@ struct rampage_event_t: public event_t
     }
     else
     {
+      warrior -> rampage_driver = nullptr;
       warrior -> buff.meat_cleaver -> expire();
     }
   }
