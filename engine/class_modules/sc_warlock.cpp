@@ -8,7 +8,7 @@
 // ==========================================================================
 //
 // TODO
-// Class trinket initialization
+// Cleanup aff/destro class trinket implementation
 // 
 //
 // Affliction -
@@ -2371,12 +2371,17 @@ struct agony_t: public warlock_spell_t
     warlock_spell_t( p, "Agony" )
   {
     may_crit = false;
+  }
 
-    if ( p -> affliction_trinket )
+  void init() override
+  {
+    warlock_spell_t::init();
+
+    if ( p() -> affliction_trinket )
     {
-      const spell_data_t* data = p -> affliction_trinket -> driver();
-      double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
-      double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
+      const spell_data_t* data = p() -> affliction_trinket -> driver();
+      double period_value = data -> effectN( 1 ).average( p() -> affliction_trinket -> item ) / 100.0;
+      double duration_value = data -> effectN( 2 ).average( p() -> affliction_trinket -> item ) / 100.0;
 
       base_tick_time *= 1.0 + period_value;
       dot_duration *= 1.0 + duration_value;
@@ -2470,11 +2475,24 @@ struct unstable_affliction_t : public warlock_spell_t
       tick_may_crit = hasted_ticks = true;
     }
 
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      return s -> action -> tick_time( s ) * 4.0; 
+    }
+
     void init() override
     {
       base_t::init();
 
-      update_flags = snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_HASTE;
+      if ( p() -> affliction_trinket )
+      {
+        const spell_data_t* data = p() -> affliction_trinket -> driver();
+        double period_value = data -> effectN( 1 ).average( p() -> affliction_trinket -> item ) / 100.0;
+
+        base_tick_time *= 1.0 + period_value;
+      }
+
+      snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_HASTE;
     }
 
     virtual void tick( dot_t* d ) override
@@ -2498,22 +2516,11 @@ struct unstable_affliction_t : public warlock_spell_t
     spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
     base_multiplier *= dot_duration / base_tick_time;
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
-
-    if ( p -> affliction_trinket )
-    {
-      const spell_data_t* data = p -> affliction_trinket -> driver();
-      double period_value = data -> effectN( 1 ).average( p -> affliction_trinket->item ) / 100.0;
-      double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
-
-      base_tick_time *= 1.0 + period_value;
-      dot_duration *= 1.0 + duration_value;
-    }
   }
 
   double cost() const override
   {
     double c = warlock_spell_t::cost();
-
 
     if ( p() -> buffs.shard_instability -> check() )
     {
@@ -2566,22 +2573,27 @@ struct corruption_t: public warlock_spell_t
     spell_power_mod.tick = data().effectN( 1 ).trigger() -> effectN( 1 ).sp_coeff();
     base_tick_time = data().effectN( 1 ).trigger() -> effectN( 1 ).period();
 
-    if ( p -> affliction_trinket )
-    {
-      const spell_data_t* data = p -> affliction_trinket ->  driver();
-      double period_value = data -> effectN( 1 ).average( p -> affliction_trinket -> item ) / 100.0;
-      double duration_value = data -> effectN( 2 ).average( p -> affliction_trinket -> item ) / 100.0;
-
-      base_tick_time *= 1.0 + period_value;
-      dot_duration *= 1.0 + duration_value;
-    }
-
     if ( p -> talents.absolute_corruption -> ok() )
     {
       dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
         2 * sim -> expected_iteration_time :
         2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
       base_multiplier *= 1.0 + p -> talents.absolute_corruption -> effectN( 2 ).percent();
+    }
+  }
+
+  void init() override
+  {
+    warlock_spell_t::init();
+
+    if ( p() -> affliction_trinket )
+    {
+      const spell_data_t* data = p() -> affliction_trinket -> driver();
+      double period_value = data -> effectN( 1 ).average( p() -> affliction_trinket -> item ) / 100.0;
+      double duration_value = data -> effectN( 2 ).average( p() -> affliction_trinket -> item ) / 100.0;
+
+      base_tick_time *= 1.0 + period_value;
+      dot_duration *= 1.0 + duration_value;
     }
   }
 
