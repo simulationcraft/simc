@@ -1273,7 +1273,7 @@ template <typename F>
 struct fn_expr_t : public expr_t
 {
 public:
-  fn_expr_t( const std::string& name, F f_ ) :
+  fn_expr_t( const std::string& name, F&& f_ ) :
     expr_t( name ), f( f_ ) {}
 private:
   F f;
@@ -1299,8 +1299,8 @@ struct target_wrapper_expr_t : public expr_t
 
 // Template to return a function expression
 template <typename F>
-inline expr_t* make_fn_expr( const std::string& name, F f )
-{ return new fn_expr_t<F>( name, f ); }
+inline expr_t* make_fn_expr( const std::string& name, F&& f )
+{ return new fn_expr_t<F>( name, std::forward<F>(f) ); }
 
 // Make member function expression - make_mem_fn_expr
 // Template to return function expression that calls a member ( mem ) function ( fn ) f on reference t.

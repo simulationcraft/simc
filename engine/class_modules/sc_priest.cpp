@@ -6086,49 +6086,18 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
 {
   if ( name_str == "primary_target" )
   {
-    struct primary_target_t : public expr_t
-    {
-      priest_t& player;
-      action_t& action;
-      primary_target_t( priest_t& p, action_t& act )
-        : expr_t( "primary_target" ), player( p ), action( act )
-      {
-      }
-
-      double evaluate() override
-      {
-        if ( player.target == action.target )
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-    };
-    return new primary_target_t( *this, *a );
+    return make_fn_expr( "primary_target",
+                         [this, a]() { return target == a->target; } );
   }
   if ( name_str == "shadowy_apparitions_in_flight" )
   {
-    struct shadowy_apparitions_in_flight_t : public expr_t
-    {
-      priest_t& priest;
-      shadowy_apparitions_in_flight_t( priest_t& p )
-        : expr_t( "shadowy_apparitions_in_flight" ), priest( p )
-      {
-      }
+    return make_fn_expr( "shadowy_apparitions_in_flight", [this]() {
+      if ( !active_spells.shadowy_apparitions )
+        return 0.0;
 
-      double evaluate() override
-      {
-        if ( !priest.active_spells.shadowy_apparitions )
-          return 0.0;
-
-        return static_cast<double>(
-            priest.active_spells.shadowy_apparitions->get_num_travel_events() );
-      }
-    };
-    return new shadowy_apparitions_in_flight_t( *this );
+      return static_cast<double>(
+          active_spells.shadowy_apparitions->get_num_travel_events() );
+    } );
   }
   // Current Insanity Drain for the next 1.0 sec.
   // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
