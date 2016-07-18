@@ -8,6 +8,11 @@
 // ==========================================================================
 //
 // TODO
+// Contagion is fucking fuckity fucked
+// Backdraft duration is reduced by haste
+// Channel demonfire + backdraft is fucking fuckity fucked
+// Mana tap is fucking fuckity fucked
+//
 // Affliction -
 // Haunt reset
 // Soul Effigy
@@ -2215,6 +2220,7 @@ public:
 
     return h;
   }
+
 
   void consume_resource() override
   {
