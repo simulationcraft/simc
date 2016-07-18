@@ -4,10 +4,6 @@ race=orc
 role=spell
 position=back
 talents=0000311
-talent_override=grimoire_of_service,if=talent.demonic_servitude.enabled
-talent_override=soulburn_haunt,if=enemies=2
-talent_override=cataclysm,if=enemies>2
-talent_override=grimoire_of_supremacy,if=enemies>1
 spec=affliction
 
 # This default action priority list is automatically created based on your character.
@@ -18,11 +14,15 @@ spec=affliction
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=felmouth_frenzy
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
 actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 
 # Executed every time the actor is available.
 

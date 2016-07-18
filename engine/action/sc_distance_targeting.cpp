@@ -228,7 +228,7 @@ double player_t::get_position_distance( double m, double v ) const
 
 // player_t::get_player_distance ===============================================
 
-double player_t::get_player_distance( player_t& p ) const
+double player_t::get_player_distance( const player_t& p ) const
 {
   return get_position_distance( p.x_position, p.y_position );
 }

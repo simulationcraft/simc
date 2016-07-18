@@ -5051,7 +5051,6 @@ struct fire_blast_t : public fire_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
 
-      // FIX THIS TO SCALE WITH ITEMLEVEL
       if ( p() -> rng().roll( pyrosurge_chance ) )
       {
 
@@ -6104,10 +6103,216 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 // ============================================================================
 
 // Choose Rotation ============================================================
+/*
+struct choose_rotation_t : public action_t
+{
+  double evocation_target_mana_percentage;
+  int force_dps;
+  int force_dpm;
+  timespan_t final_burn_offset;
+  double oom_offset;
+
+  choose_rotation_t( mage_t* p, const std::string& options_str ) :
+    action_t( ACTION_USE, "choose_rotation", p )
+  {
+    cooldown -> duration = timespan_t::from_seconds( 10 );
+    evocation_target_mana_percentage = 35;
+    force_dps = 0;
+    force_dpm = 0;
+
+    final_burn_offset = timespan_t::from_seconds( 20 );
+    oom_offset = 0;
 
 
+    add_option( opt_timespan( "cooldown", ( cooldown -> duration ) ) );
+    add_option( opt_float( "evocation_pct", evocation_target_mana_percentage ) );
+    add_option( opt_int( "force_dps", force_dps ) );
+    add_option( opt_int( "force_dpm", force_dpm ) );
+    add_option( opt_timespan( "final_burn_offset", ( final_burn_offset ) ) );
+    add_option( opt_float( "oom_offset", oom_offset ) );
 
+    parse_options( options_str );
 
+    if ( cooldown -> duration < timespan_t::from_seconds( 1.0 ) )
+    {
+      sim -> errorf( "Player %s: choose_rotation cannot have cooldown -> duration less than 1.0sec", p -> name() );
+      cooldown -> duration = timespan_t::from_seconds( 1.0 );
+    }
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    mage_t* p = debug_cast<mage_t*>( player );
+
+    if ( force_dps || force_dpm )
+    {
+      if ( p -> rotation.current == ROTATION_DPS )
+      {
+        p -> rotation.dps_time += ( sim -> current_time - p -> rotation.last_time );
+      }
+      else if ( p -> rotation.current == ROTATION_DPM )
+      {
+        p -> rotation.dpm_time += ( sim -> current_time - p -> rotation.last_time );
+      }
+      p -> rotation.last_time = sim -> current_time;
+
+      if ( sim -> log )
+      {
+        sim -> out_log.printf( "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - ( p -> rotation.mana_gain / sim -> current_time.total_seconds() ), sim -> target -> time_to_percent( 0.0 ).total_seconds() );
+      }
+
+      if ( force_dps )
+      {
+        if ( sim -> log ) sim -> out_log.printf( "%s switches to DPS spell rotation", p -> name() );
+        p -> rotation.current = ROTATION_DPS;
+      }
+      if ( force_dpm )
+      {
+        if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
+        p -> rotation.current = ROTATION_DPM;
+      }
+
+      update_ready();
+
+      return;
+    }
+
+    if ( sim -> log ) sim -> out_log.printf( "%s Considers Spell Rotation", p -> name() );
+
+    // The purpose of this action is to automatically determine when to start dps rotation.
+    // We aim to either reach 0 mana at end of fight or evocation_target_mana_percentage at next evocation.
+    // If mana gem has charges we assume it will be used during the next dps rotation burn.
+    // The dps rotation should correspond only to the actual burn, not any corrections due to overshooting.
+
+    // It is important to smooth out the regen rate by averaging out the returns from Evocation and Mana Gems.
+    // In order for this to work, the resource_gain() method must filter out these sources when
+    // tracking "rotation.mana_gain".
+
+    double regen_rate = p -> rotation.mana_gain / sim -> current_time.total_seconds();
+
+    timespan_t ttd = sim -> target -> time_to_percent( 0.0 );
+    timespan_t tte = p -> cooldowns.evocation -> remains();
+
+    if ( p -> rotation.current == ROTATION_DPS )
+    {
+      p -> rotation.dps_time += ( sim -> current_time - p -> rotation.last_time );
+
+      // We should only drop out of dps rotation if we break target mana treshold.
+      // In that situation we enter a mps rotation waiting for evocation to come off cooldown or for fight to end.
+      // The action list should take into account that it might actually need to do some burn in such a case.
+
+      if ( tte < ttd )
+      {
+        // We're going until target percentage
+        if ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] < evocation_target_mana_percentage / 100.0 )
+        {
+          if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
+
+          p -> rotation.current = ROTATION_DPM;
+        }
+      }
+      else
+      {
+        // We're going until OOM, stop when we can no longer cast full stack AB (approximately, 4 stack with AP can be 6177)
+        if ( p -> resources.current[ RESOURCE_MANA ] < 6200 )
+        {
+          if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
+
+          p -> rotation.current = ROTATION_DPM;
+        }
+      }
+    }
+    else if ( p -> rotation.current == ROTATION_DPM )
+    {
+      p -> rotation.dpm_time += ( sim -> current_time - p -> rotation.last_time );
+
+      // Calculate consumption rate of dps rotation and determine if we should start burning.
+
+      double consumption_rate = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - regen_rate;
+      double available_mana = p -> resources.current[ RESOURCE_MANA ];
+
+      // Mana Gem, if we have uses left
+      if ( p -> mana_gem_charges > 0 )
+      {
+        available_mana += p -> dbc.effect_max( 16856, p -> level );
+      }
+
+      // If this will be the last evocation then figure out how much of it we can actually burn before end and adjust appropriately.
+
+      timespan_t evo_cooldown = timespan_t::from_seconds( 240.0 );
+
+      timespan_t target_time;
+      double target_pct;
+
+      if ( ttd < tte + evo_cooldown )
+      {
+        if ( ttd < tte + final_burn_offset )
+        {
+          // No more evocations, aim for OOM
+          target_time = ttd;
+          target_pct = oom_offset;
+        }
+        else
+        {
+          // If we aim for normal evo percentage we'll get the most out of burn/mana adept synergy.
+          target_time = tte;
+          target_pct = evocation_target_mana_percentage / 100.0;
+        }
+      }
+      else
+      {
+        // We'll cast more then one evocation, we're aiming for a normal evo target burn.
+        target_time = tte;
+        target_pct = evocation_target_mana_percentage / 100.0;
+      }
+
+      if ( consumption_rate > 0 )
+      {
+        // Compute time to get to desired percentage.
+        timespan_t expected_time = timespan_t::from_seconds( ( available_mana - target_pct * p -> resources.max[ RESOURCE_MANA ] ) / consumption_rate );
+
+        if ( expected_time >= target_time )
+        {
+          if ( sim -> log ) sim -> out_log.printf( "%s switches to DPS spell rotation", p -> name() );
+
+          p -> rotation.current = ROTATION_DPS;
+        }
+      }
+      else
+      {
+        // If dps rotation is regen, then obviously use it all the time.
+
+        if ( sim -> log ) sim -> out_log.printf( "%s switches to DPS spell rotation", p -> name() );
+
+        p -> rotation.current = ROTATION_DPS;
+      }
+    }
+    p -> rotation.last_time = sim -> current_time;
+
+    update_ready();
+  }
+
+  virtual bool ready()
+  {
+    // NOTE this delierately avoids calling the supreclass ready method;
+    // not all the checks there are relevnt since this isn't a spell
+    if ( cooldown -> down() )
+      return false;
+
+    if ( sim -> current_time < cooldown -> duration )
+      return false;
+
+    if ( if_expr && ! if_expr -> success() )
+      return false;
+
+    return true;
+  }
+};
+
+*/
 // Choose Target Action =======================================================
 
 struct choose_target_t : public action_t
@@ -8740,7 +8945,7 @@ struct shatterlance_t : public scoped_actor_callback_t<mage_t>
   { }
 
   void manipulate( mage_t* actor, const special_effect_t& e ) override
-  { actor -> legendary.shatterlance_effect = ( e.driver() -> effectN( 1 ).average( e.item ) ) / 100; 
+  { actor -> legendary.shatterlance_effect = ( e.driver() -> effectN( 1 ).average( e.item ) ) / 100;
     actor -> legendary.shatterlance = true; }
 };
 // MAGE MODULE INTERFACE ====================================================
