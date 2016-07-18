@@ -33,7 +33,7 @@ actions+=/potion,name=draenic_strength,if=cooldown.dark_arbiter.remains>165&tale
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
 actions+=/dark_transformation
 actions+=/blighted_rune_weapon
-actions+=/run_action_list,name=valkyr,if=pet.valkyr_battlemaiden.active
+actions+=/run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_battlemaiden.active
 actions+=/call_action_list,name=generic
 
 actions.valkyr=death_coil
