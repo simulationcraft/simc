@@ -40,8 +40,8 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
 {
     baseDir.setFilter( QDir::Dirs );
 
-    static const char* tierNames[] = { "T17", "T18", "T19" };
-    static const int TIER_MAX = 3; // = sizeof_array( tierNames );
+    static const char* tierNames[] = { "T18", "T19" };
+    static const int TIER_MAX = 2; // = sizeof_array( tierNames );
 
     QTreeWidgetItem* playerItems[PLAYER_MAX];
     range::fill( playerItems, 0 );

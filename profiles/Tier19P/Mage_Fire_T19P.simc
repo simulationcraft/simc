@@ -1,9 +1,10 @@
-mage="Mage_Fire_T18M"
-level=100
+mage="Mage_Fire_T19P_TEMP"
+level=110
 race=troll
 role=spell
 position=back
 talents=3003322
+artifact=54:0:0:0:0:748:1:749:3:751:3:754:3:755:3:756:3:759:1:762:1:763:1:1340:1
 spec=fire
 
 # This default action priority list is automatically created based on your character.
@@ -35,7 +36,6 @@ actions.comb_prep=fire_blast,if=buff.heating_up.up
 actions.comb_prep+=/fireball
 
 actions.combustion_phase=combustion
-actions.combustion_phase+=/use_item,slot=finger2
 actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/arcane_torrent
@@ -57,30 +57,31 @@ actions.single_target+=/call_action_list,name=active_talents
 actions.single_target+=/scorch,if=target.health.pct<=25&equipped.132454
 actions.single_target+=/fireball
 
-head=cowl_of_the_arcanic_conclave,id=124160,bonus_id=567,upgrade=2
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
-shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567,upgrade=2
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
-chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567,upgrade=2
-wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
-hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567,upgrade=2
-waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
-legs=leggings_of_the_iron_summoner,id=124164,bonus_id=567,upgrade=2
-feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
-finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,upgrade=2,enchant=gift_of_critical_strike
-finger2=nithramus_the_allseer,id=124635,bonus_id=641,enchant=gift_of_critical_strike
-trinket1=sandmans_pouch,id=112320,bonus_id=618,upgrade=2
-trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
-main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant=mark_of_the_thunderlord
+head=cowl_of_the_arcanic_conclave,id=124160,bonus_id=567
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=gift_of_critical_strike
+shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_critical_strike
+chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567
+wrists=contemptuous_wristguards,id=124186,bonus_id=567
+hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567
+waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567
+legs=leggings_of_the_iron_summoner,id=124164,bonus_id=567
+feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567
+finger1=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_critical_strike
+finger2=seal_of_the_traitorous_councilor,id=124191,bonus_id=567,enchant=gift_of_critical_strike
+trinket1=sandmans_pouch,id=112320,bonus_id=618
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567
+main_hand=felomelorn,id=128820,bonus_id=730,ilevel=840
+off_hand=heart_of_the_phoenix,id=133959,ilevel=840
 
 # Gear Summary
-# gear_ilvl=741.00
-# gear_stamina=7045
-# gear_intellect=7739
-# gear_crit_rating=2158
-# gear_haste_rating=2296
-# gear_mastery_rating=2031
-# gear_versatility_rating=391
-# gear_armor=1201
+# gear_ilvl=840.00
+# gear_stamina=17377
+# gear_intellect=19155
+# gear_crit_rating=4675
+# gear_haste_rating=5045
+# gear_mastery_rating=3386
+# gear_versatility_rating=330
+# gear_armor=1570
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

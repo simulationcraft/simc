@@ -26,6 +26,7 @@ actions.precombat+=/pyroblast,if=!talent.mirror_image.enabled|!talent.rune_of_po
 
 actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=target.health.pct<25|time=0
+actions+=/rune_of_power,if=recharge_time<cooldown.combustion.remains&buff.combustion.down|((cooldown.combustion.remains+5)>target.time_to_die)
 actions+=/call_action_list,name=combustion_phase,if=cooldown.combustion.remains=0&buff.hot_streak.up|buff.combustion.up
 actions+=/call_action_list,name=comb_prep,if=cooldown.combustion.remains<6&cooldown.flame_on.remains<6
 actions+=/call_action_list,name=single_target
@@ -43,13 +44,17 @@ actions.combustion_phase+=/fire_blast,if=!prev_off_gcd.fire_blast
 actions.combustion_phase+=/scorch,if=target.health.pct<=25&equipped.132454
 actions.combustion_phase+=/fireball
 
-actions.active_talents=dragons_breath,if=equipped.132863
+actions.active_talents=flame_on,if=action.fire_blast.charges<1
+actions.active_talents+=/blast_wave,if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1)
+actions.active_talents+=/meteor,if=cooldown.combustion.remains>10|(cooldown.combustion.remains>target.time_to_die)
+actions.active_talents+=/cinderstorm,if=buff.combustion.down
 
 actions.single_target=pyroblast,if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time
 actions.single_target+=/pyroblast,if=buff.hot_streak.up
 actions.single_target+=/fire_blast,if=buff.hot_streak.down&buff.heating_up.up
 actions.single_target+=/call_action_list,name=active_talents
 actions.single_target+=/scorch,if=target.health.pct<=25&equipped.132454
+actions.single_target+=/fireball
 
 head=cowl_of_the_arcanic_conclave,id=124160
 neck=vial_of_immiscible_liquid,id=124212,enchant=gift_of_critical_strike

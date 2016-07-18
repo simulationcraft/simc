@@ -1,0 +1,37 @@
+# TxM
+# Tier x Mythic
+# * Ilvl Cap: 735
+# * No Sockets, Tertiary Stats, or Warforged items
+# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
+# * EXCEPTION: 735 Legendary Ring can be used. (accessibility)
+
+# talent_format=numbers
+
+# Shadow
+priest="Priest_Shadow_T19P_TEMP"
+talents=1133231
+level=110
+race=troll
+spec=shadow
+role=spell
+position=back
+artifact=47:0:0:0:0:764:1:765:1:767:3:769:1:770:1:771:3:772:3:773:3:776:3:1347:1
+scale_to_itemlevel=840
+#glyphs=mind_flay/fade/sha
+head=demon_princes_ascendant_crown,id=124159,bonus_id=567
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=gift_of_mastery
+shoulders=pious_mantle,id=124178,bonus_id=567
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_mastery
+chest=pious_raiment,id=124172,bonus_id=567
+wrists=contemptuous_wristguards,id=124186,bonus_id=567
+hands=pious_handwraps,id=124155,bonus_id=567
+waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567
+legs=pious_leggings,id=124166,bonus_id=567
+feet=dessicated_soulrender_slippers,id=124150,bonus_id=567
+finger1=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_mastery
+finger2=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_mastery
+trinket1=repudiation_of_war,id=124519,bonus_id=567
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,ilevel=840
+off_hand=secrets_of_the_void,id=133958,ilevel=840
+save=Priest_Shadow_T19P.simc

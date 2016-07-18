@@ -21,8 +21,8 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727/1492,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,bonus_id=1727/1492,enchant_id=5427
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=133764/133684/137476,relic_id=1727:1492/1727:1492/1727:1492
-off_hand=twinblades_of_the_deceiver,id=127830
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,ilevel=840
+off_hand=twinblades_of_the_deceiver,id=127830,ilevel=840
 save=Demon_Hunter_Havoc_T19P.simc
 
 demonhunter="Demon_Hunter_Vengeance_PreRaid"
@@ -46,8 +46,8 @@ feet=footpads_of_the_swift_balestra,id=137497
 legs=snaggles_favorite_pants,id=140594
 finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,enchant_id=5427
-main_hand=twinblades_of_the_deceiver,id=127829,ilevel=820
-off_hand=twinblades_of_the_deceiver,id=127830,ilevel=820
+main_hand=twinblades_of_the_deceiver,id=127829,ilevel=840
+off_hand=twinblades_of_the_deceiver,id=127830,ilevel=840
 trinket1=chaos_talisman,id=137459
 trinket2=horn_of_valor,id=133642
 save=Demon_Hunter_Vengeance_T19P.simc

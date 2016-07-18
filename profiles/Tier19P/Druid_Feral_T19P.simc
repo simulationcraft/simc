@@ -94,15 +94,15 @@ finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,enchant_id=5427
 trinket1=chaos_talisman,id=137459
 trinket2=horn_of_valor,id=133642
-main_hand=fangs_of_ashamane,id=128860,bonus_id=723,ilevel=820
-off_hand=fangs_of_ashamane,id=128859,ilevel=820
+main_hand=fangs_of_ashamane,id=128860,bonus_id=723,ilevel=840
+off_hand=fangs_of_ashamane,id=128859,ilevel=840
 
 # Gear Summary
-# gear_ilvl=820.00
-# gear_agility=8031
-# gear_stamina=14228
-# gear_crit_rating=9141
-# gear_haste_rating=834
-# gear_mastery_rating=1633
-# gear_versatility_rating=4695
-# gear_armor=1830
+# gear_ilvl=840.00
+# gear_agility=9632
+# gear_stamina=17139
+# gear_crit_rating=9815
+# gear_haste_rating=898
+# gear_mastery_rating=1760
+# gear_versatility_rating=5057
+# gear_armor=1957

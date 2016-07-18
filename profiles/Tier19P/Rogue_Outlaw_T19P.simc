@@ -73,14 +73,14 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=137412/133763/137493,relic_id=1727/1727/1727
-off_hand=the_dreadblades,id=134552
+main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=840
+off_hand=the_dreadblades,id=134552,ilevel=840
 
 # Gear Summary
-# gear_ilvl=844.38
-# gear_agility=9760
-# gear_stamina=17727
-# gear_crit_rating=5996
+# gear_ilvl=840.00
+# gear_agility=9432
+# gear_stamina=17140
+# gear_crit_rating=5908
 # gear_haste_rating=1796
-# gear_mastery_rating=9531
+# gear_mastery_rating=9426
 # gear_armor=1957

@@ -1,0 +1,88 @@
+priest="Priest_Shadow_T19P_TEMP"
+level=110
+race=troll
+role=spell
+position=back
+talents=1133231
+artifact=47:0:0:0:0:764:1:765:1:767:3:769:1:770:1:771:3:772:3:773:3:776:3:1347:1
+spec=shadow
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=pickled_eel
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/mind_blast
+
+# Executed every time the actor is available.
+
+actions=call_action_list,name=vf,if=buff.voidform.up
+actions+=/call_action_list,name=main
+
+actions.main=void_eruption
+actions.main+=/mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc
+actions.main+=/shadow_word_death
+actions.main+=/mind_blast
+actions.main+=/shadow_word_pain,if=!ticking,cycle_targets=1
+actions.main+=/vampiric_touch,if=!ticking,cycle_targets=1
+actions.main+=/shadow_word_void
+actions.main+=/shadow_crash,if=talent.shadow_crash.enabled
+actions.main+=/shadowfiend,if=!talent.mindbender.enabled
+actions.main+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
+actions.main+=/mind_spike,if=talent.mind_spike.enabled
+actions.main+=/shadow_word_pain
+
+actions.vf=surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up)&target.time_to_die<120
+actions.vf+=/power_infusion,if=buff.voidform.stack>=10
+actions.vf+=/berserking,if=buff.voidform.stack>10
+actions.vf+=/dispersion
+actions.vf+=/void_torrent,if=buff.voidform.stack>=10
+actions.vf+=/void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd,cycle_targets=1
+actions.vf+=/void_bolt
+actions.vf+=/mind_blast
+actions.vf+=/mindbender,if=talent.mindbender.enabled
+actions.vf+=/shadow_word_death
+actions.vf+=/shadow_word_void
+actions.vf+=/shadowfiend,if=!talent.mindbender.enabled
+actions.vf+=/shadow_word_pain,if=!ticking,cycle_targets=1
+actions.vf+=/vampiric_touch,if=!ticking,cycle_targets=1
+actions.vf+=/shadow_crash,if=talent.shadow_crash.enabled
+actions.vf+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
+actions.vf+=/mind_spike,if=talent.mind_spike.enabled
+actions.vf+=/shadow_word_pain
+
+head=demon_princes_ascendant_crown,id=124159,bonus_id=567
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant=gift_of_mastery
+shoulders=pious_mantle,id=124178,bonus_id=567
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_mastery
+chest=pious_raiment,id=124172,bonus_id=567
+wrists=contemptuous_wristguards,id=124186,bonus_id=567
+hands=pious_handwraps,id=124155,bonus_id=567
+waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567
+legs=pious_leggings,id=124166,bonus_id=567
+feet=dessicated_soulrender_slippers,id=124150,bonus_id=567
+finger1=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_mastery
+finger2=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_mastery
+trinket1=repudiation_of_war,id=124519,bonus_id=567
+trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,ilevel=840
+off_hand=secrets_of_the_void,id=133958,ilevel=840
+
+# Gear Summary
+# gear_ilvl=840.00
+# gear_stamina=17377
+# gear_intellect=18032
+# gear_crit_rating=4024
+# gear_haste_rating=3640
+# gear_mastery_rating=5768
+# gear_armor=1570
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1

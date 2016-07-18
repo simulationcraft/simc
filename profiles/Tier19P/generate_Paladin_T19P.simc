@@ -1,0 +1,38 @@
+# TxM
+# Tier x Mythic
+# * Ilvl Cap: 700
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Thunderforged/Warforged)
+# * No Legendaries
+# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
+# * EXCEPTION: 715 Legendary Ring can be used. (accessibility)
+
+# talent_format=numbers
+paladin="Paladin_Retribution_T19P_TEMP"
+level=110
+race=blood_elf
+role=attack
+position=back
+talents=2112232
+
+spec=retribution
+artifact=2:0:0:0:0:40:1:41:3:42:3:47:3:50:3:51:1:53:3:54:1:350:1:1275:1
+scale_to_itemlevel=840
+ 
+head=helm_of_the_ceaseless_vigil,id=124333,bonus_id=567
+neck=choker_of_sneering_superiority,id=124219,bonus_id=567,enchant=gift_of_mastery
+shoulders=doomcriers_shoulderplates,id=124343,bonus_id=567
+back=cloak_of_incendiary_wrath,id=124144,bonus_id=567,enchant=gift_of_mastery
+chest=cuirass_of_the_ceaseless_vigil,id=124318,bonus_id=567
+wrists=breachscarred_wristplates,id=124353,bonus_id=567
+hands=gauntlets_of_the_ceaseless_vigil,id=124328,bonus_id=567
+waist=annihilans_waistplate,id=124349,bonus_id=567
+legs=greaves_of_the_ceaseless_vigil,id=124339,bonus_id=567
+feet=treads_of_the_defiler,id=124322,bonus_id=567
+finger1=loop_of_beckoned_shadows,id=124199,bonus_id=567,enchant=gift_of_mastery
+finger2=loop_of_beckoned_shadows,id=124199,bonus_id=567,enchant=gift_of_mastery
+trinket1=libram_of_vindication,id=124518,bonus_id=567
+trinket2=empty_drinking_horn,id=124238,bonus_id=567
+main_hand=ashbringer,id=120978,bonus_id=737,ilevel=840
+save=Paladin_Retribution_T19P.simc

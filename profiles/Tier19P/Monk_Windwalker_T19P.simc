@@ -1,0 +1,96 @@
+monk="Monk_Windwalker_T19P_TEMP"
+level=110
+race=blood_elf
+role=hybrid
+position=back
+talents=3020022
+artifact=50:0:0:0:0:800:1:820:3:821:3:824:3:828:1:829:3:831:1:832:1:1094:3:1341:1
+spec=windwalker
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_agility
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/invoke_xuen
+actions+=/potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent,if=chi.max-chi>=1
+actions+=/touch_of_death,if=!artifact.gale_burst.enabled
+actions+=/touch_of_death,if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&!talent.serenity.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
+actions+=/touch_of_death,if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&talent.serenity.enabled&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
+actions+=/storm_earth_and_fire,if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
+actions+=/storm_earth_and_fire,if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
+actions+=/serenity,if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
+actions+=/serenity,if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
+actions+=/energizing_elixir,if=energy<energy.max&chi<=1&buff.serenity.down
+actions+=/rushing_jade_wind,if=buff.serenity.up&!prev_gcd.rushing_jade_wind
+actions+=/strike_of_the_windlord,if=artifact.strike_of_the_windlord.enabled
+actions+=/whirling_dragon_punch
+actions+=/fists_of_fury
+actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/call_action_list,name=aoe,if=active_enemies>=3
+
+actions.opener=blood_fury
+actions.opener+=/berserking
+actions.opener+=/arcane_torrent,if=chi.max-chi>=1
+actions.opener+=/fists_of_fury,if=buff.serenity.up&buff.serenity.remains<1.5
+actions.opener+=/rising_sun_kick
+actions.opener+=/blackout_kick,if=chi.max-chi<=1&cooldown.chi_brew.up|buff.serenity.up
+actions.opener+=/serenity,if=chi.max-chi<=2
+actions.opener+=/tiger_palm,if=chi.max-chi>=2&!buff.serenity.up
+
+actions.st=rising_sun_kick
+actions.st+=/strike_of_the_windlord
+actions.st+=/rushing_jade_wind,if=chi>1&!prev_gcd.rushing_jade_wind
+actions.st+=/chi_wave,if=energy.time_to_max>2|buff.serenity.down
+actions.st+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
+actions.st+=/blackout_kick,if=(chi>1|buff.bok_proc.up)&buff.serenity.down&!prev_gcd.blackout_kick
+actions.st+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
+
+actions.aoe=spinning_crane_kick,if=!prev_gcd.spinning_crane_kick
+actions.aoe+=/strike_of_the_windlord
+actions.aoe+=/rushing_jade_wind,if=chi>=2&!prev_gcd.rushing_jade_wind
+actions.aoe+=/chi_wave,if=energy.time_to_max>2|buff.serenity.down
+actions.aoe+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
+actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
+
+head=mask_of_the_hurricanes_eye,id=124262,bonus_id=567
+neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,enchant=gift_of_haste
+shoulders=mantle_of_the_hurricanes_eye,id=124273,bonus_id=567
+back=cloak_of_desperate_temerity,id=124134,bonus_id=567,enchant=gift_of_haste
+chest=tunic_of_the_soulbinder,id=124245,bonus_id=567
+wrists=bloodcult_bracers,id=124279,bonus_id=567
+hands=fistwraps_of_the_hurricanes_eye,id=124256,bonus_id=567
+waist=waistwrap_of_banishment,id=124276,bonus_id=567
+legs=legwraps_of_the_hurricanes_eye,id=124268,bonus_id=567
+feet=oppressors_merciless_treads,id=124251,bonus_id=567
+finger1=portal_key_signet,id=124189,bonus_id=567,enchant=gift_of_haste
+finger2=portal_key_signet,id=124189,bonus_id=567,enchant=gift_of_haste
+trinket1=sacred_draenic_incense,id=124517,bonus_id=567
+trinket2=soul_capacitor,id=124225,bonus_id=567
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=840
+off_hand=fists_of_the_heavens,id=133948,ilevel=840
+
+# Gear Summary
+# gear_ilvl=840.00
+# gear_agility=12471
+# gear_stamina=17140
+# gear_crit_rating=5212
+# gear_haste_rating=4679
+# gear_mastery_rating=2535
+# gear_armor=1957
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1

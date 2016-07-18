@@ -1,0 +1,91 @@
+mage="Mage_Frost_T19P_TEMP"
+level=110
+race=dwarf
+role=spell
+position=back
+talents=3003222
+artifact=53:0:0:0:0:783:1:784:2:786:3:788:3:791:3:792:3:793:1:794:1:796:1:797:1:1296:1
+spec=frost
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/water_elemental
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/mirror_image
+actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/frostbolt,if=!talent.frost_bomb.enabled
+actions.precombat+=/frost_bomb
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/time_warp,if=target.health.pct<25|time>0
+actions+=/rune_of_power,if=(charges_fractional>=2)|(buff.icy_veins.up&!talent.ray_of_frost.enabled)|(cooldown.icy_veins.remains>target.time_to_die)|cooldown.ray_of_frost.remains=0
+actions+=/call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0
+actions+=/call_action_list,name=single_target
+
+actions.water_jet=frostbolt,if=prev_off_gcd.water_jet
+actions.water_jet+=/ice_lance,if=buff.fingers_of_frost.react>=2+artifact.icy_hand.enabled&action.frostbolt.in_flight
+actions.water_jet+=/frostbolt,if=debuff.water_jet.remains>cast_time+travel_time
+
+actions.cooldowns=icy_veins
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/arcane_torrent
+
+actions.single_target=call_action_list,name=cooldowns
+actions.single_target+=/ice_lance,if=(buff.fingers_of_frost.react&(buff.fingers_of_frost.remains<action.frostbolt.execute_time|buff.fingers_of_frost.remains<buff.fingers_of_frost.react*gcd.max))|prev_gcd.flurry
+actions.single_target+=/flurry,if=buff.brain_freeze.react&(buff.brain_freeze.remains<action.frostbolt.execute_time|(buff.fingers_of_frost.react=0&debuff.water_jet.remains=0))
+actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react>(artifact.icy_hand.enabled)|prev_gcd.ebonbolt
+actions.single_target+=/ice_lance,if=buff.shatterlance.up
+actions.single_target+=/call_action_list,name=active_talents
+actions.single_target+=/call_action_list,name=init_water_jet,if=!talent.lonely_winter.enabled&pet.water_elemental.cooldown.water_jet.remains<=gcd.max&buff.fingers_of_frost.react<2+artifact.icy_hand.enabled&!dot.frozen_orb.ticking
+actions.single_target+=/frozen_orb,if=buff.fingers_of_frost.stack<2+artifact.icy_hand.enabled
+actions.single_target+=/blizzard,if=talent.arctic_gale.enabled
+actions.single_target+=/ice_lance,if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)
+actions.single_target+=/frostbolt
+
+actions.init_water_jet=frostbolt
+
+actions.active_talents=ray_of_frost,if=buff.rune_of_power.up|!talent.rune_of_power.enabled
+actions.active_talents+=/ice_nova
+actions.active_talents+=/frozen_touch,if=buff.fingers_of_frost.stack=0
+actions.active_talents+=/glacial_spike
+actions.active_talents+=/comet_storm
+
+head=countenance_of_the_revenant,id=124158,bonus_id=567
+neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,enchant=gift_of_multistrike
+shoulders=mantle_of_the_arcanic_conclave,id=124177,bonus_id=567
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant=gift_of_multistrike
+chest=robe_of_the_arcanic_conclave,id=124171,bonus_id=567
+wrists=powdersinged_bracers,id=124183,bonus_id=567
+hands=gloves_of_the_arcanic_conclave,id=124154,bonus_id=567
+waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567
+legs=pantaloons_of_the_arcanic_conclave,id=124165,bonus_id=567
+feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567
+finger1=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_multistrike
+finger2=loathful_encrusted_band,id=124192,bonus_id=567,enchant=gift_of_multistrike
+trinket1=tome_of_shifting_words,id=124516,bonus_id=567
+trinket2=unblinking_gaze_of_sethe,id=124229,bonus_id=567
+main_hand=edict_of_argus,id=128862,bonus_id=731,ilevel=840
+
+# Gear Summary
+# gear_ilvl=840.00
+# gear_stamina=17393
+# gear_intellect=19087
+# gear_crit_rating=4208
+# gear_haste_rating=4372
+# gear_mastery_rating=3430
+# gear_versatility_rating=330
+# gear_armor=1570
+# set_bonus=tier18_2pc=1
+# set_bonus=tier18_4pc=1

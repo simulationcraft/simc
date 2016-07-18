@@ -377,7 +377,7 @@ bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
 {
   range::fill( sim -> active_player -> artifact_points, 0 );
 
-  if ( value.size() == 0 )
+  if ( value.size() == 0 || sim -> disable_artifacts )
   {
     return false;
   }
