@@ -5159,8 +5159,8 @@ struct explosive_trap_t: public hunter_spell_t
       if ( p -> talents.improved_traps -> ok() )
         cooldown -> duration *= 1.0 + p -> talents.improved_traps -> effectN( 2 ).percent();
 
-      if ( p -> talents.expert_trapper -> ok() )
-        base_multiplier *= 1.0 + p -> talents.expert_trapper -> effectN( 1 ).percent();
+     // if ( p -> talents.expert_trapper -> ok() )
+     //   base_multiplier *= 1.0 + p -> talents.expert_trapper -> effectN( 1 ).percent();
 
       if ( p -> artifacts.hunters_guile.rank() )
         cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
@@ -5182,6 +5182,26 @@ struct explosive_trap_t: public hunter_spell_t
 
     if ( p() -> legendary.sv_feet )
       p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
+  }
+
+  virtual double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_spell_t::composite_target_da_multiplier( t );
+
+    if ( t == p() -> target )
+      m *= 1.0 + p() -> talents.expert_trapper -> effectN( 1 ).percent();
+
+    return m;
+  }  
+  
+  virtual double composite_target_ta_multiplier( player_t* t ) const override
+  {
+    double m = hunter_spell_t::composite_target_ta_multiplier( t );
+
+    if ( t == p() -> target )
+      m *= 1.0 + p() -> talents.expert_trapper -> effectN( 1 ).percent();
+
+    return m;
   }
 };
 
