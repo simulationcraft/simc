@@ -2027,19 +2027,9 @@ private:
 
     havoc_proc = nullptr;
 
-    if ( p() -> destruction_trinket )
-    {
-      affected_by_flamelicked = data().affected_by( p() -> destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ) );
-    }
-    else
-    {
-      affected_by_flamelicked = false;
-    }
-
     destro_mastery = true;
 
     parse_spell_coefficient( *this );
-
   }
 
 public:
@@ -2120,6 +2110,20 @@ public:
   virtual void reset() override
   {
     spell_t::reset();
+  }
+
+  void init() override
+  {
+    action_t::init();
+
+    if ( p() -> destruction_trinket )
+    {
+      affected_by_flamelicked = data().affected_by( p() -> destruction_trinket -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    }
+    else
+    {
+      affected_by_flamelicked = false;
+    }
   }
 
   virtual int n_targets() const override
@@ -5206,6 +5210,7 @@ void warlock_t::apl_destruction()
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
 
   // artifact check
+  if ( true_level > 100 )
   add_action( "Dimensional Rift", "if=charges=3" );
 
   add_action( "Immolate", "if=remains<=tick_time" );
