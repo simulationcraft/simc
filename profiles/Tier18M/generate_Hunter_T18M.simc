@@ -17,8 +17,8 @@ legs=haughty_chain_legguards,id=124300,bonus_id=567,upgrade=2
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5326
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5326
-trinket1=malicious_censer,id=124226,bonus_id=567,upgrade=2
-trinket2=talisman_of_the_master_tracker,id=124515,bonus_id=567,upgrade=2
+trinket1=stone_of_the_elements,id=128024
+trinket2=chipped_soul_prism,id=124545,upgrade=2
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5383
 save=Hunter_BM_T18M.simc
 
@@ -42,8 +42,8 @@ legs=leggings_of_the_savage_hunt,id=124301,bonus_id=567,upgrade=2
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,enchant_id=5324,bonus_id=641
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5324
-trinket1=talisman_of_the_master_tracker,id=124515,bonus_id=567,upgrade=2
-trinket2=felspring_coil,id=124223,bonus_id=567,upgrade=2
+trinket1=stone_of_the_elements,id=128024
+trinket2=chipped_soul_prism,id=124545,upgrade=2
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5276
 save=Hunter_MM_T18M.simc
 
@@ -66,7 +66,7 @@ legs=leggings_of_the_savage_hunt,id=124301,bonus_id=567,upgrade=2
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,enchant_id=5327,bonus_id=641
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5327
-trinket1=beating_heart_of_the_mountain,id=113931,bonus_id=567,upgrade=2
-trinket2=malicious_censer,id=124226,bonus_id=567,upgrade=2
-main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5275
+trinket1=stone_of_the_elements,id=128024
+trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
+main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant_id=5330
 save=Hunter_SV_T18M.simc
