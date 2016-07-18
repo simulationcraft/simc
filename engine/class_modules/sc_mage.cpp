@@ -522,6 +522,7 @@ public:
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
+    legendary( legendary_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
     rotation( rotation_t() ),
