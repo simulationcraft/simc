@@ -15,7 +15,7 @@ spec=unholy
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=countess_armies
+actions.precombat=flask,type=countless_armies
 actions.precombat+=/food,type=buttered_sturgeon
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats

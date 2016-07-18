@@ -4,7 +4,7 @@ race=blood_elf
 spec=frost
 role=attack
 position=back
-talents=2001001
+talents=1130023
 #glyphs=
 head=demongaze_helm,id=124332
 neck=shadowgorged_iron_choker,id=124217,enchant=gift_of_haste
@@ -30,7 +30,7 @@ race=blood_elf
 spec=frost
 role=attack
 position=back
-talents=2001002
+talents=1130023
 #glyphs=
 head=demongaze_helm,id=124332
 neck=corrupted_talonguard_pendant,id=124218,enchant=gift_of_mastery
