@@ -1,10 +1,10 @@
-hunter="Hunter_SV_T19P"
+hunter="Hunter_SV_T19H"
 level=110
 race=pandaren
 role=attack
 position=ranged_back
 talents=3302022
-artifact=34:0:0:0:0:1068:1:1070:2:1072:3:1073:3:1075:3:1076:3:1080:1:1082:1:1084:1:1338:1
+artifact=34:0:0:0:0:1068:1:1070:2:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1079:1:1080:1:1082:1:1083:1:1084:1:1338:1
 spec=survival
 
 # This default action priority list is automatically created based on your character.
@@ -28,7 +28,6 @@ actions=auto_attack
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/use_item,name=moonlit_prism
 actions+=/fury_of_the_eagle,if=buff.mongoose_fury.stack>=4&buff.mongoose_fury.remains<action.mongoose_bite.gcd
 actions+=/raptor_strike,if=talent.way_of_the_moknathal.enabled&(buff.moknathal_tactics.stack>=3&(buff.moknathal_tactics.remains<gcd)|(buff.mongoose_fury.stack>=4&buff.mongoose_fury.remains<2*gcd&buff.moknathal_tactics.remains<action.fury_of_the_eagle.duration+gcd))
 actions+=/dragonsfire_grenade
@@ -45,29 +44,29 @@ actions+=/carve,if=spell_targets.carve>=4|spell_targets.carve>=3&dot.serpent_sti
 actions+=/spitting_cobra
 actions+=/throwing_axes
 
-head=helm_of_endless_dunes,id=134471,bonus_id=1727
-neck=understone_gorget,id=134491,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=mantle_of_the_abyss,id=134479,bonus_id=1727
-back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
-chest=decontaminated_chain_tunic,id=134463,bonus_id=1727
-wrists=call_of_the_wild,id=137101,bonus_id=1727
-hands=gloves_of_fleshshaping,id=134468,bonus_id=1727
-waist=cinch_of_frozen_fear,id=134482,bonus_id=1727
-legs=leggings_of_acidic_venom,id=137450,bonus_id=1727
-feet=plasmadrilled_steel_toes,id=137444,bonus_id=1727
-finger1=ring_of_contempt,id=134490,bonus_id=1727,enchant=200vers
-finger2=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=200vers
-trinket1=moonlit_prism,id=137541,bonus_id=1727
-trinket2=stormsinger_fulmination_charge,id=137367,bonus_id=1727
-main_hand=talonclaw,id=128808,gem_id=137550/137350/137543,relic_id=1727/1727/1727
+head=greyed_dragonscale_coif,id=139214,bonus_id=1805
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_claw
+shoulders=matted_fur_pauldrons,id=139217,bonus_id=1805
+back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=200agi
+chest=patient_ambushers_hauberk,id=139221,bonus_id=1805
+wrists=scored_ironclaw_sabatons,id=139220,bonus_id=1805
+hands=gauntlets_of_malevolent_intent,id=139213,bonus_id=1805
+waist=laughing_sisters_pouchchain,id=139211,bonus_id=1805
+legs=disjointed_linkage_leggings,id=139216,bonus_id=1805
+feet=malignant_sabatons,id=138211,bonus_id=1805
+finger1=grubby_silver_ring,id=139236,bonus_id=1805,enchant=200vers
+finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=200vers
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
+trinket2=natures_call,id=139334,bonus_id=1805
+main_hand=talonclaw,id=128808,gem_id=139262/139257/139255,relic_id=1805/1805/1805
 
 # Gear Summary
-# gear_ilvl=842.00
-# gear_agility=11306
-# gear_stamina=17965
-# gear_crit_rating=5427
-# gear_haste_rating=5788
-# gear_mastery_rating=1116
-# gear_versatility_rating=4629
-# gear_armor=2433
+# gear_ilvl=866.93
+# gear_agility=14199
+# gear_stamina=22645
+# gear_crit_rating=9696
+# gear_haste_rating=4469
+# gear_mastery_rating=2771
+# gear_versatility_rating=1639
+# gear_armor=2630
 summon_pet=cat

@@ -12,5 +12,10 @@
 optimal_raid=1
 # tmi_boss=TMI_Standard_Boss_T17L
 
+# Hunter
+Hunter_BM_T19M.simc
+Hunter_MM_T19M.simc
+Hunter_SV_T19M.simc
+
 # Rogue
 Rogue_T19M.simc

@@ -1,10 +1,10 @@
-hunter="Hunter_MM_T19P"
+hunter="Hunter_MM_T19H"
 level=110
 race=pandaren
 role=attack
 position=ranged_back
 talents=1103021
-artifact=55:0:0:0:0:307:1:308:1:310:1:312:3:313:2:315:3:319:3:320:3:322:1:1337:1
+artifact=55:0:0:0:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -25,7 +25,6 @@ actions.precombat+=/potion,name=draenic_agility
 # Executed every time the actor is available.
 
 actions=auto_shot
-actions+=/use_item,name=moonlit_prism
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
@@ -64,28 +63,28 @@ actions.careful_aim+=/multishot,if=spell_targets.multishot>1&(buff.marking_targe
 actions.careful_aim+=/arcane_shot,if=buff.marking_targets.up|focus.time_to_max>=2
 actions.careful_aim+=/sidewinders,if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5))
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1727
-neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=thundercrush_pauldrons,id=134478,bonus_id=1727
-back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
-hands=lavabreaker_gauntlets,id=137519,bonus_id=1727
-waist=belt_of_mighty_links,id=137456,bonus_id=1727
-legs=mute_erasure_legguards,id=134475,bonus_id=1727
-feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727
-finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=200mastery
-finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=200mastery
-trinket1=moonlit_prism,id=137541,bonus_id=1727
+head=greyed_dragonscale_coif,id=139214,bonus_id=1805
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1805,enchant=mark_of_the_claw
+shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1805
+back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=200agi
+chest=patient_ambushers_hauberk,id=139221,bonus_id=1805
+wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1805
+hands=gauntlets_of_the_demented_mind,id=138214,bonus_id=1805
+waist=creeping_string_of_larva,id=139212,bonus_id=1805
+legs=singular_chain_leggings,id=139215,bonus_id=1805
+feet=black_venom_sabatons,id=139219,bonus_id=1805
+finger1=mindrend_band,id=138220,bonus_id=1805,enchant=200mastery
+finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1805,enchant=200mastery
+trinket1=twisting_wind,id=139323,bonus_id=1805
 trinket2=stormsinger_fulmination_charge,id=137367,bonus_id=1727
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=137550/137350/137307,relic_id=1727/1727/1727
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=139262/139257/138228,relic_id=1805/1805/1805
 
 # Gear Summary
-# gear_ilvl=842.00
-# gear_agility=11306
-# gear_stamina=17963
-# gear_crit_rating=715
-# gear_haste_rating=5767
-# gear_mastery_rating=10478
-# gear_armor=2433
+# gear_ilvl=865.27
+# gear_agility=15322
+# gear_stamina=22645
+# gear_crit_rating=3208
+# gear_haste_rating=5272
+# gear_mastery_rating=9111
+# gear_armor=2630
 summon_pet=cat
