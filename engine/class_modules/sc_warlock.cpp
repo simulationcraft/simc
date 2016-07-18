@@ -1989,7 +1989,8 @@ struct soul_effigy_t : public warlock_pet_t
 
     if ( incoming_state -> result_amount > 0 )
     {
-      double amount = soul_effigy_passive -> effectN( 1 ).percent() * incoming_state -> result_amount;
+      double multiplier = o()->composite_player_target_multiplier(o()->target);
+      double amount = soul_effigy_passive -> effectN( 1 ).percent() * incoming_state -> result_amount * multiplier;
       damage -> target = target;
       damage -> base_dd_min = damage -> base_dd_max = amount;
       damage -> execute();
