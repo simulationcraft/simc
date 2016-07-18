@@ -5,8 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-#include <regex>
-
 set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
 {
   // First, pre-allocate vectors based on current boundaries of the set bonus data in DBC
@@ -309,21 +307,18 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
     return false;
   }
 
-  size_t bonus_offset = 1;
-
-  try {
-  std::regex bonus_regex( "^([0-9]+)pc$", std::regex::icase | std::regex::ECMAScript );
-  std::smatch match;
-  if ( std::regex_match( split[ bonus_offset ], match, bonus_regex ) && match.size() == 2 )
+  auto bonus_offset = split[ 1 ].find( "pc" );
+  if ( bonus_offset == std::string::npos )
   {
-    unsigned b = util::to_unsigned( match[ 1 ] );
-    if ( b > B_MAX )
-    {
-      return false;
-    }
-
-    bonus = static_cast<set_bonus_e>( b - 1 );
+    return false;
   }
+
+  auto b = util::to_unsigned( split[ 1 ].substr( 0, bonus_offset ) );
+  if ( b > B_MAX )
+  {
+    return false;
+  }
+  bonus = static_cast<set_bonus_e>( b - 1 );
 
   for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( SC_USE_PTR ); bonus_idx++ )
   {
@@ -336,12 +331,6 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
       set_bonus = static_cast< set_bonus_type_e >( bonus.enum_id );
       break;
     }
-  }
-  }
-  catch(const std::regex_error& e )
-  {
-    actor -> sim -> errorf("Could not parse set bonus: regex_error: %s", e.what() );
-    return false;
   }
 
   return set_bonus != SET_BONUS_NONE && bonus != B_NONE;
