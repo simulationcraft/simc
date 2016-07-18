@@ -12,6 +12,8 @@
 // Backdraft duration is reduced by haste
 // Channel demonfire + backdraft is fucking fuckity fucked
 // Mana tap is fucking fuckity fucked
+// Class trinket initialization
+// 
 //
 // Affliction -
 // Haunt reset
