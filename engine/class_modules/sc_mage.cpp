@@ -3535,6 +3535,10 @@ struct comet_storm_t : public frost_mage_spell_t
     frost_mage_spell_t::tick( d );
     projectile -> execute();
   }
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
+  }
 };
 
 
