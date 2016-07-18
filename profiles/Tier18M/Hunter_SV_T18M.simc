@@ -3,7 +3,7 @@ level=100
 race=blood_elf
 role=attack
 position=ranged_back
-talents=3203022
+talents=3302022
 spec=survival
 
 # This default action priority list is automatically created based on your character.
@@ -56,18 +56,18 @@ legs=leggings_of_the_savage_hunt,id=124301,bonus_id=567,upgrade=2
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5327
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5327
-trinket1=stone_of_the_elements,id=128024
-trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
+trinket1=stone_of_the_elements,id=128024,upgrade=2
+trinket2=skull_of_war,id=112318,bonus_id=618,upgrade=2
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant_id=5330
 
 # Gear Summary
 # gear_ilvl=740.67
-# gear_agility=5072
+# gear_agility=5056
 # gear_stamina=7023
 # gear_crit_rating=2796
 # gear_haste_rating=2218
 # gear_mastery_rating=1213
-# gear_versatility_rating=621
+# gear_versatility_rating=655
 # gear_armor=1773
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
