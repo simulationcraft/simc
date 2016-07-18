@@ -26,6 +26,9 @@ function class_sim2() {
     SIMC_PROFILE=${spec}
     for talent in ${PROFILE_TALENTS[@]}; do
       sim talents=${talent} threads=2 default_actions=1
+      if [ ! "${status}" -eq 0 ]; then
+        echo "Error in sim: "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} talents=${talent} threads=2 default_actions=1"
+      fi 
       [ "${status}" -eq 0 ]
     done
   done
