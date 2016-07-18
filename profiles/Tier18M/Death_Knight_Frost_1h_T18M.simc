@@ -56,7 +56,7 @@ actions.generic+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 actions.generic+=/hungering_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 
 actions.core=glacial_advance
-actions.core+=/frostscythe,if=buff.killing_machine.react&spell_targets.frostscythe>=4
+actions.core+=/frostscythe,if=buff.killing_machine.react|spell_targets.frostscythe>=4
 actions.core+=/obliterate,if=buff.killing_machine.react
 actions.core+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
 actions.core+=/obliterate
