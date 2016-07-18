@@ -3627,7 +3627,14 @@ struct marked_shot_t: public hunter_ranged_attack_t
   virtual void schedule_travel( action_state_t* s ) override
   {
     if ( td( s -> target ) -> debuffs.hunters_mark -> up() )
+    {
       hunter_ranged_attack_t::schedule_travel( s );
+    }
+    // If its not a valid target, the state needs to be released
+    else
+    {
+      action_state_t::release( s );
+    }
   }
 
   // Marked Shot can only be used if a Hunter's Mark exists on any target.
@@ -4748,7 +4755,7 @@ struct dire_beast_t: public hunter_spell_t
     {
       p() -> procs.tier18_4pc_bm -> occur();
 
-      for( int i = 0; i < p() -> felboars.size(); i++ )
+      for( size_t i = 0; i < p() -> felboars.size(); i++ )
       {
         if ( p() -> felboars[ i ] -> is_sleeping() )
         {
