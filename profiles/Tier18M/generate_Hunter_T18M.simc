@@ -4,7 +4,7 @@ race=orc
 spec=beast_mastery
 position=ranged_back
 role=attack
-talents=2102021
+talents=3102012
 head=hood_of_the_savage_hunt,id=124296,bonus_id=567,upgrade=2
 neck=chain_of_lidless_eyes,id=124209,bonus_id=567,upgrade=2,enchant_id=5319
 shoulders=pauldrons_of_the_savage_hunt,id=124307,bonus_id=567,upgrade=2
@@ -17,7 +17,7 @@ legs=haughty_chain_legguards,id=124300,bonus_id=567,upgrade=2
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5326
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5326
-trinket1=stone_of_the_elements,id=128024
+trinket1=stone_of_the_elements,id=128024,upgrade=2
 trinket2=chipped_soul_prism,id=124545,upgrade=2
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5383
 save=Hunter_BM_T18M.simc
@@ -42,7 +42,7 @@ legs=leggings_of_the_savage_hunt,id=124301,bonus_id=567,upgrade=2
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,enchant_id=5324,bonus_id=641
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5324
-trinket1=stone_of_the_elements,id=128024
+trinket1=stone_of_the_elements,id=128024,upgrade=2
 trinket2=chipped_soul_prism,id=124545,upgrade=2
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5276
 save=Hunter_MM_T18M.simc
@@ -52,7 +52,7 @@ level=100
 race=blood_elf
 role=attack
 position=ranged_back
-talents=3203022
+talents=3302022
 spec=survival
 head=hood_of_the_savage_hunt,id=124296,bonus_id=567,upgrade=2
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant_id=5320
@@ -66,7 +66,7 @@ legs=leggings_of_the_savage_hunt,id=124301,bonus_id=567,upgrade=2
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,enchant_id=5327,bonus_id=641
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5327
-trinket1=stone_of_the_elements,id=128024
-trinket2=soul_capacitor,id=124225,bonus_id=567,upgrade=2
+trinket1=stone_of_the_elements,id=128024,upgrade=2
+trinket2=skull_of_war,id=112318,bonus_id=618,upgrade=2
 main_hand=xutenash_glaive_of_ruin,id=124378,bonus_id=567,upgrade=2,enchant_id=5330
 save=Hunter_SV_T18M.simc

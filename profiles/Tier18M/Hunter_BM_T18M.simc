@@ -3,7 +3,7 @@ level=100
 race=orc
 role=attack
 position=ranged_back
-talents=2102021
+talents=3102012
 spec=beast_mastery
 
 # This default action priority list is automatically created based on your character.
@@ -53,18 +53,18 @@ legs=haughty_chain_legguards,id=124300,bonus_id=567,upgrade=2
 feet=spiked_throatcrusher_boots,id=124287,bonus_id=567,upgrade=2
 finger1=maalus_the_blood_drinker,id=124636,bonus_id=641,enchant_id=5326
 finger2=portal_key_signet,id=124189,bonus_id=567,upgrade=2,enchant_id=5326
-trinket1=stone_of_the_elements,id=128024
+trinket1=stone_of_the_elements,id=128024,upgrade=2
 trinket2=chipped_soul_prism,id=124545,upgrade=2
 main_hand=cursed_demonbone_longbow,id=124361,bonus_id=567,upgrade=2,enchant_id=5383
 
 # Gear Summary
-# gear_ilvl=739.00
+# gear_ilvl=739.67
 # gear_agility=4925
 # gear_stamina=7006
 # gear_crit_rating=2072
 # gear_haste_rating=2114
 # gear_mastery_rating=2800
-# gear_versatility_rating=879
+# gear_versatility_rating=913
 # gear_armor=1774
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
