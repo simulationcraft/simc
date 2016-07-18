@@ -7,43 +7,43 @@ __talents_per_tier = 3
 __class_map = {
     'Death_Knight': [
         (0, -1),        # 56: All
-                        # 57: None
-                        # 58: None
-        (3, -1),        # 60: All
-                        # 75: Death Pact, Death Siphon (tank only, and we dont teset tanks atm)
-                        # 90: None
+        (1, -1),        # 57: All
+        (2, -1),        # 58: All
+                        # 60: None
+                        # 75: None
+        (5, -1),        # 90: All
         (6, -1),        # 100: All
     ],
     'Druid': [
-                        # 15: None
+        (0, -1),        # 15: All
+                        # 30: None
+        (2, -1),        # 45: All
+                        # 60: None
+        (4, -1),        # 75: All
+        (5, -1),        # 90: All
+        (6, -1),        # 100: All
+    ],
+    'Hunter': [
+        (0, -1),        # 15: All
         (1, -1),        # 30: All
-        (2, 1),         # 45: Faerie Swarm
+                        # 45: None
         (3, -1),        # 60: All
                         # 75: None
         (5, -1),        # 90: All
         (6, -1),        # 100: All
     ],
-    'Hunter': [
-                        # 15: None
-                        # 30: None
-                        # 45: None
-        (3, -1),        # 60: All
-        (4, -1),        # 75: All
-        (5, -1),        # 90: All
-        (6, -1),        # 100: All
-    ],
     'Mage': [
-        (0, 3),         # 15: Ice Floes
+        (0, -1),        # 15: All
                         # 30: None
-                        # 45: None
-        (3, 3),         # 60: Cold Snap
-        (4, -1),        # 75: All
+        (2, -1),        # 45: All
+        (3, -1),        # 60: All
+                        # 75: None
         (5, -1),        # 90: All
         (6, -1),        # 100: All
     ],
     'Monk': [
-                        # 15: None
-        (1, -1),        # 30: All
+        (0, -1),        # 15: All
+                        # 30: None
         (2, -1),        # 45: All
                         # 60: None
                         # 75: None
@@ -51,56 +51,56 @@ __class_map = {
         (6, -1),        # 100: All
     ],
     'Paladin': [
-                        # 15: None
-                        # 30: None
-        (2, -1),        # 45: All
+        (0, -1),        # 15: All
+        (1, -1),        # 30: All
+                        # 45: None
         (3, -1),        # 60: All
-        (4, -1),        # 75: All
-        (5, -1),        # 90: All
+                        # 75: None
+                        # 90: None
         (6, -1),        # 100: All
     ],
     'Priest': [
-                        # 15: None
+        (0, -1),        # 15: All
                         # 30: None
-        (2, -1),        # 45: All
-                        # 60: None
+                        # 45: None
+        (3, -1),        # 60: All
         (4, -1),        # 75: All
         (5, -1),        # 90: All
         (6, -1),        # 100: All
     ],
     'Rogue': [
         (0, -1),        # 15: All
-                        # 30: None
-                        # 45: None
+        (1, -1),        # 30: All
+        (2, -1),        # 45: All
                         # 60: None
                         # 75: None
         (5, -1),        # 90: All
         (6, -1),        # 100: All
     ],
     'Shaman': [
-                        # 15: None
+        (0, -1),        # 15: All
                         # 30: None
+                        # 45: None
+        (3, -1),        # 60: All
+        (4, -1),        # 75: All
+        (5, -1),        # 90: All
+        (6, -1),        # 100: All
+    ],
+    'Warlock': [
+        (0, -1),        # 15: All
+        (1, -1),        # 30: All
                         # 45: None
         (3, -1),        # 60: All
                         # 75: None
         (5, -1),        # 90: All
         (6, -1),        # 100: All
     ],
-    'Warlock': [
-        (0, 3),         # 15: Harvest Life
-                        # 30: None
-        (2, 1),         # 45: Soul Link
-                        # 60: None
-        (4, -1),        # 75: All
-        (5, -1),        # 90: All
-        (6, -1),        # 100: All
-    ],
     'Warrior': [
-        (0, 1),         # 15: Juggernaut
+        (0, -1),        # 15: All
         (1, -1),        # 30: All
         (2, -1),        # 45: All
-        (3, -1),        # 60: All
-                        # 75: None
+                        # 60: None
+        (4, -1),        # 75: All
         (5, -1),        # 90: All
         (6, -1),        # 90: All
     ]
