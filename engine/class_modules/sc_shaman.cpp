@@ -6386,12 +6386,16 @@ void shaman_t::init_action_list_elemental()
   single -> add_talent( this, "Icefury", "if=raid_event.movement.in<5" );
   single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&"
                                             "(cooldown_react|buff.ascendance.up)" );
+  single -> add_talent( this, "Elemental Blast" );
   single -> add_action( this, "Flame Shock", "if=maelstrom>=20&refreshable" );
-  single -> add_action( this, "Frost Shock", "if=maelstrom>=20&raid_event.movement.in>(1.5*spell_haste*buff.icefury.stack)" );
+  single -> add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up&"
+                                             "((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|"
+                                             "buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))" );
   single -> add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
   single -> add_action( this, "Earth Shock", "if=maelstrom>=86" );
-  single -> add_talent( this, "Elemental Blast" );
-  single -> add_talent( this, "Icefury", "if=maelstrom<=76&raid_event.movement.in>30" );
+  single -> add_talent( this, "Icefury", "if=maelstrom<=70&raid_event.movement.in>30&"
+                                         "((talent.ascendance.enabled&cooldown.ascendance.remains>buff.icefury.duration)|"
+                                         "!talent.ascendance.enabled)" );
   single -> add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
   single -> add_action( this, "Stormkeeper", "if=(talent.ascendance.enabled&cooldown.ascendance.remains>10)|"
                                              "!talent.ascendance.enabled" );
@@ -6405,7 +6409,8 @@ void shaman_t::init_action_list_elemental()
   single -> add_action( this, "Lightning Bolt", "target_if=!debuff.lightning_rod.up" );
   single -> add_action( this, "Lightning Bolt" );
   single -> add_action( this, "Frost Shock", "if=maelstrom>=20&dot.flame_shock.remains>19" );
-  single -> add_action( this, "Flame_shock" );
+  single -> add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
+  single -> add_action( this, "Flame Shock", "moving=1" );
 
   // Aoe APL
   aoe -> add_action( this, "Stormkeeper" );

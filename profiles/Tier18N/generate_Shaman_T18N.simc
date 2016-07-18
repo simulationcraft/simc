@@ -29,11 +29,11 @@ save=Shaman_Enhancement_T18N.simc
 #Elemental
 shaman="Shaman_Elemental_T18N"
 level=100
-race=dwarf
+race=tauren
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=0001011
+talents=3113211
 #glyphs=chain_lightning/spiritwalkers_focus
 spec=elemental
 head=sinister_felborne_helmet,id=124295

@@ -1,10 +1,10 @@
 shaman="Shaman_Elemental_T18N"
 level=100
-race=dwarf
+race=tauren
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=0001011
+talents=3113211
 spec=elemental
 
 # This default action priority list is automatically created based on your character.
@@ -46,12 +46,12 @@ actions.single+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&
 actions.single+=/earth_shock,if=maelstrom>=92
 actions.single+=/icefury,if=raid_event.movement.in<5
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
+actions.single+=/elemental_blast
 actions.single+=/flame_shock,if=maelstrom>=20&refreshable
-actions.single+=/frost_shock,if=maelstrom>=20&raid_event.movement.in>(1.5*spell_haste*buff.icefury.stack)
+actions.single+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))
 actions.single+=/frost_shock,moving=1,if=buff.icefury.up
 actions.single+=/earth_shock,if=maelstrom>=86
-actions.single+=/elemental_blast
-actions.single+=/icefury,if=maelstrom<=76&raid_event.movement.in>30
+actions.single+=/icefury,if=maelstrom<=70&raid_event.movement.in>30&((talent.ascendance.enabled&cooldown.ascendance.remains>buff.icefury.duration)|!talent.ascendance.enabled)
 actions.single+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
 actions.single+=/stormkeeper,if=(talent.ascendance.enabled&cooldown.ascendance.remains>10)|!talent.ascendance.enabled
 actions.single+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
@@ -62,6 +62,8 @@ actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightni
 actions.single+=/lightning_bolt,target_if=!debuff.lightning_rod.up
 actions.single+=/lightning_bolt
 actions.single+=/frost_shock,if=maelstrom>=20&dot.flame_shock.remains>19
+actions.single+=/flame_shock,moving=1,target_if=refreshable
+actions.single+=/flame_shock,moving=1
 
 # Multi target action priority list
 
