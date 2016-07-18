@@ -1211,7 +1211,20 @@ struct soul_effigy_t : public warlock_pet_spell_t
   void init() override
   {
     warlock_pet_spell_t::init();
-    snapshot_flags = update_flags = 0;
+    snapshot_flags = STATE_TGT_MUL_DA;
+    update_flags = 0;
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    if ( p() -> o() -> talents.contagion -> ok() && td -> dots_unstable_affliction -> is_ticking() )
+      m *= 1.0 + p() -> o() -> talents.contagion -> effectN( 1 ).percent();
+
+    return m;
   }
 };
 
@@ -2026,8 +2039,6 @@ private:
 
     affected_by_backdraft = data().affected_by( p() -> find_spell( 117828 ) );
 
-    affected_by_contagion = data().affected_by( p() -> find_spell( 30108 ) -> effectN( 2 ) );
-
     destro_mastery = true;
 
     parse_spell_coefficient( *this );
@@ -2042,7 +2053,6 @@ public:
 
   bool destro_mastery;
   bool affected_by_flamelicked;
-  bool affected_by_contagion;
   bool affected_by_backdraft;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
@@ -2264,8 +2274,7 @@ public:
 
     warlock_td_t* td = this -> td( t );
 
-    // Contagion - change to effect 2 spelldata list
-    if ( affected_by_contagion && td -> dots_unstable_affliction -> is_ticking() )
+    if ( p() -> talents.contagion -> ok() && td -> dots_unstable_affliction -> is_ticking() )
       m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
 
     if ( p() -> talents.eradication -> ok() && td -> debuffs_eradication -> check() )
@@ -4502,9 +4511,9 @@ double warlock_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  if ( buffs.misery->check() )
+  if ( buffs.misery -> check() )
   {
-    h *= 1.0 / ( 1.0 + buffs.misery->stack_value() );
+    h *= 1.0 / ( 1.0 + buffs.misery -> stack_value() );
   }
 
   return h;
