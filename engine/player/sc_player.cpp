@@ -377,14 +377,18 @@ bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
 {
   range::fill( sim -> active_player -> artifact_points, 0 );
 
-  if ( value.size() == 0 || sim -> disable_artifacts )
+  if ( value.size() == 0 )
   {
     return false;
   }
 
   bool ret = false;
 
-  if ( util::str_in_str_ci( value, ".wowdb.com/artifact-calculator#" ) )
+  if ( sim -> disable_artifacts )
+  {
+    ret = true;
+  }
+  else if ( util::str_in_str_ci( value, ".wowdb.com/artifact-calculator#" ) )
   {
     ret = sim -> active_player -> parse_artifact_wowdb( value );
   }
