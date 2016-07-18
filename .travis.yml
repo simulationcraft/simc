@@ -4,7 +4,6 @@ language: cpp
 
 branches:
   only:
-    - master
     - legion-dev
     
 # Enable Trusty (Ubuntu 14.04 LTS) Beta
@@ -29,6 +28,8 @@ matrix:
  exclude:
    - os: osx
      compiler: gcc
+   - os: linux
+     compiler: clang
 
 before_install:
   # Install bats
@@ -48,13 +49,12 @@ notifications:
 
 install:
   # Build SimulationCraft
-  - cd engine
-  - make DEBUG=1 -j2
-  - cd ..
+  - make DEBUG=1 -C engine -j 2
 
 script:
   # Valgrind a raid profile with Linux
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --tool=memcheck --show-reachable=yes --leak-check=summary ./engine/simc Raid_T18H.simc iterations=5 threads=1 output=/dev/null; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --tool=memcheck --show-reachable=yes --leak-check=summary ./engine/simc Raid_T18H.simc iterations=5 threads=1 fight_style=HelterSkelter output=/dev/null; fi
 
   # Test SimulationCraft.
   - cd tests
