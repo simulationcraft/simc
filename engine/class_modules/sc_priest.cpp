@@ -6089,7 +6089,7 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
     return make_fn_expr( "primary_target",
                          [this, a]() { return target == a->target; } );
   }
-  if ( name_str == "shadowy_apparitions_in_flight" )
+  else if ( name_str == "shadowy_apparitions_in_flight" )
   {
     return make_fn_expr( "shadowy_apparitions_in_flight", [this]() {
       if ( !active_spells.shadowy_apparitions )
@@ -6099,28 +6099,19 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
           active_spells.shadowy_apparitions->get_num_travel_events() );
     } );
   }
-  // Current Insanity Drain for the next 1.0 sec.
-  // Does not account for a new stack occurring in the middle and can be anywhere from 0.0 - 0.5 off the real value.
-  // Does not account for Dispersion or Void Torrent
-  if (name_str == "current_insanity_drain")
+  else if ( name_str == "current_insanity_drain" )
   {
-    struct current_insanity_drain_t : public expr_t
-    {
-      priest_t& priest;
-      current_insanity_drain_t(priest_t& p)
-        : expr_t("current_insanity_drain"), priest(p)
-      {
-      }
+    // Current Insanity Drain for the next 1.0 sec.
+    // Does not account for a new stack occurring in the middle and can be
+    // anywhere from 0.0 - 0.5 off the real value.
+    // Does not account for Dispersion or Void Torrent
+    return make_fn_expr( "current_insanity_drain", [this]() {
+      if ( !buffs.voidform->check() )
+        return 0.0;
 
-      double evaluate() override
-      {
-        if (!priest.buffs.voidform->check())
-          return 0.0;
-
-        return ((priest.buffs.voidform->data().effectN(2).base_value() / -500) + ((priest.buffs.insanity_drain_stacks->check() - 1) / 2));
-      }
-    };
-    return new current_insanity_drain_t(*this);
+      return ( ( buffs.voidform->data().effectN( 2 ).base_value() / -500.0 ) +
+               ( ( buffs.insanity_drain_stacks->check() - 1 ) / 2.0 ) );
+    } );
   }
 
   return player_t::create_expression( a, name_str );
