@@ -742,8 +742,8 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
 void print_text_performance( FILE* file, sim_t* sim )
 {
   std::time_t cur_time = std::time( nullptr );
-  char date_str[ sizeof "2011-10-08 07:07:09" ];
-  std::strftime( date_str, sizeof date_str, "%Y-%m-%d %H:%M:%S",
+  char date_str[ sizeof "2011-10-08 07:07:09+0000" ];
+  std::strftime( date_str, sizeof date_str, "%Y-%m-%d %H:%M:%S%z",
                  std::localtime( &cur_time ) );
   util::fprintf(
       file,
