@@ -15,6 +15,7 @@
 // Haunt reset
 // Demonology -
 // TODO:
+// demonwrath
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
 // Add wild imp spawn delay
 // Double check all up()/check() usage.
@@ -5119,27 +5120,27 @@ void warlock_t::apl_precombat()
   std::string& precombat_list =
     get_action_priority_list( "precombat" )->action_list_str;
 
-  //if ( sim -> allow_flasks )
-  //{
-  //  // Flask
-  //  if ( true_level == 110 )
-  //    precombat_list = "flask,type=whispered_pact";
-  //  else if ( true_level >= 100 )
-  //    precombat_list = "flask,type=greater_draenic_intellect_flask";
-  //}
+  if ( sim -> allow_flasks )
+  {
+    // Flask
+    if ( true_level == 110 )
+      precombat_list = "flask,type=whispered_pact";
+    else if ( true_level >= 100 )
+      precombat_list = "flask,type=greater_draenic_intellect_flask";
+  }
 
-  //if ( sim -> allow_food )
-  //{
-  //  // Food
-  //  if ( true_level == 110 )
-  //    precombat_list += "/food,type=azshari_salad";
-  //  else if ( true_level >= 100 && specialization() == WARLOCK_DESTRUCTION )
-  //    precombat_list += "/food,type=pickled_eel";
-  //  else if ( true_level >= 100 && specialization() == WARLOCK_DEMONOLOGY)
-  //    precombat_list += "/food,type=sleeper_sushi";
-  //  else if ( true_level >= 100 && specialization() == WARLOCK_AFFLICTION )
-  //    precombat_list += "/food,type=felmouth_frenzy";
-  //}
+  if ( sim -> allow_food )
+  {
+    // Food
+    if ( true_level == 110 )
+      precombat_list += "/food,type=azshari_salad";
+    else if ( true_level >= 100 && specialization() == WARLOCK_DESTRUCTION )
+      precombat_list += "/food,type=pickled_eel";
+    else if ( true_level >= 100 && specialization() == WARLOCK_DEMONOLOGY)
+      precombat_list += "/food,type=sleeper_sushi";
+    else if ( true_level >= 100 && specialization() == WARLOCK_AFFLICTION )
+      precombat_list += "/food,type=felmouth_frenzy";
+  }
 
   precombat_list += "/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)";
   precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3";
@@ -5149,14 +5150,16 @@ void warlock_t::apl_precombat()
   if ( specialization() != WARLOCK_DEMONOLOGY )
     precombat_list += "/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled";
 
-  //if ( sim -> allow_potions )
-  //{
-  //  // Pre-potion
-  //  if ( true_level == 110 )
-  //    precombat_list += "/potion,name=deadly_grace";
-  //  else if ( true_level >= 100 )
-  //    precombat_list += "/potion,name=draenic_intellect";
-  //}
+  if ( sim -> allow_potions )
+  {
+    // Pre-potion
+    if ( true_level == 110 )
+      precombat_list += "/potion,name=deadly_grace";
+    else if ( true_level >= 100 )
+      precombat_list += "/potion,name=draenic_intellect";
+  }
+
+  precombat_list += "/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains";
 
   if ( specialization() == WARLOCK_DESTRUCTION )
     precombat_list += "/incinerate";
@@ -5209,6 +5212,8 @@ void warlock_t::apl_destruction()
   add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<duration&action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&charges=2" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=3&buff.bloodlust.remains" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
   action_list_str += "/soul_harvest";
