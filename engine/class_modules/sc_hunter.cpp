@@ -5227,6 +5227,40 @@ struct steel_trap_t: public hunter_spell_t
   }
 };
 
+// Caltrops =========================================================================
+
+struct caltrops_t: public hunter_spell_t
+{
+  struct caltrops_tick_t: public hunter_spell_t
+  {
+    caltrops_tick_t( hunter_t* p ):
+      hunter_spell_t( "caltrops_tick", p, p -> find_spell( 194279 ) ) 
+    {
+      background = true;
+      dot_behavior = DOT_CLIP;
+      hasted_ticks = false;
+      tick_may_crit = true;
+
+      if ( p -> talents.expert_trapper -> ok() )
+        base_multiplier = 1.0 + p -> talents.expert_trapper -> effectN( 2 ).percent();
+    };
+  };
+
+  caltrops_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "caltrops", p, p -> talents.caltrops )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    dot_behavior = DOT_CLIP;
+    dot_duration = data().effectN( 1 ).trigger() -> duration();
+    ground_aoe = true;
+    hasted_ticks = false;
+    tick_action = new caltrops_tick_t( p );
+  }
+};
+
 // Dragonsfire Grenade ==============================================================
 
 struct dragonsfire_grenade_t: public hunter_spell_t
@@ -5349,6 +5383,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
   if ( name == "carve"                 ) return new                  carve_t( this, options_str );
+  if ( name == "caltrops"              ) return new               caltrops_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
