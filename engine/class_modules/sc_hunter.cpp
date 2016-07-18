@@ -4160,30 +4160,27 @@ struct carve_t: public hunter_melee_attack_t
 
     if ( p() -> legendary.sv_ring && num_targets() > 1 )
     {
-      // Check each target to see if they have lacerate.
-      // Find a new target at random.
-      // Once all targets have been checked, apply the new debuffs.
-      std::unordered_map<int, timespan_t> new_lacerate_targets;
       std::vector<player_t*> carve_targets = execute_state -> action -> target_list();
+      std::vector<player_t*> available_targets;
+      std::vector<player_t*> lacerated_targets;
+
+      // Split the target list into targets with and without debuffs
       for ( size_t i = 0; i < carve_targets.size(); i++ )
       {
-        if ( td( carve_targets[ i ] ) -> debuffs.lacerate -> up() )
-        {
-          size_t new_target_index = rand() % carve_targets.size();
-          while( new_target_index == i ) new_target_index = rand() % carve_targets.size();
-          if ( td( carve_targets[ i ] ) -> debuffs.lacerate -> remains() > td( carve_targets[ new_target_index ] ) -> debuffs.lacerate -> remains() )
-            new_lacerate_targets[ new_target_index ] = td ( carve_targets[ i ] ) -> debuffs.lacerate -> remains();
-        }
+        if ( td( carve_targets[ i ] ) -> dots.lacerate -> is_ticking() )
+          lacerated_targets.push_back( carve_targets[ i ] );
+        else
+          available_targets.push_back( carve_targets[ i ] );
       }
 
-      // Apply the new debuffs.
-      for ( auto i : new_lacerate_targets )
+      // Spread the dots to available targets
+      for ( size_t i = 0; i < lacerated_targets.size(); i++ )
       {
-        p() -> active.lacerate -> target = carve_targets[ i.first ];
-        p() -> active.lacerate -> dot_duration = i.second;
-        p() -> active.lacerate -> base_costs[ RESOURCE_FOCUS ] = 0.0;
-        p() -> active.lacerate -> dual = true;
-        p() -> active.lacerate -> execute();
+        if ( available_targets.empty() ) 
+          break;
+
+        td( lacerated_targets[ i ] ) -> dots.lacerate -> copy( available_targets.back(), DOT_COPY_CLONE );
+        available_targets.pop_back();
       }
     }
   }
@@ -4289,30 +4286,27 @@ struct butchery_t: public hunter_melee_attack_t
 
     if ( p() -> legendary.sv_ring && num_targets() > 1 )
     {
-      // Check each target to see if they have lacerate.
-      // Find a new target at random.
-      // Once all targets have been checked, apply the new debuffs.
-      std::unordered_map<int, timespan_t> new_lacerate_targets;
       std::vector<player_t*> butchery_targets = execute_state -> action -> target_list();
+      std::vector<player_t*> available_targets;
+      std::vector<player_t*> lacerated_targets;
+
+      // Split the target list into targets with and without debuffs
       for ( size_t i = 0; i < butchery_targets.size(); i++ )
       {
-        if ( td( butchery_targets[ i ] ) -> debuffs.lacerate -> up() )
-        {
-          size_t new_target_index = rand() % butchery_targets.size();
-          while( new_target_index == i ) new_target_index = rand() % butchery_targets.size();
-          if ( td( butchery_targets[ i ] ) -> debuffs.lacerate -> remains() > td( butchery_targets[ new_target_index ] ) -> debuffs.lacerate -> remains() )
-            new_lacerate_targets[ new_target_index ] = td ( butchery_targets[ i ] ) -> debuffs.lacerate -> remains();
-        }
+        if ( td( butchery_targets[ i ] ) -> dots.lacerate -> is_ticking() )
+          lacerated_targets.push_back( butchery_targets[ i ] );
+        else
+          available_targets.push_back( butchery_targets[ i ] );
       }
 
-      // Apply the new debuffs.
-      for ( auto i : new_lacerate_targets )
+      // Spread the dots to available targets
+      for ( size_t i = 0; i < lacerated_targets.size(); i++ )
       {
-        p() -> active.lacerate -> target = butchery_targets[ i.first ];
-        p() -> active.lacerate -> dot_duration = i.second;
-        p() -> active.lacerate -> base_costs[ RESOURCE_FOCUS ] = 0.0;
-        p() -> active.lacerate -> dual = true;
-        p() -> active.lacerate -> execute();
+        if ( available_targets.empty() ) 
+          break;
+
+        td( lacerated_targets[ i ] ) -> dots.lacerate -> copy( available_targets.back(), DOT_COPY_CLONE );
+        available_targets.pop_back();
       }
     }
   }
