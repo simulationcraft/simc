@@ -20,3 +20,8 @@ load test_helper
   [ "${status}" -eq 0 ]
 }
 
+@test "Test Beastlord style encounter" {
+  sim threads=2 fight_style=Beastlord
+  [ "${status}" -eq 0 ]
+}
+
