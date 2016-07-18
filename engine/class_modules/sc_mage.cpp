@@ -1691,7 +1691,7 @@ struct touch_of_the_magi_buff_t : public buff_t
   double accumulated_damage;
 
   touch_of_the_magi_buff_t( mage_td_t* td ) :
-    buff_t( buff_creator_t( td -> target, "touch_of_the_magi",
+    buff_t( buff_creator_t( *td, "touch_of_the_magi",
                             td -> source -> find_spell( 210824 ) ) ),
     mage( static_cast<mage_t*>( td -> source ) ),
     accumulated_damage( 0.0 )
