@@ -8,9 +8,6 @@
 // ==========================================================================
 //
 // TODO
-// Backdraft duration is reduced by haste
-// Channel demonfire + backdraft is fucking fuckity fucked
-// Mana tap is fucking fuckity fucked
 // Class trinket initialization
 // 
 //
@@ -2038,8 +2035,6 @@ private:
       affected_by_flamelicked = false;
     }
 
-    affected_by_backdraft = data().affected_by( p() -> find_spell( 117828 ) );
-
     destro_mastery = true;
 
     parse_spell_coefficient( *this );
@@ -2054,7 +2049,6 @@ public:
 
   bool destro_mastery;
   bool affected_by_flamelicked;
-  bool affected_by_backdraft;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
   // if it's enabled
@@ -2206,17 +2200,6 @@ public:
     p() -> buffs.mana_tap -> up();
     p() -> buffs.demonic_synergy -> up();
   }
-
-  virtual timespan_t execute_time() const override
-  {
-    timespan_t h = spell_t::execute_time();
-
-    if ( affected_by_backdraft && p() -> buffs.backdraft -> up() )
-      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
-
-    return h;
-  }
-
 
   void consume_resource() override
   {
@@ -3084,6 +3067,8 @@ struct conflagrate_t: public warlock_spell_t
 
 struct incinerate_t: public warlock_spell_t
 {
+  double backdraft_gcd;
+  double backdraft_cast_time;
   double dimension_ripper;
   incinerate_t( warlock_t* p ):
     warlock_spell_t( p, "Incinerate" )
@@ -3095,6 +3080,34 @@ struct incinerate_t: public warlock_spell_t
     base_multiplier *= 1.0 + p -> artifact.master_of_distaster.percent();
     
     dimension_ripper = p -> find_spell( 219415 ) -> proc_chance();
+
+    backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
+    backdraft_gcd = 1.0 + p -> buffs.backdraft -> data().effectN( 2 ).percent();
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t h = spell_t::execute_time();
+
+    if ( p() -> buffs.backdraft -> up() )
+      h *= backdraft_cast_time;
+
+    return h;
+  }
+
+  virtual timespan_t gcd() const
+  {
+    timespan_t t = action_t::gcd();
+
+    if ( t == timespan_t::zero() )
+      return t;
+
+    if ( p() -> buffs.backdraft -> check() )
+      t *= backdraft_gcd;
+    if ( t < min_gcd )
+      t = min_gcd;
+
+    return t;
   }
   
   void execute() override
@@ -3131,6 +3144,8 @@ struct incinerate_t: public warlock_spell_t
 
 struct chaos_bolt_t: public warlock_spell_t
 {
+  double backdraft_gcd;
+  double backdraft_cast_time;
   double refund;
   chaos_bolt_t( warlock_t* p ):
     warlock_spell_t( p, "Chaos Bolt" )
@@ -3143,6 +3158,34 @@ struct chaos_bolt_t: public warlock_spell_t
     base_execute_time += p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 1 ).time_value();
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T18, B2 ) -> effectN( 2 ).percent() );
     base_multiplier *= 1.0 + ( p -> sets.set( WARLOCK_DESTRUCTION, T17, B4 ) -> effectN( 1 ).percent() );
+
+    backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
+    backdraft_gcd = 1.0 + p -> buffs.backdraft -> data().effectN( 2 ).percent();
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t h = spell_t::execute_time();
+
+    if ( p() -> buffs.backdraft -> up() )
+      h *= backdraft_cast_time;
+
+    return h;
+  }
+
+  virtual timespan_t gcd() const
+  {
+    timespan_t t = action_t::gcd();
+
+    if ( t == timespan_t::zero() )
+      return t;
+
+    if ( p() -> buffs.backdraft -> check() )
+      t *= backdraft_gcd;
+    if ( t < min_gcd )
+      t = min_gcd;
+
+    return t;
   }
 
   void impact( action_state_t* s ) override
@@ -4313,6 +4356,8 @@ struct channel_demonfire_tick_t : public warlock_spell_t
 
 struct channel_demonfire_t: public warlock_spell_t
 {
+  double backdraft_cast_time;
+  double backdraft_tick_time;
   channel_demonfire_tick_t* channel_demonfire;
 
   channel_demonfire_t( warlock_t* p ):
@@ -4324,6 +4369,9 @@ struct channel_demonfire_t: public warlock_spell_t
 
     channel_demonfire = new channel_demonfire_tick_t( p );
     add_child( channel_demonfire );
+
+    backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 4 ).percent();
+    backdraft_tick_time = 1.0 + p -> buffs.backdraft -> data().effectN( 3 ).percent();
   }
 
   void init() override
@@ -4359,6 +4407,16 @@ struct channel_demonfire_t: public warlock_spell_t
     }
 
     warlock_spell_t::tick( d );
+  }
+
+  timespan_t tick_time( const action_state_t* ) const
+  {
+    timespan_t t = base_tick_time;
+
+    if ( p() -> buffs.backdraft -> check() )
+      t *= backdraft_tick_time;
+
+    return t;
   }
 };
 
