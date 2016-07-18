@@ -575,6 +575,8 @@ public:
     };
   }
 
+  ~mage_t();
+
   // Character Definition
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
@@ -691,6 +693,22 @@ struct buff_source_benefit_t
     trigger_count += stacks;
   }
 };
+
+mage_t::~mage_t()
+{
+  delete benefits.incanters_flow;
+  delete benefits.arcane_charge.arcane_barrage;
+  delete benefits.arcane_charge.arcane_blast;
+  delete benefits.arcane_charge.arcane_explosion;
+  delete benefits.arcane_charge.arcane_missiles;
+  delete benefits.arcane_charge.nether_tempest;
+  delete benefits.arcane_missiles;
+  delete benefits.fingers_of_frost;
+  delete benefits.ray_of_frost;
+
+  delete[] pets.temporal_heroes;
+  delete[] pets.mirror_images;
+}
 
 inline current_target_reset_cb_t::current_target_reset_cb_t( player_t* m ):
   mage( debug_cast<mage_t*>( m ) )
