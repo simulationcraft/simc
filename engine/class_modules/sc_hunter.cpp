@@ -5232,8 +5232,8 @@ struct dragonsfire_grenade_t: public hunter_spell_t
 	  hunter_spell_t( "dragonsfire_grenade", p, p -> talents.dragonsfire_grenade -> effectN( 1 ).trigger() ), conflag( nullptr )
   {
     parse_options( options_str );
-    school = SCHOOL_FIRE;
     parse_spell_data( *p -> talents.dragonsfire_grenade );
+    school = SCHOOL_FIRE;
 
     hasted_ticks = false;
     harmful = tick_may_crit = true;
@@ -5248,7 +5248,7 @@ struct dragonsfire_grenade_t: public hunter_spell_t
     if ( conflag && conflag -> target_list().size() > 1 )
     {
       conflag -> target = d -> target;
-	  conflag -> original_target = d -> target;
+	    conflag -> original_target = d -> target;
       conflag -> execute();
     }
   }
