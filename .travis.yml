@@ -54,7 +54,7 @@ install:
 
 script:
   # Valgrind a raid profile with Linux
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --tool=memcheck --show-reachable=yes --leak-check=summary ../engine/simc Raid_T18H.simc iterations=5 threads=1; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then valgrind --tool=memcheck --show-reachable=yes --leak-check=summary ./engine/simc Raid_T18H.simc iterations=5 threads=1; fi
 
   # Test SimulationCraft.
   - cd tests
