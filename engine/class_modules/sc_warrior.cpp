@@ -9,7 +9,7 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// Add Intercept
+// Implement ignore pain + rage from damage taken + artifacts for prot
 // Add back second wind
 // Legendary items not completely implemented yet
 // Archavon's Heavy Hand - 137060 - Heroic throw deals 25% increased damage for every yard between you and the target - 207326
@@ -108,12 +108,12 @@ public:
     buff_t* shattered_defenses;
     buff_t* shield_block;
     buff_t* shield_wall;
-    buff_t* sword_and_board;
     buff_t* taste_for_blood;
     buff_t* tier17_2pc_arms;
     buff_t* tier17_4pc_fury;
     buff_t* tier17_4pc_fury_driver;
     buff_t* wrecking_ball;
+    buff_t* spell_reflection;
 
     //Legendary Items
     buff_t* bindings_of_kakushan;
@@ -167,7 +167,6 @@ public:
     gain_t* raging_blow;
     gain_t* revenge;
     gain_t* shield_slam;
-    gain_t* sword_and_board;
     gain_t* tier17_4pc_arms;
     gain_t* will_of_the_first_king;
 
@@ -216,12 +215,12 @@ public:
   {
     const spell_data_t* bastion_of_defense;
     const spell_data_t* battle_cry;
-    const spell_data_t* bladed_armor;
     const spell_data_t* bloodthirst;
     const spell_data_t* cleave;
     const spell_data_t* colossus_smash;
     const spell_data_t* commanding_shout;
     const spell_data_t* deep_wounds;
+    const spell_data_t* defensive_stance;
     const spell_data_t* demoralizing_shout;
     const spell_data_t* devastate;
     const spell_data_t* die_by_the_sword;
@@ -231,6 +230,8 @@ public:
     const spell_data_t* focused_rage;
     const spell_data_t* furious_slash;
     const spell_data_t* hamstring;
+    const spell_data_t* ignore_pain;
+    const spell_data_t* intercept;
     const spell_data_t* last_stand;
     const spell_data_t* meat_cleaver;
     const spell_data_t* mortal_strike;
@@ -238,7 +239,6 @@ public:
     const spell_data_t* protection; // Weird spec passive that increases damage of bladestorm/execute.
     const spell_data_t* raging_blow;
     const spell_data_t* rampage;
-    const spell_data_t* resolve;
     const spell_data_t* revenge;
     const spell_data_t* riposte;
     const spell_data_t* seasoned_soldier;
@@ -247,7 +247,6 @@ public:
     const spell_data_t* shield_wall;
     const spell_data_t* singleminded_fury;
     const spell_data_t* slam;
-    const spell_data_t* sword_and_board;
     const spell_data_t* tactician;
     const spell_data_t* thunder_clap;
     const spell_data_t* titans_grip;
@@ -276,7 +275,6 @@ public:
     const spell_data_t* outburst;
     const spell_data_t* rend;
     const spell_data_t* renewed_fury; //
-    const spell_data_t* ultimatum; //
     const spell_data_t* wrecking_ball;
 
     const spell_data_t* bounding_stride;
@@ -1318,6 +1316,55 @@ struct charge_t: public warrior_attack_t
   }
 };
 
+
+struct intercept_t: public warrior_attack_t
+{
+  double movement_speed_increase, min_range, rage_gain;
+  intercept_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "intercept", p, p -> find_specialization_spell( "Intercept" ) ),
+    movement_speed_increase( 5.0 ),
+    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    movement_directionality = MOVEMENT_OMNI;
+    energize_type = ENERGIZE_ON_CAST;
+    cooldown -> duration = data().cooldown();
+    if ( p -> talents.warbringer -> ok() )
+    {
+      aoe = -1;
+      parse_effect_data( p -> find_spell( 7922 ) -> effectN( 1 ) );
+    }
+    if ( p -> talents.double_time -> ok() )
+    {
+      cooldown -> charges += p -> talents.double_time -> effectN( 1 ).base_value();
+      cooldown -> duration += p -> talents.double_time -> effectN( 2 ).time_value();
+    }
+  }
+
+  void execute() override
+  {
+    if ( p() -> current.distance_to_move > 5 )
+    {
+      p() -> buff.charge_movement -> trigger( 1, movement_speed_increase, 1, timespan_t::from_seconds(
+        p() -> current.distance_to_move / (p() -> base_movement_speed * (1 + p() -> passive_movement_modifier() + movement_speed_increase)) ) );
+      p() -> current.moving_away = 0;
+    }
+
+    warrior_attack_t::execute();
+  }
+
+  bool ready() override
+  {
+    if ( p() -> buff.charge_movement -> check() || p() -> buff.heroic_leap_movement -> check() || p() -> buff.intervene_movement -> check() )
+    {
+      return false;
+    }
+
+    return warrior_attack_t::ready();
+  }
+};
+
 // Cleave ===================================================================
 
 struct cleave_t: public warrior_attack_t
@@ -1495,8 +1542,10 @@ struct demoralizing_shout: public warrior_attack_t
 
 struct devastate_t: public warrior_attack_t
 {
+  double shield_slam_reset;
   devastate_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "devastate", p, p -> spec.devastate )
+    warrior_attack_t( "devastate", p, p -> spec.devastate ),
+    shield_slam_reset( p -> spec.devastate -> effectN( 3 ).percent() )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -1509,7 +1558,7 @@ struct devastate_t: public warrior_attack_t
 
     p() -> buff.bindings_of_kakushan -> trigger();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> buff.sword_and_board -> trigger() )
+    if ( result_is_hit( execute_state -> result ) && rng().roll( shield_slam_reset ) )
     {
       p() -> cooldown.shield_slam -> reset( true );
     }
@@ -2651,17 +2700,6 @@ struct shield_slam_t: public warrior_attack_t
   {
     parse_options( options_str );
     energize_type = ENERGIZE_NONE;
-
-    attack_power_mod.direct = 0.561; // Low level value for shield slam.
-    if ( p -> level() >= 80 )
-    {
-      attack_power_mod.direct += 0.426; // Adds 42.6% ap once the character is level 80
-    }
-    if ( p -> level() >= 85 )
-    {
-      attack_power_mod.direct += 3.46; // Adds another 346% ap at level 85
-    }
-    //Shield slam is just the best.
   }
 
   double action_multiplier() const override
@@ -2670,7 +2708,7 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( p() -> buff.shield_block -> up() )
     {
-      am *= 1.0 + p() -> talents.heavy_repercussions -> effectN( 1 ).percent();
+      am *= 1.0 + p() -> find_spell( 132404 ) -> effectN( 2 ).percent();
     }
 
     am *= 1.0 + p() -> buff.focused_rage -> stack_value();
@@ -2700,15 +2738,8 @@ struct shield_slam_t: public warrior_attack_t
       p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_slam );
     }
 
-    if ( p() -> buff.sword_and_board -> up() )
-    {
-      rage_from_snb = p() -> buff.sword_and_board -> data().effectN( 1 ).resource( RESOURCE_RAGE );
-      p() -> resource_gain( RESOURCE_RAGE,
-                          rage_from_snb,
-                          p() -> gain.sword_and_board );
-    }
-    p() -> buff.sword_and_board -> expire();
     p() -> buff.bindings_of_kakushan -> expire();
+    p() -> buff.focused_rage -> expire();
   }
 
   bool ready() override
@@ -3440,6 +3471,31 @@ struct battle_cry_t: public warrior_spell_t
   }
 };
 
+// Ignore Pain =============================================================
+
+struct ignore_pain_t: public warrior_spell_t
+{
+  ignore_pain_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "ignore_pain", p, p -> find_specialization_spell( "Ignore Pain" ) )
+  {
+    parse_options( options_str );
+    use_off_gcd = true;
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+
+  }
+
+  bool ready() override
+  {
+
+
+    return warrior_spell_t::ready();
+  }
+};
+
 // Shield Block =============================================================
 
 struct shield_block_t: public warrior_spell_t
@@ -3600,6 +3656,9 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "victory_rush"         ) return new victory_rush_t         ( this, options_str );
   if ( name == "vigilance"            ) return new vigilance_t            ( this, options_str );
   if ( name == "warbreaker"           ) return new warbreaker_t           ( this, options_str );
+  if ( name == "ignore_pain"          ) return new ignore_pain_t          ( this, options_str );
+  if ( name == "intercept"            ) return new intercept_t            ( this, options_str );
+  if ( name == "focused_rage"         ) return new focused_rage_t         ( this, options_str );
   if ( name == "whirlwind" )
   {
     if ( specialization() == WARRIOR_FURY )
@@ -3629,12 +3688,12 @@ void warrior_t::init_spells()
   // Spec Passives
   spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense" );
   spec.battle_cry               = find_specialization_spell( "Battle Cry" );
-  spec.bladed_armor             = find_specialization_spell( "Bladed Armor" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
   spec.cleave                   = find_specialization_spell( "Cleave" );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
   spec.commanding_shout         = find_specialization_spell( "Commanding Shout" );
   spec.deep_wounds              = find_specialization_spell( "Deep Wounds" );
+  spec.defensive_stance         = find_specialization_spell( "Defensive Stance" );
   spec.demoralizing_shout       = find_specialization_spell( "Demoralizing Shout" );
   spec.devastate                = find_specialization_spell( "Devastate" );
   spec.die_by_the_sword         = find_specialization_spell( "Die By the Sword" );//
@@ -3651,7 +3710,6 @@ void warrior_t::init_spells()
   spec.protection               = find_specialization_spell( "Protection" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.rampage                  = find_specialization_spell( "Rampage" );
-  spec.resolve                  = find_specialization_spell( "Resolve" );
   spec.revenge                  = find_specialization_spell( "Revenge" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
@@ -3660,12 +3718,14 @@ void warrior_t::init_spells()
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
   spec.singleminded_fury        = find_specialization_spell( "Single-Minded Fury" );
   spec.slam                     = find_specialization_spell( "Slam" );
-  spec.sword_and_board          = find_specialization_spell( "Sword and Board" );
   spec.tactician                = find_specialization_spell( "Tactician" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
   spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
+  spec.ignore_pain              = find_specialization_spell( "Ignore Pain" );
+  spec.intercept                = find_specialization_spell( "Intercept" );
+  spec.focused_rage             = find_specialization_spell( "Focused Rage" );
 
   // Talents
   talents.anger_management      = find_talent_spell( "Anger Management" );
@@ -3876,12 +3936,6 @@ void warrior_t::init_base_stats()
   base.dodge += spec.bastion_of_defense -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
-
-  // initialize resolve for prot
-  if ( specialization() == WARRIOR_PROTECTION )
-  {
-    resolve_manager.init();
-  }
 }
 
 // warrior_t::has_t18_class_trinket ============================================
@@ -4526,6 +4580,8 @@ void warrior_t::create_buffs()
   buff.sense_death = buff_creator_t( this, "sense_death", artifact.sense_death.data().effectN( 1 ).trigger() )
     .chance( artifact.sense_death.percent() );
 
+  buff.spell_reflection = buff_creator_t( this, "spell_reflection", find_specialization_spell( "Spell Reflection" ) );
+
   buff.juggernaut = buff_creator_t( this, "juggernaut", artifact.juggernaut.data().effectN( 1 ).trigger() )
     .default_value( artifact.juggernaut.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
@@ -4548,9 +4604,6 @@ void warrior_t::create_buffs()
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
     .default_value( spec.shield_wall -> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
-
-  buff.sword_and_board = buff_creator_t( this, "sword_and_board", find_spell( 50227 ) )
-    .chance( spec.sword_and_board -> effectN( 1 ).percent() );
 
   buff.tier17_2pc_arms = buff_creator_t( this, "tier17_2pc_arms", sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets.set( WARRIOR_ARMS, T17, B2 ) -> proc_chance() );
@@ -4609,7 +4662,6 @@ void warrior_t::init_gains()
   gain.battle_cry = get_gain( "battle_cry" );
   gain.revenge = get_gain( "revenge" );
   gain.shield_slam = get_gain( "shield_slam" );
-  gain.sword_and_board = get_gain( "sword_and_board" );
   gain.will_of_the_first_king = get_gain( "will_of_the_first_king" );
 
   gain.tier17_4pc_arms = get_gain( "tier17_4pc_arms" );
@@ -4732,11 +4784,6 @@ void warrior_t::combat_begin()
   }
 
   player_t::combat_begin();
-
-  if ( specialization() == WARRIOR_PROTECTION )
-  {
-    resolve_manager.start();
-  }
 }
 
 // warrior_t::reset =========================================================
@@ -4965,8 +5012,6 @@ double warrior_t::composite_melee_attack_power() const
 {
   double ap = player_t::composite_melee_attack_power();
 
-  ap += spec.bladed_armor -> effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
-
   return ap;
 }
 
@@ -5177,11 +5222,6 @@ void warrior_t::invalidate_cache( cache_e c )
   {
     player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
-
-  if ( c == CACHE_BONUS_ARMOR && spec.bladed_armor -> ok() )
-  {
-    player_t::invalidate_cache( CACHE_ATTACK_POWER );
-  }
 }
 
 // warrior_t::primary_role() ================================================
@@ -5246,6 +5286,10 @@ void warrior_t::assess_damage( school_e school,
       s -> result_amount *= 1.0 + td -> debuffs_demoralizing_shout -> value();
     }
 
+    if ( school != SCHOOL_PHYSICAL && buff.spell_reflection -> up() )
+    {
+      s -> result_amount *= 1.0 + buff.spell_reflection -> data().effectN( 2 ).percent();
+    }
     //take care of dmg reduction CDs
     if ( buff.shield_wall -> up() )
     {
