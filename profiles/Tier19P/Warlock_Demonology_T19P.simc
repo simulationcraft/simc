@@ -15,10 +15,14 @@ spec=demonology
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+actions.precombat=flask,type=whispered_pact
+actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
 actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
 actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 
 # Executed every time the actor is available.
 
