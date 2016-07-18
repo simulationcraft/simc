@@ -7589,6 +7589,7 @@ void mage_t::apl_arcane()
   default_list -> add_talent( this, "Rune of Power",
                               "if=buff.rune_of_power.remains<2*spell_haste" );
   default_list -> add_talent( this, "Mirror Image" );
+  default_list -> add_action( this, "Arcane Blast" );
   /*
   default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=5" );
   default_list -> add_action( "call_action_list,name=init_burn,if=!burn_phase" );
