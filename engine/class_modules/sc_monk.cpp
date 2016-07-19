@@ -541,7 +541,6 @@ public:
     const spell_data_t* crosswinds;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* hit_combo;
-    const spell_data_t* rising_sun_kick_trinket;
     const spell_data_t* whirling_dragon_punch;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier17_4pc_melee;
@@ -1159,7 +1158,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   {
 
     sef_rising_sun_kick_trinket_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "rising_sun_kick_trinket", player, player -> o() -> passives.rising_sun_kick_trinket )
+      sef_melee_attack_t( "rising_sun_kick_trinket", player, player -> o() -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
     {
       player -> find_action( "rising_sun_kick" ) -> add_child( this );
     }
@@ -1181,7 +1180,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   {
 
     sef_rising_sun_kick_tornado_kick_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "rising_sun_kick_tornado_kick", player, player -> o() -> passives.rising_sun_kick_trinket )
+      sef_melee_attack_t( "rising_sun_kick_tornado_kick", player, player -> o() -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
     {
       player -> find_action( "rising_sun_kick" ) -> add_child( this );
     }
@@ -2229,7 +2228,7 @@ struct tiger_palm_t: public monk_melee_attack_t
 struct rising_sun_kick_proc_t : public monk_melee_attack_t
 {
   rising_sun_kick_proc_t( monk_t* p ) :
-    monk_melee_attack_t( "rising_sun_kick_trinket", p, p -> passives.rising_sun_kick_trinket )
+    monk_melee_attack_t( "rising_sun_kick_trinket", p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
   {
     sef_ability = SEF_RISING_SUN_KICK_TRINKET;
 
@@ -2392,8 +2391,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    attack_power_mod.direct = p -> spec.rising_sun_kick -> effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
-
     if ( p -> specialization() == MONK_MISTWEAVER )
       cooldown -> duration += p -> passives.aura_mistweaver_monk -> effectN( 8 ).time_value();
     if ( p -> sets.has_set_bonus( MONK_WINDWALKER, T19, B2) )
@@ -2403,7 +2400,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
-    attack_power_mod.direct = p -> passives.rising_sun_kick_trinket -> effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = p -> spec.rising_sun_kick -> effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
     spell_power_mod.direct = 0.0;
 
     if ( p -> artifact.tornado_kicks.rank() )
@@ -3240,16 +3237,6 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
       return false;
 
     return monk_melee_attack_t::ready();
-  }
-
-  double composite_aoe_multiplier(const action_state_t* state) const override
-  {
-    if ( state -> target != target )
-    {
-      return 1.0 / state -> n_targets;
-    }
-
-    return 1.0;
   }
 
   void execute() override
@@ -6398,7 +6385,6 @@ void monk_t::init_spells()
   passives.crosswinds                       = find_spell( 196061 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.hit_combo                        = find_spell( 196741 );
-  passives.rising_sun_kick_trinket          = find_spell( 185099 );
   passives.whirling_dragon_punch            = find_spell( 158221 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
