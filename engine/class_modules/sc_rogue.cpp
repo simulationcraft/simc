@@ -479,7 +479,7 @@ struct rogue_t : public player_t
     proc_t* roll_the_bones_1;
     proc_t* roll_the_bones_2;
     proc_t* roll_the_bones_3;
-    proc_t* roll_the_bones_5;
+    proc_t* roll_the_bones_6;
   } procs;
 
   struct prng_t
@@ -5223,7 +5223,7 @@ struct roll_the_bones_t : public buff_t
         rogue -> procs.roll_the_bones_3 -> occur();
         break;
       case 6:
-        rogue -> procs.roll_the_bones_5 -> occur();
+        rogue -> procs.roll_the_bones_6 -> occur();
         break;
       default:
         assert( 0 );
@@ -5850,18 +5850,6 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   {
     return make_ref_expr( name_str, finality_nightblade );
   }
-  // dot.(rupture|garrote).exsanguinated
-  else if ( split.size() == 3 && util::str_compare_ci( split[ 2 ], "exsanguinated" ) &&
-            ( util::str_compare_ci( split[ 1 ], "rupture" ) || util::str_compare_ci( split[ 1 ], "garrote" ) ) )
-  {
-    action_t* action = find_action( split[ 1 ] );
-    if ( ! action )
-    {
-      return expr_t::create_constant( "exsanguinated_expr", 0 );
-    }
-
-    return new exsanguinated_expr_t( action );
-  }
   else if ( util::str_compare_ci( name_str, "rtb_buffs" ) )
   {
     if ( specialization() != ROGUE_OUTLAW || talent.slice_and_dice -> ok() )
@@ -5879,6 +5867,82 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       n_buffs += buffs.buried_treasure -> check() != 0;
       return n_buffs;
     } );
+  }
+
+  // Split expressions
+
+  // dot.(rupture|garrote).exsanguinated
+  if ( split.size() == 3 && util::str_compare_ci( split[ 2 ], "exsanguinated" ) &&
+       ( util::str_compare_ci( split[ 1 ], "rupture" ) || util::str_compare_ci( split[ 1 ], "garrote" ) ) )
+  {
+    action_t* action = find_action( split[ 1 ] );
+    if ( ! action )
+    {
+      return expr_t::create_constant( "exsanguinated_expr", 0 );
+    }
+
+    return new exsanguinated_expr_t( action );
+  }
+  // rtb_list.<buffs>
+  else if ( split.size() == 3 && util::str_compare_ci( split[ 0 ], "rtb_list" ) && ! split[ 1 ].empty() )
+  {
+    enum rtb_list_type
+    {
+      RTB_NONE = 0,
+      RTB_ANY,
+      RTB_ALL
+    };
+
+    const std::array<const buff_t*, 6> rtb_buffs = { {
+      buffs.broadsides,
+      buffs.buried_treasure,
+      buffs.grand_melee,
+      buffs.jolly_roger,
+      buffs.shark_infested_waters,
+      buffs.true_bearing
+    } };
+
+    // Figure out the type
+    rtb_list_type type = RTB_NONE;
+    if ( util::str_compare_ci( split[ 1 ], "any" ) )
+    {
+      type = RTB_ANY;
+    }
+    else if ( util::str_compare_ci( split[ 1 ], "all" ) )
+    {
+      type = RTB_ALL;
+    }
+
+    // Parse the buff numeric list to values that index rtb_buffs above
+    std::vector<unsigned> list_values;
+    range::for_each( split[ 3 ], [ &list_values ]( char v ) {
+      if ( v < '1' || v > '6' )
+      {
+        return;
+      }
+
+      list_values.push_back( v - '1' );
+    } );
+
+    // If we have buffs and an operating mode, make an expression
+    if ( type != RTB_NONE && list_values.size() > 0 )
+    {
+      return make_fn_expr( split[ 0 ], [ type, rtb_buffs, list_values ]() {
+        for ( size_t i = 0, end = list_values.size(); i < end; ++i )
+        {
+          if  ( type == RTB_ANY && rtb_buffs[ i ] -> check() )
+          {
+            return 1;
+          }
+          else if ( type == RTB_ALL && ! rtb_buffs[ i ] -> check() )
+          {
+            return 0;
+          }
+        }
+
+        return type == RTB_ANY ? 0 : 1;
+      } );
+    }
   }
 
   return player_t::create_expression( a, name_str );
@@ -6161,7 +6225,7 @@ void rogue_t::init_procs()
   procs.roll_the_bones_1         = get_proc( "Roll the Bones: 1 buff" );
   procs.roll_the_bones_2         = get_proc( "Roll the Bones: 2 buffs" );
   procs.roll_the_bones_3         = get_proc( "Roll the Bones: 3 buffs" );
-  procs.roll_the_bones_5         = get_proc( "Roll the Bones: 5 buffs" );
+  procs.roll_the_bones_6         = get_proc( "Roll the Bones: 6 buffs" );
 
   procs.deepening_shadows        = get_proc( "Deepening Shadows" );
 
