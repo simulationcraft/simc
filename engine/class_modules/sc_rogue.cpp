@@ -5862,6 +5862,24 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 
     return new exsanguinated_expr_t( action );
   }
+  else if ( util::str_compare_ci( name_str, "rtb_buffs" ) )
+  {
+    if ( specialization() != ROGUE_OUTLAW || talent.slice_and_dice -> ok() )
+    {
+      return expr_t::create_constant( name_str, 0 );
+    }
+
+    return make_fn_expr( name_str, [ this ]() {
+      double n_buffs = 0;
+      n_buffs += buffs.jolly_roger -> check() != 0;
+      n_buffs += buffs.grand_melee -> check() != 0;
+      n_buffs += buffs.shark_infested_waters -> check() != 0;
+      n_buffs += buffs.true_bearing -> check() != 0;
+      n_buffs += buffs.broadsides -> check() != 0;
+      n_buffs += buffs.buried_treasure -> check() != 0;
+      return n_buffs;
+    } );
+  }
 
   return player_t::create_expression( a, name_str );
 }
