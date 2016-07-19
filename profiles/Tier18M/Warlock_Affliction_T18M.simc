@@ -26,8 +26,7 @@ actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 
 # Executed every time the actor is available.
 
-actions=use_item,name=nithramus_the_allseer
-actions+=/soul_effigy,if=!pet.soul_effigy.active
+actions=soul_effigy,if=!pet.soul_effigy.active
 actions+=/agony,if=remains<=tick_time+gcd
 actions+=/agony,target=soul_effigy,if=remains<=tick_time+gcd
 actions+=/service_pet
@@ -36,6 +35,7 @@ actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
+actions+=/use_item,name=nithramus_the_allseer
 actions+=/soul_harvest
 actions+=/corruption,if=remains<=tick_time+gcd
 actions+=/siphon_life,if=remains<=tick_time+gcd
