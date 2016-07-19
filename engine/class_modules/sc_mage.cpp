@@ -19,17 +19,19 @@ namespace buffs {
   struct touch_of_the_magi_t;
   struct arcane_missiles_t;
 }
+namespace pets {
+struct water_elemental_pet_t;
+}
 
 
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
-// Forcibly reset mage's current target, if it dies.
-struct current_target_reset_cb_t
+
+enum temporal_hero_e
 {
-  mage_t* mage;
-
-  current_target_reset_cb_t( mage_t* m );
-
-  void operator()(player_t*);
+  ARTHAS,
+  JAINA,
+  SYLVANAS,
+  TYRANDE
 };
 
 struct state_switch_t
@@ -89,14 +91,10 @@ public:
   }
 };
 
-namespace pets {
-struct water_elemental_pet_t;
-}
-
 // Icicle data, stored in an icicle container object. Contains a source stats object and the damage
-typedef std::pair< double, stats_t* > icicle_data_t;
+using icicle_data_t = std::pair< double, stats_t* >;
 // Icicle container object, stored in a list to launch icicles at unsuspecting enemies!
-typedef std::pair< timespan_t, icicle_data_t > icicle_tuple_t;
+using icicle_tuple_t = std::pair< timespan_t, icicle_data_t >;
 
 struct mage_td_t : public actor_target_data_t
 {
@@ -184,6 +182,8 @@ public:
   const special_effect_t* wild_arcanist; // Arcane
   const special_effect_t* pyrosurge;     // Fire
   const special_effect_t* shatterlance;  // Frost
+
+  temporal_hero_e last_summoned;
 
   // State switches for rotation selection
   state_switch_t burn_phase;
@@ -546,34 +546,6 @@ public:
     regen_caches[ CACHE_HASTE ] = true;
     regen_caches[ CACHE_SPELL_HASTE ] = true;
 
-    // Forcibly reset mage's current target, if it dies.
-    struct current_target_reset_cb_t
-    {
-      mage_t* mage;
-
-      current_target_reset_cb_t( mage_t* m ) : mage( m )
-      { }
-
-      void operator()(player_t*)
-      {
-        for ( size_t i = 0, end = mage -> sim -> target_non_sleeping_list.size(); i < end; ++i )
-        {
-          // If the mage's current target is still alive, bail out early.
-          if ( mage -> current_target == mage -> sim -> target_non_sleeping_list[ i ] )
-          {
-            return;
-          }
-        }
-
-        if ( mage -> sim -> debug )
-        {
-          mage -> sim -> out_debug.printf( "%s current target %s died. Resetting target to %s.",
-              mage -> name(), mage -> current_target -> name(), mage -> target -> name() );
-        }
-
-        mage -> current_target = mage -> target;
-      }
-    };
   }
 
   ~mage_t();
@@ -704,30 +676,6 @@ mage_t::~mage_t()
   delete benefits.arcane_missiles;
   delete benefits.fingers_of_frost;
   delete benefits.ray_of_frost;
-}
-
-inline current_target_reset_cb_t::current_target_reset_cb_t( mage_t* m ):
-  mage( m )
-{ }
-
-inline void current_target_reset_cb_t::operator()(player_t*)
-{
-  for ( size_t i = 0, end = mage -> sim -> target_non_sleeping_list.size(); i < end; ++i )
-  {
-    // If the mage's current target is still alive, bail out early.
-    if ( mage -> current_target == mage -> sim -> target_non_sleeping_list[ i ] )
-    {
-      return;
-    }
-  }
-
-  if ( mage -> sim -> debug )
-  {
-    mage -> sim -> out_debug.printf( "%s current target %s died. Resetting target to %s.",
-        mage -> name(), mage -> current_target -> name(), mage -> target -> name() );
-  }
-
-  mage -> current_target = mage -> target;
 }
 
 namespace pets {
@@ -1194,16 +1142,9 @@ struct mirror_image_pet_t : public pet_t
 
 struct temporal_hero_t : public pet_t
 {
-  enum hero_e
-  {
-    ARTHAS,
-    JAINA,
-    SYLVANAS,
-    TYRANDE
-  };
 
-  hero_e hero_type;
-  static hero_e last_summoned;
+
+  temporal_hero_e hero_type;
 
   struct temporal_hero_melee_attack_t : public mage_pet_melee_attack_t
   {
@@ -1396,10 +1337,10 @@ struct temporal_hero_t : public pet_t
     pet_t::arise();
 
     // Summoned heroes follow Jaina -> Arthas -> Sylvanas -> Tyrande order
-    if ( last_summoned == JAINA )
+    if ( o() -> last_summoned == JAINA )
     {
       hero_type = ARTHAS;
-      last_summoned = hero_type;
+      o() -> last_summoned = hero_type;
       temporal_hero_multiplier = 0.1964;
 
       if ( sim -> debug )
@@ -1408,10 +1349,10 @@ struct temporal_hero_t : public pet_t
                                  owner -> name() );
       }
     }
-    else if ( last_summoned == TYRANDE )
+    else if ( o() -> last_summoned == TYRANDE )
     {
       hero_type = JAINA;
-      last_summoned = hero_type;
+      o() -> last_summoned = hero_type;
       temporal_hero_multiplier = 0.6;
 
       if ( sim -> debug )
@@ -1420,10 +1361,10 @@ struct temporal_hero_t : public pet_t
                                  owner -> name() );
       }
     }
-    else if ( last_summoned == ARTHAS )
+    else if ( o() -> last_summoned == ARTHAS )
     {
       hero_type = SYLVANAS;
-      last_summoned = hero_type;
+      o() -> last_summoned = hero_type;
       temporal_hero_multiplier = 0.5283;
 
       if ( sim -> debug )
@@ -1435,7 +1376,7 @@ struct temporal_hero_t : public pet_t
     else
     {
       hero_type = TYRANDE;
-      last_summoned = hero_type;
+      o() -> last_summoned = hero_type;
       temporal_hero_multiplier = 0.5283;
 
       if ( sim -> debug )
@@ -1462,29 +1403,27 @@ struct temporal_hero_t : public pet_t
     owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
-  static void randomize_last_summoned( const mage_t* p )
+  static void randomize_last_summoned( mage_t* p )
   {
     double rand = p -> rng().real();
     if ( rand < 0.25 )
     {
-      last_summoned = ARTHAS;
+      p -> last_summoned = ARTHAS;
     }
     else if ( rand < 0.5 )
     {
-      last_summoned = JAINA;
+      p -> last_summoned = JAINA;
     }
     else if ( rand < 0.75 )
     {
-      last_summoned = SYLVANAS;
+      p -> last_summoned = SYLVANAS;
     }
     else
     {
-      last_summoned = TYRANDE;
+      p -> last_summoned = TYRANDE;
     }
   }
 };
-
-temporal_hero_t::hero_e temporal_hero_t::last_summoned;
 
 } // pets
 
@@ -7599,7 +7538,25 @@ void mage_t::init_stats()
 
   // Register target reset callback here (anywhere later on than in
   // constructor) so older GCCs are happy
-  sim -> target_non_sleeping_list.register_callback( current_target_reset_cb_t( this ) );
+  // Forcibly reset mage's current target, if it dies.
+  sim->target_non_sleeping_list.register_callback( [this]( player_t* ) {
+
+    // If the mage's current target is still alive, bail out early.
+    if ( range::find( sim->target_non_sleeping_list, current_target ) !=
+         sim->target_non_sleeping_list.end() )
+    {
+      return;
+    }
+
+    if ( sim->debug )
+    {
+      sim->out_debug.printf(
+          "%s current target %s died. Resetting target to %s.", name(),
+          current_target->name(), target->name() );
+    }
+
+    current_target = target;
+  } );
 }
 
 
