@@ -125,32 +125,27 @@ struct mage_td_t : public actor_target_data_t
 struct buff_stack_benefit_t
 {
   const buff_t* buff;
-  benefit_t** buff_stack_benefit;
+  std::vector<benefit_t*> buff_stack_benefit;
 
   buff_stack_benefit_t( const buff_t* _buff,
                         const std::string& prefix ) :
-    buff( _buff )
+    buff( _buff ),
+    buff_stack_benefit()
   {
-    buff_stack_benefit = new benefit_t*[ buff -> max_stack() + 1 ];
     for ( int i = 0; i <= buff -> max_stack(); i++ )
     {
-      buff_stack_benefit[ i ] = buff -> player ->
+      buff_stack_benefit.push_back( buff -> player ->
                                 get_benefit( prefix + " " +
                                              buff -> data().name_cstr() + " " +
-                                             util::to_string( i ) );
+                                             util::to_string( i ) ) );
     }
-  }
-
-  virtual ~buff_stack_benefit_t()
-  {
-    delete[] buff_stack_benefit;
   }
 
   void update()
   {
-    for ( int i = 0; i <= buff -> max_stack(); i++ )
+    for ( std::size_t i = 0; i < buff_stack_benefit.size(); ++i )
     {
-      buff_stack_benefit[ i ] -> update( i == buff -> check() );
+      buff_stack_benefit[ i ] -> update( i == as<unsigned>(buff -> check()) );
     }
   }
 };
@@ -706,9 +701,6 @@ mage_t::~mage_t()
   delete benefits.arcane_missiles;
   delete benefits.fingers_of_frost;
   delete benefits.ray_of_frost;
-
-  delete[] pets.temporal_heroes;
-  delete[] pets.mirror_images;
 }
 
 inline current_target_reset_cb_t::current_target_reset_cb_t( player_t* m ):
