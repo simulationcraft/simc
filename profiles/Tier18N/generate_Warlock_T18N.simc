@@ -47,7 +47,7 @@ save=Warlock_Demonology_T18N.simc
 
 warlock="Warlock_Destruction_T18N"
 level=100
-race=human
+race=troll
 role=spell
 spec=destruction
 talents=2301033
