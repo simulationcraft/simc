@@ -890,6 +890,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 
   void execute() override
   {
+    priest_pet_melee_t::execute();
     p().buffs.shadowcrawl->up();  // uptime tracking
   }
 
