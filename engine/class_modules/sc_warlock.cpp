@@ -14,14 +14,13 @@
 // Affliction -
 // Haunt reset
 // Demonology -
-// TODO:
 // demonwrath
+// tier 17/18
+// tier trinket
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
-// Add wild imp spawn delay
-// Double check all up()/check() usage.
+// Double check all up()/check() usage.p
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
-// Move imp spawn to hog impact
 // condition to track minimum pet duration
 // condition to track # of buffs active on pets
 // condition to track # of active pets
