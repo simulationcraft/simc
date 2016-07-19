@@ -26,8 +26,9 @@ struct water_elemental_pet_t;
 
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
-enum temporal_hero_e
+enum class temporal_hero
 {
+  INVALID,
   ARTHAS,
   JAINA,
   SYLVANAS,
@@ -183,7 +184,7 @@ public:
   const special_effect_t* pyrosurge;     // Fire
   const special_effect_t* shatterlance;  // Frost
 
-  temporal_hero_e last_summoned;
+  temporal_hero last_summoned;
 
   // State switches for rotation selection
   state_switch_t burn_phase;
@@ -514,6 +515,7 @@ public:
     wild_arcanist( nullptr ),
     pyrosurge( nullptr ),
     shatterlance( nullptr ),
+    last_summoned( temporal_hero::INVALID ),
     distance_from_rune( 0.0 ),
     incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
     iv_haste( 1.0 ),
@@ -1144,7 +1146,7 @@ struct temporal_hero_t : public pet_t
 {
 
 
-  temporal_hero_e hero_type;
+  temporal_hero hero_type;
 
   struct temporal_hero_melee_attack_t : public mage_pet_melee_attack_t
   {
@@ -1190,7 +1192,7 @@ struct temporal_hero_t : public pet_t
     virtual bool ready() override
     {
       temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
-      if ( hero -> hero_type != ARTHAS )
+      if ( hero -> hero_type != temporal_hero::ARTHAS )
       {
         return false;
       }
@@ -1211,7 +1213,7 @@ struct temporal_hero_t : public pet_t
     virtual bool ready() override
     {
       temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
-      if ( hero -> hero_type != JAINA )
+      if ( hero -> hero_type != temporal_hero::JAINA )
       {
         return false;
       }
@@ -1247,7 +1249,7 @@ struct temporal_hero_t : public pet_t
     virtual bool ready() override
     {
       temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
-      if ( hero -> hero_type != SYLVANAS && hero -> hero_type != TYRANDE )
+      if ( hero -> hero_type != temporal_hero::SYLVANAS && hero -> hero_type != temporal_hero::TYRANDE )
       {
         return false;
       }
@@ -1275,7 +1277,7 @@ struct temporal_hero_t : public pet_t
 
   temporal_hero_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "temporal_hero", true, true ),
-    hero_type( ARTHAS ), temporal_hero_multiplier( 1.0 )
+    hero_type( temporal_hero::ARTHAS ), temporal_hero_multiplier( 1.0 )
   { }
 
   mage_t* o()
@@ -1335,11 +1337,12 @@ struct temporal_hero_t : public pet_t
   void arise() override
   {
     pet_t::arise();
+    assert( o() -> last_summoned != temporal_hero::INVALID );
 
     // Summoned heroes follow Jaina -> Arthas -> Sylvanas -> Tyrande order
-    if ( o() -> last_summoned == JAINA )
+    if ( o() -> last_summoned == temporal_hero::JAINA )
     {
-      hero_type = ARTHAS;
+      hero_type = temporal_hero::ARTHAS;
       o() -> last_summoned = hero_type;
       temporal_hero_multiplier = 0.1964;
 
@@ -1349,9 +1352,9 @@ struct temporal_hero_t : public pet_t
                                  owner -> name() );
       }
     }
-    else if ( o() -> last_summoned == TYRANDE )
+    else if ( o() -> last_summoned == temporal_hero::TYRANDE )
     {
-      hero_type = JAINA;
+      hero_type = temporal_hero::JAINA;
       o() -> last_summoned = hero_type;
       temporal_hero_multiplier = 0.6;
 
@@ -1361,9 +1364,9 @@ struct temporal_hero_t : public pet_t
                                  owner -> name() );
       }
     }
-    else if ( o() -> last_summoned == ARTHAS )
+    else if ( o() -> last_summoned == temporal_hero::ARTHAS )
     {
-      hero_type = SYLVANAS;
+      hero_type = temporal_hero::SYLVANAS;
       o() -> last_summoned = hero_type;
       temporal_hero_multiplier = 0.5283;
 
@@ -1375,7 +1378,7 @@ struct temporal_hero_t : public pet_t
     }
     else
     {
-      hero_type = TYRANDE;
+      hero_type = temporal_hero::TYRANDE;
       o() -> last_summoned = hero_type;
       temporal_hero_multiplier = 0.5283;
 
@@ -1408,19 +1411,19 @@ struct temporal_hero_t : public pet_t
     double rand = p -> rng().real();
     if ( rand < 0.25 )
     {
-      p -> last_summoned = ARTHAS;
+      p -> last_summoned = temporal_hero::ARTHAS;
     }
     else if ( rand < 0.5 )
     {
-      p -> last_summoned = JAINA;
+      p -> last_summoned = temporal_hero::JAINA;
     }
     else if ( rand < 0.75 )
     {
-      p -> last_summoned = SYLVANAS;
+      p -> last_summoned = temporal_hero::SYLVANAS;
     }
     else
     {
-      p -> last_summoned = TYRANDE;
+      p -> last_summoned = temporal_hero::TYRANDE;
     }
   }
 };
@@ -4729,6 +4732,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
+    frozen_orb_action_id( 0 ),
     magtheridons_banished_bracers_multiplier( 0.0 )
   {
     parse_options( options_str );
@@ -7135,8 +7139,8 @@ void mage_t::create_pets()
     for ( unsigned i = 0; i < pets.temporal_hero_count; i++ )
     {
       pets.temporal_heroes.push_back( new pets::temporal_hero_t( sim, this ) );
-      pets::temporal_hero_t::randomize_last_summoned( this );
     }
+    pets::temporal_hero_t::randomize_last_summoned( this );
   }
 
   if ( talents.arcane_familiar -> ok() &&
