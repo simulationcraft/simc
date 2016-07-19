@@ -569,6 +569,7 @@ namespace pets {
     } procs;
 
     bool is_grimoire_of_service = false;
+    bool is_demonbolt_enabled = true;
     bool is_lord_of_flames = false;
 
     struct travel_t: public action_t
@@ -1378,6 +1379,11 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   {
       m *= 1.0 + o() -> find_spell( 216187 ) -> effectN( 1 ).percent();
   }
+
+  if( o() -> mastery_spells.master_demonologist -> ok() )
+  {
+     m *= 1.0 +  o() -> cache.mastery_value();
+  }
   return m;
 }
 
@@ -1479,6 +1485,7 @@ struct t18_illidari_satyr_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "illidari_satyr", PET_FELGUARD, true )
   {
     owner_coeff.ap_from_sp = 1;
+    is_demonbolt_enabled = false;
     regen_type = REGEN_DISABLED;
     action_list_str = "travel";
   }
@@ -1526,6 +1533,7 @@ struct t18_vicious_hellhound_t: public warlock_pet_t
     warlock_pet_t( sim, owner, "vicious_hellhound", PET_DOG, true )
   {
     owner_coeff.ap_from_sp = 1;
+    is_demonbolt_enabled = false;
     regen_type = REGEN_DISABLED;
     action_list_str = "travel";
   }
@@ -1951,6 +1959,7 @@ struct thal_kiel_t : public warlock_pet_t
       warlock_pet_t( sim, owner, "thal'keil", PET_THAL_KIEL )
     {
         action_list_str = "thal_kiel_discord,if=!ticking";
+        is_demonbolt_enabled = false;
         regen_type = REGEN_DISABLED;
     }
 
@@ -2328,7 +2337,7 @@ public:
       double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
       pm *= 1.0 + chaotic_energies_rng;
     }
-    if ( p()->specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
+    if ( p()->specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
     {
         pm *= 1.0 + p()->artifact.breath_of_thalkiel.percent();
     }
@@ -4047,6 +4056,7 @@ struct demonbolt_t: public warlock_spell_t
   {
     double pm = spell_t::action_multiplier();
 
+    int counter = 0;
     for( auto& pet : p() -> pet_list )
     {
       pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
@@ -4055,10 +4065,11 @@ struct demonbolt_t: public warlock_spell_t
       {
         if( !lock_pet -> is_sleeping() )
         {
-            pm *= ( 1.0 + data().effectN( 3 ).percent() );
+            counter += ( 1.0 + data().effectN( 3 ).percent() );
         }
       }
     }
+    pm *= 1 + counter;
     if(p()->buffs.stolen_power->up())
     {
         p()->procs.stolen_power_used->occur();
