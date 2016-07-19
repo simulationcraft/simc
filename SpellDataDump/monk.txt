@@ -3626,7 +3626,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=228215)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE friendly(30)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE friendly(30)
 Description      : $@spelldesc196725
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 

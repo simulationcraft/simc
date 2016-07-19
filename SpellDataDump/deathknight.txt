@@ -816,7 +816,7 @@ Effects          :
 #1 (id=42113)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 5 | Target: Enemy(6)
 #2 (id=42114)    : Weapon Damage% (31)
-                   Base Value: 225 | Scaled Value: 2.25 | Target: Enemy(6)
+                   Base Value: 258 | Scaled Value: 2.58 | Target: Enemy(6)
 #3 (id=287354)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #4 (id=331353)   : Dummy (3)
@@ -870,6 +870,7 @@ Spell Level      : 56
 GCD              : 1.5 seconds
 Charges          : 2 (7.5 seconds cooldown)
 Category         : 1611
+Affecting spells : Blood Death Knight (137008)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1092,7 +1093,7 @@ Name             : Death and Decay (id=52212) [Scaling Spell (1), Spell Family (
 Class            : Death Knight
 School           : Shadow
 Range            : 100 yards
-Affecting spells : Morbid Strike (166021), All-Consuming Rot (192464), 
+Affecting spells : Blood Death Knight (137008), Morbid Strike (166021), All-Consuming Rot (192464), 
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ ........ ........ .x....x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -2031,7 +2032,7 @@ Effects          :
 #1 (id=87374)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.433) | Target: Enemy(6)
 #2 (id=87375)    : Weapon Damage% (31)
-                   Base Value: 500 | Scaled Value: 5 | Target: Enemy(6)
+                   Base Value: 475 | Scaled Value: 4.75 | Target: Enemy(6)
 #3 (id=333923)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 2 - 4 | Value Range: 3 | Target: Enemy(6)
 Description      : Deals $sw2 Physical damage and infects the target with $m3 to $M3 Festering Wounds.
@@ -2121,9 +2122,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=95513)    : Dummy (3)
-                   Base Value: 150 | Scaled Value: 150 | Target: Enemy(6)
+                   Base Value: 135 | Scaled Value: 135 | Target: Enemy(6)
 #2 (id=341774)   : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 135 | Scaled Value: 1.35 | Radius: 8 yards | Target: Cone Front(104)
 Description      : Rakes an enemy with deformed claws, dealing $91778s1% of normal damage to the target and nearby enemies.
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
@@ -2424,7 +2425,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=127901)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 300000000 | Scaled Value: 3e+008 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 300000000 | Scaled Value: 3e+08 | Misc Value: 127 | Target: Self(1)
 Description      : An unholy pact that prevents fatal damage, instead absorbing incoming healing equal to the damage prevented, lasting $116888d.
 
 If any healing absorption remains when this effect expires, you will die. This effect may only occur every $123981d.
@@ -2737,8 +2738,9 @@ Effects          :
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Death and Decay (43265), Death and Decay (143375), Defile (152280)
-#4 (id=191168)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=191168)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+                   Affected Spells: Blood Boil (50842), Death and Decay (52212), Defile (156000)
 #5 (id=191169)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260807)   : Apply Aura (6) | Dummy (4)
@@ -3089,7 +3091,7 @@ Name             : Defile (id=156000) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadowfrost
 Range            : 100 yards
-Affecting spells : Razorice (51714), Morbid Strike (166021), All-Consuming Rot (192464), 
+Affecting spells : Razorice (51714), Blood Death Knight (137008), Morbid Strike (166021), All-Consuming Rot (192464), 
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x.....x 
                  : x....... ........ ........ ........   ........ .......x ........ ........ 
@@ -3614,7 +3616,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=285787)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Death and Decay (188290)
 #2 (id=287223)   : Apply Aura (6) | Add Percent Modifier: Unknown 2 (108)
                    Base Value: -33 | Scaled Value: -33 | Misc Value: 19 | Target: Self(1)
@@ -3622,7 +3624,7 @@ Effects          :
 #3 (id=312639)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #4 (id=331476)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 15 | Scaled Value: 15
 Description      : Your Death and Decay deals damage $s3% more often, and while in your Death and Decay you generate $s4% more Runic Power.
 
 Name             : Rune Tap (id=194679) [Spell Family (15)] 
@@ -3833,7 +3835,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ....x... 
 Effects          :
 #1 (id=286506)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Self(1)
 #2 (id=293376)   : Apply Aura (6) | Unknown effect sub type (408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195182 | Target: Self(1)
 #3 (id=306110)   : Apply Aura (6) | Unknown effect sub type (133)
@@ -4079,7 +4081,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288467)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.40000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.28800 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc194844
 
 Name             : Bonestorm (id=196545) [Spell Family (15)] 
@@ -4352,7 +4354,7 @@ Effects          :
 #1 (id=302967)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=302968)   : Weapon Damage% (31)
-                   Base Value: 250 | Scaled Value: 2.5 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 287 | Scaled Value: 2.87 | Radius: 8 yards | Target: Cone Front(104)
 #3 (id=302969)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #4 (id=302970)   : Dummy (3)
@@ -4453,7 +4455,7 @@ Effects          :
 #1 (id=306039)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Targets: 2 | Target: Enemy(6)
 #2 (id=306040)   : Weapon Damage% (31)
-                   Base Value: 225 | Scaled Value: 2.25 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 258 | Scaled Value: 2.58 | Chain Targets: 2 | Target: Enemy(6)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
@@ -4484,7 +4486,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=306042)   : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 3.75000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 4.31000 | Target: Enemy(6)
 Description      : Drains $o1 health from the target over $d.
 
 You can move, parry, dodge, and use defensive abilities while channeling this ability.
@@ -4597,7 +4599,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306100)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 145000000 | Scaled Value: 1.45e+008 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 145000000 | Scaled Value: 1.45e+08 | Misc Value: 127 | Target: Self(1)
 #2 (id=306101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #3 (id=306102)   : Apply Aura (6) | Dummy (4)

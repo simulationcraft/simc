@@ -375,7 +375,7 @@ Duration of all harmful Magic effects reduced by $w2%.
 Name             : Arcane Missiles (id=7268) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
-Spell Level      : 24
+Spell Level      : 14
 Range            : 60 yards
 Velocity         : 20 yards/sec
 Affecting spells : Shatter (12982), Arcane Charge (36032), Arcane Focus (171375), Aegwynn's Fury (187287), Erosion (210134)
@@ -561,14 +561,14 @@ Duration         : 9 seconds
 Affecting spells : Everburning Consumption (194314), 
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ..x..... ....x.x. 
-                 : .......x x......x ....x... ........   ........ ........ .......x ........ 
+                 : .......x .......x ....x... ........   ........ ........ .......x ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=5511)     : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-#2 (id=5512)     : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
+#2 (id=5512)     : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=260628)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
@@ -1325,7 +1325,7 @@ Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=48273)    : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+007 | Target: Self(1)
+                   Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self(1)
 #2 (id=48274)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 Description      : Creates $s2 copies of you nearby, which cast spells and attack your enemies. Lasts $55342d.
@@ -1690,7 +1690,7 @@ Casting Ice Lance causes any Icicles stored to begin launching at the target. Up
 Name             : Arcane Missiles! (id=79683) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
-Spell Level      : 24
+Spell Level      : 14
 Duration         : 20 seconds
 Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
@@ -1715,7 +1715,7 @@ Tooltip          : Arcane Missiles activated.
 Name             : Arcane Missiles (id=79684) [Spell Family (3), Passive, Hidden] 
 Class            : Arcane Mage
 School           : Physical
-Spell Level      : 16
+Spell Level      : 14
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
@@ -1861,7 +1861,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=88723)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Self(1)
 #2 (id=88811)    : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self(1)
 #3 (id=302842)   : Trigger Spell: Blazing Speed (64)
@@ -1940,7 +1940,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=90295)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.8, dl=0.2) | SP Coefficient: 0.81000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=1.8, dl=0.2) | SP Coefficient: 0.72000 | Target: Enemy(6)
 Description      : Hurls a fiery ball that causes $s1 Fire damage.
 
 Name             : Arcane Blast (id=88084) [Scaling Spell (5), Spell Family (3)] 
@@ -3874,7 +3874,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=292756)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.65000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.58000 | Target: Enemy(6)
 Description      : $@spelldesc198929
 
 Name             : Cinderstorm (id=198929) [Spell Family (3)] 
@@ -4128,7 +4128,7 @@ Name             : Flame On (id=205029) [Spell Family (3)]
 Class            : Mage
 School           : Fire
 Spell Level      : 1
-Cooldown         : 40 seconds
+Cooldown         : 45 seconds
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4345,7 +4345,7 @@ Attributes       : ........ ........ ........ x..x....   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303428)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.20000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Chilled (id=205708) [Spell Family (3)] 

@@ -549,7 +549,7 @@ Effects          :
 #1 (id=10651)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 (avg=2.2, dl=0.1) | Target: Enemy(6)
 #2 (id=101526)   : Weapon Damage% (31)
-                   Base Value: 135 | Scaled Value: 2.05 | Points Per Level: 7 | Target: Enemy(6)
+                   Base Value: 135 | Scaled Value: 2.15 | Points Per Level: 8 | Target: Enemy(6)
 Description      : A powerful aimed shot that deals $sw2 Physical damage.
 
 Name             : Bestial Wrath (id=19574) [Spell Family (9)] 
@@ -4837,7 +4837,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged ability (1)
 Effects          :
 #1 (id=285672)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.60000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.30000 | Target: Enemy(6)
 #2 (id=285673)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 186070 | Target: Enemy(6)
 Description      : Fires a Black Arrow at the target, dealing $o1 Shadow damage over $d and summoning a Dark Minion to taunt it for the duration.
@@ -6178,7 +6178,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Affecting spells : Freezing Trap (3355), Hunter (137014), Dire Stable (193532), Beast Master (215779)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .......x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

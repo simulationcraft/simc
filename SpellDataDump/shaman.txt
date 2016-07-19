@@ -356,7 +356,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=7950)     : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 10 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 10 | Target: Self(1)
 Description      : Elemental forces empower you with $s1% haste for $d.
 Tooltip          : Haste increased by $s1%.
 
@@ -546,7 +546,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21915)    : Weapon Damage% (31)
-                   Base Value: 630 | Scaled Value: 6.3 | SP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 600 | Scaled Value: 6 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=172084)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc17364
@@ -567,7 +567,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=21916)    : Weapon Damage% (31)
-                   Base Value: 630 | Scaled Value: 6.3 | SP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 600 | Scaled Value: 6 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=172085)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc17364
@@ -1084,7 +1084,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=51290)    : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 3.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 2.70000 | Target: Enemy(6)
 Description      : Inflicts Fire damage to an enemy.
 
 Name             : Wind Shear (id=57994) [Spell Family (11)] 
@@ -1245,7 +1245,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=53784)    : Weapon Damage% (31)
-                   Base Value: 530 | Scaled Value: 5.3 | Target: Enemy(6)
+                   Base Value: 505 | Scaled Value: 5.05 | Target: Enemy(6)
 #2 (id=53785)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Charges your off-hand weapon with lava and burns your target, dealing $sw1 Fire damage.
@@ -1646,7 +1646,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -2294,7 +2294,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129139)   : Weapon Damage% (31)
-                   Base Value: 630 | Scaled Value: 6.3 | Target: Enemy(6)
+                   Base Value: 600 | Scaled Value: 6 | Target: Enemy(6)
 #2 (id=197633)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc115356
@@ -2316,7 +2316,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=129143)   : Weapon Damage% (31)
-                   Base Value: 630 | Scaled Value: 6.3 | Target: Enemy(6)
+                   Base Value: 600 | Scaled Value: 6 | Target: Enemy(6)
 #2 (id=197634)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc115356
@@ -2386,7 +2386,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=132332)   : School Damage: elemental (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.25000 | Target: Enemy(6)
 Description      : Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike, Haste, or Mastery by $118522s1 for $118522d.
 
 Name             : Fire Nova (id=117588) 
@@ -2424,9 +2424,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=134677)   : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.35000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Target: Enemy(6)
 #2 (id=134678)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | Target: Enemy(6)
 Description      : Burns an enemy, then inflicts additional Fire damage every $t1 sec. for $d.
 Tooltip          : Fire damage inflicted every $t1 sec.
 
@@ -2515,7 +2515,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=140233)   : School Damage: elemental (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=3.18, dl=0.15) | SP Coefficient: 4.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 (avg=3.18, dl=0.15) | SP Coefficient: 5.25000 | Target: Enemy(6)
 Description      : $@spelldesc117014
 
 Name             : Spiritual Insight (id=123099) [Spell Family (11), Passive] 
@@ -3081,7 +3081,7 @@ Effects          :
 #1 (id=219618)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: Custom(18) -> AOE friendly(31)
 #2 (id=306466)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Radius: 0 - 40 yards | Target: Custom(18) -> AOE friendly(31)
+                   Base Value: 25 | Scaled Value: 25 | Radius: 0 - 40 yards | Target: Custom(18) -> AOE friendly(31)
 Description      : $@spelldesc157153
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -3374,7 +3374,7 @@ Description      : Every $m1 Lightning Bolt or Chain Lightning casts, your total
 Name             : Lightning Bolt (id=187837) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Nature
-Resource         : 0 - 60 Maelstrom w/ Overcharge (id=210727)
+Resource         : 0 Maelstrom w/ Overcharge (id=210727)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3407,7 +3407,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274038)   : Weapon Damage% (31)
-                   Base Value: 135 | Scaled Value: 1.35 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 100 | Scaled Value: 1 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=274039)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 Description      : Electrocutes all enemies in front of you, dealing $sw1 Nature damage. Hitting 2 or more targets enhances your weapons for $187878d, causing Stormstrike and Lava Lash to also deal $195592sw1 Nature damage to all targets in front of you.  
@@ -3759,7 +3759,7 @@ Effects          :
 #2 (id=279920)   : Apply Aura (6) | Unknown effect sub type (396)
                    Base Value: 19 | Scaled Value: 19 | Misc Value: 11 | Misc Value 2: 0x1 | Trigger Spell: 195769 | Target: Self(1)
 
-Name             : Maelstrom Power Increase (id=190900) [Spell Family (11)] 
+Name             : Maelstrom Power Increase (id=190900) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
 Spell Level      : 1
@@ -3767,12 +3767,13 @@ Duration         : Aura (infinite)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered by     : Maelstrom Controller (190899)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
 Effects          :
 #1 (id=279930)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -4092,7 +4093,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=282015)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.70000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc192222
 
 Name             : Tempest (id=192234) [Spell Family (11), Passive, Hidden] 
@@ -4347,7 +4348,7 @@ Effects          :
 #1 (id=287112)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=287113)   : Weapon Damage% (31)
-                   Base Value: 75 | Scaled Value: 0.75 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 100 | Scaled Value: 1 | Radius: 8 yards | Target: Cone Front(104)
 Description      : $@spelldesc187874
 
 Name             : Maelstrom Power Decrease (id=195769) [Spell Family (11), Hidden] 
@@ -4800,7 +4801,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=291691)   : School Damage: nature (2)
-                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Deals $s1 damage to all targets within $A1.
 
 Name             : Fire Nova (id=198480) [Spell Family (11)] 
@@ -4815,7 +4816,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=291723)   : School Damage: fire (2)
-                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Deals $s1 Fire damage to all targets within $A1 yards.
 
 Name             : Snowstorm (id=198483) [Spell Family (11)] 
@@ -4831,7 +4832,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=291727)   : School Damage: frost (2)
-                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=302479)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
 Description      : Deals $s1 Frost damage to all targets within $A1 yards.
@@ -4848,7 +4849,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=291730)   : School Damage: nature (2)
-                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | AP Coefficient: 1.00000 | Chain Multiplier: 0.9 | Chain Targets: 5 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Chain Multiplier: 0.9 | Chain Targets: 5 | Target: Enemy(6)
 Description      : Deals $s1 Nature damage, jumping to up to $x targets.
 
 Name             : Feral Spirit (id=198506) [Spell Family (11)] 
@@ -5496,7 +5497,7 @@ Effects          :
 #1 (id=306879)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 10 | Scaled Value: 10 | Target: Friend(21)
 #2 (id=322959)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1000000000 | Scaled Value: 1e+009 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 1000000000 | Scaled Value: 1e+09 | Misc Value: 127 | Target: Friend(21)
 Description      : $@spelldesc207399
 Tooltip          : Health increased by $s1%.
 
@@ -5713,7 +5714,7 @@ Effects          :
 #1 (id=312100)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 #2 (id=341410)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
 Description      : Your Lightning Bolt and Chain Lightning have a $s1% chance to make the primary target a Lightning Rod for $197209d. Lightning Rods take $s2% of all damage you deal with Lightning Bolt and Chain Lightning.
 
 Name             : Aftershock (id=210707) [Spell Family (11), Passive] 
@@ -5780,7 +5781,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=312152)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self(1)
+                   Base Value: 45 | Scaled Value: 45 | Target: Self(1)
 #2 (id=312153)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1500 | Scaled Value: 1500 | Target: Self(1)
 #3 (id=312154)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
@@ -5803,7 +5804,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256), Stormlash (213307)
 #2 (id=312160)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256), Stormlash (213307)
 Description      : Stormlash now spreads to $s1 additional target and deals $s2% additional damage.
 
@@ -6303,9 +6304,9 @@ Attributes       : ........ ........ ........ ..x....x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=335388)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=335389)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.40000 | Target: Enemy(6)
 Description      : Bite the target for $s1 Fire damage, causing an additional $o2 Fire damage over $d.
 Tooltip          : Suffering $s2 Fire damage every $t sec.
 
