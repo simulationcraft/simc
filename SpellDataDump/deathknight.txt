@@ -3821,7 +3821,7 @@ Tooltip          : Applying Festering Wounds when autoattacking.
 Name             : Bone Shield (id=195181) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
-Spell Level      : 78
+Spell Level      : 55
 Duration         : 30 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%

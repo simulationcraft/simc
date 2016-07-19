@@ -2648,6 +2648,7 @@ Effects          :
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
 Class            : Arcane Mage
 School           : Physical
+Spell Level      : 10 (max 40)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2656,8 +2657,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179704)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#1 (id=179704)   : Apply Aura (6) | Mod Power Regen (110)
+                   Base Value: 60 | Scaled Value: 0 | Points Per Level: -2 | Target: Self(1)
 #2 (id=191116)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191117)   : Apply Aura (6) | Dummy (4)

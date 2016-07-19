@@ -5085,6 +5085,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: Unknown(129)
 Description      : $@spelldesc205320
 
+Name             : Mark of the Crane (id=228287) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Level      : 12
+Range            : 100 yards
+Duration         : 15 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=343601)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
+Description      : $@spelldesc101546
+Tooltip          : Increasing the damage of the Monk's Spinning Crane Kick by $s1%.
+
 Name             : Blackout Combo (id=228563) [Spell Family (53)] 
 Class            : Monk
 School           : Physical

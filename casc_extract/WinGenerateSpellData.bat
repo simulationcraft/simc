@@ -3,12 +3,12 @@ cd wow
 dir /b /a:D /O:-D>hi.txt
 set /p wowdir=<hi.txt
 set /p oldname=<hi.txt
-set wowdir=%wowdir:~4,-17%
+set wowdir=%wowdir:~6%
 ren %oldname% %wowdir%
 del hi.txt
 cd ..
 cd ..
 set curr=%cd%
-cd dbc_extract2
+cd dbc_extract3
 call generate.bat %wowdir% %curr%\casc_extract\wow
 pause
