@@ -916,6 +916,27 @@ struct rogue_attack_t : public melee_attack_t
     return melee_attack_t::spell_tick_power_coefficient( s );
   }
 
+  double base_da_min( const action_state_t* s ) const override
+  {
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
+      return base_dd_min * cast_state( s ) -> cp;
+    return melee_attack_t::base_da_min( s );
+  }
+
+  double base_da_max( const action_state_t* s ) const override
+  {
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
+      return base_dd_max * cast_state( s ) -> cp;
+    return melee_attack_t::base_da_max( s );
+  }
+
+  double base_ta( const action_state_t* s ) const override
+  {
+    if ( base_costs[ RESOURCE_COMBO_POINT ] )
+      return base_td * cast_state( s ) -> cp;
+    return melee_attack_t::base_ta( s );
+  }
+
   double bonus_da( const action_state_t* s ) const override
   {
     if ( base_costs[ RESOURCE_COMBO_POINT ] )
@@ -1230,6 +1251,15 @@ struct poison_bomb_t : public rogue_attack_t
     rogue_attack_t( "poison_bomb", p, p -> find_spell( 192660 ) )
   {
     background = true;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
+
+    return m;
   }
 };
 
@@ -2245,10 +2275,8 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t( "envenom", p, p -> find_specialization_spell( "Envenom" ), options_str )
   {
     weapon = &( p -> main_hand_weapon );
-    attack_power_mod.direct = 0.417;
     dot_duration = timespan_t::zero();
     base_multiplier *= 1.0 + p -> artifact.toxic_blades.percent();
-    base_dd_min = base_dd_max = 0;
   }
 
   void consume_resource() override
