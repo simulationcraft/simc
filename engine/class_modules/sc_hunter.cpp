@@ -5893,7 +5893,9 @@ void hunter_t::init_action_list()
     if ( sim -> allow_flasks && true_level >= 80 )
     {
       std::string flask_action = "flask,type=";
-      if ( true_level > 90 )
+      if ( true_level > 100 )
+        flask_action += "flask_of_the_seventh_demon";
+      else if ( true_level > 90 )
         flask_action += "greater_draenic_agility_flask";
       else
         flask_action += "spring_blossoms";
@@ -5906,14 +5908,19 @@ void hunter_t::init_action_list()
       std::string food_action = "food,type=";
       if ( level() <= 90 )
         food_action += ( level() > 85 ) ? "sea_mist_rice_noodles" : "seafood_magnifique_feast";
-      else if ( specialization() == HUNTER_BEAST_MASTERY )
-        food_action += "sleeper_sushi";
-      else if ( specialization() == HUNTER_MARKSMANSHIP )
-        food_action += "pickled_eel";
-      else if ( specialization() == HUNTER_SURVIVAL )
-        food_action += "salty_squid_roll";
+      else if ( level() <= 100 )
+      {
+        if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_MARKSMANSHIP )
+          food_action += "salty_squid_roll";
+        else if ( specialization() == HUNTER_SURVIVAL )
+          food_action += "pickled_eel";
+        else
+          food_action += "salty_squid_roll";
+      }
+      else if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_MARKSMANSHIP )
+        food_action += "nightborne_delicacy_platter";
       else
-        food_action += "salty_squid_roll";
+        food_action += "seedbattered_fish_plate";
       precombat -> add_action( food_action );
     }
 
