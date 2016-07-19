@@ -358,6 +358,7 @@ public:
     gain_t* power_trip;
     gain_t* shadow_bolt;
     gain_t* doom;
+    gain_t* demonwrath;
     gain_t* soul_conduit;
     gain_t* reverse_entropy;
     gain_t* soulsnatcher;
@@ -3618,7 +3619,59 @@ struct rain_of_fire_t : public warlock_spell_t
   }
 };
 
-struct hellfire_tick_t: public warlock_spell_t
+
+
+struct demonwrath_tick_t: public warlock_spell_t
+{
+  gain_t* shard_gain;
+
+  demonwrath_tick_t( warlock_t* p, const spell_data_t& s ):
+    warlock_spell_t( "demonwrath_tick", p, p->find_spell(193439) ), shard_gain( p -> gains.demonwrath )
+  {
+    aoe = -1;
+    background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      warlock_td_t* tdata = td( s -> target );
+      if(rng().roll(p()->find_spell( 193440 )->effectN( 1 ).percent()))
+      //if(rng().roll(.15))
+      {
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, shard_gain );
+      }
+    }
+  }
+
+};
+
+struct demonwrath_t: public warlock_spell_t
+{
+  demonwrath_t( warlock_t* p ):
+    warlock_spell_t( "Demonwrath", p, p -> find_spell( 193440 ) )
+  {
+    tick_zero = false;
+    may_miss = false;
+    channeled = true;
+    may_crit = false;
+
+    spell_power_mod.tick = base_td = 0;
+
+    dynamic_tick_action = true;
+    tick_action = new demonwrath_tick_t( p, data() );
+  }
+
+  virtual bool usable_moving() const override
+  {
+    return true;
+  }
+};
+
+/*struct hellfire_tick_t: public warlock_spell_t
 {
   hellfire_tick_t( warlock_t* p, const spell_data_t& s ):
     warlock_spell_t( "hellfire_tick", p, s.effectN( 1 ).trigger() )
@@ -3648,7 +3701,7 @@ struct hellfire_t: public warlock_spell_t
   {
     return true;
   }
-};
+};*/
 
 // SUMMONING SPELLS
 
@@ -4796,7 +4849,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "seed_of_corruption"    ) a = new                seed_of_corruption_t( this );
   else if ( action_name == "cataclysm"             ) a = new                         cataclysm_t( this );
   else if ( action_name == "rain_of_fire"          ) a = new                      rain_of_fire_t( this, options_str );
-  else if ( action_name == "hellfire"              ) a = new                          hellfire_t( this );
+  else if ( action_name == "demonwrath"            ) a = new                        demonwrath_t( this );
   else if ( action_name == "summon_infernal"       ) a = new                   summon_infernal_t( this );
   else if ( action_name == "summon_doomguard"      ) a = new                  summon_doomguard_t( this );
   else if ( action_name == "call_dreadstalkers"    ) a = new                call_dreadstalkers_t( this );
