@@ -42,6 +42,7 @@ actions.combustion_phase+=/arcane_torrent
 actions.combustion_phase+=/call_action_list,name=active_talents
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.up
 actions.combustion_phase+=/fire_blast,if=!prev_off_gcd.fire_blast
+actions.combustion_phase+=/scorch,if=!artifact.phoenixs_flames.enabled&!prev_gcd.scorch
 actions.combustion_phase+=/scorch,if=target.health.pct<=25&equipped.132454
 actions.combustion_phase+=/fireball
 

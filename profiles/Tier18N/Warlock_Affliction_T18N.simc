@@ -32,6 +32,9 @@ actions+=/agony,target=soul_effigy,if=remains<=tick_time+gcd
 actions+=/service_pet
 actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3
 actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
+actions+=/berserking
+actions+=/blood_fury
+actions+=/arcane_torrent
 actions+=/soul_harvest
 actions+=/corruption,if=remains<=tick_time+gcd
 actions+=/siphon_life,if=remains<=tick_time+gcd
