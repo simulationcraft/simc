@@ -28,10 +28,6 @@ actions.precombat+=/incinerate
 # Executed every time the actor is available.
 
 actions=use_item,name=nithramus_the_allseer
-actions+=/service_pet,if=active_enemies<3
-actions+=/service_voidwalker,if=active_enemies>=3
-actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3
-actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
 actions+=/immolate,if=remains<=tick_time
 actions+=/immolate,if=talent.roaring_blaze.enabled&remains<duration&action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&charges=2
@@ -40,6 +36,9 @@ actions+=/conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=3&buff.bloodlust.remains
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
+actions+=/service_pet
+actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3
+actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
 actions+=/soul_harvest
 actions+=/channel_demonfire,if=dot.immolate.remains>cast_time
 actions+=/chaos_bolt,if=soul_shard>3
@@ -49,31 +48,32 @@ actions+=/chaos_bolt
 actions+=/cataclysm
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled
 actions+=/immolate,if=!talent.roaring_blaze.enabled&remains<=duration*0.3
+actions+=/life_tap,if=talent.mana_tap.enabled&mana.pct<=10
 actions+=/incinerate
 actions+=/life_tap
 
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=75crit
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=75haste
 shoulders=deathrattle_shoulderpads,id=124179,bonus_id=567,upgrade=2
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=100crit
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=100haste
 chest=deathrattle_robe,id=124173,bonus_id=567,upgrade=2
 wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 hands=deathrattle_gloves,id=124156,bonus_id=567,upgrade=2
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
 legs=deathrattle_leggings,id=124167,bonus_id=567,upgrade=2
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
-finger1=nithramus_the_allseer,id=124635,bonus_id=641,upgrade=2,enchant=50crit
-finger2=pompous_ceremonial_ring,id=124195,bonus_id=567,upgrade=2,enchant=50crit
+finger1=nithramus_the_allseer,id=124635,bonus_id=641,upgrade=2,enchant=50haste
+finger2=pompous_ceremonial_ring,id=124195,bonus_id=567,upgrade=2,enchant=50haste
 trinket1=sandmans_pouch,id=112320,bonus_id=618,upgrade=2
 trinket2=chipped_soul_prism,id=124545,upgrade=2
-main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5384
+main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5337
 
 # Gear Summary
 # gear_ilvl=740.67
 # gear_stamina=7096
 # gear_intellect=8032
-# gear_crit_rating=2011
-# gear_haste_rating=2008
+# gear_crit_rating=1736
+# gear_haste_rating=2283
 # gear_mastery_rating=2666
 # gear_versatility_rating=891
 # gear_armor=1203

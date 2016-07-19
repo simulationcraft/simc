@@ -4,7 +4,7 @@ warlock="Warlock_Affliction_T18H"
 level=100
 race=troll
 spec=affliction
-talents=0000311
+talents=2203011
 head=deathrattle_mask,id=124162,bonus_id=566
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant_id=5318
 shoulders=mantle_of_the_eredar_lord,id=124176,bonus_id=566
@@ -18,7 +18,7 @@ feet=dessicated_soulrender_slippers,id=124150,bonus_id=566
 finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant_id=5325
 finger2=loathful_encrusted_band,id=124192,bonus_id=566,enchant_id=5325
 trinket1=fragment_of_the_dark_star,id=124522,bonus_id=566
-trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=566
+trinket2=chipped_soul_prism,id=124545
 main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5337
 save=Warlock_Affliction_T18H.simc
 

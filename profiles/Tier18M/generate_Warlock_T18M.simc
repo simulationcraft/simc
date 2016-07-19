@@ -2,24 +2,24 @@
 
 warlock="Warlock_Affliction_T18M"
 level=100
-race=orc
+race=human
 spec=affliction
-talents=0000311
+talents=2203011
 head=deathrattle_mask,id=124162,bonus_id=567,upgrade=2
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,enchant_id=5318,upgrade=2
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant_id=5318
 shoulders=mantle_of_the_eredar_lord,id=124176,bonus_id=567,upgrade=2
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,enchant_id=5311,upgrade=2
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant_id=5311
 chest=deathrattle_robe,id=124173,bonus_id=567,upgrade=2
 wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 hands=deathrattle_gloves,id=124156,bonus_id=567,upgrade=2
 waist=sash_of_unending_anguish,id=124181,bonus_id=567,upgrade=2
 legs=deathrattle_leggings,id=124167,bonus_id=567,upgrade=2
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=567,upgrade=2
-finger1=nithramus_the_allseer,id=124635,enchant_id=5325,bonus_id=641
-finger2=loathful_encrusted_band,id=124192,bonus_id=567,enchant_id=5325,upgrade=2
+finger1=nithramus_the_allseer,id=124635,bonus_id=641,enchant_id=5325
+finger2=loathful_encrusted_band,id=124192,bonus_id=567,upgrade=2,enchant_id=5325
 trinket1=fragment_of_the_dark_star,id=124522,bonus_id=567,upgrade=2
-trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
-main_hand=edict_of_argus,id=124382,bonus_id=567,enchant_id=5337,upgrade=2
+trinket2=chipped_soul_prism,id=124545,upgrade=2
+main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5337
 save=Warlock_Affliction_T18M.simc
 
 warlock="Warlock_Demonology_T18M"
@@ -51,19 +51,19 @@ role=spell
 spec=destruction
 talents=2301033
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=75crit
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=75haste
 shoulders=deathrattle_shoulderpads,id=124179,bonus_id=567,upgrade=2
-back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=100crit
+back=cloak_of_hideous_unity,id=124138,bonus_id=567,upgrade=2,enchant=100haste
 chest=deathrattle_robe,id=124173,bonus_id=567,upgrade=2
 wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 hands=deathrattle_gloves,id=124156,bonus_id=567,upgrade=2
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
 legs=deathrattle_leggings,id=124167,bonus_id=567,upgrade=2
 feet=bloody_daggerheeled_pumps,id=124149,bonus_id=567,upgrade=2
-finger1=nithramus_the_allseer,id=124635,bonus_id=641,upgrade=2,enchant=50crit
-finger2=pompous_ceremonial_ring,id=124195,bonus_id=567,upgrade=2,enchant=50crit
+finger1=nithramus_the_allseer,id=124635,bonus_id=641,upgrade=2,enchant=50haste
+finger2=pompous_ceremonial_ring,id=124195,bonus_id=567,upgrade=2,enchant=50haste
 trinket1=sandmans_pouch,id=112320,bonus_id=618,upgrade=2
 trinket2=chipped_soul_prism,id=124545,upgrade=2
-main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5384
+main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5337
 save=Warlock_Destruction_T18M.simc
 

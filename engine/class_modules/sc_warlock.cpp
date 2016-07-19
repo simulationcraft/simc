@@ -9,7 +9,7 @@
 //
 // TODO
 // Cleanup aff/destro class trinket implementation
-// 
+// Drain life never cancels regardless of mana
 //
 // Affliction -
 // Haunt reset
@@ -2623,13 +2623,13 @@ struct drain_life_t: public warlock_spell_t
     may_crit = false;
   }
 
-  virtual bool ready() override
-  {
-    if ( p() -> talents.drain_soul -> ok() )
-      return false;
+  //virtual bool ready() override
+  //{
+  //  if ( p() -> talents.drain_soul -> ok() )
+  //    return false;
 
-    return warlock_spell_t::ready();
-  }
+  //  return warlock_spell_t::ready();
+  //}
 
   virtual void tick( dot_t* d ) override
   {
@@ -5203,7 +5203,30 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
-  
+  action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
+  add_action( "Agony", "if=remains<=tick_time+gcd" );
+  add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
+  action_list_str += "/service_pet";
+  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
+  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+  action_list_str += "/soul_harvest";
+  add_action( "Corruption", "if=remains<=tick_time+gcd" );
+  add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
+  add_action( "Corruption", "target=soul_effigy,if=remains<=tick_time+gcd" );
+  add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
+  action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3";
+  action_list_str += "/phantom_singularity";
+  add_action( "Unstable Affliction", "if=(soul_shard>1|cooldown.summon_doomguard.remains>5|talent.demonic_servitude.enabled)&(!talent.contagion.enabled|soul_shard>4|dot.unstable_affliction.ticking|buff.shard_instability.react)" );
+  add_action( "Agony", "if=remains<=duration*0.3" );
+  add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3" );
+  add_action( "Corruption", "if=remains<=duration*0.3" );
+  action_list_str += "/haunt";
+  add_action( "Siphon Life", "if=remains<=duration*0.3" );
+  add_action( "Corruption", "target=soul_effigy,if=remains<=duration*0.3" );
+  add_action( "Siphon Life", "target=soul_effigy,if=remains<=duration*0.3" );
+  add_action( "Life Tap", "if=mana.pct<=10" );
+  action_list_str += "/drain_soul,chain=1,interrupt=1";
+  add_action( "Drain Life", "chain=1,interrupt=1" );
 }
 
 void warlock_t::apl_demonology()
@@ -5215,11 +5238,6 @@ void warlock_t::apl_destruction()
 {
   // action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
   // action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
-
-  action_list_str += "/service_pet,if=active_enemies<3";
-  action_list_str += "/service_voidwalker,if=active_enemies>=3";
-  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
-  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
 
   // artifact check
   if ( true_level > 100 )
@@ -5233,6 +5251,9 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=3&buff.bloodlust.remains" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
+  action_list_str += "/service_pet";
+  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
+  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Chaos Bolt", "if=soul_shard>3" );
@@ -5245,6 +5266,7 @@ void warlock_t::apl_destruction()
   action_list_str += "/cataclysm";
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled" );
   add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
+  add_action( "Life Tap", "if=talent.mana_tap.enabled&mana.pct<=10" );
   add_action( "Incinerate" );
 }
 
