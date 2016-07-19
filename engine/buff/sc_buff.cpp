@@ -737,9 +737,6 @@ bool buff_t::trigger( int        stacks,
       return false;
   }
 
-  if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )
-    value = default_value;
-
   if ( ( ! activated || stack_behavior == BUFF_STACK_ASYNCHRONOUS ) && player
     && player -> in_combat && sim -> default_aura_delay > timespan_t::zero() )
   {
@@ -766,6 +763,9 @@ bool buff_t::trigger( int        stacks,
 
 void buff_t::execute( int stacks, double value, timespan_t duration )
 {
+  if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )
+    value = default_value;
+
   if ( last_trigger > timespan_t::zero() )
   {
     trigger_intervals.add( ( sim -> current_time() - last_trigger ).total_seconds() );
