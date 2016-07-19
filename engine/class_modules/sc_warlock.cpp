@@ -4063,8 +4063,8 @@ struct demonbolt_t: public warlock_spell_t
   virtual double action_multiplier() const override
   {
     double pm = spell_t::action_multiplier();
+    double pet_counter = 0.0;
 
-    int counter = 0;
     for( auto& pet : p() -> pet_list )
     {
       pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
@@ -4073,17 +4073,18 @@ struct demonbolt_t: public warlock_spell_t
       {
         if( !lock_pet -> is_sleeping() )
         {
-            counter += ( 1.0 + data().effectN( 3 ).percent() );
+            pet_counter += data().effectN( 3 ).percent();
         }
       }
     }
-    pm *= 1 + counter;
-    if(p()->buffs.stolen_power->up())
+    if( p() -> buffs.stolen_power -> up() )
     {
-        p()->procs.stolen_power_used->occur();
-        pm *= 1.0 + p()->buffs.stolen_power->data().effectN( 1 ).percent();
-        p()->buffs.stolen_power->reset();
+        p() -> procs.stolen_power_used -> occur();
+        pm *= 1.0 + p() -> buffs.stolen_power -> data().effectN( 1 ).percent();
+        p() -> buffs.stolen_power -> reset();
     }
+
+    pm *= 1 + pet_counter;
     return pm;
   }
 
