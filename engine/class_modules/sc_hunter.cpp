@@ -3138,297 +3138,23 @@ struct black_arrow_t: public hunter_ranged_attack_t
   }
 };
 
-// Trick Shot =========================================================================
+// 
 
-struct trick_shot_t: public hunter_ranged_attack_t
+struct aimed_shot_base_t: public hunter_ranged_attack_t
 {
-  trick_shot_t( hunter_t* p ):
-    hunter_ranged_attack_t( "trick_shot", p, p -> find_talent_spell( "Trick Shot" ) )
-  {
-    // Simulated as aoe for simplicity
-    aoe               = -1;
-    background        = true;
-    dual              = true;
-    weapon            = &p -> main_hand_weapon;
-    weapon_multiplier = p -> find_specialization_spell( "Aimed Shot" ) -> effectN( 2 ).percent();
-    base_multiplier   = p -> find_talent_spell( "Trick Shot" ) -> effectN( 1 ).percent();
-
-    // Wind Arrows
-    if ( p -> artifacts.wind_arrows.rank() )
-      base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
-  }
-
-  virtual void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    int count = 0;
-    std::vector<player_t*> trick_shot_targets = execute_state -> action -> target_list();
-    for( size_t i = 0; i < trick_shot_targets.size(); i++ )
-    {
-      if ( trick_shot_targets[i] != p() -> target && td( trick_shot_targets[i] ) -> debuffs.vulnerable -> up() )
-        count++;
-    }
-    if ( count == 0 )
-      p() -> buffs.trick_shot -> trigger();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    // Do not hit current target, and only deal damage to targets with Vulnerable
-    if ( s -> target != p() -> target && ( td( s -> target ) -> debuffs.vulnerable -> up() ) )
-    {
-      hunter_ranged_attack_t::impact( s );
-
-      trigger_true_aim( p(), s -> target );
-      if ( p() -> buffs.careful_aim -> check() && s -> result == RESULT_CRIT )
-        trigger_piercing_shots( s );
-    }
-  }
-
-  virtual double composite_target_crit_chance( player_t* t ) const override
-  {
-    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
-
-    cc += p() -> buffs.careful_aim -> value();
-    if ( td( t ) -> debuffs.vulnerable -> up() )
-      cc += td( t ) -> debuffs.vulnerable -> stack() * p() -> artifacts.marked_for_death.percent();
-
-    return cc;
-  }
-
-  virtual double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
-
-    hunter_td_t* td = this -> td( t );
-    if ( td -> debuffs.vulnerable -> up() )
-      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-
-    if ( td -> debuffs.true_aim -> up() )
-      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
-
-    return m;
-  }
-
-  // FIXME 21134 - this talent is bugged on alpha (does no damage), so not sure if mastery should affect this or not
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
-};
-
-// Legacy of the Windrunners ==========================================================
-// Affected by:
-//   Vulnerable
-//   True Aim
-//   Deadly Aim
-//   Mastery
-// Not affected by:
-//   Careful Aim
-struct legacy_of_the_windrunners_t: hunter_ranged_attack_t
-{
-  legacy_of_the_windrunners_t( hunter_t* p ):
-    hunter_ranged_attack_t( "legacy_of_the_windrunners", p, p -> artifacts.legacy_of_the_windrunners )
+  aimed_shot_base_t( const std::string& name, hunter_t* p, const spell_data_t* s):
+    hunter_ranged_attack_t( name, p, s )
   {
     background = true;
-    proc = true;
-    weapon_multiplier = p -> find_spell( 191043 ) -> effectN( 2 ).percent();
-    weapon = &p -> main_hand_weapon;
+    parse_spell_data( *p -> specs.aimed_shot );
 
     // Wind Arrows
     if ( p -> artifacts.wind_arrows.rank() )
       base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
 
     // Deadly Aim
-    crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    trigger_true_aim( p(), s -> target );
-  }
-
-
-  virtual double composite_target_crit_chance( player_t* t ) const override
-  {
-    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
-
-    cc += p() -> buffs.careful_aim -> value();
-    if ( td( t ) -> debuffs.vulnerable -> up() )
-      cc += td( t ) -> debuffs.vulnerable -> stack() * p() -> artifacts.marked_for_death.percent();
-
-    return cc;
-  }
-
-  virtual double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
-
-    hunter_td_t* td = this -> td( t );
-
-    if ( td -> debuffs.vulnerable -> up() )
-      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-
-    if ( td -> debuffs.true_aim -> up() )
-      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
-
-    return m;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
-
-  virtual double composite_crit_chance_multiplier() const override
-  {
-    double cm = hunter_ranged_attack_t::composite_crit_chance_multiplier();
-
-    if ( p() -> artifacts.deadly_aim.rank() )
-      cm *= 1.0 + p() -> artifacts.deadly_aim.percent();
-
-    return cm;
-  }
-};
-
-struct aimed_shot_t: public hunter_ranged_attack_t
-{
-  benefit_t* aimed_in_ca;
-
-  trick_shot_t* trick_shot;
-  legacy_of_the_windrunners_t* legacy_of_the_windrunners;
-
-  aimed_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
-    aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
-    trick_shot( nullptr ), legacy_of_the_windrunners( nullptr )
-  {
-    parse_options( options_str );
-
-    if ( p -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B4 ) )
-      base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
-
-    if ( p -> talents.trick_shot -> ok() )
-    {
-      trick_shot = new trick_shot_t( p );
-      add_child( trick_shot );
-    }
-
-    // Deadly Aim
-    if ( p -> artifacts.deadly_aim.rank() )
+    if ( p -> artifacts.deadly_aim.rank() ) 
       crit_bonus_multiplier *= 1.0 + p -> artifacts.deadly_aim.percent();
-
-    // Legacy of the Windrunners
-    if ( p -> artifacts.legacy_of_the_windrunners.rank() )
-    {
-      legacy_of_the_windrunners = new legacy_of_the_windrunners_t( p );
-      add_child( legacy_of_the_windrunners );
-    }
-
-    // Wind Arrows
-    if ( p -> artifacts.wind_arrows.rank() )
-      base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
-  }
-
-  virtual double composite_target_crit_chance( player_t* t ) const override
-  {
-    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
-
-    cc += p() -> buffs.careful_aim -> value();
-    if ( td( t ) -> debuffs.vulnerable -> up() )
-      cc += td( t ) -> debuffs.vulnerable -> stack() * p() -> artifacts.marked_for_death.percent();
-
-    return cc;
-  }
-
-  virtual double cost() const override
-  {
-    double cost = hunter_ranged_attack_t::cost();
-
-    if ( p() -> buffs.lock_and_load -> check() )
-      return 0;
-
-    return cost;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    trigger_true_aim( p(), s -> target );
-    if ( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
-      trigger_piercing_shots( s );
-
-    if ( !td( s -> target ) -> debuffs.vulnerable -> check() )
-      p() -> procs.no_vuln_aimed_shot -> occur();
-  }
-
-  virtual void execute() override
-  {
-    p() -> no_steady_focus();
-
-    hunter_ranged_attack_t::execute();
-    aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, PVP, B4 ) )
-    {
-      p() -> cooldowns.trueshot -> adjust( -p() -> sets.set( HUNTER_MARKSMANSHIP, PVP, B4 ) -> effectN( 1 ).time_value() );
-    }
-
-    if ( p() -> buffs.lock_and_load -> up() )
-      p() -> buffs.lock_and_load -> decrement();
-
-    if ( trick_shot )
-      trick_shot -> execute();
-
-    if ( legacy_of_the_windrunners && rng().roll( p() -> artifacts.legacy_of_the_windrunners.data().proc_chance() ) )
-    {
-      legacy_of_the_windrunners -> schedule_execute();
-      legacy_of_the_windrunners -> schedule_execute();
-      legacy_of_the_windrunners -> schedule_execute();
-      legacy_of_the_windrunners -> schedule_execute();
-      legacy_of_the_windrunners -> schedule_execute();
-      legacy_of_the_windrunners -> schedule_execute();
-    }
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-    timespan_t t = hunter_ranged_attack_t::execute_time();
-
-    if ( p() -> buffs.lock_and_load -> up() )
-      t = timespan_t::zero();
-
-    return t;
-  }
-
-  virtual double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
-
-    hunter_td_t* td = this -> td( t );
-    if ( td -> debuffs.vulnerable -> up() )
-      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-
-    if ( td -> debuffs.true_aim -> up() )
-      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
-
-    return m;
   }
 
   virtual double action_multiplier() const override
@@ -3442,10 +3168,217 @@ struct aimed_shot_t: public hunter_ranged_attack_t
       am *= 1.0 + p() -> buffs.trick_shot -> default_value;
 
     if ( p() -> buffs.sentinels_sight -> up() )
-    {
       am *= 1.0 + p() -> buffs.sentinels_sight -> check_stack_value();
-      p() -> buffs.sentinels_sight -> expire();
+
+    return am;
+  }
+
+  virtual double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
+
+    hunter_td_t* td = this -> td( t );
+
+    if ( td -> debuffs.vulnerable -> up() )
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+
+    if ( td -> debuffs.true_aim -> up() )
+      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+
+    return m;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    trigger_true_aim( p(), s -> target );
+  }
+
+  virtual double composite_target_crit_chance( player_t* t ) const override
+  {
+    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
+
+    cc += p() -> buffs.careful_aim -> value();
+
+    if ( td( t ) -> debuffs.vulnerable -> up() )
+      cc += td( t ) -> debuffs.vulnerable -> stack() * p() -> artifacts.marked_for_death.percent();
+
+    return cc;
+  }
+};
+
+// Trick Shot =========================================================================
+
+struct trick_shot_t: public aimed_shot_base_t
+{
+  trick_shot_t( hunter_t* p ):
+    aimed_shot_base_t( "trick_shot", p, p -> find_talent_spell( "Trick Shot" ) )
+  {
+    // Simulated as aoe for simplicity
+    aoe               = -1;
+    background        = true;
+    dual              = true;
+    weapon_multiplier *= p -> find_talent_spell( "Trick Shot" ) -> effectN( 1 ).percent();
+  }
+
+  virtual void execute() override
+  {
+    aimed_shot_base_t::execute();
+
+    int count = 0;
+    std::vector<player_t*> trick_shot_targets = execute_state -> action -> target_list();
+    for( size_t i = 0; i < trick_shot_targets.size(); i++ )
+    {
+      if ( trick_shot_targets[ i ] != p() -> target && td( trick_shot_targets[ i ] ) -> debuffs.vulnerable -> up() )
+        count++;
     }
+    if ( count == 0 )
+      p() -> buffs.trick_shot -> trigger();
+    else
+      p() -> buffs.trick_shot -> expire();
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    // Do not hit current target, and only deal damage to targets with Vulnerable
+    if ( s -> target != p() -> target && ( td( s -> target ) -> debuffs.vulnerable -> up() ) )
+    {
+      aimed_shot_base_t::impact( s );
+
+      if ( p() -> buffs.careful_aim -> check() && s -> result == RESULT_CRIT )
+        trigger_piercing_shots( s );
+    }
+  }
+};
+
+// Legacy of the Windrunners ==========================================================
+
+struct legacy_of_the_windrunners_t: aimed_shot_base_t
+{
+  legacy_of_the_windrunners_t( hunter_t* p ):
+    aimed_shot_base_t( "legacy_of_the_windrunners", p, p -> artifacts.legacy_of_the_windrunners )
+  {
+    background = true;
+    dual = true;
+    proc = true;
+    weapon_multiplier = p -> find_spell( 191043 ) -> effectN( 2 ).percent();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = aimed_shot_base_t::action_multiplier();
+
+    if ( p() -> buffs.trick_shot -> up() )
+      am *= 1.0 + p() -> buffs.trick_shot -> default_value;
+
+    return am;
+  }
+};
+
+// Aimed Shot =========================================================================
+
+struct aimed_shot_t: public aimed_shot_base_t
+{
+  benefit_t* aimed_in_ca;
+  trick_shot_t* trick_shot;
+  legacy_of_the_windrunners_t* legacy_of_the_windrunners;
+  aimed_shot_t( hunter_t* p, const std::string& options_str ):
+    aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
+    aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
+    trick_shot( nullptr ), legacy_of_the_windrunners( nullptr )
+  {
+    parse_options( options_str );
+
+    background = false;
+
+    if ( p -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B4 ) )
+      base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
+
+    if ( p -> talents.trick_shot -> ok() )
+    {
+      trick_shot = new trick_shot_t( p );
+      add_child( trick_shot );
+    }
+
+    if ( p -> artifacts.legacy_of_the_windrunners.rank() )
+    {
+      legacy_of_the_windrunners = new legacy_of_the_windrunners_t( p );
+      add_child( legacy_of_the_windrunners );
+    }
+  }
+
+  virtual double cost() const override
+  {
+    double cost = aimed_shot_base_t::cost();
+
+    if ( p() -> buffs.lock_and_load -> check() )
+      return 0;
+
+    return cost;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    aimed_shot_base_t::impact( s );
+
+    if ( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
+      trigger_piercing_shots( s );
+
+    if ( !td( s -> target ) -> debuffs.vulnerable -> check() )
+      p() -> procs.no_vuln_aimed_shot -> occur();
+  }
+
+  virtual void execute() override
+  {
+    p() -> no_steady_focus();
+
+    aimed_shot_base_t::execute();
+    
+    if ( trick_shot )
+      trick_shot -> execute();
+
+    aimed_in_ca -> update( p() -> buffs.careful_aim -> check() != 0 );
+
+    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, PVP, B4 ) )
+      p() -> cooldowns.trueshot -> adjust( -p() -> sets.set( HUNTER_MARKSMANSHIP, PVP, B4 ) -> effectN( 1 ).time_value() );
+
+    if ( p() -> buffs.lock_and_load -> up() )
+      p() -> buffs.lock_and_load -> decrement();
+
+    if ( legacy_of_the_windrunners && rng().roll( p() -> artifacts.legacy_of_the_windrunners.data().proc_chance() ) )
+    {
+      legacy_of_the_windrunners -> schedule_execute();
+      legacy_of_the_windrunners -> schedule_execute();
+      legacy_of_the_windrunners -> schedule_execute();
+      legacy_of_the_windrunners -> schedule_execute();
+      legacy_of_the_windrunners -> schedule_execute();
+      legacy_of_the_windrunners -> schedule_execute();
+    }
+
+    if ( p() -> legendary.mm_feet )
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+
+    if ( p() -> buffs.sentinels_sight -> up() )
+      p() -> buffs.sentinels_sight -> expire();
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t t = aimed_shot_base_t::execute_time();
+
+    if ( p() -> buffs.lock_and_load -> up() )
+      t = timespan_t::zero();
+
+    return t;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = aimed_shot_base_t::action_multiplier();
+
+    if ( p() -> buffs.trick_shot -> up() )
+      am *= 1.0 + p() -> buffs.trick_shot -> default_value;
 
     return am;
   }
@@ -3541,7 +3474,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t( "call_of_the_hunter", p, p -> artifacts.call_of_the_hunter )
     {
       aoe = -1;
-      attack_power_mod.direct = 2.0;
+      attack_power_mod.direct = 3.0; // FIXME pull spell data at some point
       weapon = &p -> main_hand_weapon;
       weapon_multiplier = 0.0;
     }
@@ -5284,14 +5217,17 @@ struct dragonsfire_grenade_t: public hunter_spell_t
 
   dragonsfire_conflagration_t* conflag;
   dragonsfire_grenade_t( hunter_t* p, const std::string& options_str ):
-	  hunter_spell_t( "dragonsfire_grenade", p, p -> talents.dragonsfire_grenade -> effectN( 1 ).trigger() ), conflag( nullptr )
+	  hunter_spell_t( "dragonsfire_grenade", p, p -> talents.dragonsfire_grenade ), conflag( nullptr )
   {
     parse_options( options_str );
-    parse_spell_data( *p -> talents.dragonsfire_grenade );
-    school = SCHOOL_FIRE;
 
+    attack_power_mod.tick = data().effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
+    base_tick_time = data().effectN( 1 ).trigger() -> effectN( 1 ).period();
+    dot_duration = data().effectN( 1 ).trigger() -> duration();
     hasted_ticks = false;
     harmful = tick_may_crit = true;
+    school = SCHOOL_FIRE;
+
     conflag = new dragonsfire_conflagration_t( p );
     add_child( conflag );
   }
@@ -5382,8 +5318,8 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
-  if ( name == "carve"                 ) return new                  carve_t( this, options_str );
   if ( name == "caltrops"              ) return new               caltrops_t( this, options_str );
+  if ( name == "carve"                 ) return new                  carve_t( this, options_str );
   if ( name == "chimaera_shot"         ) return new          chimaera_shot_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
