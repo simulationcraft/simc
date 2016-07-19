@@ -5930,11 +5930,11 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return make_fn_expr( split[ 0 ], [ type, rtb_buffs, list_values ]() {
         for ( size_t i = 0, end = list_values.size(); i < end; ++i )
         {
-          if  ( type == RTB_ANY && rtb_buffs[ i ] -> check() )
+          if  ( type == RTB_ANY && rtb_buffs[ list_values[ i ] ] -> check() )
           {
             return 1;
           }
-          else if ( type == RTB_ALL && ! rtb_buffs[ i ] -> check() )
+          else if ( type == RTB_ALL && ! rtb_buffs[ list_values[ i ] ] -> check() )
           {
             return 0;
           }
