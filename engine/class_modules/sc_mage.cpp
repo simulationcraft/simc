@@ -13,7 +13,11 @@ namespace { // UNNAMED NAMESPACE
 // Mage
 // ==========================================================================
 
+// Forward declarations
 struct mage_t;
+namespace buffs {
+  struct touch_of_the_magi_t;
+}
 
 
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
@@ -108,8 +112,8 @@ struct mage_td_t : public actor_target_data_t
   struct debuffs_t
   {
     buff_t* erosion,
-          * slow,
-          * touch_of_the_magi;
+          * slow;
+    buffs::touch_of_the_magi_t* touch_of_the_magi;
 
     buff_t* firestarter;
 
@@ -622,7 +626,7 @@ public:
   icicle_data_t get_icicle_object();
   void trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
 
-  void trigger_touch_of_the_magi( buff_t* touch_of_the_magi_buff );
+  void trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* touch_of_the_magi_buff );
 
   void              apl_precombat();
   void              apl_arcane();
@@ -1512,11 +1516,11 @@ struct cinder_impact_event_t : public event_t
 
 }
 
-
+namespace buffs {
 // Arcane Missiles Buff =======================================================
-struct arcane_missiles_buff_t : public buff_t
+struct arcane_missiles_t : public buff_t
 {
-  arcane_missiles_buff_t( mage_t* p ) :
+  arcane_missiles_t( mage_t* p ) :
     buff_t( buff_creator_t( p, "arcane_missiles", p -> find_spell( 79683 ) ) )
   {
     default_chance = p -> find_spell( 79684 ) -> effectN( 1 ).percent();
@@ -1583,17 +1587,17 @@ struct chilled_t : public buff_t
   }
 };
 
-struct erosion_debuff_t : public buff_t
+struct erosion_t : public buff_t
 {
 
   // Erosion debuff =============================================================
 
   struct erosion_event_t : public event_t
   {
-    erosion_debuff_t* debuff;
+    erosion_t* debuff;
     const spell_data_t* data;
 
-    erosion_event_t( actor_t& m, erosion_debuff_t* _debuff, const spell_data_t* _data,
+    erosion_event_t( actor_t& m, erosion_t* _debuff, const spell_data_t* _data,
                      bool player_triggered = false ) :
       event_t( m ), debuff( _debuff ), data( _data )
     {
@@ -1635,7 +1639,7 @@ struct erosion_debuff_t : public buff_t
   const spell_data_t* erosion_event_data;
   event_t* decay_event;
 
-  erosion_debuff_t( mage_td_t* td ) :
+  erosion_t( mage_td_t* td ) :
     buff_t( buff_creator_t( *td, "erosion",
                             td -> source -> find_spell( 210134 ) ) ),
     erosion_event_data( td -> source -> find_spell( 210154) ),
@@ -1671,12 +1675,12 @@ struct erosion_debuff_t : public buff_t
 
 // Touch of the Magi debuff ===================================================
 
-struct touch_of_the_magi_buff_t : public buff_t
+struct touch_of_the_magi_t : public buff_t
 {
   mage_t* mage;
   double accumulated_damage;
 
-  touch_of_the_magi_buff_t( mage_td_t* td ) :
+  touch_of_the_magi_t( mage_td_t* td ) :
     buff_t( buff_creator_t( *td, "touch_of_the_magi",
                             td -> source -> find_spell( 210824 ) ) ),
     mage( static_cast<mage_t*>( td -> source ) ),
@@ -1716,18 +1720,82 @@ struct touch_of_the_magi_buff_t : public buff_t
 };
 
 
-// Touch of the Magi explosion trigger
-
-void mage_t::trigger_touch_of_the_magi( buff_t* touch_of_the_magi_buff )
+// Custom buffs ===============================================================
+struct icy_veins_buff_t : public buff_t
 {
-  touch_of_the_magi_buff_t* touch =
-    static_cast<touch_of_the_magi_buff_t*>( touch_of_the_magi_buff);
+  mage_t* p;
+  icy_veins_buff_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) )
+            .add_invalidate( CACHE_SPELL_HASTE ) ),p( p )
 
-  touch_of_the_magi_explosion -> target = touch -> player;
-  touch_of_the_magi_explosion -> base_dd_max = touch -> accumulated_damage;
-  touch_of_the_magi_explosion -> base_dd_min = touch -> accumulated_damage;
-  touch_of_the_magi_explosion -> execute();
-}
+  {}
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+    if ( p -> legendary.lady_vashjs_grasp )
+    {
+      p -> buffs.lady_vashjs_grasp -> expire();
+    }
+  }
+};
+struct incanters_flow_t : public buff_t
+{
+  incanters_flow_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "incanters_flow", p -> find_spell( 116267 ) ) // Buff is a separate spell
+            .duration( p -> sim -> max_time * 3 ) // Long enough duration to trip twice_expected_event
+            .period( p -> talents.incanters_flow -> effectN( 1 ).period() ) ) // Period is in the talent
+  { }
+
+  void bump( int stacks, double value ) override
+  {
+    int before_stack = current_stack;
+    buff_t::bump( stacks, value );
+    // Reverse direction if max stacks achieved before bump
+    if ( before_stack == current_stack )
+      reverse = true;
+  }
+
+  void decrement( int stacks, double value ) override
+  {
+    // This buff will never fade; reverse direction at 1 stack.
+    // Buff uptime reporting _should_ work ok with this solution
+    if ( current_stack > 1 )
+      buff_t::decrement( stacks, value );
+    else
+      reverse = false;
+  }
+};
+
+
+struct ray_of_frost_buff_t : public buff_t
+{
+  timespan_t rof_cd;
+
+  ray_of_frost_buff_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "ray_of_frost", p -> find_spell( 208141 ) ) )
+  {
+    const spell_data_t* rof_data = p -> find_spell( 205021 );
+    rof_cd = rof_data -> cooldown() - rof_data -> duration();
+  }
+
+  //TODO: This be calling expire_override instead
+  virtual void aura_loss() override
+  {
+    buff_t::aura_loss();
+
+    mage_t* p = static_cast<mage_t*>( player );
+    p -> cooldowns.ray_of_frost -> start( rof_cd );
+
+    if ( p -> channeling && p -> channeling -> name_str == "ray_of_frost" )
+    {
+      p -> channeling -> interrupt_action();
+    }
+  }
+};
+
+
+} // buffs
 
 
 namespace actions {
@@ -2733,8 +2801,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      arcane_missiles_buff_t* am_buff =
-        debug_cast<arcane_missiles_buff_t*>( p() -> buffs.arcane_missiles );
+      buffs::arcane_missiles_t* am_buff =
+        debug_cast<buffs::arcane_missiles_t*>( p() -> buffs.arcane_missiles );
       trigger_am( "Arcane Blast", am_buff -> proc_chance() * 2.0 );
 
       p() -> buffs.arcane_charge -> trigger();
@@ -6958,16 +7026,16 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
   dots.frozen_orb     = target -> get_dot( "frozen_orb",     mage );
 
-  debuffs.erosion     = new erosion_debuff_t( this );
+  debuffs.erosion     = new buffs::erosion_t( this );
   debuffs.slow        = buff_creator_t( *this, "slow",
                                         mage -> find_spell( 31589 ) );
-  debuffs.touch_of_the_magi = new touch_of_the_magi_buff_t( this );
+  debuffs.touch_of_the_magi = new buffs::touch_of_the_magi_t( this );
 
   debuffs.firestarter = buff_creator_t( *this, "firestarter" )
                           .chance( 1.0 )
                           .duration( timespan_t::from_seconds( 10.0 ) );
 
-  debuffs.chilled     = new chilled_t( this );
+  debuffs.chilled     = new buffs::chilled_t( this );
   debuffs.frost_bomb  = buff_creator_t( *this, "frost_bomb",
                                         mage -> talents.frost_bomb );
   debuffs.water_jet   = buff_creator_t( *this, "water_jet",
@@ -6977,6 +7045,17 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   //TODO: Find spelldata for this!
   debuffs.winters_chill = buff_creator_t( *this, "winters_chill" )
                           .duration( timespan_t::from_seconds( 1.0 ) );
+}
+
+// Touch of the Magi explosion trigger
+
+void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
+{
+
+  touch_of_the_magi_explosion -> target = buff -> player;
+  touch_of_the_magi_explosion -> base_dd_max = buff -> accumulated_damage;
+  touch_of_the_magi_explosion -> base_dd_min = buff -> accumulated_damage;
+  touch_of_the_magi_explosion -> execute();
 }
 
 // mage_t::create_action ====================================================
@@ -7298,81 +7377,6 @@ void mage_t::init_base_stats()
     pet_multiplier *= 1.0 + find_racial_spell( "Command" ) -> effectN( 1 ).percent();
 }
 
-// Custom buffs ===============================================================
-struct icy_veins_buff_t : public buff_t
-{
-  mage_t* p;
-  icy_veins_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "icy_veins", p -> find_spell( 12472 ) )
-            .add_invalidate( CACHE_SPELL_HASTE ) ),p( p )
-
-  {}
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    if ( p -> legendary.lady_vashjs_grasp )
-    {
-      p -> buffs.lady_vashjs_grasp -> expire();
-    }
-  }
-};
-struct incanters_flow_t : public buff_t
-{
-  incanters_flow_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "incanters_flow", p -> find_spell( 116267 ) ) // Buff is a separate spell
-            .duration( p -> sim -> max_time * 3 ) // Long enough duration to trip twice_expected_event
-            .period( p -> talents.incanters_flow -> effectN( 1 ).period() ) ) // Period is in the talent
-  { }
-
-  void bump( int stacks, double value ) override
-  {
-    int before_stack = current_stack;
-    buff_t::bump( stacks, value );
-    // Reverse direction if max stacks achieved before bump
-    if ( before_stack == current_stack )
-      reverse = true;
-  }
-
-  void decrement( int stacks, double value ) override
-  {
-    // This buff will never fade; reverse direction at 1 stack.
-    // Buff uptime reporting _should_ work ok with this solution
-    if ( current_stack > 1 )
-      buff_t::decrement( stacks, value );
-    else
-      reverse = false;
-  }
-};
-
-
-struct ray_of_frost_buff_t : public buff_t
-{
-  timespan_t rof_cd;
-
-  ray_of_frost_buff_t( mage_t* p ) :
-    buff_t( buff_creator_t( p, "ray_of_frost", p -> find_spell( 208141 ) ) )
-  {
-    const spell_data_t* rof_data = p -> find_spell( 205021 );
-    rof_cd = rof_data -> cooldown() - rof_data -> duration();
-  }
-
-  //TODO: This be calling expire_override instead
-  virtual void aura_loss() override
-  {
-    buff_t::aura_loss();
-
-    mage_t* p = static_cast<mage_t*>( player );
-    p -> cooldowns.ray_of_frost -> start( rof_cd );
-
-    if ( p -> channeling && p -> channeling -> name_str == "ray_of_frost" )
-    {
-      p -> channeling -> interrupt_action();
-    }
-  }
-};
-
-
 // mage_t::create_buffs =======================================================
 
 void mage_t::create_buffs()
@@ -7389,7 +7393,7 @@ void mage_t::create_buffs()
   buffs.arcane_charge         = buff_creator_t( this, "arcane_charge", spec.arcane_charge );
   buffs.arcane_instability    = buff_creator_t( this, "arcane_instability", find_spell( 166872 ) )
                                   .trigger_spell( sets.set( MAGE_ARCANE, T17, B4 ) );
-  buffs.arcane_missiles       = new arcane_missiles_buff_t( this );
+  buffs.arcane_missiles       = new buffs::arcane_missiles_t( this );
   buffs.arcane_power          = buff_creator_t( this, "arcane_power", find_spell( 12042 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   if ( artifact.aegwynns_imperative.rank() )
@@ -7434,7 +7438,7 @@ void mage_t::create_buffs()
                                               artifact.icy_hand.rank() );
   buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
                                   .add_invalidate( CACHE_SPELL_HASTE );
-  buffs.icy_veins             = new icy_veins_buff_t( this );
+  buffs.icy_veins             = new buffs::icy_veins_buff_t( this );
   buffs.frost_t17_4pc         = buff_creator_t( this, "frost_t17_4pc", find_spell( 165470 ) )
                                   .duration( find_spell( 84714 ) -> duration() )
                                   .period( find_spell( 165470 ) -> effectN( 1 ).time_value() )
@@ -7450,7 +7454,7 @@ void mage_t::create_buffs()
                                   }
                                 );
   buffs.ice_shard             = buff_creator_t( this, "ice_shard", find_spell( 166869 ) );
-  buffs.ray_of_frost          = new ray_of_frost_buff_t( this );
+  buffs.ray_of_frost          = new buffs::ray_of_frost_buff_t( this );
   buffs.shatterlance          = buff_creator_t( this, "shatterlance")
                                   .duration( timespan_t::from_seconds( 0.9 ) )
                                   .cd( timespan_t::zero() )
@@ -7458,7 +7462,7 @@ void mage_t::create_buffs()
 
   // Talents
   buffs.ice_floes             = buff_creator_t( this, "ice_floes", talents.ice_floes );
-  buffs.incanters_flow        = new incanters_flow_t( this );
+  buffs.incanters_flow        = new buffs::incanters_flow_t( this );
   buffs.rune_of_power         = buff_creator_t( this, "rune_of_power", find_spell( 116014 ) )
                                   .duration( find_spell( 116011 ) -> duration() )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -7615,15 +7619,12 @@ void mage_t::init_assessors()
     assessor_out_damage.add(
       assessor::TARGET_DAMAGE - 1,
       [ mage ]( dmg_e, action_state_t* state ) {
-        buff_t* buff = mage -> get_target_data( state -> target )
+        buffs::touch_of_the_magi_t* buff = mage -> get_target_data( state -> target )
                             -> debuffs.touch_of_the_magi;
 
         if ( buff -> check() )
         {
-          touch_of_the_magi_buff_t* touch_of_the_magi =
-            static_cast<touch_of_the_magi_buff_t*>( buff );
-
-          touch_of_the_magi -> accumulate_damage( state );
+          buff -> accumulate_damage( state );
         }
 
         return assessor::CONTINUE;
