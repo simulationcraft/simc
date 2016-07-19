@@ -1,0 +1,27 @@
+# Windwalker
+monk="Monk_Windwalker_T19P"
+level=110
+race=blood_elf
+role=dps
+position=back
+talents=3020022
+spec=windwalker
+artifact=50:0:0:0:0:800:3:821:3:824:3:828:1:829:3:831:1:832:1:833:1:1094:3:1341:1
+
+head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
+neck=erratically_ticking_talisman,id=137418,bonus_id=1727
+shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727
+back=putrid_carapace,id=134408,bonus_id=1727
+chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727
+wrists=thermal_bindings,id=134461,bonus_id=1727
+hands=ravens_veil_gloves,id=139242,bonus_id=1727
+waist=manafang_waistguard,id=137409,bonus_id=1727
+legs=charskin_legguards,id=137353,bonus_id=1727
+feet=shellshock_footguards,id=134441,bonus_id=1727
+finger1=empowered_ring_of_the_kirin_tor,id=139599
+finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
+trinket1=chaos_talisman,id=137459,bonus_id=1727
+trinket2=spiked_counterweight,id=136715,bonus_id=1727
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=840
+off_hand=fists_of_the_heavens,id=124368,ilevel=840
+save=Monk_Windwalker_T19P.simc

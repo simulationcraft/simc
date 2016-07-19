@@ -41,7 +41,8 @@ actions+=/call_action_list,name=single_target
 actions.movement=heroic_leap
 actions.movement+=/charge
 
-actions.single_target=rampage,if=rage=100|buff.massacre.up
+actions.single_target=odyns_fury
+actions.single_target+=/rampage,if=rage=100|buff.massacre.up
 actions.single_target+=/berserker_rage,if=talent.outburst.enabled&cooldown.dragon_roar.remains=0&buff.enrage.down
 actions.single_target+=/dragon_roar,if=!talent.bloodbath.enabled&(cooldown.battle_cry.remains<1|cooldown.battle_cry.remains>10)|talent.bloodbath.enabled&cooldown.bloodbath.remains=0
 actions.single_target+=/avatar,if=buff.dragon_roar.up

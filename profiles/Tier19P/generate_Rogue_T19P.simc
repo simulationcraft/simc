@@ -6,7 +6,6 @@ position=back
 talents=3110131
 artifact=43:0:0:0:0:323:3:325:3:328:3:330:3:331:2:332:1:337:1:346:1:347:1:1276:1
 spec=assassination
-scale_to_itemlevel=840
 
 head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
 neck=erratically_ticking_talisman,id=137418,bonus_id=1727
@@ -34,7 +33,6 @@ position=back
 talents=2010021
 artifact=44:0:0:0:0:1052:1:1054:1:1057:1:1060:3:1061:3:1064:3:1065:3:1066:3:1348:1
 spec=outlaw
-scale_to_itemlevel=840
 
 head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
 neck=erratically_ticking_talisman,id=137418,bonus_id=1727
@@ -62,7 +60,6 @@ position=back
 talents=2210011
 artifact=17:0:0:0:0:851:1:852:3:854:3:858:3:859:3:860:3:862:1:864:1:1349:1
 spec=subtlety
-scale_to_itemlevel=840
 head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
 neck=erratically_ticking_talisman,id=137418,bonus_id=1727
 shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727

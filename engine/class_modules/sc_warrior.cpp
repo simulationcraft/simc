@@ -3968,7 +3968,14 @@ void warrior_t::apl_precombat()
   if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( true_level > 90 )
+    if ( true_level > 100 )
+    {
+      if ( primary_role() == ROLE_ATTACK )
+      {
+        flask_action += "flask_of_the_countless_armies";
+      }
+    }
+    else if ( true_level > 90 )
     {
       if ( primary_role() == ROLE_ATTACK )
       {
@@ -4104,6 +4111,10 @@ void warrior_t::apl_fury()
     {
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
     }
+    else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
+    }
   }
 
   if ( sim -> allow_potions )
@@ -4142,6 +4153,7 @@ void warrior_t::apl_fury()
   movement -> add_action( this, "Heroic Leap" );
   movement -> add_action( this, "Charge" );
 
+  single_target -> add_action( this, "Odyn's Fury" );
   single_target -> add_action( this, "Rampage", "if=rage=100|buff.massacre.up");
   single_target -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&cooldown.dragon_roar.remains=0&buff.enrage.down" );
   single_target -> add_talent( this, "Dragon Roar", "if=!talent.bloodbath.enabled&(cooldown.battle_cry.remains<1|cooldown.battle_cry.remains>10)|talent.bloodbath.enabled&cooldown.bloodbath.remains=0" );
