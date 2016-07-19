@@ -17,6 +17,7 @@ namespace { // UNNAMED NAMESPACE
 struct mage_t;
 namespace buffs {
   struct touch_of_the_magi_t;
+  struct arcane_missiles_t;
 }
 
 
@@ -26,7 +27,7 @@ struct current_target_reset_cb_t
 {
   mage_t* mage;
 
-  current_target_reset_cb_t( player_t* m );
+  current_target_reset_cb_t( mage_t* m );
 
   void operator()(player_t*);
 };
@@ -217,13 +218,13 @@ public:
   {
     // Arcane
     buff_t* arcane_charge,
-          * arcane_missiles,
           * arcane_power,
           * presence_of_mind,
           * arcane_affinity,       // T17 2pc Arcane
           * arcane_instability,    // T17 4pc Arcane
           * temporal_power,        // T18 4pc Arcane
           * quickening;
+    buffs::arcane_missiles_t* arcane_missiles;
 
     stat_buff_t* mage_armor;
 
@@ -652,8 +653,6 @@ struct buff_source_benefit_t
 
   void update( const std::string& source, int stacks = 1 )
   {
-    mage_t* mage = static_cast<mage_t*>( buff -> player );
-
     // Update old sources
     int index = -1;
     for ( size_t i = 0; i < sources.size(); i++ )
@@ -677,7 +676,7 @@ struct buff_source_benefit_t
 
       std::string benefit_name = std::string( buff -> data().name_cstr() ) +
                                  " from " + source;
-      benefit_t* source_benefit = mage -> get_benefit( benefit_name );
+      benefit_t* source_benefit = buff -> player -> get_benefit( benefit_name );
       for ( int i = 0; i < trigger_count; i++ )
       {
         source_benefit -> update( false );
@@ -707,8 +706,8 @@ mage_t::~mage_t()
   delete benefits.ray_of_frost;
 }
 
-inline current_target_reset_cb_t::current_target_reset_cb_t( player_t* m ):
-  mage( debug_cast<mage_t*>( m ) )
+inline current_target_reset_cb_t::current_target_reset_cb_t( mage_t* m ):
+  mage( m )
 { }
 
 inline void current_target_reset_cb_t::operator()(player_t*)
@@ -742,7 +741,7 @@ struct mage_pet_spell_t : public spell_t
   mage_t* o()
   {
     pet_t* pet = static_cast< pet_t* >( player );
-    mage_t* mage = static_cast< mage_t* >( pet -> owner );
+    mage_t* mage = debug_cast< mage_t* >( pet -> owner );
     return mage;
   }
 
@@ -763,7 +762,7 @@ struct mage_pet_melee_attack_t : public melee_attack_t
   mage_t* o()
   {
     pet_t* pet = static_cast< pet_t* >( player );
-    mage_t* mage = static_cast< mage_t* >( pet -> owner );
+    mage_t* mage = debug_cast< mage_t* >( pet -> owner );
     return mage;
   }
   virtual void schedule_execute( action_state_t* execute_state ) override
@@ -788,22 +787,21 @@ struct arcane_familiar_pet_t : public pet_t
       spell_power_mod.direct = p -> find_spell( 225119 ) -> effectN( 1 ).sp_coeff();
     }
   };
+
   void arise() override
   {
-    mage_t* m = debug_cast<mage_t*>( owner );
     pet_t::arise();
 
-    m -> recalculate_resource_max( RESOURCE_MANA );
+    owner -> recalculate_resource_max( RESOURCE_MANA );
   }
 
   void demise() override
   {
-    mage_t* m = debug_cast<mage_t*>( owner );
-
     pet_t::demise();
-    m -> recalculate_resource_max( RESOURCE_MANA );
 
+    owner -> recalculate_resource_max( RESOURCE_MANA );
   }
+
   arcane_familiar_pet_t( sim_t* sim, mage_t* owner ) :
     pet_t( sim, owner, "arcane_familiar", true )
   {
@@ -1209,7 +1207,7 @@ struct temporal_hero_t : public pet_t
 
   struct temporal_hero_melee_attack_t : public mage_pet_melee_attack_t
   {
-    temporal_hero_melee_attack_t( pet_t* p ) :
+    temporal_hero_melee_attack_t( temporal_hero_t* p ) :
       mage_pet_melee_attack_t( "melee", p )
     {
       may_crit = true;
@@ -1236,7 +1234,7 @@ struct temporal_hero_t : public pet_t
 
   struct temporal_hero_autoattack_t : public mage_pet_melee_attack_t
   {
-    temporal_hero_autoattack_t( pet_t* p ) :
+    temporal_hero_autoattack_t( temporal_hero_t* p ) :
       mage_pet_melee_attack_t( "auto_attack", p )
     {
       p -> main_hand_attack = new temporal_hero_melee_attack_t( p );
@@ -1250,7 +1248,7 @@ struct temporal_hero_t : public pet_t
 
     virtual bool ready() override
     {
-      temporal_hero_t* hero = debug_cast<temporal_hero_t*>( player );
+      temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
       if ( hero -> hero_type != ARTHAS )
       {
         return false;
@@ -1262,7 +1260,7 @@ struct temporal_hero_t : public pet_t
 
   struct temporal_hero_frostbolt_t : public mage_pet_spell_t
   {
-    temporal_hero_frostbolt_t( pet_t* p ) :
+    temporal_hero_frostbolt_t( temporal_hero_t* p ) :
       mage_pet_spell_t( "frostbolt", p, p -> find_spell( 191764 ) )
     {
       base_dd_min = base_dd_max = 2750.0;
@@ -1271,7 +1269,7 @@ struct temporal_hero_t : public pet_t
 
     virtual bool ready() override
     {
-      temporal_hero_t* hero = debug_cast<temporal_hero_t*>( player );
+      temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
       if ( hero -> hero_type != JAINA )
       {
         return false;
@@ -1282,8 +1280,8 @@ struct temporal_hero_t : public pet_t
 
     bool init_finished() override
     {
-      pet_t* p = debug_cast<pet_t*>( player );
-      mage_t* m = debug_cast<mage_t*>( p -> owner );
+      temporal_hero_t* p = static_cast<temporal_hero_t*>( player );
+      mage_t* m = p -> o();
 
       if ( m -> pets.temporal_heroes[0] )
       {
@@ -1296,7 +1294,7 @@ struct temporal_hero_t : public pet_t
 
   struct temporal_hero_shoot_t : public mage_pet_spell_t
   {
-    temporal_hero_shoot_t( pet_t* p ) :
+    temporal_hero_shoot_t( temporal_hero_t* p ) :
       mage_pet_spell_t( "shoot", p, p -> find_spell( 191799 ) )
     {
       school = SCHOOL_PHYSICAL;
@@ -1307,7 +1305,7 @@ struct temporal_hero_t : public pet_t
 
     virtual bool ready() override
     {
-      temporal_hero_t* hero = debug_cast<temporal_hero_t*>( player );
+      temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
       if ( hero -> hero_type != SYLVANAS && hero -> hero_type != TYRANDE )
       {
         return false;
@@ -1318,8 +1316,8 @@ struct temporal_hero_t : public pet_t
 
     bool init_finished() override
     {
-      pet_t* p = debug_cast<pet_t*>( player );
-      mage_t* m = debug_cast<mage_t*>( p -> owner );
+      temporal_hero_t* p = static_cast<temporal_hero_t*>( player );
+      mage_t* m = p -> o();
 
       if ( m -> pets.temporal_heroes[0] )
       {
@@ -1338,6 +1336,11 @@ struct temporal_hero_t : public pet_t
     pet_t( sim, owner, "temporal_hero", true, true ),
     hero_type( ARTHAS ), temporal_hero_multiplier( 1.0 )
   { }
+
+  mage_t* o()
+  { return static_cast<mage_t*>( owner ); }
+  const mage_t* o() const
+  { return static_cast<mage_t*>( owner ); }
 
   void init_base_stats() override
   {
@@ -1380,8 +1383,7 @@ struct temporal_hero_t : public pet_t
     // for each pet instance, and merging the buff statistics.
     if ( owner -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
     {
-      mage_t* mage = debug_cast<mage_t*>( owner );
-      m *= 1.0 + mage -> buffs.temporal_power -> data().effectN( 1 ).percent();
+      m *= 1.0 + o() -> buffs.temporal_power -> data().effectN( 1 ).percent();
     }
 
     m *= temporal_hero_multiplier;
@@ -1445,8 +1447,7 @@ struct temporal_hero_t : public pet_t
 
     if ( owner -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
     {
-      mage_t* m = debug_cast<mage_t*>( owner );
-      m -> buffs.temporal_power -> trigger();
+      o() -> buffs.temporal_power -> trigger();
     }
 
     owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -1456,8 +1457,7 @@ struct temporal_hero_t : public pet_t
   {
     pet_t::demise();
 
-    mage_t* m = debug_cast<mage_t*>( owner );
-    m -> buffs.temporal_power -> decrement();
+    o() -> buffs.temporal_power -> decrement();
 
     owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
@@ -1925,7 +1925,7 @@ public:
   void trigger_am( const std::string& source, double chance = -1.0,
                    int stacks = 1 )
   {
-    if ( p() -> buffs.arcane_missiles
+    if ( static_cast<buff_t*>(p() -> buffs.arcane_missiles)
              -> trigger( stacks, buff_t::DEFAULT_VALUE(), chance ) )
     {
       p() -> benefits.arcane_missiles -> update( source, stacks );
@@ -2801,9 +2801,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      buffs::arcane_missiles_t* am_buff =
-        debug_cast<buffs::arcane_missiles_t*>( p() -> buffs.arcane_missiles );
-      trigger_am( "Arcane Blast", am_buff -> proc_chance() * 2.0 );
+      trigger_am( "Arcane Blast", p() -> buffs.arcane_missiles -> proc_chance() * 2.0 );
 
       p() -> buffs.arcane_charge -> trigger();
       p() -> buffs.arcane_instability -> trigger();
@@ -5727,7 +5725,7 @@ struct pyroblast_t : public fire_mage_spell_t
                                    -> effectN( 1 ).time_value()  );
       }
 
-      ignite_spell_state_t* is = static_cast<ignite_spell_state_t*>( s );
+      ignite_spell_state_t* is = debug_cast<ignite_spell_state_t*>( s );
       if ( p() -> sets.has_set_bonus( MAGE_FIRE, PVP, B4 ) &&
            is -> hot_streak )
       {
