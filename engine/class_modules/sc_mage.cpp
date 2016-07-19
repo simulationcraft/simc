@@ -306,10 +306,10 @@ public:
   {
     pets::water_elemental_pet_t* water_elemental;
 
-    pet_t** mirror_images;
+    std::vector<pet_t*> mirror_images;
 
-    int temporal_hero_count = 10;
-    pet_t** temporal_heroes;
+    unsigned temporal_hero_count = 10;
+    std::vector<pet_t*> temporal_heroes;
 
     pet_t* arcane_familiar;
   } pets;
@@ -3047,11 +3047,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
          rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 )
                          -> proc_chance() ) )
     {
-      for ( unsigned i = 0; p() -> pets.temporal_hero_count; i++ )
+      for ( pet_t* temporal_hero : p() -> pets.temporal_heroes )
       {
-        if ( p() -> pets.temporal_heroes[ i ] -> is_sleeping() )
+        if ( temporal_hero -> is_sleeping() )
         {
-          p() -> pets.temporal_heroes[ i ] -> summon( temporal_hero_duration );
+          temporal_hero -> summon( temporal_hero_duration );
           break;
         }
       }
@@ -5419,19 +5419,19 @@ struct mirror_image_t : public mage_spell_t
 
   bool init_finished() override
   {
-    pet_t** images = p() -> pets.mirror_images;
+    std::vector<pet_t*> images = p() -> pets.mirror_images;
 
-    for ( int i = 0; i < data().effectN( 2 ).base_value(); i++ )
+    for ( pet_t* image : images )
     {
-      if ( !images[i] )
+      if ( !image )
       {
         continue;
       }
 
-      stats -> add_child( images[i] -> get_stats( "arcane_blast" ) );
-      stats -> add_child( images[i] -> get_stats( "fire_blast" ) );
-      stats -> add_child( images[i] -> get_stats( "fireball" ) );
-      stats -> add_child( images[i] -> get_stats( "frostbolt" ) );
+      stats -> add_child( image -> get_stats( "arcane_blast" ) );
+      stats -> add_child( image -> get_stats( "fire_blast" ) );
+      stats -> add_child( image -> get_stats( "fireball" ) );
+      stats -> add_child( image -> get_stats( "frostbolt" ) );
     }
 
     return mage_spell_t::init_finished();
@@ -7182,10 +7182,9 @@ void mage_t::create_pets()
   if ( talents.mirror_image -> ok() && find_action( "mirror_image" ) )
   {
     int image_num = talents.mirror_image -> effectN( 2 ).base_value();
-    pets.mirror_images = new pet_t*[ image_num ];
     for ( int i = 0; i < image_num; i++ )
     {
-      pets.mirror_images[ i ] = new pets::mirror_image_pet_t( sim, this );
+      pets.mirror_images.push_back( new pets::mirror_image_pet_t( sim, this ) );
       if ( i > 0 )
       {
         pets.mirror_images[ i ] -> quiet = 1;
@@ -7196,10 +7195,9 @@ void mage_t::create_pets()
   if ( sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
   {
     // There isn't really a cap on temporal heroes, but 10 sounds safe-ish
-    pets.temporal_heroes = new pet_t*[ pets.temporal_hero_count ];
-    for ( int i = 0; i < pets.temporal_hero_count; i++ )
+    for ( unsigned i = 0; i < pets.temporal_hero_count; i++ )
     {
-      pets.temporal_heroes[ i ] = new pets::temporal_hero_t( sim, this );
+      pets.temporal_heroes.push_back( new pets::temporal_hero_t( sim, this ) );
       pets::temporal_hero_t::randomize_last_summoned( this );
     }
   }
