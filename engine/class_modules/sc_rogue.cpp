@@ -5915,7 +5915,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 
     // Parse the buff numeric list to values that index rtb_buffs above
     std::vector<unsigned> list_values;
-    range::for_each( split[ 3 ], [ &list_values ]( char v ) {
+    range::for_each( split[ 2 ], [ &list_values ]( char v ) {
       if ( v < '1' || v > '6' )
       {
         return;
