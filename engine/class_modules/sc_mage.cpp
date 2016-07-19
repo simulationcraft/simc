@@ -1484,6 +1484,35 @@ temporal_hero_t::hero_e temporal_hero_t::last_summoned;
 
 } // pets
 
+
+// Cinderstorm impact helper event ============================================
+namespace events {
+struct cinder_impact_event_t : public event_t
+{
+  action_t* cinder;
+  player_t* target;
+
+  cinder_impact_event_t( actor_t& m, action_t* c, player_t* t,
+                         timespan_t impact_time ) :
+    event_t( m ), cinder( c ), target( t )
+  {
+    add_event( impact_time );
+  }
+
+  virtual const char* name() const override
+  { return "cinder_impact_event"; }
+
+  void execute() override
+  {
+    cinder -> target = target;
+    cinder -> execute();
+  }
+};
+
+
+}
+
+
 // Arcane Missiles Buff =======================================================
 struct arcane_missiles_buff_t : public buff_t
 {
@@ -1554,66 +1583,55 @@ struct chilled_t : public buff_t
   }
 };
 
-
-// Cinderstorm impact helper event ============================================
-namespace events {
-struct cinder_impact_event_t : public event_t
-{
-  action_t* cinder;
-  player_t* target;
-
-  cinder_impact_event_t( actor_t& m, action_t* c, player_t* t,
-                         timespan_t impact_time ) :
-    event_t( m ), cinder( c ), target( t )
-  {
-    add_event( impact_time );
-  }
-
-  virtual const char* name() const override
-  { return "cinder_impact_event"; }
-
-  void execute() override
-  {
-    cinder -> target = target;
-    cinder -> execute();
-  }
-};
-}
-
-
-// Erosion debuff =============================================================
-
-namespace events {
-struct erosion_event_t : public event_t
-{
-  buff_t* debuff;
-  const spell_data_t* data;
-
-  erosion_event_t( actor_t& m, buff_t* _debuff, const spell_data_t* _data,
-                   bool player_triggered = false ) :
-    event_t( m ), debuff( _debuff ), data( _data )
-  {
-    // Erosion debuff decays 3 seconds after direct application by a player,
-    // followed by a 1 stack every second
-    if ( player_triggered )
-    {
-      add_event( data -> duration() );
-    }
-    else
-    {
-      add_event( data -> effectN( 1 ).period() );
-    }
-  }
-
-  virtual const char* name() const override
-  { return "erosion_decay_event"; }
-
-  void execute() override;
-};
-}
-
 struct erosion_debuff_t : public buff_t
 {
+
+  // Erosion debuff =============================================================
+
+  struct erosion_event_t : public event_t
+  {
+    erosion_debuff_t* debuff;
+    const spell_data_t* data;
+
+    erosion_event_t( actor_t& m, erosion_debuff_t* _debuff, const spell_data_t* _data,
+                     bool player_triggered = false ) :
+      event_t( m ), debuff( _debuff ), data( _data )
+    {
+      // Erosion debuff decays 3 seconds after direct application by a player,
+      // followed by a 1 stack every second
+      if ( player_triggered )
+      {
+        add_event( data -> duration() );
+      }
+      else
+      {
+        add_event( data -> effectN( 1 ).period() );
+      }
+    }
+
+    const char* name() const override
+    { return "erosion_decay_event"; }
+
+
+    void execute() override
+    {
+      debuff -> decrement();
+
+      // Always update the parent debuff's reference to the decay event, so that it
+      // can be cancelled upon a new application of the debuff
+      if ( debuff -> check() > 0 )
+      {
+        debuff -> decay_event =
+          new ( sim() ) erosion_event_t( *(debuff -> source),
+                                                 debuff, data );
+      }
+      else
+      {
+        debuff -> decay_event = nullptr;
+      }
+    }
+  };
+
   const spell_data_t* erosion_event_data;
   event_t* decay_event;
 
@@ -1637,7 +1655,7 @@ struct erosion_debuff_t : public buff_t
       }
 
       decay_event = new (*sim)
-        events::erosion_event_t( *source, this, erosion_event_data, true );
+        erosion_event_t( *source, this, erosion_event_data, true );
     }
 
     return triggered;
@@ -1645,35 +1663,10 @@ struct erosion_debuff_t : public buff_t
 
   void reset() override
   {
-    if ( decay_event )
-    {
-      event_t::cancel( decay_event );
-    }
-
+    event_t::cancel( decay_event );
     buff_t::reset();
   }
 };
-
-namespace events{
-void erosion_event_t::execute()
-{
-  erosion_debuff_t* erosion_debuff = static_cast<erosion_debuff_t*>( debuff );
-  erosion_debuff -> decrement();
-
-  // Always update the parent debuff's reference to the decay event, so that it
-  // can be cancelled upon a new application of the debuff
-  if ( erosion_debuff -> check() > 0 )
-  {
-    erosion_debuff -> decay_event =
-      new ( sim() ) events::erosion_event_t( *(erosion_debuff -> source),
-                                             erosion_debuff, data );
-  }
-  else
-  {
-    erosion_debuff -> decay_event = nullptr;
-  }
-}
-}
 
 
 // Touch of the Magi debuff ===================================================
