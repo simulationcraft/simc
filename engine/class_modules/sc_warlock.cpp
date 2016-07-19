@@ -5406,17 +5406,6 @@ void warlock_t::apl_precombat()
 
   if ( specialization() == WARLOCK_DESTRUCTION )
     precombat_list += "/incinerate";
-
-  action_list_str += init_use_profession_actions();
-
-  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
-  {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[i].name();
-    }
-  }
 }
 
 void warlock_t::apl_global_filler()
@@ -5439,6 +5428,15 @@ void warlock_t::apl_affliction()
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
+  action_list_str += init_use_profession_actions();
+  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      action_list_str += "/use_item,name=";
+      action_list_str += items[i].name();
+    }
+  }
   action_list_str += "/soul_harvest";
   add_action( "Corruption", "if=remains<=tick_time+gcd" );
   add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
@@ -5487,6 +5485,15 @@ void warlock_t::apl_destruction()
   action_list_str += "/service_pet";
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+  action_list_str += init_use_profession_actions();
+  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      action_list_str += "/use_item,name=";
+      action_list_str += items[i].name();
+    }
+  }
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Chaos Bolt", "if=soul_shard>3" );
