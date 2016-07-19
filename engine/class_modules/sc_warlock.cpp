@@ -2745,6 +2745,14 @@ struct shadow_bolt_t: public warlock_spell_t
     base_crit += p->artifact.maw_of_shadows.percent();
   }
 
+  virtual bool ready() override
+  {
+    if ( p() -> talents.demonbolt -> ok() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+
   virtual timespan_t execute_time() const override
   {
     if ( p() -> buffs.shadowy_inspiration -> check() )
