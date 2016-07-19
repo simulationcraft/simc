@@ -20,13 +20,15 @@ namespace buffs {
   struct arcane_missiles_t;
 }
 namespace pets {
+namespace water_elemental {
 struct water_elemental_pet_t;
+}
 }
 
 
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
 
-enum class temporal_hero
+enum class temporal_hero_e
 {
   INVALID,
   ARTHAS,
@@ -154,7 +156,58 @@ struct buff_stack_benefit_t
   }
 };
 
-struct buff_source_benefit_t;
+struct buff_source_benefit_t
+{
+  const buff_t* buff;
+  int trigger_count;
+  std::vector<std::string> sources;
+  std::vector<benefit_t*> buff_source_benefit;
+
+  buff_source_benefit_t( const buff_t* _buff ) :
+    buff( _buff ), trigger_count( 0 )
+  { }
+
+  void update( const std::string& source, int stacks = 1 )
+  {
+    // Update old sources
+    int index = -1;
+    for ( size_t i = 0; i < sources.size(); i++ )
+    {
+      bool source_matches = ( sources[i] == source );
+      if ( source_matches )
+      {
+        index = as<int>( i );
+      }
+
+      for ( int j = 0; j < stacks; j++ )
+      {
+        buff_source_benefit[i] -> update( source_matches );
+      }
+    }
+
+    if ( index == -1 )
+    {
+      // Add new source
+      sources.push_back( source );
+
+      std::string benefit_name = std::string( buff -> data().name_cstr() ) +
+                                 " from " + source;
+      benefit_t* source_benefit = buff -> player -> get_benefit( benefit_name );
+      for ( int i = 0; i < trigger_count; i++ )
+      {
+        source_benefit -> update( false );
+      }
+      for ( int i = 0; i < stacks; i++ )
+      {
+        source_benefit -> update( true );
+      }
+
+      buff_source_benefit.push_back( source_benefit );
+    }
+
+    trigger_count += stacks;
+  }
+};
 
 struct mage_t : public player_t
 {
@@ -184,7 +237,7 @@ public:
   const special_effect_t* pyrosurge;     // Fire
   const special_effect_t* shatterlance;  // Frost
 
-  temporal_hero last_summoned;
+  temporal_hero_e last_summoned;
 
   // State switches for rotation selection
   state_switch_t burn_phase;
@@ -306,7 +359,7 @@ public:
   // Pets
   struct pets_t
   {
-    pets::water_elemental_pet_t* water_elemental;
+    pets::water_elemental::water_elemental_pet_t* water_elemental;
 
     std::vector<pet_t*> mirror_images;
 
@@ -501,54 +554,7 @@ public:
   } artifact;
 
 public:
-  mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
-    player_t( sim, MAGE, name, r ),
-    current_target( target ),
-    icicle( nullptr ),
-    icicle_event( nullptr ),
-    ignite( nullptr ),
-    ignite_spread_event( nullptr ),
-    touch_of_the_magi_explosion( nullptr ),
-    unstable_magic_explosion( nullptr ),
-    last_bomb_target( nullptr ),
-    scorched_earth_counter( 0 ),
-    wild_arcanist( nullptr ),
-    pyrosurge( nullptr ),
-    shatterlance( nullptr ),
-    last_summoned( temporal_hero::INVALID ),
-    distance_from_rune( 0.0 ),
-    incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
-    iv_haste( 1.0 ),
-    pet_multiplier( 1.0 ),
-    benefits( benefits_t() ),
-    buffs( buffs_t() ),
-    cooldowns( cooldowns_t() ),
-    gains( gains_t() ),
-    legendary( legendary_t() ),
-    pets( pets_t() ),
-    procs( procs_t() ),
-    rotation( rotation_t() ),
-    spec( specializations_t() ),
-    talents( talents_list_t() )
-  {
-    // Cooldowns
-    cooldowns.combustion       = get_cooldown( "combustion"       );
-    cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
-    cooldowns.dragons_breath   = get_cooldown( "dragons_breath"   );
-    cooldowns.evocation        = get_cooldown( "evocation"        );
-    cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
-    cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
-    cooldowns.fire_blast       = get_cooldown( "fire_blast"    );
-    cooldowns.phoenixs_flames  = get_cooldown( "phoenixs_flames"  );
-    cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
-    cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
-
-    // Options
-    base.distance = 10;
-    regen_caches[ CACHE_HASTE ] = true;
-    regen_caches[ CACHE_SPELL_HASTE ] = true;
-
-  }
+  mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF );
 
   ~mage_t();
 
@@ -614,90 +620,46 @@ public:
   std::string       get_potion_action();
 };
 
-struct buff_source_benefit_t
+namespace pets
 {
-  const buff_t* buff;
-  int trigger_count;
-  std::vector<std::string> sources;
-  std::vector<benefit_t*> buff_source_benefit;
-
-  buff_source_benefit_t( const buff_t* _buff ) :
-    buff( _buff ), trigger_count( 0 )
-  { }
-
-  void update( const std::string& source, int stacks = 1 )
+struct mage_pet_t : public pet_t
+{
+  mage_pet_t( sim_t* sim, mage_t* owner, std::string pet_name,
+              bool guardian = false, bool dynamic = false )
+    : pet_t( sim, owner, pet_name, guardian, dynamic )
   {
-    // Update old sources
-    int index = -1;
-    for ( size_t i = 0; i < sources.size(); i++ )
-    {
-      bool source_matches = ( sources[i] == source );
-      if ( source_matches )
-      {
-        index = as<int>( i );
-      }
-
-      for ( int j = 0; j < stacks; j++ )
-      {
-        buff_source_benefit[i] -> update( source_matches );
-      }
-    }
-
-    if ( index == -1 )
-    {
-      // Add new source
-      sources.push_back( source );
-
-      std::string benefit_name = std::string( buff -> data().name_cstr() ) +
-                                 " from " + source;
-      benefit_t* source_benefit = buff -> player -> get_benefit( benefit_name );
-      for ( int i = 0; i < trigger_count; i++ )
-      {
-        source_benefit -> update( false );
-      }
-      for ( int i = 0; i < stacks; i++ )
-      {
-        source_benefit -> update( true );
-      }
-
-      buff_source_benefit.push_back( source_benefit );
-    }
-
-    trigger_count += stacks;
   }
-};
-
-mage_t::~mage_t()
-{
-  delete benefits.incanters_flow;
-  delete benefits.arcane_charge.arcane_barrage;
-  delete benefits.arcane_charge.arcane_blast;
-  delete benefits.arcane_charge.arcane_explosion;
-  delete benefits.arcane_charge.arcane_missiles;
-  delete benefits.arcane_charge.nether_tempest;
-  delete benefits.arcane_missiles;
-  delete benefits.fingers_of_frost;
-  delete benefits.ray_of_frost;
-}
-
-namespace pets {
-
-struct mage_pet_spell_t : public spell_t
-{
-  mage_pet_spell_t( const std::string& n, pet_t* p, const spell_data_t* s ):
-    spell_t( n, p, s )
-  {}
+  const mage_t* o() const
+  {
+    return static_cast<mage_t*>( owner );
+  }
 
   mage_t* o()
   {
-    pet_t* pet = static_cast< pet_t* >( player );
-    mage_t* mage = debug_cast< mage_t* >( pet -> owner );
-    return mage;
+    return static_cast<mage_t*>( owner );
+  }
+};
+
+struct mage_pet_spell_t : public spell_t
+{
+  mage_pet_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
+    : spell_t( n, p, s )
+  {
+  }
+
+  mage_t* o()
+  {
+    return static_cast<mage_pet_t*>( player )->o();
+  }
+
+  const mage_t* o() const
+  {
+    return static_cast<mage_pet_t*>( player )->o();
   }
 
   virtual void schedule_execute( action_state_t* execute_state ) override
   {
-    target = o() -> current_target;
+    target = o()->current_target;
 
     spell_t::schedule_execute( execute_state );
   }
@@ -705,585 +667,486 @@ struct mage_pet_spell_t : public spell_t
 
 struct mage_pet_melee_attack_t : public melee_attack_t
 {
-  mage_pet_melee_attack_t( const std::string& n, pet_t* p ):
-    melee_attack_t( n, p, spell_data_t::nil() )
-  {}
+  mage_pet_melee_attack_t( const std::string& n, mage_pet_t* p )
+    : melee_attack_t( n, p, spell_data_t::nil() )
+  {
+  }
 
   mage_t* o()
   {
-    pet_t* pet = static_cast< pet_t* >( player );
-    mage_t* mage = debug_cast< mage_t* >( pet -> owner );
-    return mage;
+    return static_cast<mage_pet_t*>( player )->o();
   }
+
+  const mage_t* o() const
+  {
+    return static_cast<mage_pet_t*>( player )->o();
+  }
+
   virtual void schedule_execute( action_state_t* execute_state ) override
   {
-    target = o() -> current_target;
+    target = o()->current_target;
 
     melee_attack_t::schedule_execute( execute_state );
   }
 };
 
+namespace arcane_familiar
+{
 //================================================================================
 // Pet Arcane Familiar
 //================================================================================
-struct arcane_familiar_pet_t : public pet_t
+struct arcane_familiar_pet_t : public mage_pet_t
 {
-  struct arcane_assault_t : public mage_pet_spell_t
-  {
-    arcane_assault_t( arcane_familiar_pet_t* p, const std::string& options_str ) :
-      mage_pet_spell_t( "arcane_assault", p, p -> find_spell( 205235 ) )
-    {
-      parse_options( options_str );
-      spell_power_mod.direct = p -> find_spell( 225119 ) -> effectN( 1 ).sp_coeff();
-    }
-  };
-
-  void arise() override
-  {
-    pet_t::arise();
-
-    owner -> recalculate_resource_max( RESOURCE_MANA );
-  }
-
-  void demise() override
-  {
-    pet_t::demise();
-
-    owner -> recalculate_resource_max( RESOURCE_MANA );
-  }
-
-  arcane_familiar_pet_t( sim_t* sim, mage_t* owner ) :
-    pet_t( sim, owner, "arcane_familiar", true )
+  arcane_familiar_pet_t( sim_t* sim, mage_t* owner )
+    : mage_pet_t( sim, owner, "arcane_familiar", true )
   {
     owner_coeff.sp_from_sp = 1.00;
   }
 
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str ) override
+  void arise() override
   {
-    if ( name == "arcane_assault" ) return new arcane_assault_t( this, options_str );
-    return pet_t::create_action( name, options_str );
+    mage_pet_t::arise();
+
+    owner->recalculate_resource_max( RESOURCE_MANA );
   }
 
-  mage_t* o() const
-  { return static_cast<mage_t*>( owner ); }
+  void demise() override
+  {
+    mage_pet_t::demise();
+
+    owner->recalculate_resource_max( RESOURCE_MANA );
+  }
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str ) override;
 
   virtual void init_action_list() override
   {
     action_list_str = "arcane_assault";
 
-    pet_t::init_action_list();
+    mage_pet_t::init_action_list();
   }
 };
 
+struct arcane_assault_t : public mage_pet_spell_t
+{
+  arcane_assault_t( arcane_familiar_pet_t* p, const std::string& options_str )
+    : mage_pet_spell_t( "arcane_assault", p, p->find_spell( 205235 ) )
+  {
+    parse_options( options_str );
+    spell_power_mod.direct = p->find_spell( 225119 )->effectN( 1 ).sp_coeff();
+  }
+};
+
+action_t* arcane_familiar_pet_t::create_action( const std::string& name,
+                                                const std::string& options_str )
+{
+  if ( name == "arcane_assault" )
+    return new arcane_assault_t( this, options_str );
+
+  return mage_pet_t::create_action( name, options_str );
+}
+
+}  // arcane familiar
+
+namespace water_elemental
+{
 // ==========================================================================
 // Pet Water Elemental
 // ==========================================================================
 struct water_elemental_pet_t;
 
-struct water_elemental_pet_td_t: public actor_target_data_t
+struct water_elemental_pet_td_t : public actor_target_data_t
 {
   buff_t* water_jet;
+
 public:
   water_elemental_pet_td_t( player_t* target, water_elemental_pet_t* welly );
 };
-struct water_elemental_pet_t : public pet_t
+
+struct water_elemental_pet_t : public mage_pet_t
 {
-  struct freeze_t : public mage_pet_spell_t
-  {
-    freeze_t( water_elemental_pet_t* p, const std::string& options_str ):
-      mage_pet_spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
-    {
-      parse_options( options_str );
-      aoe = -1;
-      may_crit = true;
-      ignore_false_positive = true;
-      action_skill = 1;
-    }
-
-    virtual void impact( action_state_t* s ) override
-    {
-      spell_t::impact( s );
-
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-
-      if ( result_is_hit( s -> result ) )
-      {
-        p -> o() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
-        p -> o() -> benefits.fingers_of_frost -> update( "Water Jet" );
-      }
-    }
-  };
-
- struct water_jet_t : public mage_pet_spell_t
-   {
-     // queued water jet spell, auto cast water jet spell
-     bool queued, autocast;
-
-     water_jet_t( water_elemental_pet_t* p, const std::string& options_str ) :
-       mage_pet_spell_t( "water_jet", p, p -> find_spell( 135029 ) ),
-       queued( false ), autocast( true )
-     {
-       parse_options( options_str );
-       channeled = tick_may_crit = true;
-
-       if ( p -> o() -> sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
-       {
-         dot_duration += p -> find_spell( 185971 ) -> effectN( 1 ).time_value();
-       }
-     }
-     water_elemental_pet_td_t* td( player_t* t ) const
-     { return p() -> get_target_data( t ? t : target ); }
-
-    water_elemental_pet_t* p()
-    { return static_cast<water_elemental_pet_t*>( player ); }
-
-    const water_elemental_pet_t* p() const
-    { return static_cast<water_elemental_pet_t*>( player ); }
-
-    void execute() override
-    {
-      mage_pet_spell_t::execute();
-      // If this is a queued execute, disable queued status
-      if ( ! autocast && queued )
-        queued = false;
-    }
-
-    virtual void impact( action_state_t* s ) override
-    {
-      mage_pet_spell_t::impact( s );
-
-      td( s -> target ) -> water_jet
-                        -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0,
-                                   dot_duration *
-                                   p() -> composite_spell_haste());
-
-      // Trigger hidden proxy water jet for the mage, so
-      // debuff.water_jet.<expression> works
-      p() -> o() -> get_target_data( s -> target ) -> debuffs.water_jet
-          -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0,
-                     dot_duration * p() -> composite_spell_haste());
-    }
-
-    virtual double action_multiplier() const override
-    {
-      double am = mage_pet_spell_t::action_multiplier();
-
-      if ( p() -> o() -> spec.icicles -> ok() )
-      {
-        am *= 1.0 + p() -> o() -> cache.mastery_value();
-      }
-
-      return am;
-    }
-
-    virtual void last_tick( dot_t* d ) override
-    {
-      mage_pet_spell_t::last_tick( d );
-      td( d -> target ) -> water_jet -> expire();
-    }
-
-    bool ready() override
-    {
-      // Not ready, until the owner gives permission to cast
-      if ( ! autocast && ! queued )
-        return false;
-
-      return mage_pet_spell_t::ready();
-    }
-
-    void reset() override
-    {
-      mage_pet_spell_t::reset();
-
-      queued = false;
-    }
-  };
-
-  water_elemental_pet_td_t* td( player_t* t ) const
-  { return get_target_data( t ); }
-
   target_specific_t<water_elemental_pet_td_t> target_data;
 
-  virtual water_elemental_pet_td_t* get_target_data( player_t* target ) const override
-  {
-    water_elemental_pet_td_t*& td = target_data[ target ];
-    if ( ! td )
-      td = new water_elemental_pet_td_t( target, const_cast<water_elemental_pet_t*>(this) );
-    return td;
-  }
-  struct waterbolt_t: public mage_pet_spell_t
-  {
-    waterbolt_t( water_elemental_pet_t* p, const std::string& options_str ):
-      mage_pet_spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
-    {
-      trigger_gcd = timespan_t::zero();
-      parse_options( options_str );
-      may_crit = true;
-    }
-
-    const water_elemental_pet_t* p() const
-    { return static_cast<water_elemental_pet_t*>( player ); }
-
-    virtual double action_multiplier() const override
-    {
-      double am = mage_pet_spell_t::action_multiplier();
-
-      if ( p() -> o() -> spec.icicles -> ok() )
-      {
-        am *= 1.0 + p() -> o() -> cache.mastery_value();
-      }
-
-      if ( p() -> o() -> artifact.its_cold_outside.rank() )
-      {
-        am *= 1.0 + p() -> o() -> artifact.its_cold_outside.data().effectN( 3 ).percent();
-      }
-      return am;
-    }
-
-    virtual void impact( action_state_t* s ) override
-    {
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-
-      double fof_chance = p -> o() -> artifact.its_cold_outside.percent();
-
-
-      spell_t::impact( s );
-
-      if ( result_is_hit( s -> result ) && rng().roll( fof_chance ) )
-      {
-        p -> o() -> buffs.fingers_of_frost -> trigger();
-        p -> o() -> benefits.fingers_of_frost -> update( "Waterbolt Proc", 1.0 );
-      }
-    }
-  };
-
-  water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
-    pet_t( sim, owner, "water_elemental" )
+  water_elemental_pet_t( sim_t* sim, mage_t* owner )
+    : mage_pet_t( sim, owner, "water_elemental" )
   {
     owner_coeff.sp_from_sp = 0.75;
-    action_list_str  = "water_jet/waterbolt";
+    action_list_str        = "water_jet/waterbolt";
   }
 
-  mage_t* o()
-  { return static_cast<mage_t*>( owner ); }
-  const mage_t* o() const
-  { return static_cast<mage_t*>( owner ); }
+  water_elemental_pet_td_t* td( player_t* t ) const
+  {
+    return get_target_data( t );
+  }
+
+  virtual water_elemental_pet_td_t* get_target_data(
+      player_t* target ) const override
+  {
+    water_elemental_pet_td_t*& td = target_data[ target ];
+    if ( !td )
+      td = new water_elemental_pet_td_t(
+          target, const_cast<water_elemental_pet_t*>( this ) );
+    return td;
+  }
 
   virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str ) override
-  {
-    if ( name == "freeze"       ) return new              freeze_t( this, options_str );
-    if ( name == "waterbolt"    ) return new           waterbolt_t( this, options_str );
-    if ( name == "water_jet"    ) return new           water_jet_t( this, options_str );
-    return pet_t::create_action( name, options_str );
-  }
+                                   const std::string& options_str ) override;
 
   virtual double composite_player_multiplier( school_e school ) const override
   {
-    double m = pet_t::composite_player_multiplier( school );
+    double m = mage_pet_t::composite_player_multiplier( school );
 
-    if ( o() -> buffs.rune_of_power -> check() )
+    if ( o()->buffs.rune_of_power->check() )
     {
-      m *= 1.0 + o() -> buffs.rune_of_power -> data().effectN( 3 ).percent();
+      m *= 1.0 + o()->buffs.rune_of_power->data().effectN( 3 ).percent();
     }
 
-    if ( o() -> talents.incanters_flow -> ok() )
+    if ( o()->talents.incanters_flow->ok() )
     {
-      m *= 1.0 + o() -> buffs.incanters_flow -> current_stack *
-                 o() -> incanters_flow_stack_mult;
+      m *= 1.0 +
+           o()->buffs.incanters_flow->current_stack *
+               o()->incanters_flow_stack_mult;
     }
 
-    m *= o() -> pet_multiplier;
+    m *= o()->pet_multiplier;
 
     return m;
   }
 };
-water_elemental_pet_td_t::water_elemental_pet_td_t( player_t* target, water_elemental_pet_t* welly ) :
-  actor_target_data_t( target, welly )
+
+water_elemental_pet_td_t::water_elemental_pet_td_t(
+    player_t* target, water_elemental_pet_t* welly )
+  : actor_target_data_t( target, welly )
 {
-  water_jet = buff_creator_t( *this, "water_jet", welly -> find_spell( 135029 ) ).cd( timespan_t::zero() );
+  water_jet = buff_creator_t( *this, "water_jet", welly->find_spell( 135029 ) )
+                  .cd( timespan_t::zero() );
 }
 
+struct waterbolt_t : public mage_pet_spell_t
+{
+  waterbolt_t( water_elemental_pet_t* p, const std::string& options_str )
+    : mage_pet_spell_t( "waterbolt", p, p->find_pet_spell( "Waterbolt" ) )
+  {
+    trigger_gcd = timespan_t::zero();
+    parse_options( options_str );
+    may_crit = true;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = mage_pet_spell_t::action_multiplier();
+
+    if ( o()->spec.icicles->ok() )
+    {
+      am *= 1.0 + o()->cache.mastery_value();
+    }
+
+    if ( o()->artifact.its_cold_outside.rank() )
+    {
+      am *= 1.0 + o()->artifact.its_cold_outside.data().effectN( 3 ).percent();
+    }
+    return am;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
+    double fof_chance = p->o()->artifact.its_cold_outside.percent();
+
+    spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && rng().roll( fof_chance ) )
+    {
+      p->o()->buffs.fingers_of_frost->trigger();
+      p->o()->benefits.fingers_of_frost->update( "Waterbolt Proc", 1.0 );
+    }
+  }
+};
+
+struct freeze_t : public mage_pet_spell_t
+{
+  freeze_t( water_elemental_pet_t* p, const std::string& options_str )
+    : mage_pet_spell_t( "freeze", p, p->find_pet_spell( "Freeze" ) )
+  {
+    parse_options( options_str );
+    aoe                   = -1;
+    may_crit              = true;
+    ignore_false_positive = true;
+    action_skill          = 1;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      o()->buffs.fingers_of_frost->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+      o()->benefits.fingers_of_frost->update( "Water Jet" );
+    }
+  }
+};
+
+struct water_jet_t : public mage_pet_spell_t
+{
+  // queued water jet spell, auto cast water jet spell
+  bool queued, autocast;
+
+  water_jet_t( water_elemental_pet_t* p, const std::string& options_str )
+    : mage_pet_spell_t( "water_jet", p, p->find_spell( 135029 ) ),
+      queued( false ),
+      autocast( true )
+  {
+    parse_options( options_str );
+    channeled = tick_may_crit = true;
+
+    if ( p->o()->sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
+    {
+      dot_duration += p->find_spell( 185971 )->effectN( 1 ).time_value();
+    }
+  }
+  water_elemental_pet_td_t* td( player_t* t ) const
+  {
+    return static_cast<water_elemental_pet_t*>( player )
+        ->get_target_data( t ? t : target );
+  }
+
+  void execute() override
+  {
+    mage_pet_spell_t::execute();
+    // If this is a queued execute, disable queued status
+    if ( !autocast && queued )
+      queued = false;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    mage_pet_spell_t::impact( s );
+
+    td( s->target )
+        ->water_jet->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0,
+                              dot_duration * player->composite_spell_haste() );
+
+    // Trigger hidden proxy water jet for the mage, so
+    // debuff.water_jet.<expression> works
+    o()->get_target_data( s->target )
+        ->debuffs.water_jet->trigger(
+            1, buff_t::DEFAULT_VALUE(), 1.0,
+            dot_duration * player->composite_spell_haste() );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = mage_pet_spell_t::action_multiplier();
+
+    if ( o()->spec.icicles->ok() )
+    {
+      am *= 1.0 + o()->cache.mastery_value();
+    }
+
+    return am;
+  }
+
+  virtual void last_tick( dot_t* d ) override
+  {
+    mage_pet_spell_t::last_tick( d );
+    td( d->target )->water_jet->expire();
+  }
+
+  bool ready() override
+  {
+    // Not ready, until the owner gives permission to cast
+    if ( !autocast && !queued )
+      return false;
+
+    return mage_pet_spell_t::ready();
+  }
+
+  void reset() override
+  {
+    mage_pet_spell_t::reset();
+
+    queued = false;
+  }
+};
+
+action_t* water_elemental_pet_t::create_action( const std::string& name,
+                                                const std::string& options_str )
+{
+  if ( name == "freeze" )
+    return new freeze_t( this, options_str );
+  if ( name == "waterbolt" )
+    return new waterbolt_t( this, options_str );
+  if ( name == "water_jet" )
+    return new water_jet_t( this, options_str );
+
+  return mage_pet_t::create_action( name, options_str );
+}
+
+}  // water_elemental
+
+namespace mirror_image
+{
 // ==========================================================================
 // Pet Mirror Image
 // ==========================================================================
 
-struct mirror_image_pet_t : public pet_t
+struct mirror_image_pet_t : public mage_pet_t
 {
-  struct mirror_image_spell_t : public mage_pet_spell_t
-  {
-    mirror_image_spell_t( const std::string& n, mirror_image_pet_t* p, const spell_data_t* s ):
-      mage_pet_spell_t( n, p, s )
-    {
-      may_crit = true;
-    }
-
-    bool init_finished() override
-    {
-      if ( p() -> o() -> pets.mirror_images[ 0 ] )
-      {
-        stats = p() -> o() -> pets.mirror_images[ 0 ] -> get_stats( name_str );
-      }
-
-      return mage_pet_spell_t::init_finished();
-    }
-
-    mirror_image_pet_t* p() const
-    { return static_cast<mirror_image_pet_t*>( player ); }
-  };
-
-  struct arcane_blast_t : public mirror_image_spell_t
-  {
-    arcane_blast_t( mirror_image_pet_t* p, const std::string& options_str ):
-      mirror_image_spell_t( "arcane_blast", p, p -> find_pet_spell( "Arcane Blast" ) )
-    {
-      parse_options( options_str );
-    }
-
-    virtual void execute() override
-    {
-      mirror_image_spell_t::execute();
-
-      p() -> arcane_charge -> trigger();
-    }
-
-    virtual double action_multiplier() const override
-    {
-      double am = mirror_image_spell_t::action_multiplier();
-
-      // MI Arcane Charges are still hardcoded as 25% damage gains
-      am *= 1.0 + p() -> arcane_charge -> check() * 0.25;
-
-      return am;
-    }
-  };
-
-  struct fireball_t : public mirror_image_spell_t
-  {
-    fireball_t( mirror_image_pet_t* p, const std::string& options_str ):
-      mirror_image_spell_t( "fireball", p, p -> find_pet_spell( "Fireball" ) )
-    {
-      parse_options( options_str );
-    }
-  };
-
-  struct frostbolt_t : public mirror_image_spell_t
-  {
-    frostbolt_t( mirror_image_pet_t* p, const std::string& options_str ):
-      mirror_image_spell_t( "frostbolt", p, p -> find_pet_spell( "Frostbolt" ) )
-    {
-      parse_options( options_str );
-    }
-  };
-
   buff_t* arcane_charge;
 
-  mirror_image_pet_t( sim_t* sim, mage_t* owner ) :
-    pet_t( sim, owner, "mirror_image", true ),
-    arcane_charge( nullptr )
+  mirror_image_pet_t( sim_t* sim, mage_t* owner )
+    : mage_pet_t( sim, owner, "mirror_image", true ), arcane_charge( nullptr )
   {
     owner_coeff.sp_from_sp = 1.00;
   }
 
   virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str ) override
-  {
-    if ( name == "arcane_blast" ) return new arcane_blast_t( this, options_str );
-    if ( name == "fireball"     ) return new     fireball_t( this, options_str );
-    if ( name == "frostbolt"    ) return new    frostbolt_t( this, options_str );
-
-    return pet_t::create_action( name, options_str );
-  }
-
-  mage_t* o() const
-  { return static_cast<mage_t*>( owner ); }
+                                   const std::string& options_str ) override;
 
   virtual void init_action_list() override
   {
+    if ( o()->specialization() == MAGE_FIRE )
+    {
+      action_list_str = "fireball";
+    }
+    else if ( o()->specialization() == MAGE_ARCANE )
+    {
+      action_list_str = "arcane_blast";
+    }
+    else
+    {
+      action_list_str = "frostbolt";
+    }
 
-      if ( o() -> specialization() == MAGE_FIRE )
-      {
-        action_list_str = "fireball";
-      }
-      else if ( o() -> specialization() == MAGE_ARCANE )
-      {
-        action_list_str = "arcane_blast";
-      }
-      else
-      {
-        action_list_str = "frostbolt";
-      }
-
-    pet_t::init_action_list();
+    mage_pet_t::init_action_list();
   }
 
   virtual void create_buffs() override
   {
-    pet_t::create_buffs();
+    mage_pet_t::create_buffs();
 
-    arcane_charge = buff_creator_t( this, "arcane_charge",
-                                    o() -> spec.arcane_charge );
+    arcane_charge =
+        buff_creator_t( this, "arcane_charge", o()->spec.arcane_charge );
   }
-
 
   virtual double composite_player_multiplier( school_e school ) const override
   {
-    double m = pet_t::composite_player_multiplier( school );
+    double m = mage_pet_t::composite_player_multiplier( school );
 
-    m *= o() -> pet_multiplier;
+    m *= o()->pet_multiplier;
 
     return m;
   }
 };
 
+struct mirror_image_spell_t : public mage_pet_spell_t
+{
+  mirror_image_spell_t( const std::string& n, mirror_image_pet_t* p,
+                        const spell_data_t* s )
+    : mage_pet_spell_t( n, p, s )
+  {
+    may_crit = true;
+  }
 
+  bool init_finished() override
+  {
+    if ( p()->o()->pets.mirror_images[ 0 ] )
+    {
+      stats = p()->o()->pets.mirror_images[ 0 ]->get_stats( name_str );
+    }
+
+    return mage_pet_spell_t::init_finished();
+  }
+
+  mirror_image_pet_t* p() const
+  {
+    return static_cast<mirror_image_pet_t*>( player );
+  }
+};
+
+struct arcane_blast_t : public mirror_image_spell_t
+{
+  arcane_blast_t( mirror_image_pet_t* p, const std::string& options_str )
+    : mirror_image_spell_t( "arcane_blast", p,
+                            p->find_pet_spell( "Arcane Blast" ) )
+  {
+    parse_options( options_str );
+  }
+
+  virtual void execute() override
+  {
+    mirror_image_spell_t::execute();
+
+    p()->arcane_charge->trigger();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = mirror_image_spell_t::action_multiplier();
+
+    // MI Arcane Charges are still hardcoded as 25% damage gains
+    am *= 1.0 + p()->arcane_charge->check() * 0.25;
+
+    return am;
+  }
+};
+
+struct fireball_t : public mirror_image_spell_t
+{
+  fireball_t( mirror_image_pet_t* p, const std::string& options_str )
+    : mirror_image_spell_t( "fireball", p, p->find_pet_spell( "Fireball" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
+struct frostbolt_t : public mirror_image_spell_t
+{
+  frostbolt_t( mirror_image_pet_t* p, const std::string& options_str )
+    : mirror_image_spell_t( "frostbolt", p, p->find_pet_spell( "Frostbolt" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
+action_t* mirror_image_pet_t::create_action( const std::string& name,
+                                             const std::string& options_str )
+{
+  if ( name == "arcane_blast" )
+    return new arcane_blast_t( this, options_str );
+  if ( name == "fireball" )
+    return new fireball_t( this, options_str );
+  if ( name == "frostbolt" )
+    return new frostbolt_t( this, options_str );
+
+  return mage_pet_t::create_action( name, options_str );
+}
+
+}  // mirror_image
+
+namespace temporal_hero
+{
 // ==========================================================================
 // Pet Temporal Heroes (2T18)
 // ==========================================================================
 
-struct temporal_hero_t : public pet_t
+struct temporal_hero_t : public mage_pet_t
 {
-
-
-  temporal_hero hero_type;
-
-  struct temporal_hero_melee_attack_t : public mage_pet_melee_attack_t
-  {
-    temporal_hero_melee_attack_t( temporal_hero_t* p ) :
-      mage_pet_melee_attack_t( "melee", p )
-    {
-      may_crit = true;
-      background = repeating = auto_attack = true;
-      school = SCHOOL_PHYSICAL;
-      special = false;
-      weapon = &( p -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-    }
-
-    bool init_finished() override
-    {
-      pet_t* p = debug_cast<pet_t*>( player );
-      mage_t* m = debug_cast<mage_t*>( p -> owner );
-
-      if ( m -> pets.temporal_heroes[0] )
-      {
-        stats = m -> pets.temporal_heroes[0] -> get_stats( "melee" );
-      }
-
-      return mage_pet_melee_attack_t::init_finished();
-    }
-  };
-
-  struct temporal_hero_autoattack_t : public mage_pet_melee_attack_t
-  {
-    temporal_hero_autoattack_t( temporal_hero_t* p ) :
-      mage_pet_melee_attack_t( "auto_attack", p )
-    {
-      p -> main_hand_attack = new temporal_hero_melee_attack_t( p );
-      trigger_gcd = timespan_t::zero();
-    }
-
-    virtual void execute() override
-    {
-      player -> main_hand_attack -> schedule_execute();
-    }
-
-    virtual bool ready() override
-    {
-      temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
-      if ( hero -> hero_type != temporal_hero::ARTHAS )
-      {
-        return false;
-      }
-
-      return player -> main_hand_attack -> execute_event == nullptr;
-    }
-  };
-
-  struct temporal_hero_frostbolt_t : public mage_pet_spell_t
-  {
-    temporal_hero_frostbolt_t( temporal_hero_t* p ) :
-      mage_pet_spell_t( "frostbolt", p, p -> find_spell( 191764 ) )
-    {
-      base_dd_min = base_dd_max = 2750.0;
-      may_crit = true;
-    }
-
-    virtual bool ready() override
-    {
-      temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
-      if ( hero -> hero_type != temporal_hero::JAINA )
-      {
-        return false;
-      }
-
-      return mage_pet_spell_t::ready();
-    }
-
-    bool init_finished() override
-    {
-      temporal_hero_t* p = static_cast<temporal_hero_t*>( player );
-      mage_t* m = p -> o();
-
-      if ( m -> pets.temporal_heroes[0] )
-      {
-        stats = m -> pets.temporal_heroes[0] -> get_stats( "frostbolt" );
-      }
-
-      return mage_pet_spell_t::init_finished();
-    }
-  };
-
-  struct temporal_hero_shoot_t : public mage_pet_spell_t
-  {
-    temporal_hero_shoot_t( temporal_hero_t* p ) :
-      mage_pet_spell_t( "shoot", p, p -> find_spell( 191799 ) )
-    {
-      school = SCHOOL_PHYSICAL;
-      base_dd_min = base_dd_max = 3255.19;
-      base_execute_time = p -> main_hand_weapon.swing_time;
-      may_crit = true;
-    }
-
-    virtual bool ready() override
-    {
-      temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
-      if ( hero -> hero_type != temporal_hero::SYLVANAS && hero -> hero_type != temporal_hero::TYRANDE )
-      {
-        return false;
-      }
-
-      return player -> main_hand_attack -> execute_event == nullptr;
-    }
-
-    bool init_finished() override
-    {
-      temporal_hero_t* p = static_cast<temporal_hero_t*>( player );
-      mage_t* m = p -> o();
-
-      if ( m -> pets.temporal_heroes[0] )
-      {
-        stats = m -> pets.temporal_heroes[0] -> get_stats( "shoot" );
-      }
-
-      return mage_pet_spell_t::init_finished();
-    }
-  };
+  temporal_hero_e hero_type;
 
   // Each Temporal Hero has base damage and hidden multipliers for damage done
   // Values are reverse engineered from 6.2 PTR Build 20157 testing
   double temporal_hero_multiplier;
 
-  temporal_hero_t( sim_t* sim, mage_t* owner ) :
-    pet_t( sim, owner, "temporal_hero", true, true ),
-    hero_type( temporal_hero::ARTHAS ), temporal_hero_multiplier( 1.0 )
-  { }
-
-  mage_t* o()
-  { return static_cast<mage_t*>( owner ); }
-  const mage_t* o() const
-  { return static_cast<mage_t*>( owner ); }
+  temporal_hero_t( sim_t* sim, mage_t* owner )
+    : mage_pet_t( sim, owner, "temporal_hero", true, true ),
+      hero_type( temporal_hero_e::ARTHAS ),
+      temporal_hero_multiplier( 1.0 )
+  {
+  }
 
   void init_base_stats() override
   {
@@ -1308,14 +1171,7 @@ struct temporal_hero_t : public pet_t
   }
 
   action_t* create_action( const std::string& name,
-                           const std::string& options_str ) override
-  {
-    if ( name == "auto_attack" ) return new temporal_hero_autoattack_t( this );
-    if ( name == "frostbolt" )   return new  temporal_hero_frostbolt_t( this );
-    if ( name == "shoot" )       return new      temporal_hero_shoot_t( this );
-
-    return base_t::create_action( name, options_str );
-  }
+                           const std::string& options_str ) override;
 
   virtual double composite_player_multiplier( school_e school ) const override
   {
@@ -1324,9 +1180,9 @@ struct temporal_hero_t : public pet_t
     // Temporal Hero benefits from Temporal Power applied by itself (1 stack).
     // Using owner's buff object, in order to avoid creating a separate buff_t
     // for each pet instance, and merging the buff statistics.
-    if ( owner -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+    if ( owner->sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
     {
-      m *= 1.0 + o() -> buffs.temporal_power -> data().effectN( 1 ).percent();
+      m *= 1.0 + o()->buffs.temporal_power->data().effectN( 1 ).percent();
     }
 
     m *= temporal_hero_multiplier;
@@ -1337,99 +1193,237 @@ struct temporal_hero_t : public pet_t
   void arise() override
   {
     pet_t::arise();
-    assert( o() -> last_summoned != temporal_hero::INVALID );
+    assert( o()->last_summoned != temporal_hero_e::INVALID );
 
     // Summoned heroes follow Jaina -> Arthas -> Sylvanas -> Tyrande order
-    if ( o() -> last_summoned == temporal_hero::JAINA )
+    if ( o()->last_summoned == temporal_hero_e::JAINA )
     {
-      hero_type = temporal_hero::ARTHAS;
-      o() -> last_summoned = hero_type;
+      hero_type = temporal_hero_e::ARTHAS;
+      o()->last_summoned       = hero_type;
       temporal_hero_multiplier = 0.1964;
 
-      if ( sim -> debug )
+      if ( sim->debug )
       {
-        sim -> out_debug.printf( "%s summons 2T18 temporal hero: Arthas",
-                                 owner -> name() );
+        sim->out_debug.printf( "%s summons 2T18 temporal hero: Arthas",
+                               owner->name() );
       }
     }
-    else if ( o() -> last_summoned == temporal_hero::TYRANDE )
+    else if ( o()->last_summoned == temporal_hero_e::TYRANDE )
     {
-      hero_type = temporal_hero::JAINA;
-      o() -> last_summoned = hero_type;
+      hero_type = temporal_hero_e::JAINA;
+      o()->last_summoned       = hero_type;
       temporal_hero_multiplier = 0.6;
 
-      if ( sim -> debug )
+      if ( sim->debug )
       {
-        sim -> out_debug.printf( "%s summons 2T18 temporal hero: Jaina" ,
-                                 owner -> name() );
+        sim->out_debug.printf( "%s summons 2T18 temporal hero: Jaina",
+                               owner->name() );
       }
     }
-    else if ( o() -> last_summoned == temporal_hero::ARTHAS )
+    else if ( o()->last_summoned == temporal_hero_e::ARTHAS )
     {
-      hero_type = temporal_hero::SYLVANAS;
-      o() -> last_summoned = hero_type;
+      hero_type = temporal_hero_e::SYLVANAS;
+      o()->last_summoned       = hero_type;
       temporal_hero_multiplier = 0.5283;
 
-      if ( sim -> debug )
+      if ( sim->debug )
       {
-        sim -> out_debug.printf( "%s summons 2T18 temporal hero: Sylvanas",
-                                 owner -> name() );
+        sim->out_debug.printf( "%s summons 2T18 temporal hero: Sylvanas",
+                               owner->name() );
       }
     }
     else
     {
-      hero_type = temporal_hero::TYRANDE;
-      o() -> last_summoned = hero_type;
+      hero_type = temporal_hero_e::TYRANDE;
+      o()->last_summoned       = hero_type;
       temporal_hero_multiplier = 0.5283;
 
-      if ( sim -> debug )
+      if ( sim->debug )
       {
-        sim -> out_debug.printf( "%s summons 2T18 temporal hero: Tyrande",
-                                 owner -> name() );
+        sim->out_debug.printf( "%s summons 2T18 temporal hero: Tyrande",
+                               owner->name() );
       }
     }
 
-    if ( owner -> sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+    if ( owner->sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
     {
-      o() -> buffs.temporal_power -> trigger();
+      o()->buffs.temporal_power->trigger();
     }
 
-    owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    owner->invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void demise() override
   {
     pet_t::demise();
 
-    o() -> buffs.temporal_power -> decrement();
+    o()->buffs.temporal_power->decrement();
 
-    owner -> invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-
-  static void randomize_last_summoned( mage_t* p )
-  {
-    double rand = p -> rng().real();
-    if ( rand < 0.25 )
-    {
-      p -> last_summoned = temporal_hero::ARTHAS;
-    }
-    else if ( rand < 0.5 )
-    {
-      p -> last_summoned = temporal_hero::JAINA;
-    }
-    else if ( rand < 0.75 )
-    {
-      p -> last_summoned = temporal_hero::SYLVANAS;
-    }
-    else
-    {
-      p -> last_summoned = temporal_hero::TYRANDE;
-    }
+    owner->invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
-} // pets
+struct temporal_hero_melee_attack_t : public mage_pet_melee_attack_t
+{
+  temporal_hero_melee_attack_t( temporal_hero_t* p )
+    : mage_pet_melee_attack_t( "melee", p )
+  {
+    may_crit   = true;
+    background = repeating = auto_attack = true;
+    school            = SCHOOL_PHYSICAL;
+    special           = false;
+    weapon            = &( p->main_hand_weapon );
+    base_execute_time = weapon->swing_time;
+  }
 
+  bool init_finished() override
+  {
+    pet_t* p  = debug_cast<pet_t*>( player );
+    mage_t* m = debug_cast<mage_t*>( p->owner );
+
+    if ( m->pets.temporal_heroes[ 0 ] )
+    {
+      stats = m->pets.temporal_heroes[ 0 ]->get_stats( "melee" );
+    }
+
+    return mage_pet_melee_attack_t::init_finished();
+  }
+};
+
+struct temporal_hero_autoattack_t : public mage_pet_melee_attack_t
+{
+  temporal_hero_autoattack_t( temporal_hero_t* p )
+    : mage_pet_melee_attack_t( "auto_attack", p )
+  {
+    p->main_hand_attack = new temporal_hero_melee_attack_t( p );
+    trigger_gcd         = timespan_t::zero();
+  }
+
+  virtual void execute() override
+  {
+    player->main_hand_attack->schedule_execute();
+  }
+
+  virtual bool ready() override
+  {
+    temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
+    if ( hero->hero_type != temporal_hero_e::ARTHAS )
+    {
+      return false;
+    }
+
+    return player->main_hand_attack->execute_event == nullptr;
+  }
+};
+
+struct temporal_hero_frostbolt_t : public mage_pet_spell_t
+{
+  temporal_hero_frostbolt_t( temporal_hero_t* p )
+    : mage_pet_spell_t( "frostbolt", p, p->find_spell( 191764 ) )
+  {
+    base_dd_min = base_dd_max = 2750.0;
+    may_crit = true;
+  }
+
+  virtual bool ready() override
+  {
+    temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
+    if ( hero->hero_type != temporal_hero_e::JAINA )
+    {
+      return false;
+    }
+
+    return mage_pet_spell_t::ready();
+  }
+
+  bool init_finished() override
+  {
+    temporal_hero_t* p = static_cast<temporal_hero_t*>( player );
+    mage_t* m          = p->o();
+
+    if ( m->pets.temporal_heroes[ 0 ] )
+    {
+      stats = m->pets.temporal_heroes[ 0 ]->get_stats( "frostbolt" );
+    }
+
+    return mage_pet_spell_t::init_finished();
+  }
+};
+
+struct temporal_hero_shoot_t : public mage_pet_spell_t
+{
+  temporal_hero_shoot_t( temporal_hero_t* p )
+    : mage_pet_spell_t( "shoot", p, p->find_spell( 191799 ) )
+  {
+    school      = SCHOOL_PHYSICAL;
+    base_dd_min = base_dd_max = 3255.19;
+    base_execute_time = p->main_hand_weapon.swing_time;
+    may_crit          = true;
+  }
+
+  virtual bool ready() override
+  {
+    temporal_hero_t* hero = static_cast<temporal_hero_t*>( player );
+    if ( hero->hero_type != temporal_hero_e::SYLVANAS &&
+         hero->hero_type != temporal_hero_e::TYRANDE )
+    {
+      return false;
+    }
+
+    return player->main_hand_attack->execute_event == nullptr;
+  }
+
+  bool init_finished() override
+  {
+    temporal_hero_t* p = static_cast<temporal_hero_t*>( player );
+    mage_t* m          = p->o();
+
+    if ( m->pets.temporal_heroes[ 0 ] )
+    {
+      stats = m->pets.temporal_heroes[ 0 ]->get_stats( "shoot" );
+    }
+
+    return mage_pet_spell_t::init_finished();
+  }
+};
+
+action_t* temporal_hero_t::create_action( const std::string& name,
+                                          const std::string& options_str )
+{
+  if ( name == "auto_attack" )
+    return new temporal_hero_autoattack_t( this );
+  if ( name == "frostbolt" )
+    return new temporal_hero_frostbolt_t( this );
+  if ( name == "shoot" )
+    return new temporal_hero_shoot_t( this );
+
+  return base_t::create_action( name, options_str );
+}
+
+void randomize_last_summoned( mage_t* p )
+{
+  double rand = p->rng().real();
+  if ( rand < 0.25 )
+  {
+    p->last_summoned = temporal_hero_e::ARTHAS;
+  }
+  else if ( rand < 0.5 )
+  {
+    p->last_summoned = temporal_hero_e::JAINA;
+  }
+  else if ( rand < 0.75 )
+  {
+    p->last_summoned = temporal_hero_e::SYLVANAS;
+  }
+  else
+  {
+    p->last_summoned = temporal_hero_e::TYRANDE;
+  }
+}
+
+}  // temporal_hero
+
+}  // pets
 
 // Cinderstorm impact helper event ============================================
 namespace events {
@@ -4413,7 +4407,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
       if (  p() -> pets.water_elemental && !p() -> pets.water_elemental -> is_sleeping() )
       {
-        pets::water_elemental_pet_td_t* we_td =
+        auto we_td =
           p() -> pets.water_elemental
           -> get_target_data( execute_state -> target );
 
@@ -6609,7 +6603,7 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
 
 struct water_jet_t : public action_t
 {
-  pets::water_elemental_pet_t::water_jet_t* action;
+  pets::water_elemental::water_jet_t* action;
 
   water_jet_t( mage_t* p, const std::string& options_str ) :
     action_t( ACTION_OTHER, "water_jet", p ), action( nullptr )
@@ -6630,7 +6624,7 @@ struct water_jet_t : public action_t
     if ( ! action )
     {
       mage_t* m = debug_cast<mage_t*>( player );
-      action = debug_cast<pets::water_elemental_pet_t::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+      action = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
       assert( action );
       action -> autocast = false;
     }
@@ -6988,8 +6982,70 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                           .duration( timespan_t::from_seconds( 1.0 ) );
 }
 
-// Touch of the Magi explosion trigger
+mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
+  player_t( sim, MAGE, name, r ),
+  current_target( target ),
+  icicle( nullptr ),
+  icicle_event( nullptr ),
+  ignite( nullptr ),
+  ignite_spread_event( nullptr ),
+  touch_of_the_magi_explosion( nullptr ),
+  unstable_magic_explosion( nullptr ),
+  last_bomb_target( nullptr ),
+  scorched_earth_counter( 0 ),
+  wild_arcanist( nullptr ),
+  pyrosurge( nullptr ),
+  shatterlance( nullptr ),
+  last_summoned( temporal_hero_e::INVALID ),
+  distance_from_rune( 0.0 ),
+  incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
+  iv_haste( 1.0 ),
+  pet_multiplier( 1.0 ),
+  benefits( benefits_t() ),
+  buffs( buffs_t() ),
+  cooldowns( cooldowns_t() ),
+  gains( gains_t() ),
+  legendary( legendary_t() ),
+  pets( pets_t() ),
+  procs( procs_t() ),
+  rotation( rotation_t() ),
+  spec( specializations_t() ),
+  talents( talents_list_t() )
+{
+  // Cooldowns
+  cooldowns.combustion       = get_cooldown( "combustion"       );
+  cooldowns.cone_of_cold     = get_cooldown( "cone_of_cold"     );
+  cooldowns.dragons_breath   = get_cooldown( "dragons_breath"   );
+  cooldowns.evocation        = get_cooldown( "evocation"        );
+  cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
+  cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
+  cooldowns.fire_blast       = get_cooldown( "fire_blast"    );
+  cooldowns.phoenixs_flames  = get_cooldown( "phoenixs_flames"  );
+  cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
+  cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
 
+  // Options
+  base.distance = 10;
+  regen_caches[ CACHE_HASTE ] = true;
+  regen_caches[ CACHE_SPELL_HASTE ] = true;
+
+}
+
+
+mage_t::~mage_t()
+{
+  delete benefits.incanters_flow;
+  delete benefits.arcane_charge.arcane_barrage;
+  delete benefits.arcane_charge.arcane_blast;
+  delete benefits.arcane_charge.arcane_explosion;
+  delete benefits.arcane_charge.arcane_missiles;
+  delete benefits.arcane_charge.nether_tempest;
+  delete benefits.arcane_missiles;
+  delete benefits.fingers_of_frost;
+  delete benefits.ray_of_frost;
+}
+
+/// Touch of the Magi explosion trigger
 void mage_t::trigger_touch_of_the_magi( buffs::touch_of_the_magi_t* buff )
 {
 
@@ -7117,7 +7173,7 @@ void mage_t::create_pets()
 {
   if ( specialization() == MAGE_FROST && find_action( "water_elemental" ) )
   {
-    pets.water_elemental = new pets::water_elemental_pet_t( sim, this );
+    pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
   }
 
   if ( talents.mirror_image -> ok() && find_action( "mirror_image" ) )
@@ -7125,7 +7181,7 @@ void mage_t::create_pets()
     int image_num = talents.mirror_image -> effectN( 2 ).base_value();
     for ( int i = 0; i < image_num; i++ )
     {
-      pets.mirror_images.push_back( new pets::mirror_image_pet_t( sim, this ) );
+      pets.mirror_images.push_back( new pets::mirror_image::mirror_image_pet_t( sim, this ) );
       if ( i > 0 )
       {
         pets.mirror_images[ i ] -> quiet = 1;
@@ -7138,15 +7194,15 @@ void mage_t::create_pets()
     // There isn't really a cap on temporal heroes, but 10 sounds safe-ish
     for ( unsigned i = 0; i < pets.temporal_hero_count; i++ )
     {
-      pets.temporal_heroes.push_back( new pets::temporal_hero_t( sim, this ) );
+      pets.temporal_heroes.push_back( new pets::temporal_hero::temporal_hero_t( sim, this ) );
     }
-    pets::temporal_hero_t::randomize_last_summoned( this );
+    pets::temporal_hero::randomize_last_summoned( this );
   }
 
   if ( talents.arcane_familiar -> ok() &&
        find_action( "summon_arcane_familiar" ) )
   {
-    pets.arcane_familiar = new pets::arcane_familiar_pet_t( sim, this );
+    pets.arcane_familiar = new pets::arcane_familiar::arcane_familiar_pet_t( sim, this );
 
   }
 }
@@ -8156,7 +8212,7 @@ void mage_t::reset()
 
   if ( sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) )
   {
-    pets::temporal_hero_t::randomize_last_summoned( this );
+    pets::temporal_hero::randomize_last_summoned( this );
   }
 }
 
