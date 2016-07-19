@@ -3640,7 +3640,6 @@ struct demonwrath_tick_t: public warlock_spell_t
     {
       warlock_td_t* tdata = td( s -> target );
       if(rng().roll(p()->find_spell( 193440 )->effectN( 1 ).percent()))
-      //if(rng().roll(.15))
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, shard_gain );
       }
@@ -4042,6 +4041,7 @@ struct demonbolt_t: public warlock_spell_t
         base_crit += p->artifact.maw_of_shadows.percent();
     }
 
+  //fix this
   virtual double action_multiplier() const override
   {
     double pm = spell_t::action_multiplier();
@@ -5624,6 +5624,377 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       virtual double evaluate() override { return ( felguard ) ? felguard -> special_action -> get_dot() -> is_ticking() : false; }
     };
     return new felstorm_is_ticking_expr_t( debug_cast<pets::warlock_pet_t*>( find_pet( "felguard" ) ) );
+  }
+
+  else if( name_str == "wild_imp_count")
+  {
+    struct wild_imp_count_expr_t: public expr_t
+    {
+        warlock_t& player;
+
+        wild_imp_count_expr_t( warlock_t& p ):
+          expr_t( "shard_react" ), player( p ) { }
+        virtual double evaluate() override
+        {
+            double t = 0;
+            for(auto& pet : player.warlock_pet_list.wild_imps)
+            {
+                if(!pet->is_sleeping())
+                    t++;
+            }
+            return t;
+        }
+
+    };
+    return new wild_imp_count_expr_t( *this );
+  }
+  else if( name_str == "dreadstalker_count")
+  {
+      struct dreadstalker_count_expr_t: public expr_t
+      {
+          warlock_t& player;
+
+          dreadstalker_count_expr_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 0;
+              for(auto& pet : player.warlock_pet_list.dreadstalkers)
+              {
+                  if(!pet->is_sleeping())
+                      t++;
+              }
+              return t;
+          }
+
+      };
+      return new dreadstalker_count_expr_t( *this );
+  }
+  else if( name_str == "doomguard_count")
+  {
+      struct doomguard_count_expr_t: public expr_t
+      {
+          warlock_t& player;
+
+          doomguard_count_expr_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 0;
+              for(auto& pet : player.warlock_pet_list.doomguard)
+              {
+                  if(!pet->is_sleeping())
+                      t++;
+              }
+              return t;
+          }
+
+      };
+      return new doomguard_count_expr_t( *this );
+  }
+  else if( name_str == "infernal_count")
+  {
+      struct infernal_count_expr_t: public expr_t
+      {
+          warlock_t& player;
+
+          infernal_count_expr_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 0;
+              for(auto& pet : player.warlock_pet_list.infernal)
+              {
+                  if(!pet->is_sleeping())
+                      t++;
+              }
+              return t;
+          }
+
+      };
+      return new infernal_count_expr_t( *this );
+  }
+  else if( name_str == "service_count" )
+  {
+      struct service_count_expr_t: public expr_t
+      {
+          warlock_t& player;
+
+          service_count_expr_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 0;
+              for(auto& pet : player.pet_list)
+              {
+                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != NULL)
+                  {
+                      if(lock_pet->is_grimoire_of_service)
+                      {
+                          if( !lock_pet->is_sleeping() )
+                          {
+                              t++;
+                          }
+                      }
+                  }
+              }
+              return t;
+          }
+
+      };
+      return new service_count_expr_t( *this );
+  }
+
+  else if( name_str == "wild_imp_no_de" )
+  {
+      struct wild_imp_without_de_expr_t: public expr_t
+      {
+          warlock_t& player;
+
+          wild_imp_without_de_expr_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 0;
+              for(auto& pet : player.warlock_pet_list.wild_imps)
+              {
+                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
+                      t++;
+              }
+              return t;
+          }
+
+      };
+      return new wild_imp_without_de_expr_t( *this );
+  }
+  else if( name_str == "dreadstalker_no_de" )
+  {
+      struct dreadstalker_without_de_expr_t: public expr_t
+      {
+          warlock_t& player;
+
+          dreadstalker_without_de_expr_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 0;
+              for(auto& pet : player.warlock_pet_list.dreadstalkers)
+              {
+                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
+                      t++;
+              }
+              return t;
+          }
+
+      };
+      return new dreadstalker_without_de_expr_t( *this );
+  }
+  else if( name_str == "doomguard_no_de" )
+  {
+      struct doomguard_without_de_expr_t: public expr_t
+      {
+          warlock_t& player;
+
+          doomguard_without_de_expr_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 0;
+              for(auto& pet : player.warlock_pet_list.doomguard)
+              {
+                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
+                      t++;
+              }
+              return t;
+          }
+
+      };
+      return new doomguard_without_de_expr_t( *this );
+  }
+  else if( name_str == "infernal_no_de" )
+  {
+      struct infernal_without_de_expr_t: public expr_t
+      {
+          warlock_t& player;
+
+          infernal_without_de_expr_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 0;
+              for(auto& pet : player.warlock_pet_list.infernal)
+              {
+                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
+                      t++;
+              }
+              return t;
+          }
+
+      };
+      return new infernal_without_de_expr_t( *this );
+  }
+  else if( name_str == "service_no_de" )
+  {
+      struct service_without_de_expr_t: public expr_t
+      {
+          warlock_t& player;
+
+          service_without_de_expr_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 0;
+              for(auto& pet : player.pet_list)
+              {
+                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != NULL)
+                  {
+                      if(lock_pet->is_grimoire_of_service)
+                      {
+                          if(!lock_pet->is_sleeping() & !lock_pet->buffs.demonic_empowerment->up())
+                              t++;
+                      }
+                  }
+              }
+              return t;
+          }
+
+      };
+      return new service_without_de_expr_t( *this );
+  }
+
+  else if( name_str == "wild_imp_de_duration" )
+  {
+      struct wild_imp_de_duration_expression_t: public expr_t
+      {
+          warlock_t& player;
+
+          wild_imp_de_duration_expression_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 150000;
+              for(auto& pet : player.warlock_pet_list.wild_imps)
+              {
+                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
+                  {
+                    if(pet->buffs.demonic_empowerment->buff_duration.total_seconds() < t)
+                        t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
+                  }
+              }
+              return t;
+          }
+
+      };
+      return new wild_imp_de_duration_expression_t( *this );
+  }
+  else if( name_str == "dreadstalkers_de_duration" )
+  {
+      struct dreadstalkers_de_duration_expression_t: public expr_t
+      {
+          warlock_t& player;
+
+          dreadstalkers_de_duration_expression_t( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 150000;
+              for(auto& pet : player.warlock_pet_list.dreadstalkers)
+              {
+                  if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
+                  {
+                    if(pet->buffs.demonic_empowerment->buff_duration.total_seconds() < t)
+                        t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
+                  }
+              }
+              return t;
+          }
+
+      };
+      return new dreadstalkers_de_duration_expression_t( *this );
+  }
+  else if( name_str == "infernal_de_duration" )
+      {
+          struct infernal_de_duration_expression_t: public expr_t
+          {
+              warlock_t& player;
+
+              infernal_de_duration_expression_t( warlock_t& p ):
+                expr_t( "shard_react" ), player( p ) { }
+              virtual double evaluate() override
+              {
+                  double t = 150000;
+                  for(auto& pet : player.warlock_pet_list.infernal)
+                  {
+                      if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
+                      {
+                        if(pet->buffs.demonic_empowerment->buff_duration.total_seconds() < t)
+                            t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
+                      }
+                  }
+                  return t;
+              }
+
+          };
+          return new infernal_de_duration_expression_t( *this );
+      }
+  else if( name_str == "doomguard_de_duration" )
+      {
+          struct doomguard_de_duration_expression_t: public expr_t
+          {
+              warlock_t& player;
+
+              doomguard_de_duration_expression_t( warlock_t& p ):
+                expr_t( "shard_react" ), player( p ) { }
+              virtual double evaluate() override
+              {
+                  double t = 150000;
+                  for(auto& pet : player.warlock_pet_list.doomguard)
+                  {
+                      if(!pet->is_sleeping() & !pet->buffs.demonic_empowerment->up())
+                      {
+                        if(pet->buffs.demonic_empowerment->buff_duration.total_seconds() < t)
+                            t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
+                      }
+                  }
+                  return t;
+              }
+
+          };
+          return new doomguard_de_duration_expression_t( *this );
+      }
+  else if( name_str == "service_de_duration" )
+  {
+      struct service_de_duration: public expr_t
+      {
+          warlock_t& player;
+
+          service_de_duration( warlock_t& p ):
+            expr_t( "shard_react" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 500000;
+              for(auto& pet : player.pet_list)
+              {
+                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != NULL)
+                  {
+                      if(lock_pet->is_grimoire_of_service)
+                      {
+                          if(!lock_pet->is_sleeping() & !lock_pet->buffs.demonic_empowerment->up())
+                          {
+                              if(lock_pet->buffs.demonic_empowerment->buff_duration.total_seconds() )
+                                  t = lock_pet->buffs.demonic_empowerment->buff_duration.total_seconds();
+                          }
+                      }
+                  }
+              }
+              return t;
+          }
+
+      };
+      return new service_de_duration( *this );
   }
   else
   {
