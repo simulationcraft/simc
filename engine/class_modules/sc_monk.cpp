@@ -131,7 +131,7 @@ public:
 
   struct buffs_t
   {
-    debuff_t* cyclone_strikes;
+    debuff_t* mark_of_the_crane;
     debuff_t* dizzing_kicks;
     debuff_t* keg_smash;
     debuff_t* storm_earth_and_fire;
@@ -541,6 +541,7 @@ public:
     const spell_data_t* crosswinds;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* hit_combo;
+    const spell_data_t* mark_of_the_crane;
     const spell_data_t* whirling_dragon_punch;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* tier17_4pc_melee;
@@ -699,8 +700,8 @@ public:
   const double heavy_stagger_threshold;
 //  combo_strikes_e convert_expression_action_to_enum( action_t* a );
   void trigger_celestial_fortune( action_state_t* );
-  void trigger_cyclone_strikes( action_state_t* );
-  player_t* next_cyclone_strikes_target( action_state_t* );
+  void trigger_mark_of_the_crane( action_state_t* );
+  player_t* next_mark_of_the_crane_target( action_state_t* );
   double weapon_power_mod;
   double clear_stagger();
   double partial_clear_stagger( double );
@@ -1112,7 +1113,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state -> result ) )
       {
-        o() -> trigger_cyclone_strikes( state );
+        o() -> trigger_mark_of_the_crane( state );
       }
     }
   };
@@ -1130,7 +1131,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state -> result ) )
       {
-        o() -> trigger_cyclone_strikes( state );
+        o() -> trigger_mark_of_the_crane( state );
       }
     }
    };
@@ -1149,7 +1150,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( result_is_hit( state -> result ) )
       {
         state -> target -> debuffs.mortal_wounds -> trigger();
-        o() -> trigger_cyclone_strikes( state );
+        o() -> trigger_mark_of_the_crane( state );
       }
     }
   };
@@ -1170,8 +1171,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( result_is_hit( state -> result ) )
       {
         state -> target -> debuffs.mortal_wounds -> trigger();
-//        o() -> trigger_cyclone_strikes( state );
-//        state -> target = o() -> next_cyclone_strikes_target( state );
+//        o() -> trigger_mark_of_the_crane( state );
+//        state -> target = o() -> next_mark_of_the_crane_target( state );
       }
     }
   };
@@ -1192,8 +1193,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
       if ( result_is_hit( state -> result ) )
       {
         state -> target -> debuffs.mortal_wounds -> trigger();
-        o() -> trigger_cyclone_strikes( state );
-        state -> target = o() -> next_cyclone_strikes_target( state );
+        o() -> trigger_mark_of_the_crane( state );
+        state -> target = o() -> next_mark_of_the_crane_target( state );
       }
     }
   };
@@ -1352,7 +1353,7 @@ public:
   // SEF applies the Cyclone Strike debuff as well
   struct buffs_t
   {
-    debuff_t* cyclone_strikes;
+    debuff_t* mark_of_the_crane;
     debuff_t* dizzing_kicks;
   } debuffs;
 
@@ -2216,7 +2217,7 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     // Apply Mortal Wonds
     if ( p() -> specialization() == MONK_WINDWALKER && result_is_hit( s -> result ) )
-      p() -> trigger_cyclone_strikes( s );
+      p() -> trigger_mark_of_the_crane( s );
   }
 };
 
@@ -2308,7 +2309,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     {
       // Apply Mortal Wonds
       s -> target -> debuffs.mortal_wounds -> trigger();
-      p() -> trigger_cyclone_strikes( s );
+      p() -> trigger_mark_of_the_crane( s );
     }
   }
 };
@@ -2373,7 +2374,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     {
       // Apply Mortal Wonds
       s -> target -> debuffs.mortal_wounds -> trigger();
-      p() -> trigger_cyclone_strikes( s );
+      p() -> trigger_mark_of_the_crane( s );
     }
   }
 };
@@ -2712,7 +2713,7 @@ struct blackout_kick_t: public monk_melee_attack_t
         td( s -> target ) -> debuff.dizzing_kicks -> trigger();
 
       if ( p() -> specialization() == MONK_WINDWALKER )
-        p() -> trigger_cyclone_strikes( s );
+        p() -> trigger_mark_of_the_crane( s );
 
       if ( p() -> buff.teachings_of_the_monastery -> up() )
       {
@@ -2900,20 +2901,20 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
   }
 
-  int cyclone_strike_counter() const
+  int mark_of_the_crane_counter() const
   {
     std::vector<player_t*> targets = target_list();
-    int cyclone_strike_counter = 0;
+    int mark_of_the_crane_counter = 0;
 
     if ( p() -> specialization() == MONK_WINDWALKER )
     {
       for ( player_t* target : targets )
       {
-        if ( td( target ) -> debuff.cyclone_strikes -> up() )
-          cyclone_strike_counter++;
+        if ( td( target ) -> debuff.mark_of_the_crane -> up() )
+          mark_of_the_crane_counter++;
       }
     }
-    return cyclone_strike_counter;
+    return mark_of_the_crane_counter;
   }
 
   virtual double action_multiplier() const override
@@ -2922,7 +2923,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     am *= combo_strikes_multiplier();
 
-    am *= 1 + cyclone_strike_counter() * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent();
+    am *= 1 + mark_of_the_crane_counter() * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent();
 
     if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
@@ -5942,9 +5943,9 @@ monk( *p )
 {
   if ( p -> specialization() == MONK_WINDWALKER )
   {
-    debuff.cyclone_strikes = buff_creator_t( *this, "cyclone_strikes" )
-      .spell( p -> spec.cyclone_strikes )
-      .duration( timespan_t::from_seconds( p -> spec.spinning_crane_kick -> effectN( 3 ).base_value() ) )
+    debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane" )
+      .spell( p -> passives.mark_of_the_crane )
+      .default_value( p -> passives.mark_of_the_crane -> effectN( 1 ).percent() )
       .quiet( true );
   }
 
@@ -6049,12 +6050,12 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
   }
 }
 
-void monk_t::trigger_cyclone_strikes( action_state_t* s )
+void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 {
-  get_target_data( s -> target ) -> debuff.cyclone_strikes -> trigger();
+  get_target_data( s -> target ) -> debuff.mark_of_the_crane -> trigger();
 }
 
-player_t* monk_t::next_cyclone_strikes_target( action_state_t* state )
+player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
 {
   std::vector<player_t*> targets = state -> action -> target_list();
   if ( targets.size() > 1 )
@@ -6069,7 +6070,7 @@ player_t* monk_t::next_cyclone_strikes_target( action_state_t* state )
     // First of all find targets that do not have the cyclone strike debuff applied and send the SEF to those targets
     for ( player_t* target : targets )
     {
-      if (  !get_target_data( target ) -> debuff.cyclone_strikes -> up() &&
+      if (  !get_target_data( target ) -> debuff.mark_of_the_crane -> up() &&
         !get_target_data( target ) -> debuff.storm_earth_and_fire -> up() )
       {
         // remove the current target as having an SEF on it
@@ -6089,8 +6090,8 @@ player_t* monk_t::next_cyclone_strikes_target( action_state_t* state )
     {
       if ( !get_target_data( target ) -> debuff.storm_earth_and_fire -> up() )
       {
-        if ( get_target_data( target ) -> debuff.cyclone_strikes -> remains() <
-          get_target_data( lowest_duration ) -> debuff.cyclone_strikes -> remains() )
+        if ( get_target_data( target ) -> debuff.mark_of_the_crane -> remains() <
+          get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> remains() )
           lowest_duration = target;
       }
     }
@@ -6385,6 +6386,7 @@ void monk_t::init_spells()
   passives.crosswinds                       = find_spell( 196061 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.hit_combo                        = find_spell( 196741 );
+  passives.mark_of_the_crane                = find_spell( 228287 );
   passives.whirling_dragon_punch            = find_spell( 158221 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.tier17_4pc_melee                 = find_spell( 166603 );
@@ -6834,8 +6836,8 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
   // Sort the list by selecting non-cyclone striked targets first, followed by ascending order of
   // the debuff remaining duration
   range::sort( l, [ this ]( player_t* l, player_t* r ) {
-    auto lcs = get_target_data( l ) -> debuff.cyclone_strikes;
-    auto rcs = get_target_data( r ) -> debuff.cyclone_strikes;
+    auto lcs = get_target_data( l ) -> debuff.mark_of_the_crane;
+    auto rcs = get_target_data( r ) -> debuff.mark_of_the_crane;
     // Neither has cyclone strike
     if ( ! lcs -> up() && ! rcs -> up() )
     {
@@ -6862,7 +6864,7 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
     range::for_each( l, [ this ]( player_t* t ) {
       sim -> out_debug.printf( "%s cs=%.3f",
         t -> name(),
-        get_target_data( t ) -> debuff.cyclone_strikes -> remains().total_seconds() );
+        get_target_data( t ) -> debuff.mark_of_the_crane -> remains().total_seconds() );
     } );
   }
 
