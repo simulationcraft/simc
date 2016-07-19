@@ -91,7 +91,7 @@ public:
   demon_hunter_td_t( player_t* target, demon_hunter_t& p );
 };
 
-static const unsigned MAX_SOUL_FRAGMENTS = 5;
+const unsigned MAX_SOUL_FRAGMENTS = 5;
 
 enum soul_fragment_e
 {
@@ -122,7 +122,7 @@ struct movement_buff_t : public buff_t
   demon_hunter_t* dh;
 
   movement_buff_t( demon_hunter_t* p, const buff_creator_basics_t& b )
-    : buff_t( b ), dh( p )
+    : buff_t( b ), yards_from_melee( 0.0 ), distance_moved( 0.0 ), dh( p )
   {
   }
 
@@ -132,7 +132,7 @@ struct movement_buff_t : public buff_t
   void expire_override( int, timespan_t ) override;
 };
 
-static double VENGEFUL_RETREAT_DISTANCE = 20.0;
+const double VENGEFUL_RETREAT_DISTANCE = 20.0;
 
 /* Demon Hunter class definition
  *
@@ -2075,7 +2075,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
     bool primary;
 
     fiery_brand_state_t( action_t* a, player_t* target )
-      : action_state_t( a, target )
+      : action_state_t( a, target ), primary( false )
     {
     }
 
@@ -2609,6 +2609,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     assert( frag );
     timespan_t time = calculate_movement_time( frag );
 
+    assert( p()->soul_fragment_pick_up == nullptr );
     p()->soul_fragment_pick_up =
         new ( *sim ) pick_up_event_t( frag, time, if_expr );
   }
@@ -5107,7 +5108,7 @@ void demon_hunter_t::create_buffs()
   buff.soul_barrier = new buffs::soul_barrier_t( this );
 }
 
-static const std::string parse_abbreviation( const std::string& s )
+std::string parse_abbreviation( const std::string& s )
 {
   if ( s == "cs" )
     return "chaos_strike";
