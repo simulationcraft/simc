@@ -6445,7 +6445,8 @@ void shaman_t::init_action_list_enhancement()
                            ( true_level >= 85  ) ? "spring_blossoms" :
                            ( true_level >= 80  ) ? "winds" :
                            "";
-  std::string food_name = ( true_level >  90 ) ? "buttered_sturgeon" :
+  std::string food_name = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+                          ( true_level >= 90 ) ? "buttered_sturgeon" :
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                           "";
@@ -6458,6 +6459,15 @@ void shaman_t::init_action_list_enhancement()
   if ( sim -> allow_flasks && true_level >= 80 )
   {
     precombat -> add_action( "flask,type=" + flask_name );
+
+    // Added Rune if Flask are allowed since there is no "allow_runes" bool.
+    if (true_level >= 100)
+    {
+        std::string rune_action = "augmentation,type=";
+        rune_action += ((true_level >= 110) ? "defiled" : (true_level >= 100) ? "hyper" : "");
+
+        precombat->add_action(rune_action);
+    }
   }
 
   // Food
@@ -6499,19 +6509,21 @@ void shaman_t::init_action_list_enhancement()
   // In-combat potion
   if ( sim -> allow_potions && true_level >= 80  )
   {
-    def -> add_action( "potion,name=" + potion_name + ",if=target.time_to_die<=30" );
+    def -> add_action( "potion,name=" + potion_name + ",if=pet.feral_spirit.remains>10|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5|target.time_to_die<=30" );
   }
 
   // Racials
   def -> add_action( "berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100" );
   def -> add_action( "blood_fury" );
 
-  def -> add_action( this, "Doom Winds" );
-  def -> add_talent( this, "Windsong" );
+  def -> add_action( this, "Feral Spirit");
+  def -> add_talent( this, "Boulderfist", "if=!buff.boulderfist.up");
   def -> add_talent( this, "Ascendance" );
-  def -> add_action( this, "Feral Spirit" );
+  def -> add_talent( this, "Windsong");
   def -> add_talent( this, "Fury of Air", "if=!ticking" );
   def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8" );
+  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8");
+  def -> add_action( this, "Doom Winds");
   def -> add_action( this, "Crash Lightning", "if=active_enemies>=3" );
   def -> add_action( this, "Windstrike" );
   def -> add_action( this, "Stormstrike" );
@@ -6519,7 +6531,6 @@ void shaman_t::init_action_list_enhancement()
   def -> add_action( this, "Lava Lash", "if=buff.hot_hand.react" );
   def -> add_talent( this, "Boulderfist", "if=charges_fractional>=1.5" );
   def -> add_talent( this, "Earthen Spike" );
-  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8" );
   def -> add_action( this, "Crash Lightning", "if=active_enemies>1|talent.crashing_storm.enabled|"
                                               "(pet.feral_spirit.remains>5|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5)" );
   def -> add_talent( this, "Sundering" );

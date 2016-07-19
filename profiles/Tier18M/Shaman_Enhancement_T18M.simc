@@ -16,6 +16,7 @@ spec=enhancement
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_agility_flask
+actions.precombat+=/augmentation,type=hyper
 actions.precombat+=/food,type=buttered_sturgeon
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -29,15 +30,17 @@ actions=wind_shear
 actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/use_item,slot=finger2
-actions+=/potion,name=draenic_agility,if=target.time_to_die<=30
+actions+=/potion,name=draenic_agility,if=pet.feral_spirit.remains>10|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5|target.time_to_die<=30
 actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
 actions+=/blood_fury
-actions+=/doom_winds
-actions+=/windsong
-actions+=/ascendance
 actions+=/feral_spirit
+actions+=/boulderfist,if=!buff.boulderfist.up
+actions+=/ascendance
+actions+=/windsong
 actions+=/fury_of_air,if=!ticking
 actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8
+actions+=/flametongue,if=buff.flametongue.remains<4.8
+actions+=/doom_winds
 actions+=/crash_lightning,if=active_enemies>=3
 actions+=/windstrike
 actions+=/stormstrike
@@ -45,7 +48,6 @@ actions+=/lightning_bolt,if=talent.overcharge.enabled&maelstrom>=45
 actions+=/lava_lash,if=buff.hot_hand.react
 actions+=/boulderfist,if=charges_fractional>=1.5
 actions+=/earthen_spike
-actions+=/flametongue,if=buff.flametongue.remains<4.8
 actions+=/crash_lightning,if=active_enemies>1|talent.crashing_storm.enabled|(pet.feral_spirit.remains>5|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5)
 actions+=/sundering
 actions+=/lava_lash,if=maelstrom>=120
