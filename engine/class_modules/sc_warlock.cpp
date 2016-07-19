@@ -2623,13 +2623,13 @@ struct drain_life_t: public warlock_spell_t
     may_crit = false;
   }
 
-  //virtual bool ready() override
-  //{
-  //  if ( p() -> talents.drain_soul -> ok() )
-  //    return false;
+  virtual bool ready() override
+  {
+    if ( p() -> talents.drain_soul -> ok() )
+      return false;
 
-  //  return warlock_spell_t::ready();
-  //}
+    return warlock_spell_t::ready();
+  }
 
   virtual void tick( dot_t* d ) override
   {
