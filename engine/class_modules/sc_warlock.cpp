@@ -1335,6 +1335,7 @@ void warlock_pet_t::create_buffs()
 
   buffs.demonic_empowerment = buff_creator_t( this, "demonic_empowerment", find_spell(193396))
 	  .add_invalidate( CACHE_HASTE )
+          .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
 	  .chance(1);
 
   buffs.the_expendables = buff_creator_t( this, "the_expendables", find_spell(211218))
@@ -4697,7 +4698,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.flames_of_the_pit.percent();
   }
 
-  if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
+  if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
   {
       //m *= 1.0 + artifact.breath_of_thalkiel.percent();
       m += artifact.breath_of_thalkiel.percent();
