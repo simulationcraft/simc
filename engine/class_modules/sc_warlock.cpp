@@ -17,6 +17,7 @@
 // demonwrath
 // tier 17/18
 // tier trinket
+// other irrelevent things that do need updating.
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
 // Double check all up()/check() usage.p
 // Check resource generation execute/impact and hit requirement
@@ -2675,6 +2676,14 @@ struct shadow_bolt_t: public warlock_spell_t
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 1;
 
+    if(p->sets.set(WARLOCK_DEMONOLOGY, T17, B4))
+    {
+        if(rng().roll(p->sets.set(WARLOCK_DEMONOLOGY, T17, B4)->effectN(1).percent()))
+        {
+            energize_amount++;
+        }
+    }
+
     base_crit += p->artifact.maw_of_shadows.percent();
   }
 
@@ -2838,6 +2847,13 @@ struct hand_of_guldan_t: public warlock_spell_t
         virtual void execute() override
         {
             warlock_t* p = static_cast<warlock_t*>( player() );
+            if(p->sets.set(WARLOCK_DEMONOLOGY, T17, B2))
+            {
+                if(rng().roll(p->sets.set(WARLOCK_DEMONOLOGY, T17, B2)->effectN(1).percent()))
+                {
+                    count *= p->sets.set(WARLOCK_DEMONOLOGY, T17, B2)->effectN(1).percent();
+                }
+            }
             for(int i = 0; i < p->warlock_pet_list.wild_imps.size(); i ++)
             {
                 if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
@@ -3894,6 +3910,15 @@ struct demonbolt_t: public warlock_spell_t
         energize_type = ENERGIZE_ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
         energize_amount = 1;
+
+        if(p->sets.set(WARLOCK_DEMONOLOGY, T17, B4))
+        {
+            if(rng().roll(p->sets.set(WARLOCK_DEMONOLOGY, T17, B4)->effectN(1).percent()))
+            {
+                energize_amount++;
+            }
+        }
+
         base_crit += p->artifact.maw_of_shadows.percent();
     }
 
@@ -5208,6 +5233,9 @@ void warlock_t::apl_affliction()
   action_list_str += "/service_pet";
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+  action_list_str += "/berserking";
+  action_list_str += "/blood_fury";
+  action_list_str += "/arcane_torrent";
   action_list_str += "/soul_harvest";
   add_action( "Corruption", "if=remains<=tick_time+gcd" );
   add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
@@ -5244,6 +5272,9 @@ void warlock_t::apl_destruction()
 
   add_action( "Immolate", "if=remains<=tick_time" );
   add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<duration&action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd" );
+  action_list_str += "/berserking";
+  action_list_str += "/blood_fury";
+  action_list_str += "/arcane_torrent";
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&charges=2" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2" );
