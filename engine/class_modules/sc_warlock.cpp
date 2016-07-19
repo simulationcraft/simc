@@ -333,6 +333,7 @@ public:
     buff_t* stolen_power_stacks;
     buff_t* stolen_power;
     buff_t* demonic_calling;
+    buff_t* molten_core;
 
     //destruction_buffs
     buff_t* backdraft;
@@ -391,6 +392,7 @@ public:
     proc_t* power_trip;
     proc_t* stolen_power_stack;
     proc_t* stolen_power_used;
+    proc_t* t18_demo_4p;
   } procs;
 
   struct spells_t
@@ -1067,6 +1069,48 @@ struct wild_firebolt_t: public warlock_pet_spell_t
   {
     return spell_t::ready();
   }
+
+  virtual void impact( action_state_t* s ) override
+    {
+      warlock_pet_spell_t::impact( s );
+
+      if ( result_is_hit( s -> result ))
+      {
+          //p()->o()->procs.t18_demo_4p;
+          if(p() -> o() -> sets.set(WARLOCK_DEMONOLOGY, T18, B4))
+          {
+              p() -> o() -> buffs.molten_core -> trigger();
+          }
+      }
+
+
+      //{
+
+          /*if(p()->o()->sets.set(WARLOCK_DEMONOLOGY, T18, B4))
+          {
+              if(rng().roll(p()->o()->sets.set(WARLOCK_DEMONOLOGY, T18, B4)->effectN(1).percent()))
+              {
+                  if(rng().roll(.6)) // 60% roll chance
+                  {
+
+                  }
+                  else
+                  {
+                      for(int i = 0; i < p()->o()->warlock_pet_list.t18_illidari_satyr.size(); i ++)
+                      {
+                          if(p()->o()->warlock_pet_list.t18_illidari_satyr[i]->is_sleeping())
+                              p()->o()->warlock_pet_list.t18_illidari_satyr[i]->summon( illidari_satyr_duration );
+                      }
+                  }
+              }
+          }*/
+      //}
+    }
+
+  /*virtual void execute() override
+  {
+
+  }*/
 };
 
 struct eye_laser_t : public warlock_pet_spell_t
@@ -2666,6 +2710,9 @@ struct life_tap_t: public warlock_spell_t
 
 
 // Demonology Spells
+
+
+
 struct shadow_bolt_t: public warlock_spell_t
 {
     //thalkeils_discord_t discord;
@@ -2730,6 +2777,10 @@ struct shadow_bolt_t: public warlock_spell_t
                 }
             }
         }
+    }
+    if(p()->sets.set(WARLOCK_DEMONOLOGY, T18, B2))
+    {
+        p()->buffs.tier18_2pc_demonology->trigger(1);
     }
   }
 };
@@ -2852,6 +2903,19 @@ struct hand_of_guldan_t: public warlock_spell_t
                 if(rng().roll(p->sets.set(WARLOCK_DEMONOLOGY, T17, B2)->effectN(1).percent()))
                 {
                     count *= p->sets.set(WARLOCK_DEMONOLOGY, T17, B2)->effectN(1).percent();
+                }
+            }
+            if(p->demonology_trinket)
+            {
+                const spell_data_t* data = p -> find_spell( p -> demonology_trinket -> spell_id );
+                double demonology_trinket_chance = data -> effectN( 1 ).average( p -> demonology_trinket -> item );
+                demonology_trinket_chance /= 100.0;
+                if(rng().roll(demonology_trinket_chance))
+                {
+                    count += 3;
+                    p -> procs.fragment_wild_imp -> occur();
+                    p -> procs.fragment_wild_imp -> occur();
+                    p -> procs.fragment_wild_imp -> occur();
                 }
             }
             for(int i = 0; i < p->warlock_pet_list.wild_imps.size(); i ++)
@@ -3901,6 +3965,9 @@ struct summon_soul_effigy_t : public warlock_spell_t
 // TALENT SPELLS
 
 // DEMONOLOGY
+
+
+
 struct demonbolt_t: public warlock_spell_t
 {
   demonbolt_t( warlock_t* p ):
@@ -3969,6 +4036,10 @@ struct demonbolt_t: public warlock_spell_t
                     }
                 }
             }
+        }
+        if(p()->sets.set(WARLOCK_DEMONOLOGY, T18, B2))
+        {
+            p()->buffs.tier18_2pc_demonology->trigger(1);
         }
       }
 };
@@ -5048,6 +5119,62 @@ struct havoc_buff_t : public buff_t
   }
 };
 
+
+struct molten_core_t : public buff_t        //kept to force imps to proc
+{
+  timespan_t illidari_satyr_duration;
+  timespan_t vicious_hellhound_duration;
+  timespan_t prince_malchezaar_duration;
+
+  molten_core_t( warlock_t* p ) :
+    buff_t( buff_creator_t( p, "molten_core" ).activated( false ).max_stack( 10 ) )
+  {
+    prince_malchezaar_duration = p -> find_spell( 189296 ) -> duration();
+    vicious_hellhound_duration = p -> find_spell( 189298 ) -> duration();
+    illidari_satyr_duration = p -> find_spell( 189297 ) -> duration();
+  }
+
+  void execute( int a, double b, timespan_t t ) override
+  {
+    warlock_t* p = debug_cast<warlock_t*>( player );
+    bool trigger_t18_4p = true;
+
+    buff_t::execute( a, b, t );
+
+
+    if ( rng().roll(p->sets.set( WARLOCK_DEMONOLOGY, T18, B4 ) -> effectN( 1 ).percent() ) )
+    {
+      //Which pet will we spawn?
+      p->procs.t18_demo_4p->occur();
+      double pet = rng().range( 0.0, 1.0 );
+      if ( pet <= 0.6 ) // 45% chance to spawn hellhound
+      {
+        for ( size_t i = 0; i < p->warlock_pet_list.t18_vicious_hellhound.size(); i++ )
+        {
+          if ( p -> warlock_pet_list.t18_vicious_hellhound[i] -> is_sleeping() )
+          {
+            p -> warlock_pet_list.t18_vicious_hellhound[i] -> summon( vicious_hellhound_duration );
+            p -> procs.t18_vicious_hellhound -> occur();
+            break;
+          }
+        }
+      }
+      else // 45% chance to spawn illidari
+      {
+        for ( size_t i = 0; i < p -> warlock_pet_list.t18_illidari_satyr.size(); i++ )
+        {
+          if ( p -> warlock_pet_list.t18_illidari_satyr[i] -> is_sleeping() )
+          {
+            p -> warlock_pet_list.t18_illidari_satyr[i] -> summon( illidari_satyr_duration );
+            p -> procs.t18_illidari_satyr -> occur();
+            break;
+          }
+        }
+      }
+    }
+  }
+};
+
 void warlock_t::create_buffs()
 {
   player_t::create_buffs();
@@ -5078,6 +5205,7 @@ void warlock_t::create_buffs()
   buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
   buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() )
     .chance( find_spell( 205145 ) -> proc_chance() );
+  buffs.molten_core = new molten_core_t( this );
   buffs.stolen_power_stacks = buff_creator_t( this, "stolen_power_stacks", find_spell( 211529 ) );
   buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell( 211583 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -5153,6 +5281,7 @@ void warlock_t::init_procs()
   procs.stolen_power_stack = get_proc( "stolen_power_proc" );
   procs.stolen_power_used = get_proc( "stolen_power_used" );
   procs.soul_conduit = get_proc( "soul_conduit" );
+  procs.t18_demo_4p = get_proc( "t18_demo_4p" );
 }
 
 void warlock_t::apl_precombat()
