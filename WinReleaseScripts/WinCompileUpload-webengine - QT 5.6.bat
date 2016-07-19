@@ -24,13 +24,14 @@ set redist=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\
 
 cd ..
 git clean -f -x -d
+for /F "delims=" %%i IN ('git --git-dir=%simcfiles%\.git\ rev-parse --short HEAD') do set GITREV=-%%i
 
 cd>bla.txt
 set /p download=<bla.txt
 del bla.txt
 
 ::WebEngine compilation.
-set install=simc-%simcversion%-win64
+set install=simc-%simcversion%-win64-%GITREV%
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
