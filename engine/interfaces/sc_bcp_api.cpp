@@ -114,33 +114,21 @@ void parse_profession( std::string&               professions_str,
 const rapidjson::Value* choose_talent_spec( const rapidjson::Value& talents,
                                                    const std::string& specifier )
 {
-  const rapidjson::Value& spec_1 = talents[ 0u ];
-  const rapidjson::Value& spec_2 = talents[ 1u ];
-  bool spec1_is_active = false;
-  if ( spec_1.HasMember( "selected" ) )
-    spec1_is_active = spec_1[ "selected" ].GetBool();
+  for ( size_t i = 0; i < talents.Size(); ++i )
+  {
+    if ( talents[ i ].HasMember( "selected" ) )
+    {
+      return &talents[ i ];
+    }
+  }
 
-  const rapidjson::Value* spec = nullptr;
-
-  if ( util::str_compare_ci( specifier, "active" ) )
-    spec = spec1_is_active ? &spec_1 : &spec_2;
-  else if ( util::str_compare_ci( specifier, "inactive" ) )
-    spec = spec1_is_active ? &spec_2 : &spec_1;
-  else if ( util::str_compare_ci( specifier, "primary" ) )
-    spec = &spec_1;
-  else if ( util::str_compare_ci( specifier, "secondary" ) )
-    spec = &spec_2;
-
-  return spec;
+  return nullptr;
 }
 
 bool parse_talents( player_t*  p,
                     const rapidjson::Value& talents,
                     const std::string& specifier )
 {
-  if ( talents.Size() != 2 )
-    return false;
-
   const rapidjson::Value* spec = choose_talent_spec( talents, specifier );
   if ( ! spec )
     return false;
