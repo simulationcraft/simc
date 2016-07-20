@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 talents=1211111
-artifact=47:0:0:0:0:764:1:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
+artifact=47:142063:142057:142063:0:764:1:767:3:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -106,7 +106,7 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=band_of_fused_coral,id=134532,bonus_id=1727
 trinket1=chrono_shard,id=137419,bonus_id=1727
 trinket2=obelisk_of_the_void,id=137433,bonus_id=1727
-main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=743,gem_id=140821/140820/140821,relic_id=1806/1806/1806
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=142063/142057/142063,relic_id=1806/1806/1806
 off_hand=secrets_of_the_void,id=133958
 
 # Gear Summary
