@@ -176,7 +176,9 @@ void plot_t::analyze_stats()
         }
         if ( dps_plot_target_error > 0 )
           delta_sim->target_error = dps_plot_target_error;
-        delta_sim->enchant.add_stat( i, j * dps_plot_step );
+        //delta_sim->enchant.add_stat( i, j * dps_plot_step );
+        delta_sim->scaling->scale_stat = i;
+        delta_sim->scaling->scale_value = j * dps_plot_step;
         if ( sim->report_progress )
         {
           std::stringstream stat_name;
