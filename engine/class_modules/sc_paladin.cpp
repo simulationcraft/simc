@@ -346,6 +346,8 @@ public:
   timespan_t extra_regen_period;
   double extra_regen_percent;
 
+  timespan_t last_jol_proc;
+
   double fixed_holy_wrath_health_pct;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
@@ -361,6 +363,7 @@ public:
     beacon_target( nullptr ),
     last_extra_regen( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
+    last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_percent( 0.0 ),
     fixed_holy_wrath_health_pct( -1.0 )
   {
@@ -787,7 +790,7 @@ public:
 
   void trigger_judgment_of_light( action_state_t* s )
   {
-    if ( p() -> resources.current[ RESOURCE_HEALTH ] < p() -> resources.max[ RESOURCE_HEALTH ] )
+    if ( p() -> resources.current[ RESOURCE_HEALTH ] < p() -> resources.max[ RESOURCE_HEALTH ] && ( p() -> sim -> current_time() - p() -> last_jol_proc ) >= timespan_t::from_seconds( 1.0 ) )
     {
       p() -> active_judgment_of_light_proc -> execute();
       td ( s -> target ) -> buffs.judgment_of_light -> decrement();
@@ -2184,6 +2187,13 @@ struct judgment_of_light_proc_t : public paladin_heal_t
     // NOTE: this is implemented in SimC as a self-heal only. It does NOT proc for other players attacking the boss.
     // This is mostly done because it's much simpler to code, and for the most part Prot doesn't care about raid healing efficiency.
     // If Holy wants this to work like the in-game implementation, they'll have to go through the pain of moving things to player_t
+  }
+
+  virtual void execute() override
+  {
+    paladin_heal_t::execute();
+
+    p() -> last_jol_proc = p() -> sim -> current_time();
   }
 };
 
@@ -4149,6 +4159,7 @@ void paladin_t::reset()
   active_consecrations.clear();
   last_retribution_trinket_target = nullptr;
   last_extra_regen = timespan_t::zero();
+  last_jol_proc = timespan_t::zero();
 }
 
 // paladin_t::init_gains ====================================================
