@@ -5490,7 +5490,7 @@ void warlock_t::apl_demonology()
   action_list_str += "/soul_harvest";
   add_action( "Doom", "if=remains<=action.hand_of_guldan.cast_time" );
   action_list_str += "/hand_of_guldan,if=soul_shard>=3";
-  action_list_str += "Demonic Empowerment,if=wild_imp_no_de>=5";
+  action_list_str += "demonic_empowerment,if=wild_imp_no_de>=5";
   add_action( "Doom", "if=remains<=duration*0.3" );
   add_action( "Demonbolt" );
   add_action( "Shadow Bolt" );
