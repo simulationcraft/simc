@@ -2028,6 +2028,9 @@ struct fel_eruption_t : public demon_hunter_spell_t
       school = SCHOOL_CHAOS;        // Jun 27 2016: Spell data states Chromatic
                                     // damage, just override it.
       may_proc_fel_barrage = true;  // Jul 12 2016
+
+      // Damage penalty for Vengeance DH
+      base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 4 ).percent();
     }
   };
 
@@ -3683,8 +3686,10 @@ struct felblade_t : public demon_hunter_attack_t
 
       // Clear energize and then manually pick which effect to parse.
       energize_type = ENERGIZE_NONE;
-      parse_effect_data(
-          data().effectN( p->specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
+      parse_effect_data( data().effectN( p->specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
+
+      // Damage penalty for Vengeance DH
+      base_multiplier *= 1.0 + p -> spec.vengeance -> effectN( 3 ).percent();
     }
   };
 
@@ -4435,6 +4440,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
                   .tick_callback( &callback )
                   .add_invalidate( CACHE_LEECH ) )
   {
+    assert( p -> specialization() == DEMON_HUNTER_VENGEANCE );
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -6218,8 +6224,7 @@ double demon_hunter_t::composite_dodge() const
   return d;
 }
 
-// demon_hunter_t::composite_melee_haste
-// ==========================================
+// demon_hunter_t::composite_melee_haste  ===================================
 
 double demon_hunter_t::composite_melee_haste() const
 {
@@ -6233,8 +6238,7 @@ double demon_hunter_t::composite_melee_haste() const
   return mh;
 }
 
-// demon_hunter_t::composite_spell_haste
-// ==========================================
+// demon_hunter_t::composite_spell_haste ====================================
 
 double demon_hunter_t::composite_spell_haste() const
 {
@@ -6272,8 +6276,7 @@ double demon_hunter_t::composite_leech() const
   return l;
 }
 
-// demon_hunter_t::composite_melee_crit_chance
-// =====================================
+// demon_hunter_t::composite_melee_crit_chance ==============================
 
 double demon_hunter_t::composite_melee_crit_chance() const
 {
@@ -6344,8 +6347,7 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-// demon_hunter_t::composite_spell_crit_chance
-// =====================================
+// demon_hunter_t::composite_spell_crit_chance ==============================
 
 double demon_hunter_t::composite_spell_crit_chance() const
 {
