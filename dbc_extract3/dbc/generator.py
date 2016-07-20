@@ -1191,6 +1191,7 @@ class SpellDataGenerator(DataGenerator):
           ( 191043, 0 ), # MM Artifact proc
           ( 204740, 0 ), # Flanking Strike
           ( 191070, 0 ), # Call of the Hunter
+          ( 217207, 0 ), # Dire Frenzy (pet)
         ),
 
         # Rogue:

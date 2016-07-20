@@ -1049,7 +1049,7 @@ public:
     buff_t* stampede;
     buff_t* beast_cleave;
     buff_t* dire_frenzy;
-    buff_t* titans_thunder_df;
+    buff_t* titans_frenzy;
     buff_t* tier17_4pc_bm;
     buff_t* tier18_4pc_bm;
   } buffs;
@@ -1198,7 +1198,7 @@ public:
                                 .default_value ( frenzy_value )
                                 .cd( timespan_t::zero() )
                                 .add_invalidate( CACHE_ATTACK_HASTE );
-    buffs.titans_thunder_df = buff_creator_t( this, "titans_thunder" ).duration( timespan_t::from_seconds( 30.0 ) ).quiet( true );
+    buffs.titans_frenzy = buff_creator_t( this, "titans_thunder" ).duration( timespan_t::from_seconds( 30.0 ) ).quiet( true );
 
     buffs.tier17_4pc_bm = buff_creator_t( this, 178875, "tier17_4pc_bm" )
       .default_value( owner -> find_spell( 178875 ) -> effectN( 2 ).percent() )
@@ -1854,62 +1854,38 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
 
 struct dire_frenzy_t: public hunter_main_pet_attack_t
 {
-  struct dire_frenzy_titans_thunder_t: public hunter_main_pet_attack_t
+  // This is the additional attack from Titan's Thunder
+  struct titans_frenzy_t: public hunter_main_pet_attack_t
   {
-    dire_frenzy_titans_thunder_t( hunter_main_pet_t* p ):
-      hunter_main_pet_attack_t( "titans_thunder_df", p, p -> find_spell( 207068 ) )
+    titans_frenzy_t( hunter_main_pet_t* p ):
+      hunter_main_pet_attack_t( "titans_frenzy", p, p -> find_spell( 207068 ) )
     {
-      attack_power_mod.direct = 2.0; //FIXME
+      attack_power_mod.direct = data().effectN( 1 ).trigger() -> effectN( 1 ).base_value();
       background = true;
       school = SCHOOL_NATURE;
     }
   };
 
-  struct dire_frenzy_tick_t: public hunter_main_pet_attack_t
-  {
-    dire_frenzy_titans_thunder_t* df_tt_proc;
-    dire_frenzy_tick_t( hunter_main_pet_t* p ):
-      hunter_main_pet_attack_t( "dire_frenzy_tick", p, p -> find_spell( 217200 ) ), df_tt_proc( nullptr )
-    {
-      background = true;
-      energize_amount = 0.0;
-      weapon = &p -> main_hand_weapon;
-      weapon_multiplier = 1.0;
-      if ( p -> o() -> artifacts.titans_thunder.rank() )
-        df_tt_proc = new dire_frenzy_titans_thunder_t( p );
-    }
-
-    virtual void execute() override
-    {
-      hunter_main_pet_attack_t::execute();
-
-      if ( p() -> buffs.titans_thunder_df -> up() )
-        df_tt_proc -> execute();
-    }
-  };
-
+  titans_frenzy_t* titans_frenzy;
   dire_frenzy_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "dire_frenzy", p, p -> find_spell( 217200 ) )
+    hunter_main_pet_attack_t( "dire_frenzy", p, p -> find_spell( 217200 ) ) // FIXME use 217207
   {
       background = true;
-      base_tick_time = timespan_t::from_seconds( 0.2 );
-      dot_duration = timespan_t::from_seconds( 1.0 );
-      energize_amount = 0.0;
-      tick_action = new dire_frenzy_tick_t( p );
+      energize_amount = 0.0;  // FIXME
+      school = SCHOOL_PHYSICAL;
+      weapon = &p -> main_hand_weapon;
+      weapon_multiplier = 1.4; // FIXME
+
+      if ( p -> o() -> artifacts.titans_thunder.rank() )
+        titans_frenzy = new titans_frenzy_t( p );
   }
 
-  virtual void execute()
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
-    hunter_main_pet_attack_t::execute();
+    hunter_main_pet_attack_t::schedule_execute();
 
-    p() -> buffs.dire_frenzy -> trigger();
-  }
-
-  virtual void last_tick( dot_t* d ) override
-  {
-    hunter_main_pet_attack_t::last_tick( d );
-
-    p() -> buffs.titans_thunder_df -> expire();
+    if ( p() -> buffs.titans_frenzy -> up() && titans_frenzy )
+      titans_frenzy -> schedule_execute();
   }
 };
 
@@ -4809,6 +4785,8 @@ struct kill_command_t: public hunter_spell_t
   }
 };
 
+// Dire Frenzy ==============================================================
+
 struct dire_frenzy_t: public hunter_spell_t
 {
   dire_frenzy_t( hunter_t* p, const std::string& options_str ):
@@ -4818,6 +4796,7 @@ struct dire_frenzy_t: public hunter_spell_t
 
     cooldown -> hasted = true;
     harmful = false;
+    school = SCHOOL_PHYSICAL;
 
     if ( p -> talents.dire_stable -> ok() )
       energize_amount += p -> talents.dire_stable -> effectN( 2 ).base_value();
@@ -4826,7 +4805,10 @@ struct dire_frenzy_t: public hunter_spell_t
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
+    {
       stats -> add_child( pet -> get_stats( "dire_frenzy" ) );
+      stats -> add_child( pet -> get_stats( "titans_frenzy" ) );
+    }
 
     return hunter_spell_t::init_finished();
   }
@@ -4838,9 +4820,18 @@ struct dire_frenzy_t: public hunter_spell_t
     p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_seconds( 15 ) ); //Missing from spell data
 
     if ( p() -> active.pet )
-      p() -> active.pet -> active.dire_frenzy -> execute();
+    {
+      // Execute number of attacks listed in spell data
+      for ( size_t i = 0; i < data().effectN( 1 ).base_value(); i++ )
+        p() -> active.pet -> active.dire_frenzy -> schedule_execute();
+
+      p() -> active.pet -> buffs.dire_frenzy -> trigger();
+      p() -> active.pet -> buffs.titans_frenzy -> expire();
+    }
   }
 };
+
+// Titan's Thunder ==========================================================
 
 struct titans_thunder_t: public hunter_spell_t
 {
@@ -4856,7 +4847,7 @@ struct titans_thunder_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     if ( p() -> talents.dire_frenzy -> ok() )
-      p() -> active.pet -> buffs.titans_thunder_df -> trigger();
+      p() -> active.pet -> buffs.titans_frenzy -> trigger();
     p() -> active.pet -> active.titans_thunder -> execute();
     p() -> hati -> active.titans_thunder -> execute();
     int i = 0;
@@ -4866,10 +4857,7 @@ struct titans_thunder_t: public hunter_spell_t
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
-    {
       stats -> add_child( pet -> get_stats( "titans_thunder" ) );
-      stats -> add_child( pet -> get_stats( "titans_thunder_df" ) );
-    }
 
     return hunter_spell_t::init_finished();
   }
