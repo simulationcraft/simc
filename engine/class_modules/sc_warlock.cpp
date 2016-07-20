@@ -5378,9 +5378,9 @@ void warlock_t::apl_precombat()
     if ( true_level == 110 )
       precombat_list += "/food,type=azshari_salad";
     else if ( true_level >= 100 && specialization() == WARLOCK_DESTRUCTION )
-      precombat_list += "/food,type=pickled_eel";
+      precombat_list += "/food,type=frosty_stew";
     else if ( true_level >= 100 && specialization() == WARLOCK_DEMONOLOGY)
-      precombat_list += "/food,type=sleeper_sushi";
+      precombat_list += "/food,type=frosty_stew";
     else if ( true_level >= 100 && specialization() == WARLOCK_AFFLICTION )
       precombat_list += "/food,type=felmouth_frenzy";
   }
@@ -5444,7 +5444,7 @@ void warlock_t::apl_affliction()
   add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
   action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3";
   action_list_str += "/phantom_singularity";
-  add_action( "Unstable Affliction", "if=(soul_shard>1|cooldown.summon_doomguard.remains>5|talent.demonic_servitude.enabled)&(!talent.contagion.enabled|soul_shard>4|dot.unstable_affliction.ticking|buff.shard_instability.react)" );
+  add_action( "Unstable Affliction", "if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains|buff.nithramus.remains)" );
   add_action( "Agony", "if=remains<=duration*0.3" );
   add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3" );
   add_action( "Corruption", "if=remains<=duration*0.3" );

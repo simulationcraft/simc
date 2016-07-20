@@ -1,35 +1,59 @@
-warlock="Warlock_Demonology_T18M"
+warlock="Warlock_demo_legion"
 level=100
 race=troll
 role=spell
 position=back
-talents=0000311
+talents=1202022
 spec=demonology
-
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=sleeper_sushi
-actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+actions.precombat=summon_pet,if=!talent.grimoire_of_supremacy.enabled
 actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
+actions.precombat+=/demonic_empowerment
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 
 # Executed every time the actor is available.
 
-actions=life_tap
+actions=use_item,name=nithramus_the_allseer
+actions+=/service_pet,if=cooldown.summon_doomguard.remains<gcd&soul_shard>=2
+actions+=/service_pet,if=cooldown.summon_doomguard.remains>25
+actions+=/summon_doomguard,if=talent.grimoire_of_service.enabled&prev.service_felguard&active_enemies<3
+actions+=/summon_doomguard,if=talent.grimoire_of_synergy.enabled&active_enemies<3
+actions+=/summon_infernal,if=talent.grimoire_of_service.enabled&prev.service_felguard&active_enemies>=3
+actions+=/summon_infernal,if=talent.grimoire_of_synergy.enabled&active_enemies>=3
+actions+=/call_dreadstalkers,if=!talent.summon_darkglare.enabled
+actions+=/hand_of_guldan,if=soul_shard>=4&!talent.summon_darkglare.enabled
+actions+=/summon_darkglare,if=prev.hand_of_guldan
+actions+=/summon_darkglare,if=prev.call_dreadstalkers
+actions+=/summon_darkglare,if=cooldown.call_dreadstalkers.remains>5&soul_shard<3
+actions+=/summon_darkglare,if=cooldown.call_dreadstalkers.remains<action.summon_darkglare.cast_time&soul_shard>=3
+actions+=/summon_darkglare,if=cooldown.call_dreadstalkers.remains<action.summon_darkglare.cast_time&soul_shard>=1&buff.demonic_calling.up
+actions+=/call_dreadstalkers,if=cooldown.summon_darkglare.remains>2
+actions+=/call_dreadstalkers,if=prev.summon_darkglare
+actions+=/call_dreadstalkers,if=cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=3
+actions+=/call_dreadstalkers,if=cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=1&buff.demonic_calling.up
+actions+=/hand_of_guldan,if=soul_shard>=3&prev.call_dreadstalkers
+actions+=/hand_of_guldan,if=soul_shard>=5&cooldown.summon_darkglare.remains<=action.hand_of_guldan.cast_time
+actions+=/hand_of_guldan,if=soul_shard>=4&cooldown.summon_darkglare.remains>2
+actions+=/demonic_empowerment,if=prev.hand_of_guldan
+actions+=/demonic_empowerment,if=prev.call_dreadstalkers
+actions+=/demonic_empowerment,if=prev.summon_doomguard
+actions+=/demonic_empowerment,if=talent.grimoire_of_service.enabled&prev.service_felguard
+actions+=/demonic_empowerment,if=prev.summon_darkglare
+actions+=/soul_harvest
+actions+=/felguard:felstorm
+actions+=/doom,cycle_targets=1,if=(!ticking|dot.doom.remains<gcd+4)
+actions+=/shadowflame,if=charges=3
+actions+=/shadowflame,if=dot.shadowflame.remains<action.shadow_bolt.execute_time
+actions+=/life_tap,if=mana.pct<=30
+actions+=/demonbolt
+actions+=/shadow_bolt
 
-head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
+head=deathrattle_mask,id=124162,bonus_id=567,upgrade=2
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant_id=5319
-shoulders=deathrattle_shoulderpads,id=124179,bonus_id=567,upgrade=2
+shoulders=shadow_councils_mantle,id=115589,bonus_id=567,upgrade=2
 back=shawl_of_sanguinary_ritual,id=124137,bonus_id=567,upgrade=2,enchant_id=5312
 chest=deathrattle_robe,id=124173,bonus_id=567,upgrade=2
 wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
@@ -44,14 +68,14 @@ trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
 main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5384
 
 # Gear Summary
-# gear_ilvl=742.33
-# gear_stamina=7054
-# gear_intellect=7361
-# gear_crit_rating=1220
-# gear_haste_rating=1994
-# gear_mastery_rating=3439
+# gear_ilvl=739.33
+# gear_stamina=6851
+# gear_intellect=7225
+# gear_crit_rating=1019
+# gear_haste_rating=2097
+# gear_mastery_rating=3350
 # gear_versatility_rating=228
-# gear_armor=1193
+# gear_armor=1152
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
 default_pet=felguard
