@@ -528,35 +528,12 @@ struct priest_pet_t : public pet_t
     base.distance = 3;
   }
 
-  struct _stat_list_t
-  {
-    int level;
-    std::array<double, ATTRIBUTE_MAX> stats;
-  };
-
   void init_base_stats() override
   {
     pet_t::init_base_stats();
 
     owner_coeff.ap_from_sp = 1.0;
     owner_coeff.sp_from_sp = 1.0;
-
-    // Base Stats, same for all pets. Depends on level
-    static const _stat_list_t pet_base_stats[] = {
-        //   none, str, agi, sta, int, spi
-        {85, {{0, 453, 883, 353, 159, 225}}},
-    };
-
-    // Loop from end to beginning to get the data for the highest available
-    // level equal or lower than the player level
-    int i = as<int>( sizeof_array( pet_base_stats ) );
-    while ( --i > 0 )
-    {
-      if ( pet_base_stats[ i ].level <= level() )
-        break;
-    }
-    if ( i >= 0 )
-      base.stats.attribute = pet_base_stats[ i ].stats;
   }
 
   void schedule_ready( timespan_t delta_time, bool waiting ) override
