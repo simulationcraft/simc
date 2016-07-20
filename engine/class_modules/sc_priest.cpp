@@ -5975,7 +5975,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p )
                            .duration( timespan_t::from_seconds( 10 ) )
                            .max_stack( 10 );  // FIXME no value in Data?
 
-  target->callbacks_on_demise.push_back( [this]() { target_demise(); } );
+  target->callbacks_on_demise.push_back( [this](player_t*) { target_demise(); } );
 }
 
 void priest_td_t::reset()
