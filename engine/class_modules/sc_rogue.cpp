@@ -4218,6 +4218,14 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   {
     return new exsanguinated_expr_t( this );
   }
+  else if ( util::str_compare_ci( name_str, "bleeds" ) )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      rogue_td_t* tdata = td( target );
+      return tdata -> dots.garrote -> is_ticking() +
+             tdata -> dots.rupture -> is_ticking();
+    } );
+  }
 
   return melee_attack_t::create_expression( name_str );
 }
