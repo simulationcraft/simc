@@ -83,8 +83,7 @@ public:
 struct priest_t final : public player_t
 {
 public:
-  typedef player_t base_t;
-  bool shadowy_insight_during_mind_blast;
+  using base_t = player_t;
 
   // Buffs
   struct
@@ -1280,11 +1279,6 @@ public:
       else
       {
         priest.procs.shadowy_insight->occur();
-      }
-
-      if ( priest.executing && priest.executing->id == 8092 )
-      {
-        priest.shadowy_insight_during_mind_blast = true;
       }
       return true;
     }
@@ -2900,20 +2894,16 @@ public:
     priest_spell_t::init();
   }
 
+  void schedule_execute( action_state_t* s ) override
+  {
+    priest_spell_t::schedule_execute( s );
+
+    priest.buffs.shadowy_insight->expire();
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
-
-    // Shadowy Insight buff does not get eaten, if the Shadowy Insight proc
-    // happened
-    // during the Mind Blast cast
-    if ( !priest.shadowy_insight_during_mind_blast &&
-         priest.buffs.shadowy_insight->check() )
-    {
-      priest.buffs.shadowy_insight->expire();
-    }
-
-    priest.shadowy_insight_during_mind_blast = false;
 
     priest.buffs.power_overwhelming->trigger();
   }
@@ -2963,10 +2953,18 @@ public:
 
     // Shadowy Insight has proc'd during the cast of Mind Blast, the cooldown
     // reset is deferred to the finished cast, instead of "eating" it.
-    if ( priest.shadowy_insight_during_mind_blast )
+    if ( priest.buffs.shadowy_insight->check() )
     {
       cd_duration            = timespan_t::zero();
       cooldown->last_charged = sim->current_time();
+
+      if ( sim->debug )
+      {
+        sim->out_debug.printf(
+            "%s shadowy insight proc occured during %s cast. Deferring "
+            "cooldown reset.",
+            priest.name(), name() );
+      }
     }
 
     priest_spell_t::update_ready( cd_duration );
@@ -6000,7 +5998,6 @@ void priest_td_t::target_demise()
 
 priest_t::priest_t( sim_t* sim, const std::string& name, race_e r )
   : player_t( sim, PRIEST, name, r ),
-    shadowy_insight_during_mind_blast( false ),
     buffs(),
     talents(),
     specs(),
@@ -7808,7 +7805,7 @@ void priest_t::copy_from( player_t* source )
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
-class priest_report_t final : public player_report_extension_t
+struct priest_report_t final : public player_report_extension_t
 {
 public:
   priest_report_t( priest_t& player ) : p( player )
