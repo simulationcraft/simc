@@ -106,7 +106,7 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=band_of_fused_coral,id=134532,bonus_id=1727
 trinket1=chrono_shard,id=137419,bonus_id=1727
 trinket2=obelisk_of_the_void,id=137433,bonus_id=1727
-main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=142063/142057/142063,relic_id=1806/1806/1806
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=142063/142057/142063
 off_hand=secrets_of_the_void,id=133958
 
 # Gear Summary
