@@ -226,6 +226,16 @@ bool wowhead::download_item_data( item_t&            item,
       if ( hybrid_stat != STAT_NONE && ( type == STAT_STRENGTH || type == STAT_INTELLECT || type == STAT_AGILITY ) )
         continue;
 
+      // 2016-07-20: Wowhead's XML output for item stats produces weird results on certain items
+      // that are no longer available in game. Skip very high values to let the sim run, but not use
+      // completely silly values.
+      if ( i -> value.GetInt() > wowhead::WOWHEAD_STAT_MAX )
+      {
+        item.sim -> errorf( "Warning, item %s has abnormal stat value (stat=%s value=%d) in XML output, ingoring ...",
+          item.name(), util::stat_type_string( type ), i -> value.GetInt() );
+        continue;
+      }
+
       item.parsed.data.stat_type_e[ n ] = util::translate_stat( type );
       item.parsed.data.stat_val[ n ] = i -> value.GetInt();
       n++;

@@ -7350,6 +7350,14 @@ action_t* create_action( player_t*, const std::string& name, const std::string& 
 
 namespace wowhead
 {
+// 2016-07-20: Wowhead's XML output for item stats produces weird results on certain items that are
+// no longer available in game. Skip very high values to let the sim run, but not use completely
+// silly values.
+enum
+{
+  WOWHEAD_STAT_MAX = 10000
+};
+
 enum wowhead_e
 {
   LIVE,
