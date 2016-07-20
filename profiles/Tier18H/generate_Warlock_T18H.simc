@@ -26,8 +26,7 @@ warlock="Warlock_Demonology_T18H"
 level=100
 race=troll
 spec=demonology
-talents=0000211
-#glyphs=dark_soul
+talents=1102013
 head=demon_princes_ascendant_crown,id=124159,bonus_id=566
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant_id=5319
 shoulders=deathrattle_shoulderpads,id=124179,bonus_id=566

@@ -333,7 +333,7 @@ public:
     buff_t* stolen_power_stacks;
     buff_t* stolen_power;
     buff_t* demonic_calling;
-    buff_t* molten_core;
+    buff_t* t18_4pc_driver;
 
     //destruction_buffs
     buff_t* backdraft;
@@ -1076,12 +1076,11 @@ struct wild_firebolt_t: public warlock_pet_spell_t
     {
       warlock_pet_spell_t::impact( s );
 
-      if ( result_is_hit( s -> result ))
+      if ( result_is_hit( s -> result ) )
       {
-          //p()->o()->procs.t18_demo_4p;
-          if(p() -> o() -> sets.set(WARLOCK_DEMONOLOGY, T18, B4))
+          if( rng().roll( p() -> o() -> sets.set( WARLOCK_DEMONOLOGY, T18, B4 ) -> effectN( 1 ).percent() ))
           {
-              p() -> o() -> buffs.molten_core -> trigger();
+              p() -> o() -> buffs.t18_4pc_driver -> trigger();
           }
       }
 
@@ -5201,16 +5200,14 @@ struct havoc_buff_t : public buff_t
 };
 
 
-struct molten_core_t : public buff_t        //kept to force imps to proc
+struct t18_4pc_driver_t : public buff_t        //kept to force imps to proc
 {
   timespan_t illidari_satyr_duration;
   timespan_t vicious_hellhound_duration;
-  timespan_t prince_malchezaar_duration;
 
-  molten_core_t( warlock_t* p ) :
-    buff_t( buff_creator_t( p, "molten_core" ).activated( false ).max_stack( 10 ) )
+  t18_4pc_driver_t( warlock_t* p ) :
+    buff_t( buff_creator_t( p, "t18_4pc_driver" ).activated( true ).duration( timespan_t::from_millis( 500 ) ).tick_behavior( BUFF_TICK_NONE ) )
   {
-    prince_malchezaar_duration = p -> find_spell( 189296 ) -> duration();
     vicious_hellhound_duration = p -> find_spell( 189298 ) -> duration();
     illidari_satyr_duration = p -> find_spell( 189297 ) -> duration();
   }
@@ -5218,38 +5215,32 @@ struct molten_core_t : public buff_t        //kept to force imps to proc
   void execute( int a, double b, timespan_t t ) override
   {
     warlock_t* p = debug_cast<warlock_t*>( player );
-    bool trigger_t18_4p = true;
 
     buff_t::execute( a, b, t );
 
-
-    if ( rng().roll(p->sets.set( WARLOCK_DEMONOLOGY, T18, B4 ) -> effectN( 1 ).percent() ) )
+    //Which pet will we spawn?
+    double pet = rng().range( 0.0, 1.0 );
+    if ( pet <= 0.6 ) // 60% chance to spawn hellhound
     {
-      //Which pet will we spawn?
-      p->procs.t18_demo_4p->occur();
-      double pet = rng().range( 0.0, 1.0 );
-      if ( pet <= 0.6 ) // 45% chance to spawn hellhound
+      for ( size_t i = 0; i < p -> warlock_pet_list.t18_vicious_hellhound.size(); i++ )
       {
-        for ( size_t i = 0; i < p->warlock_pet_list.t18_vicious_hellhound.size(); i++ )
+        if ( p -> warlock_pet_list.t18_vicious_hellhound[i] -> is_sleeping() )
         {
-          if ( p -> warlock_pet_list.t18_vicious_hellhound[i] -> is_sleeping() )
-          {
-            p -> warlock_pet_list.t18_vicious_hellhound[i] -> summon( vicious_hellhound_duration );
-            p -> procs.t18_vicious_hellhound -> occur();
-            break;
-          }
+          p -> warlock_pet_list.t18_vicious_hellhound[i] -> summon( vicious_hellhound_duration );
+          p -> procs.t18_vicious_hellhound -> occur();
+          break;
         }
       }
-      else // 45% chance to spawn illidari
+    }
+    else // 40% chance to spawn illidari
+    {
+      for ( size_t i = 0; i < p -> warlock_pet_list.t18_illidari_satyr.size(); i++ )
       {
-        for ( size_t i = 0; i < p -> warlock_pet_list.t18_illidari_satyr.size(); i++ )
+        if ( p -> warlock_pet_list.t18_illidari_satyr[i] -> is_sleeping() )
         {
-          if ( p -> warlock_pet_list.t18_illidari_satyr[i] -> is_sleeping() )
-          {
-            p -> warlock_pet_list.t18_illidari_satyr[i] -> summon( illidari_satyr_duration );
-            p -> procs.t18_illidari_satyr -> occur();
-            break;
-          }
+          p -> warlock_pet_list.t18_illidari_satyr[i] -> summon( illidari_satyr_duration );
+          p -> procs.t18_illidari_satyr -> occur();
+          break;
         }
       }
     }
@@ -5286,7 +5277,7 @@ void warlock_t::create_buffs()
   buffs.shadowy_inspiration = buff_creator_t( this, "shadowy_inspiration", find_spell( 196606 ) );
   buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() )
     .chance( find_spell( 205145 ) -> proc_chance() );
-  buffs.molten_core = new molten_core_t( this );
+  buffs.t18_4pc_driver = new t18_4pc_driver_t( this );
   buffs.stolen_power_stacks = buff_creator_t( this, "stolen_power_stacks", find_spell( 211529 ) );
   buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell( 211583 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -5409,10 +5400,14 @@ void warlock_t::apl_precombat()
       precombat_list += "/potion,name=draenic_intellect";
   }
 
-  precombat_list += "/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains";
+  if ( specialization() != WARLOCK_DEMONOLOGY )
+    precombat_list += "/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains";
 
   if ( specialization() == WARLOCK_DESTRUCTION )
     precombat_list += "/incinerate";
+
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+    precombat_list += "/demonic_empowerment";
 }
 
 void warlock_t::apl_global_filler()
@@ -5426,6 +5421,14 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
+  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      action_list_str += "/use_item,name=";
+      action_list_str += items[i].name();
+    }
+  }
   action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
   add_action( "Agony", "if=remains<=tick_time+gcd" );
   add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
@@ -5436,14 +5439,8 @@ void warlock_t::apl_affliction()
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
   action_list_str += init_use_profession_actions();
-  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
-  {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      action_list_str += "/use_item,name=";
-      action_list_str += items[i].name();
-    }
-  }
+  if ( find_item( "nithramus_the_allseer" ) )
+    action_list_str += "/potion,name=draenic_intellect,if=buff.nithramus.remains";
   action_list_str += "/soul_harvest";
   add_action( "Corruption", "if=remains<=tick_time+gcd" );
   add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
@@ -5473,6 +5470,30 @@ void warlock_t::apl_affliction()
 
 void warlock_t::apl_demonology()
 {
+  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+  {
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      action_list_str += "/use_item,name=";
+      action_list_str += items[i].name();
+    }
+  }
+  action_list_str += "/berserking";
+  action_list_str += "/blood_fury";
+  action_list_str += "/arcane_torrent";
+  if ( find_item( "nithramus_the_allseer" ) )
+    action_list_str += "/potion,name=draenic_intellect,if=buff.nithramus.remains";
+  action_list_str += "/service_pet";
+  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
+  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+  action_list_str += init_use_profession_actions();
+  action_list_str += "/soul_harvest";
+  add_action( "Doom", "if=remains<=action.hand_of_guldan.cast_time" );
+  action_list_str += "/hand_of_guldan,if=soul_shard>=3";
+  action_list_str += "Demonic Empowerment,if=wild_imp_no_de>=5";
+  add_action( "Doom", "if=remains<=duration*0.3" );
+  add_action( "Demonbolt" );
+  add_action( "Shadow Bolt" );
 
 }
 
@@ -5482,23 +5503,6 @@ void warlock_t::apl_destruction()
   // action_priority_list_t* aoe                 = get_action_priority_list( "aoe" );
 
   // artifact check
-  if ( true_level > 100 )
-  add_action( "Dimensional Rift", "if=charges=3" );
-
-  add_action( "Immolate", "if=remains<=tick_time" );
-  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd))" );
-  action_list_str += "/berserking";
-  action_list_str += "/blood_fury";
-  action_list_str += "/arcane_torrent";
-  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd))" );
-  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
-  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2" );
-  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=3&buff.bloodlust.remains" );
-  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
-  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
-  action_list_str += "/service_pet";
-  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
-  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
 
   for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
   {
@@ -5508,6 +5512,26 @@ void warlock_t::apl_destruction()
       action_list_str += items[i].name();
     }
   }
+
+  if ( true_level > 100 )
+  add_action( "Dimensional Rift", "if=charges=3" );
+
+  add_action( "Immolate", "if=remains<=tick_time" );
+  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd))" );
+  action_list_str += "/berserking";
+  action_list_str += "/blood_fury";
+  action_list_str += "/arcane_torrent";
+  if ( find_item( "nithramus_the_allseer" ) )
+    action_list_str += "/potion,name=draenic_intellect,if=buff.nithramus.remains";
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd))" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=3&buff.bloodlust.remains" );
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
+  action_list_str += "/service_pet";
+  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
+  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Chaos Bolt", "if=soul_shard>3" );
@@ -5697,7 +5721,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           dreadstalker_count_expr_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "dreadstalker_count" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 0;
@@ -5719,7 +5743,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           doomguard_count_expr_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "doomguard_count" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 0;
@@ -5734,14 +5758,14 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       };
       return new doomguard_count_expr_t( *this );
   }
-  else if( name_str == "infernal_count")
+  else if( name_str == "infernal_count" )
   {
       struct infernal_count_expr_t: public expr_t
       {
           warlock_t& player;
 
           infernal_count_expr_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "infernal_count" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 0;
@@ -5763,7 +5787,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           service_count_expr_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "service_count" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 0;
@@ -5795,7 +5819,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           wild_imp_without_de_expr_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "wild_imp_no_de" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 0;
@@ -5817,7 +5841,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           dreadstalker_without_de_expr_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "dreadstalker_no_de" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 0;
@@ -5839,7 +5863,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           doomguard_without_de_expr_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "doomguard_no_de" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 0;
@@ -5861,7 +5885,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           infernal_without_de_expr_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "infernal_no_de" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 0;
@@ -5883,7 +5907,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           service_without_de_expr_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "service_no_de" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 0;
@@ -5913,7 +5937,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           wild_imp_de_duration_expression_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "wild_imp_de_duration" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 150000;
@@ -5938,7 +5962,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           dreadstalkers_de_duration_expression_t( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "dreadstalkers_de_duration" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 150000;
@@ -5963,7 +5987,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
               warlock_t& player;
 
               infernal_de_duration_expression_t( warlock_t& p ):
-                expr_t( "shard_react" ), player( p ) { }
+                expr_t( "infernal_de_duration" ), player( p ) { }
               virtual double evaluate() override
               {
                   double t = 150000;
@@ -5988,7 +6012,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
               warlock_t& player;
 
               doomguard_de_duration_expression_t( warlock_t& p ):
-                expr_t( "shard_react" ), player( p ) { }
+                expr_t( "doomguard_de_duration" ), player( p ) { }
               virtual double evaluate() override
               {
                   double t = 150000;
@@ -6013,7 +6037,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           warlock_t& player;
 
           service_de_duration( warlock_t& p ):
-            expr_t( "shard_react" ), player( p ) { }
+            expr_t( "service_de_duration" ), player( p ) { }
           virtual double evaluate() override
           {
               double t = 500000;

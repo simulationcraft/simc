@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=0000211
+talents=1102013
 spec=demonology
 
 # This default action priority list is automatically created based on your character.
@@ -21,11 +21,22 @@ actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&act
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
+actions.precombat+=/demonic_empowerment
 
 # Executed every time the actor is available.
 
-actions=life_tap
+actions=berserking
+actions+=/blood_fury
+actions+=/arcane_torrent
+actions+=/service_pet
+actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3
+actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
+actions+=/soul_harvest
+actions+=/doom,if=remains<=action.hand_of_guldan.cast_time
+actions+=/hand_of_guldan,if=soul_shard>=3Demonic Empowerment,if=wild_imp_no_de>=5
+actions+=/doom,if=remains<=duration*0.3
+actions+=/shadow_bolt
+actions+=/life_tap
 
 head=demon_princes_ascendant_crown,id=124159,bonus_id=566
 neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,enchant_id=5319

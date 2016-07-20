@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=0000311
+talents=1102013
 spec=demonology
 
 # This default action priority list is automatically created based on your character.
@@ -21,36 +21,49 @@ actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&act
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
+actions.precombat+=/demonic_empowerment
 
 # Executed every time the actor is available.
 
-actions=life_tap
+actions=use_item,name=nithramus_the_allseer
+actions+=/berserking
+actions+=/blood_fury
+actions+=/arcane_torrent
+actions+=/potion,name=draenic_intellect,if=buff.nithramus.remains
+actions+=/service_pet
+actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3
+actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
+actions+=/soul_harvest
+actions+=/doom,if=remains<=action.hand_of_guldan.cast_time
+actions+=/hand_of_guldan,if=soul_shard>=3Demonic Empowerment,if=wild_imp_no_de>=5
+actions+=/doom,if=remains<=duration*0.3
+actions+=/shadow_bolt
+actions+=/life_tap
 
 head=demon_princes_ascendant_crown,id=124159,bonus_id=567,upgrade=2
-neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant_id=5319
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=567,upgrade=2,enchant=75mastery
 shoulders=deathrattle_shoulderpads,id=124179,bonus_id=567,upgrade=2
-back=shawl_of_sanguinary_ritual,id=124137,bonus_id=567,upgrade=2,enchant_id=5312
+back=shawl_of_sanguinary_ritual,id=124137,bonus_id=567,upgrade=2,enchant=100mastery
 chest=deathrattle_robe,id=124173,bonus_id=567,upgrade=2
 wrists=contemptuous_wristguards,id=124186,bonus_id=567,upgrade=2
 hands=deathrattle_gloves,id=124156,bonus_id=567,upgrade=2
 waist=demonbuckle_sash_of_argus,id=124200,bonus_id=567,upgrade=2
 legs=deathrattle_leggings,id=124167,bonus_id=567,upgrade=2
 feet=dessicated_soulrender_slippers,id=124150,bonus_id=567,upgrade=2
-finger1=nithramus_the_allseer,id=124635,bonus_id=641,enchant_id=5326
-finger2=loathful_encrusted_band,id=124192,bonus_id=567,upgrade=2,enchant_id=5326
+finger1=nithramus_the_allseer,id=124635,bonus_id=641,enchant=50mastery
+finger2=loathful_encrusted_band,id=124192,bonus_id=567,upgrade=2,enchant=50mastery
 trinket1=fragment_of_the_dark_star,id=124522,bonus_id=567,upgrade=2
-trinket2=desecrated_shadowmoon_insignia,id=124228,bonus_id=567,upgrade=2
-main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5384
+trinket2=chipped_soul_prism,id=124545,upgrade=2
+main_hand=edict_of_argus,id=124382,bonus_id=567,upgrade=2,enchant_id=5337
 
 # Gear Summary
-# gear_ilvl=742.33
+# gear_ilvl=741.33
 # gear_stamina=7054
-# gear_intellect=7361
-# gear_crit_rating=1220
-# gear_haste_rating=1994
-# gear_mastery_rating=3439
-# gear_versatility_rating=228
+# gear_intellect=7619
+# gear_crit_rating=1478
+# gear_haste_rating=2252
+# gear_mastery_rating=3322
+# gear_versatility_rating=486
 # gear_armor=1193
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
