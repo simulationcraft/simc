@@ -4390,6 +4390,11 @@ void player_t::demise()
   // stops resolve and clear resolve_source_list
   resolve_manager.stop();
 
+  for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
+  {
+    callbacks_on_demise[i]( this );
+  }
+
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
     buff_t* b = buff_list[ i ];
@@ -4406,11 +4411,6 @@ void player_t::demise()
   for ( size_t i = 0; i < pet_list.size(); ++i )
   {
     pet_list[i] -> demise();
-  }
-
-  for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
-  {
-    callbacks_on_demise[i]();
   }
 
   for ( size_t i = 0; i < dot_list.size(); ++i )
