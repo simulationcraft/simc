@@ -1233,13 +1233,35 @@ struct furious_slash_t: public warrior_attack_t
     parse_options( options_str );
     weapon = &( p -> off_hand_weapon );
     weapon_multiplier *= 1.0 + p -> artifact.wild_slashes.percent();
+    base_crit += p -> sets.set( WARRIOR_FURY, T18, B2 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
+    if ( execute_state -> result == RESULT_CRIT && p() -> sets.has_set_bonus( WARRIOR_FURY, T18, B4 ) )
+    {
+      p() -> cooldown.battle_cry -> adjust( timespan_t::from_millis( p() -> sets.set( WARRIOR_FURY, T18, B4 ) -> effectN( 1 ).base_value() ) );
+    }
     p() -> buff.taste_for_blood -> trigger( 1 );
     p() -> buff.frenzy -> trigger( 1 );
+  }
+
+  double total_crit_bonus( action_state_t* state ) const override
+  {
+    double bonus = warrior_attack_t::total_crit_bonus( state );
+
+    bonus *= 1.0 + p() -> sets.set( WARRIOR_FURY, T18, B2 ) -> effectN( 2 ).percent();
+
+    return bonus;
+  }
+
+  bool ready() override
+  {
+    if ( p() -> off_hand_weapon.type == WEAPON_NONE )
+      return false;
+
+    return warrior_attack_t::ready();
   }
 };
 
@@ -1434,7 +1456,7 @@ struct colossus_smash_t: public warrior_attack_t
 
       p() -> buff.shattered_defenses -> trigger();
       p() -> buff.precise_strikes -> trigger();
-      if ( p() -> sets.set( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
+      if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T17, B2 ) && p() -> buff.tier17_2pc_arms -> trigger() )
       {
         p() -> proc.t17_2pc_arms -> occur();
       }
