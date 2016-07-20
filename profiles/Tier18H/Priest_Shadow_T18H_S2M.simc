@@ -1,9 +1,9 @@
-priest="Priest_Shadow_T18N"
+priest="Priest_Shadow_T18H_S2M"
 level=100
 race=troll
 role=spell
 position=back
-talents=1213231
+talents=1212233
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -90,30 +90,30 @@ actions.s2m+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
 actions.s2m+=/mind_spike,if=talent.mind_spike.enabled
 actions.s2m+=/shadow_word_pain
 
-head=demon_princes_ascendant_crown,id=124159,upgrade=2
-neck=vial_of_immiscible_liquid,id=124212,upgrade=2,enchant=gift_of_haste
-shoulders=pious_mantle,id=124178,upgrade=2
-back=cloak_of_hideous_unity,id=124138,upgrade=2,enchant=gift_of_haste
-chest=pious_raiment,id=124172,upgrade=2
-wrists=contemptuous_wristguards,id=124186,upgrade=2
-hands=pious_handwraps,id=124155,upgrade=2
-waist=demonbuckle_sash_of_argus,id=124200,upgrade=2
-legs=pious_leggings,id=124166,upgrade=2
-feet=dessicated_soulrender_slippers,id=124150,upgrade=2
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
-finger2=loathful_encrusted_band,id=124192,upgrade=2,enchant=gift_of_haste
-trinket1=repudiation_of_war,id=124519,upgrade=2
-trinket2=iron_reaver_piston,id=124227,upgrade=2
-main_hand=edict_of_argus,id=124382,upgrade=2,enchant=mark_of_warsong
+head=demon_princes_ascendant_crown,id=124159,bonus_id=566,upgrade=2
+neck=vial_of_immiscible_liquid,id=124212,bonus_id=566,upgrade=2,enchant=gift_of_haste
+shoulders=pious_mantle,id=124178,bonus_id=566,upgrade=2
+back=cloak_of_hideous_unity,id=124138,bonus_id=566,upgrade=2,enchant=gift_of_haste
+chest=pious_raiment,id=124172,bonus_id=566,upgrade=2
+wrists=contemptuous_wristguards,id=124186,bonus_id=566,upgrade=2
+hands=pious_handwraps,id=124155,bonus_id=566,upgrade=2
+waist=demonbuckle_sash_of_argus,id=124200,bonus_id=566,upgrade=2
+legs=pious_leggings,id=124166,bonus_id=566,upgrade=2
+feet=dessicated_soulrender_slippers,id=124150,bonus_id=566,upgrade=2
+finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,bonus_id=641
+finger2=loathful_encrusted_band,id=124192,bonus_id=566,upgrade=2,enchant=gift_of_haste
+trinket1=repudiation_of_war,id=124519,bonus_id=566,upgrade=2
+trinket2=iron_reaver_piston,id=124227,bonus_id=566,upgrade=2
+main_hand=edict_of_argus,id=124382,bonus_id=566,upgrade=2,enchant=mark_of_warsong
 
 # Gear Summary
-# gear_ilvl=709.33
-# gear_stamina=5162
-# gear_intellect=5666
-# gear_crit_rating=1397
-# gear_haste_rating=1960
-# gear_mastery_rating=1803
-# gear_versatility_rating=108
-# gear_armor=958
+# gear_ilvl=727.33
+# gear_stamina=6126
+# gear_intellect=6642
+# gear_crit_rating=1610
+# gear_haste_rating=2163
+# gear_mastery_rating=2168
+# gear_versatility_rating=189
+# gear_armor=1073
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1

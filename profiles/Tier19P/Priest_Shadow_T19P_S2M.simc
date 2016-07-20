@@ -1,9 +1,10 @@
-priest="Priest_Shadow_T18N"
-level=100
+priest="Priest_Shadow_T19P_S2M"
+level=110
 race=troll
 role=spell
 position=back
-talents=1213231
+talents=1212233
+artifact=47:0:0:0:0:764:1:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -23,7 +24,8 @@ actions.precombat+=/mind_blast
 
 # Executed every time the actor is available.
 
-actions=call_action_list,name=s2m,if=buff.voidform.up&buff.surrender_to_madness.up
+actions=use_item,slot=trinket2
+actions+=/call_action_list,name=s2m,if=buff.voidform.up&buff.surrender_to_madness.up
 actions+=/call_action_list,name=vf,if=buff.voidform.up
 actions+=/call_action_list,name=main
 
@@ -90,30 +92,32 @@ actions.s2m+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
 actions.s2m+=/mind_spike,if=talent.mind_spike.enabled
 actions.s2m+=/shadow_word_pain
 
-head=demon_princes_ascendant_crown,id=124159,upgrade=2
-neck=vial_of_immiscible_liquid,id=124212,upgrade=2,enchant=gift_of_haste
-shoulders=pious_mantle,id=124178,upgrade=2
-back=cloak_of_hideous_unity,id=124138,upgrade=2,enchant=gift_of_haste
-chest=pious_raiment,id=124172,upgrade=2
-wrists=contemptuous_wristguards,id=124186,upgrade=2
-hands=pious_handwraps,id=124155,upgrade=2
-waist=demonbuckle_sash_of_argus,id=124200,upgrade=2
-legs=pious_leggings,id=124166,upgrade=2
-feet=dessicated_soulrender_slippers,id=124150,upgrade=2
-finger1=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
-finger2=loathful_encrusted_band,id=124192,upgrade=2,enchant=gift_of_haste
-trinket1=repudiation_of_war,id=124519,upgrade=2
-trinket2=iron_reaver_piston,id=124227,upgrade=2
-main_hand=edict_of_argus,id=124382,upgrade=2,enchant=mark_of_warsong
+head=collar_of_enclosure,id=134424,bonus_id=1727
+neck=strand_of_the_stars,id=137487,bonus_id=1727
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
+back=goldscar_pelt,id=133639,bonus_id=1727
+chest=fluxflow_robes,id=134413,bonus_id=1727
+wrists=armbands_of_slaughter,id=134436,bonus_id=1727
+hands=satin_throatclutchers,id=134422,bonus_id=1727
+waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727
+legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1727
+feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727
+finger1=empowered_ring_of_the_kirin_tor,id=139599
+finger2=band_of_fused_coral,id=134532,bonus_id=1727
+trinket1=chrono_shard,id=137419,bonus_id=1727
+trinket2=obelisk_of_the_void,id=137433,bonus_id=1727
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=743,gem_id=140821/140820/140821,relic_id=1806/1806/1806
+off_hand=secrets_of_the_void,id=133958
 
 # Gear Summary
-# gear_ilvl=709.33
-# gear_stamina=5162
-# gear_intellect=5666
-# gear_crit_rating=1397
-# gear_haste_rating=1960
-# gear_mastery_rating=1803
-# gear_versatility_rating=108
-# gear_armor=958
-# set_bonus=tier18_2pc=1
-# set_bonus=tier18_4pc=1
+# gear_ilvl=840.00
+# gear_stamina=17377
+# gear_intellect=17160
+# gear_crit_rating=5409
+# gear_haste_rating=7825
+# gear_mastery_rating=2208
+# gear_versatility_rating=960
+# gear_leech_rating=404
+# gear_armor=1570
+# set_bonus=journey_through_time_2pc=1
+# set_bonus=tier19p_cloth_2pc=1

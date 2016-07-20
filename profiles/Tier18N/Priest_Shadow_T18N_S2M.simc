@@ -1,9 +1,9 @@
-priest="Priest_Shadow_T18N"
+priest="Priest_Shadow_T18N_S2M"
 level=100
 race=troll
 role=spell
 position=back
-talents=1213231
+talents=1212233
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
