@@ -182,7 +182,7 @@ all: $(MODULE)
 
 -include $(SRC_DEPS)
 
-debug:OPTS += -g -fno-omit-frame-pointer -O0
+debug:OPTS += -g -fno-omit-frame-pointer -O0 -fno-optimize-sibling-calls
 debug: $(MODULE)
 
 release:CPP_FLAGS += -DNDEBUG
