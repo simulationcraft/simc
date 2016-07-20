@@ -5613,11 +5613,11 @@ void rogue_t::init_action_list()
   {
     std::string food_action = "food,type=";
     if ( specialization() == ROGUE_ASSASSINATION )
-      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "sleeper_sushi" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_OUTLAW )
-      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "sleeper_sushi" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_SUBTLETY )
-      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "sleeper_sushi" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
+      food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
 
     precombat -> add_action( food_action );
   }
@@ -5673,24 +5673,28 @@ void rogue_t::init_action_list()
         def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
 
-    def -> add_action( this, "Vendetta", "if=cooldown.exsanguinate.remains<5&time>10|time<10&energy<40" );
+    def -> add_action( this, "Vendetta", "if=((!artifact.urge_to_kill.enabled&dot.rupture.ticking)|(energy%energy.max)<0.4)&(time<10|cooldown.exsanguinate.remains<5)" );
     def -> add_talent( this, "Exsanguinate", "if=prev_gcd.rupture&dot.rupture.remains>20" );
-    def -> add_action( this, "Vanish", "if=cooldown.exsanguinate.remains<2&combo_points>5" );
-    def -> add_action( this, "Rupture", "if=cooldown.exsanguinate.remains<1&combo_points>5|(time<3&dot.hemorrhage.remains>10&dot.garrote.remains>8)" );
-    def -> add_action( this, "Garrote", "if=refreshable&combo_points<6&!dot.garrote.exsanguinated" );
-    def -> add_talent( this, "Hemorrhage", "if=refreshable&combo_points<6" );
-    def -> add_action( this, "Kingsbane", "if=time>5" );
-    def -> add_action( this, "Fan of Knives", "cycle_targets=1,if=spell_targets>4|(!dot.deadly_poison_dot.ticking&spell_targets>2)" );
-    def -> add_action( this, "Mutilate", "cycle_targets=1,if=!dot.deadly_poison_dot.ticking&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3" );
-    def -> add_talent( this, "Hemorrhage", "cycle_targets=1,max_cycle_targets=3,if=spell_targets.fan_of_knives>1&!ticking&dot.rupture.remains>6" );
-    def -> add_action( this, "Fan of Knives", "if=spell_targets>3|(poisoned_enemies<3&spell_targets>2)" );
-    def -> add_action( this, "Mutilate", "if=combo_points<5|(combo_points=5&(cooldown.exsanguinate.remains<2|dot.rupture.refreshable))" );
-    def -> add_action( this, "Rupture", "if=!exsanguinated&refreshable&combo_points>5" );
+    def -> add_action( this, "Vanish", "if=cooldown.exsanguinate.remains<2&combo_points>4+talent.deeper_stratagem.enabled" );
+    def -> add_action( this, "Rupture", "if=(combo_points>4+talent.deeper_stratagem.enabled&(cooldown.exsanguinate.remains<1|!exsanguinated&refreshable))|(time<4&dot.hemorrhage.remains>10&dot.garrote.remains>8)" );
+    def -> add_action( this, "Rupture", "if=spell_targets.fan_of_knives>1&!ticking&combo_points>4" );
+    def -> add_action( this, "Rupture", "cycle_targets=1,target_if=max:target.time_to_die,max_cycle_targets=6,if=spell_targets.fan_of_knives>1&!ticking&combo_points>4" );
     def -> add_talent( this, "Death from Above", "if=combo_points>4");
-    def -> add_action( this, "Rupture", "cycle_targets=1,max_cycle_targets=3,if=spell_targets.fan_of_knives>1&!ticking&combo_points>4" );
-    def -> add_action( this, "Envenom", "if=combo_points>=5&(energy.deficit<40|dot.rupture.exsanguinated)&buff.envenom.remains<1&buff.elaborate_planning.remains<2" );
-    def -> add_talent( this, "Marked for Death", "cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.max-combo_points>=4" );
-    def -> add_action( this, "Rupture", "cycle_targets=1,max_cycle_targets=3,if=combo_points>4&refreshable&spell_targets.fan_of_knives>1" );
+    def -> add_action( this, "Envenom", "if=combo_points>3+talent.deeper_stratagem.enabled&(energy.deficit<40|dot.rupture.exsanguinated)&buff.envenom.remains<(1+combo_points)*0.3&buff.elaborate_planning.remains<2" );
+    def -> add_talent( this, "Marked for Death", "cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_stratagem.enabled" );
+    def -> add_action( this, "Rupture", "cycle_targets=1,target_if=max:target.time_to_die,max_cycle_targets=6,if=combo_points>4&refreshable&spell_targets.fan_of_knives>1" );
+    def -> add_action( this, "Mutilate", "if=prev_gcd.exsanguinate" );
+    def -> add_action( this, "Kingsbane", "if=time>6" );
+    def -> add_action( this, "Mutilate", "if=!talent.agonizing_poison.enabled&combo_points.deficit>=2&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3&dot.deadly_poison_dot.remains<4" );
+    def -> add_action( this, "Mutilate", "cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=!talent.agonizing_poison.enabled&combo_points.deficit>=2&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3&dot.deadly_poison_dot.remains<4&dot.rupture.ticking&dot.garrote.ticking" );
+    def -> add_action( this, "Mutilate", "cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=!talent.agonizing_poison.enabled&combo_points.deficit>=2&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3&dot.deadly_poison_dot.remains<4&dot.rupture.ticking" );
+    def -> add_action( this, "Mutilate", "cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=!talent.agonizing_poison.enabled&combo_points.deficit>=2&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3&dot.deadly_poison_dot.remains<4&dot.garrote.ticking" );
+    def -> add_action( this, "Mutilate", "cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=!talent.agonizing_poison.enabled&combo_points.deficit>=2&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3&dot.deadly_poison_dot.remains<4" );
+    def -> add_talent( this, "Hemorrhage", "cycle_targets=1,target_if=max:target.time_to_die,max_cycle_targets=3,if=combo_points.deficit>=1&spell_targets.fan_of_knives>1&!ticking&dot.rupture.remains>6" );
+    def -> add_action( this, "Fan of Knives", "if=combo_points.deficit>=1&(spell_targets>3|(poisoned_enemies<3&spell_targets>2))" );
+    def -> add_action( this, "Mutilate", "if=(combo_points.deficit>=2&cooldown.garrote.remains>1&(!dot.hemorrhage.refreshable|!talent.hemorrhage.enabled))" );
+    def -> add_action( this, "Garrote", "if=combo_points.deficit>=1&refreshable&!dot.garrote.exsanguinated" );
+    def -> add_talent( this, "Hemorrhage", "if=combo_points.deficit>=1&(refreshable|(cooldown.exsanguinate.remains<2|dot.rupture.refreshable))" );
   }
 
   else if ( specialization() == ROGUE_OUTLAW )
@@ -5705,7 +5709,7 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        def -> add_action( racial_actions[i] + ",if=energy<60" );
+        def -> add_action( racial_actions[i] + ",if=energy.deficit>40" );
       else
         def -> add_action( racial_actions[i] );
     }
@@ -5715,15 +5719,15 @@ void rogue_t::init_action_list()
     def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     def -> add_action( this, "Ambush" );
     def -> add_action( "pool_resource,for_next=1,extra_amount=60" );
-    def -> add_action( this, "Vanish", "if=combo_points.max-combo_points>=2&energy>60" );
+    def -> add_action( this, "Vanish", "if=combo_points.deficit>=2&energy>60" );
     def -> add_action( "pool_resource,for_next=1,extra_amount=60" );
-    def -> add_action( "shadowmeld,if=combo_points.max-combo_points>=2&energy>60" );
-    def -> add_talent( this, "Slice and Dice", "if=talent.slice_and_dice.enabled&combo_points>=5+talent.deeper_strategem.enabled&buff.slice_and_dice.remains<6" );
-    def -> add_action( this, "Roll the Bones", "if=!talent.slice_and_dice.enabled&combo_points>=5+talent.deeper_strategem.enabled&buff.roll_the_bones.remains<6" );
+    def -> add_action( "shadowmeld,if=combo_points.deficit>=2&energy>60" );
+    def -> add_talent( this, "Slice and Dice", "if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<6" );
+    def -> add_action( this, "Roll the Bones", "if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<3|buff.roll_the_bones.remains<duration*0.3%rtb_buffs|(!buff.shark_infested_waters.up&rtb_buffs<2))" );
     def -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
-    def -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=2" );
-    def -> add_action( this, "Curse of the Dreadblades", "if=combo_points.max-combo_points>=4" );
-    def -> add_talent( this, "Marked for Death", "cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.max-combo_points>=4" );
+    def -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
+    def -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4" );
+    def -> add_talent( this, "Marked for Death", "cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled" );
     def -> add_action( "call_action_list,name=finisher,if=combo_points>=5+talent.deeper_strategem.enabled" );
     def -> add_action( "call_action_list,name=generator,if=combo_points<5+talent.deeper_strategem.enabled" );
 
@@ -5734,7 +5738,7 @@ void rogue_t::init_action_list()
 
     // Combo Point Generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo Point Generators" );
-    gen -> add_talent( this, "Ghostly Strike", "if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<4.5" );
+    gen -> add_talent( this, "Ghostly Strike", "if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<duration*0.3" );
     gen -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&energy<60" );
     gen -> add_action( this, "Saber Slash");
   }
@@ -5766,15 +5770,15 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Shadow Dance", "if=combo_points.max-combo_points>=2&((cooldown.vanish.remains&buff.symbols_of_death.remains<=10.5&energy.deficit<talent.master_of_shadows.enabled*30)|cooldown.shadow_dance.charges>=2|target.time_to_die<25)" );
     def -> add_action( "shadowmeld,if=energy>40&combo_points.max-combo_points>=3&!(buff.shadow_dance.up|buff.vanish.up|buff.stealth.up)" );
     def -> add_talent( this, "Enveloping Shadows", "if=buff.enveloping_shadows.remains<target.time_to_die&((buff.enveloping_shadows.remains<=10.8+talent.deeper_strategem.enabled*1.8&combo_points>=5+talent.deeper_strategem.enabled)|buff.enveloping_shadows.remains<=6)" );
-    def -> add_talent( this, "Marked for Death", "cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.max-combo_points>=4" );
+    def -> add_talent( this, "Marked for Death", "cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled" );
     def -> add_action( "run_action_list,name=finisher,if=combo_points>=5" );
     def -> add_action( "run_action_list,name=generator,if=combo_points<5" );
 
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
     finisher -> add_talent( this, "Death from Above", "if=spell_targets.death_from_above>=10" );
-    finisher -> add_action( this, "Nightblade", "if=!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3" );
-    finisher -> add_action( this, "Nightblade", "cycle_targets=1,target_if=max:target.time_to_die,if=active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3)" );
+    finisher -> add_action( this, "Nightblade", "if=!dot.nightblade.ticking|dot.nightblade.remains<duration*0.3" );
+    finisher -> add_action( this, "Nightblade", "cycle_targets=1,target_if=max:target.time_to_die,if=active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<duration*0.3)" );
     finisher -> add_talent( this, "Death from Above" );
     finisher -> add_action( this, "Eviscerate" );
 

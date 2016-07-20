@@ -17,7 +17,7 @@ spec=outlaw
 
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/augmentation,type=hyper
-actions.precombat+=/food,type=sleeper_sushi
+actions.precombat+=/food,type=jumbo_sea_dog
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
@@ -31,20 +31,20 @@ actions+=/blade_flurry,if=(spell_targets.blade_flurry>=2&!buff.blade_flurry.up)|
 actions+=/use_item,slot=finger1,if=buff.bloodlust.react|buff.adrenaline_rush.up|target.time_to_die<20
 actions+=/blood_fury
 actions+=/berserking
-actions+=/arcane_torrent,if=energy<60
+actions+=/arcane_torrent,if=energy.deficit>40
 actions+=/adrenaline_rush,if=!buff.adrenaline_rush.up
 actions+=/pool_resource,for_next=1
 actions+=/ambush
 actions+=/pool_resource,for_next=1,extra_amount=60
-actions+=/vanish,if=combo_points.max-combo_points>=2&energy>60
+actions+=/vanish,if=combo_points.deficit>=2&energy>60
 actions+=/pool_resource,for_next=1,extra_amount=60
-actions+=/shadowmeld,if=combo_points.max-combo_points>=2&energy>60
-actions+=/slice_and_dice,if=talent.slice_and_dice.enabled&combo_points>=5+talent.deeper_strategem.enabled&buff.slice_and_dice.remains<6
-actions+=/roll_the_bones,if=!talent.slice_and_dice.enabled&combo_points>=5+talent.deeper_strategem.enabled&buff.roll_the_bones.remains<6
+actions+=/shadowmeld,if=combo_points.deficit>=2&energy>60
+actions+=/slice_and_dice,if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<6
+actions+=/roll_the_bones,if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<3|buff.roll_the_bones.remains<duration*0.3%rtb_buffs|(!buff.shark_infested_waters.up&rtb_buffs<2))
 actions+=/killing_spree,if=energy.time_to_max>5|energy<15
-actions+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=2
-actions+=/curse_of_the_dreadblades,if=combo_points.max-combo_points>=4
-actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.max-combo_points>=4
+actions+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
+actions+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
+actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled
 actions+=/call_action_list,name=finisher,if=combo_points>=5+talent.deeper_strategem.enabled
 actions+=/call_action_list,name=generator,if=combo_points<5+talent.deeper_strategem.enabled
 
@@ -55,7 +55,7 @@ actions.finisher+=/run_through
 
 # Combo Point Generators
 
-actions.generator=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<4.5
+actions.generator=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<duration*0.3
 actions.generator+=/pistol_shot,if=buff.opportunity.up&energy<60
 actions.generator+=/saber_slash
 

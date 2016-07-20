@@ -17,7 +17,7 @@ spec=subtlety
 
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/augmentation,type=hyper
-actions.precombat+=/food,type=sleeper_sushi
+actions.precombat+=/food,type=jumbo_sea_dog
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
@@ -44,15 +44,15 @@ actions+=/pool_resource,for_next=1,extra_amount=energy.max-talent.master_of_shad
 actions+=/shadow_dance,if=combo_points.max-combo_points>=2&((cooldown.vanish.remains&buff.symbols_of_death.remains<=10.5&energy.deficit<talent.master_of_shadows.enabled*30)|cooldown.shadow_dance.charges>=2|target.time_to_die<25)
 actions+=/shadowmeld,if=energy>40&combo_points.max-combo_points>=3&!(buff.shadow_dance.up|buff.vanish.up|buff.stealth.up)
 actions+=/enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&((buff.enveloping_shadows.remains<=10.8+talent.deeper_strategem.enabled*1.8&combo_points>=5+talent.deeper_strategem.enabled)|buff.enveloping_shadows.remains<=6)
-actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.max-combo_points>=4
+actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled
 actions+=/run_action_list,name=finisher,if=combo_points>=5
 actions+=/run_action_list,name=generator,if=combo_points<5
 
 # Combo point finishers
 
 actions.finisher=death_from_above,if=spell_targets.death_from_above>=10
-actions.finisher+=/nightblade,if=!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3
-actions.finisher+=/nightblade,cycle_targets=1,target_if=max:target.time_to_die,if=active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<(6+(2*combo_points))*0.3)
+actions.finisher+=/nightblade,if=!dot.nightblade.ticking|dot.nightblade.remains<duration*0.3
+actions.finisher+=/nightblade,cycle_targets=1,target_if=max:target.time_to_die,if=active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<duration*0.3)
 actions.finisher+=/death_from_above
 actions.finisher+=/eviscerate
 
