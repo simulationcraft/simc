@@ -2140,13 +2140,20 @@ public:
   {
     if ( ! target_str_override.empty() )
     {
-      // If soul effigy is enabled, and the target option specifies soul_effigy as the target, skip
-      // global sim target parsing, and instead target the warlock's own soul effigy.
-      if ( p() -> talents.soul_effigy -> ok() &&
-           p() -> warlock_pet_list.soul_effigy &&
-           util::str_compare_ci( target_str_override, "soul_effigy" ) )
+      // "target=soul_effigy" overrides default sim target option parsing for actions
+      if ( util::str_compare_ci( target_str_override, "soul_effigy" ) )
       {
-        default_target = target = p() -> warlock_pet_list.soul_effigy;
+        // If soul effigy is enabled, skip global sim target parsing, and instead target the
+        // warlock's own soul effigy.
+        if ( p() -> talents.soul_effigy -> ok() && p() -> warlock_pet_list.soul_effigy )
+        {
+          default_target = target = p() -> warlock_pet_list.soul_effigy;
+        }
+        // Soul Effigy not used / not talented, suppress the action using it
+        else
+        {
+          background = true;
+        }
       }
       // .. otherwise, parse the target option using the global target option parsing
       else
@@ -5444,7 +5451,14 @@ void warlock_t::apl_affliction()
   add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
   action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3";
   action_list_str += "/phantom_singularity";
-  add_action( "Unstable Affliction", "if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains|buff.nithramus.remains)" );
+  if ( find_item( "nithramus_the_allseer" ) )
+  {
+    add_action( "Unstable Affliction", "if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains|buff.nithramus.remains)" );
+  }
+  else
+  {
+    add_action( "Unstable Affliction", "if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains)" );
+  }
   add_action( "Agony", "if=remains<=duration*0.3" );
   add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3" );
   add_action( "Corruption", "if=remains<=duration*0.3" );

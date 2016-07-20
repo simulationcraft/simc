@@ -42,7 +42,7 @@ actions+=/corruption,target=soul_effigy,if=remains<=tick_time+gcd
 actions+=/siphon_life,target=soul_effigy,if=remains<=tick_time+gcd
 actions+=/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3
 actions+=/phantom_singularity
-actions+=/unstable_affliction,if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains|buff.nithramus.remains)
+actions+=/unstable_affliction,if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains)
 actions+=/agony,if=remains<=duration*0.3
 actions+=/agony,target=soul_effigy,if=remains<=duration*0.3
 actions+=/corruption,if=remains<=duration*0.3
