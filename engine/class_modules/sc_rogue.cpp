@@ -268,6 +268,7 @@ struct rogue_t : public player_t
     gain_t* t17_4pc_subtlety;
     gain_t* t18_2pc_assassination;
     gain_t* venomous_wounds;
+    gain_t* venomous_wounds_death;
     gain_t* vitality;
     gain_t* energetic_stabbing;
     gain_t* urge_to_kill;
@@ -608,6 +609,9 @@ struct rogue_t : public player_t
   void trigger_true_bearing( int );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
+
+  // On-death trigger for Venomous Wounds energy replenish
+  void trigger_venomous_wounds_death( player_t* );
 
   double consume_cp_max() const
   { return 5.0 + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
@@ -4510,6 +4514,42 @@ void rogue_t::trigger_venomous_wounds( const action_state_t* state )
                  gains.venomous_wounds );
 }
 
+void rogue_t::trigger_venomous_wounds_death( player_t* target )
+{
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( sim -> event_mgr.canceled )
+  {
+    return;
+  }
+
+  if ( ! spec.venomous_wounds -> ok() )
+    return;
+
+  rogue_td_t* td = get_target_data( target );
+  if ( ! td -> poisoned() )
+    return;
+
+  // No end event means it naturally expired
+  if ( ! td -> dots.rupture -> is_ticking() || td -> dots.rupture -> remains() == timespan_t::zero() )
+  {
+    return;
+  }
+
+  // TODO: Exact formula?
+  unsigned full_ticks_remaining = td -> dots.rupture -> remains() / td -> dots.rupture -> current_action -> base_tick_time;
+  int replenish = spec.venomous_wounds -> effectN( 2 ).base_value() +
+                  talent.venom_rush -> effectN( 1 ).base_value();
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s venomous_wounds replenish on target death: full_ticks=%u, ticks_left=%u, vw_replenish=%d, remaining_time=%.3f",
+      name(), full_ticks_remaining, td -> dots.rupture -> ticks_left(), replenish, td -> dots.rupture -> remains().total_seconds() );
+
+  }
+
+  resource_gain( RESOURCE_ENERGY, full_ticks_remaining * replenish, gains.venomous_wounds_death, td -> dots.rupture -> current_action );
+}
+
 void rogue_t::trigger_blade_flurry( const action_state_t* state )
 {
   if ( state -> result_total <= 0 )
@@ -5387,6 +5427,13 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     .spell( source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() )
     .trigger_spell( source -> artifact.blood_of_the_assassinated )
     .default_value( source -> artifact.blood_of_the_assassinated.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
+  // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on
+  // death.
+  if ( source -> specialization() == ROGUE_ASSASSINATION && source -> spec.venomous_wounds -> ok() )
+  {
+    target -> callbacks_on_demise.push_back( std::bind( &rogue_t::trigger_venomous_wounds_death, source, std::placeholders::_1 ) );
+  }
 }
 
 // ==========================================================================
@@ -6236,7 +6283,8 @@ void rogue_t::init_gains()
   gains.t17_2pc_subtlety        = get_gain( "t17_2pc_subtlety" );
   gains.t17_4pc_subtlety        = get_gain( "t17_4pc_subtlety" );
   gains.t18_2pc_assassination   = get_gain( "Assassination T18 2PC" );
-  gains.venomous_wounds         = get_gain( "venomous_vim"       );
+  gains.venomous_wounds         = get_gain( "Venomous Vim"       );
+  gains.venomous_wounds_death   = get_gain( "Venomous Vim (death) ");
   gains.quick_draw = get_gain( "Quick Draw" );
   gains.broadsides = get_gain( "Broadsides" );
   gains.ruthlessness = get_gain( "Ruthlessness" );
