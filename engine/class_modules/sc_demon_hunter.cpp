@@ -6381,8 +6381,6 @@ double demon_hunter_t::passive_movement_modifier() const
     ms += cache.mastery() *
           mastery_spell.demonic_presence -> effectN( 2 ).mastery_value();
 
-  ms += buff.immolation_aura -> value();
-
   return ms;
 }
 
