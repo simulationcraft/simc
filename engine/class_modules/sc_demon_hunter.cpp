@@ -757,6 +757,7 @@ struct soul_fragment_t
             frag->dh->get_total_soul_fragments( frag->type ) );
       }
 
+      frag->expiration = nullptr;
       frag->remove();
     }
   };
@@ -4057,6 +4058,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = may_crit = false;
     attack_power_mod.direct = 0;  // This parent action deals no damage;
+    base_dd_min = base_dd_max = 0;
 
     mh = new soul_cleave_damage_t( "soul_cleave_mh", p,
                                    data().effectN( 2 ).trigger() );
