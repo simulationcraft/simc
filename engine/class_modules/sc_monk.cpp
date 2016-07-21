@@ -117,7 +117,7 @@ enum sef_ability_e {
 
 unsigned sef_spell_idx( unsigned x )
 {
-  return x - as<unsigned>( SEF_SPELL_MIN );
+  return x - as<unsigned>(static_cast<int>( SEF_SPELL_MIN ));
 }
 
 struct monk_td_t: public actor_target_data_t

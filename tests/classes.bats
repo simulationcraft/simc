@@ -40,3 +40,7 @@ load test_helper
 	class_sim2 Warrior
 }
 
+@test "Simple Monk specs test" {
+	class_sim2 Monk
+}
+
