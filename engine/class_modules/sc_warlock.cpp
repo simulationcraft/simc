@@ -6062,6 +6062,142 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       };
       return new service_de_duration( *this );
   }
+
+
+  else if( name_str == "wild_imp_remaining_duration" )
+      {
+          struct wild_imp_remaining_duration_expression_t: public expr_t
+          {
+              warlock_t& player;
+
+              wild_imp_remaining_duration_expression_t( warlock_t& p ):
+                expr_t( "wild_imp_remaining_duration" ), player( p ) { }
+              virtual double evaluate() override
+              {
+                  double t = 5000;
+                  for(auto& pet : player.warlock_pet_list.wild_imps)
+                  {
+                      if( !pet->is_sleeping() )
+                      {
+                          if( t > pet->duration.total_millis() )
+                          t = pet->duration.total_millis();
+                      }
+                  }
+                  if(t=5000)
+                      t = 0;
+                  return t;
+              }
+
+          };
+          return new wild_imp_remaining_duration_expression_t( *this );
+      }
+  else if( name_str == "dreadstalker_remaining_duration" )
+      {
+          struct dreadstalker_remaining_duration_expression_t: public expr_t
+          {
+              warlock_t& player;
+
+              dreadstalker_remaining_duration_expression_t( warlock_t& p ):
+                expr_t( "dreadstalker_remaining_duration" ), player( p ) { }
+              virtual double evaluate() override
+              {
+                  double t = 0;
+                  for(auto& pet : player.warlock_pet_list.dreadstalkers)
+                  {
+                      if( !pet->is_sleeping() )
+                      {
+                          if( t > pet->duration.total_millis() )
+                          t = pet->duration.total_millis();
+                      }
+                  }
+                  if(t=5000)
+                      t = 0;
+                  return t;
+              }
+
+          };
+          return new dreadstalker_remaining_duration_expression_t( *this );
+      }
+  else if( name_str == "infernal_remaining_duration" )
+      {
+          struct infernal_remaining_duration_expression_t: public expr_t
+          {
+              warlock_t& player;
+
+              infernal_remaining_duration_expression_t( warlock_t& p ):
+                expr_t( "infernal_remaining_duration" ), player( p ) { }
+              virtual double evaluate() override
+              {
+                  double t = 0;
+                  for(auto& pet : player.warlock_pet_list.infernal)
+                  {
+                      if(!pet->is_sleeping() )
+                      {
+                          t = pet->duration.total_millis();
+                      }
+                  }
+                  return t;
+              }
+
+          };
+          return new infernal_remaining_duration_expression_t( *this );
+      }
+  else if( name_str == "doomguard_remaining_duration" )
+      {
+          struct doomguard_remaining_duration_expression_t: public expr_t
+          {
+              warlock_t& player;
+
+              doomguard_remaining_duration_expression_t( warlock_t& p ):
+                expr_t( "doomguard_remaining_duration" ), player( p ) { }
+              virtual double evaluate() override
+              {
+                  double t = 0;
+                  for(auto& pet : player.warlock_pet_list.doomguard)
+                  {
+                      if(!pet->is_sleeping() )
+                      {
+                          t = pet->duration.total_millis();
+                      }
+                  }
+                  return t;
+              }
+
+          };
+          return new doomguard_remaining_duration_expression_t( *this );
+      }
+  else if( name_str == "service_remaining_duration" )
+  {
+      struct service_remaining_duration_expr_t: public expr_t
+      {
+          warlock_t& player;
+
+          service_remaining_duration_expr_t( warlock_t& p ):
+            expr_t( "service_remaining_duration" ), player( p ) { }
+          virtual double evaluate() override
+          {
+              double t = 0;
+              for(auto& pet : player.pet_list)
+              {
+                  pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
+                  if(lock_pet != NULL)
+                  {
+                      if(lock_pet->is_grimoire_of_service)
+                      {
+                          if(!lock_pet->is_sleeping() )
+                          {
+                              t=lock_pet->duration.total_millis();
+                          }
+                      }
+                  }
+              }
+              return t;
+          }
+
+      };
+      return new service_remaining_duration_expr_t( *this );
+  }
+
   else
   {
     return player_t::create_expression( a, name_str );
