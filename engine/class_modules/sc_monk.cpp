@@ -6546,7 +6546,7 @@ void monk_t::create_buffs()
     .default_value( passives.dragonfire_brew_reduction -> effectN( 1 ).percent() ); // Saved as -2%
 
   buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", mastery.elusive_brawler -> effectN( 3 ).trigger() )
-    .max_stack( specialization() == MONK_BREWMASTER ? static_cast<int>( ceil( 1 / ( mastery.elusive_brawler -> effectN( 1 ).mastery_value() * 8 ) ) ) : 1 )
+    .max_stack( 100 ) // Hard code 100 stacks based on testing 07/20/16 https://twitter.com/Phazius/status/755956860583149568
     .add_invalidate( CACHE_DODGE );
 
   buff.elusive_dance = buff_creator_t(this, "elusive_dance", passives.elusive_dance)
