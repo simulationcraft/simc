@@ -8421,7 +8421,8 @@ struct monk_module_t: public module_t
   {
     p -> buffs.windwalking_movement_aura = buff_creator_t( p, "windwalking_movement_aura",
                                                             p -> find_spell( 166646 ) )
-      .duration( timespan_t::from_seconds( 0 ) );
+      .duration( timespan_t::from_seconds( 0 ) )
+      .add_invalidate( CACHE_RUN_SPEED );
   }
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
