@@ -54,8 +54,8 @@ install:
 script:
   # Test SimulationCraft.
   - cd tests
-  - ./run.sh enemies.bats
   - ./run.sh classes.bats
+  - ./run.sh enemies.bats
   - cd ..
 
   # Valgrind a raid profile with Linux

@@ -115,7 +115,10 @@ enum sef_ability_e {
   SEF_MAX
 };
 
-#define sef_spell_idx( x ) ( ( x ) - SEF_SPELL_MIN )
+unsigned sef_spell_idx( unsigned x )
+{
+  return x - as<unsigned>( SEF_SPELL_MIN );
+}
 
 struct monk_td_t: public actor_target_data_t
 {
@@ -173,6 +176,17 @@ public:
   unsigned int internal_id;
   // Counter for when to start the trigger for the 19 4-piece Windwalker Combo Master buff
   double tier19_4pc_melee_counter;
+
+  double weapon_power_mod;
+  // Tier 18 (WoD 6.2) trinket effects
+  const special_effect_t* eluding_movements;
+  const special_effect_t* soothing_breeze;
+  const special_effect_t* furious_sun;
+
+  // Legion Artifact effects
+  const special_effect_t* fu_zan_the_wanderers_companion;
+  const special_effect_t* sheilun_staff_of_the_mists;
+  const special_effect_t* fists_of_the_heavens;
 
   struct buffs_t
   {
@@ -563,32 +577,42 @@ public:
     int initial_chi;
   } user_options;
 
+  // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
+  // the threshold will switch to the next threshold
+  const double light_stagger_threshold;
+  const double moderate_stagger_threshold;
+  const double heavy_stagger_threshold;
 private:
   target_specific_t<monk_td_t> target_data;
 public:
-
-  monk_t( sim_t* sim, const std::string& name, race_e r ):
-    player_t( sim, MONK, name, r ),
-    active_actions( active_actions_t() ),
-    buff( buffs_t() ),
-    gain( gains_t() ),
-    proc( procs_t() ),
-    talent( talents_t() ),
-    spec( specs_t() ),
-    mastery( mastery_spells_t() ),
-    cooldown( cooldowns_t() ),
-    passives( passives_t() ),
-    pet( pets_t() ),
-    user_options( options_t() ),
-    light_stagger_threshold( 0 ),
-    moderate_stagger_threshold( 0.035 ),
-    heavy_stagger_threshold( 0.065 ),
-    eluding_movements( nullptr ),
-    soothing_breeze( nullptr ),
-    furious_sun( nullptr ),
-    fu_zan_the_wanderers_companion(nullptr),
-    sheilun_staff_of_the_mists( nullptr ),
-    fists_of_the_heavens( nullptr )
+  monk_t( sim_t* sim, const std::string& name, race_e r )
+    : player_t( sim, MONK, name, r ),
+      active_actions( active_actions_t() ),
+      previous_combo_strike(CS_NONE),
+      gale_burst_touch_of_death_bonus(),
+      gift_of_the_ox_proc_chance(),
+      internal_id(),
+      tier19_4pc_melee_counter(),
+      weapon_power_mod(),
+      eluding_movements( nullptr ),
+      soothing_breeze( nullptr ),
+      furious_sun( nullptr ),
+      fu_zan_the_wanderers_companion( nullptr ),
+      sheilun_staff_of_the_mists( nullptr ),
+      fists_of_the_heavens( nullptr ),
+      buff( buffs_t() ),
+      gain( gains_t() ),
+      proc( procs_t() ),
+      talent( talents_t() ),
+      spec( specs_t() ),
+      mastery( mastery_spells_t() ),
+      cooldown( cooldowns_t() ),
+      passives( passives_t() ),
+      pet( pets_t() ),
+      user_options( options_t() ),
+      light_stagger_threshold( 0 ),
+      moderate_stagger_threshold( 0.035 ),
+      heavy_stagger_threshold( 0.065 )
   {
     // actives
     active_celestial_fortune_proc = nullptr;
@@ -610,11 +634,6 @@ public:
       regen_caches[CACHE_HASTE] = true;
       regen_caches[CACHE_ATTACK_HASTE] = true;
     }
-    previous_combo_strike = CS_NONE;
-    gale_burst_touch_of_death_bonus = 0;
-    gift_of_the_ox_proc_chance = 0;
-    internal_id = 0;
-    tier19_4pc_melee_counter = 0;
     user_options.initial_chi = 0;
   }
 
@@ -693,29 +712,13 @@ public:
   double current_stagger_tick_dmg_percent();
   double current_stagger_dot_remains();
   double stagger_pct();
-  // Blizzard rounds it's stagger damage; anything higher than half a percent beyond 
-  // the threshold will switch to the next threshold
-  const double light_stagger_threshold;
-  const double moderate_stagger_threshold;
-  const double heavy_stagger_threshold;
 //  combo_strikes_e convert_expression_action_to_enum( action_t* a );
   void trigger_celestial_fortune( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
-  double weapon_power_mod;
   double clear_stagger();
   double partial_clear_stagger( double );
   bool has_stagger();
-
-  // Tier 18 (WoD 6.2) trinket effects
-  const special_effect_t* eluding_movements;
-  const special_effect_t* soothing_breeze;
-  const special_effect_t* furious_sun;
-
-  // Legion Artifact effects
-  const special_effect_t* fu_zan_the_wanderers_companion;
-  const special_effect_t* sheilun_staff_of_the_mists;
-  const special_effect_t* fists_of_the_heavens;
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
@@ -742,9 +745,8 @@ struct statue_t: public pet_t
 
 struct jade_serpent_statue_t: public statue_t
 {
-  typedef statue_t base_t;
   jade_serpent_statue_t( sim_t* sim, monk_t* owner, const std::string& n ):
-    base_t( sim, owner, n, PET_NONE, true )
+    statue_t( sim, owner, n, PET_NONE, true )
   { }
 };
 
@@ -756,7 +758,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
 {
   struct sef_td_t: public actor_target_data_t
   {
-
     sef_td_t( player_t* target, storm_earth_and_fire_pet_t* source ) :
       actor_target_data_t( target, source )
     { }
@@ -1020,10 +1021,10 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         ap += o() -> main_hand_weapon.dps * 3.5;
       }
-      // 1h/dual wield equation. Note, this formula is slightly off (~3%) for
-      // owner dw/pet dw variation.
       else
       {
+        // 1h/dual wield equation. Note, this formula is slightly off (~3%) for
+        // owner dw/pet dw variation.
         double total_dps = o() -> main_hand_weapon.dps;
         double dw_mul = 1.0;
         if ( o() -> off_hand_weapon.group() != WEAPON_NONE )
@@ -1053,7 +1054,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
         schedule_execute();
       }
       else
+      {
         sef_melee_attack_t::execute();
+      }
     }
   };
 
@@ -1416,19 +1419,24 @@ public:
   {
     pet_t::init_spells();
 
-    attacks[ SEF_TIGER_PALM                   ] = new sef_tiger_palm_t( this );
-    attacks[ SEF_BLACKOUT_KICK                ] = new sef_blackout_kick_t( this );
-    attacks[ SEF_RISING_SUN_KICK              ] = new sef_rising_sun_kick_t( this );
-    attacks[ SEF_RISING_SUN_KICK_TRINKET      ] = new sef_rising_sun_kick_trinket_t( this );
-//    attacks[ SEF_RISING_SUN_KICK_TORNADO_KICK ] = new sef_rising_sun_kick_tornado_kick_t( this );
-    attacks[ SEF_FISTS_OF_FURY                ] = new sef_fists_of_fury_t( this );
-    attacks[ SEF_SPINNING_CRANE_KICK          ] = new sef_spinning_crane_kick_t( this );
-    attacks[ SEF_RUSHING_JADE_WIND            ] = new sef_rushing_jade_wind_t( this );
-    attacks[ SEF_WHIRLING_DRAGON_PUNCH        ] = new sef_whirling_dragon_punch_t( this );
+    attacks.at( SEF_TIGER_PALM )      = new sef_tiger_palm_t( this );
+    attacks.at( SEF_BLACKOUT_KICK )   = new sef_blackout_kick_t( this );
+    attacks.at( SEF_RISING_SUN_KICK ) = new sef_rising_sun_kick_t( this );
+    attacks.at( SEF_RISING_SUN_KICK_TRINKET ) =
+        new sef_rising_sun_kick_trinket_t( this );
+    //    attacks.at SEF_RISING_SUN_KICK_TORNADO_KICK ) = new
+    //    sef_rising_sun_kick_tornado_kick_t( this );
+    attacks.at( SEF_FISTS_OF_FURY ) = new sef_fists_of_fury_t( this );
+    attacks.at( SEF_SPINNING_CRANE_KICK ) =
+        new sef_spinning_crane_kick_t( this );
+    attacks.at( SEF_RUSHING_JADE_WIND ) = new sef_rushing_jade_wind_t( this );
+    attacks.at( SEF_WHIRLING_DRAGON_PUNCH ) =
+        new sef_whirling_dragon_punch_t( this );
 
-    spells[ sef_spell_idx( SEF_CHI_BURST )                ] = new sef_chi_burst_t( this );
-    spells[ sef_spell_idx( SEF_CHI_WAVE )                 ] = new sef_chi_wave_t( this );
-    spells[ sef_spell_idx( SEF_CRACKLING_JADE_LIGHTNING ) ] = new sef_crackling_jade_lightning_t( this );
+    spells.at( sef_spell_idx( SEF_CHI_BURST ) ) = new sef_chi_burst_t( this );
+    spells.at( sef_spell_idx( SEF_CHI_WAVE ) )  = new sef_chi_wave_t( this );
+    spells.at( sef_spell_idx( SEF_CRACKLING_JADE_LIGHTNING ) ) =
+        new sef_crackling_jade_lightning_t( this );
   }
 
   void init_action_list() override
@@ -5822,8 +5830,10 @@ struct chi_orbit_event_t : public player_event_t
     tick_time = clamp( tick_time, timespan_t::zero(), player.talent.chi_orbit -> effectN( 1 ).period() );
     add_event( tick_time );
   }
+
   virtual const char* name() const override
   { return  "chi_orbit_generate"; }
+
   virtual void execute() override
   {
     monk_t* p = debug_cast<monk_t*>( player() );
@@ -5842,8 +5852,10 @@ struct chi_orbit_trigger_event_t : public player_event_t
     tick_time = clamp( tick_time, timespan_t::zero(), timespan_t::from_seconds( 1 ) );
     add_event( tick_time );
   }
+
   virtual const char* name() const override
   { return  "chi_orbit_trigger"; }
+
   virtual void execute() override
   {
     monk_t* p = debug_cast<monk_t*>( player() );
@@ -5864,8 +5876,10 @@ struct power_strikes_event_t: public player_event_t
     tick_time = clamp( tick_time, timespan_t::zero(), player.talent.power_strikes -> effectN( 1 ).period() );
     add_event( tick_time );
   }
+
   virtual const char* name() const override
   { return  "power_strikes"; }
+
   virtual void execute() override
   {
     monk_t* p = debug_cast<monk_t*>( player() );
@@ -6058,6 +6072,10 @@ void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
 {
   std::vector<player_t*> targets = state -> action -> target_list();
+  if ( targets.empty())
+  {
+    return nullptr;
+  }
   if ( targets.size() > 1 )
   {
     // Have the SEF converge onto the the cleave target if there are only 2 targets
@@ -6102,7 +6120,7 @@ player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
     return lowest_duration;
   }
   // otherwise, target the same as the player
-  return targets[0];
+  return targets.front();
 }
 
 // monk_t::create_pet =======================================================
@@ -6839,17 +6857,17 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
     auto lcs = get_target_data( l ) -> debuff.mark_of_the_crane;
     auto rcs = get_target_data( r ) -> debuff.mark_of_the_crane;
     // Neither has cyclone strike
-    if ( ! lcs -> up() && ! rcs -> up() )
+    if ( ! lcs -> check() && ! rcs -> check() )
     {
       return false;
     }
     // Left side does not have cyclone strike, right side does
-    else if ( ! lcs -> up() && rcs -> up() )
+    else if ( ! lcs -> check() && rcs -> check() )
     {
       return true;
     }
     // Left side has cyclone strike, right side does not
-    else if ( lcs -> up() && ! rcs -> up() )
+    else if ( lcs -> check() && ! rcs -> check() )
     {
       return false;
     }
