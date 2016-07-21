@@ -524,7 +524,7 @@ Description      : Fire a blast of unholy energy, causing Shadow damage to an en
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
 Class            : Blood Death Knight
 School           : Physical
-Spell Level      : 60
+Spell Level      : 55
 GCD              : 1 seconds
 Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...... ........ 
                  : x....... ........ ........ ........   ........ ........ x...x... ........ 
