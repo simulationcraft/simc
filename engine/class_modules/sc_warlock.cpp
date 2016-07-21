@@ -2786,6 +2786,10 @@ struct shadow_bolt_t: public warlock_spell_t
 
     if ( p() -> talents.demonic_calling -> ok() )
       p() -> buffs.demonic_calling -> trigger();
+
+    if ( p() -> buffs.shadowy_inspiration -> check() )
+      p() -> buffs.shadowy_inspiration -> expire();
+
     if( p()->artifact.thalkiels_discord.rank())
     {
         if( rng().roll(0.15) )
@@ -4094,12 +4098,25 @@ struct demonbolt_t: public warlock_spell_t
     return pm;
   }
 
+  virtual timespan_t execute_time() const override
+  {
+    if ( p() -> buffs.shadowy_inspiration -> check() )
+    {
+      return timespan_t::zero();
+    }
+    return warlock_spell_t::execute_time();
+  }
+
     void execute() override
     {
         warlock_spell_t::execute();
 
         if ( p() -> talents.demonic_calling -> ok() )
           p() -> buffs.demonic_calling -> trigger();
+
+        if ( p() -> buffs.shadowy_inspiration -> check() )
+          p() -> buffs.shadowy_inspiration -> expire();
+
         if( p()->artifact.thalkiels_discord.rank())
         {
             if( rng().roll(0.15) )
