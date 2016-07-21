@@ -35,7 +35,8 @@ actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_target
 actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
 actions+=/soul_harvest
 actions+=/doom,if=remains<=action.hand_of_guldan.cast_time
-actions+=/hand_of_guldan,if=soul_shard>=3demonic_empowerment,if=wild_imp_no_de>=5
+actions+=/hand_of_guldan,if=soul_shard>=3
+actions+=/demonic_empowerment,if=wild_imp_no_de>=5
 actions+=/doom,if=remains<=duration*0.3
 actions+=/shadow_bolt
 actions+=/life_tap
