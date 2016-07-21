@@ -1831,13 +1831,10 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
 
   titans_frenzy_t* titans_frenzy;
   dire_frenzy_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "dire_frenzy", p, p -> find_spell( 217200 ) ) // FIXME use 217207
+    hunter_main_pet_attack_t( "dire_frenzy", p, p -> find_spell( 217207 ) )
   {
       background = true;
-      energize_amount = 0.0;  // FIXME
-      school = SCHOOL_PHYSICAL;
       weapon = &p -> main_hand_weapon;
-      weapon_multiplier = 1.4; // FIXME
 
       if ( p -> o() -> artifacts.titans_thunder.rank() )
         titans_frenzy = new titans_frenzy_t( p );
@@ -2646,8 +2643,8 @@ struct start_attack_t: public hunter_ranged_attack_t
 //==============================
 // Shared attacks
 //==============================
+
 // Barrage ==================================================================
-// This is a spell because that's the only way to support "channeled" effects
 
 struct barrage_t: public hunter_ranged_attack_t
 {
