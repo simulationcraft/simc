@@ -2389,7 +2389,14 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
     // TODO: Verify if only integer chunks of 20 focus reduce the CD, or if there's rollover
     if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_seconds( -1.0 * cost() / p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 ) -> effectN( 1 ).base_value() ) );
+    {
+      p() -> cooldowns.trueshot 
+        -> adjust( timespan_t::from_seconds( -1.0 * 
+                                             cost() / 
+                                               p() -> sets.set( HUNTER_MARKSMANSHIP, T19, B2 ) 
+                                            -> effectN( 1 )
+                                              .base_value() ) );
+    }
   }
 
   virtual timespan_t execute_time() const override
@@ -2422,7 +2429,10 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
   void trigger_piercing_shots( action_state_t* s )
   {
-    double amount = p() -> talents.careful_aim -> effectN( 3 ).percent() * s -> result_amount;
+    double amount = p() -> talents.careful_aim 
+                        -> effectN( 3 )
+                          .percent() * 
+                      s -> result_amount;
 
     residual_action::trigger( p() -> active.piercing_shots, s -> target, amount );
   }
@@ -2430,19 +2440,19 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
 struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
 {
-  hunter_melee_attack_t( const std::string& n, hunter_t* player,
+  hunter_melee_attack_t( const std::string& n, hunter_t* p,
                           const spell_data_t* s = spell_data_t::nil() ):
-                          base_t( n, player, s )
+                          base_t( n, p, s )
   {
-    if ( player -> main_hand_weapon.type == WEAPON_NONE )
+    if ( p -> main_hand_weapon.type == WEAPON_NONE )
       background = true;
 
-    weapon = &( player -> main_hand_weapon );
-    special = true;
-    may_crit = true;
-    tick_may_crit = true;
-    may_parry = false;
+    weapon = &p -> main_hand_weapon;
     may_block = false;
+    may_crit = true;
+    may_parry = false;
+    special = true;
+    tick_may_crit = true;
   }
 
   virtual double composite_crit_chance() const override
@@ -2461,11 +2471,11 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
 struct ranged_t: public hunter_ranged_attack_t
 {
   bool first_shot;
-  ranged_t( hunter_t* player, const char* name = "ranged", const spell_data_t* s = spell_data_t::nil() ):
-    hunter_ranged_attack_t( name, player, s ), first_shot( true )
+  ranged_t( hunter_t* p, const char* n = "ranged", const spell_data_t* s = spell_data_t::nil() ):
+    hunter_ranged_attack_t( n, p, s ), first_shot( true )
   {
     school = SCHOOL_PHYSICAL;
-    weapon = &( player -> main_hand_weapon );
+    weapon = &p -> main_hand_weapon;
     base_execute_time = weapon -> swing_time;
     background = true;
     repeating = true;
@@ -3567,6 +3577,13 @@ struct sidewinders_t: hunter_ranged_attack_t
 
   virtual void execute() override
   {
+    // Sidewinders resets swing timer (lol barrage copy & paste)
+    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
+    {
+      p() -> main_hand_attack -> cancel();
+      p() -> main_hand_attack -> schedule_execute();
+    }
+
     hunter_ranged_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -4943,9 +4960,6 @@ struct explosive_trap_t: public hunter_spell_t
       if ( p -> talents.improved_traps -> ok() )
         cooldown -> duration *= 1.0 + p -> talents.improved_traps -> effectN( 2 ).percent();
 
-     // if ( p -> talents.expert_trapper -> ok() )
-     //   base_multiplier *= 1.0 + p -> talents.expert_trapper -> effectN( 1 ).percent();
-
       if ( p -> artifacts.hunters_guile.rank() )
         cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
     }
@@ -5033,6 +5047,9 @@ struct caltrops_t: public hunter_spell_t
 
       if ( p -> talents.expert_trapper -> ok() )
         base_multiplier = 1.0 + p -> talents.expert_trapper -> effectN( 2 ).percent();
+
+      if ( p -> artifacts.hunters_guile.rank() )
+        cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
     };
   };
 
@@ -5115,38 +5132,58 @@ dots( dots_t() )
   dots.lacerate = target -> get_dot( "lacerate", p );
   dots.on_the_trail = target -> get_dot( "on_the_trail", p );
 
-  debuffs.hunters_mark      = buff_creator_t( *this, "hunters_mark" )
-                                .spell( p -> find_spell( 185365 ) );
+  debuffs.hunters_mark = 
+    buff_creator_t( *this, "hunters_mark" )
+      .spell( p -> find_spell( 185365 ) );
   if ( p -> talents.patient_sniper -> ok() )
   {
-    debuffs.vulnerable      = buff_creator_t( *this, "vulnerability" )
-                                  .spell( p -> find_spell( 187131 ) )
-                                  .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() + p -> talents.patient_sniper -> effectN( 2 ).percent() )
-                                  .duration( timespan_t::from_seconds( 6.0 ) )
-                                  .max_stack( 1 );
+    debuffs.vulnerable = 
+      buff_creator_t( *this, "vulnerability" )
+        .spell( p -> find_spell( 187131 ) )
+        .default_value( p -> find_spell( 187131 ) 
+                          -> effectN( 2 )
+                            .percent() + 
+                              p -> talents.patient_sniper 
+                                -> effectN( 2 
+                                 ).percent() )
+        .duration( timespan_t::from_seconds( 6.0 ) )
+        .max_stack( 1 );
   }
   else
   {
-    debuffs.vulnerable      = buff_creator_t( *this, "vulnerability" )
-                                  .spell( p -> find_spell( 187131 ) )
-                                  .default_value( p -> find_spell( 187131 ) -> effectN( 2 ).percent() )
-                                  .max_stack( 3 );
+    debuffs.vulnerable = 
+      buff_creator_t( *this, "vulnerability" )
+        .spell( p -> find_spell( 187131 ) )
+        .default_value( p -> find_spell( 187131 ) 
+                          -> effectN( 2 )
+                            .percent() )
+        .max_stack( 3 );
   }
-  debuffs.true_aim          = buff_creator_t( *this, "true_aim" )
-                                .spell( p -> find_spell( 199803 ) )
-                                .default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
+  debuffs.true_aim = 
+    buff_creator_t( *this, "true_aim" )
+        .spell( p -> find_spell( 199803 ) )
+        .default_value( p -> find_spell( 199803 ) 
+                          -> effectN( 1 )
+                            .percent() );
 
-  debuffs.lacerate          = buff_creator_t( *this, "lacerate" )
-                                .cd( timespan_t::zero() )
-                                .spell( p -> find_specialization_spell( "Lacerate" ) );
+  debuffs.lacerate = 
+    buff_creator_t( *this, "lacerate" )
+        .cd( timespan_t::zero() )
+        .spell( p -> find_specialization_spell( "Lacerate" ) );
 
-  debuffs.t18_2pc_open_wounds = buff_creator_t( *this, "open_wounds" )
-                                .spell( p -> find_spell( 188400 ) )
-                                .default_value( p -> find_spell( 188400 ) -> effectN( 1 ).percent() );
+  debuffs.t18_2pc_open_wounds = 
+    buff_creator_t( *this, "open_wounds" )
+        .spell( p -> find_spell( 188400 ) )
+        .default_value( p -> find_spell( 188400 ) 
+                          -> effectN( 1 )
+                            .percent() );
 
-  debuffs.mark_of_helbrine  = buff_creator_t( *this, "mark_of_helbrine" )
-                                .spell( p -> find_spell( 213156 ) )
-                                .default_value( p -> find_spell( 213154 ) -> effectN( 1 ).percent() );
+  debuffs.mark_of_helbrine = 
+    buff_creator_t( *this, "mark_of_helbrine" )
+        .spell( p -> find_spell( 213156 ) )
+        .default_value( p -> find_spell( 213154 ) 
+                          -> effectN( 1 )
+                            .percent() );
 }
 
 
