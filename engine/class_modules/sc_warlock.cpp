@@ -6079,8 +6079,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                   {
                       if( !pet->is_sleeping() )
                       {
-                          if( t > pet->duration.total_millis() )
-                          t = pet->duration.total_millis();
+                          if( t > pet->duration.total_seconds() )
+                          t = pet->duration.total_seconds();
                       }
                   }
                   if(t=5000)
@@ -6101,13 +6101,13 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                 expr_t( "dreadstalker_remaining_duration" ), player( p ) { }
               virtual double evaluate() override
               {
-                  double t = 0;
+                  double t = 5000;
                   for(auto& pet : player.warlock_pet_list.dreadstalkers)
                   {
                       if( !pet->is_sleeping() )
                       {
-                          if( t > pet->duration.total_millis() )
-                          t = pet->duration.total_millis();
+                          if( t > pet->duration.total_seconds() )
+                          t = pet->duration.total_seconds();
                       }
                   }
                   if(t=5000)
@@ -6133,7 +6133,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                   {
                       if(!pet->is_sleeping() )
                       {
-                          t = pet->duration.total_millis();
+                          t = pet->duration.total_seconds();
                       }
                   }
                   return t;
@@ -6157,7 +6157,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                   {
                       if(!pet->is_sleeping() )
                       {
-                          t = pet->duration.total_millis();
+                          t = pet->duration.total_seconds();
                       }
                   }
                   return t;
@@ -6186,7 +6186,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                       {
                           if(!lock_pet->is_sleeping() )
                           {
-                              t=lock_pet->duration.total_millis();
+                              t=lock_pet->duration.total_seconds();
                           }
                       }
                   }
