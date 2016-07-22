@@ -1588,7 +1588,14 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   {
     skulker_shot_t( risen_skulker_pet_t* player, const std::string& options_str ) :
       super( player, "skulker_shot", player -> find_spell( 212423 ), options_str )
-    { weapon = &( player -> main_hand_weapon ); }
+    {
+      weapon = &( player -> main_hand_weapon );
+
+      // Approximate the Skulker bro's lag as 400ms mean with 50ms standard deviation. This roughly
+      // matches in game behavior around 2016-07-22.
+      ability_lag = timespan_t::from_millis( 400 );
+      ability_lag_stddev = timespan_t::from_millis( 50 );
+    }
   };
 
   risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "Risen_Skulker", true, false )
