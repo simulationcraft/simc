@@ -4047,7 +4047,13 @@ struct pyrosurge_flamestrike_t : public fire_mage_spell_t
 
     if ( p() -> talents.flame_patch -> ok() )
     {
-      flame_patch -> execute();
+      // DurationID: 205470. 8s
+      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        .pulse_time( timespan_t::from_seconds( 1.0 ) )
+        .target( execute_state -> target )
+        .duration( timespan_t::from_seconds( 8.0 ) )
+        .action( flame_patch )
+        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
     }
   }
 };
@@ -6100,7 +6106,7 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 // ============================================================================
 
 // Choose Rotation ============================================================
-/*
+
 struct choose_rotation_t : public action_t
 {
   double evocation_target_mana_percentage;
@@ -6304,7 +6310,7 @@ struct choose_rotation_t : public action_t
   }
 };
 
-*/
+
 // Choose Target Action =======================================================
 
 struct choose_target_t : public action_t
