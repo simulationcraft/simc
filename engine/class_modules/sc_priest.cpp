@@ -1226,11 +1226,11 @@ public:
   {
     if ( priest.rppm.call_to_the_void->trigger() )
     {
-      for ( size_t i = 0; i < priest.pets.void_tendril.size(); i++ )
+      for ( auto void_tendril : priest.pets.void_tendril )
       {
-        if ( priest.pets.void_tendril[ i ]->is_sleeping() )
+        if ( void_tendril->is_sleeping() )
         {
-          priest.pets.void_tendril[ i ]->trigger();
+          void_tendril->trigger();
           priest.procs.void_tendril->occur();
           return;
         }
@@ -1334,11 +1334,11 @@ protected:
   priest_t& priest;
 
   /// typedef for priest_action_t<action_base_t>
-  typedef priest_action_t base_t;
+  using base_t = priest_action_t;
 
 private:
   /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
-  typedef Base ab;
+  using ab = Base;
 };
 
 // ==========================================================================
@@ -1487,8 +1487,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       assert( s->result != RESULT_CRIT );
       base_dd_min = base_dd_max = s->result_amount;
-      target                    = s->target;
-      trigger_crit_multiplier   = s->composite_crit_chance();
+      target                  = s->target;
+      trigger_crit_multiplier = s->composite_crit_chance();
       execute();
     }
   };
@@ -1538,8 +1538,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
     double ctc = base_t::composite_target_crit_chance( t );
 
     if ( get_td( t ).buffs.holy_word_serenity->check() )
+    {
       ctc +=
           get_td( t ).buffs.holy_word_serenity->data().effectN( 2 ).percent();
+    }
 
     return ctc;
   }
@@ -1553,17 +1555,12 @@ struct priest_heal_t : public priest_action_t<heal_t>
     return am;
   }
 
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double ctm = base_t::composite_target_multiplier( t );
-
-    return ctm;
-  }
-
   void execute() override
   {
     if ( can_trigger_spirit_shell )
+    {
       may_crit = priest.buffs.spirit_shell->check() == 0;
+    }
 
     priest.buffs.chakra_serenity->up();  // uptime tracking
     priest.buffs.archangel->up();        // uptime tracking
@@ -1699,10 +1696,12 @@ struct priest_heal_t : public priest_action_t<heal_t>
   void trigger_strength_of_soul( player_t* t )
   {
     if ( priest.specs.strength_of_soul->ok() && t->buffs.weakened_soul->up() )
+    {
       t->buffs.weakened_soul->extend_duration(
           player,
           timespan_t::from_seconds(
               -1 * priest.specs.strength_of_soul->effectN( 1 ).base_value() ) );
+    }
   }
 
   void consume_serendipity()
@@ -1783,7 +1782,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
           std::min( cap, damage * data().effectN( 1 ).percent() );
 
       direct_tick = dual = ( dmg_type == DMG_OVER_TIME );
-      may_crit           = ( result == RESULT_CRIT );
+      may_crit = ( result == RESULT_CRIT );
 
       execute();
     }
@@ -1950,16 +1949,15 @@ struct priest_spell_t : public priest_action_t<spell_t>
     range::remove_copy_if( sim->player_no_pet_list.data(),
                            back_inserter( ally_list ), player_t::_is_sleeping );
 
-    for ( size_t i = 0; i < ally_list.size(); ++i )
+    for ( player_t* ally : ally_list )
     {
-      player_t& q = *ally_list[ i ];
+      ally->resource_gain( RESOURCE_HEALTH, amount,
+                           ally->gains.vampiric_embrace );
 
-      q.resource_gain( RESOURCE_HEALTH, amount, q.gains.vampiric_embrace );
-
-      for ( size_t j = 0; j < q.pet_list.size(); ++j )
+      for ( pet_t* pet : ally->pet_list )
       {
-        pet_t& r = *q.pet_list[ j ];
-        r.resource_gain( RESOURCE_HEALTH, amount, r.gains.vampiric_embrace );
+        pet->resource_gain( RESOURCE_HEALTH, amount,
+                            pet->gains.vampiric_embrace );
       }
     }
   }
@@ -2044,17 +2042,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
 namespace spells
 {
-// int cancel_dot( dot_t& dot )
-//{
-//  if ( dot.is_ticking() )
-//  {
-//    int lostTicks = dot.ticks_left();
-//    dot.cancel();
-//    return lostTicks;
-//  }
-//  return 0;
-//}
-
 // ==========================================================================
 // Priest Abilities
 // ==========================================================================
@@ -2133,11 +2120,17 @@ struct chakra_base_t : public priest_spell_t
   void switch_to( buff_t* b )
   {
     if ( priest.buffs.chakra_sanctuary != b )
+    {
       priest.buffs.chakra_sanctuary->expire();
+    }
     if ( priest.buffs.chakra_serenity != b )
+    {
       priest.buffs.chakra_serenity->expire();
+    }
     if ( priest.buffs.chakra_chastise != b )
+    {
       priest.buffs.chakra_chastise->expire();
+    }
 
     b->trigger();
   }
@@ -2365,7 +2358,9 @@ struct void_bolt_t final : public priest_spell_t
     double m = priest_spell_t::action_multiplier();
 
     if ( priest.mastery_spells.madness->ok() )
+    {
       m *= 1.0 + priest.cache.mastery_value();
+    }
 
     if ( priest.buffs.anunds_last_breath->check() )
     {
@@ -2415,8 +2410,6 @@ struct void_eruption_t final : public priest_spell_t
 
     while ( it != tl.end() )
     {
-      int total = 0;
-
       priest_td_t& td = priest_spell_t::get_td( *it );
 
       if ( !td.dots.shadow_word_pain->is_ticking() &&
@@ -2810,8 +2803,10 @@ struct mind_spike_detonation_t final : public priest_spell_t
     detonation_target = target;
 
     if ( priest.sim->debug )
+    {
       priest.sim->out_debug << priest.name()
                             << " triggered Mind Spike Detonation.";
+    }
     schedule_execute();
   }
 };
@@ -3012,6 +3007,7 @@ struct mind_spike_t final : public priest_spell_t
             s->result_amount *
                 priest.talents.mind_spike->effectN( 2 ).percent();
         if ( priest.sim->debug )
+        {
           priest.sim->out_debug.printf(
               "%s adds %d to mind_spike_detonation, now %d total at %i stacks",
               priest.name(),
@@ -3019,6 +3015,7 @@ struct mind_spike_t final : public priest_spell_t
                   priest.talents.mind_spike->effectN( 2 ).percent(),
               td.buffs.mind_spike->current_value,
               td.buffs.mind_spike->stack() );
+        }
       }
 
       if ( priest.active_items.mental_fatigue )
@@ -3036,7 +3033,9 @@ struct mind_spike_t final : public priest_spell_t
     priest_spell_t::execute();
 
     if ( priest.talents.void_ray->ok() )
+    {
       priest.buffs.void_ray->trigger();
+    }
   }
 
   double action_multiplier() const override
@@ -3044,9 +3043,11 @@ struct mind_spike_t final : public priest_spell_t
     double am = priest_spell_t::action_multiplier();
 
     if ( priest.talents.void_ray->ok() && priest.buffs.void_ray->check() )
+    {
       am *= 1.0 +
             priest.buffs.void_ray->check() *
                 priest.buffs.void_ray->data().effectN( 1 ).percent();
+    }
 
     return am;
   }
@@ -4189,11 +4190,11 @@ public:
           // jump
           // counter by one.
           cascade_state_t* s = debug_cast<cascade_state_t*>( ab::get_state() );
-          s->target          = t;
-          s->source_target   = currentTarget;
-          s->n_targets       = 1;
-          s->chain_target    = 0;
-          s->jump_counter    = cs->jump_counter + 1;
+          s->target        = t;
+          s->source_target = currentTarget;
+          s->n_targets     = 1;
+          s->chain_target  = 0;
+          s->jump_counter  = cs->jump_counter + 1;
           ab::snapshot_state(
               s, q->target->is_enemy() ? DMG_DIRECT : HEAL_DIRECT );
           s->result = ab::calculate_result( s );
@@ -4489,7 +4490,7 @@ struct silence_t final : public priest_spell_t
     : priest_spell_t( "silence", player, player.find_class_spell( "Silence" ) )
   {
     parse_options( options_str );
-    may_miss = may_crit   = false;
+    may_miss = may_crit = false;
     ignore_false_positive = true;
 
     cooldown           = priest.cooldowns.silence;
@@ -4737,7 +4738,7 @@ struct guardian_spirit_t final : public priest_heal_t
     parse_options( options_str );
 
     base_dd_min = base_dd_max = 0.0;  // The absorb listed isn't a real absorb
-    harmful                   = false;
+    harmful = false;
   }
 
   void execute() override
@@ -5421,7 +5422,7 @@ struct renew_t final : public priest_heal_t
       dot_t* d         = get_dot( s->target );
       result_e r       = d->state->result;
       d->state->result = RESULT_HIT;
-      double tick_dmg  = calculate_tick_amount( d->state, d->current_stack() );
+      double tick_dmg = calculate_tick_amount( d->state, d->current_stack() );
       d->state->result = r;
       tick_dmg *=
           d->ticks_left();  // Gets multiplied by the hasted amount of ticks
@@ -5950,7 +5951,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p )
                            .duration( timespan_t::from_seconds( 10 ) )
                            .max_stack( 10 );  // FIXME no value in Data?
 
-  target->callbacks_on_demise.push_back( [this](player_t*) { target_demise(); } );
+  target->callbacks_on_demise.push_back(
+      [this]( player_t* ) { target_demise(); } );
 }
 
 void priest_td_t::reset()
@@ -6960,10 +6962,9 @@ void priest_t::create_buffs()
           .chance( specialization() == PRIEST_HOLY ? 1.0 : 0.0 )
           .cd( timespan_t::from_seconds( 30 ) );
 
-  buffs.serendipity =
-      buff_creator_t( this, "serendipity" )
-          .spell( find_spell(
-              specs.serendipity->effectN( 1 ).trigger_spell_id() ) );
+  buffs.serendipity = buff_creator_t( this, "serendipity" )
+                          .spell( find_spell( specs.serendipity->effectN( 1 )
+                                                  .trigger_spell_id() ) );
 
   buffs.focused_will =
       buff_creator_t( this, "focused_will" )
@@ -7224,14 +7225,16 @@ void priest_t::apl_shadow()
   action_priority_list_t* s2m          = get_action_priority_list( "s2m" );
 
   // On-Use Items
-  std::vector<std::string> item_actions = get_item_actions();
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    default_list->add_action( item_actions[ i ] );
+  for ( const std::string& item_action : get_item_actions() )
+  {
+    default_list->add_action( item_action );
+  }
 
   // Professions
-  std::vector<std::string> profession_actions = get_profession_actions();
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    default_list->add_action( profession_actions[ i ] );
+  for ( const std::string& profession_action : get_profession_actions() )
+  {
+    default_list->add_action( profession_action );
+  }
 
   // Potions
 
@@ -7378,14 +7381,16 @@ void priest_t::apl_disc_heal()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   // On-Use Items
-  std::vector<std::string> item_actions = get_item_actions();
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    def->add_action( item_actions[ i ] );
+  for ( const std::string& item_action : get_item_actions() )
+  {
+    def->add_action( item_action );
+  }
 
   // Professions
-  std::vector<std::string> profession_actions = get_profession_actions();
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    def->add_action( profession_actions[ i ] );
+  for ( const std::string& profession_action : get_profession_actions() )
+  {
+    def->add_action( profession_action );
+  }
 
   // Potions
   if ( sim->allow_potions )
@@ -7399,9 +7404,10 @@ void priest_t::apl_disc_heal()
 
   if ( race != RACE_BLOOD_ELF )
   {
-    std::vector<std::string> racial_actions = get_racial_actions();
-    for ( size_t i = 0; i < racial_actions.size(); i++ )
-      def->add_action( racial_actions[ i ] );
+    for ( const std::string& racial_action : get_racial_actions() )
+    {
+      def->add_action( racial_action );
+    }
   }
 
   def->add_action( "power_infusion,if=talent.power_infusion.enabled" );
@@ -7425,14 +7431,16 @@ void priest_t::apl_disc_dmg()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   // On-Use Items
-  std::vector<std::string> item_actions = get_item_actions();
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    def->add_action( item_actions[ i ] );
+  for ( const std::string& item_action : get_item_actions() )
+  {
+    def->add_action( item_action );
+  }
 
   // Professions
-  std::vector<std::string> profession_actions = get_profession_actions();
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    def->add_action( profession_actions[ i ] );
+  for ( const std::string& profession_action : get_profession_actions() )
+  {
+    def->add_action( profession_action );
+  }
 
   // Potions
   if ( sim->allow_potions && true_level >= 80 )
@@ -7463,9 +7471,10 @@ void priest_t::apl_disc_dmg()
 
   if ( race != RACE_BLOOD_ELF )
   {
-    std::vector<std::string> racial_actions = get_racial_actions();
-    for ( size_t i = 0; i < racial_actions.size(); i++ )
-      def->add_action( racial_actions[ i ] );
+    for ( const std::string& racial_action : get_racial_actions() )
+    {
+      def->add_action( racial_action );
+    }
   }
 
   def->add_talent( this, "Power Infusion", "if=talent.power_infusion.enabled" );
@@ -7493,14 +7502,16 @@ void priest_t::apl_holy_heal()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   // On-Use Items
-  std::vector<std::string> item_actions = get_item_actions();
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    def->add_action( item_actions[ i ] );
+  for ( const std::string& item_action : get_item_actions() )
+  {
+    def->add_action( item_action );
+  }
 
   // Professions
-  std::vector<std::string> profession_actions = get_profession_actions();
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    def->add_action( profession_actions[ i ] );
+  for ( const std::string& profession_action : get_profession_actions() )
+  {
+    def->add_action( profession_action );
+  }
 
   // Potions
   if ( sim->allow_potions )
@@ -7510,9 +7521,10 @@ void priest_t::apl_holy_heal()
   if ( race == RACE_BLOOD_ELF )
     racial_condition = ",if=mana.pct<=90";
 
-  std::vector<std::string> racial_actions = get_racial_actions();
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    def->add_action( racial_actions[ i ], racial_condition );
+  for ( const std::string& racial_action : get_racial_actions() )
+  {
+    def->add_action( racial_action );
+  }
 
   def->add_action( "power_infusion,if=talent.power_infusion.enabled" );
   def->add_action( this, "Lightwell" );
@@ -7540,14 +7552,16 @@ void priest_t::apl_holy_dmg()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   // On-Use Items
-  std::vector<std::string> item_actions = get_item_actions();
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    def->add_action( item_actions[ i ] );
+  for ( const std::string& item_action : get_item_actions() )
+  {
+    def->add_action( item_action );
+  }
 
   // Professions
-  std::vector<std::string> profession_actions = get_profession_actions();
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    def->add_action( profession_actions[ i ] );
+  for ( const std::string& profession_action : get_profession_actions() )
+  {
+    def->add_action( profession_action );
+  }
 
   // Potions
   if ( sim->allow_potions )
@@ -7572,9 +7586,10 @@ void priest_t::apl_holy_dmg()
   if ( race == RACE_BLOOD_ELF )
     racial_condition = ",if=mana.pct<=90";
 
-  std::vector<std::string> racial_actions = get_racial_actions();
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    def->add_action( racial_actions[ i ], racial_condition );
+  for ( const std::string& racial_action : get_racial_actions() )
+  {
+    def->add_action( racial_action );
+  }
 
   def->add_action( "power_infusion,if=talent.power_infusion.enabled" );
   def->add_action( "shadowfiend,if=!talent.mindbender.enabled" );
@@ -7656,9 +7671,9 @@ void priest_t::reset()
   base_t::reset();
 
   // Reset Target Data
-  for ( size_t i = 0; i < sim->target_list.size(); ++i )
+  for ( player_t* target : sim->target_list )
   {
-    if ( priest_td_t* td = find_target_data( sim->target_list[ i ] ) )
+    if ( priest_td_t* td = find_target_data( target ))
     {
       td->reset();
     }
@@ -7711,7 +7726,7 @@ void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
 
   if ( buffs.dispersion->check() )
   {
-    double extraReduction = 0;
+    double extraReduction = 0.0;
 
     s->result_amount *=
         1.0 +
