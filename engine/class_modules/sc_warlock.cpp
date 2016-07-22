@@ -1854,7 +1854,7 @@ struct wild_imp_pet_t: public warlock_pet_t
           for( auto& pet : o()->pet_list )
           {
               pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-              if(!lock_pet->is_sleeping() && lock_pet != this )
+              if( lock_pet && !lock_pet->is_sleeping() && lock_pet != this )
               {
                   lock_pet->buffs.the_expendables->bump(1,
                         buffs.the_expendables->data().effectN( 1 ).percent());
@@ -6100,7 +6100,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                           t = pet->duration.total_seconds();
                       }
                   }
-                  if(t=5000)
+                  if(t == 5000)
                       t = 0;
                   return t;
               }
@@ -6127,7 +6127,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                           t = pet->duration.total_seconds();
                       }
                   }
-                  if(t=5000)
+                  if( t==5000 )
                       t = 0;
                   return t;
               }

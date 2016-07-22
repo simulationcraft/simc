@@ -52,8 +52,6 @@ public:
 
   // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* arms_trinket, *prot_trinket;
-  // Artifacts
-  const special_effect_t* stromkar_the_warbreaker, *warswords_of_the_valarjar, *scale_of_the_earth_warder;
   // Legendary Items
   const special_effect_t* archavons_heavy_hand, *groms_wartorn_pauldrons, *bindings_of_kakushan,
     *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_girdle, *kazzalax_fujiedas_fury, *the_walls_fell,
@@ -386,7 +384,6 @@ public:
     player_t( sim, WARRIOR, name, r ),
     heroic_charge( nullptr ),
     rampage_driver( nullptr ), rampage_attacks( 0 ),
-    stromkar_the_warbreaker(), warswords_of_the_valarjar(), scale_of_the_earth_warder(),
     active( active_t() ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
@@ -2654,13 +2651,13 @@ struct revenge_t: public warrior_attack_t
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
       p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
-        ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 )
+        ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
                             , p() -> gain.revenge );
     }
     else
     {
       p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
-        ( 1.0 + p() -> artifact.might_of_the_vrykul.percent() * ( 1.0 + p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
+        ( 1.0 + p() -> artifact.might_of_the_vrykul.percent() )* ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
                             , p() -> gain.revenge );
     }
 
@@ -2802,11 +2799,11 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ), p() -> gain.shield_slam );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.shield_slam );
     }
     else
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ), p() -> gain.shield_slam );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.shield_slam );
     }
 
     p() -> buff.bindings_of_kakushan -> expire();
