@@ -2867,6 +2867,7 @@ struct kingsbane_t : public rogue_attack_t
     double m = rogue_attack_t::composite_target_multiplier( target );
 
     m *= 1.0 + td( target ) -> debuffs.kingsbane -> stack_value();
+    m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
 
     return m;
   }
