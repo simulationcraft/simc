@@ -1584,7 +1584,7 @@ struct demoralizing_shout: public warrior_attack_t
   {
     warrior_attack_t::impact( s );
     p() -> buff.demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
-    td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
+    td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent(), 1.0, p() -> spec.demoralizing_shout -> duration() * ( 1.0 + p() -> artifact.rumbling_voice.percent() ) );
   }
 };
 
@@ -4552,8 +4552,7 @@ struct enrage_t: public warrior_buff_t < buff_t >
 struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
 {
   debuff_demo_shout_t( warrior_td_t& p ):
-    base_t( p, buff_creator_t( p, "demoralizing_shout", warrior.spec.demoralizing_shout )
-            .duration( warrior.spec.demoralizing_shout -> duration() * ( 1.0 + warrior.artifact.rumbling_voice.percent() ) ) )
+    base_t( p, buff_creator_t( p, "demoralizing_shout", p.source -> find_specialization_spell( "Demoralizing Shout" ) ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
