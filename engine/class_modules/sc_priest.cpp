@@ -4059,234 +4059,6 @@ struct smite_t final : public priest_spell_t
   }
 };
 
-// Cascade Spell
-
-// TODO: Have Cascade pick the next target per bounce based on current distance
-// instead of feeding it a list of all available targets.
-template <class Base>
-struct cascade_base_t : public Base
-{
-private:
-  typedef Base ab;  // typedef for the templated action type, priest_spell_t, or
-                    // priest_heal_t
-public:
-  typedef cascade_base_t base_t;  // typedef for cascade_base_t<action_base_t>
-  struct cascade_state_t : action_state_t
-  {
-    int jump_counter;
-    player_t* source_target;
-
-    cascade_state_t( action_t* a, player_t* t )
-      : action_state_t( a, t ), jump_counter( 0 ), source_target( nullptr )
-    {
-    }
-  };
-
-  std::vector<player_t*> targets;  // List of available targets to jump to,
-                                   // created once at execute() and static
-                                   // during the jump process.
-
-  cascade_base_t( const std::string& n, priest_t& p,
-                  const std::string& options_str,
-                  const spell_data_t* scaling_data )
-    : ab( n, p, p.find_talent_spell( "Cascade" ) )
-  {
-    ab::parse_options( options_str );
-
-    if ( p.specialization() != PRIEST_SHADOW )
-      ab::parse_effect_data( scaling_data->effectN(
-          1 ) );  // Parse damage or healing numbers from the scaling spell
-    else
-      ab::parse_effect_data( scaling_data->effectN( 2 ) );
-    ab::school       = scaling_data->get_school_type();
-    ab::travel_speed = scaling_data->missile_speed();
-    ab::radius       = 40;
-    ab::range        = 0;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new cascade_state_t( this, ab::target );
-  }
-
-  timespan_t distance_targeting_travel_time( action_state_t* s ) const override
-  {
-    cascade_state_t* cs = debug_cast<cascade_state_t*>( s );
-    if ( cs->source_target )
-      return timespan_t::from_seconds(
-          cs->source_target->get_player_distance( *s->target ) /
-          ab::travel_speed );
-    return timespan_t::zero();
-  }
-
-  player_t* get_next_player( player_t* currentTarget )
-  {
-    if ( targets.empty() )
-    {
-      return nullptr;
-    }
-    player_t* furthest       = nullptr;
-    double furthest_distance = 0;
-
-    // Get target at first position
-    for ( auto it = targets.begin(); it != targets.end(); it++ )
-    {
-      player_t* t = *it;
-      if ( t == currentTarget )
-        continue;
-
-      if ( currentTarget->sim->distance_targeting_enabled )
-      {
-        double current_distance = t->get_player_distance( *currentTarget );
-        if ( current_distance <= 40 && current_distance > furthest_distance )
-        {
-          furthest_distance = current_distance;
-          furthest          = t;
-        }
-        continue;
-      }
-      targets.erase( it );
-      return t;
-    }
-
-    return furthest;
-  }
-
-  virtual void populate_target_list() = 0;
-
-  void execute() override
-  {
-    // Clear and populate targets list
-    targets.clear();
-    populate_target_list();
-
-    ab::execute();
-  }
-
-  void impact( action_state_t* q ) override
-  {
-    ab::impact( q );
-
-    cascade_state_t* cs = static_cast<cascade_state_t*>( q );
-
-    assert( ab::data().effectN( 1 ).base_value() < 5 );  // Safety limit
-    assert( ab::data().effectN( 2 ).base_value() < 5 );  // Safety limit
-
-    if ( cs->jump_counter < ab::data().effectN( 1 ).base_value() )
-    {
-      player_t* currentTarget = q->target;
-      for ( int i = 0; i < ab::data().effectN( 2 ).base_value(); ++i )
-      {
-        player_t* t = get_next_player( currentTarget );
-
-        if ( t )
-        {
-          if ( ab::sim->debug )
-            ab::sim->out_debug.printf( "%s action %s jumps to player %s",
-                                       ab::player->name(), ab::name(),
-                                       t->name() );
-
-          // Copy-Pasted action_t::execute() code. Additionally increasing
-          // jump
-          // counter by one.
-          cascade_state_t* s = debug_cast<cascade_state_t*>( ab::get_state() );
-          s->target        = t;
-          s->source_target = currentTarget;
-          s->n_targets     = 1;
-          s->chain_target  = 0;
-          s->jump_counter  = cs->jump_counter + 1;
-          ab::snapshot_state(
-              s, q->target->is_enemy() ? DMG_DIRECT : HEAL_DIRECT );
-          s->result = ab::calculate_result( s );
-
-          if ( ab::result_is_hit( s->result ) )
-            s->result_amount = calculate_direct_amount( s );
-
-          if ( ab::sim->debug )
-            s->debug();
-
-          ab::schedule_travel( s );
-        }
-      }
-    }
-    else
-    {
-      cs->jump_counter = 0;
-    }
-  }
-
-  double calculate_direct_amount( action_state_t* s ) const override
-  {
-    cascade_state_t* cs = debug_cast<cascade_state_t*>( s );
-    double cda          = action_t::calculate_direct_amount( s );
-
-    double distance;
-
-    if ( cs->source_target == nullptr )  // Initial bounce
-    {
-      if ( cs->action->player->sim->distance_targeting_enabled )
-        distance = cs->action->player->get_player_distance( *cs->target );
-      else
-        distance = std::fabs( cs->action->player->current.distance -
-                              cs->target->current.distance );
-    }
-    else
-    {
-      if ( cs->action->player->sim->distance_targeting_enabled )
-        distance = cs->source_target->get_player_distance( *cs->target );
-      else
-        distance = std::fabs( cs->source_target->current.distance -
-                              cs->target->current.distance );
-    }
-
-    if ( distance >= 30.0 )
-      return cda;
-
-    // Source: Ghostcrawler 20/06/2012;
-    // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
-    // 40% damage at 0 yards, 100% at 30, scaling linearly
-    return cda * ( 0.4 + 0.6 * distance / 30.0 );
-  }
-};
-
-struct cascade_t final : public cascade_base_t<priest_spell_t>
-{
-  cascade_t( priest_t& p, const std::string& options_str )
-    : base_t( "cascade", p, options_str, get_spell_data( p ) )
-  {
-  }
-
-  void populate_target_list() override
-  {
-    for ( size_t i = 0; i < target_list().size(); ++i )
-    {
-      player_t* t;
-      if ( priest.specialization() == PRIEST_SHADOW )
-        t = target_list()[ i ];
-      else
-        t = sim->player_no_pet_list[ i ];
-
-      if ( target_list().size() > 1 )
-      {
-        targets.push_back( t );
-        targets.push_back( t );
-      }
-    }
-
-    if ( priest.specialization() != PRIEST_SHADOW )
-    {
-      targets.push_back( target );
-    }
-  }
-
-private:
-  const spell_data_t* get_spell_data( priest_t& p ) const
-  {
-    unsigned id = p.specialization() == PRIEST_SHADOW ? 127628 : 121148;
-    return p.find_spell( id );
-  }
-};
-
 // Halo Spell
 
 // This is the background halo spell which does the actual damage
@@ -4294,51 +4066,50 @@ private:
 template <class Base>
 struct halo_base_t : public Base
 {
-private:
-  typedef Base ab;  // typedef for the templated action type, priest_spell_t, or
-                    // priest_heal_t
 public:
-  typedef halo_base_t base_t;  // typedef for halo_base_t<ab>
-
   halo_base_t( const std::string& n, priest_t& p, const spell_data_t* s )
-    : ab( n, p, s )
+    : Base( n, p, s )
   {
-    ab::aoe        = -1;
-    ab::background = true;
+    Base::aoe        = -1;
+    Base::background = true;
 
-    if ( ab::data().ok() )
+    if ( Base::data().ok() )
     {
       // Reparse the correct effect number, because we have two competing ones
       // (
       // were 2 > 1 always wins out )
-      ab::parse_effect_data( ab::data().effectN( 1 ) );
+      Base::parse_effect_data( Base::data().effectN( 1 ) );
     }
-    ab::radius = 30;
-    ab::range  = 0;
+    Base::radius = 30;
+    Base::range  = 0;
   }
 
   timespan_t distance_targeting_travel_time( action_state_t* s ) const override
   {
     return timespan_t::from_seconds(
         s->action->player->get_player_distance( *s->target ) /
-        ab::travel_speed );
+        Base::travel_speed );
   }
 
   double calculate_direct_amount( action_state_t* s ) const override
   {
     double cda = action_t::calculate_direct_amount( s );
 
-    // Source: Ghostcrawler 20/06/2012
+    // Source: Ghostcrawler 2012-06-20
     // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
 
     double distance;
     if ( s->action->player->sim->distance_targeting_enabled )
+    {
       distance = s->action->player->get_player_distance( *s->target );
+    }
     else
+    {
       distance =
           std::fabs( s->action->player->current.distance -
                      s->target->current
                          .distance );  // Distance from the caster to the target
+    }
 
     // double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) +
     // 0.1 + 0.015 * distance;
@@ -4353,36 +4124,28 @@ struct halo_t final : public priest_spell_t
 {
   halo_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "halo", p, p.talents.halo ),
-      _base_spell( get_base_spell( p ) )
+      _heal_spell( new halo_base_t<priest_heal_t>( "halo_heal", p,
+                                                   p.find_spell( 120692 ) ) ),
+      _dmg_spell( new halo_base_t<priest_spell_t>( "halo_damage", p,
+                                                   p.find_spell( 120696 ) ) )
   {
     parse_options( options_str );
 
-    add_child( _base_spell );
+    add_child( _heal_spell );
+    add_child( _dmg_spell );
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    _base_spell->execute();
+    _heal_spell->execute();
+    _dmg_spell->execute();
   }
 
 private:
-  action_t* _base_spell;
-
-  action_t* get_base_spell( priest_t& p ) const
-  {
-    if ( p.specialization() == PRIEST_SHADOW )
-    {
-      return new halo_base_t<priest_spell_t>( "halo_damage", p,
-                                              p.find_spell( 120696 ) );
-    }
-    else
-    {
-      return new halo_base_t<priest_heal_t>( "halo_heal", p,
-                                             p.find_spell( 120692 ) );
-    }
-  }
+  action_t* _heal_spell;
+  action_t* _dmg_spell;
 };
 
 // Divine Star spell
@@ -6562,8 +6325,6 @@ action_t* priest_t::create_action( const std::string& name,
     else
       return new holy_fire_t( *this, options_str );
   }
-  if ( name == "cascade" )
-    return new cascade_t( *this, options_str );
   if ( name == "halo" )
     return new halo_t( *this, options_str );
   if ( name == "divine_star" )
