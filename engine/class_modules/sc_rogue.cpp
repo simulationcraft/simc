@@ -1217,14 +1217,23 @@ struct poison_knives_t : public rogue_attack_t
     rogue_attack_t( "poison_knives", p, p -> find_spell( 192380 ) )
   {
     background = true;
-    may_crit = callbacks = false;
+    may_crit = callbacks = may_miss = false;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
+
+    return m;
   }
 
   void init() override
   {
     rogue_attack_t::init();
 
-    snapshot_flags = update_flags = 0;
+    snapshot_flags = update_flags = STATE_TGT_MUL_DA;
   }
 };
 
@@ -4775,11 +4784,10 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
 
   unsigned ticks_left = td -> dots.deadly_poison -> ticks_left();
   timespan_t tick_time = td -> dots.deadly_poison -> current_action -> tick_time( td -> dots.deadly_poison -> state );
-  timespan_t remaining_time = td -> dots.deadly_poison -> remains() - ticks_left * tick_time;
   double partial_tick = 0;
-  if ( remaining_time > timespan_t::zero() )
+  if ( ticks_left > 1 && ticks_left * tick_time > td -> dots.deadly_poison -> remains() )
   {
-    partial_tick = remaining_time / tick_time;
+    partial_tick = ( td -> dots.deadly_poison -> remains() - ( ticks_left - 1 ) * tick_time ) / tick_time;
   }
 
   // Recompute tick damage with current stats
@@ -4787,7 +4795,25 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
       td -> dots.deadly_poison -> current_stack() );
 
   double tick_base_damage = td -> dots.deadly_poison -> state -> result_raw;
+  // Poison knives double dips into some multipliers
+
+  // .. first, mastery
+  tick_base_damage *= 1.0 + cache.mastery_value();
+
+  // .. then, apparently the Master Alchemist talent
+  tick_base_damage *= 1.0 + artifact.master_alchemist.percent();
+
+  // Target multipliers get applied on execute, they also work
+
   double total_damage = ( partial_tick + ticks_left ) * tick_base_damage * artifact.poison_knives.percent();
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s poison_knives dot_remains=%.3f duration=%.3f ticks_left=%u partial=%.3f amount=%.3f total=%.3f",
+      name(), td -> dots.deadly_poison -> remains().total_seconds(),
+      td -> dots.deadly_poison -> duration().total_seconds(),
+      td -> dots.deadly_poison -> ticks_left(), partial_tick, tick_base_damage,
+      total_damage );
+  }
 
   poison_knives -> base_dd_min = poison_knives -> base_dd_max = total_damage;
   poison_knives -> target = state -> target;
