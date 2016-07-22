@@ -3752,27 +3752,27 @@ struct serenity_t: public monk_spell_t
 
     // Executing Serenity reduces any current cooldown by 50%
     // Have to manually adjust each of the affected spells
-    double cooldown = p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50%
+    double percent_adjust = p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50%
 
-    cooldown_reduction( p() -> cooldown.blackout_kick, cooldown );
+    cooldown_reduction( p() -> cooldown.blackout_kick, percent_adjust);
 
-    cooldown_reduction( p() -> cooldown.blackout_strike, cooldown );
+    cooldown_reduction( p() -> cooldown.blackout_strike, percent_adjust);
 
-    cooldown_reduction( p() -> cooldown.rushing_jade_wind, cooldown );
+    cooldown_reduction( p() -> cooldown.rushing_jade_wind, percent_adjust);
 
-    cooldown_reduction( p() -> cooldown.refreshing_jade_wind, cooldown );
+    cooldown_reduction( p() -> cooldown.refreshing_jade_wind, percent_adjust);
 
-    cooldown_reduction( p() -> cooldown.rising_sun_kick, cooldown );
+    cooldown_reduction( p() -> cooldown.rising_sun_kick, percent_adjust);
 
-    cooldown_reduction( p() -> cooldown.fists_of_fury, cooldown );
+    cooldown_reduction( p() -> cooldown.fists_of_fury, percent_adjust);
 
-    cooldown_reduction( p() -> cooldown.strike_of_the_windlord, cooldown );
+    cooldown_reduction( p() -> cooldown.strike_of_the_windlord, percent_adjust);
   }
 
-  void cooldown_reduction(cooldown_t* cd, double percent )
+  void cooldown_reduction(cooldown_t* cd, double percent_adjust )
   {
     if ( cd -> down() )
-      cd -> adjust( cd -> remains() * percent );
+      cd -> adjust( cd -> remains() * percent_adjust);
   }
 };
 
