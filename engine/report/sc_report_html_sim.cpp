@@ -1155,7 +1155,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
       continue;
     }
 
-    if ( !sim.dbc.ptr && !( entry->flags_ & hotfix::HOTFIX_FLAG_LIVE ) )
+    if ( entry && !sim.dbc.ptr && !( entry->flags_ & hotfix::HOTFIX_FLAG_LIVE ) )
     {
       continue;
     }
