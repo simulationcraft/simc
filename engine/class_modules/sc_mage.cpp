@@ -6106,7 +6106,7 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 // ============================================================================
 
 // Choose Rotation ============================================================
-
+/*
 struct choose_rotation_t : public action_t
 {
   double evocation_target_mana_percentage;
@@ -6221,7 +6221,7 @@ struct choose_rotation_t : public action_t
       else
       {
         // We're going until OOM, stop when we can no longer cast full stack AB (approximately, 4 stack with AP can be 6177)
-        if ( p -> resources.current[ RESOURCE_MANA ] < ab_cost )
+        if ( p -> resources.current[ RESOURCE_MANA ] < ab_cost*4 )
         {
           if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
 
@@ -6310,7 +6310,7 @@ struct choose_rotation_t : public action_t
   }
 };
 
-
+*/
 // Choose Target Action =======================================================
 
 struct choose_target_t : public action_t
