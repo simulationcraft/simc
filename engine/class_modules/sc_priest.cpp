@@ -4204,45 +4204,29 @@ struct divine_star_t final : public priest_spell_t
 {
   divine_star_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "divine_star", p, p.talents.divine_star ),
-      _base_spell( get_base_spell( p ) )
+      _heal_spell( new divine_star_base_t<priest_heal_t>(
+          "divine_star_heal", p, p.find_spell( 110745 ) ) ),
+      _dmg_spell( new divine_star_base_t<priest_spell_t>(
+          "divine_star_damage", p, p.find_spell( 122128 ) ) )
   {
     parse_options( options_str );
 
     dot_duration = base_tick_time = timespan_t::zero();
 
-    add_child( _base_spell );
+    add_child( _heal_spell );
+    add_child( _dmg_spell );
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    _base_spell->execute();
+    _heal_spell->execute();
+    _dmg_spell->execute();
   }
-
-  bool usable_moving() const override
-  {
-    // Holy/Disc version is usable while moving, Shadow version is instant cast
-    // anyway.
-    return true;
-  }
-
 private:
-  action_t* _base_spell;
-
-  action_t* get_base_spell( priest_t& p ) const
-  {
-    if ( priest.specialization() == PRIEST_SHADOW )
-    {
-      return new divine_star_base_t<priest_spell_t>( "divine_star_damage", p,
-                                                     p.find_spell( 122128 ) );
-    }
-    else
-    {
-      return new divine_star_base_t<priest_heal_t>( "divine_star_heal", p,
-                                                    p.find_spell( 110745 ) );
-    }
-  }
+  action_t* _heal_spell;
+  action_t* _dmg_spell;
 };
 
 // Silence Spell =======================================================
