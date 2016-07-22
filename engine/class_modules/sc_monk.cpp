@@ -3750,30 +3750,29 @@ struct serenity_t: public monk_spell_t
 
     p() -> buff.serenity -> trigger();
 
-    // Executing Serenity reduces any current cooldown in 50%
+    // Executing Serenity reduces any current cooldown by 50%
     // Have to manually adjust each of the affected spells
-    double cooldown_reduction = p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50%
+    double percent_adjust = p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50%
 
-    if ( p() -> cooldown.blackout_kick -> down() )
-      p() -> cooldown.blackout_kick -> adjust( p() -> cooldown.blackout_kick -> remains() * cooldown_reduction );
+    cooldown_reduction( p() -> cooldown.blackout_kick, percent_adjust);
 
-    if ( p() -> cooldown.blackout_strike -> down() )
-      p() -> cooldown.blackout_strike -> adjust( p() -> cooldown.blackout_strike -> remains() * cooldown_reduction );
+    cooldown_reduction( p() -> cooldown.blackout_strike, percent_adjust);
 
-    if ( p() -> cooldown.rushing_jade_wind -> down() )
-      p() -> cooldown.rushing_jade_wind -> adjust( p() -> cooldown.rushing_jade_wind -> remains() * cooldown_reduction );
+    cooldown_reduction( p() -> cooldown.rushing_jade_wind, percent_adjust);
 
-    if ( p() -> cooldown.refreshing_jade_wind -> down() )
-      p() -> cooldown.refreshing_jade_wind -> adjust( p() -> cooldown.refreshing_jade_wind -> remains() * cooldown_reduction );
+    cooldown_reduction( p() -> cooldown.refreshing_jade_wind, percent_adjust);
 
-    if ( p() -> cooldown.rising_sun_kick -> down() )
-      p() -> cooldown.rising_sun_kick -> adjust( p() -> cooldown.rising_sun_kick -> remains() * cooldown_reduction );
+    cooldown_reduction( p() -> cooldown.rising_sun_kick, percent_adjust);
 
-    if ( p() -> cooldown.fists_of_fury -> down() )
-      p() -> cooldown.fists_of_fury -> adjust( p() -> cooldown.fists_of_fury -> remains() * cooldown_reduction );
+    cooldown_reduction( p() -> cooldown.fists_of_fury, percent_adjust);
 
-    if ( p() -> cooldown.strike_of_the_windlord -> down() )
-      p() -> cooldown.strike_of_the_windlord -> adjust( p() -> cooldown.strike_of_the_windlord -> remains() * cooldown_reduction );
+    cooldown_reduction( p() -> cooldown.strike_of_the_windlord, percent_adjust);
+  }
+
+  void cooldown_reduction(cooldown_t* cd, double percent_adjust )
+  {
+    if ( cd -> down() )
+      cd -> adjust( cd -> remains() * percent_adjust);
   }
 };
 
