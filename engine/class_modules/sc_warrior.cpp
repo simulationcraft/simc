@@ -9,7 +9,8 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// Implement ignore pain + rage from damage taken + artifacts for prot
+// Implement ignore pain + rage from damage taken
+// Implement Wall of Steel + Neltharion's Fury + scales of earth
 // Add back second wind
 // Legendary items not completely implemented yet
 // Archavon's Heavy Hand - 137060 - Heroic throw deals 25% increased damage for every yard between you and the target - 207326
@@ -47,12 +48,12 @@ public:
   std::vector<attack_t*> rampage_attacks;
   std::vector<cooldown_t*> odyns_champion_cds;
   int initial_rage;
-  bool non_dps_mechanics, warrior_fixed_time;
+  bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger;
 
   // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* arms_trinket, *prot_trinket;
   // Artifacts
-  const special_effect_t* stromkar_the_warbreaker, *warswords_of_the_valarjar;
+  const special_effect_t* stromkar_the_warbreaker, *warswords_of_the_valarjar, *scale_of_the_earth_warder;
   // Legendary Items
   const special_effect_t* archavons_heavy_hand, *groms_wartorn_pauldrons, *bindings_of_kakushan,
     *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_girdle, *kazzalax_fujiedas_fury, *the_walls_fell,
@@ -86,8 +87,10 @@ public:
     buff_t* commanding_shout;
     buff_t* corrupted_blood_of_zakajz;
     buff_t* defensive_stance;
+    buff_t* demoralizing_shout;
     buff_t* die_by_the_sword;
     buff_t* dragon_roar;
+    buff_t* dragon_scales;
     buff_t* enrage;
     buff_t* focused_rage;
     buff_t* frenzy;
@@ -115,6 +118,7 @@ public:
     buff_t* wrecking_ball;
     buff_t* spell_reflection;
 
+    absorb_buff_t* ignore_pain;
     //Legendary Items
     buff_t* bindings_of_kakushan;
     buff_t* kargaths_sacrificed_hands;
@@ -354,6 +358,24 @@ public:
     artifact_power_t wild_slashes;
     artifact_power_t wrath_and_fury;
 
+    artifact_power_t neltharions_fury;
+    artifact_power_t strength_of_the_earth_aspect;
+    artifact_power_t shatter_the_bones;
+    artifact_power_t rage_of_the_fallen;
+    artifact_power_t vrykul_shield_training;
+    artifact_power_t will_to_survive;
+    artifact_power_t toughness;
+    artifact_power_t rumbling_voice;
+    artifact_power_t might_of_the_vrykul;
+    artifact_power_t wall_of_steel;
+    artifact_power_t leaping_giants;
+    artifact_power_t scales_of_earth;
+    artifact_power_t intolerance;
+    artifact_power_t thunder_crash;
+    artifact_power_t dragon_skin;
+    artifact_power_t reflective_plating;
+    artifact_power_t dragon_scales;
+
     // NYI
     artifact_power_t touch_of_zakajz;
     artifact_power_t defensive_measures;
@@ -364,7 +386,7 @@ public:
     player_t( sim, WARRIOR, name, r ),
     heroic_charge( nullptr ),
     rampage_driver( nullptr ), rampage_attacks( 0 ),
-    stromkar_the_warbreaker(), warswords_of_the_valarjar(),
+    stromkar_the_warbreaker(), warswords_of_the_valarjar(), scale_of_the_earth_warder(),
     active( active_t() ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
@@ -377,13 +399,13 @@ public:
   {
     initial_rage = 0;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
-    warrior_fixed_time = true;
+    warrior_fixed_time = frothing_may_trigger = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
     base.distance = 5.0;
 
     arms_trinket = prot_trinket = nullptr;
     archavons_heavy_hand = groms_wartorn_pauldrons = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
-      ceannar_girdle = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = verjas_protectors_of_the_berserker_king =
-      najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = weight_of_the_earth = nullptr;
+    ceannar_girdle = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = verjas_protectors_of_the_berserker_king =
+    najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = weight_of_the_earth = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -650,6 +672,11 @@ public:
     ab::consume_resource();
 
     double rage = ab::resource_consumed;
+
+    if ( rage > 0 )
+    {
+      p() -> frothing_may_trigger = true;
+    }
 
     if ( p() -> talents.anger_management -> ok() )
     {
@@ -1556,6 +1583,7 @@ struct demoralizing_shout: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
+    p() -> buff.demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
     td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
   }
 };
@@ -1572,6 +1600,7 @@ struct devastate_t: public warrior_attack_t
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
     impact_action = p -> active.deep_wounds;
+    weapon_multiplier *= 1.0 + p -> artifact.strength_of_the_earth_aspect.percent();
   }
 
   void execute() override
@@ -1870,6 +1899,7 @@ struct heroic_leap_t: public warrior_attack_t
 
     cooldown -> duration = data().charge_cooldown(); // Fixes bug in spelldata for now. 
     cooldown -> duration += p -> talents.bounding_stride -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> artifact.leaping_giants.time_value();
   }
 
   timespan_t travel_time() const override
@@ -2585,17 +2615,17 @@ struct ravager_t: public warrior_attack_t
 
 struct revenge_t: public warrior_attack_t
 {
-  stats_t* absorb_stats;
   double rage_gain;
   revenge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "revenge", p, p -> spec.revenge ),
-    absorb_stats( nullptr ), rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
+    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
   {
     parse_options( options_str );
     aoe = -1;
     energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
 
     impact_action = p -> active.deep_wounds;
+    attack_power_mod.direct *= 1.0 + p -> artifact.rage_of_the_fallen.percent();
   }
 
   bool ready() override
@@ -2623,11 +2653,15 @@ struct revenge_t: public warrior_attack_t
 
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ), p() -> gain.revenge );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
+        ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 )
+                            , p() -> gain.revenge );
     }
     else
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.revenge );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
+        ( 1.0 + p() -> artifact.might_of_the_vrykul.percent() * ( 1.0 + p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
+                            , p() -> gain.revenge );
     }
 
     p() -> buff.bindings_of_kakushan -> expire();
@@ -2740,6 +2774,20 @@ struct shield_slam_t: public warrior_attack_t
 
     return am;
   }
+
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    if ( p() -> buff.shield_block -> check() )
+    {
+      cc += p() -> artifact.shatter_the_bones.percent();
+    }
+
+    return cc;
+  }
+
   
   void execute() override
   {
@@ -2754,11 +2802,11 @@ struct shield_slam_t: public warrior_attack_t
 
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ), p() -> gain.shield_slam );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ), p() -> gain.shield_slam );
     }
     else
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.shield_slam );
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ), p() -> gain.shield_slam );
     }
 
     p() -> buff.bindings_of_kakushan -> expire();
@@ -2927,6 +2975,7 @@ struct thunder_clap_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
+    attack_power_mod.direct *= 1.0 + p -> artifact.thunder_crash.percent(); 
   }
 };
 
@@ -3508,7 +3557,7 @@ struct ignore_pain_t: public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
-
+    p() -> buff.ignore_pain -> trigger( 1 );///fixme
   }
 
   bool ready() override
@@ -3839,6 +3888,24 @@ void warrior_t::init_spells()
   artifact.wild_slashes              = find_artifact_spell( "Wild Slashes" );
   artifact.wrath_and_fury            = find_artifact_spell( "Wrath and Fury" );
 
+  artifact.neltharions_fury             = find_artifact_spell( "Neltharion's Fury" );
+  artifact.strength_of_the_earth_aspect = find_artifact_spell( "Strength of the Earth Aspect" );
+  artifact.shatter_the_bones            = find_artifact_spell( "Shatter the Bones" );
+  artifact.rage_of_the_fallen           = find_artifact_spell( "Rage of the Fallen" );
+  artifact.vrykul_shield_training       = find_artifact_spell( "Vrykul Shield Training" );
+  artifact.will_to_survive              = find_artifact_spell( "Will to Survive" );
+  artifact.toughness                    = find_artifact_spell( "Toughness" );
+  artifact.rumbling_voice               = find_artifact_spell( "Rumbling Voice" );
+  artifact.might_of_the_vrykul          = find_artifact_spell( "Might of the Vrykul" );
+  artifact.wall_of_steel                = find_artifact_spell( "Wall of Steel" );
+  artifact.leaping_giants               = find_artifact_spell( "Leaping Giants" );
+  artifact.scales_of_earth              = find_artifact_spell( "Scales of Earth" );
+  artifact.intolerance                  = find_artifact_spell( "Intolerance" );
+  artifact.thunder_crash                = find_artifact_spell( "Thunder Crash" );
+  artifact.dragon_skin                  = find_artifact_spell( "Dragon Skin" );
+  artifact.reflective_plating           = find_artifact_spell( "Reflective Plating" );
+  artifact.dragon_scales                = find_artifact_spell( "Dragon Scales" );
+
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
   spell.colossus_smash_debuff   = find_spell( 208086 );
@@ -3946,7 +4013,7 @@ void warrior_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  resources.base[RESOURCE_RAGE] = 100 + ( artifact.unending_rage.value() / 10 );
+  resources.base[RESOURCE_RAGE] = 100 + ( ( artifact.unending_rage.value() + artifact.intolerance.value() ) / 10 );
   resources.max[RESOURCE_RAGE] = resources.base[RESOURCE_RAGE];
 
   base.attack_power_per_strength = 1.0;
@@ -4439,7 +4506,7 @@ struct last_stand_t: public warrior_buff_t < buff_t >
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * warrior.spec.last_stand -> effectN( 1 ).percent() ) );
+    health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * ( warrior.spec.last_stand -> effectN( 1 ).percent() + warrior.artifact.will_to_survive.percent() ) ) );
     warrior.stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
@@ -4455,7 +4522,11 @@ struct enrage_t: public warrior_buff_t < buff_t >
 {
   int health_gain;
   enrage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s ).duration( p.spec.enrage -> effectN( 2 ).trigger() -> duration() + p.sets.set(WARRIOR_FURY, T19, B4 )->effectN( 1 ).time_value() ).can_cancel( false ).add_invalidate( CACHE_ATTACK_SPEED ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
+    base_t( p, buff_creator_t( &p, n, s )
+            .duration( p.spec.enrage -> effectN( 2 ).trigger() -> duration() + p.sets.set(WARRIOR_FURY, T19, B4 ) -> effectN( 1 ).time_value() )
+            .can_cancel( false )
+            .add_invalidate( CACHE_ATTACK_SPEED )
+            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
   {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -4481,7 +4552,8 @@ struct enrage_t: public warrior_buff_t < buff_t >
 struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
 {
   debuff_demo_shout_t( warrior_td_t& p ):
-    base_t( p, buff_creator_t( p, "demoralizing_shout", p.source -> find_specialization_spell( "Demoralizing Shout" ) ) )
+    base_t( p, buff_creator_t( p, "demoralizing_shout", warrior.spec.demoralizing_shout )
+            .duration( warrior.spec.demoralizing_shout -> duration() * ( 1.0 + warrior.artifact.rumbling_voice.percent() ) ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
@@ -4564,6 +4636,9 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_ARMOR )
     .add_invalidate( CACHE_BONUS_ARMOR );
 
+  buff.demoralizing_shout = buff_creator_t( this, "demoralizing_shout", spec.demoralizing_shout )
+    .duration( spec.demoralizing_shout -> duration() * ( 1.0 + artifact.rumbling_voice.percent() ) );
+
   buff.die_by_the_sword = buff_creator_t( this, "die_by_the_sword", spec.die_by_the_sword )
     .default_value( spec.die_by_the_sword -> effectN( 2 ).percent() )
     .cd( timespan_t::zero() )
@@ -4573,6 +4648,10 @@ void warrior_t::create_buffs()
     .default_value( talents.dragon_roar -> effectN( 2 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .cd( timespan_t::zero() );
+
+  buff.dragon_scales = buff_creator_t( this, "dragon_scales", artifact.dragon_scales.data().effectN( 1 ).trigger() )
+    .chance( artifact.dragon_scales.data().proc_chance() )
+    .default_value( artifact.dragon_scales.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.enrage = new buffs::enrage_t( *this, "enrage", spec.enrage -> effectN( 2 ).trigger() );
 
@@ -4616,6 +4695,8 @@ void warrior_t::create_buffs()
     .chance( artifact.sense_death.percent() );
 
   buff.spell_reflection = buff_creator_t( this, "spell_reflection", find_specialization_spell( "Spell Reflection" ) );
+
+  buff.ignore_pain = absorb_buff_creator_t( this, "ignore_pain", spec.ignore_pain );
 
   buff.juggernaut = buff_creator_t( this, "juggernaut", artifact.juggernaut.data().effectN( 1 ).trigger() )
     .default_value( artifact.juggernaut.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
@@ -4838,6 +4919,7 @@ void warrior_t::reset()
 
   heroic_charge = nullptr;
   rampage_driver = nullptr;
+  frothing_may_trigger = true;
 }
 
 // Movement related overrides. =============================================
@@ -4932,6 +5014,7 @@ double warrior_t::composite_attribute( attribute_e attr ) const
     a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
   }
   a += spec.titans_grip -> effectN( 2 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
+  a += artifact.toughness.percent() * player_t::composite_attribute( ATTR_STAMINA );
   break;
   default:
   break;
@@ -4957,6 +5040,8 @@ double warrior_t::composite_melee_haste() const
 double warrior_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
+
+  a += artifact.vrykul_shield_training.percent();
 
   return a;
 }
@@ -5196,9 +5281,10 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t*
 {
   double aa = player_t::resource_gain( r, a, gain, action );
 
-  if ( r == RESOURCE_RAGE && talents.frothing_berserker -> ok() && resources.current[ r ] > 99 )
+  if ( r == RESOURCE_RAGE && talents.frothing_berserker -> ok() && resources.current[ r ] > 99 && frothing_may_trigger )
   {
     buff.frothing_berserker -> trigger(); 
+    frothing_may_trigger = false;
   }
 
   return aa;
@@ -5241,11 +5327,6 @@ double warrior_t::temporary_movement_modifier() const
 void warrior_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
-
-  if ( c == CACHE_ATTACK_CRIT_CHANCE && mastery.critical_block -> ok() )
-  {
-    player_t::invalidate_cache( CACHE_PARRY );
-  }
 
   if ( c == CACHE_MASTERY && mastery.critical_block -> ok() )
   {
@@ -5348,6 +5429,11 @@ void warrior_t::assess_damage( school_e school,
   if ( prot_trinket && school != SCHOOL_PHYSICAL && buff.shield_block -> check() )
   {
     s -> result_amount *= 1.0 + ( prot_trinket -> driver() -> effectN( 1 ).average( prot_trinket -> item ) / 100.0 );
+  }
+
+  if ( action_t::result_is_block( s -> block_result ) )
+  {
+    buff.dragon_scales -> trigger();
   }
 
   player_t::assess_damage( school, dtype, s );
@@ -5463,13 +5549,6 @@ static void prot_trinket( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
   do_trinket_init( s, WARRIOR_PROTECTION, s -> prot_trinket, effect );
-}
-
-// Strom'kar the Warbreaker
-static void stromkar_the_warbreaker( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, WARRIOR_ARMS, s -> stromkar_the_warbreaker, effect );
 }
 
 static void archavons_heavy_hand( special_effect_t& effect )
@@ -5666,7 +5745,6 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 184926, fury_trinket_t(), true );
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
-    unique_gear::register_special_effect( 209579, stromkar_the_warbreaker );
     unique_gear::register_special_effect( 205144, archavons_heavy_hand );
     unique_gear::register_special_effect( 205597, groms_wartorn_pauldrons );
     unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
