@@ -5623,7 +5623,11 @@ double rogue_t::composite_player_target_multiplier( player_t* target ) const
     }
     stack_value *= 1.0 + talent.master_poisoner -> effectN( 3 ).percent();
     stack_value *= 1.0 + cache.mastery() * mastery.potent_poisons -> effectN( 4 ).mastery_value();
-    stack_value *= 1.0 + artifact.master_alchemist.percent();
+    // Note the division (by 5), apparently it is hardcoded into the tooltip, the artifact power
+    // itself uses power levels of 5, 10, 15, 20, ...
+    stack_value *= 1.0 + artifact.master_alchemist.percent() / artifact.master_alchemist.data().effectN( 3 ).base_value();
+    // Another weird one, this time divided by 2
+    stack_value *= 1.0 + artifact.poison_knives.percent() / artifact.poison_knives.data().effectN( 2 ).base_value();
     m *= 1.0 + stack_value;
   }
 
