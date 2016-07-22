@@ -2833,6 +2833,7 @@ struct kingsbane_strike_t : public rogue_attack_t
   {
     background = true;
     weapon = w;
+    base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 3 ).percent();
   }
 };
 
@@ -2847,6 +2848,7 @@ struct kingsbane_t : public rogue_attack_t
   {
     add_child( mh );
     add_child( oh );
+    base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 3 ).percent();
   }
 
   double composite_target_multiplier( player_t* target ) const override
