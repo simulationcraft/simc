@@ -487,6 +487,8 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* blackout_kick;
+    cooldown_t* blackout_strike;
     cooldown_t* brewmaster_attack;
     cooldown_t* brewmaster_active_mitigation;
     cooldown_t* breath_of_fire;
@@ -495,6 +497,9 @@ public:
     cooldown_t* fortifying_brew;
     cooldown_t* healing_elixirs;
     cooldown_t* rising_sun_kick;
+    cooldown_t* refreshing_jade_wind;
+    cooldown_t* rushing_jade_wind;
+    cooldown_t* strike_of_the_windlord;
     cooldown_t* thunder_focus_tea;
     cooldown_t* touch_of_death;
     cooldown_t* serenity;
@@ -617,6 +622,9 @@ public:
     // actives
     active_celestial_fortune_proc = nullptr;
 
+
+    cooldown.blackout_kick                = get_cooldown( "blackout_kick" );
+    cooldown.blackout_strike              = get_cooldown( "blackout_stike" );
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
     cooldown.brewmaster_active_mitigation = get_cooldown( "brews" );
     cooldown.breath_of_fire               = get_cooldown( "breath_of_fire" );
@@ -624,6 +632,9 @@ public:
     cooldown.fists_of_fury                = get_cooldown( "fists_of_fury" );
     cooldown.healing_elixirs              = get_cooldown( "healing_elixirs" );
     cooldown.rising_sun_kick              = get_cooldown( "rising_sun_kick" );
+    cooldown.refreshing_jade_wind         = get_cooldown( "refreshing_jade_wind" );
+    cooldown.rushing_jade_wind            = get_cooldown( "rushing_jade_wind" );
+    cooldown.strike_of_the_windlord       = get_cooldown( "strike_of_the_windlord" );
     cooldown.thunder_focus_tea            = get_cooldown( "thunder_focus_tea" );
     cooldown.touch_of_death               = get_cooldown( "touch_of_death" );
     cooldown.serenity                     = get_cooldown( "serenity" );
@@ -3738,6 +3749,31 @@ struct serenity_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.serenity -> trigger();
+
+    // Executing Serenity reduces any current cooldown in 50%
+    // Have to manually adjust each of the affected spells
+    double cooldown_reduction = p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50%
+
+    if ( p() -> cooldown.blackout_kick -> down() )
+      p() -> cooldown.blackout_kick -> adjust( p() -> cooldown.blackout_kick -> remains() * cooldown_reduction );
+
+    if ( p() -> cooldown.blackout_strike -> down() )
+      p() -> cooldown.blackout_strike -> adjust( p() -> cooldown.blackout_strike -> remains() * cooldown_reduction );
+
+    if ( p() -> cooldown.rushing_jade_wind -> down() )
+      p() -> cooldown.rushing_jade_wind -> adjust( p() -> cooldown.rushing_jade_wind -> remains() * cooldown_reduction );
+
+    if ( p() -> cooldown.refreshing_jade_wind -> down() )
+      p() -> cooldown.refreshing_jade_wind -> adjust( p() -> cooldown.refreshing_jade_wind -> remains() * cooldown_reduction );
+
+    if ( p() -> cooldown.rising_sun_kick -> down() )
+      p() -> cooldown.rising_sun_kick -> adjust( p() -> cooldown.rising_sun_kick -> remains() * cooldown_reduction );
+
+    if ( p() -> cooldown.fists_of_fury -> down() )
+      p() -> cooldown.fists_of_fury -> adjust( p() -> cooldown.fists_of_fury -> remains() * cooldown_reduction );
+
+    if ( p() -> cooldown.strike_of_the_windlord -> down() )
+      p() -> cooldown.strike_of_the_windlord -> adjust( p() -> cooldown.strike_of_the_windlord -> remains() * cooldown_reduction );
   }
 };
 
