@@ -394,7 +394,7 @@ public:
     mage_rotation_e current;
     double mana_gain,
            dps_mana_loss,
-           dpm_mana_gain;
+           dpm_mana_loss;
     timespan_t dps_time,
                dpm_time,
                last_time;
@@ -602,6 +602,10 @@ public:
     }
     return td;
   }
+
+  // Event Tracking
+  virtual double resource_gain( resource_e, double amount, gain_t* = 0, action_t* = 0 );
+  virtual double resource_loss( resource_e, double amount, gain_t* = 0, action_t* = 0 );
 
   // Public mage functions:
   icicle_data_t get_icicle_object();
@@ -6095,6 +6099,7 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 struct choose_rotation_t : public action_t
 {
   double evocation_target_mana_percentage;
+  double ab_cost;
   int force_dps;
   int force_dpm;
   timespan_t final_burn_offset;
@@ -6110,8 +6115,8 @@ struct choose_rotation_t : public action_t
 
     final_burn_offset = timespan_t::from_seconds( 20 );
     oom_offset = 0;
-
-
+    //TODO: Double check this. Scale with AC state.
+    double ab_cost = p -> find_class_spell( "Arcane Blast" ) -> cost( POWER_MANA ) * p -> resources.base[ RESOURCE_MANA ];
     add_option( opt_timespan( "cooldown", ( cooldown -> duration ) ) );
     add_option( opt_float( "evocation_pct", evocation_target_mana_percentage ) );
     add_option( opt_int( "force_dps", force_dps ) );
@@ -6195,7 +6200,7 @@ struct choose_rotation_t : public action_t
       if ( tte < ttd )
       {
         // We're going until target percentage
-        if ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] < evocation_target_mana_percentage / 100.0 )
+        if ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] <= evocation_target_mana_percentage / 100.0 )
         {
           if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
 
@@ -6205,7 +6210,7 @@ struct choose_rotation_t : public action_t
       else
       {
         // We're going until OOM, stop when we can no longer cast full stack AB (approximately, 4 stack with AP can be 6177)
-        if ( p -> resources.current[ RESOURCE_MANA ] < 6200 )
+        if ( p -> resources.current[ RESOURCE_MANA ] < ab_cost )
         {
           if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
 
@@ -6221,12 +6226,6 @@ struct choose_rotation_t : public action_t
 
       double consumption_rate = ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - regen_rate;
       double available_mana = p -> resources.current[ RESOURCE_MANA ];
-
-      // Mana Gem, if we have uses left
-      if ( p -> mana_gem_charges > 0 )
-      {
-        available_mana += p -> dbc.effect_max( 16856, p -> level );
-      }
 
       // If this will be the last evocation then figure out how much of it we can actually burn before end and adjust appropriately.
 
@@ -6285,7 +6284,7 @@ struct choose_rotation_t : public action_t
 
   virtual bool ready()
   {
-    // NOTE this delierately avoids calling the supreclass ready method;
+    // This delierately avoids calling the supreclass ready method;
     // not all the checks there are relevnt since this isn't a spell
     if ( cooldown -> down() )
       return false;
@@ -8214,6 +8213,52 @@ void mage_t::reset()
   {
     pets::temporal_hero::randomize_last_summoned( this );
   }
+}
+
+
+
+// mage_t::resource_gain ====================================================
+
+double mage_t::resource_gain( resource_e resource,
+                              double    amount,
+                              gain_t*   source,
+                              action_t* action )
+{
+  double actual_amount = player_t::resource_gain( resource, amount, source, action );
+
+  if ( resource == RESOURCE_MANA )
+  {
+    if ( source != gains.evocation )
+    {
+      rotation.mana_gain += actual_amount;
+    }
+  }
+
+  return actual_amount;
+}
+
+// mage_t::resource_loss ====================================================
+
+double mage_t::resource_loss( resource_e resource,
+                              double    amount,
+                              gain_t*   source,
+                              action_t* action )
+{
+  double actual_amount = player_t::resource_loss( resource, amount, source, action );
+
+  if ( resource == RESOURCE_MANA )
+  {
+    if ( rotation.current == ROTATION_DPS )
+    {
+      rotation.dps_mana_loss += actual_amount;
+    }
+    else if ( rotation.current == ROTATION_DPM )
+    {
+      rotation.dpm_mana_loss += actual_amount;
+    }
+  }
+
+  return actual_amount;
 }
 
 // mage_t::stun =============================================================
