@@ -4803,11 +4803,17 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
                    Affected Spells: Swipe (106785)
 #4 (id=344680)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
-                   Affected Spells: Rip (1079), Ferocious Bite (22568), Ashamane's Rip (210705)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Affected Spells: Ferocious Bite (22568)
 #5 (id=344848)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
+#6 (id=346473)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Rip (1079), Ashamane's Rip (210705)
+#7 (id=346474)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Rake (1822), Rake (155722)
 Description      : You gain:
 
 $@spellicon131768 $@spellname131768
@@ -5364,11 +5370,17 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
                    Affected Spells: Swipe (106785)
 #4 (id=344681)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
-                   Affected Spells: Rip (1079), Ferocious Bite (22568), Ashamane's Rip (210705)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Affected Spells: Ferocious Bite (22568)
 #5 (id=344851)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
+#6 (id=346475)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Rip (1079), Ashamane's Rip (210705)
+#7 (id=346476)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Rake (1822), Rake (155722)
 Description      : You gain:
 
 $@spellicon131768 $@spellname131768
@@ -5403,11 +5415,17 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
                    Affected Spells: Swipe (106785)
 #4 (id=344682)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
-                   Affected Spells: Rip (1079), Ferocious Bite (22568), Ashamane's Rip (210705)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Affected Spells: Ferocious Bite (22568)
 #5 (id=344859)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
+#6 (id=346477)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Rip (1079), Ashamane's Rip (210705)
+#7 (id=346478)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Rake (1822), Rake (155722)
 Description      : You gain:
 
 $@spellicon131768 $@spellname131768
