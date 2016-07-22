@@ -3896,12 +3896,11 @@ struct flame_patch_t : public fire_mage_spell_t
     fire_mage_spell_t( "flame_patch", p, p -> talents.flame_patch )
   {
     parse_options( options_str );
-
-    dot_duration =  p -> find_spell( 205470 ) -> duration();
-    base_tick_time = timespan_t::from_seconds( 1.0 );//TODO: Hardcode this as it is not in the spell data.
     hasted_ticks=true;
-    spell_power_mod.tick = p -> find_spell( 205472 ) -> effectN( 1 ).sp_coeff();
+    spell_power_mod.direct = p -> find_spell( 205472 ) -> effectN( 1 ).sp_coeff();
     aoe = -1;
+    ground_aoe = background = true;
+    school = SCHOOL_FIRE;
   }
 };
 // Flamestrike Spell ==========================================================
@@ -3973,7 +3972,13 @@ struct flamestrike_t : public fire_mage_spell_t
 
     if ( p() -> talents.flame_patch -> ok() )
     {
-      flame_patch -> execute();
+      // DurationID: 205470. 8s
+      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        .pulse_time( timespan_t::from_seconds( 1.0 ) )
+        .target( execute_state -> target )
+        .duration( timespan_t::from_seconds( 8.0 ) )
+        .action( flame_patch )
+        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
     }
   }
 
