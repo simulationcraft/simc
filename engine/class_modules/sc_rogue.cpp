@@ -1231,21 +1231,32 @@ struct poison_knives_t : public rogue_attack_t
 struct from_the_shadows_damage_t : public rogue_attack_t
 {
   from_the_shadows_damage_t( rogue_t* p ) :
-    rogue_attack_t( "from_the_shadows_damage", p, p -> find_spell( 192434 ) )
+    rogue_attack_t( "from_the_shadows", p, p -> find_spell( 192434 ) )
   {
     background = true;
     callbacks = false;
   }
 };
 
-struct from_the_shadows_t : public rogue_attack_t
+struct from_the_shadows_driver_t : public rogue_attack_t
 {
-  from_the_shadows_t( rogue_t* p ) :
-    rogue_attack_t( "from_the_shadows", p, p -> find_spell( 192432 ) )
-  {
-    background = true;
+  from_the_shadows_damage_t* damage;
 
-    tick_action = new from_the_shadows_damage_t( p );
+  from_the_shadows_driver_t( rogue_t* p ) :
+    rogue_attack_t( "from_the_shadows_driver", p, p -> find_spell( 192432 ) ),
+    damage( new from_the_shadows_damage_t( p ) )
+  {
+    background = quiet = true;
+    callbacks = may_miss = may_crit = false;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+
+    damage -> target = d -> target;
+    damage -> execute();
+    damage -> execute();
   }
 };
 
@@ -6239,7 +6250,7 @@ void rogue_t::init_spells()
 
   if ( artifact.from_the_shadows.rank() )
   {
-    from_the_shadows_ = new actions::from_the_shadows_t( this );
+    from_the_shadows_ = new actions::from_the_shadows_driver_t( this );
   }
 
   if ( artifact.bag_of_tricks.rank() )
