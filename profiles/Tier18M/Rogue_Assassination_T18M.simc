@@ -1,4 +1,4 @@
-rogue="Rogue_Assassination_T18M"
+rogue="Rogue_Assassination_Skasch"
 level=100
 race=blood_elf
 role=attack
@@ -24,35 +24,69 @@ actions.precombat+=/stealth
 actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/marked_for_death
 
-# Executed every time the actor is available.
+# Executed every time the actor is available
 
-actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<30|cooldown.vendetta.remains<10
+# Cooldowns
+actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<30|debuff.vendetta.up
 actions+=/use_item,slot=finger1,if=buff.bloodlust.react|target.time_to_die<20|debuff.vendetta.up
 actions+=/blood_fury,if=debuff.vendetta.up
 actions+=/berserking,if=debuff.vendetta.up
-actions+=/arcane_torrent,if=debuff.vendetta.up&energy.deficit>50
-actions+=/vendetta,if=((!artifact.urge_to_kill.enabled&dot.rupture.ticking)|(energy%energy.max)<0.4)&(time<10|cooldown.exsanguinate.remains<5)
+actions+=/vendetta,if=target.time_to_die<20
+actions+=/arcane_torrent,if=energy.deficit>50&debuff.vendetta.up&!dot.rupture.exsanguinated&cooldown.exsanguinate.remains>3
+actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=5
+
+# Rotation
+actions+=/vendetta,if=dot.rupture.ticking&cooldown.exsanguinate.remains<1
+actions+=/vanish,sync=rupture,if=cooldown.exsanguinate.remains<1&talent.nightstalker.enabled
+actions+=/vanish,if=!dot.rupture.exsanguinated&talent.shadow_focus.enabled&combo_points.deficit>=2
+actions+=/vanish,if=combo_points<=2&!dot.rupture.exsanguinated&talent.subterfuge.enabled
+actions+=/rupture,if=combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1
 actions+=/exsanguinate,if=prev_gcd.rupture&dot.rupture.remains>20
-actions+=/vanish,if=cooldown.exsanguinate.remains<2&combo_points>4+talent.deeper_stratagem.enabled
-actions+=/rupture,if=(combo_points>4+talent.deeper_stratagem.enabled&(cooldown.exsanguinate.remains<1|!exsanguinated&refreshable))|(time<4&dot.hemorrhage.remains>10&dot.garrote.remains>8)
-actions+=/rupture,if=spell_targets.fan_of_knives>1&!ticking&combo_points>4
-actions+=/rupture,cycle_targets=1,target_if=max:target.time_to_die,max_cycle_targets=6,if=spell_targets.fan_of_knives>1&!ticking&combo_points>4
-actions+=/death_from_above,if=combo_points>4
-actions+=/envenom,if=combo_points>3+talent.deeper_stratagem.enabled&(energy.deficit<40|dot.rupture.exsanguinated)&buff.envenom.remains<(1+combo_points)*0.3&buff.elaborate_planning.remains<2
-actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_stratagem.enabled
-actions+=/rupture,cycle_targets=1,target_if=max:target.time_to_die,max_cycle_targets=6,if=combo_points>4&refreshable&spell_targets.fan_of_knives>1
-actions+=/mutilate,if=prev_gcd.exsanguinate
-actions+=/kingsbane,if=time>6
-actions+=/mutilate,if=!talent.agonizing_poison.enabled&combo_points.deficit>=2&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3&dot.deadly_poison_dot.remains<4
-actions+=/mutilate,cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=!talent.agonizing_poison.enabled&combo_points.deficit>=2&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3&dot.deadly_poison_dot.remains<4&dot.rupture.ticking&dot.garrote.ticking
-actions+=/mutilate,cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=!talent.agonizing_poison.enabled&combo_points.deficit>=2&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3&dot.deadly_poison_dot.remains<4&dot.rupture.ticking
-actions+=/mutilate,cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=!talent.agonizing_poison.enabled&combo_points.deficit>=2&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3&dot.deadly_poison_dot.remains<4&dot.garrote.ticking
-actions+=/mutilate,cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=!talent.agonizing_poison.enabled&combo_points.deficit>=2&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<3&dot.deadly_poison_dot.remains<4
-actions+=/hemorrhage,cycle_targets=1,target_if=max:target.time_to_die,max_cycle_targets=3,if=combo_points.deficit>=1&spell_targets.fan_of_knives>1&!ticking&dot.rupture.remains>6
-actions+=/fan_of_knives,if=combo_points.deficit>=1&(spell_targets>3|(poisoned_enemies<3&spell_targets>2))
-actions+=/mutilate,if=(combo_points.deficit>=2&cooldown.garrote.remains>1&(!dot.hemorrhage.refreshable|!talent.hemorrhage.enabled))
-actions+=/garrote,if=combo_points.deficit>=1&refreshable&!dot.garrote.exsanguinated
-actions+=/hemorrhage,if=combo_points.deficit>=1&(refreshable|(cooldown.exsanguinate.remains<2|dot.rupture.refreshable))
+actions+=/pool_resource,for_next=1
+actions+=/garrote,cycle_targets=1,target_if=max:target.time_to_die,if=combo_points.deficit>=1&!ticking&talent.subterfuge.enabled
+actions+=/pool_resource,for_next=1
+actions+=/garrote,if=combo_points.deficit>=1&!exsanguinated
+actions+=/run_action_list,name=ex_soon,if=cooldown.exsanguinate.remains<5&talent.hemorrhage.enabled&talent.exsanguinate.enabled
+actions+=/run_action_list,name=aoe,if=spell_targets.fan_of_knives>1
+actions+=/run_action_list,name=exsang,if=dot.rupture.exsanguinated
+actions+=/run_action_list,name=standard
+
+# AoE Rotation
+actions.aoe=rupture,if=!ticking&combo_points>=5
+actions.aoe+=/rupture,cycle_targets=1,target_if=max:target.time_to_die,if=!ticking&combo_points>=5
+actions.aoe+=/death_from_above,if=combo_points>=cp_max_spend-1
+actions.aoe+=/envenom,if=combo_points>=cp_max_spend-1&refreshable&!dot.rupture.refreshable&energy.deficit<40&buff.elaborate_planning.remains<2
+actions.aoe+=/envenom,if=combo_points>=cp_max_spend&refreshable&cooldown.garrote.remains<1&buff.elaborate_planning.remains<2
+actions.aoe+=/mutilate,cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=combo_points.deficit>=2&dot.rupture.exsanguinated
+actions.aoe+=/mutilate,cycle_targets=1,target_if=max:bleeds,if=combo_points.deficit>=2&spell_targets.fan_of_knives=2&dot.deadly_poison_dot.refreshable&dot.agonizing_poison_dot.refreshable
+actions.aoe+=/hemorrhage,cycle_targets=1,target_if=max:target.time_to_die,if=combo_points.deficit>=1&!ticking&dot.rupture.remains>6
+actions.aoe+=/fan_of_knives,if=combo_points.deficit>=1&(spell_targets>3|(poisoned_enemies<3&spell_targets>2))
+actions.aoe+=/run_action_list,name=standard
+
+# Standard rotation
+actions.standard=rupture,if=combo_points>=cp_max_spend&refreshable&(!exsanguinated|ticks_remain<2)
+actions.standard+=/death_from_above,if=combo_points>=cp_max_spend-1
+actions.standard+=/envenom,if=combo_points>=cp_max_spend-1&refreshable&!dot.rupture.refreshable&energy.deficit<40&buff.elaborate_planning.remains<2
+actions.standard+=/envenom,if=combo_points>=cp_max_spend&refreshable&cooldown.garrote.remains<1&buff.elaborate_planning.remains<2
+actions.standard+=/hemorrhage,if=combo_points.deficit>=1&refreshable
+actions.standard+=/hemorrhage,if=combo_points.deficit=1|combo_points.deficit=2
+actions.standard+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
+
+# Exsanguinate soon
+actions.ex_soon=rupture,if=combo_points>=2&!dot.rupture.ticking
+actions.ex_soon+=/hemorrhage,if=combo_points.deficit>=1&debuff.hemorrhage.remains<15
+actions.ex_soon+=/hemorrhage,if=combo_points.deficit=0&energy>40
+actions.ex_soon+=/hemorrhage,if=combo_points.deficit=1|combo_points.deficit=2
+actions.ex_soon+=/hemorrhage,if=combo_points.deficit=0&energy>40
+actions.ex_soon+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
+
+# Exsanguinated rotation
+actions.exsang=death_from_above,if=combo_points>=cp_max_spend-1&dot.rupture.remains>2
+actions.exsang+=/envenom,if=combo_points>=cp_max_spend-1&refreshable&dot.rupture.remains>2
+actions.exsang+=/hemorrhage,if=combo_points.deficit<=1&energy>40&dot.rupture.remains>1
+actions.exsang+=/hemorrhage,if=combo_points.deficit>=1&debuff.hemorrhage.remains<1
+actions.exsang+=/mutilate,if=combo_points.deficit>=2
+actions.exsang+=/hemorrhage,if=combo_points.deficit=1|combo_points.deficit=2
 
 head=felblade_hood,id=124263,bonus_id=567,upgrade=2
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=567,upgrade=2,enchant_id=5321
