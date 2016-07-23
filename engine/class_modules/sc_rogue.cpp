@@ -3056,6 +3056,8 @@ struct mutilate_strike_t : public rogue_attack_t
   {
     background  = true;
     may_miss = may_dodge = may_parry = false;
+
+    base_multiplier *= 1.0 + p -> artifact.assassins_blades.percent();
   }
 
   double composite_crit_chance() const override
@@ -3104,9 +3106,6 @@ struct mutilate_t : public rogue_attack_t
     mh_strike( nullptr ), oh_strike( nullptr ), toxic_mutilator_crit_chance( 0 )
   {
     may_crit = false;
-    snapshot_flags |= STATE_MUL_DA;
-
-    base_multiplier *= 1.0 + p -> artifact.assassins_blades.percent();
 
     if ( p -> main_hand_weapon.type != WEAPON_DAGGER ||
          p ->  off_hand_weapon.type != WEAPON_DAGGER )
