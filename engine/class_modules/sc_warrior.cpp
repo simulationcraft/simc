@@ -2258,6 +2258,7 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
+    weapon_multiplier = 1.36; //FIXME No idea why it is doing 136% weapon damage baseline, as blizz only nerfed it to 146%. Confirmed in game 7/22/2016
     weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
     weapon_multiplier *= 1.0 + p -> artifact.wrath_and_fury.percent();
   }
