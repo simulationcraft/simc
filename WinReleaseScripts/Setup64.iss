@@ -2,8 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Simulationcraft(x64)"
-#define MyAppVersion "703-01"
-#define RealAppVersion "7.0.3.01"
+;#define MyAppVersion "703-01"
+;#define RealAppVersion "7.0.3.01"
 #define MyAppPublisher "Simulationcraft"
 #define MyAppURL "http://www.simulationcraft.org"
 #define MyAppExeName "SimulationCraft64.exe"
@@ -14,7 +14,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{AC025546-B7C5-45A7-B16A-80AE482CBB01}
 AppName={#MyAppName}
-AppVersion={#RealAppVersion}
+AppVersion={#SimcAppFullVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}

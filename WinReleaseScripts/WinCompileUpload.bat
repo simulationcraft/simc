@@ -14,6 +14,7 @@ set /p ask=Build with PGO data? Only applies to 64-bit installation. (y/n)
 @echo on
 
 set simcversion=703-01
+set SIMCAPPFULLVERSION=7.0.3.01
 :: For bumping the minor version, just change the above line.  Make sure to also change setup32.iss and setup64.iss as well. 
 set simcfiles=C:\Simulationcraft\
 :: Location of source files
@@ -31,7 +32,7 @@ set /p download=<bla.txt
 del bla.txt
 
 ::WebEngine compilation.
-set install=simc-%simcversion%-win64-%GITREV%
+set install=simc-%simcversion%-win64
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
@@ -47,9 +48,11 @@ cd %install%
 %qt_dir%\msvc2015_64\bin\windeployqt.exe --no-translations simulationcraft64.exe
 cd ..
 
-cd winreleasescripts
-iscc.exe "setup64.iss"
+cd winreleasescripts 
+iscc.exe /DMyAppVersion=%simcversion% ^
+		 /DSimcAppFullVersion="%SIMCAPPFULLVERSION%" "setup64.iss"
+				
 cd ..
 call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win64.exe -nopreservetime -nopermissions -transfer=binary" "exit"
-7z a -r %install% %install% -mx9 -md=32m
-call start winscp /command "open downloads" "put %download%\%install%.7z -nopreservetime -nopermissions -transfer=binary" "exit"
+7z a -r %install%%GITREV% %install% -mx9 -md=32m
+call start winscp /command "open downloads" "put %download%\%install%%GITREV%.7z -nopreservetime -nopermissions -transfer=binary" "exit"
