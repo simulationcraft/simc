@@ -5525,7 +5525,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=314805)   : Weapon Damage% (31)
-                   Base Value: 150 | Scaled Value: 1.5 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 135 | Scaled Value: 1.35 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : $@spelldesc212333
 
 Name             : Dark Arbiter (id=212412) [Spell Family (15), Hidden] 
