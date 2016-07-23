@@ -3,7 +3,7 @@ level=100
 race=troll
 role=spell
 position=back
-talents=1102013
+talents=1102012
 spec=demonology
 
 # This default action priority list is automatically created based on your character.
@@ -32,10 +32,11 @@ actions+=/service_pet
 actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3
 actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
 actions+=/soul_harvest
-actions+=/doom,if=remains<=action.hand_of_guldan.cast_time
-actions+=/hand_of_guldan,if=soul_shard>=3
+actions+=/doom,if=talent.impending_doom.enabled&remains<=action.hand_of_guldan.cast_time
+actions+=/hand_of_guldan,if=soul_shard>=1
 actions+=/demonic_empowerment,if=wild_imp_no_de>=5
-actions+=/doom,if=remains<=duration*0.3
+actions+=/doom,if=talent.impending_doom.enabled&remains<=duration*0.3
+actions+=/demonbolt
 actions+=/shadow_bolt
 actions+=/life_tap
 

@@ -5505,11 +5505,11 @@ void warlock_t::apl_demonology()
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
   action_list_str += init_use_profession_actions();
   action_list_str += "/soul_harvest";
-  add_action( "Doom", "if=remains<=action.hand_of_guldan.cast_time" );
-  action_list_str += "/hand_of_guldan,if=soul_shard>=3";
+  add_action( "Doom", "if=talent.impending_doom.enabled&remains<=action.hand_of_guldan.cast_time" );
+  action_list_str += "/hand_of_guldan,if=soul_shard>=1";
   action_list_str += "/demonic_empowerment,if=wild_imp_no_de>=5";
-  add_action( "Doom", "if=remains<=duration*0.3" );
-  add_action( "Demonbolt" );
+  add_action( "Doom", "if=talent.impending_doom.enabled&remains<=duration*0.3" );
+  action_list_str += "/demonbolt";
   add_action( "Shadow Bolt" );
 
 }
