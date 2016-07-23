@@ -103,8 +103,8 @@ public:
   {
     pet_t* active;
     pet_t* last;
-    static const int WILD_IMP_LIMIT = 25;
-    static const int T18_PET_LIMIT = 6 ;
+    static const int WILD_IMP_LIMIT = 60;
+    static const int T18_PET_LIMIT = 45;
     static const int DREADSTALKER_LIMIT = 4;
     static const int DIMENSIONAL_RIFT_LIMIT = 10;
     static const int INFERNAL_LIMIT = 1;
