@@ -98,7 +98,6 @@ struct stat_buff_t;
 struct stat_pair_t;
 struct travel_event_t;
 struct xml_node_t;
-struct action_cost_tick_event_t;
 class xml_writer_t;
 struct real_ppm_t;
 namespace highchart {
@@ -5321,6 +5320,9 @@ public:
   /// Cost of using ability per periodic effect tick.
   std::array< double, RESOURCE_MAX > base_costs_per_tick;
 
+  /// Need to consume per tick?
+  bool consume_per_tick_;
+
   /// Minimum base direct damage
   double base_dd_min;
 
@@ -5433,7 +5435,6 @@ public:
   /// action statistics, merged by action-name
   stats_t* stats;
   event_t* execute_event;
-  action_cost_tick_event_t* cost_tick_event;
   timespan_t time_to_execute, time_to_travel;
   double resource_consumed;
   timespan_t last_reaction_time;
@@ -5807,12 +5808,6 @@ public:
   const std::vector<travel_event_t*>& current_travel_events() const
   { return travel_events; }
 
-  virtual bool need_to_trigger_costs_per_tick() const
-  {
-    return std::accumulate(base_costs_per_tick.begin(),
-        base_costs_per_tick.end(), 0.0) != 0;
-  }
-
   virtual bool has_movement_directionality() const;
 
   virtual double composite_teleport_distance( const action_state_t* ) const
@@ -5900,10 +5895,7 @@ public:
 
   event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = nullptr );
 
-  virtual void schedule_cost_tick_event( const dot_t& dot );
   virtual bool consume_cost_per_tick( const dot_t& dot );
-  virtual timespan_t cost_tick_time( const dot_t& /* dot */ ) const
-  { return timespan_t::from_seconds( 1.0 ); }
 
   virtual void do_teleport( action_state_t* );
 
@@ -6375,20 +6367,6 @@ private:
   dot_t* dot;
 };
 
-// Action cost Tick Event ===========================================================
-
-struct action_cost_tick_event_t : public event_t
-{
-public:
-  action_cost_tick_event_t( const dot_t& a );
-
-private:
-  virtual void execute() override;
-  virtual const char* name() const override
-  { return "Action Cost Tick"; }
-  const dot_t& dot;
-};
-
 // DoT End Event ===========================================================
 
 struct dot_end_event_t : public event_t
@@ -6519,6 +6497,11 @@ inline void dot_tick_event_t::execute()
   // the dot no longer exists.
   if ( ! dot -> is_ticking() )
     return;
+
+  if ( ! dot -> current_action -> consume_cost_per_tick( *dot ) )
+  {
+    return;
+  }
 
   if ( dot -> channel_interrupt() )
   {

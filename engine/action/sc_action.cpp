@@ -316,7 +316,6 @@ action_t::action_t( action_e       ty,
   base_recharge_multiplier( 1.0 ),
   movement_directionality( MOVEMENT_NONE ),
   base_teleport_distance( 0.0 ),
-  cost_tick_event( nullptr ),
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
   target_specific_dot( false ),
@@ -395,6 +394,7 @@ action_t::action_t( action_e       ty,
   parent_dot = 0;
   ground_aoe = false;
   state_cache = 0;
+  consume_per_tick_ = false;
 
   range::fill( base_costs, 0.0 );
   range::fill( secondary_costs, 0.0 );
@@ -2031,6 +2031,8 @@ void action_t::init()
 
   init_target_cache();
 
+  consume_per_tick_ = range::find_if( base_costs_per_tick, []( const double& d ) { return d != 0; } ) != base_costs_per_tick.end();
+
   // Setup default target in init
   default_target = target;
 }
@@ -2115,7 +2117,6 @@ void action_t::reset()
   execute_event = 0;
   travel_events.clear();
   target = default_target;
-  cost_tick_event = 0;
 
   if( sim -> current_iteration == 1 )
   {
@@ -3210,28 +3211,17 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   }
 }
 
-void action_t::schedule_cost_tick_event( const dot_t& dot )
-{
-  if ( cost_tick_event )
-  {
-    event_t::cancel( cost_tick_event );
-  }
-
-  cost_tick_event = new ( *sim ) action_cost_tick_event_t( dot );
-
-  if ( sim -> debug )
-  {
-    sim -> out_debug.printf( "%s scheduling action %s cost tick event. tick_time=%.3f",
-        player -> name(), name(), cost_tick_event -> remains().total_seconds() );
-  }
-}
-
 /**
  * If the action is still ticking and all resources could be successfully consumed,
  * return true to indicate continued ticking.
  */
 bool action_t::consume_cost_per_tick( const dot_t& /* dot */ )
 {
+  if ( ! consume_per_tick_ )
+  {
+    return true;
+  }
+
   if ( player -> get_active_dots( internal_id ) == 0 )
   {
     if ( sim -> debug )
@@ -3333,28 +3323,5 @@ bool action_t::has_movement_directionality() const
       return true;
     else
       return m == movement_directionality;
-  }
-}
-action_cost_tick_event_t::action_cost_tick_event_t( const dot_t& dot ) :
-    event_t( *dot.source ),
-    dot( dot )
-{
-  add_event( dot.current_action -> cost_tick_time( dot ) );
-}
-
-void action_cost_tick_event_t::execute()
-{
-  action_t* action = dot.current_action;
-
-  action -> cost_tick_event = nullptr;
-
-  if ( action -> consume_cost_per_tick( dot ) )
-  {
-    action -> schedule_cost_tick_event( dot );
-  }
-  else
-  {
-    if ( sim().debug )
-      sim().out_debug << "Action cost tick event ended.";
   }
 }

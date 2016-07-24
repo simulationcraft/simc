@@ -4227,12 +4227,6 @@ struct fury_of_elune_t : public druid_spell_t
     base_costs_per_tick[ RESOURCE_ASTRAL_POWER ] *= base_tick_time.total_seconds();
   }
 
-  timespan_t cost_tick_time( const dot_t& d ) const override
-  {
-    // Consumes cost each time DoT ticks.
-    return d.time_to_next_tick();
-  }
-
   void impact( action_state_t* s ) override
   {
     bool refresh = get_dot( s -> target ) -> is_ticking();
