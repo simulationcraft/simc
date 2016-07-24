@@ -4573,8 +4573,8 @@ private:
   double cached_amount;
   double weapon_damage_multiplier;
   double crit_bonus_damage;
-  double
-  first_blood;  // First Blood talent multiplier, if relevant to the action.
+  // First Blood talent multiplier, if relevant to the action.
+  double first_blood;
 #ifndef NDEBUG
   std::vector<actions::demon_hunter_attack_t*> attacks_;
 #endif
@@ -4711,6 +4711,11 @@ private:
       double m = get_target_mitigation( t ) *
                  action -> composite_target_multiplier( t ) *
                  get_target_crit_modifier( t );
+
+      if ( action -> chain_multiplier != 1.0 )
+      {
+        m *= pow( action -> chain_multiplier, i );
+      }
 
       if ( i == 0 )
       {
