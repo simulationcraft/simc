@@ -205,17 +205,14 @@ public:
   // Talents
   struct talents_t
   {
-    const spell_data_t* exotic_munitions;
-
     // tier 1
-    const spell_data_t* one_with_the_pack;
+    const spell_data_t* big_game_hunter;
     const spell_data_t* way_of_the_cobra;
     const spell_data_t* dire_stable;
 
     const spell_data_t* lone_wolf;
     const spell_data_t* steady_focus;
-    const spell_data_t* true_aim;
-    const spell_data_t* sentinel;
+    const spell_data_t* careful_aim;
 
     const spell_data_t* animal_instincts;
     const spell_data_t* throwing_axes;
@@ -225,14 +222,13 @@ public:
     const spell_data_t* stomp;
     const spell_data_t* dire_frenzy;
     const spell_data_t* chimaera_shot;
-
+    
+    const spell_data_t* lock_and_load;
     const spell_data_t* black_arrow;
-    const spell_data_t* explosive_shot;
-    const spell_data_t* trick_shot;
-
-    const spell_data_t* caltrops;
-    const spell_data_t* steel_trap;
-    const spell_data_t* improved_traps;
+    const spell_data_t* true_aim;
+    
+    const spell_data_t* mortal_wounds;
+    const spell_data_t* snake_hunter;
 
     // tier 3
     const spell_data_t* posthaste;
@@ -240,16 +236,17 @@ public:
     const spell_data_t* dash;
 
     // tier 4
-    const spell_data_t* big_game_hunter;
+    const spell_data_t* one_with_the_pack;
     const spell_data_t* bestial_fury;
     const spell_data_t* blink_strikes;
-
-    const spell_data_t* careful_aim;
-    const spell_data_t* heightened_vulnerability;
+    
+    const spell_data_t* explosive_shot;
+    const spell_data_t* sentinel;
     const spell_data_t* patient_sniper;
 
-    const spell_data_t* dragonsfire_grenade;
-    const spell_data_t* snake_hunter;
+    const spell_data_t* caltrops;
+    const spell_data_t* steel_trap;
+    const spell_data_t* improved_traps;
 
     // tier 5
     const spell_data_t* binding_shot;
@@ -267,7 +264,7 @@ public:
     const spell_data_t* volley;
 
     const spell_data_t* butchery;
-    const spell_data_t* mortal_wounds;
+    const spell_data_t* dragonsfire_grenade;
     const spell_data_t* serpent_sting;
 
     // tier 7
@@ -277,7 +274,7 @@ public:
 
     const spell_data_t* sidewinders;
     const spell_data_t* piercing_shot;
-    const spell_data_t* lock_and_load;
+    const spell_data_t* trick_shot;
 
     const spell_data_t* spitting_cobra;
     const spell_data_t* expert_trapper;
@@ -679,7 +676,7 @@ public:
 
     // Bullseye artifact trait - procs from specials on targets below 20%
     // TODO: Apparently this only procs on a single impact for multi-shot
-    if ( p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() < p() -> artifacts.bullseye.value() )
+    if ( p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() )
       p() -> buffs.bullseye -> trigger();
   }
 
@@ -687,7 +684,7 @@ public:
   {
     double cost = ab::cost();
 
-    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> up() )
+    if ( p() -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> check() )
       cost *= 0.50; //TODO: Wait to see if spell data is updated with a value
 
     if ( p() -> legendary.bm_waist && p() -> buffs.bestial_wrath -> check() )
@@ -1207,9 +1204,8 @@ public:
         .add_invalidate( CACHE_ATTACK_HASTE );
 
     buffs.titans_frenzy = 
-      buff_creator_t( this, "titans_thunder" )
-        .duration( timespan_t::from_seconds( 30.0 ) )
-        .quiet( true );
+      buff_creator_t( this, "titans_frenzy", o() -> artifacts.titans_thunder )
+        .duration( timespan_t::from_seconds( 30.0 ) );
 
     buffs.tier17_4pc_bm = 
       buff_creator_t( this, 178875, "tier17_4pc_bm" )
@@ -2700,7 +2696,7 @@ struct barrage_t: public hunter_ranged_attack_t
    hunter_ranged_attack_t::execute();
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
  }
 
  bool usable_moving() const override
@@ -2804,7 +2800,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     }
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
 
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) )
       p() -> buffs.t18_2p_dire_longevity -> trigger();
@@ -2985,7 +2981,7 @@ struct black_arrow_t: public hunter_ranged_attack_t
       p() -> dark_minion[ 1 ] -> summon( duration );
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 };
 
@@ -3206,7 +3202,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     }
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
 
     if ( p() -> buffs.sentinels_sight -> up() )
       p() -> buffs.sentinels_sight -> expire();
@@ -3275,7 +3271,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     }
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 
 
@@ -3326,9 +3322,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t( "call_of_the_hunter", p, p -> artifacts.call_of_the_hunter )
     {
       aoe = -1;
-      attack_power_mod.direct = 3.0; // FIXME pull spell data at some point
-      weapon = &p -> main_hand_weapon;
-      weapon_multiplier = 0.0;
+      attack_power_mod.direct = p -> find_spell( 191070 ) -> effectN( 1 ).ap_coeff();
     }
   };
 
@@ -3391,7 +3385,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
       call_of_the_hunter -> execute();
 
     if ( p() -> legendary.mm_feet && special )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3497,7 +3491,7 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 
   virtual double action_multiplier() const override
@@ -3539,7 +3533,7 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -3610,7 +3604,7 @@ struct sidewinders_t: hunter_ranged_attack_t
     }
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3644,7 +3638,7 @@ struct windburst_t: hunter_ranged_attack_t
     }
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 };
 
@@ -3724,7 +3718,8 @@ struct melee_t: public hunter_melee_attack_t
     {
       // TODO: Wait for spell data to reflect actual values
       // Max extended duration of 36s
-      timespan_t extension = std::min( timespan_t::from_seconds( 6.0 ), timespan_t::from_seconds( 36.0 ) - td( s -> target ) -> dots.on_the_trail -> remains() );
+      timespan_t extension = std::min( timespan_t::from_seconds( 6.0 ), 
+                                       timespan_t::from_seconds( 36.0 ) - td( s -> target ) -> dots.on_the_trail -> remains() );
       td( s -> target ) -> dots.on_the_trail -> extend_duration( extension );
     }
 
@@ -4392,7 +4387,7 @@ struct moc_t: public ranged_attack_t
     ranged_attack_t::execute();
 
     if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ), false );
+      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 };
 
@@ -4702,7 +4697,11 @@ struct dire_frenzy_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_seconds( 15 ) ); //Missing from spell data
+    // Adjust BW cd
+    timespan_t t = timespan_t::from_seconds( p() -> specs.dire_beast -> effectN( 1 ).base_value() );
+    if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
+      t += timespan_t::from_seconds( p() -> sets.set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).base_value() );
+    p() -> cooldowns.bestial_wrath -> adjust( -t );
 
     if ( p() -> active.pet )
     {
@@ -5141,8 +5140,8 @@ dots( dots_t() )
                           -> effectN( 2 )
                             .percent() + 
                               p -> talents.patient_sniper 
-                                -> effectN( 2 
-                                 ).percent() )
+                                -> effectN( 2 )
+                                  .percent() )
         .duration( timespan_t::from_seconds( 6.0 ) )
         .max_stack( 1 );
   }
@@ -5332,14 +5331,13 @@ void hunter_t::init_spells()
   player_t::init_spells();
 
   //Tier 1
-  talents.one_with_the_pack                 = find_talent_spell( "One with the Pack" );
+  talents.big_game_hunter                   = find_talent_spell( "Big Game Hunter" );
   talents.way_of_the_cobra                  = find_talent_spell( "Way of the Cobra" );
   talents.dire_stable                       = find_talent_spell( "Dire Stable" );
 
   talents.lone_wolf                         = find_talent_spell( "Lone Wolf" );
   talents.steady_focus                      = find_talent_spell( "Steady Focus" );
-  talents.true_aim                          = find_talent_spell( "True Aim" );
-  talents.sentinel                          = find_talent_spell( "Sentinel" );
+  talents.careful_aim                       = find_talent_spell( "Careful Aim" );
 
   talents.animal_instincts                  = find_talent_spell( "Animal Instincts" );
   talents.way_of_the_moknathal              = find_talent_spell( "Way of the Mok'Nathal" );
@@ -5347,17 +5345,15 @@ void hunter_t::init_spells()
 
   //Tier 2
   talents.stomp                             = find_talent_spell( "Stomp" );
-  talents.exotic_munitions                  = find_talent_spell( "Exotic Munitions" );
   talents.dire_frenzy                       = find_talent_spell( "Dire Frenzy" );
   talents.chimaera_shot                     = find_talent_spell( "Chimaera Shot" );
-
+  
+  talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
   talents.black_arrow                       = find_talent_spell( "Black Arrow" );
-  talents.explosive_shot                    = find_talent_spell( "Explosive Shot" );
-  talents.trick_shot                        = find_talent_spell( "Trick Shot" );
-
-  talents.caltrops                          = find_talent_spell( "Caltrops" );
-  talents.steel_trap                        = find_talent_spell( "Steel Trap" );
-  talents.improved_traps                    = find_talent_spell( "Improved Traps" );
+  talents.true_aim                          = find_talent_spell( "True Aim" );
+  
+  talents.mortal_wounds                     = find_talent_spell( "Mortal Wounds" );
+  talents.snake_hunter                      = find_talent_spell( "Snake Hunter" );
 
   //Tier 3
   talents.posthaste                         = find_talent_spell( "Posthaste" );
@@ -5365,21 +5361,25 @@ void hunter_t::init_spells()
   talents.dash                              = find_talent_spell( "Dash" );
 
   //Tier 4
+  talents.bestial_fury                      = find_talent_spell( "Bestial Fury" );
+  talents.blink_strikes                     = find_talent_spell( "Blink Strikes" );
+  talents.one_with_the_pack                 = find_talent_spell( "One with the Pack" );
+  
+  talents.explosive_shot                    = find_talent_spell( "Explosive Shot" );
+  talents.sentinel                          = find_talent_spell( "Sentinel" );
+  talents.patient_sniper                    = find_talent_spell( "Patient Sniper" );
+
+  talents.caltrops                          = find_talent_spell( "Caltrops" );
+  talents.steel_trap                        = find_talent_spell( "Steel Trap" );
+  talents.improved_traps                    = find_talent_spell( "Improved Traps" );
+
+  //Tier 5
   talents.intimidation                      = find_talent_spell( "Intimidation" );
   talents.wyvern_sting                      = find_talent_spell( "Wyvern Sting" );
   talents.binding_shot                      = find_talent_spell( "Binding Shot" );
-
-  //Tier 5
-  talents.big_game_hunter                   = find_talent_spell( "Big Game Hunter" );
-  talents.bestial_fury                      = find_talent_spell( "Bestial Fury" );
-  talents.blink_strikes                     = find_talent_spell( "Blink Strikes" );
-
-  talents.careful_aim                       = find_talent_spell( "Careful Aim" );
-  talents.heightened_vulnerability          = find_talent_spell( "Heightened Vulnerability" );
-  talents.patient_sniper                    = find_talent_spell( "Patient Sniper" );
-
-  talents.dragonsfire_grenade               = find_talent_spell( "Dragonsfire Grenade" );
-  talents.snake_hunter                      = find_talent_spell( "Snake Hunter" );
+  talents.camouflage                        = find_talent_spell( "Camouflage" );
+  talents.sticky_bomb                       = find_talent_spell( "Sticky Bomb" );
+  talents.rangers_net                       = find_talent_spell( "Ranger's Net" );
 
   //Tier 6
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
@@ -5387,7 +5387,7 @@ void hunter_t::init_spells()
   talents.volley                            = find_talent_spell( "Volley" );
 
   talents.butchery                          = find_talent_spell( "Butchery" );
-  talents.mortal_wounds                     = find_talent_spell( "Mortal Wounds" );
+  talents.dragonsfire_grenade               = find_talent_spell( "Dragonsfire Grenade" );
   talents.serpent_sting                     = find_talent_spell( "Serpent Sting" );
 
   //Tier 7
@@ -5397,7 +5397,7 @@ void hunter_t::init_spells()
 
   talents.sidewinders                       = find_talent_spell( "Sidewinders" );
   talents.piercing_shot                     = find_talent_spell( "Piercing Shot" );
-  talents.lock_and_load                     = find_talent_spell( "Lock and Load" );
+  talents.trick_shot                        = find_talent_spell( "Trick Shot" );
 
   talents.spitting_cobra                    = find_talent_spell( "Spitting Cobra" );
   talents.expert_trapper                    = find_talent_spell( "Expert Trapper" );
@@ -6003,7 +6003,7 @@ void hunter_t::apl_bm()
   default_list -> add_talent( this, "Dire Frenzy", "if=cooldown.bestial_wrath.remains>2" );
   default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1|(spell_targets.barrage=1&focus>90)" );
-  default_list -> add_action( this, "Titan's Thunder", "if=cooldown.dire_beast.remains>=3" );
+  default_list -> add_action( this, "Titan's Thunder", "if=cooldown.dire_beast.remains>=3|talent.dire_frenzy.enabled" );
   default_list -> add_action( this, "Bestial Wrath" );
   default_list -> add_action( this, "Multi-shot", "if=spell_targets.multi_shot>=3&pet.buff.beast_cleave.down" );
   default_list -> add_action( this, "Kill Command" );
@@ -6028,11 +6028,11 @@ void hunter_t::apl_mm()
   if ( artifacts.quick_shot.rank() )
     trueshot_cd += artifacts.quick_shot.time_value().total_seconds();
   if ( sets.has_set_bonus( HUNTER_MARKSMANSHIP, T19, B2 ) )
-    trueshot_cd *= 0.65;
+    trueshot_cd *= 0.6;
   for ( size_t i = 0; i < items.size(); i++ )
   {
     if ( items[ i ].name_str == "ullrs_feather_snowshoes" )
-      trueshot_cd *= 0.7;
+      trueshot_cd *= 0.65;
     if ( items[ i ].name_str == "convergence_of_fates" )
       trueshot_cd *= 0.8;
   }
