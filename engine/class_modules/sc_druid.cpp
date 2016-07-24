@@ -39,12 +39,8 @@ namespace { // UNNAMED NAMESPACE
 
   Guardian ==================================================================
   Statistics?
-  Primal Fury gone or bugged?
   Incarnation CD modifier rework
-  Gory Fur
   Check Galactic Guardian proc sources
-  Fix rage generation from AAs
-    http://us.battle.net/wow/en/forum/topic/20743504316?page=13#248
 
   Resto =====================================================================
   All the things
@@ -403,7 +399,6 @@ public:
   {
     // Multiple Specs / Forms
     gain_t* clearcasting;       // Feral & Restoration
-    gain_t* primal_fury;        // Feral & Guardian
     gain_t* soul_of_the_forest; // Feral & Guardian
 
     // Balance
@@ -420,6 +415,7 @@ public:
     gain_t* energy_refund;
     gain_t* elunes_guidance;
     gain_t* moonfire;
+    gain_t* primal_fury;
     gain_t* rake;
     gain_t* shred;
     gain_t* swipe_cat;
@@ -760,6 +756,7 @@ public:
   virtual double    composite_block() const override { return 0; }
   virtual double    composite_crit_avoidance() const override;
   virtual double    composite_dodge() const override;
+  virtual double    composite_dodge_rating() const override;
   virtual double    composite_leech() const override;
   virtual double    composite_melee_attack_power() const override;
   virtual double    composite_melee_crit_chance() const override;
@@ -792,6 +789,7 @@ public:
   form_e get_form() const { return form; };
   void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
+  const spell_data_t* find_affinity_spell( const std::string& );
 
 private:
   void              apl_precombat();
@@ -1068,11 +1066,13 @@ public:
     base_t( p, buff_creator_t( &p, "bear_form", p.find_class_spell( "Bear Form" ) ) ),
     rage_spell( p.find_spell( 17057 ) )
   {
-    add_invalidate( CACHE_AGILITY );
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_STAMINA );
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_EXP );
+
+    if ( p.spec.killer_instinct -> ok() )
+      add_invalidate( CACHE_AGILITY );
   }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1195,8 +1195,10 @@ struct cat_form_t : public druid_buff_t< buff_t >
   cat_form_t( druid_t& p ) :
     base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
   {
-    add_invalidate( CACHE_AGILITY );
     add_invalidate( CACHE_ATTACK_POWER );
+
+    if ( p.spec.killer_instinct -> ok() )
+      add_invalidate( CACHE_AGILITY );
   }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1829,7 +1831,7 @@ struct moonfire_t : public druid_spell_t
   moonfire_damage_t* damage;
 
   moonfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonfire", player, player -> find_spell( 8921 ), options_str )
+    druid_spell_t( "moonfire", player, player -> find_affinity_spell( "Moonfire" ), options_str )
   {
     may_miss = false;
     damage = new moonfire_damage_t( player );
@@ -2037,6 +2039,21 @@ public:
 
     razor_claws.direct = data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) );
     razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
+
+    // Apply all Feral Affinity damage modifiers.
+    if ( p -> talent.feral_affinity -> ok() )
+    {
+      for ( size_t i = 1; i <= p -> talent.feral_affinity -> effect_count(); i++ )
+      {
+        const spelleffect_data_t& effect = p -> talent.feral_affinity -> effectN( i );
+
+        if ( ! ( effect.type() == E_APPLY_AURA && effect.subtype() == A_ADD_PCT_MODIFIER ) )
+          continue;
+
+        if ( data().affected_by( effect ) )
+          base_multiplier *= 1.0 + effect.percent();
+      }
+    }
   }
 
   // For effects that specifically trigger only when "prowling."
@@ -2568,7 +2585,7 @@ struct ferocious_bite_t : public cat_attack_t
   bool max_energy;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "ferocious_bite", p, p -> find_class_spell( "Ferocious Bite" ) ),
+    cat_attack_t( "ferocious_bite", p, p -> find_affinity_spell( "Ferocious Bite" ) ),
     excess_energy( 0 ), max_excess_energy( 0 ), max_energy( false )
   {
     add_option( opt_bool( "max_energy" , max_energy ) );
@@ -2724,7 +2741,7 @@ struct rake_t : public cat_attack_t
   double stealth_multiplier;
 
   rake_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rake", p, p -> find_specialization_spell( "Rake" ), options_str ),
+    cat_attack_t( "rake", p, p -> find_affinity_spell( "Rake" ), options_str ),
     stealth_multiplier( 0.0 )
   {
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
@@ -2765,7 +2782,7 @@ struct rake_t : public cat_attack_t
 struct rip_t : public cat_attack_t
 {
   rip_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rip", p, p -> spec.rip, options_str )
+    cat_attack_t( "rip", p, p -> find_affinity_spell( "Rip" ), options_str )
   {
     special      = true;
     may_crit     = false;
@@ -2778,7 +2795,6 @@ struct rip_t : public cat_attack_t
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
-
     base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
   }
 
@@ -2866,7 +2882,7 @@ struct savage_roar_t : public cat_attack_t
 struct shred_t : public cat_attack_t
 {
   shred_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "shred", p, p -> find_specialization_spell( "Shred" ), options_str )
+    cat_attack_t( "shred", p, p -> find_affinity_spell( "Shred" ), options_str )
   {
     base_crit += p -> artifact.feral_power.percent();
     base_multiplier *= 1.0 + p -> artifact.shredder_fangs.percent();
@@ -3100,16 +3116,6 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
     if ( result_is_hit( s -> result ) )
     {
-      // Only trigger from primary target. Legion TOCHECK
-      if ( p() -> spec.primal_fury -> ok() && s -> target == target
-           && s -> result == RESULT_CRIT && s -> result_amount > 0 )
-      {
-        p() -> resource_gain( RESOURCE_RAGE,
-          p() -> spec.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
-          p() -> gain.primal_fury );
-        p() -> proc.primal_fury -> occur();
-      }
-
       if ( p() -> talent.galactic_guardian -> ok() )
         trigger_galactic_guardian( s );
     }
@@ -3157,7 +3163,7 @@ struct bear_melee_t : public bear_attack_t
 
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_RAGE;
-    energize_amount   = 70.0 / 9.0; // Legion TOCHECK: Estimate Jan 27 2016, need more accurate number.
+    energize_amount   = 7.875; // http://us.battle.net/wow/en/forum/topic/20743504316?page=13#248
   }
 
   virtual timespan_t execute_time() const override
@@ -3219,7 +3225,7 @@ struct mangle_t : public bear_attack_t
   double bleeding_multiplier;
 
   mangle_t( druid_t* player, const std::string& options_str ) :
-    bear_attack_t( "mangle", player, player -> find_class_spell( "Mangle" ), options_str )
+    bear_attack_t( "mangle", player, player -> find_affinity_spell( "Mangle" ), options_str )
   {
     bleeding_multiplier = data().effectN( 3 ).percent();
 
@@ -3353,22 +3359,22 @@ struct thrash_bear_t : public bear_attack_t
   thrash_bear_t( druid_t* p, const std::string& options_str ) :
     bear_attack_t( "thrash_bear", p, p -> find_spell( 77758 ), options_str )
   {
-    aoe                    = -1;
+    aoe = -1;
     spell_power_mod.direct = 0;
-
     gore = true;
-
     dot_duration = p -> spec.thrash_bear_dot -> duration();
     base_tick_time = p -> spec.thrash_bear_dot -> effectN( 1 ).period();
     attack_power_mod.tick = p -> spec.thrash_bear_dot -> effectN( 1 ).ap_coeff();
     dot_max_stack = 3; 
-
+    // Apply hidden passive damage multiplier
+    base_dd_multiplier *= 1.0 + p -> spec.guardian_overrides -> effectN( 6 ).percent();
+    // Bear Form cost modifier
+    base_costs[ RESOURCE_RAGE ] *= 1.0 + p -> buff.bear_form -> data().effectN( 7 ).percent();
+    
     if ( p -> talent.blood_frenzy -> ok() )
       blood_frenzy_amount = p -> find_spell( 203961 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
 
     base_multiplier *= 1.0 + p -> artifact.jagged_claws.percent();
-    // Apply hidden passive damage multiplier
-    base_dd_multiplier *= 1.0 + p -> spec.guardian_overrides -> effectN( 6 ).percent();
   }
 
   virtual void tick( dot_t* d ) override
@@ -4621,7 +4627,7 @@ struct lunar_strike_t : public druid_spell_t
 
   lunar_strike_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "lunar_strike", player,
-      player -> find_specialization_spell( "Lunar Strike" ), options_str )
+      player -> find_affinity_spell( "Lunar Strike" ), options_str )
   {
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
@@ -4863,7 +4869,7 @@ struct sunfire_t : public druid_spell_t
   sunfire_damage_t* damage;
 
   sunfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "sunfire", player, player -> find_specialization_spell( "Sunfire" ), options_str )
+    druid_spell_t( "sunfire", player, player -> find_affinity_spell( "Sunfire" ), options_str )
   {
     may_miss = false;
     damage = new sunfire_damage_t( player );
@@ -4978,7 +4984,7 @@ struct solar_wrath_t : public druid_spell_t
   timespan_t natures_balance;
 
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "solar_wrath", player, player -> find_specialization_spell( "Solar Wrath" ), options_str )
+    druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str )
   {
     natures_balance    = timespan_t::from_seconds( player -> talent.natures_balance -> effectN( 2 ).base_value() );
 
@@ -5284,15 +5290,15 @@ struct starsurge_t : public druid_spell_t
     }
   };
 
-  starsurge_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "starsurge", player, player -> find_specialization_spell( "Starsurge" ), options_str )
+  starsurge_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "starsurge", p, p -> find_affinity_spell( "Starsurge" ), options_str )
   {
-    base_crit += player -> artifact.scythe_of_the_stars.percent();
+    base_crit += p -> artifact.scythe_of_the_stars.percent();
 
-    if ( player -> artifact.power_of_goldrinn.rank() && ! player -> active.goldrinns_fang )
+    if ( p -> artifact.power_of_goldrinn.rank() && ! p -> active.goldrinns_fang )
     {
-      player -> active.goldrinns_fang = new goldrinns_fang_t( player );
-      add_child( player -> active.goldrinns_fang );
+      p -> active.goldrinns_fang = new goldrinns_fang_t( p );
+      add_child( p -> active.goldrinns_fang );
     }
   }
 
@@ -5749,7 +5755,8 @@ void druid_t::init_spells()
   spec.primal_fury                = find_spell( 16953 );
   spec.rip                        = find_specialization_spell( "Rip" );
   spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
-  spec.swipe_cat                  = find_specialization_spell( "Swipe" ) -> ok() ? find_spell( 106785 ) : spell_data_t::not_found();
+  spec.swipe_cat                  = find_specialization_spell( "Swipe" ) -> ok() || talent.feral_affinity -> ok() ?
+                                      find_spell( 106785 ) : spell_data_t::not_found();
 
   // Guardian
   spec.bear_form                  = find_class_spell( "Bear Form" ) -> ok() ? find_spell( 1178 ) : spell_data_t::not_found();
@@ -5966,6 +5973,7 @@ void druid_t::init_base_stats()
   base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 3 : 30;
 
   // All specs get benefit from both agi and intellect.
+  // Nurturing Instinct overrides this behavior in composite_spell_power.
   base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
@@ -5986,6 +5994,7 @@ void druid_t::init_base_stats()
   resources.active_resource[ RESOURCE_RAGE         ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
 
   base_energy_regen_per_second = 10;
+  base_energy_regen_per_second *= 1.0 + talent.feral_affinity -> effectN( 2 ).percent();
 
   // Max Mana & Mana Regen modifiers
   resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + spec.druid -> effectN( 5 ).percent();
@@ -6986,7 +6995,7 @@ void druid_t::invalidate_cache( cache_e c )
       player_t::invalidate_cache( CACHE_SPELL_POWER );
     break;
   case CACHE_INTELLECT:
-    if ( spec.killer_instinct -> ok() )
+    if ( spec.killer_instinct -> ok() && ( buff.cat_form -> check() || buff.bear_form -> check() ) )
       player_t::invalidate_cache( CACHE_AGILITY );
     break;
   case CACHE_MASTERY:
@@ -7000,6 +7009,9 @@ void druid_t::invalidate_cache( cache_e c )
     if ( spec.bladed_armor -> ok() )
       player_t::invalidate_cache( CACHE_ATTACK_POWER );
     break;
+  case CACHE_CRIT_CHANCE:
+    if ( specialization() == DRUID_GUARDIAN )
+      player_t::invalidate_cache( CACHE_DODGE );
   default:
     break;
   }
@@ -7159,12 +7171,13 @@ double druid_t::composite_spell_haste() const
 
 double druid_t::composite_spell_power( school_e school ) const
 {
-  double p = player_t::composite_spell_power( school );
-
+  // Nurturing Instinct overrides SP from other sources.
   if ( spec.nurturing_instinct -> ok() )
-    p += spec.nurturing_instinct -> effectN( 1 ).percent() * cache.agility();
+  {
+    return spec.nurturing_instinct -> effectN( 1 ).percent() * cache.agility();
+  }
 
-  return p;
+  return player_t::composite_spell_power( school );
 }
 
 // druid_t::composite_attribute =============================================
@@ -7177,7 +7190,10 @@ double druid_t::composite_attribute( attribute_e attr ) const
   {
   case ATTR_AGILITY:
     if ( spec.killer_instinct -> ok() && ( buff.bear_form -> up() || buff.cat_form -> up() ) )
-      a += spec.killer_instinct -> effectN( 1 ).percent() * cache.intellect();
+    {
+      // 100% of non-base Intellect added as Agility
+      a += spec.killer_instinct -> effectN( 1 ).percent() * ( cache.intellect() - base.stats.attribute[ STAT_INTELLECT ] );
+    }
     break;
   default:
     break;
@@ -7251,6 +7267,21 @@ double druid_t::composite_dodge() const
   d += buff.protection_of_ashamane -> check_value();
 
   return d;
+}
+
+// druid_t::composite_dodge_rating ==========================================
+
+double druid_t::composite_dodge_rating() const
+{
+  double dr = player_t::composite_dodge_rating();
+
+  // FIXME: Spell dataify me.
+  if ( specialization() == DRUID_GUARDIAN )
+  {
+    dr += composite_rating( RATING_MELEE_CRIT );
+  }
+
+  return dr;
 }
 
 // druid_t::composite_leech =================================================
@@ -7616,6 +7647,43 @@ void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
   w.max_dmg *= mod;
   w.damage *= mod;
   w.swing_time = timespan_t::from_seconds( swing_time );
+}
+
+// druid_t::find_affinity_spell =============================================
+
+const spell_data_t* druid_t::find_affinity_spell( const std::string& name )
+{
+  const spell_data_t* spec_spell = find_specialization_spell( name );
+
+  if ( spec_spell )
+  {
+    return spec_spell;
+  }
+
+  if ( talent.balance_affinity -> ok() )
+  {
+    if ( util::str_compare_ci( "Starsurge", name             ) ) return find_spell( 197626 );
+    if ( util::str_compare_ci( "Lunar Strike", name          ) ) return find_spell( 197628 );
+    if ( util::str_compare_ci( "Solar Wrath", name           ) ) return find_spell( 197629 );
+    if ( util::str_compare_ci( "Sunfire", name               ) ) return find_spell( 197630 );
+  }
+  else if ( talent.feral_affinity -> ok() )
+  {
+    if ( util::str_compare_ci( "Rip", name                   ) ) return find_spell( 1079 );
+    if ( util::str_compare_ci( "Rake", name                  ) ) return find_spell( 1822 );
+    if ( util::str_compare_ci( "Shred", name                 ) ) return find_spell( 5221 );
+    if ( util::str_compare_ci( "Ferocious Bite", name        ) ) return find_spell( 22568 );
+    if ( util::str_compare_ci( "Swipe", name                 ) ) return find_spell( 213764 );
+  }
+  else if ( talent.guardian_affinity -> ok() )
+  {
+    if ( util::str_compare_ci( "Mangle", name                ) ) return find_spell( 33917 );
+    if ( util::str_compare_ci( "Thrash", name                ) ) return find_spell( 106832 );
+    if ( util::str_compare_ci( "Ironfur", name               ) ) return find_spell( 192081 );
+    if ( util::str_compare_ci( "Frenzied Regeneration", name ) ) return find_spell( 22842 );
+  }
+
+  return spell_data_t::not_found();
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
