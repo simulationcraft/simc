@@ -41,6 +41,7 @@ namespace { // UNNAMED NAMESPACE
   Statistics?
   Incarnation CD modifier rework
   Check Galactic Guardian proc sources
+  New rage from damage taken formula (Bristling Fur)
 
   Resto =====================================================================
   All the things
@@ -2939,7 +2940,8 @@ struct swipe_cat_t : public cat_attack_t
 {
 public:
   swipe_cat_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "swipe_cat", player, player -> spec.swipe_cat, options_str )
+    cat_attack_t( "swipe_cat", player, player -> find_affinity_spell( "Swipe" ) ?
+      player -> spec.swipe_cat : spell_data_t::not_found(), options_str )
   {
     aoe = -1;
     energize_amount = data().effectN( 1 ).percent();
@@ -5755,8 +5757,7 @@ void druid_t::init_spells()
   spec.primal_fury                = find_spell( 16953 );
   spec.rip                        = find_specialization_spell( "Rip" );
   spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
-  spec.swipe_cat                  = find_specialization_spell( "Swipe" ) -> ok() || talent.feral_affinity -> ok() ?
-                                      find_spell( 106785 ) : spell_data_t::not_found();
+  spec.swipe_cat                  = find_spell( 106785 );
 
   // Guardian
   spec.bear_form                  = find_class_spell( "Bear Form" ) -> ok() ? find_spell( 1178 ) : spell_data_t::not_found();
