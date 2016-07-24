@@ -2047,6 +2047,12 @@ bool sim_t::init_actor( player_t* p )
     ret = false;
   }
 
+  // Create all actor pets before special effects get initialized. This ensures that we can use
+  // stuff like the presence of an action (created with create_actions()) to determine if a pet
+  // needs to be created or not. Similarly, talent, artifact, spec, and item based qualifiers would
+  // work.
+  p -> create_pets();
+
   // Second-phase initialize all special effects and register them to actors
   if ( ! p -> init_special_effects() )
   {
@@ -2107,7 +2113,6 @@ bool sim_t::init_actor_pets()
   {
     player_t* p = player_no_pet_list[ i ];
 
-    p -> create_pets();
     for (auto & elem : p -> pet_list)
     {
       if ( ! init_actor( elem ) )
