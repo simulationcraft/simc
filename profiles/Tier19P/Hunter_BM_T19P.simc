@@ -35,7 +35,7 @@ actions+=/dire_beast,if=cooldown.bestial_wrath.remains>2
 actions+=/dire_frenzy,if=cooldown.bestial_wrath.remains>2
 actions+=/aspect_of_the_wild,if=buff.bestial_wrath.up
 actions+=/barrage,if=spell_targets.barrage>1|(spell_targets.barrage=1&focus>90)
-actions+=/titans_thunder,if=cooldown.dire_beast.remains>=3
+actions+=/titans_thunder,if=cooldown.dire_beast.remains>=3|talent.dire_frenzy.enabled
 actions+=/bestial_wrath
 actions+=/multishot,if=spell_targets.multi_shot>=3&pet.buff.beast_cleave.down
 actions+=/kill_command
