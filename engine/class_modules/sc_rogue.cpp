@@ -6516,7 +6516,8 @@ void rogue_t::create_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
-  buffs.blade_flurry        = buff_creator_t( this, "blade_flurry", find_spell( 57142 ) );
+  buffs.blade_flurry        = buff_creator_t( this, "blade_flurry", spec.blade_flurry )
+    .cd( timespan_t::zero() );
   buffs.adrenaline_rush     = buff_creator_t( this, "adrenaline_rush", find_class_spell( "Adrenaline Rush" ) )
                               .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
