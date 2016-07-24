@@ -5991,6 +5991,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                         t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
                   }
               }
+              if(t == 150000)
+                  return -1;
               return t;
           }
 
@@ -6016,6 +6018,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                             t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
                       }
                   }
+                  if(t == 150000)
+                      return -1;
                   return t;
               }
 
@@ -6041,6 +6045,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                             t = pet->buffs.demonic_empowerment->buff_duration.total_seconds();
                       }
                   }
+                  if(t == 150000)
+                      return -1;
                   return t;
               }
 
@@ -6073,6 +6079,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                       }
                   }
               }
+              if(t == 500000)
+                  return -1;
               return t;
           }
 
@@ -6101,7 +6109,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                       }
                   }
                   if(t == 5000)
-                      t = 0;
+                      return -1;
                   return t;
               }
 
@@ -6127,8 +6135,8 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                           t = pet->duration.total_seconds();
                       }
                   }
-                  if( t==5000 )
-                      t = 0;
+                  if( t == 5000 )
+                      return -1;
                   return t;
               }
 
