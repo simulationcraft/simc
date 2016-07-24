@@ -2875,6 +2875,7 @@ struct demonic_empowerment_t: public warlock_spell_t
 		warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment )
 	{
     may_crit = false;
+    harmful = false;
 
     power_trip_rng = p -> talents.power_trip -> effectN( 1 ).percent();
 	}
@@ -5504,7 +5505,8 @@ void warlock_t::apl_demonology()
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
   action_list_str += init_use_profession_actions();
-  action_list_str += "/soul_harvest";
+  action_list_str += "/soul_harvest,if=dot.doom.remains";
+  add_action( "Doom", "if=talent.soul_harvest.enabled&!cooldown.soul_harvest.remains&!remains" );
   add_action( "Doom", "if=talent.impending_doom.enabled&remains<=action.hand_of_guldan.cast_time" );
   action_list_str += "/hand_of_guldan,if=soul_shard>=1";
   action_list_str += "/demonic_empowerment,if=wild_imp_no_de>=5";

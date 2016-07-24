@@ -26,7 +26,7 @@ warlock="Warlock_Demonology_T18M"
 level=100
 race=troll
 spec=demonology
-talents=1102012
+talents=1102013
 head=deathrattle_mask,id=124162,bonus_id=567,upgrade=2
 neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,upgrade=2,enchant_id=5320
 shoulders=deathrattle_shoulderpads,id=124179,bonus_id=567,upgrade=2
