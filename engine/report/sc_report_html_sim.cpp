@@ -1160,7 +1160,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
       continue;
     }
 
-    if ( current_group != entry->group_ )
+    if ( entry && current_group != entry->group_ )
     {
       if ( !first_group )
       {
