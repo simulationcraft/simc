@@ -1531,23 +1531,30 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     buff_expr_t( const std::string& n, const std::string& bn, action_t* a, buff_t* b ) :
       expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false ) {}
 
-    buff_t* buff()
+    virtual buff_t* create() const
+    {
+      action -> player -> get_target_data( action -> target );
+      auto buff = buff_t::find( action -> target, buff_name, action -> player );
+      if ( ! buff ) buff = buff_t::find( action -> target, buff_name, action -> target ); // Raid debuffs
+      if ( ! buff )
+      {
+        action -> sim -> errorf( "Reference to unknown buff/debuff %s by player %s", buff_name.c_str(), action -> player -> name() );
+        assert( 0 );
+        action -> sim -> cancel();
+        // Prevent segfault
+        buff = buff_creator_t( action -> player, "dummy" );
+      }
+
+      return buff;
+    }
+
+    virtual buff_t* buff() const
     {
       if ( static_buff ) return static_buff;
       buff_t*& buff = specific_buff[ action -> target ];
       if ( ! buff )
       {
-        action -> player -> get_target_data( action -> target );
-        buff = buff_t::find( action -> target, buff_name, action -> player );
-        if ( ! buff ) buff = buff_t::find( action -> target, buff_name, action -> target ); // Raid debuffs
-        if ( ! buff )
-        {
-          action -> sim -> errorf( "Reference to unknown buff/debuff %s by player %s", buff_name.c_str(), action -> player -> name() );
-          assert( 0 );
-          action -> sim -> cancel();
-          // Prevent segfault
-          buff = buff_creator_t( action -> player, "dummy" );
-        }
+        buff = create();
       }
       return buff;
     }
@@ -1649,9 +1656,11 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       react_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_react", bn, a, b ) {}
-      virtual double evaluate() override { return buff() -> stack_react(); }
+      buff_t* create() const override
+      { auto b = buff_expr_t::create(); b -> reactable = true; return b; }
+      double evaluate() override
+      { return buff() -> stack_react(); }
     };
-    static_buff -> reactable = true;
     return new react_expr_t( buff_name, action, static_buff );
   }
   else if ( type == "react_pct" )
@@ -1660,9 +1669,11 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     {
       react_pct_expr_t( std::string bn, action_t* a, buff_t* b ) :
         buff_expr_t( "buff_react_pct", bn, a, b ) {}
-      virtual double evaluate() override { return 100.0 * buff() -> stack_react() / buff() -> max_stack(); }
+      buff_t* create() const override
+      { auto b = buff_expr_t::create(); b -> reactable = true; return b; }
+      double evaluate() override
+      { return 100.0 * buff() -> stack_react() / buff() -> max_stack(); }
     };
-    static_buff -> reactable = true;
     return new react_pct_expr_t( buff_name, action, static_buff );
   }
   else if ( type == "cooldown_react" )
