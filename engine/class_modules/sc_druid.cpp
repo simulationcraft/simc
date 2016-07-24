@@ -2940,7 +2940,7 @@ struct swipe_cat_t : public cat_attack_t
 {
 public:
   swipe_cat_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "swipe_cat", player, player -> find_affinity_spell( "Swipe" ) ?
+    cat_attack_t( "swipe_cat", player, player -> find_affinity_spell( "Swipe" ) -> ok() ?
       player -> spec.swipe_cat : spell_data_t::not_found(), options_str )
   {
     aoe = -1;
