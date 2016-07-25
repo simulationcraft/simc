@@ -9,24 +9,16 @@
 //
 // TODO
 // Cleanup aff/destro class trinket implementation
-// Drain life never cancels regardless of mana
 //
 // Affliction -
 // Haunt reset
-// Demonology -
-// demonwrath
-// tier 17/18
-// tier trinket
-// other irrelevent things that do need updating.
+// 
+// Better reporting for add buffs.
+//
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
 // Double check all up()/check() usage.p
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
-// condition to track minimum pet duration
-// condition to track # of buffs active on pets
-// condition to track # of active pets
-// condition to track time since last spell -
-// save current_time in timespan_t on execute, return current_time - timespan_t on call
 //
 // ==========================================================================
 namespace { // unnamed namespace
@@ -5552,7 +5544,7 @@ void warlock_t::apl_destruction()
   }
 
   if ( true_level > 100 )
-  add_action( "Dimensional Rift", "if=charges=3" );
+    add_action( "Dimensional Rift", "if=charges=3" );
 
   add_action( "Immolate", "if=remains<=tick_time" );
   add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd))" );
@@ -5568,6 +5560,7 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
   action_list_str += "/service_pet";
+  add_action( "Summon Infernal", "if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains" );
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
   action_list_str += "/soul_harvest";
