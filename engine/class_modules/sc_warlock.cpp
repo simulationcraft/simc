@@ -4151,12 +4151,8 @@ struct implosion_t : public warlock_spell_t
       for ( auto imp : p() -> warlock_pet_list.wild_imps )
       {
         if ( !imp -> is_sleeping() )
-          i++;
+          return true;
       }
-
-      if ( i > 0 )
-        return r;
-
       return false;
     }
     
