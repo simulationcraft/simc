@@ -6111,12 +6111,14 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                 {
                   if( !pet -> is_sleeping() )
                   {
-                    if( t > pet -> duration.total_seconds() )
-                    t = pet -> duration.total_seconds();
+                    if( t > pet -> expiration->remains().total_seconds() )
+                    {
+                        t = pet->expiration->remains().total_seconds();
+                    }
                   }
                 }
                 if( t == 5000 )
-                  t = 0;
+                  t = -1;
                 return t;
               }
 
@@ -6138,12 +6140,12 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                   {
                       if( !pet->is_sleeping() )
                       {
-                          if( t > pet->duration.total_seconds() )
-                          t = pet->duration.total_seconds();
+                          if( t > pet->expiration->remains().total_seconds() )
+                          t = pet->expiration->remains().total_seconds();
                       }
                   }
                   if( t==5000 )
-                      t = 0;
+                      t = -1;
                   return t;
               }
 
@@ -6160,12 +6162,12 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                 expr_t( "infernal_remaining_duration" ), player( p ) { }
               virtual double evaluate() override
               {
-                  double t = 0;
+                  double t = -1;
                   for(auto& pet : player.warlock_pet_list.infernal)
                   {
                       if(!pet->is_sleeping() )
                       {
-                          t = pet->duration.total_seconds();
+                          t = pet->expiration->remains().total_seconds();
                       }
                   }
                   return t;
@@ -6184,12 +6186,12 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                 expr_t( "doomguard_remaining_duration" ), player( p ) { }
               virtual double evaluate() override
               {
-                  double t = 0;
+                  double t = -1;
                   for(auto& pet : player.warlock_pet_list.doomguard)
                   {
                       if(!pet->is_sleeping() )
                       {
-                          t = pet->duration.total_seconds();
+                          t = pet->expiration->remains().total_seconds();
                       }
                   }
                   return t;
@@ -6208,7 +6210,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
             expr_t( "service_remaining_duration" ), player( p ) { }
           virtual double evaluate() override
           {
-              double t = 0;
+              double t = -1;
               for(auto& pet : player.pet_list)
               {
                   pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
@@ -6218,7 +6220,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                       {
                           if(!lock_pet->is_sleeping() )
                           {
-                              t=lock_pet->duration.total_seconds();
+                              t=lock_pet->expiration->remains().total_seconds();
                           }
                       }
                   }
