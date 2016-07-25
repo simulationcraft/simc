@@ -5247,6 +5247,7 @@ struct agonizing_poison_t : public rogue_poison_buff_t
     rogue_poison_buff_t( r, "agonizing_poison", r.source -> find_spell( 200803 ) )
   {
     default_value = data().effectN( 1 ).percent();
+    refresh_behavior = BUFF_REFRESH_PANDEMIC;
   }
 };
 
@@ -5828,7 +5829,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish" );
       // AoE
-    finish -> add_action( this, "Rupture", "cycle_targets=1,target_if=max:target.time_to_die,if=!ticking&combo_points>=5&spell_targets.fan_of_knives>1", " Finishers" );
+    finish -> add_action( this, "Rupture", "target_if=max:target.time_to_die,if=!ticking&combo_points>=5&spell_targets.fan_of_knives>1", " Finishers" );
       // Single
     finish -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&refreshable&(!exsanguinated|ticks_remain<2)" );
     finish -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1");
@@ -5838,9 +5839,9 @@ void rogue_t::init_action_list()
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build" );
       // AoE
-    build -> add_action( this, "Mutilate", "cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=combo_points.deficit>=2&dot.rupture.exsanguinated&spell_targets.fan_of_knives>1", " Builders" );
-    build -> add_action( this, "Mutilate", "cycle_targets=1,target_if=max:bleeds,if=combo_points.deficit>=2&spell_targets.fan_of_knives=2&dot.deadly_poison_dot.refreshable&dot.agonizing_poison_dot.refreshable" );
-    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,target_if=max:target.time_to_die,if=combo_points.deficit>=1&!ticking&dot.rupture.remains>6&spell_targets.fan_of_knives>1" );
+    build -> add_action( this, "Mutilate", "target_if=min:dot.deadly_poison_dot.remains,if=combo_points.deficit>=2&dot.rupture.exsanguinated&spell_targets.fan_of_knives>1", " Builders" );
+    build -> add_action( this, "Mutilate", "target_if=max:bleeds,if=combo_points.deficit>=2&spell_targets.fan_of_knives=2&dot.deadly_poison_dot.refreshable&debuff.agonizing_poison.remains<=0.3*debuff.agonizing_poison.duration" );
+    build -> add_talent( this, "Hemorrhage", "target_if=max:target.time_to_die,if=combo_points.deficit>=1&!ticking&dot.rupture.remains>6&spell_targets.fan_of_knives>1" );
     build -> add_action( this, "Fan of Knives", "if=combo_points.deficit>=1&(spell_targets>3|(poisoned_enemies<3&spell_targets>2))&spell_targets.fan_of_knives>1" );
       // Single
     build -> add_talent( this, "Hemorrhage", "if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&energy.deficit<40)" );

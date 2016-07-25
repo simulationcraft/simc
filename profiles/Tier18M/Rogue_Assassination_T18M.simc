@@ -66,16 +66,16 @@ actions.exsang+=/pool_resource,for_next=1
 actions.exsang+=/mutilate,if=combo_points.deficit>=2
 
 #  Finishers
-actions.finish=rupture,cycle_targets=1,target_if=max:target.time_to_die,if=!ticking&combo_points>=5&spell_targets.fan_of_knives>1
+actions.finish=rupture,target_if=max:target.time_to_die,if=!ticking&combo_points>=5&spell_targets.fan_of_knives>1
 actions.finish+=/rupture,if=combo_points>=cp_max_spend&refreshable&(!exsanguinated|ticks_remain<2)
 actions.finish+=/death_from_above,if=combo_points>=cp_max_spend-1
 actions.finish+=/envenom,if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&energy.deficit<40&buff.elaborate_planning.remains<2
 actions.finish+=/envenom,if=combo_points>=cp_max_spend&cooldown.garrote.remains<1&buff.elaborate_planning.remains<2
 
 #  Builders
-actions.build=mutilate,cycle_targets=1,target_if=min:dot.deadly_poison_dot.remains,if=combo_points.deficit>=2&dot.rupture.exsanguinated&spell_targets.fan_of_knives>1
-actions.build+=/mutilate,cycle_targets=1,target_if=max:bleeds,if=combo_points.deficit>=2&spell_targets.fan_of_knives=2&dot.deadly_poison_dot.refreshable&dot.agonizing_poison_dot.refreshable
-actions.build+=/hemorrhage,cycle_targets=1,target_if=max:target.time_to_die,if=combo_points.deficit>=1&!ticking&dot.rupture.remains>6&spell_targets.fan_of_knives>1
+actions.build=mutilate,target_if=min:dot.deadly_poison_dot.remains,if=combo_points.deficit>=2&dot.rupture.exsanguinated&spell_targets.fan_of_knives>1
+actions.build+=/mutilate,target_if=max:bleeds,if=combo_points.deficit>=2&spell_targets.fan_of_knives=2&dot.deadly_poison_dot.refreshable&debuff.agonizing_poison.remains<=0.3*debuff.agonizing_poison.duration
+actions.build+=/hemorrhage,target_if=max:target.time_to_die,if=combo_points.deficit>=1&!ticking&dot.rupture.remains>6&spell_targets.fan_of_knives>1
 actions.build+=/fan_of_knives,if=combo_points.deficit>=1&(spell_targets>3|(poisoned_enemies<3&spell_targets>2))&spell_targets.fan_of_knives>1
 actions.build+=/hemorrhage,if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&energy.deficit<40)
 actions.build+=/hemorrhage,if=combo_points.deficit=2&set_bonus.tier18_2pc&target.health.pct<=35
