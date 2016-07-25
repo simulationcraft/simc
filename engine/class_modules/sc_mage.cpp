@@ -5790,6 +5790,7 @@ struct rune_of_power_t : public mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    triggers_arcane_missiles = false;
   }
 
   virtual void execute() override
