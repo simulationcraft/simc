@@ -3,8 +3,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=2112232
-#glyphs=templars_verdict/mass_exorcism/#glyph_of_double_jeopardy
+talents=1112112
 spec=retribution
 
 head=helm_of_the_ceaseless_vigil,id=124333
