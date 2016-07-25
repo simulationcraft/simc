@@ -59,29 +59,29 @@ actions+=/life_tap,if=talent.mana_tap.enabled&mana.pct<=10
 actions+=/incinerate
 actions+=/life_tap
 
-head=cragshapers_fitted_hood,id=137341,bonus_id=1726
-neck=tightweb_choker,id=134541,bonus_id=1726,enchant_id=5439
-shoulders=amice_of_cruel_laughter,id=137503,bonus_id=1726
-back=goldscar_pelt,id=133639,bonus_id=1726,enchant_id=5436
-chest=fluxflow_robes,id=134413,bonus_id=1726
-wrists=armbands_of_slaughter,id=134436,bonus_id=1726
-hands=silken_bloodscent_gloves,id=133609,bonus_id=1726
-waist=waistband_of_spiritual_doom,id=137507,bonus_id=1726
-legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1726
-feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1726
-finger1=band_of_fused_coral,id=134532,bonus_id=1726,enchant_id=5430
-finger2=seal_of_malicious_deceit,id=134489,bonus_id=1726,enchant_id=5428
-trinket1=obelisk_of_the_void,id=137433,bonus_id=1726
-trinket2=horn_of_valor,id=133642,bonus_id=1726
+head=cragshapers_fitted_hood,id=137341,bonus_id=1727
+neck=tightweb_choker,id=134541,bonus_id=1727,enchant_id=5439
+shoulders=amice_of_cruel_laughter,id=137503,bonus_id=1727
+back=goldscar_pelt,id=133639,bonus_id=1727,enchant_id=5436
+chest=fluxflow_robes,id=134413,bonus_id=1727
+wrists=armbands_of_slaughter,id=134436,bonus_id=1727
+hands=silken_bloodscent_gloves,id=133609,bonus_id=1727
+waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727
+legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1727
+feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727
+finger1=band_of_fused_coral,id=134532,bonus_id=1727,enchant_id=5430
+finger2=seal_of_malicious_deceit,id=134489,bonus_id=1727,enchant_id=5428
+trinket1=obelisk_of_the_void,id=137433,bonus_id=1727/1492
+trinket2=horn_of_valor,id=133642,bonus_id=1727/1492
 main_hand=scepter_of_sargeras,id=128941,ilevel=840
 
 # Gear Summary
-# gear_ilvl=826.00
-# gear_stamina=15358
-# gear_intellect=15152
-# gear_crit_rating=5162
-# gear_haste_rating=10000
+# gear_ilvl=840.00
+# gear_stamina=17393
+# gear_intellect=16248
+# gear_crit_rating=5460
+# gear_haste_rating=10528
 # gear_mastery_rating=630
-# gear_versatility_rating=1049
-# gear_armor=1487
+# gear_versatility_rating=1098
+# gear_armor=1570
 default_pet=imp
