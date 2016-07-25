@@ -8,7 +8,9 @@
 // ==========================================================================
 //
 // TODO
-// Cleanup aff/destro class trinket implementation
+// Legendaries
+// Double check all up()/check() usage.
+// Expression to estimate imp vs implosion damage.
 //
 // Affliction -
 // Haunt reset
@@ -16,7 +18,6 @@
 // Better reporting for add buffs.
 //
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
-// Double check all up()/check() usage.p
 // Check resource generation execute/impact and hit requirement
 // Report which spells triggered soul conduit
 //
@@ -1067,45 +1068,16 @@ struct wild_firebolt_t: public warlock_pet_spell_t
   }
 
   virtual void impact( action_state_t* s ) override
-    {
-      warlock_pet_spell_t::impact( s );
-
-      if ( result_is_hit( s -> result ) )
-      {
-          if( rng().roll( p() -> o() -> sets.set( WARLOCK_DEMONOLOGY, T18, B4 ) -> effectN( 1 ).percent() ))
-          {
-              p() -> o() -> buffs.t18_4pc_driver -> trigger();
-          }
-      }
-
-
-      //{
-
-          /*if(p()->o()->sets.set(WARLOCK_DEMONOLOGY, T18, B4))
-          {
-              if(rng().roll(p()->o()->sets.set(WARLOCK_DEMONOLOGY, T18, B4)->effectN(1).percent()))
-              {
-                  if(rng().roll(.6)) // 60% roll chance
-                  {
-
-                  }
-                  else
-                  {
-                      for(int i = 0; i < p()->o()->warlock_pet_list.t18_illidari_satyr.size(); i ++)
-                      {
-                          if(p()->o()->warlock_pet_list.t18_illidari_satyr[i]->is_sleeping())
-                              p()->o()->warlock_pet_list.t18_illidari_satyr[i]->summon( illidari_satyr_duration );
-                      }
-                  }
-              }
-          }*/
-      //}
-    }
-
-  /*virtual void execute() override
   {
-
-  }*/
+    warlock_pet_spell_t::impact( s );
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( rng().roll( p() -> o() -> sets.set( WARLOCK_DEMONOLOGY, T18, B4 ) -> effectN( 1 ).percent() ) )
+      {
+        p() -> o() -> buffs.t18_4pc_driver -> trigger();
+      }
+    }
+  }
 };
 
 struct eye_laser_t : public warlock_pet_spell_t
@@ -2902,59 +2874,54 @@ struct demonic_empowerment_t: public warlock_spell_t
 
 struct hand_of_guldan_t: public warlock_spell_t
 {
-
-    struct trigger_imp_event_t: public player_event_t
+  struct trigger_imp_event_t : public player_event_t
+  {
+    bool initiator;
+    int count;
+    trigger_imp_event_t( warlock_t* p, int c, bool init = false ) :
+      player_event_t( *p ), initiator( init ), count( c )//Use original corruption until DBC acts more friendly.
     {
-        bool initiator;
-        int count;
-        trigger_imp_event_t( warlock_t* p, int c, bool init = false):
-            player_event_t(  *p ) , initiator( init ), count( c )//Use original corruption until DBC acts more friendly.
-        {
-            add_event( rng().range(timespan_t::from_millis(500),
-                                 timespan_t::from_millis(1200)) );
-            //UPDATE THIS TO MULTIMODAL DISTRIBUTION
-            //player = p;
-        }
+      add_event( rng().range( timespan_t::from_millis( 500 ),
+        timespan_t::from_millis( 1200 ) ) );
+      //UPDATE THIS TO MULTIMODAL DISTRIBUTION
+      //player = p;
+    }
 
-        virtual const char* name() const override
-            { return  "trigger_imp"; }
+    virtual const char* name() const override
+    {
+      return  "trigger_imp";
+    }
 
-        virtual void execute() override
+    virtual void execute() override
+    {
+      warlock_t* p = static_cast< warlock_t* >( player() );
+
+      if ( p -> demonology_trinket )
+      {
+        const spell_data_t* data = p -> find_spell( p -> demonology_trinket -> spell_id );
+        double demonology_trinket_chance = data -> effectN( 1 ).average( p -> demonology_trinket -> item );
+        demonology_trinket_chance /= 100.0;
+        if ( rng().roll( demonology_trinket_chance ) )
         {
-            warlock_t* p = static_cast<warlock_t*>( player() );
-            if(p->sets.set(WARLOCK_DEMONOLOGY, T17, B2))
-            {
-                if(rng().roll(p->sets.set(WARLOCK_DEMONOLOGY, T17, B2)->effectN(1).percent()))
-                {
-                    count *= p->sets.set(WARLOCK_DEMONOLOGY, T17, B2)->effectN(1).percent();
-                }
-            }
-            if(p->demonology_trinket)
-            {
-                const spell_data_t* data = p -> find_spell( p -> demonology_trinket -> spell_id );
-                double demonology_trinket_chance = data -> effectN( 1 ).average( p -> demonology_trinket -> item );
-                demonology_trinket_chance /= 100.0;
-                if(rng().roll(demonology_trinket_chance))
-                {
-                    count += 3;
-                    p -> procs.fragment_wild_imp -> occur();
-                    p -> procs.fragment_wild_imp -> occur();
-                    p -> procs.fragment_wild_imp -> occur();
-                }
-            }
-            for(int i = 0; i < p->warlock_pet_list.wild_imps.size(); i ++)
-            {
-                if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
-                {
-                    count --;
-                    p -> warlock_pet_list.wild_imps[i] -> trigger();
-                    p -> procs.wild_imp -> occur();
-                }
-                if(count == 0)
-                    return;
-            }
+          count += 3;
+          p -> procs.fragment_wild_imp -> occur();
+          p -> procs.fragment_wild_imp -> occur();
+          p -> procs.fragment_wild_imp -> occur();
         }
-    };
+      }
+      for ( int i = 0; i < p -> warlock_pet_list.wild_imps.size(); i++ )
+      {
+        if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
+        {
+          count--;
+          p -> warlock_pet_list.wild_imps[i] -> trigger();
+          p -> procs.wild_imp -> occur();
+        }
+        if ( count == 0 )
+          return;
+      }
+    }
+  };
 
   trigger_imp_event_t* imp_event;
   int shards_used;
@@ -3014,12 +2981,19 @@ struct hand_of_guldan_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-        if( p() -> talents.hand_of_doom -> ok() )
+      if( p() -> talents.hand_of_doom -> ok() )
+      {
+        doom -> target = s -> target;
+        doom -> execute();
+      }
+      if ( p() -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) )
+      {
+        if ( rng().roll( p() -> sets.set( WARLOCK_DEMONOLOGY, T17, B2 ) -> proc_chance() ) )
         {
-            doom -> target = s -> target;
-            doom -> execute();
+          shards_used *= 1.5;
         }
-        imp_event =  new ( *sim ) trigger_imp_event_t( p(), shards_used, true);
+      }
+      imp_event =  new ( *sim ) trigger_imp_event_t( p(), floor( shards_used ), true);
     }
   }
 };
@@ -6114,18 +6088,18 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
                 expr_t( "wild_imp_remaining_duration" ), player( p ) { }
               virtual double evaluate() override
               {
-                  double t = 5000;
-                  for(auto& pet : player.warlock_pet_list.wild_imps)
+                double t = 5000;
+                for( auto& pet : player.warlock_pet_list.wild_imps )
+                {
+                  if( !pet -> is_sleeping() )
                   {
-                      if( !pet->is_sleeping() )
-                      {
-                          if( t > pet->duration.total_seconds() )
-                          t = pet->duration.total_seconds();
-                      }
+                    if( t > pet -> duration.total_seconds() )
+                    t = pet -> duration.total_seconds();
                   }
-                  if(t == 5000)
-                      t = 0;
-                  return t;
+                }
+                if( t == 5000 )
+                  t = 0;
+                return t;
               }
 
           };
