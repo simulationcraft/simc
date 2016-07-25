@@ -2320,10 +2320,10 @@ bool player_t::init_actions()
 {
   for ( size_t i = 0; i < action_list.size(); ++i )
   {
-    action_t* action = action_list[ i ];
-    action -> init();
-    action -> consolidate_snapshot_flags();
+    action_list[ i ] -> init();
   }
+
+  range::for_each( action_list, []( action_t* a ) { a -> consolidate_snapshot_flags(); } );
 
   return true;
 }
