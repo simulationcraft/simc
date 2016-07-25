@@ -82,4 +82,4 @@ main_hand=edict_of_argus,id=124382,bonus_id=566,enchant_id=5384
 # gear_armor=995
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
-default_pet=felhunter
+default_pet=imp
