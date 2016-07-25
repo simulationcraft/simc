@@ -158,9 +158,6 @@ public:
   {
     gain_t* archavons_heavy_hand;
     gain_t* avoided_attacks;
-    gain_t* battle_cry;
-    gain_t* bloodthirst;
-    gain_t* charge;
     gain_t* critical_block;
     gain_t* in_for_the_kill;
     gain_t* melee_crit;
@@ -1303,6 +1300,7 @@ struct charge_t: public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
+    energize_resource = RESOURCE_RAGE;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> artifact.uncontrolled_rage.value() / 10;
     cooldown -> duration = data().cooldown();
@@ -1375,6 +1373,8 @@ struct intercept_t: public warrior_attack_t
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
     energize_type = ENERGIZE_ON_CAST;
+    energize_resource = RESOURCE_RAGE;
+    //Add the amount
     cooldown -> duration = data().cooldown();
     if ( p -> talents.warbringer -> ok() )
     {
@@ -3523,9 +3523,9 @@ struct battle_cry_t: public warrior_spell_t
 
     if ( p -> talents.reckless_abandon -> ok() )
     {
-      parse_effect_data( p -> talents.reckless_abandon -> effectN( 2 ) );
+      energize_amount = p -> talents.reckless_abandon -> effectN( 2 ).base_value() / 10;
       energize_type = ENERGIZE_ON_CAST;
-      gain = p -> gain.battle_cry;
+      energize_resource = RESOURCE_RAGE;
     }
   }
 
@@ -4766,15 +4766,11 @@ void warrior_t::init_gains()
 
   gain.archavons_heavy_hand = get_gain( "archavons_heavy_hand" );
   gain.avoided_attacks = get_gain( "avoided_attacks" );
-  gain.bloodthirst = get_gain( "bloodthirst" );
-  gain.charge = get_gain( "charge" );
   gain.critical_block = get_gain( "critical_block" );
   gain.in_for_the_kill = get_gain( "in_for_the_kill" );
   gain.melee_crit = get_gain( "melee_crit" );
   gain.melee_main_hand = get_gain( "melee_main_hand" );
   gain.melee_off_hand = get_gain( "melee_off_hand" );
-  gain.raging_blow = get_gain( "raging_blow" );
-  gain.battle_cry = get_gain( "battle_cry" );
   gain.revenge = get_gain( "revenge" );
   gain.shield_slam = get_gain( "shield_slam" );
   gain.will_of_the_first_king = get_gain( "will_of_the_first_king" );
