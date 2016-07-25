@@ -1747,7 +1747,7 @@ struct mage_spell_t : public spell_t
 {
   bool consumes_ice_floes,
        frozen,
-       may_proc_missiles;
+       triggers_arcane_missiles;
 
 public:
   int dps_rotation,
@@ -1761,7 +1761,7 @@ public:
     dps_rotation( 0 ),
     dpm_rotation( 0 )
   {
-    may_proc_missiles = harmful && !background;
+    triggers_arcane_missiles = harmful && !background;
     may_crit      = true;
     tick_may_crit = true;
   }
@@ -1920,7 +1920,7 @@ public:
 
     if ( p() -> specialization() == MAGE_ARCANE &&
          result_is_hit( execute_state -> result ) &&
-         may_proc_missiles )
+         triggers_arcane_missiles )
     {
       trigger_am( data().name_cstr() );
     }
@@ -2416,7 +2416,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    may_proc_missiles = false;
+    triggers_arcane_missiles = false;
   }
 
   virtual bool ready() override
@@ -2692,7 +2692,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     wild_arcanist_effect( 0.0 )
   {
     parse_options( options_str );
-    may_proc_missiles = false; // Disable default AM proc logic.
+    triggers_arcane_missiles = false; // Disable default AM proc logic.
     base_multiplier *= 1.0 + p -> artifact.blasting_rod.percent();
 
     if ( p -> wild_arcanist )
@@ -2916,7 +2916,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
-    may_proc_missiles = false;
+    triggers_arcane_missiles = false;
     dot_duration      = data().duration();
     base_tick_time    = data().effectN( 2 ).period();
     channeled         = true;
@@ -3274,7 +3274,7 @@ struct charged_up_t : public arcane_mage_spell_t
     arcane_mage_spell_t( "charged_up", p, p -> find_spell ("Charged Up" ) )
   {
     parse_options( options_str );
-    may_proc_missiles = false;
+    triggers_arcane_missiles = false;
   }
 
   virtual void execute() override
@@ -3725,7 +3725,7 @@ struct evocation_t : public arcane_mage_spell_t
     hasted_ticks      = false;
     tick_zero         = true;
     ignore_false_positive = true;
-    may_proc_missiles = false;
+    triggers_arcane_missiles = false;
 
     if ( p -> artifact.aegwynns_ascendance.rank() )
     {
@@ -5227,7 +5227,7 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     school = SCHOOL_ARCANE;
-    may_proc_missiles = false;
+    triggers_arcane_missiles = false;
     dot_duration = p -> find_spell( 210726 ) -> duration();
     base_tick_time = timespan_t::from_seconds( 1.2 ); // TODO: Hardcode until tick times are worked out
     spell_power_mod.tick = p -> find_spell( 211088 ) -> effectN( 1 ).sp_coeff();
@@ -5978,7 +5978,7 @@ struct summon_arcane_familiar_t : public arcane_mage_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
-    may_proc_missiles = false;
+    triggers_arcane_missiles = false;
     trigger_gcd = timespan_t::zero();
   }
 
@@ -6078,7 +6078,7 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     trigger_gcd = timespan_t::zero();
     may_miss = may_crit = callbacks = false;
 
-    may_proc_missiles = false;
+    triggers_arcane_missiles = false;
 
     aoe = -1;
   }
@@ -6693,7 +6693,7 @@ struct darklight_ray_t : public mage_spell_t
     callbacks = false;
 
     // Mage specific control
-    may_proc_missiles = false;
+    triggers_arcane_missiles = false;
     consumes_ice_floes = false;
 
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
@@ -6711,7 +6711,7 @@ struct doom_nova_t : public mage_spell_t
     callbacks = false;
 
     // Mage specific control
-    may_proc_missiles = false;
+    triggers_arcane_missiles = false;
     consumes_ice_floes = false;
 
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
