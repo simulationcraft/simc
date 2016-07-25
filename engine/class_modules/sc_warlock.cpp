@@ -324,6 +324,7 @@ public:
     //affliction buffs
     buff_t* shard_instability;
     buff_t* instability;
+    buff_t* reap_souls;
     haste_buff_t* misery;
 
     //demonology buffs
@@ -404,7 +405,7 @@ public:
   } spells;
 
   int initial_soul_shards;
-  double affliction_artifact_modifier;
+  double reap_souls_modifier;
   std::string default_pet;
 
   timespan_t shard_react;
@@ -4445,6 +4446,24 @@ struct soul_harvest_t : public warlock_spell_t
   }
 };
 
+struct reap_souls_t: public warlock_spell_t
+{
+    reap_souls_t( warlock_t* p ) :
+        warlock_spell_t( "reap_souls", p, p->artifact.reap_souls)
+    {
+
+    }
+
+    virtual void execute() override
+    {
+        warlock_spell_t::execute();
+
+        p()->reap_souls_modifier = 2.0;
+
+        //need to drop this modifier when the reap souls buff fades.
+    }
+};
+
 struct grimoire_of_sacrifice_t: public warlock_spell_t
 {
   grimoire_of_sacrifice_t( warlock_t* p ):
@@ -4717,7 +4736,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   regen_type = REGEN_DYNAMIC;
   regen_caches[CACHE_HASTE] = true;
   regen_caches[CACHE_SPELL_HASTE] = true;
-  affliction_artifact_modifier = 1.0;
+  reap_souls_modifier = 1.0;
 }
 
 
