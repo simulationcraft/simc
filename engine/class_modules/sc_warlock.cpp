@@ -4146,12 +4146,14 @@ struct implosion_t : public warlock_spell_t
     virtual bool ready() override
     {
       bool r = warlock_spell_t::ready();
-      int i = 0;
 
-      for ( auto imp : p() -> warlock_pet_list.wild_imps )
+      if(r)
       {
-        if ( !imp -> is_sleeping() )
-          return true;
+          for ( auto imp : p() -> warlock_pet_list.wild_imps )
+          {
+            if ( !imp -> is_sleeping() )
+              return true;
+          }
       }
       return false;
     }
