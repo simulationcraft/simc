@@ -333,6 +333,7 @@ public:
     buff_t* havoc;
     buff_t* conflagration_of_chaos;
     buff_t* lord_of_flames;
+    buff_t* embrace_chaos;
 
   } buffs;
 
@@ -3121,6 +3122,9 @@ struct conflagrate_t: public warlock_spell_t
   {
     energize_type = ENERGIZE_PER_HIT;
     base_duration = p -> find_spell( 117828 ) -> duration();
+
+    cooldown -> charges += p -> sets.set( WARLOCK_DESTRUCTION, T19, B2 ) -> effectN( 1 ).base_value();
+    cooldown -> duration += p -> sets.set( WARLOCK_DESTRUCTION, T19, B2 ) -> effectN( 2 ).time_value();
   }
 
   void init() override
@@ -3288,6 +3292,9 @@ struct chaos_bolt_t: public warlock_spell_t
 
     if ( p() -> buffs.backdraft -> up() )
       h *= backdraft_cast_time;
+
+    if ( p() -> buffs.embrace_chaos -> up() )
+      h *= 1.0 + p() -> buffs.embrace_chaos -> data().effectN( 1 ).percent();
 
     return h;
   }
@@ -5319,6 +5326,8 @@ void warlock_t::create_buffs()
     .tick_behavior( BUFF_TICK_NONE );
   buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", artifact.conflagration_of_chaos.data().effectN( 1 ).trigger() )
     .chance( artifact.conflagration_of_chaos.rank() ? artifact.conflagration_of_chaos.data().proc_chance() : 0.0 );
+  buffs.embrace_chaos = buff_creator_t( this, "embrace_chaos", sets.set( WARLOCK_DESTRUCTION,T19, B4 ) -> effectN( 1 ).trigger() )
+    .chance( sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> proc_chance() );
 }
 
 void warlock_t::init_rng()
