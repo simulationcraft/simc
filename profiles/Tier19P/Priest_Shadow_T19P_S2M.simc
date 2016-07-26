@@ -29,7 +29,7 @@ actions+=/call_action_list,name=s2m,if=buff.voidform.up&buff.surrender_to_madnes
 actions+=/call_action_list,name=vf,if=buff.voidform.up
 actions+=/call_action_list,name=main
 
-actions.main=surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_to_die<=90+((raw_haste_pct*100)*2)
+actions.main=surrender_to_madness,if=talent.surrender_to_madness.enabled&target.health.pct<30
 actions.main+=/mindbender,if=talent.mindbender.enabled
 actions.main+=/shadow_word_pain,if=dot.shadow_word_pain.remains<(3+(4%3))*gcd
 actions.main+=/vampiric_touch,if=dot.vampiric_touch.remains<(4+(4%3))*gcd
@@ -49,7 +49,7 @@ actions.main+=/mind_flay,if=!talent.mind_spike.enabled,interrupt=1,chain=1
 actions.main+=/mind_spike,if=talent.mind_spike.enabled
 actions.main+=/shadow_word_pain
 
-actions.vf=surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_death.up|buff.shadowy_insight.up)&target.time_to_die<=90+((raw_haste_pct*100)*2)-buff.insanity_drain_stacks.stack
+actions.vf=surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_death.up|buff.shadowy_insight.up)&target.health.pct<30
 actions.vf+=/shadow_crash,if=talent.shadow_crash.enabled
 actions.vf+=/mindbender,if=talent.mindbender.enabled
 actions.vf+=/dispersion,if=!buff.power_infusion.up&!buff.berserking.up&!buff.bloodlust.up

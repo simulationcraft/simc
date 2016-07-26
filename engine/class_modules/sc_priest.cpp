@@ -19,6 +19,11 @@ Shadow
   - Setbonuses
     - Several Setbonuses have to be updated by Blizzard: T17, T16 no longer
 work.
+  - Shadow Priests are being killed by casting surrender to madness way too early when the simulation doesn't use fixed_time
+    and the expression uses 'target.time_to_die' instead of target.health.pct.
+    I band-aid fixed it by turning on fixed time when there are only shadow priests in a simulation, and also changed the expression to use health pct.
+    This might be the best fix for it, but it's probably worth looking into other avenues. 
+    - Collision 7/25/2016
 
 */
 namespace  // UNNAMED NAMESPACE
@@ -409,6 +414,7 @@ public:
   {
     std::string atonement_target_str;
     bool autoUnshift;  // Shift automatically out of stance/form
+    bool priest_fixed_time = true;
     priest_options_t() : autoUnshift( true )
     {
     }
@@ -483,6 +489,7 @@ public:
   void target_mitigation( school_e, dmg_e, action_state_t* ) override;
   void pre_analyze_hook() override;
   void init_action_list() override;
+  void combat_begin() override;
   void init_rng() override;
   priest_td_t* get_target_data( player_t* target ) const override;
   expr_t* create_expression( action_t* a,
@@ -6994,9 +7001,11 @@ void priest_t::apl_shadow()
   default_list->add_action( "call_action_list,name=main" );
 
   // Main APL when
+  //main->add_action(
+  //    "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_"
+  //    "to_die<=90+((raw_haste_pct*100)*2)" );  Temporarily change this until we figure out what is killing spriest way too early.
   main->add_action(
-      "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_"
-      "to_die<=90+((raw_haste_pct*100)*2)" );
+      "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.health.pct<30" );
   main->add_action( "mindbender,if=talent.mindbender.enabled" );
   main->add_action(
       "shadow_word_pain,if=dot.shadow_word_pain.remains<(3+(4%3))*gcd" );
@@ -7036,11 +7045,16 @@ void priest_t::apl_shadow()
   main->add_action( "mind_spike,if=talent.mind_spike.enabled" );
   main->add_action( "shadow_word_pain" );
 
+  //vf->add_action(
+  //    "surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>="
+  //    "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
+  //    "death.up|buff.shadowy_insight.up)&target.time_to_die<=90+((raw_haste_"
+  //    "pct*100)*2)-buff.insanity_drain_stacks.stack" ); Temporarily change this until we figure out what is killing spriest too early.
+
   vf->add_action(
-      "surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>="
-      "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
-      "death.up|buff.shadowy_insight.up)&target.time_to_die<=90+((raw_haste_"
-      "pct*100)*2)-buff.insanity_drain_stacks.stack" );
+    "surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>="
+    "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
+    "death.up|buff.shadowy_insight.up)&target.health.pct<30" );
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action( "mindbender,if=talent.mindbender.enabled" );
   vf->add_action(
@@ -7409,6 +7423,36 @@ void priest_t::init_action_list()
   base_t::init_action_list();
 }
 
+// priest_t::combat_begin ===================================================
+
+void priest_t::combat_begin()
+{
+  if ( !sim -> fixed_time  )
+  {
+    if ( options.priest_fixed_time && talents.surrender_to_madness -> ok() )
+    {
+      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      {
+        player_t* p = sim -> player_list[i];
+        if ( p -> specialization() != PRIEST_SHADOW )
+        {
+          options.priest_fixed_time = false;
+          break;
+        }
+      }
+      if ( options.priest_fixed_time )
+      {
+        sim -> fixed_time = true;
+        sim -> errorf( "Due to Shadow Priest deaths during Surrender to Madness, fixed time has been enabled in this simulation." );
+        sim -> errorf( "This allows sims with only Shadow Priests to give useful feedback, as otherwise the sim would continue on for 300+ seconds and reduce the target's health in the next iteration by significantly more than it should." );
+        sim -> errorf( "To disable this option, add priest_fixed_time=0 to your sim." );
+      }
+    }
+  }
+
+  player_t::combat_begin();
+}
+
 // priest_t::reset ==========================================================
 
 void priest_t::reset()
@@ -7507,6 +7551,7 @@ void priest_t::create_options()
   add_option( opt_string( "atonement_target", options.atonement_target_str ) );
   add_option( opt_deprecated( "double_dot", "action_list=double_dot" ) );
   add_option( opt_bool( "autounshift", options.autoUnshift ) );
+  add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
 }
 
 // priest_t::create_profile =================================================
@@ -7523,6 +7568,9 @@ std::string priest_t::create_profile( save_e type )
 
     if ( !options.atonement_target_str.empty() )
       profile_str += "atonement_target=" + options.atonement_target_str + "\n";
+
+    if ( !options.priest_fixed_time )
+      profile_str += "priest_fixed_time=" + util::to_string( options.priest_fixed_time ) + "\n";
   }
 
   return profile_str;
