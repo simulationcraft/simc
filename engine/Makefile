@@ -123,6 +123,10 @@ ifeq (64,${BITS})
   OPTS += -m64
 endif
 
+ifneq (${SANITIZE},)
+  OPTS += -fsanitize=address
+endif
+
 ifneq (${SC_DEFAULT_APIKEY},)
   CPP_FLAGS += -DSC_DEFAULT_APIKEY=\"${SC_DEFAULT_APIKEY}\"
 endif
