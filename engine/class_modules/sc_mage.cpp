@@ -4087,6 +4087,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
   flurry_bolt_t( mage_t* p ) :
     frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) )
   {
+    chills = true;
   }
   virtual action_state_t* new_state() override
   {
