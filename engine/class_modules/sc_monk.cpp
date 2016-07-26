@@ -6713,7 +6713,6 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.masterful_strikes = buff_creator_t(this, "masterful_strikes", passives.tier18_2pc_melee )
-    .duration( timespan_t::from_minutes( 60 ) )
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() 
       * ( specialization() == MONK_WINDWALKER ? mastery.combo_strikes -> effectN( 1 ).mastery_value() : 1 ) )
     .add_invalidate( CACHE_MASTERY );
