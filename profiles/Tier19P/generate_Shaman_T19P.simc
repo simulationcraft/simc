@@ -48,5 +48,5 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727,upgrade=0,enchant=bind
 finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1727,upgrade=0,enchant=binding_of_critical_strike
 trinket1=portable_manacracker,id=137398,bonus_id=1826,upgrade=0
 trinket2=naraxas'_spiked_tongue,id=137349,bonus_id=1826,upgrade=0
-artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:296:1:300:1:301:3:302:3:303:3:304:3:1350:1
+artifact=40:0:0:0:0:291:1:292:1:294:1:296:1:298:2:300:3:301:3:302:3:303:3:1350:1
 save=Shaman_Elemental_T19P.simc

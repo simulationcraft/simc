@@ -4,7 +4,7 @@ race=orc
 role=spell
 position=ranged_back
 talents=3112211
-artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:296:1:300:1:301:3:302:3:303:3:304:3:1350:1
+artifact=40:0:0:0:0:291:1:292:1:294:1:296:1:298:2:300:3:301:3:302:3:303:3:1350:1
 spec=elemental
 
 # This default action priority list is automatically created based on your character.
