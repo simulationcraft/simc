@@ -49,8 +49,7 @@ notifications:
 
 install:
   # Build SimulationCraft
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make DEBUG=1 -C engine -j 2; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then make DEBUG=1 SANITIZE=1 -C engine -j 2; fi
+  - make DEBUG=1 -C engine -j 2
 
 script:
   # Test SimulationCraft.
