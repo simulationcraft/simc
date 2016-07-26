@@ -33,11 +33,11 @@ matrix:
 
 before_install:
   # Install bats
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo add-apt-repository ppa:duggan/bats -y && sudo apt-get update -qq && sudo apt-get install -qq bats; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install bats coreutils; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository ppa:duggan/bats -y && sudo apt-get update -qq && sudo apt-get install -qq bats; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update && brew install bats coreutils; fi
 
   # Install valgrind on Linux
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install -qq valgrind; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq valgrind; fi
 
 notifications:
   irc:
@@ -49,7 +49,8 @@ notifications:
 
 install:
   # Build SimulationCraft
-  - make DEBUG=1 -C engine -j 2
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then make DEBUG=1 -C engine -j 2; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then make DEBUG=1 SANITIZE=1 -C engine -j 2; fi
 
 script:
   # Test SimulationCraft.
