@@ -932,7 +932,9 @@ protected:
     }
 
     QString url_to_show = url.toString();
-    if ( url.isLocalFile() || url_to_show.contains( "battle.net" ) || url_to_show.contains( "battlenet" ) || url_to_show.contains( "github.com" ) )
+    if ( url.isLocalFile() || url_to_show.contains( "battle.net" ) || 
+         url_to_show.contains( "battlenet" ) || url_to_show.contains( "github.com" ) ||
+         url_to_show.contains ( "worldofwarcraft.com" ) )
       return true;
     else
       QDesktopServices::openUrl( url_to_show );
