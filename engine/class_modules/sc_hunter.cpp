@@ -3676,13 +3676,15 @@ struct melee_t: public hunter_melee_attack_t
 {
   bool first;
   talon_strike_t* talon_strike;
-  melee_t( hunter_t* player, const std::string &name = "auto_attack", const spell_data_t* s = spell_data_t::nil() ):
+  melee_t( hunter_t* player, const std::string &name = "auto_attack_mh", const spell_data_t* s = spell_data_t::nil() ):
     hunter_melee_attack_t( name, player, s ), first( true ), talon_strike( nullptr )
   {
     school             = SCHOOL_PHYSICAL;
     base_execute_time  = player -> main_hand_weapon.swing_time;
+    weapon = &( player -> main_hand_weapon );
     background         = true;
     repeating          = true;
+    may_glance         = true;
     special            = false;
     trigger_gcd        = timespan_t::zero();
 
@@ -3693,7 +3695,7 @@ struct melee_t: public hunter_melee_attack_t
     }
   }
 
-  virtual timespan_t execute_time() const override
+  timespan_t execute_time() const override
   {
   if ( ! player -> in_combat )
     return timespan_t::from_seconds( 0.01 );
@@ -3703,14 +3705,14 @@ struct melee_t: public hunter_melee_attack_t
       return hunter_melee_attack_t::execute_time();;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     if ( first )
       first = false;
     hunter_melee_attack_t::execute();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     hunter_melee_attack_t::impact( s );
 
@@ -3740,14 +3742,17 @@ struct auto_attack_t: public hunter_melee_attack_t
   {
     parse_options( options_str );
     player -> main_hand_attack = new melee_t( player );
+    ignore_false_positive = true;
+    range = 5;
+    trigger_gcd = timespan_t::zero();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     player -> main_hand_attack -> schedule_execute();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( player -> is_moving() )
       return false;
