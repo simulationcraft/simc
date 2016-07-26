@@ -4095,7 +4095,11 @@ void warrior_t::apl_precombat()
     std::string food_action = "food,type=";
     if ( specialization() == WARRIOR_FURY )
     {
-      if ( level() > 90 )
+      if ( true_level > 100 )
+      {
+        food_action += "azshari_salad";
+      }
+      else if ( true_level > 90 )
       {
         food_action += "pickled_eel";
       }
@@ -4106,7 +4110,11 @@ void warrior_t::apl_precombat()
     }
     else if ( specialization() == WARRIOR_ARMS )
     {
-      if ( level() > 90 )
+      if ( true_level > 100 )
+      {
+        food_action += "azshari_salad";
+      }
+      else if ( true_level > 90 )
       {
         food_action += "sleeper_sushi";
       }
@@ -4117,7 +4125,7 @@ void warrior_t::apl_precombat()
     }
     else
     {
-      if ( level() > 90 )
+      if ( true_level > 90 )
       {
         food_action += "sleeper_sushi";
       }
@@ -4128,6 +4136,9 @@ void warrior_t::apl_precombat()
     }
     precombat -> add_action( food_action );
   }
+
+  if ( true_level > 100 )
+    precombat -> add_action( "augmentation,type=defiled" );
   /*
   if ( specialization() == WARRIOR_ARMS )
   {

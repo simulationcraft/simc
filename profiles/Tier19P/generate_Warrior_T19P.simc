@@ -6,7 +6,7 @@ role=attack
 spec=fury
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!1121022
 talent_override=massacre
-artifact=35:0:0:0:0:981:1:984:1:985:1:990:3:991:3:993:3:995:3:996:3:1357:1
+artifact=35:0:0:0:0:982:1:984:1:985:1:986:1:988:2:990:3:991:3:995:3:996:3:1357:1
 head=,id=137526,bonus_id=1727
 neck=,id=139101,bonus_id=1727,enchant=mark_of_the_claw
 shoulders=,id=134510,bonus_id=1727
