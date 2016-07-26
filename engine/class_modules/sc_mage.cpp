@@ -2141,23 +2141,6 @@ struct fire_mage_spell_t : public mage_spell_t
     }
   }
 
-  double total_crit_bonus( action_state_t* s ) const override
-  {
-    // TODO: Only apply bonus to hardcast spells?
-    double bonus = mage_spell_t::total_crit_bonus( s );
-    if ( background == true )
-    {
-      return bonus;
-    }
-
-    if ( p() -> buffs.pyretic_incantation -> stack() > 0 )
-    {
-      bonus *= 1.0 + ( p() -> artifact.pyretic_incantation.percent() *
-                       p() -> buffs.pyretic_incantation -> stack() );
-    }
-    return bonus;
-  }
-
   virtual double composite_ignite_multiplier( const action_state_t* /* s */ ) const
   { return 1.0; }
 
@@ -8062,7 +8045,14 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
 
   if ( artifact.burning_gaze.rank() && s -> action -> school == SCHOOL_FIRE )
   {
-  m *= 1.0 + artifact.burning_gaze.percent();
+    m *= 1.0 + artifact.burning_gaze.percent();
+  }
+
+  if ( dbc::is_school( s -> action -> get_school(), SCHOOL_FIRE ) &&
+       buffs.pyretic_incantation -> check() > 0 )
+  {
+    m *= 1.0 + ( artifact.pyretic_incantation.percent() *
+                 buffs.pyretic_incantation -> stack() );
   }
 
   return m;
