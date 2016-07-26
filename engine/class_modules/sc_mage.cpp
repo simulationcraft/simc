@@ -4017,7 +4017,7 @@ struct pyrosurge_flamestrike_t : public fire_mage_spell_t
                        flame_patch( new flame_patch_t( p, options_str ) )
   {
     parse_options( options_str );
-
+    base_costs[ RESOURCE_MANA ] = 0;
     base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
     background = true;
     triggers_ignite = true;
