@@ -356,7 +356,6 @@ public:
     // Guardian
     buff_t* adaptive_fur;
     buff_t* barkskin;
-    buff_t* bladed_armor;
     buff_t* bristling_fur;
     buff_t* earthwarden;
     buff_t* earthwarden_driver;
@@ -512,7 +511,6 @@ public:
     const spell_data_t* guardian;
     const spell_data_t* guardian_overrides;
     const spell_data_t* bear_form;
-    const spell_data_t* bladed_armor;
     const spell_data_t* gore;
     const spell_data_t* ironfur;
     const spell_data_t* resolve;
@@ -759,7 +757,6 @@ public:
   virtual double    composite_dodge() const override;
   virtual double    composite_dodge_rating() const override;
   virtual double    composite_leech() const override;
-  virtual double    composite_melee_attack_power() const override;
   virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_parry() const override { return 0; }
@@ -1789,6 +1786,8 @@ struct moonfire_t : public druid_spell_t
       base_multiplier    *= 1.0 + p -> spec.guardian -> effectN( 4 ).percent();
       base_dd_multiplier *= 1.0 + p -> spec.feral_overrides -> effectN( 1 ).percent();
       base_td_multiplier *= 1.0 + p -> spec.feral_overrides -> effectN( 2 ).percent();
+      base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 6 ).percent();
+      base_td_multiplier *= 1.0 + p -> spec.guardian -> effectN( 7 ).percent();
 
       base_multiplier    *= 1.0 + p -> artifact.twilight_glow.percent();
     }
@@ -5762,7 +5761,6 @@ void druid_t::init_spells()
 
   // Guardian
   spec.bear_form                  = find_class_spell( "Bear Form" ) -> ok() ? find_spell( 1178 ) : spell_data_t::not_found();
-  spec.bladed_armor               = find_specialization_spell( "Bladed Armor" );
   spec.gore                       = find_specialization_spell( "Gore" );
   spec.guardian                   = find_specialization_spell( "Guardian Druid" );
   spec.guardian_overrides         = find_specialization_spell( "Guardian Overrides Passive" );
@@ -6171,10 +6169,6 @@ void druid_t::create_buffs()
                                  if ( talent.brambles -> ok() )
                                    active.brambles_pulse -> execute();
                                } );
-
-  buff.bladed_armor          = buff_creator_t( this, "bladed_armor", spec.bladed_armor )
-                               .default_value( spec.bladed_armor -> effectN( 1 ).percent() )
-                               .add_invalidate( CACHE_ATTACK_POWER );
 
   buff.bristling_fur         = buff_creator_t( this, "bristling_fur", talent.bristling_fur )
                                .cd( timespan_t::zero() );
@@ -6942,9 +6936,6 @@ void druid_t::arise()
   if ( talent.earthwarden -> ok() )
     persistent_buff_delay.push_back( new ( *sim ) persistent_buff_delay_event_t( this, buff.earthwarden_driver ) );
 
-  if ( spec.bladed_armor -> ok() )
-    buff.bladed_armor -> trigger();
-
   if ( legendary.ailuro_pouncers > timespan_t::zero() )
   {
     timespan_t preproc = legendary.ailuro_pouncers * rng().real();
@@ -6992,7 +6983,7 @@ void druid_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
-  case CACHE_AGILITY:
+  case CACHE_ATTACK_POWER:
     if ( spec.nurturing_instinct -> ok() )
       player_t::invalidate_cache( CACHE_SPELL_POWER );
     break;
@@ -7006,10 +6997,6 @@ void druid_t::invalidate_cache( cache_e c )
       player_t::invalidate_cache( CACHE_ATTACK_POWER );
       recalculate_resource_max( RESOURCE_HEALTH );
     }
-    break;
-  case CACHE_BONUS_ARMOR:
-    if ( spec.bladed_armor -> ok() )
-      player_t::invalidate_cache( CACHE_ATTACK_POWER );
     break;
   case CACHE_CRIT_CHANCE:
     if ( specialization() == DRUID_GUARDIAN )
@@ -7113,17 +7100,6 @@ double druid_t::composite_melee_expertise( const weapon_t* ) const
   return exp;
 }
 
-// druid_t::composite_melee_attack_power ====================================
-
-double druid_t::composite_melee_attack_power() const
-{
-  double ap = player_t::composite_melee_attack_power();
-
-  ap += buff.bladed_armor -> check_value() * current.stats.get_stat( STAT_BONUS_ARMOR );
-
-  return ap;
-}
-
 // druid_t::composite_melee_crit_chance ============================================
 
 double druid_t::composite_melee_crit_chance() const
@@ -7196,7 +7172,7 @@ double druid_t::composite_spell_power( school_e school ) const
   // Nurturing Instinct overrides SP from other sources.
   if ( spec.nurturing_instinct -> ok() )
   {
-    return spec.nurturing_instinct -> effectN( 1 ).percent() * cache.agility();
+    return spec.nurturing_instinct -> effectN( 1 ).percent() * cache.attack_power();
   }
 
   return player_t::composite_spell_power( school );
