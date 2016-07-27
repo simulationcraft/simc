@@ -401,13 +401,15 @@ public:
     // Multiple Specs / Forms
     gain_t* clearcasting;       // Feral & Restoration
     gain_t* soul_of_the_forest; // Feral & Guardian
-
+    
     // Balance
     gain_t* astral_communion;
     gain_t* blessing_of_anshe;
     gain_t* lunar_strike;
+    gain_t* moonfire;
     gain_t* shooting_stars;
     gain_t* solar_wrath;
+    gain_t* sunfire;
 
     // Feral (Cat)
     gain_t* ashamanes_energy;
@@ -415,7 +417,6 @@ public:
     gain_t* brutal_slash;
     gain_t* energy_refund;
     gain_t* elunes_guidance;
-    gain_t* moonfire;
     gain_t* primal_fury;
     gain_t* rake;
     gain_t* shred;
@@ -1816,7 +1817,7 @@ struct moonfire_t : public druid_spell_t
         {
           p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
           p() -> buff.galactic_guardian -> expire();
-        } 
+        }
       }
     }
 
@@ -1838,6 +1839,16 @@ struct moonfire_t : public druid_spell_t
     may_miss = false;
     damage = new moonfire_damage_t( player );
     damage -> stats = stats;
+
+    if (player->spec.balance->ok())
+    {
+      energize_resource = RESOURCE_ASTRAL_POWER;
+      energize_amount = player->spec.balance->effectN(3).resource(RESOURCE_ASTRAL_POWER);
+    }
+    else
+    {
+      energize_type = ENERGIZE_NONE;
+    }
 
     // Add damage modifiers in moonfire_damage_t, not here.
   }
@@ -4889,6 +4900,16 @@ struct sunfire_t : public druid_spell_t
     damage = new sunfire_damage_t( player );
     damage -> stats = stats;
 
+    if (player->spec.balance->ok())
+    {
+      energize_resource = RESOURCE_ASTRAL_POWER;
+      energize_amount = player->spec.balance->effectN(3).resource(RESOURCE_ASTRAL_POWER);
+    }
+    else
+    {
+      energize_type = ENERGIZE_NONE;
+    }
+
     // Add damage modifiers in sunfire_damage_t, not here.
   }
 
@@ -6754,12 +6775,19 @@ void druid_t::init_gains()
 {
   player_t::init_gains();
 
+  // Multiple Specs / Forms
+  gain.clearcasting          = get_gain( "clearcasting" );       // Feral & Restoration
+  gain.soul_of_the_forest    = get_gain( "soul_of_the_forest" ); // Feral & Guardian
+
   // Balance
   gain.astral_communion      = get_gain( "astral_communion"      );
   gain.blessing_of_anshe     = get_gain( "blessing_of_anshe"     );
   gain.lunar_strike          = get_gain( "lunar_strike"          );
+  gain.moonfire              = get_gain( "moonfire"              );
   gain.shooting_stars        = get_gain( "shooting_stars"        );
   gain.solar_wrath           = get_gain( "solar_wrath"           );
+  gain.sunfire               = get_gain( "sunfire"               );
+
 
   // Feral
   gain.ashamanes_energy      = get_gain( "ashamanes_energy"      );
@@ -6767,12 +6795,9 @@ void druid_t::init_gains()
   gain.brutal_slash          = get_gain( "brutal_slash"          );
   gain.energy_refund         = get_gain( "energy_refund"         );
   gain.elunes_guidance       = get_gain( "elunes_guidance"       );
-  gain.moonfire              = get_gain( "moonfire"              );
-  gain.clearcasting          = get_gain( "clearcasting"          );
   gain.primal_fury           = get_gain( "primal_fury"           );
   gain.rake                  = get_gain( "rake"                  );
   gain.shred                 = get_gain( "shred"                 );
-  gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
   gain.swipe_cat             = get_gain( "swipe_cat"             );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
 
