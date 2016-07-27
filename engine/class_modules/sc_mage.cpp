@@ -4480,7 +4480,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() +
                                p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
     }
-    base_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
+    crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
   }
 
@@ -4751,6 +4751,7 @@ struct ice_lance_t : public frost_mage_spell_t
       base_aoe_multiplier *= p -> talents.splitting_ice
                                -> effectN( 2 ).percent();
     }
+    crit_bonus_multiplier *= 1.0 + p -> artifact.let_it_go.percent();
   }
 
   virtual action_state_t* new_state() override
@@ -4758,18 +4759,7 @@ struct ice_lance_t : public frost_mage_spell_t
     return new frost_spell_state_t( this, target );
   }
 
-  double total_crit_bonus( action_state_t* s ) const override
-  {
-    // TODO: Only apply bonus to hardcast spells?
-    double bonus = frost_mage_spell_t::total_crit_bonus( s );
 
-
-    if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
-    {
-      s -> result_total *= 1.0 + p() -> artifact.let_it_go.percent();
-    }
-    return bonus;
-  }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
   {
