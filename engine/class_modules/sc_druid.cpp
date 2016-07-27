@@ -1833,7 +1833,7 @@ struct moonfire_t : public druid_spell_t
   moonfire_damage_t* damage;
 
   moonfire_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "moonfire", player, player -> find_affinity_spell( "Moonfire" ), options_str )
+    druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" ), options_str )
   {
     may_miss = false;
     damage = new moonfire_damage_t( player );
