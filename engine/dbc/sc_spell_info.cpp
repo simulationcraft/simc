@@ -308,8 +308,8 @@ const char * _effect_subtype_strings[] =
   nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 390
   nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 395
   nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 400
-  nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 405
-  nullptr,                            "Modify Cooldown Charge",   nullptr,                      nullptr,                          nullptr,                       // 410
+  "Modify Combat Rating Multiplier",  nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 405
+  nullptr,                            "Modify Cooldown Charge",         nullptr,                      nullptr,                          nullptr,                       // 410
   nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 415
   nullptr,                            "Modify Absorb% Done",      "Modify Absorb% Done",  nullptr,                          nullptr,                       // 420
   nullptr,                            nullptr,                          nullptr,                      nullptr,                          nullptr,                       // 425

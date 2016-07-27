@@ -1143,7 +1143,7 @@ enum effect_subtype_t {
     A_402 = 402,
     A_403 = 403,
     A_404 = 404,
-    A_405 = 405,
+    A_MOD_RATING_MULTIPLIER = 405, // Misc value seems to be a mask that holds the modified ratings.
     A_406 = 406,
     A_407 = 407,
     A_408 = 408,

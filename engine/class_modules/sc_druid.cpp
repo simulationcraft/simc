@@ -764,6 +764,7 @@ public:
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_parry() const override { return 0; }
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_rating_multiplier( rating_e ) const override;
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_spell_power( school_e school ) const override;
@@ -7078,6 +7079,26 @@ double druid_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.rage_of_the_sleeper -> check() * buff.rage_of_the_sleeper -> data().effectN( 5 ).percent();
 
   return m;
+}
+
+// druid_t::composite_rating_multiplier ====================================
+
+double druid_t::composite_rating_multiplier( rating_e rating ) const
+{
+  double rm = player_t::composite_rating_multiplier( rating );
+
+  switch( rating )
+  {
+    case RATING_SPELL_HASTE:
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+      rm *= 1.0 + spec.feral -> effectN( 3 ).percent();
+      break;
+    default:
+      break;
+  }
+
+  return rm;
 }
 
 // druid_t::composite_melee_expertise( weapon_t* ) ==========================
