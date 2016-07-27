@@ -360,6 +360,7 @@ public:
     buff_t* earthwarden;
     buff_t* earthwarden_driver;
     buff_t* galactic_guardian;
+    buff_t* gore;
     buff_t* gory_fur;
     buff_t* guardian_of_elune;
     buff_t* incarnation_bear;
@@ -1404,7 +1405,7 @@ public:
     {
       p() -> proc.gore -> occur();
       p() -> cooldown.mangle -> reset( true );
-      p() -> resource_gain( RESOURCE_RAGE, 4.0, p() -> gain.gore ); // FIXME: Not in spell data.
+      p() -> buff.gore -> trigger();
 
       return true;
     }
@@ -3240,6 +3241,15 @@ struct mangle_t : public bear_attack_t
     base_multiplier *= 1.0 + player -> artifact.vicious_bites.percent();
   }
 
+  double composite_energize_amount( const action_state_t* s ) const
+  {
+    double em = bear_attack_t::composite_energize_amount( s );
+
+    em += p() -> buff.gore -> value();
+
+    return em;
+  }
+
   void update_ready( timespan_t ) override
   {
     timespan_t cd = cooldown -> duration;
@@ -3279,6 +3289,8 @@ struct mangle_t : public bear_attack_t
   void execute() override
   {
     bear_attack_t::execute();
+
+    p() -> buff.gore -> expire();
 
     p() -> buff.guardian_tier19_4pc -> trigger();
     p() -> buff.gory_fur -> trigger();
@@ -6079,6 +6091,9 @@ void druid_t::create_buffs()
   buff.galactic_guardian     = buff_creator_t( this, "galactic_guardian", find_spell( 213708 ) )
                                .chance( talent.galactic_guardian -> ok() )
                                .default_value( find_spell( 213708 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
+
+  buff.gore                  = buff_creator_t( this, "mangle", find_spell( 93622 ) )
+                               .default_value( find_spell( 93622 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
   buff.gory_fur              = buff_creator_t( this, "gory_fur", artifact.gory_fur.data().effectN( 1 ).trigger() )
                                .trigger_spell( artifact.gory_fur )
