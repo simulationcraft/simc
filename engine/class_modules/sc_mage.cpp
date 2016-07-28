@@ -3948,12 +3948,11 @@ struct flamestrike_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( state );
 
-    if ( p() -> artifact.aftershocks.rank() )
+    if ( state -> chain_target == 0 && p() -> artifact.aftershocks.rank() )
     {
       aftershocks -> schedule_execute();
     }
-
-    if ( p() -> talents.flame_patch -> ok() )
+    if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
       // DurationID: 205470. 8s
       new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
@@ -4023,12 +4022,12 @@ struct pyrosurge_flamestrike_t : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( state );
 
-    if ( p() -> artifact.aftershocks.rank() )
+    if ( state -> chain_target == 0 && p() -> artifact.aftershocks.rank() )
     {
       aftershocks -> schedule_execute();
     }
 
-    if ( p() -> talents.flame_patch -> ok() )
+    if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
       // DurationID: 205470. 8s
       new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
