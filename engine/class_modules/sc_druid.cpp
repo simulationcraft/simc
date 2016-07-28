@@ -5304,6 +5304,8 @@ struct starshards_t : public starfall_t
     background = true;
     target = sim -> target;
     radius = 40;
+    // Does not cost astral power.
+    base_costs.fill( 0 );
   }
 
   // Allow the action to execute even when Starfall is already active.
