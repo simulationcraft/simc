@@ -6155,6 +6155,7 @@ void demon_hunter_t::create_cooldowns()
   sigil_cooldowns.push_back( cooldown.sigil_of_chains );
   sigil_cooldowns.push_back( cooldown.sigil_of_flame );
   sigil_cooldowns.push_back( cooldown.sigil_of_silence );
+  sigil_cooldowns.push_back( cooldown.sigil_of_misery );
 }
 
 // demon_hunter_t::create_gains =============================================
