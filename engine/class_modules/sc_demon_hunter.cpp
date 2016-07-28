@@ -34,14 +34,13 @@ namespace
    Figure out Fel Barrage mechanics
 
    Vengeance ----------------------------------------------------------------
-   Infernal Strike
    Torment
-   Abyssal Strike, Last Resort, Nether Bond talents
+   Last Resort, Nether Bond talents
    Infernal Force artifact trait
    Siphon Power artifact trait
      http://us.battle.net/wow/en/forum/topic/20743504316?page=15#282
    True proc chance for Fallout
-   Flame Crash
+   Infernal Strike, Abyssal Strike, Flame Crash
    Artificial Stamina
    Fancy pain from damage taken formula
 
@@ -2246,6 +2245,107 @@ struct fiery_brand_t : public demon_hunter_spell_t
   }
 };
 
+// Metamorphosis ============================================================
+
+struct sigil_of_flame_damage_t : public demon_hunter_spell_t
+{
+  sigil_of_flame_damage_t( demon_hunter_t* );
+};
+
+struct infernal_strike_t : public demon_hunter_spell_t
+{
+  struct infernal_strike_impact_t : public demon_hunter_spell_t
+  {
+    action_t* sigil;
+    timespan_t sigil_delay;
+
+    infernal_strike_impact_t( demon_hunter_t* p )
+      : demon_hunter_spell_t( "infernal_strike_impact", p, 
+        p -> find_spell( 189112 ) ), sigil( nullptr )
+    {
+      background = dual = true;
+      aoe = -1;
+
+      base_multiplier *= 1.0 + p -> artifact.infernal_force.percent();
+
+      if ( p -> talent.flame_crash -> ok() )
+      {
+        sigil = new sigil_of_flame_damage_t( p );
+        sigil_delay = p -> find_specialization_spell( "Sigil of Flame" ) -> duration() +
+          p -> talent.quickened_sigils -> effectN( 1 ).time_value();
+
+        assert( sigil_delay > timespan_t::zero() );
+      }
+    }
+
+    void execute() override
+    {
+      demon_hunter_spell_t::execute();
+
+      if ( sigil )
+      {
+        new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+            .target( execute_state -> target )
+            .x( p() -> x_position )
+            .y( p() -> y_position )
+            .pulse_time( sigil_delay )
+            .duration( sigil_delay )
+            .start_time( sim -> current_time() )
+            .action( sigil ) );
+      }
+    }
+  };
+
+  action_t* damage;
+
+  infernal_strike_t( demon_hunter_t* p, const std::string& options_str )
+    : demon_hunter_spell_t( "infernal_strike", p,
+      p -> find_specialization_spell( "Infernal Strike" ), options_str )
+  {
+    may_miss = may_dodge = may_parry = may_crit = may_block = false;
+    base_teleport_distance  = data().max_range();
+    movement_directionality = MOVEMENT_OMNI;
+    travel_speed = 1.0;  // allows use precombat
+
+    damage = p -> find_action( "infernal_strike_impact" );
+
+    if ( ! damage )
+    {
+      infernal_strike_impact_t* a = new infernal_strike_impact_t( p );
+      a -> stats = stats;
+      if ( a -> sigil )
+      {
+        add_child( a -> sigil );
+      }
+
+      damage = a;
+    }
+
+    base_teleport_distance += p -> talent.abyssal_strike -> effectN( 1 ).base_value();
+    cooldown -> duration += p -> talent.abyssal_strike -> effectN( 2 ).time_value();
+  }
+
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  {
+    ( void )s;
+    assert( s -> result_amount == 0.0 );
+  }
+
+  // leap travel time, independent of distance
+  // TOCHECK: Just assuming this is the same as metamorphosis.
+  timespan_t travel_time() const override
+  { return timespan_t::from_seconds( 1.0 ); }
+
+  void impact( action_state_t* s ) override
+  {
+    demon_hunter_spell_t::impact( s );
+
+    damage -> target = s -> target;
+    damage -> schedule_execute();
+  }
+};
+
 // Immolation Aura ==========================================================
 
 struct immolation_aura_t : public demon_hunter_spell_t
@@ -2646,26 +2746,23 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 // Sigil of Flame ===========================================================
 
+inline sigil_of_flame_damage_t::sigil_of_flame_damage_t( demon_hunter_t* p )
+  : demon_hunter_spell_t( "sigil_of_flame_dmg", p, p -> find_spell( 204598 ) )
+{
+  aoe = -1;
+  background = dual = ground_aoe = true;
+  hasted_ticks = false;
+
+  if ( p -> talent.concentrated_sigils -> ok() )
+  {
+    range = 0;  // Targeted at player's location.
+    dot_duration +=
+      p -> talent.concentrated_sigils -> effectN( 5 ).time_value();
+  }
+}
+
 struct sigil_of_flame_t : public demon_hunter_spell_t
 {
-  struct sigil_of_flame_damage_t : public demon_hunter_spell_t
-  {
-    sigil_of_flame_damage_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "sigil_of_flame_dmg", p, p -> find_spell( 204598 ) )
-    {
-      aoe        = -1;
-      background = dual = true;
-      hasted_ticks = false;
-
-      if ( p -> talent.concentrated_sigils -> ok() )
-      {
-        range = 0;  // Targeted at player's location.
-        dot_duration +=
-          p -> talent.concentrated_sigils -> effectN( 5 ).time_value();
-      }
-    }
-  };
-
   sigil_of_flame_damage_t* damage;
   timespan_t delay;
 
@@ -2675,8 +2772,8 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
                             options_str )
   {
     may_miss = may_crit = false;
-    delay         = data().duration();
-    damage        = new sigil_of_flame_damage_t( p );
+    delay = data().duration();
+    damage = new sigil_of_flame_damage_t( p );
     damage -> stats = stats;
 
     delay += p -> talent.quickened_sigils -> effectN( 1 ).time_value();
@@ -2697,7 +2794,14 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    new ( *sim ) delayed_execute_event_t( p(), damage, target, delay );
+    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        .target( execute_state -> target )
+        .x( execute_state -> target -> x_position )
+        .y( execute_state -> target -> y_position )
+        .pulse_time( delay )
+        .duration( delay )
+        .start_time( sim -> current_time() )
+        .action( damage ) );
   }
 };
 
@@ -3819,7 +3923,7 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
                       base_multiplier * p() -> buff.rage_of_the_illidari -> check_value();
 
       demon_hunter_attack_t::execute();
-
+      
       p() -> buff.rage_of_the_illidari -> expire();
     }
   };
@@ -4073,7 +4177,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
                                    data().effectN( 2 ).trigger() );
     mh -> stats = stats;
 
-	// TOCHECK: How does this really work with regards to the heal multiplier?
+	  // TOCHECK: How does this really work with regards to the heal multiplier?
     double cost_mod = p -> sets.set( DEMON_HUNTER_VENGEANCE, T19, B2 ) -> effectN( 1 ).resource( RESOURCE_PAIN );
 
     base_costs[ RESOURCE_PAIN ]      += cost_mod;
@@ -4903,6 +5007,8 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new fel_rush_t( this, options_str );
   if ( name == "fiery_brand" )
     return new fiery_brand_t( this, options_str );
+  if ( name == "infernal_strike" )
+    return new infernal_strike_t( this, options_str );
   if ( name == "immolation_aura" )
     return new immolation_aura_t( this, options_str );
   if ( name == "metamorphosis" || name == "meta" )
