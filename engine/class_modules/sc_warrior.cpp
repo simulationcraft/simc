@@ -2258,8 +2258,6 @@ struct raging_blow_attack_t: public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
-    if ( p -> talents.warpaint -> ok() && data().affected_by( p -> talents.warbringer -> effectN( 1 ) ) ) // Hopefully a bug, but currently this talent reduces the damage of raging blow... 
-      weapon_multiplier += p -> talents.warbringer -> effectN( 1 ).percent();
 
     weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
     weapon_multiplier *= 1.0 + p -> artifact.wrath_and_fury.percent();
