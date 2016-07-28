@@ -2522,13 +2522,18 @@ struct rampage_parent_t: public warrior_attack_t
     {
       add_child( p -> rampage_attacks[i] );
     }
-    if ( p -> bugs )
+    base_costs[RESOURCE_RAGE] += p -> talents.carnage -> effectN( 1 ).resource( RESOURCE_RAGE );
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t t = warrior_attack_t::gcd();
+
+    if ( t >= timespan_t::from_millis( 1500 ) )
     {
-      trigger_gcd = timespan_t::from_millis( 1500 ); // Testing as of 5/20/2016
-      headlongrush = false;
-      headlongrushgcd = false;
+      return timespan_t::from_millis( 1500 );
     }
-    base_costs[RESOURCE_RAGE] += p -> talents.carnage -> effectN( 1 ).resource(RESOURCE_RAGE);
+    return t;
   }
 
   double cost() const override
