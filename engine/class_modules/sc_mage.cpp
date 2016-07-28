@@ -1981,7 +1981,7 @@ struct arcane_mage_spell_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( p() -> talents.erosion -> ok() &&  result_is_hit( s -> result ) )
+    if ( p() -> talents.erosion -> ok() &&  result_is_hit( s -> result ) && harmful == true )
     {
       td( s -> target ) -> debuffs.erosion -> trigger();
     }
