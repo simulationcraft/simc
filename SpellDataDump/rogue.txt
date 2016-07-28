@@ -1037,7 +1037,7 @@ Effects          :
 #1 (id=8231)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=8232)     : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 4.27 | Points Per Level: 3 | Target: Enemy(6)
+                   Base Value: 100 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=8233)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #4 (id=134070)   : Apply Aura (6) | Unknown effect sub type (271)
