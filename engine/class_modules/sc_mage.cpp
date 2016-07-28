@@ -1981,7 +1981,8 @@ struct arcane_mage_spell_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( p() -> talents.erosion -> ok() &&  result_is_hit( s -> result ) && harmful == true )
+    if ( p() -> talents.erosion -> ok() &&  result_is_hit( s -> result ) && harmful == true
+      && s -> action -> id != 224968 )
     {
       td( s -> target ) -> debuffs.erosion -> trigger();
     }
@@ -5178,10 +5179,14 @@ void living_bomb_t::init()
 struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
 {
   mark_of_aluneth_explosion_t( mage_t* p ) :
-    arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> find_spell( 224968 ) )
+    arcane_mage_spell_t( "mark_of_aluneth_explosion", p, p -> find_spell( 210726 ) )
   {
     background = true;
     school = SCHOOL_ARCANE;
+    // Override the nonsense data from their duplicated MoA spelldata.
+    dot_duration = timespan_t::zero();
+    base_costs[ RESOURCE_MANA ] = 0;
+    trigger_gcd = timespan_t::zero();
   }
   virtual void init() override
   {
@@ -5214,6 +5219,12 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     base_tick_time = timespan_t::from_seconds( 1.2 ); // TODO: Hardcode until tick times are worked out
     spell_power_mod.tick = p -> find_spell( 211088 ) -> effectN( 1 ).sp_coeff();
     hasted_ticks = false;
+  }
+
+  void tick( dot_t* dot ) override
+  {
+    arcane_mage_spell_t::tick( dot );
+    td( dot -> target ) -> debuffs.erosion -> trigger();
   }
 
   void last_tick( dot_t* d ) override
