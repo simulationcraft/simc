@@ -75,7 +75,6 @@ public:
     action_t*           surge_of_the_stormgod;
   } active;
 
-  // Dire beasts last 8 seconds, so you'll have at max 8
   std::array< pets::dire_critter_t*, 8 >  pet_dire_beasts;
   pets::hati_t* hati;
   std::array< pets::hunter_secondary_pet_t*, 2 > dark_minion;
@@ -2423,7 +2422,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
         return;
     }
 
-    // either two required shots have happened or we don't require them
+    // either three required shots have happened or we don't require them
     double regen_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
     p() -> buffs.steady_focus -> trigger( 1, regen_buff );
     p() -> buffs.pre_steady_focus -> expire();
@@ -2795,9 +2794,11 @@ struct multi_shot_t: public hunter_ranged_attack_t
         p() -> active.surge_of_the_stormgod -> execute();
       if ( p() -> hati )
         p() -> active.surge_of_the_stormgod -> execute();
-      int i = 0;
-      while( !p() -> pet_dire_beasts[ i++ ] -> is_sleeping() )
-        p() -> active.surge_of_the_stormgod -> execute();
+      for ( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
+      {
+        if( !p() -> pet_dire_beasts[ i ] -> is_sleeping() )
+          p() -> active.surge_of_the_stormgod -> execute();
+      }
     }
 
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) )
@@ -2921,10 +2922,16 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> talents.way_of_the_cobra -> ok() )
     {
-      int active_pets = 0, i = 0;
-      while( !p() -> pet_dire_beasts[ i++ ] -> is_sleeping() )    active_pets++;
-      if ( !p() -> active.pet -> is_sleeping() )                   active_pets++;
-      if ( p() -> hati && !p() -> hati -> is_sleeping() )   active_pets++;
+      int active_pets = 1;
+
+      if ( p() -> hati )
+        active_pets++;
+      for ( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
+      {
+        if ( !p() -> pet_dire_beasts[ i ] -> is_sleeping() )
+          active_pets++;
+      }
+
       am *= 1.0 + active_pets * p() -> talents.way_of_the_cobra -> effectN( 1 ).percent();
     }
 
@@ -3548,13 +3555,6 @@ struct sidewinders_t: hunter_ranged_attack_t
 
   virtual void execute() override
   {
-    // Sidewinders resets swing timer (lol barrage copy & paste)
-    if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-    {
-      p() -> main_hand_attack -> cancel();
-      p() -> main_hand_attack -> schedule_execute();
-    }
-
     hunter_ranged_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -4713,8 +4713,11 @@ struct titans_thunder_t: public hunter_spell_t
       p() -> active.pet -> buffs.titans_frenzy -> trigger();
     p() -> active.pet -> active.titans_thunder -> execute();
     p() -> hati -> active.titans_thunder -> execute();
-    int i = 0;
-    while( !p() -> pet_dire_beasts[ i ] -> is_sleeping() ) p() -> pet_dire_beasts[ i++ ] -> active.titans_thunder -> execute();
+    for ( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
+    {
+      if ( !p() -> pet_dire_beasts[ i ] -> is_sleeping() )
+        p() -> pet_dire_beasts[ i ] -> active.titans_thunder -> execute();
+    }
   }
 
   bool init_finished() override
