@@ -4101,17 +4101,20 @@ struct soul_cleave_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
+    double pain_multiplier = resource_consumed / base_costs[ current_resource() ];
+
     // Heal happens first.
     action_state_t* heal_state = heal -> get_state();
     heal -> target    = player;
     heal -> snapshot_state( heal_state, HEAL_DIRECT );
-    heal_state -> da_multiplier *= resource_consumed / base_costs[ current_resource() ];
+    heal_state -> da_multiplier *= pain_multiplier;
     heal -> schedule_execute( heal_state );
 
     // Damage; snapshot state now so we can include Gluttony.
     action_state_t* mh_state = mh -> get_state();
     mh -> target      = execute_state -> target;
     mh -> snapshot_state( mh_state, DMG_DIRECT );
+    mh_state -> da_multiplier *= pain_multiplier;
     mh -> schedule_execute( mh_state );
 
     p() -> consume_soul_fragments();
