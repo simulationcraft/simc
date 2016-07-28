@@ -603,9 +603,11 @@ public:
     return td;
   }
 
-  // Event Tracking
-  virtual double resource_gain( resource_e, double amount, gain_t* = 0, action_t* = 0 );
-  virtual double resource_loss( resource_e, double amount, gain_t* = 0, action_t* = 0 );
+  // Resource gain tracking
+  virtual double resource_gain( resource_e, double amount,
+                                gain_t* = 0, action_t* = 0 ) override;
+  virtual double resource_loss( resource_e, double amount,
+                                gain_t* = 0, action_t* = 0 ) override;
 
   // Public mage functions:
   icicle_data_t get_icicle_object();
