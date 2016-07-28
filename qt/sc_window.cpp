@@ -275,7 +275,11 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 #if defined( Q_OS_WIN )
   AppDataDir = QCoreApplication::applicationDirPath();
 #else
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 4, 0 )
   QStringList q = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation );
+#else
+  QStringList q = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
+#endif
   assert( !q.isEmpty() );
   AppDataDir = q.first();
   QDir::home().mkpath( AppDataDir );
@@ -1138,6 +1142,11 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     resultsHtmlView -> enableMouseNavigation();
     resultsEntry -> addTab( resultsHtmlView, "html" );
     QFile html_file( sim -> html_file_str.c_str() );
+    if ( html_file.open( QIODevice::ReadOnly ) )
+    {
+      resultsHtmlView -> out_html = html_file.readAll();
+      html_file.close();
+    }
     QString html_file_absolute_path = QFileInfo( html_file ).absoluteFilePath();
     // just load it, let the error page extension handle failure to open
     resultsHtmlView -> load( QUrl::fromLocalFile( html_file_absolute_path ) );
@@ -1755,16 +1764,12 @@ void SC_SingleResultTab::save_result()
     {
     case TAB_HTML:
     {
-#if defined( SC_USE_WEBKIT )
       QFile file( f.selectedFiles().at( 0 ) );
-      if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+      if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
       {
-        file.write(static_cast<SC_WebView*>(currentWidget())->toHtml().toUtf8());
+        file.write( debug_cast<SC_WebView*>( currentWidget() )->out_html );
         file.close();
       }
-#else
-      static_cast<SC_WebView*>(currentWidget())->page()->toHtml(HtmlOutputFunctor(f.selectedFiles().at( 0 )));
-#endif /* SC_USE_WEBKIT */
       break;
     }
       case TAB_TEXT:

@@ -960,6 +960,7 @@ public:
   int progress;
   QString html_str;
   QString url_to_show;
+  QByteArray out_html;
 
   SC_WebView( SC_MainWindow* mw, QWidget* parent = 0, const QString& h = QString() ) :
     SC_WebEngineView( parent ),
