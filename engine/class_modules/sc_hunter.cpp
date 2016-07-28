@@ -2390,6 +2390,15 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
                                             -> effectN( 1 )
                                               .base_value() ) );
     }
+
+    if ( !background && p() -> legendary.mm_feet )
+    {
+      p() -> cooldowns.trueshot 
+        -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet 
+                                                -> driver() 
+                                                -> effectN( 1 )
+                                                  .base_value() ) );
+    }
   }
 
   virtual timespan_t execute_time() const override
@@ -2691,14 +2700,6 @@ struct barrage_t: public hunter_ranged_attack_t
     p() -> no_steady_focus();
   }
 
- virtual void execute() override
- {
-   hunter_ranged_attack_t::execute();
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
- }
-
  bool usable_moving() const override
   {
     return true;
@@ -2798,9 +2799,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
       while( !p() -> pet_dire_beasts[ i++ ] -> is_sleeping() )
         p() -> active.surge_of_the_stormgod -> execute();
     }
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
 
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) )
       p() -> buffs.t18_2p_dire_longevity -> trigger();
@@ -2979,9 +2977,6 @@ struct black_arrow_t: public hunter_ranged_attack_t
       p() -> dark_minion[ 0 ] -> summon( duration );
     else
       p() -> dark_minion[ 1 ] -> summon( duration );
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 };
 
@@ -3201,9 +3196,6 @@ struct aimed_shot_t: public aimed_shot_base_t
       legacy_of_the_windrunners -> schedule_execute();
     }
 
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
-
     if ( p() -> buffs.sentinels_sight -> up() )
       p() -> buffs.sentinels_sight -> expire();
   }
@@ -3269,9 +3261,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
         focus_multiplier *= 1.0 + p() -> artifacts.critical_focus.percent();
       p() -> resource_gain( RESOURCE_FOCUS, focus_multiplier * focus_gain, gain );
     }
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 
 
@@ -3383,9 +3372,6 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> artifacts.call_of_the_hunter.rank() && p() -> ppm_call_of_the_hunter -> trigger() )
       call_of_the_hunter -> execute();
-
-    if ( p() -> legendary.mm_feet && special )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3489,9 +3475,6 @@ struct piercing_shot_t: public hunter_ranged_attack_t
   {
     p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 
   virtual double action_multiplier() const override
@@ -3531,9 +3514,6 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     initial_target = p() -> target;
 
     hunter_ranged_attack_t::execute();
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -3602,9 +3582,6 @@ struct sidewinders_t: hunter_ranged_attack_t
 
       trigger_steady_focus( false );
     }
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3636,10 +3613,10 @@ struct windburst_t: hunter_ranged_attack_t
       hunter_td_t* td = this -> td( execute_state -> target );
       td -> debuffs.vulnerable -> trigger();
     }
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
+
+  virtual bool usable_moving() const override
+  { return false; }
 };
 
 // Piercing Shots ====================================================================
@@ -4390,9 +4367,6 @@ struct moc_t: public ranged_attack_t
   {
     p() -> no_steady_focus();
     ranged_attack_t::execute();
-
-    if ( p() -> legendary.mm_feet )
-      p() -> cooldowns.trueshot -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet -> driver() -> effectN( 1 ).base_value() ) );
   }
 };
 
