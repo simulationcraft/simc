@@ -7579,7 +7579,7 @@ void druid_t::assess_damage( school_e school,
   }
 }
 
-// druid_t::assess_damage_imminent_preabsorb ================================
+// druid_t::assess_damage_imminent_pre_absorb ===============================
 
 // Trigger effects based on being hit or taking damage.
 
