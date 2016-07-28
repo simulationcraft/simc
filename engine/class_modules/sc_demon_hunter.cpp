@@ -43,8 +43,7 @@ namespace
    True proc chance for Fallout
    Flame Crash
    Artificial Stamina
-   Pain from damage taken
-   Soul Cleave variable consumption
+   Fancy pain from damage taken formula
 
    Needs Documenting --------------------------------------------------------
 */
@@ -413,6 +412,7 @@ public:
     gain_t* prepared;
 
     // Vengeance
+    gain_t* damage_taken;
     gain_t* immolation_aura;
     gain_t* metamorphosis;
   } gain;
@@ -566,6 +566,7 @@ public:
 
   // overridden player_t combat functions
   void assess_damage( school_e, dmg_e, action_state_t* s ) override;
+  void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* ) override;
   void combat_begin() override;
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   void interrupt() override;
@@ -1499,7 +1500,10 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
       pct_heal( 0.0 )
   {
     background = true;
-    base_costs.fill( 0 );  // This action is free; the parent pays the cost.
+    // This action is free; the parent pays the cost.
+    base_costs.fill( 0 );
+    secondary_costs.fill( 0 );
+    attack_power_mod.direct = 4.50; // From tooltip.
 
     if ( p -> talent.feast_of_souls -> ok() )
     {
@@ -1510,7 +1514,7 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
       hasted_ticks          = false;
     }
 
-    pct_heal = p -> artifact.devour_souls.percent();
+    base_multiplier *= 1.0 + p -> artifact.devour_souls.percent();
   }
 
   void execute() override
@@ -4069,12 +4073,21 @@ struct soul_cleave_t : public demon_hunter_attack_t
                                    data().effectN( 2 ).trigger() );
     mh -> stats = stats;
 
-    base_costs[ RESOURCE_PAIN ] +=
-      p -> sets.set( DEMON_HUNTER_VENGEANCE, T19, B2 )
-       -> effectN( 1 )
-      .resource( RESOURCE_PAIN );
+	// TOCHECK: How does this really work with regards to the heal multiplier?
+    double cost_mod = p -> sets.set( DEMON_HUNTER_VENGEANCE, T19, B2 ) -> effectN( 1 ).resource( RESOURCE_PAIN );
+
+    base_costs[ RESOURCE_PAIN ]      += cost_mod;
+    secondary_costs[ RESOURCE_PAIN ] += cost_mod;
 
     // Add damage modifiers in soul_cleave_damage_t, not here.
+  }
+
+  double cost() const override
+  {
+    resource_e cr = current_resource();
+
+    // Consume pain between min and max cost.
+    return clamp( p() -> resources.current[ cr ], base_costs[ cr ], base_cost() );
   }
 
   // Don't record data for this action.
@@ -4088,14 +4101,21 @@ struct soul_cleave_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    // Heal happens first;
-    heal -> schedule_execute();
+    double pain_multiplier = resource_consumed / base_costs[ current_resource() ];
+
+    // Heal happens first.
+    action_state_t* heal_state = heal -> get_state();
+    heal -> target    = player;
+    heal -> snapshot_state( heal_state, HEAL_DIRECT );
+    heal_state -> da_multiplier *= pain_multiplier;
+    heal -> schedule_execute( heal_state );
 
     // Damage; snapshot state now so we can include Gluttony.
-    action_state_t* s = mh -> get_state();
-    mh -> target        = execute_state -> target;
-    mh -> snapshot_state( s, DMG_DIRECT );
-    mh -> schedule_execute();
+    action_state_t* mh_state = mh -> get_state();
+    mh -> target      = execute_state -> target;
+    mh -> snapshot_state( mh_state, DMG_DIRECT );
+    mh_state -> da_multiplier *= pain_multiplier;
+    mh -> schedule_execute( mh_state );
 
     p() -> consume_soul_fragments();
 
@@ -6149,6 +6169,7 @@ void demon_hunter_t::create_gains()
   gain.prepared         = get_gain( "prepared" );
 
   // Vengeance
+  gain.damage_taken    = get_gain( "damage_taken" );
   gain.immolation_aura = get_gain( "immolation_aura" );
   gain.metamorphosis   = get_gain( "metamorphosis" );
 }
@@ -6421,6 +6442,27 @@ void demon_hunter_t::assess_damage( school_e school, dmg_e dt,
   {
     buff.demon_spikes -> up();
     buff.defensive_spikes -> up();
+  }
+}
+
+// demon_hunter_t::damage_imminent_pre_absorb ===============================
+
+void demon_hunter_t::assess_damage_imminent_pre_absorb( school_e school,
+                                                        dmg_e rt,
+                                                        action_state_t* s )
+{
+  player_t::assess_damage_imminent_pre_absorb( school, rt, s );
+
+  if ( s -> result_amount <= 0 )
+  {
+    return;
+  }
+
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    resource_gain( RESOURCE_PAIN,
+      s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 50.0,
+      gain.damage_taken );
   }
 }
 

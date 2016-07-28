@@ -1680,7 +1680,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 13 (max 20)
 Range            : 100 yards
-Affecting spells : Warrior (137047), Wrath and Fury (200849), Warpaint (208154), Item - Warrior T19 Fury 4P Bonus (212158), Inner Rage (215573), 
+Affecting spells : Warrior (137047), Wrath and Fury (200849), Inner Rage (215573), 
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .x...... ........ x.....x. 
@@ -1824,7 +1824,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 13 (max 20)
 Range            : 100 yards
-Affecting spells : Warrior (137047), Wrath and Fury (200849), Warpaint (208154), Item - Warrior T19 Fury 4P Bonus (212158), Inner Rage (215573), 
+Affecting spells : Warrior (137047), Wrath and Fury (200849), Inner Rage (215573), 
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ......x. 
@@ -4436,7 +4436,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=307953)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 12 | Target: Self(1)
-                   Affected Spells: Berserker Rage (18499), Raging Blow (85384), Raging Blow (96103), Enrage (184362)
+                   Affected Spells: Berserker Rage (18499), Enrage (184362)
 Description      : You now take only ${30+$208154m1}% increased damage from Enrage.
 
 Name             : Void Cleave (id=209573) [Spell Family (4), Passive, Hidden] 

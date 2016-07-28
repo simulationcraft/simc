@@ -5304,6 +5304,8 @@ struct starshards_t : public starfall_t
     background = true;
     target = sim -> target;
     radius = 40;
+    // Does not cost astral power.
+    base_costs.fill( 0 );
   }
 
   // Allow the action to execute even when Starfall is already active.
@@ -7577,7 +7579,7 @@ void druid_t::assess_damage( school_e school,
   }
 }
 
-// druid_t::assess_damage_imminent_preabsorb ================================
+// druid_t::assess_damage_imminent_pre_absorb ===============================
 
 // Trigger effects based on being hit or taking damage.
 
