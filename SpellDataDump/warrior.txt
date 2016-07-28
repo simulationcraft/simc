@@ -3300,7 +3300,7 @@ Name             : Intercept (id=198304) [Spell Family (4)]
 Replaces         : Charge (id=100)
 Class            : Protection Warrior
 School           : Physical
-Spell Level      : 72
+Spell Level      : 28
 Range            : 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
