@@ -3885,6 +3885,13 @@ struct flame_patch_t : public fire_mage_spell_t
     ground_aoe = background = true;
     school = SCHOOL_FIRE;
   }
+
+  // Override damage type to avoid triggering Doom Nova
+  dmg_e amount_type( const action_state_t* /* state */,
+                     bool /* periodic */ ) const override
+  {
+    return DMG_OVER_TIME;
+  }
 };
 // Flamestrike Spell ==========================================================
 
@@ -7961,7 +7968,6 @@ void mage_t::invalidate_cache( cache_e c )
       if ( spec.savant -> ok() )
       {
         recalculate_resource_max( RESOURCE_MANA );
-
       }
       else if ( spec.icicles -> ok() )
       {
@@ -7972,7 +7978,10 @@ void mage_t::invalidate_cache( cache_e c )
       // Combustion makes mastery dependent on spell crit chance rating. Thus
       // any spell_crit_chance invalidation (which should include any
       // spell_crit_rating changes) will also invalidate mastery.
-      invalidate_cache( CACHE_MASTERY );
+      if ( specialization() == MAGE_FIRE )
+      {
+        invalidate_cache( CACHE_MASTERY );
+      }
       break;
     default:
       break;
@@ -8052,7 +8061,6 @@ double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  // TODO: which of these cache invalidations are actually needed?
   if ( specialization() == MAGE_ARCANE )
   {
     if ( buffs.arcane_power -> check() )
@@ -8060,11 +8068,8 @@ double mage_t::composite_player_multiplier( school_e school ) const
       double v = buffs.arcane_power -> value();
       m *= 1.0 + v;
     }
-
-    cache.player_mult_valid[ school ] = false;
   }
 
-  // TODO: which of these cache invalidations are actually needed?
   if ( talents.rune_of_power -> ok() )
   {
     if ( buffs.rune_of_power -> check() )
