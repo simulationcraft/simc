@@ -426,6 +426,7 @@ public:
 
     // Guardian (Bear)
     gain_t* bear_form;
+    gain_t* blood_frenzy;
     gain_t* brambles;
     gain_t* bristling_fur;
     gain_t* galactic_guardian;
@@ -3298,7 +3299,8 @@ struct thrash_bear_t : public bear_attack_t
   double blood_frenzy_amount;
 
   thrash_bear_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( "thrash_bear", p, p -> find_spell( 77758 ), options_str )
+    bear_attack_t( "thrash_bear", p, p -> find_spell( 77758 ), options_str ),
+    blood_frenzy_amount( 0 )
   {
     aoe = -1;
     spell_power_mod.direct = 0;
@@ -3322,8 +3324,7 @@ struct thrash_bear_t : public bear_attack_t
   {
     bear_attack_t::tick( d );
 
-    if ( p() -> talent.blood_frenzy -> ok() && d -> current_stack() == d -> max_stack )
-      p() -> resource_gain( RESOURCE_RAGE, blood_frenzy_amount, gain );
+    p() -> resource_gain( RESOURCE_RAGE, blood_frenzy_amount, p() -> gain.blood_frenzy );
   }
 };
 
@@ -6733,6 +6734,7 @@ void druid_t::init_gains()
 
   // Guardian
   gain.bear_form             = get_gain( "bear_form"             );
+  gain.blood_frenzy          = get_gain( "blood_frenzy"          );
   gain.brambles              = get_gain( "brambles"              );
   gain.bristling_fur         = get_gain( "bristling_fur"         );
   gain.galactic_guardian     = get_gain( "galactic_guardian"     );
