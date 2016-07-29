@@ -6,4 +6,3 @@ engine/util/rapidxml/* linguist-vendored
 engine/util/utf8.h linguist-vendored
 engine/util/utf8/* linguist-vendored
 locale/*.qm linguist-vendored
-*.pgd filter=lfs diff=lfs merge=lfs -text
