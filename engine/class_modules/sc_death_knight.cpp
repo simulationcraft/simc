@@ -8,6 +8,9 @@
 // - Does Festering Wound (generation|consumption) require a positive hit result?
 // - Festering Strike Festering Wound generation probability distribution
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
+// - Portal to the Underworld damage is messed up (by ~3%).
+// - "The Shambler" is not benefiting from mastery in game
+// - Armies of the Damned is not implemented
 // Blood
 //
 
@@ -195,6 +198,7 @@ struct death_knight_td_t : public actor_target_data_t {
     debuff_t* mark_of_blood;
     debuff_t* soul_reaper;
     debuff_t* blood_mirror;
+    debuff_t* scourge_of_worlds;
   } debuff;
 
   // Check if DnD or Defile are up for ScS/CS AOE
@@ -299,6 +303,7 @@ public:
     action_t* bursting_sores;
     action_t* mark_of_blood;
     action_t* crystalline_swords;
+    action_t* necrobomb;
   } active_spells;
 
   // Gains
@@ -319,6 +324,7 @@ public:
     gain_t* tombstone;
     gain_t* overpowered;
     gain_t* t18_2pc_blood;
+    gain_t* scourge_the_unbeliever;
   } gains;
 
   // Specialization
@@ -465,6 +471,23 @@ public:
     artifact_power_t hypothermia;
     artifact_power_t soulbiter;
 
+    // Unholy
+    artifact_power_t apocalypse;
+    artifact_power_t feast_of_souls;
+    artifact_power_t eternal_agony;
+    artifact_power_t the_darkest_crusade;
+    artifact_power_t portal_to_the_underworld;
+    artifact_power_t runic_tattoos;
+    artifact_power_t scourge_of_worlds;
+    artifact_power_t rotten_touch;
+    artifact_power_t plaguebearer;
+    artifact_power_t armies_of_the_damned;
+    artifact_power_t scourge_the_unbeliever;
+    artifact_power_t the_shambler;
+    artifact_power_t double_doom;
+    artifact_power_t deadliest_coil;
+    artifact_power_t fleshsearer;
+
   } artifact;
 
   // Spells
@@ -474,10 +497,17 @@ public:
     const spell_data_t* ossuary;
   } spell;
 
+  // RPPM
+  struct rppm_t
+  {
+    real_ppm_t* shambler;
+  } rppm;
+
   // Pets and Guardians
   struct pets_t
   {
     std::array< pet_t*, 8 > army_ghoul;
+    std::array< pet_t*, 8 > apocalypse_ghoul;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
     pets::dt_pet_t* ghoul_pet; // Covers both Ghoul and Sludge Belcher
     pet_t* gargoyle;
@@ -636,6 +666,10 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
                            .cd( timespan_t::zero() ); // Handled by the action
   debuff.blood_mirror = buff_creator_t( *this, "blood_mirror", death_knight -> talent.blood_mirror )
                         .cd( timespan_t::zero() ); // Handled by the action
+  debuff.scourge_of_worlds = buff_creator_t( *this, "scourge_of_worlds" )
+    .spell( death_knight -> artifact.scourge_of_worlds.data().effectN( 1 ).trigger() )
+    .trigger_spell( death_knight -> artifact.scourge_of_worlds )
+    .default_value( death_knight -> artifact.scourge_of_worlds.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 }
 
 // ==========================================================================
@@ -877,6 +911,8 @@ struct death_knight_pet_t : public pet_t
     {
       m *= 1.0 + o() -> cache.mastery_value();
     }
+
+    m *= 1.0 + o() -> artifact.fleshsearer.percent();
 
     return m;
   }
@@ -1351,29 +1387,69 @@ struct army_pet_t : public base_ghoul_pet_t
     { }
   };
 
-  army_pet_t( death_knight_t* owner ) : base_ghoul_pet_t( owner, "army_of_the_dead", true )
+  struct dragged_to_helheim_t : public pet_spell_t<army_pet_t>
+  {
+    dragged_to_helheim_t( army_pet_t* player ) :
+      super( player, "dragged_to_helheim", player -> find_spell( 218321 ) )
+    {
+      background = true;
+      aoe = -1;
+    }
+
+    // Uses owner's attack power .. probably. The damage in game is not very self-explanatory.
+    // Technically this is wrong, but we have no action-specific composite attack power multiplier,
+    // so just multiply it in here. The ghoul itself will never have an attack power multiplier so
+    // there's no possibility of breakage.
+    double composite_attack_power() const override
+    { return p() -> o() -> cache.attack_power() * p() -> o() -> composite_attack_power_multiplier(); }
+  };
+
+  dragged_to_helheim_t* despawn_explosion;
+
+  army_pet_t( death_knight_t* owner, const std::string& name ) :
+    base_ghoul_pet_t( owner, name, true ), despawn_explosion( nullptr )
   { }
+
+  void dismiss( bool expired ) override
+  {
+    if ( expired && despawn_explosion )
+    {
+      despawn_explosion -> execute();
+    }
+
+    pet_t::dismiss( expired );
+  }
 
   void init_base_stats() override
   {
-    death_knight_pet_t::init_base_stats();
+    base_ghoul_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 0.30;
   }
 
   void init_action_list() override
   {
-    death_knight_pet_t::init_action_list();
+    base_ghoul_pet_t::init_action_list();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     def -> add_action( "Claw" );
+  }
+
+  bool create_actions() override
+  {
+    if ( o() -> artifact.portal_to_the_underworld.rank() )
+    {
+      despawn_explosion = new dragged_to_helheim_t( this );
+    }
+
+    return base_ghoul_pet_t::create_actions();
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "claw" ) return new army_claw_t( this, options_str );
 
-    return death_knight_pet_t::create_action( name, options_str );
+    return base_ghoul_pet_t::create_action( name, options_str );
   }
 };
 
@@ -1828,6 +1904,8 @@ struct death_knight_action_t : public Base
       amount *= 1.0 + p() -> talent.rapid_decomposition -> effectN( 4 ).percent();
     }
 
+    amount  *= 1.0 + p() -> artifact.runic_tattoos.data().effectN( 1 ).percent();
+
     return amount;
   }
 
@@ -2034,6 +2112,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   void trigger_icecap( const action_state_t* state ) const;
   void trigger_avalanche( const action_state_t* state ) const;
   void trigger_crystalline_swords( const action_state_t* state ) const;
+  void trigger_necrobomb( const action_state_t* state ) const;
 };
 
 // ==========================================================================
@@ -2108,6 +2187,7 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
   base_t::impact( state );
 
   trigger_avalanche( state );
+  trigger_necrobomb( state );
 }
 
 // death_knight_melee_attack_t::ready() =====================================
@@ -2224,6 +2304,34 @@ void death_knight_melee_attack_t::trigger_crystalline_swords( const action_state
   p() -> active_spells.crystalline_swords -> execute();
 
   p() -> crystalline_swords = 0;
+}
+
+// death_knight_melee_attack_t::trigger_necrobomb ========================
+
+void death_knight_melee_attack_t::trigger_necrobomb( const action_state_t* state ) const
+{
+  if ( ! result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  if ( ! p() -> artifact.the_shambler.rank() )
+  {
+    return;
+  }
+
+  if ( ! p() -> rppm.shambler -> trigger() )
+  {
+    return;
+  }
+
+  if ( p() -> active_spells.necrobomb -> target != state -> target )
+  {
+    p() -> active_spells.necrobomb -> target_cache.is_valid = false;
+  }
+
+  p() -> active_spells.necrobomb -> target = state -> target;
+  p() -> active_spells.necrobomb -> schedule_execute();
 }
 
 // ==========================================================================
@@ -2360,6 +2468,26 @@ struct bursting_sores_t : public death_knight_spell_t
     }
 
     return tl.size();
+  }
+};
+
+// Necrobomb ===============================================================
+
+struct necrobomb_t : public death_knight_spell_t
+{
+  necrobomb_t( death_knight_t* p ) :
+    death_knight_spell_t( "necrobomb", p, p -> find_spell( 191758 ) )
+  {
+    background = true;
+    aoe = -1;
+  }
+
+  void init() override
+  {
+    death_knight_spell_t::init();
+
+    // TODO: 2016-07-30: Versatility does not affect necrobomb in game, check later
+    snapshot_flags &= ~STATE_VERSATILITY;
   }
 };
 
@@ -2510,6 +2638,38 @@ struct auto_attack_t : public death_knight_melee_attack_t
 // Death Knight Abilities
 // ==========================================================================
 
+// Apocalypse
+
+struct apocalypse_t : public death_knight_melee_attack_t
+{
+  const spell_data_t* summon;
+
+  apocalypse_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_melee_attack_t( "apocalypse", p, p -> artifact.apocalypse ),
+    summon( p -> find_spell( 221180 ) )
+  {
+    parse_options( options_str );
+
+    weapon = &( p -> main_hand_weapon );
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+    auto n_wounds = td( execute_state -> target ) -> debuff.festering_wound -> stack();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      burst_festering_wound( execute_state, n_wounds );
+    }
+
+    for ( int i = 0; i < n_wounds; ++i )
+    {
+      p() -> pets.apocalypse_ghoul[ i ] -> summon( summon -> duration() );
+    }
+  }
+};
+
 // Army of the Dead =========================================================
 
 struct army_of_the_dead_t : public death_knight_spell_t
@@ -2657,6 +2817,7 @@ struct virulent_plague_t : public disease_t
   {
     base_tick_time *= 1.0 + p -> talent.ebon_fever -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> talent.ebon_fever -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> artifact.plaguebearer.percent();
 
     add_child( explosion );
   }
@@ -3269,13 +3430,13 @@ struct defile_t : public death_knight_spell_t
 // TODO: Conveert to mimic blizzard spells
 struct death_coil_t : public death_knight_spell_t
 {
-
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_coil", p, p -> find_specialization_spell( "Death Coil" ) )
   {
     parse_options( options_str );
 
     attack_power_mod.direct = p -> find_spell( 47632 ) -> effectN( 1 ).ap_coeff();
+    base_multiplier *= 1.0 + p -> artifact.deadliest_coil.percent();
   }
 
   double cost() const override
@@ -3301,6 +3462,8 @@ struct death_coil_t : public death_knight_spell_t
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
+
+      td( execute_state -> target ) -> debuff.scourge_of_worlds -> trigger();
     }
 
     if ( p() -> talent.shadow_infusion -> ok() && ! p() -> buffs.dark_transformation -> up() )
@@ -3310,6 +3473,7 @@ struct death_coil_t : public death_knight_spell_t
     }
 
     p() -> buffs.necrosis -> trigger();
+
   }
 };
 
@@ -3646,6 +3810,8 @@ struct festering_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "festering_strike", p, p -> find_specialization_spell( "Festering Strike" ) )
   {
     parse_options( options_str );
+
+    base_multiplier *= 1.0 + p -> artifact.rotten_touch.percent();
   }
 
   void impact( action_state_t* s ) override
@@ -4462,6 +4628,15 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       return m;
     }
 
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = death_knight_melee_attack_t::composite_target_multiplier( target );
+
+      m *= 1.0 + td( target ) -> debuff.scourge_of_worlds -> stack_value();
+
+      return m;
+    }
+
     void impact( action_state_t* state ) override
     {
       death_knight_melee_attack_t::impact( state );
@@ -4492,6 +4667,10 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
 
     p() -> buffs.necrosis -> decrement();
+    if ( rng().roll( p() -> artifact.scourge_the_unbeliever.percent() ) )
+    {
+      p() -> replenish_rune( 1, p() -> gains.scourge_the_unbeliever );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4521,6 +4700,15 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     {
       m *= 1.0 + p() -> buffs.necrosis -> stack_value();
     }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
+
+    m *= 1.0 + td( target ) -> debuff.scourge_of_worlds -> stack_value();
 
     return m;
   }
@@ -5205,6 +5393,7 @@ void runeforge::fallen_crusader( special_effect_t& effect )
         target = player;
         callbacks = may_crit = false;
         base_pct_heal = data -> effectN( 2 ).percent();
+        base_pct_heal *= 1.0 + dk -> artifact.the_darkest_crusade.percent();
       }
 
       // Procs by default target the target of the action that procced them.
@@ -5329,6 +5518,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
 
   // Unholy Actions
+  if ( name == "apocalypse"               ) return new apocalypse_t               ( this, options_str );
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
   if ( name == "dark_transformation"      ) return new dark_transformation_t      ( this, options_str );
   if ( name == "death_and_decay"          ) return new death_and_decay_t          ( this, options_str );
@@ -5491,7 +5681,15 @@ void death_knight_t::create_pets()
     {
       for ( int i = 0; i < 8; i++ )
       {
-        pets.army_ghoul[ i ] = new pets::army_pet_t( this );
+        pets.army_ghoul[ i ] = new pets::army_pet_t( this, "army_ghoul" );
+      }
+    }
+
+    if ( artifact.apocalypse.rank() && find_action( "apocalypse" ) )
+    {
+      for ( auto i = 0; i < 8; i++ )
+      {
+        pets.apocalypse_ghoul[ i ] = new pets::army_pet_t( this, "apocalypse_ghoul" );
       }
     }
   }
@@ -5547,8 +5745,11 @@ double death_knight_t::composite_spell_haste() const
 
 // death_knight_t::init_rng =================================================
 
-void death_knight_t::init_rng() {
+void death_knight_t::init_rng()
+{
   player_t::init_rng();
+
+  rppm.shambler = get_rppm( "shambler", artifact.the_shambler );
 }
 
 // death_knight_t::init_base ================================================
@@ -5562,6 +5763,7 @@ void death_knight_t::init_base_stats()
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
   resources.base[ RESOURCE_RUNIC_POWER ] += spec.veteran_of_the_third_war -> effectN( 10 ).resource( RESOURCE_RUNIC_POWER );
+  resources.base[ RESOURCE_RUNIC_POWER ] += artifact.runic_tattoos.data().effectN( 2 ).base_value() / 10.0;
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
 
   base_gcd = timespan_t::from_seconds( 1.0 );
@@ -5711,6 +5913,21 @@ void death_knight_t::init_spells()
   artifact.hypothermia         = find_artifact_spell( "Hypothermia" );
   artifact.soulbiter           = find_artifact_spell( "Soulbiter" );
 
+  artifact.apocalypse          = find_artifact_spell( "Apocalypse" );
+  artifact.feast_of_souls      = find_artifact_spell( "Feast of Souls" );
+  artifact.eternal_agony       = find_artifact_spell( "Eternal Agony" );
+  artifact.the_darkest_crusade = find_artifact_spell( "The Darkest Crusade" );
+  artifact.portal_to_the_underworld = find_artifact_spell( "Portal to the Underworld" );
+  artifact.runic_tattoos       = find_artifact_spell( "Runic Tattoos" );
+  artifact.scourge_of_worlds   = find_artifact_spell( "Scourge of Worlds" );
+  artifact.rotten_touch        = find_artifact_spell( "Rotten Touch" );
+  artifact.plaguebearer        = find_artifact_spell( "Plaguebearer" );
+  artifact.armies_of_the_damned = find_artifact_spell( "Armies of the Damned" );
+  artifact.scourge_the_unbeliever = find_artifact_spell( "Scourge the Unbeliever" );
+  artifact.the_shambler        = find_artifact_spell( "The Shambler" );
+  artifact.double_doom         = find_artifact_spell( "Double Doom" );
+  artifact.deadliest_coil      = find_artifact_spell( "Deadliest Coil" );
+  artifact.fleshsearer         = find_artifact_spell( "Fleshsearer" );
   // Generic spells
   spell.antimagic_shell        = find_class_spell( "Anti-Magic Shell" );
   spell.blood_rites            = find_spell( 163948 );
@@ -5718,6 +5935,7 @@ void death_knight_t::init_spells()
 
   // Active Spells
   fallen_crusader += find_spell( 53365 ) -> effectN( 1 ).percent();
+  fallen_crusader *= 1.0 + artifact.the_darkest_crusade.percent();
 
   if ( talent.avalanche -> ok() )
   {
@@ -5747,6 +5965,11 @@ void death_knight_t::init_spells()
   if ( artifact.crystalline_swords.rank() )
   {
     active_spells.crystalline_swords = new crystalline_swords_t( this );
+  }
+
+  if ( artifact.the_shambler.rank() )
+  {
+    active_spells.necrobomb = new necrobomb_t( this );
   }
 }
 
@@ -6097,6 +6320,7 @@ void death_knight_t::create_buffs()
                               .cd( timespan_t::zero() )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) )
+    .duration( find_specialization_spell( "Dark Transformation" ) -> duration() + artifact.eternal_agony.time_value() )
     .cd( timespan_t::zero() ); // Handled by the action
 
   buffs.gathering_storm     = buff_creator_t( this, "gathering_storm", find_spell( 211805 ) )
@@ -6130,6 +6354,8 @@ void death_knight_t::create_buffs()
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom" )
                               .spell( spec.sudden_doom -> effectN( 1 ).trigger() )
+                              .rppm_mod( 1.0 + artifact.double_doom.data().effectN( 2 ).percent() )
+                              .max_stack( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() + artifact.double_doom.data().effectN( 1 ).base_value() )
                               .trigger_spell( spec.sudden_doom );
 
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
@@ -6202,6 +6428,7 @@ void death_knight_t::init_gains()
   gains.tombstone                        = get_gain( "Tombstone"                  );
   gains.overpowered                      = get_gain( "Over-Powered"               );
   gains.t18_2pc_blood                    = get_gain( "Tier18 Blood 2PC"           );
+  gains.scourge_the_unbeliever           = get_gain( "Scourge the Unbeliever"     );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -6422,7 +6649,9 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STRENGTH )
   {
     if ( runeforge.rune_of_the_fallen_crusader -> up() )
+    {
       m *= 1.0 + fallen_crusader;
+    }
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
   else if ( attr == ATTR_STAMINA )
@@ -6519,9 +6748,14 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( mastery.dreadblade -> ok() && dbc::is_school( school, SCHOOL_SHADOW )  )
+  if ( dbc::is_school( school, SCHOOL_SHADOW ) )
   {
-    m *= 1.0 + cache.mastery_value();
+    if ( mastery.dreadblade -> ok() )
+    {
+      m *= 1.0 + cache.mastery_value();
+    }
+
+    m *= 1.0 + artifact.feast_of_souls.percent();
   }
 
   if ( dbc::is_school( school, SCHOOL_FROST ) )
@@ -6538,6 +6772,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + artifact.soulbiter.percent();
+  m *= 1.0 + artifact.fleshsearer.percent();
 
   if ( buffs.t18_4pc_unholy -> up() )
   {
@@ -6725,10 +6960,12 @@ void death_knight_t::regen( timespan_t periodicity ) {
 // means composite_attack_haste is 1/1.3), so we invert it.  Haste
 // linearly scales regen rate -- 100% haste means a rune regens in 5
 // seconds, etc.
-inline double death_knight_t::runes_per_second() const {
+inline double death_knight_t::runes_per_second() const
+{
   double rps = RUNE_REGEN_BASE_SEC / cache.attack_haste();
   // Runic corruption doubles rune regeneration speed
-  if ( buffs.runic_corruption -> check() ) {
+  if ( buffs.runic_corruption -> check() )
+  {
     rps *= 2.0;
   }
 
