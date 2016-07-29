@@ -1015,7 +1015,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5217, // Tiger's Fury
            0,
     },
-    // Guardian tree, 18 abilities
+    // Guardian tree, 19 abilities
     {
        22812, // Barkskin
       203958, // Brambles
@@ -1026,6 +1026,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        33917, // Mangle
       192083, // Mark of Ursol
         6807, // Maul
+      227034, // Nature's Guardian
         5215, // Prowl
         2782, // Remove Corruption
       106839, // Skull Bash

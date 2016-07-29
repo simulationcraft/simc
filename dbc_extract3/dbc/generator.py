@@ -1411,6 +1411,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 209407, 1 ),       # Oneth's Overconfidence buff
       ( 213666, 1 ),       # Echoing Stars artifact spell
       ( 69369,  2 ),       # Predatory Swiftness buff
+      ( 227034, 3 ),       # Nature's Guardian heal
         ),
 		
 		# Demon Hunter:

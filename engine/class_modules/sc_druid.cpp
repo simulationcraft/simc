@@ -280,6 +280,7 @@ public:
     spell_t*  echoing_stars;
     spell_t*  galactic_guardian;
     spell_t*  goldrinns_fang;
+    action_t* natures_guardian;
     spell_t*  rage_of_the_sleeper;
     attack_t* shadow_thrash;
     spell_t*  shooting_stars;
@@ -788,6 +789,7 @@ public:
   void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
   const spell_data_t* find_affinity_spell( const std::string& );
+  void trigger_natures_guardian( const action_state_t* );
 
 private:
   void              apl_precombat();
@@ -3663,6 +3665,27 @@ struct lifebloom_t : public druid_heal_t
   }
 };
 
+// Nature's Guardian ========================================================
+
+struct natures_guardian_t : public druid_heal_t
+{
+  natures_guardian_t( druid_t* p ) :
+    druid_heal_t( "natures_guardian", p, p -> find_spell( 227034 ) )
+  {
+    background = true;
+    may_crit = false;
+    target = p;
+  }
+
+  void init() override
+  {
+    druid_heal_t::init();
+
+    // Not affected by multipliers of any sort.
+    snapshot_flags &= ~STATE_NO_MULTIPLIER;
+  }
+};
+
 // Regrowth =================================================================
 
 struct regrowth_t : public druid_heal_t
@@ -5930,6 +5953,8 @@ void druid_t::init_spells()
   }
   if ( artifact.ashamanes_bite.rank() )
     active.ashamanes_rip = new cat_attacks::ashamanes_rip_t( this );
+  if ( mastery.natures_guardian -> ok() )
+    active.natures_guardian = new heals::natures_guardian_t( this );
 }
 
 // druid_t::init_base =======================================================
@@ -7560,6 +7585,8 @@ void druid_t::assess_heal( school_e school,
     s -> result_total *= 1.0 + cache.mastery_value();
 
   player_t::assess_heal( school, dmg_type, s );
+
+  trigger_natures_guardian( s );
 }
 
 // druid_t::shapeshift ======================================================
@@ -7654,6 +7681,25 @@ const spell_data_t* druid_t::find_affinity_spell( const std::string& name )
   }
 
   return spell_data_t::not_found();
+}
+
+// druid_t::trigger_natures_guardian ========================================
+
+void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
+{
+  if ( ! mastery.natures_guardian -> ok() )
+    return;
+  if ( trigger_state -> result_total <= 0 )
+    return;
+  if ( trigger_state -> action == active.natures_guardian )
+    return;
+
+  active.natures_guardian -> base_dd_min = active.natures_guardian -> base_dd_max =
+    trigger_state -> result_total * cache.mastery_value();
+  action_state_t* s = active.natures_guardian -> get_state();
+  s -> target = this;
+  active.natures_guardian -> snapshot_state( s, HEAL_DIRECT );
+  active.natures_guardian -> schedule_execute( s );
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
