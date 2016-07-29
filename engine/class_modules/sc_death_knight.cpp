@@ -4461,6 +4461,16 @@ struct scourge_strike_t : public death_knight_melee_attack_t
 
       return m;
     }
+
+    void impact( action_state_t* state ) override
+    {
+      death_knight_melee_attack_t::impact( state );
+
+      if ( state -> result == RESULT_CRIT && p() -> talent.castigator -> ok() )
+      {
+        burst_festering_wound( state, 1 );
+      }
+    }
   };
 
   scourge_strike_shadow_t* scourge_strike_shadow;
