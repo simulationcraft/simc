@@ -765,6 +765,7 @@ public:
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_spell_power( school_e school ) const override;
+  virtual double    composite_spell_power_multiplier() const override;
   virtual double    temporary_movement_modifier() const override;
   virtual double    passive_movement_modifier() const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
@@ -7168,11 +7169,26 @@ double druid_t::composite_spell_power( school_e school ) const
   // Nurturing Instinct overrides SP from other sources.
   if ( spec.nurturing_instinct -> ok() )
   {
-    return spec.nurturing_instinct -> effectN( 1 ).percent()
-      * cache.attack_power() * composite_attack_power_multiplier();
+    /* Apply attack power multiplier dynamically in composite_spell_power_multiplier,
+       else we'll get cache assert failures. */
+    return spec.nurturing_instinct -> effectN( 1 ).percent() * cache.attack_power();
   }
 
   return player_t::composite_spell_power( school );
+}
+
+// druid_t::composite_spell_power_multiplier ================================
+
+double druid_t::composite_spell_power_multiplier() const
+{
+  double spm = player_t::composite_spell_power_multiplier();
+
+  if ( spec.nurturing_instinct -> ok() )
+  {
+    spm *= composite_attack_power_multiplier();
+  }
+
+  return spm;
 }
 
 // druid_t::composite_attribute =============================================
