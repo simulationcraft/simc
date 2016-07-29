@@ -1216,6 +1216,7 @@ public:
   bool rend_and_tear;
   bool hasted_gcd;
   double gore_chance;
+  bool triggers_galactic_guardian;
 
   druid_action_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
@@ -1223,7 +1224,7 @@ public:
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
     rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
-    gore_chance( player -> spec.gore -> proc_chance() )
+    gore_chance( player -> spec.gore -> proc_chance() ), triggers_galactic_guardian( true )
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
@@ -1266,6 +1267,8 @@ public:
 
     if ( p() -> buff.feral_tier17_4pc -> check() )
       trigger_gushing_wound( s -> target, s -> result_amount );
+
+    trigger_galactic_guardian( s );
   }
 
   virtual void tick( dot_t* d )
@@ -1274,6 +1277,8 @@ public:
 
     if ( p() -> buff.feral_tier17_4pc -> check() )
       trigger_gushing_wound( d -> target, d -> state -> result_amount );
+
+    trigger_galactic_guardian( d -> state );
   }
 
   virtual void schedule_execute( action_state_t* s = nullptr ) override
@@ -1333,6 +1338,32 @@ public:
       return true;
     }
     return false;
+  }
+
+  virtual void trigger_galactic_guardian( action_state_t* s )
+  {
+    if ( ! ( triggers_galactic_guardian && ! ab::proc && ab::harmful ) )
+      return;
+    if ( ! p() -> talent.galactic_guardian -> ok() )
+      return;
+    if ( s -> target == p() )
+      return;
+    if ( ! ab::result_is_hit( s -> result ) )
+      return;
+    if ( s -> result_total <= 0 )
+      return;
+
+    if ( rng().roll( p() -> talent.galactic_guardian -> proc_chance() ) )
+    {
+      // Trigger Moonfire
+      action_state_t* gg_s = p() -> active.galactic_guardian -> get_state();
+      gg_s -> target = s -> target;
+      p() -> active.galactic_guardian -> snapshot_state( gg_s, DMG_DIRECT );
+      p() -> active.galactic_guardian -> schedule_execute( gg_s );
+
+      // Trigger buff
+      p() -> buff.galactic_guardian -> trigger();
+    }
   }
 };
 
@@ -1705,6 +1736,7 @@ struct moonfire_t : public druid_spell_t
       }
 
       may_miss = false;
+      triggers_galactic_guardian = false;
       dual = background = true;
       dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 4 ).percent();
@@ -1731,22 +1763,6 @@ struct moonfire_t : public druid_spell_t
               + p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() ) * ( 1.0 + p() -> artifact.falling_star.percent() );
 
       return tm;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      druid_spell_t::impact( s );
-
-      if ( result_is_hit( s -> result ) )
-      {
-        trigger_gore();
-
-        if ( p() -> buff.galactic_guardian -> check() )
-        {
-          p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
-          p() -> buff.galactic_guardian -> expire();
-        }
-      }
     }
 
     void tick( dot_t* d ) override
@@ -1779,6 +1795,22 @@ struct moonfire_t : public druid_spell_t
     }
 
     // Add damage modifiers in moonfire_damage_t, not here.
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      trigger_gore();
+
+      if ( p() -> buff.galactic_guardian -> check() )
+      {
+        p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
+        p() -> buff.galactic_guardian -> expire();
+      }
+    }
   }
 
   void execute() override
@@ -3051,42 +3083,6 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     if ( hit_any_target && gore )
       trigger_gore();
   }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    base_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( p() -> talent.galactic_guardian -> ok() )
-        trigger_galactic_guardian( s );
-    }
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    base_t::tick( d );
-
-    trigger_galactic_guardian( d -> state );
-  }
-
-  // TOCHECK: does it proc off of ANY damage event? or just bear attacks
-  virtual void trigger_galactic_guardian( action_state_t* s )
-  {
-    if ( ! p() -> talent.galactic_guardian -> ok() )
-      return;
-    if ( ! result_is_hit( s -> result ) )
-      return;
-    if ( s -> result_total <= 0 )
-      return;
-
-    if ( rng().roll( p() -> talent.galactic_guardian -> proc_chance() ) )
-    {
-      p() -> active.galactic_guardian -> target = s -> target;
-      p() -> active.galactic_guardian -> execute();
-      p() -> buff.galactic_guardian -> trigger();
-    }
-  }
 }; // end bear_attack_t
 
 // Bear Melee Attack ========================================================
@@ -4060,9 +4056,7 @@ struct brambles_t : public druid_spell_t
   brambles_t( druid_t* p ) :
     druid_spell_t( "brambles_reflect", p, p -> find_spell( 203958 ) )
   {
-    background = true;
-    may_block = may_dodge = may_parry = may_miss = true;
-    may_crit = true;
+    background = may_crit = proc = may_miss = true;
   }
 };
 
@@ -4746,7 +4740,7 @@ struct rage_of_the_sleeper_t : public druid_spell_t
     rage_of_the_sleeper_reflect_t( druid_t* p ) :
       druid_spell_t( "rage_of_the_sleeper_reflect", p, p -> find_spell( 219432 ) )
     {
-      background = true;
+      background = proc = true;
       may_miss = may_crit = false;
     }
   };
