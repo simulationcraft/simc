@@ -6792,7 +6792,7 @@ double shaman_t::composite_spell_power( school_e school ) const
   double sp = 0;
 
   if ( specialization() == SHAMAN_ENHANCEMENT )
-    sp = cache.attack_power() * spec.enhancement_shaman -> effectN( 1 ).percent();
+    sp = composite_attack_power_multiplier() * cache.attack_power() * spec.enhancement_shaman -> effectN( 1 ).percent();
   else
     sp = player_t::composite_spell_power( school );
 
@@ -6804,7 +6804,7 @@ double shaman_t::composite_spell_power( school_e school ) const
 double shaman_t::composite_spell_power_multiplier() const
 {
   if ( specialization() == SHAMAN_ENHANCEMENT )
-    return composite_attack_power_multiplier();
+    return 1.0;
 
   return player_t::composite_spell_power_multiplier();
 }
