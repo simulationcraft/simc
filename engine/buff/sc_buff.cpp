@@ -59,6 +59,8 @@ struct expiration_t : public buff_event_t
 
   virtual void execute() override
   {
+    assert( buff -> expiration.size() );
+
     buff -> expiration.erase( buff -> expiration.begin() );
 
     if ( buff -> stack_behavior == BUFF_STACK_ASYNCHRONOUS )
