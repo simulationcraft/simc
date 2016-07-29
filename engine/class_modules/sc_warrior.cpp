@@ -4196,27 +4196,19 @@ void warrior_t::apl_fury()
   action_priority_list_t* bladestorm = get_action_priority_list( "bladestorm" );
 
   default_list -> add_action( "auto_attack" );
+  default_list -> add_action( this, "Charge" );
   default_list -> add_action( "run_action_list,name=movement,if=movement.distance>5", "This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
 
-  size_t num_items = items.size();
-  for ( size_t i = 0; i < num_items; i++ )
+  for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[i].name_str == "scabbard_of_kyanos" )
-    {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.avatar.up|target.time_to_die<25)" );
-    }
-    else if ( items[i].name_str == "vial_of_convulsive_shadows" )
-    {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
-    }
-    else if ( items[i].name_str == "thorasus_the_stone_heart_of_draenor" )
+    if ( items[i].name_str == "thorasus_the_stone_heart_of_draenor" )
     {
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
     }
     else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
     }
   }
 
@@ -4232,10 +4224,9 @@ void warrior_t::apl_fury()
     }
   }
 
-  default_list -> add_action( "run_action_list,name=single_target,if=(raid_event.adds.cooldown<90&raid_event.adds.count>2&spell_targets.whirlwind=1)|raid_event.movement.cooldown<5", "Skip cooldown usage if we can line them up with bladestorm on a large set of adds, or if movement is coming soon." );
-  default_list -> add_action( this, "Battle Cry", "if=target.time_to_die<15&(talent.bladestorm.enabled&(!raid_event.adds.exists|enemies=1))|!talent.bladestorm.enabled" );
-
-  default_list -> add_talent( this, "Avatar", "if=buff.battle_cry.up|cooldown.battle_cry.remains>60|target.time_to_die<30" );
+  default_list -> add_action( this, "Battle Cry", "if=(artifact.odyns_fury.enabled&cooldown.odyns_fury.remains=0&(cooldown.bloodthirst.remains=0|(buff.enrage.remains>cooldown.bloodthirst.remains)))|!artifact.odyns_fury.enabled" );
+  default_list -> add_talent( this, "Avatar", "if=buff.battle_cry.up|(target.time_to_die<(cooldown.battle_cry.remains+10))" );
+  default_list -> add_talent( this, "Bloodbath", "if=buff.dragon_roar.up|(!talent.dragon_roar.enabled&(buff.battle_cry.up|cooldown.battle_cry.remains>10))" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
@@ -4254,43 +4245,39 @@ void warrior_t::apl_fury()
   default_list -> add_action( "call_action_list,name=single_target" );
 
   movement -> add_action( this, "Heroic Leap" );
-  movement -> add_action( this, "Charge" );
 
-  single_target -> add_action( this, "Odyn's Fury" );
-  single_target -> add_action( this, "Rampage", "if=rage=100|buff.massacre.up");
+  single_target -> add_action( this, "Odyn's Fury", "if=buff.battle_cry.up|target.time_to_die<cooldown.battle_cry.remains" );
   single_target -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&cooldown.dragon_roar.remains=0&buff.enrage.down" );
-  single_target -> add_talent( this, "Dragon Roar", "if=!talent.bloodbath.enabled&(cooldown.battle_cry.remains<1|cooldown.battle_cry.remains>10)|talent.bloodbath.enabled&cooldown.bloodbath.remains=0" );
-  single_target -> add_talent( this, "Avatar", "if=buff.dragon_roar.up" );
-  single_target -> add_talent( this, "Bloodbath", "if=buff.dragon_roar.up" );
-  single_target -> add_action( this, "Battle Cry", "if=buff.dragon_roar.up" );
-  single_target -> add_action( this, "Rampage", "if=buff.enrage.down" );
-  single_target -> add_action( this, "Furious Slash", "if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=3)" );
-  single_target -> add_action( this, "Execute", "if=buff.enrage.up&(!talent.massacre.enabled&!talent.inner_rage.enabled)|talent.massacre.enabled&buff.enrage.down|buff.enrage.up&(talent.massacre.enabled&!talent.inner_rage.enabled)" );
-  single_target -> add_action( this, "Bloodthirst", "if=!talent.inner_rage.enabled" );
+  single_target -> add_action( this, "Rampage", "if=rage>95|buff.massacre.react");
   single_target -> add_action( this, "Whirlwind", "if=!talent.inner_rage.enabled&buff.wrecking_ball.react" );
   single_target -> add_action( this, "Raging Blow", "if=buff.enrage.up" );
   single_target -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
-  single_target -> add_action( this, "Execute", "if=buff.enrage.up&!talent.frenzy.enabled|talent.frenzy.enabled|talent.massacre.enabled" );
-  single_target -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
-  single_target -> add_action( this, "Raging Blow" );
+  single_target -> add_action( this, "Execute", "if=buff.enrage.up|buff.battle_cry.up|buff.stone_heart.react" );
   single_target -> add_action( this, "Bloodthirst" );
+  single_target -> add_action( this, "Raging Blow" );
+  single_target -> add_talent( this, "Dragon Roar", "if=!talent.bloodbath.enabled&(cooldown.battle_cry.remains<1|cooldown.battle_cry.remains>10)|talent.bloodbath.enabled&cooldown.bloodbath.remains=0" );
+  single_target -> add_action( this, "Rampage", "if=(target.health.pct>20&(cooldown.battle_cry.remains>3|buff.battle_cry.up|rage>90))" );
+  single_target -> add_action( this, "Execute", "if=rage>50|buff.battle_cry.up|buff.stone_heart.react|target.time_to_die<20" );
   single_target -> add_action( this, "Furious Slash" );
   
   two_targets -> add_action( this, "Whirlwind", "if=buff.meat_cleaver.down" );
+  two_targets -> add_action( "call_action_list,name=bladestorm" );
   two_targets -> add_action( this, "Rampage", "if=buff.enrage.down|(rage=100&buff.juggernaut.down)|buff.massacre.up" );
   two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
   two_targets -> add_action( this, "Raging Blow", "if=talent.inner_rage.enabled&spell_targets.whirlwind=2" );
   two_targets -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>2" );
   two_targets -> add_talent( this, "Dragon Roar" );
   two_targets -> add_action( this, "Bloodthirst" );
+  two_targets -> add_action( this, "Whirlwind" );
 
   aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50" );
   aoe -> add_action( "call_action_list,name=bladestorm" );
-  aoe -> add_action( this, "Whirlwind" );
+  aoe -> add_action( this, "Whirlwind", "if=buff.enrage.up" );
   aoe -> add_talent( this, "Dragon Roar" );
+  aoe -> add_action( this, "Rampage", "if=buff.meat_cleaver.up" );
   aoe -> add_action( this, "Bloodthirst" );
+  aoe -> add_action( this, "Whirlwind" );
 
-  bladestorm -> add_action( this, "Battle Cry", "sync=bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)", "oh god why" );
   bladestorm -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)" );
 }
 
