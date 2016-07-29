@@ -5209,11 +5209,8 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "defensive_spikes",
                     artifact.defensive_spikes.data().effectN( 1 ).trigger() )
     .trigger_spell( artifact.defensive_spikes )
-    .default_value( artifact.defensive_spikes.data()
-                    .effectN( 1 )
-                    .trigger()
-                     -> effectN( 1 )
-                    .percent() )
+    .default_value(artifact.defensive_spikes.data().effectN( 1 ).trigger()
+      -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PARRY );
 
   buff.demon_spikes =

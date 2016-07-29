@@ -1785,7 +1785,7 @@ struct moonfire_t : public druid_spell_t
       may_miss = false;
       dual = background = true;
       dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
-      base_multiplier    *= 1.0 + p -> spec.guardian -> effectN( 4 ).percent();
+      base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 4 ).percent();
       base_dd_multiplier *= 1.0 + p -> spec.feral_overrides -> effectN( 1 ).percent();
       base_td_multiplier *= 1.0 + p -> spec.feral_overrides -> effectN( 2 ).percent();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 6 ).percent();
@@ -7214,7 +7214,8 @@ double druid_t::composite_spell_power( school_e school ) const
   // Nurturing Instinct overrides SP from other sources.
   if ( spec.nurturing_instinct -> ok() )
   {
-    return spec.nurturing_instinct -> effectN( 1 ).percent() * cache.attack_power();
+    return spec.nurturing_instinct -> effectN( 1 ).percent()
+      * cache.attack_power() * composite_attack_power_multiplier();
   }
 
   return player_t::composite_spell_power( school );
