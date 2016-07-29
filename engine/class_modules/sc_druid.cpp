@@ -6982,22 +6982,22 @@ void druid_t::invalidate_cache( cache_e c )
   {
   case CACHE_ATTACK_POWER:
     if ( spec.nurturing_instinct -> ok() )
-      player_t::invalidate_cache( CACHE_SPELL_POWER );
+      invalidate_cache( CACHE_SPELL_POWER );
     break;
   case CACHE_INTELLECT:
     if ( spec.killer_instinct -> ok() && ( buff.cat_form -> check() || buff.bear_form -> check() ) )
-      player_t::invalidate_cache( CACHE_AGILITY );
+      invalidate_cache( CACHE_AGILITY );
     break;
   case CACHE_MASTERY:
     if ( mastery.natures_guardian -> ok() )
     {
-      player_t::invalidate_cache( CACHE_ATTACK_POWER );
+      invalidate_cache( CACHE_ATTACK_POWER );
       recalculate_resource_max( RESOURCE_HEALTH );
     }
     break;
   case CACHE_CRIT_CHANCE:
     if ( specialization() == DRUID_GUARDIAN )
-      player_t::invalidate_cache( CACHE_DODGE );
+      invalidate_cache( CACHE_DODGE );
   default:
     break;
   }
@@ -7008,6 +7008,8 @@ void druid_t::invalidate_cache( cache_e c )
 double druid_t::composite_attack_power_multiplier() const
 {
   double ap = player_t::composite_attack_power_multiplier();
+
+  // All modifiers MUST invalidate CACHE_ATTACK_POWER or Nurturing Instinct will break.
 
   if ( mastery.natures_guardian -> ok() )
     ap *= 1.0 + cache.mastery() * mastery.natures_guardian_AP -> effectN( 1 ).mastery_value();
@@ -7169,9 +7171,8 @@ double druid_t::composite_spell_power( school_e school ) const
   // Nurturing Instinct overrides SP from other sources.
   if ( spec.nurturing_instinct -> ok() )
   {
-    /* Apply attack power multiplier dynamically in composite_spell_power_multiplier,
-       else we'll get cache assert failures. */
-    return spec.nurturing_instinct -> effectN( 1 ).percent() * cache.attack_power();
+    return spec.nurturing_instinct -> effectN( 1 ).percent() * cache.attack_power() *
+      composite_attack_power_multiplier();
   }
 
   return player_t::composite_spell_power( school );
@@ -7183,7 +7184,7 @@ double druid_t::composite_spell_power_multiplier() const
 {
   if ( spec.nurturing_instinct -> ok() )
   {
-    return composite_attack_power_multiplier();
+    return 1.0;
   }
 
   return player_t::composite_spell_power_multiplier();
