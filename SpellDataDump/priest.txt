@@ -4089,6 +4089,7 @@ Name             : Shadow Crash (id=205385) [Spell Family (6)]
 Class            : Priest
 School           : Shadow
 Range            : 40 yards
+GCD              : 1.5 seconds
 Velocity         : 2.5 yards/sec
 Cooldown         : 30 seconds
 Affecting spells : Voidform (194249), Lingering Insanity (197937)

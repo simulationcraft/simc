@@ -4908,13 +4908,13 @@ Duration         : 8 seconds
 Triggered by     : Dragonsfire Grenade (194855)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286030)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.60000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.42200 | Target: Enemy(6)
 #2 (id=286031)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc194855
@@ -4936,7 +4936,7 @@ Effects          :
 #1 (id=286033)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=322543)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.60000 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.42200 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc194855
 
 Name             : Wing Clip (id=195645) [Spell Family (9)] 

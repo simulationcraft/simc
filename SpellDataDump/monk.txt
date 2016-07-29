@@ -489,7 +489,7 @@ GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Category         : 1561
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3336,8 +3336,9 @@ Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
                    Affected Spells: Effuse (116694)
-#2 (id=191100)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=191100)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
+                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191102)   : Apply Aura (6) | Dummy (4)
@@ -3359,6 +3360,8 @@ Effects          :
 #12 (id=260823)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=260824)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#14 (id=347516)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Combo Breaker (id=137384) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
@@ -4791,7 +4794,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5137,7 +5140,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 3
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

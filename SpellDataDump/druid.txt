@@ -6702,6 +6702,21 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.50000 | Target: Unknown(25)
 Description      : Deals $s1 Nature damage.
 
+Name             : Nature's Guardian (id=227034) [Spell Family (7)] 
+Class            : Druid
+School           : Nature
+Spell Level      : 78
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ .....x.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=341007)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : $@spelldesc155783
+
 Name             : Cat Form (Shapeshift) (id=228545) [Spell Family (7), Hidden] 
 Class            : Feral Druid
 School           : Physical
