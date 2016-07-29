@@ -65,7 +65,6 @@ struct shooting_stars_t;
 }
 namespace heals {
 struct cenarion_ward_hot_t;
-struct yseras_tick_t;
 }
 namespace cat_attacks {
 struct gushing_wound_t;
@@ -275,7 +274,6 @@ public:
     stalwart_guardian_t*            stalwart_guardian;
     cat_attacks::gushing_wound_t*   gushing_wound;
     heals::cenarion_ward_hot_t*     cenarion_ward_hot;
-    heals::yseras_tick_t*           yseras_gift;
     attack_t* ashamanes_rip;
     action_t* brambles;
     action_t* brambles_pulse;
@@ -287,6 +285,7 @@ public:
     spell_t*  shooting_stars;
     spell_t*  starfall;
     spell_t*  starshards;
+    action_t* yseras_gift;
   } active;
 
   // Pets
@@ -3846,13 +3845,21 @@ struct wild_growth_t : public druid_heal_t
 
 // Ysera's Gift =============================================================
 
-struct yseras_tick_t : public druid_heal_t
+struct yseras_gift_t : public druid_heal_t
 {
-  yseras_tick_t( druid_t* p ) :
+  yseras_gift_t( druid_t* p ) :
     druid_heal_t( "yseras_gift", p, p -> find_spell( 145110 ) )
   {
     may_crit = false;
     background = dual = true;
+    base_pct_heal = p -> spec.yseras_gift -> effectN( 1 ).percent();
+  }
+
+  void init() override
+  {
+    druid_heal_t::init();
+
+    snapshot_flags &= ~STATE_VERSATILITY; // Is not affected by versatility.
   }
 
   virtual double action_multiplier() const override
@@ -5911,7 +5918,7 @@ void druid_t::init_spells()
   if ( talent.cenarion_ward -> ok() )
     active.cenarion_ward_hot  = new heals::cenarion_ward_hot_t( this );
   if ( spec.yseras_gift )
-    active.yseras_gift        = new heals::yseras_tick_t( this );
+    active.yseras_gift        = new heals::yseras_gift_t( this );
   if ( sets.has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new cat_attacks::gushing_wound_t( this );
   if ( talent.brambles -> ok() )
@@ -6187,10 +6194,8 @@ void druid_t::create_buffs()
   {
     buff.yseras_gift         = buff_creator_t( this, "yseras_gift_driver", spec.yseras_gift )
                                .quiet( true )
-                               .default_value( spec.yseras_gift -> effectN( 1 ).percent() )
                                .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                                 active.yseras_gift -> base_dd_min = b -> value() * resources.max[ RESOURCE_HEALTH ];
-                                 active.yseras_gift -> execute(); } )
+                                 active.yseras_gift -> schedule_execute(); } )
                                .tick_zero( true );
   }
 
