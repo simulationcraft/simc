@@ -1787,10 +1787,10 @@ struct moonfire_t : public druid_spell_t
     damage = new moonfire_damage_t( player );
     damage -> stats = stats;
 
-    if (player->spec.balance->ok())
+    if ( player -> spec.balance -> ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount = player->spec.balance->effectN(3).resource(RESOURCE_ASTRAL_POWER);
+      energize_amount = player -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
     {

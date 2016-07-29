@@ -53,9 +53,18 @@ namespace item
   void twisting_wind( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
 
-  /* NYI
+  /* NYI ================================================================
+
+  Emerald Nightmare -------------------------
+
   void bough_of_corruption( special_effect_t& );
   void unstable_horrorslime( special_effect_t& );
+
+  Nighthold ---------------------------------
+
+  Everything
+
+  Healer trinkets / other rubbish -----------
 
   cocoon_of_enforced_solitude
   goblet_of_nightmarish_ichor
