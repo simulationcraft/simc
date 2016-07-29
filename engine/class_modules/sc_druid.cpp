@@ -7181,14 +7181,12 @@ double druid_t::composite_spell_power( school_e school ) const
 
 double druid_t::composite_spell_power_multiplier() const
 {
-  double spm = player_t::composite_spell_power_multiplier();
-
   if ( spec.nurturing_instinct -> ok() )
   {
-    spm *= composite_attack_power_multiplier();
+    return composite_attack_power_multiplier();
   }
 
-  return spm;
+  return player_t::composite_spell_power_multiplier();
 }
 
 // druid_t::composite_attribute =============================================
