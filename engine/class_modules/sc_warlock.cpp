@@ -277,6 +277,7 @@ public:
   real_ppm_t* demonic_power_rppm; // grimoire of sacrifice
   real_ppm_t* grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
   real_ppm_t* grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
+  real_ppm_t* tormented_souls_rppm; // affliction artifact buff
 
   // Cooldowns
   struct cooldowns_t
@@ -319,6 +320,8 @@ public:
     buff_t* instability;
     buff_t* reap_souls;
     haste_buff_t* misery;
+    buff_t* deadwind_harvester;
+    buff_t* tormented_souls;
 
     //demonology buffs
     buff_t* tier18_2pc_demonology;
@@ -389,6 +392,7 @@ public:
     proc_t* stolen_power_stack;
     proc_t* stolen_power_used;
     proc_t* t18_demo_4p;
+    proc_t* souls_consumed;
   } procs;
 
   struct spells_t
@@ -2212,7 +2216,7 @@ public:
 
     if ( result_is_hit( execute_state -> result ) && p() -> talents.grimoire_of_synergy -> ok() )
     {
-      pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() ->warlock_pet_list.active ); //get active pet
+      pets::warlock_pet_t* my_pet = static_cast<pets::warlock_pet_t*>( p() -> warlock_pet_list.active ); //get active pet
       if ( my_pet != nullptr )
       {
         bool procced = p() -> grimoire_of_synergy -> trigger();
@@ -2272,6 +2276,13 @@ public:
 
     p() -> buffs.mana_tap -> up();
     p() -> buffs.demonic_synergy -> up();
+
+    if ( result_is_hit( d -> state -> result ) && p() -> artifact.reap_souls.rank() )
+    {
+      bool procced = p() -> tormented_souls_rppm -> trigger(); //check for RPPM
+      if ( procced )
+        p() -> buffs.tormented_souls -> trigger(); //trigger the buff
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2282,6 +2293,13 @@ public:
          && id != p() -> spells.seed_of_corruption_aoe -> id )
     {
       accumulate_seed_of_corruption( td( s -> target ), s -> result_amount );
+    }
+
+    if ( result_is_hit( s -> result ) && p() -> artifact.reap_souls.rank() )
+    {
+      bool procced = p() -> tormented_souls_rppm -> trigger(); //check for RPPM
+      if ( procced )
+        p() -> buffs.tormented_souls -> trigger(); //trigger the buff
     }
   }
 
@@ -4437,19 +4455,26 @@ struct soul_harvest_t : public warlock_spell_t
 
 struct reap_souls_t: public warlock_spell_t
 {
+  timespan_t base_duration;
+  timespan_t total_duration;
+  int souls;
     reap_souls_t( warlock_t* p ) :
-        warlock_spell_t( "reap_souls", p, p->artifact.reap_souls)
+        warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls )
     {
-
+      base_duration = p -> buffs.deadwind_harvester -> buff_duration;
     }
 
     virtual void execute() override
     {
-        warlock_spell_t::execute();
+      warlock_spell_t::execute();
 
-        p()->reap_souls_modifier = 2.0;
-
-        //need to drop this modifier when the reap souls buff fades.
+      total_duration = base_duration * p() -> buffs.tormented_souls -> current_stack;
+      p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
+      for ( size_t i = 0; i < p() -> buffs.tormented_souls -> current_stack; ++i )
+      {
+        p() -> procs.souls_consumed -> occur();
+      }
+      p() -> buffs.tormented_souls -> expire(); 
     }
 };
 
@@ -4725,7 +4750,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   regen_type = REGEN_DYNAMIC;
   regen_caches[CACHE_HASTE] = true;
   regen_caches[CACHE_SPELL_HASTE] = true;
-  reap_souls_modifier = 1.0;
+  reap_souls_modifier = 2.0;
 }
 
 
@@ -4901,14 +4926,15 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "havoc"                 ) a = new                             havoc_t( this );
   else if ( action_name == "seed_of_corruption"    ) a = new                seed_of_corruption_t( this );
   else if ( action_name == "cataclysm"             ) a = new                         cataclysm_t( this );
-  else if ( action_name == "rain_of_fire"          ) a = new                      rain_of_fire_t( this, options_str );
+  else if ( action_name == "rain_of_fire"          ) a = new         rain_of_fire_t( this, options_str );
   else if ( action_name == "demonwrath"            ) a = new                        demonwrath_t( this );
+  else if ( action_name == "shadowflame"           ) a = new                       shadowflame_t( this );
+  else if ( action_name == "reap_souls"            ) a = new                        reap_souls_t( this );
+  else if ( action_name == "dimensional_rift"      ) a = new                  dimensional_rift_t( this );
+  else if ( action_name == "call_dreadstalkers"    ) a = new                call_dreadstalkers_t( this );
+  else if ( action_name == "soul_effigy"           ) a = new                summon_soul_effigy_t( this );
   else if ( action_name == "summon_infernal"       ) a = new                   summon_infernal_t( this );
   else if ( action_name == "summon_doomguard"      ) a = new                  summon_doomguard_t( this );
-  else if ( action_name == "call_dreadstalkers"    ) a = new                call_dreadstalkers_t( this );
-  else if ( action_name == "dimensional_rift"      ) a = new                  dimensional_rift_t( this );
-  else if ( action_name == "shadowflame"           ) a = new                       shadowflame_t( this );
-  else if ( action_name == "soul_effigy"           ) a = new                summon_soul_effigy_t( this );
   else if ( action_name == "summon_darkglare"      ) a = new                  summon_darkglare_t( this );
   else if ( action_name == "summon_felhunter"      ) a = new      summon_main_pet_t( "felhunter", this );
   else if ( action_name == "summon_felguard"       ) a = new       summon_main_pet_t( "felguard", this );
@@ -5295,6 +5321,9 @@ void warlock_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.misery = haste_buff_creator_t( this, "misery", find_spell( 216412 ) )
     .default_value( find_spell( 216412 ) -> effectN( 1 ).percent() );
+  buffs.deadwind_harvester = buff_creator_t( this, "deadwind_harvester", find_spell( 216708 ));
+  buffs.tormented_souls = buff_creator_t( this, "tormented_souls", find_spell( 216695 ) )
+    .tick_behavior( BUFF_TICK_NONE );
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
@@ -5330,6 +5359,7 @@ void warlock_t::init_rng()
   demonic_power_rppm = get_rppm( "demonic_power", find_spell( 196099 ) );
   grimoire_of_synergy = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
   grimoire_of_synergy_pet = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
+  tormented_souls_rppm = get_rppm( "tormented_souls", 4.5 );
 }
 
 void warlock_t::init_gains()
@@ -5384,6 +5414,7 @@ void warlock_t::init_procs()
   procs.stolen_power_used = get_proc( "stolen_power_used" );
   procs.soul_conduit = get_proc( "soul_conduit" );
   procs.t18_demo_4p = get_proc( "t18_demo_4p" );
+  procs.souls_consumed = get_proc( "souls_consumed" );
 }
 
 void warlock_t::apl_precombat()
