@@ -1189,6 +1189,7 @@ struct bloodthirst_t: public warrior_attack_t
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
+    base_aoe_multiplier = 0.5; // Not in spelldata.
   }
 
   int n_targets() const override
@@ -2441,6 +2442,7 @@ struct rampage_attack_t: public warrior_attack_t
   {
     dual = true;
     weapon_multiplier *= 1.0 + p -> artifact.unstoppable.percent();
+    base_aoe_multiplier = 0.5; // Not in spelldata.
   }
 
   int n_targets() const override
