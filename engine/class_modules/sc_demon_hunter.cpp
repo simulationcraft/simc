@@ -36,11 +36,7 @@ namespace
    Vengeance ----------------------------------------------------------------
    Torment
    Last Resort, Nether Bond talents
-   Infernal Force artifact trait
-   Siphon Power artifact trait
-     http://us.battle.net/wow/en/forum/topic/20743504316?page=15#282
    True proc chance for Fallout
-   Infernal Strike, Abyssal Strike, Flame Crash
    Artificial Stamina
    Fancy pain from damage taken formula
 
@@ -74,6 +70,7 @@ public:
   {
     // Vengeance
     dot_t* fiery_brand;
+    dot_t* sigil_of_flame;
   } dots;
 
   struct debuffs_t
@@ -209,6 +206,7 @@ public:
     buff_t* gluttony;
     buff_t* immolation_aura;
     buff_t* painbringer;
+    buff_t* siphon_power;
     absorb_buff_t* soul_barrier;
   } buff;
 
@@ -2344,6 +2342,9 @@ struct infernal_strike_t : public demon_hunter_spell_t
     damage -> target = s -> target;
     damage -> schedule_execute();
   }
+
+  dot_t* get_dot( player_t* t ) override
+  { return td( t ) -> dots.sigil_of_flame; }
 };
 
 // Immolation Aura ==========================================================
@@ -2755,7 +2756,6 @@ inline sigil_of_flame_damage_t::sigil_of_flame_damage_t( demon_hunter_t* p )
 
   if ( p -> talent.concentrated_sigils -> ok() )
   {
-    range = 0;  // Targeted at player's location.
     dot_duration +=
       p -> talent.concentrated_sigils -> effectN( 5 ).time_value();
   }
@@ -2796,13 +2796,18 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
 
     new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
         .target( execute_state -> target )
-        .x( execute_state -> target -> x_position )
-        .y( execute_state -> target -> y_position )
+        .x( p() -> talent.concentrated_sigils -> ok() ?
+          p() -> x_position : execute_state -> target -> x_position )
+        .y( p() -> talent.concentrated_sigils -> ok() ?
+          p() -> y_position : execute_state -> target -> y_position )
         .pulse_time( delay )
         .duration( delay )
         .start_time( sim -> current_time() )
         .action( damage ) );
   }
+
+  dot_t* get_dot( player_t* t ) override
+  { return td( t ) -> dots.sigil_of_flame; }
 };
 
 // Spirit Bomb ==============================================================
@@ -4877,7 +4882,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.nemesis = new buffs::nemesis_debuff_t( &p, target );
 
   // Vengeance
-  dots.fiery_brand = target -> get_dot( "fiery_brand_dot", &p );
+  dots.fiery_brand    = target -> get_dot( "fiery_brand_dot", &p );
+  dots.sigil_of_flame = target -> get_dot( "sigil_of_flame_dmg", &p );
   debuffs.frailty =
     buff_creator_t( target, "frailty", p.find_spell( 224509 ) )
     .default_value( p.find_spell( 224509 ) -> effectN( 1 ).percent() );
@@ -5243,6 +5249,12 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "painbringer", find_spell( 212988 ) )
     .trigger_spell( artifact.painbringer )
     .default_value( find_spell( 212988 ) -> effectN( 1 ).percent() );
+
+  buff.siphon_power =
+    buff_creator_t( this, "siphoned_power", find_spell( 218561 ) )
+    .trigger_spell( artifact.siphon_power )
+    .add_invalidate( CACHE_AGILITY )
+    .max_stack( artifact.siphon_power.value() );
 
   buff.soul_barrier = new buffs::soul_barrier_t( this );
 }
@@ -6325,6 +6337,10 @@ double demon_hunter_t::composite_attribute_multiplier( attribute_e a ) const
     case ATTR_STAMINA:
       am *= 1.0 + spec.demonic_wards -> effectN( 4 ).percent();
       break;
+    case ATTR_AGILITY:
+	  // Deliberately ignore stacks.
+      am *= 1.0 + buff.siphon_power -> check_value();
+      break;
     default:
       break;
   }
@@ -6570,6 +6586,31 @@ void demon_hunter_t::assess_damage_imminent_pre_absorb( school_e school,
     resource_gain( RESOURCE_PAIN,
       s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 50.0,
       gain.damage_taken );
+  }
+
+  if ( artifact.siphon_power.rank() && buff.empower_wards -> check() &&
+    dbc::get_school_mask( s -> action -> school ) & SCHOOL_MAGIC_MASK )
+  {
+    double cv = 0;
+
+    if ( buff.siphon_power -> check() )
+    {
+      cv = buff.siphon_power -> check_value();
+    }
+
+    assert( buff.siphon_power -> check() || buff.siphon_power -> current_stack == 0 );
+
+    cv += s -> result_amount / resources.max[ RESOURCE_HEALTH ];
+
+    cv = std::min( cv, artifact.siphon_power.percent() );
+
+    // Trigger with stacks just for reporting convenience;
+    // the stack count doesn't actually do anything.
+    unsigned new_stack =
+      std::max( static_cast<unsigned>( cv * 100.0 ), ( unsigned ) 1 );
+
+    buff.siphon_power -> trigger(
+      new_stack - buff.siphon_power -> current_stack, cv );
   }
 }
 
