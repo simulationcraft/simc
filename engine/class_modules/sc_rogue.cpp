@@ -15,7 +15,6 @@
 //
 // Outlaw:
 // - Blunderbuss [artifact power]
-// - For some reason, Between the Eyes is not affected by Blurred Time
 
 #include "simulationcraft.hpp"
 
@@ -2182,13 +2181,6 @@ struct between_the_eyes_t : public rogue_attack_t
   {
     crit_bonus_multiplier = 3;
     base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    affected_by.blurred_time = false;
   }
 
   void execute() override
