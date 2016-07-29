@@ -20,6 +20,8 @@ moc_*.cpp
 *.swp
 *.pyc
 *.ld_*
+*.db2
+*.pgc
 Win32OpenSSL_Light-*
 Win64OpenSSL_Light-*
 
@@ -28,6 +30,7 @@ casc_extract/cache/
 vs/int_gui/
 x64/
 x86/
+simc-*/
 doc/build/
 doc/doxygen/
 doc/ext/breathe/
