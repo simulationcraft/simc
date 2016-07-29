@@ -57,7 +57,6 @@ namespace { // UNNAMED NAMESPACE
 struct druid_t;
 
 // Active actions
-struct brambles_t;
 struct stalwart_guardian_t;
 namespace spells {
 struct moonfire_t;
@@ -73,7 +72,6 @@ struct gushing_wound_t;
 }
 namespace bear_attacks {
 struct bear_attack_t;
-struct brambles_pulse_t;
 }
 
 enum form_e {
@@ -274,21 +272,21 @@ public:
 
   struct active_actions_t
   {
-    bear_attacks::brambles_pulse_t* brambles_pulse;
-    brambles_t*                     brambles;
     stalwart_guardian_t*            stalwart_guardian;
     cat_attacks::gushing_wound_t*   gushing_wound;
     heals::cenarion_ward_hot_t*     cenarion_ward_hot;
     heals::yseras_tick_t*           yseras_gift;
-    spell_t*  rage_of_the_sleeper;
-    spell_t*  galactic_guardian;
-    spell_t*  starfall;
-    spell_t*  echoing_stars;
-    spell_t*  starshards;
     attack_t* ashamanes_rip;
-    spell_t*  shooting_stars;
-    attack_t* shadow_thrash;
+    action_t* brambles;
+    action_t* brambles_pulse;
+    spell_t*  echoing_stars;
+    spell_t*  galactic_guardian;
     spell_t*  goldrinns_fang;
+    spell_t*  rage_of_the_sleeper;
+    attack_t* shadow_thrash;
+    spell_t*  shooting_stars;
+    spell_t*  starfall;
+    spell_t*  starshards;
   } active;
 
   // Pets
@@ -515,7 +513,6 @@ public:
     const spell_data_t* bear_form;
     const spell_data_t* gore;
     const spell_data_t* ironfur;
-    const spell_data_t* resolve;
     const spell_data_t* thick_hide; // Guardian Affinity
     const spell_data_t* thrash_bear_dot; // For Rend and Tear modifier
 
@@ -818,69 +815,6 @@ snapshot_counter_t::snapshot_counter_t( druid_t* player , buff_t* buff ) :
 
 // Stalwart Guardian ( 6.2 T18 Guardian Trinket) ============================
 
-struct brambles_t : public absorb_t
-{
-  struct brambles_reflect_t : public attack_t
-  {
-    brambles_reflect_t( druid_t* p ) :
-      attack_t( "brambles_reflect", p, p -> find_spell( 203958 ) )
-    {
-      may_block = may_dodge = may_parry = may_miss = true;
-      may_crit = true;
-    }
-  };
-
-  double incoming_damage;
-  double absorb_size;
-  player_t* triggering_enemy;
-  brambles_reflect_t* reflect;
-
-  brambles_t( druid_t* p ) :
-    absorb_t( "brambles_bg", p, p -> find_spell( 185321 ) ),
-    incoming_damage( 0 ), absorb_size( 0 ),
-    reflect( new brambles_reflect_t( p ) )
-  {
-    background = quiet = true;
-    may_crit = false;
-    target = p;
-    harmful = false;
-
-    attack_power_mod.direct = 0.2; // FIXME: not in spell data?
-  }
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  void init() override
-  {
-    absorb_t::init();
-
-    snapshot_flags &= ~STATE_VERSATILITY; // Is not affected by versatility.
-  }
-
-  void execute() override
-  {
-    absorb_t::execute();
-
-    // Trigger damage reflect
-    double resolve = 1.0;
-    if ( p() -> resolve_manager.is_started() )
-      resolve *= 1.0 + player -> buffs.resolve -> check_value() / 100.0;
-
-    // Base damage is equal to the size of the absorb pre-resolve.
-    reflect -> base_dd_min = absorb_size / resolve;
-    reflect -> target = triggering_enemy;
-    reflect -> execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    absorb_size = s -> result_total;
-  }
-};
-
-// Stalwart Guardian ( 6.2 T18 Guardian Trinket) ============================
-
 struct stalwart_guardian_t : public absorb_t
 {
   struct stalwart_guardian_reflect_t : public attack_t
@@ -927,13 +861,7 @@ struct stalwart_guardian_t : public absorb_t
   {
     absorb_t::execute();
 
-    // Trigger damage reflect
-    double resolve = 1.0;
-    if ( p() -> resolve_manager.is_started() )
-      resolve *= 1.0 + player -> buffs.resolve -> check_value() / 100.0;
-
-    // Base damage is equal to the size of the absorb pre-resolve.
-    reflect -> base_dd_min = absorb_size / resolve;
+    reflect -> base_dd_min = absorb_size;
     reflect -> target = triggering_enemy;
     reflect -> execute();
   }
@@ -1083,9 +1011,6 @@ public:
     swap_melee( druid.caster_melee_attack, druid.caster_form_weapon );
 
     druid.recalculate_resource_max( RESOURCE_HEALTH );
-
-    if ( druid.specialization() == DRUID_GUARDIAN )
-      druid.resolve_manager.stop();
   }
 
   virtual void start( int stacks, double value, timespan_t duration ) override
@@ -1094,9 +1019,6 @@ public:
     druid.buff.cat_form -> expire();
 
     druid.buff.tigers_fury -> expire(); // Mar 03 2016: Tiger's Fury ends when you enter bear form.
-
-    if ( druid.specialization() == DRUID_GUARDIAN )
-      druid.resolve_manager.start();
 
     swap_melee( druid.bear_melee_attack, druid.bear_weapon );
 
@@ -1797,7 +1719,7 @@ struct moonfire_t : public druid_spell_t
         base_td_multiplier *= 1.0 + p -> spec.feral_overrides -> effectN( 2 ).percent();
       }
 
-      base_multiplier    *= 1.0 + p -> artifact.twilight_glow.percent();
+      base_multiplier *= 1.0 + p -> artifact.twilight_glow.percent();
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -3195,18 +3117,6 @@ struct bear_melee_t : public bear_attack_t
   }
 };
 
-// Brambles =================================================================
-
-struct brambles_pulse_t : public bear_attack_t
-{
-  brambles_pulse_t( druid_t* p ) :
-    bear_attack_t( "brambles_pulse", p, p -> find_spell( 213709 ) )
-  {
-    background = dual = true;
-    aoe = -1;
-  }
-};
-
 // Growl ====================================================================
 
 struct growl_t: public bear_attack_t
@@ -3834,13 +3744,6 @@ struct renewal_t : public druid_heal_t
     may_crit = false;
   }
 
-  virtual void init() override
-  {
-    druid_heal_t::init();
-
-    snapshot_flags &= ~STATE_RESOLVE; // Is not affected by resolve.
-  }
-
   virtual void execute() override
   {
     base_dd_min = p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
@@ -3949,14 +3852,6 @@ struct yseras_tick_t : public druid_heal_t
   {
     may_crit = false;
     background = dual = true;
-  }
-
-  virtual void init() override
-  {
-    druid_heal_t::init();
-
-    snapshot_flags &= ~STATE_RESOLVE; // Is not affected by resolve.
-    // TODO: What other multipliers does this not scale with?
   }
 
   virtual double action_multiplier() const override
@@ -4147,6 +4042,29 @@ struct blessing_of_elune_t : public druid_spell_t
       return false;
 
     return druid_spell_t::ready();
+  }
+};
+
+// Brambles =================================================================
+
+struct brambles_t : public druid_spell_t
+{
+  brambles_t( druid_t* p ) :
+    druid_spell_t( "brambles_reflect", p, p -> find_spell( 203958 ) )
+  {
+    background = true;
+    may_block = may_dodge = may_parry = may_miss = true;
+    may_crit = true;
+  }
+};
+
+struct brambles_pulse_t : public druid_spell_t
+{
+  brambles_pulse_t( druid_t* p ) :
+    druid_spell_t( "brambles_pulse", p, p -> find_spell( 213709 ) )
+  {
+    background = dual = true;
+    aoe = -1;
   }
 };
 
@@ -5560,14 +5478,23 @@ double brambles_handler( const action_state_t* s )
   assert( p -> talent.brambles -> ok() );
   assert( s );
 
-  // Pass incoming damage value so the absorb can be calculated.
-  // TOCHECK: Does this use result_amount or result_mitigated?
-  p -> active.brambles -> incoming_damage = s -> result_mitigated;
-  // Pass the triggering enemy so that the damage reflect has a target;
-  p -> active.brambles -> triggering_enemy = s -> action -> player;
-  p -> active.brambles -> execute();
+  /* Calculate the maximum amount absorbed. This is not affected by
+     versatility (and likely other player modifiers). */
+  double absorb_cap = 0.24 * p -> cache.attack_power() *
+    p -> composite_attack_power_multiplier();
 
-  return p -> active.brambles -> absorb_size;
+  // Calculate actual amount absorbed.
+  double amount_absorbed = std::min( s -> result_mitigated, absorb_cap );
+
+  // Schedule reflected damage.
+  p -> active.brambles -> base_dd_min = p -> active.brambles -> base_dd_max = 
+    amount_absorbed;
+  action_state_t* ref_s = p -> active.brambles -> get_state();
+  ref_s -> target = s -> action -> player;
+  p -> active.brambles -> snapshot_state( ref_s, DMG_DIRECT );
+  p -> active.brambles -> schedule_execute( ref_s );
+
+  return amount_absorbed;
 }
 
 // Earthwarden Absorb Handler ===============================================
@@ -5806,7 +5733,6 @@ void druid_t::init_spells()
   spec.guardian                   = find_specialization_spell( "Guardian Druid" );
   spec.guardian_overrides         = find_specialization_spell( "Guardian Overrides Passive" );
   spec.ironfur                    = find_specialization_spell( "Ironfur" );
-  spec.resolve                    = find_specialization_spell( "Resolve" );
   spec.thrash_bear_dot            = find_specialization_spell( "Thrash" ) -> ok() ? find_spell( 192090 ) : spell_data_t::not_found();
   
   // Talents ================================================================
@@ -5989,11 +5915,11 @@ void druid_t::init_spells()
     active.gushing_wound      = new cat_attacks::gushing_wound_t( this );
   if ( talent.brambles -> ok() )
   {
-    active.brambles           = new brambles_t( this );
+    active.brambles           = new spells::brambles_t( this );
+    active.brambles_pulse     = new spells::brambles_pulse_t( this );
+
     instant_absorb_list[ talent.brambles -> id() ] =
       new instant_absorb_t( this, talent.brambles, "brambles", &brambles_handler );
-
-    active.brambles_pulse     = new bear_attacks::brambles_pulse_t( this );
   }
   if ( talent.galactic_guardian -> ok() )
   {
@@ -6042,10 +5968,6 @@ void druid_t::init_base_stats()
   base.mana_regen_per_second *= 1.0 + spec.druid -> effectN( 5 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
-
-  // initialize resolve for Guardians
-  if ( specialization() == DRUID_GUARDIAN )
-    resolve_manager.init();
 }
 
 // druid_t::init_buffs ======================================================
