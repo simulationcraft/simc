@@ -1356,7 +1356,7 @@ public:
     if ( s -> result_total <= 0 )
       return;
 
-    if ( rng().roll( p() -> talent.galactic_guardian -> proc_chance() ) )
+    if ( ab::rng().roll( p() -> talent.galactic_guardian -> proc_chance() ) )
     {
       // Trigger Moonfire
       action_state_t* gg_s = p() -> active.galactic_guardian -> get_state();
@@ -6214,7 +6214,7 @@ void druid_t::create_buffs()
   {
     buff.yseras_gift         = buff_creator_t( this, "yseras_gift_driver", spec.yseras_gift )
                                .quiet( true )
-                               .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                               .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                                  active.yseras_gift -> schedule_execute(); } )
                                .tick_zero( true );
   }
