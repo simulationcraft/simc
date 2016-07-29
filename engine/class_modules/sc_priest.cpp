@@ -19,10 +19,13 @@ Shadow
   - Setbonuses
     - Several Setbonuses have to be updated by Blizzard: T17, T16 no longer
 work.
-  - Shadow Priests are being killed by casting surrender to madness way too early when the simulation doesn't use fixed_time
+  - Shadow Priests are being killed by casting surrender to madness way too
+early when the simulation doesn't use fixed_time
     and the expression uses 'target.time_to_die' instead of target.health.pct.
-    I band-aid fixed it by turning on fixed time when there are only shadow priests in a simulation, and also changed the expression to use health pct.
-    This might be the best fix for it, but it's probably worth looking into other avenues. 
+    I band-aid fixed it by turning on fixed time when there are only shadow
+priests in a simulation, and also changed the expression to use health pct.
+    This might be the best fix for it, but it's probably worth looking into
+other avenues.
     - Collision 7/25/2016
 
 */
@@ -279,7 +282,7 @@ public:
   // Mastery Spells
   struct
   {
-    const spell_data_t* shield_discipline;
+    const spell_data_t* absolution;  // NYI
     const spell_data_t* echo_of_light;
     const spell_data_t* madness;
   } mastery_spells;
@@ -1362,16 +1365,6 @@ public:
     tick_may_crit = false;
     may_miss      = false;
   }
-
-  double action_multiplier() const override
-  {
-    double am = base_t::action_multiplier();
-
-    if ( priest.mastery_spells.shield_discipline->ok() )
-      am *= 1.0 + priest.cache.mastery_value();
-
-    return am;
-  }
 };
 
 // ==========================================================================
@@ -1493,8 +1486,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       assert( s->result != RESULT_CRIT );
       base_dd_min = base_dd_max = s->result_amount;
-      target                  = s->target;
-      trigger_crit_multiplier = s->composite_crit_chance();
+      target                    = s->target;
+      trigger_crit_multiplier   = s->composite_crit_chance();
       execute();
     }
   };
@@ -1771,7 +1764,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
           std::min( cap, damage * data().effectN( 1 ).percent() );
 
       direct_tick = dual = ( dmg_type == DMG_OVER_TIME );
-      may_crit = ( result == RESULT_CRIT );
+      may_crit           = ( result == RESULT_CRIT );
 
       execute();
     }
@@ -3827,6 +3820,7 @@ struct penance_t final : public priest_spell_t
       //      can_trigger_atonement = priest.specs.atonement->ok();
 
       this->stats = stats;
+
     }
 
     void init() override
@@ -3860,19 +3854,30 @@ struct penance_t final : public priest_spell_t
     tick_zero      = true;
     dot_duration   = timespan_t::from_seconds( 2.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
-    hasted_ticks   = false;
 
     // HACK: Set can_trigger here even though the tick spell actually
     // does the triggering. We want atonement_penance to be created in
     // priest_heal_t::init() so that it appears in the report.
     //    can_trigger_atonement = priest.specs.atonement->ok();
 
+    if ( priest.talents.castigation->ok() )
+    {
+      // Add 1 extra millisecond, so we only get 4 ticks instead of an extra tiny 5th tick.
+      base_tick_time = timespan_t::from_seconds( 2.0 / 3) + timespan_t::from_millis( 1 );
+    }
     dot_duration += priest.sets.set( PRIEST_DISCIPLINE, T17, B2 )
                         ->effectN( 1 )
                         .time_value();
 
     dynamic_tick_action = true;
     tick_action         = new penance_tick_t( p, stats );
+
+  }
+
+  timespan_t tick_time( const action_state_t* ) const
+  {
+    // Do not haste ticks!
+    return base_tick_time;
   }
 
   void init() override
@@ -3880,6 +3885,7 @@ struct penance_t final : public priest_spell_t
     priest_spell_t::init();
     if ( atonement )
       atonement->channeled = true;
+
   }
 
   void execute() override
@@ -4104,7 +4110,7 @@ struct silence_t final : public priest_spell_t
     : priest_spell_t( "silence", player, player.find_class_spell( "Silence" ) )
   {
     parse_options( options_str );
-    may_miss = may_crit = false;
+    may_miss = may_crit   = false;
     ignore_false_positive = true;
 
     cooldown           = priest.cooldowns.silence;
@@ -4157,14 +4163,14 @@ struct purge_the_wicked_t final : public priest_spell_t
   struct purge_the_wicked_dot_t final : public priest_spell_t
   {
     purge_the_wicked_dot_t( priest_t& p )
-      : priest_spell_t( "purge_the_wicked_dot", p,
-                        p.find_spell(204213 ) )
-                        //p.talents.purge_the_wicked->effectN( 2 ).trigger() )
+      : priest_spell_t( "purge_the_wicked", p,
+                        p.talents.purge_the_wicked->effectN( 2 ).trigger() )
     {
-      may_crit  = true;
-      //tick_zero = false;
+      may_crit = true;
+      // tick_zero = false;
       energize_type =
           ENERGIZE_NONE;  // disable resource generation from spell data
+      background = true;
     }
   };
 
@@ -4375,7 +4381,7 @@ struct guardian_spirit_t final : public priest_heal_t
     parse_options( options_str );
 
     base_dd_min = base_dd_max = 0.0;  // The absorb listed isn't a real absorb
-    harmful = false;
+    harmful                   = false;
   }
 
   void execute() override
@@ -4885,7 +4891,7 @@ struct renew_t final : public priest_heal_t
       dot_t* d         = get_dot( s->target );
       result_e r       = d->state->result;
       d->state->result = RESULT_HIT;
-      double tick_dmg = calculate_tick_amount( d->state, d->current_stack() );
+      double tick_dmg  = calculate_tick_amount( d->state, d->current_stack() );
       d->state->result = r;
       tick_dmg *=
           d->ticks_left();  // Gets multiplied by the hasted amount of ticks
@@ -5864,12 +5870,6 @@ double priest_t::composite_player_heal_multiplier(
        buffs.voidform->check() )
     m *= 1.0 + talents.void_lord->effectN( 1 ).percent();
 
-  if ( mastery_spells.shield_discipline->ok() )
-  {
-    m *= 1.0 +
-         cache.mastery() *
-             mastery_spells.shield_discipline->effectN( 3 ).mastery_value();
-  }
   if ( specs.grace->ok() )
     m *= 1.0 + specs.grace->effectN( 1 ).percent();
 
@@ -6316,9 +6316,9 @@ void priest_t::init_spells()
       find_specialization_spell( "Shadowy Apparitions" );
 
   // Mastery Spells
-  mastery_spells.shield_discipline = find_mastery_spell( PRIEST_DISCIPLINE );
-  mastery_spells.echo_of_light     = find_mastery_spell( PRIEST_HOLY );
-  mastery_spells.madness           = find_mastery_spell( PRIEST_SHADOW );
+  mastery_spells.absolution    = find_mastery_spell( PRIEST_DISCIPLINE );
+  mastery_spells.echo_of_light = find_mastery_spell( PRIEST_HOLY );
+  mastery_spells.madness       = find_mastery_spell( PRIEST_SHADOW );
 
   if ( mastery_spells.echo_of_light->ok() )
     active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
@@ -6416,9 +6416,10 @@ void priest_t::create_buffs()
   buffs.spirit_shell = new buffs::spirit_shell_t( *this );
 
   // Holy
-  buffs.serendipity = buff_creator_t( this, "serendipity" )
-                          .spell( find_spell( specs.serendipity->effectN( 1 )
-                                                  .trigger_spell_id() ) );
+  buffs.serendipity =
+      buff_creator_t( this, "serendipity" )
+          .spell( find_spell(
+              specs.serendipity->effectN( 1 ).trigger_spell_id() ) );
 
   buffs.focused_will =
       buff_creator_t( this, "focused_will" )
@@ -6703,11 +6704,13 @@ void priest_t::apl_shadow()
   default_list->add_action( "call_action_list,name=main" );
 
   // Main APL when
-  //main->add_action(
+  // main->add_action(
   //    "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_"
-  //    "to_die<=90+((raw_haste_pct*100)*2)" );  Temporarily change this until we figure out what is killing spriest way too early.
+  //    "to_die<=90+((raw_haste_pct*100)*2)" );  Temporarily change this until
+  //    we figure out what is killing spriest way too early.
   main->add_action(
-      "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.health.pct<30" );
+      "surrender_to_madness,if=talent.surrender_to_madness.enabled&target."
+      "health.pct<30" );
   main->add_action( "mindbender,if=talent.mindbender.enabled" );
   main->add_action(
       "shadow_word_pain,if=dot.shadow_word_pain.remains<(3+(4%3))*gcd" );
@@ -6747,16 +6750,17 @@ void priest_t::apl_shadow()
   main->add_action( "mind_spike,if=talent.mind_spike.enabled" );
   main->add_action( "shadow_word_pain" );
 
-  //vf->add_action(
+  // vf->add_action(
   //    "surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>="
   //    "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
   //    "death.up|buff.shadowy_insight.up)&target.time_to_die<=90+((raw_haste_"
-  //    "pct*100)*2)-buff.insanity_drain_stacks.stack" ); Temporarily change this until we figure out what is killing spriest too early.
+  //    "pct*100)*2)-buff.insanity_drain_stacks.stack" ); Temporarily change
+  //    this until we figure out what is killing spriest too early.
 
   vf->add_action(
-    "surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>="
-    "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
-    "death.up|buff.shadowy_insight.up)&target.health.pct<30" );
+      "surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>="
+      "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
+      "death.up|buff.shadowy_insight.up)&target.health.pct<30" );
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action( "mindbender,if=talent.mindbender.enabled" );
   vf->add_action(
@@ -6940,10 +6944,11 @@ void priest_t::apl_disc_dmg()
   def->add_action( this, "Smite",
                    "if=glyph.smite.enabled&(dot.power_word_solace.remains+dot."
                    "holy_fire.remains)>cast_time" );
-  //def->add_talent( this, "Purge the Wicked", "if=remains<(duration*0.3)" );
+  def->add_talent( this, "Purge the Wicked", "if=remains<(duration*0.3)" );
   def->add_action(
       this, "Shadow Word: Pain",
       "if=remains<(duration*0.3)&!talent.purge_the_wicked.enabled" );
+  def->add_talent( this, "Divine Star", "if=mana.pct>80" );
   def->add_action( this, "Smite" );
   def->add_action( this, "Shadow Word: Pain" );
 }
@@ -7118,14 +7123,14 @@ void priest_t::init_action_list()
 
 void priest_t::combat_begin()
 {
-  if ( !sim -> fixed_time  )
+  if ( !sim->fixed_time )
   {
-    if ( options.priest_fixed_time && talents.surrender_to_madness -> ok() )
+    if ( options.priest_fixed_time && talents.surrender_to_madness->ok() )
     {
-      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      for ( size_t i = 0; i < sim->player_list.size(); ++i )
       {
-        player_t* p = sim -> player_list[i];
-        if ( p -> specialization() != PRIEST_SHADOW )
+        player_t* p = sim->player_list[ i ];
+        if ( p->specialization() != PRIEST_SHADOW )
         {
           options.priest_fixed_time = false;
           break;
@@ -7133,10 +7138,17 @@ void priest_t::combat_begin()
       }
       if ( options.priest_fixed_time )
       {
-        sim -> fixed_time = true;
-        sim -> errorf( "Due to Shadow Priest deaths during Surrender to Madness, fixed time has been enabled in this simulation." );
-        sim -> errorf( "This allows sims with only Shadow Priests to give useful feedback, as otherwise the sim would continue on for 300+ seconds and reduce the target's health in the next iteration by significantly more than it should." );
-        sim -> errorf( "To disable this option, add priest_fixed_time=0 to your sim." );
+        sim->fixed_time = true;
+        sim->errorf(
+            "Due to Shadow Priest deaths during Surrender to Madness, fixed "
+            "time has been enabled in this simulation." );
+        sim->errorf(
+            "This allows sims with only Shadow Priests to give useful "
+            "feedback, as otherwise the sim would continue on for 300+ seconds "
+            "and reduce the target's health in the next iteration by "
+            "significantly more than it should." );
+        sim->errorf(
+            "To disable this option, add priest_fixed_time=0 to your sim." );
       }
     }
   }
@@ -7226,11 +7238,6 @@ void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
 void priest_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
-
-  if ( c == CACHE_MASTERY && mastery_spells.shield_discipline->ok() )
-  {
-    player_t::invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
-  }
 }
 
 // priest_t::create_options =================================================
@@ -7261,7 +7268,8 @@ std::string priest_t::create_profile( save_e type )
       profile_str += "atonement_target=" + options.atonement_target_str + "\n";
 
     if ( !options.priest_fixed_time )
-      profile_str += "priest_fixed_time=" + util::to_string( options.priest_fixed_time ) + "\n";
+      profile_str += "priest_fixed_time=" +
+                     util::to_string( options.priest_fixed_time ) + "\n";
   }
 
   return profile_str;

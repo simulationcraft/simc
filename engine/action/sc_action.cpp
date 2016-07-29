@@ -2035,6 +2035,15 @@ void action_t::init()
 
   // Setup default target in init
   default_target = target;
+
+  // Make sure background is set for triggered actions.
+  // Leads to double-readying of the player otherwise.
+  assert( ( !execute_action || execute_action->background ) &&
+          "Execute action needs to be set to background." );
+  assert( ( !tick_action || tick_action->background ) &&
+          "Tick action needs to be set to background." );
+  assert( ( !impact_action || impact_action->background ) &&
+          "Impact action needs to be set to background." );
 }
 
 bool action_t::init_finished()
