@@ -1703,7 +1703,8 @@ public:
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_monk -> effectN( 1 ) );
-        ab::cooldown -> duration *= 1 + p() -> passives.aura_windwalker_monk -> effectN( 2 ).percent(); // saved as -100
+        if ( ab::data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 2 ) ) )
+          ab::cooldown -> duration *= 1 + p() -> passives.aura_windwalker_monk -> effectN( 2 ).percent(); // saved as -100
         break;
       }
       default: break;
