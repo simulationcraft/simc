@@ -11,6 +11,7 @@ enum sdata_field_type_t
 {
   SD_TYPE_INT = 0,
   SD_TYPE_UNSIGNED,
+  SD_TYPE_UINT64,
   SD_TYPE_DOUBLE,
   SD_TYPE_STR
 };
@@ -75,7 +76,7 @@ const sdata_field_t _spell_data_fields[] =
 {
   { SD_TYPE_STR,      "name"          },
   { SD_TYPE_UNSIGNED, "id",           },
-  { SD_TYPE_UNSIGNED, "flags"         },
+  { SD_TYPE_UINT64,   "hotfix"        },
   { SD_TYPE_DOUBLE,   "speed"         },
   { SD_TYPE_UNSIGNED, ""              }, // School, requires custom thing
   { SD_TYPE_UNSIGNED, ""              }, // Class (spell_class_expr_t)
@@ -571,6 +572,9 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
           case SD_TYPE_UNSIGNED:
             offset += sizeof( int );
             break;
+          case SD_TYPE_UINT64:
+            offset += sizeof( uint64_t );
+            break;
           case SD_TYPE_DOUBLE:
             offset += sizeof( double );
             break;
@@ -616,6 +620,22 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       {
         unsigned unsigned_v  = *reinterpret_cast< const unsigned* >( data + offset );
         unsigned ounsigned_v = static_cast<unsigned>( other.result_num );
+        switch ( t )
+        {
+          case TOK_LT:     return unsigned_v <  ounsigned_v;
+          case TOK_LTEQ:   return unsigned_v <= ounsigned_v;
+          case TOK_GT:     return unsigned_v >  ounsigned_v;
+          case TOK_GTEQ:   return unsigned_v >= ounsigned_v;
+          case TOK_EQ:     return unsigned_v == ounsigned_v;
+          case TOK_NOTEQ:  return unsigned_v != ounsigned_v;
+          default:         return false;
+        }
+        break;
+      }
+      case SD_TYPE_UINT64:
+      {
+        uint64_t unsigned_v  = *reinterpret_cast< const uint64_t* >( data + offset );
+        uint64_t ounsigned_v = static_cast<uint64_t>( other.result_num );
         switch ( t )
         {
           case TOK_LT:     return unsigned_v <  ounsigned_v;
@@ -747,7 +767,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     std::vector<uint32_t> res;
 
     if ( other.result_tok != TOK_NUM ||
-         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_DOUBLE )  )
+         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
       sim -> errorf( "Unsupported expression operator < for left=%s(%d), right=%s(%d) or field '%s' is not a number",
                      name_str.c_str(),
@@ -767,7 +787,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     std::vector<uint32_t> res;
 
     if ( other.result_tok != TOK_NUM ||
-         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_DOUBLE )  )
+         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
       sim -> errorf( "Unsupported expression operator <= for left=%s(%d), right=%s(%d) or field '%s' is not a number",
                      name_str.c_str(),
@@ -787,7 +807,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     std::vector<uint32_t> res;
 
     if ( other.result_tok != TOK_NUM ||
-         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_DOUBLE )  )
+         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
       sim -> errorf( "Unsupported expression operator > for left=%s(%d), right=%s(%d) or field '%s' is not a number",
                      name_str.c_str(),
@@ -807,7 +827,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     std::vector<uint32_t> res;
 
     if ( other.result_tok != TOK_NUM ||
-         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_DOUBLE )  )
+         ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
       sim -> errorf( "Unsupported expression operator >= for left=%s(%d), right=%s(%d) or field '%s' is not a number",
                      name_str.c_str(),

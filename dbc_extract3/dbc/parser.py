@@ -290,6 +290,9 @@ class DBCParserBase:
         return True
 
     def get_string(self, offset):
+        if offset == 0:
+            return None
+
         end_offset = self.data.find(b'\x00', self.string_block_offset + offset)
 
         if end_offset == -1:

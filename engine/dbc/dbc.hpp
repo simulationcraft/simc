@@ -290,6 +290,7 @@ public:
   unsigned _id;
   unsigned _spell_id;
   unsigned _aura_id; // Spell id for the aura during which this power type is active
+  unsigned _flags;
   int      _power_e;
   int      _cost;
   int      _cost_max;
@@ -382,38 +383,40 @@ inline spellpower_data_t* spellpower_data_t::nil()
 struct spelleffect_data_t
 {
 public:
-  unsigned         _id;              // Effect id
-  unsigned         _flags;           // Unused for now, 0x00 for all
-  unsigned         _spell_id;        // Spell this effect belongs to
-  unsigned         _index;           // Effect index for the spell
-  effect_type_t    _type;            // Effect type
-  effect_subtype_t _subtype;         // Effect sub-type
+  unsigned         _id;              // 1 Effect id
+  unsigned         _hotfix;          // 2 Hotfix bitmap
+                                     //   Each bit points to a field in this struct, starting from
+                                     //   the first field
+  unsigned         _spell_id;        // 3 Spell this effect belongs to
+  unsigned         _index;           // 4 Effect index for the spell
+  effect_type_t    _type;            // 5 Effect type
+  effect_subtype_t _subtype;         // 6 Effect sub-type
   // SpellScaling.dbc
-  double           _m_avg;           // Effect average spell scaling multiplier
-  double           _m_delta;         // Effect delta spell scaling multiplier
-  double           _m_unk;           // Unused effect scaling multiplier
+  double           _m_avg;           // 7 Effect average spell scaling multiplier
+  double           _m_delta;         // 8 Effect delta spell scaling multiplier
+  double           _m_unk;           // 9 Unused effect scaling multiplier
   //
-  double           _sp_coeff;           // Effect coefficient
-  double           _ap_coeff;        // Effect attack power coefficient
-  double           _amplitude;       // Effect amplitude (e.g., tick time)
+  double           _sp_coeff;        // 10 Effect coefficient
+  double           _ap_coeff;        // 11 Effect attack power coefficient
+  double           _amplitude;       // 12 Effect amplitude (e.g., tick time)
   // SpellRadius.dbc
-  double           _radius;          // Minimum spell radius
-  double           _radius_max;      // Maximum spell radius
+  double           _radius;          // 13 Minimum spell radius
+  double           _radius_max;      // 14 Maximum spell radius
   //
-  int              _base_value;      // Effect value
-  int              _misc_value;      // Effect miscellaneous value
-  int              _misc_value_2;    // Effect miscellaneous value 2
-  unsigned         _class_flags[NUM_CLASS_FAMILY_FLAGS]; // Class family flags
-  unsigned         _trigger_spell_id;// Effect triggers this spell id
-  double           _m_chain;         // Effect chain multiplier
-  double           _pp_combo_points; // Effect points per combo points
-  double           _real_ppl;        // Effect real points per level
-  int              _die_sides;       // Effect damage range
-  unsigned         _mechanic;        // Effect Mechanic
-  unsigned         _chain_target;    // Number of targets (for chained spells)
-  unsigned         _targeting_1;     // Targeting related field 1
-  unsigned         _targeting_2;     // 2
-  double           _m_value;         // Misc multiplier used for some spells(?)
+  int              _base_value;      // 15 Effect value
+  int              _misc_value;      // 16 Effect miscellaneous value
+  int              _misc_value_2;    // 17 Effect miscellaneous value 2
+  unsigned         _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 18 Class family flags
+  unsigned         _trigger_spell_id;// 19 Effect triggers this spell id
+  double           _m_chain;         // 20 Effect chain multiplier
+  double           _pp_combo_points; // 21 Effect points per combo points
+  double           _real_ppl;        // 22 Effect real points per level
+  int              _die_sides;       // 23 Effect damage range
+  unsigned         _mechanic;        // 24 Effect Mechanic
+  unsigned         _chain_target;    // 25 Number of targets (for chained spells)
+  unsigned         _targeting_1;     // 26 Targeting related field 1
+  unsigned         _targeting_2;     // 27 Targeting related field 2
+  double           _m_value;         // 28 Misc multiplier used for some spells(?)
 
   // Pointers for runtime linking
   spell_data_t* _spell;
@@ -596,7 +599,11 @@ private:
 public:
   const char* _name;               // 1 Spell name from Spell.dbc stringblock (enGB)
   unsigned    _id;                 // 2 Spell ID in dbc
-  unsigned    _flags;              // 3 Unused for now, 0x00 for all
+  uint64_t    _hotfix;             // 3 Hotfix bitmap
+                                   //   Each field points to a field in this struct, starting from
+                                   //   the first field. The most significant bit
+                                   //   (0x8000 0000 0000 0000) indicates the presence of hotfixed
+                                   //   effect data for this spell.
   double      _prj_speed;          // 4 Projectile Speed
   unsigned    _school;             // 5 Spell school mask
   unsigned    _class_mask;         // 6 Class mask for spell

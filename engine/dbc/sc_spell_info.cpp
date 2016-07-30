@@ -345,6 +345,9 @@ std::string spell_flags( const spell_data_t* spell )
   if ( spell -> flags( SPELL_ATTR_HIDDEN ) )
     s << "Hidden, ";
 
+  if ( spell -> _hotfix != 0 )
+    s << "Hotfixed, ";
+
   if ( s.tellp() > 1 )
   {
     s.seekp( -2, std::ios_base::cur );
@@ -469,6 +472,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       s << " | Unknown effect sub type";
 
     s << " (" << e -> subtype() << ")";
+  }
+
+  if ( e -> _hotfix != 0 )
+  {
+    s << " [Hotfixed]";
   }
 
   s << std::endl;

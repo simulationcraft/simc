@@ -5,16 +5,20 @@ import dbc.fmt
 _FORMATDB = None
 
 class RawDBCRecord:
-    __slots__ = ( '_id', '_d', '_dbcp' )
+    __slots__ = ( '_id', '_d', '_dbcp', '_flags' )
 
     def dbc_name(self):
         return self.__class__.__name__.replace('_', '-')
+
+    def is_hotfixed(self):
+        return self._flags != 0
 
     def __init__(self, parser, dbc_id, data):
         self._dbcp = parser
 
         self._id = dbc_id
         self._d = data
+        self._flags = 0
 
         if not self._d:
             self._d = (0,) * len(self._fi)
@@ -78,6 +82,14 @@ class DBCRecord(RawDBCRecord):
                 v(value)
             else:
                 raise AttributeError
+
+    def get_hotfix_mapping(self, *args):
+        hotfix_val = 0
+        for field_name, map_index in args:
+            field_index = self._cd[field_name]
+            if (1 << field_index) & self._flags:
+                hotfix_val |= (1 << map_index)
+        return hotfix_val
 
     def get_link(self, name, index = 0):
         if name not in self.__l:
@@ -294,6 +306,21 @@ class SpellCooldowns(DBCRecord):
                 return 0
         else:
             return DBCRecord.__getattribute__(self, name)
+
+    # Need to override get_hotfix_mapping too so we can get some information
+    # out of the record when the special 'cooldown_duration' field is specified
+    def get_hotfix_mapping(self, *args):
+        hotfix_val = 0
+        for field_name, map_index in args:
+            if field_name == 'cooldown_duration':
+                if (1 << self._cd['cooldown']) & self._flags or (1 << self._cd['category_cooldown']) & self._flags:
+                    hotfix_val |= (1 << map_index)
+            else:
+                field_index = self._cd[field_name]
+                if (1 << field_index) & self._flags:
+                    hotfix_val |= (1 << map_index)
+        return hotfix_val
+
 
     def field(self, *args):
         f = DBCRecord.field(self, *args)

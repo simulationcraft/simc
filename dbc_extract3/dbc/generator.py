@@ -1,6 +1,23 @@
-import sys, os, re, types, html.parser, urllib, datetime, signal, json, pdb, pathlib, csv, logging, io, fnmatch
+import sys, os, re, types, html.parser, urllib, datetime, signal, json, pdb, pathlib, csv, logging, io, fnmatch, traceback
 
 import dbc.db, dbc.data, dbc.constants, dbc.parser, dbc.file
+
+# Special hotfix flag for spells to mark that the spell has hotfixed effects
+EFFECT_HOTFIX_PRESENT = 0x8000000000000000
+
+def hotfix_fields(orig, hotfix):
+    if orig.id != hotfix.id:
+        return -1
+
+    hotfix_fields = 0
+    for idx in range(0, len(orig._fo)):
+        fmt = orig._fo[idx]
+        if 'S' in fmt and orig._dbcp.get_string(orig._d[idx]) != hotfix._dbcp.get_string(hotfix._d[idx]):
+            hotfix_fields |= (1 << idx)
+        elif 'S' not in fmt and orig._d[idx] != hotfix._d[idx]:
+            hotfix_fields |= (1 << idx)
+
+    return hotfix_fields
 
 def apply_hotfixes(opts, file_name, dbc_file, database):
     if not opts.cache_dir:
@@ -47,8 +64,9 @@ def apply_hotfixes(opts, file_name, dbc_file, database):
         logging.debug('Applying hotfixes from %s', cache_file.file_name)
         for record in cache_file:
             try:
+                hotfix_data = hotfix_fields(database[record.id], record)
                 # Add some additional information for debugging purposes
-                if opts.debug:
+                if opts.debug and hotfix_data:
                     if database[record.id].id == record.id:
                         logging.debug('%s (%d) REPLACE OLD: %s',
                             cache_file.file_name, cache_file.parser.timestamp, database[record.id])
@@ -57,10 +75,14 @@ def apply_hotfixes(opts, file_name, dbc_file, database):
                     else:
                         logging.debug('%s (%d) ADD: %s',
                             cache_file.file_name, cache_file.parser.timestamp, record)
-                database[record.id] = record
+
+                if hotfix_data:
+                    record._flags = hotfix_data
+                    database[record.id] = record
             except Exception as e:
                 logging.error('Error while parsing %s: record=%s, error=%s',
                     cache_file.class_name(), record, e)
+                traceback.print_exc()
                 sys.exit(1)
 
 # Generic linker
@@ -1107,7 +1129,7 @@ class SpellDataGenerator(DataGenerator):
          104510, 104423,            # Windsong Mastery / Haste buffs
          177172, 177175, 177176,    # WoD Legendary ring, phase 1(?)
          177161, 177159, 177160,    # WoD Legendary ring, phase 1(?)
-		 187619, 187616, 187624, 187625, # phase 2?
+         187619, 187616, 187624, 187625, # phase 2?
          143924,                    # Leech
          54861, 133022,             # Nitro boosts
          175457, 175456, 175439,    # Focus Augmentation / Hyper Augmentation / Stout Augmentation
@@ -1147,12 +1169,12 @@ class SpellDataGenerator(DataGenerator):
             ( 144442, 0 ),          # T16 Melee 4 pc buff
             ( 119938, 0 ),          # Overpower
             ( 209700, 0 ),           # Void Cleave (arms artifact gold medal)
-			( 218877, 0 ),
-			( 218850, 0 ),
-			( 218836, 0 ),
-			( 218835, 0 ),
-			( 218834, 0 ),
-			( 218822, 0 )
+            ( 218877, 0 ),
+            ( 218850, 0 ),
+            ( 218836, 0 ),
+            ( 218835, 0 ),
+            ( 218834, 0 ),
+            ( 218822, 0 )
         ),
 
         # Paladin:
@@ -1172,7 +1194,7 @@ class SpellDataGenerator(DataGenerator):
             ( 186805, 0 ),          # echoed Templar's Verdict (speculative)
             ( 193115, 0 ),          # Blade of Light (speculative)
             ( 180290, 0 ),          # ashen strike (speculative)
-			( 221883, 0 ),          # Divine Steed 
+            ( 221883, 0 ),          # Divine Steed 
         ),
 
         # Hunter:
@@ -1224,8 +1246,8 @@ class SpellDataGenerator(DataGenerator):
             (  94472, 0 ), 			# Atonement Crit
             ( 114908, 0, False ), 	# Spirit Shell absorb
             ( 190714, 3, False ), 	# Shadow Word: Death - Insanity gain
-			( 193473, 5 ),			# Void Tendril "Mind Flay"
-			( 217676, 3 )			# Mind Spike Detonation
+            ( 193473, 5 ),			# Void Tendril "Mind Flay"
+            ( 217676, 3 )			# Mind Spike Detonation
         ),
 
         # Death Knight:
@@ -1386,53 +1408,52 @@ class SpellDataGenerator(DataGenerator):
           ( 150017, 5 ),       # Rake for Treants
           ( 146874, 2 ),       # Feral Rage (T16 4pc feral bonus)
           ( 124991, 0 ), ( 124988, 0 ), # Nature's Vigil
-		  ( 155627, 2 ),       # Lunar Inspiration
-		  ( 155625, 2 ),       # Lunar Inspiration Moonfire
-		  ( 145152, 2 ),       # Bloodtalons buff
-		  ( 135597, 3 ),       # Tooth and Claw absorb buff
-		  ( 155784, 3 ),       # Primal Tenacity buff
-		  ( 137542, 0 ),       # Displacer Beast buff
-		  ( 185321, 3 ),       # Stalwart Guardian buff (T18 trinket)
-		  ( 188046, 5 ),       # T18 2P Faerie casts this spell
+          ( 155627, 2 ),       # Lunar Inspiration
+          ( 155625, 2 ),       # Lunar Inspiration Moonfire
+          ( 145152, 2 ),       # Bloodtalons buff
+          ( 135597, 3 ),       # Tooth and Claw absorb buff
+          ( 155784, 3 ),       # Primal Tenacity buff
+          ( 137542, 0 ),       # Displacer Beast buff
+          ( 185321, 3 ),       # Stalwart Guardian buff (T18 trinket)
+          ( 188046, 5 ),       # T18 2P Faerie casts this spell
           ( 202771, 1 ),       # Half Moon artifact power
-		  ( 202768, 1 ),       # Full Moon artifact power
-		  ( 203001, 1 ),       # Goldrinn's Fang, Spirit of Goldrinn artifact power
-		  ( 203958, 3 ),       # Brambles (talent) damage spell
-		  ( 210721, 2 ),       # Shredded Wounds (Fangs of Ashamane artifact passive)
-		  ( 210713, 2 ),       # Ashamane's Rake (Fangs of Ashamane artifact trait spell)
-		  ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
-		  ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
-		  ( 211140, 2 ),       # Feral tier19_2pc
-		  ( 211142, 2 ),       # Feral tier19_4pc
-		  ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait) 
-		  ( 211547, 1 ),       # Fury of Elune move spell
-		  ( 213771, 3 ),       # Swipe (Bear)
-		  ( 209406, 1 ),       # Oneth's Intuition buff
-		  ( 209407, 1 ),       # Oneth's Overconfidence buff
-      ( 213666, 1 ),       # Echoing Stars artifact spell
-      ( 69369,  2 ),       # Predatory Swiftness buff
-      ( 227034, 3 ),       # Nature's Guardian heal
+          ( 202768, 1 ),       # Full Moon artifact power
+          ( 203001, 1 ),       # Goldrinn's Fang, Spirit of Goldrinn artifact power
+          ( 203958, 3 ),       # Brambles (talent) damage spell
+          ( 210721, 2 ),       # Shredded Wounds (Fangs of Ashamane artifact passive)
+          ( 210713, 2 ),       # Ashamane's Rake (Fangs of Ashamane artifact trait spell)
+          ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
+          ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
+          ( 211140, 2 ),       # Feral tier19_2pc
+          ( 211142, 2 ),       # Feral tier19_4pc
+          ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait) 
+          ( 211547, 1 ),       # Fury of Elune move spell
+          ( 213771, 3 ),       # Swipe (Bear)
+          ( 209406, 1 ),       # Oneth's Intuition buff
+          ( 209407, 1 ),       # Oneth's Overconfidence buff
+          ( 213666, 1 ),       # Echoing Stars artifact spell
+          ( 69369,  2 ),       # Predatory Swiftness buff
+          ( 227034, 3 ),       # Nature's Guardian heal
         ),
-		
-		# Demon Hunter:
-		(
-      # General
-      ( 225102, 0 ), # Fel Eruption damage
-    
-		  # Havoc
-		  ( 203557, 1 ), # Felblade proc rate
-		  ( 208605, 1 ), # Nemesis player buff
-		  ( 203796, 1 ), # Demon Blade proc
-		  ( 217070, 1 ), # Rage of the Illidari explosion
-		  ( 217060, 1 ), # Rage of the Illidari buff
-		  ( 202446, 1 ), # Anguish damage spell
-		  ( 222703, 1 ), # Fel Barrage proc rate
-      ( 211796, 1 ), # Chaos Blades damage spell
-		  
-		  # Vengeance
-		  ( 209245, 2 ), # Fiery Brand damage reduction
-		  ( 213011, 2 ), # Charred Warblades heal
-		),
+        # Demon Hunter:
+        (
+          # General
+          ( 225102, 0 ), # Fel Eruption damage
+
+          # Havoc
+          ( 203557, 1 ), # Felblade proc rate
+          ( 208605, 1 ), # Nemesis player buff
+          ( 203796, 1 ), # Demon Blade proc
+          ( 217070, 1 ), # Rage of the Illidari explosion
+          ( 217060, 1 ), # Rage of the Illidari buff
+          ( 202446, 1 ), # Anguish damage spell
+          ( 222703, 1 ), # Fel Barrage proc rate
+          ( 211796, 1 ), # Chaos Blades damage spell
+
+          # Vengeance
+          ( 209245, 2 ), # Fiery Brand damage reduction
+          ( 213011, 2 ), # Charred Warblades heal
+       ),
     ]
 
     # Class specific item sets, T13, T14, T15
@@ -2214,14 +2235,11 @@ class SpellDataGenerator(DataGenerator):
         index = 0
         for id in id_keys + [0]:
             spell = self._spell_db[id]
+            hotfix_flags = 0
 
             if not spell.id and id > 0:
                 sys.stderr.write('Spell id %d not found\n') % id
                 continue
-
-            #if len(spell._misc) > 1:
-            #    sys.stderr.write('Spell id %u (%s) has more than one SpellMisc.dbc entry\n' % ( spell.id, spell.name ) )
-            #    continue
 
             for power in spell.get_links('power'):
                 powers.add( power )
@@ -2229,16 +2247,18 @@ class SpellDataGenerator(DataGenerator):
             misc = self._spellmisc_db[spell.id_misc]
 
             if index % 20 == 0:
-              self._out.write('//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,Chg, ChrgCd, Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n')
+              self._out.write('//{ Name                                ,     Id,             Hotfix,PrjSp,  Sch, Class,  Race,Sca,MSL,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,Chg, ChrgCd, Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n')
 
             # 1, 2
             fields = spell.field('name', 'id')
+            hotfix_flags |= spell.get_hotfix_mapping(('name', 0))
             assert len(fields) == 2
             # 3
-            fields += [ u'%#.2x' % 0 ]
+            fields += [ u'%#.16x' % 0 ]
             assert len(fields) == 3
             # 4, 5
             fields += misc.field('proj_speed', 'school')
+            hotfix_flags |= misc.get_hotfix_mapping(('proj_speed', 3), ('school', 4))
             assert len(fields) == 5
 
             # Hack in the combined class from the id_tuples dict
@@ -2250,50 +2270,65 @@ class SpellDataGenerator(DataGenerator):
             # Set the scaling index for the spell
             # 8, 9
             fields += spell.get_link('scaling').field('id_class', 'max_scaling_level')
+            hotfix_flags |= spell.get_link('scaling').get_hotfix_mapping(('id_class', 7), ('max_scaling_level', 8))
             assert len(fields) == 9
 
             #fields += spell.field('extra_coeff')
 
             # 10, 11
             fields += spell.get_link('level').field('base_level', 'max_level')
+            hotfix_flags |= spell.get_link('level').get_hotfix_mapping(('base_level', 9), ('max_level', 10))
             assert len(fields) == 11
-            # 12
-            rid = misc.id_range
-            fields += self._spellrange_db[rid].field('min_range')
-            assert len(fields) == 12
-            # 13
-            fields += self._spellrange_db[rid].field('max_range')
+            # 12, 13
+            range_entry = self._spellrange_db[misc.id_range]
+            fields += range_entry.field('min_range', 'max_range')
+            hotfix_flags |= range_entry.get_hotfix_mapping(('min_range', 11), ('max_range', 12))
             assert len(fields) == 13
             # 14, 15
             fields += spell.get_link('cooldown').field('cooldown_duration', 'gcd_cooldown')
+            hotfix_flags |= spell.get_link('cooldown').get_hotfix_mapping(('cooldown_duration', 13), ('gcd_cooldown', 14))
             assert len(fields) == 15
             # 16, 17
             category = spell.get_link('categories')
             category_data = self._spellcategory_db[category.charge_category]
+
             fields += category_data.field('charges', 'charge_cooldown')
+            hotfix_flags |= category_data.get_hotfix_mapping(('charges', 15), ('charge_cooldown', 16))
             # 18
             if category.charge_category > 0: # Note, some spells have both cooldown and charge categories
                 fields += category.field('charge_category')
+                hotfix_flags |= category.get_hotfix_mapping(('charge_category', 17))
             else:
                 fields += category.field('cooldown_category')
+                hotfix_flags |= category.get_hotfix_mapping(('cooldown_category', 17))
             assert len(fields) == 18
 
             # 19
-            fields += self._spellduration_db[misc.id_duration].field('duration_1')
+            duration_entry = self._spellduration_db[misc.id_duration]
+            fields += duration_entry.field('duration_1')
+            hotfix_flags |= duration_entry.get_hotfix_mapping(('duration_1', 18))
             assert len(fields) == 19
             # 20, 21, 22, 23, 24
             fields += spell.get_link('aura_option').field('stack_amount', 'proc_chance', 'proc_charges', 'proc_flags', 'internal_cooldown')
+            hotfix_flags |= spell.get_link('aura_option').get_hotfix_mapping(
+                    ('stack_amount', 19), ('proc_chance', 20), ('proc_charges', 21),
+                    ('proc_flags', 22), ('internal_cooldown', 23))
             assert len(fields) == 24
             # 25
-            fields += self._spellprocsperminute_db[spell.get_link('aura_option').id_ppm].field('ppm')
+            ppm_entry = self._spellprocsperminute_db[spell.get_link('aura_option').id_ppm]
+            fields += ppm_entry.field('ppm')
+            hotfix_flags |= ppm_entry.get_hotfix_mapping(('ppm', 24))
             assert len(fields) == 25
 
             # 26, 27, 28
             fields += spell.get_link('equipped_item').field('item_class', 'mask_inv_type', 'mask_sub_class')
+            hotfix_flags |= spell.get_link('equipped_item').get_hotfix_mapping(
+                ('item_class', 25), ('mask_inv_type', 26), ('mask_sub_class', 27))
 
             cast_times = self._spellcasttimes_db[misc.id_cast_time]
             # 29, 30
             fields += cast_times.field('min_cast_time', 'cast_time')
+            hotfix_flags |= cast_times.get_hotfix_mapping(('min_cast_time', 28), ('cast_time', 29))
             # 31, 32, 33
             fields += [u'0', u'0', u'0'] # cast_div, c_scaling, c_scaling_threshold
 
@@ -2305,35 +2340,56 @@ class SpellDataGenerator(DataGenerator):
 
             s_effect = []
             effect_ids = []
+            # Check if effects have hotfixed data, later on we use a special
+            # bitflag (0x8000 0000 0000 0000) to mark effect hotfix presence for spells.
             for effect in spell._effects:
                 if effect and ids.get(id, { 'effect_list': [ False ] })['effect_list'][effect.index]:
                     effects.add( ( effect.id, spell.get_link('scaling').id ) )
                     effect_ids.append( '%u' % effect.id )
+                    if effect.is_hotfixed():
+                        hotfix_flags |= EFFECT_HOTFIX_PRESENT
 
             # Add spell flags
             # 35
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
                 'flags_5', 'flags_6', 'flags_7', 'flags_8', 'flags_9', 'flags_10', 'flags_11',
                 'flags_12')) ]
+            # Note, bunch up the flags checking into one field,
+            hotfix_flags |= misc.get_hotfix_mapping(('flags_1', 34), ('flags_2', 34), ('flags_3', 34),
+                ('flags_4', 34), ('flags_5', 34), ('flags_6', 34), ('flags_7', 34), ('flags_8', 34),
+                ('flags_9', 34), ('flags_10', 34), ('flags_11', 34), ('flags_12', 34))
             # 36, 37
             fields += [ '{ %s }' % ', '.join(spell.get_link('class_option').field('flags_1', 'flags_2', 'flags_3', 'flags_4')) ]
             fields += spell.get_link('class_option').field('family')
+            hotfix_flags |= spell.get_link('class_option').get_hotfix_mapping(('flags_1', 35), ('flags_2', 35),
+                ('flags_3', 35), ('flags_4', 35), ('family', 36))
             # 38
             fields += spell.get_link('shapeshift').field('flags')
+            hotfix_flags |= spell.get_link('shapeshift').get_hotfix_mapping(('flags', 37))
             # 39
-            fields += self._spellmechanic_db[spell.get_link('categories').mechanic].field('mechanic')
+            mechanic = self._spellmechanic_db[spell.get_link('categories').mechanic]
+            fields += mechanic.field('mechanic')
+            hotfix_flags |= mechanic.get_hotfix_mapping(('mechanic', 38))
             # 40, 41
             fields += spell.field('desc', 'tt')
+            hotfix_flags |= spell.get_hotfix_mapping(('desc', 39), ('tt', 40))
             # 42
-            if spell.id_desc_var and self._spelldescriptionvariables_db.get(spell.id_desc_var):
-                fields += self._spelldescriptionvariables_db[spell.id_desc_var].field('desc')
+            desc_var = self._spelldescriptionvariables_db.get(spell.id_desc_var)
+            if desc_var:
+                fields += desc_var.field('desc')
+                hotfix_flags |= desc_var.get_hotfix_mapping(('desc', 41))
             else:
+                hotfix_flags |= spell.get_hotfix_mapping(('id_desc_var', 41))
                 fields += [ u'0' ]
             # 43
             fields += spell.field('rank')
+            hotfix_flags |= spell.get_hotfix_mapping(('rank', 42))
             # Pad struct with empty pointers for direct access to spell effect data
             # 44, 45, 46
             fields += [ u'0', u'0', u'0' ]
+
+            # Finally, update hotfix flags, they are located in the array of fields at position 2
+            fields[2] = '%#.16x' % hotfix_flags
 
             try:
                 self._out.write('  { %s }, /* %s */\n' % (', '.join(fields), ', '.join(effect_ids)))
@@ -2364,12 +2420,15 @@ class SpellDataGenerator(DataGenerator):
             if index % 20 == 0:
                 self._out.write('//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die,Mech,ChTrg,0, 0 },\n')
 
+            hotfix_flags = 0
+
             # 1
             fields = effect.field('id')
             # 2
-            fields += [ '%#.2x' % 0 ]
+            fields += [ '%#.8x' % 0 ]
             # 3, 4
             fields += effect.field('id_spell', 'index')
+            hotfix_flags |= effect.get_hotfix_mapping(('id_spell', 2), ('index', 3))
             tmp_fields = []
             if dbc.constants.effect_type.get(effect.type):
                 tmp_fields += [ '%-*s' % ( dbc.constants.effect_type_maxlen, dbc.constants.effect_type.get(effect.type) ) ]
@@ -2385,19 +2444,52 @@ class SpellDataGenerator(DataGenerator):
 
             # 5, 6
             fields += tmp_fields
+            hotfix_flags |= effect.get_hotfix_mapping(('type', 4), ('sub_type', 5))
             # 7, 8, 9
             fields += effect.get_link('scaling').field('average', 'delta', 'bonus')
+            hotfix_flags |= effect.get_link('scaling').get_hotfix_mapping(('average', 6), ('delta', 7), ('bonus', 8))
             # 10, 11, 12
             fields += effect.field('sp_coefficient', 'ap_coefficient', 'amplitude')
-            fields += self._spellradius_db[effect.id_radius].field('radius_1')
-            fields += self._spellradius_db[effect.id_radius_max].field('radius_1')
+            hotfix_flags |= effect.get_hotfix_mapping(('sp_coefficient', 9), ('ap_coefficient', 10), ('amplitude', 11))
+
+            # 13
+            radius_entry = self._spellradius_db[effect.id_radius]
+            fields += radius_entry.field('radius_1')
+            hotfix_flags |= radius_entry.get_hotfix_mapping(('radius_1', 12))
+
+            # 14
+            radius_max_entry = self._spellradius_db[effect.id_radius_max]
+            fields += radius_max_entry.field('radius_1')
+            hotfix_flags |= radius_max_entry.get_hotfix_mapping(('radius_1', 13))
+
+            # 15, 16, 17
             fields += effect.field('base_value', 'misc_value', 'misc_value_2')
+            hotfix_flags |= effect.get_hotfix_mapping(('base_value', 14), ('misc_value', 15), ('misc_value_2', 16))
+
+            # 18, note hotfix flags bunched together into one bit field
             fields += [ '{ %s }' % ', '.join( effect.field('class_mask_1', 'class_mask_2', 'class_mask_3', 'class_mask_4' ) ) ]
+            hotfix_flags |=  effect.get_hotfix_mapping(('class_mask_1', 17), ('class_mask_2', 17), ('class_mask_3', 17), ('class_mask_4', 17))
+
+            # 19, 20, 21, 22, 23
             fields += effect.field('trigger_spell', 'dmg_multiplier', 'points_per_combo_points', 'real_ppl', 'die_sides')
-            fields += self._spellmechanic_db[effect.id_mechanic].field('mechanic')
+            hotfix_flags |= effect.get_hotfix_mapping(('trigger_spell', 18), ('dmg_multiplier', 19),
+                ('points_per_combo_points', 20), ('real_ppl', 21), ('die_sides', 22))
+
+            # 24
+            mechanic = self._spellmechanic_db[effect.id_mechanic]
+            fields += mechanic.field('mechanic')
+            hotfix_flags |= mechanic.get_hotfix_mapping(('mechanic', 23))
+
+            # 25, 26, 27, 28
             fields += effect.field('chain_target', 'implicit_target_1', 'implicit_target_2', 'val_mul')
+            hotfix_flags |= effect.get_hotfix_mapping(('chain_target', 24), ('implicit_target_1', 25),
+                ('implicit_target_2', 26), ('val_mul', 27))
+
             # Pad struct with empty pointers for direct spell data access
             fields += [ '0', '0' ]
+
+            # Update hotfix flags, they are located at position 1
+            fields[1] = '%#.8x' % hotfix_flags
 
             try:
                 self._out.write('  { %s },\n' % (', '.join(fields)))
@@ -2426,7 +2518,9 @@ class SpellDataGenerator(DataGenerator):
         self._out.write('static struct spellpower_data_t __%s_data[] = {\n' % ( self.format_str( "spellpower" ) ))
 
         for power in powers + [ self._spellpower_db[0] ]:
-            fields = power.field('id', 'id_spell', 'aura_id', 'type_power', 'cost', 'cost_max', 'cost_per_second', 'pct_cost', 'pct_cost_max', 'pct_cost_per_second' )
+            fields = power.field('id', 'id_spell', 'aura_id')
+            fields += [ '%#.8x' % (power.is_hotfixed() and dbc.data.DATA_HOTFIX or 0) ]
+            fields += power.field('type_power', 'cost', 'cost_max', 'cost_per_second', 'pct_cost', 'pct_cost_max', 'pct_cost_per_second' )
 
             try:
                 self._out.write('  { %s },\n' % (', '.join(fields)))
