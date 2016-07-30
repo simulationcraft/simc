@@ -5824,29 +5824,62 @@ void rogue_t::init_action_list()
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    for ( size_t i = 0; i < item_actions.size(); i++ )
-      if ( items[ i ].name_str != "maalus_the_blood_drinker" )
-        def -> add_action( item_actions[i] );
-      else
-        def -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up");
+    bool has_maalus = false;
+    for ( size_t i = 0; i < items.size(); i++ )
+    {
+      if ( items[ i ].has_use_special_effect() )
+      {
+        std::string item_action = std::string( "use_item,slot=" ) + items[ i ].slot_name();
+        if ( items[ i ].name_str == "maalus_the_blood_drinker" )
+        {
+          has_maalus = true;
+          def -> add_action( item_action );
+        } 
+        else 
+        {
+          def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up");
+        }
+      }
+    }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
+      {
         def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up&energy.deficit>50&!dot.rupture.exsanguinated&(cooldown.exsanguinate.remains>3|!artifact.urge_to_kill.enabled)" );
+      }
       else
+      {
         def -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
+      }
     }
     def -> add_action( "call_action_list,name=cds" );
-    def -> add_action( "call_action_list,name=garrote" );
-    def -> add_action( this, "Kingsbane", "if=buff.vendetta.up|cooldown.vendetta.remains>30" );
-    def -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1" );
-      // Makes sure Rupture is pandemic-ed before Exsanguinating
-    def -> add_talent( this, "Exsanguinate", "if=prev_gcd.rupture&dot.rupture.remains>25+4*talent.deeper_stratagem.enabled" );
     def -> add_action( this, "Rupture", "if=combo_points>=2&!ticking&time<10&!artifact.urge_to_kill.enabled" );
     def -> add_action( this, "Rupture", "if=combo_points>=4&!ticking" );
-      // Dump energy with mutilate before Exsang
-    def -> add_action( this, "Mutilate", "if=combo_points.deficit<=1&energy.deficit<=80&cooldown.exsanguinate.remains<3" );
-    def -> add_action( "call_action_list,name=exsang,if=dot.rupture.exsanguinated&dot.rupture.ticks_remain>1&spell_targets.fan_of_knives<=1" );
+    def -> add_action( this, "Kingsbane", "if=buff.vendetta.up|cooldown.vendetta.remains>30" );
+    // If Maalus, should synchronize Exsanguinate with Maalus hence waiting for
+    // Maalus every other Exsanguinate
+    // run_action_list forbids the simulator from running the following actions
+    {
+      if ( has_maalus )
+      {
+        def -> add_action( "run_action_list,name=exsang_combo,if=cooldown.exsanguinate.up&(buff.maalus.up|cooldown.vanish.remains>35)" );
+      }
+      else
+      {
+        def -> add_action( "run_action_list,name=exsang_combo,if=cooldown.exsanguinate.remains<3" );
+      }
+    }
+    def -> add_action( "call_action_list,name=garrote" );
+    // Refresh Rupture early if Maalus to ensure a full pandemic Rupture when 
+    // casting Exsanguinate; delaying the Exsanguinate can result in bad timing 
+    // hence this necessary condition
+    {
+      if ( has_maalus )
+      {
+        def -> add_action( this, "Rupture", "if=combo_points>=5&cooldown.exsanguinate.remains<8&dot.rupture.remains<14" );
+      }
+    }
+    def -> add_action( "call_action_list,name=exsang,if=dot.rupture.exsanguinated&spell_targets.fan_of_knives<=1" );
     def -> add_action( "call_action_list,name=finish" );
     def -> add_action( "call_action_list,name=build" );
 
@@ -5854,27 +5887,54 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds" );
       // Targets the target who will die the sooner to fresh MfD
     cds -> add_talent( this, "Marked for Death", "cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=5", " Cooldowns" );
-      // If Urge to Kill, cast Vendetta sooner to have the time to dump the energy before Exsanguinate
-    cds -> add_action( this, "Vendetta", "if=artifact.urge_to_kill.enabled&(dot.rupture.ticking&cooldown.exsanguinate.remains<8&(energy<55|time<10))|target.time_to_die<20" );
-    cds -> add_action( this, "Vendetta", "if=!artifact.urge_to_kill.enabled&(dot.rupture.ticking&cooldown.exsanguinate.remains<1)|target.time_to_die<20" );
-      // Wait for Kingsbane to be used is basically a safety check to ensure it's not used too early
-    cds -> add_action( this, "Vanish", "sync=rupture,if=talent.nightstalker.enabled&cooldown.exsanguinate.remains<1&(cooldown.kingsbane.remains|!artifact.kingsbane.enabled)" );
-      // Gives as much time as possible to spam Garrote if Subterfuge enabled (only useful on AoE)
-    cds -> add_action( this, "Vanish", "if=combo_points<=2&!dot.rupture.exsanguinated&talent.subterfuge.enabled" );
-      // Builders costs more Energy than finishers, so try to use Vanish on a builder if possible
+      // If Maalus, simply sync Vendetta with Maalus
+    {
+      if ( has_maalus )
+      {
+        cds -> add_action( this, "Vendetta", "if=target.time_to_die<20|buff.maalus.react" );
+      }
+      else
+      {
+        // If Urge to Kill, cast Vendetta sooner to have the time to dump the
+        // energy before Exsanguinate
+        cds -> add_action( this, "Vendetta", "if=target.time_to_die<20|artifact.urge_to_kill.enabled&dot.rupture.ticking&cooldown.exsanguinate.remains<8&(energy<55|time<10)" );
+        cds -> add_action( this, "Vendetta", "if=target.time_to_die<20|!artifact.urge_to_kill.enabled&dot.rupture.ticking&cooldown.exsanguinate.remains<1" );
+      }
+    }
+      // Gives as much time as possible to spam Garrote if Subterfuge enabled 
+      // (only useful on AoE)
+    cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&combo_points<=2&!dot.rupture.exsanguinated" );
+      // Builders costs more Energy than finishers, so try to use Vanish on a 
+      // builder if possible if Shadow Focus
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&!dot.rupture.exsanguinated&combo_points.deficit>=2" );
+
+    // Exsanguinate Combo
+    action_priority_list_t* exsang_combo = get_action_priority_list( "exsang_combo" );
+      // Syncing Vanish with Rupture
+    exsang_combo -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&gcd.remains=0&energy>=25", " Exsanguinate Combo" );
+    exsang_combo -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&(buff.vanish.up|cooldown.vanish.remains>15)&cooldown.exsanguinate.remains<1" );
+      // Some safeguards to make sure Exsanguinate is casted at the right moment
+    exsang_combo -> add_talent( this, "Exsanguinate", "if=prev_gcd.rupture&dot.rupture.remains>25+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10" );
+    exsang_combo -> add_action( "call_action_list,name=garrote" );
+      // Build last combo point with Hemorrhage to avoid wasting too many
+    exsang_combo -> add_talent( this, "Hemorrhage", "if=combo_points.deficit=1" );
+      // Dumping extra energy into Mutilate while waiting for Exsanguinate
+    exsang_combo -> add_action( this, "Mutilate", "if=combo_points.deficit<=1" );
+    exsang_combo -> add_action( "call_action_list,name=build" );
 
     // Garrote
     action_priority_list_t* garrote = get_action_priority_list( "garrote" );
     garrote -> add_action( "pool_resource,for_next=1", " Garrote" );
     garrote -> add_action( this, "Garrote", "cycle_targets=1,target_if=max:target.time_to_die,if=talent.subterfuge.enabled&!ticking&combo_points.deficit>=1" );
     garrote -> add_action( "pool_resource,for_next=1" );
-    garrote -> add_action( this, "Garrote", "if=combo_points.deficit>=1&(!exsanguinated|ticks_remain<2)" );
+    garrote -> add_action( this, "Garrote", "if=combo_points.deficit>=1&!exsanguinated" );
+
 
     // Exsanguinated Rotation
     action_priority_list_t* exsang = get_action_priority_list( "exsang" );
       // Wait for Combo Points if Rupture is about to expire to reapply it as soon as possible
-    exsang -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1&dot.rupture.remains>3", " Exsanguinated Rotation");
+    exsang -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&ticks_remain<2", " Exsanguinated Rotation" );
+    exsang -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1&dot.rupture.remains>3" );
     exsang -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&dot.rupture.remains>3" );
      // Fills with hemorrhage at the end of the Exsanguinate
     exsang -> add_talent( this, "Hemorrhage", "if=combo_points.deficit<=1" );
@@ -5887,10 +5947,10 @@ void rogue_t::init_action_list()
       // AoE
     finish -> add_action( this, "Rupture", "target_if=max:target.time_to_die,if=!ticking&combo_points>=5&spell_targets.fan_of_knives>1", " Finishers" );
       // Single
-    finish -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&refreshable&(!exsanguinated|ticks_remain<2)" );
+    finish -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&refreshable&!exsanguinated" );
     finish -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1");
-    finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&energy.deficit<40&buff.elaborate_planning.remains<2" );
-    finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend&cooldown.garrote.remains<1&buff.elaborate_planning.remains<2" );
+    finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40" );
+    finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1" );
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build" );
@@ -5900,11 +5960,11 @@ void rogue_t::init_action_list()
     build -> add_talent( this, "Hemorrhage", "target_if=max:target.time_to_die,if=combo_points.deficit>=1&!ticking&dot.rupture.remains>6&spell_targets.fan_of_knives>1" );
     build -> add_action( this, "Fan of Knives", "if=combo_points.deficit>=1&(spell_targets>3|(poisoned_enemies<3&spell_targets>2))&spell_targets.fan_of_knives>1" );
       // Single
-    build -> add_talent( this, "Hemorrhage", "if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&energy.deficit<40)" );
+    build -> add_talent( this, "Hemorrhage", "if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&dot.rupture.refreshable)" );
     if (true_level <= 100 )
     {
       build -> add_talent( this, "Hemorrhage", "if=combo_points.deficit=2&set_bonus.tier18_2pc&target.health.pct<=35" );
-      build -> add_action( this, "Mutilate", "if=cooldown.garrote.remains>2&(combo_points.deficit>=3|(combo_points.deficit>=2&(!set_bonus.tier18_2pc|target.health.pct>35)))" );
+      build -> add_action( this, "Mutilate", "if=cooldown.garrote.remains>2&(combo_points.deficit>=3|(combo_points.deficit>=2&!(set_bonus.tier18_2pc&target.health.pct<=35)))" );
     }
     else
       build -> add_action( this, "Mutilate", "if=combo_points.deficit>=2&cooldown.garrote.remains>2" );
