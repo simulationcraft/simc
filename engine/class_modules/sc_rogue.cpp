@@ -2722,7 +2722,6 @@ struct hemorrhage_t : public rogue_attack_t
     rogue_attack_t( "hemorrhage", p, p -> talent.hemorrhage, options_str )
   {
     weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 1;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
