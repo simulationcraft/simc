@@ -1829,7 +1829,7 @@ public:
 
     if ( p() -> buff.combo_strikes -> up() )
     {
-      am *= 1.0 + ( p() -> composite_mastery() * 0.01 );
+      am *= 1.0 + p() -> cache.mastery_value();
       am *= 1.0 + p() -> buff.hit_combo -> stack_value();
     }
 
@@ -6811,6 +6811,8 @@ bool monk_t::has_t18_class_trinket() const
 void monk_t::reset()
 {
   base_t::reset();
+
+  previous_combo_strike = CS_NONE;
 }
 
 // monk_t::regen (brews/teas)================================================
