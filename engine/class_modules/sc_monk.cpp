@@ -2311,13 +2311,13 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( result_is_miss( execute_state -> result ) )
       return;
 
-    // TODO: This is a possible bug where it is removing a stack before adding 2 stacks
-    if ( p() -> buff.masterful_strikes -> up() )
-      p() -> buff.masterful_strikes -> decrement();
-
     // Activate A'Buraq's Trait
     if ( p() -> artifact.transfer_the_power.rank() )
       p() -> buff.transfer_the_power -> trigger();
+
+    // TODO: This is a possible bug where it is removing a stack before adding 2 stacks
+    if ( p() -> buff.masterful_strikes -> up() )
+      p() -> buff.masterful_strikes -> decrement();
 
     if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
       p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
@@ -2484,13 +2484,13 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        // TODO: This is a possible bug where it is removing a stack before adding 2 stacks
-        if ( p() -> buff.masterful_strikes -> up() )
-          p() -> buff.masterful_strikes -> decrement();
-
         // Activate A'Buraq's Trait
         if ( p() -> artifact.transfer_the_power.rank() )
           p() -> buff.transfer_the_power -> trigger();
+
+        // TODO: This is a possible bug where it is removing a stack before adding 2 stacks
+        if ( p() -> buff.masterful_strikes -> up() )
+          p() -> buff.masterful_strikes -> decrement();
 
         if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
           p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
@@ -4733,7 +4733,7 @@ struct gust_of_mists_t: public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
-    am *= p() -> cache.mastery() * p() -> mastery.gust_of_mists -> effectN( 1 ).mastery_value();
+    am *= p() -> cache.mastery_value();
 
     // Mastery's Effect 3 gives a flat add modifier of 0.1 Spell Power co-efficient
     // TODO: Double check calculation
@@ -6708,8 +6708,7 @@ void monk_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.masterful_strikes = buff_creator_t(this, "masterful_strikes", passives.tier18_2pc_melee )
-    .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() 
-      * ( specialization() == MONK_WINDWALKER ? mastery.combo_strikes -> effectN( 1 ).mastery_value() : 1 ) )
+    .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )
     .add_invalidate( CACHE_MASTERY );
 
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
@@ -7176,7 +7175,7 @@ double monk_t::composite_attack_power_multiplier() const
   double ap = player_t::composite_attack_power_multiplier();
 
   if ( mastery.elusive_brawler -> ok() )
-    ap *= 1.0 + cache.mastery() * mastery.elusive_brawler -> effectN( 2 ).mastery_value();
+    ap *= 1.0 + cache.mastery_value();
 
   return ap;
 }
@@ -7200,7 +7199,7 @@ double monk_t::composite_dodge() const
     d += buff.brew_stache -> value();
 
   if ( buff.elusive_brawler -> up() )
-    d += buff.elusive_brawler -> current_stack * ( cache.mastery() * mastery.elusive_brawler -> effectN( 1 ).mastery_value() );
+    d += buff.elusive_brawler -> current_stack * cache.mastery_value();
 
   if ( buff.elusive_dance -> up() )
     d += buff.elusive_dance -> stack_value();
@@ -7232,7 +7231,7 @@ double monk_t::composite_mastery() const
   double m = player_t::composite_mastery();
 
   if ( buff.masterful_strikes -> up() )
-    m += buff.masterful_strikes -> value() * 100;
+    m += buff.masterful_strikes -> value();
 
   return m;
 }
