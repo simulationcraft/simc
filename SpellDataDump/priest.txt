@@ -133,7 +133,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=237)      : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -90000000 | Scaled Value: -9e+007 | Target: Self(1)
+                   Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self(1)
 Description      : Fade out, removing all your threat for $d.
 Tooltip          : Reduced threat level.
 
@@ -607,7 +607,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1500000000 | Scaled Value: 1.5e+009 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1500000000 | Scaled Value: 1.5e+09 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
@@ -1276,7 +1276,7 @@ Effects          :
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Friend(21)
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
 
 Massive damage amounts will kill the target despite this effect.
@@ -1409,7 +1409,7 @@ Effects          :
 Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
-Name             : Power Word: Barrier (id=62618) [Scaling Spell (8), Spell Family (6)] 
+Name             : Power Word: Barrier (id=62618) [Scaling Spell (8), Spell Family (6), Hotfixed: Attributes] 
 Class            : Discipline Priest
 School           : Holy
 Resource         : 6.3% Base Mana (69300 @Level 110)
@@ -2245,7 +2245,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.87400 | Target: Friend(21)
 Description      : $@spelldesc120517
 
-Name             : Halo (id=120696) [Spell Family (6)] 
+Name             : Halo (id=120696) [Spell Family (6), Hotfixed: Attributes] 
 Class            : Priest
 School           : Holy
 Range            : 100 yards
@@ -2282,7 +2282,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Radius: 2 yards | Target: AOE friendly(31)
 Description      : Places a feather at the target location, granting the first ally to walk through it $121557s1% increased movement speed for $121557d. Only 3 feathers can be placed at one time.  Maximum 3 charges.
 
-Name             : Angelic Feather (id=121557) [Spell Family (6)] 
+Name             : Angelic Feather (id=121557) [Spell Family (6), Hotfixed: Attributes] 
 Class            : Priest
 School           : Holy
 Range            : 50000 yards
@@ -3306,7 +3306,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 Description      : A burst of light heals a friendly target and their $s3 nearest allies for $s2, and applies Atonement. 
 
-Name             : Invoke the Naaru (id=196684) [Spell Family (6), Passive] 
+Name             : Invoke the Naaru (id=196684) [Spell Family (6), Passive, Hotfixed: Proc Chance] 
 Class            : Priest
 School           : Physical
 Range            : 100 yards
@@ -4085,7 +4085,7 @@ Effects          :
 Description      : $@spelldesc205371
 Tooltip          : Increases $?s73510[Mind Spike][Mind Flay] and Mind Sear damage by $s1%.
 
-Name             : Shadow Crash (id=205385) [Spell Family (6)] 
+Name             : Shadow Crash (id=205385) [Spell Family (6), Hotfixed: GCD, Category] 
 Class            : Priest
 School           : Shadow
 Range            : 40 yards
@@ -4410,7 +4410,7 @@ Effects          :
 #11 (id=320871)   : Apply Aura (6) | Unknown effect sub type (40)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 #12 (id=320872)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 145000000 | Scaled Value: 1.45e+008 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 145000000 | Scaled Value: 1.45e+08 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 Description      : The Priest becomes the Spirit of Redemption for $d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. 
 Tooltip          : You have become more powerful than anyone can possibly imagine.
 

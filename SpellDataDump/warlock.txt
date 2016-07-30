@@ -829,6 +829,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=9474)     : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.15000 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy(6)
 Description      : Blasts a target for $s1 Shadow damage. 
@@ -1373,7 +1374,7 @@ Effects          :
 #1 (id=32745)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
-Name             : Rain of Fire (id=42223) [Spell Family (5)] 
+Name             : Rain of Fire (id=42223) [Spell Family (5), Hotfixed: Attributes] 
 Class            : Warlock
 School           : Fire
 Spell Level      : 20
@@ -1748,7 +1749,7 @@ Effects          :
 #2 (id=318370)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66600 | Target: Self(1)
 #3 (id=318371)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1000000000 | Scaled Value: 1e+009 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 1000000000 | Scaled Value: 1e+09 | Misc Value: 127 | Target: Self(1)
 Description      : Your spells deal a random amount of additional damage, up to $s1%. Damage you take is reduced by a random amount, up to $s2%.
 
 Name             : Havoc (id=80240) [Spell Family (5)] 
@@ -2148,7 +2149,7 @@ Description      : Hardens your skin, reducing all damage you take by $s3% and g
 Tooltip          : Damage taken reduced by $w3%.
 Immune to interrupt and silence effects.
 
-Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
+Name             : Hand of Gul'dan (id=105174) [Spell Family (5), Hotfixed: Attributes] 
 Class            : Demonology Shaman, Warlock
 School           : Shadowflame
 Resource         : 1 - 4 Soul Shard
@@ -2602,7 +2603,7 @@ Attributes       : ........ ........ .......x x.xx.x..   .....x.. ........ .....
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=127009)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -1000000000 | Scaled Value: -1e+009 | Misc Value: 893 | Target: Self(1)
+                   Base Value: -1000000000 | Scaled Value: -1e+09 | Misc Value: 893 | Target: Self(1)
 Description      : Faded into the nether and unable to use another Demonic Gateway.
 Tooltip          : Faded into the nether and unable to use another Demonic Gateway.
 
@@ -3030,6 +3031,7 @@ Effects          :
 #1 (id=179727)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -33 | Scaled Value: -33 | Target: Self(1)
                    Affected Spells: Demonic Power (196100)
+                   Hotfixed: Sub Type, Base Value, Affects Spells
 #2 (id=191031)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191032)   : Apply Aura (6) | Dummy (4)
@@ -3071,6 +3073,7 @@ Effects          :
 #1 (id=179728)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -15 | Scaled Value: -15 | Target: Self(1)
                    Affected Spells: Doom (603), Doom Bolt (85692)
+                   Hotfixed: Sub Type, Base Value, Affects Spells
 #2 (id=191027)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191028)   : Apply Aura (6) | Dummy (4)
@@ -3549,6 +3552,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=270296)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 15 | Target: Self(1)
+                   Hotfixed: Base Value
 Description      : When your Wild Imps cast Felfire Bolt, you have a $m1% chance to summon a Demon from the void to assist you in battle.
 
 Name             : Chaos Barrage (id=187385) [Spell Family (107), Hidden] 
@@ -3725,7 +3729,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Radius: 0 - 100 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc193440
 
-Name             : Demonwrath (id=193440) [Spell Family (5)] 
+Name             : Demonwrath (id=193440) [Spell Family (5), Hotfixed: Attributes] 
 Class            : Demonology Warlock
 School           : Shadow
 Resource         : 0% Base Mana and 2.5% Base Mana (27500 @Level 110) per second or tick
@@ -3907,6 +3911,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=287838)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: mana | Target: Self(1)
+                   Hotfixed: Base Value
 #3 (id=299357)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Consumes $s2% of your current mana to grant $s1% increased damage for $d.
@@ -4470,7 +4475,7 @@ Effects          :
 Description      : Places a phantom singularity above the target, which consumes the life of all enemies within $205246A2 yards, dealing ${8*$205246s2} damage over $d, healing you for ${$205246e2*100}% of the damage done.
 Tooltip          : Dealing damage to all nearby targets every $t1 sec and healing the casting Warlock.
 
-Name             : Summon Darkglare (id=205180) [Spell Family (5)] 
+Name             : Summon Darkglare (id=205180) [Spell Family (5), Hotfixed: School] 
 Class            : Warlock
 School           : Shadow
 Resource         : 1 Soul Shard
@@ -4601,7 +4606,8 @@ Effects          :
 #1 (id=303014)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=303063)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.72000 | Radius: 0 - 25 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 1.44000 | Radius: 0 - 25 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient
 Description      : $@spelldesc205179
 
 Name             : Soul Effigy (id=205247) [Spell Family (5), Passive] 
@@ -4636,7 +4642,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Unknown(25)
 Description      : $@spelldesc205178
 
-Name             : Roaring Blaze (id=205690) [Spell Family (5), Hidden] 
+Name             : Roaring Blaze (id=205690) [Spell Family (5), Hidden, Hotfixed: Attributes] 
 Class            : Warlock
 School           : Physical
 Range            : 100 yards
@@ -4674,8 +4680,10 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=313705)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy(6)
+                   Hotfixed: Base Value
 #2 (id=343470)   : Unknown effect type (165)
                    Base Value: 6 | Scaled Value: 6 | Radius: 100 yards | Target: Unknown(120)
+                   Hotfixed: Base Value
 Description      : |cFFFFCC99Thal'kiel|r drains $s2% of the life from your demon servants and unleashes a blast of Shadow damage at your current target equal to the life he stole. 
 
 Name             : Thal'kiel's Consumption (id=211715) [Spell Family (5)] 

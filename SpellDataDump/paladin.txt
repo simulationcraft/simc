@@ -289,7 +289,7 @@ Effects          :
 #2 (id=171227)   : Apply Aura (6) | Unknown effect sub type (403)
                    Base Value: 132331 | Scaled Value: 132331 | Misc Value: 35395 | Misc Value 2: 0x204eb | Target: Self(1)
 
-Name             : Judgment (id=20271) [Spell Family (10)] 
+Name             : Judgment (id=20271) [Spell Family (10), Hotfixed: Attributes] 
 Class            : Paladin
 School           : Holy
 Resource         : 3% Base Mana (6600 @Level 110) w/ Holy Paladin (id=137029)
@@ -310,6 +310,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Target: Enemy(6)
 #2 (id=336161)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 #3 (id=343343)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Enemy(6)
 #4 (id=343346)   : Dummy (3)
@@ -448,7 +449,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=8.222, dl=0.08) | SP Coefficient: 4.00000 | Target: Friend(21)
 Description      : Blasts the target with Holy energy, causing $25912s1 Holy damage to an enemy, or $25914s1 healing to an ally.
 
-Name             : Consecration (id=26573) [Spell Family (10)] 
+Name             : Consecration (id=26573) [Spell Family (10), Hotfixed: Attributes] 
 Class            : Holy Protection Paladin
 School           : Holy
 Spell Level      : 32
@@ -1341,7 +1342,7 @@ Effects          :
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
 Description      : Increases Judgment damage by $s3%, and causes Judgment to increase damage taken from your Holy Power spenders by $s1%.
 
-Name             : Consecration (id=81297) [Spell Family (10)] 
+Name             : Consecration (id=81297) [Spell Family (10), Hotfixed: Attributes] 
 Class            : Paladin
 School           : Holy
 Spell Level      : 6
@@ -1424,7 +1425,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.25000 | Target: Friend(21)
 Description      : A slow but efficient spell, healing a friendly target for $s1.
 
-Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
+Name             : Grand Crusader (id=85043) [Spell Family (10), Passive, Hotfixed: Spell Level] 
 Class            : Protection Paladin
 School           : Physical
 Spell Level      : 28
@@ -3054,7 +3055,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : $@spelldesc184662
 
-Name             : Consecration (id=188370) [Spell Family (10)] 
+Name             : Consecration (id=188370) [Spell Family (10), Hotfixed: Attributes] 
 Class            : Paladin
 School           : Holy
 Range            : 50000 yards
@@ -3807,7 +3808,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301049)   : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -70000000 | Scaled Value: -7e+007 | Misc Value: 127 | Target: Unknown(57)
+                   Base Value: -70000000 | Scaled Value: -7e+07 | Misc Value: 127 | Target: Unknown(57)
 Description      : Places a blessing on a party or raid member, temporarily removing all threat from the target and causing all additional threat generated to be transferred to you. Lasts $d.
 Tooltip          : All threat temporarily removed and additional threat transferred to the casting Paladin.
 
@@ -3834,7 +3835,7 @@ Effects          :
 Description      : Places a blessing on a party or raid member, protecting them from all magical attacks for $d. Cannot be used on a target with Forbearance.  Causes Forbearance for $25771d.
 Tooltip          : Immune to magical attacks.
 
-Name             : Blessed Hammer (id=204019) [Spell Family (10)] 
+Name             : Blessed Hammer (id=204019) [Spell Family (10), Hotfixed: Attributes] 
 Class            : Paladin
 School           : Holy
 GCD              : 1.5 seconds
@@ -4023,7 +4024,7 @@ Effects          :
 Description      : $@spelldesc204054
 Tooltip          : Receiving $s1 healing every $26573t1 sec while standing in Consecration.
 
-Name             : Blessed Hammer (id=204301) [Spell Family (10)] 
+Name             : Blessed Hammer (id=204301) [Spell Family (10), Hotfixed: Attributes] 
 Class            : Paladin
 School           : Holy
 Range            : 100 yards
@@ -4038,6 +4039,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=301536)   : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.63800 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient
 #2 (id=303007)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy(6)
 Description      : $@spelldesc204019
@@ -4086,7 +4088,7 @@ Effects          :
                    Base Value: 170 | Scaled Value: 1.7 | Target: Enemy(6)
 Description      : $@spelldesc205191
 
-Name             : Consecration (id=205228) [Spell Family (10)] 
+Name             : Consecration (id=205228) [Spell Family (10), Hotfixed: Attributes] 
 Class            : Paladin
 School           : Holy
 Spell Level      : 1
@@ -4327,7 +4329,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=316419)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 99999999 | Scaled Value: 1e+008 - 1.9e+008 | Value Range: 90000001 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 99999999 | Scaled Value: 1e+08 - 1.9e+08 | Value Range: 90000001 | Misc Value: 127 | Target: Self(1)
 #2 (id=316420)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #3 (id=316427)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
@@ -4585,7 +4587,7 @@ Effects          :
 Description      : Infuse a friendly target with faith for $d, healing them for $s1 at the end.
 Tooltip          : Will be healed for $s1 upon expiration.
 
-Name             : Fervent Martyr (Passive Talent) (id=223316) [Spell Family (10)] 
+Name             : Fervent Martyr (Passive Talent) (id=223316) [Spell Family (10), Hotfixed: Max stacks] 
 Class            : Paladin
 School           : Physical
 Duration         : 30 seconds
@@ -4601,6 +4603,7 @@ Effects          :
 #1 (id=333758)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Light of the Martyr (183998)
+                   Hotfixed: Base Value
 Description      : $@spelldesc196923
 Tooltip          : Cost of your next Light of the Martyr reduced by ${$min($w1,100)}%.
 

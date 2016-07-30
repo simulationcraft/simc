@@ -125,6 +125,7 @@ Effects          :
                    Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Fury of the Illidari (201467), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Soul Carver (214743), Spirit Bomb (218679), Soul Cleave (228477)
 #8 (id=329388)   : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
                    Base Value: 0 | Scaled Value: 0
+                   Hotfixed: Period
 #9 (id=341804)   : Apply Aura (6) | Unknown effect sub type (312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 567 | Target: Self(1)
 Description      : $@spelldesc191427
@@ -332,7 +333,7 @@ Effects          :
 #1 (id=266245)   : Apply Aura (6) | Proc Trigger Spell: Consume Magic (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218903 | Target: Self(1)
 
-Name             : Throw Glaive (id=185123) [Spell Family (107)] 
+Name             : Throw Glaive (id=185123) [Spell Family (107), Hotfixed: Attributes] 
 Class            : Demon Hunter
 School           : Physical
 Range            : 30 yards
@@ -1557,6 +1558,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=300652)   : Weapon Damage% (31)
                    Base Value: 95 | Scaled Value: 0.95 | Target: Enemy(6)
+                   Hotfixed: Base Value
 #3 (id=300653)   : Energize Power (30)
                    Base Value: 14 | Scaled Value: 15 - 20 | Value Range: 6 | Misc Value: fury | Target: Self(1)
 Description      : Inflicts $sw1 Shadow damage and generates $m3 to $M3 Fury.
@@ -2265,6 +2267,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=307364)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 0.50000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient
 Description      : $@spelldesc204021
 Tooltip          : Branded, taking $w1 Fire damage every $t1 sec, and dealing $204021s1% less damage to the branding Demon Hunter.
 
@@ -2408,7 +2411,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=309716)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100000000 | Scaled Value: 1e+008 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Self(1)
 #2 (id=309745)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 Description      : Sustaining fatal damage instead transforms you to Metamorphosis form, and returns you to $s2% health.
@@ -2682,6 +2685,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=312614)   : School Damage: chaos (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.50000 | Radius: 4 - 8 yards | Target: Unknown(86) -> AOE enemy (instant)(16)
+                   Hotfixed: Target 1
 
 Name             : Fel Barrage (id=211053) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -2701,6 +2705,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
 Effects          :
 #1 (id=312615)   : Apply Aura (6) | Periodic Dummy: every 0.25 seconds (226)
                    Base Value: 345914 | Scaled Value: 345914 | Target: Enemy(6)
+                   Hotfixed: Sub Type, Trigger Spell
 #2 (id=332627)   : Apply Aura (6) | Unknown effect sub type (106)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : At your command, unleash Fel, inflicting ${$211052s1} Chaos damage to your target and nearby enemies for each charge.  Max 5 charges.
@@ -2764,8 +2769,10 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Mechanic: Unknown(95) | Target: Enemy(6)
 #2 (id=345978)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Mechanic: Unknown(95) | Target: Enemy(6)
+                   Hotfixed: NEW EFFECT
 #3 (id=345979)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Mechanic: Unknown(95) | Target: Enemy(6)
+                   Hotfixed: NEW EFFECT
 Description      : Impales the target for $225102s1 Chaos damage and stuns them for $d.  Inflicts an additional $s3% damage against targets permanently immune to stuns.
 Tooltip          : Stunned.
 
@@ -2933,9 +2940,11 @@ Effects          :
 #3 (id=315252)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -45 | Scaled Value: -45 | Target: Self(1)
                    Affected Spells: Felblade (213241), Felblade (213243)
+                   Hotfixed: Sub Type, Base Value, Affects Spells
 #4 (id=315253)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -65 | Scaled Value: -65 | Target: Self(1)
                    Affected Spells: Fel Eruption (225102)
+                   Hotfixed: Sub Type, Base Value, Affects Spells
 #5 (id=315254)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=315255)   : Apply Aura (6) | Dummy (4)
@@ -3240,6 +3249,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=325652)   : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.80000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient
 Description      : $@spelldesc218679
 
 Name             : Spirit Bomb (id=218679) [Spell Family (107)] 
@@ -3385,8 +3395,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=337187)   : School Damage: chromatic (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.50000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient
 #2 (id=345980)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
+                   Hotfixed: NEW EFFECT
 Description      : $@spelldesc211881
 
 Name             : Fracture (id=225919) [Spell Family (107)] 

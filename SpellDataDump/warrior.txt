@@ -210,7 +210,8 @@ Tooltip          : $?s199023[Demoralized, dealing $s1% less damage.][Demoralized
 Name             : Slam (id=1464) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 20 Rage
+Resource         : 20 Rage [Hotfixed: Cost]
+
 Spell Level      : 1 (max 20)
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -228,6 +229,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=119511)   : Weapon Damage% (31)
                    Base Value: 125 | Scaled Value: 2.01 | Points Per Level: 4 | Target: Enemy(6)
+                   Hotfixed: Base Value
 Description      : Slams an opponent, causing $sw2 Physical damage.
 
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
@@ -454,6 +456,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229536)   : Weapon Damage% (31)
                    Base Value: 441 | Scaled Value: 4.41 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 Description      : Attempt to finish off a wounded foe, causing ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -474,6 +477,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
 Effects          :
 #1 (id=2203)     : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.83800 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Hotfixed: AP Coefficient
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
 Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage$?s199045[, rooting them for $199042d and reducing their movement speed by $s2% for $d.][ and reduces their movement speed by $s2% for $d.]
@@ -538,6 +542,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=2316)     : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 4.72500 | Radius: 8 yards | Target: Cone Front(104)
+                   Hotfixed: AP Coefficient
 #2 (id=159566)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self(1)
 Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
@@ -776,6 +781,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=102316)   : Weapon Damage% (31)
                    Base Value: 241 | Scaled Value: 3.09 | Points Per Level: 8.5 | Target: Enemy(6)
+                   Hotfixed: Base Value
 #2 (id=11313)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=290309)   : Dummy (3)
@@ -839,6 +845,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=134421)   : Weapon Damage% (31)
                    Base Value: 137 | Scaled Value: 2.17 | Points Per Level: 8 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 #3 (id=156242)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
 #4 (id=226744)   : Dummy (3)
@@ -873,7 +880,7 @@ Description      : Raise your shield, reflecting spells cast on you and reducing
 Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
 Magical damage taken reduced by $s2%.
 
-Name             : Shield Slam (id=23922) [Spell Family (4)] 
+Name             : Shield Slam (id=23922) [Spell Family (4), Hotfixed: Variables] 
 Class            : Protection Warrior
 School           : Physical
 Spell Level      : 10
@@ -890,6 +897,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=14132)    : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 5.47500 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient
 #2 (id=155551)   : Dispel (38)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Enemy(6)
 #3 (id=290322)   : Energize Power (30)
@@ -1099,6 +1107,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=36872)    : Weapon Damage% (31)
                    Base Value: 45 | Scaled Value: 0.45 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Hotfixed: Base Value
 Description      : $@spelldesc190411
 
 Name             : Mayhem Projection Goggles (id=46114) 
@@ -1290,7 +1299,7 @@ Effects          :
 #1 (id=49564)    : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
-Name             : Heroic Throw (id=57755) [Spell Family (4)] 
+Name             : Heroic Throw (id=57755) [Spell Family (4), Hotfixed: Attributes] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 22
@@ -1675,7 +1684,7 @@ Description      : A mighty blow with both weapons that deals a total of ${$9610
 
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
 
-Name             : Raging Blow (id=85384) [Spell Family (4)] 
+Name             : Raging Blow (id=85384) [Spell Family (4), Hotfixed: Affecting Spells] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 13 (max 20)
@@ -1694,6 +1703,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=86556)    : Weapon Damage% (31)
                    Base Value: 118 | Scaled Value: 1.46 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 Description      : $@spelldesc85288
 
 Name             : Meat Cleaver (id=85739) [Spell Family (4)] 
@@ -1819,7 +1829,7 @@ Effects          :
                    Base Value: 145 | Scaled Value: 1.45 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $sw2 Physical damage.
 
-Name             : Raging Blow (id=96103) [Spell Family (4)] 
+Name             : Raging Blow (id=96103) [Spell Family (4), Hotfixed: Affecting Spells] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 13 (max 20)
@@ -1838,6 +1848,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=101984)   : Weapon Damage% (31)
                    Base Value: 118 | Scaled Value: 1.46 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 Description      : $@spelldesc85288
 
 Name             : Commanding Shout (id=97462) [Spell Family (4)] 
@@ -1899,6 +1910,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=107866)   : Weapon Damage% (31)
                    Base Value: 171 | Scaled Value: 2.71 | Points Per Level: 10 | Target: Enemy(6)
+                   Hotfixed: Base Value
 #4 (id=313843)   : Trigger Spell: Taste for Blood (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 206333 | Target: Self(1)
 Description      : Aggressively strike with your off-hand weapon for $sw3 Physical damage. Increases your Bloodthirst critical strike chance by $206333s1% until it next deals a critical strike, stacking up to $206333u times.
@@ -2067,6 +2079,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=129821)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.05000 | Mechanic: Bleed | Target: Enemy(6)
+                   Hotfixed: AP Coefficient
 Description      : $@spelldesc115768
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -2972,6 +2985,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=230086)   : Weapon Damage% (31)
                    Base Value: 441 | Scaled Value: 4.41 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
@@ -3136,6 +3150,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267758)   : Weapon Damage% (31)
                    Base Value: 142 | Scaled Value: 1.42 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=184709) [Spell Family (4)] 
@@ -3158,6 +3173,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267762)   : Weapon Damage% (31)
                    Base Value: 95 | Scaled Value: 0.95 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
@@ -3296,7 +3312,7 @@ Effects          :
 Description      : A defensive combat state that reduces all damage you take by $s1%, and all damage you deal by $s2%. Lasts $d.
 Tooltip          : Reduces damage taken by $s1% and damage done by $s2%.
 
-Name             : Intercept (id=198304) [Spell Family (4)] 
+Name             : Intercept (id=198304) [Spell Family (4), Hotfixed: Spell Level] 
 Replaces         : Charge (id=100)
 Class            : Protection Warrior
 School           : Physical
@@ -3411,6 +3427,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=293809)   : Weapon Damage% (31)
                    Base Value: 61 | Scaled Value: 0.61 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Hotfixed: Base Value
 Description      : $@spelldesc1680
 
 Name             : Whirlwind (id=199667) [Spell Family (4)] 
@@ -3431,6 +3448,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=293820)   : Weapon Damage% (31)
                    Base Value: 45 | Scaled Value: 0.45 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Hotfixed: Base Value
 Description      : $@spelldesc190411
 
 Name             : Whirlwind (id=199850) [Spell Family (4)] 
@@ -3450,6 +3468,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=294126)   : Weapon Damage% (31)
                    Base Value: 61 | Scaled Value: 0.61 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Hotfixed: Base Value
 Description      : $@spelldesc1680
 
 Name             : Tactician (id=199854) [Spell Family (4)] 
@@ -3512,6 +3531,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296643)   : Weapon Damage% (31)
                    Base Value: 166 | Scaled Value: 1.66 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -3533,6 +3553,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296645)   : Weapon Damage% (31)
                    Base Value: 285 | Scaled Value: 2.85 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
@@ -3786,6 +3807,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298254)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 11 | Target: Self(1)
+                   Hotfixed: Base Value
 Description      : Whirlwind deals $s1% increased damage to your primary target. 
 
 Name             : Frenzy (id=202539) [Spell Family (4)] 
@@ -3805,6 +3827,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=298590)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+                   Hotfixed: Base Value
 Description      : Furious Slash increases your Haste by $s2% for $d, stacking up to $u times.
 Tooltip          : Haste increased by $s2%.
 
@@ -4710,6 +4733,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=320532)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Hotfixed: Base Value
 #2 (id=320533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | Target: Self(1)
 Description      : Bloodthirst has a $s1% increased critical strike chance against targets above $s2% health.
@@ -4808,6 +4832,7 @@ Effects          :
 #3 (id=320542)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 150 | Scaled Value: 150 | Target: Self(1)
                    Affected Spells: Raging Blow (85288), Raging Blow (85384), Raging Blow (96103)
+                   Hotfixed: Base Value
 Description      : Raging Blow no longer requires Enrage and deals $s3% increased damage, but has a ${$s1/1000}.1 sec cooldown.
 
 Name             : Rampage (id=218617) [Spell Family (4)] 
@@ -4830,6 +4855,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=325561)   : Weapon Damage% (31)
                    Base Value: 47 | Scaled Value: 0.47 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value
 Description      : $@spelldesc184367
 
 Name             : Gaze of the Val'kyr (id=218822) [Spell Family (4), Hidden] 
