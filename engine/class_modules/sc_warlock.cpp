@@ -2138,7 +2138,7 @@ public:
     return spell_t::init_finished();
   }
 
-  virtual void reset() override
+  void reset() override
   {
     spell_t::reset();
   }
@@ -2157,12 +2157,22 @@ public:
     }
   }
 
-  virtual int n_targets() const override
+  int n_targets() const override
   {
     if ( aoe == 0 && use_havoc() )
       return 2;
 
     return spell_t::n_targets();
+  }
+
+  void record_data( action_state_t* state ) override
+  {
+    if ( state -> target == p() -> warlock_pet_list.soul_effigy )
+    {
+      return;
+    }
+
+    spell_t::record_data( state );
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -2203,14 +2213,14 @@ public:
       return spell_t::target_list();
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
     double c = spell_t::cost();
 
     return c;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     spell_t::execute();
 
@@ -2264,7 +2274,7 @@ public:
     }
   }
 
-  virtual void tick( dot_t* d ) override
+  void tick( dot_t* d ) override
   {
     spell_t::tick( d );
 
@@ -2285,7 +2295,7 @@ public:
     }
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     spell_t::impact( s );
 
@@ -2303,7 +2313,7 @@ public:
     }
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
     double m = 1.0;
 
@@ -2318,7 +2328,7 @@ public:
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double pm = spell_t::action_multiplier();
 
@@ -2335,12 +2345,12 @@ public:
     return pm;
   }
 
-  virtual resource_e current_resource() const override
+  resource_e current_resource() const override
   {
     return spell_t::current_resource();
   }
 
-  virtual double composite_target_crit_chance( player_t* target ) const override
+  double composite_target_crit_chance( player_t* target ) const override
   {
     double c = spell_t::composite_target_crit_chance( target );
     if ( affected_by_flamelicked && p() -> destruction_trinket )
