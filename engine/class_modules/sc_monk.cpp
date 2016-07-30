@@ -7175,7 +7175,7 @@ double monk_t::composite_attack_power_multiplier() const
   double ap = player_t::composite_attack_power_multiplier();
 
   if ( mastery.elusive_brawler -> ok() )
-    ap *= 1.0 + cache.mastery_value();
+    ap *= 1.0 + cache.mastery() * mastery.elusive_brawler -> effectN( 2 ).mastery_value();
 
   return ap;
 }
