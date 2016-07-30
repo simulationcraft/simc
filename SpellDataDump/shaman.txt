@@ -5496,7 +5496,7 @@ Effects          :
 #1 (id=306879)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 10 | Scaled Value: 10 | Target: Friend(21)
 #2 (id=322959)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1000000000 | Scaled Value: 1e+09 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 1000000000 | Scaled Value: 1e+009 | Misc Value: 127 | Target: Friend(21)
 Description      : $@spelldesc207399
 Tooltip          : Health increased by $s1%.
 

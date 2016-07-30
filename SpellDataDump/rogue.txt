@@ -1232,7 +1232,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=20803)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 500000000 | Scaled Value: 5e+08 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 500000000 | Scaled Value: 5e+008 | Misc Value: 127 | Target: Self(1)
 Description      : Fatal attacks instead reduce you to 7% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
 
 Name             : Master of Subtlety (id=31666) [Spell Family (8), Hidden] 
@@ -2896,7 +2896,7 @@ Attributes       : ........ ........ ..x..... ...x...x   ....x... ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=269037)   : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -10000000 | Scaled Value: -1e+07 | SP Coefficient: 1.00000 | Target: Self(1)
+                   Base Value: -10000000 | Scaled Value: -1e+007 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=317950)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
                    Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283), Death (227151)
