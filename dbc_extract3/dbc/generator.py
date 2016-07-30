@@ -2519,7 +2519,7 @@ class SpellDataGenerator(DataGenerator):
 
         for power in powers + [ self._spellpower_db[0] ]:
             fields = power.field('id', 'id_spell', 'aura_id')
-            fields += [ '%#.8x' % (power.is_hotfixed() and dbc.data.DATA_HOTFIX or 0) ]
+            fields += [ '%#.8x' % power._flags ]
             fields += power.field('type_power', 'cost', 'cost_max', 'cost_per_second', 'pct_cost', 'pct_cost_max', 'pct_cost_per_second' )
 
             try:
