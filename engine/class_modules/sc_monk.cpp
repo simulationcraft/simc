@@ -402,7 +402,7 @@ public:
 
     // Windwalker
     const spell_data_t* afterlife;
-    const spell_data_t* combat_conditioning;
+    const spell_data_t* combat_conditioning; // Possibly will get removed
     const spell_data_t* combo_breaker;
     const spell_data_t* cyclone_strikes;
     const spell_data_t* disable;
@@ -1703,6 +1703,7 @@ public:
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_monk -> effectN( 1 ) );
+        // Cooldown reduction
         if ( ab::data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 2 ) ) )
           ab::cooldown -> duration *= 1 + p() -> passives.aura_windwalker_monk -> effectN( 2 ).percent(); // saved as -100
         break;
@@ -2626,7 +2627,6 @@ struct blackout_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-        cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
         rsk_proc = new rising_sun_kick_proc_t( p );
         break;
       }
@@ -2772,13 +2772,6 @@ struct blackout_strike_t: public monk_melee_attack_t
         if ( p -> artifact.obsidian_fists.rank() )
           base_crit += p -> artifact.obsidian_fists.percent();
 
-        break;
-      }
-      // Windwalkers cannot learn this spell. However the effect to adjust this spell is in the database.
-      // Just being a completionist about this.
-      case MONK_WINDWALKER:
-      {
-        cooldown -> duration *= 1 + p -> spec.combat_conditioning -> effectN( 2 ).percent(); // -100% for Windwalkers
         break;
       }
       default: break;
