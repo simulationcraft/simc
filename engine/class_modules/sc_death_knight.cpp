@@ -3430,8 +3430,11 @@ struct defile_t : public death_knight_spell_t
 // TODO: Conveert to mimic blizzard spells
 struct death_coil_t : public death_knight_spell_t
 {
+  const spell_data_t* unholy_vigor;
+
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "death_coil", p, p -> find_specialization_spell( "Death Coil" ) )
+    death_knight_spell_t( "death_coil", p, p -> find_specialization_spell( "Death Coil" ) ),
+    unholy_vigor( p -> find_spell( 196263 ) )
   {
     parse_options( options_str );
 
@@ -3473,7 +3476,8 @@ struct death_coil_t : public death_knight_spell_t
     }
 
     p() -> buffs.necrosis -> trigger();
-
+    p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY,
+      unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ), nullptr, this );
   }
 };
 
