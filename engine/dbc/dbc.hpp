@@ -47,6 +47,19 @@ struct stat_data_t
 // ==========================================================================
 
 namespace dbc {
+enum
+{
+  HOTFIX_SPELL_NEW    = 0xFFFFFFFFFFFFFFFFllu,
+  HOTFIX_SPELL_EFFECT = 0x8000000000000000llu,
+  HOTFIX_SPELL_POWER  = 0x4000000000000000llu,
+
+  // Completely new effect special value
+  HOTFIX_EFFECT_NEW = 0xFFFFFFFF,
+
+  // Completely new power special value
+  HOTFIX_POWER_NEW  = 0xFFFFFFFF,
+};
+
 // Initialization
 void apply_hotfixes();
 void init();
@@ -290,7 +303,7 @@ public:
   unsigned _id;
   unsigned _spell_id;
   unsigned _aura_id; // Spell id for the aura during which this power type is active
-  unsigned _flags;
+  unsigned _hotfix;
   int      _power_e;
   int      _cost;
   int      _cost_max;
@@ -590,6 +603,8 @@ private:
 // Spell Data
 // ==========================================================================
 
+// Note, Max numbered field count 62 for hotfixing purposes. The last two fields are used to
+// indicate that a spell has hotfixed effects or powers.
 struct spell_data_t
 {
 private:

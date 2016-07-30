@@ -12,7 +12,7 @@ struct proc_map_t
   const char* proc;
 };
 
-static const std::map<unsigned, const std::string> _targeting_map = {
+const std::map<unsigned, const std::string> _targeting_map = {
   {  1,  "Self"                },
   {  5,  "Active Pet"          },
   {  6,  "Enemy"               },
@@ -32,6 +32,176 @@ static const std::map<unsigned, const std::string> _targeting_map = {
   { 53,  "At Enemy"            },
   { 56,  "Raid Members"        },
 };
+
+std::vector<std::string> _hotfix_effect_map = {
+  "Id",
+  "", // Hotfix field
+  "Spell Id",
+  "Index",
+  "Type",
+  "Sub Type",
+  "Average",
+  "Delta",
+  "Bonus",
+  "SP Coefficient",
+  "AP Coefficient",
+  "Period",
+  "Min Radius",
+  "Max Radius",
+  "Base Value",
+  "Misc Value",
+  "Misc Value 2",
+  "Affects Spells",
+  "Trigger Spell",
+  "Chain Multiplier",
+  "Points per Combo Points",
+  "Points per Level",
+  "Die Sides",
+  "Mechanic",
+  "Chain Targets",
+  "Target 1",
+  "Target 2",
+  "Value Multiplier"
+};
+
+std::vector<std::string> _hotfix_spell_map = {
+  "Name",
+  "Id",
+  "", // Hotfix field
+  "Velocity",
+  "School",
+  "Class",
+  "Race",
+  "Scaling Spell",
+  "Max Scaling Level",
+  "Spell Level",
+  "Max Spell Level",
+  "Min Range",
+  "Max Range",
+  "Cooldown",
+  "GCD",
+  "Charges",
+  "Charge Cooldown",
+  "Category",
+  "Duration",
+  "Max stacks",
+  "Proc Chance",
+  "Proc Stacks",
+  "Proc Flags",
+  "Internal Cooldown",
+  "RPPM",
+  "", "", "", // Equipped items stuff, don't think we use these anywhere
+  "Min Cast Time",
+  "Max Cast Time",
+  "", "", "", // Old cast-time related fields, now zero (cast_div, cast_scaling, cast_scaling_type)
+  "", // Replace spell id, we're not flagging these as it's derived information
+  "Attributes",
+  "Affecting Spells",
+  "Spell Family",
+  "Stance Mask",
+  "Mechanic",
+  "Description",
+  "Tooltip",
+  "Variables",
+  "Rank",
+};
+
+std::vector<std::string> _hotfix_power_map = {
+  "Id",
+  "Spell Id",
+  "Aura Id",
+  "", // Hotfix flags
+  "Power Type",
+  "Cost",
+  "Max Cost",
+  "Cost per Tick",
+  "Percent Cost",
+  "Max Percent Cost",
+  "Percent Cost per Tick"
+};
+
+template <typename MAP_TYPE>
+std::ostringstream& hotfix_map_str( MAP_TYPE hotfix_map, std::ostringstream& s, const std::vector<std::string>& map )
+{
+  if ( hotfix_map == 0 )
+  {
+    return s;
+  }
+
+  for ( size_t i = 0; i < map.size(); ++i )
+  {
+    MAP_TYPE shift = (static_cast<MAP_TYPE>( 1 ) << i);
+
+    if ( ! ( hotfix_map & shift ) )
+    {
+      continue;
+    }
+
+    if ( s.tellp() > 0 )
+    {
+      s << ", ";
+    }
+
+    if ( map[ i ].empty() )
+    {
+      s << "Unknown(" << i << ")";
+    }
+    else
+    {
+      s << map[ i ];
+    }
+  }
+
+  return s;
+}
+
+std::string spell_hotfix_map_str( uint64_t hotfix_map )
+{
+  std::ostringstream s;
+
+  if ( hotfix_map == dbc::HOTFIX_SPELL_NEW )
+  {
+    s << "NEW SPELL";
+  }
+  else
+  {
+    hotfix_map_str( hotfix_map, s, _hotfix_spell_map );
+  }
+
+  return s.str();
+}
+
+std::string effect_hotfix_map_str( unsigned hotfix_map )
+{
+  std::ostringstream s;
+
+  if ( hotfix_map == dbc::HOTFIX_EFFECT_NEW )
+  {
+    s << "NEW EFFECT";
+  }
+  else
+  {
+    hotfix_map_str( hotfix_map, s, _hotfix_effect_map );
+  }
+
+  return s.str();
+}
+
+std::string power_hotfix_map_str( unsigned hotfix_map )
+{
+  std::ostringstream s;
+
+  if ( hotfix_map == dbc::HOTFIX_POWER_NEW )
+  {
+    s << "NEW POWER";
+  }
+  else
+  {
+    hotfix_map_str( hotfix_map, s, _hotfix_power_map );
+  }
+
+  return s.str();
+}
 
 std::string targeting_str( unsigned v )
 {
@@ -346,7 +516,13 @@ std::string spell_flags( const spell_data_t* spell )
     s << "Hidden, ";
 
   if ( spell -> _hotfix != 0 )
-    s << "Hotfixed, ";
+  {
+    auto hotfix_str = spell_hotfix_map_str( spell -> _hotfix );
+    if ( ! hotfix_str.empty() )
+    {
+      s << "Hotfixed: " << hotfix_str << ", ";
+    }
+  }
 
   if ( s.tellp() > 1 )
   {
@@ -472,11 +648,6 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       s << " | Unknown effect sub type";
 
     s << " (" << e -> subtype() << ")";
-  }
-
-  if ( e -> _hotfix != 0 )
-  {
-    s << " [Hotfixed]";
   }
 
   s << std::endl;
@@ -625,6 +796,14 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << std::endl;
   }
 
+  if ( e -> _hotfix != 0 )
+  {
+    s << "                   Hotfixed: ";
+    s << effect_hotfix_map_str( e -> _hotfix );
+    s << std::endl;
+  }
+
+
   s.precision( ssize );
 
   return s;
@@ -766,6 +945,15 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     if ( pd -> aura_id() > 0 && dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
       s << " w/ " << dbc.spell( pd -> aura_id() ) -> name_cstr() << " (id=" << pd -> aura_id() << ")";
+
+    if ( pd -> _hotfix != 0 )
+    {
+      auto hotfix_str = power_hotfix_map_str( pd -> _hotfix );
+      if ( ! hotfix_str.empty() )
+      {
+        s << " [Hotfixed: " << hotfix_str << "]" << std::endl;
+      }
+    }
 
     s << std::endl;
   }

@@ -2,8 +2,14 @@ import sys, os, re, types, html.parser, urllib, datetime, signal, json, pdb, pat
 
 import dbc.db, dbc.data, dbc.constants, dbc.parser, dbc.file
 
-# Special hotfix flag for spells to mark that the spell has hotfixed effects
-EFFECT_HOTFIX_PRESENT = 0x8000000000000000
+# Special hotfix flags for spells to mark that the spell has hotfixed effects or powers
+SPELL_EFFECT_HOTFIX_PRESENT = 0x8000000000000000
+SPELL_POWER_HOTFIX_PRESENT  = 0x4000000000000000
+
+# Special hotfix map values to indicate an entry is new (added completely through the hotfix entry)
+SPELL_HOTFIX_MAP_NEW  = 0xFFFFFFFFFFFFFFFF
+EFFECT_HOTFIX_MAP_NEW = 0xFFFFFFFF
+POWER_HOTFIX_MAP_NEW  = 0xFFFFFFFF
 
 def hotfix_fields(orig, hotfix):
     if orig.id != hotfix.id:
@@ -1582,6 +1588,7 @@ class SpellDataGenerator(DataGenerator):
         71,     # SPELL_EFFECT_PICKPOCKET
         94,     # SPELL_EFFECT_SELF_RESURRECT
         97,     # SPELL_EFFECT_SUMMON_ALL_TOTEMS
+        103,    # Grant reputation to faction
         109,    # SPELL_EFFECT_SUMMON_DEAD_PET
         110,    # SPELL_EFFECT_DESTROY_ALL_TOTEMS
         118,    # SPELL_EFFECT_SKILL
@@ -1653,6 +1660,7 @@ class SpellDataGenerator(DataGenerator):
         "^Weapon Skills",
         "^Armor Skills",
         "^Tamed Pet Passive",
+        "^Empowering$",
     ]
 
     _spell_families = {
@@ -2243,6 +2251,8 @@ class SpellDataGenerator(DataGenerator):
 
             for power in spell.get_links('power'):
                 powers.add( power )
+                if power.is_hotfixed():
+                    hotfix_flags |= SPELL_POWER_HOTFIX_PRESENT
 
             misc = self._spellmisc_db[spell.id_misc]
 
@@ -2347,7 +2357,7 @@ class SpellDataGenerator(DataGenerator):
                     effects.add( ( effect.id, spell.get_link('scaling').id ) )
                     effect_ids.append( '%u' % effect.id )
                     if effect.is_hotfixed():
-                        hotfix_flags |= EFFECT_HOTFIX_PRESENT
+                        hotfix_flags |= SPELL_EFFECT_HOTFIX_PRESENT
 
             # Add spell flags
             # 35
@@ -2389,6 +2399,8 @@ class SpellDataGenerator(DataGenerator):
             fields += [ u'0', u'0', u'0' ]
 
             # Finally, update hotfix flags, they are located in the array of fields at position 2
+            if spell._flags == -1:
+                hotfix_flags = SPELL_HOTFIX_MAP_NEW
             fields[2] = '%#.16x' % hotfix_flags
 
             try:
@@ -2488,7 +2500,10 @@ class SpellDataGenerator(DataGenerator):
             # Pad struct with empty pointers for direct spell data access
             fields += [ '0', '0' ]
 
-            # Update hotfix flags, they are located at position 1
+            # Update hotfix flags, they are located at position 1. If the
+            # effect's hotfix_flags is -1, it's a new entry
+            if effect._flags == -1:
+                hotfix_flags = EFFECT_HOTFIX_MAP_NEW
             fields[1] = '%#.8x' % hotfix_flags
 
             try:
@@ -2518,9 +2533,21 @@ class SpellDataGenerator(DataGenerator):
         self._out.write('static struct spellpower_data_t __%s_data[] = {\n' % ( self.format_str( "spellpower" ) ))
 
         for power in powers + [ self._spellpower_db[0] ]:
+            hotfix_flags = 0
+            # 1 2 3
             fields = power.field('id', 'id_spell', 'aura_id')
+            hotfix_flags |= power.get_hotfix_mapping(('id_spell', 1), ('aura_id', 2))
+            # 4
             fields += [ '%#.8x' % power._flags ]
+            # 5 6 7 8 9 10 11
             fields += power.field('type_power', 'cost', 'cost_max', 'cost_per_second', 'pct_cost', 'pct_cost_max', 'pct_cost_per_second' )
+            hotfix_flags |= power.get_hotfix_mapping(('type_power', 4), ('cost', 5), ('cost_max', 6),
+                ('cost_per_second', 7), ('pct_cost', 8), ('pct_cost_max', 9), ('pct_cost_per_second', 10))
+
+            # And update hotfix flags at position 3
+            if power._flags == -1:
+                hotfix_flags = POWER_HOTFIX_MAP_NEW
+            fields[3] = '%#.8x' % hotfix_flags
 
             try:
                 self._out.write('  { %s },\n' % (', '.join(fields)))
