@@ -1153,7 +1153,53 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> power_id() > 0 )
   {
-    s << "Artifact Power Id: " << spell -> power_id() << std::endl;
+    auto powers = dbc.artifact_power_ranks( spell -> power_id() );
+    s << "Artifact Power   : Id: " << spell -> power_id() << ", Max Rank: " << ( powers.back() -> index + 1 );
+    if ( powers.size() > 1 )
+    {
+      std::ostringstream value_str;
+      std::ostringstream spells_str;
+      value_str << ", Values: [ ";
+      bool has_multiple_spells = false;
+      for ( size_t i = 0, end = powers.size(); i < end; ++i )
+      {
+        const auto& power = powers[ i ];
+
+        if ( power -> value != 0 )
+        {
+          value_str << power -> value;
+        }
+        else if ( power -> id_spell > 0 && power -> id_spell != spell -> id() )
+        {
+          auto rank_spell = dbc.spell( power -> id_spell );
+          value_str << rank_spell -> effectN( 1 ).base_value();
+          spells_str << rank_spell -> id();
+          has_multiple_spells = true;
+        }
+        else
+        {
+          value_str << spell -> effectN( 1 ).base_value();
+        }
+
+        if ( i < powers.size() - 1 )
+        {
+          value_str << ", ";
+          if ( spells_str.tellp() > 0 )
+          {
+            spells_str << ", ";
+          }
+        }
+      }
+
+      value_str << " ]";
+      s << value_str.str();
+      if ( spells_str.tellp() > 0 )
+      {
+        s << ", Rank spells: [ " << spell -> id() << ", " << spells_str.str() << " ]";
+      }
+    }
+
+    s << std::endl;
   }
 
   if ( spell -> proc_flags() > 0 )
