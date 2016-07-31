@@ -49,6 +49,7 @@ public:
   std::vector<cooldown_t*> odyns_champion_cds;
   int initial_rage;
   bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger;
+  double expected_max_health;
 
   // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* arms_trinket, *prot_trinket;
@@ -171,6 +172,7 @@ public:
 
     // Legendarys
     gain_t* ceannar_rage;
+    gain_t* rage_from_damage_taken;
   } gain;
 
   // Spells
@@ -394,6 +396,7 @@ public:
     initial_rage = 0;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time = frothing_may_trigger = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
+    expected_max_health = 0;
     base.distance = 5.0;
 
     arms_trinket = prot_trinket = nullptr;
@@ -459,6 +462,7 @@ public:
   virtual resource_e primary_resource() const override { return RESOURCE_RAGE; }
   virtual role_e     primary_role() const override;
   virtual stat_e     convert_hybrid_stat( stat_e s ) const override;
+  virtual void       assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
   virtual void       assess_damage( school_e, dmg_e, action_state_t* s ) override;
   virtual void       copy_from( player_t* source ) override;
 
@@ -4031,6 +4035,22 @@ void warrior_t::init_base_stats()
   base.dodge += spec.bastion_of_defense -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
+
+  int num_items = (int) items.size();
+  double average_itemlevel;
+  for ( int i = 0; i < num_items; i++ )
+  {
+    average_itemlevel += static_cast<double>( items[i].item_level() ); //FIXME Need to make this weighted.
+  }
+  average_itemlevel /= num_items;
+
+  const auto& data = dbc.random_property( average_itemlevel );
+  data.p_epic[0];
+  expected_max_health = data.p_epic[0] * 8.484262;
+  expected_max_health += base.stats.attribute[ATTR_STAMINA];
+  expected_max_health *= 1.0511;
+  expected_max_health *= 1.0 + artifact.toughness.percent();
+  expected_max_health *= 60; //christ
 }
 
 // warrior_t::has_t18_class_trinket ============================================
@@ -4780,6 +4800,7 @@ void warrior_t::init_gains()
 
   gain.tier17_4pc_arms = get_gain( "tier17_4pc_arms" );
   gain.ceannar_rage = get_gain( "ceannar_rage" );
+  gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
 }
 
 // warrior_t::init_position ====================================================
@@ -5376,6 +5397,19 @@ stat_e warrior_t::convert_hybrid_stat( stat_e s ) const
   }
   default: return s;
   }
+}
+
+// warrior_t::assess_damage_imminent_pre_absorb =============================
+
+void warrior_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, action_state_t* s )
+{
+  if ( specialization() == WARRIOR_PROTECTION && s -> result_amount > 0 )
+  {
+    double rage_gain_from_damage_taken;
+    rage_gain_from_damage_taken = 50.0 * s -> result * expected_max_health;
+    resource_gain( RESOURCE_RAGE, rage_gain_from_damage_taken, gain.rage_from_damage_taken );
+  }
+  player_t::assess_damage_imminent_pre_absorb( school, dmg, s );
 }
 
 // warrior_t::assess_damage =================================================
