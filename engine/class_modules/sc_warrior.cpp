@@ -4045,7 +4045,7 @@ void warrior_t::init_base_stats()
   average_itemlevel /= num_items;
 
   const auto& data = dbc.random_property( average_itemlevel );
-  data.p_epic[0];
+
   expected_max_health = data.p_epic[0] * 8.484262;
   expected_max_health += base.stats.attribute[ATTR_STAMINA];
   expected_max_health *= 1.0511;
