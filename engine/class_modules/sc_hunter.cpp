@@ -1736,6 +1736,14 @@ struct basic_attack_t: public hunter_main_pet_attack_t
     return p() -> resources.current[RESOURCE_FOCUS] > 50;
   }
 
+  virtual void impact( action_state_t* s ) override
+  {
+    hunter_main_pet_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      trigger_beast_cleave( s );
+  }
+
   double action_multiplier() const override
   {
     double am = hunter_main_pet_attack_t::action_multiplier();
