@@ -29,6 +29,7 @@ MISTWEAVER:
 -- Summon Jade Serpent Statue
 
 BREWMASTER:
+- Celestial Fortune needs to be implemented.
 - Change the intial midigation % of stagger into an absorb (spell id 115069)
 - Fortuitous Sphers - Finish implementing
 - Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
@@ -6087,7 +6088,7 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
   }
 
   // Attempt to proc the heal
-  if ( rng().roll( composite_melee_crit_chance() ) )
+  if ( active_celestial_fortune_proc && rng().roll( composite_melee_crit_chance() ) )
   {
     active_celestial_fortune_proc -> base_dd_max = active_celestial_fortune_proc -> base_dd_min = s -> result_amount;
     active_celestial_fortune_proc -> schedule_execute();
