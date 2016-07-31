@@ -4036,21 +4036,26 @@ void warrior_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 
-  int num_items = (int) items.size();
-  double average_itemlevel;
-  for ( int i = 0; i < num_items; i++ )
+  if ( specialization() == WARRIOR_PROTECTION )
   {
-    average_itemlevel += static_cast<double>( items[i].item_level() ); //FIXME Need to make this weighted.
+    if ( items.size() > 0 )
+    {
+      double average_itemlevel = 0;
+      for ( size_t i = 0; i < items.size(); i++ )
+      {
+        average_itemlevel += static_cast<double>( items[i].item_level() ); //FIXME Need to make this weighted.
+      }
+      average_itemlevel /= items.size();
+
+      const auto& data = dbc.random_property( average_itemlevel );
+
+      expected_max_health = data.p_epic[0] * 8.484262;
+      expected_max_health += base.stats.attribute[ATTR_STAMINA];
+      expected_max_health *= 1.0511;
+      expected_max_health *= 1.0 + artifact.toughness.percent();
+      expected_max_health *= 60; //christ
+    }
   }
-  average_itemlevel /= num_items;
-
-  const auto& data = dbc.random_property( average_itemlevel );
-
-  expected_max_health = data.p_epic[0] * 8.484262;
-  expected_max_health += base.stats.attribute[ATTR_STAMINA];
-  expected_max_health *= 1.0511;
-  expected_max_health *= 1.0 + artifact.toughness.percent();
-  expected_max_health *= 60; //christ
 }
 
 // warrior_t::has_t18_class_trinket ============================================
