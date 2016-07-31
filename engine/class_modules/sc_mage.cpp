@@ -4524,7 +4524,7 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     hasted_ticks = false;
-    base_tick_time    = timespan_t::from_seconds( 1.0 );
+    base_tick_time    = timespan_t::from_seconds( 0.5 );
     dot_duration      = data().duration();
     add_child( frozen_orb_bolt );
     may_miss       = false;
