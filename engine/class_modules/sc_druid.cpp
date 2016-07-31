@@ -1500,8 +1500,8 @@ public:
     if ( ! ( ab::p() -> specialization() == DRUID_FERAL && ab::p() -> spec.omen_of_clarity -> ok() ) )
       return;
     
-    // 3.5 PPM via https://twitter.com/Celestalon/status/482329896404799488
-    double chance = ab::weapon -> proc_chance_on_swing( 3.5 );
+    // 5.25 PPM via http://us.battle.net/wow/en/forum/topic/20747154889#1
+    double chance = ab::weapon -> proc_chance_on_swing( 5.25 );
 
     if ( ab::p() -> sets.has_set_bonus( DRUID_FERAL, T18, B2 ) )
       chance *= 1.0 + ab::p() -> sets.set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent();
