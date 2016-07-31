@@ -58,6 +58,7 @@ std::vector<std::string> _hotfix_effect_map = {
   "Points per Level",
   "Die Sides",
   "Mechanic",
+  "Power Id",
   "Chain Targets",
   "Target 1",
   "Target 2",
@@ -1148,6 +1149,11 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> mechanic() > 0 )
   {
     s << "Mechanic         : " << mechanic_str( spell -> mechanic() ) << std::endl;
+  }
+
+  if ( spell -> power_id() > 0 )
+  {
+    s << "Artifact Power Id: " << spell -> power_id() << std::endl;
   }
 
   if ( spell -> proc_flags() > 0 )

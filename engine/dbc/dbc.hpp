@@ -765,19 +765,20 @@ public:
   unsigned    _stance_mask;        // 38 Stance mask (used only for druid form restrictions?)
   // SpellMechanic.db2
   unsigned    _mechanic;           // 39
+  unsigned    _power_id;           // 40 Artifact power id
   // Textual data
-  const char* _desc;               // 40 Spell.dbc description stringblock
-  const char* _tooltip;            // 41 Spell.dbc tooltip stringblock
+  const char* _desc;               // 41 Spell.dbc description stringblock
+  const char* _tooltip;            // 42 Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // 42 Spell description variable stringblock, if present
+  const char* _desc_vars;          // 43 Spell description variable stringblock, if present
   // SpellIcon.dbc
-  const char* _rank_str;           // 43
+  const char* _rank_str;           // 44
 
   // Pointers for runtime linking
-  std::vector<const spelleffect_data_t*>* _effects; // 44
-  std::vector<const spellpower_data_t*>*  _power; // 45
-  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s) // 46
-  const hotfix::client_hotfix_entry_t* _hotfix_entry; // 47 First hotfix entry in the hotfix table, if available
+  std::vector<const spelleffect_data_t*>* _effects;
+  std::vector<const spellpower_data_t*>*  _power;
+  std::vector<spell_data_t*>* _driver; // The triggered spell's driver(s)
+  const hotfix::client_hotfix_entry_t* _hotfix_entry; // First hotfix entry in the hotfix table, if available
 
   // Direct member access functions
   uint32_t category() const
@@ -875,6 +876,9 @@ public:
 
   unsigned mechanic() const
   { return _mechanic; }
+
+  unsigned power_id() const
+  { return _power_id; }
 
   // Helper functions
   size_t effect_count() const

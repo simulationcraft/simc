@@ -1715,6 +1715,7 @@ class SpellDataGenerator(DataGenerator):
             self._data_store.link('SpellEquippedItems', 'id_spell', 'Spell', 'equipped_item')
             self._data_store.link('SpellClassOptions',  'id_spell', 'Spell', 'class_option' )
             self._data_store.link('SpellShapeshift',    'id_spell', 'Spell', 'shapeshift'   )
+            self._data_store.link('ArtifactPowerRank',  'id_spell', 'Spell', 'artifact_power')
 
             self._data_store.link('SpellEffectScaling', 'id_effect', 'SpellEffect', 'scaling')
 
@@ -1733,6 +1734,7 @@ class SpellDataGenerator(DataGenerator):
             link(self._spellequippeditems_db, 'id_spell', self._spell_db, 'equipped_item')
             link(self._spellclassoptions_db, 'id_spell', self._spell_db, 'class_option')
             link(self._spellshapeshift_db, 'id_spell', self._spell_db, 'shapeshift')
+            link(self._artifactpowerrank_db, 'id_spell', self._spell_db, 'artifact_power')
 
             # Effect data model linkage
             link(self._spelleffectscaling_db, 'id_effect', self._spelleffect_db, 'scaling')
@@ -2436,26 +2438,34 @@ class SpellDataGenerator(DataGenerator):
             f, hfd = mechanic.get_hotfix_info(('mechanic', 38))
             hotfix_flags |= f
             hotfix_data += hfd
-            # 40, 41
+
+            # Note, no hotfix data for this for now. Also, only apply power id to the first rank
+            # 40
+            if spell.get_link('artifact_power').index == 0:
+                fields += spell.get_link('artifact_power').field('id_power')
+            else:
+                fields += self._artifactpowerrank_db[0].field('id_power')
+
+            # 41, 42
             fields += spell.field('desc', 'tt')
-            f, hfd = spell.get_hotfix_info(('desc', 39), ('tt', 40))
+            f, hfd = spell.get_hotfix_info(('desc', 40), ('tt', 41))
             hotfix_flags |= f
             hotfix_data += hfd
             # 42
             desc_var = self._spelldescriptionvariables_db.get(spell.id_desc_var)
             if desc_var:
                 fields += desc_var.field('desc')
-                f, hfd = desc_var.get_hotfix_info(('desc', 41))
+                f, hfd = desc_var.get_hotfix_info(('desc', 42))
                 hotfix_flags |= f
                 hotfix_data += hfd
             else:
-                f, hfd = spell.get_hotfix_info(('id_desc_var', 41))
+                f, hfd = spell.get_hotfix_info(('id_desc_var', 42))
                 hotfix_flags |= f
                 hotfix_data += hfd
                 fields += [ u'0' ]
             # 43
             fields += spell.field('rank')
-            f, hfd = spell.get_hotfix_info(('rank', 42))
+            f, hfd = spell.get_hotfix_info(('rank', 43))
             hotfix_flags |= f
             hotfix_data += hfd
             # Pad struct with empty pointers for direct access to spell effect data
