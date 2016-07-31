@@ -47,17 +47,17 @@ struct stat_data_t
 // ==========================================================================
 
 namespace dbc {
-enum
+enum : uint64_t
 {
-  HOTFIX_SPELL_NEW    = 0xFFFFFFFFFFFFFFFFllu,
-  HOTFIX_SPELL_EFFECT = 0x8000000000000000llu,
-  HOTFIX_SPELL_POWER  = 0x4000000000000000llu,
+  HOTFIX_SPELL_NEW    = 0xFFFFFFFFFFFFFFFF,
+  HOTFIX_SPELL_EFFECT = 0x8000000000000000,
+  HOTFIX_SPELL_POWER  = 0x4000000000000000,
 
   // Completely new effect special value
-  HOTFIX_EFFECT_NEW = 0xFFFFFFFF,
+  HOTFIX_EFFECT_NEW   = 0xFFFFFFFF,
 
   // Completely new power special value
-  HOTFIX_POWER_NEW  = 0xFFFFFFFF,
+  HOTFIX_POWER_NEW    = 0xFFFFFFFF,
 };
 
 // Initialization
