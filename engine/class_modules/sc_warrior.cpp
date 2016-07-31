@@ -4040,21 +4040,39 @@ void warrior_t::init_base_stats()
   {
     if ( items.size() > 0 )
     {
+      double totalweight = 0;
+      double avg_weighted_ilevel = 0;
       double average_itemlevel = 0;
       size_t divisor = 0;
       for ( size_t i = 0; i < items.size(); i++ )
       {
-        if ( items[i].slot ==  SLOT_SHIRT || items[i].slot == SLOT_TABARD )
+        if ( items[i].slot == SLOT_SHIRT || items[i].slot == SLOT_TABARD || !items[i].active() )
         {
           continue;
         }
         else
-        {          
-          average_itemlevel += static_cast<double>( items[i].item_level() ); //FIXME Need to make this weighted.
+        {
+          const auto& data = dbc.random_property( items[i].item_level() );
+          double ratio = data.p_epic[item_database::random_suffix_type( items[i] )] / data.p_epic[0];
+          totalweight += ratio;
           divisor++;
         }
       }
-      average_itemlevel /= divisor;
+      for ( size_t i = 0; i < items.size(); i++ )
+      {
+        if ( items[i].slot == SLOT_SHIRT || items[i].slot == SLOT_TABARD || !items[i].active() )
+        {
+          continue;
+        }
+        else
+        {
+          const auto& data = dbc.random_property( items[i].item_level() );
+          double ratio = data.p_epic[item_database::random_suffix_type( items[i] )] / data.p_epic[0];
+          avg_weighted_ilevel += ( ratio * static_cast<double>( items[i].item_level() ) / totalweight * divisor );
+        }
+      }
+
+      average_itemlevel = avg_weighted_ilevel / divisor;
 
       const auto& data = dbc.random_property( average_itemlevel );
 
