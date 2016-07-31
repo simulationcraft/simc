@@ -1699,7 +1699,8 @@ class SpellDataGenerator(DataGenerator):
                 'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment',
                 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization',
                 'SpellEffectScaling', 'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
-                'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'SpellShapeshift', 'SpellMechanic' ]
+                'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'ArtifactPower', 'Artifact',
+                'SpellShapeshift', 'SpellMechanic' ]
 
     def initialize(self):
         super().initialize()
@@ -2439,9 +2440,14 @@ class SpellDataGenerator(DataGenerator):
             hotfix_flags |= f
             hotfix_data += hfd
 
-            # Note, no hotfix data for this for now. Also, only apply power id to the first rank
+            # Note, no hotfix data for this for now. Also, only apply power id
+            # to the first rank, and only to spec specific artifacts. Fishing
+            # be gone!
             # 40
-            if spell.get_link('artifact_power').index == 0:
+            power_rank = spell.get_link('artifact_power')
+            power = self._artifactpower_db[power_rank.id_power]
+            artifact = self._artifact_db[power.id_artifact]
+            if power_rank.index == 0 and artifact.id_spec != 0:
                 fields += spell.get_link('artifact_power').field('id_power')
             else:
                 fields += self._artifactpowerrank_db[0].field('id_power')
