@@ -4041,11 +4041,20 @@ void warrior_t::init_base_stats()
     if ( items.size() > 0 )
     {
       double average_itemlevel = 0;
+      size_t divisor = 0;
       for ( size_t i = 0; i < items.size(); i++ )
       {
-        average_itemlevel += static_cast<double>( items[i].item_level() ); //FIXME Need to make this weighted.
+        if ( items[i].slot ==  SLOT_SHIRT || items[i].slot == SLOT_TABARD )
+        {
+          continue;
+        }
+        else
+        {          
+          average_itemlevel += static_cast<double>( items[i].item_level() ); //FIXME Need to make this weighted.
+          divisor++;
+        }
       }
-      average_itemlevel /= items.size();
+      average_itemlevel /= divisor;
 
       const auto& data = dbc.random_property( average_itemlevel );
 
