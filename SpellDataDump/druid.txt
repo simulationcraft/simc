@@ -80,7 +80,8 @@ Effects          :
 Description      : Heals all allies within $a2 yards for ${5*$157982s1} over $d. Healing increased by $s3% when not in a raid.
 Tooltip          : Healing all allies within $a1 yards for $157982s1 every $t1 sec.
 
-Name             : Cat Form (Shapeshift) (id=768) [Spell Family (7), Hotfixed: Attributes] 
+Name             : Cat Form (Shapeshift) (id=768) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Level      : 1
@@ -163,7 +164,8 @@ Description      : Shapeshift into a travel form appropriate to your current loc
 The act of shapeshifting frees you from movement impairing effects.
 Tooltip          : Immune to Polymorph effects.  Movement speed increased.
 
-Name             : Rip (id=1079) [Spell Family (7), Hotfixed: Variables] 
+Name             : Rip (id=1079) [Spell Family (7)] 
+Hotfixed         : Variables
 Class            : Feral Druid
 School           : Physical
 Resource         : 30 Energy
@@ -184,7 +186,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16000 | Mechanic: Bleed | Target: Enemy(6)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (0.14 -> 0.16)
 #2 (id=117625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #3 (id=117626)   : Dummy (3)
@@ -243,7 +245,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=559)      : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.91200 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (0.8 -> 0.912)
 #2 (id=560)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #3 (id=561)      : Trigger Spell: Rake (64)
@@ -413,7 +415,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=230015)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Hotfixed: Base Value
+                   Hotfixed: Base Value (20 -> 50)
 Description      : Activates Cat Form and places you into stealth until cancelled.
 Tooltip          : Stealthed.
 
@@ -460,7 +462,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #3 (id=1861)     : Weapon Damage% (31)
                    Base Value: 353 | Scaled Value: 6.95 | Points Per Level: 18 | Target: Enemy(6)
-                   Hotfixed: Base Value, Points per Level
+                   Hotfixed: Base Value (548 -> 353), Points per Level (28 -> 18)
 Description      : Shred the target, causing $sw1 Physical damage to the target. Deals $106785s2% increased damage against bleeding targets.
 
 While stealthed, Shred deals $5215m4% increased damage, and has double the chance to critically strike.
@@ -534,7 +536,8 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
 Description      : Increases swimming speed by $s1% and allow's the druid to breathe underwater.
 
-Name             : Bear Form (Shapeshift) (id=5487) [Spell Family (7), Hotfixed: Attributes] 
+Name             : Bear Form (Shapeshift) (id=5487) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Level      : 8
@@ -629,7 +632,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Target: Enemy(6)
 #2 (id=2457)     : Weapon Damage% (31)
                    Base Value: 81 | Scaled Value: 0.81 | Target: Enemy(6)
-                   Hotfixed: Base Value
+                   Hotfixed: Base Value (135 -> 81)
 Description      : Maul the target for $sw2 Physical damage.
 
 Name             : Moonfire (Lunar) (id=8921) [Spell Family (7)] 
@@ -961,7 +964,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=12790)    : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.74500 | Chain Multiplier: 0.7 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (5.8 -> 3.745)
 #2 (id=12791)    : Energize Power (30)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: energy | Target: Self(1)
 Description      : Finishing move that causes Physical damage per combo point and consumes up to 25 additional Energy to increase damage by up to 100%.
@@ -1243,7 +1246,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=216150)   : Weapon Damage% (31)
                    Base Value: 375 | Scaled Value: 3.75 | Target: Enemy(6)
-                   Hotfixed: Base Value
+                   Hotfixed: Base Value (340 -> 375)
 #3 (id=281797)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #4 (id=290296)   : Energize Power (30)
@@ -1481,8 +1484,7 @@ Tooltip          : Damage taken reduced by $s1%.
 Name             : Savage Roar (id=52610) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
-Resource         : 40 Energy [Hotfixed: Cost]
-
+Resource         : 40 Energy [Hotfixed: Cost (25 -> 40)]
 Resource         : 1 - 5 Combo Points
 Spell Level      : 1
 Range            : 100 yards
@@ -1853,7 +1855,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=68168)    : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.53400 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (0.54 -> 0.534)
 #2 (id=312099)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: rage | Target: Self(1)
 Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
@@ -1931,7 +1933,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=68522)    : Weapon Damage% (31)
                    Base Value: 630 | Scaled Value: 6.3 | Target: Enemy(6)
-                   Hotfixed: Base Value
+                   Hotfixed: Base Value (420 -> 630)
 #2 (id=68523)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=327035)   : Dummy (3)
@@ -2687,10 +2689,10 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=117262)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 0.41000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (0.6156 -> 0.41)
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.29200 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (0.438 -> 0.292)
 Description      : Strikes all nearby enemies, dealing $m1 bleed damage and an additional $o2 damage over $d.
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
@@ -3265,11 +3267,11 @@ Effects          :
 #6 (id=260757)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-                   Hotfixed: Sub Type, Base Value, Affects Spells
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 20), Affects Spells
 #7 (id=260758)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-                   Hotfixed: Sub Type, Base Value, Misc Value, Affects Spells
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 20), Misc Value (0 -> 22), Affects Spells
 #8 (id=260759)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260760)   : Apply Aura (6) | Dummy (4)
@@ -3308,7 +3310,7 @@ Effects          :
                    Affected Spells: Healing Touch (5185)
 #3 (id=191155)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 917504 | Target: Self(1)
-                   Hotfixed: Sub Type, Base Value, Misc Value
+                   Hotfixed: Sub Type (4 -> 405), Base Value (0 -> 50), Misc Value (0 -> 917504)
 #4 (id=191156)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191157)   : Apply Aura (6) | Dummy (4)
@@ -3603,7 +3605,7 @@ Effects          :
 #1 (id=195368)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Enraged Mangle (202085), Ashamane's Frenzy (210723), Swipe (213771)
-                   Hotfixed: Base Value, Affects Spells
+                   Hotfixed: Base Value (40 -> 50), Affects Spells
 Description      : Casting Healing Touch causes your next two melee abilities to deal $s1% increased damage for their full duration.
 Tooltip          : Your next two melee abilities deal $s1% increased damage for their full duration.
 
@@ -3727,10 +3729,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=216287)   : Apply Aura (6) | Periodic Damage: arcane every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.87500 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (0.7 -> 0.875)
 #2 (id=216288)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.12500 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (0.9 -> 1.125)
 #3 (id=216290)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
@@ -3805,7 +3807,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.91200 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (0.8 -> 0.912)
 Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
@@ -3902,7 +3904,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=221437)   : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Target: Self(1)
-                   Hotfixed: Base Value
+                   Hotfixed: Base Value (8 -> 12)
 Description      : Your finishing moves grant $s1 Energy per combo point.
 
 Name             : Soul of the Forest (id=158477) [Spell Family (7), Passive] 
@@ -4657,7 +4659,7 @@ Attributes       : ....x... ........ .....x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=281782)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.13400 | Mechanic: Bleed | Target: Enemy(6)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (0.135 -> 0.134)
 #2 (id=301092)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
                    Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Ashamane's Rip (210705), Swipe (213771), Bloody Paws (214995)
@@ -4826,7 +4828,7 @@ Effects          :
 #4 (id=344680)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
                    Affected Spells: Ferocious Bite (22568)
-                   Hotfixed: Base Value, Affects Spells
+                   Hotfixed: Base Value (35 -> 40), Affects Spells
 #5 (id=344848)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
@@ -4972,7 +4974,7 @@ Effects          :
 #5 (id=290503)   : Apply Aura (6) | Add Percent Modifier: Spell Tick Time (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Self(1)
                    Affected Spells: Feral Overrides Passive (197692)
-                   Hotfixed: Base Value
+                   Hotfixed: Base Value (-100 -> 0)
 #6 (id=310756)   : Apply Aura (6) | Unknown effect sub type (332)
                    Base Value: 102383 | Scaled Value: 102383 | Misc Value 2: 0x8 | Target: Self(1)
                    Affected Spells: Wild Charge (102401)
@@ -5303,7 +5305,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=297728)   : Weapon Damage% (31)
                    Base Value: 2025 | Scaled Value: 20.25 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: Base Value
+                   Hotfixed: Base Value (2700 -> 2025)
 Description      : Strikes all nearby enemies with a massive slash, inflicting $sw3 Physical damage. Awards $s1 combo $lpoint:points;. Maximum $s2 charges.
 
 Name             : Sabertooth (id=202031) [Spell Family (7), Passive] 
@@ -5335,11 +5337,11 @@ Effects          :
 #1 (id=297732)   : Apply Aura (6) | Add Percent Modifier: Unknown 2 (108)
                    Base Value: -33 | Scaled Value: -33 | SP Coefficient: 1.00000 | Misc Value: 19 | Target: Self(1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
-                   Hotfixed: Base Value
+                   Hotfixed: Base Value (-40 -> -33)
 #2 (id=297777)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
                    Base Value: -33 | Scaled Value: -33 | SP Coefficient: 1.00000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Shadow Thrash (210687), Ashamane's Rip (210705)
-                   Hotfixed: Base Value
+                   Hotfixed: Base Value (-40 -> -33)
 Description      : Your Rip, Rake, and Thrash abilities deal the same damage as normal, but in $s1% less time.
 
 Name             : Elune's Guidance (id=202060) [Spell Family (8)] 
@@ -5404,7 +5406,7 @@ Effects          :
 #4 (id=344681)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
                    Affected Spells: Ferocious Bite (22568)
-                   Hotfixed: Base Value, Affects Spells
+                   Hotfixed: Base Value (35 -> 40), Affects Spells
 #5 (id=344851)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
@@ -5452,7 +5454,7 @@ Effects          :
 #4 (id=344682)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
                    Affected Spells: Ferocious Bite (22568)
-                   Hotfixed: Base Value, Affects Spells
+                   Hotfixed: Base Value (35 -> 40), Affects Spells
 #5 (id=344859)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
                    Affected Spells: Rake (1822), Shred (5221), Rake (155722)
@@ -6363,7 +6365,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 Description      : Your combo point generators against targets bleeding from your Rip have a $h% chance to awaken the Spirit of Ashamane, which inflicts a Shadowy duplicate of that Rip on the target.
 
-Name             : Ashamane's Rip (id=210705) [Spell Family (7), Hotfixed: Variables] 
+Name             : Ashamane's Rip (id=210705) [Spell Family (7)] 
+Hotfixed         : Variables
 Class            : Druid
 School           : Shadow
 Spell Level      : 22
@@ -6379,7 +6382,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=312119)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient
+                   Hotfixed: AP Coefficient (0.14 -> 0.16)
 #2 (id=312120)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #3 (id=312121)   : Dummy (3)
@@ -6661,7 +6664,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=317225)   : Weapon Damage% (31)
                    Base Value: 216 | Scaled Value: 2.16 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: Base Value
+                   Hotfixed: Base Value (180 -> 216)
 Description      : Swipe nearby enemies, inflicting $sw3 Physical damage.
 
 Name             : Protection of Ashamane (id=214274) [Spell Family (7), Hidden] 

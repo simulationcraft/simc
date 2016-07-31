@@ -2117,7 +2117,8 @@ $low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
 $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
-Name             : Power Strikes (id=121283) [Spell Family (53), Hotfixed: Attributes] 
+Name             : Power Strikes (id=121283) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Range            : 50000 yards
@@ -2338,7 +2339,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 63508 | Misc Value 2: 0xcbe | Target: At Enemy(53)
 Description      : Summons an effigy of Xuen, the White Tiger for $d. Xuen attacks your primary target, and strikes 3 enemies within $123996A1 yards every $123999t1 sec with Tiger Lightning for $123996s1 Nature damage.
 
-Name             : Chi Burst (id=123986) [Scaling Spell (6), Spell Family (53), Hotfixed: Attributes] 
+Name             : Chi Burst (id=123986) [Scaling Spell (6), Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -2678,7 +2680,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1028
 Description      : $@spelldesc125151
 
-Name             : Healing Sphere (id=125355) [Spell Family (53), Hotfixed: Attributes] 
+Name             : Healing Sphere (id=125355) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Range            : 50000 yards
@@ -3029,7 +3032,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : You're a Level 90 Monk.  Grats!
 
-Name             : Chi Burst (id=130654) [Scaling Spell (6), Spell Family (53), Hotfixed: Attributes] 
+Name             : Chi Burst (id=130654) [Scaling Spell (6), Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -3340,7 +3344,7 @@ Effects          :
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
-                   Hotfixed: Sub Type, Base Value, Misc Value, Affects Spells
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -100), Misc Value (0 -> 11), Affects Spells
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191102)   : Apply Aura (6) | Dummy (4)
@@ -3441,7 +3445,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self(1)
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
-Name             : Chi Burst (id=148135) [Spell Family (53), Hotfixed: Attributes] 
+Name             : Chi Burst (id=148135) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -3633,7 +3638,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=228215)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE friendly(30)
-                   Hotfixed: SP Coefficient
+                   Hotfixed: SP Coefficient (0.25 -> 0.33)
 Description      : $@spelldesc196725
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -3719,7 +3724,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: Self(1)
 Description      : Every time your Soothing Mist heals a target your critical strike chance is increased by $167732s1%.
 
-Name             : Windwalking (id=166646) [Spell Family (53), Hotfixed: Attributes] 
+Name             : Windwalking (id=166646) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Level      : 1
@@ -3899,7 +3905,8 @@ Description      : Unleashes a rapid twirl of healing bolts at up to $s1 allies 
 
 Gust of Mists will heal affected targets twice.
 
-Name             : Essence Font (id=191840) [Spell Family (53), Hotfixed: Attributes] 
+Name             : Essence Font (id=191840) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -4620,7 +4627,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Target: Friend(21)
 Description      : Chi-Ji dashes to three allies, healing them for $s2.
 
-Name             : Song of Chi-Ji (id=198898) [Spell Family (53), Hotfixed: Attributes] 
+Name             : Song of Chi-Ji (id=198898) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -4641,7 +4649,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5484 | Target: Custom(18)
 Description      : Conjures a cloud of hypnotic mist that slowly travels forward. Enemies touched by the mist fall asleep, Disoriented for $198909d.
 
-Name             : Song of Chi-Ji (id=198909) [Spell Family (53), Hotfixed: Attributes] 
+Name             : Song of Chi-Ji (id=198909) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Level      : 1
@@ -4840,7 +4849,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
 Effects          :
 #1 (id=310090)   : Apply Aura (6) | Periodic Heal: every 0.5 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.55000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend(21)
-                   Hotfixed: SP Coefficient
+                   Hotfixed: SP Coefficient (0.4 -> 0.55)
 Description      : Heals the target for $o1 over $d.
 
 While channeling, Effuse and Enveloping Mist are instant cast, and will heal the soothed target without breaking the Soothing Mist channel.
