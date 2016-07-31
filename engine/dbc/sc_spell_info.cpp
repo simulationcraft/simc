@@ -120,10 +120,10 @@ std::vector<std::string> _hotfix_power_map = {
   "Percent Cost per Tick"
 };
 
-template <typename MAP_TYPE>
-std::ostringstream& hotfix_map_str( MAP_TYPE hotfix_map, std::ostringstream& s, const std::vector<std::string>& map )
+template <typename DATA_TYPE, typename MAP_TYPE>
+std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s, const std::vector<std::string>& map )
 {
-  if ( hotfix_map == 0 )
+  if ( data -> _hotfix == 0 )
   {
     return s;
   }
@@ -132,7 +132,7 @@ std::ostringstream& hotfix_map_str( MAP_TYPE hotfix_map, std::ostringstream& s, 
   {
     MAP_TYPE shift = (static_cast<MAP_TYPE>( 1 ) << i);
 
-    if ( ! ( hotfix_map & shift ) )
+    if ( ! ( data -> _hotfix & shift ) )
     {
       continue;
     }
@@ -149,55 +149,74 @@ std::ostringstream& hotfix_map_str( MAP_TYPE hotfix_map, std::ostringstream& s, 
     else
     {
       s << map[ i ];
+      auto hotfix_entry = hotfix::hotfix_entry( data, i );
+      if ( hotfix_entry != nullptr )
+      {
+        switch ( hotfix_entry -> field_type )
+        {
+          case hotfix::UINT:
+            s << " (" << hotfix_entry -> orig_value.u << " -> " << hotfix_entry -> hotfixed_value.u << ")";
+            break;
+          case hotfix::INT:
+            s << " (" << hotfix_entry -> orig_value.i << " -> " << hotfix_entry -> hotfixed_value.i << ")";
+            break;
+          case hotfix::FLOAT:
+            s << " (" << hotfix_entry -> orig_value.f << " -> " << hotfix_entry -> hotfixed_value.f << ")";
+            break;
+          // Don't print out the changed string for now, seems pointless
+          case hotfix::STRING:
+            break;
+        }
+      }
     }
   }
 
   return s;
 }
 
-std::string spell_hotfix_map_str( uint64_t hotfix_map )
+std::string spell_hotfix_map_str( const spell_data_t* spell )
 {
   std::ostringstream s;
 
-  if ( hotfix_map == dbc::HOTFIX_SPELL_NEW )
+  if ( spell -> _hotfix == dbc::HOTFIX_SPELL_NEW )
   {
     s << "NEW SPELL";
   }
   else
   {
-    hotfix_map_str( hotfix_map, s, _hotfix_spell_map );
+    hotfix_map_str<spell_data_t, uint64_t>( spell, s, _hotfix_spell_map );
   }
 
   return s.str();
 }
 
-std::string effect_hotfix_map_str( unsigned hotfix_map )
+std::string effect_hotfix_map_str( const spelleffect_data_t* effect )
 {
   std::ostringstream s;
 
-  if ( hotfix_map == dbc::HOTFIX_EFFECT_NEW )
+  if ( effect -> _hotfix == dbc::HOTFIX_EFFECT_NEW )
   {
     s << "NEW EFFECT";
   }
   else
   {
-    hotfix_map_str( hotfix_map, s, _hotfix_effect_map );
+    hotfix_map_str<spelleffect_data_t, unsigned>( effect, s, _hotfix_effect_map );
   }
 
   return s.str();
 }
 
-std::string power_hotfix_map_str( unsigned hotfix_map )
+std::string power_hotfix_map_str( const spellpower_data_t* power )
 {
   std::ostringstream s;
 
-  if ( hotfix_map == dbc::HOTFIX_POWER_NEW )
+  if ( power -> _hotfix == dbc::HOTFIX_POWER_NEW )
   {
     s << "NEW POWER";
   }
   else
   {
-    hotfix_map_str( hotfix_map, s, _hotfix_power_map );
+    hotfix_map_str<spellpower_data_t, unsigned>( power, s, _hotfix_power_map );
   }
 
   return s.str();
@@ -515,15 +534,6 @@ std::string spell_flags( const spell_data_t* spell )
   if ( spell -> flags( SPELL_ATTR_HIDDEN ) )
     s << "Hidden, ";
 
-  if ( spell -> _hotfix != 0 )
-  {
-    auto hotfix_str = spell_hotfix_map_str( spell -> _hotfix );
-    if ( ! hotfix_str.empty() )
-    {
-      s << "Hotfixed: " << hotfix_str << ", ";
-    }
-  }
-
   if ( s.tellp() > 1 )
   {
     s.seekp( -2, std::ios_base::cur );
@@ -799,7 +809,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( e -> _hotfix != 0 )
   {
     s << "                   Hotfixed: ";
-    s << effect_hotfix_map_str( e -> _hotfix );
+    s << effect_hotfix_map_str( e );
     s << std::endl;
   }
 
@@ -825,6 +835,15 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> rank_str() )
     name_str += " (" + std::string( spell -> rank_str() ) + ")";
   s <<   "Name             : " << name_str << " (id=" << spell -> id() << ") " << spell_flags( spell ) << std::endl;
+
+  if ( spell -> _hotfix != 0 )
+  {
+    auto hotfix_str = spell_hotfix_map_str( spell );
+    if ( ! hotfix_str.empty() )
+    {
+      s << "Hotfixed         : " << hotfix_str << std::endl;
+    }
+  }
 
   if ( spell -> replace_spell_id() > 0 )
   {
@@ -948,10 +967,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     if ( pd -> _hotfix != 0 )
     {
-      auto hotfix_str = power_hotfix_map_str( pd -> _hotfix );
+      auto hotfix_str = power_hotfix_map_str( pd );
       if ( ! hotfix_str.empty() )
       {
-        s << " [Hotfixed: " << hotfix_str << "]" << std::endl;
+        s << " [Hotfixed: " << hotfix_str << "]";
       }
     }
 

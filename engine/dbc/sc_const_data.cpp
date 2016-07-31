@@ -79,6 +79,7 @@ spelltoken_t tokens;
 dbc_index_t<spell_data_t> spell_data_index;
 dbc_index_t<spelleffect_data_t> spelleffect_data_index;
 dbc_index_t<talent_data_t> talent_data_index;
+dbc_index_t<spellpower_data_t> power_data_index;
 
 std::vector< std::vector< const spell_data_t* > > class_family_index;
 std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
@@ -125,47 +126,6 @@ std::size_t dbc::n_set_bonus( bool ptr )
   return n;
 }
 
-/* Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
- *
- */
-void dbc::apply_hotfixes()
-{
-  /* Spell Data Hotfix Area
-   *
-   * ALWAYS DOCUMENT YOUR CHANGES, including a DATE and a LINK to the source
-   *
-   * ALWAYS USE ABSOLUTE VALUES, never relative ones. That means only assignment operators ( = ),
-   * no multiplication, addition, etc.
-   */
-
-  // spell_data_t* s;
-  // spelleffect_data_t* e;
-
-  // Hunter
-
-  // Mage
-
-  // Paladin
-
-  // Priest
-
-  // Rogue
-
-  // Shaman
-
-  // Warlock
-
-  // Druid
-
-  // Death Knight
-
-  // Warrior
-
-  // Enchants
-
-  // Item hotfixes
-}
-
 static void generate_class_flags_index( bool ptr = false )
 {
   std::vector< std::vector< const spell_data_t* > >* l = &( class_family_index );
@@ -199,6 +159,7 @@ void dbc::init()
   spell_data_index.init();
   spelleffect_data_index.init();
   talent_data_index.init();
+  power_data_index.init();
   init_item_data();
 
   // runtime linking, eg. from spell_data to all its effects
@@ -215,8 +176,12 @@ void dbc::init()
     talent_data_t::link( true );
   }
 
-  // Apply "modifications" to dbc data
-  dbc::apply_hotfixes();
+  // Link client side hotfix data to spells, effects, and power entries after everything else is
+  // done
+  hotfix::link_hotfix_data( false );
+#if SC_USE_PTR
+  hotfix::link_hotfix_data( true );
+#endif
 
   generate_class_flags_index();
   if ( SC_USE_PTR )
@@ -1660,6 +1625,12 @@ spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
   return effect;
 }
 
+// Always returns non-NULL
+spellpower_data_t* spellpower_data_t::find( unsigned id, bool ptr )
+{
+  spellpower_data_t* power = power_data_index.get( ptr, id );
+  return power ? power : spellpower_data_t::nil();
+}
 
 talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr )
 {
@@ -2692,5 +2663,106 @@ unsigned dbc_t::artifact_power_spell_id( specialization_e spec, unsigned power_i
   }
 
   return ranks[ rank - 1 ] -> id_spell;
+}
+
+// Hotfix data handling
+
+
+size_t hotfix::n_spell_hotfix_entry( bool ptr )
+{
+#if SC_USE_PTR
+  return ptr ? PTR_SPELL_HOTFIX_SIZE : SPELL_HOTFIX_SIZE;
+#else
+  ( void ) ptr;
+  return SPELL_HOTFIX_SIZE;
+#endif
+}
+
+size_t hotfix::n_effect_hotfix_entry( bool ptr )
+{
+#if SC_USE_PTR
+  return ptr ? PTR_EFFECT_HOTFIX_SIZE : EFFECT_HOTFIX_SIZE;
+#else
+  ( void ) ptr;
+  return EFFECT_HOTFIX_SIZE;
+#endif
+}
+
+size_t hotfix::n_power_hotfix_entry( bool ptr )
+{
+#if SC_USE_PTR
+  return ptr ? PTR_POWER_HOTFIX_SIZE : POWER_HOTFIX_SIZE;
+#else
+  ( void ) ptr;
+  return POWER_HOTFIX_SIZE;
+#endif
+}
+
+const hotfix::client_hotfix_entry_t* hotfix::spell_hotfix_entry( bool ptr )
+{
+#if SC_USE_PTR
+  return ptr ? __ptr_spell_hotfix_data : __spell_hotfix_data;
+#else
+  (void ) ptr;
+  return __spell_hotfix_data;
+#endif
+}
+
+const hotfix::client_hotfix_entry_t* hotfix::effect_hotfix_entry( bool ptr )
+{
+#if SC_USE_PTR
+  return ptr ? __ptr_effect_hotfix_data : __effect_hotfix_data;
+#else
+  (void ) ptr;
+  return __effect_hotfix_data;
+#endif
+}
+
+const hotfix::client_hotfix_entry_t* hotfix::power_hotfix_entry( bool ptr )
+{
+#if SC_USE_PTR
+  return ptr ? __ptr_power_hotfix_data : __power_hotfix_data;
+#else
+  (void ) ptr;
+  return __power_hotfix_data;
+#endif
+}
+
+// Link up the hotfix entry pointer to each relevant spell, effect, or power data.
+template <typename DATA>
+static void link_hotfix_entry_ptr( bool ptr, const std::function<const hotfix::client_hotfix_entry_t*(bool)>& entry_fn )
+{
+  auto entry = entry_fn( ptr );
+  unsigned last_id = entry -> id;
+  DATA* data = DATA::find( entry -> id, ptr );
+  while ( entry -> id != 0 )
+  {
+    if ( entry -> id != last_id )
+    {
+      data = DATA::find( entry -> id, ptr );
+      last_id = entry -> id;
+    }
+
+    if ( ! data || data -> _hotfix_entry )
+    {
+      ++entry;
+      continue;
+    }
+
+    data -> _hotfix_entry = entry;
+    ++entry;
+  }
+}
+
+void hotfix::link_hotfix_data( bool ptr )
+{
+  // First up, link spell hotfix data
+  link_hotfix_entry_ptr<spell_data_t>( ptr, spell_hotfix_entry );
+
+  // Next, link effect hotfix data
+  link_hotfix_entry_ptr<spelleffect_data_t>( ptr, effect_hotfix_entry );
+
+  // Finally, link power hotfix data
+  link_hotfix_entry_ptr<spellpower_data_t>( ptr, power_hotfix_entry );
 }
 

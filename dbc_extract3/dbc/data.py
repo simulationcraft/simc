@@ -42,7 +42,7 @@ class RawDBCRecord:
 class DBCRecord(RawDBCRecord):
     __l = None
     __d = None
-    __slots__ = ('_l',) # Lazy initialized in add_link
+    __slots__ = ('_l', '_hotfix_data' ) # Lazy initialized in add_link, Hotfixed field data
 
     # Default value if database is accessed with a missing key (id)
     @classmethod
@@ -66,6 +66,23 @@ class DBCRecord(RawDBCRecord):
 
         cls.__l[attr_name] = attr_default
 
+    # Field_name of -1 indicates new entry, otherwise, collect original value
+    # to _hotfix_data so we can output it later on
+    def add_hotfix(self, field_name, original_data):
+        field_index = 0
+        if field_name == -1:
+            field_index = -1
+        else:
+            field_index = self._cd[field_name]
+
+        if not hasattr(self, '_hotfix_data'):
+            self._hotfix_data = []
+
+        if field_index == -1:
+            self._hotfix_data.append((-1, None))
+        else:
+            self._hotfix_data.append((field_index, getattr(original_data, field_name)))
+
     def add_link(self, name, value):
         if not hasattr(self, '_l'):
             self._l = {}
@@ -83,13 +100,31 @@ class DBCRecord(RawDBCRecord):
             else:
                 raise AttributeError
 
-    def get_hotfix_mapping(self, *args):
+    # Returns a tuple of ( <hotfix field flags>, [ <hotfix data: mapping id, field type, and the original value> ] )
+    def get_hotfix_info(self, *args):
         hotfix_val = 0
+        hotfix_data = []
         for field_name, map_index in args:
+            # Note, theoretically this can keyerror, which is fine since it's
+            # always a bug on the generator side (typoed field name)
             field_index = self._cd[field_name]
-            if (1 << field_index) & self._flags:
-                hotfix_val |= (1 << map_index)
-        return hotfix_val
+
+            if (1 << field_index) & self._flags == 0:
+                continue
+
+            # Only flag the same mapping index once, since we are not concerned
+            # (currently) with hotfixed fields inside arrays of data
+            if (1 << map_index) & hotfix_val:
+                continue
+
+            hotfix_val |= (1 << map_index)
+            # Add field to hotfix data
+            for index, orig_value in self._hotfix_data:
+                if index == field_index:
+                    hotfix_data.append((map_index, self._fo[field_index], orig_value, getattr(self, field_name)))
+                    break
+
+        return hotfix_val, hotfix_data
 
     def get_link(self, name, index = 0):
         if name not in self.__l:
@@ -307,19 +342,40 @@ class SpellCooldowns(DBCRecord):
         else:
             return DBCRecord.__getattribute__(self, name)
 
-    # Need to override get_hotfix_mapping too so we can get some information
+    # Need to override get_hotfix_info too so we can get some information
     # out of the record when the special 'cooldown_duration' field is specified
-    def get_hotfix_mapping(self, *args):
+    def get_hotfix_info(self, *args):
         hotfix_val = 0
+        hotfix_data = []
         for field_name, map_index in args:
             if field_name == 'cooldown_duration':
-                if (1 << self._cd['cooldown']) & self._flags or (1 << self._cd['category_cooldown']) & self._flags:
+                if (1 << self._cd['cooldown']) & self._flags:
+                    field_index = self._cd['cooldown']
                     hotfix_val |= (1 << map_index)
+                    for index, orig_value in self._hotfix_data:
+                        if index == field_index:
+                            hotfix_data.append((map_index, self._fo[field_index], orig_value, self._d[field_index]))
+                            break
+                elif (1 << self._cd['category_cooldown']) & self._flags:
+                    field_index = self._cd['category_cooldown']
+                    hotfix_val |= (1 << map_index)
+                    for index, orig_value in self._hotfix_data:
+                        if index == field_index:
+                            hotfix_data.append((map_index, self._fo[field_index], orig_value, self._d[field_index]))
+                            break
             else:
                 field_index = self._cd[field_name]
-                if (1 << field_index) & self._flags:
-                    hotfix_val |= (1 << map_index)
-        return hotfix_val
+                if (1 << field_index) & self._flags == 0:
+                    continue
+
+                hotfix_val |= (1 << map_index)
+
+                for index, orig_value in self._hotfix_data:
+                    if index == field_index:
+                        hotfix_data.append((map_index, self._fo[field_index], orig_value, getattr(self, field_name)))
+                        break
+
+        return hotfix_val, hotfix_data
 
 
     def field(self, *args):
