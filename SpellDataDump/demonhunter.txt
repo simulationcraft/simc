@@ -1026,6 +1026,7 @@ GCD              : 1.5 seconds
 Velocity         : 3 yards/sec
 Duration         : 3 seconds
 Cooldown         : 60 seconds
+Artifact Power   : Id: 1010, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Triggered by     : Push Active Ability to Bar (225863)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -1043,6 +1044,7 @@ Name             : Rage of the Illidari (id=201472) [Spell Family (107), Passive
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
+Artifact Power   : Id: 1015, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -1061,6 +1063,7 @@ Name             : Anguish of the Deceiver (id=201473) [Spell Family (107), Pass
 Class            : Demon Hunter
 School           : Chaos
 Proc Chance      : 101%
+Artifact Power   : Id: 1016, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -2009,6 +2012,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
+Artifact Power   : Id: 1096, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Triggered by     : Push Active Ability to Bar (225864)
 Attributes       : ........ ........ ..x..... .......x   ........ .x...... ........ ........ 
@@ -2686,7 +2690,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=312614)   : School Damage: chaos (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.50000 | Radius: 4 - 8 yards | Target: Unknown(86) -> AOE enemy (instant)(16)
-                   Hotfixed: Target 1 (74 -> 86)
+                   Hotfixed: Chain Targets (74 -> 86)
 
 Name             : Fel Barrage (id=211053) [Spell Family (107)] 
 Class            : Demon Hunter

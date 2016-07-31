@@ -3473,6 +3473,7 @@ Name             : Crystalline Swords (id=189186) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Proc Chance      : 45%
+Artifact Power   : Id: 122, Max Rank: 1
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3494,6 +3495,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 300 seconds
 Category         : 1652
+Artifact Power   : Id: 124, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4358,6 +4360,7 @@ Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
+Artifact Power   : Id: 289, Max Rank: 1
 Affecting spells : Dark Succor (101568), Death Knight (137005), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5906,6 +5909,7 @@ GCD              : 1.5 seconds
 Cooldown         : 90 seconds
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
+Artifact Power   : Id: 149, Max Rank: 1
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Affecting spells : Death Knight (137005)

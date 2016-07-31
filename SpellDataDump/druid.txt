@@ -165,7 +165,7 @@ The act of shapeshifting frees you from movement impairing effects.
 Tooltip          : Immune to Polymorph effects.  Movement speed increased.
 
 Name             : Rip (id=1079) [Spell Family (7)] 
-Hotfixed         : Variables
+Hotfixed         : Rank
 Class            : Feral Druid
 School           : Physical
 Resource         : 30 Energy
@@ -5230,6 +5230,7 @@ School           : Physical
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Stance Mask      : 0x00000010
+Artifact Power   : Id: 960, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225867)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5693,6 +5694,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (15 seconds cooldown)
 Category         : 1584
+Artifact Power   : Id: 1049, Max Rank: 1
 Affecting spells : Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Triggered by     : Push Active Ability to Bar (225865)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6168,6 +6170,7 @@ School           : Nature
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 90 seconds
+Artifact Power   : Id: 125, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225868)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6279,6 +6282,7 @@ Class            : Druid
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
+Artifact Power   : Id: 1167, Max Rank: 6, Values: [ 5, 10, 15, 20, 25, 30 ]
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : AOE Heal, Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6314,6 +6318,7 @@ Name             : Protection of Ashamane (id=210650) [Spell Family (7), Passive
 Class            : Druid
 School           : Physical
 Range            : 100 yards
+Artifact Power   : Id: 1158, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6351,6 +6356,7 @@ Class            : Druid
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 10%
+Artifact Power   : Id: 1154, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -6366,7 +6372,7 @@ Effects          :
 Description      : Your combo point generators against targets bleeding from your Rip have a $h% chance to awaken the Spirit of Ashamane, which inflicts a Shadowy duplicate of that Rip on the target.
 
 Name             : Ashamane's Rip (id=210705) [Spell Family (7)] 
-Hotfixed         : Variables
+Hotfixed         : Rank
 Class            : Druid
 School           : Shadow
 Spell Level      : 22
@@ -6420,6 +6426,7 @@ GCD              : 1 seconds
 Duration         : 3 seconds
 Cooldown         : 75 seconds
 Stance Mask      : 0x00000001
+Artifact Power   : Id: 1153, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

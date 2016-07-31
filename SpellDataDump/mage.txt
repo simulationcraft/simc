@@ -3703,6 +3703,7 @@ Name             : Aftershocks (id=194431) [Spell Family (3), Passive]
 Class            : Mage
 School           : Physical
 Proc Chance      : 100%
+Artifact Power   : Id: 761, Max Rank: 1
 Proc Flags       : ........ ....x... x.x..... ........ 
                  : AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3746,6 +3747,7 @@ Velocity         : 50 yards/sec
 Charges          : 3 (45 seconds cooldown)
 Category         : 1633
 Proc Chance      : 101%
+Artifact Power   : Id: 748, Max Rank: 1
 Affecting spells : Critical Mass (117216)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4510,6 +4512,7 @@ Class            : Mage
 School           : Physical
 Internal Cooldown: 6 seconds
 Proc Chance      : 10%
+Artifact Power   : Id: 86, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -4722,6 +4725,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Cooldown         : 45 seconds
+Artifact Power   : Id: 783, Max Rank: 1
 Affecting spells : Shatter (12982), Ice Floes (108839), 
 Triggered by     : Push Active Ability to Bar (225872)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

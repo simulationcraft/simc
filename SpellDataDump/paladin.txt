@@ -2731,6 +2731,7 @@ Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Physical
 Range            : 100 yards
+Artifact Power   : Id: 353, Max Rank: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3379,6 +3380,7 @@ School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
 Real PPM         : 1
+Artifact Power   : Id: 963, Max Rank: 1
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3402,6 +3404,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
+Artifact Power   : Id: 965, Max Rank: 1
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4128,6 +4131,7 @@ School           : Holyfire
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
+Artifact Power   : Id: 40, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225875)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4194,6 +4198,7 @@ School           : Holy
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 60 seconds
+Artifact Power   : Id: 1120, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

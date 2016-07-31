@@ -4167,6 +4167,7 @@ Tooltip          : Fel Boar summoned.
 Name             : Marked for Death (id=190529) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
+Artifact Power   : Id: 319, Max Rank: 6, Values: [ 2, 4, 6, 8, 10, 12 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4314,6 +4315,7 @@ Class            : Hunter
 School           : Physical
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
+Artifact Power   : Id: 311, Max Rank: 1
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -5591,6 +5593,7 @@ Range            : 8 yards
 Duration         : 4 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 100%
+Artifact Power   : Id: 1068, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Blackness (184902), Mongoose Fury (190931), Mastery: Sniper Training (193468), Sharpened Fang (203566)
@@ -5615,6 +5618,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 20 seconds
+Artifact Power   : Id: 307, Max Rank: 1
 Affecting spells : Hunter (137014), Mastery: Sniper Training (193468)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -5897,6 +5901,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 8 seconds
 Cooldown         : 60 seconds
+Artifact Power   : Id: 879, Max Rank: 1
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

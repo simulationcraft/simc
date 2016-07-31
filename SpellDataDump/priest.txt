@@ -3316,6 +3316,7 @@ School           : Physical
 Range            : 100 yards
 Internal Cooldown: 15 seconds
 Proc Chance      : 20%
+Artifact Power   : Id: 834, Max Rank: 1
 Proc Flags       : ........ ..x.x.x. x....x.. ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Trap Triggered
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3936,6 +3937,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
+Artifact Power   : Id: 764, Max Rank: 1
 Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -4181,6 +4183,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 90 seconds
+Artifact Power   : Id: 883, Max Rank: 1
 Triggered by     : Push Active Ability to Bar (225879)
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4218,6 +4221,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 2 (45 seconds cooldown)
 Category         : 1604
+Artifact Power   : Id: 836, Max Rank: 1
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
