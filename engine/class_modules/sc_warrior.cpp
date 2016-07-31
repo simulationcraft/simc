@@ -3586,6 +3586,7 @@ struct shield_block_t: public warrior_spell_t
   {
     parse_options( options_str );
     use_off_gcd = true;
+    cooldown -> hasted = true;
   }
 
   void execute() override
