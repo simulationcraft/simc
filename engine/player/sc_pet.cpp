@@ -128,29 +128,6 @@ void pet_t::init_base_stats()
 
 }
 
-double pet_t::health_percentage() const
-{
-  if ( duration > timespan_t::zero() && owner -> type == ENEMY )
-  {
-    timespan_t remainder = timespan_t::zero();
-    timespan_t divisor = timespan_t::zero();
-    if ( duration > timespan_t::zero() )
-    {
-      remainder = expiration -> remains();
-      divisor = duration;
-    }
-    else
-    {
-      remainder = std::max( timespan_t::zero(), sim -> expected_iteration_time - sim -> current_time() );
-      divisor = sim -> expected_iteration_time;
-    }
-
-    return remainder / divisor * 100.0;
-  }
-
-  return resources.pct( RESOURCE_HEALTH ) * 100;
-}
-
 // pet_t::init_target =======================================================
 
 void pet_t::init_target()
@@ -181,7 +158,7 @@ void pet_t::summon( timespan_t summon_duration )
 
   current.distance = owner -> current.distance;
 
-  // Add to active_ pets
+  // Add to active_pets
   auto it = range::find( owner -> active_pets, this );
   if ( it != owner -> active_pets.end() )
     owner -> active_pets.push_back( this );
