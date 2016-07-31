@@ -669,16 +669,6 @@ public:
     return am;
   }
 
-  virtual void impact( action_state_t* s ) override
-  {
-    ab::impact( s );
-
-    // Bullseye artifact trait - procs from specials on targets below 20%
-    // TODO: Apparently this only procs on a single impact for multi-shot
-    if ( p() -> artifacts.bullseye.rank() &&  s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() )
-      p() -> buffs.bullseye -> trigger();
-  }
-
   virtual double cost() const override
   {
     double cost = ab::cost();
@@ -2375,6 +2365,14 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     }
   }
 
+  virtual void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    if ( p() -> artifacts.bullseye.rank() && s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() )
+      p() -> buffs.bullseye -> trigger();
+  }
+
   virtual timespan_t execute_time() const override
   {
     timespan_t t = base_t::execute_time();
@@ -2635,11 +2633,11 @@ struct barrage_t: public hunter_ranged_attack_t
       background = true;
       may_crit = true;
       weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
       aoe = -1;
       base_aoe_multiplier = 0.5;
       range = radius;
       range = 0;
+      travel_speed = 0.0;
     }
   };
 
