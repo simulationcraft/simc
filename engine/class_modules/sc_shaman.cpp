@@ -6387,7 +6387,7 @@ void shaman_t::init_action_list_elemental()
   single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&"
                                             "(cooldown_react|buff.ascendance.up)" );
   single -> add_talent( this, "Elemental Blast" );
-  single -> add_action( this, "Flame Shock", "if=maelstrom>=20&refreshable" );
+  single -> add_action( this, "Flame Shock", "if=maelstrom>=20,target_if=refreshable" );
   single -> add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up&"
                                              "((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|"
                                              "buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))" );

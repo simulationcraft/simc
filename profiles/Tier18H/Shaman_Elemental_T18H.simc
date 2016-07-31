@@ -47,7 +47,7 @@ actions.single+=/earth_shock,if=maelstrom>=92
 actions.single+=/icefury,if=raid_event.movement.in<5
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
 actions.single+=/elemental_blast
-actions.single+=/flame_shock,if=maelstrom>=20&refreshable
+actions.single+=/flame_shock,if=maelstrom>=20,target_if=refreshable
 actions.single+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))
 actions.single+=/frost_shock,moving=1,if=buff.icefury.up
 actions.single+=/earth_shock,if=maelstrom>=86
