@@ -4789,6 +4789,7 @@ public:
 
   virtual void init() override;
   virtual void init_base_stats() override;
+  virtual double health_percentage() const override;
   virtual void init_target() override;
   virtual void reset() override;
   virtual void summon( timespan_t duration = timespan_t::zero() );
