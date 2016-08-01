@@ -1456,7 +1456,7 @@ static const convergence_cd_t convergence_cds[] =
   { HUNTER_MARKSMANSHIP,  { "trueshot" } },
   { HUNTER_SURVIVAL,      { "aspect_of_the_eagle" } },
   { MONK_WINDWALKER,      { "storm_earth_and_fire" } },
-  { PALADIN_RETRIBUTION,  { "avenging_wrath" } },
+  { PALADIN_RETRIBUTION,  { "avenging_wrath", "crusade" } },
   { ROGUE_SUBTLETY,       { "vendetta" } },
   { ROGUE_OUTLAW,         { "adrenaline_rush" } },
   { ROGUE_ASSASSINATION,  { "shadow_blades" } },
