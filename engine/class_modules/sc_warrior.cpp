@@ -524,7 +524,10 @@ public:
       ab::aoe = p() -> talents.sweeping_strikes -> effectN( 1 ).base_value() + 1;
     }
 
-    ab::cooldown -> hasted = headlongrush;
+    if ( headlongrush )
+    {
+      ab::cooldown -> hasted = headlongrush;
+    }
   }
 
   virtual ~warrior_action_t() {}
