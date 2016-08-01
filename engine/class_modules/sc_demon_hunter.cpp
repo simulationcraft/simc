@@ -38,8 +38,7 @@ namespace
    Last Resort, Nether Bond talents
    True proc chance for Fallout
    Artificial Stamina
-   Fancy pain from damage taken formula
-
+   
    Needs Documenting --------------------------------------------------------
 */
 
@@ -160,6 +159,7 @@ public:
   unsigned demon_blades_charges;  // # of banked Demon Blades procs
   unsigned shear_counter;         // # of failed Shears since last proc
   double metamorphosis_health;    // Vengeance temp health from meta;
+  double expected_max_health;
 
   // Soul Fragments
   unsigned next_fragment_spawn;  // determines whether the next fragment spawn
@@ -573,6 +573,7 @@ public:
 
   // custom demon_hunter_t functions
   void adjust_movement();
+  double calculate_expected_max_health() const;
   unsigned consume_soul_fragments( soul_fragment_e = SOUL_FRAGMENT_ALL,
                                    bool heal = true );
   unsigned get_active_soul_fragments(
@@ -5664,6 +5665,7 @@ void demon_hunter_t::init_resources( bool force )
 
   resources.current[ RESOURCE_FURY ] = 0;
   resources.current[ RESOURCE_PAIN ] = 0;
+  expected_max_health = calculate_expected_max_health();
 }
 
 // demon_hunter_t::init_rng =================================================
@@ -6545,6 +6547,41 @@ double demon_hunter_t::temporary_movement_modifier() const
 // overridden player_t combat functions
 // ==========================================================================
 
+// demon_hunter_t::expected_max_health() ============================================
+
+double demon_hunter_t::calculate_expected_max_health() const
+{
+	double slot_weights = 0;
+	double prop_values = 0;
+	for (size_t i = 0; i < items.size(); i++)
+	{
+		const item_t* item = &items[i];
+		if (!item || item -> slot == SLOT_SHIRT || item -> slot == SLOT_RANGED || item -> slot == SLOT_TABARD)
+		{
+			continue;
+		}
+
+		const random_prop_data_t item_data = dbc.random_property(item->item_level());
+		int index = item_database::random_suffix_type(&item->parsed.data);
+		slot_weights += item_data.p_epic[index] / item_data.p_epic[0];
+
+		if (!item->active())
+		{
+			continue;
+		}
+
+		prop_values += item_data.p_epic[index];
+	}
+
+	double expected_health = (prop_values / slot_weights) * 8.318556;
+	expected_health += base.stats.attribute[STAT_STAMINA];
+	expected_health *= 1 + matching_gear_multiplier(ATTR_STAMINA);
+	expected_health *= 1 + spec.demonic_wards->effectN(4).percent();
+	expected_health *= 1 + artifact.will_of_the_illidari.percent();
+	expected_health *= current.health_per_stamina;
+	return expected_health;
+}
+
 // demon_hunter_t::assess_damage ============================================
 
 void demon_hunter_t::assess_damage( school_e school, dmg_e dt,
@@ -6581,7 +6618,7 @@ void demon_hunter_t::assess_damage_imminent_pre_absorb( school_e school,
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
     resource_gain( RESOURCE_PAIN,
-      s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 50.0,
+      s -> result_amount / expected_max_health * 50.0,
       gain.damage_taken );
   }
 
