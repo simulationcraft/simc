@@ -364,7 +364,7 @@ public:
     artifact_power_t quick_shot;
     artifact_power_t critical_focus;
     artifact_power_t windrunners_guidance;
-    artifact_power_t call_the_targets;
+    artifact_power_t called_shot;
     artifact_power_t marked_for_death;
     artifact_power_t precision;
     artifact_power_t rapid_killing;
@@ -2699,8 +2699,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     aoe = -1;
 
-    if ( p -> artifacts.call_the_targets.rank() )
-      base_multiplier *= 1.0 + p -> artifacts.call_the_targets.percent();
+    if ( p -> artifacts.called_shot.rank() )
+      base_multiplier *= 1.0 + p -> artifacts.called_shot.percent();
 
     if ( p -> specialization() == HUNTER_MARKSMANSHIP )
     {
@@ -3524,6 +3524,9 @@ struct sidewinders_t: hunter_ranged_attack_t
 
     if ( p -> artifacts.critical_focus.rank() )
       energize_amount += p -> find_spell( 191328 ) -> effectN( 2 ).base_value();
+
+    if ( p -> artifacts.called_shot.rank() )
+      base_multiplier *= 1.0 + p -> artifacts.called_shot.percent();
   }
 
   virtual void execute() override
@@ -5424,7 +5427,7 @@ void hunter_t::init_spells()
   artifacts.quick_shot                = find_artifact_spell( "Quick Shot" );
   artifacts.critical_focus            = find_artifact_spell( "Critical Focus" );
   artifacts.windrunners_guidance      = find_artifact_spell( "Windrunner's Guidance" );
-  artifacts.call_the_targets          = find_artifact_spell( "Call the Targets" );
+  artifacts.called_shot               = find_artifact_spell( "Called Shot" );
   artifacts.marked_for_death          = find_artifact_spell( "Marked for Death" );
   artifacts.precision                 = find_artifact_spell( "Precision" );
   artifacts.rapid_killing             = find_artifact_spell( "Rapid Killing" );
