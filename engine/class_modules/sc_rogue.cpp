@@ -294,6 +294,7 @@ struct rogue_t : public player_t
 
     // Generic
     const spell_data_t* subtlety_rogue;
+    const spell_data_t* outlaw_rogue;
 
     // Assassination
     const spell_data_t* assassins_resolve;
@@ -2177,7 +2178,7 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
         options_str )
   {
-    crit_bonus_multiplier = 3;
+    crit_bonus_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
   }
 
@@ -6296,6 +6297,7 @@ void rogue_t::init_spells()
 
   // Generic
   spec.subtlety_rogue       = find_specialization_spell( "Subtlety Rogue" );
+  spec.outlaw_rogue         = find_specialization_spell( "Outlaw Rogue" );
 
   // Assassination
   spec.assassins_resolve    = find_specialization_spell( "Assassin's Resolve" );
