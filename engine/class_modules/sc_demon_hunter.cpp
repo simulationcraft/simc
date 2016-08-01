@@ -1804,14 +1804,25 @@ struct fel_barrage_t : public demon_hunter_spell_t
     }
   };
 
+  action_t* damage;
+
   fel_barrage_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "fel_barrage", p, p -> talent.fel_barrage,
                             options_str )
   {
-    tick_action = new fel_barrage_tick_t( p );
     channeled = tick_zero = true;
+    may_proc_fel_barrage = false;
     dot_duration   = data().duration();
     base_tick_time = data().effectN( 1 ).period();
+
+    damage = p -> find_action( "fel_barrage_tick" );
+
+    if ( ! damage )
+    {
+      damage = new fel_barrage_tick_t( p );
+    }
+
+    damage -> stats = stats;
   }
 
   // Hide direct results in report.
@@ -1822,24 +1833,17 @@ struct fel_barrage_t : public demon_hunter_spell_t
   }
 
   timespan_t travel_time() const override
-  {
-    return timespan_t::zero();
-  }
+  { return timespan_t::zero(); }
 
   // Channel is not hasted. TOCHECK
   timespan_t tick_time( const action_state_t* ) const override
+  { return base_tick_time; }
+
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    return base_tick_time;
-  }
-
-  double composite_persistent_multiplier(
-    const action_state_t* s ) const override
-  {
-    double pm = demon_hunter_spell_t::composite_persistent_multiplier( s );
-
-    pm *= ( double )cooldown -> current_charge / cooldown -> charges;
-
-    return pm;
+    /* Override persistent multiplier and just return the charge multiplier.
+    This value will be used to modify the tick_state. */
+    return ( double )cooldown -> current_charge / cooldown -> charges;
   }
 
   void update_ready( timespan_t cd_duration ) override
@@ -1854,8 +1858,18 @@ struct fel_barrage_t : public demon_hunter_spell_t
   }
 
   bool usable_moving() const override
+  { return true; }
+
+  void tick( dot_t* d ) override
   {
-    return true;
+    demon_hunter_spell_t::tick( d );
+    
+    action_state_t* tick_state = damage -> get_state();
+    damage -> target = d -> target;
+    damage -> snapshot_state( tick_state, DMG_DIRECT );
+    // Multiply the damage by the number of charges.
+    tick_state -> persistent_multiplier *= d -> state -> persistent_multiplier;
+    damage-> schedule_execute( tick_state );
   }
 };
 
@@ -2165,12 +2179,12 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     void trigger_burning_alive( dot_t* d )
     {
-      if ( !p() -> talent.burning_alive -> ok() )
+      if ( ! p() -> talent.burning_alive -> ok() )
       {
         return;
       }
 
-      if ( !debug_cast<fiery_brand_state_t*>( d -> state ) -> primary )
+      if ( ! debug_cast<fiery_brand_state_t*>( d -> state ) -> primary )
       {
         return;
       }
@@ -2192,7 +2206,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       for ( size_t i = 0; i < targets.size(); i++ )
       {
-        if ( !td( targets[ i ] ) -> dots.fiery_brand -> is_ticking() )
+        if ( ! td( targets[ i ] ) -> dots.fiery_brand -> is_ticking() )
         {
           candidates.push_back( targets[ i ] );
         }
@@ -2205,7 +2219,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       // Pick a random target.
       player_t* target =
-        candidates[ ( int )p() -> rng().range( 0, candidates.size() ) ];
+        candidates[ ( int ) p() -> rng().range( 0, candidates.size() ) ];
 
       // Execute a dot on that target.
       this -> target = target;
@@ -2213,33 +2227,39 @@ struct fiery_brand_t : public demon_hunter_spell_t
     }
   };
 
-  fiery_brand_t( demon_hunter_t* p, const std::string& /* options_str */ )
+  action_t* dot;
+
+  fiery_brand_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "fiery_brand", p,
-                            p -> find_specialization_spell( "Fiery Brand" ) )
+      p -> find_specialization_spell( "Fiery Brand" ), options_str )
   {
-    use_off_gcd          = true;
-    impact_action        = new fiery_brand_dot_t( p );
-    impact_action -> stats = stats;
-  }
+    use_off_gcd = true;
 
-  action_state_t* new_state() override
-  {
-    return new fiery_brand_state_t( this, target );
-  }
+    dot = p -> find_action( "fiery_brand_dot" );
 
-  void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    demon_hunter_spell_t::snapshot_state( s, rt );
+    if ( ! dot )
+    {
+      dot = new fiery_brand_dot_t( p );
+    }
 
-    /* Set this DoT as the primary DoT, enabling its ticks to spread the DoT
-       to nearby targets when Burning Alive is talented. impact_action will
-       automatically copy this state to the dot state. */
-    debug_cast<fiery_brand_state_t*>( s ) -> primary = true;
+    dot -> stats = stats;
   }
 
   dot_t* get_dot( player_t* t ) override
+  { return dot -> get_dot( t ); }
+
+  void impact( action_state_t* s ) override
   {
-    return impact_action -> get_dot( t );
+    demon_hunter_spell_t::impact( s );
+
+    /* Set this DoT as the primary DoT, enabling its ticks to spread the DoT
+       to nearby targets when Burning Alive is talented. */
+    fiery_brand_state_t* fb_state =
+      debug_cast<fiery_brand_state_t*>( dot -> get_state() );
+    fb_state -> target = s -> target;
+    dot -> snapshot_state( fb_state, DMG_DIRECT );
+    fb_state -> primary = true;
+    dot -> schedule_execute( fb_state );
   }
 };
 
@@ -3962,8 +3982,8 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     }  // TOCHECK
   };
 
-  fury_of_the_illidari_tick_t* mh;
-  fury_of_the_illidari_tick_t* oh;
+  action_t* mh;
+  action_t* oh;
   rage_of_the_illidari_t* rage;
 
   fury_of_the_illidari_t( demon_hunter_t* p, const std::string& options_str )
@@ -3978,13 +3998,11 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
     base_tick_time = timespan_t::from_millis( 500 );
     tick_zero      = true;
 
-    // Set MH to tick action. OH is executed in tick().
-    tick_action = mh;
     // Disallow use outside of melee range.
     range = 5.0;
 
     // Silly reporting things
-    school    = mh -> school;
+    school = mh -> school;
     mh -> stats = oh -> stats = stats;
 
     if ( p -> artifact.rage_of_the_illidari.rank() )
@@ -3995,14 +4013,13 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
   }
 
   timespan_t travel_time() const override
-  {
-    return timespan_t::zero();
-  }
+  { return timespan_t::zero(); }
 
   void tick( dot_t* d ) override
   {
     demon_hunter_attack_t::tick( d );
 
+    mh -> schedule_execute();
     oh -> schedule_execute();
   }
 
@@ -5251,7 +5268,7 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "siphoned_power", find_spell( 218561 ) )
     .trigger_spell( artifact.siphon_power )
     .add_invalidate( CACHE_AGILITY )
-    .max_stack( artifact.siphon_power.value() );
+    .max_stack( artifact.siphon_power.value() || 1 );
 
   buff.soul_barrier = new buffs::soul_barrier_t( this );
 }
