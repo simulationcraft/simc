@@ -15,7 +15,7 @@ namespace
 // Legendary items not completely implemented yet
 // Archavon's Heavy Hand - 137060 - Heroic throw deals 25% increased damage for every yard between you and the target - 207326
 // Grom's Wartorn Pauldrons - 137077 - While battle cry or berserker rage is active, charge has no cooldown - 205597
-// Kargath's Sacrificed Hands - 138489 - Activating ignore pain regenerates 5% of your maximum hp over 5 seconds - 207845 
+// Kargath's Sacrificed Hands - 138489 - Activating ignore pain regenerates 5% of your maximum hp over 5 seconds - 207845
 // Thundergod's Vigor - 137089 - Each enemy you hit with thunderclap reduces cd of demo shout by 1 second - 215176
 // The Walls Fell - 137054 - Shield slam extends the duration of shield wall by 2 seconds - 215057
 // Destiny Driver - 137018 - Intercepted Attacks grant you and your intercept target an absorb shield equal to 25% of the damage done by the attack for 10 sec  - 215090
@@ -988,7 +988,7 @@ struct melee_t: public warrior_attack_t
     {
       if ( s -> result == RESULT_CRIT )
       {
-        rage_gain *= rng().range( 5.715, 6.00 ); 
+        rage_gain *= rng().range( 5.715, 6.00 );
       }
       else
       {
@@ -1902,7 +1902,7 @@ struct heroic_leap_t: public warrior_attack_t
     range = -1;
     attack_power_mod.direct = heroic_leap_damage -> effectN( 1 ).ap_coeff();
 
-    cooldown -> duration = data().charge_cooldown(); // Fixes bug in spelldata for now. 
+    cooldown -> duration = data().charge_cooldown(); // Fixes bug in spelldata for now.
     cooldown -> duration += p -> talents.bounding_stride -> effectN( 1 ).time_value();
     cooldown -> duration += p -> artifact.leaping_giants.time_value();
   }
@@ -2362,7 +2362,7 @@ struct overpower_t: public warrior_attack_t
     warrior_attack_t::execute();
     p() -> buff.overpower -> expire();
   }
-  
+
   bool ready() override
   {
     if ( p() -> buff.overpower -> check() )
@@ -2506,7 +2506,7 @@ struct rampage_event_t: public event_t
     warrior -> rampage_attacks[attacks] -> execute();
     if ( attacks == 0 )
     {
-      warrior -> enrage(); // As of 5/23/2016 the first attack does not get a damage bonus from the enrage that rampage triggers... even though it shows up in the combat log before the attack lands. 
+      warrior -> enrage(); // As of 5/23/2016 the first attack does not get a damage bonus from the enrage that rampage triggers... even though it shows up in the combat log before the attack lands.
     }                      // It will get a damage bonus if something else triggered the enrage beforehand, though.
     attacks++;
     if ( attacks < warrior -> rampage_attacks.size() )
@@ -2665,13 +2665,13 @@ struct revenge_t: public warrior_attack_t
 
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain *
         ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
                             , p() -> gain.revenge );
     }
     else
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain *
         ( 1.0 + p() -> artifact.might_of_the_vrykul.percent() )* ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
                             , p() -> gain.revenge );
     }
@@ -2800,7 +2800,7 @@ struct shield_slam_t: public warrior_attack_t
     return cc;
   }
 
-  
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -2987,7 +2987,7 @@ struct thunder_clap_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
-    attack_power_mod.direct *= 1.0 + p -> artifact.thunder_crash.percent(); 
+    attack_power_mod.direct *= 1.0 + p -> artifact.thunder_crash.percent();
   }
 };
 
@@ -3262,7 +3262,7 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
   timespan_t spin_time;
   arms_whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
-    first_mh_attack( nullptr), mh_attack( nullptr ), 
+    first_mh_attack( nullptr), mh_attack( nullptr ),
     spin_time( timespan_t::from_millis( p -> spec.whirlwind -> effectN( 2 ).misc_value1() ) )
   {
     parse_options( options_str );
@@ -4336,7 +4336,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Rampage", "if=(target.health.pct>20&(cooldown.battle_cry.remains>3|buff.battle_cry.up|rage>90))" );
   single_target -> add_action( this, "Execute", "if=rage>50|buff.battle_cry.up|buff.stone_heart.react|target.time_to_die<20" );
   single_target -> add_action( this, "Furious Slash" );
-  
+
   two_targets -> add_action( this, "Whirlwind", "if=buff.meat_cleaver.down" );
   two_targets -> add_action( "call_action_list,name=bladestorm" );
   two_targets -> add_action( this, "Rampage", "if=buff.enrage.down|(rage=100&buff.juggernaut.down)|buff.massacre.up" );
@@ -4484,11 +4484,11 @@ void warrior_t::apl_prot()
     }
     if ( true_level > 90 )
     {
-      prot -> add_action( "potion,name=draenic_strength,if=" + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=draenic_strength,if=if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
     }
     else if ( true_level >= 80 )
     {
-      prot -> add_action( "potion,name=mountains,if=" + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=mountains,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
     }
   }
 
@@ -5331,7 +5331,7 @@ double warrior_t::composite_melee_crit_chance() const
 double warrior_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
-  
+
   if ( buff.battle_cry -> check() )
   {
     cdm *= 1.0 + artifact.unrivaled_strength.percent();
@@ -5362,7 +5362,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t*
 
   if ( r == RESOURCE_RAGE && talents.frothing_berserker -> ok() && resources.current[ r ] > 99 && frothing_may_trigger )
   {
-    buff.frothing_berserker -> trigger(); 
+    buff.frothing_berserker -> trigger();
     frothing_may_trigger = false;
   }
 
@@ -5512,7 +5512,7 @@ void warrior_t::assess_damage( school_e school,
   if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) && !s -> action -> is_aoe() ) // AoE attacks do not reset revenge.
   {
     if ( cooldown.revenge_reset -> up() )
-    { // 3 second internal cooldown on resetting revenge. 
+    { // 3 second internal cooldown on resetting revenge.
       cooldown.revenge -> reset( true );
       cooldown.revenge_reset -> start();
     }
@@ -5724,7 +5724,7 @@ struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buf
       .spell( e.driver() -> effectN( 1 ).trigger() )
       .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( e.item ) / 100.0 );
   }
-}; 
+};
 
 struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
 {
