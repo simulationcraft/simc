@@ -6782,7 +6782,7 @@ void rogue_t::create_buffs()
                        .default_value( find_spell( 193359 ) -> effectN( 1 ).base_value() );
   buffs.broadsides = buff_creator_t( this, "broadsides", find_spell( 193356 ) );
   buffs.buried_treasure = buff_creator_t( this, "buried_treasure", find_spell( 199600 ) )
-                       .default_value( find_spell( 193356 ) -> effectN( 1 ).percent() );
+                       .default_value( find_spell( 199600 ) -> effectN( 1 ).percent() );
   // Note, since I (navv) am a slacker, this needs to be constructed after the secondary buffs.
   buffs.roll_the_bones = new buffs::roll_the_bones_t( this, rtb_creator );
 
