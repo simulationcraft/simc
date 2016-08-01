@@ -284,7 +284,7 @@ class DBCParserBase:
 
         # If this is an actual WDB file (or WCH file with -t view), setup the
         # correct id format to the formatter
-        if not self.is_wch() or self.options.type == 'view':
+        if not self.options.raw and (not self.is_wch() or self.options.type == 'view'):
             dbc.data._FORMATDB.set_id_format(self.class_name(), self.id_format())
 
         return True
