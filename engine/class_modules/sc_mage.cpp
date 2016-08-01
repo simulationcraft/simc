@@ -623,6 +623,7 @@ public:
   virtual void      init_action_list() override;
 
   virtual bool      has_t18_class_trinket() const override;
+  std::string       get_food_action();
   std::string       get_potion_action();
 };
 
@@ -7712,39 +7713,34 @@ void mage_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  // TODO: Handle level 110 food/flasks
   if( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
 
     if ( true_level <= 85 )
+    {
       flask_action += "draconic_mind" ;
+    }
     else if ( true_level <= 90 )
+    {
       flask_action += "warm_sun" ;
-    else
+    }
+    else if ( true_level <= 100 )
+    {
       flask_action += "greater_draenic_intellect_flask" ;
+    }
+    else
+    {
+      flask_action += "flask_of_the_whispered_pact";
+    }
 
     precombat -> add_action( flask_action );
   }
-    // Food
-  if ( sim -> allow_food && level() >= 80 )
+
+  // Food
+  if ( sim -> allow_food && true_level >= 80 )
   {
-    std::string food_action = "food,type=";
-
-    if ( level() <= 85 )
-      food_action += "seafood_magnifique_feast" ;
-    else if ( level() <= 90 )
-      food_action += "mogu_fish_stew" ;
-    else if ( specialization() == MAGE_ARCANE && sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
-      food_action += "buttered_sturgeon" ;
-    else if ( specialization() == MAGE_ARCANE )
-      food_action += "sleeper_sushi" ;
-    else if ( specialization() == MAGE_FIRE )
-      food_action += "pickled_eel" ;
-    else
-      food_action += "salty_squid_roll" ;
-
-    precombat -> add_action( food_action );
+    precombat -> add_action( get_food_action() );
   }
 
   // Water Elemental
@@ -7759,7 +7755,7 @@ void mage_t::apl_precombat()
   precombat -> add_talent( this, "Mirror Image" );
 
   //Potions
-  if ( sim -> allow_potions && true_level >= 80 )
+  if ( sim -> allow_potions && level() >= 80 )
   {
     precombat -> add_action( get_potion_action() );
   }
@@ -7775,19 +7771,80 @@ void mage_t::apl_precombat()
   }
 }
 
+std::string mage_t::get_food_action()
+{
+  std::string food_action = "food,type=";
 
-// Util for using level appropriate potion
-// TODO: Handle level 110 potions
+  if ( true_level <= 85 )
+  {
+    food_action += "seafood_magnifique_feast" ;
+  }
+  else if ( true_level <= 90 )
+  {
+    food_action += "mogu_fish_stew" ;
+  }
+  else if ( true_level <= 100 )
+  {
+    if ( specialization() == MAGE_ARCANE )
+    {
+      if ( sets.has_set_bonus( MAGE_ARCANE, T18, B4 ) )
+      {
+        food_action += "buttered_sturgeon" ;
+      }
+      else
+      {
+        food_action += "sleeper_sushi" ;
+      }
+    }
+    else if ( specialization() == MAGE_FIRE )
+    {
+      food_action += "pickled_eel" ;
+    }
+    else
+    {
+      food_action += "salty_squid_roll" ;
+    }
+  }
+  else
+  {
+    if ( specialization() == MAGE_ARCANE )
+    {
+      food_action += "nightborne_delicacy_platter" ;
+    }
+    else if ( specialization() == MAGE_FIRE )
+    {
+      food_action += "the_hungry_magister" ;
+    }
+    else
+    {
+      food_action += "azshari_salad" ;
+    }
+  }
+
+  return food_action;
+}
+
+
 std::string mage_t::get_potion_action()
 {
   std::string potion_action = "potion,name=";
 
   if ( true_level <= 85 )
-    potion_action += "volcanic" ;
+  {
+    potion_action += "volcanic";
+  }
   else if ( true_level <= 90 )
-    potion_action += "jade_serpent" ;
+  {
+    potion_action += "jade_serpent";
+  }
+  else if ( true_level <= 100 )
+  {
+    potion_action += "draenic_intellect";
+  }
   else
-    potion_action += "draenic_intellect" ;
+  {
+    potion_action += "deadly_grace";
+  }
 
   return potion_action;
 }
