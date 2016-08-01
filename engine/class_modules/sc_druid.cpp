@@ -252,6 +252,7 @@ public:
   action_t* t16_2pc_sun_bolt;
 
   double starshards;
+  timespan_t last_rake, last_healing_touch;
 
   // RPPM objects
   struct rppms_t
@@ -2715,11 +2716,15 @@ struct rake_t : public cat_attack_t
 {
   const spell_data_t* bleed_spell;
   double stealth_multiplier;
+  bool once_per_bt;
 
   rake_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rake", p, p -> find_affinity_spell( "Rake" ), options_str ),
-    stealth_multiplier( 0.0 )
+    cat_attack_t( "rake", p, p -> find_affinity_spell( "Rake" ) ),
+    stealth_multiplier( 0.0 ), once_per_bt( false )
   {
+    add_option( opt_bool( "once_per_bt", once_per_bt ) );
+    parse_options( options_str );
+
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
     bleed_spell           = p -> find_spell( 155722 );
@@ -2750,6 +2755,21 @@ struct rake_t : public cat_attack_t
       pm *= 1.0 + stealth_multiplier;
 
     return pm;
+  }
+
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    p() -> last_rake = sim -> current_time();
+  }
+
+  bool ready() override
+  {
+    if ( once_per_bt && p() -> last_rake > p() -> last_healing_touch )
+      return false;
+
+    return cat_attack_t::ready();
   }
 };
 
@@ -3514,8 +3534,11 @@ struct healing_touch_t : public druid_heal_t
       + p -> spec.guardian -> effectN( 2 ).percent();
 
     // redirect to self if not specified
-    if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
-      target = p;
+    /* if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
+      target = p; */
+
+    target = sim -> target;
+    base_multiplier = 0;
 
     base_multiplier *= 1.0 + p -> artifact.attuned_to_nature.percent();
   }
@@ -3584,6 +3607,8 @@ struct healing_touch_t : public druid_heal_t
   virtual void execute() override
   {
     druid_heal_t::execute();
+
+    p() -> last_healing_touch = sim -> current_time();
 
     if ( p() -> talent.bloodtalons -> ok() )
       p() -> buff.bloodtalons -> trigger( 2 );
@@ -4324,6 +4349,7 @@ struct elunes_guidance_t : public druid_spell_t
   elunes_guidance_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "elunes_guidance", p, p -> talent.elunes_guidance, options_str )
   {
+    harmful = false;
     energize_type = ENERGIZE_ON_CAST;
     dot_duration = timespan_t::zero();
   }
@@ -4470,7 +4496,9 @@ struct innervate_t : public druid_spell_t
 {
   innervate_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "innervate", p, p -> find_specialization_spell( "Innervate" ), options_str )
-  {}
+  {
+    harmful = false;
+  }
 };
 
 // Ironfur ==================================================================
@@ -4850,10 +4878,10 @@ struct sunfire_t : public druid_spell_t
     damage = new sunfire_damage_t( player );
     damage -> stats = stats;
 
-    if (player->spec.balance->ok())
+    if ( player -> spec.balance -> ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount = player->spec.balance->effectN(3).resource(RESOURCE_ASTRAL_POWER);
+      energize_amount = player -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
     {
@@ -6874,6 +6902,8 @@ void druid_t::reset()
 
   if ( mastery.natures_guardian -> ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
+
+  last_rake = last_healing_touch = timespan_t::zero();
 }
 
 // druid_t::merge ===========================================================
