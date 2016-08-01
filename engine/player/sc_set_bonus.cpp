@@ -302,23 +302,25 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
   bonus = B_NONE;
 
   std::vector<std::string> split = util::string_split( opt_str, "_" );
-  if ( split.size() < 2 || split.size() > 3 )
+  if ( split.size() < 2 )
   {
     return false;
   }
 
-  auto bonus_offset = split[ 1 ].find( "pc" );
+  auto bonus_offset = split.back().find( "pc" );
   if ( bonus_offset == std::string::npos )
   {
     return false;
   }
 
-  auto b = util::to_unsigned( split[ 1 ].substr( 0, bonus_offset ) );
+  auto b = util::to_unsigned( split.back().substr( 0, bonus_offset ) );
   if ( b > B_MAX )
   {
     return false;
   }
   bonus = static_cast<set_bonus_e>( b - 1 );
+
+  std::string set_name = opt_str.substr( 0, opt_str.size() - split.back().size() - 1 );
 
   for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( SC_USE_PTR ); bonus_idx++ )
   {
@@ -326,7 +328,7 @@ bool set_bonus_t::parse_set_bonus_option( const std::string& opt_str,
     if ( bonus.class_id != -1 && bonus.class_id != util::class_id( actor -> type ) )
       continue;
 
-    if ( set_bonus == SET_BONUS_NONE && util::str_compare_ci( split[ 0 ], bonus.set_opt_name ) )
+    if ( set_bonus == SET_BONUS_NONE && util::str_compare_ci( set_name, bonus.set_opt_name ) )
     {
       set_bonus = static_cast< set_bonus_type_e >( bonus.enum_id );
       break;

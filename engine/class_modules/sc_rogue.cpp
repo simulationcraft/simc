@@ -129,6 +129,9 @@ struct rogue_td_t : public actor_target_data_t
 
 struct rogue_t : public player_t
 {
+  // Custom options
+  std::vector<size_t> fixed_rtb;
+
   // Shadow techniques swing counter;
   unsigned shadow_techniques;
 
@@ -294,6 +297,7 @@ struct rogue_t : public player_t
 
     // Generic
     const spell_data_t* subtlety_rogue;
+    const spell_data_t* outlaw_rogue;
 
     // Assassination
     const spell_data_t* assassins_resolve;
@@ -2177,7 +2181,7 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
         options_str )
   {
-    crit_bonus_multiplier = 3;
+    crit_bonus_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
   }
 
@@ -5340,12 +5344,12 @@ struct roll_the_bones_t : public buff_t
   roll_the_bones_t( rogue_t* r, buff_creator_t& b ) :
     buff_t( b ), rogue( r )
   {
-    buffs[ 0 ] = rogue -> buffs.jolly_roger;
-    buffs[ 1 ] = rogue -> buffs.grand_melee;
-    buffs[ 2 ] = rogue -> buffs.shark_infested_waters;
-    buffs[ 3 ] = rogue -> buffs.true_bearing;
-    buffs[ 4 ] = rogue -> buffs.broadsides;
-    buffs[ 5 ] = rogue -> buffs.buried_treasure;
+    buffs[ 0 ] = rogue -> buffs.broadsides;
+    buffs[ 1 ] = rogue -> buffs.buried_treasure;
+    buffs[ 2 ] = rogue -> buffs.grand_melee;
+    buffs[ 3 ] = rogue -> buffs.jolly_roger;
+    buffs[ 4 ] = rogue -> buffs.shark_infested_waters;
+    buffs[ 5 ] = rogue -> buffs.true_bearing;
   }
 
   void expire_secondary_buffs()
@@ -5358,11 +5362,8 @@ struct roll_the_bones_t : public buff_t
     rogue -> buffs.buried_treasure -> expire();
   }
 
-  void execute( int stacks, double value, timespan_t duration ) override
+  unsigned random_roll()
   {
-    buff_t::execute( stacks, value, duration );
-    expire_secondary_buffs();
-
     std::array<unsigned, 6> rolls;
     range::fill( rolls, 0 );
     for ( size_t i = 0; i < 6; ++i )
@@ -5384,7 +5385,34 @@ struct roll_the_bones_t : public buff_t
       n_groups++;
     }
 
-    switch ( n_groups )
+    return n_groups;
+  }
+
+  unsigned fixed_roll()
+  {
+    range::for_each( rogue -> fixed_rtb, [ this ]( size_t idx ) { buffs[ idx ] -> trigger(); } );
+    return rogue -> fixed_rtb.size();
+  }
+
+  unsigned roll_the_bones()
+  {
+    if ( rogue -> fixed_rtb.size() == 0 )
+    {
+      return random_roll();
+    }
+    else
+    {
+      return fixed_roll();
+    }
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    expire_secondary_buffs();
+
+    switch ( roll_the_bones() )
     {
       case 1:
         rogue -> procs.roll_the_bones_1 -> occur();
@@ -6296,6 +6324,7 @@ void rogue_t::init_spells()
 
   // Generic
   spec.subtlety_rogue       = find_specialization_spell( "Subtlety Rogue" );
+  spec.outlaw_rogue         = find_specialization_spell( "Outlaw Rogue" );
 
   // Assassination
   spec.assassins_resolve    = find_specialization_spell( "Assassin's Resolve" );
@@ -6828,11 +6857,46 @@ static bool parse_mainhand_secondary( sim_t* sim,
   return do_parse_secondary_weapon( rogue, value, SLOT_MAIN_HAND );
 }
 
+static bool parse_fixed_rtb( sim_t* sim,
+                             const std::string& /* name */,
+                             const std::string& value )
+{
+  std::vector<size_t> buffs;
+  for ( auto it = value.begin(); it < value.end(); ++it )
+  {
+    if ( *it < '1' or *it > '6' )
+    {
+      continue;
+    }
+
+    size_t buff_index = *it - '1';
+    if ( range::find( buffs, buff_index ) != buffs.end() )
+    {
+      sim -> errorf( "%s: Duplicate 'fixed_rtb' buff %c", sim -> active_player -> name(), *it );
+      return false;
+    }
+
+    buffs.push_back( buff_index );
+  }
+
+  if ( buffs.size() == 0 || buffs.size() == 4 || buffs.size() == 5 )
+  {
+    sim -> errorf( "%s: No valid 'fixed_rtb' buffs given by string '%s'", sim -> active_player -> name(),
+        value.c_str() );
+    return false;
+  }
+
+  debug_cast< rogue_t* >( sim -> active_player ) -> fixed_rtb = buffs;
+
+  return true;
+}
+
 void rogue_t::create_options()
 {
   add_option( opt_func( "off_hand_secondary", parse_offhand_secondary ) );
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
   add_option( opt_int( "initial_combo_points", initial_combo_points ) );
+  add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
 
   player_t::create_options();
 }

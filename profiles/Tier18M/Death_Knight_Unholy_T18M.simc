@@ -3,7 +3,7 @@ level=100
 race=blood_elf
 role=attack
 position=back
-talents=3330021
+talents=3320011
 spec=unholy
 
 # This default action priority list is automatically created based on your character.
@@ -84,17 +84,18 @@ legs=demongaze_legplates,id=124338,bonus_id=567,upgrade=2
 feet=treads_of_the_defiler,id=124322,bonus_id=567,upgrade=2
 finger1=thorasus_the_stone_heart_of_draenor,id=124634,bonus_id=641,enchant=gift_of_multistrike
 finger2=congealed_globule_loop,id=124197,bonus_id=567,upgrade=2,enchant=gift_of_multistrike
-trinket1=empty_drinking_horn,id=124238,bonus_id=567,upgrade=2
-trinket2=discordant_chorus,id=124237,bonus_id=567,upgrade=2
+trinket1=stone_of_the_elements,id=128024,upgrade=2
+trinket2=skull_of_war,id=112318,bonus_id=618,upgrade=2
 main_hand=hellrender,id=124360,bonus_id=567,upgrade=2,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=742.00
-# gear_strength=5475
+# gear_ilvl=740.00
+# gear_strength=5028
 # gear_stamina=6981
 # gear_crit_rating=1626
 # gear_haste_rating=1890
 # gear_mastery_rating=2666
+# gear_versatility_rating=385
 # gear_armor=2588
 # set_bonus=tier18_2pc=1
 # set_bonus=tier18_4pc=1
