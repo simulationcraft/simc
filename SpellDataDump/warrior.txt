@@ -880,7 +880,7 @@ Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spel
 Magical damage taken reduced by $s2%.
 
 Name             : Shield Slam (id=23922) [Spell Family (4)] 
-Hotfixed         : Rank (297 -> 0)
+Hotfixed         : Variables (297 -> 0)
 Class            : Protection Warrior
 School           : Physical
 Spell Level      : 10

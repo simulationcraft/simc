@@ -165,7 +165,7 @@ The act of shapeshifting frees you from movement impairing effects.
 Tooltip          : Immune to Polymorph effects.  Movement speed increased.
 
 Name             : Rip (id=1079) [Spell Family (7)] 
-Hotfixed         : Rank
+Hotfixed         : Variables
 Class            : Feral Druid
 School           : Physical
 Resource         : 30 Energy
@@ -6372,7 +6372,7 @@ Effects          :
 Description      : Your combo point generators against targets bleeding from your Rip have a $h% chance to awaken the Spirit of Ashamane, which inflicts a Shadowy duplicate of that Rip on the target.
 
 Name             : Ashamane's Rip (id=210705) [Spell Family (7)] 
-Hotfixed         : Rank
+Hotfixed         : Variables
 Class            : Druid
 School           : Shadow
 Spell Level      : 22

@@ -2690,7 +2690,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=312614)   : School Damage: chaos (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.50000 | Radius: 4 - 8 yards | Target: Unknown(86) -> AOE enemy (instant)(16)
-                   Hotfixed: Chain Targets (74 -> 86)
+                   Hotfixed: Target 1 (74 -> 86)
 
 Name             : Fel Barrage (id=211053) [Spell Family (107)] 
 Class            : Demon Hunter

@@ -3850,7 +3850,6 @@ Name             : Hunting Companion (id=191335) [Spell Family (9)]
 Class            : Monk
 School           : Physical
 Range            : 50000 yards
-Affecting spells : Aspect of the Eagle (186289), Mastery: Hunting Companion (191334)
 Triggered by     : Hunting Companion (191336)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3865,11 +3864,12 @@ Description      : Gain a charge of Mongoose Bite.
 Tooltip          : Gain a charge of Mongoose Bite.
 
 Name             : Hunting Companion (id=191336) [Spell Family (9), Passive] 
+Hotfixed         : Proc Chance (0 -> 100)
 Class            : Monk
 School           : Physical
+Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x... x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Hostile Spell, Periodic
-Affecting spells : Aspect of the Eagle (186289), Mastery: Hunting Companion (191334)
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

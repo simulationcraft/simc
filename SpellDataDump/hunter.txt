@@ -3896,9 +3896,9 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=271240)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-#2 (id=283888)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 18 | Target: Self(1)
-                   Affected Spells: Hunting Companion (191335), Hunting Companion (191336)
+#2 (id=283888)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Hotfixed: Sub Type (107 -> 4), Base Value (100 -> 25), Misc Value (18 -> 0), Affects Spells
 Description      : Grants you and your pet $s1% increased Critical Strike chance on all abilities, and increases your chance to gain charges of Mongoose Bite by $s2%. Lasts $d.
 Tooltip          : Critical Strike chance on abilities increased by $s1%.
 
@@ -4378,9 +4378,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=280652)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
+#1 (id=280652)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 18 | Target: Self(1)
-                   Affected Spells: Hunting Companion (191335), Hunting Companion (191336)
+                   Hotfixed: Sub Type (107 -> 4), Affects Spells
 Description      : Your pet's attacks have a ${$m1/4}.1% chance to grant you an additional charge of Mongoose Bite.
 
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive] 
