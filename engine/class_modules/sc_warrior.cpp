@@ -4082,7 +4082,7 @@ void warrior_t::init_base_stats()
 
       expected_max_health = data.p_epic[0] * 8.484262;
       expected_max_health += base.stats.attribute[ATTR_STAMINA];
-      expected_max_health *= 1.0511;
+      expected_max_health *= 1.05 * 1.3; //plate specialization bonus * spec stamina bonus
       expected_max_health *= 1.0 + artifact.toughness.percent();
       expected_max_health *= 60; //christ
     }
