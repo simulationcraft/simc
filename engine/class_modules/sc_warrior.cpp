@@ -4082,9 +4082,10 @@ void warrior_t::init_base_stats()
 
       expected_max_health = data.p_epic[0] * 8.484262;
       expected_max_health += base.stats.attribute[ATTR_STAMINA];
-      expected_max_health *= 1.05 * 1.3; //plate specialization bonus * spec stamina bonus
+      expected_max_health *= 1.0 + matching_gear_multiplier( ATTR_STAMINA );
+      expected_max_health *= 1.0 + spec.unwavering_sentinel -> effectN( 1 ).percent();
       expected_max_health *= 1.0 + artifact.toughness.percent();
-      expected_max_health *= 60; //christ
+      expected_max_health *= 60;
     }
   }
 }
@@ -5088,10 +5089,7 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   switch ( attr )
   {
   case ATTR_STAMINA:
-  if ( buff.defensive_stance -> check() )
-  {
-    a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
-  }
+  a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
   a += spec.titans_grip -> effectN( 2 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
   a += artifact.toughness.percent() * player_t::composite_attribute( ATTR_STAMINA );
   break;
