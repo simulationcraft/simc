@@ -4325,6 +4325,7 @@ struct moc_t: public ranged_attack_t
     may_parry = false;
     may_block = false;
     may_dodge = false;
+    tick_zero = true;
 
     starved_proc = player -> get_proc( "starved: a_murder_of_crows" );
   }
