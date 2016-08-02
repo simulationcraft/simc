@@ -15,7 +15,7 @@ namespace
 // Legendary items not completely implemented yet
 // Archavon's Heavy Hand - 137060 - Heroic throw deals 25% increased damage for every yard between you and the target - 207326
 // Grom's Wartorn Pauldrons - 137077 - While battle cry or berserker rage is active, charge has no cooldown - 205597
-// Kargath's Sacrificed Hands - 138489 - Activating ignore pain regenerates 5% of your maximum hp over 5 seconds - 207845 
+// Kargath's Sacrificed Hands - 138489 - Activating ignore pain regenerates 5% of your maximum hp over 5 seconds - 207845
 // Thundergod's Vigor - 137089 - Each enemy you hit with thunderclap reduces cd of demo shout by 1 second - 215176
 // The Walls Fell - 137054 - Shield slam extends the duration of shield wall by 2 seconds - 215057
 // Destiny Driver - 137018 - Intercepted Attacks grant you and your intercept target an absorb shield equal to 25% of the damage done by the attack for 10 sec  - 215090
@@ -988,7 +988,7 @@ struct melee_t: public warrior_attack_t
     {
       if ( s -> result == RESULT_CRIT )
       {
-        rage_gain *= rng().range( 5.715, 6.00 ); 
+        rage_gain *= rng().range( 5.715, 6.00 );
       }
       else
       {
@@ -1902,7 +1902,7 @@ struct heroic_leap_t: public warrior_attack_t
     range = -1;
     attack_power_mod.direct = heroic_leap_damage -> effectN( 1 ).ap_coeff();
 
-    cooldown -> duration = data().charge_cooldown(); // Fixes bug in spelldata for now. 
+    cooldown -> duration = data().charge_cooldown(); // Fixes bug in spelldata for now.
     cooldown -> duration += p -> talents.bounding_stride -> effectN( 1 ).time_value();
     cooldown -> duration += p -> artifact.leaping_giants.time_value();
   }
@@ -2362,7 +2362,7 @@ struct overpower_t: public warrior_attack_t
     warrior_attack_t::execute();
     p() -> buff.overpower -> expire();
   }
-  
+
   bool ready() override
   {
     if ( p() -> buff.overpower -> check() )
@@ -2506,7 +2506,7 @@ struct rampage_event_t: public event_t
     warrior -> rampage_attacks[attacks] -> execute();
     if ( attacks == 0 )
     {
-      warrior -> enrage(); // As of 5/23/2016 the first attack does not get a damage bonus from the enrage that rampage triggers... even though it shows up in the combat log before the attack lands. 
+      warrior -> enrage(); // As of 5/23/2016 the first attack does not get a damage bonus from the enrage that rampage triggers... even though it shows up in the combat log before the attack lands.
     }                      // It will get a damage bonus if something else triggered the enrage beforehand, though.
     attacks++;
     if ( attacks < warrior -> rampage_attacks.size() )
@@ -2665,13 +2665,13 @@ struct revenge_t: public warrior_attack_t
 
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain *
         ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
                             , p() -> gain.revenge );
     }
     else
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain * 
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain *
         ( 1.0 + p() -> artifact.might_of_the_vrykul.percent() )* ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
                             , p() -> gain.revenge );
     }
@@ -2800,7 +2800,7 @@ struct shield_slam_t: public warrior_attack_t
     return cc;
   }
 
-  
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -2987,7 +2987,7 @@ struct thunder_clap_t: public warrior_attack_t
     parse_options( options_str );
     aoe = -1;
     may_dodge = may_parry = may_block = false;
-    attack_power_mod.direct *= 1.0 + p -> artifact.thunder_crash.percent(); 
+    attack_power_mod.direct *= 1.0 + p -> artifact.thunder_crash.percent();
   }
 };
 
@@ -3262,7 +3262,7 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
   timespan_t spin_time;
   arms_whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
-    first_mh_attack( nullptr), mh_attack( nullptr ), 
+    first_mh_attack( nullptr), mh_attack( nullptr ),
     spin_time( timespan_t::from_millis( p -> spec.whirlwind -> effectN( 2 ).misc_value1() ) )
   {
     parse_options( options_str );
@@ -4118,7 +4118,10 @@ void warrior_t::apl_precombat()
   if ( sim -> allow_flasks && true_level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    if ( true_level > 100 )
+    if ( true_level > 100 ) {
+      flask_action += "flask_of_the_countless_armies";
+    }
+    else if ( true_level > 90 )
     {
       if ( primary_role() == ROLE_ATTACK )
       {
@@ -4156,11 +4159,11 @@ void warrior_t::apl_precombat()
     std::string food_action = "food,type=";
     if ( specialization() == WARRIOR_FURY )
     {
-      if ( true_level > 100 )
+      if ( level() > 100 )
       {
         food_action += "azshari_salad";
       }
-      else if ( true_level > 90 )
+      else if ( level() > 90 )
       {
         food_action += "pickled_eel";
       }
@@ -4171,11 +4174,11 @@ void warrior_t::apl_precombat()
     }
     else if ( specialization() == WARRIOR_ARMS )
     {
-      if ( true_level > 100 )
+      if ( level() > 100 )
       {
-        food_action += "azshari_salad";
+        food_action += "nightborne_delicacy_platter";
       }
-      else if ( true_level > 90 )
+      else if ( level() > 90 )
       {
         food_action += "sleeper_sushi";
       }
@@ -4186,7 +4189,11 @@ void warrior_t::apl_precombat()
     }
     else
     {
-      if ( true_level > 90 )
+      if ( level() > 100 )
+      {
+        food_action += "azshari_salad";
+      }
+      else if ( level() > 90 )
       {
         food_action += "sleeper_sushi";
       }
@@ -4215,7 +4222,18 @@ void warrior_t::apl_precombat()
   //Pre-pot
   if ( sim -> allow_potions )
   {
-    if ( true_level > 90 )
+    if ( true_level > 100 )
+    {
+      if ( specialization() == WARRIOR_PROTECTION )
+      {
+        precombat -> add_action( "potion,name=unbending_potion" );
+      }
+      else
+      {
+        precombat -> add_action( "potion,name=potion_of_the_old_war" );
+      }
+    }
+    else if ( true_level > 90 )
     {
       if ( specialization() != WARRIOR_PROTECTION )
       {
@@ -4239,6 +4257,7 @@ void warrior_t::apl_precombat()
     }
   }
 }
+
 
 // Fury Warrior Action Priority List ========================================
 
@@ -4317,7 +4336,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Rampage", "if=(target.health.pct>20&(cooldown.battle_cry.remains>3|buff.battle_cry.up|rage>90))" );
   single_target -> add_action( this, "Execute", "if=rage>50|buff.battle_cry.up|buff.stone_heart.react|target.time_to_die<20" );
   single_target -> add_action( this, "Furious Slash" );
-  
+
   two_targets -> add_action( this, "Whirlwind", "if=buff.meat_cleaver.down" );
   two_targets -> add_action( "call_action_list,name=bladestorm" );
   two_targets -> add_action( this, "Rampage", "if=buff.enrage.down|(rage=100&buff.juggernaut.down)|buff.massacre.up" );
@@ -4423,8 +4442,6 @@ void warrior_t::apl_arms()
 
 void warrior_t::apl_prot()
 {
-  //threshold for defensive abilities
-  std::string threshold = "incoming_damage_2500ms>health.max*0.1";
 
   std::vector<std::string> racial_actions = get_racial_actions();
 
@@ -4432,7 +4449,7 @@ void warrior_t::apl_prot()
   action_priority_list_t* prot = get_action_priority_list( "prot" );
   action_priority_list_t* prot_aoe = get_action_priority_list( "prot_aoe" );
 
-  default_list -> add_action( this, "charge" );
+  default_list -> add_action( this, "intercept" );
   default_list -> add_action( "auto_attack" );
 
   size_t num_items = items.size();
@@ -4440,60 +4457,67 @@ void warrior_t::apl_prot()
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=active_enemies=1|(active_enemies>=2&buff.ravager_protection.up)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
+
   default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
-  prot -> add_action( this, "Shield Block", "if=!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up)" );
-  prot -> add_action( this, "Demoralizing Shout", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)" );
-  prot -> add_talent( this, "Enraged Regeneration", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)" );
-  prot -> add_action( this, "Shield Wall", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)" );
-  prot -> add_action( this, "Last Stand", "if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)" );
+  prot -> add_action( this, "Shield Block", "if=!buff.neltharion's_fury.up" );
+  prot -> add_action( this, "Focused Rage", "if=(talent.vengeance.enabled&!buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|buff.vengeance_focused_rage.up" );
+  prot -> add_action( this, "Ignore Pain", "if=buff.vengeance_ignore_pain.up|!talent.vengeance.enabled" );
+  prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20" );
+  prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.50" );
+  prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.50&!cooldown.shield_wall.remains=0" );
+  prot -> add_action( this, "Spell Reflect", "if=incoming_damage_2500ms>health.max*0.20" );
+  prot -> add_action( this, "Stoneform", "if=incoming_damage_2500ms>health.max*0.15" );
 
   //potion
   if ( sim -> allow_potions )
   {
+    if ( true_level > 100 )
+    {
+      prot -> add_action( "potion,name=unbending_potion,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
+    }
     if ( true_level > 90 )
     {
-      prot -> add_action( "potion,name=draenic_strength,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=draenic_strength,if=if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
     }
     else if ( true_level >= 80 )
     {
-      prot -> add_action( "potion,name=mountains,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=mountains,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
     }
   }
 
-  //stoneform
-  prot -> add_action( "stoneform,if=" + threshold + "&!(debuff.demoralizing_shout.up|buff.ravager_protection.up|buff.shield_wall.up|buff.last_stand.up|buff.shield_block.up|buff.potion.up)" );
-
   //dps-single-target
-  prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>3" );
-  prot -> add_talent( this, "Avatar", "if=talent.avatar.enabled&((cooldown.ravager.remains=0&talent.ravager.enabled)|(cooldown.dragon_roar.remains=0&talent.dragon_roar.enabled)|(talent.storm_bolt.enabled&cooldown.storm_bolt.remains=0)|(!(talent.dragon_roar.enabled|talent.ravager.enabled|talent.storm_bolt.enabled)))" );
+  prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>=3" );
+  prot -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
+  prot -> add_action( this, "Avatar", "if=talent.avatar.enabled" );
+  prot -> add_action( this, "Battle Cry" );
+  prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=80" );
+  prot -> add_action( this, "Ravager", "if=talent.ravager.enabled" );
+  prot -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
   prot -> add_action( this, "Shield Slam" );
   prot -> add_action( this, "Revenge" );
-  prot -> add_talent( this, "Ravager" );
-  prot -> add_talent( this, "Storm Bolt" );
-  prot -> add_talent( this, "Impending Victory", "if=talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
-  prot -> add_action( this, "Victory Rush", "if=!talent.impending_victory.enabled&cooldown.shield_slam.remains<=execute_time" );
+  prot -> add_action( this, "Victory Rush if=health.pct<=.25" );
+  prot -> add_action( this, "Impending Victory if=talent.impending_victory&health.pct<=.25" );
   prot -> add_action( this, "Devastate" );
 
   //dps-aoe
-  prot_aoe -> add_talent( this, "Avatar" );
-  prot_aoe -> add_action( this, "Thunder Clap", "if=!dot.deep_wounds.ticking" );
-  prot_aoe -> add_action( this, "Heroic Leap", "if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists" );
-  prot_aoe -> add_action( this, "Shield Slam", "if=buff.shield_block.up" );
-  prot_aoe -> add_talent( this, "Ravager", "if=(buff.avatar.up|cooldown.avatar.remains>10)|!talent.avatar.enabled" );
-  prot_aoe -> add_talent( this, "Shockwave" );
+  prot_aoe -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
+  prot_aoe -> add_action( this, "Avatar", "if=talent.avatar.enabled" );
+  prot_aoe -> add_action( this, "Battle Cry" );
+  prot_aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=80" );
+  prot_aoe -> add_action( this, "Ravager", "if=talent.ravager.enabled" );
+  prot_aoe -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
+  prot_aoe -> add_action( this, "Shield Slam" );
   prot_aoe -> add_action( this, "Revenge" );
   prot_aoe -> add_action( this, "Thunder Clap" );
-  prot_aoe -> add_talent( this, "Bladestorm" );
-  prot_aoe -> add_action( this, "Shield Slam" );
-  prot_aoe -> add_talent( this, "Storm Bolt" );
-  prot_aoe -> add_action( this, "Shield Slam" );
+  prot_aoe -> add_action( this, "Victory Rush", "if=health.pct<=.25" );
+  prot_aoe -> add_action( this, "Impending Victory", "if=talent.impending_victory&health.pct<=.25" );
   prot_aoe -> add_action( this, "Devastate" );
 }
 
@@ -5307,7 +5331,7 @@ double warrior_t::composite_melee_crit_chance() const
 double warrior_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
-  
+
   if ( buff.battle_cry -> check() )
   {
     cdm *= 1.0 + artifact.unrivaled_strength.percent();
@@ -5338,7 +5362,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t*
 
   if ( r == RESOURCE_RAGE && talents.frothing_berserker -> ok() && resources.current[ r ] > 99 && frothing_may_trigger )
   {
-    buff.frothing_berserker -> trigger(); 
+    buff.frothing_berserker -> trigger();
     frothing_may_trigger = false;
   }
 
@@ -5488,7 +5512,7 @@ void warrior_t::assess_damage( school_e school,
   if ( ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) && !s -> action -> is_aoe() ) // AoE attacks do not reset revenge.
   {
     if ( cooldown.revenge_reset -> up() )
-    { // 3 second internal cooldown on resetting revenge. 
+    { // 3 second internal cooldown on resetting revenge.
       cooldown.revenge -> reset( true );
       cooldown.revenge_reset -> start();
     }
@@ -5700,7 +5724,7 @@ struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buf
       .spell( e.driver() -> effectN( 1 ).trigger() )
       .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( e.item ) / 100.0 );
   }
-}; 
+};
 
 struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
 {
