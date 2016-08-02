@@ -3288,10 +3288,10 @@ struct marked_shot_t: public hunter_ranged_attack_t
   struct call_of_the_hunter_t: public hunter_ranged_attack_t
   {
     call_of_the_hunter_t( hunter_t* p ):
-      hunter_ranged_attack_t( "call_of_the_hunter", p, p -> artifacts.call_of_the_hunter )
+      hunter_ranged_attack_t( "call_of_the_hunter", p, p -> find_spell( 191070 ) )
     {
       aoe = -1;
-      attack_power_mod.direct = p -> find_spell( 191070 ) -> effectN( 1 ).ap_coeff();
+      background = true;
     }
   };
 
@@ -3351,7 +3351,10 @@ struct marked_shot_t: public hunter_ranged_attack_t
       p() -> buffs.hunters_mark_exists -> expire();
 
     if ( p() -> artifacts.call_of_the_hunter.rank() && p() -> ppm_call_of_the_hunter -> trigger() )
-      call_of_the_hunter -> execute();
+    {
+      call_of_the_hunter -> schedule_execute();
+      call_of_the_hunter -> schedule_execute();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
