@@ -5466,7 +5466,7 @@ void warrior_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, a
   if ( specialization() == WARRIOR_PROTECTION && s -> result_amount > 0 )
   {
     double rage_gain_from_damage_taken;
-    rage_gain_from_damage_taken = 50.0 * s -> result * expected_max_health;
+    rage_gain_from_damage_taken = 50.0 * s -> result / expected_max_health;
     resource_gain( RESOURCE_RAGE, rage_gain_from_damage_taken, gain.rage_from_damage_taken );
   }
   player_t::assess_damage_imminent_pre_absorb( school, dmg, s );
