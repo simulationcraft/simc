@@ -950,9 +950,10 @@ Description      : Hammers the current target for $53595sw1 Physical damage.$?s2
 While you are standing in your Consecration, Hammer of the Righteous also causes a wave of light that hits all other targets within $88263A1 yds for $88263sw1 Holy damage.][]
 
 Name             : Shield of the Righteous (id=53600) [Spell Family (10)] 
+Hotfixed         : Spell Level (38 -> 28)
 Class            : Protection Paladin
 School           : Holy
-Spell Level      : 38
+Spell Level      : 28
 Range            : 5 yards
 Cooldown         : 1 seconds
 Charges          : 3 (16 seconds cooldown)
@@ -2136,9 +2137,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Shield of the Righteous (id=132403) [Spell Family (10)] 
+Hotfixed         : Spell Level (40 -> 1)
 Class            : Paladin
 School           : Holy
-Spell Level      : 40
+Spell Level      : 1
 Range            : 5 yards
 Duration         : 4.5 seconds
 Affecting spells : Mastery: Divine Bulwark (76671), Consecration (188370), Consecrated Hammer (203785), Righteous Crusader (209226), Righteous Crusader (213570), Righteous Crusader (213571), Righteous Crusader (213572), Righteous Crusader (213573), Righteous Crusader (213574)

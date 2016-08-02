@@ -690,9 +690,10 @@ Effects          :
 Description      : While wielding a two-handed melee weapon, you deal $s1% increased damage.
 
 Name             : Meat Cleaver (id=12950) [Spell Family (4), Passive] 
+Hotfixed         : Spell Level (58 -> 28)
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 58
+Spell Level      : 28
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
@@ -4193,10 +4194,11 @@ Effects          :
 Description      : $@spelldesc203524
 
 Name             : Focused Rage (id=204488) [Spell Family (4)] 
+Hotfixed         : Spell Level (52 -> 44)
 Class            : Protection Warrior
 School           : Physical
 Resource         : 30 Rage
-Spell Level      : 52
+Spell Level      : 44
 Range            : 5 yards
 Duration         : 30 seconds
 Cooldown         : 1.5 seconds

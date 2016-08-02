@@ -1773,10 +1773,15 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=64510)    : Normalized Weapon Damage (121)
-                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
+#1 (id=64510)    : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+                   Hotfixed: Type (121 -> 3), Base Value (1 -> 0)
 #2 (id=214692)   : Weapon Damage% (31)
-                   Base Value: 65 | Scaled Value: 0.65 | Target: Enemy(6)
+                   Base Value: 65 | Scaled Value: 0.65 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: Target 1 (6 -> 53), Target 2 (0 -> 16)
+#3 (id=347757)   : Normalized Weapon Damage (121)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
+                   Hotfixed: NEW EFFECT
 Description      : $@spelldesc55090
 
 Name             : Mastery: Blood Shield (id=77513) [Spell Family (15), Passive] 
