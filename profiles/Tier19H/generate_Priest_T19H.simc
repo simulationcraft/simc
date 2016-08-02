@@ -1,0 +1,67 @@
+# T19H
+# Tier 19 Heroic
+# * Ilvl Cap: 865
+# * Artifact Rank Cap: 26
+# * No items from Mythic Emerald Nightmare
+# * No items from Nighthold (including set bonuses)
+# * No Legendaries
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Warforged/Titanforged)
+# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
+
+# Shadow
+priest="Priest_Shadow_T19H"
+level=110
+race=troll
+role=dps
+position=back
+talents=1211111
+spec=shadow
+artifact=47:139251:139257:139251:0:764:1:765:1:767:3:768:1:769:1:770:1:771:3:772:5:773:3:775:3:776:4:777:3:1347:1
+
+head=hood_of_darkened_visions,id=139189,bonus_id=1805
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_claw
+shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1805
+back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=200int
+chest=dreamscale_inlaid_vestments,id=138215,bonus_id=1805
+wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1805
+hands=handwraps_of_delusional_power,id=138212,bonus_id=1805
+waist=pliable_spider_silk_cinch,id=138217,bonus_id=1805
+legs=nazaks_dusty_pantaloons,id=141415
+feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1805
+finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=200haste
+finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1805,enchant=200haste
+trinket1=swarming_plaguehive,id=139321,bonus_id=1805
+trinket2=twisting_wind,id=139323,bonus_id=1805
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=139251/139257/139251,relic_id=1805/1805/1805
+off_hand=secrets_of_the_void,id=133958
+save=Priest_Shadow_T19H.simc
+
+# Shadow S2M
+copy="Priest_Shadow_T19H_S2M"
+level=110
+race=troll
+role=dps
+position=back
+talents=1212233
+spec=shadow
+artifact=47:139251:139257:139251:0:764:1:765:1:767:3:768:1:769:1:770:1:771:3:772:5:773:3:775:3:776:4:777:3:1347:1
+
+head=hood_of_darkened_visions,id=139189,bonus_id=1805
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_claw
+shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1805
+back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=200int
+chest=dreamscale_inlaid_vestments,id=138215,bonus_id=1805
+wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1805
+hands=handwraps_of_delusional_power,id=138212,bonus_id=1805
+waist=pliable_spider_silk_cinch,id=138217,bonus_id=1805
+legs=nazaks_dusty_pantaloons,id=141415
+feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1805
+finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=200haste
+finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1805,enchant=200haste
+trinket1=swarming_plaguehive,id=139321,bonus_id=1805
+trinket2=twisting_wind,id=139323,bonus_id=1805
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=139251/139257/139251,relic_id=1805/1805/1805
+off_hand=secrets_of_the_void,id=133958
+save=Priest_Shadow_T19H_S2M.simc
