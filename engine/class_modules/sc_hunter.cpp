@@ -2139,7 +2139,7 @@ struct dire_frenzy_t: public hunter_main_pet_attack_t
 
   virtual void schedule_execute( action_state_t* state = nullptr ) override
   {
-    hunter_main_pet_attack_t::schedule_execute();
+    hunter_main_pet_attack_t::schedule_execute( state );
 
     if ( p() -> buffs.titans_frenzy -> up() && titans_frenzy )
       titans_frenzy -> schedule_execute();
@@ -2658,24 +2658,19 @@ struct barrage_t: public hunter_ranged_attack_t
     starved_proc = player -> get_proc( "starved: barrage" );
   }
 
- void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state = nullptr ) override
   {
     hunter_ranged_attack_t::schedule_execute( state );
 
-    // To suppress autoshot, just delay it by the execute time of the barrage
+    // Delay auto shot, add 500ms to simulate "wind up"
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-    {
-      timespan_t time_to_next_hit = p() -> main_hand_attack -> execute_event -> remains();
-      time_to_next_hit += dot_duration;
-      p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
-    }
+      p() -> main_hand_attack -> reschedule_execute( dot_duration * composite_haste() + timespan_t::from_millis( 500 ) );
+
     p() -> no_steady_focus();
   }
 
- bool usable_moving() const override
-  {
-    return true;
-  }
+  bool usable_moving() const override
+  { return true; }
 
   virtual double action_multiplier() const override
   {
