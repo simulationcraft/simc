@@ -2380,7 +2380,7 @@ struct void_eruption_t final : public priest_spell_t
                      ->effectN( 1 )
                      .base_value() );
 
-      priest.buffs.voidform->current_stack += mss_vf_stacks;
+      priest.buffs.voidform->bump(mss_vf_stacks); 
     }
 
     if ( priest.talents.void_lord->ok() &&
