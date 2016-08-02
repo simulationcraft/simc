@@ -1231,6 +1231,7 @@ class SpellDataGenerator(DataGenerator):
           ( 204740, 0 ), # Flanking Strike
           ( 191070, 0 ), # Call of the Hunter
           ( 217207, 0 ), # Dire Frenzy (pet)
+          ( 201594, 0 ), # Stampede
         ),
 
         # Rogue:

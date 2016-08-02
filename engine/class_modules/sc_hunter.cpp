@@ -4751,19 +4751,40 @@ struct aspect_of_the_wild_t: public hunter_spell_t
 
 struct stampede_t: public hunter_spell_t
 {
+  struct stampede_tick_t: public hunter_spell_t
+  {
+    stampede_tick_t( hunter_t* p ):
+      hunter_spell_t( "stampede_tick", p, p -> find_spell( 201594 ) )
+    {
+      aoe = -1;
+      background = true;
+      may_crit = true;
+    }
+  };
+
   stampede_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "stampede", p, p -> talents.stampede )
   {
     parse_options( options_str );
 
-    aoe = -1;
-    attack_power_mod.tick = 1.5;
     base_tick_time = timespan_t::from_millis( 667 );
     dot_duration = data().duration();
     hasted_ticks = false;
     radius = 8;
     school = SCHOOL_PHYSICAL;
-    tick_may_crit = true;
+
+    tick_action = new stampede_tick_t( p );
+
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_spell_t::action_multiplier();
+
+    if ( p() -> mastery.master_of_beasts -> ok() )
+      am *= 1.0 + p() -> cache.mastery_value();
+
+    return am;
   }
 };
 
