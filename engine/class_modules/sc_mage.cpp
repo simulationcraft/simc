@@ -290,7 +290,8 @@ public:
           * molten_armor,
           * pyretic_incantation,
           * pyromaniac,            // T17 4pc Fire
-          * icarus_uprising;       // T18 4pc Fire
+          * icarus_uprising,       // T18 4pc Fire
+          * streaking;             // T19 4pc Fire
 
     // Frost
     buff_t* brain_freeze,
@@ -2098,7 +2099,14 @@ struct fire_mage_spell_t : public mage_spell_t
           p -> buffs.heating_up -> expire();
           p -> buffs.hot_streak -> trigger();
           p -> buffs.pyromaniac -> trigger();
-        }
+
+          //TODO: Add proc tracking to this to track from talent or non-talent sources.
+          if ( p -> sets.has_set_bonus( MAGE_FIRE, T19, B4 ) &&
+               rng().roll( p -> sets.set( MAGE_FIRE, T19, B4) -> effectN( 1 ).percent() ) )
+          {
+          p -> buffs.streaking -> trigger();
+          }
+          }
         // Crit without HU => generate HU
         else
         {
@@ -2113,6 +2121,11 @@ struct fire_mage_spell_t : public mage_spell_t
             p -> procs.controlled_burn -> occur();
             p -> buffs.heating_up -> expire();
             p -> buffs.hot_streak -> trigger();
+            if ( p -> sets.has_set_bonus( MAGE_FIRE, T19, B4 ) &&
+                  rng().roll( p -> sets.set( MAGE_FIRE, T19, B4 ) -> effectN( 1 ).percent() ) )
+            {
+              p -> buffs.streaking -> trigger();
+            }
           }
         }
       }
@@ -2993,6 +3006,12 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     if ( rhonins_assaulting_armwraps_proc_rate > 0 && rng().roll( rhonins_assaulting_armwraps_proc_rate ) )
     {
       p() -> buffs.rhonins_assaulting_armwraps -> trigger();
+    }
+
+    if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T19, B4 ) )
+    {
+      p() -> cooldowns.evocation
+          -> adjust( -1000 * p() -> sets.set( MAGE_ARCANE, T19, B4 ) -> effectN( 1 ).time_value()  );
     }
   }
 
@@ -4502,6 +4521,11 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 2 ).percent();
+
+      if ( p() -> sets.has_set_bonus( MAGE_FROST, T19, B4 ) )
+      {
+        fof_proc_chance += p() -> sets.set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
+      }
       trigger_fof( "Frozen Orb Tick", fof_proc_chance );
     }
   }
@@ -5631,6 +5655,7 @@ struct pyroblast_t : public fire_mage_spell_t
     {
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
     }
+    //TODO: Does this interact with T19 4pc?
     if ( p() -> talents.pyromaniac -> ok() &&
          rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
     {
@@ -7426,6 +7451,7 @@ void mage_t::create_buffs()
   buffs.pyretic_incantation   = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) );
   buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", sets.set( MAGE_FIRE, T17, B4 ) -> effectN( 1 ).trigger() )
                                   .trigger_spell( sets.set( MAGE_FIRE, T17, B4 ) );
+  buffs.streaking             = buff_creator_t( this, "streaking", find_spell( 211399 ) );
 
   // Frost
   //TODO: Remove hardcoded duration once spelldata contains the value
@@ -8235,6 +8261,10 @@ double mage_t::composite_spell_haste() const
     h /= 1.0 + buffs.icarus_uprising -> data().effectN( 1 ).percent();
   }
 
+  if ( buffs.streaking -> check() )
+  {
+    h /= 1.0 + buffs.streaking -> data().effectN( 1 ).percent();
+  }
   // TODO: Double check scaling with hits.
   if ( buffs.quickening -> check() )
   {
