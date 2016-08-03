@@ -2282,8 +2282,8 @@ struct frost_mage_spell_t : public mage_spell_t
       p() -> trigger_icicle( state );
     }
 
-    icicle_tuple_t tuple = icicle_tuple_t( p() -> sim -> current_time(),
-                                           icicle_data_t( amount, stats ) );
+    icicle_tuple_t tuple{p()->sim->current_time(),
+                         icicle_data_t{ amount, stats }};
     p() -> icicles.push_back( tuple );
 
     if ( p() -> sim -> debug )
@@ -8675,7 +8675,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
 
       double evaluate() override
       {
-        if ( mage.icicles.size() == 0 )
+        if ( mage.icicles.empty() )
           return 0;
         else if ( mage.sim -> current_time() - mage.icicles[ 0 ].timestamp < mage.spec.icicles_driver -> duration() )
           return static_cast<double>(mage.icicles.size());
@@ -8729,31 +8729,33 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
 
 icicle_data_t mage_t::get_icicle_object()
 {
-  if ( icicles.size() == 0 )
-    return icicle_data_t( (double) 0, (stats_t*) nullptr );
+  if ( icicles.empty() )
+  {
+    return icicle_data_t{ 0.0, nullptr };
+  }
 
   timespan_t threshold = spec.icicles_driver -> duration();
 
-  auto idx = icicles.begin(),
-       end = icicles.end();
-  for ( ; idx < end; ++idx )
+  // Find first icicle which did not time out
+  auto idx =
+      range::find_if( icicles, [this, threshold]( const icicle_tuple_t& t ) {
+        return ( sim->current_time() - t.timestamp ) < threshold;
+      } );
+
+  // Remove all timed out icicles
+  if ( idx != icicles.begin() )
   {
-    if ( sim -> current_time() - ( *idx ).timestamp < threshold )
-      break;
+    icicles.erase( icicles.begin(), idx );
   }
 
-  // Set of icicles timed out
-  if ( idx != icicles.begin() )
-    icicles.erase( icicles.begin(), idx );
-
-  if ( icicles.size() > 0 )
+  if ( !icicles.empty() )
   {
     icicle_data_t d = icicles.front().data;
     icicles.erase( icicles.begin() );
     return d;
   }
 
-  return icicle_data_t( (double) 0, (stats_t*) nullptr );
+  return icicle_data_t{ 0.0, nullptr };
 }
 
 void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, player_t* chain_target )
@@ -8761,10 +8763,8 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
   if ( ! spec.icicles -> ok() )
     return;
 
-  if ( icicles.size() == 0 )
+  if ( icicles.empty() )
     return;
-
-  std::pair<double, stats_t*> d;
 
   player_t* icicle_target;
   if ( chain_target )
@@ -8778,31 +8778,32 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
 
   if ( chain && ! icicle_event )
   {
-    d = get_icicle_object();
-    if ( d.first == 0 )
+    icicle_data_t d = get_icicle_object();
+    if ( d.damage == 0.0 )
       return;
 
+    assert( icicle_target );
     icicle_event = new ( *sim ) events::icicle_event_t( *this, d, icicle_target, true );
 
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
                                name(), icicle_target -> name(),
-                               chain ? " (chained)" : "", d.first,
+                               chain ? " (chained)" : "", d.damage,
                                as<unsigned>( icicles.size() ) );
     }
   }
   else if ( ! chain )
   {
-    d = get_icicle_object();
-    if ( d.first == 0 )
+    icicle_data_t d = get_icicle_object();
+    if ( d.damage == 0 )
       return;
 
-    icicle -> base_dd_min = icicle -> base_dd_max = d.first;
+    icicle -> base_dd_min = icicle -> base_dd_max = d.damage;
 
     actions::icicle_state_t* new_state = debug_cast<actions::icicle_state_t*>( icicle -> get_state() );
     new_state -> target = icicle_target;
-    new_state -> source = d.second;
+    new_state -> source = d.stats;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object
@@ -8813,7 +8814,7 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
     {
       sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
                                name(), icicle_target -> name(),
-                               chain ? " (chained)" : "", d.first,
+                               chain ? " (chained)" : "", d.damage,
                                as<unsigned>( icicles.size() ) );
     }
   }
