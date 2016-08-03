@@ -15,12 +15,12 @@ spec=arms
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=flask_of_the_countless_armies
-actions.precombat+=/food,type=azshari_salad
+actions.precombat=flask,type=countless_armies
+actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_strength
+actions.precombat+=/potion,name=potion_of_the_old_war
 
 # Executed every time the actor is available.
 
