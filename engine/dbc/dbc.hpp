@@ -484,11 +484,6 @@ inline spellpower_data_t* spellpower_data_t::nil()
 // Spell Effect Data - SpellEffect.dbc
 // ==========================================================================
 
-#ifdef __OpenBSD__
-#pragma pack(1)
-#else
-#pragma pack( push, 1 )
-#endif
 struct spelleffect_data_t
 {
 public:
@@ -1093,12 +1088,7 @@ public:
   static spell_data_t* find( unsigned id, const char* confirmation, bool ptr = false );
   static spell_data_t* list( bool ptr = false );
   static void de_link( bool ptr = false );
-} SC_PACKED_STRUCT;
-#ifdef __OpenBSD__
-#pragma pack()
-#else
-#pragma pack( pop )
-#endif
+};
 
 // ==========================================================================
 // Spell Effect Data Nil

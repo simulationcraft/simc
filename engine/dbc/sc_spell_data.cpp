@@ -20,118 +20,92 @@ struct sdata_field_t
 {
   sdata_field_type_t type;
   std::string        name;
+  size_t             offset;
 };
 
+#define O_TD(f) offsetof( talent_data_t, f )
 const sdata_field_t _talent_data_fields[] =
 {
-  { SD_TYPE_STR,      "name"          },
-  { SD_TYPE_UNSIGNED, "id",           },
-  { SD_TYPE_UNSIGNED, "flags"         },
-  { SD_TYPE_UNSIGNED, "tab"           },
-  { SD_TYPE_UNSIGNED, ""              }, // Class (spell_class_expr_t)
-  { SD_TYPE_UNSIGNED, ""              }, // Spec
-  { SD_TYPE_UNSIGNED, "col"           },
-  { SD_TYPE_UNSIGNED, "row"           },
-  { SD_TYPE_UNSIGNED, ""              }, // Talent rank spell ids, unused for now
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
+  { SD_TYPE_STR,      "name",  O_TD( _name )       },
+  { SD_TYPE_UNSIGNED, "id",    O_TD( _id )         },
+  { SD_TYPE_UNSIGNED, "flags", O_TD( _flags )      },
+  { SD_TYPE_UNSIGNED, "col",   O_TD( _col )        },
+  { SD_TYPE_UNSIGNED, "row",   O_TD( _row )        },
 };
 
+#define O_SED(f) offsetof( spelleffect_data_t, f )
 const sdata_field_t _effect_data_fields[] =
 {
-  { SD_TYPE_UNSIGNED, "id"             },
-  { SD_TYPE_UNSIGNED, "flags"          },
-  { SD_TYPE_UNSIGNED, "spell_id"       },
-  { SD_TYPE_UNSIGNED, "index"          },
-  { SD_TYPE_INT,      "type"           },
-  { SD_TYPE_INT,      "sub_type"       },
-  { SD_TYPE_DOUBLE,   "m_average"      },
-  { SD_TYPE_DOUBLE,   "m_delta"        },
-  { SD_TYPE_DOUBLE,   "m_bonus"        },
-  { SD_TYPE_DOUBLE,   "coefficient"    },
-  { SD_TYPE_DOUBLE,   "ap_coefficient" },
-  { SD_TYPE_DOUBLE,   "amplitude"      },
-  { SD_TYPE_DOUBLE,   "radius"         },
-  { SD_TYPE_DOUBLE,   "max_radius"     },
-  { SD_TYPE_INT,      "base_value"     },
-  { SD_TYPE_INT,      "misc_value"     },
-  { SD_TYPE_INT,      "misc_value2"    },
-  { SD_TYPE_UNSIGNED, ""               }, // Family flags 1
-  { SD_TYPE_UNSIGNED, ""               }, // Family flags 2
-  { SD_TYPE_UNSIGNED, ""               }, // Family flags 3
-  { SD_TYPE_UNSIGNED, ""               }, // Family flags 4
-  { SD_TYPE_INT,      "trigger_spell"  },
-  { SD_TYPE_DOUBLE,   "m_chain"        },
-  { SD_TYPE_DOUBLE,   "p_combo_points" },
-  { SD_TYPE_DOUBLE,   "p_level"        },
-  { SD_TYPE_INT,      "damage_range"   },
-  { SD_TYPE_UNSIGNED, "mechanic"       },
-  { SD_TYPE_UNSIGNED, "chain_target"   },
-  { SD_TYPE_UNSIGNED, "target_1"       },
-  { SD_TYPE_UNSIGNED, "target_2"       },
-  { SD_TYPE_DOUBLE,   "m_value"        }
+  { SD_TYPE_UNSIGNED, "id",             O_SED( _id )              },
+  { SD_TYPE_UNSIGNED, "hotfix",         O_SED( _hotfix )          },
+  { SD_TYPE_UNSIGNED, "spell_id",       O_SED( _spell_id )        },
+  { SD_TYPE_UNSIGNED, "index",          O_SED( _index )           },
+  { SD_TYPE_INT,      "type",           O_SED( _type )            },
+  { SD_TYPE_INT,      "sub_type" ,      O_SED( _subtype )         },
+  { SD_TYPE_DOUBLE,   "m_average",      O_SED( _m_avg )           },
+  { SD_TYPE_DOUBLE,   "m_delta",        O_SED( _m_delta )         },
+  { SD_TYPE_DOUBLE,   "m_bonus" ,       O_SED( _m_unk )           },
+  { SD_TYPE_DOUBLE,   "coefficient",    O_SED( _sp_coeff )        },
+  { SD_TYPE_DOUBLE,   "ap_coefficient", O_SED( _ap_coeff )        },
+  { SD_TYPE_DOUBLE,   "amplitude",      O_SED( _amplitude )       },
+  { SD_TYPE_DOUBLE,   "radius",         O_SED( _radius )          },
+  { SD_TYPE_DOUBLE,   "max_radius",     O_SED( _radius_max )      },
+  { SD_TYPE_INT,      "base_value",     O_SED( _base_value )      },
+  { SD_TYPE_INT,      "misc_value",     O_SED( _misc_value )      },
+  { SD_TYPE_INT,      "misc_value2",    O_SED( _misc_value_2 )    },
+  { SD_TYPE_INT,      "trigger_spell",  O_SED( _trigger_spell )   },
+  { SD_TYPE_DOUBLE,   "m_chain",        O_SED( _m_chain )         },
+  { SD_TYPE_DOUBLE,   "p_combo_points", O_SED( _pp_combo_points ) },
+  { SD_TYPE_DOUBLE,   "p_level",        O_SED( _real_ppl )        },
+  { SD_TYPE_INT,      "damage_range",   O_SED( _die_sides )       },
+  { SD_TYPE_UNSIGNED, "mechanic",       O_SED( _mechanic )        },
+  { SD_TYPE_UNSIGNED, "chain_target",   O_SED( _chain_target )    },
+  { SD_TYPE_UNSIGNED, "target_1",       O_SED( _targeting_1 )     },
+  { SD_TYPE_UNSIGNED, "target_2",       O_SED( _targeting_2 )     },
+  { SD_TYPE_DOUBLE,   "m_value",        O_SED( _m_value )         }
 };
 
+#define O_SD(f) offsetof( spell_data_t, f )
 const sdata_field_t _spell_data_fields[] =
 {
-  { SD_TYPE_STR,      "name"          },
-  { SD_TYPE_UNSIGNED, "id",           },
-  { SD_TYPE_UINT64,   "hotfix"        },
-  { SD_TYPE_DOUBLE,   "speed"         },
-  { SD_TYPE_UNSIGNED, ""              }, // School, requires custom thing
-  { SD_TYPE_UNSIGNED, ""              }, // Class (spell_class_expr_t)
-  { SD_TYPE_UNSIGNED, ""              }, // Race (spell_race_expr_t)
-  { SD_TYPE_INT,      "scaling"       },
-  { SD_TYPE_UNSIGNED, "max_scaling_level" },
-  { SD_TYPE_UNSIGNED, "level"         },
-  { SD_TYPE_UNSIGNED, "max_level"     },
-  { SD_TYPE_DOUBLE,   "min_range"     },
-  { SD_TYPE_DOUBLE,   "max_range"     },
-  { SD_TYPE_UNSIGNED, "cooldown"      },
-  { SD_TYPE_UNSIGNED, "gcd"           },
-  { SD_TYPE_UNSIGNED, "charges"       },
-  { SD_TYPE_UNSIGNED, "charge_cooldown" },
-  { SD_TYPE_UNSIGNED, "category"      },
-  { SD_TYPE_DOUBLE,   "duration"      },
-  { SD_TYPE_UNSIGNED, "max_stack"     },
-  { SD_TYPE_UNSIGNED, "proc_chance"   },
-  { SD_TYPE_INT,      "initial_stack" },
-  { SD_TYPE_UNSIGNED, ""              }, // Proc flags, no support for now
-  { SD_TYPE_UNSIGNED, "icd"           },
-  { SD_TYPE_DOUBLE,   "rppm"          },
-  { SD_TYPE_UNSIGNED, "equip_class"   },
-  { SD_TYPE_UNSIGNED, "equip_imask"   },
-  { SD_TYPE_UNSIGNED, "equip_scmask"  },
-  { SD_TYPE_INT,      "cast_min"      },
-  { SD_TYPE_INT,      "cast_max"      },
-  { SD_TYPE_INT,      "cast_div"      },
-  { SD_TYPE_DOUBLE,   "m_scaling"     },
-  { SD_TYPE_UNSIGNED, "scaling_level" },
-  { SD_TYPE_UNSIGNED, "replace_spellid" },
-  { SD_TYPE_UNSIGNED, ""              }, // Attributes, 0..11, not done for now
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              },
-  { SD_TYPE_UNSIGNED, ""              }, // Family flags 1
-  { SD_TYPE_UNSIGNED, ""              }, // Family flags 1
-  { SD_TYPE_UNSIGNED, ""              }, // Family flags 1
-  { SD_TYPE_UNSIGNED, ""              }, // Family flags 1
-  { SD_TYPE_UNSIGNED, "family"        }, // Family
-  { SD_TYPE_UNSIGNED, "stance_mask"   },
-  { SD_TYPE_UNSIGNED, "mechanic"      },
-  { SD_TYPE_UNSIGNED, "power_id"       }, // Artifact power id
-  { SD_TYPE_STR,      "desc"          },
-  { SD_TYPE_STR,      "tooltip"       },
-  { SD_TYPE_STR,      "desc_vars"     },
-  { SD_TYPE_STR,      "rank"          },
+  { SD_TYPE_STR,      "name",              O_SD( _name )                   },
+  { SD_TYPE_UNSIGNED, "id",                O_SD( _id )                     },
+  { SD_TYPE_UINT64,   "hotfix",            O_SD( _hotfix )                 },
+  { SD_TYPE_DOUBLE,   "speed",             O_SD( _prj_speed )              },
+  { SD_TYPE_INT,      "scaling",           O_SD( _scaling_type )           },
+  { SD_TYPE_UNSIGNED, "max_scaling_level", O_SD( _max_scaling_level )      },
+  { SD_TYPE_UNSIGNED, "level",             O_SD( _spell_level )            },
+  { SD_TYPE_UNSIGNED, "max_level",         O_SD( _max_level )              },
+  { SD_TYPE_DOUBLE,   "min_range",         O_SD( _min_range )              },
+  { SD_TYPE_DOUBLE,   "max_range",         O_SD( _max_range )              },
+  { SD_TYPE_UNSIGNED, "cooldown",          O_SD( _cooldown )               },
+  { SD_TYPE_UNSIGNED, "gcd",               O_SD( _gcd )                    },
+  { SD_TYPE_UNSIGNED, "charges",           O_SD( _charges )                },
+  { SD_TYPE_UNSIGNED, "charge_cooldown",   O_SD( _charge_cooldown )        },
+  { SD_TYPE_UNSIGNED, "category",          O_SD( _category )               },
+  { SD_TYPE_DOUBLE,   "duration",          O_SD( _duration )               },
+  { SD_TYPE_UNSIGNED, "max_stack",         O_SD( _max_stack )              },
+  { SD_TYPE_UNSIGNED, "proc_chance",       O_SD( _proc_chance )            },
+  { SD_TYPE_INT,      "initial_stack",     O_SD( _proc_charges )           },
+  { SD_TYPE_UNSIGNED, "icd",               O_SD( _internal_cooldown )      },
+  { SD_TYPE_DOUBLE,   "rppm",              O_SD( _rppm )                   },
+  { SD_TYPE_UNSIGNED, "equip_class",       O_SD( _equipped_class )         },
+  { SD_TYPE_UNSIGNED, "equip_imask",       O_SD( _equipped_invtype_mask )  },
+  { SD_TYPE_UNSIGNED, "equip_scmask",      O_SD( _equipped_subclass_mask ) },
+  { SD_TYPE_INT,      "cast_min",          O_SD( _cast_min )               },
+  { SD_TYPE_INT,      "cast_max",          O_SD( _cast_max )               },
+  { SD_TYPE_INT,      "cast_div",          O_SD( _cast_div )               },
+  { SD_TYPE_DOUBLE,   "m_scaling",         O_SD( _c_scaling )              },
+  { SD_TYPE_UNSIGNED, "scaling_level",     O_SD( _c_scaling_level )        },
+  { SD_TYPE_UNSIGNED, "replace_spellid",   O_SD( _replace_spell_id )       },
+  { SD_TYPE_UNSIGNED, "family",            O_SD( _class_flags_family )     }, // Family
+  { SD_TYPE_UNSIGNED, "stance_mask",       O_SD( _stance_mask )            },
+  { SD_TYPE_UNSIGNED, "mechanic",          O_SD( _mechanic )               },
+  { SD_TYPE_UNSIGNED, "power_id",          O_SD( _power_id )               }, // Artifact power id
+  { SD_TYPE_STR,      "desc",              O_SD( _desc )                   },
+  { SD_TYPE_STR,      "tooltip",           O_SD( _tooltip )                },
+  { SD_TYPE_STR,      "desc_vars",         O_SD( _desc_vars )              },
+  { SD_TYPE_STR,      "rank",              O_SD( _rank_str )               },
 };
 
 const std::string _class_strings[] =
@@ -562,38 +536,14 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       fsize  = sizeof( _spell_data_fields );
     }
 
-    // Figure out our offset then
-    for ( unsigned int i = 0; i < fsize / sizeof( sdata_field_t ); i++ )
+    for ( size_t i = 0, end = fsize / sizeof( sdata_field_t ); i < end; ++i )
     {
-      if ( fields[ i ].name.empty() || ! util::str_compare_ci( f_name, fields[ i ].name ) )
+      if ( util::str_compare_ci( f_name, fields[ i ].name ) )
       {
-        switch ( fields[ i ].type )
-        {
-          case SD_TYPE_INT:
-          case SD_TYPE_UNSIGNED:
-            offset += sizeof( int );
-            break;
-          case SD_TYPE_UINT64:
-            offset += sizeof( uint64_t );
-            break;
-          case SD_TYPE_DOUBLE:
-            offset += sizeof( double );
-            break;
-          case SD_TYPE_STR:
-            offset += sizeof( const char* );
-            break;
-          default:
-            sim -> errorf( "Unknown field type %d for %s.",
-                           fields[ i ].type,
-                           fields[ i ].name.c_str() );
-            break;
-        }
-
-        continue;
+        offset = fields[ i ].offset;
+        field_type = fields[ i ].type;
+        break;
       }
-
-      field_type = fields[ i ].type;
-      break;
     }
   }
 
