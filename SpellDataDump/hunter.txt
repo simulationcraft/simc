@@ -37,6 +37,7 @@ Effects          :
 Description      : Allows one-hand and off-hand weapons to be equipped in the off-hand.
 
 Name             : Disengage (id=781) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
 Spell Level      : 14
@@ -45,7 +46,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1449
 Affecting spells : Hunter (137014), Guide: Disengage (162116)
-Attributes       : ........ ........ x.x.x... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
