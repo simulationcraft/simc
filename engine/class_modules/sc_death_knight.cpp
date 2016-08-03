@@ -6359,7 +6359,10 @@ void death_knight_t::create_buffs()
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom" )
                               .spell( spec.sudden_doom -> effectN( 1 ).trigger() )
                               .rppm_mod( 1.0 + artifact.double_doom.data().effectN( 2 ).percent() )
-                              .max_stack( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() + artifact.double_doom.data().effectN( 1 ).base_value() )
+                              .max_stack( specialization() == DEATH_KNIGHT_UNHOLY
+                                  ? ( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() +
+                                      artifact.double_doom.data().effectN( 1 ).base_value() )
+                                  : 1 )
                               .trigger_spell( spec.sudden_doom );
 
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
