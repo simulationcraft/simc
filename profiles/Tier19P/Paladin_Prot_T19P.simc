@@ -41,12 +41,11 @@ main_hand=oathseeker,id=128867,ilevel=855
 off_hand=truthguard,id=128866,ilevel=855
 
 
-enemy=MyCustomEnemy 
+enemy=MyCustomEnemy
 enemy_tank=Paladin_Prot
-actions=auto_attack,damage=3300000,range=1000000,attack_speed=1.5 
-actions+=/spell_nuke,damage=3000000,cooldown=30 
+actions=auto_attack,damage=3300000,range=1000000,attack_speed=1.5
+actions+=/spell_nuke,damage=3000000,cooldown=30
 actions+=/spell_dot,damage=50000,cooldown=20
 
 raid_events+=/heal,cooldown=1,amount=100000
 raid_events+=/heal,cooldown=4,amount=1400000
-
