@@ -5,8 +5,6 @@
 
 #include "simulationcraft.hpp"
 
-using namespace residual_action;
-
 namespace { // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -94,10 +92,19 @@ public:
   }
 };
 
-// Icicle data, stored in an icicle container object. Contains a source stats object and the damage
-using icicle_data_t = std::pair< double, stats_t* >;
-// Icicle container object, stored in a list to launch icicles at unsuspecting enemies!
-using icicle_tuple_t = std::pair< timespan_t, icicle_data_t >;
+/// Icicle data, stored in an icicle container object. Contains a source stats object and the damage
+struct icicle_data_t
+{
+  double damage;
+  stats_t* stats;
+};
+
+/// Icicle container object, contains a timestamp and its corresponding icicle data!
+struct icicle_tuple_t
+{
+  timespan_t timestamp;
+  icicle_data_t data;
+};
 
 struct mage_td_t : public actor_target_data_t
 {
@@ -2177,7 +2184,7 @@ struct fire_mage_spell_t : public mage_spell_t
 
     bool ignite_exists = p -> ignite -> get_dot( s -> target ) -> is_ticking();
 
-    trigger( p -> ignite, s -> target, amount );
+    residual_action::trigger( p -> ignite, s -> target, amount );
 
     if ( !ignite_exists )
     {
@@ -4705,7 +4712,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     for ( int i = 0; i < icicle_count; i++ )
     {
       icicle_data_t d = p() -> get_icicle_object();
-      icicle_damage_sum += d.first;
+      icicle_damage_sum += d.damage;
     }
 
     if ( sim -> debug )
@@ -6810,10 +6817,10 @@ struct icicle_event_t : public event_t
     }
 
     actions::icicle_state_t* new_s = debug_cast<actions::icicle_state_t*>( mage -> icicle -> get_state() );
-    new_s -> source = state.second;
+    new_s -> source = state.stats;
     new_s -> target = target;
 
-    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = state.first;
+    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = state.damage;
 
     // Immediately execute icicles so the correct damage is carried into the
     // travelling icicle object
@@ -6821,12 +6828,12 @@ struct icicle_event_t : public event_t
     mage -> icicle -> execute();
 
     icicle_data_t new_state = mage -> get_icicle_object();
-    if ( new_state.first > 0 )
+    if ( new_state.damage > 0 )
     {
       mage -> icicle_event = new ( sim() ) icicle_event_t( *mage, new_state, target );
       if ( mage -> sim -> debug )
         mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), damage=%f, total=%u",
-                               mage -> name(), target -> name(), new_state.first, as<unsigned>( mage -> icicles.size() ) );
+                               mage -> name(), target -> name(), new_state.damage, as<unsigned>( mage -> icicles.size() ) );
     }
     else
       mage -> icicle_event = nullptr;
@@ -6839,14 +6846,14 @@ struct ignite_spread_event_t : public event_t
 
   static double ignite_bank( dot_t* ignite )
   {
-    if ( !ignite -> is_ticking() )
+    if ( !ignite->is_ticking() )
     {
       return 0.0;
     }
 
-    residual_periodic_state_t* ignite_state =
-      debug_cast< residual_periodic_state_t* >( ignite -> state );
-    return ignite_state -> tick_amount * ignite -> ticks_left();
+    auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>(
+        ignite->state );
+    return ignite_state->tick_amount * ignite->ticks_left();
   }
 
   static bool ignite_compare ( dot_t* a, dot_t* b )
@@ -8670,14 +8677,14 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       {
         if ( mage.icicles.size() == 0 )
           return 0;
-        else if ( mage.sim -> current_time() - mage.icicles[ 0 ].first < mage.spec.icicles_driver -> duration() )
+        else if ( mage.sim -> current_time() - mage.icicles[ 0 ].timestamp < mage.spec.icicles_driver -> duration() )
           return static_cast<double>(mage.icicles.size());
         else
         {
           size_t icicles = 0;
           for ( int i = as<int>( mage.icicles.size() - 1 ); i >= 0; i-- )
           {
-            if ( mage.sim -> current_time() - mage.icicles[ i ].first >= mage.spec.icicles_driver -> duration() )
+            if ( mage.sim -> current_time() - mage.icicles[ i ].timestamp >= mage.spec.icicles_driver -> duration() )
               break;
 
             icicles++;
@@ -8731,7 +8738,7 @@ icicle_data_t mage_t::get_icicle_object()
        end = icicles.end();
   for ( ; idx < end; ++idx )
   {
-    if ( sim -> current_time() - ( *idx ).first < threshold )
+    if ( sim -> current_time() - ( *idx ).timestamp < threshold )
       break;
   }
 
@@ -8741,7 +8748,7 @@ icicle_data_t mage_t::get_icicle_object()
 
   if ( icicles.size() > 0 )
   {
-    icicle_data_t d = icicles.front().second;
+    icicle_data_t d = icicles.front().data;
     icicles.erase( icicles.begin() );
     return d;
   }
