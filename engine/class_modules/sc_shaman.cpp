@@ -6366,7 +6366,7 @@ void shaman_t::init_action_list_elemental()
 
   def -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
   def -> add_action( this, "Fire Elemental" );
-  def -> add_action( this, "Storm Elemental" );
+  def -> add_talent( this, "Storm Elemental" );
   def -> add_talent( this, "Elemental Mastery" );
   def -> add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   def -> add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
