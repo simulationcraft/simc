@@ -2937,12 +2937,12 @@ struct hand_of_guldan_t: public warlock_spell_t
           p -> procs.fragment_wild_imp -> occur();
         }
       }
-      for ( int i = 0; i < p -> warlock_pet_list.wild_imps.size(); i++ )
+      for ( pets::wild_imp_pet_t* wild_imp : p -> warlock_pet_list.wild_imps )
       {
-        if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
+        if ( wild_imp -> is_sleeping() )
         {
           count--;
-          p -> warlock_pet_list.wild_imps[i] -> trigger();
+          wild_imp -> trigger();
           p -> procs.wild_imp -> occur();
         }
         if ( count == 0 )
@@ -3656,7 +3656,7 @@ struct demonwrath_tick_t: public warlock_spell_t
 {
   gain_t* shard_gain;
 
-  demonwrath_tick_t( warlock_t* p, const spell_data_t& s ):
+  demonwrath_tick_t( warlock_t* p, const spell_data_t& ):
     warlock_spell_t( "demonwrath_tick", p, p->find_spell(193439) ), shard_gain( p -> gains.demonwrath )
   {
     aoe = -1;
@@ -3669,7 +3669,6 @@ struct demonwrath_tick_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_td_t* tdata = td( s -> target );
       if(rng().roll(p()->find_spell( 193440 )->effectN( 1 ).percent()))
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, shard_gain );
@@ -4480,7 +4479,7 @@ struct reap_souls_t: public warlock_spell_t
 
       total_duration = base_duration * p() -> buffs.tormented_souls -> current_stack;
       p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
-      for ( size_t i = 0; i < p() -> buffs.tormented_souls -> current_stack; ++i )
+      for ( int i = 0; i < p() -> buffs.tormented_souls -> current_stack; ++i )
       {
         p() -> procs.souls_consumed -> occur();
       }

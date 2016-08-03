@@ -1839,7 +1839,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
   timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
 
-  double composite_persistent_multiplier( const action_state_t* s ) const override
+  double composite_persistent_multiplier( const action_state_t* ) const override
   {
     /* Override persistent multiplier and just return the charge multiplier.
     This value will be used to modify the tick_state. */
@@ -4749,7 +4749,7 @@ struct spirit_bomb_event_t : public event_t
     if ( dh -> spirit_bomb > 0 )
     {
       action_t* a    = dh -> active.spirit_bomb_heal;
-      a -> base_dd_min = a -> base_dd_min = dh -> spirit_bomb;
+      a -> base_dd_min = a -> base_dd_max = dh -> spirit_bomb;
       a -> schedule_execute();
 
       dh -> spirit_bomb = 0.0;
