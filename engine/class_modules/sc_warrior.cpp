@@ -4120,25 +4120,11 @@ void warrior_t::apl_precombat()
   {
     std::string flask_action = "flask,type=";
     if ( true_level > 100 ) {
-      flask_action += "flask_of_the_countless_armies";
+      flask_action += "countless_armies";
     }
     else if ( true_level > 90 )
     {
-      if ( primary_role() == ROLE_ATTACK )
-      {
-        flask_action += "flask_of_the_countless_armies";
-      }
-    }
-    else if ( true_level > 90 )
-    {
-      if ( primary_role() == ROLE_ATTACK )
-      {
-        flask_action += "greater_draenic_strength_flask";
-      }
-      else if ( primary_role() == ROLE_TANK )
-      {
-        flask_action += "greater_draenic_stamina_flask";
-      }
+      flask_action += "greater_draenic_strength_flask";
     }
     else
     {
@@ -4467,9 +4453,9 @@ void warrior_t::apl_prot()
   default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
-  prot -> add_action( this, "Shield Block", "if=!buff.neltharion's_fury.up" );
-  prot -> add_action( this, "Focused Rage", "if=(talent.vengeance.enabled&!buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|buff.vengeance_focused_rage.up" );
-  prot -> add_action( this, "Ignore Pain", "if=buff.vengeance_ignore_pain.up|!talent.vengeance.enabled" );
+  prot -> add_action( this, "Shield Block"/*, "if=!buff.neltharion's_fury.up"*/ );
+  prot -> add_action( this, "Ignore Pain"/*, "if=buff.vengeance_ignore_pain.up&rage>=30|(talent.vengeance.enabled&rage>=20&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up)|!talent.vengeance.enabled"*/ );
+  //prot -> add_action( this, "Focused Rage"/*, "if=(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up&buff.ultimatum.up)"*/ );
   prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20" );
   prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.50" );
   prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.50&!cooldown.shield_wall.remains=0" );
@@ -4481,11 +4467,11 @@ void warrior_t::apl_prot()
   {
     if ( true_level > 100 )
     {
-      prot -> add_action( "potion,name=unbending_potion,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=unbending_potion,if=(incoming_damage_2500ms>health.max*0.15&!buff.unbending_potion.up)|target.time_to_die<=25" );
     }
     if ( true_level > 90 )
     {
-      prot -> add_action( "potion,name=draenic_strength,if=if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
+      prot -> add_action( "potion,name=draenic_strength,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
     }
     else if ( true_level >= 80 )
     {
@@ -4495,30 +4481,26 @@ void warrior_t::apl_prot()
 
   //dps-single-target
   prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>=3" );
-  prot -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
+  //prot -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
   prot -> add_action( this, "Avatar", "if=talent.avatar.enabled" );
   prot -> add_action( this, "Battle Cry" );
-  prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=80" );
+  prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=50" );
   prot -> add_action( this, "Ravager", "if=talent.ravager.enabled" );
-  prot -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
+  //prot -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
   prot -> add_action( this, "Shield Slam" );
   prot -> add_action( this, "Revenge" );
-  prot -> add_action( this, "Victory Rush if=health.pct<=.25" );
-  prot -> add_action( this, "Impending Victory if=talent.impending_victory&health.pct<=.25" );
   prot -> add_action( this, "Devastate" );
 
   //dps-aoe
-  prot_aoe -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
+  //prot_aoe -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
   prot_aoe -> add_action( this, "Avatar", "if=talent.avatar.enabled" );
   prot_aoe -> add_action( this, "Battle Cry" );
-  prot_aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=80" );
+  prot_aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=50" );
   prot_aoe -> add_action( this, "Ravager", "if=talent.ravager.enabled" );
-  prot_aoe -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
+  //prot_aoe -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
   prot_aoe -> add_action( this, "Shield Slam" );
   prot_aoe -> add_action( this, "Revenge" );
   prot_aoe -> add_action( this, "Thunder Clap" );
-  prot_aoe -> add_action( this, "Victory Rush", "if=health.pct<=.25" );
-  prot_aoe -> add_action( this, "Impending Victory", "if=talent.impending_victory&health.pct<=.25" );
   prot_aoe -> add_action( this, "Devastate" );
 }
 

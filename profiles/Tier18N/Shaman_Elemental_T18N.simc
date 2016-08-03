@@ -32,6 +32,7 @@ actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/potion,name=draenic_intellect,if=buff.ascendance.up|target.time_to_die<=30
 actions+=/totem_mastery,if=buff.resonance_totem.remains<2
 actions+=/fire_elemental
+actions+=/storm_elemental
 actions+=/elemental_mastery
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up

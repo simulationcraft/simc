@@ -3090,11 +3090,13 @@ Tooltip          : Hammer of the Righteous also causes a wave of light that hits
 Increases the effects of Shield of the Righteous and Light of the Protector by $s2%
 
 Name             : Divine Steed (id=190784) [Spell Family (10)] 
+Hotfixed         : Spell Level (58 -> 28), Cooldown (45000 -> 0), Charges, Charge Cooldown, Category (0 -> 1662)
 Class            : Protection Paladin
 School           : Holy
-Spell Level      : 58
+Spell Level      : 28
 GCD              : 1.5 seconds
-Cooldown         : 45 seconds
+Charges          : 1 (45 seconds cooldown)
+Category         : 1662
 Mechanic         : Unknown(180)
 Affecting spells : Knight Templar (204139), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
@@ -3801,27 +3803,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05000 | Target: Enemy(6)
 Description      : $@spelldesc203797
 
-Name             : Blessing of Salvation (id=204013) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Spell Level      : 1
-Range            : 40 yards
-GCD              : 1.5 seconds
-Duration         : 10 seconds
-Cooldown         : 60 seconds
-Affecting spells : Lucidity (137288), Uther's Guard (206338)
-Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=301049)   : Apply Aura (6) | Unknown effect sub type (103)
-                   Base Value: -70000000 | Scaled Value: -7e+007 | Misc Value: 127 | Target: Unknown(57)
-Description      : Places a blessing on a party or raid member, temporarily removing all threat from the target and causing all additional threat generated to be transferred to you. Lasts $d.
-Tooltip          : All threat temporarily removed and additional threat transferred to the casting Paladin.
-
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
@@ -3992,10 +3973,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=301267)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (205656)
+                   Affected Spells: Divine Steed (190784)
 #2 (id=301268)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (205656)
+                   Affected Spells: Divine Steed (190784)
 Description      : Reduces the cooldown of Divine Steed by $s1% and reduces all damage taken while mounted on your Divine Steed by $s2%.
 
 Name             : Aegis of Light (id=204150) [Spell Family (10)] 
@@ -4175,25 +4156,6 @@ Effects          :
 Description      : $@spelldesc205273
 Tooltip          : Stunned.
 
-Name             : Divine Steed (id=205656) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Spell Level      : 1
-GCD              : 1.5 seconds
-Cooldown         : 45 seconds
-Mechanic         : Unknown(180)
-Affecting spells : Knight Templar (204139), 
-Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .....x.. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-Effects          :
-#1 (id=303876)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-Description      : $@spelldesc190784
-
 Name             : Eye of Tyr (Artifact) (id=209202) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
@@ -4344,7 +4306,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=316419)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 99999999 | Scaled Value: 1e+008 - 1.9e+008 | Value Range: 90000001 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 99999999 | Scaled Value: 1e+08 - 1.9e+08 | Value Range: 90000001 | Misc Value: 127 | Target: Self(1)
 #2 (id=316420)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #3 (id=316427)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
@@ -4766,5 +4728,19 @@ Effects          :
 #1 (id=341087)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Your maximum health is increased by $s1%.
+
+Name             : Cavalier (id=230332) [Passive] 
+Hotfixed         : NEW SPELL
+Class            : Paladin
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+Description      : Divine Steed now has ${1+$m1} charges.
 
 
