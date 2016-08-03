@@ -276,6 +276,10 @@ int sim_t::main( const std::vector<std::string>& args )
 int main( int argc, char** argv )
 {
   std::locale::global( std::locale( "C" ) );
+#if defined( SC_VS ) && SC_VS < 15
+  // Ensure unified scientific notation exponent rules between different VS versions
+  _set_output_format( _TWO_DIGIT_EXPONENT );
+#endif
 
   sim_t sim;
   return sim.main( io::utf8_args( argc, argv ) );
