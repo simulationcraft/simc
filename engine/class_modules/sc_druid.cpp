@@ -25,6 +25,7 @@ namespace { // UNNAMED NAMESPACE
   Artifact utility traits
   Check Luffa-Wrapped Grips (what procs it)
   Check Blood Scent crit
+  Jagged Wounds partial ticks
 
   Balance ===================================================================
   Stellar Drift cast while moving
@@ -1769,6 +1770,14 @@ struct moonfire_t : public druid_spell_t
       return tm;
     }
 
+    dot_t* get_dot( player_t* t ) override
+    {
+      if ( ! t ) t = target;
+      if ( ! t ) return nullptr;
+
+      return td( t ) -> dots.moonfire;
+    }
+
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
@@ -1824,9 +1833,6 @@ struct moonfire_t : public druid_spell_t
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
   }
-
-  dot_t* get_dot( player_t* t ) override
-  { return damage -> get_dot( t ); }
 };
 
 }
@@ -2714,36 +2720,48 @@ struct maim_t : public cat_attack_t
 
 struct rake_t : public cat_attack_t
 {
-  const spell_data_t* bleed_spell;
-  double stealth_multiplier;
-  bool once_per_bt;
+  struct rake_bleed_t : public cat_attack_t
+  {
+    rake_bleed_t( druid_t* p ) :
+      cat_attack_t( "rake_bleed", p, p -> find_spell( 155722 ) )
+    {
+      background = dual = true;
+      may_miss = may_parry = may_dodge = may_crit = false;
+
+      base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
+      dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
+      
+      // Direct damage modifiers go in rake_t!
+      trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
+      base_multiplier *= 1.0 + p -> artifact.tear_the_flesh.percent();
+    }
+
+    dot_t* get_dot( player_t* t ) override
+    {
+      if ( ! t ) t = target;
+      if ( ! t ) return nullptr;
+
+      return td( t ) -> dots.rake;
+    }
+  };
+
+  action_t* bleed;
 
   rake_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rake", p, p -> find_affinity_spell( "Rake" ) ),
-    stealth_multiplier( 0.0 ), once_per_bt( false )
+    cat_attack_t( "rake", p, p -> find_affinity_spell( "Rake" ) )
   {
-    add_option( opt_bool( "once_per_bt", once_per_bt ) );
     parse_options( options_str );
 
-    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    bleed = p -> find_action( "rake_bleed" );
 
-    bleed_spell           = p -> find_spell( 155722 );
-    base_td               = bleed_spell -> effectN( 1 ).base_value();
-    attack_power_mod.tick = bleed_spell -> effectN( 1 ).ap_coeff();
-    dot_duration          = bleed_spell -> duration();
-    base_tick_time        = bleed_spell -> effectN( 1 ).period();
+    if ( ! bleed )
+    {
+      bleed = new rake_bleed_t( p );
+      bleed -> stats = stats;
+    }
 
-    stealth_multiplier    = data().effectN( 4 ).percent();
-
-    trigger_tier17_2pc    = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
-
-    // 2015/09/01: Rake deals 20% less damage in PvP combat.
-    if ( sim -> pvp_crit )
-      base_multiplier *= 0.8;
-
-    base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-    dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
-
+    // Periodic damage modifiers go in rake_bleed_t!
+    trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
     base_multiplier *= 1.0 + p -> artifact.tear_the_flesh.percent();
   }
 
@@ -2752,24 +2770,21 @@ struct rake_t : public cat_attack_t
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
     if ( stealthed() )
-      pm *= 1.0 + stealth_multiplier;
+      pm *= 1.0 + data().effectN( 4 ).percent();
 
     return pm;
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    cat_attack_t::execute();
+    cat_attack_t::impact( s );
 
-    p() -> last_rake = sim -> current_time();
-  }
-
-  bool ready() override
-  {
-    if ( once_per_bt && p() -> last_rake > p() -> last_healing_touch )
-      return false;
-
-    return cat_attack_t::ready();
+    action_state_t* b_state = bleed -> get_state();
+    b_state -> target = s -> target;
+    bleed -> snapshot_state( b_state, DMG_OVER_TIME );
+    // Copy persistent multipliers from the direct attack.
+    b_state -> persistent_multiplier = s -> persistent_multiplier;
+    bleed -> schedule_execute( b_state );
   }
 };
 
@@ -2784,10 +2799,6 @@ struct rip_t : public cat_attack_t
     may_crit     = false;
 
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
-
-    // 2015/09/01: Rip deals 20% less damage in PvP combat.
-    if ( sim -> pvp_crit )
-      base_multiplier *= 0.8;
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
@@ -4859,6 +4870,14 @@ struct sunfire_t : public druid_spell_t
       return tm;
     }
 
+    dot_t* get_dot( player_t* t ) override
+    {
+      if ( ! t ) t = target;
+      if ( ! t ) return nullptr;
+
+      return td( t ) -> dots.sunfire;
+    }
+
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
@@ -4898,9 +4917,6 @@ struct sunfire_t : public druid_spell_t
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
   }
-
-  dot_t* get_dot( player_t* t ) override
-  { return damage -> get_dot( t ); }
 };
 
 // Moonkin Form Spell =======================================================
@@ -7757,7 +7773,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.fury_of_elune    = target.get_dot( "fury_of_elune",    &source );
   dots.gushing_wound    = target.get_dot( "gushing_wound",    &source );
   dots.lifebloom        = target.get_dot( "lifebloom",        &source );
-  dots.moonfire         = target.get_dot( "moonfire_dmg",     &source );
+  dots.moonfire         = target.get_dot( "moonfire",         &source );
   dots.stellar_flare    = target.get_dot( "stellar_flare",    &source );
   dots.rake             = target.get_dot( "rake",             &source );
   dots.regrowth         = target.get_dot( "regrowth",         &source );
@@ -7766,7 +7782,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.shadow_rake      = target.get_dot( "ashamanes_rake",   &source );
   dots.shadow_rip       = target.get_dot( "ashamanes_rip",    &source );
   dots.shadow_thrash    = target.get_dot( "shadow_thrash",    &source );
-  dots.sunfire          = target.get_dot( "sunfire_dmg",      &source );
+  dots.sunfire          = target.get_dot( "sunfire",          &source );
   dots.starfall         = target.get_dot( "starfall",         &source );
   dots.thrash_bear      = target.get_dot( "thrash_bear",      &source );
   dots.thrash_cat       = target.get_dot( "thrash_cat",       &source );
