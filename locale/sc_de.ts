@@ -232,7 +232,7 @@
         <translation type="vanished">Ort</translation>
     </message>
     <message>
-        <source>These sample profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.
+        <source>These sample profiles are attempts at creating the best possible gear, talent, and action priority list setups to achieve the highest possible average damage per second.
 The profiles are created with a lot of help from the theorycrafting community.
 They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
 If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
@@ -1445,7 +1445,7 @@ Skalierungsplot für:</translation>
         <source>This options sets a target error threshold and
 runs iterations until that threshold is reached.
 </source>
-        <translation>Diese Option gibt einen Sollfehler vor und 
+        <translation>Diese Option gibt einen Sollfehler vor und
 iteriert bis dieser Sollfehler erreicht ist.</translation>
     </message>
     <message>
@@ -1735,7 +1735,7 @@ Durch die erzwungene einzige Iteration ist keine Skalierungsfaktor-Berechnung m�
     <message>
         <location filename="../qt/sc_OptionsTab.cpp" line="905"/>
         <source>Deterministic Random Number Generator creates all random numbers with a given, constant seed.
-This allows to better observe marginal changes which aren&apos;t influenced by rng, 
+This allows to better observe marginal changes which aren&apos;t influenced by rng,
  or check for other influences without having to reduce statistic noise</source>
         <translation>Deterministischer Zufallszahlengenerator erzeugt alle Zufallszahlen mit einem gegebenen, konstanten Seed.
 Dies erlaubt eine genauere Betrachtung von marginalen Veränderungen, welche nicht durch den Zufall beeinflusst sind,
@@ -1933,7 +1933,7 @@ Dies ist nicht die Anzahl der Schritte. Ein niedrigerer Wert wird mehr Punkte er
     </message>
     <message>
         <location filename="../qt/sc_SampleProfilesTab.cpp" line="16"/>
-        <source>These sample profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.
+        <source>These sample profiles are attempts at creating the best possible gear, talent, and action priority list setups to achieve the highest possible average damage per second.
 The profiles are created with a lot of help from the theorycrafting community.
 They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
 If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
@@ -2391,9 +2391,9 @@ Für kompliziertere Abfragen, setze die Datenquelle und den Filter auf leer und 
  To aid comparison, SimulationCraft can import the character xml file written by Rawr.
 
  Alternatively, paste xml from the Rawr in-game addon into the space below.</source>
-        <translation type="obsolete">Rawr ist ein herausragendes Theorycrafting Werkzeug, welches bei Gegenstandoptimierungen brilliert. 
-Der Hauptunterschied zwischen Rawr und SimulationCraft ist der zwischen Formulierung ( Analytisch ) und Simulation ( Statistisch ). 
-Beide Ansätze haben ihre Stärken und Schwächen. Da sie das Problem aus unterschiedlichen Blickwinkeln betrachten, 
+        <translation type="obsolete">Rawr ist ein herausragendes Theorycrafting Werkzeug, welches bei Gegenstandoptimierungen brilliert.
+Der Hauptunterschied zwischen Rawr und SimulationCraft ist der zwischen Formulierung ( Analytisch ) und Simulation ( Statistisch ).
+Beide Ansätze haben ihre Stärken und Schwächen. Da sie das Problem aus unterschiedlichen Blickwinkeln betrachten,
 kann ein Vergleich zwischen den Tweien die Zuverlässigkeit der Resultate erhöhen, falls sie zu den selben Schlüssel kommen.
 
 Um die Vergleichbarkeit zu erhöhen, erlaubt SimulationCraft die importierung von Rawr XML Charakterdateien.
@@ -2417,9 +2417,9 @@ Alternativ kann der XML-Export vom Rawr Im-Spiel Addon hier hineinkopiert werden
 The profiles are created with a lot of help from the theorycrafting community. They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
 If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
 The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps.</source>
-        <translation type="obsolete">Bestmögliche ( auch &quot;Best in Slot&quot; genannt, kurz BiS ) Profile sind Versuche, die bestmögliche Ausrüstung, Talente, Glyphen und Fähigkeitsprioritäten herauszufinden, 
+        <translation type="obsolete">Bestmögliche ( auch &quot;Best in Slot&quot; genannt, kurz BiS ) Profile sind Versuche, die bestmögliche Ausrüstung, Talente, Glyphen und Fähigkeitsprioritäten herauszufinden,
 welche den höchstmöglichen durchschnittlichen Schaden pro Sekunde erzielen.
-Die Profile werden in Zusammenarbeit mit der Theorycrafting Gemeinschaft entwickelt. Sie sind nur so gut wie der Aufwand, welcher in sie investiert wurde, 
+Die Profile werden in Zusammenarbeit mit der Theorycrafting Gemeinschaft entwickelt. Sie sind nur so gut wie der Aufwand, welcher in sie investiert wurde,
 und wie das Feedback und die Kritik, welche sie von der Gemeinschaft erhalten, inklusive Dir.
 Falls du Ideen zur Verbesserung hast, versuche sie einfach zu simulieren. Sollten sie in erhöhtem Schaden pro Sekunde resultieren, öffne bitte ein Ticket auf unserer Webseite.
 Je mehr Leute versuchen die BiS Profile zu verbessern, je besser werden sie sein bei ihrem Versuch das Ziel des höchstmöglichen Schaden pro Sekunde zu erreichen. </translation>
@@ -2624,7 +2624,7 @@ Höhere Statistikstufen benötigen mehr Arbeitsspeicher.</translation>
     </message>
     <message>
         <source>Deterministic Random Number Generator creates all random numbers with a given, constant seed.
-This allows to better observe marginal changes which aren&apos;t influenced by rng, 
+This allows to better observe marginal changes which aren&apos;t influenced by rng,
  or check for other influences without having to reduce statistic noise</source>
         <translation type="vanished">Deterministischer Zufallszahlen-Generator erzeugt alle Zufallszahlen mit einem gegebenen, konstanten Samen.
 Dies erlaubt eine genauere Betrachtung von marginalen Veränderungen, welche nicht durch den Zufall beeinflusst sind,
@@ -2659,9 +2659,9 @@ There are strengths and weaknesses to each approach.  Since they come from diffe
  To aid comparison, SimulationCraft can import the character xml file written by Rawr.
 
  Alternatively, paste xml from the Rawr in-game addon into the space below.</source>
-        <translation type="vanished">Rawr ist ein herausragendes Theorycrafting Werkzeug, welches bei Gegenstandoptimierungen brilliert. 
-Der Hauptunterschied zwischen Rawr und SimulationCraft ist der zwischen Formulierung ( Analytisch ) und Simulation ( Statistisch ). 
-Beide Ansätze haben ihre Stärken und Schwächen. Da sie das Problem aus unterschiedlichen Blickwinkeln betrachten, 
+        <translation type="vanished">Rawr ist ein herausragendes Theorycrafting Werkzeug, welches bei Gegenstandoptimierungen brilliert.
+Der Hauptunterschied zwischen Rawr und SimulationCraft ist der zwischen Formulierung ( Analytisch ) und Simulation ( Statistisch ).
+Beide Ansätze haben ihre Stärken und Schwächen. Da sie das Problem aus unterschiedlichen Blickwinkeln betrachten,
 kann ein Vergleich zwischen den Tweien die Zuverlässigkeit der Resultate erhöhen, falls sie zu den selben Schlüssel kommen.
 
 Um die Vergleichbarkeit zu erhöhen, erlaubt SimulationCraft die importierung von Rawr XML Charakterdateien.
@@ -2674,9 +2674,9 @@ The profiles are created with a lot of help from the theorycrafting community.
 They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
 If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
 The more people help improve BiS profiles, the better will they reach their goal of representing the highest possible dps.</source>
-        <translation type="vanished">Bestmögliche ( auch &quot;Best in Slot&quot; genannt, kurz BiS ) Profile sind Versuche, die bestmögliche Ausrüstung, Talente, Glyphen und Fähigkeitsprioritäten herauszufinden, 
+        <translation type="vanished">Bestmögliche ( auch &quot;Best in Slot&quot; genannt, kurz BiS ) Profile sind Versuche, die bestmögliche Ausrüstung, Talente, Glyphen und Fähigkeitsprioritäten herauszufinden,
 welche den höchstmöglichen durchschnittlichen Schaden pro Sekunde erzielen.
-Die Profile werden in Zusammenarbeit mit der Theorycrafting Gemeinschaft entwickelt. Sie sind nur so gut wie der Aufwand, welcher in sie investiert wurde, 
+Die Profile werden in Zusammenarbeit mit der Theorycrafting Gemeinschaft entwickelt. Sie sind nur so gut wie der Aufwand, welcher in sie investiert wurde,
 und wie das Feedback und die Kritik, welche sie von der Gemeinschaft erhalten, inklusive Dir.
 Falls du Ideen zur Verbesserung hast, versuche sie einfach zu simulieren. Sollten sie in erhöhtem Schaden pro Sekunde resultieren, öffne bitte ein Ticket auf unserer Webseite.
 Je mehr Leute versuchen die BiS Profile zu verbessern, je besser werden sie sein bei ihrem Versuch das Ziel des höchstmöglichen Schaden pro Sekunde zu erreichen. </translation>

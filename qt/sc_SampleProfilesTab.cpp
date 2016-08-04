@@ -13,7 +13,7 @@ SC_SampleProfilesTab::SC_SampleProfilesTab( QWidget* parent ) :
 
     // Create BiS Introduction
     QFormLayout* bisIntroductionFormLayout = new QFormLayout();
-    QLabel* bisText = new QLabel( tr( "These sample profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.\n"
+    QLabel* bisText = new QLabel( tr( "These sample profiles are attempts at creating the best possible gear, talent, and action priority list setups to achieve the highest possible average damage per second.\n"
       "The profiles are created with a lot of help from the theorycrafting community.\n"
       "They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.\n"
       "If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.\n"

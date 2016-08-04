@@ -1,0 +1,84 @@
+warrior="Warrior_Protection_T19P"
+level=110
+race=tauren
+role=tank
+position=front
+talents=0111201
+artifact=11:133763:137412:133686:0:91:1:92:1:93:1:99:3:100:6:101:3:102:3:103:1:104:1:1358:1
+spec=protection
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=countless_armies
+actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/augmentation,type=defiled
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=unbending_potion
+
+# Executed every time the actor is available.
+
+actions=intercept
+actions+=/auto_attack
+actions+=/use_item,name=horn_of_valor
+actions+=/use_item,name=coagulated_nightwell_residue
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
+actions+=/call_action_list,name=prot
+
+actions.prot=shield_block
+actions.prot+=/ignore_pain
+actions.prot+=/demoralizing_shout,if=incoming_damage_2500ms>health.max*0.20
+actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.50
+actions.prot+=/last_stand,if=incoming_damage_2500ms>health.max*0.50&!cooldown.shield_wall.remains=0
+actions.prot+=/potion,name=unbending_potion,if=(incoming_damage_2500ms>health.max*0.15&!buff.unbending_potion.up)|target.time_to_die<=25
+actions.prot+=/potion,name=draenic_strength,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25
+actions.prot+=/call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>=3
+actions.prot+=/battle_cry
+actions.prot+=/demoralizing_shout,if=talent.booming_voice.enabled&rage<=50
+actions.prot+=/ravager,if=talent.ravager.enabled
+actions.prot+=/shield_slam
+actions.prot+=/revenge
+actions.prot+=/devastate
+
+actions.prot_aoe=battle_cry
+actions.prot_aoe+=/demoralizing_shout,if=talent.booming_voice.enabled&rage<=50
+actions.prot_aoe+=/ravager,if=talent.ravager.enabled
+actions.prot_aoe+=/shield_slam
+actions.prot_aoe+=/revenge
+actions.prot_aoe+=/thunder_clap
+actions.prot_aoe+=/devastate
+
+head=casque_of_the_deep,id=134512,bonus_id=1727
+neck=brulstone_pendant,id=134161,bonus_id=1727,enchant=mark_of_the_heavy_hide
+shoulders=rockbound_pauldrons,id=134140,bonus_id=1727
+back=trembling_mightstone_drape,id=134158,bonus_id=1727,enchant=binding_of_strength
+chest=wardbreaker_chestplate,id=136725,bonus_id=1727
+wrists=detention_wristclamps,id=134522,bonus_id=1727134503
+hands=rumblestone_gauntlets,id=137355,bonus_id=1727
+waist=rockbound_girdle,id=134137,bonus_id=1727
+legs=tassets_of_ravenous_euphoria,id=134516,bonus_id=1727
+feet=wardbreaker_warboots,id=136731,bonus_id=1727
+finger1=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=binding_of_versatility
+finger2=ring_of_contempt,id=134490,bonus_id=1727,enchant=binding_of_versatility
+trinket1=horn_of_valor,id=133642,bonus_id=1727
+trinket2=coagulated_nightwell_residue,id=137400,bonus_id=1727
+main_hand=scaleshard,id=128288,ilevel=855
+off_hand=scale_of_the_earthwarder,id=128289,ilevel=855
+
+# Gear Summary
+# gear_ilvl=840.00
+# gear_strength=9791
+# gear_stamina=17377
+# gear_crit_rating=633
+# gear_haste_rating=7736
+# gear_mastery_rating=1506
+# gear_versatility_rating=7823
+# gear_armor=3965

@@ -231,7 +231,7 @@
         <translation type="vanished">Posizione</translation>
     </message>
     <message>
-        <source>These sample profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.
+        <source>These sample profiles are attempts at creating the best possible gear, talent, and action priority list setups to achieve the highest possible average damage per second.
 The profiles are created with a lot of help from the theorycrafting community.
 They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
 If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
@@ -1935,7 +1935,7 @@ NON è il numero di passi: un valore più basso genererà più punti!</translati
     </message>
     <message>
         <location filename="../qt/sc_SampleProfilesTab.cpp" line="16"/>
-        <source>These sample profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.
+        <source>These sample profiles are attempts at creating the best possible gear, talent, and action priority list setups to achieve the highest possible average damage per second.
 The profiles are created with a lot of help from the theorycrafting community.
 They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
 If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
