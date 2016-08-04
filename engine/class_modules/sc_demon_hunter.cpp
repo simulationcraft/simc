@@ -32,6 +32,7 @@ namespace
    More thorough caching on blade_dance_expr_t
    Fix Nemesis
    Figure out Fel Barrage mechanics
+   VR/FR cds
 
    Vengeance ----------------------------------------------------------------
    Torment
@@ -2156,6 +2157,14 @@ struct fiery_brand_t : public demon_hunter_spell_t
       return new fiery_brand_state_t( this, target );
     }
 
+    dot_t* get_dot( player_t* t ) override
+    {
+      if ( ! t ) t = target;
+      if ( ! t ) return nullptr;
+
+      return td( t ) -> dots.fiery_brand;
+    }
+
     void record_data( action_state_t* s ) override
     {
       // Don't record data direct hits for this action.
@@ -2246,9 +2255,6 @@ struct fiery_brand_t : public demon_hunter_spell_t
     dot -> stats = stats;
   }
 
-  dot_t* get_dot( player_t* t ) override
-  { return dot -> get_dot( t ); }
-
   void impact( action_state_t* s ) override
   {
     demon_hunter_spell_t::impact( s );
@@ -2269,6 +2275,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
 struct sigil_of_flame_damage_t : public demon_hunter_spell_t
 {
   sigil_of_flame_damage_t( demon_hunter_t* );
+
+  dot_t* get_dot( player_t* ) override;
 };
 
 struct infernal_strike_t : public demon_hunter_spell_t
@@ -2365,7 +2373,12 @@ struct infernal_strike_t : public demon_hunter_spell_t
   }
 
   dot_t* get_dot( player_t* t ) override
-  { return td( t ) -> dots.sigil_of_flame; }
+  {
+    if ( ! t ) t = target;
+    if ( ! t ) return nullptr;
+
+    return td( t ) -> dots.sigil_of_flame;
+  }
 };
 
 // Immolation Aura ==========================================================
@@ -2782,6 +2795,14 @@ inline sigil_of_flame_damage_t::sigil_of_flame_damage_t( demon_hunter_t* p )
   }
 }
 
+inline dot_t* sigil_of_flame_damage_t::get_dot( player_t* t )
+{
+  if ( ! t ) t = target;
+  if ( ! t ) return nullptr;
+
+  return td( t ) -> dots.sigil_of_flame;
+}
+
 struct sigil_of_flame_t : public demon_hunter_spell_t
 {
   sigil_of_flame_damage_t* damage;
@@ -2827,8 +2848,23 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
         .action( damage ) );
   }
 
-  dot_t* get_dot( player_t* t ) override
-  { return td( t ) -> dots.sigil_of_flame; }
+  expr_t* create_expression( const std::string& name ) override
+  {
+    if ( util::str_compare_ci( name, "activation_time" ) ||
+      util::str_compare_ci( name, "delay" ) )
+    {
+      if ( sim -> optimize_expressions )
+      {
+        return expr_t::create_constant( name, delay.total_seconds() );
+      }
+      else
+      {
+        return make_ref_expr( name, delay );
+      }
+    }
+
+    return demon_hunter_spell_t::create_expression( name );
+  }
 };
 
 // Spirit Bomb ==============================================================
@@ -4906,8 +4942,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   debuffs.nemesis = new buffs::nemesis_debuff_t( &p, target );
 
   // Vengeance
-  dots.fiery_brand    = target -> get_dot( "fiery_brand_dot", &p );
-  dots.sigil_of_flame = target -> get_dot( "sigil_of_flame_dmg", &p );
+  dots.fiery_brand    = target -> get_dot( "fiery_brand", &p );
+  dots.sigil_of_flame = target -> get_dot( "sigil_of_flame", &p );
   debuffs.frailty =
     buff_creator_t( target, "frailty", p.find_spell( 224509 ) )
     .default_value( p.find_spell( 224509 ) -> effectN( 1 ).percent() );
