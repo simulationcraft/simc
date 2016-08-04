@@ -7166,7 +7166,7 @@ double rogue_t::energy_regen_per_second() const
   {
     double penalty = spec.blade_flurry -> effectN( 1 ).percent();
     penalty += artifact.blade_dancer.percent();
-    r *= 1.0 + spec.blade_flurry -> effectN( 1 ).percent();
+    r *= 1.0 + penalty;
   }
 
   if ( buffs.buried_treasure -> up() )
