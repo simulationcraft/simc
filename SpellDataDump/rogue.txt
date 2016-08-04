@@ -1038,7 +1038,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=8232)     : Weapon Damage% (31)
                    Base Value: 100 | Scaled Value: 1 | Target: Enemy(6)
-                   Hotfixed: Points per Level (3 -> 0)
 #3 (id=8233)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #4 (id=134070)   : Apply Aura (6) | Unknown effect sub type (271)
@@ -1235,22 +1234,6 @@ Effects          :
 #1 (id=20803)    : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 500000000 | Scaled Value: 5e+08 | Misc Value: 127 | Target: Self(1)
 Description      : Fatal attacks instead reduce you to 7% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
-
-Name             : Master of Subtlety (id=31666) [Spell Family (8), Hidden] 
-Class            : Rogue
-School           : Physical
-Duration         : 6 seconds
-Proc Chance      : 100%
-Attributes       : .......x x....... ........ ...x.x..   .....x.. ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=21283)    : Apply Aura (6) | Periodic Dummy: every 6 seconds (226)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 
 Name             : Envenom (id=32645) [Spell Family (8)] 
 Class            : Assassination Rogue
@@ -1563,7 +1546,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 57842 | Target: Enemy(6)
 #3 (id=211058)   : Weapon Damage% (31)
                    Base Value: 210 | Scaled Value: 2.1 | Target: Enemy(6)
-                   Hotfixed: Base Value (170 -> 210)
 Description      : $@spelldesc51690
 
 Name             : Killing Spree Off-Hand (id=57842) [Spell Family (8)] 
@@ -1584,7 +1566,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=211071)   : Weapon Damage% (31)
                    Base Value: 210 | Scaled Value: 2.1 | Target: Enemy(6)
-                   Hotfixed: Base Value (170 -> 210)
 Description      : $@spelldesc51690
 
 Name             : Tricks of the Trade (id=57934) [Spell Family (8)] 
@@ -2193,7 +2174,6 @@ Effects          :
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
 Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Subtlety Rogue
 School           : Physical
 Resource         : 40 Energy
@@ -2956,7 +2936,6 @@ Description      : Strike through the shadows, appearing behind your target and 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
 Name             : Poisoned Knife (id=185565) [Scaling Spell (9), Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Assassination Rogue
 School           : Physical
 Resource         : 40 Energy
@@ -2981,7 +2960,6 @@ Description      : Throws a poison-coated knife, dealing $s1 damage and applying
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Pistol Shot (id=185763) [Scaling Spell (9), Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 40 Energy
@@ -3241,7 +3219,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #3 (id=283621)   : Weapon Damage% (31)
                    Base Value: 195 | Scaled Value: 2.75 | Points Per Level: 8 | Target: Enemy(6)
-                   Hotfixed: Base Value (190 -> 195), Points per Level (7 -> 8)
 #4 (id=283622)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Saber Slash (193315)
@@ -4144,7 +4121,6 @@ Description      : Grants $s1% chance to parry for $d, and each time you parry a
 Tooltip          : Parry chance increased by $s1% and riposting attacks.
 
 Name             : Between the Eyes (id=199804) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 35 Energy

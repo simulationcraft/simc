@@ -1412,7 +1412,6 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Power Word: Barrier (id=62618) [Scaling Spell (8), Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Discipline Priest
 School           : Holy
 Resource         : 6.3% Base Mana (69300 @Level 110)
@@ -2249,7 +2248,6 @@ Effects          :
 Description      : $@spelldesc120517
 
 Name             : Halo (id=120696) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Range            : 100 yards
@@ -2287,7 +2285,6 @@ Effects          :
 Description      : Places a feather at the target location, granting the first ally to walk through it $121557s1% increased movement speed for $121557d. Only 3 feathers can be placed at one time.  Maximum 3 charges.
 
 Name             : Angelic Feather (id=121557) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Range            : 50000 yards
@@ -3312,7 +3309,6 @@ Effects          :
 Description      : A burst of light heals a friendly target and their $s3 nearest allies for $s2, and applies Atonement. 
 
 Name             : Invoke the Naaru (id=196684) [Spell Family (6), Passive] 
-Hotfixed         : Proc Chance (15 -> 20)
 Class            : Priest
 School           : Physical
 Range            : 100 yards

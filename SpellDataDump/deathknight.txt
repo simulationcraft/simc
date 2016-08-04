@@ -454,7 +454,6 @@ Effects          :
 Description      : Smash the target's mind with cold, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Death Coil (id=47541) [Scaling Spell (1), Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Unholy Death Knight
 School           : Shadow
 Resource         : 35 Runic Power
@@ -523,7 +522,6 @@ Effects          :
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
-Hotfixed         : Spell Level (60 -> 55)
 Class            : Blood Death Knight
 School           : Physical
 Spell Level      : 55
@@ -710,7 +708,6 @@ Effects          :
 Description      : Chill your weapons with icy power, and quickly strike the enemy with both weapons, dealing a total of ${$222026sw1+$66196sw1} Frost damage.
 
 Name             : Howling Blast (id=49184) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Frost Death Knight
 School           : Frost
 Resource         : 1 Rune
@@ -820,7 +817,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 5 | Target: Enemy(6)
 #2 (id=42114)    : Weapon Damage% (31)
                    Base Value: 258 | Scaled Value: 2.58 | Target: Enemy(6)
-                   Hotfixed: Base Value (225 -> 258)
 #3 (id=287354)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #4 (id=331353)   : Dummy (3)
@@ -1860,7 +1856,6 @@ Description      : When you deal damage with Death Strike while in Blood Presenc
 Tooltip          : Absorbs $w1 Physical damage.
 
 Name             : Outbreak (id=77575) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Unholy Death Knight
 School           : Shadow
 Resource         : 1 Rune
@@ -2043,7 +2038,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=0.433) | Target: Enemy(6)
 #2 (id=87375)    : Weapon Damage% (31)
                    Base Value: 475 | Scaled Value: 4.75 | Target: Enemy(6)
-                   Hotfixed: Base Value (500 -> 475)
 #3 (id=333923)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 2 - 4 | Value Range: 3 | Target: Enemy(6)
 Description      : Deals $sw2 Physical damage and infects the target with $m3 to $M3 Festering Wounds.
@@ -2134,10 +2128,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=95513)    : Dummy (3)
                    Base Value: 135 | Scaled Value: 135 | Target: Enemy(6)
-                   Hotfixed: Base Value (150 -> 135)
 #2 (id=341774)   : Weapon Damage% (31)
                    Base Value: 135 | Scaled Value: 1.35 | Radius: 8 yards | Target: Cone Front(104)
-                   Hotfixed: Base Value (150 -> 135)
 Description      : Rakes an enemy with deformed claws, dealing $91778s1% of normal damage to the target and nearby enemies.
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
@@ -2754,7 +2746,6 @@ Effects          :
 #4 (id=191168)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
                    Affected Spells: Blood Boil (50842), Death and Decay (52212), Defile (156000)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 15), Affects Spells
 #5 (id=191169)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260807)   : Apply Aura (6) | Dummy (4)
@@ -3634,7 +3625,6 @@ Effects          :
 #1 (id=285787)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Death and Decay (188290)
-                   Hotfixed: Base Value (20 -> 15)
 #2 (id=287223)   : Apply Aura (6) | Add Percent Modifier: Unknown 2 (108)
                    Base Value: -33 | Scaled Value: -33 | Misc Value: 19 | Target: Self(1)
                    Affected Spells: Death and Decay (43265), Death and Decay (143375), Defile (152280)
@@ -3642,7 +3632,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50
 #4 (id=331476)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
-                   Hotfixed: Base Value (20 -> 15)
 Description      : Your Death and Decay deals damage $s3% more often, and while in your Death and Decay you generate $s4% more Runic Power.
 
 Name             : Rune Tap (id=194679) [Spell Family (15)] 
@@ -3837,7 +3826,6 @@ Description      : Your next $s1 auto attacks infect your target with 2 Festerin
 Tooltip          : Applying Festering Wounds when autoattacking.
 
 Name             : Bone Shield (id=195181) [Spell Family (15)] 
-Hotfixed         : Spell Level (78 -> 55)
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 55
@@ -3896,7 +3884,6 @@ Description      : Smash the target, dealing $sw2 Physical damage and generating
 $@spelldesc195181
 
 Name             : Death's Caress (id=195292) [Scaling Spell (1), Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Blood Death Knight
 School           : Shadow
 Resource         : 1 Rune
@@ -4090,7 +4077,6 @@ Effects          :
 Description      : $@spelldesc195679
 
 Name             : Bonestorm (id=196528) [Spell Family (15)] 
-Hotfixed         : Category
 Class            : Death Knight
 School           : Shadow
 Triggered by     : Bonestorm (194844)
@@ -4103,7 +4089,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288467)   : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.28800 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: AP Coefficient (1.4 -> 1.288)
 Description      : $@spelldesc194844
 
 Name             : Bonestorm (id=196545) [Spell Family (15)] 
@@ -4378,7 +4363,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=302968)   : Weapon Damage% (31)
                    Base Value: 287 | Scaled Value: 2.87 | Radius: 8 yards | Target: Cone Front(104)
-                   Hotfixed: Base Value (250 -> 287)
 #3 (id=302969)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #4 (id=302970)   : Dummy (3)
@@ -4480,7 +4464,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Targets: 2 | Target: Enemy(6)
 #2 (id=306040)   : Weapon Damage% (31)
                    Base Value: 258 | Scaled Value: 2.58 | Chain Targets: 2 | Target: Enemy(6)
-                   Hotfixed: Base Value (225 -> 258)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
@@ -4512,7 +4495,6 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
 Effects          :
 #1 (id=306042)   : Apply Aura (6) | Periodic Health Leech (53)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 4.31000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (3.75 -> 4.31)
 Description      : Drains $o1 health from the target over $d.
 
 You can move, parry, dodge, and use defensive abilities while channeling this ability.
@@ -5189,7 +5171,6 @@ Description      : Each Festering Strike critical strike applies $s1 additional 
 Each Scourge Strike critical strike bursts $s2 additional Festering Wound.
 
 Name             : Clawing Shadows (id=207311) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Resource         : 1 Rune
@@ -5554,7 +5535,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=314805)   : Weapon Damage% (31)
                    Base Value: 135 | Scaled Value: 1.35 | Radius: 0 - 10 yards | Target: Custom(18) -> AOE enemy (instant)(16)
-                   Hotfixed: Base Value (150 -> 135)
 Description      : $@spelldesc212333
 
 Name             : Dark Arbiter (id=212412) [Spell Family (15), Hidden] 
