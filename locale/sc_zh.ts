@@ -239,7 +239,7 @@ There are strengths and weaknesses to each approach.  Since they come from diffe
         <translation type="vanished">文件位置</translation>
     </message>
     <message>
-        <source>These sample profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.
+        <source>These sample profiles are attempts at creating the best possible gear, talent, and action priority list setups to achieve the highest possible average damage per second.
 The profiles are created with a lot of help from the theorycrafting community.
 They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
 If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
@@ -2049,7 +2049,7 @@ It&apos;s NOT the number of steps: a lower value will generate more points!</sou
     </message>
     <message>
         <location filename="../qt/sc_SampleProfilesTab.cpp" line="16"/>
-        <source>These sample profiles are attempts at creating the best possible gear, talent, glyph and action priority list setups to achieve the highest possible average damage per second.
+        <source>These sample profiles are attempts at creating the best possible gear, talent, and action priority list setups to achieve the highest possible average damage per second.
 The profiles are created with a lot of help from the theorycrafting community.
 They are only as good as the thorough testing done on them, and the feedback and critic we receive from the community, including yourself.
 If you have ideas for improvements, try to simulate them. If they result in increased dps, please open a ticket on our Issue tracker.
