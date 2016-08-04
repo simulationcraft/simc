@@ -18,21 +18,17 @@ namespace
    General ------------------------------------------------------------------
    Soul Fragments from Shattered Souls
    Demon Soul buff
-   Fel Blade movement mechanics
+   Felblade movement mechanics
    Darkness
 
    Havoc --------------------------------------------------------------------
-   Change Nemesis to be race specific instead of generic
    Defensive talent tier
    Second look at Momentum skills' timings
    Fury of the Illidari distance targeting support
    Overwhelming Power artifact trait
    Defensive artifact traits
-   Keep an eye out for Metamorphosis haste instead of flat GCD reductions
    More thorough caching on blade_dance_expr_t
    Fix Nemesis
-   Figure out Fel Barrage mechanics
-   VR/FR cds
 
    Vengeance ----------------------------------------------------------------
    Torment
@@ -41,6 +37,8 @@ namespace
    Artificial Stamina
    
    Needs Documenting --------------------------------------------------------
+   "activation_time" sigil expression
+   "jump_cancel" -> "animation_cancel" fel rush option
 */
 
 /* Forward declarations
@@ -2010,6 +2008,12 @@ struct fel_rush_t : public demon_hunter_spell_t
 
     damage -> schedule_execute();
 
+    // Aug 04 2016: Using Fel Rush puts VR on cooldown for 1 second.
+    if ( p() -> cooldown.vengeful_retreat -> remains() < timespan_t::from_seconds( 1.0 ) )
+    {
+      p() -> cooldown.vengeful_retreat -> start( timespan_t::from_seconds( 1.0 ) );
+    }
+
     if ( !a_cancel )
     {
       p() -> buff.fel_rush_move -> trigger();
@@ -2020,6 +2024,10 @@ struct fel_rush_t : public demon_hunter_spell_t
 
   bool ready() override
   {
+    /* Aug 04 2016: Using VR puts Fel Rush on cooldown for 1 second. So as to
+    not mess with the charge timer, just prevent it in ready here. This also 
+    is just generally a good idea to prevent unforeseen interactions with the
+    movement code. */
     if ( p() -> buff.vengeful_retreat_move -> check() )
     {
       return false;
@@ -2824,7 +2832,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
 
     // Add damage modifiers in sigil_of_flame_damage_t, not here.
   }
-
+  
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
   {
@@ -4405,6 +4413,8 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   void execute() override
   {
     demon_hunter_attack_t::execute();
+
+    p() -> cooldown.fel_rush -> start( timespan_t::from_seconds( 1.0 ) );
 
     p() -> buff.vengeful_retreat_move -> trigger();
 
