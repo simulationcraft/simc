@@ -6497,6 +6497,9 @@ void shaman_t::init_action_list_enhancement()
   // Turn on auto-attack first thing
   def -> add_action( "auto_attack" );
 
+  // Use Feral Spirits before off-GCD CDs.
+  def -> add_action( this, "Feral Spirit" );
+
   // On-use items
   for ( const auto& item : items )
   {
@@ -6516,28 +6519,28 @@ void shaman_t::init_action_list_enhancement()
   def -> add_action( "berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100" );
   def -> add_action( "blood_fury" );
 
-  def -> add_action( this, "Feral Spirit");
-  def -> add_talent( this, "Boulderfist", "if=!buff.boulderfist.up");
-  def -> add_talent( this, "Ascendance" );
+  def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd|charges_fractional>1.75");
+  def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd" );
+  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<gcd");
   def -> add_talent( this, "Windsong");
+  def -> add_talent( this, "Ascendance" );
   def -> add_talent( this, "Fury of Air", "if=!ticking" );
-  def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8" );
-  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8");
   def -> add_action( this, "Doom Winds");
   def -> add_action( this, "Crash Lightning", "if=active_enemies>=3" );
   def -> add_action( this, "Windstrike" );
   def -> add_action( this, "Stormstrike" );
-  def -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&maelstrom>=45" );
+  def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8" );
+  def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8");
+  def -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&maelstrom>=60" );
   def -> add_action( this, "Lava Lash", "if=buff.hot_hand.react" );
-  def -> add_talent( this, "Boulderfist", "if=charges_fractional>=1.5" );
   def -> add_talent( this, "Earthen Spike" );
   def -> add_action( this, "Crash Lightning", "if=active_enemies>1|talent.crashing_storm.enabled|"
                                               "(pet.feral_spirit.remains>5|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5)" );
   def -> add_talent( this, "Sundering" );
-  def -> add_action( this, "Lava Lash", "if=maelstrom>=120" );
-  def -> add_action( this, "Flametongue", "if=talent.boulderfist.enabled" );
-  def -> add_talent( this, "Boulderfist" );
+  def -> add_action( this, "Lava Lash", "if=maelstrom>=90" );
   def -> add_action( this, "Rockbiter" );
+  def -> add_action( this, "Flametongue" );
+  def -> add_talent( this, "Boulderfist" );
 }
 
 // shaman_t::init_actions ===================================================
