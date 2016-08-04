@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
+#include "sc_OptionsTab.hpp"
+
 #ifdef SC_PAPERDOLL
 #include "sc_PaperDoll.hpp"
 #endif
@@ -71,6 +73,32 @@ void SC_ImportThread::importBattleNet()
   }
 }
 
+void SC_ImportThread::start( sim_t* s, const QString& reg, const QString& rea, const QString& cha, const QString& spe )
+{
+  tab             = TAB_IMPORT_NEW;
+  item_db_sources = mainWindow -> optionsTab -> get_db_order();
+  api             = mainWindow -> optionsTab -> get_api_key();
+  m_role          = mainWindow -> optionsTab -> get_player_role();
+
+  sim             = s;
+  region          = reg;
+  realm           = rea;
+  character       = cha;
+  spec            = spe;
+
+  QThread::start();
+}
+
+void SC_ImportThread::importWidget()
+{
+  // Windows 7 64bit somehow cannot handle straight toStdString() conversion, so
+  // do it in a silly way as a workaround for now.
+  std::string cpp_r   = region.toUtf8().constData();
+  std::string cpp_s   = realm.toUtf8().constData();
+  std::string cpp_c   = character.toUtf8().constData();
+  std::string cpp_sp  = spec.toUtf8().constData();
+  player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, cpp_sp );
+}
 
 void SC_ImportThread::run()
 {
@@ -81,6 +109,7 @@ void SC_ImportThread::run()
   switch ( tab )
   {
     case TAB_BATTLE_NET: importBattleNet(); break;
+    case TAB_IMPORT_NEW: importWidget(); break;
     default: assert( 0 ); break;
   }
 

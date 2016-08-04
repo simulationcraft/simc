@@ -39,6 +39,8 @@ class PaperdollProfile;
 #include "util/sc_searchbox.hpp" // remove once implementations are moved to source files
 #include "util/sc_textedit.hpp" // remove once implementations are moved to source files
 
+#include "sc_importWindow.hpp"
+
 enum main_tabs_e
 {
   TAB_WELCOME = 0,
@@ -63,7 +65,8 @@ enum import_tabs_e
   TAB_HISTORY,
   TAB_RECENT,
   TAB_AUTOMATION,
-  TAB_CUSTOM
+  TAB_CUSTOM,
+  TAB_IMPORT_NEW // Not a real tab but .. the GUI is convoluted. Use this to indicate a "new style" import
 };
 
 class SC_WebView;
@@ -836,7 +839,8 @@ public slots:
   void stopImport();
   void stopSim();
   void stopAllSim();
-  
+  void startNewImport( const QString&, const QString&, const QString&, const QString& );
+
 public:
   SC_MainWindow( QWidget *parent = 0 );
 };
@@ -1245,12 +1249,15 @@ public:
   QString m_role;
   QString api;
   player_t* player;
+  QString region, realm, character, spec; // New import uses these
 
   void importBattleNet();
+  void importWidget();
 
   void start( sim_t* s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role, const QString& apikey )
   { sim = s; tab = t; url = u; profile = ""; item_db_sources = sources; player = 0; active_spec = spec; m_role = role, api = apikey; QThread::start(); }
-  virtual void run();
+  void start( sim_t* s, const QString&, const QString&, const QString&, const QString& );
+  void run() override;
   SC_ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
 };
 

@@ -17,6 +17,8 @@
  HEADERS += qt/sc_SampleProfilesTab.hpp
  HEADERS += qt/sc_OptionsTab.hpp
  HEADERS += qt/sc_AutomationTab.hpp
+ HEADERS += qt/sc_importWidget.hpp
+ HEADERS += qt/sc_importWindow.hpp
  SOURCES += qt/util/sc_textedit.cpp
  SOURCES += qt/util/sc_tabbar.cpp
  SOURCES += qt/util/sc_searchbox.cpp
@@ -32,4 +34,6 @@
  SOURCES += qt/sc_OptionsTab.cpp
  SOURCES += qt/sc_ImportThread.cpp
  SOURCES += qt/sc_AutomationTab.cpp
+ SOURCES += qt/sc_importWidget.cpp
+ SOURCES += qt/sc_importWindow.cpp
  SOURCES += qt/main.cpp

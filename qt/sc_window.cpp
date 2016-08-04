@@ -22,6 +22,8 @@
 #include <QStandardPaths>
 #include <QDateTime>
 
+#include "sc_importWindow.hpp"
+
 static int SC_GUI_HISTORY_VERSION = 650;
 
 namespace { // UNNAMED NAMESPACE
@@ -345,6 +347,9 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 #endif
   setAcceptDrops( true );
   loadHistory();
+
+  auto newImport = new BattleNetImportWindow( this );
+  connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), newImport -> widget(), SLOT( armoryRegionChanged( const QString& ) ) );
 }
 
 void SC_MainWindow::createCmdLine()
@@ -684,6 +689,19 @@ void SC_MainWindow::enqueueSim()
   QString fullOptions = optionsTab -> mergeOptions();
 
   simulationQueue.enqueue( title, options, fullOptions );
+}
+
+void SC_MainWindow::startNewImport( const QString& region, const QString& realm, const QString& character, const QString& specialization )
+{
+  if ( importRunning() )
+  {
+    stopImport();
+    return;
+  }
+  simProgress = 0;
+  import_sim = initSim();
+  importThread -> start( import_sim, region, realm, character, specialization );
+  simulateTab -> add_Text( defaultSimulateText, tr( "Importing" ) );
 }
 
 void SC_MainWindow::startImport( int tab, const QString& url )
