@@ -743,6 +743,8 @@ struct arcane_assault_t : public mage_pet_spell_t
   {
     parse_options( options_str );
     spell_power_mod.direct = p->find_spell( 225119 )->effectN( 1 ).sp_coeff();
+    cooldown -> duration = timespan_t::from_seconds( 3.0 );
+    cooldown -> hasted = true;
   }
 };
 
