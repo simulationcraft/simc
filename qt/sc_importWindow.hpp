@@ -7,8 +7,8 @@
 #define SC_IMPORTWINDOW_HPP
 
 #include <QDebug>
-#include <QWidget>
-#include <QShortcut>
+#include <QtWidgets/QShortcut>
+#include <QtWidgets/QtWidgets>
 
 class SC_MainWindow;
 

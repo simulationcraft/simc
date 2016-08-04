@@ -6,16 +6,16 @@
 #ifndef SC_IMPORTWIDGET_HPP
 #define SC_IMPORTWIDGET_HPP
 
-#include <QWidget>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QComboBox>
+#include <QtWidgets/QtWidgets>
+//#include <QtWidgets/QHBoxLayout>
+//#include <QtWidgets/QLabel>
+//#include <QtWidgets/QComboBox>
 #include <QStandardItemModel>
-#include <QLineEdit>
+//#include <QLineEdit>
 #include <QMap>
 #include <QVector>
 #include <QFile>
-#include <QPushButton>
+//#include <QPushButton>
 #include <QRegExpValidator>
 #include <QDebug>
 #include <QSettings>
