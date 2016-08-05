@@ -3,9 +3,8 @@ tmi_boss=TMI_Standard_Boss_T18N
 # Raid Tier18N
 
 # Death Knight
-#Death_Knight_Frost_1h_T18N.simc
-#Death_Knight_Frost_2h_T18N.simc
-#Death_Knight_Unholy_T18N.simc
+Death_Knight_Frost_T18N.simc
+Death_Knight_Unholy_T18N.simc
 
 # Druid
 Druid_Balance_T18N.simc
