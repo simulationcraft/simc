@@ -40,16 +40,6 @@ macx {
 win32 {
   QMAKE_PROJECT_NAME = "Simulationcraft GUI"
   RC_FILE = ../qt/simcqt.rc
-  !isEmpty(PGO) {
-    win32-msvc2015 {
-      QMAKE_LFLAGS_RELEASE += /LTCG /USEPROFILE
-    }
-
-    win32-msvc2013 {
-      QMAKE_CXXFLAGS_RELEASE += /GL
-      QMAKE_LFLAGS_RELEASE   += /LTCG
-    }
-  }
 }
 
 RESOURCES = \

@@ -12,16 +12,6 @@ PRECOMPILED_HEADER = ../engine/simulationcraft.hpp
 
 win32 {
   QMAKE_PROJECT_NAME = "Simulationcraft Engine"
-  !isEmpty(PGO) {
-    win32-msvc2015 {
-      QMAKE_LFLAGS_RELEASE += /LTCG /USEPROFILE
-    }
-
-    win32-msvc2013 {
-      QMAKE_CXXFLAGS_RELEASE += /GL
-      QMAKE_LFLAGS_RELEASE   += /LTCG
-    }
-  }
 }
 
 !isEmpty(SC_DEFAULT_APIKEY) {
