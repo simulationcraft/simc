@@ -2826,6 +2826,7 @@ struct virulent_plague_explosion_t : public death_knight_spell_t
     death_knight_spell_t( "virulent_eruption", p, p -> find_spell( 191685 ) )
   {
     background = split_aoe_damage = true;
+    base_multiplier *= 1.0 + p -> artifact.plaguebearer.percent();
     aoe = -1;
   }
 };
