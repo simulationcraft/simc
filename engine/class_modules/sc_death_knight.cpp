@@ -288,6 +288,7 @@ public:
     cooldown_t* antimagic_shell;
     cooldown_t* bone_shield_icd;
     cooldown_t* dark_transformation;
+    cooldown_t* frost_fever;
     cooldown_t* pillar_of_frost;
     cooldown_t* vampiric_blood;
   } cooldown;
@@ -310,6 +311,7 @@ public:
   struct gains_t {
     gain_t* antimagic_shell;
     gain_t* festering_wound;
+    gain_t* frost_fever;
     gain_t* horn_of_winter;
     gain_t* hungering_rune_weapon;
     gain_t* murderous_efficiency;
@@ -2780,23 +2782,14 @@ struct frost_fever_t : public disease_t
   {
     base_multiplier *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
 
-    if ( p -> spec.frost_fever -> ok() )
-    {
-      rp_amount = p -> spec.frost_fever -> effectN( 1 ).trigger()
-        -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-      energize_resource = RESOURCE_RUNIC_POWER;
-      energize_type = ENERGIZE_PER_TICK;
-    }
+    p -> cooldown.frost_fever = p -> get_cooldown( "frost_fever" );
+    p -> cooldown.frost_fever -> duration = p -> spec.frost_fever -> internal_cooldown();
 
     if ( hypothermia )
     {
       add_child( hypothermia );
     }
   }
-
-  // Override "must consume resource to grant resource" in death_knight_spell_t.
-  action_energize_e energize_type_() const override
-  { return energize_type; }
 
   void tick( dot_t* d ) override
   {
@@ -2805,6 +2798,16 @@ struct frost_fever_t : public disease_t
       rp_amount : 0;
 
     disease_t::tick( d );
+
+    if ( p() -> cooldown.frost_fever -> up() &&
+         rng().roll( p() -> spec.frost_fever -> proc_chance() ) )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+          p() -> spec.frost_fever -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+          p() -> gains.frost_fever,
+          this );
+      p() -> cooldown.frost_fever -> start();
+    }
 
     if ( p() -> artifact.hypothermia.rank() &&
          rng().roll( p() -> artifact.hypothermia.data().proc_chance() ) )
@@ -6444,6 +6447,7 @@ void death_knight_t::init_gains()
   gains.antimagic_shell                  = get_gain( "antimagic_shell"            );
   gains.horn_of_winter                   = get_gain( "Horn of Winter"             );
   gains.hungering_rune_weapon            = get_gain( "Hungering Rune Weapon"      );
+  gains.frost_fever                      = get_gain( "Frost Fever"                );
   gains.festering_wound                  = get_gain( "Festering Wound"            );
   gains.murderous_efficiency             = get_gain( "Murderous Efficiency"       );
   gains.power_refund                     = get_gain( "power_refund"               );
