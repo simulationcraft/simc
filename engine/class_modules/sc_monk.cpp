@@ -7032,6 +7032,12 @@ double monk_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + sef_mult;
   }
 
+  if ( buff.combo_strikes -> up() )
+  {
+    m *= 1.0 + cache.mastery_value();
+    m *= 1.0 + buff.hit_combo -> stack_value();
+  }
+
   // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, Elusive Brew increases damage based on spell data of the special effect.
 /*  if ( eluding_movements )
   {
@@ -7073,12 +7079,6 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
     if ( artifact.spiritual_focus.rank() )
       sef_mult += artifact.spiritual_focus.data().effectN( 2 ).percent();
     m *= 1.0 + sef_mult;
-  }
-
-  if ( buff.combo_strikes -> up() )
-  {
-    m *= 1.0 + cache.mastery_value();
-    m *= 1.0 + buff.hit_combo -> stack_value();
   }
 
   return m;
