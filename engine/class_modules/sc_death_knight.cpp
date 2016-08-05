@@ -340,6 +340,7 @@ public:
     const spell_data_t* riposte;
 
     // Frost
+    const spell_data_t* frost_fever;
     const spell_data_t* runic_empowerment;
     const spell_data_t* killing_machine;
     const spell_data_t* rime;
@@ -1889,14 +1890,19 @@ struct death_knight_action_t : public Base
   death_knight_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  double composite_energize_amount( const action_state_t* s ) const override
+  action_energize_e energize_type_() const override
   {
     // Harmful actions that do not consume any resources do not generate RP
     if ( this -> harmful && this -> resource_consumed == 0 )
     {
-      return 0;
+      return ENERGIZE_NONE;
     }
 
+    return action_base_t::energize_type_();
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
     double amount = action_base_t::composite_energize_amount( s );
 
     if ( p() -> talent.rapid_decomposition -> ok() && td( s -> target ) -> in_aoe_radius() )
@@ -2767,11 +2773,20 @@ struct hypothermia_t : public death_knight_spell_t
 struct frost_fever_t : public disease_t
 {
   hypothermia_t* hypothermia;
+  double rp_amount;
 
   frost_fever_t( death_knight_t* p ) : disease_t( p, "frost_fever", 55095 ),
     hypothermia( p -> artifact.hypothermia.rank() ? new hypothermia_t( p ) : nullptr )
   {
     base_multiplier *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
+
+    if ( p -> spec.frost_fever -> ok() )
+    {
+      rp_amount = p -> spec.frost_fever -> effectN( 1 ).trigger()
+        -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+      energize_resource = RESOURCE_RUNIC_POWER;
+      energize_type = ENERGIZE_PER_TICK;
+    }
 
     if ( hypothermia )
     {
@@ -2779,8 +2794,16 @@ struct frost_fever_t : public disease_t
     }
   }
 
+  // Override "must consume resource to grant resource" in death_knight_spell_t.
+  action_energize_e energize_type_() const override
+  { return energize_type; }
+
   void tick( dot_t* d ) override
   {
+    // Roll for energize.
+    energize_amount = rng().roll( p() -> spec.frost_fever -> proc_chance() ) ?
+      rp_amount : 0;
+
     disease_t::tick( d );
 
     if ( p() -> artifact.hypothermia.rank() &&
@@ -5799,6 +5822,7 @@ void death_knight_t::init_spells()
   spec.riposte                    = find_specialization_spell( "Riposte" );
 
   // Frost
+  spec.frost_fever                = find_specialization_spell( "Frost Fever" );
   spec.runic_empowerment          = find_specialization_spell( "Runic Empowerment" );
   spec.rime                       = find_specialization_spell( "Rime" );
   spec.killing_machine            = find_specialization_spell( "Killing Machine" );
