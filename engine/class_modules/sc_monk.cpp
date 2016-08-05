@@ -7045,12 +7045,11 @@ double monk_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + sef_mult;
   }
 
-/*  if ( buff.combo_strikes -> up() )
+  if ( buff.combo_strikes -> up() )
   {
     m *= 1.0 + cache.mastery_value();
     m *= 1.0 + buff.hit_combo -> stack_value();
   }
-  */
   // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, Elusive Brew increases damage based on spell data of the special effect.
 /*  if ( eluding_movements )
   {
@@ -7258,11 +7257,7 @@ void monk_t::invalidate_cache( cache_e c )
     break;
   case CACHE_MASTERY:
     if ( specialization() == MONK_WINDWALKER )
-      player_t::invalidate_cache( CACHE_MASTERY );
-    break;
-  case CACHE_PLAYER_DAMAGE_MULTIPLIER:
-    if (specialization() == MONK_WINDWALKER)
-      player_t::invalidate_cache(CACHE_PLAYER_DAMAGE_MULTIPLIER);
+      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     break;
   default: break;
   }
