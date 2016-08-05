@@ -40,6 +40,7 @@ macx {
 win32 {
   QMAKE_PROJECT_NAME = "Simulationcraft GUI"
   RC_FILE = ../qt/simcqt.rc
+  DEFINES += VS_NEW_BUILD_SYSTEM
 }
 
 RESOURCES = \
