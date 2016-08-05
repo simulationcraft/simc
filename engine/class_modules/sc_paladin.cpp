@@ -2306,7 +2306,7 @@ struct light_of_the_protector_t : public paladin_heal_t
   {
     double am = paladin_heal_t::action_multiplier();
 
-    if ( p() -> standing_in_consecration() )
+    if ( p() -> standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
       am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
 
     am *= 1.0 + p() -> artifact.scatter_the_shadows.percent();
@@ -2362,7 +2362,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
   {
     double am = paladin_heal_t::action_multiplier();
 
-    if ( p() -> standing_in_consecration() )
+    if ( p() -> standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
       am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
 
     am *= 1.0 + p() -> artifact.scatter_the_shadows.percent();
@@ -3556,7 +3556,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-    if ( p() -> standing_in_consecration() )
+    if ( p() -> standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
       am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
 
     am *= 1.0 + p() -> artifact.righteous_crusader.percent( 1 );
@@ -5480,7 +5480,7 @@ void paladin_t::target_mitigation( school_e school,
 
     // 20% more effective if standing in Cons
     // TODO: test if this is multiplicative or additive. Assumed multiplicative.
-    if ( standing_in_consecration() )
+    if ( standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
       sotr_mitigation *= 1.0 + spells.consecration_bonus -> effectN( 3 ).percent();
 
     // clamp is hardcoded in tooltip, not shown in effects
