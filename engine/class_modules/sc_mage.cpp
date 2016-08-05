@@ -4101,6 +4101,10 @@ struct flurry_bolt_t : public frost_mage_spell_t
     frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) )
   {
     chills = true;
+    if ( p -> talents.lonely_winter -> ok() )
+    {
+      base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+    }
   }
   virtual action_state_t* new_state() override
   {
