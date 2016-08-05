@@ -684,8 +684,8 @@ public:
 
   virtual timespan_t gcd() const override
   {
-    timespan_t g = action_t::gcd();
-    timespan_t m = action_t::min_gcd;
+    timespan_t g = ab::gcd();
+    timespan_t m = ab::min_gcd;
 
     if ( g == timespan_t::zero() )
       return timespan_t::zero();

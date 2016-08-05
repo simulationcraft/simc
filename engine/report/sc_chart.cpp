@@ -378,7 +378,6 @@ double get_data_value( const player_collected_data_t& container,
       }
       return 0;
     }
-    break;
     case METRIC_VARIANCE:
     {
       if ( val != VALUE_MEAN )

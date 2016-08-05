@@ -299,9 +299,6 @@ bool parse_cache( sim_t*             /* sim */,
 
   else
     return false;
-
-
-  return true;
 }
 
 // parse_talent_format ======================================================

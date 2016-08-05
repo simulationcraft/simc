@@ -977,7 +977,6 @@ int item_database::random_suffix_type( const item_data_t* item )
         default:
           return 3;
       }
-      break;
     case ITEM_CLASS_ARMOR:
       switch ( item -> inventory_type )
       {
@@ -1006,7 +1005,6 @@ int item_database::random_suffix_type( const item_data_t* item )
         default:
           return -1;
       }
-      break;
     default:
       return -1;
   }

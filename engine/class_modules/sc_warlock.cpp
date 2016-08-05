@@ -3364,8 +3364,8 @@ struct chaos_bolt_t: public warlock_spell_t
 
     if ( rng().roll( t18_4pc_rng ) )
     {
-      return 1;
       p() -> procs.t18_4pc_destruction -> occur();
+      return 1;
     }
 
     return c;

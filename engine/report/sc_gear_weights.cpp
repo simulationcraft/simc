@@ -29,7 +29,6 @@ int wowhead_role( player_e type, role_e role )
         return 3;
       else
         return 1;
-      break;
     case ROLE_SPELL:
       return 2;
     case ROLE_HEAL:

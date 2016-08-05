@@ -65,7 +65,6 @@ public:
 
   static int cpu_thread_count()
   { return std::thread::hardware_concurrency(); }
-private:
 };
 
 mutex_t::mutex_t() :

@@ -2764,7 +2764,9 @@ expr_t* action_t::create_expression( const std::string& name_str )
   if ( splits.size() == 3 && splits[ 0 ] == "enemy_dot" )
   {
     // simple by-pass to test
-    return player -> get_dot( splits[ 1 ], target ) -> create_expression( this, splits[ 2 ], false );
+    auto dt_ = player -> get_dot( splits[ 1 ], target ) -> create_expression( this, splits[ 2 ], false );
+    if ( dt_ )
+      return dt_;
 
     // more complicated version, cycles through possible sources
     std::vector<expr_t*> dot_expressions;

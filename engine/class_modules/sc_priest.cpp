@@ -2414,8 +2414,6 @@ struct void_eruption_t final : public priest_spell_t
     {
       return false;
     }
-
-    return priest_spell_t::ready();
   }
 };
 
@@ -3965,7 +3963,7 @@ public:
 
   double calculate_direct_amount( action_state_t* s ) const override
   {
-    double cda = action_t::calculate_direct_amount( s );
+    double cda = Base::calculate_direct_amount( s );
 
     // Source: Ghostcrawler 2012-06-20
     // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97

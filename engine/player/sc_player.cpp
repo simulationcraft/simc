@@ -4597,7 +4597,6 @@ void player_t::regen( timespan_t periodicity )
 
         default:
           continue;
-          break;
       }
 
       if ( gain && base )

@@ -4833,7 +4833,7 @@ struct ice_lance_t : public frost_mage_spell_t
     //  s -> result_total *= 1.0 + p() -> artifact.let_it_go.percent();
     // }
 
-    return s -> result_total;
+    //return s -> result_total;
   }
 
   virtual result_e calculate_result( action_state_t* s ) const override
