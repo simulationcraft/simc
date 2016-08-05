@@ -7457,7 +7457,8 @@ void mage_t::create_buffs()
   buffs.pyretic_incantation   = buff_creator_t( this, "pyretic_incantation", find_spell( 194329 ) );
   buffs.pyromaniac            = buff_creator_t( this, "pyromaniac", sets.set( MAGE_FIRE, T17, B4 ) -> effectN( 1 ).trigger() )
                                   .trigger_spell( sets.set( MAGE_FIRE, T17, B4 ) );
-  buffs.streaking             = buff_creator_t( this, "streaking", find_spell( 211399 ) );
+  buffs.streaking             = buff_creator_t( this, "streaking", find_spell( 211399 ) )
+                                  .add_invalidate( CACHE_SPELL_HASTE );
 
   // Frost
   //TODO: Remove hardcoded duration once spelldata contains the value
