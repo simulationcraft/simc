@@ -926,11 +926,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
       super_t::execute();
     }
 
-    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
+/*    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
     {
       super_t::snapshot_internal( state, flags, rt );
     }
-  };
+*/  };
 
   struct sef_melee_attack_t : public sef_action_base_t<melee_attack_t>
   {
@@ -1437,7 +1437,7 @@ public:
     return pet_t::create_action( name, options_str );
   }
 
-  double composite_player_multiplier( school_e school ) const override
+/*  double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -1451,7 +1451,7 @@ public:
 
     return m;
   }
-
+  */
   void summon( timespan_t duration = timespan_t::zero() ) override
   {
     pet_t::summon( duration );
@@ -1807,6 +1807,19 @@ public:
       p() -> tier19_4pc_melee_counter = 0;
     }
     p() -> previous_combo_strike = new_ability;
+  }
+
+  double combo_strikes_value()
+  {
+    double am = 1;
+
+    if (p() -> buff.combo_strikes->up())
+    {
+      am *= 1 + p() -> cache.mastery_value();
+      am *= 1 + p() -> buff.hit_combo -> stack_value();
+    }
+
+    return am;
   }
 
   virtual double cost() const
@@ -7032,12 +7045,12 @@ double monk_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + sef_mult;
   }
 
-  if ( buff.combo_strikes -> up() )
+/*  if ( buff.combo_strikes -> up() )
   {
     m *= 1.0 + cache.mastery_value();
     m *= 1.0 + buff.hit_combo -> stack_value();
   }
-
+  */
   // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, Elusive Brew increases damage based on spell data of the special effect.
 /*  if ( eluding_movements )
   {
@@ -7242,6 +7255,14 @@ void monk_t::invalidate_cache( cache_e c )
   case CACHE_BONUS_ARMOR:
     if ( spec.bladed_armor -> ok() )
       player_t::invalidate_cache( CACHE_ATTACK_POWER );
+    break;
+  case CACHE_MASTERY:
+    if ( specialization() == MONK_WINDWALKER )
+      player_t::invalidate_cache( CACHE_MASTERY );
+    break;
+  case CACHE_PLAYER_DAMAGE_MULTIPLIER:
+    if (specialization() == MONK_WINDWALKER)
+      player_t::invalidate_cache(CACHE_PLAYER_DAMAGE_MULTIPLIER);
     break;
   default: break;
   }
