@@ -26,6 +26,7 @@ void BattleNetImportWindow::toggle()
     {
         QWidget::raise();
         QWidget::show();
+        activateWindow();
 
         auto basePos = m_mainWindow -> geometry();
         move( basePos.center().x() - geometry().width() * .5,
