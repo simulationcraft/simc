@@ -6416,8 +6416,9 @@ void shaman_t::init_action_list_elemental()
   aoe -> add_action( this, "Stormkeeper" );
   aoe -> add_talent( this, "Ascendance" );
   aoe -> add_talent( this, "Liquid Magma Totem" );
+  aoe -> add_action( this, "Flame Shock", "if=spell_targets.chain_lightning=3&maelstrom>=20,target_if=refreshable" );
   aoe -> add_action( this, "Earthquake Totem" );
-  aoe -> add_action( this, "Lava Beam", "target_if=!debuff.lightning_rod.up" );
+  aoe -> add_action( this, "Lava Burst", "if=buff.lava_surge.up&spell_targets.chain_lightning=3" );
   aoe -> add_action( this, "Lava Beam" );
   aoe -> add_action( this, "Chain Lightning", "target_if=!debuff.lightning_rod.up" );
   aoe -> add_action( this, "Chain Lightning" );
