@@ -5480,7 +5480,7 @@ void paladin_t::target_mitigation( school_e school,
 
     // 20% more effective if standing in Cons
     // TODO: test if this is multiplicative or additive. Assumed multiplicative.
-    if ( standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
+    if ( standing_in_consecration() || talents.consecrated_hammer -> ok() )
       sotr_mitigation *= 1.0 + spells.consecration_bonus -> effectN( 3 ).percent();
 
     // clamp is hardcoded in tooltip, not shown in effects
