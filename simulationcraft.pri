@@ -40,19 +40,19 @@ macx {
 
 win32 {
   LIBS += -lwininet -lshell32
-	win32-msvc2013|win32-msvc2015 {
-			QMAKE_CXXFLAGS_RELEASE += /Ot /MP
-	}
-	
-	!isEmpty(PGO) {
-		win32-msvc2013 {
-			QMAKE_LFLAGS_RELEASE += /LTCG
-			QMAKE_CXXFLAGS_RELEASE += /GL
-		}
-		
-		win32-msvc2015 {
-			QMAKE_CXXFLAGS_RELEASE += /GL
-			QMAKE_LFLAGS_RELEASE   += /LTCG /USEPROFILE /PGD:"..\SimulationCraft64.pgd"
-		}
+  win32-msvc2013|win32-msvc2015 {
+    QMAKE_CXXFLAGS_RELEASE += /Ot /MP
+  }
+
+  !isEmpty(PGO) {
+    win32-msvc2013 {
+      QMAKE_LFLAGS_RELEASE += /LTCG
+      QMAKE_CXXFLAGS_RELEASE += /GL
+    }
+    
+    win32-msvc2015 {
+      QMAKE_CXXFLAGS_RELEASE += /GL
+      QMAKE_LFLAGS_RELEASE   += /LTCG /USEPROFILE /PGD:"..\SimulationCraft64.pgd"
+    }
   }
 }

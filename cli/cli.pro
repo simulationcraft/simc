@@ -15,3 +15,5 @@ win32 {
 }
 
 include(../source_files/QT_engine_main.pri)
+
+SOURCES = $$replace(SOURCES, engine, ../engine)

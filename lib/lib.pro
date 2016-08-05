@@ -8,8 +8,6 @@ QT         -= core gui
 CONFIG(release, debug|release): DESTDIR = release
 CONFIG(debug, debug|release): DESTDIR = debug
 
-PRECOMPILED_HEADER = ../engine/simulationcraft.hpp
-
 win32 {
   QMAKE_PROJECT_NAME = "Simulationcraft Engine"
 }
@@ -23,3 +21,11 @@ win32 {
 }
 
 include(../source_files/QT_engine.pri)
+
+# Fix paths in SOURCES, HEADERS, PRECOMPILED_HEADER, as they need to 
+# refer to parent directory for the respective subprojects. Additionally, 
+# simulationcraft.hpp must only be defined in PRECOMPILED_HEADER.
+HEADERS -= engine/simulationcraft.hpp
+HEADERS = $$replace(HEADERS, engine/, ../engine/)
+SOURCES = $$replace(SOURCES, engine/, ../engine/)
+PRECOMPILED_HEADER = $$replace(PRECOMPILED_HEADER, engine/, ../engine/)

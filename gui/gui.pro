@@ -52,3 +52,7 @@ TRANSLATIONS = \
 
 include(../source_files/QT_gui.pri)
 
+# Fix paths in SOURCES and HEADERS, as they need to  refer to parent
+# directory for the respective subprojects.
+HEADERS = $$replace(HEADERS, qt/, ../qt/)
+SOURCES = $$replace(SOURCES, qt/, ../qt/)
