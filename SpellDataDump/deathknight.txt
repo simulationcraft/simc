@@ -5557,21 +5557,27 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Skulker Shot (id=212423) 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Range            : 35 yards
 Cast Time        : 2 seconds
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : .x..x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Ranged ability (1)
 Effects          :
-#1 (id=314938)   : Weapon Damage% (31)
-                   Base Value: 200 | Scaled Value: 2 | Target: Enemy(6)
+#1 (id=314938)   : Dummy (3)
+                   Base Value: 75 | Scaled Value: 75 | Target: Enemy(6)
+                   Hotfixed: Type (31 -> 3), Base Value (200 -> 75)
+#2 (id=348187)   : Weapon Damage% (31)
+                   Base Value: 75 | Scaled Value: 0.75 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: NEW EFFECT
 Description      : A shot that causes Physical damage.
 
 Name             : Wraith Walk (id=212552) [Spell Family (15)] 

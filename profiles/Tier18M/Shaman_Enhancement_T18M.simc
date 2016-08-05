@@ -36,7 +36,7 @@ actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
 actions+=/blood_fury
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd|charges_fractional>1.75
 actions+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd
-actions+=/flametongue,if=buff.flametongue.remains<4.8
+actions+=/flametongue,if=buff.flametongue.remains<gcd
 actions+=/windsong
 actions+=/ascendance
 actions+=/fury_of_air,if=!ticking

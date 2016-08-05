@@ -6153,11 +6153,12 @@ Description      : Release the natural power within G'Hanir to increase the freq
 Tooltip          : Heal over time spells are healing ${100*(1/(1+($m1/100))-1)}% faster.
 
 Name             : Oneth's Intuition (id=209405) [Spell Family (7), Passive] 
+Hotfixed         : Proc Flags (536870912 -> 65536)
 Class            : Druid
 School           : Nature
 Proc Chance      : 20%
-Proc Flags       : ........ ........ ........ .....x.. 
-                 
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
