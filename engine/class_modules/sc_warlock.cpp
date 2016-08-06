@@ -5633,6 +5633,8 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled" );
   add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
   add_action( "Life Tap", "if=talent.mana_tap.enabled&mana.pct<=10" );
+  add_action( "Immolate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=0" );
+  add_action( "Immolate", "if=!talent.roaring_blaze.enabled" );
   add_action( "Incinerate" );
 }
 

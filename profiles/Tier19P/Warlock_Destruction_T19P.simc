@@ -3,8 +3,8 @@ level=110
 race=troll
 role=spell
 position=back
-talents=2301023
-artifact=38:140825:140837:140825:0:803:1:804:2:807:5:809:4:811:3:812:3:815:1:817:1:818:1:1355:1
+talents=1301023
+artifact=38:0:0:0:0:803:1:804:2:807:4:809:4:811:3:812:3:815:1:817:1:818:1:1355:1
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -56,6 +56,8 @@ actions+=/cataclysm
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled
 actions+=/immolate,if=!talent.roaring_blaze.enabled&remains<=duration*0.3
 actions+=/life_tap,if=talent.mana_tap.enabled&mana.pct<=10
+actions+=/immolate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=0
+actions+=/immolate,if=!talent.roaring_blaze.enabled
 actions+=/incinerate
 actions+=/life_tap
 
