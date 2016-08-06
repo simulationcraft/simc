@@ -37,7 +37,7 @@ set install=simc-%simcversion%-win64
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
-"%MSBUILDDIR%msbuild.exe" %simcfiles%\simulationcraft.sln /p:configuration=Release /nr:true /m
+"%MSBUILDDIR%msbuild.exe" %simcfiles%\simulationcraft.sln /p:configuration=Release /nr:true
 
 robocopy "%redist%x64\Microsoft.VC140.CRT" %install%\ msvcp140.dll vccorlib140.dll vcruntime140.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
