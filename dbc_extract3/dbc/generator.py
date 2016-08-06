@@ -1302,6 +1302,7 @@ class SpellDataGenerator(DataGenerator):
           ( 221847, 0 ),    # Blood Mirror damage
           ( 205164, 0 ),    # Crystalline Swords
           ( 205165, 0 ),    # More crystalline swords stuff
+          ( 191730, 0 ), ( 191727, 0 ), ( 191728, 0 ), ( 191729, 0 ), # Armies of the Damned debuffs
         ),
 
         # Shaman:

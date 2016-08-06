@@ -199,6 +199,7 @@ struct death_knight_td_t : public actor_target_data_t {
     debuff_t* soul_reaper;
     debuff_t* blood_mirror;
     debuff_t* scourge_of_worlds;
+    debuff_t* death; // Armies of the Damned ghoul proc
   } debuff;
 
   // Check if DnD or Defile are up for ScS/CS AOE
@@ -305,6 +306,7 @@ public:
     action_t* mark_of_blood;
     action_t* crystalline_swords;
     action_t* necrobomb;
+    action_t* pestilence; // Armies of the Damned
   } active_spells;
 
   // Gains
@@ -673,6 +675,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
     .spell( death_knight -> artifact.scourge_of_worlds.data().effectN( 1 ).trigger() )
     .trigger_spell( death_knight -> artifact.scourge_of_worlds )
     .default_value( death_knight -> artifact.scourge_of_worlds.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  debuff.death = buff_creator_t( *this, "death", death_knight -> find_spell( 191730 ) )
+    .trigger_spell( death_knight -> artifact.armies_of_the_damned )
+    .default_value( death_knight -> find_spell( 191730 ) -> effectN( 1 ).percent() );
 }
 
 // ==========================================================================
@@ -1388,6 +1393,44 @@ struct army_pet_t : public base_ghoul_pet_t
     army_claw_t( army_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> find_spell( 91776 ), options_str )
     { }
+
+    // Triggers the currently selected Armies of the Damned proc for the pet
+    void trigger_aotd_proc( const action_state_t* state )
+    {
+      if ( ! p() -> o() -> artifact.armies_of_the_damned.rank() )
+      {
+        return;
+      }
+
+      // Presume 10% chance to trigger per claw execute
+      if ( ! rng().roll( p() -> o() -> artifact.armies_of_the_damned.data().effectN( 1 ).percent() ) )
+      {
+        return;
+      }
+
+      // 4 different procs, but only 2 are relevant for the DPS
+      switch ( static_cast<int>( rng().range( 0, 4 ) ) )
+      {
+        case 0:
+          p() -> o() -> get_target_data( state -> target ) -> debuff.death -> trigger();
+          break;
+        case 1:
+          p() -> o() -> active_spells.pestilence -> target = state -> target;
+          p() -> o() -> active_spells.pestilence -> execute();
+          break;
+        default:
+          break;
+      }
+    }
+
+    void execute() override
+    {
+      super::execute();
+      if ( result_is_hit( execute_state -> result ) )
+      {
+        trigger_aotd_proc( execute_state );
+      }
+    }
   };
 
   struct dragged_to_helheim_t : public pet_spell_t<army_pet_t>
@@ -2502,6 +2545,20 @@ struct necrobomb_t : public death_knight_spell_t
 
     // TODO: 2016-07-30: Versatility does not affect necrobomb in game, check later
     snapshot_flags &= ~STATE_VERSATILITY;
+  }
+};
+
+// Pestilence ===============================================================
+
+struct pestilence_t : public death_knight_spell_t
+{
+  pestilence_t( death_knight_t* p ) :
+    death_knight_spell_t( "pestilence", p, p -> find_spell( 191729 ) )
+  {
+    // TODO: Are ticks hasted?
+    hasted_ticks = may_crit = false;
+    background = true;
+    dot_max_stack = data().max_stacks();
   }
 };
 
@@ -6008,6 +6065,11 @@ void death_knight_t::init_spells()
   if ( artifact.the_shambler.rank() )
   {
     active_spells.necrobomb = new necrobomb_t( this );
+  }
+
+  if ( artifact.armies_of_the_damned.rank() )
+  {
+    active_spells.pestilence = new pestilence_t( this );
   }
 }
 
