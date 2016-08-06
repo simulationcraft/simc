@@ -6026,7 +6026,8 @@ void rogue_t::init_action_list()
     def -> add_action( "pool_resource,for_next=1,extra_amount=60" );
     def -> add_action( "shadowmeld,if=combo_points.deficit>=2&energy>60" );
     def -> add_talent( this, "Slice and Dice", "if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<6" );
-    def -> add_action( this, "Roll the Bones", "if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<3|buff.roll_the_bones.remains<duration*0.3%rtb_buffs|(!buff.shark_infested_waters.up&rtb_buffs<2))" );
+      // Reroll unless 3+ buffs or sharks + 1 or jolly roger + 1 or broadsides + true bearing
+    def -> add_action( this, "Roll the Bones", "if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<3|buff.roll_the_bones.remains<duration*0.3%rtb_buffs|(rtb_buffs<=1|rtb_buffs=2&!buff.shark_infested_waters.up&!buff.jolly_roger.up&!(buff.broadsides.up&buff.true_bearing.up)))" );
     def -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
     def -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
     def -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4" );
