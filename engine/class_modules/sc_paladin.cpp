@@ -5463,7 +5463,7 @@ void paladin_t::target_mitigation( school_e school,
     sim -> out_debug.printf( "Damage to %s after other mitigation effects but before SotR is %f", s -> target -> name(), s -> result_amount );
 
   // Shield of the Righteous
-  if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
+  if ( buffs.shield_of_the_righteous -> check())
   {
     // sotr has a lot going on, so we'll be verbose
     double sotr_mitigation;
