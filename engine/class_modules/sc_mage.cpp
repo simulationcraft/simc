@@ -2297,6 +2297,8 @@ struct frost_mage_spell_t : public mage_spell_t
 
   virtual double action_multiplier() const override
   {
+    // NOTE!!: As of Legion, Icicles benefit from anything inside frost_mage_spell_t::action_multiplier()! Always check
+    // for icicle interaction if something is added here, and adjust icicle_t::composite_da_multiplier() accordingly.
     double am = mage_spell_t::action_multiplier();
 
     // Divide effect percent by 10 to convert 5 into 0.5%, not into 5%.
@@ -2407,11 +2409,18 @@ struct icicle_t : public frost_mage_spell_t
     snapshot_flags &= ~( STATE_SP | STATE_CRIT | STATE_TGT_CRIT );
   }
 
-  virtual double action_multiplier() const override
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
-    // Ignores all regular multipliers
-    double am = 1.0;
-    return am;
+    // Override this to remove composite_player_multiplier benefits (RoP/IF/CttC)
+    // Also remove composute_player_dd_multipliers. Only return action and action_da multipliers.
+    double am = action_multiplier();
+    // Icicles shouldn't be double dipping on Bone Chilling.
+    if ( p() -> buffs.bone_chilling -> up() )
+    {
+      am /= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() / 10 );
+
+    }
+    return am * action_da_multiplier();
   }
 };
 
