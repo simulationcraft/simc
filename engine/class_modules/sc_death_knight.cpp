@@ -2537,6 +2537,7 @@ struct necrobomb_t : public death_knight_spell_t
     death_knight_spell_t( "necrobomb", p, p -> find_spell( 191758 ) )
   {
     background = true;
+    may_crit = false;
     aoe = -1;
   }
 
