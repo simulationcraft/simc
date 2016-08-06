@@ -11,6 +11,17 @@ CONFIG(release, debug|release): OBJECTS_DIR = build/release
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 
+# Setup some paths if DESTDIR/PREFIX are defined for Linux stuff
+unix:!macx {
+  !isEmpty(DESTDIR): PREFIX=$$DESTDIR/$$PREFIX
+  isEmpty(PREFIX):   PREFIX=/usr/local
+  isEmpty(DATADIR):  DATADIR=$$PREFIX/share
+  isEmpty(SEARCH):   SEARCH=$$DATADIR/$$ORG_NAME/$$APP_NAME
+  isEmpty(BINDIR):   BINDIR=$$PREFIX/bin
+
+  SHAREPATH = $$DESTDIR$$PREFIX/share/$$ORG_NAME/$$APP_NAME
+}
+
 CONFIG(release, debug|release) {
   DEFINES += NDEBUG
 }
@@ -49,7 +60,7 @@ win32 {
       QMAKE_LFLAGS_RELEASE += /LTCG
       QMAKE_CXXFLAGS_RELEASE += /GL
     }
-    
+
     win32-msvc2015 {
       QMAKE_CXXFLAGS_RELEASE += /GL
       QMAKE_LFLAGS_RELEASE   += /LTCG /USEPROFILE /PGD:"..\SimulationCraft64.pgd"
