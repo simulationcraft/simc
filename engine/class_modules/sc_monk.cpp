@@ -784,12 +784,11 @@ struct storm_earth_and_fire_pet_t : public pet_t
     typedef sef_action_base_t<BASE> base_t;
 
     const action_t* source_action;
-    buff_t* sef_hit_combo;
 
     sef_action_base_t( const std::string& n,
                        storm_earth_and_fire_pet_t* p,
                        const spell_data_t* data = spell_data_t::nil() ) :
-      BASE( n, p, data ), source_action( nullptr ), sef_hit_combo( nullptr )
+      BASE( n, p, data ), source_action( nullptr )
     {
       // Make SEF attacks always background, so they do not consume resources
       // or do anything associated with "foreground actions".
@@ -927,15 +926,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       super_t::execute();
     }
 
-    void create_buffs()
-    {
-      super_t::create_buffs();
-
-      sef_hit_combo = buff_creator_t( this, "sef_hit_combo", o() -> passives.hit_combo )
-                      .default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
-                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    }
-
     void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
     {
       super_t::snapshot_internal( state, flags, rt );
@@ -946,9 +936,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
         state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
         state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
 
-      // TODO: ADD SEF's Hit Combo Multiplier
-//      state -> da_multiplier *= ( 1 + sef_hit_combo -> stack_value() );
-//      state -> ta_multiplier *= ( 1 + sef_hit_combo -> stack_value() );
+      // ADD SEF's Hit Combo Multiplier
+      state -> da_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
+      state -> ta_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
       }
     }
   };
@@ -1138,16 +1128,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t( "tiger_palm", player, player -> o() -> spec.tiger_palm )
     { }
 
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//        sef_hit_combo -> trigger();
-
-      sef_melee_attack_t::execute();
-    }
-
     void impact( action_state_t* state ) override
     {
       sef_melee_attack_t::impact( state );
@@ -1163,16 +1143,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_blackout_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "blackout_kick", player, player -> o() -> spec.blackout_kick )
     { }
-
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//        sef_hit_combo -> trigger();
-
-      sef_melee_attack_t::execute();
-    }
 
     void impact( action_state_t* state ) override
     {
@@ -1191,16 +1161,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "rising_sun_kick", player, player -> o() -> spec.rising_sun_kick )
     { }
-
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//        sef_hit_combo -> trigger();
-
-      sef_melee_attack_t::execute();
-    }
 
     void impact( action_state_t* state ) override
     {
@@ -1221,16 +1181,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t( "rising_sun_kick_trinket", player, player -> o() -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
     {
       player -> find_action( "rising_sun_kick" ) -> add_child( this );
-    }
-
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//        sef_hit_combo -> trigger();
-
-      sef_melee_attack_t::execute();
     }
 
     void impact( action_state_t* state ) override
@@ -1274,16 +1224,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
-
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//        sef_hit_combo -> trigger();
-
-      sef_melee_attack_t::execute();
-    }
   };
 
   struct sef_spinning_crane_kick_t : public sef_melee_attack_t
@@ -1297,16 +1237,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       weapon_power_mod = 0;
 
       tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, &( data() ) );
-    }
-
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//        sef_hit_combo -> trigger();
-
-      sef_melee_attack_t::execute();
     }
   };
 
@@ -1323,16 +1253,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       tick_action = new sef_tick_action_t( "rushing_jade_wind_tick", player,
           player -> o() -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
-    }
-
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//        sef_hit_combo -> trigger();
-
-      sef_melee_attack_t::execute();
     }
   };
 
@@ -1357,16 +1277,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       weapon_power_mod = 0;
 
       tick_action = new sef_whirling_dragon_punch_tick_t( player );
-    }
-
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//     if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//       sef_hit_combo -> trigger();
-
-      sef_melee_attack_t::execute();
     }
   };
 
@@ -1402,16 +1312,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
         wave -> schedule_execute();
       }
     }
-
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//        sef_hit_combo -> trigger();
-
-      sef_spell_t::execute();
-    }
   };
 
   struct sef_chi_burst_t : public sef_spell_t
@@ -1420,16 +1320,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_spell_t( "chi_burst", player, player -> o() -> passives.chi_burst_damage )
     {
       interrupt_auto_attack = false;
-    }
-
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//        sef_hit_combo -> trigger();
-
-      sef_spell_t::execute();
     }
   };
 
@@ -1441,16 +1331,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       tick_may_crit = true;
       hasted_ticks = false;
       interrupt_auto_attack = true;
-    }
-
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-//        sef_hit_combo -> trigger();
-
-      sef_spell_t::execute();
     }
   };
 
@@ -1466,6 +1346,7 @@ public:
   // SEF applies the Cyclone Strike debuff as well
 
   bool sticky_target; // When enabled, SEF pets will stick to the target they have
+  buff_t* sef_hit_combo;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
@@ -1574,6 +1455,15 @@ public:
     o() -> buff.storm_earth_and_fire -> decrement();
   }
 
+  void create_buffs()
+  {
+    pet_t::create_buffs();
+
+    sef_hit_combo = buff_creator_t( this, "sef_hit_combo", o() -> passives.hit_combo )
+                    .default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
+                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
   {
     if ( ability >= SEF_SPELL_MIN )
@@ -1581,12 +1471,18 @@ public:
       size_t spell = static_cast<size_t>( ability - SEF_SPELL_MIN );
       assert( spells[ spell ] );
 
+      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
+        sef_hit_combo -> trigger();
+
       spells[ spell ] -> source_action = source_action;
       spells[ spell ] -> execute();
     }
     else
     {
       assert( attacks[ ability ] );
+
+      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
+        sef_hit_combo -> trigger();
 
       attacks[ ability ] -> source_action = source_action;
       attacks[ ability ] -> execute();
