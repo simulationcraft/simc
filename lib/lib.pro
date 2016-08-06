@@ -9,8 +9,15 @@ win32 {
   QMAKE_PROJECT_NAME = "Simulationcraft Engine"
 }
 
+# If apikey is in environment, use that
+ENV_APIKEY=$$(SC_DEFAULT_APIKEY)
+!isEmpty(ENV_APIKEY) {
+  SC_DEFAULT_APIKEY=$$(SC_DEFAULT_APIKEY)
+}
+
 !isEmpty(SC_DEFAULT_APIKEY) {
   DEFINES += SC_DEFAULT_APIKEY=\"$${SC_DEFAULT_APIKEY}\"
+  message($$SC_DEFAULT_APIKEY)
 }
 
 # On Linux compilation, setup the profile search directory

@@ -19,7 +19,7 @@ win32 {
 }
 
 # Deployment for Linux
-unix:!mac {
+unix:!macx {
   DISTFILES  += CHANGES COPYING
   INSTALLS   += target profiles
   # Disable strip

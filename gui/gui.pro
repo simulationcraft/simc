@@ -70,7 +70,7 @@ win32 {
 }
 
 # Deplopyment for Linux, note, the cli project also copies profiles
-unix:!mac {
+unix:!macx {
   DISTFILES  += CHANGES COPYING
   INSTALLS   += target profiles data icon locale
   # Disable strip
