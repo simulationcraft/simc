@@ -5246,8 +5246,6 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
     parse_options( options_str );
     school = SCHOOL_ARCANE;
     triggers_arcane_missiles = false;
-    dot_duration = p -> find_spell( 210726 ) -> duration();
-    base_tick_time = timespan_t::from_seconds( 1.2 ); // TODO: Hardcode until tick times are worked out
     spell_power_mod.tick = p -> find_spell( 211088 ) -> effectN( 1 ).sp_coeff();
     hasted_ticks = false;
   }
