@@ -363,8 +363,8 @@ public:
     beacon_target( nullptr ),
     last_extra_regen( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
-    last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_percent( 0.0 ),
+    last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
     fixed_holy_wrath_health_pct( -1.0 )
   {
     last_retribution_trinket_target = nullptr;
