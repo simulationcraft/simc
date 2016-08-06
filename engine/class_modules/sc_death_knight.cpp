@@ -1670,14 +1670,19 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     {
       weapon = &( player -> main_hand_weapon );
 
+      // 2016-08-06 Hotfixed to do aoe splash damage, splash multiplier currently not in spell data
+      aoe = -1;
+      base_aoe_multiplier = 0.5;
+
       // Approximate the Skulker bro's lag as 400ms mean with 50ms standard deviation. This roughly
       // matches in game behavior around 2016-07-22.
-      ability_lag = timespan_t::from_millis( 400 );
-      ability_lag_stddev = timespan_t::from_millis( 50 );
+      // 2016-08-06 AI Lag is now gone
+      //ability_lag = timespan_t::from_millis( 400 );
+      //ability_lag_stddev = timespan_t::from_millis( 50 );
     }
   };
 
-  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "Risen_Skulker", true, false )
+  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "risen_skulker", true, false )
   {
     regen_type = REGEN_DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
@@ -1689,7 +1694,8 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     // As per Blizzard
-    owner_coeff.ap_from_ap = 1.0;
+    // 2016-08-06 Changes to pet, AP ineritance to 200% (guesstimate, based on Skulker Shot data)
+    owner_coeff.ap_from_ap = 2.0;
   }
 
   void init_action_list() override
@@ -1821,7 +1827,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "Dancing_Rune_Weapon", true, true )
+    death_knight_pet_t( owner, "dancing_rune_weapon", true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST_2H;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.5 );
