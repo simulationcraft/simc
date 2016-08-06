@@ -587,7 +587,7 @@ namespace pets {
 
       return pet_t::create_action( name, options_str );
     }
-    void init_procs()
+    void init_procs() override
     {
         procs.the_expendable = get_proc( "the_expendables" );
     }
@@ -1108,7 +1108,7 @@ struct eye_laser_t : public warlock_pet_spell_t
     add_child( eye_laser );
   }
 
-  size_t available_targets(std::vector<player_t *> &tl) const
+  size_t available_targets(std::vector<player_t *> &tl) const override
   {
       warlock_pet_spell_t::available_targets( tl );
 
@@ -2000,7 +2000,7 @@ struct soul_effigy_t : public warlock_pet_t
   }
 
   // Soul Effigy does not run pet_t::assess_damage (that has aoe avoidance)
-  void assess_damage( school_e school, dmg_e type, action_state_t* s )
+  void assess_damage( school_e school, dmg_e type, action_state_t* s ) override
   { player_t::assess_damage( school, type, s ); }
 
   // Damage the bound target (target is bound by the warlock soul_effigy_t action upon summon).
@@ -3220,7 +3220,7 @@ struct incinerate_t: public warlock_spell_t
     return h;
   }
 
-  virtual timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t t = action_t::gcd();
 
@@ -3301,7 +3301,7 @@ struct chaos_bolt_t: public warlock_spell_t
     return h;
   }
 
-  virtual timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t t = action_t::gcd();
 
@@ -4661,7 +4661,7 @@ struct channel_demonfire_t: public warlock_spell_t
     warlock_spell_t::tick( d );
   }
 
-  timespan_t tick_time( const action_state_t* ) const
+  timespan_t tick_time( const action_state_t* ) const override
   {
     timespan_t t = base_tick_time;
 

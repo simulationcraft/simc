@@ -1074,7 +1074,7 @@ struct bastion_of_light_t : public paladin_spell_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -2571,7 +2571,7 @@ struct wake_of_ashes_t : public paladin_spell_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! player -> artifact_enabled() )
     {
@@ -2613,7 +2613,7 @@ struct holy_wrath_t : public paladin_spell_t
     paladin_spell_t::impact( s );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> fixed_holy_wrath_health_pct > 0 && p() -> fixed_holy_wrath_health_pct < 100 )
       return paladin_spell_t::ready();

@@ -1130,7 +1130,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     return timespan_t::from_seconds( 10.0 );
   }
 
-  timespan_t tick_time( const action_state_t* ) const
+  timespan_t tick_time( const action_state_t* ) const override
   {
     return timespan_t::from_seconds( 1.0 );
   }
@@ -2120,7 +2120,7 @@ struct dispersion_t final : public priest_spell_t
     return timespan_t::from_seconds( 6.0 );
   }
 
-  timespan_t tick_time( const action_state_t* ) const
+  timespan_t tick_time( const action_state_t* ) const override
   {
     return timespan_t::from_seconds( 1.0 );
   }
@@ -2303,7 +2303,7 @@ struct void_eruption_t final : public priest_spell_t
     void_bolt = player->find_action( "void_bolt" );
   }
 
-  std::vector<player_t*>& target_list() const
+  std::vector<player_t*>& target_list() const override
   {
     std::vector<player_t*>& tl = priest_spell_t::target_list();
 
@@ -3301,7 +3301,7 @@ struct void_torrent_t final : public priest_spell_t
     return timespan_t::from_seconds( 4.0 );
   }
 
-  timespan_t tick_time( const action_state_t* ) const
+  timespan_t tick_time( const action_state_t* ) const override
   {
     timespan_t t = base_tick_time;
 
@@ -3872,7 +3872,7 @@ struct penance_t final : public priest_spell_t
     tick_action         = new penance_tick_t( p, stats );
   }
 
-  timespan_t tick_time( const action_state_t* ) const
+  timespan_t tick_time( const action_state_t* ) const override
   {
     // Do not haste ticks!
     return base_tick_time;

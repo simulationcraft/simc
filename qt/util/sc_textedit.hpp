@@ -37,9 +37,9 @@ public:
   void removeAllIgnoreKeyPressEvent();
 
 protected:
-  virtual void keyPressEvent( QKeyEvent* e );
-  virtual void focusInEvent( QFocusEvent* e );
-  virtual void resizeEvent( QResizeEvent* e );
+  void keyPressEvent( QKeyEvent* e ) override;
+  void focusInEvent( QFocusEvent* e ) override;
+  void resizeEvent( QResizeEvent* e ) override;
 
 private slots:
   void text_edited()

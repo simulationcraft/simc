@@ -3003,7 +3003,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     return m;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
 

@@ -217,7 +217,7 @@ public:
   }
 
 protected:
-  virtual void keyPressEvent( QKeyEvent* e )
+  void keyPressEvent( QKeyEvent* e ) override
   {
     int k = e -> key();
     Qt::KeyboardModifiers m = e -> modifiers();
@@ -641,13 +641,13 @@ class SC_ComboBoxIntegerValidator: public QValidator
     input = modifiedInput;
   }
 
-  virtual void fixup( QString& input ) const
+  void fixup( QString& input ) const override
   {
     int cursorPos = 0;
     stripNonNumbersAndAdjustCursorPos( input, cursorPos );
   }
 
-  virtual State validate( QString& input, int& cursorPos ) const
+  State validate( QString& input, int& cursorPos ) const override
   {
     State retval = QValidator::Invalid;
 
@@ -794,7 +794,7 @@ public:
   }
 
 protected:
-  virtual void closeEvent( QCloseEvent* );
+  void closeEvent( QCloseEvent* ) override;
 
 private slots:
   void updatetimer();
@@ -928,7 +928,7 @@ protected:
     return true;
   }
 #elif defined( SC_USE_WEBENGINE ) && ( QT_VERSION >= QT_VERSION_CHECK( 5, 5, 0 ) ) // Functionality added to webengine in qt 5.5
-  bool acceptNavigationRequest( const QUrl &url, NavigationType, bool isMainFrame )
+  bool acceptNavigationRequest( const QUrl &url, NavigationType, bool isMainFrame ) override
   {
     if ( ! isMainFrame )
     {
@@ -1066,7 +1066,7 @@ private:
   }
 
 protected:
-  virtual void mouseReleaseEvent( QMouseEvent* e )
+  void mouseReleaseEvent( QMouseEvent* e ) override
   {
     if ( allow_mouse_navigation )
     {
@@ -1085,7 +1085,7 @@ protected:
     SC_WebEngineView::mouseReleaseEvent( e );
   }
 
-  virtual void keyReleaseEvent( QKeyEvent* e )
+  void keyReleaseEvent( QKeyEvent* e ) override
   {
     if ( allow_keyboard_navigation )
     {
@@ -1122,13 +1122,13 @@ protected:
     SC_WebEngineView::keyReleaseEvent( e );
   }
 
-  virtual void resizeEvent( QResizeEvent* e )
+  void resizeEvent( QResizeEvent* e ) override
   {
     searchBox -> updateGeometry();
     SC_WebEngineView::resizeEvent( e );
   }
 
-  virtual void focusInEvent( QFocusEvent* e )
+  void focusInEvent( QFocusEvent* e ) override
   {
     hideSearchBox();
     SC_WebEngineView::focusInEvent( e );

@@ -142,7 +142,7 @@ signals:
   QWidget* initListView();
   QModelIndex getSelectionAndMakeSureIsValidIfElementsAvailable();
   protected:
-  void showEvent( QShowEvent* e )
+  void showEvent( QShowEvent* e ) override
   {
     Q_UNUSED( e );
     if ( previewAnItemOnShow )

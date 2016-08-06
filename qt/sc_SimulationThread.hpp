@@ -20,7 +20,7 @@ public:
   bool success;
   SC_SimulateThread( SC_MainWindow* );
   void start( sim_t* s, const QByteArray& o, QString tab_name );
-  virtual void run();
+  void run() override;
   QByteArray getOptions() const
   { return utf8_options; }
   QString getErrorCategory() const

@@ -26,7 +26,7 @@ class BattleNetImportWindow : public QWidget
 public:
     BattleNetImportWindow( SC_MainWindow* parent );
 
-    QSize sizeHint() const
+    QSize sizeHint() const override
     { return m_importWidget -> sizeHint(); }
 
     BattleNetImportWidget* widget() const

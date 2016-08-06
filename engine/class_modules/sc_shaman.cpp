@@ -881,7 +881,7 @@ struct stormlash_buff_t : public buff_t
     callback -> activate();
   }
 
-  void expire_override( int expiration_stacks, timespan_t remaining_duration )
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
@@ -2400,7 +2400,7 @@ struct windfury_weapon_melee_attack_t : public shaman_attack_t
     may_proc_maelstrom_weapon = true;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
 
@@ -2483,7 +2483,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     may_proc_unleash_doom = true;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
 
@@ -4344,14 +4344,14 @@ struct doom_winds_t : public shaman_spell_t
     harmful = callbacks = false;
   }
 
-  void execute()
+  void execute() override
   {
     shaman_spell_t::execute();
 
     p() -> buff.doom_winds -> trigger();
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! player -> artifact_enabled() )
     {
@@ -5163,7 +5163,7 @@ struct liquid_magma_totem_pulse_t : public totem_pulse_action_t
     dot_duration = timespan_t::zero();
   }
 
-  void impact( action_state_t* state )
+  void impact( action_state_t* state ) override
   {
     totem_pulse_action_t::impact( state );
 
@@ -5330,7 +5330,7 @@ struct flametongue_buff_t : public buff_t
     p -> buff.t18_4pc_enhancement -> decrement();
   }
 
-  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
+  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
   {
     buff_t::execute( stacks, value, duration );
 
@@ -7384,7 +7384,7 @@ struct echoes_of_the_great_sundering_t : public scoped_action_callback_t<earth_s
   echoes_of_the_great_sundering_t() : super( SHAMAN_ELEMENTAL, "earth_shock" )
   { }
 
-  void manipulate( earth_shock_t* action, const special_effect_t& e )
+  void manipulate( earth_shock_t* action, const special_effect_t& e ) override
   { action -> eotgs_base_chance = e.driver() -> effectN( 1 ).percent() / action -> base_cost(); }
 };
 
@@ -7393,10 +7393,10 @@ struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
   echoes_of_the_great_sundering_buff_t() : super( SHAMAN_ELEMENTAL, "echoes_of_the_great_sundering" )
   { }
 
-  buff_t*& buff_ptr( const special_effect_t& e )
+  buff_t*& buff_ptr( const special_effect_t& e ) override
   { return debug_cast<shaman_t*>( e.player ) -> buff.echoes_of_the_great_sundering; }
 
-  buff_creator_t creator( const special_effect_t& e ) const
+  buff_creator_t creator( const special_effect_t& e ) const override
   { return super::creator( e ).spell( e.player -> find_spell( 208723 ) ); }
 };
 
@@ -7407,7 +7407,7 @@ struct emalons_charged_core_t : public scoped_action_callback_t<crash_lightning_
   emalons_charged_core_t() : super( SHAMAN, "crash_lightning" )
   { }
 
-  void manipulate( crash_lightning_t* action, const special_effect_t& e )
+  void manipulate( crash_lightning_t* action, const special_effect_t& e ) override
   { action -> ecc_min_targets = e.driver() -> effectN( 1 ).base_value(); }
 };
 
@@ -7416,10 +7416,10 @@ struct emalons_charged_core_buff_t : public class_buff_cb_t<buff_t>
   emalons_charged_core_buff_t() : super( SHAMAN, "emalons_charged_core" )
   { }
 
-  buff_t*& buff_ptr( const special_effect_t& e )
+  buff_t*& buff_ptr( const special_effect_t& e ) override
   { return debug_cast<shaman_t*>( e.player ) -> buff.emalons_charged_core; }
 
-  buff_creator_t creator( const special_effect_t& e ) const
+  buff_creator_t creator( const special_effect_t& e ) const override
   {
     return super::creator( e )
       .spell( e.player -> find_spell( 208742 ) )
@@ -7432,7 +7432,7 @@ struct pristine_protoscale_girdle_t : public scoped_action_callback_t<lava_burst
   pristine_protoscale_girdle_t() : super( SHAMAN_ELEMENTAL, "lava_burst" )
   { }
 
-  void manipulate( lava_burst_t* action, const special_effect_t& )
+  void manipulate( lava_burst_t* action, const special_effect_t& ) override
   {
     if ( ! action -> p() -> action.ppsg )
     {

@@ -3119,7 +3119,7 @@ struct bonestorm_t : public death_knight_spell_t
     add_child( heal );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* ) const
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   { return base_tick_time * resource_consumed / 10; }
 };
 
@@ -4805,7 +4805,7 @@ struct soulgorge_t : public death_knight_spell_t
     aoe = -1;
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     death_knight_spell_t::available_targets( tl );
 

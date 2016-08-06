@@ -1108,7 +1108,7 @@ struct incarnation_moonkin_buff_t : public druid_buff_t< buff_t >
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   {}
 
-  void expire_override( int stacks, timespan_adl_barrier::timespan_t duration )
+  void expire_override( int stacks, timespan_adl_barrier::timespan_t duration ) override
   {
     druid_buff_t<buff_t>::expire_override( stacks, duration );
 
@@ -1159,7 +1159,7 @@ struct celestial_alignment_buff_t : public druid_buff_t < buff_t >
                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
   {}
 
-  void expire_override( int stacks, timespan_adl_barrier::timespan_t duration )
+  void expire_override( int stacks, timespan_adl_barrier::timespan_t duration ) override
   {
     druid_buff_t<buff_t>::expire_override( stacks, duration );
 
@@ -1455,7 +1455,7 @@ public:
     }
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     ab::impact( s );
 
@@ -1463,7 +1463,7 @@ public:
       trigger_clearcasting();
   }
 
-  virtual void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     ab::tick( d );
 
@@ -1482,7 +1482,7 @@ public:
       return ab::target_armor( t );
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  double composite_target_multiplier( player_t* t ) const override
   {
     double tm = ab::composite_target_multiplier( t );
 
@@ -2141,7 +2141,7 @@ public:
     return tc;
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
 
@@ -2155,7 +2155,7 @@ public:
     return am;
   }
 
-  virtual double composite_persistent_multiplier( const action_state_t* s ) const
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double pm = base_t::composite_persistent_multiplier( s );
 
@@ -3198,7 +3198,7 @@ struct mangle_t : public bear_attack_t
     base_multiplier *= 1.0 + player -> artifact.vicious_bites.percent();
   }
 
-  double composite_energize_amount( const action_state_t* s ) const
+  double composite_energize_amount( const action_state_t* s ) const override
   {
     double em = bear_attack_t::composite_energize_amount( s );
 
@@ -3217,7 +3217,7 @@ struct mangle_t : public bear_attack_t
     bear_attack_t::update_ready( cd );
   }
 
-  virtual double composite_target_multiplier( player_t* t ) const
+  double composite_target_multiplier( player_t* t ) const override
   {
     double tm = bear_attack_t::composite_target_multiplier( t );
 
@@ -3398,7 +3398,7 @@ struct cenarion_ward_t : public druid_heal_t
     p() -> buff.cenarion_ward -> trigger();
   }
 
-  virtual bool ready()
+  virtual bool ready() override
   {
     if ( target != p() )
     {
@@ -3928,7 +3928,7 @@ struct yseras_gift_t : public druid_heal_t
     return am;
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     if ( p() -> health_percentage() < 100 )
       target = p();
@@ -4608,7 +4608,7 @@ struct lunar_beam_t : public druid_spell_t
     add_child( damage );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     druid_spell_t::execute();
 
@@ -4748,7 +4748,7 @@ struct mark_of_ursol_t : public druid_spell_t
       timespan_t::from_seconds( p() -> buff.guardian_of_elune -> value() );
   }
 
-  virtual void execute()
+  virtual void execute() override
   {
     druid_spell_t::execute();
 
@@ -7940,7 +7940,7 @@ struct wildcat_celerity_t : public scoped_buff_callback_t<buff_t>
     super( DRUID_FERAL, n )
   {}
   
-  void manipulate( buff_t* b, const special_effect_t& e )
+  void manipulate( buff_t* b, const special_effect_t& e ) override
   {
     if ( b -> player -> true_level < 110 )
     {
@@ -7954,7 +7954,7 @@ struct starshards_callback_t : public scoped_actor_callback_t<druid_t>
   starshards_callback_t() : super( DRUID_BALANCE )
   {}
 
-  void manipulate( druid_t* p, const special_effect_t& e )
+  void manipulate( druid_t* p, const special_effect_t& e ) override
   {
     p -> starshards = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
     p -> active.starshards = new starshards_t( p );
@@ -7983,7 +7983,7 @@ struct stalwart_guardian_callback_t : public scoped_actor_callback_t<druid_t>
     return p -> active.stalwart_guardian -> absorb_size;
   }
 
-  void manipulate( druid_t* p, const special_effect_t& /* e */ )
+  void manipulate( druid_t* p, const special_effect_t& /* e */ ) override
   {
     p -> active.stalwart_guardian = new stalwart_guardian_t( p );
 
@@ -8022,7 +8022,7 @@ struct luffa_wrappings_t : public scoped_action_callback_t<T>
     scoped_action_callback_t<T>( DRUID, name )
   {}
 
-  void manipulate( T* a, const special_effect_t& e )
+  void manipulate( T* a, const special_effect_t& e ) override
   {
     a -> radius *= 1.0 + e.driver() -> effectN( 1 ).percent();
     a -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
@@ -8034,7 +8034,7 @@ struct dual_determination_t : public scoped_action_callback_t<survival_instincts
   dual_determination_t() : super( DRUID, "survival_instincts" )
   {}
 
-  void manipulate( survival_instincts_t* a, const special_effect_t& e )
+  void manipulate( survival_instincts_t* a, const special_effect_t& e ) override
   {
     a -> cooldown -> charges += e.driver() -> effectN( 1 ).base_value();
     a -> base_recharge_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
@@ -8164,7 +8164,7 @@ struct elizes_everlasting_encasement_t : public scoped_action_callback_t<thrash_
   elizes_everlasting_encasement_t() : super( DRUID, "thrash_bear" )
   {}
 
-  void manipulate( thrash_bear_t* a, const special_effect_t& e )
+  void manipulate( thrash_bear_t* a, const special_effect_t& e ) override
   {
     a -> dot_max_stack += e.driver() -> effectN( 1 ).base_value();
   }
@@ -8195,7 +8195,7 @@ struct skysecs_hold_t : public scoped_action_callback_t<frenzied_regeneration_t>
   skysecs_hold_t() : super( DRUID, "frenzied_regeneration_driver" )
   {}
 
-  void manipulate( frenzied_regeneration_t* a, const special_effect_t& e )
+  void manipulate( frenzied_regeneration_t* a, const special_effect_t& e ) override
   {
     a -> skysecs_hold = new skysecs_hold_heal_t( e );
   }

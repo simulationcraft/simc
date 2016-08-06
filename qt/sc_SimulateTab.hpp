@@ -29,15 +29,15 @@ public:
     void set_Text( const QString& text );
     void append_Text( const QString& text );
     void close_All_Tabs();
-    virtual int insertAt();
+    int insertAt() override;
     bool wrapToEnd();
     bool wrapToBeginning();
     void insertNewTabAt( int index = -1, const QString text = defaultSimulateText, const QString title = defaultSimulateTabTitle );
 
 protected:
-    virtual void keyPressEvent( QKeyEvent* e );
-    virtual void keyReleaseEvent( QKeyEvent* e );
-    virtual void showEvent( QShowEvent* e );
+    void keyPressEvent( QKeyEvent* e ) override;
+    void keyReleaseEvent( QKeyEvent* e ) override;
+    void showEvent( QShowEvent* e ) override;
 
 public slots:
     void TabCloseRequest( int index );

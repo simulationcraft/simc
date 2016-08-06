@@ -2225,7 +2225,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -2344,7 +2344,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     bool ret = monk_melee_attack_t::init_finished();
     action_t* rsk = player -> find_action( "rising_sun_kick" );
@@ -2365,7 +2365,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     return timespan_t::from_millis( 250 );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -2441,7 +2441,7 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     return timespan_t::from_millis( 250 );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -2516,7 +2516,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       add_child( rsk_proc );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -2632,7 +2632,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     bool ret = monk_melee_attack_t::init_finished();
     action_t* bok = player -> find_action( "blackout_kick" );
@@ -2653,7 +2653,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     return timespan_t::from_millis( 100 );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -3624,9 +3624,9 @@ struct touch_of_death_t: public monk_spell_t
     return monk_spell_t::ready();
   }
 
-  virtual double target_armor( player_t* ) const override { return 0; }
+  double target_armor( player_t* ) const override { return 0; }
 
-  virtual double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const
+  double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const override
   {
     double amount = p() -> resources.max[RESOURCE_HEALTH];
 

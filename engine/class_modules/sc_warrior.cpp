@@ -2460,7 +2460,7 @@ struct rampage_attack_t: public warrior_attack_t
     }
     return 1;
   }
-  void odyns_champion( timespan_t )
+  void odyns_champion( timespan_t ) override
   { // Only procs odyns champion once from the spell being initially cast.
   }
 };
@@ -3040,7 +3040,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
 
     return am;
   }
-  void odyns_champion( timespan_t )
+  void odyns_champion( timespan_t ) override
   { // Only procs odyns champion once from the spell being initially cast.
   }
 };
@@ -3064,7 +3064,7 @@ struct fury_whirlwind_mh_t: public warrior_attack_t
 
     return am;
   }
-  void odyns_champion( timespan_t )
+  void odyns_champion( timespan_t ) override
   { // Only procs odyns champion once from the spell being initially cast.
   }
 };

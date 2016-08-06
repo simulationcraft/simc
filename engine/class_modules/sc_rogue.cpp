@@ -1057,7 +1057,7 @@ struct rogue_attack_t : public melee_attack_t
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
-  expr_t* create_expression( const std::string& name_str );
+  expr_t* create_expression( const std::string& name_str ) override;
 };
 
 struct secondary_ability_trigger_t : public event_t
@@ -1179,7 +1179,7 @@ struct weaponmaster_strike_t : public rogue_attack_t
   double target_armor( player_t* ) const override
   { return 0; }
 
-  double calculate_direct_amount( action_state_t* ) const
+  double calculate_direct_amount( action_state_t* ) const override
   { return base_dd_min; }
 };
 
@@ -3222,7 +3222,7 @@ struct nightblade_base_t : public rogue_attack_t
   }
 
   // Nightblade dots overwrite eachother
-  dot_t* get_dot( player_t* t = nullptr )
+  dot_t* get_dot( player_t* t = nullptr ) override
   { return td( t ? t : target ) -> dots.nightblade; }
 
   double attack_tick_power_coefficient( const action_state_t* s ) const override
@@ -3543,7 +3543,7 @@ struct shadow_blades_t : public rogue_attack_t
     }
   }
 
-  void execute()
+  void execute() override
   {
     rogue_attack_t::execute();
 
@@ -5478,7 +5478,7 @@ struct shadow_blades_t : public buff_t
     }
   }
 
-  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
+  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
   {
     buff_t::execute( stacks, value, duration );
 
