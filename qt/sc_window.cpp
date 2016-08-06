@@ -22,9 +22,9 @@
 #include <QStandardPaths>
 #include <QDateTime>
 
-#if ! defined( Q_OS_WIN )
+#if defined( Q_OS_MAC ) || defined( VS_NEW_BUILD_SYSTEM )
 #include "sc_importWindow.hpp"
-#endif
+#endif /* Q_OS_MAC || VS_NEW_BUILD_SYSTEM */
 
 static int SC_GUI_HISTORY_VERSION = 650;
 
@@ -350,10 +350,10 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   setAcceptDrops( true );
   loadHistory();
 
-#if ! defined( Q_OS_WIN )
+#if defined( Q_OS_MAC ) || defined( VS_NEW_BUILD_SYSTEM )
   auto newImport = new BattleNetImportWindow( this );
   connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), newImport -> widget(), SLOT( armoryRegionChanged( const QString& ) ) );
-#endif
+#endif /* Q_OS_MAC || VS_NEW_BUILD_SYSTEM */
 }
 
 void SC_MainWindow::createCmdLine()

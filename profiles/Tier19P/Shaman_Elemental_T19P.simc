@@ -71,8 +71,9 @@ actions.single+=/flame_shock,moving=1
 actions.aoe=stormkeeper
 actions.aoe+=/ascendance
 actions.aoe+=/liquid_magma_totem
+actions.aoe+=/flame_shock,if=spell_targets.chain_lightning=3&maelstrom>=20,target_if=refreshable
 actions.aoe+=/earthquake_totem
-actions.aoe+=/lava_beam,target_if=!debuff.lightning_rod.up
+actions.aoe+=/lava_burst,if=buff.lava_surge.up&spell_targets.chain_lightning=3
 actions.aoe+=/lava_beam
 actions.aoe+=/chain_lightning,target_if=!debuff.lightning_rod.up
 actions.aoe+=/chain_lightning
