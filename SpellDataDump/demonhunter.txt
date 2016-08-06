@@ -1138,13 +1138,14 @@ Description      : Place a Sigil of Silence at the target location that activate
 Silences all enemies affected by the sigil for $204490d.
 
 Name             : Sigil of Chains (id=202138) [Spell Family (107)] 
+Hotfixed         : Cooldown (120000 -> 60000)
 Class            : Vengeance Demon Hunter
 School           : Physical
 Spell Level      : 100
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Cooldown         : 120 seconds
+Cooldown         : 60 seconds
 Category         : 1606
 Affecting spells : Metamorphosis (162264), Quickened Sigils (209281), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -2488,7 +2489,8 @@ Attributes       : ........ x....... ........ .......x   .....x.. ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=309959)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Unknown(25)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Unknown(25)
+                   Hotfixed: Base Value (15 -> 20)
 Description      : $@spelldesc196718
 Tooltip          : Attacks against you have a $s1% chance to inflict no damage.
 
@@ -3196,6 +3198,7 @@ Effects          :
 Description      : Gain $s1% Leech while Metamorphosis is active.
 
 Name             : Empower Wards (id=218256) [Spell Family (107)] 
+Replaces         : Darkness (id=196718)
 Class            : Vengeance Demon Hunter
 School           : Fire
 Spell Level      : 100
@@ -3522,41 +3525,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self(1)
 Description      : Infernal Strike creates a Sigil of Flame when you land.
 
-Name             : Gluttony (id=227327) [Spell Family (107), Passive] 
-Class            : Demon Hunter
-School           : Physical
-Proc Chance      : 101%
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=341624)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self(1)
-Description      : Consuming a Soul Fragment increases the damage of your next Soul Cleave by $227330s1%, stacking up to $227330u times.
-
-Name             : Gluttony (id=227330) [Spell Family (107)] 
-Class            : Demon Hunter
-School           : Physical
-Duration         : 12 seconds
-Stacks           : 5 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=341627)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-                   Affected Spells: Soul Cleave (228478)
-Description      : $@spelldesc227327
-Tooltip          : Your next Soul Cleave deals $s1% increased damage.
-
 Name             : Annihilation (id=227518) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
@@ -3611,7 +3579,7 @@ Name             : Soul Cleave (id=228478) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Range            : 5 yards
-Affecting spells : Item - Demon Hunter T19 Vengeance 2P Bonus (211075), Devour Souls (212821), Tormented Souls (214744), Gluttony (227330)
+Affecting spells : Item - Demon Hunter T19 Vengeance 2P Bonus (211075), Devour Souls (212821), Tormented Souls (214744)
 Triggered by     : Soul Cleave (228477)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 

@@ -1462,6 +1462,7 @@ Description      : Activates your true form, increasing current movement speed b
 Tooltip          : True form activated, movement speed increased by an additional $s1%.
 
 Name             : Unleash Life (id=73685) [Spell Family (11)] 
+Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Nature
 Resource         : 5% Base Mana (11000 @Level 110)
