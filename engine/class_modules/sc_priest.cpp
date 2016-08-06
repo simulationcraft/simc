@@ -5681,12 +5681,8 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
   else if ( name_str == "raw_haste_pct" )
   {
     return make_fn_expr( name_str, [this]() {
-      double h = std::max( 0.0, composite_rating( RATING_SPELL_HASTE ) ) /
+      double h = std::max( 0.0, initial.stats.haste_rating ) /
                  initial_rating().spell_haste;
-
-      // h = 1.0 / (1.0 + h);
-
-      // h = 1.0 / h;
 
       return h;
     } );
@@ -7086,7 +7082,7 @@ void priest_t::combat_begin()
       {
         player_t* p = sim->player_list[ i ];
         priest_t* pr = (priest_t*)sim->player_list[ i ];
-        if ( p->specialization() != PRIEST_SHADOW || (pr->specialization() == PRIEST_SHADOW && (pr->talents.legacy_of_the_void->ok() || pr->talents.mind_spike->ok() ) ) )
+        if ( p->specialization() != PRIEST_SHADOW || (p->specialization() == PRIEST_SHADOW && (pr->talents.legacy_of_the_void->ok() || pr->talents.mind_spike->ok() ) ) )
         {
           options.priest_fixed_time = false;
           break;
