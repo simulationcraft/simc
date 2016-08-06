@@ -59,11 +59,11 @@ trinket2=stormsinger_fulmination_charge,id=137367,bonus_id=1727
 main_hand=titanstrike,id=128861,gem_id=137550/137547/137543,relic_id=1727/1727/1727
 
 # Gear Summary
-# gear_ilvl=840.00
-# gear_agility=10925
-# gear_stamina=17391
-# gear_crit_rating=639
+# gear_ilvl=842.00
+# gear_agility=11306
+# gear_stamina=17963
+# gear_crit_rating=715
 # gear_haste_rating=5767
-# gear_mastery_rating=10405
+# gear_mastery_rating=10478
 # gear_armor=2433
 summon_pet=cat

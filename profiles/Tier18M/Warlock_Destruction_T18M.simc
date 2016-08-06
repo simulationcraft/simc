@@ -54,6 +54,8 @@ actions+=/cataclysm
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled
 actions+=/immolate,if=!talent.roaring_blaze.enabled&remains<=duration*0.3
 actions+=/life_tap,if=talent.mana_tap.enabled&mana.pct<=10
+actions+=/immolate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=0
+actions+=/immolate,if=!talent.roaring_blaze.enabled
 actions+=/incinerate
 actions+=/life_tap
 

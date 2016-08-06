@@ -65,12 +65,12 @@ trinket2=stormsinger_fulmination_charge,id=137367,bonus_id=1727
 main_hand=talonclaw,id=128808,gem_id=137550/137350/137543,relic_id=1727/1727/1727
 
 # Gear Summary
-# gear_ilvl=840.00
-# gear_agility=10925
-# gear_stamina=17393
-# gear_crit_rating=5351
+# gear_ilvl=842.00
+# gear_agility=11306
+# gear_stamina=17965
+# gear_crit_rating=5427
 # gear_haste_rating=5788
-# gear_mastery_rating=1043
+# gear_mastery_rating=1116
 # gear_versatility_rating=4629
 # gear_armor=2433
 summon_pet=cat
