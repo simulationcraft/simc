@@ -1184,7 +1184,7 @@ struct thalkiels_discord_t : public warlock_pet_spell_t
       warlock_pet_spell_t( "thalkiels_discord", p, p -> find_spell( 211720 ) )
     {
       parse_options( options_str );
-      base_tick_time = timespan_t::from_millis(1500);
+      base_tick_time = timespan_t::from_millis( 1500 );
       tick_action = new thalkeils_discord_tick_t( p/*, data()*/ );
     }
 
@@ -4379,10 +4379,16 @@ struct phantom_singularity_t : public warlock_spell_t
   phantom_singularity_t( warlock_t* p ):
     warlock_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity )
   {
-    hasted_ticks = callbacks = false; // FIXME check for hasted ticks.
+    callbacks = false;
+    hasted_ticks = true;
 
     phantom_singularity = new phantom_singularity_tick_t( p );
     add_child( phantom_singularity );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return s -> action -> tick_time( s ) * 8.0;
   }
 
   void tick( dot_t* d ) override
