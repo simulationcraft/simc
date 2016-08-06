@@ -8,8 +8,8 @@
 :: QT 5.7.0, or whatever version we are currently using
 :: Inno Setup - http://www.jrsoftware.org/isinfo.php - Used to make the installer, optional if you just want a compressed file.
 
-git clean -f -x -d
 cd ..
+git clean -f -x -d
 set currdir=%cd%
 call C:\Qt\Qt5.7.0\5.7\msvc2015_64\bin\qtenv2.bat
 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64 10.0.10586.0
