@@ -929,7 +929,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
     void create_buffs()
     {
-      pet_t::create_buffs();
+      super_t::create_buffs();
 
       sef_hit_combo = buff_creator_t( this, "sef_hit_combo", o() -> passives.hit_combo )
                       .default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
