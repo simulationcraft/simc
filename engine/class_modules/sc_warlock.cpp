@@ -3640,8 +3640,8 @@ struct rain_of_fire_t : public warlock_spell_t
     parse_options( options_str );
     dot_duration = timespan_t::zero();
     may_miss = may_crit = false;
-    base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
-                                              // TOCHECK: tick zero?
+    base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data)
+
 
     if ( !p -> active.rain_of_fire )
     {
@@ -3656,13 +3656,12 @@ struct rain_of_fire_t : public warlock_spell_t
 
     new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
       .target( execute_state -> target )
-      .x( execute_state -> target-> x_position )
-      .y( execute_state -> target-> y_position )
-      .pulse_time( base_tick_time )
-      .duration( data().duration() * player -> cache.spell_speed() )
+      .x( execute_state -> target -> x_position )
+      .y( execute_state -> target -> y_position )
+      .pulse_time( base_tick_time * player -> cache.spell_haste() )
+      .duration( data().duration() * player -> cache.spell_haste() )
       .start_time( sim -> current_time() )
-      .action( p() -> active.rain_of_fire )
-      .hasted( ground_aoe_params_t::SPELL_HASTE ), false );
+      .action( p() -> active.rain_of_fire ) );
   }
 };
 
