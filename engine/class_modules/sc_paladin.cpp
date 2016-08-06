@@ -363,8 +363,8 @@ public:
     beacon_target( nullptr ),
     last_extra_regen( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
-    last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_percent( 0.0 ),
+    last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
     fixed_holy_wrath_health_pct( -1.0 )
   {
     last_retribution_trinket_target = nullptr;
@@ -1074,7 +1074,7 @@ struct bastion_of_light_t : public paladin_spell_t
     use_off_gcd = true;
   }
 
-  virtual void execute()
+  void execute() override
   {
     paladin_spell_t::execute();
 
@@ -2571,7 +2571,7 @@ struct wake_of_ashes_t : public paladin_spell_t
     }
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( ! player -> artifact_enabled() )
     {
@@ -2613,7 +2613,7 @@ struct holy_wrath_t : public paladin_spell_t
     paladin_spell_t::impact( s );
   }
 
-  bool ready()
+  bool ready() override
   {
     if ( p() -> fixed_holy_wrath_health_pct > 0 && p() -> fixed_holy_wrath_health_pct < 100 )
       return paladin_spell_t::ready();
@@ -4419,8 +4419,10 @@ void paladin_t::generate_action_prio_list_prot()
   prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
   prot->add_action(this, "Shield of the Righteous", "if=(!talent.seraphim.enabled|action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
   prot->add_talent(this, "Bastion of Light", "if=talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1");
+  prot->add_action(this, "Light of the Protector", "if=health.pct<40&talent.righteous_protector.enabled");
+  prot->add_talent(this, "Hand of the Protector", "if=health.pct<45&talent.righteous_protector.enabled");
   prot->add_action(this, "Light of the Protector", "if=health.pct<35");
-  prot->add_talent(this, "Hand of the Protector", "if=health.pct<35");
+  prot->add_talent(this, "Hand of the Protector", "if=health.pct<40");
   prot->add_action(this, "Divine Steed", "if=talent.knight_templar.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_action(this, "Eye of Tyr", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_talent(this, "Aegis of Light", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
@@ -4451,7 +4453,8 @@ void paladin_t::generate_action_prio_list_prot()
   prot->add_action("stoneform,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
 
   //dps-single-target
-  prot->add_action(this, "Avenging Wrath");
+  prot->add_action(this, "Avenging Wrath", "if=!talent.seraphim.enabled");
+  prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&buff.seraphim.up");
   //prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.avenger_shield>3" );
   prot->add_action(this, "Judgment");
   prot->add_talent(this, "Blessed Hammer");
@@ -5463,7 +5466,7 @@ void paladin_t::target_mitigation( school_e school,
     sim -> out_debug.printf( "Damage to %s after other mitigation effects but before SotR is %f", s -> target -> name(), s -> result_amount );
 
   // Shield of the Righteous
-  if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
+  if ( buffs.shield_of_the_righteous -> check())
   {
     // sotr has a lot going on, so we'll be verbose
     double sotr_mitigation;

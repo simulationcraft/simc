@@ -41,13 +41,13 @@ public:
   }
 
 protected:
-  virtual void enterEvent( QEvent* /* event */ )
+  void enterEvent( QEvent* /* event */ ) override
   {
     if ( underMouse() && timeSinceMouseEntered.isActive() == false )
       timeSinceMouseEntered.start( timeout_ );
   }
 
-  virtual void leaveEvent( QEvent* /* event */ )
+  void leaveEvent( QEvent* /* event */ ) override
   {
     timeSinceMouseEntered.stop();
   }

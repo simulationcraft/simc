@@ -587,7 +587,7 @@ namespace pets {
 
       return pet_t::create_action( name, options_str );
     }
-    void init_procs()
+    void init_procs() override
     {
         procs.the_expendable = get_proc( "the_expendables" );
     }
@@ -1108,7 +1108,7 @@ struct eye_laser_t : public warlock_pet_spell_t
     add_child( eye_laser );
   }
 
-  size_t available_targets(std::vector<player_t *> &tl) const
+  size_t available_targets(std::vector<player_t *> &tl) const override
   {
       warlock_pet_spell_t::available_targets( tl );
 
@@ -2000,7 +2000,7 @@ struct soul_effigy_t : public warlock_pet_t
   }
 
   // Soul Effigy does not run pet_t::assess_damage (that has aoe avoidance)
-  void assess_damage( school_e school, dmg_e type, action_state_t* s )
+  void assess_damage( school_e school, dmg_e type, action_state_t* s ) override
   { player_t::assess_damage( school, type, s ); }
 
   // Damage the bound target (target is bound by the warlock soul_effigy_t action upon summon).
@@ -2937,12 +2937,12 @@ struct hand_of_guldan_t: public warlock_spell_t
           p -> procs.fragment_wild_imp -> occur();
         }
       }
-      for ( int i = 0; i < p -> warlock_pet_list.wild_imps.size(); i++ )
+      for ( pets::wild_imp_pet_t* wild_imp : p -> warlock_pet_list.wild_imps )
       {
-        if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
+        if ( wild_imp -> is_sleeping() )
         {
           count--;
-          p -> warlock_pet_list.wild_imps[i] -> trigger();
+          wild_imp -> trigger();
           p -> procs.wild_imp -> occur();
         }
         if ( count == 0 )
@@ -3074,6 +3074,22 @@ struct immolate_t: public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> debuffs_roaring_blaze -> expire();
+    }
+    
+    // 95% chance this will be nerfed.
+    if ( p() -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T17, B2 ) )
+    {
+      if ( s -> result == RESULT_CRIT && rng().roll( 0.38 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+      else if ( s -> result == RESULT_HIT && rng().roll( 0.19 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+    }
+    else
+    {
+      if ( s -> result == RESULT_CRIT && rng().roll( 0.3 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
+      else if ( s -> result == RESULT_HIT && rng().roll( 0.15 ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
     }
   }
 
@@ -3220,7 +3236,7 @@ struct incinerate_t: public warlock_spell_t
     return h;
   }
 
-  virtual timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t t = action_t::gcd();
 
@@ -3301,7 +3317,7 @@ struct chaos_bolt_t: public warlock_spell_t
     return h;
   }
 
-  virtual timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t t = action_t::gcd();
 
@@ -3656,7 +3672,7 @@ struct demonwrath_tick_t: public warlock_spell_t
 {
   gain_t* shard_gain;
 
-  demonwrath_tick_t( warlock_t* p, const spell_data_t& s ):
+  demonwrath_tick_t( warlock_t* p, const spell_data_t& ):
     warlock_spell_t( "demonwrath_tick", p, p->find_spell(193439) ), shard_gain( p -> gains.demonwrath )
   {
     aoe = -1;
@@ -3669,7 +3685,6 @@ struct demonwrath_tick_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      warlock_td_t* tdata = td( s -> target );
       if(rng().roll(p()->find_spell( 193440 )->effectN( 1 ).percent()))
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, shard_gain );
@@ -4480,7 +4495,7 @@ struct reap_souls_t: public warlock_spell_t
 
       total_duration = base_duration * p() -> buffs.tormented_souls -> current_stack;
       p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
-      for ( size_t i = 0; i < p() -> buffs.tormented_souls -> current_stack; ++i )
+      for ( int i = 0; i < p() -> buffs.tormented_souls -> current_stack; ++i )
       {
         p() -> procs.souls_consumed -> occur();
       }
@@ -4662,7 +4677,7 @@ struct channel_demonfire_t: public warlock_spell_t
     warlock_spell_t::tick( d );
   }
 
-  timespan_t tick_time( const action_state_t* ) const
+  timespan_t tick_time( const action_state_t* ) const override
   {
     timespan_t t = base_tick_time;
 
@@ -5618,6 +5633,8 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled" );
   add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
   add_action( "Life Tap", "if=talent.mana_tap.enabled&mana.pct<=10" );
+  add_action( "Immolate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=0" );
+  add_action( "Immolate", "if=!talent.roaring_blaze.enabled" );
   add_action( "Incinerate" );
 }
 

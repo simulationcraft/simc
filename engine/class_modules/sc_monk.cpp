@@ -926,11 +926,22 @@ struct storm_earth_and_fire_pet_t : public pet_t
       super_t::execute();
     }
 
-/*    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
+    void snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
     {
       super_t::snapshot_internal( state, flags, rt );
+
+      // Take out the Owner's Hit Combo Multiplier
+      if ( o() -> talent.hit_combo -> ok() )
+      {
+        state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
+        state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
+
+      // ADD SEF's Hit Combo Multiplier
+      state -> da_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
+      state -> ta_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
+      }
     }
-*/  };
+  };
 
   struct sef_melee_attack_t : public sef_action_base_t<melee_attack_t>
   {
@@ -1117,14 +1128,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t( "tiger_palm", player, player -> o() -> spec.tiger_palm )
     { }
 
-    void execute() override
-    {
-      // Trigger Hit Combo
-      // registers even on a miss
-
-      sef_melee_attack_t::execute();
-    }
-
     void impact( action_state_t* state ) override
     {
       sef_melee_attack_t::impact( state );
@@ -1209,7 +1212,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     { }
   };
 
- struct sef_fists_of_fury_t : public sef_melee_attack_t
+  struct sef_fists_of_fury_t : public sef_melee_attack_t
   {
     sef_fists_of_fury_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "fists_of_fury", player, player -> o() -> spec.fists_of_fury )
@@ -1343,6 +1346,7 @@ public:
   // SEF applies the Cyclone Strike debuff as well
 
   bool sticky_target; // When enabled, SEF pets will stick to the target they have
+  buff_t* sef_hit_combo;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
@@ -1437,21 +1441,6 @@ public:
     return pet_t::create_action( name, options_str );
   }
 
-/*  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( o() -> buff.combo_strikes -> up() )
-    {
-      // not count the player's hit combo
-      m /= 1 + o() -> buff.hit_combo -> stack_value();
-      // add in the SEF Hit Combo
-//      m *= 1 + hit_combo -> stack_value();
-    }
-
-    return m;
-  }
-  */
   void summon( timespan_t duration = timespan_t::zero() ) override
   {
     pet_t::summon( duration );
@@ -1466,6 +1455,15 @@ public:
     o() -> buff.storm_earth_and_fire -> decrement();
   }
 
+  void create_buffs()
+  {
+    pet_t::create_buffs();
+
+    sef_hit_combo = buff_creator_t( this, "sef_hit_combo", o() -> passives.hit_combo )
+                    .default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
+                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
   {
     if ( ability >= SEF_SPELL_MIN )
@@ -1473,12 +1471,18 @@ public:
       size_t spell = static_cast<size_t>( ability - SEF_SPELL_MIN );
       assert( spells[ spell ] );
 
+      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
+        sef_hit_combo -> trigger();
+
       spells[ spell ] -> source_action = source_action;
       spells[ spell ] -> execute();
     }
     else
     {
       assert( attacks[ ability ] );
+
+      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
+        sef_hit_combo -> trigger();
 
       attacks[ ability ] -> source_action = source_action;
       attacks[ ability ] -> execute();
@@ -1809,19 +1813,6 @@ public:
     p() -> previous_combo_strike = new_ability;
   }
 
-  double combo_strikes_value()
-  {
-    double am = 1;
-
-    if (p() -> buff.combo_strikes->up())
-    {
-      am *= 1 + p() -> cache.mastery_value();
-      am *= 1 + p() -> buff.hit_combo -> stack_value();
-    }
-
-    return am;
-  }
-
   virtual double cost() const
   {
     double c = ab::cost();
@@ -2130,9 +2121,12 @@ struct tiger_palm_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
 
     if ( p() -> artifact.tiger_claws.rank() )
       am *= 1 + p() -> artifact.tiger_claws.percent();
@@ -2246,7 +2240,7 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     bool ret = monk_melee_attack_t::init_finished();
     action_t* rsk = player -> find_action( "rising_sun_kick" );
@@ -2267,9 +2261,12 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     return timespan_t::from_millis( 250 );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
 
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
@@ -2340,18 +2337,11 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     return timespan_t::from_millis( 250 );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    // Make sure mastery does not affect Tornado Kick
-    if ( p() -> buff.combo_strikes -> up() )
-    {
-      am /= p() -> cache.mastery_value();
-      am /= p() -> buff.hit_combo -> stack_value();
-    }
-    
-    if ( p() -> artifact.tornado_kicks.rank())
+    if ( p() -> artifact.tornado_kicks.rank() )
       am *= p() -> artifact.tornado_kicks.data().effectN( 1 ).percent();
 
     return am;
@@ -2422,12 +2412,15 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       add_child( rsk_proc );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
       am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 9 ).percent();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
 
     if ( p() -> artifact.rising_winds.rank() )
       am *= 1 + p() -> artifact.rising_winds.percent();
@@ -2535,7 +2528,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  bool init_finished()
+  bool init_finished() override
   {
     bool ret = monk_melee_attack_t::init_finished();
     action_t* bok = player -> find_action( "blackout_kick" );
@@ -2556,7 +2549,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     return timespan_t::from_millis( 100 );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -2645,6 +2638,9 @@ struct blackout_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
+        if ( p() -> buff.combo_strikes -> up() )
+          am *= 1 + p() -> cache.mastery_value();
+
         if ( p() -> artifact.dark_skies.rank() )
           am *= 1 + p() -> artifact.dark_skies.percent();
 
@@ -2847,6 +2843,9 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
     
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
+
     if ( p() -> specialization() == MONK_BREWMASTER )
       am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent(); 
 
@@ -2919,6 +2918,9 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     am *= 1 + mark_of_the_crane_counter() * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
 
     if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
       am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
@@ -3057,6 +3059,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
+
     if ( p() -> buff.transfer_the_power -> up() )
     {
       am *= 1 + p() -> buff.transfer_the_power -> stack_value();
@@ -3166,6 +3171,16 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
     return false;
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
+
+    return am;
+  }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t tt = tick_time( s );
@@ -3214,6 +3229,16 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
 
     oh_attack = new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
     add_child( oh_attack );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
+
+    return am;
   }
 
   bool ready() override
@@ -3495,13 +3520,16 @@ struct touch_of_death_t: public monk_spell_t
     return monk_spell_t::ready();
   }
 
-  virtual double target_armor( player_t* ) const override { return 0; }
+  double target_armor( player_t* ) const override { return 0; }
 
-  virtual double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const
+  double calculate_tick_amount( action_state_t*, double /*dot_multiplier*/ ) const override
   {
     double amount = p() -> resources.max[RESOURCE_HEALTH];
 
     amount *= p() -> spec.touch_of_death -> effectN( 2 ).percent(); // 50% HP
+
+    if ( p() -> buff.combo_strikes -> up() )
+      amount *= 1 + p() -> cache.mastery_value();
 
     return amount;
   }
@@ -3717,19 +3745,19 @@ struct serenity_t: public monk_spell_t
     // Have to manually adjust each of the affected spells
     double percent_adjust = p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50%
 
-    cooldown_reduction( p() -> cooldown.blackout_kick, percent_adjust);
+    cooldown_reduction( p() -> cooldown.blackout_kick, percent_adjust );
 
-    cooldown_reduction( p() -> cooldown.blackout_strike, percent_adjust);
+    cooldown_reduction( p() -> cooldown.blackout_strike, percent_adjust );
 
-    cooldown_reduction( p() -> cooldown.rushing_jade_wind, percent_adjust);
+    cooldown_reduction( p() -> cooldown.rushing_jade_wind, percent_adjust );
 
-    cooldown_reduction( p() -> cooldown.refreshing_jade_wind, percent_adjust);
+    cooldown_reduction( p() -> cooldown.refreshing_jade_wind, percent_adjust );
 
-    cooldown_reduction( p() -> cooldown.rising_sun_kick, percent_adjust);
+    cooldown_reduction( p() -> cooldown.rising_sun_kick, percent_adjust );
 
-    cooldown_reduction( p() -> cooldown.fists_of_fury, percent_adjust);
+    cooldown_reduction( p() -> cooldown.fists_of_fury, percent_adjust );
 
-    cooldown_reduction( p() -> cooldown.strike_of_the_windlord, percent_adjust);
+    cooldown_reduction( p() -> cooldown.strike_of_the_windlord, percent_adjust );
   }
 
   void cooldown_reduction(cooldown_t* cd, double percent_adjust )
@@ -3967,6 +3995,9 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
       am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 13 ).percent();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
 
     return am;
   }
@@ -5445,6 +5476,16 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     background = direct_tick = true;
     attack_power_mod.direct = 0.750; // Hard code 06/21/16
   }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
+
+    return am;
+  }
 };
 
 struct chi_wave_t: public monk_spell_t
@@ -5537,6 +5578,16 @@ struct chi_burst_damage_t: public monk_spell_t
     background = true;
     target = p();
     attack_power_mod.direct = 4.125; // Hard code 06/21/16
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
+
+    return am;
   }
 };
 
@@ -7045,11 +7096,9 @@ double monk_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + sef_mult;
   }
 
-  if ( buff.combo_strikes -> up() )
-  {
-    m *= 1.0 + cache.mastery_value();
+  if ( talent.hit_combo -> ok() )
     m *= 1.0 + buff.hit_combo -> stack_value();
-  }
+
   // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, Elusive Brew increases damage based on spell data of the special effect.
 /*  if ( eluding_movements )
   {

@@ -1839,7 +1839,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
   timespan_t tick_time( const action_state_t* ) const override
   { return base_tick_time; }
 
-  double composite_persistent_multiplier( const action_state_t* s ) const override
+  double composite_persistent_multiplier( const action_state_t* ) const override
   {
     /* Override persistent multiplier and just return the charge multiplier.
     This value will be used to modify the tick_state. */
@@ -4569,7 +4569,7 @@ struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
   }
 
   void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(),
-                timespan_t duration = timespan_t::min() )
+                timespan_t duration = timespan_t::min() ) override
   {
     buff_t::execute( stacks, value, duration );
 
@@ -4749,7 +4749,7 @@ struct spirit_bomb_event_t : public event_t
     if ( dh -> spirit_bomb > 0 )
     {
       action_t* a    = dh -> active.spirit_bomb_heal;
-      a -> base_dd_min = a -> base_dd_min = dh -> spirit_bomb;
+      a -> base_dd_min = a -> base_dd_max = dh -> spirit_bomb;
       a -> schedule_execute();
 
       dh -> spirit_bomb = 0.0;
@@ -7057,7 +7057,7 @@ struct anger_of_the_halfgiants_t : public scoped_action_callback_t<T>
   {
   }
 
-  void manipulate( T* action, const special_effect_t& e )
+  void manipulate( T* action, const special_effect_t& e ) override
   {
     action -> energize_die_sides += e.driver() -> effectN( 1 ).base_value();
   }

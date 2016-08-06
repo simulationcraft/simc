@@ -6,7 +6,7 @@
 ;#define RealAppVersion "7.0.3.01"
 #define MyAppPublisher "Simulationcraft"
 #define MyAppURL "http://www.simulationcraft.org"
-#define MyAppExeName "SimulationCraft64.exe"
+#define MyAppExeName "SimulationCraft.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -37,7 +37,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "C:\simulationcraft\simc-{#MyAppVersion}-win64\SimulationCraft64.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\simulationcraft\simc-{#MyAppVersion}-win64\SimulationCraft.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\simulationcraft\simc-{#MyAppVersion}-win64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

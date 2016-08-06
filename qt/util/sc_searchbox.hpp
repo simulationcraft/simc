@@ -82,8 +82,8 @@ public slots:
   void setWrapSearch( bool wrapped );
   void setHideArrows( bool hideArrows );
 protected:
-  virtual void keyPressEvent( QKeyEvent* e );
-  virtual void showEvent( QShowEvent* e );
+  void keyPressEvent( QKeyEvent* e ) override;
+  void showEvent( QShowEvent* e ) override;
 private slots:
   void searchBoxTextChanged( const QString& text );
   void searchBoxContextMenuRequested( const QPoint& p );

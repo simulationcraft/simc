@@ -5,19 +5,32 @@ TARGET      = simcengine
 CONFIG     += staticlib create_prl
 QT         -= core gui
 
-CONFIG(release, debug|release): DESTDIR = release
-CONFIG(debug, debug|release): DESTDIR = debug
-
 win32 {
   QMAKE_PROJECT_NAME = "Simulationcraft Engine"
+}
+
+# If apikey is in environment, use that
+ENV_APIKEY=$$(SC_DEFAULT_APIKEY)
+!isEmpty(ENV_APIKEY) {
+  SC_DEFAULT_APIKEY=$$ENV_APIKEY
 }
 
 !isEmpty(SC_DEFAULT_APIKEY) {
   DEFINES += SC_DEFAULT_APIKEY=\"$${SC_DEFAULT_APIKEY}\"
 }
 
-!isEmpty(PREFIX)|!isEmpty(DESTDIR) {
-  DEFINES += SC_SHARED_DATA=\\\"$$PREFIX/share/$$ORG_NAME/$$APP_NAME\\\"
+# On Linux compilation, setup the profile search directory
+unix:!macx {
+  !isEmpty(PREFIX)|!isEmpty(DESTDIR) {
+    DEFINES += SC_SHARED_DATA=\\\"$$PREFIX/share/$$ORG_NAME/$$APP_NAME\\\"
+  }
+}
+
+# Win32/OS X will setup target directory to the source root instead. On linux, this is setup in
+# simulationcraft.pri.
+win32|macx {
+  CONFIG(release, debug|release): DESTDIR = release
+  CONFIG(debug, debug|release): DESTDIR = debug
 }
 
 include(../source_files/QT_engine.pri)

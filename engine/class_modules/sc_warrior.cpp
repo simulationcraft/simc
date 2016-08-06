@@ -2460,7 +2460,7 @@ struct rampage_attack_t: public warrior_attack_t
     }
     return 1;
   }
-  void odyns_champion( timespan_t )
+  void odyns_champion( timespan_t ) override
   { // Only procs odyns champion once from the spell being initially cast.
   }
 };
@@ -2810,8 +2810,6 @@ struct shield_slam_t: public warrior_attack_t
       shield_block_2pc -> execute();
     }
 
-    double rage_from_snb = 0;
-
     if ( p() -> buff.bindings_of_kakushan -> check() )
     {
       p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + p() -> buff.bindings_of_kakushan -> check_value() ) * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) ), p() -> gain.shield_slam );
@@ -3042,7 +3040,7 @@ struct whirlwind_off_hand_t: public warrior_attack_t
 
     return am;
   }
-  void odyns_champion( timespan_t )
+  void odyns_champion( timespan_t ) override
   { // Only procs odyns champion once from the spell being initially cast.
   }
 };
@@ -3066,7 +3064,7 @@ struct fury_whirlwind_mh_t: public warrior_attack_t
 
     return am;
   }
-  void odyns_champion( timespan_t )
+  void odyns_champion( timespan_t ) override
   { // Only procs odyns champion once from the spell being initially cast.
   }
 };

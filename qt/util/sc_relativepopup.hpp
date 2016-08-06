@@ -227,7 +227,7 @@ public slots:
     timeToWait__ = timeFastHide_;
   }
 protected:
-  virtual void showEvent( QShowEvent* /* event */)
+  void showEvent( QShowEvent* /* event */) override
   {
     // Start waiting for the mouse
     if ( ! underMouse() )
@@ -240,7 +240,7 @@ protected:
     }
     calculateGeometry();
   }
-  virtual void enterEvent( QEvent* /* event */)
+  void enterEvent( QEvent* /* event */) override
   {
     if ( underMouse() )
     {
@@ -253,11 +253,11 @@ protected:
       timerTillFastHide_.start( timeTillFastHide_ );
     }
   }
-  virtual void leaveEvent( QEvent* /* event */)
+  void leaveEvent( QEvent* /* event */) override
   {
     timerTillHide_.start( timeToWait__ );
   }
-  virtual void resizeEvent( QResizeEvent* event )
+  void resizeEvent( QResizeEvent* event ) override
   {
     if ( event -> oldSize() != size() )
     {

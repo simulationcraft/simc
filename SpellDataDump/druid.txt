@@ -6214,9 +6214,11 @@ Description      : $@spelldesc209405
 Tooltip          : Your next Starfall costs no Astral Power.
 
 Name             : Stag Form (Shapeshift) (id=210053) [Spell Family (7)] 
+Hotfixed         : Cooldown, GCD, Category
 Class            : Druid
 School           : Physical
 Spell Level      : 40
+GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Druid (137009), Lucidity (137247), Sunblossom Pollen (223722)

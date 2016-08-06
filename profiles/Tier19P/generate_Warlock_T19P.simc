@@ -5,8 +5,8 @@ level=110
 race=troll
 role=spell
 spec=destruction
-talents=2301023
-artifact=38:140825:140837:140825:0:803:1:804:2:807:5:809:4:811:3:812:3:815:1:817:1:818:1:1355:1
+talents=1301023
+artifact=38:0:0:0:0:803:1:804:2:807:4:809:4:811:3:812:3:815:1:817:1:818:1:1355:1
 
 head=cragshapers_fitted_hood,id=137341,bonus_id=1727
 neck=tightweb_choker,id=134541,bonus_id=1727,enchant_id=5439

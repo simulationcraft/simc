@@ -3,18 +3,44 @@ include(../simulationcraft.pri)
 TEMPLATE    = app
 TARGET      = SimulationCraft
 CONFIG     += link_prl
-QT         += network webengine webenginewidgets
-DEFINES    += SC_USE_WEBENGINE
+QT         += network widgets
 LIBS       += -L../lib -lsimcengine
-DESTDIR     = ..
 MOC_DIR     = moc
 RCC_DIR     = resources
+
+# Linux puts binaries to a different place (see simulationcraft.pri)
+win32|macx {
+  DESTDIR   = ..
+}
 
 CONFIG(release, debug|release): LIBS += -L../lib/release -lsimcengine
 CONFIG(debug, debug|release): LIBS += -L../lib/debug -lsimcengine
 
 CONFIG(to_install) {
   DEFINES += SC_TO_INSTALL
+}
+
+greaterThan( QT_MINOR_VERSION, 3 ) {
+  QT += webengine webenginewidgets
+  DEFINES += SC_USE_WEBENGINE
+  message("Using WebEngine")
+}
+
+lessThan( QT_MINOR_VERSION, 4 ) {
+  QT += webkit webkitwidgets
+  DEFINES += SC_USE_WEBKIT
+  message("Using WebKit")
+}
+
+# QT 5.4 for MinGW does not yet contain the new Web Engine
+win32-mingw {
+  greaterThan( QT_MINOR_VERSION, 3 ) {
+      QT -= webengine webenginewidgets
+      QT += webkit webkitwidgets
+      DEFINES -= SC_USE_WEBENGINE
+      DEFINES += SC_USE_WEBKIT
+      message("MinGW WebKit only")
+  }
 }
 
 macx {
@@ -41,6 +67,35 @@ win32 {
   QMAKE_PROJECT_NAME = "Simulationcraft GUI"
   RC_FILE = ../qt/simcqt.rc
   DEFINES += VS_NEW_BUILD_SYSTEM
+}
+
+# Deplopyment for Linux, note, the cli project also copies profiles
+unix:!macx {
+  DISTFILES  += CHANGES COPYING
+  INSTALLS   += target profiles data icon locale
+  # Disable strip
+  QMAKE_STRIP = echo
+
+  target.path = $$DESTDIR$$PREFIX/bin/
+
+  profiles.path = $$SHAREPATH/profiles
+  profiles.files += ../profiles/*
+  profiles.commands = @echo Installing profiles to $$SHAREPATH/profiles
+
+  data.path = $$SHAREPATH
+  data.files += ../Welcome.html
+  data.files += ../Welcome.png
+  data.files += ../READ_ME_FIRST.txt
+  data.files += ../Error.html
+  data.commands = @echo Installing global files to $$SHAREPATH
+
+  icon.path = $$SHAREPATH
+  icon.files = ../debian/simulationcraft.xpm
+  icon.commands = @echo Installing icon to $$SHAREPATH
+
+  locale.path = $$SHAREPATH/locale
+  locale.files += ../locale/*.qm
+  locale.commands = @echo Installing localizations to $$SHAREPATH/locale
 }
 
 RESOURCES = \

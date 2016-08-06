@@ -199,6 +199,7 @@ struct death_knight_td_t : public actor_target_data_t {
     debuff_t* soul_reaper;
     debuff_t* blood_mirror;
     debuff_t* scourge_of_worlds;
+    debuff_t* death; // Armies of the Damned ghoul proc
   } debuff;
 
   // Check if DnD or Defile are up for ScS/CS AOE
@@ -305,6 +306,7 @@ public:
     action_t* mark_of_blood;
     action_t* crystalline_swords;
     action_t* necrobomb;
+    action_t* pestilence; // Armies of the Damned
   } active_spells;
 
   // Gains
@@ -593,6 +595,7 @@ public:
   virtual double    composite_leech() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_target_multiplier( player_t* target ) const override;
   virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    passive_movement_modifier() const override;
@@ -673,6 +676,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
     .spell( death_knight -> artifact.scourge_of_worlds.data().effectN( 1 ).trigger() )
     .trigger_spell( death_knight -> artifact.scourge_of_worlds )
     .default_value( death_knight -> artifact.scourge_of_worlds.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  debuff.death = buff_creator_t( *this, "death", death_knight -> find_spell( 191730 ) )
+    .trigger_spell( death_knight -> artifact.armies_of_the_damned )
+    .default_value( death_knight -> find_spell( 191730 ) -> effectN( 1 ).percent() );
 }
 
 // ==========================================================================
@@ -1388,6 +1394,44 @@ struct army_pet_t : public base_ghoul_pet_t
     army_claw_t( army_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> find_spell( 91776 ), options_str )
     { }
+
+    // Triggers the currently selected Armies of the Damned proc for the pet
+    void trigger_aotd_proc( const action_state_t* state )
+    {
+      if ( ! p() -> o() -> artifact.armies_of_the_damned.rank() )
+      {
+        return;
+      }
+
+      // Presume 10% chance to trigger per claw execute
+      if ( ! rng().roll( p() -> o() -> artifact.armies_of_the_damned.data().effectN( 1 ).percent() ) )
+      {
+        return;
+      }
+
+      // 4 different procs, but only 2 are relevant for the DPS
+      switch ( static_cast<int>( rng().range( 0, 4 ) ) )
+      {
+        case 0:
+          p() -> o() -> get_target_data( state -> target ) -> debuff.death -> trigger();
+          break;
+        case 1:
+          p() -> o() -> active_spells.pestilence -> target = state -> target;
+          p() -> o() -> active_spells.pestilence -> execute();
+          break;
+        default:
+          break;
+      }
+    }
+
+    void execute() override
+    {
+      super::execute();
+      if ( result_is_hit( execute_state -> result ) )
+      {
+        trigger_aotd_proc( execute_state );
+      }
+    }
   };
 
   struct dragged_to_helheim_t : public pet_spell_t<army_pet_t>
@@ -1670,14 +1714,19 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     {
       weapon = &( player -> main_hand_weapon );
 
+      // 2016-08-06 Hotfixed to do aoe splash damage, splash multiplier currently not in spell data
+      aoe = -1;
+      base_aoe_multiplier = 0.5;
+
       // Approximate the Skulker bro's lag as 400ms mean with 50ms standard deviation. This roughly
       // matches in game behavior around 2016-07-22.
-      ability_lag = timespan_t::from_millis( 400 );
-      ability_lag_stddev = timespan_t::from_millis( 50 );
+      // 2016-08-06 AI Lag is now gone
+      //ability_lag = timespan_t::from_millis( 400 );
+      //ability_lag_stddev = timespan_t::from_millis( 50 );
     }
   };
 
-  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "Risen_Skulker", true, false )
+  risen_skulker_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "risen_skulker", true, false )
   {
     regen_type = REGEN_DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
@@ -1689,7 +1738,8 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     // As per Blizzard
-    owner_coeff.ap_from_ap = 1.0;
+    // 2016-08-06 Changes to pet, AP ineritance to 200% (guesstimate, based on Skulker Shot data)
+    owner_coeff.ap_from_ap = 2.0;
   }
 
   void init_action_list() override
@@ -1821,7 +1871,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "Dancing_Rune_Weapon", true, true )
+    death_knight_pet_t( owner, "dancing_rune_weapon", true, true )
   {
     main_hand_weapon.type       = WEAPON_BEAST_2H;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.5 );
@@ -2487,6 +2537,7 @@ struct necrobomb_t : public death_knight_spell_t
     death_knight_spell_t( "necrobomb", p, p -> find_spell( 191758 ) )
   {
     background = true;
+    may_crit = false;
     aoe = -1;
   }
 
@@ -2496,6 +2547,19 @@ struct necrobomb_t : public death_knight_spell_t
 
     // TODO: 2016-07-30: Versatility does not affect necrobomb in game, check later
     snapshot_flags &= ~STATE_VERSATILITY;
+  }
+};
+
+// Pestilence ===============================================================
+
+struct pestilence_t : public death_knight_spell_t
+{
+  pestilence_t( death_knight_t* p ) :
+    death_knight_spell_t( "pestilence", p, p -> find_spell( 191729 ) )
+  {
+    hasted_ticks = may_crit = tick_may_crit =false;
+    background = true;
+    dot_max_stack = data().max_stacks();
   }
 };
 
@@ -3119,7 +3183,7 @@ struct bonestorm_t : public death_knight_spell_t
     add_child( heal );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* ) const
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   { return base_tick_time * resource_consumed / 10; }
 };
 
@@ -4805,7 +4869,7 @@ struct soulgorge_t : public death_knight_spell_t
     aoe = -1;
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     death_knight_spell_t::available_targets( tl );
 
@@ -6003,6 +6067,11 @@ void death_knight_t::init_spells()
   {
     active_spells.necrobomb = new necrobomb_t( this );
   }
+
+  if ( artifact.armies_of_the_damned.rank() )
+  {
+    active_spells.pestilence = new pestilence_t( this );
+  }
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
@@ -6814,6 +6883,15 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.t18_4pc_unholy -> data().effectN( 2 ).percent();
   }
+
+  return m;
+}
+
+double death_knight_t::composite_player_target_multiplier( player_t* target ) const
+{
+  double m = player_t::composite_player_target_multiplier( target );
+
+  m *= 1.0 + get_target_data( target ) -> debuff.death -> stack_value();
 
   return m;
 }

@@ -85,10 +85,10 @@ main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=840
 off_hand=fists_of_the_heavens,id=124368,ilevel=840
 
 # Gear Summary
-# gear_ilvl=840.00
+# gear_ilvl=840.63
 # gear_agility=9432
-# gear_stamina=17140
-# gear_crit_rating=5822
+# gear_stamina=17237
+# gear_crit_rating=5846
 # gear_haste_rating=2146
-# gear_mastery_rating=9163
+# gear_mastery_rating=9206
 # gear_armor=1957
