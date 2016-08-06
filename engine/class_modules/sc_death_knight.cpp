@@ -2556,8 +2556,7 @@ struct pestilence_t : public death_knight_spell_t
   pestilence_t( death_knight_t* p ) :
     death_knight_spell_t( "pestilence", p, p -> find_spell( 191729 ) )
   {
-    // TODO: Are ticks hasted?
-    hasted_ticks = may_crit = false;
+    hasted_ticks = may_crit = tick_may_crit =false;
     background = true;
     dot_max_stack = data().max_stacks();
   }
