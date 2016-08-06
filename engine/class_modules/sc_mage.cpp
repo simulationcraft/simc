@@ -304,6 +304,7 @@ public:
     buff_t* brain_freeze,
           * fingers_of_frost,
           * frost_armor,
+          * icicles,               // Buff to track icicles - doesn't always line up with icicle count though!
           * icy_veins,
           * ice_shard,             // T17 2pc Frost
           * frost_t17_4pc,         // T17 4pc Frost
@@ -4401,6 +4402,7 @@ struct frostbolt_t : public frost_mage_spell_t
 
     frost_mage_spell_t::execute();
 
+    p() -> buffs.icicles -> trigger();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -4472,6 +4474,7 @@ struct frostbolt_t : public frost_mage_spell_t
            rng().roll( 0.2 ) )
       {
         trigger_icicle_gain( s, icicle );
+        p() -> buffs.icicles -> trigger();
       }
       if ( s -> result == RESULT_CRIT && p() -> artifact.frozen_veins.rank() )
       {
@@ -4646,9 +4649,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 
   virtual bool ready() override
   {
-    if ( ( as<int>( p() -> icicles.size() ) <
-         p() -> spec.icicles -> effectN( 2 ).base_value() )
-         )
+    if ( p() -> buffs.icicles -> current_stack < p() -> buffs.icicles -> max_stack() )
     {
       return false;
     }
@@ -4743,6 +4744,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
     frost_mage_spell_t::impact( s );
+    p() -> buffs.icicles -> expire();
   }
 };
 
@@ -4842,14 +4844,6 @@ struct ice_lance_t : public frost_mage_spell_t
     }
     else
       return s -> result_amount;
-
-    //TODO: Move this to the appropriate crit override.
-    // if ( result_is_hit( s -> result ) && s -> result == RESULT_CRIT )
-    //{
-    //  s -> result_total *= 1.0 + p() -> artifact.let_it_go.percent();
-    // }
-
-    //return s -> result_total;
   }
 
   virtual result_e calculate_result( action_state_t* s ) const override
@@ -4872,6 +4866,12 @@ struct ice_lance_t : public frost_mage_spell_t
 
     frost_mage_spell_t::execute();
 
+    //TODO: This is technically not correct - the buff should be step-wise decreased; but it has
+    // no real effect on gameplay.
+    if ( !p() -> talents.glacial_spike -> ok() )
+    {
+      p() -> buffs.icicles -> expire();
+    }
     //TODO: Impact vs Execute? FoF required or not?
     if ( magtheridons_banished_bracers_multiplier > 0.0 )
     {
@@ -7485,6 +7485,12 @@ void mage_t::create_buffs()
                                               artifact.icy_hand.rank() );
   buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
                                   .add_invalidate( CACHE_SPELL_HASTE );
+
+  // Buff to track icicles. This does not, however, track the true amount of icicles present.
+  // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
+  // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
+  buffs.icicles               = buff_creator_t( this, "icicles", find_spell( 148012 ) ).max_stack( 5.0 );
+
   buffs.icy_veins             = new buffs::icy_veins_buff_t( this );
   buffs.frost_t17_4pc         = buff_creator_t( this, "frost_t17_4pc", find_spell( 165470 ) )
                                   .duration( find_spell( 84714 ) -> duration() )
