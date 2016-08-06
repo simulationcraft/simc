@@ -595,6 +595,7 @@ public:
   virtual double    composite_leech() const override;
   virtual double    composite_melee_expertise( const weapon_t* ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_target_multiplier( player_t* target ) const override;
   virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double    composite_crit_avoidance() const override;
   virtual double    passive_movement_modifier() const override;
@@ -6882,6 +6883,15 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.t18_4pc_unholy -> data().effectN( 2 ).percent();
   }
+
+  return m;
+}
+
+double death_knight_t::composite_player_target_multiplier( player_t* target ) const
+{
+  double m = player_t::composite_player_target_multiplier( target );
+
+  m *= 1.0 + get_target_data( target ) -> debuff.death -> stack_value();
 
   return m;
 }
