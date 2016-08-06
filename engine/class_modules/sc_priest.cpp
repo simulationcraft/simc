@@ -7086,7 +7086,7 @@ void priest_t::combat_begin()
       {
         player_t* p = sim->player_list[ i ];
         priest_t* pr = (priest_t*)sim->player_list[ i ];
-        if ( p->specialization() != PRIEST_SHADOW || (p->specialization() == PRIEST_SHADOW && (pr->talents.legacy_of_the_void->ok() || pr->talents.mind_spike->ok() ) ) )
+        if ( p->specialization() != PRIEST_SHADOW || (pr->specialization() == PRIEST_SHADOW && (pr->talents.legacy_of_the_void->ok() || pr->talents.mind_spike->ok() ) ) )
         {
           options.priest_fixed_time = false;
           break;
