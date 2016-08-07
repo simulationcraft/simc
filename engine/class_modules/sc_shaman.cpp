@@ -3050,15 +3050,13 @@ struct stormstrike_base_t : public shaman_attack_t
   stormstrike_attack_t* mh, *oh;
   bool stormflurry;
   bool background_action;
-  bool storm_tempests; // 7.0 Legendary
 
   stormstrike_base_t( shaman_t* player, const std::string& name,
                       const spell_data_t* spell, const std::string& options_str ) :
     shaman_attack_t( name, player, spell ),
     cl( new crash_lightning_attack_t( player, name + "_cl" ) ),
     mh( nullptr ), oh( nullptr ),
-    stormflurry( false ), background_action( false ),
-    storm_tempests( false )
+    stormflurry( false ), background_action( false )
   {
     parse_options( options_str );
 
