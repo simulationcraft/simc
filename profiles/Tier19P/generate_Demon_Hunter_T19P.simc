@@ -1,4 +1,4 @@
-demonhunter="Demon_Hunter_Havoc_PreRaid"
+demonhunter="Demon_Hunter_Havoc_T19P"
 level=110
 race=night_elf
 timeofday=night
@@ -25,7 +25,7 @@ main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,ilevel=840
 off_hand=twinblades_of_the_deceiver,id=127830,ilevel=840
 save=Demon_Hunter_Havoc_T19P.simc
 
-demonhunter="Demon_Hunter_Vengeance_PreRaid"
+demonhunter="Demon_Hunter_Vengeance_T19P"
 level=110
 race=night_elf
 timeofday=night
