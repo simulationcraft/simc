@@ -103,9 +103,9 @@ RESOURCES = \
   qt/simcqt.qrc
 
 TRANSLATIONS = \
-  locale/sc_de.ts \
-  locale/sc_zh.ts \
-  locale/sc_it.ts
+  ../locale/sc_de.ts \
+  ../locale/sc_zh.ts \
+  ../locale/sc_it.ts
 
 include(../source_files/QT_gui.pri)
 
