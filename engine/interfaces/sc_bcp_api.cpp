@@ -663,6 +663,8 @@ player_t* parse_player( sim_t*             sim,
   if ( profile.HasParseError() )
   {
     sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.cleanurl.c_str() );
+    if ( sim -> apikey.empty() ) { sim -> errorf( "If you built this from source, remember to add your own api key." ); }
+    else if ( sim -> apikey.size() != 32 ) { sim -> errorf( "Check api key, must be 32 characters long." ); }
     return nullptr;
   }
 
