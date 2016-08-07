@@ -1113,22 +1113,22 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim,
                                     const std::string& name,
                                     const std::string& options_str )
 {
-  if ( name == "adds"         ) return std::unique_ptr<raid_event_t>(std::make_unique<adds_event_t>(sim, options_str));
-  if ( name == "move_enemy"   ) return std::unique_ptr<raid_event_t>(std::make_unique<move_enemy_t>(sim, options_str));
-  if ( name == "casting"      ) return std::unique_ptr<raid_event_t>(std::make_unique<casting_event_t>(sim, options_str));
-  if ( name == "distraction"  ) return std::unique_ptr<raid_event_t>(std::make_unique<distraction_event_t>(sim, options_str));
-  if ( name == "invul"        ) return std::unique_ptr<raid_event_t>(std::make_unique<invulnerable_event_t>(sim, options_str));
-  if ( name == "invulnerable" ) return std::unique_ptr<raid_event_t>(std::make_unique<invulnerable_event_t>(sim, options_str));
-  if ( name == "interrupt"    ) return std::unique_ptr<raid_event_t>(std::make_unique<interrupt_event_t>(sim, options_str));
-  if ( name == "movement"     ) return std::unique_ptr<raid_event_t>(std::make_unique<movement_event_t>(sim, options_str));
-  if ( name == "moving"       ) return std::unique_ptr<raid_event_t>(std::make_unique<movement_event_t>(sim, options_str));
-  if ( name == "damage"       ) return std::unique_ptr<raid_event_t>(std::make_unique<damage_event_t>(sim, options_str));
-  if ( name == "heal"         ) return std::unique_ptr<raid_event_t>(std::make_unique<heal_event_t>(sim, options_str));
-  if ( name == "stun"         ) return std::unique_ptr<raid_event_t>(std::make_unique<stun_event_t>(sim, options_str));
-  if ( name == "vulnerable"   ) return std::unique_ptr<raid_event_t>(std::make_unique<vulnerable_event_t>(sim, options_str));
-  if ( name == "position_switch" ) return std::unique_ptr<raid_event_t>(std::make_unique<position_event_t>(sim, options_str));
-  if ( name == "flying" )       return std::unique_ptr<raid_event_t>(std::make_unique<flying_event_t>(sim, options_str));
-  if ( name == "damage_taken_debuff" ) return std::unique_ptr<raid_event_t>(std::make_unique<damage_taken_debuff_event_t>(sim, options_str));
+  if ( name == "adds"         ) return std::unique_ptr<raid_event_t>(new         adds_event_t( sim, options_str ));
+  if ( name == "move_enemy"   ) return std::unique_ptr<raid_event_t>(new         move_enemy_t( sim, options_str ));
+  if ( name == "casting"      ) return std::unique_ptr<raid_event_t>(new      casting_event_t( sim, options_str ));
+  if ( name == "distraction"  ) return std::unique_ptr<raid_event_t>(new  distraction_event_t( sim, options_str ));
+  if ( name == "invul"        ) return std::unique_ptr<raid_event_t>(new invulnerable_event_t( sim, options_str ));
+  if ( name == "invulnerable" ) return std::unique_ptr<raid_event_t>(new invulnerable_event_t( sim, options_str ));
+  if ( name == "interrupt"    ) return std::unique_ptr<raid_event_t>(new    interrupt_event_t( sim, options_str ));
+  if ( name == "movement"     ) return std::unique_ptr<raid_event_t>(new     movement_event_t( sim, options_str ));
+  if ( name == "moving"       ) return std::unique_ptr<raid_event_t>(new     movement_event_t( sim, options_str ));
+  if ( name == "damage"       ) return std::unique_ptr<raid_event_t>(new       damage_event_t( sim, options_str ));
+  if ( name == "heal"         ) return std::unique_ptr<raid_event_t>(new         heal_event_t( sim, options_str ));
+  if ( name == "stun"         ) return std::unique_ptr<raid_event_t>(new         stun_event_t( sim, options_str ));
+  if ( name == "vulnerable"   ) return std::unique_ptr<raid_event_t>(new   vulnerable_event_t( sim, options_str ));
+  if ( name == "position_switch" ) return std::unique_ptr<raid_event_t>(new  position_event_t( sim, options_str ));
+  if ( name == "flying" )       return std::unique_ptr<raid_event_t>(new       flying_event_t( sim, options_str ));
+  if ( name == "damage_taken_debuff" ) return std::unique_ptr<raid_event_t>(new   damage_taken_debuff_event_t( sim, options_str ));
 
   return std::unique_ptr<raid_event_t>();
 }

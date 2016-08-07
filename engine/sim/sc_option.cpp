@@ -810,55 +810,55 @@ option_db_t::option_db_t()
 }
 
 std::unique_ptr<option_t> opt_string( const std::string& n, std::string& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_string_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opt_string_t( n, v )); }
 
 std::unique_ptr<option_t> opt_append( const std::string& n, std::string& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_append_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opt_append_t( n, v )); }
 
 std::unique_ptr<option_t> opt_bool( const std::string& n, int& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_bool_int_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opt_bool_int_t( n, v )); }
 
 std::unique_ptr<option_t> opt_bool( const std::string& n, bool& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_bool_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opt_bool_t( n, v )); }
 
 std::unique_ptr<option_t> opt_uint64( const std::string& n, uint64_t& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_uint64_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opt_uint64_t( n, v )); }
 
 std::unique_ptr<option_t> opt_int( const std::string& n, int& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_int_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opt_int_t( n, v )); }
 
 std::unique_ptr<option_t> opt_int( const std::string& n, int& v, int min, int max )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_int_mm_t>(n, v, min, max)); }
+{ return std::unique_ptr<option_t>(new opts::opt_int_mm_t( n, v, min, max )); }
 
 std::unique_ptr<option_t> opt_uint( const std::string& n, unsigned& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_uint_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opt_uint_t( n, v )); }
 
 std::unique_ptr<option_t> opt_uint( const std::string& n, unsigned& v, unsigned min, unsigned max )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_uint_mm_t>(n, v, min, max)); }
+{ return std::unique_ptr<option_t>(new opts::opt_uint_mm_t( n, v, min, max )); }
 
 std::unique_ptr<option_t> opt_float( const std::string& n, double& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_double_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opt_double_t( n, v )); }
 
 std::unique_ptr<option_t> opt_float( const std::string& n, double& v, double min, double max )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_double_mm_t>(n, v, min, max)); }
+{ return std::unique_ptr<option_t>(new opts::opt_double_mm_t( n, v, min, max )); }
 
 std::unique_ptr<option_t> opt_timespan( const std::string& n, timespan_t& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_timespan_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opt_timespan_t( n, v )); }
 
 std::unique_ptr<option_t> opt_timespan( const std::string& n, timespan_t& v, timespan_t min, timespan_t max )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opt_timespan_mm_t>(n, v, min, max)); }
+{ return std::unique_ptr<option_t>(new opts::opt_timespan_mm_t( n, v, min, max )); }
 
 std::unique_ptr<option_t> opt_list( const std::string& n, opts::list_t& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opts_list_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opts_list_t( n, v )); }
 
 std::unique_ptr<option_t> opt_map( const std::string& n, opts::map_t& v )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opts_map_t>(n, v)); }
+{ return std::unique_ptr<option_t>(new opts::opts_map_t( n, v )); }
 
 std::unique_ptr<option_t> opt_func( const std::string& n, const opts::function_t& f )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opts_sim_func_t>(n, f)); }
+{ return std::unique_ptr<option_t>(new opts::opts_sim_func_t( n, f )); }
 
 std::unique_ptr<option_t> opt_deprecated( const std::string& n, const std::string& new_option )
-{ return std::unique_ptr<option_t>(std::make_unique<opts::opts_deperecated_t>(n, new_option)); }
+{ return std::unique_ptr<option_t>(new opts::opts_deperecated_t( n, new_option )); }
 
 #undef SC_SHARED_DATA
 
