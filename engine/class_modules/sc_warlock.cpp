@@ -3021,7 +3021,8 @@ struct hand_of_guldan_t: public warlock_spell_t
           shards_used *= 1.5;
         }
       }
-      imp_event =  new ( *sim ) trigger_imp_event_t( p(), floor( shards_used ), true);
+      if ( s -> chain_target == 0 )
+        imp_event =  new ( *sim ) trigger_imp_event_t( p(), floor( shards_used ), true);
     }
   }
 };
