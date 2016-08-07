@@ -4504,7 +4504,7 @@ struct reap_souls_t: public warlock_spell_t
       {
         p() -> procs.souls_consumed -> occur();
       }
-      p() -> buffs.tormented_souls -> expire(); 
+      p() -> buffs.tormented_souls -> expire();
     }
 };
 
@@ -4807,8 +4807,8 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( SCHOOL_SHADOW, school ) ) )
   {
-    m *= 1.0 + artifact.crystaline_shadows.percent();
-    m *= 1.0 + artifact.shadowy_incantations.percent();
+      m *= 1.0 + artifact.crystaline_shadows.percent();
+      m *= 1.0 + artifact.shadowy_incantations.percent();
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_SHADOW, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
@@ -5288,7 +5288,6 @@ struct havoc_buff_t : public buff_t
   }
 };
 
-
 struct t18_4pc_driver_t : public buff_t        //kept to force imps to proc
 {
   timespan_t illidari_satyr_duration;
@@ -5356,7 +5355,7 @@ void warlock_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.misery = haste_buff_creator_t( this, "misery", find_spell( 216412 ) )
     .default_value( find_spell( 216412 ) -> effectN( 1 ).percent() );
-  buffs.deadwind_harvester = buff_creator_t( this, "deadwind_harvester", find_spell( 216708 ));
+  buffs.deadwind_harvester = buff_creator_t( this, "deadwind_harvester", find_spell( 216708 ) );
   buffs.tormented_souls = buff_creator_t( this, "tormented_souls", find_spell( 216695 ) )
     .tick_behavior( BUFF_TICK_NONE );
 
