@@ -2844,7 +2844,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       return make_ref_expr( "distance", player -> base.distance );
 
     std::string rest = splits[ start_rest ];
-    for ( auto i = start_rest + 1; i < splits.size(); ++i )
+    for ( size_t i = start_rest + 1; i < splits.size(); ++i )
       rest += '.' + splits[ i ];
 
     // Target.1.foo expression, bail out early.

@@ -126,7 +126,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " snapshot_flags=";
   if ( action -> snapshot_flags > 0 )
   {
-    s << "{ " << flags_to_str( action -> snapshot_flags ) << " }";
+    s << "{ " << flags_to_str( action -> snapshot_flags ) << " }";;
   }
   else
   {

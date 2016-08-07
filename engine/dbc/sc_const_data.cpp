@@ -1098,6 +1098,7 @@ stat_data_t& dbc_t::attribute_base( pet_e t, unsigned level ) const
 
 double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 {
+  ;
   assert( combat_rating_id < RATING_MAX );
   assert( level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
@@ -1417,7 +1418,7 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
 
   if ( _m_avg != 0 && _spell -> scaling_class() != 0 )
   {
-    auto scaling_level = level ? level : p -> level();
+    unsigned scaling_level = level ? level : p -> level();
     if ( _spell -> max_scaling_level() > 0 )
       scaling_level = std::min( scaling_level, _spell -> max_scaling_level() );
     m_scale = p -> dbc.spell_scaling( _spell -> scaling_class(), scaling_level );
@@ -1477,7 +1478,7 @@ double spelleffect_data_t::delta( const player_t* p, unsigned level ) const
   double m_scale = 0;
   if ( _m_delta != 0 && _spell -> scaling_class() != 0 )
   {
-    auto scaling_level = level ? level : p -> level();
+    unsigned scaling_level = level ? level : p -> level();
     if ( _spell -> max_scaling_level() > 0 )
       scaling_level = std::min( scaling_level, _spell -> max_scaling_level() );
     m_scale = p -> dbc.spell_scaling( _spell -> scaling_class(), scaling_level );
@@ -2533,7 +2534,7 @@ bool spell_data_t::affected_by( const spell_data_t* spell ) const
   if ( class_family() != spell -> class_family() )
     return false;
 
-  for ( auto flag_idx = 0; flag_idx < NUM_CLASS_FAMILY_FLAGS; flag_idx++ )
+  for ( size_t flag_idx = 0; flag_idx < NUM_CLASS_FAMILY_FLAGS; flag_idx++ )
   {
     if ( ! class_flags( (int)flag_idx ) )
       continue;
@@ -2557,7 +2558,7 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
   if ( class_family() != effect -> spell() -> class_family() )
     return false;
 
-  for ( auto flag_idx = 0; flag_idx < NUM_CLASS_FAMILY_FLAGS; flag_idx++ )
+  for ( size_t flag_idx = 0; flag_idx < NUM_CLASS_FAMILY_FLAGS; flag_idx++ )
   {
     if ( ! class_flags( (int)flag_idx ) )
       continue;

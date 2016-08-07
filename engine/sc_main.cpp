@@ -193,7 +193,7 @@ int sim_t::main( const std::vector<std::string>& args )
   // begins
   hotfix::apply();
 
-  auto setup_success = true;
+  bool setup_success = true;
   std::string errmsg;
   try
   {

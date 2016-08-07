@@ -409,7 +409,7 @@ struct elixir_t : public action_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
 
-    for ( auto i = 0; i < sizeof_array( elixir_data ); ++i )
+    for ( size_t i = 0; i < sizeof_array( elixir_data ); ++i )
     {
       const elixir_data_t& d = elixir_data[ i ];
       if ( d.name == type_str )
@@ -534,7 +534,7 @@ struct food_t : public action_t
    */
   const food_data_t* find_food( food_e type )
   {
-    for( auto i = 0; i < sizeof_array( food_data ); ++i )
+    for( size_t i = 0; i < sizeof_array( food_data ); ++i )
     {
       const food_data_t& food = food_data[ i ];
       if ( type == food.ft )
@@ -555,7 +555,7 @@ struct food_t : public action_t
                              STAT_VERSATILITY_RATING };
 
     stat_e highest_secondary = secondaries[0];
-    for ( auto i = 1; i < sizeof_array( secondaries ); i++ )
+    for ( size_t i = 1; i < sizeof_array( secondaries ); i++ )
     {
       if ( p -> current.stats.get_stat( highest_secondary ) <
            p -> current.stats.get_stat( secondaries[ i ] ) )
@@ -905,7 +905,7 @@ struct dbc_potion_t : public action_t
 
     // Setup cooldown
     cooldown = p -> get_cooldown( "potion" );
-    for ( auto i = 0; i < MAX_ITEM_EFFECT; i++ )
+    for ( size_t i = 0; i < MAX_ITEM_EFFECT; i++ )
     {
       if ( item -> cooldown_group[ i ] > 0 && item -> cooldown_group_duration[ i ] > 0 )
       {
