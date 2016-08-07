@@ -3669,10 +3669,9 @@ struct rain_of_fire_t : public warlock_spell_t
 
 struct demonwrath_tick_t: public warlock_spell_t
 {
-  gain_t* shard_gain;
 
   demonwrath_tick_t( warlock_t* p, const spell_data_t& ):
-    warlock_spell_t( "demonwrath_tick", p, p->find_spell(193439) ), shard_gain( p -> gains.demonwrath )
+    warlock_spell_t( "demonwrath_tick", p, p -> find_spell(193439) )
   {
     aoe = -1;
     background = true;
@@ -3684,9 +3683,9 @@ struct demonwrath_tick_t: public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if(rng().roll(p()->find_spell( 193440 )->effectN( 1 ).percent()))
+      if( rng().roll( p() -> find_spell( 193440 ) -> effectN( 1 ).percent() ))
       {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, shard_gain );
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.demonwrath );
       }
     }
   }
@@ -3714,38 +3713,6 @@ struct demonwrath_t: public warlock_spell_t
     return true;
   }
 };
-
-/*struct hellfire_tick_t: public warlock_spell_t
-{
-  hellfire_tick_t( warlock_t* p, const spell_data_t& s ):
-    warlock_spell_t( "hellfire_tick", p, s.effectN( 1 ).trigger() )
-  {
-    aoe = -1;
-    background = true;
-  }
-};
-
-struct hellfire_t: public warlock_spell_t
-{
-  hellfire_t( warlock_t* p ):
-    warlock_spell_t( p, "Hellfire" )
-  {
-    tick_zero = false;
-    may_miss = false;
-    channeled = true;
-    may_crit = false;
-
-    spell_power_mod.tick = base_td = 0;
-
-    dynamic_tick_action = true;
-    tick_action = new hellfire_tick_t( p, data() );
-  }
-
-  virtual bool usable_moving() const override
-  {
-    return true;
-  }
-};*/
 
 // SUMMONING SPELLS
 
@@ -5416,6 +5383,7 @@ void warlock_t::init_gains()
   gains.soulsnatcher        = get_gain( "soulsnatcher" );
   gains.power_trip          = get_gain( "power_trip" );
   gains.t18_4pc_destruction = get_gain( "t18_4pc_destruction" );
+  gains.demonwrath          = get_gain( "demonwrath" );
 }
 
 // warlock_t::init_procs ===============================================
