@@ -1655,6 +1655,70 @@ void item::ravaged_seed_pod( special_effect_t& effect )
 
 void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
 
+// Cinidaria, the Symbiote ==================================================
+
+struct cinidaria_the_symbiote_damage_t : public attack_t
+{
+  cinidaria_the_symbiote_damage_t( player_t* p ) :
+    attack_t( "cinidaria_the_symbiote", p )
+  {
+    school = SCHOOL_PHYSICAL;
+    callbacks = may_crit = may_miss = false;
+    background = true;
+  }
+
+  // TODO: Any multipliers for this?
+  void init() override
+  {
+    attack_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
+struct cinidaria_the_symbiote_cb_t : public dbc_proc_callback_t
+{
+  cinidaria_the_symbiote_damage_t* damage;
+
+  cinidaria_the_symbiote_cb_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect ),
+    damage( new cinidaria_the_symbiote_damage_t( effect.player ) )
+  { }
+
+  void trigger( action_t* a, void* call_data ) override
+  {
+    auto state = reinterpret_cast<action_state_t*>( call_data );
+    if ( state -> target -> health_percentage() < effect.driver() -> effectN( 2 ).base_value() )
+    {
+      return;
+    }
+
+    if ( state -> result_amount <= 0 )
+    {
+      return;
+    }
+
+    dbc_proc_callback_t::trigger( a, call_data );
+  }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
+  {
+    auto amount = state -> result_amount * effect.driver() -> effectN( 1 ).percent();
+    damage -> target = state -> target;
+    damage -> base_dd_min = damage -> base_dd_max = amount;
+    damage -> execute();
+  }
+};
+
+struct cinidaria_the_symbiote_t : public class_scoped_callback_t
+{
+  cinidaria_the_symbiote_t() : class_scoped_callback_t( { DEMON_HUNTER, DRUID, MONK, ROGUE } )
+  { }
+
+  void initialize( special_effect_t& effect ) override
+  { new cinidaria_the_symbiote_cb_t( effect ); }
+};
+
 // Journey Through Time =====================================================
 
 void set_bonus::journey_through_time( special_effect_t& /* effect */ ) {}
@@ -1721,6 +1785,9 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 224148, set_bonus::simple_callback );
   register_special_effect( 224150, set_bonus::simple_callback );
   register_special_effect( 228448, set_bonus::simple_callback );
+
+  /* Legendaries */
+  register_special_effect( 207692, cinidaria_the_symbiote_t() );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

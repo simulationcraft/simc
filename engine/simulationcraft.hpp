@@ -6881,27 +6881,35 @@ namespace unique_gear
   // A scoped special effect callback that validates against a player class or specialization.
   struct class_scoped_callback_t : public scoped_callback_t
   {
-    const player_e class_;
-    const specialization_e spec_;
+    std::vector<player_e> class_;
+    std::vector<specialization_e> spec_;
 
     class_scoped_callback_t( player_e c ) :
-      scoped_callback_t( PRIORITY_CLASS ), class_( c ), spec_( SPEC_NONE )
+      scoped_callback_t( PRIORITY_CLASS ), class_( { c } )
+    { }
+
+    class_scoped_callback_t( const std::vector<player_e>& c ) :
+      scoped_callback_t( PRIORITY_CLASS ), class_( c )
     { }
 
     class_scoped_callback_t( specialization_e s ) :
-      scoped_callback_t( PRIORITY_SPEC ), class_( PLAYER_NONE ), spec_( s )
+      scoped_callback_t( PRIORITY_SPEC ), spec_( { s } )
+    { }
+
+    class_scoped_callback_t( const std::vector<specialization_e>& s ) :
+      scoped_callback_t( PRIORITY_SPEC ), spec_( s )
     { }
 
     bool valid( const special_effect_t& effect ) const override
     {
       assert( effect.player );
 
-      if ( class_ != PLAYER_NONE && effect.player -> type != class_ )
+      if ( class_.size() > 0 && range::find( class_, effect.player -> type ) == class_.end() )
       {
         return false;
       }
 
-      if ( spec_ != SPEC_NONE && spec_ != effect.player -> specialization() )
+      if ( spec_.size() > 0 && range::find( spec_, effect.player -> specialization() ) == spec_.end() )
       {
         return false;
       }
