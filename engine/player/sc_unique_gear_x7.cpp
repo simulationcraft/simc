@@ -1660,9 +1660,8 @@ void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
 struct cinidaria_the_symbiote_damage_t : public attack_t
 {
   cinidaria_the_symbiote_damage_t( player_t* p ) :
-    attack_t( "cinidaria_the_symbiote", p )
+    attack_t( "cinidaria_the_symbiote", p, p -> find_spell( 207694 ) )
   {
-    school = SCHOOL_PHYSICAL;
     callbacks = may_crit = may_miss = false;
     background = true;
   }
@@ -1694,6 +1693,12 @@ struct cinidaria_the_symbiote_cb_t : public dbc_proc_callback_t
     }
 
     if ( state -> result_amount <= 0 )
+    {
+      return;
+    }
+
+    // Ensure this is an attack
+    if ( state -> action -> type != ACTION_SPELL && state -> action -> type != ACTION_ATTACK )
     {
       return;
     }

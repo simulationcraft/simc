@@ -1176,7 +1176,8 @@ class SpellDataGenerator(DataGenerator):
          222517, 222518, 222519, 222520, # Nature's Call trinket
          222050,                   # Wriggling Sinew trinket
          221865,                   # Twisting Wind trinket
-         221804, 221805            # Ravaged Seed Pod trinket
+         221804, 221805,           # Ravaged Seed Pod trinket
+         207694,                   # Symbiote Strike for Cinidaria, the Symbiote
         ),
 
         # Warrior:
