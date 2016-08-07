@@ -3668,6 +3668,7 @@ void player_t::combat_begin()
       }
     }
   }
+  first_cast = false;
 
   if ( ! precombat_action_list.empty() )
     in_combat = true;
