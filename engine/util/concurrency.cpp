@@ -123,9 +123,6 @@ void sc_thread_t::sleep_seconds( double t )
 unsigned sc_thread_t::cpu_thread_count()
 { return native_t::cpu_thread_count(); }
 
-
-
-
 #if defined(SC_WINDOWS)
 #include <windows.h>
 

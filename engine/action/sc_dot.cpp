@@ -26,7 +26,7 @@ dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   current_action( nullptr ),
   state( nullptr ),
   num_ticks( 0 ),
-  current_tick( 0 ),
+  current_tick( 0 ), max_stack(0),
   miss_time( timespan_t::min() ),
   time_to_tick( timespan_t::zero() ),
   name_str( n )

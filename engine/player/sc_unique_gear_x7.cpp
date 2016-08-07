@@ -337,7 +337,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
   };
 
   haymaker_driver_t( const special_effect_t& e, double m ) :
-    dbc_proc_callback_t( e.player, e ), effect( e ), multiplier( m ),
+    dbc_proc_callback_t( e.player, e ), debuff(nullptr), effect( e ), multiplier( m ), accumulator(nullptr),
     action( debug_cast<haymaker_damage_t*>( e.player -> find_action( "brutal_haymaker_vulnerability" ) ) )
   {}
 

@@ -16,12 +16,12 @@ namespace sc_resource_paths {
 
 }; // sc_resource_paths
 
-std::vector<std::string> sc_resource_paths::cache()
+inline std::vector<std::string> sc_resource_paths::cache()
 {
   return resource_storage();
 }
 
-std::vector<std::string> sc_resource_paths::resource_storage()
+inline std::vector<std::string> sc_resource_paths::resource_storage()
 {
   std::vector<std::string> out;
 
@@ -47,7 +47,7 @@ std::vector<std::string> sc_resource_paths::resource_storage()
   return out;
 }
 
-std::vector<std::string> sc_resource_paths::sample_profiles()
+inline std::vector<std::string> sc_resource_paths::sample_profiles()
 {
   std::vector<std::string> out;
 
@@ -59,7 +59,7 @@ std::vector<std::string> sc_resource_paths::sample_profiles()
   return out;
 }
 
-std::vector<std::string> sc_resource_paths::shared_resources()
+inline std::vector<std::string> sc_resource_paths::shared_resources()
 {
   std::vector<std::string> out;
 #if defined( SC_LINUX_PACKAGING )

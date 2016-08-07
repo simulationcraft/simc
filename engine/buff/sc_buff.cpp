@@ -48,7 +48,7 @@ struct expiration_t : public buff_event_t
   { return "buff_expiration"; }
 
   expiration_t( buff_t* b, timespan_t d ) :
-    buff_event_t( b, d )
+    buff_event_t( b, d ), stack(0)
   {
     if ( b -> stack_behavior == BUFF_STACK_ASYNCHRONOUS )
     {

@@ -142,7 +142,7 @@ struct enemy_action_t : public ACTION_TYPE
     return filtered_options;
   }
 
-  void init()
+  virtual void init()
   {
     action_type_t::init();
 
@@ -180,7 +180,7 @@ struct enemy_action_t : public ACTION_TYPE
       this -> base_dd_max = this -> base_dd_min;
   }
 
-  size_t available_targets( std::vector< player_t* >& tl ) const
+  virtual size_t available_targets( std::vector< player_t* >& tl ) const
   {
     // TODO: This does not work for heals at all, as it presumes enemies in the
     // actor list.
@@ -1694,7 +1694,7 @@ struct enemy_module_t : public module_t
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e /* r = RACE_NONE */ ) const override
   {
     auto  p = new enemy_t( sim, name );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new enemy_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>(std::make_unique<enemy_report_t>(*p));
     return p;
   }
   virtual bool valid() const override { return true; }

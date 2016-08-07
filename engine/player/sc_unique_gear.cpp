@@ -1446,7 +1446,7 @@ void item::spark_of_zandalar( special_effect_t& effect )
     stat_buff_t* buff;
 
     spark_of_zandalar_callback_t( const special_effect_t& data ) :
-      dbc_proc_callback_t( *data.item, data )
+      dbc_proc_callback_t( *data.item, data ), buff(nullptr)
     {
       const spell_data_t* spell = listener -> find_spell( 138958 );
       sparks = buff_creator_t( listener, "zandalari_spark_driver", spell, data.item )

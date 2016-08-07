@@ -1351,7 +1351,7 @@ public:
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
     pet_t( sim, owner, name, true ),
     attacks( SEF_ATTACK_MAX ), spells( SEF_SPELL_MAX - SEF_SPELL_MIN ),
-    sticky_target( false )
+    sticky_target( false ), sef_hit_combo(nullptr)
   {
     // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
     // around some sanity checks in the action execution code, that prevents
@@ -1455,7 +1455,7 @@ public:
     o() -> buff.storm_earth_and_fire -> decrement();
   }
 
-  void create_buffs()
+  void create_buffs() override
   {
     pet_t::create_buffs();
 
@@ -1842,7 +1842,7 @@ public:
     return c;
   }
 
-  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  virtual void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
     timespan_t cd = cd_duration;
     // Only adjust cooldown (through serenity) if it's non zero.
@@ -8428,7 +8428,7 @@ struct monk_module_t: public module_t
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new monk_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new monk_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>(std::make_unique<monk_report_t>(*p));
     return p;
   }
   virtual bool valid() const override { return true; }

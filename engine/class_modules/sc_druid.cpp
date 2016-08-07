@@ -274,7 +274,7 @@ public:
   struct active_actions_t
   {
     stalwart_guardian_t*            stalwart_guardian;
-    cat_attacks::gushing_wound_t*   gushing_wound;
+    action_t* gushing_wound;
     heals::cenarion_ward_hot_t*     cenarion_ward_hot;
     attack_t* ashamanes_rip;
     action_t* brambles;
@@ -1048,7 +1048,8 @@ struct berserk_buff_base_t : public druid_buff_t<buff_t>
 
   berserk_buff_base_t( druid_t& p, const std::string& name, const spell_data_t* spell ) :
     druid_buff_t<buff_t>( p, buff_creator_t( &p, name, spell )
-                          .cd( timespan_t::zero() ) ) // Cooldown handled by ability
+                          .cd( timespan_t::zero() ) ), increased_max_energy(0)
+  // Cooldown handled by ability
   {}
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -6996,7 +6997,7 @@ void druid_t::arise()
 
 void druid_t::recalculate_resource_max( resource_e rt )
 {
-  double pct_health, current_health;
+  double pct_health = 0, current_health = 0;
   bool adjust_natures_guardian_health = mastery.natures_guardian -> ok() && rt == RESOURCE_HEALTH;
   if ( adjust_natures_guardian_health )
   {
@@ -8231,7 +8232,7 @@ struct druid_module_t : public module_t
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new druid_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new druid_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>(std::make_unique<druid_report_t>(*p));
     return p;
   }
   virtual bool valid() const override { return true; }

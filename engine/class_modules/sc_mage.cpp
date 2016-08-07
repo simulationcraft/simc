@@ -2410,7 +2410,7 @@ struct icicle_t : public frost_mage_spell_t
     snapshot_flags &= ~( STATE_SP | STATE_CRIT | STATE_TGT_CRIT );
   }
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const override
+  virtual double composite_da_multiplier( const action_state_t* ) const override
   {
     // Override this to remove composite_player_multiplier benefits (RoP/IF/CttC)
     // Also remove composute_player_dd_multipliers. Only return action and action_da multipliers.
@@ -9002,7 +9002,7 @@ public:
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new mage_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new mage_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>(std::make_unique<mage_report_t>(*p));
     return p;
   }
 

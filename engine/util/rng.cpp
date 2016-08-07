@@ -786,25 +786,25 @@ std::unique_ptr<rng_t> create( rng_t::type_e t )
   switch( t )
   {
   case rng_t::MURMURHASH:
-    return std::unique_ptr<rng_t>(new rng_murmurhash_t());
+    return std::unique_ptr<rng_t>(std::make_unique<rng_murmurhash_t>());
 
   case rng_t::STD:
-    return std::unique_ptr<rng_t>(new rng_mt_cxx11_t());
+    return std::unique_ptr<rng_t>(std::make_unique<rng_mt_cxx11_t>());
 
   case rng_t::SFMT:
-    return std::unique_ptr<rng_t>(new rng_sfmt_t());
+    return std::unique_ptr<rng_t>(std::make_unique<rng_sfmt_t>());
 
   case rng_t::TINYMT:
-    return std::unique_ptr<rng_t>(new rng_tinymt_t());
+    return std::unique_ptr<rng_t>(std::make_unique<rng_tinymt_t>());
 
   case rng_t::XORSHIFT64:
-    return std::unique_ptr<rng_t>(new rng_xorshift64_t());
+    return std::unique_ptr<rng_t>(std::make_unique<rng_xorshift64_t>());
 
   case rng_t::XORSHIFT128:
-    return std::unique_ptr<rng_t>(new rng_xorshift128_t());
+    return std::unique_ptr<rng_t>(std::make_unique<rng_xorshift128_t>());
 
   case rng_t::XORSHIFT1024:
-    return std::unique_ptr<rng_t>(new rng_xorshift1024_t());
+    return std::unique_ptr<rng_t>(std::make_unique<rng_xorshift1024_t>());
 
   case rng_t::DEFAULT:
   default:

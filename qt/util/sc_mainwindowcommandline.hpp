@@ -131,8 +131,6 @@ public:
   int getBattleNetProgress();
   void setHelpViewProgress( int value, QString format, QString toolTip );
   int getHelpViewProgress();
-  void setSiteLoadProgress( int value, QString format, QString toolTip );
-  int getSiteProgress();
   QString commandLineText();
   QString commandLineText( main_tabs_e tab );
   QString commandLineText( import_tabs_e tab );

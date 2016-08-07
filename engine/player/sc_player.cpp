@@ -737,7 +737,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   skill_debuff( 0.0 ),
   distance( 0 ),
   distance_to_move( 0 ),
-  moving_away( 0 ),
+  moving_away( 0 ), movement_direction(),
   armor_coeff( 0 ),
   sleeping( false ),
   rating(),
@@ -4914,10 +4914,6 @@ void player_t::stat_gain( stat_e    stat,
 
     case STAT_HASTE_RATING:
     {
-      double old_attack_speed = 0;
-      if ( main_hand_attack || off_hand_attack )
-        old_attack_speed = cache.attack_speed();
-
       current.stats.add_stat( stat, amount );
       invalidate_cache( cache_type );
 
@@ -5085,10 +5081,6 @@ void player_t::stat_loss( stat_e    stat,
 
     case STAT_HASTE_RATING:
     {
-      double old_attack_speed = 0;
-      if ( main_hand_attack || off_hand_attack )
-        old_attack_speed = cache.attack_speed();
-
       current.stats.haste_rating   -= amount;
       invalidate_cache( cache_type );
 

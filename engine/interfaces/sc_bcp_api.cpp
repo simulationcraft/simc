@@ -112,7 +112,7 @@ void parse_profession( std::string&               professions_str,
 // parse_talents ============================================================
 
 const rapidjson::Value* choose_talent_spec( const rapidjson::Value& talents,
-                                                   const std::string& specifier )
+                                                   const std::string& )
 {
   for ( size_t i = 0; i < talents.Size(); ++i )
   {

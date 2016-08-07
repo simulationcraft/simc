@@ -312,9 +312,9 @@ protected:
 
 public:
   analyze_binary_base_t( const std::string& n, token_e o, expr_t* l, expr_t* r )
-    : expr_t( n, o ),
+    : expr_t( n, o ), op(),
       left( l ),
-      right( r ),
+      right( r ), result(0), left_result(0), right_result(0),
       left_true( 0 ),
       right_true( 0 ),
       left_false( 0 ),

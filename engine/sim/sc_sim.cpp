@@ -335,12 +335,22 @@ bool parse_talent_format( sim_t*             sim,
 class names_and_options_t
 {
 private:
-  bool is_valid_region( const std::string& s )
+  static bool is_valid_region( const std::string& s )
   { return s.size() == 2; }
 
 public:
   typedef std::runtime_error error;
-  struct option_error : public error {};
+  struct option_error : public error {
+    explicit option_error(const std::string& _Message)
+      : runtime_error(_Message)
+    {
+    }
+
+    explicit option_error(const char* _Message)
+      : runtime_error(_Message)
+    {
+    }
+  };
 
   std::vector<std::string> names;
   std::string region;

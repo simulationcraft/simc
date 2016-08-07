@@ -379,7 +379,7 @@ public:
   double min_distance() { return distance_min; }
   double max_distance() { return distance_max; }
   void schedule();
-  void reset();
+  virtual void reset();
   void start();
   void finish();
   void set_next( timespan_t t ) { next = t; }
@@ -645,10 +645,6 @@ protected:
 private:
   void init();
 public:
-  buff_creator_basics_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil() );
-  buff_creator_basics_t( actor_pair_t, uint32_t id, const std::string& name );
-  buff_creator_basics_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil() );
-
   buff_creator_basics_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
   buff_creator_basics_t( actor_pair_t, uint32_t id, const std::string& name, const item_t* item = nullptr );
   buff_creator_basics_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
@@ -1930,7 +1926,6 @@ struct sim_t : private sc_thread_t
   bool      parse_option( const std::string& name, const std::string& value );
   void      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );
-  timespan_t total_reaction_time ();
   player_t* find_player( const std::string& name ) const;
   player_t* find_player( int index ) const;
   cooldown_t* get_cooldown( const std::string& name );
@@ -2078,7 +2073,6 @@ struct scaling_t
   void analyze_ability_stats( stat_e, double, player_t*, player_t*, player_t* );
   void analyze_lag();
   void normalize();
-  void derive();
   double progress( std::string& phase, std::string* detailed = nullptr );
   void create_options();
   bool has_scale_factors();
@@ -2662,8 +2656,8 @@ struct item_t
 
   item_t() : sim( nullptr ), player( nullptr ), slot( SLOT_INVALID ), parent_slot( SLOT_INVALID ),
     unique( false ), unique_addon( false ), is_ptr( false ),
-    parsed(), xml(),
-    cached_upgrade_item_level( -1 ) { }
+    parsed(), xml(), option_initial_cd(0),
+             cached_upgrade_item_level( -1 ) { }
   item_t( player_t*, const std::string& options_str );
 
   bool active() const;
@@ -2677,7 +2671,6 @@ struct item_t
 
   bool is_matching_type() const;
   bool is_valid_type() const;
-  bool is_child() const;
   bool socket_color_match() const;
 
   unsigned item_level() const;
@@ -2712,20 +2705,17 @@ struct item_t
   bool decode_mythic();
   bool decode_armor_type();
   bool decode_random_suffix();
-  bool decode_upgrade_level();
   bool decode_ilevel();
   bool decode_quality();
   bool decode_data_source();
   bool decode_equip_effect();
   bool decode_use_effect();
 
-  bool decode_proc_spell( special_effect_t& effect );
 
   bool verify_slot();
 
   bool init_special_effects();
 
-  static bool download_slot( item_t& item );
   static bool download_item( item_t& );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
 
@@ -2908,8 +2898,6 @@ struct set_bonus_t
   std::string to_string() const;
   std::string to_profile_string( const std::string& = "\n" ) const;
   std::string generate_set_bonus_options() const;
-
-  static std::string set_bonus_type_str( set_bonus_e );
 };
 
 // "Real" 'Procs per Minute' helper class =====================================
@@ -2927,7 +2915,7 @@ private:
   timespan_t   initial_precombat_time;
   rppm_scale_e scales_with;
 
-  real_ppm_t()
+  real_ppm_t(): player(nullptr), freq(0), modifier(0), rppm(0), scales_with()
   { }
 
   static double max_interval() { return 10.0; }
@@ -4100,8 +4088,7 @@ struct player_t : public actor_t
   virtual std::vector<std::string> get_racial_actions();
   bool add_action( std::string action, std::string options = "", std::string alist = "default" );
   bool add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
-  std::string include_default_on_use_items( player_t&, const std::string& exclude_effects );
-  std::string include_specific_on_use_item( player_t&, const std::string& effect_names, const std::string& options );
+
 
   virtual void init_target();
   void init_character_properties();
@@ -4400,9 +4387,6 @@ struct player_t : public actor_t
 
   // Class-Specific Methods
   static player_t* create( sim_t* sim, const player_description_t& );
-
-  // Raid-wide aura/buff/debuff maintenance
-  static bool init ( sim_t* sim );
 
   bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
   bool is_enemy() const { return _is_enemy( type ); }
@@ -5513,7 +5497,7 @@ public:
   const spell_data_t& data() const
   { return ( *s_data ); }
   void parse_spell_data( const spell_data_t& );
-  void parse_effect_data( const spelleffect_data_t& );
+  virtual void parse_effect_data( const spelleffect_data_t& );
   virtual void parse_options( const std::string& options_str );
   void parse_target_str();
   void add_option( std::unique_ptr<option_t> new_option )
@@ -6133,7 +6117,7 @@ public:
   std::vector < player_t* > find_lowest_players( int num_players ) const;
   player_t* smart_target() const; // Find random injured healing target, preferring non-pets // Might need to move up hierarchy if there are smart absorbs
   virtual int num_targets() const override;
-  virtual void   parse_effect_data( const spelleffect_data_t& );
+  void   parse_effect_data( const spelleffect_data_t& ) override;
 
   virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
@@ -7586,7 +7570,7 @@ public:
   { assert( 0 ); }
 
   // Ensure that the ignite action snapshots nothing
-  void init() override
+  virtual void init() override
   {
     ab::init();
 

@@ -574,7 +574,6 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
 
     delete sim -> pause_mutex;
     delete sim;
-    sim = 0;
 
     QString contents;
     bool logFileOpenedSuccessfully = false;

@@ -871,7 +871,7 @@ struct stormlash_buff_t : public buff_t
 {
   stormlash_callback_t* callback;
 
-  stormlash_buff_t( const buff_creator_t& creator ) : buff_t( creator )
+  stormlash_buff_t( const buff_creator_t& creator ) : buff_t( creator ), callback(nullptr)
   { }
 
   void execute( int stacks, double value, timespan_t duration ) override
@@ -969,7 +969,7 @@ public:
     }
   }
 
-  void init()
+  virtual void init()
   {
     ab::init();
 
@@ -1001,7 +1001,7 @@ public:
   shaman_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  double composite_target_multiplier( player_t* target ) const override
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = ab::composite_target_multiplier( target );
 
@@ -1021,14 +1021,14 @@ public:
     return m;
   }
 
-  void execute() override
+  virtual void execute() override
   {
     ab::execute();
 
     trigger_maelstrom_gain( ab::execute_state );
   }
 
-  void impact( action_state_t* state ) override
+  virtual void impact( action_state_t* state ) override
   {
     ab::impact( state );
 
@@ -1045,7 +1045,7 @@ public:
     ab::schedule_execute( execute_state );
   }
 
-  void update_ready( timespan_t cd ) override
+  virtual void update_ready( timespan_t cd ) override
   {
     if ( cd_wasted_exec &&
          ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown -> duration > timespan_t::zero() ) ) &&
@@ -1071,7 +1071,7 @@ public:
     ab::update_ready( cd );
   }
 
-  expr_t* create_expression( const std::string& name ) override
+  virtual expr_t* create_expression( const std::string& name ) override
   {
     if ( ! util::str_compare_ci( name, "cooldown.higher_priority.min_remains" ) )
       return ab::create_expression( name );
@@ -1300,7 +1300,7 @@ public:
     ab( n, player, s )
   { }
 
-  void execute() override
+  virtual void execute() override
   {
     ab::execute();
 
@@ -1322,7 +1322,7 @@ public:
     }
   }
 
-  void schedule_travel( action_state_t* s ) override
+  virtual void schedule_travel( action_state_t* s ) override
   {
     ab::schedule_travel( s );
 
@@ -1547,7 +1547,7 @@ struct shaman_pet_t : public pet_t
   const spell_data_t* command;
 
   shaman_pet_t( shaman_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true ) :
-    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack )
+    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack ), command(nullptr)
   {
     regen_type            = REGEN_DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
@@ -2005,7 +2005,7 @@ struct lightning_wolf_t : public doom_wolf_base_t
 
   buff_t* crackling_surge;
 
-  lightning_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "lightning_wolf" )
+  lightning_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "lightning_wolf" ), crackling_surge(nullptr)
   { }
 
   double composite_player_multiplier( school_e s ) const override
@@ -2244,7 +2244,7 @@ struct storm_elemental_t : public primal_elemental_t
   buff_t* call_lightning;
 
   storm_elemental_t( shaman_t* owner, bool guardian ) :
-    primal_elemental_t( owner, ( ! guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian, false )
+    primal_elemental_t( owner, ( ! guardian ) ? "primal_storm_elemental" : "greater_storm_elemental", guardian, false ), call_lightning(nullptr)
   {
     owner_coeff.sp_from_sp = 1.0000;
   }
@@ -4987,7 +4987,7 @@ struct shaman_totem_t : public shaman_spell_t
   timespan_t totem_duration;
 
   shaman_totem_t( const std::string& totem_name, shaman_t* player, const std::string& options_str, const spell_data_t* spell_data ) :
-    shaman_spell_t( totem_name, player, spell_data, options_str ),
+    shaman_spell_t( totem_name, player, spell_data, options_str ), totem_pet(nullptr),
     totem_duration( data().duration() )
   {
     harmful = callbacks = may_miss = may_crit =  false;
@@ -7448,7 +7448,7 @@ struct shaman_module_t : public module_t
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new shaman_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new shaman_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>(std::make_unique<shaman_report_t>(*p));
     return p;
   }
   virtual bool valid() const override { return true; }

@@ -879,7 +879,7 @@ struct death_knight_pet_t : public pet_t
   const spell_data_t* command;
 
   death_knight_pet_t( death_knight_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true ) :
-    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack )
+    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack ), command(nullptr)
   {
     if ( auto_attack )
     {
@@ -1634,7 +1634,7 @@ struct valkyr_pet_t : public death_knight_pet_t
 
   buff_t* shadow_empowerment;
 
-  valkyr_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "valkyr_battlemaiden", true, false )
+  valkyr_pet_t( death_knight_t* owner ) : death_knight_pet_t( owner, "valkyr_battlemaiden", true, false ), shadow_empowerment(nullptr)
   { regen_type = REGEN_DISABLED; }
 
   double composite_player_multiplier( school_e s ) const override
@@ -1967,7 +1967,7 @@ struct death_knight_action_t : public Base
     return amount;
   }
 
-  void consume_resource() override
+  virtual void consume_resource() override
   {
     action_base_t::consume_resource();
 
@@ -2045,7 +2045,7 @@ struct death_knight_action_t : public Base
   }
 
 
-  double composite_target_multiplier( player_t* t ) const override
+  virtual double composite_target_multiplier( player_t* t ) const override
   {
     double m = action_base_t::composite_target_multiplier( t );
 
@@ -7306,7 +7306,7 @@ struct death_knight_module_t : public module_t {
   player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new death_knight_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new death_knight_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>(std::make_unique<death_knight_report_t>(*p));
     return p;
   }
 

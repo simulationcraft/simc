@@ -1525,7 +1525,7 @@ struct shadowy_tear_t: public warlock_pet_t
   stats_t* regular_stats;
 
   shadowy_tear_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "shadowy_tear", PET_NONE, true ), shadow_bolt_stats( nullptr )
+    warlock_pet_t( sim, owner, "shadowy_tear", PET_NONE, true ), shadow_bolt_stats( nullptr ), regular_stats(nullptr)
   {
     action_list_str = "shadow_bolt";
     regen_type = REGEN_DISABLED;
@@ -1566,7 +1566,7 @@ struct chaos_tear_t : public warlock_pet_t
   stats_t* regular_stats;
 
   chaos_tear_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "chaos_tear", PET_NONE, true ), chaos_bolt_stats( nullptr )
+    warlock_pet_t( sim, owner, "chaos_tear", PET_NONE, true ), chaos_bolt_stats( nullptr ), regular_stats(nullptr)
   {
     action_list_str = "chaos_bolt";
     regen_type = REGEN_DISABLED;
@@ -1608,7 +1608,7 @@ struct chaos_portal_t : public warlock_pet_t
   stats_t* regular_stats;
 
   chaos_portal_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "chaos_portal", PET_NONE, true ), chaos_barrage_stats( nullptr )
+    warlock_pet_t( sim, owner, "chaos_portal", PET_NONE, true ), chaos_barrage_stats( nullptr ), regular_stats(nullptr)
   {
     action_list_str = "chaos_barrage";
     regen_type = REGEN_DISABLED;
@@ -1803,7 +1803,7 @@ struct wild_imp_pet_t: public warlock_pet_t
   stats_t* regular_stats;
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), firebolt_stats( nullptr )
+    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), firebolt_stats( nullptr ), regular_stats(nullptr)
   {
   }
 
@@ -1869,7 +1869,7 @@ struct dreadstalker_t : public warlock_pet_t
     stats_t* regular_stats;
 
   dreadstalker_t( sim_t* sim, warlock_t* owner ) :
-    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER ), dreadbite_stats( nullptr )
+    warlock_pet_t( sim, owner, "dreadstalker", PET_DREADSTALKER ), dreadbite_stats( nullptr ), regular_stats(nullptr)
   {
     action_list_str = "travel/dreadbite";
     regen_type = REGEN_DISABLED;
@@ -2423,7 +2423,7 @@ struct agony_t: public warlock_spell_t
   int agony_action_id;
 
   agony_t( warlock_t* p ):
-    warlock_spell_t( p, "Agony" )
+    warlock_spell_t( p, "Agony" ), agony_action_id(0)
   {
     may_crit = false;
   }
@@ -3289,7 +3289,7 @@ struct chaos_bolt_t: public warlock_spell_t
   double backdraft_cast_time;
   double refund;
   chaos_bolt_t( warlock_t* p ):
-    warlock_spell_t( p, "Chaos Bolt" )
+    warlock_spell_t( p, "Chaos Bolt" ), refund(0)
   {
     if ( p -> talents.reverse_entropy -> ok() )
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
@@ -4489,7 +4489,7 @@ struct reap_souls_t: public warlock_spell_t
   timespan_t total_duration;
   int souls;
     reap_souls_t( warlock_t* p ) :
-        warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls )
+        warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls ), souls(0)
     {
       base_duration = p -> buffs.deadwind_harvester -> buff_duration;
     }
@@ -6344,7 +6344,7 @@ struct warlock_module_t: public module_t
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new warlock_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new warlock_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>(std::make_unique<warlock_report_t>(*p));
     return p;
   }
 

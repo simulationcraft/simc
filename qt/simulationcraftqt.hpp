@@ -1258,7 +1258,7 @@ public:
   { sim = s; tab = t; url = u; profile = ""; item_db_sources = sources; player = 0; active_spec = spec; m_role = role, api = apikey; QThread::start(); }
   void start( sim_t* s, const QString&, const QString&, const QString&, const QString& );
   void run() override;
-  SC_ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
+  SC_ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), tab(0), player( 0 ) {}
 };
 
 class SC_OverridesTab : public SC_TextEdit

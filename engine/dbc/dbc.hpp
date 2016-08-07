@@ -1341,7 +1341,6 @@ public:
   double armor_mitigation_constant( unsigned level ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
-  double oct_combat_rating( unsigned combat_rating_id, player_e t ) const;
 
   int resolve_item_scaling( unsigned level ) const;
   item_bonus_tree_entry_t& resolve_item_bonus_tree_data( unsigned level ) const;
@@ -1396,8 +1395,6 @@ public:
   std::vector<const item_bonus_entry_t*> item_bonus( unsigned bonus_id ) const;
 
   // Derived data access
-  unsigned num_tiers() const;
-
   unsigned class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned pet_ability( unsigned class_id, unsigned n ) const;
   unsigned class_ability_tree_size() const;
@@ -1420,9 +1417,6 @@ public:
 
   unsigned glyph_spell( unsigned class_id, unsigned glyph_e, unsigned n ) const;
   unsigned glyph_spell_size() const;
-
-  unsigned set_bonus_spell( unsigned class_id, unsigned tier, unsigned n ) const;
-  unsigned set_bonus_spell_size() const;
 
   // Helper methods
   double   weapon_dps( unsigned item_id, unsigned ilevel = 0 ) const;
@@ -1447,28 +1441,17 @@ public:
   unsigned specialization_ability_id( specialization_e spec_id, const char* spell_name ) const;
   unsigned mastery_ability_id( specialization_e spec, const char* spell_name ) const;
   unsigned mastery_ability_id( specialization_e spec, uint32_t idx ) const;
-  specialization_e mastery_specialization( const player_e c, uint32_t spell_id ) const;
 
   unsigned glyph_spell_id( player_e c, const char* spell_name ) const;
   unsigned glyph_spell_id( unsigned property_id ) const;
-  unsigned set_bonus_spell_id( player_e c, const char* spell_name, int tier = -1 ) const;
 
-  specialization_e class_ability_specialization( const player_e c, uint32_t spell_id ) const;
-
-  bool     is_class_ability( uint32_t spell_id ) const;
-  bool     is_race_ability( uint32_t spell_id ) const;
   bool     is_specialization_ability( uint32_t spell_id ) const;
-  bool     is_mastery_ability( uint32_t spell_id ) const;
   bool     is_glyph_spell( uint32_t spell_id ) const;
-  bool     is_set_bonus_spell( uint32_t spell_id ) const;
 
   specialization_e spec_by_spell( uint32_t spell_id ) const;
 
   bool spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const;
   specialization_e spec_by_idx( const player_e c, unsigned idx ) const;
-  double rppm_coefficient( specialization_e spec, unsigned spell_id ) const;
-
-  unsigned item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const;
 
   std::vector< const spell_data_t* > effect_affects_spells( unsigned, const spelleffect_data_t* ) const;
   std::vector< const spelleffect_data_t* > effects_affecting_spell( const spell_data_t* ) const;
@@ -1644,7 +1627,7 @@ public:
     if ( p != idx[ maybe_ptr( ptr ) ].second && KeyPolicy::id( *p ) == id )
       return p;
     else
-      return NULL;
+      return nullptr;
   }
 };
 
@@ -1694,7 +1677,7 @@ public:
       }
     }
 
-    return 0;
+    return nullptr;
   }
 
   const T* get( bool ptr, unsigned id ) const
@@ -1706,7 +1689,7 @@ public:
     if ( p != __filtered_index[ maybe_ptr( ptr ) ].end() && KeyPolicy::id( *p ) == id )
       return p;
     else
-      return NULL;
+      return nullptr;
   }
 };
 

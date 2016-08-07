@@ -4616,7 +4616,7 @@ struct enrage_t: public warrior_buff_t < buff_t >
 struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
 {
   debuff_demo_shout_t( warrior_td_t& p ):
-    base_t( p, buff_creator_t( p, "demoralizing_shout", p.source -> find_specialization_spell( "Demoralizing Shout" ) ) )
+    base_t( p, buff_creator_t( static_cast<actor_pair_t>(p), "demoralizing_shout", p.source -> find_specialization_spell( "Demoralizing Shout" ) ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
@@ -4638,14 +4638,14 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
   dots_rend = target -> get_dot( "rend", &p );
   dots_trauma = target -> get_dot( "trauma", &p );
 
-  debuffs_colossus_smash = buff_creator_t( *this, "colossus_smash" )
+  debuffs_colossus_smash = buff_creator_t( static_cast<actor_pair_t>(*this), "colossus_smash" )
     .default_value( p.spell.colossus_smash_debuff -> effectN( 3 ).percent() )
     .duration( p.spell.colossus_smash_debuff -> duration()
              * ( 1.0 + p.talents.titanic_might -> effectN( 1 ).percent() ) )
     .cd( timespan_t::zero() );
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
-  debuffs_taunt = buff_creator_t( *this, "taunt", p.find_class_spell( "Taunt" ) );
+  debuffs_taunt = buff_creator_t( static_cast<actor_pair_t>(*this), "taunt", p.find_class_spell( "Taunt" ) );
 }
 
 // warrior_t::init_buffs ====================================================
@@ -5804,7 +5804,7 @@ struct warrior_module_t: public module_t
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new warrior_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new warrior_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>(std::make_unique<warrior_report_t>(*p));
     return p;
   }
 

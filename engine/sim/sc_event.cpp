@@ -110,7 +110,7 @@ event_manager_t::event_manager_t( sim_t* s ) :
   events_traversed( 0 ),
   events_added( 0 )
 #else
-  monitor_cpu( false )
+  monitor_cpu( false ), canceled(false)
 #endif /* EVENT_QUEUE_DEBUG */
 {
   allocated_events.reserve( 100 );

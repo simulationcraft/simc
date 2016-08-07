@@ -169,7 +169,7 @@ void plot_t::analyze_stats()
 
       if ( j != 0 )
       {
-        delta_sim = std::unique_ptr<sim_t>( new sim_t( sim ) );
+        delta_sim = std::make_unique<sim_t>(sim);
         if ( dps_plot_iterations > 0 )
         {
           delta_sim->work_queue->init( dps_plot_iterations );

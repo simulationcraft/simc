@@ -16,6 +16,13 @@ struct FilterEntry
   const bool spell_source;
   const bool talent_source;
   const QString operand_type;
+  FilterEntry(const QString& q_char, bool spell_source, bool talent_source, const QString& operand_type)
+    : name(q_char),
+      spell_source(spell_source),
+      talent_source(talent_source),
+      operand_type(operand_type)
+  {
+  }
 };
 
 const QString sources[] = 

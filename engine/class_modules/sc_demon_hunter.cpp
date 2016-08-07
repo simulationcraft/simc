@@ -1105,7 +1105,7 @@ public:
     return p() -> get_target_data( t );
   }
 
-  void init() override
+  virtual void init() override
   {
     ab::init();
 
@@ -1128,7 +1128,7 @@ public:
     }
   }
 
-  timespan_t gcd() const override
+  virtual timespan_t gcd() const override
   {
     timespan_t g = ab::gcd();
 
@@ -3408,7 +3408,7 @@ struct chaos_strike_state_t : public action_state_t
   player_t* dh;
 
   chaos_strike_state_t( action_t* a, player_t* target )
-    : action_state_t( a, target ), dh( a -> player )
+    : action_state_t( a, target ), is_critical(false), dh( a -> player )
   {
   }
 
@@ -7199,8 +7199,7 @@ public:
                            race_e r = RACE_NONE ) const override
   {
     auto p              = new demon_hunter_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>(
-                            new demon_hunter_report_t( *p ) );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>(std::make_unique<demon_hunter_report_t>(*p));
     return p;
   }
 

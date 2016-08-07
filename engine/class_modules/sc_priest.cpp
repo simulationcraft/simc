@@ -7407,7 +7407,7 @@ struct priest_module_t final : public module_t
   {
     auto p = new priest_t( sim, name, r );
     p->report_extension =
-        std::unique_ptr<player_report_extension_t>( new priest_report_t( *p ) );
+      std::unique_ptr<player_report_extension_t>(std::make_unique<priest_report_t>(*p));
     return p;
   }
   bool valid() const override

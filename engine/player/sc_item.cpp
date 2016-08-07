@@ -29,7 +29,7 @@ item_t::item_t( player_t* p, const std::string& o ) :
   is_ptr( p -> dbc.ptr ),
   parsed(),
   xml(),
-  options_str( o ),
+  options_str( o ), option_initial_cd(0),
   cached_upgrade_item_level( -1 )
 {
   parsed.data.name = name_str.c_str();
