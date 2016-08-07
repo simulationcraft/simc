@@ -175,7 +175,7 @@ double compute_player_burst_max( const sc_timeline_t& container )
   sc_timeline_t timeline;
   container.build_derivative_timeline( timeline );
   double m = 0;
-  for ( size_t i = 0; i < timeline.data().size(); ++i )
+  for ( auto i = 0; i < timeline.data().size(); ++i )
   {
     if ( timeline.data()[ i ] > m )
     {
@@ -530,7 +530,7 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc,
 
   range::sort( players, compare_downtime() );
 
-  for ( size_t i = 0; i < players.size(); ++i )
+  for ( auto i = 0; i < players.size(); ++i )
   {
     const player_t* p   = players[ i ];
     const color::rgb& c = color::class_color( p->type );
@@ -592,7 +592,7 @@ bool chart::generate_raid_gear( highchart::bar_chart_t& bc, const sim_t& sim )
     }
   }
 
-  for ( size_t i = 0; i < has_stat.size(); ++i )
+  for ( auto i = 0; i < has_stat.size(); ++i )
   {
     if ( has_stat[ i ] )
     {
@@ -804,7 +804,7 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc,
 
   hc.set( "series.0.name", "Iterations" );
 
-  for ( size_t i = 0; i < tick_indices.size(); i++ )
+  for ( auto i = 0; i < tick_indices.size(); i++ )
     hc.add( "xAxis.tickPositions", tick_indices[ i ] );
 
   return true;
@@ -837,7 +837,7 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p,
   if ( p.sim->player_no_pet_list.size() > 1 )
     pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
 
-  for ( size_t i = 0; i < gains_list.size(); ++i )
+  for ( auto i = 0; i < gains_list.size(); ++i )
   {
     const gain_t* gain = gains_list[ i ];
 
@@ -879,7 +879,7 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
   // Build Data
   if ( !filtered_waiting_stats.empty() )
   {
-    for ( size_t i = 0; i < filtered_waiting_stats.size(); ++i )
+    for ( auto i = 0; i < filtered_waiting_stats.size(); ++i )
     {
       const stats_t* stats = filtered_waiting_stats[ i ];
       std::string color    = color::school_color( stats->school );
@@ -943,7 +943,7 @@ bool chart::generate_stats_sources( highchart::pie_chart_t& pc,
     pc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
 
-  for ( size_t i = 0; i < stats_list.size(); ++i )
+  for ( auto i = 0; i < stats_list.size(); ++i )
   {
     const stats_t* stats = stats_list[ i ];
     const color::rgb& c  = color::school_color( stats->school );
@@ -1104,7 +1104,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
 
     bool candlebars = false;
     // Iterate over the players and output data
-    for ( size_t i = 0; i < player_list.size(); ++i )
+    for ( auto i = 0; i < player_list.size(); ++i )
     {
       const player_t* p   = player_list[ i ];
       const color::rgb& c = color::class_color( p->type );
@@ -1395,7 +1395,7 @@ bool chart::generate_apet( highchart::bar_chart_t& bc,
   size_t num_stats = stats_list.size();
   std::vector<player_t*> players;
 
-  for ( size_t i = 0; i < num_stats; ++i )
+  for ( auto i = 0; i < num_stats; ++i )
   {
     const stats_t* stats = stats_list[ i ];
     if ( stats->player->is_pet() || stats->player->is_enemy() )
@@ -1412,7 +1412,7 @@ bool chart::generate_apet( highchart::bar_chart_t& bc,
 
   bc.height_ = 92 + num_stats * 22;
 
-  for ( size_t i = 0; i < num_stats; ++i )
+  for ( auto i = 0; i < num_stats; ++i )
   {
     const stats_t* stats = stats_list[ i ];
     const color::rgb& c  = color::school_color( stats_list[ i ]->school );
@@ -1478,11 +1478,11 @@ bool chart::generate_scaling_plot( highchart::chart_t& ac, const player_t& p,
 {
   double max_dps = 0, min_dps = std::numeric_limits<double>::max();
 
-  for ( size_t i = 0; i < p.dps_plot_data.size(); ++i )
+  for ( auto i = 0; i < p.dps_plot_data.size(); ++i )
   {
     const std::vector<plot_data_t>& pd = p.dps_plot_data[ i ];
     size_t size                        = pd.size();
-    for ( size_t j = 0; j < size; j++ )
+    for ( auto j = 0; j < size; j++ )
     {
       if ( pd[ j ].value > max_dps )
         max_dps = pd[ j ].value;

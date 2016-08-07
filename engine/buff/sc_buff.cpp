@@ -348,7 +348,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
     buff_period = params._period;
   else
   {
-    for ( size_t i = 1; i <= s_data -> effect_count(); i++ )
+    for ( auto i = 1; i <= s_data -> effect_count(); i++ )
     {
       const spelleffect_data_t& e = s_data -> effectN( i );
       if ( ! e.ok() || e.type() != E_APPLY_AURA )
@@ -480,7 +480,7 @@ void buff_t::datacollection_begin()
   overflow_count = 0;
   overflow_total = 0;
 
-  for ( int i = 0; i <= simulation_max_stack; i++ )
+  for ( auto i = 0; i <= simulation_max_stack; i++ )
     stack_uptime[ i ].datacollection_begin();
 }
 
@@ -492,7 +492,7 @@ void buff_t::datacollection_end()
 
   uptime_pct.add( time != timespan_t::zero() ? 100.0 * iteration_uptime_sum / time : 0 );
 
-  for ( int i = 0; i <= simulation_max_stack; i++ )
+  for ( auto i = 0; i <= simulation_max_stack; i++ )
     stack_uptime[ i ].datacollection_end( time );
 
   double benefit = up_count > 0 ? 100.0 * up_count / ( up_count + down_count ) : 
@@ -631,9 +631,9 @@ bool buff_t::may_react( int stack )
 
 int buff_t::stack_react()
 {
-  int stack = 0;
+  auto stack = 0;
 
-  for ( int i = 1; i <= current_stack; i++ )
+  for ( auto i = 1; i <= current_stack; i++ )
   {
     if ( stack_react_time[ i ] > sim -> current_time() ) break;
     stack++;
@@ -1142,7 +1142,7 @@ void buff_t::bump( int stacks, double value )
     {
       timespan_t total_reaction_time = ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
       timespan_t react = sim -> current_time() + total_reaction_time;
-      for ( int i = before_stack + 1; i <= current_stack; i++ )
+      for ( auto i = before_stack + 1; i <= current_stack; i++ )
       {
         stack_occurrence[ i ] = sim -> current_time();
         stack_react_time[ i ] = react;
@@ -1300,7 +1300,7 @@ void buff_t::expire( timespan_t delay )
 
   if ( reactable && player && player -> ready_type == READY_TRIGGER )
   {
-    for ( size_t i = 0; i < stack_react_ready_triggers.size(); i++ )
+    for ( auto i = 0; i < stack_react_ready_triggers.size(); i++ )
       event_t::cancel( stack_react_ready_triggers[ i ] );
   }
 
@@ -1409,7 +1409,7 @@ void buff_t::merge( const buff_t& other )
   }
 #endif
 
-  for ( size_t i = 0; i < stack_uptime.size(); i++ )
+  for ( auto i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ].merge ( other.stack_uptime[ i ] );
 }
 
@@ -1428,7 +1428,7 @@ buff_t* buff_t::find( const std::vector<buff_t*>& buffs,
                       const std::string& name_str,
                       player_t* source )
 {
-  for ( size_t i = 0; i < buffs.size(); i++ )
+  for ( auto i = 0; i < buffs.size(); i++ )
   {
     buff_t* b = buffs[ i ];
 
@@ -1706,17 +1706,17 @@ void buff_t::invalidate_cache()
 {
   if ( player )
   {
-    for ( int i = as<int>( invalidate_list.size() ) - 1; i >= 0; i-- )
+    for ( auto i = as<int>( invalidate_list.size() ) - 1; i >= 0; i-- )
     {
       player -> invalidate_cache( invalidate_list[ i ] );
     }
   }
   else // It is an aura...  Ouch.
   {
-    for ( int i = as<int>( sim -> player_no_pet_list.size() ) - 1; i >= 0; i-- )
+    for ( auto i = as<int>( sim -> player_no_pet_list.size() ) - 1; i >= 0; i-- )
     {
       player_t* p = sim -> player_no_pet_list[ i ];
-      for ( int j = as<int>( invalidate_list.size() ) - 1; j >= 0; j-- )
+      for ( auto j = as<int>( invalidate_list.size() ) - 1; j >= 0; j-- )
         p -> invalidate_cache( invalidate_list[ j ] );
     }
   }
@@ -1738,7 +1738,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
   {
     bool has_ap = false;
 
-    for ( size_t i = 1; i <= data().effect_count(); i++ )
+    for ( auto i = 1; i <= data().effect_count(); i++ )
     {
       stat_e s = STAT_NONE;
       double amount = 0;
@@ -1769,7 +1769,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
           coeff = source -> dbc.combat_rating_multiplier( params.item -> item_level() );
         }
 
-        for ( size_t j = 0; j < k.size(); j++ )
+        for ( auto j = 0; j < k.size(); j++ )
         {
           stats.push_back( buff_stat_t( k[ j ], amount * coeff ) );
         }
@@ -1796,7 +1796,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
   }
   else // parse stats from params
   {
-    for ( size_t i = 0; i < params.stats.size(); ++i )
+    for ( auto i = 0; i < params.stats.size(); ++i )
     {
       stats.push_back( buff_stat_t( params.stats[ i ].stat, params.stats[ i ].amount, params.stats[ i ].check_func ) );
     }
@@ -1809,7 +1809,7 @@ void stat_buff_t::bump( int stacks, double /* value */ )
 {
 
   buff_t::bump( stacks );
-  for ( size_t i = 0; i < stats.size(); ++i )
+  for ( auto i = 0; i < stats.size(); ++i )
   {
     if ( stats[ i ].check_func && ! stats[ i ].check_func( *this ) ) continue;
     double delta = stats[ i ].amount * current_stack - stats[ i ].current_value;
@@ -1836,7 +1836,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ].update( false, sim -> current_time() );
 
-    for ( size_t i = 0; i < stats.size(); ++i )
+    for ( auto i = 0; i < stats.size(); ++i )
     {
       double delta = stats[ i ].amount * stacks;
       if ( delta > 0 )
@@ -1864,7 +1864,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
 void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
 {
-  for ( size_t i = 0; i < stats.size(); ++i )
+  for ( auto i = 0; i < stats.size(); ++i )
   {
     if ( stats[ i ].current_value > 0 )
       player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, stat_gain, nullptr, buff_duration > timespan_t::zero() );

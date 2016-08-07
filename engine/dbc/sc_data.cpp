@@ -235,7 +235,7 @@ bool hotfix::register_hotfix( const std::string& group,
 
 void hotfix::apply()
 {
-  for ( size_t i = 0; i < hotfixes_.size(); ++i )
+  for ( auto i = 0; i < hotfixes_.size(); ++i )
   {
     hotfixes_[ i ] -> apply();
   }
@@ -308,7 +308,7 @@ std::string hotfix::to_str( bool ptr )
   std::string current_group;
   bool first_group = true;
 
-  for ( size_t i = 0; i < hotfixes_.size(); ++i )
+  for ( auto i = 0; i < hotfixes_.size(); ++i )
   {
     const hotfix_entry_t* entry = hotfixes_[ hotfixes_.size() - 1 - i ];
     if ( entry -> flags_ & HOTFIX_FLAG_QUIET )
@@ -345,7 +345,7 @@ std::string hotfix::to_str( bool ptr )
 std::vector<const hotfix_entry_t*> hotfix::hotfix_entries()
 {
   std::vector<const hotfix_entry_t*> data;
-  for ( size_t i = 0; i < hotfixes_.size(); ++i )
+  for ( auto i = 0; i < hotfixes_.size(); ++i )
   {
     data.push_back( hotfixes_[ i ] );
   }
@@ -596,7 +596,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
   }
 
   // Clone effects
-  for ( size_t i = 0; i < source -> _effects -> size(); ++i )
+  for ( auto i = 0; i < source -> _effects -> size(); ++i )
   {
     if ( source -> _effects -> at( i ) -> id() == 0 )
     {
@@ -631,7 +631,7 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
       e_clone -> _trigger_spell -> _driver = new std::vector<spell_data_t*>( e_source -> trigger() -> n_drivers(), spell_data_t::nil() );
     }
 
-    for ( size_t driver_idx = 0; driver_idx < e_source -> trigger() -> n_drivers(); ++driver_idx )
+    for ( auto driver_idx = 0; driver_idx < e_source -> trigger() -> n_drivers(); ++driver_idx )
     {
       const spell_data_t* driver = e_source -> trigger() -> driver( driver_idx );
       if ( driver -> id() == clone -> id() )
@@ -676,12 +676,12 @@ spell_data_t* custom_dbc_data_t::clone_spell( unsigned clone_spell_id, bool ptr 
 
 custom_dbc_data_t::~custom_dbc_data_t()
 {
-  for ( size_t i = 0; i < spells_[ 0 ].size(); ++i )
+  for ( auto i = 0; i < spells_[ 0 ].size(); ++i )
   {
     delete spells_[ 0 ][ i ] -> _effects;
   }
 
-  for ( size_t i = 0; i < spells_[ 1 ].size(); ++i )
+  for ( auto i = 0; i < spells_[ 1 ].size(); ++i )
   {
     delete spells_[ 1 ][ i ] -> _effects;
   }

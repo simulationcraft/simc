@@ -708,7 +708,7 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p )
     rps *= 2.0;
   }
 
-  for ( size_t j = 0; j < MAX_RUNES; ++j ) {
+  for ( auto j = 0; j < MAX_RUNES; ++j ) {
     double ttr = ( 1.0 - (p -> _runes.slot[j]).value ) / rps;
     if (ttr < t) {
       t = ttr;
@@ -732,7 +732,7 @@ static double ready_in( const death_knight_t* p, int n_runes )
   }
 
   std::vector< double > ready_times;
-  for ( size_t j = 0; j < MAX_RUNES; ++j) {
+  for ( auto j = 0; j < MAX_RUNES; ++j) {
     ready_times.push_back( (1.0 - (p -> _runes.slot[j]).value) / rps);
   }
   std::sort(ready_times.begin(), ready_times.end());
@@ -2772,13 +2772,13 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // waste rune regen and enter the fight depleted.  So, the time
       // you get for ghouls is 4-6 seconds less.
       // TODO: DBC
-      for ( int i = 0; i < 8; i++ )
+      for ( auto i = 0; i < 8; i++ )
         p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 35 ) );
 
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
       // precombat
-      for ( size_t i = 0; i < MAX_RUNES; ++i )
+      for ( auto i = 0; i < MAX_RUNES; ++i )
         p() -> _runes.slot[ i ].regen_rune( timespan_t::from_seconds( 5.0 ) );
 
       //simulate RP decay for that 5 seconds
@@ -2787,7 +2787,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     else
     {
       // TODO: DBC
-      for ( int i = 0; i < 8; i++ )
+      for ( auto i = 0; i < 8; i++ )
         p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 40 ) );
     }
   }
@@ -5018,7 +5018,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
     tick_action = new breath_of_sindragosa_tick_t( p, this );
     school = tick_action -> school;
 
-    for ( size_t idx = 1; idx <= data().power_count(); idx++ )
+    for ( auto idx = 1; idx <= data().power_count(); idx++ )
     {
       const spellpower_data_t& power = data().powerN( idx );
       if ( power.aura_id() == 0 || p -> dbc.spec_by_spell( power.aura_id() ) == p -> specialization() )
@@ -7147,7 +7147,7 @@ double death_knight_t::ready_runes_count( bool fractional ) const
   // If fractional is false, then calling this method on that rune array would return zero, because
   // there are no runes of value 1.0
   double result = 0;
-  for ( size_t rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
+  for ( auto rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
   {
     const rune_t& r = _runes.slot[ rune_idx ];
     if ( fractional || r.is_ready() )
@@ -7165,7 +7165,7 @@ double death_knight_t::runes_cooldown_min( ) const
 {
   double min_time = std::numeric_limits<double>::max();
 
-  for ( size_t rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
+  for ( auto rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
   {
     const rune_t& r = _runes.slot[ rune_idx ];
 
@@ -7189,7 +7189,7 @@ double death_knight_t::runes_cooldown_max( ) const
 {
   double max_time = 0;
 
-  for ( size_t rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
+  for ( auto rune_idx = 0; rune_idx < MAX_RUNES; ++rune_idx )
   {
     const rune_t& r = _runes.slot[ rune_idx ];
 
