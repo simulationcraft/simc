@@ -133,6 +133,7 @@ struct shaman_td_t : public actor_target_data_t
   {
     buff_t* earthen_spike;
     buff_t* lightning_rod;
+    buff_t* storm_tempests; // 7.0 Legendary
   } debuff;
 
   struct heals
@@ -222,6 +223,7 @@ public:
     spell_t* doom_vortex_ll, * doom_vortex_lb;
     action_t* lightning_rod;
     action_t* ppsg; // Pristine Proto-Scale Girdle legendary dot
+    action_t* storm_tempests; // Storm Tempests legendary damage spell
   } action;
 
   // Pets
@@ -294,6 +296,10 @@ public:
     // Legendary buffs
     buff_t* echoes_of_the_great_sundering;
     buff_t* emalons_charged_core;
+    buff_t* spiritual_journey;
+    buff_t* eotn_fire;
+    buff_t* eotn_shock;
+    buff_t* eotn_chill;
 
     // Artifact related buffs
     buff_t* stormkeeper;
@@ -330,11 +336,11 @@ public:
     gain_t* ascendance;
     gain_t* resurgence;
     gain_t* feral_spirit;
-    gain_t* fulmination; // TODO: Remove
     gain_t* spirit_of_the_maelstrom;
     gain_t* resonance_totem;
     gain_t* wind_gust;
     gain_t* t18_2pc_elemental;
+    gain_t* the_deceivers_blood_pact;
   } gain;
 
   // Tracked Procs
@@ -367,7 +373,6 @@ public:
     // Elemental
     const spell_data_t* elemental_focus;
     const spell_data_t* elemental_fury;
-    const spell_data_t* fulmination; // TODO: Remove
     const spell_data_t* lava_surge;
     const spell_data_t* spiritual_insight;
 
@@ -913,6 +918,11 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                                 p -> lightning_rods.erase( it );
                             }
                           } );
+  debuff.storm_tempests = buff_creator_t( *this, "storm_tempests", p -> find_spell( 214265 ) )
+                          .tick_callback( [ p ]( buff_t* b, int, timespan_t ) {
+                            p -> action.storm_tempests -> target = b -> player;
+                            p -> action.storm_tempests -> execute();
+                          } );
 }
 
 // ==========================================================================
@@ -1021,11 +1031,29 @@ public:
     return m;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     ab::execute();
 
     trigger_maelstrom_gain( ab::execute_state );
+
+    if ( ab::harmful && ! ab::background && ab::execute_state -> result_amount > 0 )
+    {
+      if ( dbc::is_school( ab::get_school(), SCHOOL_FIRE ) )
+      {
+        p() -> buff.eotn_fire -> trigger();
+      }
+
+      if ( dbc::is_school( ab::get_school(), SCHOOL_NATURE ) )
+      {
+        p() -> buff.eotn_shock -> trigger();
+      }
+
+      if ( dbc::is_school( ab::get_school(), SCHOOL_FROST ) )
+      {
+        p() -> buff.eotn_chill -> trigger();
+      }
+    }
   }
 
   virtual void impact( action_state_t* state ) override
@@ -2715,6 +2743,29 @@ struct pristine_protoscale_girdle_dot_t : public shaman_spell_t
   }
 };
 
+struct storm_tempests_zap_t : public melee_attack_t
+{
+  storm_tempests_zap_t( shaman_t* p ) :
+    melee_attack_t( "storm_tempests", p, p -> find_spell( 214452 ) )
+  {
+    weapon = &( p -> main_hand_weapon );
+    // TODO: Can this crit?
+    background = may_crit = true;
+    callbacks = false;
+  }
+
+  // TODO: Does this actually zap the enemy itself, if it's the only one available?
+  // TODO: Distance targeting, no clue on range.
+  void execute() override
+  {
+    // Pick a random "nearby" target
+    size_t target_idx = static_cast<size_t>( rng().range( 0, sim -> target_non_sleeping_list.size() ) );
+    target = sim -> target_non_sleeping_list[ target_idx ];
+
+    melee_attack_t::execute();
+  }
+};
+
 // Elemental overloads
 
 struct elemental_overload_spell_t : public shaman_spell_t
@@ -2906,12 +2957,12 @@ struct auto_attack_t : public shaman_attack_t
 
 struct lava_lash_t : public shaman_attack_t
 {
-  double ft_bonus;
+  double aaj_multiplier; // 7.0 legendary Akainu's Absolute Justice multiplier
   crash_lightning_attack_t* cl;
 
   lava_lash_t( shaman_t* player, const std::string& options_str ) :
     shaman_attack_t( "lava_lash", player, player -> find_specialization_spell( "Lava Lash" ) ),
-    ft_bonus( data().effectN( 2 ).percent() ),
+    aaj_multiplier( 0 ),
     cl( new crash_lightning_attack_t( player, "lava_lash_cl" ) )
   {
     check_spec( SHAMAN_ENHANCEMENT );
@@ -2961,6 +3012,11 @@ struct lava_lash_t : public shaman_attack_t
       m *= 1.0 + p() -> buff.hot_hand -> data().effectN( 1 ).percent();
     }
 
+    if ( aaj_multiplier > 0 && p() -> buff.flametongue -> up() && p() -> buff.frostbrand -> up() )
+    {
+      m *= 1.0 + aaj_multiplier;
+    }
+
     return m;
   }
 
@@ -2994,13 +3050,15 @@ struct stormstrike_base_t : public shaman_attack_t
   stormstrike_attack_t* mh, *oh;
   bool stormflurry;
   bool background_action;
+  bool storm_tempests; // 7.0 Legendary
 
   stormstrike_base_t( shaman_t* player, const std::string& name,
                       const spell_data_t* spell, const std::string& options_str ) :
     shaman_attack_t( name, player, spell ),
     cl( new crash_lightning_attack_t( player, name + "_cl" ) ),
     mh( nullptr ), oh( nullptr ),
-    stormflurry( false ), background_action( false )
+    stormflurry( false ), background_action( false ),
+    storm_tempests( false )
   {
     parse_options( options_str );
 
@@ -3058,6 +3116,11 @@ struct stormstrike_base_t : public shaman_attack_t
       {
         oh -> stormflurry = stormflurry;
         oh -> execute();
+      }
+
+      if ( p() -> action.storm_tempests )
+      {
+        td( execute_state -> target ) -> debuff.storm_tempests -> trigger();
       }
 
       if ( ! stormflurry && p() -> buff.crash_lightning -> up() )
@@ -4254,6 +4317,18 @@ struct feral_spirit_spell_t : public shaman_spell_t
     harmful = false;
   }
 
+  double recharge_multiplier() const override
+  {
+    double m = shaman_spell_t::recharge_multiplier();
+
+    if ( p() -> buff.spiritual_journey -> up() )
+    {
+      m *= 1.0 - p() -> buff.spiritual_journey -> data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   timespan_t summon_duration() const
   {
     if ( doom_wolves -> ok() )
@@ -4562,11 +4637,13 @@ struct elemental_mastery_t : public shaman_spell_t
 struct earth_shock_t : public shaman_spell_t
 {
   double base_coefficient;
-  double eotgs_base_chance;
+  double eotgs_base_chance; // 7.0 legendary Echoes of the Great Sundering proc chance
+  double tdbp_proc_chance; // 7.0 legendary The Deceiver's Blood Pact proc chance
 
   earth_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "earth_shock", player, player -> find_specialization_spell( "Earth Shock" ), options_str ),
-    base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ), eotgs_base_chance( 0 )
+    base_coefficient( data().effectN( 1 ).sp_coeff() / base_cost() ), eotgs_base_chance( 0 ),
+    tdbp_proc_chance( 0 )
   {
     base_multiplier *= 1.0 + player -> artifact.earthen_attunement.percent();
   }
@@ -4600,6 +4677,11 @@ struct earth_shock_t : public shaman_spell_t
     {
       p() -> buff.echoes_of_the_great_sundering -> trigger( 1, buff_t::DEFAULT_VALUE(),
           eotgs_base_chance * resource_consumed );
+    }
+
+    if ( rng().roll( tdbp_proc_chance ) )
+    {
+      p() -> resource_gain( RESOURCE_MAELSTROM, resource_consumed, p() -> gain.the_deceivers_blood_pact, this );
     }
   }
 };
@@ -5599,7 +5681,6 @@ void shaman_t::init_spells()
   // Elemental
   spec.elemental_focus       = find_specialization_spell( "Elemental Focus" );
   spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
-  spec.fulmination           = find_specialization_spell( "Fulmination" );
   spec.lava_surge            = find_specialization_spell( "Lava Surge" );
 
   // Enhancement
@@ -6159,7 +6240,11 @@ void shaman_t::create_buffs()
                     .period( artifact.spirit_of_the_maelstrom.rank() ? find_spell( 198240 ) -> effectN( 1 ).period() : timespan_t::min() )
                     .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
                         this -> resource_gain( RESOURCE_MAELSTROM, this -> artifact.spirit_of_the_maelstrom.value(), this -> gain.spirit_of_the_maelstrom, nullptr );
-                    });
+                    })
+                    .stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                      if ( new_ == 1 ) buff.spiritual_journey -> trigger();
+                      else             buff.spiritual_journey -> expire();
+                    } );
   buff.elemental_focus = buff_creator_t( this, "elemental_focus", spec.elemental_focus -> effectN( 1 ).trigger() )
     .default_value( 1.0 + spec.elemental_focus -> effectN( 1 ).trigger() -> effectN( 1 ).percent() +
                           sets.set( SHAMAN_ELEMENTAL, T19, B4 ) -> effectN( 1 ).percent() )
@@ -6225,11 +6310,11 @@ void shaman_t::init_gains()
   gain.ascendance           = get_gain( "Ascendance"        );
   gain.resurgence           = get_gain( "resurgence"        );
   gain.feral_spirit         = get_gain( "Feral Spirit"      );
-  gain.fulmination          = get_gain( "Fulmination"       );
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
   gain.resonance_totem      = get_gain( "Resonance Totem"   );
   gain.wind_gust            = get_gain( "Wind Gust"         );
   gain.t18_2pc_elemental    = get_gain( "Elemental T18 2PC" );
+  gain.the_deceivers_blood_pact = get_gain( "The Deceiver's Blood Pact" );
 }
 
 // shaman_t::init_procs =====================================================
@@ -6877,6 +6962,10 @@ double shaman_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.emalons_charged_core -> data().effectN( 1 ).percent();
   }
 
+  m *= 1.0 + buff.eotn_fire -> stack_value();
+  m *= 1.0 + buff.eotn_shock -> stack_value();
+  m *= 1.0 + buff.eotn_chill -> stack_value();
+
   return m;
 }
 
@@ -7441,18 +7530,128 @@ struct pristine_protoscale_girdle_t : public scoped_action_callback_t<lava_burst
   }
 };
 
+struct storm_tempests_t : public scoped_action_callback_t<stormstrike_base_t>
+{
+  storm_tempests_t( const std::string& strike_str ) : super( SHAMAN_ENHANCEMENT, strike_str )
+  { }
+
+  void manipulate( stormstrike_base_t* action, const special_effect_t& ) override
+  {
+    if ( ! action -> p() -> action.storm_tempests )
+    {
+      action -> p() -> action.storm_tempests = new storm_tempests_zap_t( action -> p() );
+    }
+  }
+};
+
+struct the_deceivers_blood_pact_t: public scoped_action_callback_t<earth_shock_t>
+{
+  the_deceivers_blood_pact_t() : super( SHAMAN_ELEMENTAL, "earth_shock" )
+  { }
+
+  void manipulate( earth_shock_t* action, const special_effect_t& e ) override
+  { action -> tdbp_proc_chance = e.driver() -> proc_chance(); }
+};
+
+struct spiritual_journey_t : public class_buff_cb_t<buff_t>
+{
+  spiritual_journey_t() : super( SHAMAN, "spiritual_journey" )
+  { }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return debug_cast<shaman_t*>( e.player ) -> buff.spiritual_journey; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    cooldown_t* feral_spirit = e.player -> get_cooldown( "feral_spirit" );
+
+    return super::creator( e )
+      .spell( e.player -> find_spell( 214170 ) )
+      .stack_change_callback( [ feral_spirit ]( buff_t*, int, int ) {
+        feral_spirit -> adjust_recharge_multiplier();
+      } );
+  }
+};
+
+struct akainus_absolute_justice_t : public scoped_action_callback_t<lava_lash_t>
+{
+  akainus_absolute_justice_t() : super( SHAMAN_ENHANCEMENT, "lava_lash" )
+  { }
+
+  void manipulate( lava_lash_t* action, const special_effect_t& e ) override
+  { action -> aaj_multiplier = e.driver() -> effectN( 1 ).percent(); }
+};
+
+template <typename T>
+struct alakirs_acrimony_t : public scoped_action_callback_t<T>
+{
+  alakirs_acrimony_t( const std::string& action_str ) :
+    scoped_action_callback_t<T>( SHAMAN_ELEMENTAL, action_str )
+  { }
+
+  void manipulate( T* action, const special_effect_t& e ) override
+  { action -> chain_multiplier *= 1.0 + e.driver() -> effectN( 1 ).percent(); }
+};
+
+struct eotn_buff_base_t : public class_buff_cb_t<buff_t>
+{
+  unsigned sid;
+
+  eotn_buff_base_t( const std::string& name_str, unsigned spell_id ) : super( SHAMAN, name_str ),
+    sid( spell_id )
+  { }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+           .spell( e.player -> find_spell( sid ) )
+           .default_value( e.player -> find_spell( sid ) -> effectN( 1 ).percent() )
+           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+};
+
+struct eotn_buff_fire_t : public eotn_buff_base_t
+{
+  eotn_buff_fire_t() : eotn_buff_base_t( "fire_of_the_twisting_nether", 207995 )
+  { }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return debug_cast<shaman_t*>( e.player ) -> buff.eotn_fire; }
+};
+
+struct eotn_buff_shock_t : public eotn_buff_base_t
+{
+  eotn_buff_shock_t() : eotn_buff_base_t( "shock_of_the_twisting_nether", 207999 )
+  { }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return debug_cast<shaman_t*>( e.player ) -> buff.eotn_shock; }
+};
+
+struct eotn_buff_chill_t : public eotn_buff_base_t
+{
+  eotn_buff_chill_t() : eotn_buff_base_t( "chill_of_the_twisting_nether", 207998 )
+  { }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return debug_cast<shaman_t*>( e.player ) -> buff.eotn_chill; }
+};
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN ) {}
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto  p = new shaman_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new shaman_report_t( *p ) );
     return p;
   }
-  virtual bool valid() const override { return true; }
-  virtual void init( player_t* p ) const override
+
+  bool valid() const override
+  { return true; }
+
+  void init( player_t* p ) const override
   {
     p -> buffs.bloodlust  = haste_buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
                             .max_stack( 1 );
@@ -7465,7 +7664,7 @@ struct shaman_module_t : public module_t
                             .quiet( true );
   }
 
-  virtual void static_init() const override
+  void static_init() const override
   {
     register_special_effect( 184919, elemental_bellows_t() );
     register_special_effect( 184920, furious_winds_t( "windfury_attack" ) );
@@ -7475,14 +7674,22 @@ struct shaman_module_t : public module_t
     register_special_effect( 208741, emalons_charged_core_t() );
     register_special_effect( 208741, emalons_charged_core_buff_t(), true );
     register_special_effect( 224837, pristine_protoscale_girdle_t() );
+    register_special_effect( 214260, storm_tempests_t( "stormstrike" ) ); // TODO: Windstrike?
+    register_special_effect( 214131, the_deceivers_blood_pact_t() );
+    register_special_effect( 214147, spiritual_journey_t(), true );
+    register_special_effect( 213359, akainus_absolute_justice_t() );
+    register_special_effect( 208699, alakirs_acrimony_t<chained_base_t>( "chain_lightning" ) );
+    register_special_effect( 208699, alakirs_acrimony_t<chained_base_t>( "lava_beam" ) );
+    register_special_effect( 208699, alakirs_acrimony_t<chained_overload_base_t>( "chain_lightning_overload" ) );
+    register_special_effect( 208699, alakirs_acrimony_t<chained_overload_base_t>( "lava_beam_overload" ) );
+    register_special_effect( 207994, eotn_buff_fire_t(), true );
+    register_special_effect( 207994, eotn_buff_shock_t(), true );
+    register_special_effect( 207994, eotn_buff_chill_t(), true );
   }
 
-  virtual void register_hotfixes() const override
-  {
-  }
-
-  virtual void combat_begin( sim_t* ) const override {}
-  virtual void combat_end( sim_t* ) const override {}
+  void register_hotfixes() const override {}
+  void combat_begin( sim_t* ) const override {}
+  void combat_end( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE
