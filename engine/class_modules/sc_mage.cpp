@@ -2923,10 +2923,40 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   }
 };
 
+struct am_state_t : public action_state_t
+{
+  bool rule_of_threes, arcane_instability;
+
+  am_state_t( action_t* action, player_t* target ) :
+    action_state_t( action, target ), rule_of_threes( false ), arcane_instability( false )
+  { }
+
+  void initialize() override
+  { action_state_t::initialize(); rule_of_threes = false; arcane_instability = false; }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s )
+      << " rule_of_threes=" << rule_of_threes
+      << " arcane_instability=" << arcane_instability;
+    return s;
+  }
+
+  void copy_state( const action_state_t* other ) override
+  {
+    action_state_t::copy_state( other );
+
+    rule_of_threes = debug_cast<const am_state_t*>( other ) -> rule_of_threes;
+    arcane_instability = debug_cast<const am_state_t*>( other ) -> arcane_instability;
+  }
+};
+
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
   timespan_t temporal_hero_duration;
   double rhonins_assaulting_armwraps_proc_rate;
+  double rule_of_threes_ticks, rule_of_threes_ratio;
+  double arcane_instability_ticks, arcane_instability_ratio;
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
                          p -> find_class_spell( "Arcane Missiles" ) ),
@@ -2947,9 +2977,16 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
 
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
+
+    rule_of_threes_ticks = dot_duration / base_tick_time +
+      p -> artifact.rule_of_threes.data().effectN( 2 ).base_value();
+    rule_of_threes_ratio = ( dot_duration / base_tick_time ) / rule_of_threes_ticks;
+
+    arcane_instability_ratio = 1.0 + p -> buffs.arcane_instability -> data().effectN( 1 ).percent();
+    arcane_instability_ticks = dot_duration / base_tick_time / arcane_instability_ratio;
   }
 
-  virtual double action_multiplier() const override
+  double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
@@ -2964,31 +3001,72 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     return DMG_DIRECT;
   }
 
+  action_state_t* new_state() override
+  { return new am_state_t( this, target ); }
 
-  virtual void execute() override
+  // Roll (and snapshot) Rule of Threes and/or Arcane instability buffs here, they affect the whole
+  // AM channel.
+  void snapshot_state( action_state_t* state, dmg_e rt ) override
+  {
+    arcane_mage_spell_t::snapshot_state( state, rt );
+
+    if ( rng().roll( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10.0 ) )
+    {
+      debug_cast<am_state_t*>( state ) -> rule_of_threes = true;
+    }
+
+    if ( p() -> buffs.arcane_instability -> up() )
+    {
+      debug_cast<am_state_t*>( state ) -> arcane_instability = true;
+    }
+  }
+
+  // If Rule of Threes or Arcane Instability is used, return the channel duration in terms of number
+  // of ticks, so we prevent weird issues with rounding on duration
+  timespan_t composite_dot_duration( const action_state_t* state ) const override
+  {
+    auto s = debug_cast<const am_state_t*>( state );
+
+    if ( s -> rule_of_threes )
+    {
+      return tick_time( state ) * rule_of_threes_ticks;
+    }
+    else if ( s -> arcane_instability )
+    {
+      return tick_time( state ) * arcane_instability_ticks;
+    }
+    else
+    {
+      return arcane_mage_spell_t::composite_dot_duration( state );
+    }
+  }
+
+  // Adjust tick time on Rule of Threes and Arcane Instability
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    auto s = debug_cast<const am_state_t*>( state );
+
+    if ( s -> rule_of_threes )
+    {
+      return base_tick_time * rule_of_threes_ratio * state -> haste;
+    }
+    else if ( s -> arcane_instability )
+    {
+      return base_tick_time * arcane_instability_ratio * state -> haste;
+    }
+    else
+    {
+      return arcane_mage_spell_t::tick_time( state );
+    }
+  }
+
+  void execute() override
   {
     p() -> benefits.arcane_charge.arcane_missiles -> update();
 
-    // Reset base_tick_time to default before applying 4T17/Rule of Threes
-    base_tick_time = data().effectN( 2 ).period();
-
-    // 4T17 : Increase the number of missiles by reducing base_tick_time
-    if ( p() -> buffs.arcane_instability -> up() )
-    {
-      base_tick_time *= 1 + p() -> buffs.arcane_instability
-                                -> data().effectN( 1 ).percent() ;
-      p() -> buffs.arcane_instability -> expire();
-    }
-
-
-    if ( p() -> artifact.rule_of_threes.rank() &&
-         rng().roll( p() -> artifact.rule_of_threes
-         .data().effectN( 1 ).percent() / 10 ) )
-    {
-      base_tick_time *=  1.0 - ( p() -> artifact.rule_of_threes.data().effectN( 1 ).percent() / 10 );
-    }
     arcane_mage_spell_t::execute();
 
+    p() -> buffs.arcane_instability -> expire();
     if ( p() -> buffs.arcane_power -> check() &&
          p() -> talents.overpowered -> ok() )
     {
@@ -3034,7 +3112,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
   }
 
-  virtual void last_tick ( dot_t * d ) override
+  void last_tick ( dot_t * d ) override
   {
     arcane_mage_spell_t::last_tick( d );
 
@@ -3043,7 +3121,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     p() -> buffs.arcane_instability -> trigger();
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! p() -> buffs.arcane_missiles -> check() )
       return false;
