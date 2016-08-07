@@ -1503,7 +1503,7 @@ private:
       melee_attack_t( n, player, spell_data_t::nil() )
     {
       background = repeating = may_crit = may_glance = true;
-      school = SCHOOL_NATURE;
+      school = SCHOOL_PHYSICAL;
 
       // Use damage numbers from the level-scaled weapon
       weapon = &( player -> main_hand_weapon );
@@ -3031,11 +3031,9 @@ struct fists_of_fury_t: public monk_melee_attack_t
     sef_ability = SEF_FISTS_OF_FURY;
 
     channeled = tick_zero = true;
-    hasted_ticks = false;
     interrupt_auto_attack = true;
-    dot_behavior = DOT_REFRESH;
     // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
-    base_tick_time = dot_duration / 5;
+    base_tick_time = dot_duration / 4;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
     attack_power_mod.direct = 0.0;
@@ -3047,12 +3045,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p -> artifact.crosswinds.rank() )
       add_child( crosswinds );
-  }
-
-  // N full ticks, but never additional ones.
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return dot_duration * ( tick_time( s ) / base_tick_time );;
   }
 
   virtual double action_multiplier() const override
@@ -4040,6 +4032,7 @@ struct chi_orbit_t: public monk_spell_t
     background = true;
     attack_power_mod.direct = p -> passives.chi_orbit -> effectN( 1 ).ap_coeff();
     aoe = -1;
+    school = p -> passives.chi_orbit -> get_school_type();
   }
 
   bool ready() override
@@ -5474,7 +5467,7 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     monk_spell_t( name, player, player -> passives.chi_wave_damage )
   {
     background = direct_tick = true;
-    attack_power_mod.direct = 0.750; // Hard code 06/21/16
+    attack_power_mod.direct = 0.867; // Hard code 07/12/16
   }
 
   double action_multiplier() const override
