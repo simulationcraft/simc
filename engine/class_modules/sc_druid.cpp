@@ -32,7 +32,6 @@ namespace { // UNNAMED NAMESPACE
   Force of Nature
   Shooting Stars AsP react
   Check Fury of Elune
-  Moonfire and Sunfire mana costs (see action_t::parse_spell_data)
 
   Touch of the Moon
   Light of the Sun
@@ -508,6 +507,7 @@ public:
     const spell_data_t* celestial_alignment;
     const spell_data_t* moonkin_form;
     const spell_data_t* starfall;
+    const spell_data_t* stellar_empowerment;
     const spell_data_t* balance_tier19_2pc;
 
     // Guardian
@@ -1577,6 +1577,7 @@ public:
   bool incarnation;
   bool celestial_alignment;
   bool blessing_of_elune;
+  bool stellar_empowerment;
 
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s      = spell_data_t::nil(),
@@ -1584,7 +1585,8 @@ public:
     : base_t( token, p, s ),
       incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 4 ) ) ),
       celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
-      blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) )
+      blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) ),
+      stellar_empowerment( data().affected_by( p -> spec.stellar_empowerment -> effectN( 1 ) ) )
   {
     parse_options( options );
   }
@@ -1613,6 +1615,18 @@ public:
     ab::consume_resource();
 
     trigger_impeccable_fel_essence();
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = ab::composite_target_multiplier( t );
+
+    if ( stellar_empowerment && td( t ) -> debuff.stellar_empowerment -> up() )
+    {
+      tm *= 1.0 + composite_stellar_empowerment( t );
+    }
+
+    return tm;
   }
 
   virtual void execute() override
@@ -1704,6 +1718,37 @@ public:
 
     p() -> buff.star_power -> trigger();
   }
+
+  // Empowerment multiplier functions to prevent putting this mess in several places.
+
+  virtual double composite_stellar_empowerment( player_t* t ) const
+  {
+    double se = td( t ) -> debuff.stellar_empowerment -> check_value();
+         
+    se += p() -> mastery.starlight -> ok() * p() -> cache.mastery_value();
+            
+    se *= 1.0 + p() -> artifact.falling_star.percent();
+
+    return se;
+  }
+
+  virtual double composite_solar_empowerment() const
+  {
+    double se = p() -> buff.solar_empowerment -> check_value();
+
+    se += p() -> mastery.starlight -> ok() * p() -> cache.mastery_value();
+
+    return se;
+  }
+
+  virtual double composite_lunar_empowerment() const
+  {
+    double le = p() -> buff.lunar_empowerment -> check_value();
+
+    le += p() -> mastery.starlight -> ok() * p() -> cache.mastery_value();
+
+    return le;
+  }
 }; // end druid_spell_t
 
 // Shooting Stars ===========================================================
@@ -1758,17 +1803,6 @@ struct moonfire_t : public druid_spell_t
       }
 
       base_multiplier *= 1.0 + p -> artifact.twilight_glow.percent();
-    }
-
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double tm = druid_spell_t::composite_target_multiplier( t );
-
-      if ( td( t ) -> debuff.stellar_empowerment -> up() )
-        tm *= 1.0 + ( td( t ) -> debuff.stellar_empowerment -> check_value()
-              + p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() ) * ( 1.0 + p() -> artifact.falling_star.percent() );
-
-      return tm;
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -4669,8 +4703,7 @@ struct lunar_strike_t : public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> buff.lunar_empowerment -> check() )
-      am *= 1.0 + p() -> buff.lunar_empowerment -> check_value()
-            + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      am *= 1.0 + composite_lunar_empowerment();
 
     return am;
   }
@@ -4860,17 +4893,6 @@ struct sunfire_t : public druid_spell_t
       radius += p -> artifact.sunblind.value();
     }
 
-    double composite_target_multiplier( player_t* t ) const override
-    {
-      double tm = druid_spell_t::composite_target_multiplier( t );
-
-      if ( td( t ) -> debuff.stellar_empowerment -> up() )
-        tm *= 1.0 + ( td( t ) -> debuff.stellar_empowerment -> check_value()
-              + p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() ) * ( 1.0 + p() -> artifact.falling_star.percent() );
-
-      return tm;
-    }
-
     dot_t* get_dot( player_t* t ) override
     {
       if ( ! t ) t = target;
@@ -5038,8 +5060,7 @@ struct solar_wrath_t : public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> buff.solar_empowerment -> check() )
-      am *= 1.0 + p() -> buff.solar_empowerment -> check_value()
-            + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      am *= 1.0 + composite_solar_empowerment();
 
     return am;
   }
@@ -5404,12 +5425,10 @@ struct stellar_flare_t : public druid_spell_t
     double pm = druid_spell_t::composite_persistent_multiplier( s );
 
     if ( p() -> buff.lunar_empowerment -> check() )
-      pm *= 1.0 + p() -> buff.lunar_empowerment -> check_value()
-            + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      pm *= 1.0 + composite_lunar_empowerment();
 
     if ( p() -> buff.solar_empowerment -> check() )
-      pm *= 1.0 + p() -> buff.solar_empowerment -> check_value()
-            + ( p() -> mastery.starlight -> ok() * p() -> cache.mastery_value() );
+      pm *= 1.0 + composite_solar_empowerment();
 
     return pm;
   }
@@ -5782,6 +5801,7 @@ void druid_t::init_spells()
   spec.celestial_alignment        = find_specialization_spell( "Celestial Alignment" );
   spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
   spec.starfall                   = find_specialization_spell( "Starfall" );
+  spec.stellar_empowerment        = spec.starfall -> ok() ? find_spell( 197637 ) : spell_data_t::not_found();
   spec.balance_tier19_2pc         = sets.has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
 
   // Feral
@@ -7796,8 +7816,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   debuff.open_wounds         = buff_creator_t( *this, "open_wounds", source.find_spell( 210670 ) )
                                .default_value( source.find_spell( 210670 ) -> effectN( 1 ).percent() )
                                .trigger_spell( source.artifact.open_wounds );
-  debuff.stellar_empowerment = buff_creator_t( *this, "stellar_empowerment", source.find_spell( 197637 ) )
-                               .default_value( source.find_spell( 197637 ) -> effectN( 1 ).percent() );
+  debuff.stellar_empowerment = buff_creator_t( *this, "stellar_empowerment", source.spec.stellar_empowerment )
+                                .default_value( source.spec.stellar_empowerment -> effectN( 1 ).percent() );
 }
 
 // Copypasta for reporting

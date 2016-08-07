@@ -33,7 +33,7 @@ const spec_map_t spec_map[] =
   { HUNTER_MARKSMANSHIP,  "Marksmanship Hunter"  },
   { HUNTER_SURVIVAL,      "Survival Hunter"      },
   { ROGUE_ASSASSINATION,  "Assassination Rogue"  },
-  { ROGUE_OUTLAW,         "Combat Rogue"         },
+  { ROGUE_OUTLAW,         "Outlaw Rogue"         },
   { ROGUE_SUBTLETY,       "Subtlety Rogue"       },
   { PRIEST_DISCIPLINE,    "Discipline Priest"    },
   { PRIEST_HOLY,          "Holy Priest"          },
