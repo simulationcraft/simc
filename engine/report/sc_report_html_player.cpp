@@ -2981,9 +2981,9 @@ void print_html_player_description( report::sc_html_stream& os,
   if ( !p.report_information.thumbnail_url.empty() )
   {
     os.format(
-        "<a href=\"%s\" class=\"toggle-thumbnail ext%s\"><img src=\"%s\" "
-        "alt=\"%s\" class=\"player-thumbnail\"/></a>\n",
-        p.origin_str.c_str(), ( num_players == 1 ) ? "" : " hide",
+        "<class=\"toggle-thumbnail ext%s\"><img src=\"%s\" "
+        "alt=\"%s\" class=\"player-thumbnail\"/>\n",
+        ( num_players == 1 ) ? "" : " hide",
         p.report_information.thumbnail_url.c_str(), p.name_str.c_str() );
   }
 
