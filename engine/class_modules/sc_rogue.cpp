@@ -132,6 +132,9 @@ struct rogue_t : public player_t
   // Custom options
   std::vector<size_t> fixed_rtb;
 
+  // Duskwalker footpads counter
+  double df_counter;
+
   // Shadow techniques swing counter;
   unsigned shadow_techniques;
 
@@ -248,6 +251,7 @@ struct rogue_t : public player_t
     cooldown_t* marked_for_death;
     cooldown_t* death_from_above;
     cooldown_t* weaponmaster;
+    cooldown_t* vendetta;
   } cooldowns;
 
   // Gains
@@ -385,6 +389,7 @@ struct rogue_t : public player_t
     const spell_data_t* quick_draw;
 
     // Outlaw - Level 30 (NYI)
+    const spell_data_t* hit_and_run;
 
     // Outlaw - Level 90
     const spell_data_t* cannonball_barrage;
@@ -489,12 +494,18 @@ struct rogue_t : public player_t
     real_ppm_t* bag_of_tricks;
   } prng;
 
+  struct legendary_t
+  {
+    const spell_data_t* duskwalker_footpads;
+  } legendary;
+
   // Options
   uint32_t fof_p1, fof_p2, fof_p3;
   int initial_combo_points;
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
+    df_counter( 0 ),
     shadow_techniques( 0 ),
     finality_eviscerate( false ), finality_nightblade( false ),
     poisoned_enemies( 0 ),
@@ -520,6 +531,8 @@ struct rogue_t : public player_t
     talent( talents_t() ),
     mastery( masteries_t() ),
     procs( procs_t() ),
+    prng( prng_t() ),
+    legendary( legendary_t() ),
     fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 ),
     initial_combo_points( 0 )
   {
@@ -539,6 +552,7 @@ struct rogue_t : public player_t
     cooldowns.marked_for_death    = get_cooldown( "marked_for_death"    );
     cooldowns.riposte             = get_cooldown( "riposte"             );
     cooldowns.weaponmaster        = get_cooldown( "weaponmaster"        );
+    cooldowns.vendetta            = get_cooldown( "vendetta"            );
 
     base.distance = 3;
     regen_type = REGEN_DYNAMIC;
@@ -1870,6 +1884,17 @@ void rogue_attack_t::consume_resource()
 
   if ( result_is_miss( execute_state -> result ) && resource_consumed > 0 )
     p() -> trigger_energy_refund( execute_state );
+
+  if ( resource_consumed > 0 && p() -> legendary.duskwalker_footpads )
+  {
+    p() -> df_counter += resource_consumed;
+    while ( p() -> df_counter >= p() -> legendary.duskwalker_footpads -> effectN( 2 ).base_value() )
+    {
+      timespan_t adjustment = -timespan_t::from_seconds( p() -> legendary.duskwalker_footpads -> effectN( 1 ).base_value() );
+      p() -> cooldowns.vendetta -> adjust( adjustment );
+      p() -> df_counter -= p() -> legendary.duskwalker_footpads -> effectN( 2 ).base_value();
+    }
+  }
 }
 
 // rogue_attack_t::execute ==================================================
@@ -3026,8 +3051,11 @@ struct pistol_shot_t : public shot_base_t
 
 struct run_through_t: public rogue_attack_t
 {
+  double ttt_multiplier; // 7.0 legendary Thraxi's Tricksy Treads multiplier
+
   run_through_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str )
+    rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str ),
+    ttt_multiplier( 0 )
   {
     base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
   }
@@ -3038,6 +3066,12 @@ struct run_through_t: public rogue_attack_t
 
     if ( p() -> buffs.death_from_above -> up() )
       m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
+
+    if ( ttt_multiplier > 0 )
+    {
+      double movement_speed = p() -> passive_movement_modifier() + p() -> temporary_movement_modifier();
+      m *= 1.0 + movement_speed * ttt_multiplier;
+    }
 
     return m;
   }
@@ -6362,7 +6396,7 @@ void rogue_t::init_spells()
   spell.critical_strikes    = find_spell( 157442 );
   spell.death_from_above    = find_spell( 163786 );
   spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
-  spell.fleet_footed        = find_class_spell( "Fleet Footed" );
+  spell.fleet_footed        = find_spell( 31209 );
   spell.master_of_shadows   = find_spell( 196980 );
   spell.sprint              = find_class_spell( "Sprint" );
   spell.ruthlessness_driver = find_spell( 14161 );
@@ -6415,6 +6449,8 @@ void rogue_t::init_spells()
   talent.enveloping_shadows = find_talent_spell( "Enveloping Shadows" );
 
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
+
+  talent.hit_and_run        = find_talent_spell( "Hit and Run" );
 
   artifact.goremaws_bite    = find_artifact_spell( "Goremaw's Bite" );
   artifact.shadow_fangs     = find_artifact_spell( "Shadow Fangs" );
@@ -7079,6 +7115,7 @@ void rogue_t::reset()
 
   poisoned_enemies = 0;
 
+  df_counter = 0;
   shadow_techniques = rng().range( 3, 5 );
 
   finality_eviscerate = finality_nightblade = false;
@@ -7202,6 +7239,7 @@ double rogue_t::passive_movement_modifier() const
 
   ms += spell.fleet_footed -> effectN( 1 ).percent();
   ms += artifact.catwalk.percent();
+  ms += talent.hit_and_run -> effectN( 1 ).percent();
 
   if ( buffs.stealth -> up() || buffs.shadow_dance -> up() ) // Check if nightstalker is temporary or passive.
     ms += talent.nightstalker -> effectN( 1 ).percent();
@@ -7360,6 +7398,24 @@ struct from_the_shadows_t : public unique_gear::scoped_action_callback_t<>
   { action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0; }
 };
 
+struct duskwalker_footpads_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  duskwalker_footpads_t() : super( ROGUE_ASSASSINATION )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.duskwalker_footpads = e.driver(); }
+};
+
+struct thraxis_tricksy_treads_t : public unique_gear::scoped_action_callback_t<actions::run_through_t>
+{
+  thraxis_tricksy_treads_t() : super( ROGUE_OUTLAW, "run_through" )
+  { }
+
+  void manipulate( actions::run_through_t* action, const special_effect_t& e ) override
+  { action -> ttt_multiplier = e.driver() -> effectN( 1 ).percent(); }
+};
+
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -7379,6 +7435,8 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 184916, toxic_mutilator_t()    );
     unique_gear::register_special_effect( 184917, eviscerating_blade_t() );
     unique_gear::register_special_effect( 184918, from_the_shadows_t()   );
+    unique_gear::register_special_effect( 208895, duskwalker_footpads_t() );
+    unique_gear::register_special_effect( 212539, thraxis_tricksy_treads_t() );
   }
 
   virtual void register_hotfixes() const override
