@@ -1789,6 +1789,9 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_weaponmaster( state );
   p() -> trigger_surge_of_toxins( state );
 
+  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
+    p() -> trigger_seal_fate( state );
+
   if ( result_is_hit( state -> result ) )
   {
     if ( procs_poison() && p() -> active_lethal_poison )
@@ -1908,8 +1911,6 @@ void rogue_attack_t::execute()
       player -> resource_gain( RESOURCE_COMBO_POINT, cp, p() -> gains.t17_4pc_subtlety );
   }
 
-  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
-    p() -> trigger_seal_fate( execute_state );
   p() -> trigger_relentless_strikes( execute_state );
 
   p() -> trigger_elaborate_planning( execute_state );
