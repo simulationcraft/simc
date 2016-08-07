@@ -5768,7 +5768,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
         warlock_t& player;
 
         wild_imp_count_expr_t( warlock_t& p ):
-          expr_t( "shard_react" ), player( p ) { }
+          expr_t( "wild_imp_count" ), player( p ) { }
         virtual double evaluate() override
         {
             double t = 0;
@@ -5783,6 +5783,30 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
     };
     return new wild_imp_count_expr_t( *this );
   }
+
+  else if ( name_str == "darkglare_count" )
+  {
+    struct darkglare_count_expr_t : public expr_t
+    {
+      warlock_t& player;
+
+      darkglare_count_expr_t( warlock_t& p ) :
+        expr_t( "darkglare_count" ), player( p ) { }
+      virtual double evaluate() override
+      {
+        double t = 0;
+        for ( auto& pet : player.warlock_pet_list.darkglare )
+        {
+          if ( !pet -> is_sleeping() )
+            t++;
+        }
+        return t;
+      }
+
+    };
+    return new darkglare_count_expr_t( *this );
+  }
+
   else if( name_str == "dreadstalker_count")
   {
       struct dreadstalker_count_expr_t: public expr_t
@@ -5903,6 +5927,30 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       };
       return new wild_imp_without_de_expr_t( *this );
   }
+
+  else if ( name_str == "darkglare_no_de" )
+  {
+    struct darkglare_without_de_expr_t : public expr_t
+    {
+      warlock_t& player;
+
+      darkglare_without_de_expr_t( warlock_t& p ) :
+        expr_t( "darkglare_no_de" ), player( p ) { }
+      virtual double evaluate() override
+      {
+        double t = 0;
+        for ( auto& pet : player.warlock_pet_list.darkglare )
+        {
+          if ( !pet -> is_sleeping() & !pet -> buffs.demonic_empowerment -> up() )
+            t++;
+        }
+        return t;
+      }
+
+    };
+    return new darkglare_without_de_expr_t( *this );
+  }
+
   else if( name_str == "dreadstalker_no_de" )
   {
       struct dreadstalker_without_de_expr_t: public expr_t
@@ -6024,6 +6072,33 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       };
       return new wild_imp_de_duration_expression_t( *this );
   }
+
+  else if ( name_str == "darkglare_de_duration" )
+  {
+    struct darkglare_de_duration_expression_t : public expr_t
+    {
+      warlock_t& player;
+
+      darkglare_de_duration_expression_t( warlock_t& p ) :
+        expr_t( "darkglare_de_duration" ), player( p ) { }
+      virtual double evaluate() override
+      {
+        double t = 150000;
+        for ( auto& pet : player.warlock_pet_list.darkglare )
+        {
+          if ( !pet -> is_sleeping() & !pet -> buffs.demonic_empowerment -> up() )
+          {
+            if ( pet -> buffs.demonic_empowerment -> buff_duration.total_seconds() < t )
+              t = pet -> buffs.demonic_empowerment -> buff_duration.total_seconds();
+          }
+        }
+        return t;
+      }
+
+    };
+    return new darkglare_de_duration_expression_t( *this );
+  }
+
   else if( name_str == "dreadstalkers_de_duration" )
   {
       struct dreadstalkers_de_duration_expression_t: public expr_t
@@ -6132,36 +6207,66 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
       return new service_de_duration( *this );
   }
 
-
   else if( name_str == "wild_imp_remaining_duration" )
+  {
+    struct wild_imp_remaining_duration_expression_t: public expr_t
+    {
+      warlock_t& player;
+
+      wild_imp_remaining_duration_expression_t( warlock_t& p ):
+        expr_t( "wild_imp_remaining_duration" ), player( p ) { }
+      virtual double evaluate() override
       {
-          struct wild_imp_remaining_duration_expression_t: public expr_t
+        double t = 5000;
+        for( auto& pet : player.warlock_pet_list.wild_imps )
+        {
+          if( !pet -> is_sleeping() )
           {
-              warlock_t& player;
-
-              wild_imp_remaining_duration_expression_t( warlock_t& p ):
-                expr_t( "wild_imp_remaining_duration" ), player( p ) { }
-              virtual double evaluate() override
-              {
-                double t = 5000;
-                for( auto& pet : player.warlock_pet_list.wild_imps )
-                {
-                  if( !pet -> is_sleeping() )
-                  {
-                    if( t > pet -> expiration->remains().total_seconds() )
-                    {
-                        t = pet->expiration->remains().total_seconds();
-                    }
-                  }
-                }
-                if( t == 5000 )
-                  t = -1;
-                return t;
-              }
-
-          };
-          return new wild_imp_remaining_duration_expression_t( *this );
+            if( t > pet -> expiration->remains().total_seconds() )
+            {
+              t = pet->expiration->remains().total_seconds();
+            }
+          }
+        }
+        if( t == 5000 )
+          t = -1;
+          return t;
       }
+    };
+
+    return new wild_imp_remaining_duration_expression_t( *this );
+  }
+
+  else if ( name_str == "darkglare_remaining_duration" )
+  {
+    struct darkglare_remaining_duration_expression_t : public expr_t
+    {
+      warlock_t& player;
+
+      darkglare_remaining_duration_expression_t( warlock_t& p ) :
+        expr_t( "darkglare_remaining_duration" ), player( p ) { }
+      virtual double evaluate() override
+      {
+        double t = 5000;
+        for ( auto& pet : player.warlock_pet_list.darkglare )
+        {
+          if ( !pet -> is_sleeping() )
+          {
+            if ( t > pet -> expiration -> remains().total_seconds() )
+            {
+              t = pet -> expiration -> remains().total_seconds();
+            }
+          }
+        }
+        if ( t == 5000 )
+          t = -1;
+        return t;
+      }
+    };
+
+    return new darkglare_remaining_duration_expression_t( *this );
+  }
+
   else if( name_str == "dreadstalker_remaining_duration" )
       {
           struct dreadstalker_remaining_duration_expression_t: public expr_t
