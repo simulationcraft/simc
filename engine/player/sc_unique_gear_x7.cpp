@@ -1660,7 +1660,7 @@ void set_bonus::march_of_the_legion( special_effect_t& /* effect */ ) {}
 struct cinidaria_the_symbiote_damage_t : public attack_t
 {
   cinidaria_the_symbiote_damage_t( player_t* p ) :
-    attack_t( "cinidaria_the_symbiote", p, p -> find_spell( 207694 ) )
+    attack_t( "symbiote_strike", p, p -> find_spell( 207694 ) )
   {
     callbacks = may_crit = may_miss = false;
     background = true;
