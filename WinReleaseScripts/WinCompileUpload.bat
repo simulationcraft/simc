@@ -46,6 +46,7 @@ robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe read
 robocopy Profiles\ %install%\profiles\ *.* /S
 cd %install%
 %qt_dir%\msvc2015_64\bin\windeployqt.exe --no-translations simulationcraft.exe
+del vcredist_x64.exe
 cd ..
 
 cd winreleasescripts 
