@@ -35,7 +35,7 @@ trinket1=swarming_plaguehive,id=139321,bonus_id=1806
 trinket2=twisting_wind,id=139323,bonus_id=1806
 main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=139251/139257/139251,relic_id=1806/1806/1806
 off_hand=secrets_of_the_void,id=133958
-save=Priest_Shadow_T19H.simc
+save=Priest_Shadow_T19M.simc
 
 # Shadow S2M
 copy="Priest_Shadow_T19M_S2M"
@@ -63,4 +63,4 @@ trinket1=swarming_plaguehive,id=139321,bonus_id=1806
 trinket2=twisting_wind,id=139323,bonus_id=1806
 main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=139251/139257/139251,relic_id=1806/1806/1806
 off_hand=secrets_of_the_void,id=133958
-save=Priest_Shadow_T19H_S2M.simc
+save=Priest_Shadow_T19M_S2M.simc
