@@ -6499,6 +6499,7 @@ void death_knight_t::create_buffs()
     .default_value( find_spell( 187894 ) -> effectN( 1 ).percent() )
     .trigger_spell( sets.set( DEATH_KNIGHT_FROST, T18, B2 ) );
   buffs.t18_4pc_unholy = haste_buff_creator_t( this, "crazed_monstrosity", find_spell( 187981 ) )
+    .chance( sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T18, B4 ) )
     .add_invalidate( CACHE_ATTACK_SPEED )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.soulgorge = buff_creator_t( this, "soulgorge", find_spell( 213003 ) )
