@@ -4360,7 +4360,7 @@ void paladin_t::generate_action_prio_list_prot()
     // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
     // and Mountains potion is pathetic at L90
 	if (true_level > 100)
-	  potion_type = "potion_of_deadly_grace";
+	  potion_type = "unbending_potion";
     else if ( true_level > 90 )
       potion_type = "draenic_strength";
     else if ( true_level >= 80 )
@@ -4409,7 +4409,10 @@ void paladin_t::generate_action_prio_list_prot()
 
   //threshold for defensive abilities
   std::string threshold = "incoming_damage_2500ms>health.max*0.4";
-
+  std::string threshold_lotp = "incoming_damage_13000ms<health.max*1.6";
+  std::string threshold_lotp_rp = "incoming_damage_10000ms<health.max*1.25";
+  std::string threshold_hotp = "incoming_damage_9000ms<health.max*1.2";
+  std::string threshold_hotp_rp = "incoming_damage_6000ms<health.max*0.7";	
 
   for (size_t i = 0; i < racial_actions.size(); i++)
 	  def->add_action(racial_actions[i]);
@@ -4419,10 +4422,12 @@ void paladin_t::generate_action_prio_list_prot()
   prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
   prot->add_action(this, "Shield of the Righteous", "if=(!talent.seraphim.enabled|action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
   prot->add_talent(this, "Bastion of Light", "if=talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1");
-  prot->add_action(this, "Light of the Protector", "if=health.pct<40&talent.righteous_protector.enabled");
-  prot->add_talent(this, "Hand of the Protector", "if=health.pct<45&talent.righteous_protector.enabled");
-  prot->add_action(this, "Light of the Protector", "if=health.pct<35");
-  prot->add_talent(this, "Hand of the Protector", "if=health.pct<40");
+  prot->add_action(this, "Light of the Protector", "if=(health.pct<40)");
+  prot->add_talent(this, "Hand of the Protector",  "if=(health.pct<40)");
+  prot->add_action(this, "Light of the Protector", "if=("+threshold_lotp_rp+")&health.pct<55&talent.righteous_protector.enabled");
+  prot->add_action(this, "Light of the Protector", "if=("+threshold_lotp+")&health.pct<55");
+  prot->add_talent(this, "Hand of the Protector",  "if=("+threshold_hotp_rp+")&health.pct<65&talent.righteous_protector.enabled");
+  prot->add_talent(this, "Hand of the Protector",  "if=("+threshold_hotp+")&health.pct<55");
   prot->add_action(this, "Divine Steed", "if=talent.knight_templar.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_action(this, "Eye of Tyr", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_talent(this, "Aegis of Light", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
@@ -4436,7 +4441,7 @@ void paladin_t::generate_action_prio_list_prot()
   {
 	  if (level() > 100)
 	  {
-		  prot->add_action("potion,name=potion_of_the_old_war,if=role.attack|using_apl.max_dps");
+		  //prot->add_action("potion,name=the_old_war,if=role.attack|using_apl.max_dps");
 		  prot->add_action("potion,name=unbending_potion");
 	  }
 	  if (true_level > 90)
