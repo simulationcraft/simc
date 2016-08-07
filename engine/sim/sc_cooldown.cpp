@@ -322,7 +322,7 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
 
   action = a;
 
-  if ( hasted && a )
+  if ( a )
   {
     recharge_multiplier = a -> recharge_multiplier();
   }
