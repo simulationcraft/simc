@@ -1367,7 +1367,7 @@ void action_t::execute()
 
   update_ready();
 
-  if ( ! dual && !player -> first_cast ) stats -> add_execute( time_to_execute, target );
+  if ( ! dual && ( !player -> first_cast || !harmful ) ) stats -> add_execute( time_to_execute, target );
 
   if ( pre_execute_state )
     action_state_t::release( pre_execute_state );
