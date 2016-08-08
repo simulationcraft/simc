@@ -14,6 +14,7 @@
 //
 // Affliction -
 // Haunt reset
+// Drained to a Husk doesn't return spelldata?
 // 
 // Better reporting for add buffs.
 //
@@ -216,6 +217,7 @@ public:
     artifact_power_t long_dark_night_of_the_soul;
     artifact_power_t compound_interest;
     artifact_power_t soulharvester;
+    artifact_power_t soulstealer;
 
     // Demonology
     artifact_power_t thalkeils_consumption;
@@ -2675,6 +2677,8 @@ struct corruption_t: public warlock_spell_t
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
+    m *= 1.0 + p() -> artifact.hideous_corruption.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
     return m;
   }
 };
@@ -4812,6 +4816,11 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.flames_of_the_pit.percent();
   }
 
+  if ( specialization() == WARLOCK_AFFLICTION )
+  {
+    m *= 1.0 + artifact.soulstealer.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+  }
+
   if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( SCHOOL_SHADOW, school ) ) )
   {
     m *= 1.0 + artifact.crystaline_shadows.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
@@ -5202,7 +5211,7 @@ void warlock_t::init_spells()
   artifact.shadows_of_the_flesh = find_artifact_spell( "Shadows of the Flesh" );
   artifact.harvester_of_souls = find_artifact_spell( "Harvester of Souls" );
   artifact.inimitable_agony = find_artifact_spell( "Inimitable Agony" );
-  artifact.drained_to_a_husk = find_artifact_spell( "Drained to the Husk" );
+  artifact.drained_to_a_husk = find_artifact_spell( "Drained to a Husk" );
   artifact.inherently_unstable = find_artifact_spell( "Inherently Unstable" );
   artifact.sweet_souls = find_artifact_spell( "Sweet Souls" );
   artifact.perdition = find_artifact_spell( "Perdition" );
@@ -5213,6 +5222,7 @@ void warlock_t::init_spells()
   artifact.long_dark_night_of_the_soul = find_artifact_spell( "Long Dark Night of the Soul" );
   artifact.compound_interest = find_artifact_spell( "Compound Interest" );
   artifact.soulharvester = find_artifact_spell( "Soulharvester" );
+  artifact.soulstealer = find_artifact_spell( "Soulstealer" );
 
   artifact.thalkeils_consumption = find_artifact_spell( "Thal'kiel's Consumption" );
   artifact.breath_of_thalkiel = find_artifact_spell( "Breath of Thal'kiel" );
