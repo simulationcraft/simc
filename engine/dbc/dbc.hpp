@@ -106,7 +106,7 @@ std::size_t n_item_bonuses( bool ptr );
 std::string bonus_ids_str( dbc_t& );
 
 // Filtered data access
-const item_data_t* find_potion( bool ptr, const std::function<bool(const item_data_t*)>& finder );
+const item_data_t* find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& finder );
 }
 
 namespace hotfix

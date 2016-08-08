@@ -11,6 +11,13 @@ using namespace unique_gear;
 
 namespace { // UNNAMED NAMESPACE
 
+// Prefix/Suffix map to allow shorthand consumable names, when searching for the item (for potion
+// action).
+static std::map<item_subclass_consumable, std::pair<std::vector<std::string>, std::vector<std::string>>> __consumable_substrings = {
+  { ITEM_SUBCLASS_POTION, { { "potion_of_the_", "potion_of_", "potion_" }, { "_potion" } } }
+};
+
+
 /**
  * Forward declarations so we can reorganize the file a bit more sanely.
  */
@@ -4026,30 +4033,34 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
   return 0;
 }
 
-static std::string::size_type match_prefix( const std::string& str, const char* prefixes[] )
+static std::string::size_type match_prefix( const std::string& str, const std::vector<std::string>& prefixes )
 {
-  std::string::size_type offset = std::string::npos;
+  auto offset = std::string::npos;
 
-  while ( *prefixes != 0 && offset == std::string::npos )
+  for ( const auto& prefix : prefixes )
   {
-    offset = str.find( *prefixes );
+    offset = str.find( prefix );
     if ( offset != std::string::npos )
-      offset += strlen( *prefixes );
-
-    prefixes++;
+    {
+      offset += prefix.size();
+      break;
+    }
   }
 
   return offset;
 }
 
-static std::string::size_type match_suffix( const std::string& str, const char* suffixes[] )
+static std::string::size_type match_suffix( const std::string& str, const std::vector<std::string>& suffixes )
 {
-  std::string::size_type offset = std::string::npos;
+  auto offset = std::string::npos;
 
-  while ( *suffixes != 0 && offset == std::string::npos )
+  for ( const auto& suffix : suffixes )
   {
-    offset = str.rfind( *suffixes );
-    suffixes++;
+    offset = str.rfind( suffix );
+    if ( offset != std::string::npos )
+    {
+      break;
+    }
   }
 
   return offset;
@@ -4062,50 +4073,32 @@ const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
                                                  item_subclass_consumable type )
 {
   // Poor man's longest matching prefix!
-  static const char* potion_prefixes[] = { "potion_of_the_", "potion_of_", "potion_", 0 };
-  static const char* potion_suffixes[] = { "_potion", 0 };
-
-  const item_data_t* item = 0;
-  std::string consumable_name;
-
-  for ( item = dbc::items( maybe_ptr( dbc.ptr ) ); item -> id != 0; item++ )
-  {
-    if ( item -> item_class != 0 )
-      continue;
-
-    if ( item -> item_subclass != type )
-      continue;
-
-    consumable_name = item -> name;
-
-    util::tokenize( consumable_name );
-
-    if ( util::str_compare_ci( consumable_name, name ) )
-      break;
-
-    if ( type == ITEM_SUBCLASS_POTION )
+  const item_data_t* item = dbc::find_consumable( type, dbc.ptr, [type, &name]( const item_data_t* i ) {
+    std::string n = i -> name;
+    util::tokenize( n );
+    if ( util::str_compare_ci( n, name ) )
     {
-      std::string::size_type prefix_offset = match_prefix( consumable_name, potion_prefixes );
-      std::string::size_type suffix_offset = match_suffix( consumable_name, potion_suffixes );
-
-      if ( prefix_offset == std::string::npos )
-        prefix_offset = 0;
-
-      if ( suffix_offset == std::string::npos )
-        suffix_offset = consumable_name.size();
-      else if ( suffix_offset <= prefix_offset )
-        suffix_offset = consumable_name.size();
-
-      std::string parsed_name = consumable_name.substr( prefix_offset, suffix_offset );
-      if ( util::str_compare_ci( name, parsed_name ) )
-        break;
+      return true;
     }
-  }
+    auto prefix_offset = match_prefix( n, __consumable_substrings[ type ].first );
+    auto suffix_offset = match_suffix( n, __consumable_substrings[ type ].second );
+
+    if ( prefix_offset == std::string::npos )
+      prefix_offset = 0;
+
+    if ( suffix_offset == std::string::npos )
+      suffix_offset = n.size();
+    else if ( suffix_offset <= prefix_offset )
+      suffix_offset = n.size();
+
+    auto parsed_name = n.substr( prefix_offset, suffix_offset );
+    return util::str_compare_ci( name, parsed_name );
+  } );
 
   if ( item -> id != 0 )
     return item;
 
-  return 0;
+  return nullptr;
 }
 
 const item_data_t* unique_gear::find_item_by_spell( const dbc_t& dbc, unsigned spell_id )
@@ -4503,7 +4496,7 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   register_target_data_initializers_x7( sim );
 }
 
-static const special_effect_t* find_special_effect( player_t* actor, unsigned spell_id )
+special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id )
 {
   auto it = range::find_if( actor -> special_effects, [ spell_id ]( const special_effect_t* e ) {
     return e -> driver() -> id() == spell_id;

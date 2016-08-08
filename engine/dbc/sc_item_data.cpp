@@ -11,13 +11,11 @@
 #endif
 
 namespace {
-  template<typename T>
-  struct potion_filter_t
+  template<typename T, item_subclass_consumable CLASS>
+  struct consumable_filter_t
   {
     bool operator()(const T* obj) const
-    {
-      return obj -> item_class == ITEM_CLASS_CONSUMABLE && obj -> item_subclass == ITEM_SUBCLASS_POTION;
-    }
+    { return obj -> item_class == ITEM_CLASS_CONSUMABLE && obj -> item_subclass == CLASS; }
   };
 
   item_data_t nil_item_data;
@@ -27,7 +25,7 @@ namespace {
   dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
   dbc_index_t<item_data_t, id_member_policy> item_data_index;
 
-  typedef filtered_dbc_index_t<item_data_t, potion_filter_t<item_data_t>, id_member_policy> potion_data_t;
+  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<item_data_t, ITEM_SUBCLASS_POTION>, id_member_policy> potion_data_t;
 
   potion_data_t potion_data_index;
 }
@@ -1376,16 +1374,19 @@ size_t item_database::parse_tokens( std::vector<token_t>& tokens,
   return splits.size();
 }
 
-const item_data_t* dbc::find_potion( bool ptr, const std::function<bool(const item_data_t*)>& f )
+const item_data_t* dbc::find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& f )
 {
-  if ( const item_data_t* i = potion_data_index.get( ptr, f ) )
+  const item_data_t* i = nullptr;
+  switch ( type )
   {
-    return i;
+    case ITEM_SUBCLASS_POTION:
+      i = potion_data_index.get( ptr, f );
+      break;
+    default:
+      break;
   }
-  else
-  {
-    return &( nil_item_data );
-  }
+
+  return i ? i : &( nil_item_data );
 }
 
 static std::string get_bonus_id_desc( bool ptr, const std::vector<const item_bonus_entry_t*>& entries )

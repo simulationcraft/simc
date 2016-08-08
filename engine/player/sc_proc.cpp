@@ -178,10 +178,10 @@ void special_effect_t::reset()
   proc_delay = false;
   unique = false;
   weapon_proc = false;
-  
+
   override_result_es_mask = 0;
   result_es_mask = 0;
-  
+
   spell_id = 0;
   trigger_spell_id = 0;
 
@@ -189,6 +189,9 @@ void special_effect_t::reset()
   custom_buff = nullptr;
   custom_init = nullptr;
   custom_init_object.clear();
+
+  action_disabled = false;
+  buff_disabled = false;
 }
 
 // special_effect_t::driver =================================================
@@ -398,7 +401,9 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
 
 special_effect_buff_e special_effect_t::buff_type() const
 {
-  if ( custom_buff != nullptr )
+  if ( buff_disabled )
+    return SPECIAL_EFFECT_BUFF_NONE;
+  else if ( custom_buff != nullptr )
     return SPECIAL_EFFECT_BUFF_CUSTOM;
   else if ( is_stat_buff() )
     return SPECIAL_EFFECT_BUFF_STAT;
@@ -412,6 +417,17 @@ special_effect_buff_e special_effect_t::buff_type() const
 
 buff_t* special_effect_t::create_buff() const
 {
+  if ( buff_type() != SPECIAL_EFFECT_BUFF_CUSTOM &&
+       buff_type() != SPECIAL_EFFECT_BUFF_NONE &&
+       buff_type() != SPECIAL_EFFECT_BUFF_DISABLED )
+  {
+    buff_t* b = buff_t::find( player, name() );
+    if ( b )
+    {
+      return b;
+    }
+  }
+
   switch ( buff_type() )
   {
     case SPECIAL_EFFECT_BUFF_CUSTOM:
@@ -429,7 +445,9 @@ action_t* special_effect_t::create_action() const
 {
   // Custom actions have done their create_proc_action() call in the second phase init of the
   // special effect
-  if ( action_type() != SPECIAL_EFFECT_ACTION_CUSTOM && action_type() != SPECIAL_EFFECT_ACTION_NONE )
+  if ( action_type() != SPECIAL_EFFECT_ACTION_CUSTOM &&
+       action_type() != SPECIAL_EFFECT_ACTION_NONE &&
+       action_type() != SPECIAL_EFFECT_ACTION_DISABLED )
   {
     action_t* a = player -> find_action( name() );
     if ( a )
@@ -463,7 +481,9 @@ action_t* special_effect_t::create_action() const
 
 special_effect_action_e special_effect_t::action_type() const
 {
-  if ( execute_action != nullptr )
+  if ( action_disabled )
+    return SPECIAL_EFFECT_ACTION_NONE;
+  else if ( execute_action != nullptr )
     return SPECIAL_EFFECT_ACTION_CUSTOM;
   else if ( is_offensive_spell_action() )
     return SPECIAL_EFFECT_ACTION_SPELL;

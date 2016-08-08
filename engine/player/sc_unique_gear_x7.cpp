@@ -11,6 +11,12 @@ using namespace unique_gear;
  * Forward declarations so we can reorganize the file a bit more sanely.
  */
 
+namespace consumable
+{
+  void potion_of_the_old_war( special_effect_t& );
+  void potion_of_deadly_grace( special_effect_t& );
+}
+
 namespace enchants
 {
   void mark_of_the_hidden_satyr( special_effect_t& );
@@ -1724,6 +1730,118 @@ struct cinidaria_the_symbiote_t : public class_scoped_callback_t
   { new cinidaria_the_symbiote_cb_t( effect ); }
 };
 
+// Combined legion potion action ============================================
+
+template <typename T>
+struct legion_potion_damage_t : public T
+{
+  legion_potion_damage_t( const special_effect_t& effect, const std::string& name_str, const spell_data_t* spell ) :
+    T( name_str, effect.player, spell )
+  {
+    this -> background = this -> may_crit = this -> special = true;
+    this -> callbacks = false;
+    this -> base_dd_min = spell -> effectN( 1 ).min( this -> player );
+    this -> base_dd_max = spell -> effectN( 1 ).max( this -> player );
+    // Currently 0, but future proof if they decide to make it scale ..
+    this -> attack_power_mod.direct = spell -> effectN( 1 ).ap_coeff();
+    this -> spell_power_mod.direct = spell -> effectN( 1 ).sp_coeff();
+  }
+};
+
+// Potion of the Old War ====================================================
+
+void consumable::potion_of_the_old_war( special_effect_t& effect )
+{
+  // Instantiate a new action if we cannot find a suitable one already
+  auto action = effect.player -> find_action( effect.name() );
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( effect.name(), effect );
+  }
+
+  if ( ! action )
+  {
+    action = new legion_potion_damage_t<melee_attack_t>( effect, effect.name(), effect.driver() );
+  }
+
+  // Explicitly disable action creation for the potion on the base special effect
+  effect.disable_action();
+
+  // Make a bog standard damage proc for the buff
+  auto secondary = new special_effect_t( effect.player );
+  secondary -> type = SPECIAL_EFFECT_EQUIP;
+  secondary -> spell_id = effect.spell_id;
+  secondary -> cooldown_ = timespan_t::zero();
+  secondary -> execute_action = action;
+  effect.player -> special_effects.push_back( secondary );
+
+  auto proc = new dbc_proc_callback_t( effect.player, *secondary );
+  proc -> initialize();
+  proc -> deactivate();
+
+  effect.custom_buff = buff_creator_t( effect.player, effect.name() )
+    .spell( effect.driver() )
+    .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 ) proc -> activate();
+      else             proc -> deactivate();
+    } )
+    .cd( timespan_t::zero() ) // Handled by the action
+    .chance( 1.0 ); // Override chance, the 20RPPM thing is in the secondary proc above
+}
+
+// Potion of Deadly Grace ===================================================
+
+void consumable::potion_of_deadly_grace( special_effect_t& effect )
+{
+  std::string action_name = effect.driver() -> effectN( 1 ).trigger() -> name_cstr();
+  util::tokenize( action_name );
+
+  // Instantiate a new action if we cannot find a suitable one already
+  auto action = effect.player -> find_action( action_name );
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( action_name, effect );
+  }
+
+  if ( ! action )
+  {
+    action = new legion_potion_damage_t<spell_t>( effect, action_name, effect.driver() -> effectN( 1 ).trigger() );
+  }
+
+  // Explicitly disable action creation for the potion on the base special effect
+  effect.disable_action();
+
+  // Make a bog standard damage proc for the buff
+  auto secondary = new special_effect_t( effect.player );
+  secondary -> type = SPECIAL_EFFECT_EQUIP;
+  secondary -> spell_id = effect.spell_id;
+  secondary -> cooldown_ = timespan_t::zero();
+  secondary -> execute_action = action;
+  effect.player -> special_effects.push_back( secondary );
+
+  auto proc = new dbc_proc_callback_t( effect.player, *secondary );
+  proc -> initialize();
+  proc -> deactivate();
+
+  timespan_t duration = effect.driver() -> duration();
+  // Allow hunters and all spellcasters to have +5 seconds. Technically this should probably be
+  // handled fancifully with movement and all, but this should be a reasonable compromise for now.
+  if ( effect.player -> type == HUNTER || effect.player -> role == ROLE_SPELL )
+  {
+    duration += timespan_t::from_seconds( 5 );
+  }
+
+  effect.custom_buff = buff_creator_t( effect.player, effect.name() )
+    .spell( effect.driver() )
+    .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+      if ( new_ == 1 ) proc -> activate();
+      else             proc -> deactivate();
+    } )
+    .cd( timespan_t::zero() ) // Handled by the action
+    .duration( duration )
+    .chance( 1.0 ); // Override chance, the 20RPPM thing is in the secondary proc above
+}
+
 // Journey Through Time =====================================================
 
 void set_bonus::journey_through_time( special_effect_t& /* effect */ ) {}
@@ -1793,6 +1911,10 @@ void unique_gear::register_special_effects_x7()
 
   /* Legendaries */
   register_special_effect( 207692, cinidaria_the_symbiote_t() );
+
+  /* Consumables */
+  register_special_effect( 188028, consumable::potion_of_the_old_war );
+  register_special_effect( 188027, consumable::potion_of_deadly_grace );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

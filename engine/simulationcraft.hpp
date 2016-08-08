@@ -2491,6 +2491,9 @@ struct special_effect_t
   unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
   buff_t* custom_buff; // Allows custom action
+
+  bool action_disabled, buff_disabled;
+
   // Old-style function-based custom second phase initializer (callback)
   std::function<void(special_effect_t&)> custom_init;
   // New-style object-based custom second phase initializer
@@ -2502,6 +2505,13 @@ struct special_effect_t
   { reset(); }
 
   special_effect_t( const item_t* item );
+
+  // Forcefully disable creation of an (autodetected) buff or action. This is necessary in scenarios
+  // where the autodetection decides to create an invalid action or buff due to the spell data.
+  void disable_action()
+  { action_disabled = true; }
+  void disable_buff()
+  { buff_disabled = true; }
 
   void reset();
   std::string to_string() const;
@@ -7180,6 +7190,8 @@ void register_target_data_initializers( sim_t* );
 void register_target_data_initializers_x7( sim_t* ); // Legion targetdata initializers
 
 void init( player_t* );
+
+special_effect_t* find_special_effect( player_t* actor, unsigned spell_id );
 
 // First-phase special effect initializers
 bool initialize_special_effect( special_effect_t& effect, unsigned spell_id );

@@ -832,128 +832,6 @@ struct health_stone_t : public heal_t
   }
 };
 
-// ==========================================================================
-//  Potion Base
-// ==========================================================================
-
-struct dbc_potion_t : public action_t
-{
-  timespan_t pre_pot_time;
-  stat_buff_t* stat_buff;
-  std::string consumable_name_str;
-
-  dbc_potion_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "potion", p ),
-    pre_pot_time( timespan_t::from_seconds( 2.0 ) ),
-    stat_buff( nullptr )
-  {
-    harmful = callbacks = may_miss = may_crit = may_block = may_glance = may_dodge = may_parry = false;
-    proc = true;
-    trigger_gcd = timespan_t::zero();
-
-    add_option( opt_timespan( "pre_pot_time", pre_pot_time ) );
-    add_option( opt_string( "name", consumable_name_str ) );
-    parse_options( options_str );
-
-
-    const item_data_t* item = unique_gear::find_consumable( p -> dbc, consumable_name_str, ITEM_SUBCLASS_POTION );
-    // Cannot find potion by the name given; background the action
-    if ( ! item )
-    {
-      sim -> errorf( "%s: Could not find a potion item with the name '%s'.", player -> name(), consumable_name_str.c_str() );
-      background = true;
-      return;
-    }
-
-    // Setup the stat buff, use the first available spell in the potion item
-    for ( const auto id_spell : item -> id_spell )
-    {
-      if ( id_spell <= 0 )
-        continue;
-
-      // Safe cast, as we check for positive above
-      const unsigned id = static_cast< unsigned >(id_spell);
-
-      const spell_data_t* spell = p -> find_spell( id );
-      if ( spell -> id() != id )
-        continue;
-
-      std::string spell_name = spell -> name_cstr();
-      util::tokenize( spell_name );
-      buff_t* existing_buff = buff_t::find( p -> buff_list, spell_name );
-      if ( ! existing_buff )
-        stat_buff = stat_buff_creator_t( p, spell_name, spell );
-      else
-      {
-        assert( dynamic_cast< stat_buff_t* >( existing_buff ) && "Potion stat buff is not stat_buff_t" );
-        stat_buff = static_cast< stat_buff_t* >( existing_buff );
-      }
-
-      this -> id = spell -> id();
-      s_data = spell;
-
-      stats = player -> get_stats( spell_name, this );
-      break;
-    }
-
-    if ( ! stat_buff )
-    {
-      sim -> errorf( "%s: No buff found in potion '%s'.", player -> name(), item -> name );
-      background = true;
-      return;
-    }
-
-    // Setup cooldown
-    cooldown = p -> get_cooldown( "potion" );
-    for ( size_t i = 0; i < MAX_ITEM_EFFECT; i++ )
-    {
-      if ( item -> cooldown_group[ i ] > 0 && item -> cooldown_group_duration[ i ] > 0 )
-      {
-        cooldown -> duration = timespan_t::from_millis( item -> cooldown_group_duration[ i ] );
-        break;
-      }
-    }
-
-    if ( cooldown -> duration == timespan_t::zero() )
-    {
-      sim -> errorf( "%s: No cooldown found for potion '%s'.", player -> name(), item -> name );
-      background = true;
-      return;
-    }
-
-    // Sanity check pre-pot time at this time so that it's not longer than the duration of the buff
-    pre_pot_time = std::max( timespan_t::zero(), std::min( pre_pot_time, stat_buff -> data().duration() ) );
-  }
-
-  void update_ready( timespan_t cd_duration ) override
-  {
-    // If the player is in combat, just make a very long CD
-    if ( player -> in_combat )
-      cd_duration = sim -> max_time * 3;
-    else
-      cd_duration = cooldown -> duration - pre_pot_time;
-
-    action_t::update_ready( cd_duration );
-  }
-
-  // Needed to satisfy normal execute conditions
-  result_e calculate_result( action_state_t* ) const override
-  { return RESULT_HIT; }
-
-  void execute() override
-  {
-    action_t::execute();
-
-    timespan_t duration = stat_buff -> data().duration();
-
-    if ( ! player -> in_combat )
-      duration -= pre_pot_time;
-
-    stat_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-  }
-};
-
-
 struct augmentation_t : public action_t
 {
   augmentation_t( player_t* p, const std::string& options_str ) :
@@ -1048,6 +926,225 @@ struct crystal_of_insanity_t : public flask_base_t
   }
 };
 
+struct dbc_consumable_base_t : public action_t
+{
+  std::string              consumable_name;
+  const item_data_t*       item_data;
+  item_subclass_consumable type;
+
+  action_t*                consumable_action;
+  buff_t*                  consumable_buff;
+
+  dbc_consumable_base_t( player_t* p, const std::string& name_str ) :
+    action_t( ACTION_USE, name_str, p ), item_data( nullptr ), type( ITEM_SUBCLASS_CONSUMABLE )
+  {
+    add_option( opt_string( "name", consumable_name ) );
+
+    harmful = callbacks = may_crit = may_miss = false;
+
+    // Consumables always target the owner
+    target = player;
+  }
+
+  void init() override
+  {
+    item_data = unique_gear::find_consumable( player -> dbc, consumable_name, type );
+    if ( ! item_data )
+    {
+      sim -> errorf( "%s: Unable to find consumable %s for %s", player -> name(),
+          consumable_name.c_str(), signature_str.c_str() );
+      background = true;
+    }
+
+    if ( ! background && ! initialize_consumable() )
+    {
+      sim -> errorf( "%s: Unable to initialize consumable %s for %s", player -> name(),
+          consumable_name.c_str(), signature_str.c_str() );
+      background = true;
+    }
+
+    action_t::init();
+  }
+
+  // Needed to satisfy normal execute conditions
+  result_e calculate_result( action_state_t* ) const override
+  { return RESULT_HIT; }
+
+  void execute() override
+  {
+    action_t::execute();
+
+    if ( consumable_action )
+    {
+      consumable_action -> execute();
+    }
+
+    if ( consumable_buff )
+    {
+      consumable_buff -> trigger();
+    }
+  }
+
+  // Find a suitable DBC spell for the consumable
+  virtual const spell_data_t* driver() const
+  {
+    if ( ! item_data )
+    {
+      return spell_data_t::not_found();
+    }
+
+    for ( const auto& spell_id : item_data -> id_spell )
+    {
+      auto ptr = player -> find_spell( spell_id );
+      if ( ptr -> id() == as<unsigned>( spell_id ) )
+      {
+        return ptr;
+      }
+    }
+
+    return spell_data_t::not_found();
+  }
+
+  // Attempts to initialize the consumable. Jumps through quite a few hoops to manage to create
+  // special effects only once, if the user input contains multiple consumable lines (as is possible
+  // with potions for example).
+  virtual bool initialize_consumable()
+  {
+    if ( driver() -> id() == 0 )
+    {
+      return false;
+    }
+
+    special_effect_t* effect = unique_gear::find_special_effect( player, driver() -> id() );
+    // No special effect for this consumable found, so create one
+    if ( ! effect )
+    {
+      effect = new special_effect_t( player );
+      effect -> type = SPECIAL_EFFECT_USE;
+      effect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+      auto ret = unique_gear::initialize_special_effect( *effect, driver() -> id() );
+
+      // Something went wrong with the special effect init, so return false (will disable this
+      // consumable)
+      if ( ret == false )
+      {
+        delete effect;
+        return ret;
+      }
+
+      // First special effect initialization phase could not decude a proper consumable to create
+      if ( effect -> type == SPECIAL_EFFECT_NONE )
+      {
+        delete effect;
+        return false;
+      }
+
+      // Note, this needs to be added before initializing the (potentially) custom special effect,
+      // since find_special_effect for this same driver needs to find this newly created special
+      // effect, not anything the custom init might create.
+      player -> special_effects.push_back( effect );
+
+      // Finally, initialize the special effect. If it's a plain old stat buff this does nothing,
+      // but some consumables require custom initialization.
+      unique_gear::initialize_special_effect_2( effect );
+    }
+
+    // And then, grab the action and buff from the special effect, if they are enabled
+    consumable_action = effect -> create_action();
+    consumable_buff = effect -> create_buff();
+
+    return true;
+  }
+};
+
+// ==========================================================================
+// Potions (DBC-backed)
+// ==========================================================================
+
+struct potion_t : public dbc_consumable_base_t
+{
+  timespan_t pre_pot_time;
+
+  potion_t( player_t* p, const std::string& options_str ) :
+    dbc_consumable_base_t( p, "potion" ),
+    pre_pot_time( timespan_t::from_seconds( 2.0 ) )
+  {
+    add_option( opt_timespan( "pre_pot_time", pre_pot_time ) );
+    parse_options( options_str );
+
+    type = ITEM_SUBCLASS_POTION;
+    cooldown = player -> get_cooldown( "potion" );
+  }
+
+  bool initialize_consumable() override
+  {
+    if ( ! dbc_consumable_base_t::initialize_consumable() )
+    {
+      return false;
+    }
+
+    // Setup a cooldown duration for the potion
+    for ( size_t i = 0; i < sizeof_array( item_data -> cooldown_group ); i++ )
+    {
+      if ( item_data -> cooldown_group[ i ] > 0 && item_data -> cooldown_group_duration[ i ] > 0 )
+      {
+        cooldown -> duration = timespan_t::from_millis( item_data -> cooldown_group_duration[ i ] );
+        break;
+      }
+    }
+
+    if ( cooldown -> duration == timespan_t::zero() )
+    {
+      sim -> errorf( "%s: No cooldown found for potion '%s'",
+          player -> name(), item_data -> name );
+      return false;
+    }
+
+    // Sanity check pre-pot time at this time so that it's not longer than the duration of the buff
+    if ( consumable_buff )
+    {
+      pre_pot_time = std::max( timespan_t::zero(),
+                               std::min( pre_pot_time, consumable_buff -> data().duration() ) );
+    }
+
+    return true;
+  }
+
+  void update_ready( timespan_t cd_duration = timespan_t::min() ) override
+  {
+    // If the player is in combat, just make a very long CD
+    if ( player -> in_combat )
+      cd_duration = sim -> max_time * 3;
+    else
+      cd_duration = cooldown -> duration - pre_pot_time;
+
+    action_t::update_ready( cd_duration );
+  }
+
+  // Overwrite with fanciful execution due to prepotting
+  void execute() override
+  {
+    action_t::execute();
+
+    if ( consumable_action )
+    {
+      consumable_action -> execute();
+    }
+
+    if ( consumable_buff )
+    {
+      timespan_t duration = consumable_buff -> data().duration();
+      if ( ! player -> in_combat )
+      {
+        duration -= pre_pot_time;
+      }
+
+      consumable_buff -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+    }
+  }
+
+};
+
 } // END UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -1058,7 +1155,7 @@ action_t* consumable::create_action( player_t*          p,
                                      const std::string& name,
                                      const std::string& options_str )
 {
-  if ( name == "potion"               ) return new   dbc_potion_t( p, options_str );
+  if ( name == "potion"               ) return new       potion_t( p, options_str );
   if ( name == "flask"                ) return new        flask_t( p, options_str );
   if ( name == "elixir"               ) return new       elixir_t( p, options_str );
   if ( name == "food"                 ) return new         food_t( p, options_str );
