@@ -26,8 +26,10 @@ namespace {
   dbc_index_t<item_data_t, id_member_policy> item_data_index;
 
   typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<item_data_t, ITEM_SUBCLASS_POTION>, id_member_policy> potion_data_t;
+  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<item_data_t, ITEM_SUBCLASS_FLASK>, id_member_policy> flask_data_t;
 
   potion_data_t potion_data_index;
+  flask_data_t flask_data_index;
 }
 
 const item_name_description_t* dbc::item_name_descriptions( bool ptr )
@@ -438,11 +440,12 @@ void dbc::init_item_data()
   item_data_index.init( __items_noptr(), false );
   item_enchantment_data_index.init( __spell_item_ench_data, false );
   potion_data_index.init( __items_noptr(), false );
-
+  flask_data_index.init( __items_noptr(), false );
 #if SC_USE_PTR
   item_data_index.init( __items_ptr(), true );
   item_enchantment_data_index.init( __ptr_spell_item_ench_data, true );
   potion_data_index.init( __items_ptr(), true );
+  flask_data_index.init( __items_ptr(), true );
 #endif
 }
 
@@ -1381,6 +1384,9 @@ const item_data_t* dbc::find_consumable( item_subclass_consumable type, bool ptr
   {
     case ITEM_SUBCLASS_POTION:
       i = potion_data_index.get( ptr, f );
+      break;
+    case ITEM_SUBCLASS_FLASK:
+      i = flask_data_index.get( ptr, f );
       break;
     default:
       break;

@@ -3817,11 +3817,11 @@ struct player_t : public actor_t
   } resources;
 
   struct consumables_t {
-    stat_buff_t* flask;
+    buff_t* flask;
     stat_buff_t* guardian_elixir;
     stat_buff_t* battle_elixir;
     stat_buff_t* food;
-    stat_buff_t* augmentation;
+    buff_t* augmentation;
   } consumables;
 
   // Events
