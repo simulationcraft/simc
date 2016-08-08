@@ -252,7 +252,7 @@ public:
   action_t* t16_2pc_sun_bolt;
 
   double starshards;
-  timespan_t last_rake, last_healing_touch;
+  double expected_max_health; // For Bristling Fur calculations.
 
   // RPPM objects
   struct rppms_t
@@ -793,6 +793,7 @@ public:
   void init_beast_weapon( weapon_t&, double );
   const spell_data_t* find_affinity_spell( const std::string& );
   void trigger_natures_guardian( const action_state_t* );
+  double calculate_expected_max_health() const;
 
 private:
   void              apl_precombat();
@@ -3658,8 +3659,6 @@ struct healing_touch_t : public druid_heal_t
   virtual void execute() override
   {
     druid_heal_t::execute();
-
-    p() -> last_healing_touch = sim -> current_time();
 
     if ( p() -> talent.bloodtalons -> ok() )
       p() -> buff.bloodtalons -> trigger( 2 );
@@ -6869,6 +6868,7 @@ void druid_t::init_resources( bool force )
   resources.current[ RESOURCE_RAGE ] = 0;
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
   resources.current[ RESOURCE_ASTRAL_POWER ] = initial_astral_power;
+  expected_max_health = calculate_expected_max_health();
 }
 
 // druid_t::init_rng ========================================================
@@ -6941,8 +6941,6 @@ void druid_t::reset()
 
   if ( mastery.natures_guardian -> ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
-
-  last_rake = last_healing_touch = timespan_t::zero();
 }
 
 // druid_t::merge ===========================================================
@@ -7634,7 +7632,7 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t
     {
       // 1 rage per 1% of maximum health taken
       resource_gain( RESOURCE_RAGE,
-                     s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100,
+                     s -> result_amount / expected_max_health * 100,
                      gain.bristling_fur );
     }
 
@@ -7785,6 +7783,44 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
   s -> target = this;
   active.natures_guardian -> snapshot_state( s, HEAL_DIRECT );
   active.natures_guardian -> schedule_execute( s );
+}
+
+// druid_t::calculate_expected_max_health ===================================
+
+double druid_t::calculate_expected_max_health() const
+{
+	double slot_weights = 0;
+	double prop_values = 0;
+
+	for ( size_t i = 0; i < items.size(); i++ )
+	{
+		const item_t* item = &items[ i ];
+		if ( ! item || item -> slot == SLOT_SHIRT || item -> slot == SLOT_RANGED ||
+      item -> slot == SLOT_TABARD || item -> item_level() <= 0 )
+		{
+			continue;
+		}
+
+		const random_prop_data_t item_data = dbc.random_property( item -> item_level() );
+		int index = item_database::random_suffix_type( &item -> parsed.data );
+		slot_weights += item_data.p_epic[ index ] / item_data.p_epic[ 0 ];
+
+		if ( ! item -> active() )
+		{
+			continue;
+		}
+
+		prop_values += item_data.p_epic[ index ];
+	}
+
+	double expected_health = ( prop_values / slot_weights ) * 8.318556;
+	expected_health += base.stats.attribute[ STAT_STAMINA ];
+	expected_health *= 1.0 + matching_gear_multiplier( ATTR_STAMINA );
+  expected_health *= 1.0 + spec.bear_form -> effectN( 2 ).percent();
+  expected_health *= 1.0 + artifact.bestial_fortitude.percent();
+	expected_health *= current.health_per_stamina;
+
+	return expected_health;
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )

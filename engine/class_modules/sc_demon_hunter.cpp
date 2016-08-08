@@ -6633,7 +6633,7 @@ double demon_hunter_t::temporary_movement_modifier() const
 // overridden player_t combat functions
 // ==========================================================================
 
-// demon_hunter_t::expected_max_health() ============================================
+// demon_hunter_t::expected_max_health() ====================================
 
 double demon_hunter_t::calculate_expected_max_health() const
 {
