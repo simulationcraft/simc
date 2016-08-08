@@ -37,7 +37,8 @@ namespace
    Artificial Stamina
    
    Needs Documenting --------------------------------------------------------
-   "activation_time" sigil expression
+   "activation_time" / "delay" sigil expression
+   "sigil_placed" sigil expression
    "jump_cancel" -> "animation_cancel" fel rush option
 */
 
@@ -176,6 +177,9 @@ public:
   // Retreat.
   double target_reach;
   event_t* exiting_melee;  // Event to disable melee abilities mid-VR.
+
+  timespan_t sigil_delay; // The amount of time it takes for a sigil to activate.
+  timespan_t sigil_of_flame_activates; // When sigil of flame will next activate.
 
   // Buffs
   struct
@@ -586,6 +590,7 @@ public:
   {
     return target_reach >= 0 ? target_reach : sim -> target -> combat_reach;
   }
+  expr_t* create_sigil_expression( const std::string& );
 
 private:
   target_specific_t<demon_hunter_td_t> _target_data;
@@ -2285,7 +2290,6 @@ struct infernal_strike_t : public demon_hunter_spell_t
   struct infernal_strike_impact_t : public demon_hunter_spell_t
   {
     action_t* sigil;
-    timespan_t sigil_delay;
 
     infernal_strike_impact_t( demon_hunter_t* p )
       : demon_hunter_spell_t( "infernal_strike_impact", p, 
@@ -2299,10 +2303,6 @@ struct infernal_strike_t : public demon_hunter_spell_t
       if ( p -> talent.flame_crash -> ok() )
       {
         sigil = new sigil_of_flame_damage_t( p );
-        sigil_delay = p -> find_specialization_spell( "Sigil of Flame" ) -> duration() +
-          p -> talent.quickened_sigils -> effectN( 1 ).time_value();
-
-        assert( sigil_delay > timespan_t::zero() );
       }
     }
 
@@ -2312,12 +2312,14 @@ struct infernal_strike_t : public demon_hunter_spell_t
 
       if ( sigil )
       {
+        p() -> sigil_of_flame_activates = sim -> current_time() + p() -> sigil_delay;
+
         new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
             .target( execute_state -> target )
             .x( p() -> x_position )
             .y( p() -> y_position )
-            .pulse_time( sigil_delay )
-            .duration( sigil_delay )
+            .pulse_time( p() -> sigil_delay )
+            .duration( p() -> sigil_delay )
             .start_time( sim -> current_time() )
             .action( sigil ) );
       }
@@ -2379,6 +2381,14 @@ struct infernal_strike_t : public demon_hunter_spell_t
     if ( ! t ) return nullptr;
 
     return td( t ) -> dots.sigil_of_flame;
+  }
+
+  expr_t* create_expression( const std::string& name ) override
+  {
+    if ( expr_t* e = p() -> create_sigil_expression( name ) )
+      return e;
+
+    return demon_hunter_spell_t::create_expression( name );
   }
 };
 
@@ -2807,7 +2817,6 @@ inline dot_t* sigil_of_flame_damage_t::get_dot( player_t* t )
 struct sigil_of_flame_t : public demon_hunter_spell_t
 {
   sigil_of_flame_damage_t* damage;
-  timespan_t delay;
 
   sigil_of_flame_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "sigil_of_flame", p,
@@ -2815,11 +2824,9 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
                             options_str )
   {
     may_miss = may_crit = false;
-    delay = data().duration();
     damage = new sigil_of_flame_damage_t( p );
     damage -> stats = stats;
 
-    delay += p -> talent.quickened_sigils -> effectN( 1 ).time_value();
     cooldown -> duration *=
       1.0 + p -> talent.quickened_sigils -> effectN( 2 ).percent();
 
@@ -2837,32 +2844,24 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
+    p() -> sigil_of_flame_activates = sim -> current_time() + p() -> sigil_delay;
+
     new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
         .target( execute_state -> target )
         .x( p() -> talent.concentrated_sigils -> ok() ?
           p() -> x_position : execute_state -> target -> x_position )
         .y( p() -> talent.concentrated_sigils -> ok() ?
           p() -> y_position : execute_state -> target -> y_position )
-        .pulse_time( delay )
-        .duration( delay )
+        .pulse_time( p() -> sigil_delay )
+        .duration( p() -> sigil_delay )
         .start_time( sim -> current_time() )
         .action( damage ) );
   }
 
   expr_t* create_expression( const std::string& name ) override
   {
-    if ( util::str_compare_ci( name, "activation_time" ) ||
-      util::str_compare_ci( name, "delay" ) )
-    {
-      if ( sim -> optimize_expressions )
-      {
-        return expr_t::create_constant( name, delay.total_seconds() );
-      }
-      else
-      {
-        return make_ref_expr( name, delay );
-      }
-    }
+    if ( expr_t* e = p() -> create_sigil_expression( name ) )
+      return e;
 
     return demon_hunter_spell_t::create_expression( name );
   }
@@ -4977,6 +4976,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     spirit_bomb_driver( nullptr ),
     target_reach( -1.0 ),
     exiting_melee( nullptr ),
+    sigil_of_flame_activates( timespan_t::zero() ),
     buff(),
     talent(),
     spec(),
@@ -5972,7 +5972,16 @@ void demon_hunter_t::init_spells()
   }
 
   if ( talent.sigil_of_chains -> ok() )
+  {
     sigil_cooldowns.push_back( cooldown.sigil_of_chains );
+  }
+
+  sigil_delay = find_specialization_spell( "Sigil of Flame" ) -> duration();
+
+  if ( talent.quickened_sigils -> ok() )
+  {
+    sigil_delay += talent.quickened_sigils -> effectN( 1 ).time_value();
+  }
 }
 
 // demon_hunter_t::invalidate_cache =========================================
@@ -6808,6 +6817,7 @@ void demon_hunter_t::reset()
   metamorphosis_health  = 0;
   spirit_bomb           = 0.0;
   demon_blades_charges  = 0;
+  sigil_of_flame_activates = timespan_t::zero();
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
@@ -7011,6 +7021,52 @@ void demon_hunter_t::invalidate_damage_calcs()
   {
     damage_calcs[ i ] -> invalidate();
   }
+}
+
+// demon_hunter_t::create_sigil_expression ==================================
+
+expr_t* demon_hunter_t::create_sigil_expression( const std::string& name )
+{
+  if ( util::str_compare_ci( name, "activation_time" ) ||
+    util::str_compare_ci( name, "delay" ) )
+  {
+    if ( sim -> optimize_expressions )
+    {
+      return expr_t::create_constant( name, sigil_delay.total_seconds() );
+    }
+    else
+    {
+      return make_ref_expr( name, sigil_delay );
+    }
+  }
+  else if ( util::str_compare_ci( name, "sigil_placed" ) ||
+    util::str_compare_ci( name, "placed" ) )
+  {
+    struct sigil_placed_expr_t : public expr_t
+    {
+      demon_hunter_t* dh;
+
+      sigil_placed_expr_t( demon_hunter_t* p, const std::string& n )
+        : expr_t( n ), dh( p )
+      {}
+
+      double evaluate() override
+      {
+        if ( dh -> sim -> current_time() < dh -> sigil_of_flame_activates )
+        {
+          return 1;
+        }
+        else
+        {
+          return 0;
+        }
+      }
+    };
+
+    return new sigil_placed_expr_t( this, name );
+  }
+
+  return nullptr;
 }
 
 /* Always returns non-null targetdata pointer
