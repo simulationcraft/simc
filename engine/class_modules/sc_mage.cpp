@@ -742,6 +742,24 @@ struct arcane_familiar_pet_t : public mage_pet_t
 
     mage_pet_t::init_action_list();
   }
+
+  virtual double composite_player_multiplier( school_e school ) const override
+  {
+    double m = mage_pet_t::composite_player_multiplier( school );
+
+    if ( o()->buffs.rune_of_power->check() )
+    {
+      m *= 1.0 + o()->buffs.rune_of_power->data().effectN( 3 ).percent();
+    }
+
+    if ( o()->talents.incanters_flow->ok() )
+    {
+      m *= 1.0 +
+           o()->buffs.incanters_flow->current_stack *
+               o()->incanters_flow_stack_mult;
+    }
+    return m;
+  }
 };
 
 struct arcane_assault_t : public mage_pet_spell_t
@@ -753,6 +771,7 @@ struct arcane_assault_t : public mage_pet_spell_t
     spell_power_mod.direct = p->find_spell( 225119 )->effectN( 1 ).sp_coeff();
     cooldown -> duration = timespan_t::from_seconds( 3.0 );
     cooldown -> hasted = true;
+    may_crit = true;
   }
 };
 
