@@ -288,6 +288,8 @@ struct move_enemy_t : public raid_event_t
 
   void reset() override
   {
+    raid_event_t::reset();
+
     if ( enemy )
     {
       enemy -> x_position = 0;
