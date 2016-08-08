@@ -7191,7 +7191,7 @@ void register_target_data_initializers_x7( sim_t* ); // Legion targetdata initia
 
 void init( player_t* );
 
-special_effect_t* find_special_effect( player_t* actor, unsigned spell_id );
+special_effect_t* find_special_effect( player_t* actor, unsigned spell_id, special_effect_e = SPECIAL_EFFECT_NONE );
 
 // First-phase special effect initializers
 bool initialize_special_effect( special_effect_t& effect, unsigned spell_id );

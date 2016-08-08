@@ -4496,10 +4496,10 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   register_target_data_initializers_x7( sim );
 }
 
-special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id )
+special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )
 {
-  auto it = range::find_if( actor -> special_effects, [ spell_id ]( const special_effect_t* e ) {
-    return e -> driver() -> id() == spell_id;
+  auto it = range::find_if( actor -> special_effects, [ spell_id, type ]( const special_effect_t* e ) {
+    return e -> driver() -> id() == spell_id && ( type == SPECIAL_EFFECT_NONE || type == e -> type );
   });
 
   if ( it != actor -> special_effects.end() )
@@ -4509,8 +4509,8 @@ special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned sp
 
   for ( const auto& item: actor -> items )
   {
-    auto it = range::find_if( item.parsed.special_effects, [ spell_id ]( const special_effect_t* e ) {
-      return e -> driver() -> id() == spell_id;
+    auto it = range::find_if( item.parsed.special_effects, [ spell_id, type ]( const special_effect_t* e ) {
+      return e -> driver() -> id() == spell_id && ( type == SPECIAL_EFFECT_NONE || type == e -> type );
     });
 
     if ( it != item.parsed.special_effects.end() )

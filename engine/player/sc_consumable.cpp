@@ -1015,7 +1015,7 @@ struct dbc_consumable_base_t : public action_t
       return false;
     }
 
-    special_effect_t* effect = unique_gear::find_special_effect( player, driver() -> id() );
+    special_effect_t* effect = unique_gear::find_special_effect( player, driver() -> id(), SPECIAL_EFFECT_USE );
     // No special effect for this consumable found, so create one
     if ( ! effect )
     {
