@@ -115,7 +115,7 @@ struct enemy_action_t : public ACTION_TYPE
     this -> add_option(  opt_timespan( "cooldown", cooldown_ ) );
     this -> add_option(  opt_string( "type", dmg_type_override ) );
 
-    special = true;
+    this -> special = true;
     dmg_type_override = "none";
   }
 
