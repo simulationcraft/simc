@@ -95,7 +95,6 @@ enum sef_ability_e {
   SEF_BLACKOUT_KICK,
   SEF_RISING_SUN_KICK,
   SEF_RISING_SUN_KICK_TRINKET,
-//  SEF_RISING_SUN_KICK_TORNADO_KICK,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
@@ -1286,7 +1285,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_spell_t( "chi_wave_damage", player, player -> o() -> passives.chi_wave_damage )
     {
       dual = true;
-      attack_power_mod.direct = 0.867; // Hard code 07/12/16
     }
   };
 
@@ -1315,14 +1313,32 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_chi_burst_damage_t: public sef_spell_t
+  {
+    sef_chi_burst_damage_t( storm_earth_and_fire_pet_t* player ):
+      sef_spell_t( "chi_burst_damage", player, player -> o() -> passives.chi_burst_damage)
+    {
+      dual = true;
+    }
+  };
+
   struct sef_chi_burst_t : public sef_spell_t
   {
+    sef_chi_burst_damage_t* damage;
     sef_chi_burst_t( storm_earth_and_fire_pet_t* player ) :
-      sef_spell_t( "chi_burst", player, player -> o() -> passives.chi_burst_damage )
-    {
-      interrupt_auto_attack = false;
-      attack_power_mod.direct = 4.125; // Hard code 06/21/16
+      sef_spell_t( "chi_burst", player, player -> o() -> talent.chi_burst ),
+      damage( new sef_chi_burst_damage_t( player ) )
+    { 
+      aoe = -1;
     }
+
+    virtual void execute() override
+    {
+      sef_spell_t::execute();
+
+      damage -> execute();
+    }
+
   };
 
   struct sef_crackling_jade_lightning_t : public sef_spell_t
@@ -1412,8 +1428,6 @@ public:
     attacks.at( SEF_RISING_SUN_KICK ) = new sef_rising_sun_kick_t( this );
     attacks.at( SEF_RISING_SUN_KICK_TRINKET ) =
         new sef_rising_sun_kick_trinket_t( this );
-    //    attacks.at SEF_RISING_SUN_KICK_TORNADO_KICK ) = new
-    //    sef_rising_sun_kick_tornado_kick_t( this );
     attacks.at( SEF_FISTS_OF_FURY ) = new sef_fists_of_fury_t( this );
     attacks.at( SEF_SPINNING_CRANE_KICK ) =
         new sef_spinning_crane_kick_t( this );
@@ -5630,7 +5644,6 @@ struct chi_burst_damage_t: public monk_spell_t
     monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage)
   {
     background = true;
-    target = p();
     attack_power_mod.direct = 4.125; // Hard code 06/21/16
   }
 
