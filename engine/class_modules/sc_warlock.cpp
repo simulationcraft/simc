@@ -15,6 +15,7 @@
 // Affliction -
 // Haunt reset
 // Drained to a Husk doesn't return spelldata?
+// Soul Flame + Wrath of Consumption on-death effects.
 // 
 // Better reporting for add buffs.
 //
@@ -128,6 +129,7 @@ public:
   struct active_t
   {
     action_t* demonic_power_proc;
+    action_t* harvester_of_souls;
     spell_t* rain_of_fire;
   } active;
 
@@ -642,7 +644,7 @@ public:
             bool procced = p() -> o() -> grimoire_of_synergy_pet -> trigger(); //check for RPPM
             if ( procced ) p() -> o() -> buffs.demonic_synergy -> trigger(); //trigger the buff
         }
-        if( p()->o()->artifact.stolen_power.rank())
+        if( p() -> specialization() == WARLOCK_DEMONOLOGY && p() -> o() -> artifact.stolen_power.rank() )
         {
             p()->o()->buffs.stolen_power_stacks->bump(1);
             //p()->o()->procs.stolen_power_stack;
@@ -2681,6 +2683,17 @@ struct corruption_t: public warlock_spell_t
 
     return m;
   }
+
+  virtual void tick( dot_t* d ) override
+  {
+
+    if ( p() -> artifact.harvester_of_souls.rank() && rng().roll( p() -> artifact.harvester_of_souls.data().proc_chance() ) )
+    {
+      p() -> active.harvester_of_souls -> target = execute_state -> target;
+      p() -> active.harvester_of_souls -> execute();
+    }
+    warlock_spell_t::tick( d );
+  }
 };
 
 struct drain_life_t: public warlock_spell_t
@@ -4560,6 +4573,16 @@ struct demonic_power_damage_t : public warlock_spell_t
   }
 };
 
+struct harvester_of_souls_t : public warlock_spell_t
+{
+  harvester_of_souls_t( warlock_t* p ) :
+    warlock_spell_t( "harvester_of_souls", p, p -> find_spell( 218615 ) )
+  {
+    background = true;
+    proc = true;
+  }
+};
+
 struct grimoire_of_service_t: public summon_pet_t
 {
   grimoire_of_service_t( warlock_t* p, const std::string& pet_name ):
@@ -5266,6 +5289,7 @@ void warlock_t::init_spells()
 
   // Active Spells
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
+  active.harvester_of_souls = new actions::harvester_of_souls_t( this );
 }
 
 void warlock_t::init_base_stats()
