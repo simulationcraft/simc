@@ -25,19 +25,24 @@ actions.precombat+=/potion,name=draenic_agility_potion
 # Executed every time the actor is available.
 
 actions=auto_attack
-actions+=/fiery_brand
-actions+=/demon_spikes
+actions+=/fiery_brand,if=buff.demon_spikes.down&buff.metamorphosis.down
+actions+=/demon_spikes,if=charges=2|buff.demon_spikes.down&!dot.fiery_brand.ticking&buff.metamorphosis.down
 actions+=/empower_wards,if=debuff.casting.up
-actions+=/soul_cleave,if=incoming_damage_3s>health.max*0.25
-actions+=/immolation_aura
-actions+=/fracture,if=pain>=80&incoming_damage_6s=0
-actions+=/soul_cleave,if=pain>=80
-actions+=/felblade
-actions+=/sigil_of_flame
+actions+=/infernal_strike,line_cd=3,if=artifact.fiery_demise.enabled&dot.fiery_brand.ticking&remains-travel_time-action.sigil_of_flame.delay<0.3*duration
+actions+=/infernal_strike,line_cd=3,if=(!artifact.fiery_demise.enabled|(max_charges-charges_fractional)*recharge_time<cooldown.fiery_brand.remains+5)&remains-travel_time-action.sigil_of_flame.delay<0.3*duration
+actions+=/spirit_bomb,if=debuff.frailty.down
+actions+=/soul_carver,if=dot.fiery_brand.ticking
+actions+=/immolation_aura,if=pain<=90
+actions+=/felblade,if=pain<=80
+actions+=/soul_barrier
+actions+=/soul_cleave,if=soul_fragments=5
+actions+=/metamorphosis,if=buff.demon_spikes.down&!dot.fiery_brand.ticking&buff.metamorphosis.down&incoming_damage_5s>health.max*0.70
+actions+=/fel_devastation,if=incoming_damage_5s>health.max*0.70
+actions+=/soul_cleave,if=incoming_damage_5s>=health.max*0.70
 actions+=/fel_eruption
-actions+=/spirit_bomb,if=debuff.frail.down
-actions+=/fel_devastation
-actions+=/soul_carver
+actions+=/sigil_of_flame,if=remains-delay<=0.3*duration
+actions+=/fracture,if=pain>=80&soul_fragments<4&incoming_damage_4s<=health.max*0.20
+actions+=/soul_cleave,if=pain>=80
 actions+=/shear
 
 head=hood_of_the_blind_executioner,id=137511

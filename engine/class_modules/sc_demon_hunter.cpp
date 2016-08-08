@@ -202,7 +202,6 @@ public:
     buff_t* defensive_spikes;
     buff_t* demon_spikes;
     buff_t* empower_wards;
-    buff_t* gluttony;
     buff_t* immolation_aura;
     buff_t* painbringer;
     buff_t* siphon_power;
@@ -255,14 +254,14 @@ public:
 
     //                  felblade
     const spell_data_t* flame_crash;  // NYI
-    const spell_data_t* gluttony;
+    //                  fel_eruption
 
     const spell_data_t* feed_the_demon;
     const spell_data_t* fracture;
     const spell_data_t* soul_rending;
 
     const spell_data_t* concentrated_sigils;
-    //                  fel_eruption
+    const spell_data_t* sigil_of_chains;
     const spell_data_t* quickened_sigils;
 
     const spell_data_t* fel_devastation;
@@ -382,11 +381,13 @@ public:
     cooldown_t* fel_barrage;
     cooldown_t* fel_barrage_proc;
     cooldown_t* fel_rush;
+    cooldown_t* fel_rush_secondary;
     cooldown_t* fury_of_the_illidari;
     cooldown_t* nemesis;
     cooldown_t* netherwalk;
     cooldown_t* throw_glaive;
     cooldown_t* vengeful_retreat;
+    cooldown_t* vengeful_retreat_secondary;
 
     // Vengeance
     cooldown_t* demon_spikes;
@@ -943,8 +944,6 @@ struct soul_fragment_t
     {
       dh -> buff.demon_soul -> trigger();
     }
-
-    dh -> buff.gluttony -> trigger();
 
     remove();
   }
@@ -2009,10 +2008,7 @@ struct fel_rush_t : public demon_hunter_spell_t
     damage -> schedule_execute();
 
     // Aug 04 2016: Using Fel Rush puts VR on cooldown for 1 second.
-    if ( p() -> cooldown.vengeful_retreat -> remains() < timespan_t::from_seconds( 1.0 ) )
-    {
-      p() -> cooldown.vengeful_retreat -> start( timespan_t::from_seconds( 1.0 ) );
-    }
+    p() -> cooldown.vengeful_retreat_secondary -> start( timespan_t::from_seconds( 1.0 ) );
 
     if ( !a_cancel )
     {
@@ -2024,11 +2020,8 @@ struct fel_rush_t : public demon_hunter_spell_t
 
   bool ready() override
   {
-    /* Aug 04 2016: Using VR puts Fel Rush on cooldown for 1 second. So as to
-    not mess with the charge timer, just prevent it in ready here. This also 
-    is just generally a good idea to prevent unforeseen interactions with the
-    movement code. */
-    if ( p() -> buff.vengeful_retreat_move -> check() )
+    // Aug 04 2016: Using VR puts Fel Rush on cooldown for 1 second.
+    if ( p() -> cooldown.fel_rush_secondary -> down() )
     {
       return false;
     }
@@ -4217,15 +4210,6 @@ struct soul_cleave_t : public demon_hunter_attack_t
 
       base_multiplier *= 1.0 + p -> artifact.tormented_souls.percent();
     }
-
-    double action_multiplier() const override
-    {
-      double am = demon_hunter_attack_t::action_multiplier();
-
-      am *= 1.0 + p() -> buff.gluttony -> check_value();
-
-      return am;
-    }
   };
 
   heals::soul_cleave_heal_t* heal;
@@ -4281,7 +4265,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     heal_state -> da_multiplier *= pain_multiplier;
     heal -> schedule_execute( heal_state );
 
-    // Damage; snapshot state now so we can include Gluttony.
+    // Damage
     action_state_t* mh_state = mh -> get_state();
     mh -> target      = execute_state -> target;
     mh -> snapshot_state( mh_state, DMG_DIRECT );
@@ -4297,9 +4281,6 @@ struct soul_cleave_t : public demon_hunter_attack_t
       p() -> sigil_cooldowns[ roll ] -> adjust(
         p() -> legendary.the_defilers_lost_vambraces );
     }
-
-    p() -> buff.gluttony -> up();  // Benefit tracking
-    p() -> buff.gluttony -> expire();
 
     p() -> cooldown.demon_spikes -> adjust(
       -p() -> sets.set( DEMON_HUNTER_VENGEANCE, T19, B4 )
@@ -4414,13 +4395,13 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    p() -> cooldown.fel_rush -> start( timespan_t::from_seconds( 1.0 ) );
+    p() -> cooldown.fel_rush_secondary -> start( timespan_t::from_seconds( 1.0 ) );
 
     p() -> buff.vengeful_retreat_move -> trigger();
 
     if ( hit_any_target )
     {
-      // Jul 11 2016: Does not benefit from its on momentum, so snapshot now.
+      // Jul 11 2016: Does not benefit from its own momentum, so snapshot now.
       action_state_t* s = damage -> get_state();
       s -> target         = target;
       damage -> snapshot_state( s, DMG_DIRECT );
@@ -4430,6 +4411,16 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
     }
 
     p() -> buff.momentum -> trigger();
+  }
+
+  bool ready() override
+  {
+    if ( p() -> cooldown.vengeful_retreat_secondary -> down() )
+    {
+      return false;
+    }
+
+    return demon_hunter_attack_t::ready();
   }
 };
 
@@ -5298,11 +5289,6 @@ void demon_hunter_t::create_buffs()
                      -> effectN( 1 )
                     .percent() );
 
-  buff.gluttony =
-    buff_creator_t( this, "gluttony", find_spell( 227330 ) )
-    .default_value( find_spell( 227330 ) -> effectN( 1 ).percent() )
-    .trigger_spell( talent.gluttony );
-
   buff.immolation_aura =
     buff_creator_t( this, "immolation_aura", spec.immolation_aura )
   .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
@@ -5862,15 +5848,15 @@ void demon_hunter_t::init_spells()
 
   // talent.felblade
   talent.flame_crash = find_talent_spell( "Flame Crash" );
-  talent.gluttony    = find_talent_spell( "Guttony" );
+  // talent.fel_eruption
 
   talent.feed_the_demon = find_talent_spell( "Feed the Demon" );
   talent.fracture       = find_talent_spell( "Fracture" );
   // talent.soul_rending
 
   talent.concentrated_sigils = find_talent_spell( "Concentrated Sigils" );
-  // talent.fel_eruption
-  talent.quickened_sigils = find_talent_spell( "Quickened Sigils" );
+  talent.sigil_of_chains     = find_talent_spell( "Sigil of Chains" );
+  talent.quickened_sigils    = find_talent_spell( "Quickened Sigils" );
 
   talent.fel_devastation = find_talent_spell( "Fel Devastation" );
   talent.blade_turning   = find_talent_spell( "Blade Turning" );
@@ -5984,6 +5970,9 @@ void demon_hunter_t::init_spells()
   {
     active.charred_warblades = new charred_warblades_t( this );
   }
+
+  if ( talent.sigil_of_chains -> ok() )
+    sigil_cooldowns.push_back( cooldown.sigil_of_chains );
 }
 
 // demon_hunter_t::invalidate_cache =========================================
@@ -6287,20 +6276,38 @@ void demon_hunter_t::apl_vengeance()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "Fiery Brand" );
-  def -> add_action( this, "Demon Spikes" );
+  def -> add_action( this, "Fiery Brand",
+    "if=buff.demon_spikes.down&buff.metamorphosis.down" );
+  def -> add_action( this, "Demon Spikes", "if=charges=2|buff.demon_spikes.d"
+    "own&!dot.fiery_brand.ticking&buff.metamorphosis.down" );
   def -> add_action( this, "Empower Wards", "if=debuff.casting.up" );
+  def -> add_action( this, "Infernal Strike", "line_cd=3,if=artifact.fiery_d"
+    "emise.enabled&dot.fiery_brand.ticking&remains-travel_time-action.sigil_"
+    "of_flame.delay<0.3*duration" );
+  def -> add_action( this, "Infernal Strike", "line_cd=3,if=(!artifact.fiery"
+    "_demise.enabled|(max_charges-charges_fractional)*recharge_time<cooldown"
+    ".fiery_brand.remains+5)&remains-travel_time-action.sigil_of_flame.delay"
+    "<0.3*duration" );
+  def -> add_talent( this, "Spirit Bomb", "if=debuff.frailty.down" );
+  def -> add_action( this, artifact.soul_carver, "soul_carver",
+    "if=dot.fiery_brand.ticking" );
+  def -> add_action( this, "Immolation Aura", "if=pain<=90" );
+  def -> add_talent( this, "Felblade", "if=pain<=80" );
+  def -> add_talent( this, "Soul Barrier" );
+  def -> add_action( this, "Soul Cleave", "if=soul_fragments=5" );
+  def -> add_action( this, "Metamorphosis", "if=buff.demon_spikes.down&!dot."
+    "fiery_brand.ticking&buff.metamorphosis.down&incoming_damage_5s>health.m"
+    "ax*0.70" );
+  def -> add_talent( this, "Fel Devastation",
+    "if=incoming_damage_5s>health.max*0.70" );
   def -> add_action( this, "Soul Cleave",
-                   "if=incoming_damage_3s>health.max*0.25" );
-  def -> add_action( this, "Immolation Aura" );
-  def -> add_talent( this, "Fracture", "if=pain>=80&incoming_damage_6s=0" );
-  def -> add_action( this, "Soul Cleave", "if=pain>=80" );
-  def -> add_talent( this, "Felblade" );
-  def -> add_action( this, "Sigil of Flame" );
+    "if=incoming_damage_5s>=health.max*0.70" );
   def -> add_talent( this, "Fel Eruption" );
-  def -> add_talent( this, "Spirit Bomb", "if=debuff.frail.down" );
-  def -> add_talent( this, "Fel Devastation" );
-  def -> add_action( this, artifact.soul_carver, "soul_carver" );
+  def -> add_action( this, "Sigil of Flame",
+    "if=remains-delay<=0.3*duration" );
+  def -> add_talent( this, "Fracture",
+    "if=pain>=80&soul_fragments<4&incoming_damage_4s<=health.max*0.20" );
+  def -> add_action( this, "Soul Cleave", "if=pain>=80" );
   def -> add_action( this, "Shear" );
 }
 
@@ -6324,11 +6331,13 @@ void demon_hunter_t::create_cooldowns()
   cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
   cooldown.fel_barrage_proc     = get_cooldown( "fel_barrage_proc" );
   cooldown.fel_rush             = get_cooldown( "fel_rush" );
+  cooldown.fel_rush_secondary   = get_cooldown( "fel_rush_secondary" );
   cooldown.fury_of_the_illidari = get_cooldown( "fury_of_the_illidari" );
   cooldown.nemesis              = get_cooldown( "nemesis" );
   cooldown.netherwalk           = get_cooldown( "netherwalk" );
   cooldown.throw_glaive         = get_cooldown( "throw_glaive" );
   cooldown.vengeful_retreat     = get_cooldown( "vengeful_retreat" );
+  cooldown.vengeful_retreat_secondary = get_cooldown( "vengeful_retreat_secondary" );
 
   // Vengeance
   cooldown.demon_spikes     = get_cooldown( "demon_spikes" );
@@ -6338,7 +6347,6 @@ void demon_hunter_t::create_cooldowns()
   cooldown.sigil_of_misery  = get_cooldown( "sigil_of_misery" );
   cooldown.sigil_of_silence = get_cooldown( "sigil_of_silence" );
 
-  sigil_cooldowns.push_back( cooldown.sigil_of_chains );
   sigil_cooldowns.push_back( cooldown.sigil_of_flame );
   sigil_cooldowns.push_back( cooldown.sigil_of_silence );
   sigil_cooldowns.push_back( cooldown.sigil_of_misery );
@@ -6625,7 +6633,8 @@ double demon_hunter_t::calculate_expected_max_health() const
 	for (size_t i = 0; i < items.size(); i++)
 	{
 		const item_t* item = &items[i];
-		if (!item || item -> slot == SLOT_SHIRT || item -> slot == SLOT_RANGED || item -> slot == SLOT_TABARD)
+		if ( ! item || item -> slot == SLOT_SHIRT || item -> slot == SLOT_RANGED ||
+      item -> slot == SLOT_TABARD || item -> item_level() <= 0 )
 		{
 			continue;
 		}
