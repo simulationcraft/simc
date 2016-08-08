@@ -494,6 +494,10 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
   relic.parsed.data = *gem;
   relic.name_str = gem -> name;
   util::tokenize( relic.name_str );
+  // Apply evil relic data as relic bonus ids, so we can scale the relic ilevel correctly
+  range::for_each( item.parsed.relic_data[ gem_idx ], [ &relic ]( unsigned id ) {
+    relic.parsed.bonus_id.push_back( as<int>( id ) );
+  } );
 
   for ( size_t i = 0, end = sizeof_array( data.ench_type ); i < end; ++i )
   {
@@ -501,7 +505,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
     {
       case ITEM_ENCHANTMENT_RELIC_EVIL:
       {
-        for ( auto bonus_id : item.parsed.relic_data[ gem_idx ] )
+        for ( auto bonus_id : relic.parsed.bonus_id )
         {
           auto bonuses = item.player -> dbc.item_bonus( bonus_id );
           range::for_each( bonuses, [ &relic ]( const item_bonus_entry_t* entry ) {
