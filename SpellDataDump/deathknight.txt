@@ -3566,6 +3566,82 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc191587
 
+Name             : Famine (id=191727) 
+Class            : Death Knight
+School           : Physical
+Range            : 100 yards
+Duration         : 6 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=281245)   : Apply Aura (6) | Unknown effect sub type (269)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 127 | Target: Enemy(6)
+Description      : Reduces damage dealt by $m1%.
+Tooltip          : Reduces damage dealt to the Death Knight by $m1%.
+
+Name             : War (id=191728) 
+Class            : Death Knight
+School           : Physical
+Range            : 100 yards
+Duration         : 6 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=281246)   : Apply Aura (6) | Modify Healing% Done (136)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 127 | Target: Enemy(6)
+Description      : Reduces healing dealt by $m1%.
+Tooltip          : Reduces healing dealt by $m1%.
+
+Name             : Pestilence (id=191729) 
+Class            : Death Knight
+School           : Shadow
+Range            : 100 yards
+Duration         : 6 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=281247)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.10000 | Target: Enemy(6)
+Description      : Deals $o1 damage over $d.
+Tooltip          : Suffering $o1 damage over $d.
+
+Name             : Death (id=191730) 
+Class            : Death Knight
+School           : Physical
+Range            : 100 yards
+Duration         : 6 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=281248)   : Apply Aura (6) | Unknown effect sub type (270)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 127 | Target: Enemy(6)
+Description      : Increases damage taken by $m1%.
+Tooltip          : Increases damage taken from the Death Knight by $m1%.
+
 Name             : Festering Wound (id=194310) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
