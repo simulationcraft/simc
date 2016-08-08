@@ -6290,18 +6290,18 @@ void demon_hunter_t::apl_vengeance()
   def -> add_action( this, "Demon Spikes", "if=charges=2|buff.demon_spikes.d"
     "own&!dot.fiery_brand.ticking&buff.metamorphosis.down" );
   def -> add_action( this, "Empower Wards", "if=debuff.casting.up" );
-  def -> add_action( this, "Infernal Strike", "line_cd=3,if=artifact.fiery_d"
-    "emise.enabled&dot.fiery_brand.ticking&remains-travel_time-action.sigil_"
-    "of_flame.delay<0.3*duration" );
-  def -> add_action( this, "Infernal Strike", "line_cd=3,if=(!artifact.fiery"
-    "_demise.enabled|(max_charges-charges_fractional)*recharge_time<cooldown"
-    ".fiery_brand.remains+5)&remains-travel_time-action.sigil_of_flame.delay"
-    "<0.3*duration" );
+  def -> add_action( this, "Infernal Strike", "!sigil_placed&!in_flight&rema"
+    "ins-travel_time-delay<0.3*duration&artifact.fiery_demise.enabled&dot.fi"
+    "ery_brand.ticking" );
+  def -> add_action( this, "Infernal Strike", "!sigil_placed&!in_flight&rema"
+    "ins-travel_time-delay<0.3*duration&(!artifact.fiery_demise.enabled|(max"
+    "_charges-charges_fractional)*recharge_time<cooldown.fiery_brand.remains"
+    "+5)&(cooldown.sigil_of_flame.remains>7|charges=2)" );
   def -> add_talent( this, "Spirit Bomb", "if=debuff.frailty.down" );
   def -> add_action( this, artifact.soul_carver, "soul_carver",
     "if=dot.fiery_brand.ticking" );
-  def -> add_action( this, "Immolation Aura", "if=pain<=90" );
-  def -> add_talent( this, "Felblade", "if=pain<=80" );
+  def -> add_action( this, "Immolation Aura", "if=pain<=80" );
+  def -> add_talent( this, "Felblade", "if=pain<=70" );
   def -> add_talent( this, "Soul Barrier" );
   def -> add_action( this, "Soul Cleave", "if=soul_fragments=5" );
   def -> add_action( this, "Metamorphosis", "if=buff.demon_spikes.down&!dot."
