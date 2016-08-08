@@ -750,7 +750,6 @@ struct dbc_consumable_base_t : public action_t
   virtual special_effect_t* create_special_effect()
   {
     auto effect = new special_effect_t( player );
-    effect = new special_effect_t( player );
     effect -> type = SPECIAL_EFFECT_USE;
     effect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
 
