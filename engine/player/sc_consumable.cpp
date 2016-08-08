@@ -222,173 +222,6 @@ const food_data_t food_data[] =
   { FOOD_THE_HUNGRY_MAGISTER,          STAT_CRIT_RATING,        375 },
 };
 
-struct flask_base_t : public action_t
-{
-  gain_t* gain;
-
-  flask_base_t( player_t* p, const std::string& action_name_str ) :
-    action_t( ACTION_USE, action_name_str, p ),
-    gain( p -> get_gain( action_name_str ) )
-  {
-    harmful = callbacks = false;
-
-    trigger_gcd = timespan_t::zero();
-  }
-
-  virtual void execute() override
-  {
-    if ( sim -> log )
-      sim -> out_log.printf( "%s performs %s", player -> name(), player -> consumables.flask -> name() );
-
-    player -> consumables.flask -> trigger();
-  }
-
-  virtual bool ready() override
-  {
-    if ( ! player -> sim -> allow_flasks )
-      return false;
-
-    if ( ! player -> consumables.flask )
-      return false;
-
-    if ( player -> consumables.flask && player -> consumables.flask -> check() )
-      return false;
-
-    if ( player -> consumables.battle_elixir && player -> consumables.battle_elixir -> check() )
-      return false;
-
-    if( player -> consumables.guardian_elixir && player -> consumables.guardian_elixir -> check() )
-      return false;
-
-    return action_t::ready();
-  }
-};
-
-struct flask_t : public flask_base_t
-{
-  std::string flask_name;
-  bool alchemist;
-
-  flask_t( player_t* p, const std::string& options_str ) :
-    flask_base_t( p, "flask" ),
-    alchemist( false )
-  {
-    std::string type_str;
-
-    add_option( opt_string( "type", type_str ) );
-    parse_options( options_str );
-
-    const item_data_t* item;
-    for ( item = dbc::items( maybe_ptr( p -> dbc.ptr ) ); item -> id != 0; item++ )
-    {
-      if ( item -> item_class != 0 )
-        continue;
-
-      if ( item -> item_subclass != ITEM_SUBCLASS_FLASK )
-        continue;
-
-      flask_name = item -> name;
-
-      util::tokenize( flask_name );
-
-      if ( util::str_compare_ci( flask_name, type_str ) )
-        break;
-
-      std::string::size_type offset = flask_name.find( "flask_of_the_" );
-      if ( offset != std::string::npos )
-      {
-        offset += 13;
-        if ( util::str_compare_ci( flask_name.substr( offset ), type_str ) )
-          break;
-      }
-      else
-      {
-        offset = flask_name.find( "flask_of_" );
-        if ( offset != std::string::npos )
-        {
-          offset += 9;
-          if ( util::str_compare_ci( flask_name.substr( offset ), type_str ) )
-            break;
-        }
-      }
-    }
-
-    const spell_data_t* spell = nullptr;
-    for ( size_t i = 0, end = sizeof_array( item -> id_spell ); i < end; i++ )
-    {
-      if ( item -> trigger_spell[ i ] == ITEM_SPELLTRIGGER_ON_USE )
-      {
-        spell = p -> find_spell( item -> id_spell[ i ] );
-        break;
-      }
-    }
-
-    if ( ! util::str_in_str_ci( type_str, "alchemist" ) )
-    {
-      if ( ! item || item -> id == 0 || ! spell || spell -> id() == 0 )
-      {
-        sim -> errorf( "Player %s attempting to use unsupported flask '%s'.\n",
-                      player -> name(), type_str.c_str() );
-      }
-      else
-      {
-        std::string buff_name = spell -> name_cstr();
-        util::tokenize( buff_name );
-        p -> consumables.flask = stat_buff_creator_t( p, buff_name, spell );
-      }
-    }
-    // Alch flask, special handle
-    else
-    {
-      if ( p -> profession[ PROF_ALCHEMY ] < 300 )
-      {
-        sim -> errorf( "Player %s attempting to use 'alchemist flask' with %d Alchemy.\n",
-                      player -> name(), p -> profession[ PROF_ALCHEMY ] );
-      }
-      else
-      {
-        alchemist = true;
-        p -> consumables.flask = stat_buff_creator_t( p, "alchemists_flask", p -> find_spell( 105617 ) )
-                          .add_stat( STAT_AGILITY, 0 )
-                          .add_stat( STAT_STRENGTH, 0 )
-                          .add_stat( STAT_INTELLECT, 0 );
-      }
-    }
-  }
-
-  virtual void execute() override
-  {
-    if ( alchemist )
-    {
-      double v = player -> consumables.flask -> data().effectN( 1 ).average( player );
-      stat_e stat = STAT_NONE;
-      if ( player -> cache.agility() >= player -> cache.strength() )
-      {
-        if ( player -> cache.agility() >= player -> cache.intellect() )
-          stat = STAT_AGILITY;
-        else
-          stat = STAT_INTELLECT;
-      }
-      else
-      {
-        if ( player -> cache.strength() >= player -> cache.intellect() )
-          stat = STAT_STRENGTH;
-        else
-          stat = STAT_INTELLECT;
-      }
-
-      if ( stat == STAT_AGILITY )
-        player -> consumables.flask -> stats[ 0 ].amount = v;
-      else if ( stat == STAT_STRENGTH )
-        player -> consumables.flask -> stats[ 1 ].amount = v;
-      else if ( stat == STAT_INTELLECT )
-        player -> consumables.flask -> stats[ 2 ].amount = v;
-    }
-
-    flask_base_t::execute();
-  }
-};
-
 struct elixir_t : public action_t
 {
   gain_t* gain;
@@ -832,99 +665,9 @@ struct health_stone_t : public heal_t
   }
 };
 
-struct augmentation_t : public action_t
-{
-  augmentation_t( player_t* p, const std::string& options_str ) :
-    action_t( ACTION_USE, "augmentation", p )
-  {
-    std::string type_str;
-
-    add_option( opt_string( "type", type_str ) );
-    parse_options( options_str );
-    if ( util::str_compare_ci( type_str, "defiled" ) )
-    {
-      player -> consumables.augmentation = stat_buff_creator_t( player, "defiled_augmentation" )
-          .spell( player -> find_spell( 224001 ) );
-    }
-    else if ( util::str_compare_ci( type_str, "focus" ) )
-    {
-      player -> consumables.augmentation = stat_buff_creator_t( player, "focus_augmentation" )
-          .spell( player -> find_spell( 175457 ) );
-    }
-    else if  ( util::str_compare_ci( type_str, "hyper" ) )
-    {
-      player -> consumables.augmentation = stat_buff_creator_t( player, "hyper_augmentation" )
-          .spell( player -> find_spell( 175456 ) );
-    }
-    else if  ( util::str_compare_ci( type_str, "stout" ) )
-    {
-      player -> consumables.augmentation = stat_buff_creator_t( player, "stout_augmentation" )
-          .spell( player -> find_spell( 175439 ) );
-    }
-    else
-    {
-      sim -> errorf( "%s unknown augmentation type: '%s'", player -> name(), type_str.c_str() );
-      background = true;
-    }
-
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-
-  }
-
-  virtual void execute() override
-  {
-    assert( player -> consumables.augmentation );
-
-    player -> consumables.augmentation -> trigger();
-
-    if ( sim -> log )
-      sim -> out_log.printf( "%s uses augmentation.", player -> name() );
-
-  }
-  virtual bool ready() override
-  {
-    if ( ! player -> consumables.augmentation )
-      return false;
-
-    if ( player -> consumables.augmentation && player -> consumables.augmentation -> check() )
-      return false;
-
-    return action_t::ready();
-  }
-};
-
-// Misc consumables
-
-struct oralius_whispering_crystal_t : public flask_base_t
-{
-  oralius_whispering_crystal_t( player_t* p, const std::string& options_str ) :
-    flask_base_t( p, "oralius_whispering_crystal" )
-  {
-    parse_options( options_str );
-
-    const spell_data_t* spell = p -> find_spell( 176151 );
-
-    std::string buff_name = spell -> name_cstr();
-    util::tokenize( buff_name );
-    p -> consumables.flask = stat_buff_creator_t( p, buff_name, spell );
-  }
-};
-
-struct crystal_of_insanity_t : public flask_base_t
-{
-  crystal_of_insanity_t( player_t* p, const std::string& options_str ) :
-    flask_base_t( p, "crystal_of_insanity" )
-  {
-    parse_options( options_str );
-
-    const spell_data_t* spell = p -> find_spell( 127230 );
-
-    std::string buff_name = spell -> name_cstr();
-    util::tokenize( buff_name );
-    p -> consumables.flask = stat_buff_creator_t( p, buff_name, spell );
-  }
-};
+// ==========================================================================
+// DBC-backed consumable base class
+// ==========================================================================
 
 struct dbc_consumable_base_t : public action_t
 {
@@ -942,6 +685,8 @@ struct dbc_consumable_base_t : public action_t
 
     harmful = callbacks = may_crit = may_miss = false;
 
+    trigger_gcd = timespan_t::zero();
+
     // Consumables always target the owner
     target = player;
   }
@@ -949,14 +694,8 @@ struct dbc_consumable_base_t : public action_t
   void init() override
   {
     item_data = unique_gear::find_consumable( player -> dbc, consumable_name, type );
-    if ( ! item_data )
-    {
-      sim -> errorf( "%s: Unable to find consumable %s for %s", player -> name(),
-          consumable_name.c_str(), signature_str.c_str() );
-      background = true;
-    }
 
-    if ( ! background && ! initialize_consumable() )
+    if ( ! initialize_consumable() )
     {
       sim -> errorf( "%s: Unable to initialize consumable %s for %s", player -> name(),
           consumable_name.c_str(), signature_str.c_str() );
@@ -985,7 +724,8 @@ struct dbc_consumable_base_t : public action_t
     }
   }
 
-  // Find a suitable DBC spell for the consumable
+  // Find a suitable DBC spell for the consumable. This method is overridable where needed (for
+  // example custom flasks)
   virtual const spell_data_t* driver() const
   {
     if ( ! item_data )
@@ -1005,6 +745,17 @@ struct dbc_consumable_base_t : public action_t
     return spell_data_t::not_found();
   }
 
+  // Overridable method to customize the special effect that is used to drive the buff creation for
+  // the consumable
+  virtual special_effect_t* create_special_effect()
+  {
+    auto effect = new special_effect_t( player );
+    effect -> type = SPECIAL_EFFECT_USE;
+    effect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+    return effect;
+  }
+
   // Attempts to initialize the consumable. Jumps through quite a few hoops to manage to create
   // special effects only once, if the user input contains multiple consumable lines (as is possible
   // with potions for example).
@@ -1012,16 +763,16 @@ struct dbc_consumable_base_t : public action_t
   {
     if ( driver() -> id() == 0 )
     {
+      sim -> errorf( "%s: Unable to find consumable %s for %s", player -> name(),
+          consumable_name.c_str(), signature_str.c_str() );
       return false;
     }
 
-    special_effect_t* effect = unique_gear::find_special_effect( player, driver() -> id() );
+    auto effect = unique_gear::find_special_effect( player, driver() -> id(), SPECIAL_EFFECT_USE );
     // No special effect for this consumable found, so create one
     if ( ! effect )
     {
-      effect = new special_effect_t( player );
-      effect -> type = SPECIAL_EFFECT_USE;
-      effect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+      effect = create_special_effect();
       auto ret = unique_gear::initialize_special_effect( *effect, driver() -> id() );
 
       // Something went wrong with the special effect init, so return false (will disable this
@@ -1055,6 +806,91 @@ struct dbc_consumable_base_t : public action_t
 
     return true;
   }
+};
+
+// ==========================================================================
+// Flasks (DBC-backed)
+// ==========================================================================
+
+struct flask_base_t : public dbc_consumable_base_t
+{
+  flask_base_t( player_t* p, const std::string& name, const std::string& options_str ) :
+    dbc_consumable_base_t( p, name )
+  {
+    // Backwards compatibility reasons
+    add_option( opt_string( "type", consumable_name ) );
+    parse_options( options_str );
+
+    type = ITEM_SUBCLASS_FLASK;
+  }
+
+  // Flasks (starting from legion it seems) have a reverse mapping to the spell that creates them in
+  // the effect's trigger spell. This confuses the dbc-backed special effect system into thinking
+  // that's the triggering spell, so let's override trigger spell here, presuming that the flasks
+  // are simple stat buffs.
+  special_effect_t* create_special_effect() override
+  {
+    auto e = dbc_consumable_base_t::create_special_effect();
+    e -> trigger_spell_id = driver() -> id();
+    return e;
+  }
+
+  void init() override
+  {
+    dbc_consumable_base_t::init();
+
+    if ( ! background )
+    {
+      player -> consumables.flask = consumable_buff;
+    }
+  }
+
+  bool ready() override
+  {
+    if ( ! player -> sim -> allow_flasks )
+      return false;
+
+    if ( ! player -> consumables.flask )
+      return false;
+
+    if ( player -> consumables.flask && player -> consumables.flask -> check() )
+      return false;
+
+    if ( player -> consumables.battle_elixir && player -> consumables.battle_elixir -> check() )
+      return false;
+
+    if( player -> consumables.guardian_elixir && player -> consumables.guardian_elixir -> check() )
+      return false;
+
+    return dbc_consumable_base_t::ready();
+  }
+};
+
+struct flask_t : public flask_base_t
+{
+  flask_t( player_t* p, const std::string& options_str ) :
+    flask_base_t( p, "flask", options_str )
+  { }
+};
+
+struct oralius_whispering_crystal_t : public flask_base_t
+{
+  oralius_whispering_crystal_t( player_t* p, const std::string& options_str ) :
+    flask_base_t( p, "oralius_whispering_crystal", options_str )
+  { }
+
+  const spell_data_t* driver() const override
+  { return player -> find_spell( 176151 ); }
+};
+
+struct crystal_of_insanity_t : public flask_base_t
+{
+  crystal_of_insanity_t( player_t* p, const std::string& options_str ) :
+    flask_base_t( p, "crystal_of_insanity", options_str )
+  { }
+
+  const spell_data_t* driver() const override
+  { return player -> find_spell( 127230 ); }
 };
 
 // ==========================================================================
@@ -1143,8 +979,59 @@ struct potion_t : public dbc_consumable_base_t
     }
   }
 
+  bool ready() override
+  {
+    if ( ! player -> sim -> allow_potions )
+      return false;
+
+    return dbc_consumable_base_t::ready();
+  }
 };
 
+// ==========================================================================
+// Augmentations (WoD raiding consumable) (DBC-backed)
+// ==========================================================================
+
+struct augmentation_t : public dbc_consumable_base_t
+{
+  augmentation_t( player_t* p, const std::string& options_str ) :
+    dbc_consumable_base_t( p, options_str )
+  {
+    add_option( opt_string( "type", consumable_name ) );
+    parse_options( options_str );
+  }
+
+  // Custom driver for now, we don't really want to include the item data for now
+  const spell_data_t* driver() const override
+  {
+    if      ( util::str_in_str_ci( consumable_name, "defiled" ) ) return player -> find_spell( 224001 );
+    else if ( util::str_in_str_ci( consumable_name, "focus"   ) ) return player -> find_spell( 175457 );
+    else if ( util::str_in_str_ci( consumable_name, "hyper"   ) ) return player -> find_spell( 175456 );
+    else if ( util::str_in_str_ci( consumable_name, "stout"   ) ) return player -> find_spell( 175439 );
+    else return spell_data_t::not_found();
+  }
+
+  void init() override
+  {
+    dbc_consumable_base_t::init();
+
+    if ( consumable_buff )
+    {
+      player -> consumables.augmentation = consumable_buff;
+    }
+  }
+
+  bool ready() override
+  {
+    if ( ! player -> consumables.augmentation )
+      return false;
+
+    if ( player -> consumables.augmentation && player -> consumables.augmentation -> check() )
+      return false;
+
+    return action_t::ready();
+  }
+};
 } // END UNNAMED NAMESPACE
 
 // ==========================================================================

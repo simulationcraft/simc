@@ -14,7 +14,8 @@ namespace { // UNNAMED NAMESPACE
 // Prefix/Suffix map to allow shorthand consumable names, when searching for the item (for potion
 // action).
 static std::map<item_subclass_consumable, std::pair<std::vector<std::string>, std::vector<std::string>>> __consumable_substrings = {
-  { ITEM_SUBCLASS_POTION, { { "potion_of_the_", "potion_of_", "potion_" }, { "_potion" } } }
+  { ITEM_SUBCLASS_POTION, { { "potion_of_the_", "potion_of_", "potion_" }, { "_potion" } } },
+  { ITEM_SUBCLASS_FLASK,  { { "flask_of_the_", "flask_of_", "flask_" }, { "_flask" } } }
 };
 
 
@@ -4496,10 +4497,10 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   register_target_data_initializers_x7( sim );
 }
 
-special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id )
+special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )
 {
-  auto it = range::find_if( actor -> special_effects, [ spell_id ]( const special_effect_t* e ) {
-    return e -> driver() -> id() == spell_id;
+  auto it = range::find_if( actor -> special_effects, [ spell_id, type ]( const special_effect_t* e ) {
+    return e -> driver() -> id() == spell_id && ( type == SPECIAL_EFFECT_NONE || type == e -> type );
   });
 
   if ( it != actor -> special_effects.end() )
@@ -4509,8 +4510,8 @@ special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned sp
 
   for ( const auto& item: actor -> items )
   {
-    auto it = range::find_if( item.parsed.special_effects, [ spell_id ]( const special_effect_t* e ) {
-      return e -> driver() -> id() == spell_id;
+    auto it = range::find_if( item.parsed.special_effects, [ spell_id, type ]( const special_effect_t* e ) {
+      return e -> driver() -> id() == spell_id && ( type == SPECIAL_EFFECT_NONE || type == e -> type );
     });
 
     if ( it != item.parsed.special_effects.end() )
