@@ -3507,12 +3507,15 @@ struct frenzied_regeneration_t : public druid_heal_t
       skysecs_hold( nullptr )
   {
     use_off_gcd = quiet = true;
-    may_crit = false;
+    may_crit = tick_may_crit = false;
     target = p;
     cooldown -> hasted = true;
 
-    heal_pct = data().effectN( 2 ).percent(); // base heal percent
+    // % of damage taken in the last x seconds to heal.
+    heal_pct = data().effectN( 2 ).percent();
+    // Length of the incoming damage window.
     time_window = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
+    // Minimum base heal amount as a % of max health.
     min_pct = data().effectN( 4 ).percent();
     ignite = new frenzied_regeneration_ignite_t( p, &data() );
     dot_duration = timespan_t::zero();
@@ -3524,11 +3527,20 @@ struct frenzied_regeneration_t : public druid_heal_t
   {
     druid_heal_t::init();
 
-    snapshot_flags |= STATE_MUL_DA;
+    snapshot_flags = STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_TA;
+  }
+
+  double calculate_base_amount()
+  {
+    double dt = p() -> compute_incoming_damage( time_window ) * heal_pct;
+  
+    return std::max( dt, p() -> resources.max[ RESOURCE_HEALTH ] * min_pct );
   }
 
   void execute() override
   {
+    base_dd_min = base_dd_max = calculate_base_amount();
+
     druid_heal_t::execute();
 
     if ( skysecs_hold )
@@ -3551,13 +3563,6 @@ struct frenzied_regeneration_t : public druid_heal_t
     am *= 1.0 + timespan_t::from_seconds( p() -> buff.guardian_tier19_4pc -> check_stack_value() ) / ignite -> dot_duration;
 
     return am;
-  }
-
-  double base_da_min( const action_state_t* s ) const override
-  {
-    double dt = s -> action -> player -> compute_incoming_damage( time_window ) * heal_pct;
-  
-    return std::max( dt, p() -> resources.max[ RESOURCE_HEALTH ] * min_pct );
   }
 
   void impact( action_state_t* s ) override
@@ -4600,71 +4605,67 @@ struct lunar_beam_t : public druid_spell_t
 {
   struct lunar_beam_heal_t : public heals::druid_heal_t
   {
-    lunar_beam_heal_t( druid_t* player, const spell_data_t* s ) :
-      heals::druid_heal_t( "lunar_beam_heal", player, s )
+    lunar_beam_heal_t( druid_t* p ) :
+      heals::druid_heal_t( "lunar_beam_heal", p, p -> find_spell( 204069 ) )
     {
-      target = player;
-      spell_power_mod.direct = s -> effectN( 1 ).ap_coeff();
+      target = p;
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
       background = true;
     }
   };
 
   struct lunar_beam_damage_t : public druid_spell_t
   {
-    lunar_beam_damage_t( druid_t* player, const spell_data_t* s ) :
-      druid_spell_t( "lunar_beam_damage", player, s )
+    action_t* heal;
+
+    lunar_beam_damage_t( druid_t* p ) :
+      druid_spell_t( "lunar_beam_damage", p, p -> find_spell( 204069 ) )
     {
-      spell_power_mod.direct = s -> effectN( 2 ).ap_coeff();
-      dual = background = true;
+      aoe = -1;
+      dual = background = ground_aoe = true;
+      attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
+
+      heal = new lunar_beam_heal_t( p );
+    }
+
+    void execute() override
+    {
+      druid_spell_t::execute();
+
+      heal -> schedule_execute();
     }
   };
 
-  const spell_data_t* tick_spell;
-  lunar_beam_heal_t* heal;
-  lunar_beam_damage_t* damage;
-  int last_tick;
+  action_t* damage;
 
-  lunar_beam_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "lunar_beam", player, player -> talent.lunar_beam, options_str ),
-    last_tick( 0 )
+  lunar_beam_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "lunar_beam", p, p -> talent.lunar_beam, options_str )
   {
-    tick_spell = player -> find_spell( 204069 );
-    heal       = new lunar_beam_heal_t( player, tick_spell );
-    damage     = new lunar_beam_damage_t( player, tick_spell );
-
-    aoe        = -1;
-    ground_aoe = true;
-    may_crit = hasted_ticks = false;
-    radius = tick_spell -> effectN( 2 ).radius();
+    may_crit = tick_may_crit = may_miss = hasted_ticks = false;
+    dot_duration = timespan_t::zero();
     base_tick_time = timespan_t::from_seconds( 1.0 ); // TODO: Find in spell data... somewhere!
-    dot_duration = data().duration();
 
-    tick_action = damage;
-    add_child( damage );
+    damage = p -> find_action( "lunar_beam_damage" );
+
+    if ( ! damage )
+    {
+      damage = new lunar_beam_damage_t( p );
+      damage -> stats = stats;
+    }
   }
 
-  virtual void execute() override
+  void execute() override
   {
     druid_spell_t::execute();
 
-    last_tick = 0;
-  }
-
-  virtual void tick( dot_t* d ) override
-  {
-    druid_spell_t::tick( d );
-
-    // Only trigger heal once per tick
-    if ( d -> current_tick != last_tick )
-    {
-      last_tick = d -> current_tick;
-
-      if ( ! sim -> distance_targeting_enabled ||
-        p() -> get_ground_aoe_distance( *d -> state ) <= radius + d -> target -> combat_reach )
-      {
-        heal -> execute();
-      }
-    }
+    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        .target( execute_state -> target )
+        .x( execute_state -> target -> x_position )
+        .y( execute_state -> target -> y_position )
+        .pulse_time( base_tick_time )
+        .duration( data().duration() )
+        .start_time( sim -> current_time() )
+        .action( damage ), false );
   }
 };
 
