@@ -4765,6 +4765,7 @@ struct mark_of_ursol_t : public druid_spell_t
   {
     harmful = false;
     may_crit = may_miss = false;
+    dot_duration = timespan_t::zero();
   }
 
   double cost() const override
@@ -7599,16 +7600,17 @@ void druid_t::assess_damage( school_e school,
                              dmg_e    dtype,
                              action_state_t* s )
 {
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && s -> result == RESULT_HIT )
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && dtype == DMG_DIRECT &&
+    s -> result == RESULT_HIT )
+  {
     buff.ironfur -> up();
+  }
 
   player_t::assess_damage( school, dtype, s );
 
   if ( artifact.adaptive_fur.rank() && dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
   {
-    buff.adaptive_fur -> trigger( 1, school );
-
-    if ( sim -> log )
+    if ( buff.adaptive_fur -> trigger( 1, school ) && sim -> log )
     {
       sim -> out_log.printf( "%s %s adapts to %s (%d).", name(), buff.adaptive_fur -> name(),
         util::school_type_string( school ), school );
