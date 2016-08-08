@@ -995,7 +995,7 @@ struct potion_t : public dbc_consumable_base_t
 struct augmentation_t : public dbc_consumable_base_t
 {
   augmentation_t( player_t* p, const std::string& options_str ) :
-    dbc_consumable_base_t( p, options_str )
+    dbc_consumable_base_t( p, "augmentation" )
   {
     add_option( opt_string( "type", consumable_name ) );
     parse_options( options_str );
