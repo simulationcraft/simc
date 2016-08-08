@@ -2689,6 +2689,15 @@ struct drain_life_t: public warlock_spell_t
     may_crit = false;
   }
 
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> artifact.drained_to_a_husk.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return m;
+  }
+
   virtual bool ready() override
   {
     if ( p() -> talents.drain_soul -> ok() )
@@ -4250,6 +4259,15 @@ struct drain_soul_t: public warlock_spell_t
     channeled = true;
     hasted_ticks = false;
     may_crit = false;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> artifact.drained_to_a_husk.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return m;
   }
 
   virtual void tick( dot_t* d ) override
