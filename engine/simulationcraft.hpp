@@ -3929,7 +3929,7 @@ struct player_t : public actor_t
   // Movement & Position
   double base_movement_speed;
   double passive_modifier; // _PASSIVE_ movement speed modifiers
-  double x_position, y_position;
+  double x_position, y_position, default_x_position, default_y_position;
 
   struct buffs_t
   {

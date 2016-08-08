@@ -292,8 +292,8 @@ struct move_enemy_t : public raid_event_t
 
     if ( enemy )
     {
-      enemy -> x_position = 0;
-      enemy -> y_position = 0;
+      enemy -> x_position = enemy -> default_x_position;
+      enemy -> y_position = enemy -> default_y_position;
     }
   }
 
@@ -313,8 +313,8 @@ struct move_enemy_t : public raid_event_t
   {
     if ( enemy )
     {
-      enemy -> x_position = 0;
-      enemy -> y_position = 0;
+      enemy -> x_position = enemy -> default_x_position;
+      enemy -> y_position = enemy -> default_y_position;
       regenerate_cache();
     }
   }

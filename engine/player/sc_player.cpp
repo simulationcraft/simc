@@ -588,6 +588,7 @@ player_t::player_t( sim_t*             s,
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
+  default_x_position( 0.0 ), default_y_position( 0.0 ),
   buffs( buffs_t() ),
   debuffs( debuffs_t() ),
   gains( gains_t() ),
@@ -4121,6 +4122,9 @@ void player_t::reset()
   off_hand_weapon.buff_type  = 0;
   off_hand_weapon.buff_value = 0;
   off_hand_weapon.bonus_dmg  = 0;
+
+  x_position = default_x_position;
+  y_position = default_y_position;
 
   callbacks.reset();
 
@@ -9637,6 +9641,10 @@ void player_t::create_options()
     add_option( opt_func( "stat_timelines", parse_stat_timelines ) );
     add_option( opt_bool( "disable_hotfixes", disable_hotfixes ) );
     add_option( opt_func( "min_gcd", parse_min_gcd ) );
+
+    // Positioning
+    add_option( opt_float( "x_pos", default_x_position ) );
+    add_option( opt_float( "y_pos", default_y_position ) );
 
     // Items
     add_option( opt_string( "meta_gem",  meta_gem_str ) );
