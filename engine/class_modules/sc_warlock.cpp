@@ -2515,6 +2515,8 @@ struct agony_t: public warlock_spell_t
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
+    m*= 1.0 + p() -> artifact.inimitable_agony.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
     return m;
   }
 };
@@ -2533,6 +2535,15 @@ struct unstable_affliction_t : public warlock_spell_t
     timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
       return s -> action -> tick_time( s ) * 4.0; 
+    }
+
+    double composite_crit_chance() const override
+    {
+      double cc = warlock_spell_t::composite_crit_chance();
+
+      cc += p() -> artifact.inherently_unstable.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+      return cc;
     }
 
     void init() override
@@ -3536,6 +3547,15 @@ struct seed_of_corruption_t: public warlock_spell_t
       callbacks = false;
 
       p -> spells.seed_of_corruption_aoe = this;
+    }
+
+    virtual double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      m *= 1.0 + p() -> artifact.seeds_of_doom.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+      return m;
     }
 
     void impact( action_state_t* s ) override
@@ -4778,6 +4798,11 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + artifact.crystaline_shadows.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
     m *= 1.0 + artifact.shadowy_incantations.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+  }
+
+  if ( buffs.deadwind_harvester -> check() )
+  {
+    m *= 1.0 + buffs.deadwind_harvester -> data().effectN( 1 ).percent();
   }
 
   if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_SHADOW, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
