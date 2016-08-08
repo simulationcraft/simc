@@ -8268,7 +8268,7 @@ double mage_t::composite_player_critical_damage_multiplier( const action_state_t
   if ( dbc::is_school( s -> action -> get_school(), SCHOOL_FIRE ) &&
        buffs.pyretic_incantation -> check() > 0 )
   {
-    m *= 1.0 + ( artifact.pyretic_incantation.percent() *
+    m *= 1.0 + ( buffs.pyretic_incantation -> data().effectN( 1 ).percent() *
                  buffs.pyretic_incantation -> stack() );
   }
 
