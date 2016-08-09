@@ -83,7 +83,7 @@ if __name__ == '__main__':
 					for file_key in file_keys:
 						file_location = index.GetIndexData(file_key)
 						if file_location[0] > -1:
-							extract_data = (file_key, md5s, file_name) + file_location
+							extract_data = (file_key, md5s, file_name.replace('\\', '/')) + file_location
 							break
 
 				if not extract_data:

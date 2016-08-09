@@ -101,7 +101,7 @@ class BuildCfg(object):
 		conf_str_fp = io.StringIO(conf_str)
 		self.cfg.readfp(conf_str_fp)
 
-		print('Wow build: %s' % self.cfg.get('base', 'build-name'))
+		print('Wow build: %s' % line_split[-1])
 
 		return True
 
