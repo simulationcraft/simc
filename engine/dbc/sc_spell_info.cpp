@@ -328,41 +328,26 @@ const char * _resource_strings[] =
   nullptr
 };
 
-const char* _attribute_strings[] =
-{
-  nullptr,                       "Ranged ability",        nullptr,                        nullptr,                     nullptr,                       // 0
-  nullptr,                       "Passive",               "Hidden",                 nullptr,                     nullptr,                       // 5
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 10
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 15
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 20
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 25
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     "Channeled",             // 30
-  nullptr,                       nullptr,                       nullptr,                        "Channeled",           nullptr,                       // 35
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 40
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 45
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 50
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 55
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 60
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 65
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 70
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 75
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 80
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 85
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 90
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 95
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 100
-  "Not a proc",            nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 105
-  nullptr,                       nullptr,                       "Disable player procs",   "Disable target procs",nullptr,                       // 110
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 115
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 120
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 125
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 130
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 135
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 140
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 145
-  nullptr,                       "Disable weapon procs",  nullptr,                        nullptr,                     nullptr,                       // 150
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 155
-  nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr,                       // 160
+const std::map<unsigned, std::string> _attribute_strings = {
+  {   1, "Ranged Ability"           },
+  {   5, "Tradeskill ability"       },
+  {   6, "Passive"                  },
+  {   7, "Hidden"                   },
+  {  17, "Requires stealth"         },
+  {  20, "Stop attacks"             },
+  {  21, "Cannot dodge/parry/block" },
+  {  28, "Cannot be used in combat" },
+  {  31, "Cannot cancel aura"       },
+  {  34, "Channeled"                },
+  {  37, "Does not break stealth"   },
+  {  38, "Channeled"                },
+  {  93, "Cannot crit"              },
+  {  95, "Food buff"                },
+  { 105, "Not a proc"               },
+  { 112, "Disable player procs"     },
+  { 113, "Disable target procs"     },
+  { 151, "Disable weapon procs"     },
+  { 186, "Requires line of sight"   },
 };
 
 const char * _property_type_strings[] =
@@ -1280,12 +1265,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       {
         s << "x";
         size_t attr_idx = i * 32 + flag;
-        if ( attr_idx < sizeof_array( _attribute_strings ) - 1 && _attribute_strings[ attr_idx ] )
+        auto it = _attribute_strings.find( attr_idx );
+        if ( it != _attribute_strings.end() )
         {
           if ( ! attr_str.empty() )
             attr_str += ", ";
 
-          attr_str += _attribute_strings[ attr_idx ];
+          attr_str += it -> second;
           attr_str += " (" + util::to_string( attr_idx ) + ")";
         }
       }
