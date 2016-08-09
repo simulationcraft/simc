@@ -16,6 +16,11 @@
 // Haunt reset
 // Soul Flame + Wrath of Consumption on-death effects.
 // Peridition needs special crit damage override thing NYI.
+// Compounding Horror
+// Fatal Echoes
+//
+// Destruction/Demonology - 
+// 20/20 Trait
 // 
 // Better reporting for add buffs.
 //
