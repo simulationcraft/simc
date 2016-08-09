@@ -40,6 +40,9 @@ for fn in _input_base.glob('*.adb'):
 
 # Copy over any modified files
 for _fn, _data in _output.items():
+    if _fn not in _input:
+      continue
+    
     if _data['md5'] != _input[_fn]['md5']:
         print('Copying %s -> %s ...' % (_input[_fn]['name'], _data['name']))
         try:
