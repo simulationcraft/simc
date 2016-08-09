@@ -343,8 +343,6 @@ public:
     proc_t* divine_insight_overflow;
     proc_t* legendary_anunds_last_breath;
     proc_t* legendary_anunds_last_breath_overflow;
-    proc_t* legendary_zenkaram_iridis_anadem;
-    proc_t* legendary_zenkaram_iridis_anadem_overflow;
     proc_t* shadowy_insight;
     proc_t* shadowy_insight_overflow;
     proc_t* serendipity;
@@ -2662,7 +2660,7 @@ struct mind_spike_detonation_t final : public priest_spell_t
     may_miss                    = false;
     aoe                         = -1;
     is_sphere_of_insanity_spell = true;
-    range                       = 0.0;
+    range                       = 8.0;
     trigger_gcd                 = timespan_t::zero();
     school                      = SCHOOL_SHADOWFROST;
   }
@@ -3464,8 +3462,6 @@ struct shadow_word_pain_t final : public priest_spell_t
           priest.sets.set( PRIEST_SHADOW, T19, B2 )->effectN( 1 ).base_value(),
           priest.gains.insanity_shadow_word_pain_ondamage );
     }
-    // generate_insanity(1, priest.gains.insanity_shadow_word_pain_ondamage);
-    // For testing until set bonuses are available in SimC
 
     if ( priest.active_items.anunds_seared_shackles )
     {
@@ -5356,7 +5352,7 @@ void init()
   unique_gear::register_special_effect( 184915, shadow_trinket );
 
   // Legion Legendaries
-  unique_gear::register_special_effect( 215210, anunds_seared_shackles );
+  unique_gear::register_special_effect( 215209, anunds_seared_shackles );
   unique_gear::register_special_effect( 207701, mangazas_madness );
   unique_gear::register_special_effect( 215250, mother_shahrazs_seduction );
   unique_gear::register_special_effect( 207721, the_twins_painful_touch );
@@ -5574,13 +5570,10 @@ void priest_t::create_procs()
   procs.void_tendril = get_proc( "Void Tendril spawned from Call to the Void" );
 
   procs.legendary_anunds_last_breath = get_proc(
-      "Legendary - Anund's Seared Shackles - Shadow Word: Pain refreshed by "
-      "Mind Blast casts" );
-  procs.legendary_zenkaram_iridis_anadem = get_proc(
-      "Legendary - Zen'karam, Iridi's Anadem - Void Bolt damage increases (2% "
+      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (2% "
       "per)" );
-  procs.legendary_zenkaram_iridis_anadem_overflow = get_proc(
-      "Legendary - Zen'karam, Iridi's Anadem - Void Bolt damage increases (2% "
+  procs.legendary_anunds_last_breath_overflow = get_proc(
+      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (2% "
       "per) lost to overflow" );
 }
 
@@ -6692,8 +6685,25 @@ void priest_t::apl_shadow()
   }
 
   // Potions
-
-  // Racials
+  if (sim->allow_potions && true_level >= 80)
+  {
+    if (true_level > 100)
+      default_list->add_action(
+      "potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=40");
+    else if (true_level > 90)
+      default_list->add_action(
+      "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_"
+      "to_die<=40");
+    else if (true_level > 85)
+      default_list->add_action(
+      "potion,name=jade_serpent,if=buff.bloodlust.react|target.time_to_"
+      "die<"
+      "=40");
+    else
+      default_list->add_action(
+      "potion,name=volcanic,if=buff.bloodlust.react|target.time_to_die<="
+      "40");
+  }
 
   // Choose which APL to use based on talents and fight conditions.
 
