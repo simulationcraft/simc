@@ -2517,6 +2517,15 @@ struct agony_t: public warlock_spell_t
     return m;
   }
 
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cd = warlock_spell_t::composite_crit_damage_bonus_multiplier();
+
+    cd *= 1.0 + p() -> artifact.perdition.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cd;
+  }
+
   virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
@@ -2553,6 +2562,15 @@ struct unstable_affliction_t : public warlock_spell_t
       cc += p() -> artifact.inherently_unstable.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
 
       return cc;
+    }
+
+    double composite_crit_damage_bonus_multiplier() const override
+    {
+      double cd = warlock_spell_t::composite_crit_damage_bonus_multiplier();
+
+      cd *= 1.0 + p() -> artifact.perdition.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+      return cd;
     }
 
     void init() override
@@ -2687,6 +2705,15 @@ struct corruption_t: public warlock_spell_t
     m *= 1.0 + p() -> artifact.hideous_corruption.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
 
     return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cd = warlock_spell_t::composite_crit_damage_bonus_multiplier();
+
+    cd += p() -> artifact.perdition.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cd;
   }
 
   virtual void tick( dot_t* d ) override
