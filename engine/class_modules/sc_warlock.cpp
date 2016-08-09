@@ -14,8 +14,8 @@
 //
 // Affliction -
 // Haunt reset
-// Drained to a Husk doesn't return spelldata?
 // Soul Flame + Wrath of Consumption on-death effects.
+// Peridition needs special crit damage override thing NYI.
 // 
 // Better reporting for add buffs.
 //
@@ -217,7 +217,7 @@ public:
     artifact_power_t shadowy_incantations;
     artifact_power_t soul_flames;
     artifact_power_t long_dark_night_of_the_soul;
-    artifact_power_t compound_interest;
+    artifact_power_t compounding_horror;
     artifact_power_t soulharvester;
     artifact_power_t soulstealer;
 
@@ -2687,7 +2687,7 @@ struct corruption_t: public warlock_spell_t
   virtual void tick( dot_t* d ) override
   {
 
-    if ( p() -> artifact.harvester_of_souls.rank() && rng().roll( p() -> artifact.harvester_of_souls.data().proc_chance() ) )
+    if ( p() -> artifact.harvester_of_souls.rank() && rng().roll( p() -> artifact.harvester_of_souls.data().proc_chance() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 ) ) )
     {
       p() -> active.harvester_of_souls -> target = execute_state -> target;
       p() -> active.harvester_of_souls -> execute();
@@ -5243,7 +5243,7 @@ void warlock_t::init_spells()
   artifact.shadowy_incantations = find_artifact_spell( "Shadowy Incantations" );
   artifact.soul_flames = find_artifact_spell( "Soul Flames" );
   artifact.long_dark_night_of_the_soul = find_artifact_spell( "Long Dark Night of the Soul" );
-  artifact.compound_interest = find_artifact_spell( "Compound Interest" );
+  artifact.compounding_horror = find_artifact_spell( "Compounding Horror" );
   artifact.soulharvester = find_artifact_spell( "Soulharvester" );
   artifact.soulstealer = find_artifact_spell( "Soulstealer" );
 
