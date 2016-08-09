@@ -735,7 +735,7 @@ class LegionWCHParser(LegionWDBParser):
     # Manually make a list here to support those files in build_parser.
     __override_dbcs__ = [ 'SpellEffect' ]
 
-    def is_magic(self): return self.magic == b'WCH5'
+    def is_magic(self): return self.magic == b'WCH5' or self.magic == b'WCH6'
 
     def __init__(self, options, wdb_parser, fname):
         super().__init__(options, fname)

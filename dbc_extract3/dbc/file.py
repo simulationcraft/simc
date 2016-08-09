@@ -7,7 +7,8 @@ _PARSERS = {
     b'WDB2': None,
     b'WDB4': dbc.parser.WDB4Parser,
     b'WDB5': dbc.parser.WDB5Parser,
-    b'WCH5': dbc.parser.LegionWCHParser
+    b'WCH5': dbc.parser.LegionWCHParser,
+    b'WCH6': dbc.parser.LegionWCHParser
 }
 
 class DBCFileIterator:
