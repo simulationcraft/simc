@@ -208,10 +208,11 @@ Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing 
 Tooltip          : $?s199023[Demoralized, dealing $s1% less damage.][Demoralized, dealing $s1% less damage to the shouting Warrior.]
 
 Name             : Slam (id=1464) [Spell Family (4)] 
+Hotfixed         : Max Spell Level (20 -> 0)
 Class            : Arms Warrior
 School           : Physical
 Resource         : 20 Rage
-Spell Level      : 1 (max 20)
+Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 2 maximum
@@ -227,7 +228,8 @@ Effects          :
 #1 (id=462)      : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=119511)   : Weapon Damage% (31)
-                   Base Value: 125 | Scaled Value: 2.01 | Points Per Level: 4 | Target: Enemy(6)
+                   Base Value: 226 | Scaled Value: 2.26 | Target: Enemy(6)
+                   Hotfixed: Base Value (125 -> 226), Points per Level (4 -> 0)
 Description      : Slams an opponent, causing $sw2 Physical damage.
 
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
@@ -2633,8 +2635,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
+Hotfixed         : Max stacks, Proc Chance, Proc Stacks, Proc Flags, Internal Cooldown
 Class            : Arms Warrior
 School           : Physical
+Proc Chance      : 100%
+Proc Flags       : ..xx.... ........ ........ ........ 
+                 : White Melee, White Melee Taken
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
