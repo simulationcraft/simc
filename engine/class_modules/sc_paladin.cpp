@@ -4581,6 +4581,10 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( "call_action_list,name=BoW,if=talent.blade_of_wrath.enabled" );
   def -> add_action( "call_action_list,name=DH,if=talent.divine_hammer.enabled" );
 
+  action_priority_list_t* VB = get_action_priority_list( "VB" );
+  action_priority_list_t* BoW = get_action_priority_list( "BoW" );
+  action_priority_list_t* DH = get_action_priority_list( "DH" );
+
   VB -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
   VB -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&buff.divine_purpose.react" );
   VB -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
