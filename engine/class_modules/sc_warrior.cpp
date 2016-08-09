@@ -1311,7 +1311,7 @@ struct charge_t: public warrior_attack_t
     energize_resource = RESOURCE_RAGE;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> artifact.uncontrolled_rage.value() / 10;
-    cooldown -> duration = data().cooldown();
+
     if ( p -> talents.warbringer -> ok() )
     {
       aoe = -1;
