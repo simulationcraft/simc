@@ -2716,6 +2716,9 @@ struct drain_life_t: public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> artifact.drained_to_a_husk.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    
+    if ( p() -> specialization() == WARLOCK_AFFLICTION )
+      m *= 1.0 + p() -> find_spell( 205183 ) -> effectN( 1 ).percent();
 
     return m;
   }
@@ -4288,6 +4291,9 @@ struct drain_soul_t: public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> artifact.drained_to_a_husk.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    if ( p() -> specialization() == WARLOCK_AFFLICTION )
+      m *= 1.0 + p() -> find_spell( 205183 ) -> effectN( 1 ).percent();
 
     return m;
   }
