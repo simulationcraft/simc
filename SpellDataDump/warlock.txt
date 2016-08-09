@@ -147,7 +147,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Secrets of the Necrolyte (205183), Devourer of Life (215165), 
+Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Secrets of the Necrolyte (205183), Odr, Shawl of the Ymirjar (212173), Devourer of Life (215165), 
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -3250,7 +3250,7 @@ School           : Fire
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 18 seconds
-Affecting spells : Flamelicked (185229), Residual Flames (196227), Burning Hunger (196432), Roaring Blaze (205690)
+Affecting spells : Flamelicked (185229), Residual Flames (196227), Burning Hunger (196432), Roaring Blaze (205690), Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3568,11 +3568,13 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : $@spelldesc187365
 
-Name             : Chaos Barrage (id=187394) [Spell Family (107)] 
+Name             : Chaos Barrage (id=187394) [Spell Family (5)] 
+Hotfixed         : Affecting Spells, Spell Family (107 -> 5)
 Class            : Warlock
 School           : Magic
 Range            : 100 yards
 Velocity         : 24 yards/sec
+Affecting spells : Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3759,7 +3761,7 @@ Class            : Warlock
 School           : Fire
 Spell Level      : 12
 Range            : 100 yards
-Affecting spells : Flamelicked (185229), Residual Flames (196227), Burning Hunger (196432), Roaring Blaze (205690)
+Affecting spells : Flamelicked (185229), Residual Flames (196227), Burning Hunger (196432), Roaring Blaze (205690), Odr, Shawl of the Ymirjar (212173)
 Triggered by     : Immolate (193541)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4184,10 +4186,12 @@ Effects          :
 Description      : Launches $s1 bolts of felfire over $d at random targets afflicted by your Immolate within $196449A1 yds. Each bolt deals $196448s1 Fire damage.
 
 Name             : Channel Demonfire (id=196448) [Spell Family (5)] 
+Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Fire
 Range            : 100 yards
 Velocity         : 24 yards/sec
+Affecting spells : Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4270,7 +4274,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288656)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
-                   Affected Spells: Shadow Bolt (686), Demonbolt (157695), Shadow Bolt (196657)
+                   Affected Spells: Shadow Bolt (686), Demonbolt (157695)
 Description      : $@spelldesc196269
 Tooltip          : Your next Shadow Bolt is Instant.
 
@@ -4294,12 +4298,13 @@ Effects          :
 Description      : $@spelldesc187365
 
 Name             : Shadow Bolt (id=196657) [Spell Family (5)] 
+Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Shadow
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 20 yards/sec
-Affecting spells : Shadowy Inspiration (196606), Maw of Shadows (211099), Stolen Power (211583)
+Affecting spells : Odr, Shawl of the Ymirjar (212173)
 Triggered by     : Shadow Barrage (196659)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4336,7 +4341,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Secrets of the Necrolyte (205183), Devourer of Life (215165), 
+Affecting spells : Flamelicked (185229), Drained to a Husk (199120), Perdition (199158), Long Dark Night of the Soul (199214), Secrets of the Necrolyte (205183), Odr, Shawl of the Ymirjar (212173), Devourer of Life (215165), 
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -4591,12 +4596,13 @@ Effects          :
 Description      : Fires an Eye Laser that hits all Doomed targets for $s1 Shadow damage.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Range            : 40 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4718,11 +4724,13 @@ Effects          :
 Description      : Summon a Chaos Tear.
 
 Name             : Chaos Bolt (id=215279) [Spell Family (5)] 
+Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Chromatic
 Spell Level      : 1
 Range            : 40 yards
 Velocity         : 16 yards/sec
+Affecting spells : Odr, Shawl of the Ymirjar (212173)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

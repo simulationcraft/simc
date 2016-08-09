@@ -643,7 +643,8 @@ Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1833)     : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 90 | Scaled Value: 90 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+                   Hotfixed: Base Value (90 -> 100)
 #2 (id=127877)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
 Description      : Finishing move that consumes combo points to increase attack speed by $s1%. Lasts longer per combo point.
@@ -3298,7 +3299,8 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283681)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Hotfixed: Base Value (40 -> 25)
 Description      : Increases Critical Strike chance by $s1% for the duration of Roll the Bones.
 Tooltip          : Critical Strike chance increased by $s1%.
 
@@ -3315,9 +3317,11 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283682)   : Apply Aura (6) | Modify Melee Attack Speed% (319)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Hotfixed: Base Value (40 -> 50)
 #2 (id=344594)   : Apply Aura (6) | Unknown effect sub type (443)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Hotfixed: Base Value (20 -> 25)
 Description      : Increases your attack speed by $s1% and your Leech by $s2% for the duration of Roll the Bones.
 Tooltip          : Attack speed increased by $s1%.
 Leech increased by $s2%.
@@ -3966,7 +3970,8 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=293719)   : Apply Aura (6) | Mod Power Regen (110)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self(1)
+                   Hotfixed: Base Value (40 -> 25)
 Description      : Your base Energy regeneration is increased by $s1% for the duration of Roll the Bones.
 Tooltip          : Increases Energy regeneration by $s1%.
 
@@ -3983,7 +3988,8 @@ Attributes       : ........ ........ ..x..... .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=293724)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Hotfixed: Base Value (40 -> 25)
 Description      : Causes Saber Slash to have an additional $s1% chance of striking an additional time for the duration of Roll the Bones.
 Tooltip          : Saber Slash has an additional $s1% chance of striking an additional time.
 
@@ -4308,7 +4314,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=295690)   : Dummy (3)
-                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
+                   Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
+                   Hotfixed: Base Value (400 -> 100)
 Description      : Twist your blades into the target's wounds, causing your Bleed effects on them to bleed out $s1% faster.
 
 Name             : Curse of the Dreadblades (Artifact) (id=202665) [Spell Family (8)] 

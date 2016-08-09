@@ -3734,7 +3734,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=294728)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 120 | Scaled Value: 120 | Target: Self(1)
+                   Base Value: 90 | Scaled Value: 90 | Target: Self(1)
+                   Hotfixed: Base Value (120 -> 90)
 Description      : When Guardian Spirit expires without saving the target from death, reduce its remaining cooldown to $s1 seconds.
 
 Name             : Grace (Passive) (id=200309) [Spell Family (6), Passive] 
@@ -3834,7 +3835,8 @@ Attributes       : ........ ........ x....... ..x....x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301146)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000 | Radius: 0 - 30 yards | Target: Unknown(63) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.50000 | Radius: 0 - 30 yards | Target: Unknown(63) -> AOE friendly(31)
+                   Hotfixed: SP Coefficient (5 -> 5.5)
 #2 (id=301147)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Draws on the power of shadow to heal up to $s2 injured allies within $A1 yds of the target for $s1, but leaves a shell on them that absorbs the next ${$m1*$219518m1/100} healing they receive within $219521d.

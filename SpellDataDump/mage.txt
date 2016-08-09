@@ -3616,7 +3616,8 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=279088)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+                   Hotfixed: Base Value (10 -> 15)
 Description      : Frostbolt has a $m1% chance to empower your next Flurry to apply Winter's Chill to the victim for $228354d and be instant cast. 
 
 Winter's Chill causes the target to take damage from your spells as if it were frozen.

@@ -1560,7 +1560,8 @@ Effects          :
 #1 (id=300651)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=300652)   : Weapon Damage% (31)
-                   Base Value: 95 | Scaled Value: 0.95 | Target: Enemy(6)
+                   Base Value: 85 | Scaled Value: 0.85 | Target: Enemy(6)
+                   Hotfixed: Base Value (95 -> 85)
 #3 (id=300653)   : Energize Power (30)
                    Base Value: 14 | Scaled Value: 15 - 20 | Value Range: 6 | Misc Value: fury | Target: Self(1)
 Description      : Inflicts $sw1 Shadow damage and generates $m3 to $M3 Fury.
