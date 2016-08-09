@@ -349,6 +349,7 @@ public:
   timespan_t last_jol_proc;
 
   double fixed_holy_wrath_health_pct;
+  bool fake_gbom;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, PALADIN, name, r ),
@@ -365,7 +366,8 @@ public:
     extra_regen_period( timespan_t::from_seconds( 0.0 ) ),
     extra_regen_percent( 0.0 ),
     last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
-    fixed_holy_wrath_health_pct( -1.0 )
+    fixed_holy_wrath_health_pct( -1.0 ),
+    fake_gbom( false )
   {
     last_retribution_trinket_target = nullptr;
     retribution_trinket = nullptr;
@@ -773,17 +775,21 @@ public:
 
   void trigger_blessing_of_might( action_state_t* s )
   {
-    if ( p() -> buffs.blessing_of_might -> up() )
+    int num = ( p() -> fake_gbom ) ? 3 : 1;
+    for ( int i = 0; i < num; i++ )
     {
-      double chance = p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent();
-      if ( p() -> rng().roll( chance ) )
+      if ( p() -> buffs.blessing_of_might -> up() )
       {
-        double amount = s -> result_amount;
-        double multiplier = p() -> buffs.blessing_of_might -> data().effectN( 2 ).percent();
-        amount *= multiplier;
-        p() -> active_blessing_of_might_proc -> base_dd_max = p() -> active_blessing_of_might_proc -> base_dd_min = amount;
-        p() -> active_blessing_of_might_proc -> target = s -> target;
-        p() -> active_blessing_of_might_proc -> execute();
+        double chance = p() -> buffs.blessing_of_might -> data().effectN( 1 ).percent();
+        if ( p() -> rng().roll( chance ) )
+        {
+          double amount = s -> result_amount;
+          double multiplier = p() -> buffs.blessing_of_might -> data().effectN( 2 ).percent();
+          amount *= multiplier;
+          p() -> active_blessing_of_might_proc -> base_dd_max = p() -> active_blessing_of_might_proc -> base_dd_min = amount;
+          p() -> active_blessing_of_might_proc -> target = s -> target;
+          p() -> active_blessing_of_might_proc -> execute();
+        }
       }
     }
   }
@@ -5769,6 +5775,7 @@ void paladin_t::create_options()
 {
   // TODO: figure out a better solution for this.
   add_option( opt_float( "paladin_fixed_holy_wrath_health_pct", fixed_holy_wrath_health_pct ) );
+  add_option( opt_bool( "paladin_fake_gbom", fake_gbom ) );
   player_t::create_options();
 }
 
