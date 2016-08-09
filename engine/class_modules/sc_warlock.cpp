@@ -331,6 +331,7 @@ public:
     haste_buff_t* misery;
     buff_t* deadwind_harvester;
     buff_t* tormented_souls;
+    buff_t* compounding_horror;
 
     //demonology buffs
     buff_t* tier18_2pc_demonology;
@@ -2430,11 +2431,14 @@ public:
 struct agony_t: public warlock_spell_t
 {
   int agony_action_id;
+  double chance;
 
   agony_t( warlock_t* p ):
     warlock_spell_t( p, "Agony" ), agony_action_id(0)
   {
     may_crit = false;
+
+    chance = p -> find_spell( 199282 ) -> proc_chance();
   }
 
   void init() override
@@ -2503,6 +2507,17 @@ struct agony_t: public warlock_spell_t
       bool procced = p() -> misery_rppm -> trigger(); //check for RPPM
       if ( procced )
         p() -> buffs.misery -> trigger(); //trigger the buff
+    }
+
+    if ( p() -> artifact.compounding_horror.rank() )
+    {
+      if ( p() -> buffs.deadwind_harvester -> check() )
+        chance *= 2.0;
+
+      if ( rng().roll( chance ) )
+      {
+        p() -> buffs.compounding_horror -> trigger();
+      }
     }
 
     warlock_spell_t::tick( d );
@@ -2638,6 +2653,9 @@ struct unstable_affliction_t : public warlock_spell_t
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
+    if ( p() -> buffs.compounding_horror -> check() )
+      m *= 1.0 + p() -> buffs.compounding_horror -> data().effectN( 1 ).percent() * p() -> buffs.compounding_horror -> current_stack;
+
     return m;
   }
 
@@ -2653,11 +2671,14 @@ struct unstable_affliction_t : public warlock_spell_t
 
     p() -> buffs.shard_instability -> expire();
     p() -> procs.t18_2pc_affliction -> occur();
+    p() -> buffs.compounding_horror -> expire();
   }
 };
 
 struct corruption_t: public warlock_spell_t
 {
+  double chance;
+
   corruption_t( warlock_t* p ):
     warlock_spell_t( "Corruption", p, p -> find_spell( 172 ) ) //Use original corruption until DBC acts more friendly.
   {
@@ -2673,6 +2694,8 @@ struct corruption_t: public warlock_spell_t
         2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
       base_multiplier *= 1.0 + p -> talents.absolute_corruption -> effectN( 2 ).percent();
     }
+
+    chance = p -> find_spell( 199282 ) -> proc_chance();
   }
 
   void init() override
@@ -2711,7 +2734,7 @@ struct corruption_t: public warlock_spell_t
   {
     double cd = warlock_spell_t::composite_crit_damage_bonus_multiplier();
 
-    cd += p() -> artifact.perdition.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+    cd *= 1.0 + p() -> artifact.perdition.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
 
     return cd;
   }
@@ -2724,6 +2747,18 @@ struct corruption_t: public warlock_spell_t
       p() -> active.harvester_of_souls -> target = execute_state -> target;
       p() -> active.harvester_of_souls -> execute();
     }
+
+    if ( p() -> artifact.compounding_horror.rank() )
+    {
+      if ( p() -> buffs.deadwind_harvester -> check() )
+        chance *= 2.0;
+
+      if ( rng().roll( chance ) )
+      {
+        p() -> buffs.compounding_horror -> trigger();
+      }
+    }
+
     warlock_spell_t::tick( d );
   }
 };
@@ -5443,6 +5478,7 @@ void warlock_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.tormented_souls = buff_creator_t( this, "tormented_souls", find_spell( 216695 ) )
     .tick_behavior( BUFF_TICK_NONE );
+  buffs.compounding_horror = buff_creator_t( this, "compounding_horror", find_spell( 199281 ) );
 
   //demonology buffs
   buffs.demonic_synergy = buff_creator_t( this, "demonic_synergy", find_spell( 171982 ) )
