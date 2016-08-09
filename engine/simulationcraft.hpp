@@ -5693,6 +5693,9 @@ public:
   virtual double composite_crit_chance_multiplier() const
   { return 1.0; }
 
+  virtual double composite_crit_damage_bonus_multiplier() const
+  { return crit_bonus_multiplier; }
+
   virtual double composite_haste() const
   { return 1.0; }
 

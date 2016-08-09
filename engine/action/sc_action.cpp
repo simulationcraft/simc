@@ -932,12 +932,12 @@ double action_t::total_crit_bonus( action_state_t* state ) const
   if ( player -> buffs.amplification_2 )
     base_crit_bonus += player -> passive_values.amplification_2;
 
-  double bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier_buffed - 1.0 ) * crit_bonus_multiplier;
+  double bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier_buffed - 1.0 ) * composite_crit_damage_bonus_multiplier();
 
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f b_cbm=%.2f",
-                   player -> name(), name(), bonus, crit_bonus, crit_multiplier_buffed, crit_bonus_multiplier );
+                   player -> name(), name(), bonus, crit_bonus, crit_multiplier_buffed, composite_crit_damage_bonus_multiplier() );
   }
 
   return bonus;
