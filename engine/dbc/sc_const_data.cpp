@@ -1513,7 +1513,14 @@ double spelleffect_data_t::scaled_min( double avg, double delta ) const
   if ( _m_avg != 0 || _m_delta != 0 )
     result = avg - ( delta / 2 );
   else
-    result = avg - delta;
+  {
+    if ( _die_sides == 0 )
+      result = avg;
+    else if ( _die_sides == 1 )
+      result =  avg + _die_sides;
+    else
+      result = avg + ( _die_sides > 1  ? 1 : _die_sides );
+  }
 
   switch ( _type )
   {
@@ -1534,7 +1541,14 @@ double spelleffect_data_t::scaled_max( double avg, double delta ) const
   if ( _m_avg != 0 || _m_delta != 0 )
     result = avg + ( delta / 2 );
   else
-    result = avg + delta;
+  {
+    if ( _die_sides == 0 )
+      result = avg;
+    else if ( _die_sides == 1 )
+      result = avg + _die_sides;
+    else
+      result = avg + ( _die_sides > 1  ? _die_sides : -1 );
+  }
 
   switch ( _type )
   {

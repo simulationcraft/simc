@@ -15,6 +15,9 @@ namespace consumable
 {
   void potion_of_the_old_war( special_effect_t& );
   void potion_of_deadly_grace( special_effect_t& );
+  void hearty_feast( special_effect_t& );
+  void lavish_suramar_feast( special_effect_t& );
+  void pepper_breath( special_effect_t& );
 }
 
 namespace enchants
@@ -1842,6 +1845,153 @@ void consumable::potion_of_deadly_grace( special_effect_t& effect )
     .chance( 1.0 ); // Override chance, the 20RPPM thing is in the secondary proc above
 }
 
+// Hearty Feast =============================================================
+
+void consumable::hearty_feast( special_effect_t& effect )
+{
+  effect.stat = effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT );
+  switch ( effect.stat )
+  {
+    case STAT_STRENGTH:
+      effect.trigger_spell_id = 201634;
+      break;
+    case STAT_AGILITY:
+      effect.trigger_spell_id = 201635;
+      break;
+    case STAT_INTELLECT:
+      effect.trigger_spell_id = 201646;
+      break;
+    default:
+      break;
+  }
+
+  // TODO: Is this actually spec specific?
+  if ( effect.player -> role == ROLE_TANK )
+  {
+    effect.stat = STAT_STAMINA;
+    effect.trigger_spell_id = 201647;
+  }
+  effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
+}
+
+// Lavish Suramar Feast =====================================================
+
+void consumable::lavish_suramar_feast( special_effect_t& effect )
+{
+  effect.stat = effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT );
+  switch ( effect.stat )
+  {
+    case STAT_STRENGTH:
+      effect.trigger_spell_id = 201638;
+      break;
+    case STAT_AGILITY:
+      effect.trigger_spell_id = 201639;
+      break;
+    case STAT_INTELLECT:
+      effect.trigger_spell_id = 201640;
+      break;
+    default:
+      break;
+  }
+
+  // TODO: Is this actually spec specific?
+  if ( effect.player -> role == ROLE_TANK )
+  {
+    effect.stat = STAT_STAMINA;
+    effect.trigger_spell_id = 201641;
+  }
+
+  effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
+}
+
+// Pepper Breath (generic) ==================================================
+
+struct pepper_breath_damage_t : public spell_t
+{
+  pepper_breath_damage_t( const special_effect_t& effect, unsigned spell_id ) :
+    spell_t( "pepper_breath_damage", effect.player, effect.player -> find_spell( spell_id ) )
+  {
+    background = true;
+    callbacks = false;
+  }
+};
+
+// TODO: Multipliers?
+struct pepper_breath_driver_t : public spell_t
+{
+  size_t balls_min, balls_max;
+
+  pepper_breath_driver_t( const special_effect_t& effect, unsigned trigger_id ) :
+    spell_t( "pepper_breath", effect.player, effect.trigger() ),
+    balls_min( effect.trigger() -> effectN( 1 ).min( effect.player ) ),
+    balls_max( effect.trigger() -> effectN( 1 ).max( effect.player ) )
+  {
+    assert( balls_min > 0 && balls_max > 0 );
+    background = true;
+    callbacks = may_crit = hasted_ticks = tick_may_crit = may_miss = false;
+
+    // TODO: Need to look at logs
+    base_tick_time = timespan_t::from_millis( 250 );
+    dot_behavior = DOT_EXTEND;
+    travel_speed = 0;
+
+    tick_action = effect.player -> find_action( "pepper_breath_damage" );
+    if ( ! tick_action )
+    {
+      tick_action = effect.player -> create_proc_action( "pepper_breath_damage", effect );
+    }
+
+    if ( ! tick_action )
+    {
+      tick_action = new pepper_breath_damage_t( effect, trigger_id );
+    }
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  {
+    auto n_ticks = static_cast<size_t>( rng().range( balls_min, balls_max + 1 ) );
+    assert( n_ticks >= 4 && n_ticks <= 6 );
+    return base_tick_time * n_ticks;
+  }
+};
+
+void consumable::pepper_breath( special_effect_t& effect )
+{
+  unsigned trigger_id = 0;
+  switch ( effect.driver() -> id() )
+  {
+    case 225601:
+      trigger_id = 225623;
+      break;
+    case 225606:
+      trigger_id = 225624;
+      break;
+    default:
+      break;
+  }
+
+  if ( trigger_id == 0 )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
+  action_t* a = effect.player -> find_action( "pepper_breath" );
+  if ( ! a )
+  {
+    a = effect.player -> create_proc_action( "pepper_breath", effect );
+  }
+
+  if ( ! a )
+  {
+    a = new pepper_breath_driver_t( effect, trigger_id );
+  }
+
+  effect.execute_action = a;
+  auto proc = new dbc_proc_callback_t( effect.player, effect );
+  proc -> initialize();
+}
+
 // Journey Through Time =====================================================
 
 void set_bonus::journey_through_time( special_effect_t& /* effect */ ) {}
@@ -1915,6 +2065,10 @@ void unique_gear::register_special_effects_x7()
   /* Consumables */
   register_special_effect( 188028, consumable::potion_of_the_old_war );
   register_special_effect( 188027, consumable::potion_of_deadly_grace );
+  register_special_effect( 201351, consumable::hearty_feast );
+  register_special_effect( 201352, consumable::lavish_suramar_feast );
+  register_special_effect( 225606, consumable::pepper_breath );
+  register_special_effect( 225601, consumable::pepper_breath );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )

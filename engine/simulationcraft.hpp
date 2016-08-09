@@ -3820,7 +3820,7 @@ struct player_t : public actor_t
     buff_t* flask;
     stat_buff_t* guardian_elixir;
     stat_buff_t* battle_elixir;
-    stat_buff_t* food;
+    buff_t* food;
     buff_t* augmentation;
   } consumables;
 

@@ -34,8 +34,6 @@ double interpolate( int level, double val_60, double val_70, double val_80, doub
 
 const char* attribute_type_string     ( attribute_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
-const char* flask_type_string         ( flask_e type );
-const char* food_type_string          ( food_e type );
 const char* meta_gem_type_string      ( meta_gem_e type );
 const char* player_type_string        ( player_e );
 const char* pet_type_string           ( pet_e type );
@@ -80,8 +78,6 @@ stat_e      power_type_to_stat        ( power_e );
 
 attribute_e parse_attribute_type ( const std::string& name );
 dmg_e parse_dmg_type             ( const std::string& name );
-flask_e parse_flask_type         ( const std::string& name );
-food_e parse_food_type           ( const std::string& name );
 meta_gem_e parse_meta_gem_type   ( const std::string& name );
 player_e parse_player_type       ( const std::string& name );
 pet_e parse_pet_type             ( const std::string& name );
