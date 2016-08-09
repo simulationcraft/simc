@@ -19,7 +19,7 @@ actions.precombat+=/augmentation,type=hyper
 actions.precombat+=/food,type=jumbo_sea_dog
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/apply_poison,lethal=deadly
+actions.precombat+=/apply_poison
 actions.precombat+=/stealth
 actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/marked_for_death

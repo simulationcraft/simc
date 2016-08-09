@@ -1738,9 +1738,11 @@ struct apply_poison_t : public action_t
 
     if ( p -> main_hand_weapon.type != WEAPON_NONE || p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      if ( lethal_str == "deadly"    ) lethal_poison = DEADLY_POISON;
-      if ( lethal_str == "wound"     ) lethal_poison = WOUND_POISON;
-      if ( lethal_str == "agonizing" ) lethal_poison = AGONIZING_POISON;
+      // Default to agonizing -> deadly, if no option given
+      if      ( lethal_str.empty()        ) lethal_poison = p -> talent.agonizing_poison -> ok() ? AGONIZING_POISON : DEADLY_POISON;
+      else if ( lethal_str == "deadly"    ) lethal_poison = DEADLY_POISON;
+      else if ( lethal_str == "wound"     ) lethal_poison = WOUND_POISON;
+      else if ( lethal_str == "agonizing" ) lethal_poison = AGONIZING_POISON;
 
       if ( nonlethal_str == "crippling" ) nonlethal_poison = CRIPPLING_POISON;
       if ( nonlethal_str == "leeching"  ) nonlethal_poison = LEECHING_POISON;
@@ -5852,10 +5854,7 @@ void rogue_t::init_action_list()
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    if ( talent.agonizing_poison -> ok() )
-      precombat -> add_action( "apply_poison,lethal=agonizing" );
-    else
-      precombat -> add_action( "apply_poison,lethal=deadly" );
+    precombat -> add_action( "apply_poison" );
   }
 
   // Stealth before entering in combat

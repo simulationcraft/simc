@@ -20,7 +20,7 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/food,type=seedbattered_fish_plate
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/apply_poison,lethal=deadly
+actions.precombat+=/apply_poison
 actions.precombat+=/stealth
 actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/marked_for_death

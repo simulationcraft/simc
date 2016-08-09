@@ -5,7 +5,6 @@ role=attack
 position=back
 talents=1112112
 artifact=2:0:0:0:0:40:1:42:3:43:3:50:3:51:3:52:3:351:1:353:1:1275:1
-paladin_fake_gbom=1
 spec=retribution
 
 # This default action priority list is automatically created based on your character.
