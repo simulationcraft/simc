@@ -100,14 +100,14 @@ finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,bonus_id=1727,enchant_id=5427
 trinket1=darkmoon_deck_hellfire,id=128709
 trinket2=portable_manacracker,id=137398,bonus_id=1727
-main_hand=scythe_of_elune,id=128858,bonus_id=722,ilevel=840
+main_hand=scythe_of_elune,id=128858,bonus_id=722,ilevel=870
 
 # Gear Summary
-# gear_ilvl=838.33
+# gear_ilvl=840.33
 # gear_agility=200
-# gear_stamina=17392
-# gear_intellect=18061
-# gear_crit_rating=9906
-# gear_mastery_rating=1848
+# gear_stamina=17964
+# gear_intellect=20522
+# gear_crit_rating=9982
+# gear_mastery_rating=1921
 # gear_versatility_rating=4159
 # gear_armor=1957

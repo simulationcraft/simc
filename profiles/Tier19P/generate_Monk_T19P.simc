@@ -22,6 +22,6 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=840
-off_hand=fists_of_the_heavens,id=133948,ilevel=840
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=870
+off_hand=fists_of_the_heavens,id=133948,ilevel=870
 save=Monk_Windwalker_T19P.simc

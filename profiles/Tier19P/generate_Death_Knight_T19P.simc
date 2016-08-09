@@ -20,8 +20,8 @@ finger1=,id=134528,bonus_id=1727,enchant=binding_of_haste
 finger2=,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=blades_of_the_fallen_prince,id=128292,bonus_id=717,enchant=rune_of_razorice,ilevel=840
-off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader,ilevel=840
+main_hand=blades_of_the_fallen_prince,id=128292,bonus_id=717,enchant=rune_of_razorice,ilevel=870
+off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader,ilevel=870
 save=Death_Knight_Frost_T19P.simc
 
 deathknight="Death_Knight_Unholy_T19P"
@@ -46,6 +46,6 @@ finger1=,id=134528,bonus_id=1727,enchant=binding_of_haste
 finger2=,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=apocalypse,id=128403,bonus_id=718,enchant=rune_of_the_fallen_crusader,ilevel=840
+main_hand=apocalypse,id=128403,bonus_id=718,enchant=rune_of_the_fallen_crusader,ilevel=870
 
 save=Death_Knight_Unholy_T19P.simc

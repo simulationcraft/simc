@@ -81,14 +81,14 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=840
-off_hand=fists_of_the_heavens,id=133948,ilevel=840
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=870
+off_hand=fists_of_the_heavens,id=133948,ilevel=870
 
 # Gear Summary
-# gear_ilvl=840.63
-# gear_agility=9432
-# gear_stamina=17237
-# gear_crit_rating=5932
+# gear_ilvl=844.38
+# gear_agility=9760
+# gear_stamina=17727
+# gear_crit_rating=5996
 # gear_haste_rating=1796
-# gear_mastery_rating=9469
+# gear_mastery_rating=9531
 # gear_armor=1957

@@ -21,8 +21,8 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=,id=128870,bonus_id=741,ilevel=840
-off_hand=,id=128869,ilevel=840
+main_hand=,id=128870,bonus_id=741,ilevel=870
+off_hand=,id=128869,ilevel=870
 save=Rogue_Assassination_T19P.simc
 
 rogue="Rogue_Outlaw_T19P"
@@ -49,8 +49,8 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=,id=128872,bonus_id=742,ilevel=840
-off_hand=,id=134552,ilevel=840
+main_hand=,id=128872,bonus_id=742,ilevel=870
+off_hand=,id=134552,ilevel=870
 save=Rogue_Outlaw_T19P.simc
 
 rogue="Rogue_Subtlety_T19P"
@@ -76,6 +76,6 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=,id=128476,bonus_id=743,ilevel=840
-off_hand=,id=128479,ilevel=840
+main_hand=,id=128476,bonus_id=743,ilevel=870
+off_hand=,id=128479,ilevel=870
 save=Rogue_Subtlety_T19P.simc

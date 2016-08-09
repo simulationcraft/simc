@@ -78,14 +78,14 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_has
 finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=blades_of_the_fallen_prince,id=128292,bonus_id=717,ilevel=840,enchant=rune_of_razorice
-off_hand=blades_of_the_fallen_prince,id=128293,ilevel=840,enchant=rune_of_the_fallen_crusader
+main_hand=blades_of_the_fallen_prince,id=128292,bonus_id=717,ilevel=870,enchant=rune_of_razorice
+off_hand=blades_of_the_fallen_prince,id=128293,ilevel=870,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=840.00
-# gear_strength=9632
-# gear_stamina=17139
-# gear_crit_rating=8659
+# gear_ilvl=843.75
+# gear_strength=9960
+# gear_stamina=17629
+# gear_crit_rating=8723
 # gear_haste_rating=8348
-# gear_mastery_rating=526
+# gear_mastery_rating=588
 # gear_armor=3965

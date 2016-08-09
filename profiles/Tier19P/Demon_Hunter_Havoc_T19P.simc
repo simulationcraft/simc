@@ -4,7 +4,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=1230111
+talents=1130111
 talent_override=blind_fury,if=desired_targets+raid_event.adds.count>=4
 talent_override=chaos_cleave,if=desired_targets>1|raid_event.adds.exists
 artifact=3:0:0:0:0:1001:3:1002:3:1003:3:1005:2:1006:3:1010:1:1012:1:1013:1:1016:1:1330:1
@@ -87,16 +87,16 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727/1492,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,bonus_id=1727/1492,enchant_id=5427
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,ilevel=840
-off_hand=twinblades_of_the_deceiver,id=127830,ilevel=840
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,ilevel=870
+off_hand=twinblades_of_the_deceiver,id=127830,ilevel=870
 
 # Gear Summary
-# gear_ilvl=840.00
-# gear_agility=9632
-# gear_stamina=17140
-# gear_crit_rating=11452
+# gear_ilvl=843.75
+# gear_agility=9960
+# gear_stamina=17630
+# gear_crit_rating=11516
 # gear_haste_rating=4358
-# gear_mastery_rating=526
+# gear_mastery_rating=588
 # gear_versatility_rating=1193
 # gear_armor=1957
 # set_bonus=tier19p_leather_2pc=1
