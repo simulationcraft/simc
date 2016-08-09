@@ -4034,39 +4034,6 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
   return 0;
 }
 
-static std::string::size_type match_prefix( const std::string& str, const std::vector<std::string>& prefixes )
-{
-  auto offset = std::string::npos;
-
-  for ( const auto& prefix : prefixes )
-  {
-    offset = str.find( prefix );
-    if ( offset != std::string::npos )
-    {
-      offset += prefix.size();
-      break;
-    }
-  }
-
-  return offset;
-}
-
-static std::string::size_type match_suffix( const std::string& str, const std::vector<std::string>& suffixes )
-{
-  auto offset = std::string::npos;
-
-  for ( const auto& suffix : suffixes )
-  {
-    offset = str.rfind( suffix );
-    if ( offset != std::string::npos )
-    {
-      break;
-    }
-  }
-
-  return offset;
-}
-
 // Find a consumable of a given subtype, see data_enum.hh for type values.
 // Returns 0 if not found.
 const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
@@ -4074,26 +4041,10 @@ const item_data_t* unique_gear::find_consumable( const dbc_t& dbc,
                                                  item_subclass_consumable type )
 {
   // Poor man's longest matching prefix!
-  const item_data_t* item = dbc::find_consumable( type, dbc.ptr, [type, &name]( const item_data_t* i ) {
+  const item_data_t* item = dbc::find_consumable( type, dbc.ptr, [&name]( const item_data_t* i ) {
     std::string n = i -> name;
     util::tokenize( n );
-    if ( util::str_compare_ci( n, name ) )
-    {
-      return true;
-    }
-    auto prefix_offset = match_prefix( n, __consumable_substrings[ type ].first );
-    auto suffix_offset = match_suffix( n, __consumable_substrings[ type ].second );
-
-    if ( prefix_offset == std::string::npos )
-      prefix_offset = 0;
-
-    if ( suffix_offset == std::string::npos )
-      suffix_offset = n.size();
-    else if ( suffix_offset <= prefix_offset )
-      suffix_offset = n.size();
-
-    auto parsed_name = n.substr( prefix_offset, suffix_offset );
-    return util::str_compare_ci( name, parsed_name );
+    return util::str_in_str_ci( n, name );
   } );
 
   if ( item -> id != 0 )

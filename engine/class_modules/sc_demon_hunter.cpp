@@ -6290,10 +6290,10 @@ void demon_hunter_t::apl_vengeance()
   def -> add_action( this, "Demon Spikes", "if=charges=2|buff.demon_spikes.d"
     "own&!dot.fiery_brand.ticking&buff.metamorphosis.down" );
   def -> add_action( this, "Empower Wards", "if=debuff.casting.up" );
-  def -> add_action( this, "Infernal Strike", "!sigil_placed&!in_flight&rema"
+  def -> add_action( this, "Infernal Strike", "if=!sigil_placed&!in_flight&rema"
     "ins-travel_time-delay<0.3*duration&artifact.fiery_demise.enabled&dot.fi"
     "ery_brand.ticking" );
-  def -> add_action( this, "Infernal Strike", "!sigil_placed&!in_flight&rema"
+  def -> add_action( this, "Infernal Strike", "if=!sigil_placed&!in_flight&rema"
     "ins-travel_time-delay<0.3*duration&(!artifact.fiery_demise.enabled|(max"
     "_charges-charges_fractional)*recharge_time<cooldown.fiery_brand.remains"
     "+5)&(cooldown.sigil_of_flame.remains>7|charges=2)" );
