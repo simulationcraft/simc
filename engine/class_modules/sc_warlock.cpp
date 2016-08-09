@@ -264,7 +264,6 @@ public:
     artifact_power_t devourer_of_life;
     artifact_power_t planeswalker;
     artifact_power_t conflagration_of_chaos;
-    artifact_power_t stolen_power_destruction;
 
   } artifact;
 
@@ -4917,6 +4916,16 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.soulstealer.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
   }
 
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    m *= 1.0 + artifact.thalkiels_lingering_power.percent();
+  }
+
+  if ( specialization() == WARLOCK_DESTRUCTION )
+  {
+    m *= 1.0 + artifact.stolen_power.percent();
+  }
+
   if ( specialization() == WARLOCK_AFFLICTION && ( dbc::is_school( SCHOOL_SHADOW, school ) ) )
   {
     m *= 1.0 + artifact.crystaline_shadows.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
@@ -5356,7 +5365,6 @@ void warlock_t::init_spells()
   artifact.devourer_of_life = find_artifact_spell( "Devourer of Life" );
   artifact.planeswalker = find_artifact_spell( "Planeswalker" );
   artifact.conflagration_of_chaos = find_artifact_spell( "Conflagration of Chaos" );
-  //artifact.stolen_power_destruction = find_artifact_spell( "" );
   
   // Glyphs
 
