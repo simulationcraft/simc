@@ -2510,10 +2510,7 @@ struct agony_t: public warlock_spell_t
 
     if ( p() -> artifact.compounding_horror.rank() )
     {
-      if ( p() -> buffs.deadwind_harvester -> check() )
-        chance *= 2.0;
-
-      if ( rng().roll( chance ) )
+      if ( rng().roll( p() -> buffs.deadwind_harvester -> check() ? chance * 2.0 : chance ) )
       {
         p() -> buffs.compounding_horror -> trigger();
       }
@@ -2749,10 +2746,7 @@ struct corruption_t: public warlock_spell_t
 
     if ( p() -> artifact.compounding_horror.rank() )
     {
-      if ( p() -> buffs.deadwind_harvester -> check() )
-        chance *= 2.0;
-
-      if ( rng().roll( chance ) )
+      if ( rng().roll( p() -> buffs.deadwind_harvester -> check() ? chance * 2.0 : chance ) )
       {
         p() -> buffs.compounding_horror -> trigger();
       }
