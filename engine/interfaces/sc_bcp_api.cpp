@@ -22,6 +22,8 @@ player_e parse_armory_class( const std::string& class_str )
   {
     if ( util::str_compare_ci( class_str, "death-knight" ) )
       pt = DEATH_KNIGHT;
+    else if ( util::str_compare_ci( class_str, "demon-hunter" ) )
+      pt = DEMON_HUNTER;
   }
   return pt;
 }
