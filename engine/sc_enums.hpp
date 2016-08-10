@@ -1100,6 +1100,7 @@ enum rppm_scale_e
   RPPM_DISABLE,
   RPPM_HASTE,
   RPPM_CRIT,
+  RPPM_ATTACK_SPEED
 };
 
 enum action_energize_e

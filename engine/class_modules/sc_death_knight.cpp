@@ -6456,6 +6456,7 @@ void death_knight_t::create_buffs()
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom" )
                               .spell( spec.sudden_doom -> effectN( 1 ).trigger() )
                               .rppm_mod( 1.0 + artifact.double_doom.data().effectN( 2 ).percent() )
+                              .rppm_scale( RPPM_ATTACK_SPEED ) // 2016-08-08: Hotfixed, not in spell data
                               .max_stack( specialization() == DEATH_KNIGHT_UNHOLY
                                   ? ( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() +
                                       artifact.double_doom.data().effectN( 1 ).base_value() )

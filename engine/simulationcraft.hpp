@@ -7732,6 +7732,9 @@ inline double real_ppm_t::proc_chance( player_t*         player,
   if ( scales_with == RPPM_CRIT )
     coeff *= 1.0 + std::max( player -> cache.attack_crit_chance(), player -> cache.spell_crit_chance() );
 
+  if ( scales_with == RPPM_ATTACK_SPEED )
+    coeff *= 1.0 / player -> cache.attack_speed();
+
   double real_ppm = PPM * coeff;
   double old_rppm_chance = real_ppm * ( seconds / 60.0 );
 
