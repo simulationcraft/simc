@@ -6086,34 +6086,37 @@ struct variable_t : public action_t
     add_option( opt_timespan( "delay", delay_ ) );
     parse_options( options_str );
 
-    if ( name_.empty() || operation_.empty() )
+    if ( name_.empty() )
     {
-      sim -> errorf( "Player %s unnamed 'variable' action used, or no operation given", player -> name() );
+      sim -> errorf( "Player %s unnamed 'variable' action used", player -> name() );
       background = true;
       return;
+    }
+
+    // Figure out operation
+    if ( ! operation_.empty() )
+    {
+      if ( util::str_compare_ci( operation_, "set" ) )
+        operation = OPERATION_SET;
+      else if ( util::str_compare_ci( operation_, "print" ) )
+        operation = OPERATION_PRINT;
+      else if ( util::str_compare_ci( operation_, "reset" ) )
+        operation = OPERATION_RESET;
+      else if ( util::str_compare_ci( operation_, "add" ) )
+        operation = OPERATION_ADD;
+      else if ( util::str_compare_ci( operation_, "sub" ) )
+        operation = OPERATION_SUB;
+      else
+      {
+        sim -> errorf( "Player %s unknown operation '%s' given for variable, valid values are 'set', 'print', and 'reset'.", player -> name(), operation_.c_str() );
+        background = true;
+        return;
+      }
     }
 
     // Printing needs a delay, otherwise the action list will not progress
     if ( operation == OPERATION_PRINT && delay_ == timespan_t::zero() )
       delay_ = timespan_t::from_seconds( 1.0 );
-
-    // Figure out operation
-    if ( util::str_compare_ci( operation_, "set" ) )
-      operation = OPERATION_SET;
-    else if ( util::str_compare_ci( operation_, "print" ) )
-      operation = OPERATION_PRINT;
-    else if ( util::str_compare_ci( operation_, "reset" ) )
-      operation = OPERATION_RESET;
-    else if ( util::str_compare_ci( operation_, "add" ) )
-      operation = OPERATION_ADD;
-    else if ( util::str_compare_ci( operation_, "sub" ) )
-      operation = OPERATION_SUB;
-    else
-    {
-      sim -> errorf( "Player %s unknown operation '%s' given for variable, valid values are 'set', 'print', and 'reset'.", player -> name(), operation_.c_str() );
-      background = true;
-      return;
-    }
 
     // Evaluate value expression
     if ( operation == OPERATION_SET || operation == OPERATION_ADD )
@@ -6172,6 +6175,12 @@ struct variable_t : public action_t
   void execute() override
   {
     action_t::execute();
+
+    if ( sim -> debug && operation != OPERATION_PRINT )
+    {
+      sim -> out_debug.printf( "%s variable name=%s op=%d value=%f default=%f sig=%s",
+        player -> name(), var -> name_.c_str(), operation, var -> current_value_, var -> default_, signature_str.c_str() );
+    }
 
     switch ( operation )
     {
@@ -7242,7 +7251,7 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "wait"               ) return new         wait_fixed_t( this, options_str );
   if ( name == "wait_until_ready"   ) return new   wait_until_ready_t( this, options_str );
   if ( name == "pool_resource"      ) return new      pool_resource_t( this, options_str );
-  //if ( name == "variable"           ) return new           variable_t( this, options_str );
+  if ( name == "variable"           ) return new           variable_t( this, options_str );
 
   return consumable::create_action( this, name, options_str );
 }
