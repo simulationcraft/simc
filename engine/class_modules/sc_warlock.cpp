@@ -2650,7 +2650,7 @@ struct unstable_affliction_t : public warlock_spell_t
       m *= 1.0 + p() -> cache.mastery_value();
 
     if ( p() -> buffs.compounding_horror -> check() )
-      m *= 1.0 + p() -> buffs.compounding_horror -> data().effectN( 1 ).percent() * p() -> buffs.compounding_horror -> current_stack;
+      m *= 1.0 + p() -> buffs.compounding_horror -> data().effectN( 1 ).percent() * p() -> buffs.compounding_horror -> check();
 
     return m;
   }
@@ -4576,9 +4576,9 @@ struct reap_souls_t: public warlock_spell_t
 {
   timespan_t base_duration;
   timespan_t total_duration;
-  int souls;
+  int souls_consumed;
     reap_souls_t( warlock_t* p ) :
-        warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls ), souls(0)
+        warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls ), souls_consumed( 0 )
     {
       harmful = may_crit = false;
       ignore_false_positive = true;
@@ -4586,17 +4586,29 @@ struct reap_souls_t: public warlock_spell_t
       base_duration = p -> buffs.deadwind_harvester -> buff_duration;
     }
 
+    virtual bool ready() override
+    {
+      if ( !p() -> buffs.tormented_souls -> check() )
+        return false;
+
+      return warlock_spell_t::ready();
+    }
+
     virtual void execute() override
     {
       warlock_spell_t::execute();
 
-      total_duration = base_duration * p() -> buffs.tormented_souls -> current_stack;
-      p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
-      for ( int i = 0; i < p() -> buffs.tormented_souls -> current_stack; ++i )
+      if ( p() -> artifact.reap_souls.rank() && p() -> buffs.tormented_souls -> check() )
       {
-        p() -> procs.souls_consumed -> occur();
+        souls_consumed = p() -> buffs.tormented_souls -> stack();
+        total_duration = base_duration * souls_consumed;
+        p() -> buffs.deadwind_harvester -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
+        for ( int i = 0; i < souls_consumed; ++i )
+        {
+          p() -> procs.souls_consumed -> occur();
+        }
+        p() -> buffs.tormented_souls -> decrement( souls_consumed );
       }
-      p() -> buffs.tormented_souls -> expire();
     }
 };
 
