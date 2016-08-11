@@ -2061,7 +2061,7 @@ private:
 
     havoc_proc = nullptr;
 
-    destro_mastery = true;
+    affected_by_contagion = true;
 
     parse_spell_coefficient( *this );
   }
@@ -2072,7 +2072,7 @@ public:
 
   proc_t* havoc_proc;
 
-  bool destro_mastery;
+  bool affected_by_contagion;
   bool affected_by_flamelicked;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
@@ -2329,7 +2329,7 @@ public:
 
     warlock_td_t* td = this -> td( t );
 
-    if ( p() -> talents.contagion -> ok() && td -> dots_unstable_affliction -> is_ticking() )
+    if ( p() -> talents.contagion -> ok() && td -> dots_unstable_affliction -> is_ticking() && affected_by_contagion )
       m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
 
     if ( p() -> talents.eradication -> ok() && td -> debuffs_eradication -> check() )
@@ -2560,6 +2560,7 @@ struct unstable_affliction_t : public warlock_spell_t
     {
       dual = true;
       tick_may_crit = hasted_ticks = true;
+      affected_by_contagion = false;
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -2621,6 +2622,7 @@ struct unstable_affliction_t : public warlock_spell_t
     spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
     base_multiplier *= dot_duration / base_tick_time;
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
+    affected_by_contagion = false;
   }
 
   double cost() const override
@@ -2652,6 +2654,9 @@ struct unstable_affliction_t : public warlock_spell_t
 
     if ( p() -> buffs.compounding_horror -> check() )
       m *= 1.0 + p() -> buffs.compounding_horror -> data().effectN( 1 ).percent() * p() -> buffs.compounding_horror -> check();
+
+    if ( p() -> talents.contagion -> ok() )
+      m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
 
     return m;
   }
@@ -4523,6 +4528,16 @@ struct siphon_life_t : public warlock_spell_t
   {
     may_crit = false;
   }
+
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( p() -> mastery_spells.potent_afflictions -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
+
+    return m;
+  }
 };
 
 struct soul_harvest_t : public warlock_spell_t
@@ -4650,7 +4665,6 @@ struct demonic_power_damage_t : public warlock_spell_t
   {
     background = true;
     proc = true;
-    destro_mastery = false;
     base_multiplier *= 1.0 + p -> artifact.impish_incineration.data().effectN( 3 ).percent();
   }
 };
