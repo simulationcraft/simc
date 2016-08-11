@@ -6220,7 +6220,7 @@ void demon_hunter_t::apl_havoc()
                    "if=!talent.demonic.enabled&(spell_targets.eye_beam_tick>"
                    "desired_targets|(raid_event.adds.in>45&buff.metamorphosis."
                    "down&(artifact.anguish_of_the_deceiver.enabled|active_"
-                   "enemies>1)))" );
+                   "enemies>1|level=100)))" );
   def -> add_action( this, "Demon's Bite",
                    "if=buff.metamorphosis.down&cooldown.blade_dance.remains<"
                    "gcd&fury<55&blade_dance_worth_using",
@@ -6246,6 +6246,7 @@ void demon_hunter_t::apl_havoc()
                    "animation_cancel=1,if=!talent.momentum.enabled&raid_event."
                    "movement.in>charges*10" );
   def -> add_action( this, "Demon's Bite" );
+  def -> add_action( this, "Throw Glaive" );
   def -> add_action( this, "Felblade",
                    "if=movement.distance|buff.out_of_range.up" );
   def -> add_action( this, "Fel Rush",
