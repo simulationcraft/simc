@@ -1796,6 +1796,7 @@ struct doomguard_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     resources.base[RESOURCE_ENERGY] = 100;
+    base_energy_regen_per_second = 12;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
