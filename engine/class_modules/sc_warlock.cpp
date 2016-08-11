@@ -4580,6 +4580,9 @@ struct reap_souls_t: public warlock_spell_t
     reap_souls_t( warlock_t* p ) :
         warlock_spell_t( "reap_souls", p, p -> artifact.reap_souls ), souls(0)
     {
+      harmful = may_crit = false;
+      ignore_false_positive = true;
+
       base_duration = p -> buffs.deadwind_harvester -> buff_duration;
     }
 
