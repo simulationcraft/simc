@@ -42,6 +42,12 @@ contains(QMAKE_CXX, clang++)|contains(QMAKE_CXX, g++) {
   }
 }
 
+unix|macx {
+  system(which -s git) {
+    DEFINES += SC_GIT_REV="\\\"$$system(git rev-parse --short HEAD)\\\""
+  }
+}
+
 macx {
   contains(QMAKE_CXX, clang++) {
     QMAKE_CXXFLAGS += -Wno-inconsistent-missing-override
@@ -53,6 +59,11 @@ win32 {
   LIBS += -lwininet -lshell32
   win32-msvc2013|win32-msvc2015 {
     QMAKE_CXXFLAGS_RELEASE += /Ot /MP
+  }
+
+  # TODO: Mingw might want something more unixy here?
+  system(where /q git) {
+    DEFINES += SC_GIT_REV="\\\"$$system(git rev-parse --short HEAD)\\\""
   }
 
   !isEmpty(PGO) {
@@ -67,3 +78,5 @@ win32 {
     }
   }
 }
+
+

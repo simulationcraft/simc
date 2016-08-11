@@ -16,7 +16,7 @@ ENV_APIKEY=$$(SC_DEFAULT_APIKEY)
 }
 
 !isEmpty(SC_DEFAULT_APIKEY) {
-  DEFINES += SC_DEFAULT_APIKEY=\"$${SC_DEFAULT_APIKEY}\"
+  DEFINES += SC_DEFAULT_APIKEY=\\\"$${SC_DEFAULT_APIKEY}\\\"
 }
 
 # On Linux compilation, setup the profile search directory
