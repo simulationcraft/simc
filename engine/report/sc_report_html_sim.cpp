@@ -1060,7 +1060,11 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
   os.format(
       "<span id=\"logo\"></span>\n"
       "<h1><a href=\"%s\">SimulationCraft %s</a></h1>\n"
-      "<h2>for World of Warcraft %s %s (build level %d)</h2>\n\n",
+#if ! defined( SC_GIT_REV )
+      "<h2>for World of Warcraft %s %s (wow build level %d)</h2>\n\n",
+#else
+      "<h2>for World of Warcraft %s %s (wow build level %d, git build <a href=\"%s\">%s</a>)</h2>\n\n",
+#endif
       "http://www.simulationcraft.org/", SC_VERSION, sim.dbc.wow_version(),
       ( sim.dbc.ptr ?
 #if SC_BETA
@@ -1069,7 +1073,13 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
                     "PTR"
 #endif
                     : "Live" ),
+#if ! defined( SC_GIT_REV )
       sim.dbc.build_level() );
+#else
+      sim.dbc.build_level(),
+      "https://github.com/simulationcraft/simc/commit/" SC_GIT_REV,
+      SC_GIT_REV );
+#endif
 
   time_t rawtime;
   time( &rawtime );

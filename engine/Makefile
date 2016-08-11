@@ -57,6 +57,7 @@ MKDIR      = mkdir
 CXX        = g++
 CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++0x -O3 -MMD -MP
 OPTS       =
+GIT        = $(shell which git)
 
 LINK_LIBS  =
 
@@ -171,6 +172,10 @@ MODULE     = simc$(MODULE_EXT)
 
 include ../source_files/engine_make
 include ../source_files/engine_main_make
+
+ifneq (,${GIT})
+  OPTS += -DSC_GIT_REV="\"$(shell ${GIT} rev-parse --short HEAD)\""
+endif
 
 SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC)) $(filter %.inc, $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
