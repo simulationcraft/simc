@@ -446,7 +446,6 @@ public:
     // Tier 15
     const spell_data_t* arcane_familiar,
                       * presence_of_mind,
-                      * torrent,
                       * pyromaniac,
                       * conflagration,
                       * fire_starter,
@@ -467,7 +466,8 @@ public:
     // Tier 60
     const spell_data_t* supernova,
                       * charged_up,
-                      * words_of_power,
+                      * words_of_power, // TODO: Move this to 15
+                      * resonance,
                       * blast_wave,
                       * flame_on,
                       * controlled_burn,
@@ -2676,10 +2676,10 @@ struct arcane_barrage_t : public arcane_mage_spell_t
 
     am *= arcane_charge_damage_bonus();
 
-    if ( p() -> talents.torrent -> ok() )
+    if ( p() -> talents.resonance -> ok() )
     {
       int targets = std::min( n_targets(), as<int>( target_list().size() ) );
-      am *= 1.0 + p() -> talents.torrent -> effectN( 1 ).percent() * targets;
+      am *= 1.0 + p() -> talents.resonance -> effectN( 1 ).percent() * targets;
     }
 
     return am;
@@ -7364,7 +7364,7 @@ void mage_t::init_spells()
   // Tier 15
   talents.arcane_familiar = find_talent_spell( "Arcane Familiar" );
   talents.presence_of_mind= find_talent_spell( "Presence of Mind");
-  talents.torrent         = find_talent_spell( "Torrent"         );
+  talents.resonance     = find_talent_spell( "Resonance"         );
   talents.pyromaniac      = find_talent_spell( "Pyromaniac"      );
   talents.conflagration   = find_talent_spell( "Conflagration"   );
   talents.fire_starter    = find_talent_spell( "Firestarter"    );
