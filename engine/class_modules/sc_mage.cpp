@@ -6230,8 +6230,8 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
-    base_dd_max *= data().effectN( 1 ).percent();
-    base_dd_min *= data().effectN( 1 ).percent();
+    base_dd_max *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
+    base_dd_min *= p() -> artifact.touch_of_the_magi.data().effectN( 1 ).percent();
 
     mage_spell_t::execute();
   }
