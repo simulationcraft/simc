@@ -3583,16 +3583,6 @@ namespace assessor
 
 // Player ===================================================================
 
-enum action_var_e
-{
-  OPERATION_NONE = -1,
-  OPERATION_SET,
-  OPERATION_PRINT,
-  OPERATION_RESET,
-  OPERATION_ADD,
-  OPERATION_SUB
-};
-
 struct action_variable_t
 {
   std::string name_;

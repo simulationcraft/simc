@@ -6066,7 +6066,7 @@ struct variable_t : public action_t
   expr_t* value_expression;
 
   variable_t( player_t* player, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "variable", player ),
+    action_t( ACTION_VARIABLE, "variable", player ),
     operation( OPERATION_SET ), var( 0 ), value_expression( 0 )
   {
     quiet = true;
@@ -6096,16 +6096,19 @@ struct variable_t : public action_t
     // Figure out operation
     if ( ! operation_.empty() )
     {
-      if ( util::str_compare_ci( operation_, "set" ) )
-        operation = OPERATION_SET;
-      else if ( util::str_compare_ci( operation_, "print" ) )
-        operation = OPERATION_PRINT;
-      else if ( util::str_compare_ci( operation_, "reset" ) )
-        operation = OPERATION_RESET;
-      else if ( util::str_compare_ci( operation_, "add" ) )
-        operation = OPERATION_ADD;
-      else if ( util::str_compare_ci( operation_, "sub" ) )
-        operation = OPERATION_SUB;
+      if      ( util::str_compare_ci( operation_, "set"   ) ) operation = OPERATION_SET;
+      else if ( util::str_compare_ci( operation_, "print" ) ) operation = OPERATION_PRINT;
+      else if ( util::str_compare_ci( operation_, "reset" ) ) operation = OPERATION_RESET;
+      else if ( util::str_compare_ci( operation_, "add"   ) ) operation = OPERATION_ADD;
+      else if ( util::str_compare_ci( operation_, "sub"   ) ) operation = OPERATION_SUB;
+      else if ( util::str_compare_ci( operation_, "mul"   ) ) operation = OPERATION_MUL;
+      else if ( util::str_compare_ci( operation_, "div"   ) ) operation = OPERATION_DIV;
+      else if ( util::str_compare_ci( operation_, "pow"   ) ) operation = OPERATION_POW;
+      else if ( util::str_compare_ci( operation_, "mod"   ) ) operation = OPERATION_MOD;
+      else if ( util::str_compare_ci( operation_, "min"   ) ) operation = OPERATION_MIN;
+      else if ( util::str_compare_ci( operation_, "max"   ) ) operation = OPERATION_MAX;
+      else if ( util::str_compare_ci( operation_, "floor" ) ) operation = OPERATION_FLOOR;
+      else if ( util::str_compare_ci( operation_, "ceil"  ) ) operation = OPERATION_CEIL;
       else
       {
         sim -> errorf( "Player %s unknown operation '%s' given for variable, valid values are 'set', 'print', and 'reset'.", player -> name(), operation_.c_str() );
@@ -6118,8 +6121,8 @@ struct variable_t : public action_t
     if ( operation == OPERATION_PRINT && delay_ == timespan_t::zero() )
       delay_ = timespan_t::from_seconds( 1.0 );
 
-    // Evaluate value expression
-    if ( operation == OPERATION_SET || operation == OPERATION_ADD )
+    if ( operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
+         operation != OPERATION_PRINT )
     {
       if ( value_.empty() )
       {
@@ -6166,16 +6169,9 @@ struct variable_t : public action_t
     }
   }
 
-  result_e calculate_result( action_state_t* ) const override
-  { return RESULT_HIT; }
-
-  block_result_e calculate_block_result( action_state_t* ) const override
-  { return BLOCK_RESULT_UNBLOCKED; }
-
+  // Note note note, doesn't do anything that a real action does
   void execute() override
   {
-    action_t::execute();
-
     if ( sim -> debug && operation != OPERATION_PRINT )
     {
       sim -> out_debug.printf( "%s variable name=%s op=%d value=%f default=%f sig=%s",
@@ -6193,10 +6189,58 @@ struct variable_t : public action_t
       case OPERATION_SUB:
         var -> current_value_ -= value_expression -> eval();
         break;
+      case OPERATION_MUL:
+        var -> current_value_ *= value_expression -> eval();
+        break;
+      case OPERATION_DIV:
+      {
+        auto v = value_expression -> eval();
+        // Disallow division by zero, set value to zero
+        if ( v == 0 )
+        {
+          var -> current_value_ = 0;
+        }
+        else
+        {
+          var -> current_value_ /= v;
+        }
+        break;
+      }
+      case OPERATION_POW:
+        var -> current_value_ = std::pow( var -> current_value_, value_expression -> eval() );
+        break;
+      case OPERATION_MOD:
+      {
+        // Disallow division by zero, set value to zero
+        auto v = value_expression -> eval();
+        if ( v == 0 )
+        {
+          var -> current_value_ = 0;
+        }
+        else
+        {
+          var -> current_value_ = std::fmod( var -> current_value_, value_expression -> eval() );
+        }
+        break;
+      }
+      case OPERATION_MIN:
+        var -> current_value_ = std::min( var -> current_value_, value_expression -> eval() );
+        break;
+      case OPERATION_MAX:
+        var -> current_value_ = std::max( var -> current_value_, value_expression -> eval() );
+        break;
+      case OPERATION_FLOOR:
+        var -> current_value_ = util::floor( var -> current_value_ );
+        break;
+      case OPERATION_CEIL:
+        var -> current_value_ = util::ceil( var -> current_value_ );
+        break;
       case OPERATION_PRINT:
         // Only spit out prints in main thread
         if ( sim -> parent == 0 )
-          std::cout << "actor=" << player -> name_str << " time=" << sim -> current_time().total_seconds() << " iteration=" << sim -> current_iteration << " variable=" << var -> name_.c_str() << " value=" << var -> current_value_ << std::endl;
+          std::cout << "actor=" << player -> name_str << " time=" << sim -> current_time().total_seconds()
+            << " iteration=" << sim -> current_iteration << " variable=" << var -> name_.c_str()
+            << " value=" << var -> current_value_ << std::endl;
         break;
       case OPERATION_RESET:
         var -> reset();
@@ -6205,27 +6249,6 @@ struct variable_t : public action_t
         assert( 0 );
         break;
     }
-  }
-
-  bool ready() override
-  {
-    // For state change operations, return false if the variable would be
-    // unchanged, allows easier way to handle infinite action list issues due
-    // to time not progressing
-    if ( value_expression )
-    {
-      if ( operation == OPERATION_SET && value_expression -> eval() == var -> current_value_ )
-        return false;
-      else if ( ( operation == OPERATION_SUB || operation == OPERATION_ADD ) && value_expression -> eval() == 0 )
-        return false;
-    }
-
-    // For reset, only perform reset if the variable is not at default value.
-    // See above why.
-    if ( operation == OPERATION_RESET && var -> current_value_ == var -> default_ )
-      return false;
-
-    return action_t::ready();
   }
 };
 
@@ -11315,11 +11338,15 @@ action_t* player_t::select_action( const action_priority_list_t& list )
 
     if ( a -> ready() )
     {
-      if ( a -> type != ACTION_CALL )
-        return a;
+      // Execute variable operation, and continue processing
+      if ( a -> type == ACTION_VARIABLE )
+      {
+        a -> execute();
+        continue;
+      }
       // Call_action_list action, don't execute anything, but rather recurse
       // into the called action list.
-      else
+      else if ( a -> type == ACTION_CALL )
       {
         call_action_list_t* call = static_cast<call_action_list_t*>( a );
         // If the called APLs bitflag (based on internal id) is up, we're in an
@@ -11338,6 +11365,11 @@ action_t* player_t::select_action( const action_priority_list_t& list )
             real_a -> action_list -> used = true;
           return real_a;
         }
+      }
+      // .. in branch prediction, we trust
+      else
+      {
+        return a;
       }
     }
   }

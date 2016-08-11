@@ -479,7 +479,55 @@ enum action_e
   // Call other action lists
   ACTION_CALL,
 
+  // Perform operations on a variable
+  ACTION_VARIABLE,
+
   ACTION_MAX
+};
+
+enum action_var_e
+{
+  /// Invalid operation
+  OPERATION_NONE = -1,
+
+  /// Set variable to value
+  OPERATION_SET,
+
+  /// (debug) Print variable data to standard output
+  OPERATION_PRINT,
+
+  /// Reset variable to default value
+  OPERATION_RESET,
+
+  /// Add value to variable
+  OPERATION_ADD,
+
+  // Subtract value from variable
+  OPERATION_SUB,
+
+  /// Multiply variable by value
+  OPERATION_MUL,
+
+  /// Divide variable by value
+  OPERATION_DIV,
+
+  /// Raise variable to power of value
+  OPERATION_POW,
+
+  /// Take variable remainder of value
+  OPERATION_MOD,
+
+  /// Assign minimum of variable, value to variable
+  OPERATION_MIN,
+
+  /// Assign maximum of variable, value to variable
+  OPERATION_MAX,
+
+  /// Floor variable
+  OPERATION_FLOOR,
+
+  /// Raise variable to next integer value
+  OPERATION_CEIL
 };
 
 enum school_e

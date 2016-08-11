@@ -8585,11 +8585,15 @@ action_t* mage_t::select_action( const action_priority_list_t& list )
 
     if ( a -> ready() )
     {
-      if ( a -> type != ACTION_CALL )
-        return a;
+      // Ready variables execute, and processing conitnues
+      if ( a -> type == ACTION_VARIABLE )
+      {
+        a -> execute();
+        continue;
+      }
       // Call_action_list action, don't execute anything, but rather recurse
       // into the called action list.
-      else
+      else if ( a -> type == ACTION_CALL )
       {
         call_action_list_t* call = static_cast<call_action_list_t*>( a );
         // Restore original target before recursing into the called action list
@@ -8616,6 +8620,10 @@ action_t* mage_t::select_action( const action_priority_list_t& list )
             real_a -> action_list -> used = true;
           return real_a;
         }
+      }
+      else
+      {
+        return a;
       }
     }
     // Action not ready, restore target for extra safety
