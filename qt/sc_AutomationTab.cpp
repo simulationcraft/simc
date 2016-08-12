@@ -1168,7 +1168,7 @@ SC_AutomationTab::SC_AutomationTab( QWidget* parent ) :
     choice.player_race = createChoice( 13, "Blood Elf", "Draenei", "Dwarf", "Gnome", "Goblin", "Human", "Night Elf", "Orc", "Pandaren", "Tauren", "Troll", "Undead", "Worgen");
     defaultsFormLayout -> addRow( tr( "Race" ), choice.player_race );
 
-    choice.player_level = addValidatorToComboBox( 1, 100, createChoice( 4, "80", "85", "90", "100" ) );
+    choice.player_level = addValidatorToComboBox( 1, 110, createChoice( 5, "80", "85", "90", "100", "110" ) );
     defaultsFormLayout -> addRow( tr( "Level" ), choice.player_level );
 
     // Create text boxes for default talents and glyphs, and add them to the FormLayout

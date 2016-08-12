@@ -1026,16 +1026,21 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
   const auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
   std::array<double, ATTRIBUTE_MAX> hybrid_attributes;
   range::fill( hybrid_attributes, 0 );
+  const std::array<stat_e, 4> hybrid_stats = { { STAT_STR_AGI_INT, STAT_STR_AGI, STAT_STR_INT, STAT_AGI_INT } };
 
-  if ( !p.items.empty() )
+  for ( const auto& item: p.items )
   {
-    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+    for ( auto hybrid_stat : hybrid_stats )
     {
-      for ( attribute_e j = ATTR_STAMINA; ++j < ATTRIBUTE_MAX; )
+      auto real_stat = p.convert_hybrid_stat( hybrid_stat );
+      attribute_e attr = static_cast<attribute_e>( real_stat );
+
+      if ( p.gear.attribute[ attr ] >= 0 || item.stats.get_stat( hybrid_stat ) <= 0 )
       {
-        hybrid_attributes[ p.convert_hybrid_stat(
-            static_cast<stat_e>( j ) ) ] += p.items[ i ].stats.attribute[ j ];
+        continue;
       }
+
+      hybrid_attributes[ attr ] += item.stats.get_stat( hybrid_stat );
     }
   }
 
