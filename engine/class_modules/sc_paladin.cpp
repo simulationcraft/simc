@@ -211,6 +211,7 @@ public:
 
     proc_t* divine_purpose;
     proc_t* the_fires_of_justice;
+    proc_t* tfoj_set_bonus;
   } procs;
 
   // Spells
@@ -1681,6 +1682,11 @@ struct execution_sentence_t : public paladin_spell_t
     // disable if not talented
     if ( ! ( p -> talents.execution_sentence -> ok() ) )
       background = true;
+
+    if ( p -> sets.has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets.set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 2 ).percent();
+    }
   }
 
   void init() override
@@ -2750,6 +2756,22 @@ struct holy_power_generator_t : public paladin_melee_attack_t
   {
 
   }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T19, B4 ) )
+    {
+      // for some reason this is the same spell as the talent
+      // leftover nonsense from when this was Conviction?
+      bool success = p() -> buffs.the_fires_of_justice -> trigger( 1,
+        p() -> buffs.the_fires_of_justice -> default_value,
+        p() -> sets.set( PALADIN_RETRIBUTION, T19, B4 ) -> effectN( 2 ).percent() );
+      if ( success )
+        p() -> procs.tfoj_set_bonus -> occur();
+    }
+  }
 };
 
 struct holy_power_consumer_t : public paladin_melee_attack_t
@@ -2759,7 +2781,10 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
                           bool u2h = true):
                           paladin_melee_attack_t( n, p, s, u2h )
   {
-
+    if ( p -> sets.has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets.set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 1 ).percent();
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -4203,6 +4228,7 @@ void paladin_t::init_procs()
   procs.focus_of_vengeance_reset  = get_proc( "focus_of_vengeance_reset"       );
   procs.divine_purpose            = get_proc( "divine_purpose"                 );
   procs.the_fires_of_justice      = get_proc( "the_fires_of_justice"           );
+  procs.tfoj_set_bonus            = get_proc( "t19_4p"                         );
 }
 
 // paladin_t::init_scaling ==================================================
