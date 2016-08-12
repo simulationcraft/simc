@@ -80,7 +80,7 @@ actions.BoW+=/divine_storm,if=holy_power>=3&spell_targets.divine_storm>=2&(coold
 actions.BoW+=/justicars_vengeance,if=holy_power>=3&buff.divine_purpose.up&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&!equipped.whisper_of_the_nathrezim
 actions.BoW+=/templars_verdict,if=holy_power>=3&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)
 actions.BoW+=/wake_of_ashes,if=holy_power<=1|(holy_power<=2&cooldown.blade_of_justice.remains>gcd&(cooldown.zeal.charges_fractional<=0.67|cooldown.crusader_strike.charges_fractional<=0.67))
-actions.BoW+=/divine_storm,if=debuff.judgment.up&buff.divine_purpose.react&talent.the_fires_of_justice.enabled
+actions.BoW+=/divine_storm,if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react&talent.the_fires_of_justice.enabled
 actions.BoW+=/justicars_vengeance,if=debuff.judgment.up&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim&talent.the_fires_of_justice.enabled
 actions.BoW+=/templars_verdict,if=debuff.judgment.up&buff.divine_purpose.react&talent.the_fires_of_justice.enabled
 actions.BoW+=/zeal,if=charges=2&holy_power<=4

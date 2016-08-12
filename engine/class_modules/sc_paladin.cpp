@@ -367,7 +367,7 @@ public:
     extra_regen_percent( 0.0 ),
     last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
     fixed_holy_wrath_health_pct( -1.0 ),
-    fake_gbom( false )
+    fake_gbom( true )
   {
     last_retribution_trinket_target = nullptr;
     retribution_trinket = nullptr;
@@ -4545,7 +4545,6 @@ void paladin_t::generate_action_prio_list_ret()
   ///////////////////////
 
   action_priority_list_t* def = get_action_priority_list( "default" );
-  action_priority_list_t* single = get_action_priority_list( "single" );
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Rebuke" );
@@ -4634,7 +4633,7 @@ void paladin_t::generate_action_prio_list_ret()
   BoW -> add_talent( this, "Justicar's Vengeance", "if=holy_power>=3&buff.divine_purpose.up&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&!equipped.whisper_of_the_nathrezim" );
   BoW -> add_action( this, "Templar's Verdict", "if=holy_power>=3&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
   BoW -> add_action( this, "Wake of Ashes", "if=holy_power<=1|(holy_power<=2&cooldown.blade_of_justice.remains>gcd&(cooldown.zeal.charges_fractional<=0.67|cooldown.crusader_strike.charges_fractional<=0.67))" );
-  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&buff.divine_purpose.react&talent.the_fires_of_justice.enabled" );
+  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react&talent.the_fires_of_justice.enabled" );
   BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim&talent.the_fires_of_justice.enabled" );
   BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react&talent.the_fires_of_justice.enabled" );
   BoW -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
