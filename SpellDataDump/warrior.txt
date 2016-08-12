@@ -459,6 +459,7 @@ Effects          :
 Description      : Attempt to finish off a wounded foe, causing ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Protection Warrior
 School           : Physical
 Spell Level      : 16
@@ -469,7 +470,7 @@ Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160), Warrior (137047), Thunder Crash (188644), Crackling Thunder (203201)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
