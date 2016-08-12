@@ -1,0 +1,100 @@
+warrior="Warrior_Arms_T19M"
+level=110
+race=blood_elf
+role=attack
+position=back
+talents=1111122
+artifact=36:0:0:0:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:3:1148:3:1149:3:1150:3:1151:3:1356:1
+spec=arms
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=countless_armies
+actions.precombat+=/food,type=nightborne_delicacy_platter
+actions.precombat+=/augmentation,type=defiled
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=potion_of_the_old_war
+
+# Executed every time the actor is available.
+
+actions=charge
+actions+=/auto_attack
+actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25
+actions+=/battle_cry,sync=colossus_smash
+actions+=/battle_cry,if=debuff.colossus_smash.remains>=5|(debuff.colossus_smash.up&cooldown.colossus_smash.remains=0)
+actions+=/avatar,sync=colossus_smash
+actions+=/avatar,if=debuff.colossus_smash.remains>=5|(debuff.colossus_smash.up&cooldown.colossus_smash.remains=0)
+actions+=/blood_fury,if=buff.battle_cry.up
+actions+=/berserking,if=buff.battle_cry.up
+actions+=/arcane_torrent,if=rage<rage.max-40
+actions+=/heroic_leap,if=buff.shattered_defenses.down
+actions+=/rend,if=remains<gcd
+actions+=/hamstring,if=talent.deadly_calm.enabled&buff.battle_cry.up
+actions+=/colossus_smash,if=debuff.colossus_smash.down
+actions+=/warbreaker,if=debuff.colossus_smash.down
+actions+=/ravager
+actions+=/overpower
+actions+=/run_action_list,name=single,if=target.health.pct>=20
+actions+=/run_action_list,name=execute,if=target.health.pct<20
+
+actions.single=mortal_strike
+actions.single+=/colossus_smash,if=buff.shattered_defenses.down&buff.precise_strikes.down
+actions.single+=/warbreaker,if=buff.shattered_defenses.down
+actions.single+=/focused_rage,if=buff.focused_rage.stack<3|talent.deadly_calm.enabled&buff.battle_cry.up
+actions.single+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&!talent.focused_rage.enabled|talent.deadly_calm.enabled&buff.battle_cry.up|buff.cleave.up
+actions.single+=/slam,if=!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&!talent.focused_rage.enabled|talent.deadly_calm.enabled&buff.battle_cry.up
+actions.single+=/rend,if=remains<=duration*0.3
+actions.single+=/heroic_charge
+actions.single+=/whirlwind,if=talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)
+actions.single+=/slam,if=!talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)
+actions.single+=/execute
+actions.single+=/shockwave
+actions.single+=/storm_bolt
+
+actions.execute=mortal_strike,if=buff.shattered_defenses.up&buff.focused_rage.stack=3
+actions.execute+=/execute,if=debuff.colossus_smash.up&(buff.shattered_defenses.up|rage>100|talent.deadly_calm.enabled&buff.battle_cry.up)
+actions.execute+=/mortal_strike,if=talent.in_for_the_kill.enabled&buff.shattered_defenses.down
+actions.execute+=/colossus_smash,if=buff.shattered_defenses.down&buff.precise_strikes.down
+actions.execute+=/warbreaker,if=buff.shattered_defenses.down
+actions.execute+=/mortal_strike
+actions.execute+=/execute,if=debuff.colossus_smash.up|rage>=100
+actions.execute+=/focused_rage,if=talent.deadly_calm.enabled&buff.battle_cry.up
+actions.execute+=/rend,if=remains<=duration*0.3
+actions.execute+=/heroic_charge
+actions.execute+=/shockwave
+actions.execute+=/storm_bolt
+
+head=warhelm_of_the_obsidian_aspect,id=138357,bonus_id=1806
+neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=1806,enchant=mark_of_the_claw
+shoulders=shoulderplates_of_the_obsidian_aspect,id=138363,bonus_id=1806
+back=cloak_of_temporal_recalibration,id=140910,bonus_id=1806,enchant=binding_of_strength
+chest=chestplate_of_the_obsidian_aspect,id=138351,bonus_id=1806
+wrists=eternally_recurring_bracers,id=140893,bonus_id=1806
+hands=gauntlets_of_the_obsidian_aspect,id=138354,bonus_id=1806
+waist=goresmeared_abyssal_waistplate,id=140892,bonus_id=1806
+legs=legplates_of_the_obsidian_aspect,id=138360,bonus_id=1806
+feet=immaculately_polished_boots,id=140904,bonus_id=1806
+finger1=ring_of_braided_stems,id=140896,bonus_id=1806,enchant=binding_of_haste
+finger2=ring_of_the_scoured_clan,id=140897,bonus_id=1806,enchant=binding_of_haste
+trinket1=convergence_of_fates,id=140806,bonus_id=1806
+trinket2=entwined_elemental_foci,id=140796,bonus_id=1806
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,ilevel=880
+
+# Gear Summary
+# gear_ilvl=880.00
+# gear_strength=14138
+# gear_stamina=25252
+# gear_crit_rating=6935
+# gear_haste_rating=8378
+# gear_mastery_rating=4858
+# gear_versatility_rating=336
+# gear_armor=4338
+# set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1
