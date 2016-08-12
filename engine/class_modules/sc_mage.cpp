@@ -5025,11 +5025,6 @@ struct ice_lance_t : public frost_mage_spell_t
       timespan_t tv_extension = p() -> talents.thermal_void
                                     -> effectN( 1 ).time_value() * 1000;
 
-
-      sim -> out_debug.printf( "TEST ME %f", p() -> talents.thermal_void
-                                    -> effectN( 1 ).time_value().total_seconds() * 1000 );
-
-
       p() -> buffs.icy_veins -> extend_duration( p(), tv_extension );
     }
     if ( result_is_hit( s -> result ) && frozen &&
