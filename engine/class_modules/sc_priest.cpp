@@ -1925,7 +1925,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     // Get all non-pet, non-sleeping players
     std::vector<player_t*> ally_list;
-    ;
     range::remove_copy_if( sim->player_no_pet_list.data(),
                            back_inserter( ally_list ), player_t::_is_sleeping );
 

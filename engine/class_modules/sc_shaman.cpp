@@ -1449,7 +1449,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       {
         state -> action -> schedule_execute( state );
         state = nullptr;
-      };
+      }
     };
 
     if ( ! p() -> mastery.elemental_overload -> ok() )
@@ -2984,7 +2984,7 @@ struct lava_lash_t : public shaman_attack_t
   }
 
   double stormbringer_proc_chance() const override
-  { return p() -> sets.set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance(); };
+  { return p() -> sets.set( SHAMAN_ENHANCEMENT, T19, B4 ) -> proc_chance(); }
 
   void init() override
   {
@@ -5488,7 +5488,7 @@ action_t* shaman_t::create_proc_action( const std::string& name, const special_e
   if ( util::str_compare_ci( name, "flurry_of_xuen" ) ) return new shaman_flurry_of_xuen_t( this );
 
   return nullptr;
-};
+}
 
 // shaman_t::create_pet =====================================================
 

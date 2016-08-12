@@ -788,7 +788,7 @@ public:
   virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
   virtual druid_td_t* get_target_data( player_t* target ) const override;
 
-  form_e get_form() const { return form; };
+  form_e get_form() const { return form; }
   void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
   const spell_data_t* find_affinity_spell( const std::string& );

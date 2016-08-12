@@ -1098,7 +1098,6 @@ stat_data_t& dbc_t::attribute_base( pet_e t, unsigned level ) const
 
 double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 {
-  ;
   assert( combat_rating_id < RATING_MAX );
   assert( level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
@@ -2565,7 +2564,7 @@ bool spell_data_t::affected_by( const spell_data_t* spell ) const
   }
 
   return false;
-};
+}
 
 bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 {

@@ -2954,7 +2954,7 @@ Class            : Subtlety Rogue
 School           : Physical
 Resource         : 40 Energy
 Spell Level      : 22
-Range            : 25 yards
+Range            : 15 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
 Affecting spells : Shadow Blades (121471), From the Shadows (184918), Shadow Dance (185313), Premeditation (196979), Precision Strike (197235), Death (227151)

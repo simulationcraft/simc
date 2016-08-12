@@ -28,13 +28,16 @@ actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/trueshot,if=(target.time_to_die>195|target.health.pct<5)|buff.bullseye.stack>15
+actions+=/trueshot,if=(target.time_to_die>165|target.health.pct<5)|buff.bullseye.stack>15
 actions+=/marked_shot,if=!talent.sidewinders.enabled&prev_gcd.sentinel&debuff.hunters_mark.up
+actions+=/call_action_list,name=careful_aim,if=(talent.careful_aim.enabled&target.health.pct>80)&spell_targets.barrage=1
 actions+=/a_murder_of_crows
 actions+=/barrage
 actions+=/piercing_shot,if=!talent.patient_sniper.enabled&focus>50
 actions+=/windburst
+actions+=/call_action_list,name=patientless,if=!talent.patient_sniper.enabled
 actions+=/arcane_shot,if=(talent.steady_focus.enabled&buff.steady_focus.down&focus.time_to_max>=2)|(talent.true_aim.enabled&(debuff.true_aim.stack<1&focus.time_to_max>=2|debuff.true_aim.remains<2))
+actions+=/multishot,if=(talent.steady_focus.enabled&buff.steady_focus.down&focus.time_to_max>=2&spell_targets.multishot>1)
 actions+=/sidewinders,if=spell_targets.sidewinders>1&(!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5)))
 actions+=/explosive_shot
 actions+=/piercing_shot,if=talent.patient_sniper.enabled&focus>80
@@ -45,7 +48,7 @@ actions+=/multishot,if=spell_targets.multishot>1&(!debuff.hunters_mark.up&buff.m
 actions+=/arcane_shot,if=(!debuff.hunters_mark.up&buff.marking_targets.up)|focus.time_to_max>=2
 actions+=/sidewinders,if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5))
 
-actions.patientless=arcane_shot,if=debuff.vulnerability.stack<3&buff.marking_targets.up&debuff.hunters_mark.down
+actions.patientless=arcane_shot,if=debuff.vulnerability.stack<3&buff.marking_targets.up&debuff.hunters_mark.down&spell_targets.arcane_shot=1
 actions.patientless+=/marked_shot,if=debuff.vulnerability.stack<3|debuff.hunters_mark.remains<5|(focus<50|focus>80)
 actions.patientless+=/sentinel,if=!talent.sidewinders.enabled&debuff.hunters_mark.down&spell_targets.sentinel>1
 actions.patientless+=/explosive_shot
@@ -53,14 +56,14 @@ actions.patientless+=/aimed_shot,if=debuff.hunters_mark.down&cast_time<debuff.vu
 actions.patientless+=/marked_shot,if=debuff.hunters_mark.remains>5
 actions.patientless+=/black_arrow
 actions.patientless+=/multishot,if=spell_targets.multishot>1&(cast_regen+action.aimed_shot.cast_regen<=focus.deficit)
-actions.patientless+=/arcane_shot,if=cast_regen+action.aimed_shot.cast_regen<=focus.deficit
+actions.patientless+=/arcane_shot,if=cast_regen+action.aimed_shot.cast_regen<=focus.deficit&spell_targets.arcane_shot=1
 
 actions.careful_aim=windburst
-actions.careful_aim+=/arcane_shot,if=(talent.steady_focus.enabled&buff.steady_focus.down)|(talent.true_aim.enabled&(debuff.true_aim.stack<1&focus.time_to_max>=2|debuff.true_aim.remains<2))
+actions.careful_aim+=/arcane_shot,if=(talent.steady_focus.enabled&buff.steady_focus.down&spell_targets.arcane_shot=1)|(talent.true_aim.enabled&(debuff.true_aim.stack<1&focus.time_to_max>=2|debuff.true_aim.remains<2))
 actions.careful_aim+=/marked_shot,if=talent.sidewinders.enabled&(!talent.patient_sniper.enabled|debuff.vulnerability.remains<2)|!talent.sidewinders.enabled
 actions.careful_aim+=/aimed_shot,if=debuff.hunters_mark.down&cast_time<debuff.vulnerability.remains
 actions.careful_aim+=/multishot,if=spell_targets.multishot>1&(buff.marking_targets.up|focus.time_to_max>=2)
-actions.careful_aim+=/arcane_shot,if=buff.marking_targets.up|focus.time_to_max>=2
+actions.careful_aim+=/arcane_shot,if=spell_targets.arcane_shot=1&(buff.marking_targets.up|focus.time_to_max>=2)
 actions.careful_aim+=/sidewinders,if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5))
 
 head=greyed_dragonscale_coif,id=139214,bonus_id=1806

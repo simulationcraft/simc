@@ -211,6 +211,7 @@ public:
 
     proc_t* divine_purpose;
     proc_t* the_fires_of_justice;
+    proc_t* tfoj_set_bonus;
   } procs;
 
   // Spells
@@ -367,7 +368,7 @@ public:
     extra_regen_percent( 0.0 ),
     last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
     fixed_holy_wrath_health_pct( -1.0 ),
-    fake_gbom( false )
+    fake_gbom( true )
   {
     last_retribution_trinket_target = nullptr;
     retribution_trinket = nullptr;
@@ -956,7 +957,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     }
 
     p() -> active_beacon_of_light -> execute();
-  };
+  }
 };
 
 struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
@@ -1412,7 +1413,7 @@ struct blessed_hammer_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : timespan_t::zero();;
+    timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : timespan_t::zero();
 
     new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
         .target( execute_state -> target )
@@ -1681,6 +1682,11 @@ struct execution_sentence_t : public paladin_spell_t
     // disable if not talented
     if ( ! ( p -> talents.execution_sentence -> ok() ) )
       background = true;
+
+    if ( p -> sets.has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets.set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 2 ).percent();
+    }
   }
 
   void init() override
@@ -2750,6 +2756,22 @@ struct holy_power_generator_t : public paladin_melee_attack_t
   {
 
   }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T19, B4 ) )
+    {
+      // for some reason this is the same spell as the talent
+      // leftover nonsense from when this was Conviction?
+      bool success = p() -> buffs.the_fires_of_justice -> trigger( 1,
+        p() -> buffs.the_fires_of_justice -> default_value,
+        p() -> sets.set( PALADIN_RETRIBUTION, T19, B4 ) -> effectN( 2 ).percent() );
+      if ( success )
+        p() -> procs.tfoj_set_bonus -> occur();
+    }
+  }
 };
 
 struct holy_power_consumer_t : public paladin_melee_attack_t
@@ -2759,7 +2781,10 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
                           bool u2h = true):
                           paladin_melee_attack_t( n, p, s, u2h )
   {
-
+    if ( p -> sets.has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets.set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 1 ).percent();
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -4203,6 +4228,7 @@ void paladin_t::init_procs()
   procs.focus_of_vengeance_reset  = get_proc( "focus_of_vengeance_reset"       );
   procs.divine_purpose            = get_proc( "divine_purpose"                 );
   procs.the_fires_of_justice      = get_proc( "the_fires_of_justice"           );
+  procs.tfoj_set_bonus            = get_proc( "t19_4p"                         );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -4545,7 +4571,6 @@ void paladin_t::generate_action_prio_list_ret()
   ///////////////////////
 
   action_priority_list_t* def = get_action_priority_list( "default" );
-  action_priority_list_t* single = get_action_priority_list( "single" );
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Rebuke" );
@@ -4634,7 +4659,7 @@ void paladin_t::generate_action_prio_list_ret()
   BoW -> add_talent( this, "Justicar's Vengeance", "if=holy_power>=3&buff.divine_purpose.up&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&!equipped.whisper_of_the_nathrezim" );
   BoW -> add_action( this, "Templar's Verdict", "if=holy_power>=3&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
   BoW -> add_action( this, "Wake of Ashes", "if=holy_power<=1|(holy_power<=2&cooldown.blade_of_justice.remains>gcd&(cooldown.zeal.charges_fractional<=0.67|cooldown.crusader_strike.charges_fractional<=0.67))" );
-  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&buff.divine_purpose.react&talent.the_fires_of_justice.enabled" );
+  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react&talent.the_fires_of_justice.enabled" );
   BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim&talent.the_fires_of_justice.enabled" );
   BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react&talent.the_fires_of_justice.enabled" );
   BoW -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
@@ -5145,7 +5170,7 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
 
   return m;
 
-};
+}
 
 // paladin_t::composite_melee_crit_chance =========================================
 
@@ -5846,7 +5871,7 @@ expr_t* paladin_t::create_expression( action_t* a,
         return gcd_ready.total_seconds();
       else
         return shortest_hpg_time.total_seconds();
-    };
+    }
   };
 
   if ( splits[ 0 ] == "time_to_hpg" )

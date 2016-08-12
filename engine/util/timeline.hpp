@@ -201,16 +201,16 @@ public:
     _data(), _normalized_data(), _min( nan() ), _max( nan() ), _num_entries()
   {}
   double min() const
-  { return _min; };
+  { return _min; }
   double max() const
-  { return _max; };
+  { return _max; }
 
   const std::vector<size_t>& data() const
   { return _data; }
   const std::vector<double>& normalized_data() const
   { return _normalized_data; }
   double range() const
-  { return max() - min(); };
+  { return max() - min(); }
 
   double bucket_size() const
   { return range() / _data.size(); }

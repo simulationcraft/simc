@@ -3626,7 +3626,7 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
       }
     }
   }
-};
+}
 
 // player_t::combat_begin ===================================================
 
@@ -3720,7 +3720,7 @@ void player_t::combat_end()
     if ( ! is_pet() && ! is_enemy() )
       if ( f_length > 0 && ( w_time / f_length ) > 0.25 )
       {
-  ; // ready_type = READY_TRIGGER
+   // ready_type = READY_TRIGGER;
       }
 
   if ( sim -> debug )
@@ -10741,7 +10741,7 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, con
     }
     f << "\n";
   }
-};
+}
 
 double player_collected_data_t::calculate_max_spike_damage( const health_changes_timeline_t& tl, int window )
 {

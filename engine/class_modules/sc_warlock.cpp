@@ -4766,7 +4766,7 @@ struct channel_demonfire_t: public warlock_spell_t
     warlock_spell_t( "channel_demonfire", p, p -> talents.channel_demonfire )
   {
     channeled = true;
-    hasted_ticks = false;
+    hasted_ticks = true;
     may_crit = false;
 
     channel_demonfire = new channel_demonfire_tick_t( p );
@@ -4811,14 +4811,19 @@ struct channel_demonfire_t: public warlock_spell_t
     warlock_spell_t::tick( d );
   }
 
-  timespan_t tick_time( const action_state_t* ) const override
+  timespan_t tick_time( const action_state_t* s ) const override
   {
-    timespan_t t = base_tick_time;
+    timespan_t t = warlock_spell_t::tick_time( s );
 
     if ( p() -> buffs.backdraft -> check() )
       t *= backdraft_tick_time;
 
     return t;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return s -> action -> tick_time( s ) * 15.0;
   }
 };
 
