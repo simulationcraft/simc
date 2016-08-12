@@ -5061,7 +5061,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
     if ( p() -> buffs.chain_reaction -> up() )
     {
-      am *= 1.0 + p() -> buffs.chain_reaction -> data().effectN( 1 ).percent();
+      am *= 1.0 + ( p() -> buffs.chain_reaction -> data().effectN( 1 ).percent() * p() -> buffs.chain_reaction -> check() );
     }
 
     if ( p() -> buffs.magtheridons_might -> up() )
