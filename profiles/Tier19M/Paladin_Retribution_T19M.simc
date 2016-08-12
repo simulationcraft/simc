@@ -130,29 +130,27 @@ actions.DH+=/templars_verdict,if=debuff.judgment.up&(!talent.crusade.enabled|coo
 actions.DH+=/zeal,if=holy_power<=4
 actions.DH+=/crusader_strike,if=holy_power<=4
 
-head=helmet_of_the_highlord,id=138356,bonus_id=1806
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=1806,enchant=mark_of_the_claw
-shoulders=shoulderguard_of_the_eclipse,id=140883,bonus_id=1806
-back=greatmantle_of_the_highlord,id=138369,bonus_id=1806,enchant=binding_of_strength
-chest=breastplate_of_the_highlord,id=138350,bonus_id=1806
-wrists=eternally_recurring_bracers,id=140893,bonus_id=1806
-hands=gauntlets_of_the_highlord,id=138353,bonus_id=1806
-waist=goresmeared_abyssal_waistplate,id=140892,bonus_id=1806
-legs=chronotempered_legplates,id=140882,bonus_id=1806
-feet=immaculately_polished_boots,id=140904,bonus_id=1806
-finger1=ring_of_braided_stems,id=140896,bonus_id=1806,enchant=binding_of_haste
-finger2=ring_of_the_scoured_clan,id=140897,bonus_id=1806,enchant=binding_of_haste
-trinket1=convergence_of_fates,id=140806,bonus_id=1806
-trinket2=entwined_elemental_foci,id=140796,bonus_id=1806
-main_hand=ashbringer,id=120978,bonus_id=737,ilevel=880
+head=crown_of_steely_brambles,id=139231,bonus_id=1806
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_claw
+shoulders=midnight_heralds_pauldrons,id=139232,bonus_id=1806
+back=whisper_of_the_nathrezim,id=137020,enchant=binding_of_strength
+chest=horror_inscribed_chestguard,id=138216,bonus_id=1806
+wrists=dragonbone_wristclamps,id=138218,bonus_id=1806
+hands=fitted_ironbark_gauntlets,id=139225,bonus_id=1806
+waist=waistplate_of_nameless_horror,id=139227,bonus_id=1806
+legs=stormbattered_legplates,id=139230,bonus_id=1806
+feet=trampling_warboots,id=139234,bonus_id=1806
+finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1806,enchant=binding_of_haste
+finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant=binding_of_haste
+trinket1=natures_call,id=139334,bonus_id=1806
+trinket2=spiked_counterweight,id=136715,bonus_id=1806
+main_hand=ashbringer,id=120978,bonus_id=737,gem_id=139265/139266/139265,relic_id=1806/1806/1806
 
 # Gear Summary
-# gear_ilvl=880.00
-# gear_strength=14138
-# gear_stamina=25252
-# gear_crit_rating=5561
-# gear_haste_rating=6987
-# gear_mastery_rating=7959
-# gear_armor=4338
-# set_bonus=tier19_2pc=1
-# set_bonus=tier19_4pc=1
+# gear_ilvl=882.73
+# gear_strength=14754
+# gear_stamina=26174
+# gear_crit_rating=5916
+# gear_haste_rating=8931
+# gear_mastery_rating=5856
+# gear_armor=4346
