@@ -4052,13 +4052,10 @@ void warrior_t::init_base_stats()
         {
           continue;
         }
-        else
-        {
-          const auto& data = dbc.random_property( items[i].item_level() );
-          double ratio = data.p_epic[item_database::random_suffix_type( items[i] )] / data.p_epic[0];
-          totalweight += ratio;
-          divisor++;
-        }
+        const auto& data = dbc.random_property( items[i].item_level() );
+        double ratio = data.p_epic[item_database::random_suffix_type( items[i] )] / data.p_epic[0];
+        totalweight += ratio;
+        divisor++;
       }
       for ( size_t i = 0; i < items.size(); i++ )
       {
@@ -4066,12 +4063,9 @@ void warrior_t::init_base_stats()
         {
           continue;
         }
-        else
-        {
-          const auto& data = dbc.random_property( items[i].item_level() );
-          double ratio = data.p_epic[item_database::random_suffix_type( items[i] )] / data.p_epic[0];
-          avg_weighted_ilevel += ( ratio * static_cast<double>( items[i].item_level() ) / totalweight * divisor );
-        }
+        const auto& data = dbc.random_property( items[i].item_level() );
+        double ratio = data.p_epic[item_database::random_suffix_type( items[i] )] / data.p_epic[0];
+        avg_weighted_ilevel += ( ratio * static_cast<double>( items[i].item_level() ) / totalweight * divisor );
       }
 
       average_itemlevel = avg_weighted_ilevel / divisor;

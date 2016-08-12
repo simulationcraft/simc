@@ -7764,7 +7764,7 @@ inline bool real_ppm_t::trigger()
 struct instant_absorb_t
 {
 private:
-  /* const spell_data_t* spell */;
+  /* const spell_data_t* spell; */
   std::function<double( const action_state_t* )> absorb_handler;
   stats_t* absorb_stats;
   gain_t*  absorb_gain;

@@ -673,7 +673,7 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
   };
 
   effect.custom_buff = new fetid_regurgitation_buff_t( effect, charges );
-};
+}
 
 // Figurehead of the Naglfar ================================================
 

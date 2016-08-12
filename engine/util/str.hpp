@@ -18,6 +18,6 @@ std::string& format( std::string& buffer, const char *fmt, ... );
 std::string format( const char *fmt, va_list args );
 std::string format( const char *fmt, ... );
 
-}; // NAMESPACE STR
+} // NAMESPACE STR
 
 #endif // STR_HPP

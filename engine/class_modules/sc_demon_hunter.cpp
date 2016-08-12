@@ -2489,7 +2489,7 @@ struct inner_demons_t : public demon_hunter_spell_t
   timespan_t travel_time() const override
   {
     return p() -> artifact.inner_demons.data().effectN( 1 ).trigger() -> duration();
-  };
+  }
 };
 
 // Metamorphosis ============================================================
@@ -4922,7 +4922,7 @@ struct damage_calc_invalidate_callback_t
 {
   demon_hunter_t* dh;
 
-  damage_calc_invalidate_callback_t( demon_hunter_t* p ) : dh( p ) {};
+  damage_calc_invalidate_callback_t( demon_hunter_t* p ) : dh( p ) {}
 
   void operator()( player_t* )
   {

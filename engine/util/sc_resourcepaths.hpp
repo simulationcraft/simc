@@ -14,7 +14,7 @@ namespace sc_resource_paths {
   std::vector<std::string> sample_profiles();
   std::vector<std::string> resource_storage();
 
-}; // sc_resource_paths
+} // sc_resource_paths
 
 inline std::vector<std::string> sc_resource_paths::cache()
 {

@@ -956,7 +956,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     }
 
     p() -> active_beacon_of_light -> execute();
-  };
+  }
 };
 
 struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
@@ -1412,7 +1412,7 @@ struct blessed_hammer_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : timespan_t::zero();;
+    timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : timespan_t::zero();
 
     new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
         .target( execute_state -> target )
@@ -5144,7 +5144,7 @@ double paladin_t::composite_rating_multiplier( rating_e r ) const
 
   return m;
 
-};
+}
 
 // paladin_t::composite_melee_crit_chance =========================================
 
@@ -5845,7 +5845,7 @@ expr_t* paladin_t::create_expression( action_t* a,
         return gcd_ready.total_seconds();
       else
         return shortest_hpg_time.total_seconds();
-    };
+    }
   };
 
   if ( splits[ 0 ] == "time_to_hpg" )

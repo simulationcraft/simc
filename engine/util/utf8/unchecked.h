@@ -181,7 +181,7 @@ namespace utf8
         class iterator : public std::iterator <std::bidirectional_iterator_tag, uint32_t> {
             octet_iterator it;
         public:
-            iterator () {};
+            iterator () {}
             explicit iterator (const octet_iterator& octet_it): it(octet_it) {}
             // the default "big three" are OK
             octet_iterator base () const { return it; }
@@ -227,7 +227,7 @@ namespace utf8
         class iterator<octet_iterator, std::input_iterator_tag> : public std::iterator <std::input_iterator_tag, uint32_t> {
             octet_iterator it;
         public:
-            iterator () {};
+            iterator () {}
             explicit iterator (const octet_iterator& octet_it): it(octet_it) {}
             // the default "big three" are OK
             octet_iterator base () const { return it; }

@@ -3620,7 +3620,7 @@ struct talon_strike_t: public hunter_melee_attack_t
   {
     background = true;
     weapon_multiplier = 0.0;
-  };
+  }
 };
 
 struct melee_t: public hunter_melee_attack_t
@@ -3653,7 +3653,7 @@ struct melee_t: public hunter_melee_attack_t
     if ( first )
       return timespan_t::zero();
     else
-      return hunter_melee_attack_t::execute_time();;
+      return hunter_melee_attack_t::execute_time();
   }
 
   void execute() override
@@ -5024,7 +5024,7 @@ struct caltrops_t: public hunter_spell_t
 
       if ( p -> artifacts.hunters_guile.rank() )
         cooldown -> duration *= 1.0 + p -> artifacts.hunters_guile.percent();
-    };
+    }
   };
 
   caltrops_t( hunter_t* p, const std::string& options_str ):

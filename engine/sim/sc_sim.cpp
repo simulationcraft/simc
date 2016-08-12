@@ -2016,7 +2016,7 @@ bool sim_t::init_actor( player_t* p )
   {
     p -> clear_action_priority_lists();
     p -> action_list_str.clear();
-  };
+  }
 
   p -> init();
   p -> initialized = true;

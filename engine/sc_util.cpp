@@ -2465,7 +2465,7 @@ std::string util::decode_html( const std::string& input )
       if ( endp != input.c_str() + end )
       {
         // Not everything parsed. Oh well.
-        ;
+        
       }
       utf8::append( codepoint, std::back_inserter( output ) );
     }

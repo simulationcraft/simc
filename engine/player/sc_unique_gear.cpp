@@ -1474,7 +1474,7 @@ void item::spark_of_zandalar( special_effect_t& effect )
   };
 
   new spark_of_zandalar_callback_t( effect );
-};
+}
 
 void item::unerring_vision_of_leishen( special_effect_t& effect )
 {

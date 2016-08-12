@@ -1988,7 +1988,7 @@ struct arcane_mage_spell_t : public mage_spell_t
                            p() -> spec.savant -> effectN( 2 ).sp_coeff() );
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
 
-  };
+  }
 
   virtual double action_multiplier() const override
   {
