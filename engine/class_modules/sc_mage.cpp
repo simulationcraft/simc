@@ -4827,7 +4827,11 @@ struct glacial_spike_t : public frost_mage_spell_t
       sim -> out_debug.printf("Add %u icicles to glacial_spike for %f damage",
                               icicle_count, icicle_damage_sum);
     }
-
+    // Note: This needs to be manually added to icicle values for splitting ice, as normally it's a base multiplier.
+    if ( p() -> talents.splitting_ice -> ok() )
+    {
+      icicle_damage_sum *= 1.0 + p() -> talents.splitting_ice -> effectN( 3 ).percent();
+    }
 
     base_dd_min = icicle_damage_sum;
     base_dd_max = icicle_damage_sum;
@@ -5020,6 +5024,12 @@ struct ice_lance_t : public frost_mage_spell_t
     {
       timespan_t tv_extension = p() -> talents.thermal_void
                                     -> effectN( 1 ).time_value() * 1000;
+
+
+      sim -> out_debug.printf( "TEST ME %f", p() -> talents.thermal_void
+                                    -> effectN( 1 ).time_value().total_seconds() * 1000 );
+
+
       p() -> buffs.icy_veins -> extend_duration( p(), tv_extension );
     }
     if ( result_is_hit( s -> result ) && frozen &&
