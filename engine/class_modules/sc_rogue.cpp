@@ -2211,6 +2211,8 @@ struct between_the_eyes_t : public rogue_attack_t
   {
     crit_bonus_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
+
+    attack_power_mod.direct = 0.885; // 2016-08-08 Hotfixed, fix later
   }
 
   void execute() override
@@ -3060,6 +3062,8 @@ struct run_through_t: public rogue_attack_t
     ttt_multiplier( 0 )
   {
     base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
+
+    attack_power_mod.direct = 1.5; // 2016-08-08 Hotfixed, fix later
   }
 
   double action_multiplier() const override
