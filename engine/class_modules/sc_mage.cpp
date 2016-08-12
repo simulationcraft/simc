@@ -4641,7 +4641,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
-                                   -> effectN( 2 ).percent();
+                                   -> effectN( 1 ).percent();
 
       if ( p() -> sets.has_set_bonus( MAGE_FROST, T19, B4 ) )
       {
