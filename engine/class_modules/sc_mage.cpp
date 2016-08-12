@@ -893,7 +893,6 @@ struct waterbolt_t : public mage_pet_spell_t
     double fof_chance = p->o()->artifact.its_cold_outside.percent();
 
     spell_t::impact( s );
-    sim -> out_debug.printf( "TEST %f", fof_chance );
     if ( result_is_hit( s->result ) && rng().roll( fof_chance ) )
     {
       p->o()->buffs.fingers_of_frost->trigger();
