@@ -79,15 +79,16 @@ namespace automation {
 ////
 ///////////////////////////////////////////////////////////////////////////////
 
-QString classSpecText[ 11 ][ 5 ] = {
+QString classSpecText[ 12 ][ 5 ] = {
     { "DeathKnight", "Blood", "Frost", "Unholy", "N/A" },
+    { "DemonHunter", "Havoc", "Vengeance", "N/A", "N/A" },
     { "Druid", "Balance", "Feral", "Guardian", "Restoration" },
     { "Hunter", "Beast Mastery", "Marksmanship", "Survival", "N/A" },
     { "Mage", "Arcane", "Fire", "Frost", "N/A" },
     { "Monk", "Brewmaster", "Mistweaver", "Windwalker", "N/A" },
     { "Paladin", "Holy", "Protection", "Retribution", "N/A" },
     { "Priest", "Discipline", "Holy", "Shadow", "N/A" },
-    { "Rogue", "Assassination", "Combat", "Subtlety", "N/A" },
+    { "Rogue", "Assassination", "Outlaw", "Subtlety", "N/A" },
     { "Shaman", "Elemental", "Enhancement", "Restoration", "N/A" },
     { "Warlock", "Affliction", "Demonology", "Destruction", "N/A" },
     { "Warrior", "Arms", "Fury", "Protection", "N/A" }
@@ -761,7 +762,7 @@ QString defaultOptions = "AC#=action.$ability.charges>=#\nAE#=active_enemies>=#\
 QString defaultOperators = "BU=buff.$operand.up\nBA=buff.$operand.react\nBR=buff.$operand.remains\nBR#=buff.$operand.remains>#\nBC#=buff.$operand.charges>=#\nBS#=buff.$operand.stack>=#\nCD=cooldown.$operand.remains\nCD#=cooldown.$operand.remains>#\nDR=target.dot.$operand.remains\nDR#=target.dot.$operand.remains>=#\nDT=dot.$operand.ticking\nGCD=cooldown.$operand.remains<=gcd\nGCD#=cooldown.$operand.remains<=gcd*#\nT=talent.$operand.enabled\nG=glyph.$operand.enabled\n";
 
 // constant for sidebar text (this will eventually get really long)
-QString sidebarText[ 11 ][ 4 ] = {
+QString sidebarText[ 12 ][ 4 ] = {
   { // DEATHKNIGHT Shorthand Declaration
     ":::Abilities, Buffs, Glyphs, and Talents:::\nAMS=Anti Magic Shell\nAotD=Army of the Dead\nBP=Blood Plague\nCoI=Chains of Ice\nDSim=Dark Simulacrum\nDnD=Death and Decay\nDC=Death Coil\nDG=Death Grip\nDS=Death Strike\nERW=Empower Rune Weapon\nFF=Frost Fever\nHoW=Horn of Winter\nIBF=Icebound Fortitude\nIT=Icy Touch\nMF=Mind Freeze\nOB=Outbreak\nPS=Plague Strike\nSR=Soul Reaper\nPest=Pestilence\nAMZ=Anti Magic Zone\nBT=Blood Tap\nBoS=Breath of Sindragosa\nDP=Death Pact\nDSi=Death Siphon\nGG=Gorefiend's Grasp\nNP=Necrotic Plague\nPL=Plague Leech\nRC=Runic Corruption\nRE=Runic Empowerment\nUB=Unholy Blight\nRW=Remorseless Winter\nDesG=Desecrated Ground\nPATH=Path of Frost\nDef=Defile\n\n"
     "BPres=Blood Presence\nBS=Bone Shield\nDRW=Dancing Rune Weapon\nSoB=Scent of Blood\nVamp=Vampiric Blood\nWotN=Will of the Necropolis\n"
@@ -788,6 +789,33 @@ QString sidebarText[ 11 ][ 4 ] = {
     "Additional operator shorthands can be added here\n\n",
    
     "N/A"
+  },
+
+  { // DEMONHUNTER Shorthand Declaration
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "\n\n:::Options:::\n" + defaultOptions + 
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
+    
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "\n\n:::Options:::\n" + defaultOptions + 
+    
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "\n\n:::Options:::\n" + defaultOptions + 
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
+    
+    ":::Abilities, Buffs, Glyphs, and Talents:::\n" 
+    "Additional ability, buff, glyph, and talent shorthands can be added here"
+    "\n\n:::Options:::\n" + defaultOptions + 
+    "Additional option shorthands can be added here"
+    "\n\n:::Operators:::\n" + defaultOperators +
+    "Additional operator shorthands can be added here\n\n",
   },
 
   { // DRUID Shorthand Declaration
@@ -1157,7 +1185,7 @@ SC_AutomationTab::SC_AutomationTab( QWidget* parent ) :
     defaultsFormLayout -> setFieldGrowthPolicy( QFormLayout::ExpandingFieldsGrow );
 
     // Create Combo Boxes and add to the FormLayout
-  choice.player_class = createChoice( 11 , "DeathKnight", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior" );
+  choice.player_class = createChoice( 12 , "DeathKnight", "DemonHunter", "Druid", "Hunter", "Mage", "Monk", "Paladin", "Priest", "Rogue", "Shaman", "Warlock", "Warrior" );
     defaultsFormLayout -> addRow( tr( "Class" ), choice.player_class );
 
     choice.player_spec = createChoice( 3, "1", "2", "3" );
