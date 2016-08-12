@@ -893,7 +893,7 @@ struct waterbolt_t : public mage_pet_spell_t
     double fof_chance = p->o()->artifact.its_cold_outside.percent();
 
     spell_t::impact( s );
-
+    sim -> out_debug.printf( "TEST %f", fof_chance );
     if ( result_is_hit( s->result ) && rng().roll( fof_chance ) )
     {
       p->o()->buffs.fingers_of_frost->trigger();
@@ -4672,7 +4672,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     parse_options( options_str );
     hasted_ticks = false;
     base_tick_time    = timespan_t::from_seconds( 0.5 );
-    dot_duration      = data().duration();
+    dot_duration      = timespan_t::from_seconds( 10.0 );
     add_child( frozen_orb_bolt );
     may_miss       = false;
     may_crit       = false;
@@ -4682,12 +4682,9 @@ struct frozen_orb_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::tick( d );
     // "travel time" reduction of ticks based on distance from target - set on the side of less ticks lost.
-    //TODO: Update this for legion.
-    if ( d -> current_tick <= ( d -> num_ticks - util::round( ( ( player -> current.distance - 16.0 ) / 16.0 ), 0 ) ) )
-    {
+    //TODO: Update/Check this for legion - does it still lose ticks on travel?
     frozen_orb_bolt -> target = d -> target;
     frozen_orb_bolt -> execute();
-    }
   }
 
   virtual void execute() override
