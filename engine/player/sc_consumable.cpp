@@ -472,6 +472,9 @@ struct potion_t : public dbc_consumable_base_t
 
     type = ITEM_SUBCLASS_POTION;
     cooldown = player -> get_cooldown( "potion" );
+
+    // Note, potions pretty much have to be targeted to an enemy so expressions still work.
+    target = p -> target;
   }
 
   bool initialize_consumable() override
