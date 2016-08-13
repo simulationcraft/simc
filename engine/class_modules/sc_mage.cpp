@@ -4272,7 +4272,14 @@ struct flurry_bolt_t : public frost_mage_spell_t
     // Swap our flag to allow damage calculation again
     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
     fss -> impact_override = true;
-
+    if ( td( s -> target ) -> debuffs.winters_chill -> up() )
+    {
+      frozen = true;
+    }
+    else
+    {
+      frozen = false;
+    }
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
     snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
