@@ -50,7 +50,7 @@ actions.cds+=/vanish,if=talent.shadow_focus.enabled&!dot.rupture.exsanguinated&c
 
 #  Exsanguinate Combo
 actions.exsang_combo=vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&gcd.remains=0&energy>=25
-actions.exsang_combo+=/rupture,if=combo_points>=cp_max_spend&(buff.vanish.up|cooldown.vanish.remains>15)&cooldown.exsanguinate.remains<1
+actions.exsang_combo+=/rupture,if=combo_points>=cp_max_spend&(!talent.nightstalker.enabled|cooldown.vanish.remains)&cooldown.exsanguinate.remains<1
 actions.exsang_combo+=/exsanguinate,if=prev_gcd.rupture&dot.rupture.remains>25+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10
 actions.exsang_combo+=/call_action_list,name=garrote,if=spell_targets.fan_of_knives<=7
 actions.exsang_combo+=/hemorrhage,if=spell_targets.fan_of_knives>=2&!ticking
@@ -78,6 +78,9 @@ actions.exsang+=/mutilate,if=combo_points.deficit>=2
 actions.finish=rupture,cycle_targets=1,if=!ticking&combo_points>=cp_max_spend&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
 actions.finish+=/rupture,if=combo_points>=cp_max_spend&refreshable&!exsanguinated
 actions.finish+=/death_from_above,if=combo_points>=cp_max_spend-1&spell_targets.fan_of_knives<=6
+# If Exsanguinate is soon, only apply a long enough rupture so that applying a max
+# CP Rupture when Exsanguinate comes off cooldown will yield the max duration.
+actions.finish+=/rupture,if=talent.exsanguinate.enabled&remains-cooldown.exsanguinate.remains<2&new_duration-cooldown.exsanguinate.remains>=(4+cp_max_spend*4)*0.3
 actions.finish+=/envenom,if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&spell_targets.fan_of_knives<=6
 actions.finish+=/envenom,if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&spell_targets.fan_of_knives<=6
 

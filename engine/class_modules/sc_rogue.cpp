@@ -2758,17 +2758,6 @@ struct hemorrhage_t : public rogue_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    timespan_t duration = rogue_attack_t::composite_dot_duration( s );
-    if ( cast_state( s ) -> exsanguinated )
-    {
-      duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
-    }
-
-    return duration;
-  }
-
   void impact( action_state_t* s ) override
   {
     rogue_attack_t::impact( s );
@@ -3431,6 +3420,35 @@ struct rupture_t : public rogue_attack_t
     rogue_attack_t::tick( d );
 
     p() -> trigger_venomous_wounds( d -> state );
+  }
+
+  expr_t* create_expression( const std::string& name ) override
+  {
+    if ( util::str_compare_ci( name, "new_duration" ) )
+    {
+      struct new_duration_expr_t : public expr_t
+      {
+        rupture_t* rupture;
+        double cp_max_spend;
+        double base_duration;
+
+        new_duration_expr_t( rupture_t* a ) :
+          expr_t( "new_duration" ), rupture( a ), cp_max_spend( a -> p() -> consume_cp_max() ),
+          base_duration( a -> data().duration().total_seconds() )
+        {}
+
+        double evaluate() override
+        {
+          double duration = base_duration * ( 1.0 + std::min( cp_max_spend, rupture -> p() -> resources.current[ RESOURCE_COMBO_POINT ] ) );
+
+          return std::min( duration * 1.3, duration + rupture -> td( rupture -> target ) -> dots.rupture -> remains().total_seconds() );
+        }
+      };
+
+      return new new_duration_expr_t( this );
+    }
+
+    return rogue_attack_t::create_expression( name );
   }
 };
 
@@ -5432,7 +5450,7 @@ struct roll_the_bones_t : public buff_t
   unsigned fixed_roll()
   {
     range::for_each( rogue -> fixed_rtb, [ this ]( size_t idx ) { buffs[ idx ] -> trigger(); } );
-    return rogue -> fixed_rtb.size();
+    return as<unsigned>( rogue -> fixed_rtb.size() );
   }
 
   unsigned roll_the_bones()
@@ -5578,7 +5596,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
   debuffs.marked_for_death = new buffs::marked_for_death_debuff_t( *this );
   debuffs.hemorrhage = buff_creator_t( *this, "hemorrhage", source -> talent.hemorrhage )
-                       .default_value( 1.0 + source -> talent.hemorrhage -> effectN( 4 ).percent() );
+    .default_value( 1.0 + source -> talent.hemorrhage -> effectN( 4 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs.ghostly_strike = buff_creator_t( *this, "ghostly_strike", source -> talent.ghostly_strike )
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
   debuffs.garrote = new buffs::proxy_garrote_t( *this );
@@ -5978,7 +5997,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* exsang_combo = get_action_priority_list( "exsang_combo" );
       // Syncing Vanish with Rupture
     exsang_combo -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&gcd.remains=0&energy>=25", " Exsanguinate Combo" );
-    exsang_combo -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&(buff.vanish.up|cooldown.vanish.remains>15)&cooldown.exsanguinate.remains<1" );
+    exsang_combo -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&(!talent.nightstalker.enabled|cooldown.vanish.remains)&cooldown.exsanguinate.remains<1" );
       // Some safeguards to make sure Exsanguinate is casted at the right moment
     exsang_combo -> add_talent( this, "Exsanguinate", "if=prev_gcd.rupture&dot.rupture.remains>25+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10" );
     exsang_combo -> add_action( "call_action_list,name=garrote,if=spell_targets.fan_of_knives<=7" );
@@ -6018,6 +6037,9 @@ void rogue_t::init_action_list()
       // Single
     finish -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&refreshable&!exsanguinated" );
     finish -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1&spell_targets.fan_of_knives<=6" );
+    finish -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&remains-cooldown.exsanguinate.remains<2&new_duration-cooldown.exsanguinate.remains>=(4+cp_max_spend*4)*0.3",
+      "If Exsanguinate is soon, only apply a long enough rupture so that applying a max\n"
+      "# CP Rupture when Exsanguinate comes off cooldown will yield the max duration." );
     finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&spell_targets.fan_of_knives<=6" );
     finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&spell_targets.fan_of_knives<=6" );
 
