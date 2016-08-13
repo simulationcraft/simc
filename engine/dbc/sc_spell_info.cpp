@@ -121,6 +121,14 @@ std::vector<std::string> _hotfix_power_map = {
   "Percent Cost per Tick"
 };
 
+std::vector<std::string> _hotfix_artifact_power_map = {
+  "",
+  "Power Id",
+  "Index",
+  "Spell Id",
+  "Value"
+};
+
 template <typename DATA_TYPE, typename MAP_TYPE>
 std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s, const std::vector<std::string>& map )
 {
@@ -219,6 +227,15 @@ std::string power_hotfix_map_str( const spellpower_data_t* power )
   {
     hotfix_map_str<spellpower_data_t, unsigned>( power, s, _hotfix_power_map );
   }
+
+  return s.str();
+}
+
+std::string artifact_power_hotfix_map_str( const artifact_power_rank_t* rank )
+{
+  std::ostringstream s;
+
+  hotfix_map_str<artifact_power_rank_t, unsigned>( rank, s, _hotfix_artifact_power_map );
 
   return s.str();
 }
@@ -1139,9 +1156,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> power_id() > 0 )
   {
     auto powers = dbc.artifact_power_ranks( spell -> power_id() );
-    s << "Artifact Power   : Id: " << spell -> power_id() << ", Max Rank: " << ( powers.back() -> index + 1 );
+    s << "Artifact Power   : Id: " << spell -> power_id() << ", Max Rank: " << ( powers.back() -> index() + 1 );
     if ( powers.size() > 1 )
     {
+      std::vector<std::string> artifact_hotfixes;
       std::ostringstream value_str;
       std::ostringstream spells_str;
       value_str << ", Values: [ ";
@@ -1150,13 +1168,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       {
         const auto& power = powers[ i ];
 
-        if ( power -> value != 0 )
+        if ( power -> value() != 0 )
         {
-          value_str << power -> value;
+          value_str << power -> value();
         }
-        else if ( power -> id_spell > 0 && power -> id_spell != spell -> id() )
+        else if ( power -> id_spell() > 0 && power -> id_spell() != spell -> id() )
         {
-          auto rank_spell = dbc.spell( power -> id_spell );
+          auto rank_spell = dbc.spell( power -> id_spell() );
           value_str << rank_spell -> effectN( 1 ).base_value();
           spells_str << rank_spell -> id();
           has_multiple_spells = true;
@@ -1164,6 +1182,14 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         else
         {
           value_str << spell -> effectN( 1 ).base_value();
+        }
+
+        if ( power -> _hotfix != 0 )
+        {
+          auto hotfix_str = artifact_power_hotfix_map_str( power );
+          std::ostringstream s;
+          s << "Rank " << ( power -> index() + 1 ) << ": " << hotfix_str;
+          artifact_hotfixes.push_back( s.str() );
         }
 
         if ( i < powers.size() - 1 )
@@ -1182,9 +1208,25 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       {
         s << ", Rank spells: [ " << spell -> id() << ", " << spells_str.str() << " ]";
       }
-    }
 
-    s << std::endl;
+      if ( artifact_hotfixes.size() > 0 )
+      {
+        s << std::endl;
+
+        std::string str;
+        for ( size_t i = 0; i < artifact_hotfixes.size(); ++i )
+        {
+          str += artifact_hotfixes[ i ];
+          if ( i < artifact_hotfixes.size() - 1 )
+          {
+            str += ", ";
+          }
+        }
+        s << "                 : Hotfixes: " << str;
+      }
+
+      s << std::endl;
+    }
   }
 
   if ( spell -> proc_flags() > 0 )

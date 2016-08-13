@@ -175,11 +175,13 @@ namespace hotfix
   size_t n_spell_hotfix_entry( bool ptr );
   size_t n_effect_hotfix_entry( bool ptr );
   size_t n_power_hotfix_entry( bool ptr );
+  size_t n_artifact_hotfix_entry( bool ptr );
 
   // Returns an entry pointer to the hotfix data table of a specified type
   const client_hotfix_entry_t* spell_hotfix_entry( bool ptr );
   const client_hotfix_entry_t* effect_hotfix_entry( bool ptr );
   const client_hotfix_entry_t* power_hotfix_entry( bool ptr );
+  const client_hotfix_entry_t* artifact_hotfix_entry( bool ptr );
 
   // Helper method to extract correct hotfix entry from a data struct
   template <typename T>
@@ -385,6 +387,45 @@ namespace dbc_override
 
   const std::vector<dbc_override_entry_t>& override_entries();
 }
+
+// ==========================================================================
+// Artifact Power Rank Data - ArtifactPowerRank.db2
+// ==========================================================================
+
+struct artifact_power_rank_t
+{
+  unsigned _id;
+  unsigned _id_power;
+  unsigned _index;
+  unsigned _id_spell;
+  double   _value;
+  unsigned _hotfix;
+
+  unsigned id() const
+  { return _id; }
+
+  unsigned id_power() const
+  { return _id_power; }
+
+  unsigned index() const
+  { return _index; }
+
+  unsigned id_spell() const
+  { return _id_spell; }
+
+  double value() const
+  { return _value; }
+
+  const hotfix::client_hotfix_entry_t* _hotfix_entry;
+
+  static artifact_power_rank_t* nil()
+  {
+    static artifact_power_rank_t __nil;
+    return &( __nil );
+  }
+  static artifact_power_rank_t* list( bool ptr = false );
+  static artifact_power_rank_t* find( unsigned, bool ptr = false );
+};
 
 // ==========================================================================
 // Spell Power Data - SpellPower.dbc

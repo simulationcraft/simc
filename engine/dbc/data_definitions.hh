@@ -46,21 +46,6 @@ struct artifact_power_data_t
   }
 };
 
-struct artifact_power_rank_t
-{
-  unsigned id;
-  unsigned id_power;
-  unsigned index;
-  unsigned id_spell;
-  double   value;
-
-  static const artifact_power_rank_t* nil()
-  {
-    static artifact_power_rank_t __nil;
-    return &( __nil );
-  }
-};
-
 struct item_name_description_t
 {
   unsigned id;

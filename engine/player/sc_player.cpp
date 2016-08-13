@@ -8162,7 +8162,7 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
 
   // Finally, all checks satisfied, return a real spell
   return artifact_power_t( artifact_points[ power_index ],
-                           find_spell( ranks[ rank_index ] -> id_spell ),
+                           find_spell( ranks[ rank_index ] -> id_spell() ),
                            power_data,
                            ranks[ rank_index ] );
 }

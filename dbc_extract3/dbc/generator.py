@@ -102,6 +102,58 @@ def apply_hotfixes(opts, file_name, dbc_file, database):
                 traceback.print_exc()
                 sys.exit(1)
 
+def output_hotfixes(generator, data_str, hotfix_data):
+    generator._out.write('#define %s%s_HOTFIX%s_SIZE (%d)\n\n' % (
+        (generator._options.prefix and ('%s_' % generator._options.prefix) or '').upper(),
+        data_str.upper(),
+        (generator._options.suffix and ('_%s' % generator._options.suffix) or '').upper(),
+        len(hotfix_data.keys())
+    ))
+
+    generator._out.write('// %d %s hotfix entries, wow build level %d\n' % (
+        len(hotfix_data.keys()), data_str, generator._options.build ))
+    generator._out.write('static hotfix::client_hotfix_entry_t __%s%s_hotfix%s_data[] = {\n' % (
+        generator._options.prefix and ('%s_' % generator._options.prefix) or '',
+        data_str,
+        generator._options.suffix and ('_%s' % generator._options.suffix) or ''
+    ))
+
+    for id in sorted(hotfix_data.keys()) + [0]:
+        entry = None
+        if id > 0:
+            entry = hotfix_data[id]
+        # Add a zero entry at the end so we can conveniently loop to
+        # the end of the array on the C++ side
+        else:
+            entry = [(0, 'i', 0, 0)]
+
+        for field_id, field_format, orig_field_value, new_field_value in entry:
+            orig_data_str = ''
+            cur_data_str = ''
+            if field_format in ['I', 'H', 'B']:
+                orig_data_str = '%uU' % orig_field_value
+                cur_data_str = '%uU' % new_field_value
+            elif field_format in ['i', 'h', 'b']:
+                orig_data_str = '%d' % orig_field_value
+                cur_data_str = '%d' % new_field_value
+            elif field_format in ['f']:
+                orig_data_str = '%f' % orig_field_value
+                cur_data_str = '%f' % new_field_value
+            else:
+                if orig_field_value == 0:
+                    orig_data_str = 'nullptr'
+                else:
+                    orig_data_str = '"%s"' % escape_string(orig_field_value)
+                if new_field_value == 0:
+                    cur_data_str = 'nullptr'
+                else:
+                    cur_data_str = '"%s"' % escape_string(new_field_value)
+            generator._out.write('  { %6u, %2u, %s, %s },\n' % (
+                id, field_id, orig_data_str, cur_data_str
+            ))
+
+    generator._out.write('};\n\n')
+
 # Generic linker
 def link(source_db, source_key, target_db, target_attr):
     for id_, data in source_db.items():
@@ -2681,56 +2733,7 @@ class SpellDataGenerator(DataGenerator):
         # Then, write out hotfix data
         output_data = [('spell', spell_hotfix_data), ('effect', effect_hotfix_data), ('power', power_hotfix_data)]
         for type_str, hotfix_data in output_data:
-            self._out.write('#define %s%s_HOTFIX%s_SIZE (%d)\n\n' % (
-                (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
-                type_str.upper(),
-                (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
-                len(hotfix_data.keys())
-            ))
-            self._out.write('// %d %s hotfix entries, wow build level %d\n' % (
-                len(hotfix_data.keys()), type_str, self._options.build ))
-            self._out.write('static hotfix::client_hotfix_entry_t __%s%s_hotfix%s_data[] = {\n' % (
-                self._options.prefix and ('%s_' % self._options.prefix) or '',
-                type_str,
-                self._options.suffix and ('_%s' % self._options.suffix) or ''
-            ))
-            for id in sorted(hotfix_data.keys()) + [0]:
-                entry = None
-                if id > 0:
-                    entry = hotfix_data[id]
-                # Add a zero entry at the end so we can conveniently loop to
-                # the end of the array on the C++ side
-                else:
-                    entry = [(0, 'I', 0, 0)]
-
-                for field_id, field_format, orig_field_value, new_field_value in entry:
-                    orig_data_str = ''
-                    cur_data_str = ''
-                    if field_format in ['I', 'H', 'B']:
-                        orig_data_str = '%uU' % orig_field_value
-                        cur_data_str = '%uU' % new_field_value
-                    elif field_format in ['i', 'h', 'b']:
-                        orig_data_str = '%d' % orig_field_value
-                        cur_data_str = '%d' % new_field_value
-                    elif field_format in ['f']:
-                        orig_data_str = '%f' % orig_field_value
-                        cur_data_str = '%f' % new_field_value
-                    else:
-                        if orig_field_value == 0:
-                            orig_data_str = 'nullptr'
-                        else:
-                            orig_data_str = '"%s"' % escape_string(orig_field_value)
-                        if new_field_value == 0:
-                            cur_data_str = 'nullptr'
-                        else:
-                            cur_data_str = '"%s"' % escape_string(new_field_value)
-                    self._out.write('  { %6u, %2u, %s, %s },\n' % (
-                        id, field_id, orig_data_str, cur_data_str
-                    ))
-
-            self._out.write('};\n\n')
-
-        #print('generate done', datetime.datetime.now() - _start)
+            output_hotfixes(self, type_str, hotfix_data)
 
         return ''
 
@@ -4177,9 +4180,17 @@ class ArtifactDataGenerator(DataGenerator):
 
         self._out.write('static struct artifact_power_rank_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
 
+        hotfix_data = {}
         for rank in sorted(ranks, key = lambda v: (v.id_power, v.index)) + [dbc.data.ArtifactPowerRank.default()]:
             fields = rank.field('id', 'id_power', 'index', 'id_spell', 'value')
+            f, hfd = rank.get_hotfix_info(('id_power', 2), ('index', 3), ('id_spell', 4), ('value', 5))
+            fields += [ '%#.8x' % f, '0' ]
+            if f > 0:
+                hotfix_data[rank.id] = hfd
+
             self._out.write('  { %s },\n' % (', '.join(fields)))
 
         self._out.write('};\n')
+
+        output_hotfixes(self, data_str, hotfix_data);
 

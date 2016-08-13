@@ -80,6 +80,7 @@ dbc_index_t<spell_data_t> spell_data_index;
 dbc_index_t<spelleffect_data_t> spelleffect_data_index;
 dbc_index_t<talent_data_t> talent_data_index;
 dbc_index_t<spellpower_data_t> power_data_index;
+dbc_index_t<artifact_power_rank_t> artifact_power_rank_data_index;
 
 std::vector< std::vector< const spell_data_t* > > class_family_index;
 std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
@@ -160,6 +161,7 @@ void dbc::init()
   spelleffect_data_index.init();
   talent_data_index.init();
   power_data_index.init();
+  artifact_power_rank_data_index.init();
   init_item_data();
 
   // runtime linking, eg. from spell_data to all its effects
@@ -1394,6 +1396,18 @@ spellpower_data_t* spellpower_data_t::list( bool ptr )
 #endif
 }
 
+artifact_power_rank_t* artifact_power_rank_t::list( bool ptr )
+{
+  ( void )ptr;
+
+#if SC_USE_PTR
+  return ptr ? __ptr_artifact_power_rank_data
+             : __artifact_power_rank_data;
+#else
+  return __artifact_power_rank_data;
+#endif
+}
+
 double spelleffect_data_t::scaled_average( double budget, unsigned level ) const
 {
   if ( _m_avg != 0 && _spell -> scaling_class() != 0 )
@@ -1643,6 +1657,12 @@ spellpower_data_t* spellpower_data_t::find( unsigned id, bool ptr )
 {
   spellpower_data_t* power = power_data_index.get( ptr, id );
   return power ? power : spellpower_data_t::nil();
+}
+
+artifact_power_rank_t* artifact_power_rank_t::find( unsigned id, bool ptr )
+{
+  artifact_power_rank_t* rank = artifact_power_rank_data_index.get( ptr, id );
+  return rank ? rank : artifact_power_rank_t::nil();
 }
 
 talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr )
@@ -2638,9 +2658,9 @@ std::vector<const artifact_power_rank_t*> dbc_t::artifact_power_ranks( unsigned 
   const artifact_power_rank_t * p = __artifact_power_rank_data;
 #endif
 
-  while ( p -> id != 0 )
+  while ( p -> id() != 0 )
   {
-    if ( power_id == 0 || p -> id_power == power_id )
+    if ( power_id == 0 || p -> id_power() == power_id )
     {
       ranks.push_back( p );
     }
@@ -2675,7 +2695,7 @@ unsigned dbc_t::artifact_power_spell_id( specialization_e spec, unsigned power_i
     return 0;
   }
 
-  return ranks[ rank - 1 ] -> id_spell;
+  return ranks[ rank - 1 ] -> id_spell();
 }
 
 // Hotfix data handling
@@ -2711,6 +2731,17 @@ size_t hotfix::n_power_hotfix_entry( bool ptr )
 #endif
 }
 
+size_t hotfix::n_artifact_hotfix_entry( bool ptr )
+{
+#if SC_USE_PTR
+  return ptr ? PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE
+             : ARTIFACT_POWER_RANK_HOTFIX_SIZE;
+#else
+  ( void ) ptr;
+  return ARTIFACT_POWER_RANK_HOTFIX_SIZE;
+#endif
+}
+
 const hotfix::client_hotfix_entry_t* hotfix::spell_hotfix_entry( bool ptr )
 {
 #if SC_USE_PTR
@@ -2738,6 +2769,17 @@ const hotfix::client_hotfix_entry_t* hotfix::power_hotfix_entry( bool ptr )
 #else
   (void ) ptr;
   return __power_hotfix_data;
+#endif
+}
+
+const hotfix::client_hotfix_entry_t* hotfix::artifact_hotfix_entry( bool ptr )
+{
+#if SC_USE_PTR
+  return ptr ? __ptr_artifact_power_rank_hotfix_data
+             : __artifact_power_rank_hotfix_data;
+#else
+  (void ) ptr;
+  return __artifact_power_rank_hotfix_data;
 #endif
 }
 
@@ -2777,5 +2819,8 @@ void hotfix::link_hotfix_data( bool ptr )
 
   // Finally, link power hotfix data
   link_hotfix_entry_ptr<spellpower_data_t>( ptr, power_hotfix_entry );
+
+  // Next, link artifact hotfix data
+  link_hotfix_entry_ptr<artifact_power_rank_t>( ptr, artifact_hotfix_entry );
 }
 

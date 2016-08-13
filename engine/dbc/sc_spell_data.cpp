@@ -385,9 +385,9 @@ struct spell_list_expr_t : public spell_data_expr_t
       {
         for ( auto rank: sim -> dbc.artifact_power_ranks( 0 ) )
         {
-          if ( range::find( result_spell_list, rank -> id_spell ) == result_spell_list.end() )
+          if ( range::find( result_spell_list, rank -> id_spell() ) == result_spell_list.end() )
           {
-            result_spell_list.push_back( rank -> id_spell );
+            result_spell_list.push_back( rank -> id_spell() );
           }
         }
         break;
