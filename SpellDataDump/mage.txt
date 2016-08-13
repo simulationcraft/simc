@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22201)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Fire Frost Mage
@@ -1734,6 +1734,7 @@ Description      : Your offensive spells have a chance to activate Arcane Missil
 Tooltip          : Arcane Missiles activated.
 
 Name             : Arcane Missiles (id=79684) [Spell Family (3), Passive, Hidden] 
+Hotfixed         : Proc Flags (17408 -> 65536)
 Class            : Arcane Mage
 School           : Physical
 Spell Level      : 14
@@ -2022,6 +2023,7 @@ Effects          :
 Description      : Enables Worgens to switch between human and Worgan forms
 
 Name             : Ice Floes (id=108839) [Spell Family (3)] 
+Hotfixed         : Max stacks (0 -> 3), Proc Stacks (0 -> 1), Proc Flags (65536 -> 87040), Internal Cooldown (0 -> 100)
 Class            : Mage
 School           : Frost
 Spell Level      : 1

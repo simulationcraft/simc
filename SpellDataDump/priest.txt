@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22201)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -3339,6 +3339,7 @@ Effects          :
 Description      : A burst of light heals a friendly target and their $s3 nearest allies for $s2, and applies Atonement. 
 
 Name             : Invoke the Naaru (id=196684) [Spell Family (6), Passive] 
+Hotfixed         : Proc Chance (15 -> 20), Proc Flags (65536 -> 2184192), Internal Cooldown (0 -> 15000)
 Class            : Priest
 School           : Physical
 Range            : 100 yards

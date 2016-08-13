@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22201)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -3053,10 +3053,10 @@ Description      : Strikes an enemy with the Blade of Justice, dealing $sw2 Phys
 |cFFFFFFFFGenerates $s3 Holy Power.|r
 
 Name             : Shield of Vengeance (id=184662) [Spell Family (10)] 
+Hotfixed         : GCD (1500 -> 0)
 Class            : Retribution Paladin
 School           : Holy
 Spell Level      : 24
-GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 101%
@@ -3258,6 +3258,7 @@ Description      : Mastery: Lightbringer now increases your healing based on the
 The healing and range of Light of Dawn are increased by $s1%.
 
 Name             : Divine Purpose (id=197646) [Spell Family (10), Passive] 
+Hotfixed         : Proc Chance (20 -> 15), Proc Flags (2184192 -> 81920), Internal Cooldown (15000 -> 0)
 Class            : Paladin
 School           : Physical
 Spell Level      : 1
@@ -4603,6 +4604,7 @@ Description      : Infuse a friendly target with faith for $d, healing them for 
 Tooltip          : Will be healed for $s1 upon expiration.
 
 Name             : Fervent Martyr (Passive Talent) (id=223316) [Spell Family (10)] 
+Hotfixed         : Max stacks (0 -> 2), Proc Flags (4436 -> 0)
 Class            : Paladin
 School           : Physical
 Duration         : 30 seconds
