@@ -152,7 +152,7 @@
       <Profile>false</Profile>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
-      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\Simulationcraft64.pgd</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\Simulationcraft.pgd</ProfileGuidedDatabase>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'">
@@ -187,7 +187,7 @@
       <Profile>false</Profile>
       <LargeAddressAware>true</LargeAddressAware>
       <LinkTimeCodeGeneration>PGUpdate</LinkTimeCodeGeneration>
-      <ProfileGuidedDatabase>$(SolutionDir)\Simulationcraft64.pgd</ProfileGuidedDatabase>
+      <ProfileGuidedDatabase>$(SolutionDir)\Simulationcraft.pgd</ProfileGuidedDatabase>
       <GenerateDebugInformation>No</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
