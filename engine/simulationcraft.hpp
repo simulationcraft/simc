@@ -6301,15 +6301,15 @@ inline proc_types action_state_t::proc_type() const
 // triggers the "landing", dodge, parry, and miss procs
 inline proc_types2 action_state_t::execute_proc_type2() const
 {
-  // Bunch up all non-damaging harmful attacks that land into "hit"
-  if ( action -> harmful )
-    return PROC2_LANDED;
-  else if ( result == RESULT_DODGE )
+  if ( result == RESULT_DODGE )
     return PROC2_DODGE;
   else if ( result == RESULT_PARRY )
     return PROC2_PARRY;
   else if ( result == RESULT_MISS )
     return PROC2_MISS;
+  // Bunch up all non-damaging harmful attacks that land into "hit"
+  else if ( action -> harmful )
+    return PROC2_LANDED;
 
   return PROC2_INVALID;
 }
