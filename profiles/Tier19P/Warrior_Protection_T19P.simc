@@ -44,6 +44,7 @@ actions.prot+=/call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>=3
 actions.prot+=/battle_cry
 actions.prot+=/demoralizing_shout,if=talent.booming_voice.enabled&rage<=50
 actions.prot+=/ravager,if=talent.ravager.enabled
+actions.prot+=/neltharions_fury,if=buff.battle_cry.up
 actions.prot+=/shield_slam
 actions.prot+=/revenge
 actions.prot+=/devastate
@@ -51,6 +52,7 @@ actions.prot+=/devastate
 actions.prot_aoe=battle_cry
 actions.prot_aoe+=/demoralizing_shout,if=talent.booming_voice.enabled&rage<=50
 actions.prot_aoe+=/ravager,if=talent.ravager.enabled
+actions.prot_aoe+=/neltharions_fury,if=buff.battle_cry.up
 actions.prot_aoe+=/shield_slam
 actions.prot_aoe+=/revenge
 actions.prot_aoe+=/thunder_clap
