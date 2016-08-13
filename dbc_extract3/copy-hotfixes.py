@@ -14,7 +14,8 @@ if not os.access(sys.argv[2], os.R_OK):
     print('copy-hotfixes.py: Unable to access %s' % sys.argv[2])
     sys.exit(1)
 
-TIMESTAMP_OFFSET = 32
+WCH56_TIMESTAMP_OFFSET = 32
+WCH7_TIMESTAMP_OFFSET = 36
 
 _input_base = pathlib.Path(sys.argv[1])
 _output_base = pathlib.Path(sys.argv[2])
@@ -24,7 +25,10 @@ _output = {}
 print('Reading output files from %s' % sys.argv[2])
 for fn in _output_base.glob('*.adb'):
     data = bytearray(fn.read_bytes())
-    data[TIMESTAMP_OFFSET:TIMESTAMP_OFFSET + 4] = b'\x00\x00\x00\x00'
+    if data[:4] == b'WCH5' or data[:4] == b'WCH6':
+        data[WCH56_TIMESTAMP_OFFSET:WCH56_TIMESTAMP_OFFSET + 4] = b'\x00\x00\x00\x00'
+    else:
+        data[WCH7_TIMESTAMP_OFFSET:WCH7_TIMESTAMP_OFFSET + 4] = b'\x00\x00\x00\x00'
 
     _output[fn.stem] = { 'name': fn, 'md5': hashlib.md5(data).digest() }
 
@@ -34,7 +38,10 @@ for fn in _input_base.glob('*.adb'):
         continue
 
     data = bytearray(fn.read_bytes())
-    data[TIMESTAMP_OFFSET:TIMESTAMP_OFFSET + 4] = b'\x00\x00\x00\x00'
+    if data[:4] == b'WCH5' or data[:4] == b'WCH6':
+        data[WCH56_TIMESTAMP_OFFSET:WCH56_TIMESTAMP_OFFSET + 4] = b'\x00\x00\x00\x00'
+    else:
+        data[WCH7_TIMESTAMP_OFFSET:WCH7_TIMESTAMP_OFFSET + 4] = b'\x00\x00\x00\x00'
 
     _input[fn.stem] = { 'name': fn, 'md5': hashlib.md5(data).digest() }
 
