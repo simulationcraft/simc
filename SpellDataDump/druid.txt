@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22201)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -692,6 +692,7 @@ $gift=$?s87305[${1.25}][${1}]
 $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 
 Name             : Omen of Clarity (id=16864) [Spell Family (7), Passive] 
+Hotfixed         : Proc Flags (12 -> 4)
 Class            : Feral Druid
 School           : Physical
 Spell Level      : 38
@@ -4515,7 +4516,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274309)   : School Damage: astral (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60316 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60315 | Target: Enemy(6)
 Description      : $@spelldesc187875
 
 Name             : Fey Moonwing (id=188083) 
@@ -6201,7 +6202,7 @@ Description      : Release the natural power within G'Hanir to increase the freq
 Tooltip          : Heal over time spells are healing ${100*(1/(1+($m1/100))-1)}% faster.
 
 Name             : Oneth's Intuition (id=209405) [Spell Family (7), Passive] 
-Hotfixed         : Proc Flags (536870912 -> 65536)
+Hotfixed         : Proc Chance (100 -> 20), Proc Flags (349184 -> 65536), Internal Cooldown (1000 -> 0)
 Class            : Druid
 School           : Nature
 Proc Chance      : 20%

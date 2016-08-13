@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22201)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -673,9 +673,6 @@ Name             : Seasoned Soldier (id=12712) [Spell Family (4), Passive]
 Class            : Arms Warrior
 School           : Physical
 Spell Level      : 10
-Proc Chance      : 100%
-Proc Flags       : ..xx.... ........ ........ ........ 
-                 : White Melee, White Melee Taken
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
@@ -2636,7 +2633,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
-Hotfixed         : Max stacks, Proc Chance, Proc Stacks, Proc Flags, Internal Cooldown
+Hotfixed         : Max stacks (20 -> 0), Proc Chance (101 -> 100), Proc Flags (0 -> 12)
 Class            : Arms Warrior
 School           : Physical
 Proc Chance      : 100%

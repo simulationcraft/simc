@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22201)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1042,6 +1042,7 @@ Description      : An infernal falls from the sky, dealing $s1 Fire damage to al
 Tooltip          : Stunned.
 
 Name             : Seed of Corruption (id=27243) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Affliction Warlock
 School           : Shadow
 Resource         : 4.5% Base Mana (49500 @Level 110)
@@ -1055,7 +1056,7 @@ Duration         : 18 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 

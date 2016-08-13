@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22201)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -731,23 +731,6 @@ Effects          :
 Description      : Slip into the nether, increasing movement speed by $s3% and becoming immune to damage, but unable to attack. Lasts $d.
 Tooltip          : Immune to damage and unable to attack.
 Movement speed increased by $s3%.
-
-Name             : Darkness (id=196718) [Spell Family (107)] 
-Class            : Demon Hunter
-School           : Physical
-Duration         : 8 seconds
-Cooldown         : 180 seconds
-Attributes       : ....x... ........ ........ ........   .....x.. ..x..... ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ...x....   ........ ........ ........ ........ 
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=288808)   : Unknown effect type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6615 | Target: Unknown(125)
-Description      : Summons darkness around you in an 8 yd radius, cloaking friendly targets and granting a $209426s1% chance to avoid all damage from an attack.  Lasts $d.
 
 Name             : Chaos Strike (Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
@@ -2492,25 +2475,6 @@ Effects          :
                    Affected Spells: Demon Spikes (203819)
 Description      : While Demon Spikes is active, you deal $s1% increased Physical damage and your melee attacks snare targets by $210003s1% for $210003d.
 
-Name             : Darkness (id=209426) [Spell Family (107)] 
-Class            : Demon Hunter
-School           : Physical
-Range            : 100 yards
-Duration         : 8 seconds
-Attributes       : ........ x....... ........ .......x   .....x.. ..x..... ........ ........ 
-                 : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot cancel aura (31), Does not break stealth (37), Disable player procs (112), Disable target procs (113)
-Effects          :
-#1 (id=309959)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Unknown(25)
-                   Hotfixed: Base Value (15 -> 20)
-Description      : $@spelldesc196718
-Tooltip          : Attacks against you have a $s1% chance to inflict no damage.
-
 Name             : Fracture (id=209795) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
@@ -3221,7 +3185,7 @@ Effects          :
 Description      : Gain $s1% Leech while Metamorphosis is active.
 
 Name             : Empower Wards (id=218256) [Spell Family (107)] 
-Replaces         : Darkness (id=196718)
+Replaces         :  (id=196718)
 Class            : Vengeance Demon Hunter
 School           : Fire
 Spell Level      : 100

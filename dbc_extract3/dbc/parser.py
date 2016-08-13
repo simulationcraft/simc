@@ -10,6 +10,7 @@ _ID          = struct.Struct('I')
 _CLONE       = struct.Struct('II')
 _ITEMRECORD  = struct.Struct('IH')
 _WCH_ITEMRECORD = struct.Struct('IIH')
+_WCH7_BASE_HEADER = struct.Struct('IIIII')
 
 # WDB5 field data, size (32 - size) // 8, offset tuples
 _FIELD_DATA  = struct.Struct('HH')
@@ -175,6 +176,24 @@ class DBCParserBase:
         self.parse_offset += _BASE_HEADER.size
 
         return True
+
+    def fields_str(self):
+        fields = []
+
+        fields.append('byte_size=%u' % len(self.data))
+        fields.append('records=%u (%u)' % (self.records, self.n_records()))
+        fields.append('fields=%u (%u)' % (self.fields, self.n_fields()))
+        fields.append('o_data=%u' % self.data_offset)
+        fields.append('record_size=%u' % self.record_size)
+        if self.string_block_size > 0:
+            fields.append('sb_size=%u' % self.string_block_size)
+        if self.string_block_offset > 0:
+            fields.append('o_sb=%u' % self.string_block_offset)
+
+        return fields
+
+    def __str__(self):
+        return '%s::%s(%s)' % (self.full_name(), self.magic.decode('ascii'), ', '.join(self.fields_str()))
 
     def build_field_data(self):
         types = self.fmt.types(self.class_name())
@@ -561,6 +580,28 @@ class LegionWDBParser(DBCParserBase):
         logging.debug('Opened %s' % self.full_name())
         return True
 
+    def fields_str(self):
+        fields = super().fields_str()
+
+        fields.append('table_hash=%#.8x' % self.table_hash)
+        if hasattr(self, 'build'):
+            fields.append('build=%u' % self.build)
+        if hasattr(self, 'timestamp'):
+            fields.append('timestamp=%u' % self.timestamp)
+        fields.append('first_id=%u' % self.first_id)
+        fields.append('last_id=%u' % self.last_id)
+        fields.append('locale=%#.8x' % self.locale)
+        if self.clone_segment_size > 0:
+            fields.append('clone_size=%u' % self.clone_segment_size)
+            fields.append('o_clone_block=%u' % self.clone_block_offset)
+        if self.id_block_offset > 0:
+            fields.append('o_id_block=%u' % self.id_block_offset)
+        if self.offset_map_offset > 0:
+            fields.append('o_offset_map=%u' % self.offset_map_offset)
+        fields.append('flags=%#.8x' % self.flags)
+
+        return fields
+
 class WDB4Parser(LegionWDBParser):
     def is_magic(self): return self.magic == b'WDB4'
 
@@ -598,16 +639,6 @@ class WDB4Parser(LegionWDBParser):
             self.clone_block_offset = self.id_block_offset + self.records * _ID.size
 
         return True
-
-    def __str__(self):
-        s = '%s::%s(byte_size=%u, build=%u, timestamp=%u, locale=%#.8x, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u, flags=%u, hash=%#.8x)' % (
-                self.full_name(), self.magic.decode('ascii'), len(self.data), self.build, self.timestamp, self.locale,
-                self.records, self.n_cloned_records(), self.fields, self.record_size,
-                self.string_block_size, self.clone_segment_size, self.first_id,
-                self.last_id, self.data_offset, self.string_block_offset, self.id_block_offset,
-                self.clone_block_offset, self.flags, self.table_hash)
-
-        return s
 
 class WDB5Parser(LegionWDBParser):
     def is_magic(self): return self.magic == b'WDB5'
@@ -690,6 +721,15 @@ class WDB5Parser(LegionWDBParser):
 
         return True
 
+    def fields_str(self):
+        fields = super().fields_str()
+
+        fields.append('layout_hash=%#.8x' % self.layout_hash)
+        if self.id_index > 0:
+            fields.append('id_index=%u' % self.id_index)
+
+        return fields
+
     # WDB5 can always output some human readable data, even if the field types
     # are not correct, but only do this if --raw is enabled
     def raw_outputtable(self):
@@ -709,12 +749,7 @@ class WDB5Parser(LegionWDBParser):
         return True
 
     def __str__(self):
-        s = '%s::%s(byte_size=%u, locale=%#.8x, records=%u+%u, fields=%u, record_size=%u, string_block_size=%u, clone_segment_size=%u, id_index=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, id_offset=%u, clone_offset=%u, flags=%#x, table_hash=%#.8x, layout_hash=%#.8x)' % (
-                self.full_name(), self.magic.decode('ascii'), len(self.data), self.locale,
-                self.records, self.n_cloned_records(), self.fields, self.record_size,
-                self.string_block_size, self.clone_segment_size, self.id_index, self.first_id,
-                self.last_id, self.data_offset, self.string_block_offset, self.id_block_offset,
-                self.clone_block_offset, self.flags, self.table_hash, self.layout_hash)
+        s = super().__str__()
 
         fields = []
         for i in range(0, len(self.field_data)):
@@ -847,13 +882,46 @@ class LegionWCHParser(LegionWDBParser):
         else:
             self.record_parser = self.__do_parse
 
-    def __str__(self):
-        s = '%s::%s(byte_size=%u, build=%u, timestamp=%u, locale=%#.8x, records=%u, fields=%u, record_size=%u, string_block_size=%u, first_id=%u, last_id=%u, data_offset=%u, sblock_offset=%u, table_hash=%#.8x, layout_hash=%#.8x)' % (
-                self.full_name(), self.magic.decode('ascii'), len(self.data), self.build, self.timestamp, self.locale,
-                self.records, self.fields, self.record_size,
-                self.string_block_size, self.first_id,
-                self.last_id, self.data_offset, self.string_block_offset,
-                self.table_hash, self.layout_hash)
+class WCH7Parser(LegionWCHParser):
+    def is_magic(self): return self.magic == b'WCH7'
 
-        return s
+    def __init__(self, options, wdb_parser, fname):
+        super().__init__(options, wdb_parser, fname)
 
+    # Completely rewrite WCH7 parser, since the base header gained a new field
+    def parse_header(self):
+        self.magic = self.data[:4]
+
+        if not self.is_magic():
+            logging.error('Invalid data file format %s', self.data[:4].decode('utf-8'))
+            return False
+
+        self.parse_offset += 4
+        self.records, self.wch7_unk, self.fields, self.record_size, self.string_block_size = _WCH7_BASE_HEADER.unpack_from(self.data, self.parse_offset)
+        self.parse_offset += _WCH7_BASE_HEADER.size
+
+        self.table_hash, self.layout_hash, self.build, self.timestamp, self.first_id, self.last_id, self.locale = _WCH5_HEADER.unpack_from(self.data, self.parse_offset)
+        self.parse_offset += _WCH5_HEADER.size
+
+        # Setup offsets into file, first string block
+        if self.string_block_size > 2:
+            self.string_block_offset = self.parse_offset + self.records * self.record_size
+
+        # Offset map contains offset into file, record size entries in a sparse structure
+        if self.has_offset_map():
+            self.offset_map_offset = self.parse_offset
+            self.string_block_offset = 0
+            self.id_block = 0
+
+        # Has ID block
+        if self.has_id_block():
+            self.id_block_offset = self.parse_offset + self.records * self.record_size + self.string_block_size
+
+        return True
+
+    def fields_str(self):
+        fields = super().fields_str()
+
+        fields.append('unk_wch7=%u' % self.wch7_unk)
+
+        return fields

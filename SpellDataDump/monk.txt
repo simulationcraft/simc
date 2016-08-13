@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22201)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3889,7 +3889,7 @@ Description      : Gain a charge of Mongoose Bite.
 Tooltip          : Gain a charge of Mongoose Bite.
 
 Name             : Hunting Companion (id=191336) [Spell Family (9), Passive] 
-Hotfixed         : Proc Chance (0 -> 100)
+Hotfixed         : Proc Flags (65556 -> 333072), Internal Cooldown (1000 -> 0)
 Class            : Monk
 School           : Physical
 Proc Chance      : 100%

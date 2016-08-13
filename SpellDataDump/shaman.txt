@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (build level 22201)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -932,6 +932,7 @@ Description      : Summons two Spirit $?s147783[Raptors][Wolves] that aid you in
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
 Name             : Tidal Waves (id=51564) [Spell Family (11), Passive] 
+Hotfixed         : Proc Flags (4 -> 17408)
 Class            : Restoration Shaman
 School           : Physical
 Spell Level      : 50
@@ -1665,7 +1666,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
