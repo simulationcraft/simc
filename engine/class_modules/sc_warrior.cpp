@@ -3619,7 +3619,7 @@ struct ignore_pain_t: public warrior_spell_t
 
   double max_ip() const
   {
-    return ip_cap_ratio * data().effectN( 1 ).ap_coeff() * p() -> cache.damage_versatility();
+    return ip_cap_ratio * ( data().effectN( 1 ).ap_coeff() * p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier() )  * p() -> cache.damage_versatility();
   }
 
   void impact( action_state_t* s ) override
@@ -3627,7 +3627,7 @@ struct ignore_pain_t: public warrior_spell_t
     double amount;
 
     amount = s -> result_amount;
-    amount *= cost() / 60.0;
+    amount *= ( resource_consumed / 60.0 );
 
     amount += p() -> buff.ignore_pain -> current_value;
 
@@ -5301,7 +5301,7 @@ double warrior_t::composite_attack_power_multiplier() const
 
   if ( mastery.critical_block -> ok() )
   {
-    ap *= 1.0 + cache.mastery() * mastery.critical_block -> effectN( 5 ).mastery_value();
+    ap += cache.mastery() * mastery.critical_block -> effectN( 5 ).mastery_value();
   }
 
   return ap;
@@ -5530,8 +5530,10 @@ void warrior_t::assess_damage_imminent( school_e school, dmg_e dmg, action_state
     s -> result_amount -= remove;
     assert( buff.ignore_pain -> current_value >= remove );
     buff.ignore_pain -> current_value -= remove;
+    iteration_absorb_taken += remove;
+    s -> self_absorb_amount += remove;
   }
-  return player_t::assess_damage_imminent( school, dmg, s );
+  player_t::assess_damage_imminent( school, dmg, s );
 }
 
 // warrior_t::assess_damage =================================================
