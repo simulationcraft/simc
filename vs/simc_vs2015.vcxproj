@@ -76,18 +76,18 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <TargetName>$(ProjectName)64</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
     <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <TargetName>$(ProjectName)64</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
     <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <TargetName>$(ProjectName)64</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
     <OutDir>$(SolutionDir)\</OutDir>
   </PropertyGroup>

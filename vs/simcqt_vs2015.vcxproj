@@ -59,17 +59,17 @@
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'">false</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'">false</LinkIncremental>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'">SimulationCraft64</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug-WebEngine|x64'">SimulationCraft</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine|x64'">
-    <TargetName>SimulationCraft64</TargetName>
+    <TargetName>SimulationCraft</TargetName>
     <IntDir>int_gui\$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)\$(PlatformShortName)\$(Configuration)\</OutDir>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <EnableManagedIncrementalBuild>false</EnableManagedIncrementalBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='WebEngine-PGO|x64'">
-    <TargetName>SimulationCraft64</TargetName>
+    <TargetName>SimulationCraft</TargetName>
     <IntDir>int_gui\$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)\</OutDir>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
