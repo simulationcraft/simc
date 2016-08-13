@@ -30,33 +30,30 @@ actions.precombat+=/marked_for_death
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up
 actions+=/blood_fury,if=debuff.vendetta.up
 actions+=/berserking,if=debuff.vendetta.up
-actions+=/arcane_torrent,if=debuff.vendetta.up&energy.deficit>50&!dot.rupture.exsanguinated&(cooldown.exsanguinate.remains>3|!artifact.urge_to_kill.enabled)
+actions+=/arcane_torrent,if=debuff.vendetta.up&energy.deficit>50
 actions+=/call_action_list,name=cds
 actions+=/rupture,if=combo_points>=2&!ticking&time<10&!artifact.urge_to_kill.enabled
 actions+=/rupture,if=combo_points>=4&!ticking
-actions+=/kingsbane,if=buff.vendetta.up|cooldown.vendetta.remains>30
+actions+=/pool_resource,for_next=1
+actions+=/kingsbane,if=(buff.vendetta.up|cooldown.vendetta.remains>30)&dot.rupture.exsanguinated
 actions+=/run_action_list,name=exsang_combo,if=cooldown.exsanguinate.remains<3&talent.exsanguinate.enabled
 actions+=/call_action_list,name=garrote,if=spell_targets.fan_of_knives<=7
 actions+=/call_action_list,name=exsang,if=dot.rupture.exsanguinated&spell_targets.fan_of_knives<=2
+actions+=/rupture,if=talent.exsanguinate.enabled&remains-cooldown.exsanguinate.remains<(4+cp_max_spend*4)*0.3&new_duration-cooldown.exsanguinate.remains>=(4+cp_max_spend*4)*0.3+3
 actions+=/call_action_list,name=finish
 actions+=/call_action_list,name=build
 
 #  Cooldowns
 actions.cds=marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=5
-actions.cds+=/vendetta,if=target.time_to_die<20|artifact.urge_to_kill.enabled&dot.rupture.ticking&cooldown.exsanguinate.remains<8&(energy<55|time<10|spell_targets.fan_of_knives>=2)
-actions.cds+=/vendetta,if=target.time_to_die<20|!artifact.urge_to_kill.enabled&dot.rupture.ticking&cooldown.exsanguinate.remains<1
-actions.cds+=/vanish,if=talent.subterfuge.enabled&combo_points<=2&!dot.rupture.exsanguinated
-actions.cds+=/vanish,if=talent.shadow_focus.enabled&!dot.rupture.exsanguinated&combo_points.deficit>=2
+actions.cds+=/vendetta,if=target.time_to_die<20|artifact.urge_to_kill.enabled&dot.rupture.ticking&cooldown.exsanguinate.remains<5&(energy<55|time<10|spell_targets.fan_of_knives>=3)|!artifact.urge_to_kill.enabled&dot.rupture.ticking&cooldown.exsanguinate.remains<1
+actions.cds+=/vanish,if=talent.subterfuge.enabled&combo_points<=2&!dot.rupture.exsanguinated|talent.shadow_focus.enabled&!dot.rupture.exsanguinated&combo_points.deficit>=2
 
 #  Exsanguinate Combo
 actions.exsang_combo=vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&gcd.remains=0&energy>=25
-actions.exsang_combo+=/rupture,if=combo_points>=cp_max_spend&(!talent.nightstalker.enabled|cooldown.vanish.remains)&cooldown.exsanguinate.remains<1
-actions.exsang_combo+=/exsanguinate,if=prev_gcd.rupture&dot.rupture.remains>25+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10
+actions.exsang_combo+=/rupture,if=combo_points>=cp_max_spend&(!talent.nightstalker.enabled|buff.vanish.up|cooldown.vanish.remains>15)&cooldown.exsanguinate.remains<1
+actions.exsang_combo+=/exsanguinate,if=prev_gcd.rupture&dot.rupture.remains>22+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10
 actions.exsang_combo+=/call_action_list,name=garrote,if=spell_targets.fan_of_knives<=7
 actions.exsang_combo+=/hemorrhage,if=spell_targets.fan_of_knives>=2&!ticking
-actions.exsang_combo+=/fan_of_knives,if=spell_targets>=2
-actions.exsang_combo+=/hemorrhage,if=combo_points.deficit=1|combo_points.deficit<=1&remains<10
-actions.exsang_combo+=/mutilate,if=combo_points.deficit<=1
 actions.exsang_combo+=/call_action_list,name=build
 
 #  Garrote
@@ -65,28 +62,23 @@ actions.garrote+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&!ticking&
 actions.garrote+=/pool_resource,for_next=1
 actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated
 
-#  Exsanguinated Rotation
+#  Exsanguinated Finishers
 actions.exsang=rupture,if=combo_points>=cp_max_spend&ticks_remain<2
 actions.exsang+=/death_from_above,if=combo_points>=cp_max_spend-1&dot.rupture.remains>3
 actions.exsang+=/envenom,if=combo_points>=cp_max_spend-1&dot.rupture.remains>3
-actions.exsang+=/hemorrhage,if=combo_points.deficit>=1&debuff.hemorrhage.remains<1
-actions.exsang+=/hemorrhage,if=combo_points.deficit<=1
-actions.exsang+=/pool_resource,for_next=1
-actions.exsang+=/mutilate,if=combo_points.deficit>=2
 
 #  Finishers
-actions.finish=rupture,cycle_targets=1,if=!ticking&combo_points>=cp_max_spend&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
-actions.finish+=/rupture,if=combo_points>=cp_max_spend&refreshable&!exsanguinated
-actions.finish+=/death_from_above,if=combo_points>=cp_max_spend-1&spell_targets.fan_of_knives<=6
-# If Exsanguinate is soon, only apply a long enough rupture so that applying a max
-# CP Rupture when Exsanguinate comes off cooldown will yield the max duration.
-actions.finish+=/rupture,if=talent.exsanguinate.enabled&remains-cooldown.exsanguinate.remains<2&new_duration-cooldown.exsanguinate.remains>=(4+cp_max_spend*4)*0.3
+actions.finish=rupture,cycle_targets=1,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
+actions.finish+=/rupture,if=combo_points>=cp_max_spend-1&refreshable&!exsanguinated
+actions.finish+=/death_from_above,if=combo_points>=cp_max_spend-1&spell_targets.fan_of_knives<=7
 actions.finish+=/envenom,if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&spell_targets.fan_of_knives<=6
 actions.finish+=/envenom,if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&spell_targets.fan_of_knives<=6
 
+#  Builders
 actions.build=hemorrhage,cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4
-actions.build+=/fan_of_knives,if=spell_targets>1&(combo_points.deficit>=1|spell_targets>=7)
-actions.build+=/hemorrhage,if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&dot.rupture.refreshable)
+actions.build+=/fan_of_knives,if=spell_targets>=2&(combo_points.deficit>=1|spell_targets>=7)
+actions.build+=/hemorrhage,if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&(dot.rupture.exsanguinated&dot.rupture.remains<=2|cooldown.exsanguinate.remains<=2))
+actions.build+=/mutilate,if=combo_points.deficit<=1&energy.deficit<=30
 actions.build+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
