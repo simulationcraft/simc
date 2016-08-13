@@ -287,6 +287,7 @@ public:
   // Cooldowns
   struct cooldowns_t {
     cooldown_t* antimagic_shell;
+    cooldown_t* avalanche;
     cooldown_t* bone_shield_icd;
     cooldown_t* dark_transformation;
     cooldown_t* frost_fever;
@@ -558,6 +559,7 @@ public:
     base.distance = 0;
 
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
+    cooldown.avalanche       = get_cooldown( "avalanche" );
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
@@ -2308,7 +2310,7 @@ void death_knight_melee_attack_t::trigger_icecap( const action_state_t* state ) 
 
 void death_knight_melee_attack_t::trigger_avalanche( const action_state_t* state ) const
 {
-  if ( state -> result != RESULT_CRIT )
+  if ( state -> result != RESULT_CRIT || proc || ! callbacks )
   {
     return;
   }
@@ -2323,8 +2325,15 @@ void death_knight_melee_attack_t::trigger_avalanche( const action_state_t* state
     return;
   }
 
+  if ( p() -> cooldown.avalanche -> down() )
+  {
+    return;
+  }
+
   p() -> active_spells.avalanche -> target = state -> target;
   p() -> active_spells.avalanche -> schedule_execute();
+
+  p() -> cooldown.avalanche -> start( p() -> talent.avalanche -> internal_cooldown() );
 }
 
 // death_knight_melee_attack_t::trigger_crystalline_swords ==================
@@ -5445,6 +5454,8 @@ void runeforge::razorice_attack( special_effect_t& effect )
     }
   };
 
+  effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY;
+  effect.proc_flags2_ = PF2_ALL_HIT;
   effect.execute_action = new razorice_attack_t( debug_cast<death_knight_t*>( effect.item -> player ), effect.name() );
   effect.proc_chance_ = 1.0;
   new dbc_proc_callback_t( effect.item, effect );
@@ -5465,6 +5476,9 @@ void runeforge::razorice_debuff( special_effect_t& effect )
         debug_cast< death_knight_t* >( a -> player ) -> get_target_data( state -> target ) -> debuff.razorice -> constant = false;
     }
   };
+
+  effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY;
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new razorice_callback_t( effect );
 }
