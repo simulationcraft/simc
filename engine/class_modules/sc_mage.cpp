@@ -2335,6 +2335,21 @@ struct frost_mage_spell_t : public mage_spell_t
       td( state -> target ) -> debuffs.chilled -> trigger();
     }
   }
+
+  void handle_frozen( action_state_t* state ) 
+  {
+    // Handle Frozen with this, but let Ice Lance take care of itself since it needs
+    // to snapshot FoF/Frozen state on execute.
+    if ( td ( state -> target ) -> debuffs.winters_chill -> up() )
+    {
+      frozen = true;
+    }
+    else if ( !td ( state -> target ) -> debuffs.winters_chill -> up() && 
+               state -> action -> s_data -> _id != 30455 )
+    {
+      frozen = false;
+    }
+  }
 };
 
 // Icicles ==================================================================
@@ -3609,6 +3624,7 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
+    handle_frozen( s );
     snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
@@ -4272,16 +4288,11 @@ struct flurry_bolt_t : public frost_mage_spell_t
     // Swap our flag to allow damage calculation again
     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
     fss -> impact_override = true;
-    if ( td( s -> target ) -> debuffs.winters_chill -> up() )
-    {
-      frozen = true;
-    }
-    else
-    {
-      frozen = false;
-    }
+
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
+    handle_frozen( s );
     snapshot_state( s, amount_type ( s ) );
+
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
@@ -4318,7 +4329,8 @@ struct flurry_t : public frost_mage_spell_t
   virtual timespan_t travel_time() const override
   {
     // Approximate travel time from in game data.
-    return timespan_t::from_seconds( ( player -> current.distance / 31 ) );
+    // TODO: Improve approximation
+    return timespan_t::from_seconds( ( player -> current.distance / 38 ) );
   }
 
   virtual timespan_t execute_time() const override
@@ -4366,6 +4378,68 @@ struct frost_bomb_explosion_t : public frost_mage_spell_t
     parse_effect_data( data().effectN( 1 ) );
     base_aoe_multiplier *= data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
   }
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
+  }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+    if ( fss -> impact_override == true )
+    {
+      return frost_mage_spell_t::snapshot_state( s, rt );
+    }
+    else
+    {
+      return;
+    }
+  }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  {
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+    if ( fss -> impact_override == true )
+    {
+      return frost_mage_spell_t::calculate_direct_amount( s );
+    }
+    else
+    {
+      return s -> result_amount;
+    }
+  }
+
+
+  virtual result_e calculate_result( action_state_t* s ) const override
+  {
+     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+     if ( fss -> impact_override == true )
+     {
+       return frost_mage_spell_t::calculate_result( s );
+     }
+     else
+     {
+       return s -> result;
+     }
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    // Swap our flag to allow damage calculation again
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+    fss -> impact_override = true;
+
+    // Re-call functions here, before the impact call to do the damage calculations as we impact.
+    handle_frozen( s );
+    snapshot_state( s, amount_type ( s ) );
+    s -> result = calculate_result( s );
+    s -> result_amount = calculate_direct_amount( s );
+
+    frost_mage_spell_t::impact( s );
+  }
 
   virtual resource_e current_resource() const override
   { return RESOURCE_NONE; }
@@ -4384,6 +4458,7 @@ struct frost_bomb_t : public frost_mage_spell_t
 
   virtual void execute() override
   {
+
     frost_mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -4545,6 +4620,7 @@ struct frostbolt_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
+    handle_frozen( s );
     snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
@@ -4844,6 +4920,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
+    handle_frozen( s );
     snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
@@ -5010,11 +5087,8 @@ struct ice_lance_t : public frost_mage_spell_t
     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
     fss -> impact_override = true;
 
-    if ( td( s -> target ) -> debuffs.winters_chill -> up() )
-    {
-      frozen = true;
-    }
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
+    handle_frozen( s );
     snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
@@ -5090,6 +5164,69 @@ struct ice_nova_t : public frost_mage_spell_t
     double in_mult = 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
     base_multiplier *= in_mult;
     base_aoe_multiplier = 1.0 / in_mult;
+  }
+  virtual action_state_t* new_state() override
+  {
+    return new frost_spell_state_t( this, target );
+  }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+    if ( fss -> impact_override == true )
+    {
+      return frost_mage_spell_t::snapshot_state( s, rt );
+    }
+    else
+    {
+      return;
+    }
+  }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  {
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+    if ( fss -> impact_override == true )
+    {
+      return frost_mage_spell_t::calculate_direct_amount( s );
+    }
+    else
+    {
+      return s -> result_amount;
+    }
+  }
+
+
+  virtual result_e calculate_result( action_state_t* s ) const override
+  {
+     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+
+     if ( fss -> impact_override == true )
+     {
+       return frost_mage_spell_t::calculate_result( s );
+     }
+     else
+     {
+       return s -> result;
+     }
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    // Swap our flag to allow damage calculation again
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
+    fss -> impact_override = true;
+
+    // Re-call functions here, before the impact call to do the damage calculations as we impact.
+    handle_frozen( s );
+
+    snapshot_state( s, amount_type ( s ) );
+    s -> result = calculate_result( s );
+    s -> result_amount = calculate_direct_amount( s );
+
+    frost_mage_spell_t::impact( s );
   }
 };
 
@@ -7180,7 +7317,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
 
   // Options
-  base.distance = 10;
+  base.distance = 30;
   regen_caches[ CACHE_HASTE ] = true;
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 
