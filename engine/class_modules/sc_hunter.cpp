@@ -2762,11 +2762,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
         p() -> active.surge_of_the_stormgod -> execute();
       if ( p() -> hati )
         p() -> active.surge_of_the_stormgod -> execute();
-      for ( size_t i = 0; i < p() -> pet_dire_beasts.size(); i++ )
-      {
-        if( !p() -> pet_dire_beasts[ i ] -> is_sleeping() )
-          p() -> active.surge_of_the_stormgod -> execute();
-      }
     }
 
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) )
