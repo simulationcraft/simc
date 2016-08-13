@@ -117,7 +117,8 @@ public:
     buff_t* wrecking_ball;
     buff_t* spell_reflection;
 
-    absorb_buff_t* ignore_pain;
+    buff_t* ignore_pain;
+    buff_t* neltharions_fury;
     //Legendary Items
     buff_t* bindings_of_kakushan;
     buff_t* kargaths_sacrificed_hands;
@@ -407,64 +408,65 @@ public:
   }
 
   // Character Definition
-  virtual void      init_spells() override;
-  virtual void      init_base_stats() override;
-  virtual void      init_scaling() override;
-  virtual void      create_buffs() override;
-  virtual void      init_gains() override;
-  virtual void      init_position() override;
-  virtual void      init_procs() override;
-  virtual void      init_resources( bool ) override;
-  virtual void      arise() override;
-  virtual void      combat_begin() override;
-  virtual double    composite_attribute( attribute_e attr ) const override;
-  virtual double    composite_rating_multiplier( rating_e rating ) const override;
-  virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-  virtual double    composite_melee_haste() const override;
-  virtual double    composite_armor_multiplier() const override;
-  virtual double    composite_block() const override;
-  virtual double    composite_block_reduction() const override;
-  virtual double    composite_parry_rating() const override;
-  virtual double    composite_parry() const override;
-  virtual double    composite_melee_expertise( const weapon_t* ) const override;
-  virtual double    composite_attack_power_multiplier() const override;
-  virtual double    composite_melee_attack_power() const override;
-  virtual double    composite_mastery() const override;
-  virtual double    composite_crit_block() const override;
-  virtual double    composite_crit_avoidance() const override;
-  virtual double    composite_melee_speed() const override;
-  virtual double    composite_melee_crit_chance() const override;
-  virtual double    composite_spell_crit_chance() const override;
-  virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  virtual double    composite_leech() const override;
-  virtual double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
-  virtual void      teleport( double yards, timespan_t duration ) override;
-  virtual void      trigger_movement( double distance, movement_direction_e direction ) override;
-  virtual void      interrupt() override;
-  virtual void      reset() override;
-  virtual void      moving() override;
-  virtual void      create_options() override;
-  virtual action_t* create_proc_action( const std::string& name, const special_effect_t& ) override;
-  virtual std::string      create_profile( save_e type ) override;
-  virtual void      invalidate_cache( cache_e ) override;
-  virtual double    temporary_movement_modifier() const override;
-  virtual bool      has_t18_class_trinket() const override;
+  void      init_spells() override;
+  void      init_base_stats() override;
+  void      init_scaling() override;
+  void      create_buffs() override;
+  void      init_gains() override;
+  void      init_position() override;
+  void      init_procs() override;
+  void      init_resources( bool ) override;
+  void      arise() override;
+  void      combat_begin() override;
+  double    composite_attribute( attribute_e attr ) const override;
+  double    composite_rating_multiplier( rating_e rating ) const override;
+  double    composite_player_multiplier( school_e school ) const override;
+  double    matching_gear_multiplier( attribute_e attr ) const override;
+  double    composite_melee_haste() const override;
+  double    composite_armor_multiplier() const override;
+  double    composite_block() const override;
+  double    composite_block_reduction() const override;
+  double    composite_parry_rating() const override;
+  double    composite_parry() const override;
+  double    composite_melee_expertise( const weapon_t* ) const override;
+  double    composite_attack_power_multiplier() const override;
+  double    composite_melee_attack_power() const override;
+  double    composite_mastery() const override;
+  double    composite_crit_block() const override;
+  double    composite_crit_avoidance() const override;
+  double    composite_melee_speed() const override;
+  double    composite_melee_crit_chance() const override;
+  double    composite_spell_crit_chance() const override;
+  double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double    composite_leech() const override;
+  double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
+  void      teleport( double yards, timespan_t duration ) override;
+  void      trigger_movement( double distance, movement_direction_e direction ) override;
+  void      interrupt() override;
+  void      reset() override;
+  void      moving() override;
+  void      create_options() override;
+  action_t* create_proc_action( const std::string& name, const special_effect_t& ) override;
+  std::string      create_profile( save_e type ) override;
+  void      invalidate_cache( cache_e ) override;
+  double    temporary_movement_modifier() const override;
+  bool      has_t18_class_trinket() const override;
 
   void              apl_precombat();
   void              apl_default();
   void              apl_fury();
   void              apl_arms();
   void              apl_prot();
-  virtual void      init_action_list() override;
+  void      init_action_list() override;
 
-  virtual action_t*  create_action( const std::string& name, const std::string& options ) override;
-  virtual resource_e primary_resource() const override { return RESOURCE_RAGE; }
-  virtual role_e     primary_role() const override;
-  virtual stat_e     convert_hybrid_stat( stat_e s ) const override;
-  virtual void       assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
-  virtual void       assess_damage( school_e, dmg_e, action_state_t* s ) override;
-  virtual void       copy_from( player_t* source ) override;
+  action_t*  create_action( const std::string& name, const std::string& options ) override;
+  resource_e primary_resource() const override { return RESOURCE_RAGE; }
+  role_e     primary_role() const override;
+  stat_e     convert_hybrid_stat( stat_e s ) const override;
+  void       assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
+  void       assess_damage_imminent( school_e, dmg_e, action_state_t* s ) override;
+  void       assess_damage( school_e, dmg_e, action_state_t* s ) override;
+  void       copy_from( player_t* source ) override;
 
   target_specific_t<warrior_td_t> target_data;
 
@@ -2438,6 +2440,39 @@ struct warbreaker_t: public warrior_attack_t
   }
 };
 
+// Neltharion's Fury =====================================================================================
+
+struct neltharions_fury_flame_t: public warrior_attack_t
+{
+  neltharions_fury_flame_t( warrior_t* p ):
+    warrior_attack_t( "neltharions_fury_shadowflame", p, p -> artifact.neltharions_fury.data().effectN( 2 ).trigger() )
+  {
+    aoe = -1;
+    may_block = may_parry = may_dodge = false;
+    hasted_ticks = false;
+  }
+};
+
+
+struct neltharions_fury_t: public warrior_attack_t
+{
+  neltharions_fury_flame_t* flame;
+  neltharions_fury_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "neltharions_fury", p, p -> artifact.neltharions_fury ), flame( nullptr )
+  {
+    parse_options( options_str );
+    flame = new neltharions_fury_flame_t( p );
+    add_child( flame );
+    tick_action = flame;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    p() -> buff.neltharions_fury -> trigger();
+  }
+};
+
 // Rampage ================================================================
 
 struct rampage_attack_t: public warrior_attack_t
@@ -3557,27 +3592,60 @@ struct battle_cry_t: public warrior_spell_t
 
 struct ignore_pain_t: public warrior_spell_t
 {
+  double ip_cap_ratio;
   ignore_pain_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "ignore_pain", p, p -> find_specialization_spell( "Ignore Pain" ) )
+    warrior_spell_t( "ignore_pain", p, p -> spec.ignore_pain ), ip_cap_ratio( 0 )
   {
     parse_options( options_str );
     use_off_gcd = true;
+    may_crit = false;
+    range = -1;
+    target = player;
+    ip_cap_ratio = 3;
+    if ( p -> talents.never_surrender -> ok() )
+    {
+      ip_cap_ratio *= 2.0; //spelldata
+    }
+    if ( p -> talents.indomitable -> ok() )
+    {
+      ip_cap_ratio *= 1.25; //spelldata
+    }
   }
 
-  void execute() override
+  double cost() const override
   {
-    warrior_spell_t::execute();
-    p() -> buff.ignore_pain -> trigger( 1 );///fixme
+    return std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
+  }
+
+  double max_ip() const
+  {
+    return ip_cap_ratio * data().effectN( 1 ).ap_coeff() * p() -> cache.damage_versatility();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    double amount;
+
+    amount = s -> result_amount;
+    amount *= cost() / 60.0;
+
+    amount += p() -> buff.ignore_pain -> current_value;
+
+    if ( amount > max_ip() )
+      amount = max_ip();
+
+    p() -> buff.ignore_pain -> trigger( 1, amount );
+    stats -> add_result( 0.0, amount, ABSORB, s -> result, s -> block_result, p() );
   }
 
   bool ready() override
   {
+    if ( !p() -> has_shield_equipped() )
+      return false;
 
-
-    return warrior_spell_t::ready();
+    return base_t::ready();
   }
 };
-
 // Shield Block =============================================================
 
 struct shield_block_t: public warrior_spell_t
@@ -3742,6 +3810,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "ignore_pain"          ) return new ignore_pain_t          ( this, options_str );
   if ( name == "intercept"            ) return new intercept_t            ( this, options_str );
   if ( name == "focused_rage"         ) return new focused_rage_t         ( this, options_str );
+  if ( name == "neltharions_fury"     ) return new neltharions_fury_t     ( this, options_str );
   if ( name == "whirlwind" )
   {
     if ( specialization() == WARRIOR_FURY )
@@ -3858,6 +3927,7 @@ void warrior_t::init_spells()
   talents.warbringer            = find_talent_spell( "Warbringer" );
   talents.warpaint              = find_talent_spell( "Warpaint" );
   talents.wrecking_ball         = find_talent_spell( "Wrecking Ball" );
+  talents.indomitable           = find_talent_spell( "Indomitable" );
 
   // Artifact
   artifact.corrupted_blood_of_zakajz = find_artifact_spell( "Corrupted Blood of Zakajz" );
@@ -4446,7 +4516,7 @@ void warrior_t::apl_prot()
 
   //defensive
   prot -> add_action( this, "Shield Block"/*, "if=!buff.neltharion's_fury.up"*/ );
-  prot -> add_action( this, "Ignore Pain"/*, "if=buff.vengeance_ignore_pain.up&rage>=30|(talent.vengeance.enabled&rage>=20&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up)|!talent.vengeance.enabled"*/ );
+  prot -> add_action( this, "Ignore Pain"/*, "if=buff.ignore_pain.up&rage>=30|(talent.vengeance.enabled&rage>=20&!buff.ignore_pain.up&!buff.focused_rage.up)|!talent.vengeance.enabled"*/ );
   //prot -> add_action( this, "Focused Rage"/*, "if=(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up&buff.ultimatum.up)"*/ );
   prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20" );
   prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.50" );
@@ -4478,7 +4548,7 @@ void warrior_t::apl_prot()
   prot -> add_action( this, "Battle Cry" );
   prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=50" );
   prot -> add_action( this, "Ravager", "if=talent.ravager.enabled" );
-  //prot -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
+  prot -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
   prot -> add_action( this, "Shield Slam" );
   prot -> add_action( this, "Revenge" );
   prot -> add_action( this, "Devastate" );
@@ -4489,7 +4559,7 @@ void warrior_t::apl_prot()
   prot_aoe -> add_action( this, "Battle Cry" );
   prot_aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=50" );
   prot_aoe -> add_action( this, "Ravager", "if=talent.ravager.enabled" );
-  //prot_aoe -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
+  prot_aoe -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
   prot_aoe -> add_action( this, "Shield Slam" );
   prot_aoe -> add_action( this, "Revenge" );
   prot_aoe -> add_action( this, "Thunder Clap" );
@@ -4753,7 +4823,11 @@ void warrior_t::create_buffs()
 
   buff.spell_reflection = buff_creator_t( this, "spell_reflection", find_specialization_spell( "Spell Reflection" ) );
 
-  buff.ignore_pain = absorb_buff_creator_t( this, "ignore_pain", spec.ignore_pain );
+  buff.ignore_pain = buff_creator_t( this, "ignore_pain", spec.ignore_pain );
+
+  buff.neltharions_fury = buff_creator_t( this, "neltharions_fury", artifact.neltharions_fury )
+    .default_value( artifact.neltharions_fury.data().effectN( 1 ).percent() )
+    .add_invalidate( CACHE_CRIT_BLOCK );
 
   buff.juggernaut = buff_creator_t( this, "juggernaut", artifact.juggernaut.data().effectN( 1 ).trigger() )
     .default_value( artifact.juggernaut.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
@@ -5237,6 +5311,9 @@ double warrior_t::composite_attack_power_multiplier() const
 
 double warrior_t::composite_crit_block() const
 {
+  if ( buff.neltharions_fury -> check() )
+    return 1.0;
+
   double b = player_t::composite_crit_block();
 
   if ( mastery.critical_block -> ok() )
@@ -5442,6 +5519,19 @@ void warrior_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, a
     resource_gain( RESOURCE_RAGE, rage_gain_from_damage_taken, gain.rage_from_damage_taken );
   }
   player_t::assess_damage_imminent_pre_absorb( school, dmg, s );
+}
+
+void warrior_t::assess_damage_imminent( school_e school, dmg_e dmg, action_state_t*s )
+{
+  if ( buff.ignore_pain -> check() )
+  {
+    auto remove = std::min( buff.ignore_pain -> current_value, s -> result_amount * 0.9 );
+
+    s -> result_amount -= remove;
+    assert( buff.ignore_pain -> current_value >= remove );
+    buff.ignore_pain -> current_value -= remove;
+  }
+  return player_t::assess_damage_imminent( school, dmg, s );
 }
 
 // warrior_t::assess_damage =================================================
