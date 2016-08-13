@@ -74,7 +74,7 @@ win32 {
 
     win32-msvc2015 {
       QMAKE_CXXFLAGS_RELEASE += /GL
-      QMAKE_LFLAGS_RELEASE   += /LTCG /USEPROFILE /PGD:"..\SimulationCraft64.pgd"
+      QMAKE_LFLAGS_RELEASE   += /LTCG /USEPROFILE /PGD:"..\SimulationCraft.pgd"
     }
   }
 }
