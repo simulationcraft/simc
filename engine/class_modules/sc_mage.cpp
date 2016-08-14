@@ -4659,7 +4659,6 @@ struct frostbolt_t : public frost_mage_spell_t
       {
         p() -> cooldowns.icy_veins -> adjust( p() -> artifact.frozen_veins.time_value() );
         p() -> buffs.icy_veins -> cooldown -> adjust( p() -> artifact.frozen_veins.time_value() );
-        sim -> out_debug.printf( "TEST %f", p() -> artifact.frozen_veins.time_value().total_seconds() );
       }
 
       if ( s -> result == RESULT_CRIT && p() -> artifact.chain_reaction.rank() )
