@@ -1966,6 +1966,26 @@ bool sim_t::init_actors()
     decorated_tooltips = 1;
 
   actor_init = true;
+  auto name_number = 1;
+  for ( size_t j = 0; j < player_no_pet_list.size(); ++j )
+  {
+    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+    {
+      if ( i == j )
+        continue;
+      if ( player_no_pet_list[j] -> name_str == player_no_pet_list[i] -> name_str )
+      {
+        errorf( "%s has duplicate name, renaming to %s%s. Please use unique names for all players in simulation.",
+                player_no_pet_list[j] -> name_str.c_str(),
+                player_no_pet_list[j] -> name_str.c_str(),
+                std::to_string( name_number ).c_str() );
+
+        player_no_pet_list[j] -> name_str += std::to_string( name_number );
+        name_number++;
+      }
+    }
+  }
+
   for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
     if ( ! init_actor( player_no_pet_list[ i ] ) )
