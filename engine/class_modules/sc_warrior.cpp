@@ -284,7 +284,6 @@ public:
     const spell_data_t* die_by_the_sword; //
     const spell_data_t* furious_charge; //
     const spell_data_t* second_wind; //
-    const spell_data_t* vigilance; //
     const spell_data_t* warpaint; //
 
     const spell_data_t* best_served_cold; //
@@ -3594,10 +3593,17 @@ struct battle_cry_t: public warrior_spell_t
 struct ignore_pain_t: public warrior_spell_t
 {
   double ip_cap_ratio;
+  stats_t* absorb_stats;
+  gain_t*  absorb_gain;
   ignore_pain_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "ignore_pain", p, p -> spec.ignore_pain ), ip_cap_ratio( 0 )
+    warrior_spell_t( "ignore_pain", p, p -> spec.ignore_pain ), ip_cap_ratio( 0 ),
+    absorb_stats( nullptr ), absorb_gain( nullptr )
   {
     parse_options( options_str );
+    absorb_stats = p -> get_stats( "ignore_pain" );
+    absorb_gain = p -> get_gain( "ignore_pain" );
+    absorb_stats -> type = STATS_ABSORB;
+    absorb_stats -> school = SCHOOL_PHYSICAL; //?
     use_off_gcd = true;
     may_crit = false;
     range = -1;
@@ -3605,12 +3611,13 @@ struct ignore_pain_t: public warrior_spell_t
     ip_cap_ratio = 3;
     if ( p -> talents.never_surrender -> ok() )
     {
-      ip_cap_ratio *= 2.0; //spelldata
+      ip_cap_ratio *= 1.0 + p -> talents.never_surrender -> effectN( 1 ).percent();
     }
     if ( p -> talents.indomitable -> ok() )
     {
-      ip_cap_ratio *= 1.25; //spelldata
+      ip_cap_ratio *= 1.0 + p -> talents.indomitable -> effectN( 2 ).percent();
     }
+    base_dd_max = base_dd_min = 0;
   }
 
   double cost() const override
@@ -3636,7 +3643,9 @@ struct ignore_pain_t: public warrior_spell_t
       amount = max_ip();
 
     p() -> buff.ignore_pain -> trigger( 1, amount );
-    stats -> add_result( 0.0, amount, ABSORB, s -> result, s -> block_result, p() );
+    absorb_stats -> add_result( amount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, p() );
+    absorb_stats -> add_execute( timespan_t::zero(), p() );
+    absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
   }
 
   bool ready() override
@@ -3702,9 +3711,7 @@ struct shield_wall_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    double value = p() -> buff.shield_wall -> data().effectN( 1 ).percent();
-
-    p() -> buff.shield_wall -> trigger( 1, value );
+    p() -> buff.shield_wall -> trigger( 1, p() -> buff.shield_wall -> data().effectN( 1 ).percent() );
   }
 };
 
@@ -3738,17 +3745,6 @@ struct taunt_t: public warrior_spell_t
     }
 
     warrior_spell_t::impact( s );
-  }
-};
-
-// Vigilance =======================================================================
-
-struct vigilance_t: public warrior_spell_t
-{
-  vigilance_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "vigilance", p, p -> talents.vigilance )
-  {
-    parse_options( options_str );
   }
 };
 
@@ -3806,7 +3802,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "taunt"                ) return new taunt_t                ( this, options_str );
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
   if ( name == "victory_rush"         ) return new victory_rush_t         ( this, options_str );
-  if ( name == "vigilance"            ) return new vigilance_t            ( this, options_str );
   if ( name == "warbreaker"           ) return new warbreaker_t           ( this, options_str );
   if ( name == "ignore_pain"          ) return new ignore_pain_t          ( this, options_str );
   if ( name == "intercept"            ) return new intercept_t            ( this, options_str );
@@ -3923,7 +3918,6 @@ void warrior_t::init_spells()
   talents.titanic_might         = find_talent_spell( "Titanic Might" );
   talents.trauma                = find_talent_spell( "Trauma" );
   talents.vengeance             = find_talent_spell( "Vengeance" );
-  talents.vigilance             = find_talent_spell( "Vigilance" );
   talents.war_machine           = find_talent_spell( "War Machine" );
   talents.warbringer            = find_talent_spell( "Warbringer" );
   talents.warpaint              = find_talent_spell( "Warpaint" );
@@ -4108,6 +4102,8 @@ void warrior_t::init_base_stats()
   base.dodge += spec.bastion_of_defense -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
+
+  resources.base_multiplier[RESOURCE_HEALTH] *= 1 + talents.indomitable -> effectN( 1 ).percent();
 
   if ( specialization() == WARRIOR_PROTECTION )
   {

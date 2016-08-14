@@ -17,7 +17,6 @@ void print_xml_raid_events( sim_t* sim, xml_writer_t& writer );
 void print_xml_roster( sim_t* sim, xml_writer_t& writer );
 void print_xml_targets( sim_t* sim, xml_writer_t& writer );
 void print_xml_buffs( sim_t* sim, xml_writer_t& writer );
-void print_xml_hat_donors( sim_t* sim, xml_writer_t& writer );
 void print_xml_performance( sim_t* sim, xml_writer_t& writer );
 void print_xml_summary( sim_t* sim, xml_writer_t& writer );
 void print_xml_player( sim_t* sim, xml_writer_t& writer, player_t* p,
@@ -1546,7 +1545,6 @@ void print_xml( sim_t* sim )
   print_xml_targets( sim, writer );
 
   print_xml_buffs( sim, writer );
-  print_xml_hat_donors( sim, writer );
   print_xml_performance( sim, writer );
 
   print_xml_errors( sim, writer );

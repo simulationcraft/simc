@@ -7083,7 +7083,6 @@ void initialize_special_effect_2( special_effect_t* effect );
 
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
-const item_data_t* find_potion_by_spell( const dbc_t& dbc, unsigned spell_id );
 
 expr_t* create_expression( action_t* a, const std::string& name_str );
 
