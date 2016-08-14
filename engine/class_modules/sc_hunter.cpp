@@ -1511,6 +1511,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
   dire_critter_t( hunter_t& owner ):
     hunter_secondary_pet_t( owner, std::string( "dire_beast" ) )
   {
+    owner_coeff.ap_from_ap = 1.35;
   }
 
   virtual void init_base_stats() override
@@ -1527,7 +1528,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t::summon( duration );
 
     if ( o() -> talents.stomp -> ok() )
-      active.stomp -> execute();
+      active.stomp -> schedule_execute();
   }
 
   virtual double composite_player_multiplier( school_e school ) const override
@@ -1850,7 +1851,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
                                             .percent() * 
                                             s -> result_amount;
       jaws_of_thunder -> base_dd_max = jaws_of_thunder -> base_dd_min;
-      jaws_of_thunder -> execute();
+      jaws_of_thunder -> schedule_execute();
     }
   }
 
@@ -2759,9 +2760,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p() -> artifacts.surge_of_the_stormgod.rank() && rng().roll( p() -> artifacts.surge_of_the_stormgod.data().proc_chance() ) )
     {
       if ( p() -> active.pet )
-        p() -> active.surge_of_the_stormgod -> execute();
+        p() -> active.surge_of_the_stormgod -> schedule_execute();
       if ( p() -> hati )
-        p() -> active.surge_of_the_stormgod -> execute();
+        p() -> active.surge_of_the_stormgod -> schedule_execute();
     }
 
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) )
@@ -4474,7 +4475,7 @@ struct dire_beast_t: public hunter_spell_t
     double partial_attacks_per_summon = base_duration / swing_time;
     double base_attacks_per_summon = floor( partial_attacks_per_summon + 0.5 ); // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
 
-    if ( rng().roll( partial_attacks_per_summon - base_attacks_per_summon + 0.5 ) )
+    if ( rng().roll( partial_attacks_per_summon - base_attacks_per_summon ) )
       base_attacks_per_summon += 1;
 
     timespan_t summon_duration = base_attacks_per_summon * swing_time;
@@ -4582,11 +4583,11 @@ struct kill_command_t: public hunter_spell_t
 
     if ( p() -> active.pet )
     {
-      p() -> active.pet -> active.kill_command -> execute();
+      p() -> active.pet -> active.kill_command -> schedule_execute();
       trigger_tier17_2pc_bm();
     }
     if ( p() -> artifacts.master_of_beasts.rank() )
-      p() -> hati -> active.kill_command -> execute();
+      p() -> hati -> active.kill_command -> schedule_execute();
     p() -> no_steady_focus();
   }
 
