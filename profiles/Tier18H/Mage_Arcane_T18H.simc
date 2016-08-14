@@ -17,7 +17,6 @@ spec=arcane
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=buttered_sturgeon
 actions.precombat+=/snapshot_stats
-actions.precombat+=/rune_of_power
 actions.precombat+=/mirror_image
 actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/arcane_blast

@@ -18,48 +18,35 @@ actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
-actions.precombat+=/rune_of_power
 actions.precombat+=/mirror_image
 actions.precombat+=/potion,name=draenic_intellect
-actions.precombat+=/frostbolt,if=!talent.frost_bomb.enabled
-actions.precombat+=/frost_bomb
+actions.precombat+=/frostbolt
 
 # Executed every time the actor is available.
 
 actions=counterspell,if=target.debuff.casting.react
-actions+=/time_warp,if=target.health.pct<25|time>0
-actions+=/rune_of_power,if=(charges_fractional>=2)|(buff.icy_veins.up&!talent.ray_of_frost.enabled)|(cooldown.icy_veins.remains>target.time_to_die)|cooldown.ray_of_frost.remains=0
-actions+=/call_action_list,name=water_jet,if=prev_off_gcd.water_jet|debuff.water_jet.remains>0
-actions+=/call_action_list,name=single_target
+actions+=/ice_lance,if=buff.fingers_of_frost.react=0&prev_gcd.flurry
+actions+=/call_action_list,name=cooldowns
+actions+=/ice_nova,if=debuff.winters_chill.up
+actions+=/frostbolt,if=prev_off_gcd.water_jet
+actions+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
+actions+=/flurry,if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.frostbolt
+actions+=/glacial_spike
+actions+=/frozen_touch,if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)
+actions+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0
+actions+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2
+actions+=/frozen_orb
+actions+=/ice_nova
+actions+=/blizzard,if=(talent.arctic_gale.enabled&active_enemies>1)|active_enemies>3
+actions+=/ebonbolt,if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)
+actions+=/frostbolt
 
-actions.water_jet=frostbolt,if=prev_off_gcd.water_jet
-actions.water_jet+=/ice_lance,if=buff.fingers_of_frost.react>=2+artifact.icy_hand.enabled&action.frostbolt.in_flight
-actions.water_jet+=/frostbolt,if=debuff.water_jet.remains>cast_time+travel_time
-
-actions.cooldowns=icy_veins
+actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10
+actions.cooldowns+=/icy_veins,if=buff.icy_veins.down
+actions.cooldowns+=/mirror_image
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
-
-actions.single_target=call_action_list,name=cooldowns
-actions.single_target+=/ice_lance,if=(buff.fingers_of_frost.react&(buff.fingers_of_frost.remains<action.frostbolt.execute_time|buff.fingers_of_frost.remains<buff.fingers_of_frost.react*gcd.max))|prev_gcd.flurry
-actions.single_target+=/flurry,if=buff.brain_freeze.react&(buff.brain_freeze.remains<action.frostbolt.execute_time|(buff.fingers_of_frost.react=0&debuff.water_jet.remains=0))
-actions.single_target+=/ice_lance,if=buff.fingers_of_frost.react>(artifact.icy_hand.enabled)|prev_gcd.ebonbolt
-actions.single_target+=/ice_lance,if=buff.shatterlance.up
-actions.single_target+=/call_action_list,name=active_talents
-actions.single_target+=/call_action_list,name=init_water_jet,if=!talent.lonely_winter.enabled&pet.water_elemental.cooldown.water_jet.remains<=gcd.max&buff.fingers_of_frost.react<2+artifact.icy_hand.enabled&!dot.frozen_orb.ticking
-actions.single_target+=/frozen_orb,if=buff.fingers_of_frost.stack<2+artifact.icy_hand.enabled
-actions.single_target+=/blizzard,if=talent.arctic_gale.enabled
-actions.single_target+=/ice_lance,if=!talent.frost_bomb.enabled&buff.fingers_of_frost.react&(!talent.thermal_void.enabled|cooldown.icy_veins.remains>8)
-actions.single_target+=/frostbolt
-
-actions.init_water_jet=frostbolt
-
-actions.active_talents=ray_of_frost,if=buff.rune_of_power.up|!talent.rune_of_power.enabled
-actions.active_talents+=/ice_nova
-actions.active_talents+=/frozen_touch,if=buff.fingers_of_frost.stack=0
-actions.active_talents+=/glacial_spike
-actions.active_talents+=/comet_storm
 
 head=countenance_of_the_revenant,id=124158
 neck=choker_of_forbidden_indulgence,id=124391,enchant=gift_of_multistrike
