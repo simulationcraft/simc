@@ -5826,8 +5826,10 @@ void warlock_t::apl_destruction()
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
-  if ( find_item( "nithramus_the_allseer" ) )
+  if ( find_item( "nithramus_the_allseer" ) && true_level == 100 )
     action_list_str += "/potion,name=draenic_intellect,if=buff.nithramus.remains";
+  if ( true_level > 100 )
+    action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=30)";
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd))" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2" );
@@ -5845,7 +5847,7 @@ void warlock_t::apl_destruction()
   // artifact check
   add_action( "Dimensional Rift" );
 
-  action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3";
+  action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3";
   add_action( "Chaos Bolt" );
   action_list_str += "/cataclysm";
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled" );
