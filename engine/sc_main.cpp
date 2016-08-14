@@ -23,8 +23,8 @@ struct sim_signal_handler_t
   {
     const char* name = strsignal( signal );
     fprintf( stderr, "sim_signal_handler: %s! Iteration=%d Seed=%lu TargetHealth=%lu\n",
-	     name, global_sim -> current_iteration, global_sim -> seed,
-	     (uint64_t) global_sim -> target -> resources.initial[ RESOURCE_HEALTH ] );
+       name, global_sim -> current_iteration, global_sim -> seed,
+       (uint64_t) global_sim -> target -> resources.initial[ RESOURCE_HEALTH ] );
     fflush( stderr );
   }
 
@@ -35,11 +35,11 @@ struct sim_signal_handler_t
       report( signal );
       if( global_sim -> scaling -> calculate_scale_factors || global_sim -> reforge_plot -> current_reforge_sim || global_sim -> plot -> current_plot_stat != STAT_NONE )
       {
-	global_sim -> cancel();
+  global_sim -> cancel();
       }
       else
       {
-	global_sim -> interrupt();
+  global_sim -> interrupt();
       }
     }
   }

@@ -120,8 +120,8 @@ void SC_SampleProfilesTab::fillTree( QDir baseDir )
           }
 
           QTreeWidgetItem* item = new QTreeWidgetItem( QStringList() << profileList[k] << profile );
-		  assert(rootItems[player][tier]);
-		  assert(item);
+      assert(rootItems[player][tier]);
+      assert(item);
           rootItems[player][tier] -> addChild( item );
         }
       }

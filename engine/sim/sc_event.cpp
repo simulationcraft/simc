@@ -181,7 +181,7 @@ void event_manager_t::recycle_event( event_t* e )
 // event_manager_t::add_event ===============================================
 
 void event_manager_t::add_event( event_t* e,
-				 timespan_t delta_time )
+         timespan_t delta_time )
 {
   e -> id = ++global_event_id;
 
@@ -242,16 +242,16 @@ void event_manager_t::add_event( event_t* e,
 
   if ( sim -> debug )
     sim -> out_debug.printf( "Add Event: %s time=%.4f rs-time=%.4f id=%d",
-			     e -> name(), e -> time.total_seconds(),
-			     e -> reschedule_time.total_seconds(),
-			     e -> id );
+           e -> name(), e -> time.total_seconds(),
+           e -> reschedule_time.total_seconds(),
+           e -> id );
 
 #if ACTOR_EVENT_BOOKKEEPING
   if ( sim -> debug && e -> actor )
   {
     e -> actor -> event_counter++;
     sim -> out_debug.printf( "Actor %s has %d scheduled events",
-			     e -> actor -> name(), e -> actor -> event_counter );
+           e -> actor -> name(), e -> actor -> event_counter );
   }
 #endif
 }

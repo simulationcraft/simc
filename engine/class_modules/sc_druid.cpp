@@ -7789,38 +7789,38 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
 
 double druid_t::calculate_expected_max_health() const
 {
-	double slot_weights = 0;
-	double prop_values = 0;
+  double slot_weights = 0;
+  double prop_values = 0;
 
-	for ( size_t i = 0; i < items.size(); i++ )
-	{
-		const item_t* item = &items[ i ];
-		if ( ! item || item -> slot == SLOT_SHIRT || item -> slot == SLOT_RANGED ||
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    const item_t* item = &items[ i ];
+    if ( ! item || item -> slot == SLOT_SHIRT || item -> slot == SLOT_RANGED ||
       item -> slot == SLOT_TABARD || item -> item_level() <= 0 )
-		{
-			continue;
-		}
+    {
+      continue;
+    }
 
-		const random_prop_data_t item_data = dbc.random_property( item -> item_level() );
-		int index = item_database::random_suffix_type( &item -> parsed.data );
-		slot_weights += item_data.p_epic[ index ] / item_data.p_epic[ 0 ];
+    const random_prop_data_t item_data = dbc.random_property( item -> item_level() );
+    int index = item_database::random_suffix_type( &item -> parsed.data );
+    slot_weights += item_data.p_epic[ index ] / item_data.p_epic[ 0 ];
 
-		if ( ! item -> active() )
-		{
-			continue;
-		}
+    if ( ! item -> active() )
+    {
+      continue;
+    }
 
-		prop_values += item_data.p_epic[ index ];
-	}
+    prop_values += item_data.p_epic[ index ];
+  }
 
-	double expected_health = ( prop_values / slot_weights ) * 8.318556;
-	expected_health += base.stats.attribute[ STAT_STAMINA ];
-	expected_health *= 1.0 + matching_gear_multiplier( ATTR_STAMINA );
+  double expected_health = ( prop_values / slot_weights ) * 8.318556;
+  expected_health += base.stats.attribute[ STAT_STAMINA ];
+  expected_health *= 1.0 + matching_gear_multiplier( ATTR_STAMINA );
   expected_health *= 1.0 + spec.bear_form -> effectN( 2 ).percent();
   expected_health *= 1.0 + artifact.bestial_fortitude.percent();
-	expected_health *= current.health_per_stamina;
+  expected_health *= current.health_per_stamina;
 
-	return expected_health;
+  return expected_health;
 }
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )

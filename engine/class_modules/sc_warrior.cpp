@@ -1438,7 +1438,7 @@ struct cleave_t: public warrior_attack_t
   void_cleave_t* void_cleave;
   cleave_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "cleave", p, p -> spec.cleave ),
-	  void_cleave( 0 )
+    void_cleave( 0 )
   {
     parse_options( options_str );
     weapon = &( player -> main_hand_weapon );

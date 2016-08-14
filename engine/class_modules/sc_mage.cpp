@@ -9179,7 +9179,7 @@ struct magtheridons_banished_bracers_t : public scoped_action_callback_t<ice_lan
   magtheridons_banished_bracers_t() : super( MAGE_FROST, "ice_lance" )
   { }
 
-  void manipulate( ice_lance_t* action, const special_effect_t& e ) override
+  void manipulate( ice_lance_t* action, const special_effect_t& /* e */ ) override
   { action -> magtheridons_bracers = true; }
 };
 

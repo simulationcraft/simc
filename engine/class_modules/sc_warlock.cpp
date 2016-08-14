@@ -1313,9 +1313,9 @@ void warlock_pet_t::create_buffs()
     .chance( 1 );
 
   buffs.demonic_empowerment = buff_creator_t( this, "demonic_empowerment", find_spell(193396))
-	  .add_invalidate( CACHE_HASTE )
+    .add_invalidate( CACHE_HASTE )
           .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-	  .chance(1);
+    .chance(1);
 
   buffs.the_expendables = buff_creator_t( this, "the_expendables", find_spell(211218))
           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -2971,16 +2971,16 @@ struct demonic_empowerment_t: public warlock_spell_t
 {
   double power_trip_rng;
 
-	demonic_empowerment_t (warlock_t* p) :
-		warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment )
-	{
+  demonic_empowerment_t (warlock_t* p) :
+    warlock_spell_t( "demonic empowerment", p, p -> spec.demonic_empowerment )
+  {
     may_crit = false;
     harmful = false;
 
     power_trip_rng = p -> talents.power_trip -> effectN( 1 ).percent();
-	}
+  }
 
-	void execute() override
+  void execute() override
     {
     warlock_spell_t::execute();
     for( auto& pet : p() -> pet_list )
@@ -3001,7 +3001,7 @@ struct demonic_empowerment_t: public warlock_spell_t
 
     if ( p() -> talents.shadowy_inspiration -> ok() )
       p() -> buffs.shadowy_inspiration -> trigger();
-	}
+  }
 };
 
 

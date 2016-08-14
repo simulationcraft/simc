@@ -5060,7 +5060,7 @@ struct dragonsfire_grenade_t: public hunter_spell_t
 
   dragonsfire_conflagration_t* conflag;
   dragonsfire_grenade_t( hunter_t* p, const std::string& options_str ):
-	  hunter_spell_t( "dragonsfire_grenade", p, p -> talents.dragonsfire_grenade ), conflag( nullptr )
+    hunter_spell_t( "dragonsfire_grenade", p, p -> talents.dragonsfire_grenade ), conflag( nullptr )
   {
     parse_options( options_str );
 
@@ -5082,7 +5082,7 @@ struct dragonsfire_grenade_t: public hunter_spell_t
     if ( conflag && conflag -> target_list().size() > 1 )
     {
       conflag -> target = d -> target;
-	    conflag -> original_target = d -> target;
+      conflag -> original_target = d -> target;
       conflag -> execute();
     }
   }

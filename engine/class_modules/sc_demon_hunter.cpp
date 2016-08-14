@@ -4227,7 +4227,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
                                    data().effectN( 2 ).trigger() );
     mh -> stats = stats;
 
-	  // TOCHECK: How does this really work with regards to the heal multiplier?
+    // TOCHECK: How does this really work with regards to the heal multiplier?
     double cost_mod = p -> sets.set( DEMON_HUNTER_VENGEANCE, T19, B2 ) -> effectN( 1 ).resource( RESOURCE_PAIN );
 
     base_costs[ RESOURCE_PAIN ]      += cost_mod;
@@ -6424,7 +6424,7 @@ double demon_hunter_t::composite_attribute_multiplier( attribute_e a ) const
       am *= 1.0 + spec.demonic_wards -> effectN( 4 ).percent();
       break;
     case ATTR_AGILITY:
-	  // Deliberately ignore stacks.
+    // Deliberately ignore stacks.
       am *= 1.0 + buff.siphon_power -> check_value();
       break;
     default:
@@ -6638,36 +6638,36 @@ double demon_hunter_t::temporary_movement_modifier() const
 
 double demon_hunter_t::calculate_expected_max_health() const
 {
-	double slot_weights = 0;
-	double prop_values = 0;
-	for (size_t i = 0; i < items.size(); i++)
-	{
-		const item_t* item = &items[i];
-		if ( ! item || item -> slot == SLOT_SHIRT || item -> slot == SLOT_RANGED ||
+  double slot_weights = 0;
+  double prop_values = 0;
+  for (size_t i = 0; i < items.size(); i++)
+  {
+    const item_t* item = &items[i];
+    if ( ! item || item -> slot == SLOT_SHIRT || item -> slot == SLOT_RANGED ||
       item -> slot == SLOT_TABARD || item -> item_level() <= 0 )
-		{
-			continue;
-		}
+    {
+      continue;
+    }
 
-		const random_prop_data_t item_data = dbc.random_property(item->item_level());
-		int index = item_database::random_suffix_type(&item->parsed.data);
-		slot_weights += item_data.p_epic[index] / item_data.p_epic[0];
+    const random_prop_data_t item_data = dbc.random_property(item->item_level());
+    int index = item_database::random_suffix_type(&item->parsed.data);
+    slot_weights += item_data.p_epic[index] / item_data.p_epic[0];
 
-		if (!item->active())
-		{
-			continue;
-		}
+    if (!item->active())
+    {
+      continue;
+    }
 
-		prop_values += item_data.p_epic[index];
-	}
+    prop_values += item_data.p_epic[index];
+  }
 
-	double expected_health = (prop_values / slot_weights) * 8.318556;
-	expected_health += base.stats.attribute[STAT_STAMINA];
-	expected_health *= 1 + matching_gear_multiplier(ATTR_STAMINA);
-	expected_health *= 1 + spec.demonic_wards->effectN(4).percent();
-	expected_health *= 1 + artifact.will_of_the_illidari.percent();
-	expected_health *= current.health_per_stamina;
-	return expected_health;
+  double expected_health = (prop_values / slot_weights) * 8.318556;
+  expected_health += base.stats.attribute[STAT_STAMINA];
+  expected_health *= 1 + matching_gear_multiplier(ATTR_STAMINA);
+  expected_health *= 1 + spec.demonic_wards->effectN(4).percent();
+  expected_health *= 1 + artifact.will_of_the_illidari.percent();
+  expected_health *= current.health_per_stamina;
+  return expected_health;
 }
 
 // demon_hunter_t::assess_damage ============================================

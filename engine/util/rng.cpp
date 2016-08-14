@@ -567,8 +567,8 @@ struct rng_tinymt_t : public rng_t
   {
     uint64_t x;
     union {
-	uint64_t u;
-	double d;
+  uint64_t u;
+  double d;
     } conv;
     x = status[0] + status[1];
     x ^= status[0] >> TINYMT64_SH8;
@@ -673,9 +673,9 @@ double rng_t::gauss( double mean, double stddev, bool truncate_low_end )
       double x1, x2, w, y1, y2;
       do
       {
-	x1 = 2.0 * real() - 1.0;
-	x2 = 2.0 * real() - 1.0;
-	w = x1 * x1 + x2 * x2;
+  x1 = 2.0 * real() - 1.0;
+  x2 = 2.0 * real() - 1.0;
+  w = x1 * x1 + x2 * x2;
       }
       while ( w >= 1.0 || w == 0.0 );
 
@@ -710,8 +710,8 @@ double rng_t::exponential( double nu )
 
 /// Exponentially Modified Gaussian Distribution
 double rng_t::exgauss( double gauss_mean, 
-		       double gauss_stddev, 
-		       double exp_nu )
+           double gauss_stddev, 
+           double exp_nu )
 { 
   return std::max( 0.0, gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu ) ); 
 }
