@@ -2343,9 +2343,9 @@ public:
   {
     double pm = spell_t::action_multiplier();
 
-    if( p() -> mastery_spells.chaotic_energies -> ok() )
+    if( p() -> mastery_spells.chaotic_energies -> ok() && destro_mastery )
     {
-      double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() && destro_mastery );
+      double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
       pm *= 1.0 + chaotic_energies_rng;
     }
     if ( p()->specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
