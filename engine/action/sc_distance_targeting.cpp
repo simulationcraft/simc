@@ -66,7 +66,7 @@
             player -> name(), name(), range, radius,
             player -> x_position, player -> y_position, target -> name(), target -> x_position, target -> y_position, t -> name(), t -> x_position, t -> y_position );
         }
-        if ( ( ground_aoe && t -> debuffs.flying -> check() ) || t -> debuffs.invulnerable -> check() )
+        if ( ( ground_aoe && t -> debuffs.flying -> check() ) )
           tl.erase( tl.begin() + i );
         else if ( radius > 0 && range > 0 )
         { // Abilities with range/radius radiate from the target. 

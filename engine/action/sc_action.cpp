@@ -1730,9 +1730,6 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
 bool action_t::usable_moving() const
 {
-  if ( player -> buffs.aspect_of_the_fox -> up() )
-    return true;
-
   if ( execute_time() > timespan_t::zero() )
     return false;
 
@@ -3323,7 +3320,7 @@ void action_t::add_child( action_t* child )
 bool action_t::has_movement_directionality() const
 {
   // If ability has no movement restrictions, it'll be usable
-  if ( movement_directionality == MOVEMENT_OMNI || movement_directionality == MOVEMENT_NONE )
+  if ( movement_directionality == MOVEMENT_NONE || movement_directionality == MOVEMENT_OMNI )
     return true;
   else
   {

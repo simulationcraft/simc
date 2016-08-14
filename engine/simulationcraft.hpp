@@ -3934,8 +3934,6 @@ struct player_t : public actor_t
   struct buffs_t
   {
     buff_t* angelic_feather;
-    buff_t* aspect_of_the_fox;
-    buff_t* aspect_of_the_pack;
     buff_t* beacon_of_light;
     buff_t* blood_fury;
     buff_t* body_and_soul;

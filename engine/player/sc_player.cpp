@@ -3300,9 +3300,6 @@ double player_t::temporary_movement_modifier() const
 
     if ( buffs.angelic_feather -> up() )
       temporary = std::max( buffs.angelic_feather -> data().effectN( 1 ).percent(), temporary );
-
-    if ( buffs.aspect_of_the_pack -> up() )
-      temporary = std::max( buffs.aspect_of_the_pack -> data().effectN( 1 ).percent(), temporary );
   }
 
   return temporary;
@@ -4490,10 +4487,7 @@ void player_t::stun()
 
 void player_t::moving()
 {
-  if ( buffs.aspect_of_the_fox -> up() )
-    return;
-  else
-    halt();
+  halt();
 }
 
 // player_t::clear_debuffs===================================================
@@ -5499,9 +5493,6 @@ void player_t::assess_damage( school_e school,
     return;
 
   target_mitigation( school, type, s );
-
-  if ( buffs.aspect_of_the_pack -> check() ) // Aspect of the daze.
-    debuffs.dazed -> trigger();
 
   // store post-mitigation, pre-absorb value
   s -> result_mitigated = s -> result_amount;

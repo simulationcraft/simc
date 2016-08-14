@@ -498,7 +498,7 @@ template <class Base>
 struct warrior_action_t: public Base
 {
   bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless;
-  double tactician_per_rage;
+  double tactician_per_rage, arms_t19_4p_chance;
 private:
   typedef Base ab; // action base, eg. spell_t
 public:
@@ -510,11 +510,12 @@ public:
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
     dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) ),
-    tactician_per_rage( 0 )
+    tactician_per_rage( 0 ), arms_t19_4p_chance( 0 )
   {
     ab::may_crit = true;
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
     tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
+    arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent();
   }
 
   void init() override
@@ -701,7 +702,7 @@ public:
 
   void arms_t19_4p( action_state_t& s ) const
   {
-    if ( p() -> sets.has_set_bonus( WARRIOR_ARMS, T19, B4 ) && s.result == RESULT_CRIT && ab::rng().roll( p() -> sets.set(WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent() ) )
+    if ( s.result == RESULT_CRIT && ab::rng().roll( arms_t19_4p_chance ) )
     {
       p() -> proc.t19_4pc_arms -> occur();
       p() -> cooldown.colossus_smash -> reset( true );
@@ -798,7 +799,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> specialization() == WARRIOR_ARMS )
+    if ( result_is_hit( s -> result ) && p() -> specialization() == WARRIOR_ARMS && s -> result_amount > 0 )
     {
       if ( procs_overpower )
       {
@@ -812,7 +813,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
           target, // target
           s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
       }
-      if ( p() -> talents.opportunity_strikes -> ok() && s -> result_amount > 0 && s -> action -> s_data -> id() != p() -> active.opportunity_strikes -> s_data -> id() )
+      if ( p() -> talents.opportunity_strikes -> ok() && s -> action -> s_data -> id() != p() -> active.opportunity_strikes -> s_data -> id() )
       {
         if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
         {

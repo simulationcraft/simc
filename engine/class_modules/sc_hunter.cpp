@@ -6648,11 +6648,6 @@ struct hunter_module_t: public module_t
 
   virtual void init( player_t* p ) const override
   {
-    p -> buffs.aspect_of_the_pack = buff_creator_t( p, "aspect_of_the_pack",
-                                                    p -> find_class_spell( "Aspect of the Pack" ) );
-    p -> buffs.aspect_of_the_fox  = buff_creator_t( p, "aspect_of_the_fox",
-                                    p -> find_spell( 172106 ) )
-      .cd( timespan_t::zero() );
   }
 
   virtual void register_hotfixes() const override
