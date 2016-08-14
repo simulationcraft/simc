@@ -12,7 +12,7 @@ cd ..
 git clean -f -x -d
 set currdir=%cd%
 call C:\Qt\Qt5.7.0\5.7\msvc2015_64\bin\qtenv2.bat
-call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64 10.0.10586.0
+call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64 10.0.14393.0
 cd %currdir%
 qmake -r -tp vc -spec win32-msvc2015 simulationcraft.pro PGO=1
 
