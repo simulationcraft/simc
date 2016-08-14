@@ -4961,11 +4961,13 @@ struct ice_lance_t : public frost_mage_spell_t
   frost_bomb_explosion_t* frost_bomb_explosion;
 
   double magtheridons_banished_bracers_multiplier;
+  bool magtheridons_bracers;
 
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
     frozen_orb_action_id( 0 ),
-    magtheridons_banished_bracers_multiplier( 0.0 )
+    magtheridons_banished_bracers_multiplier( 0.0 ),
+    magtheridons_bracers( false )
   {
     parse_options( options_str );
     spell_power_mod.direct = p -> find_spell( 228598 ) -> effectN( 1 ).sp_coeff();
@@ -5053,10 +5055,11 @@ struct ice_lance_t : public frost_mage_spell_t
     {
       p() -> buffs.icicles -> expire();
     }
-    //TODO: Impact vs Execute? FoF required or not?
-    if ( magtheridons_banished_bracers_multiplier > 0.0 )
+
+    if ( magtheridons_bracers == true )
     {
       p() -> buffs.magtheridons_might -> trigger();
+      magtheridons_banished_bracers_multiplier = p() -> buffs.magtheridons_might -> data().effectN( 1 ).percent();
     }
 
 
@@ -9177,7 +9180,7 @@ struct magtheridons_banished_bracers_t : public scoped_action_callback_t<ice_lan
   { }
 
   void manipulate( ice_lance_t* action, const special_effect_t& e ) override
-  { action -> magtheridons_banished_bracers_multiplier = e.driver() -> effectN( 1 ).percent(); }
+  { action -> magtheridons_bracers = true; }
 };
 
 struct zannesu_journey_t : public scoped_actor_callback_t<mage_t>
