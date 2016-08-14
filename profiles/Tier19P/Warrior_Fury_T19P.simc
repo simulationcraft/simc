@@ -92,14 +92,14 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_has
 finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,ilevel=840
-off_hand=warswords_of_the_valarjar,id=134553,ilevel=840
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,ilevel=870
+off_hand=warswords_of_the_valarjar,id=134553,ilevel=870
 
 # Gear Summary
-# gear_ilvl=840.00
-# gear_strength=10984
-# gear_stamina=19165
-# gear_crit_rating=9389
+# gear_ilvl=843.75
+# gear_strength=11746
+# gear_stamina=20309
+# gear_crit_rating=9541
 # gear_haste_rating=8348
-# gear_mastery_rating=1228
+# gear_mastery_rating=1374
 # gear_armor=3965

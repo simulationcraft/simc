@@ -72,15 +72,15 @@ finger1=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=binding_of_versat
 finger2=ring_of_contempt,id=134490,bonus_id=1727,enchant=binding_of_versatility
 trinket1=horn_of_valor,id=133642,bonus_id=1727
 trinket2=coagulated_nightwell_residue,id=137400,bonus_id=1727
-main_hand=scaleshard,id=128288,ilevel=855
-off_hand=scale_of_the_earthwarder,id=128289,ilevel=855
+main_hand=scaleshard,id=128288,ilevel=870
+off_hand=scale_of_the_earthwarder,id=128289,ilevel=870
 
 # Gear Summary
-# gear_ilvl=841.88
-# gear_strength=9967
-# gear_stamina=17640
-# gear_crit_rating=669
+# gear_ilvl=843.75
+# gear_strength=10169
+# gear_stamina=17944
+# gear_crit_rating=708
 # gear_haste_rating=7736
-# gear_mastery_rating=1541
+# gear_mastery_rating=1578
 # gear_versatility_rating=7823
 # gear_armor=3965
