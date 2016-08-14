@@ -161,7 +161,7 @@ void dbc::init()
   spelleffect_data_index.init();
   talent_data_index.init();
   power_data_index.init();
-  artifact_power_rank_data_index.init();
+  //artifact_power_rank_data_index.init();
   init_item_data();
 
   // runtime linking, eg. from spell_data to all its effects
@@ -2821,6 +2821,6 @@ void hotfix::link_hotfix_data( bool ptr )
   link_hotfix_entry_ptr<spellpower_data_t>( ptr, power_hotfix_entry );
 
   // Next, link artifact hotfix data
-  link_hotfix_entry_ptr<artifact_power_rank_t>( ptr, artifact_hotfix_entry );
+  //link_hotfix_entry_ptr<artifact_power_rank_t>( ptr, artifact_hotfix_entry );
 }
 
