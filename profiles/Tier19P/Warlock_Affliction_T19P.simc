@@ -27,7 +27,7 @@ actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 
 # Executed every time the actor is available.
 
-actions=reap_souls,if=actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react|buff.valarjars_path.remains)
+actions=reap_souls,if=actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react|buff.elunes_light.remains)
 actions+=/soul_effigy,if=!pet.soul_effigy.active
 actions+=/agony,if=remains<=tick_time+gcd
 actions+=/agony,target=soul_effigy,if=remains<=tick_time+gcd
@@ -38,15 +38,15 @@ actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/soul_harvest
-actions+=/use_item,name=horn_of_valor
-actions+=/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|buff.valarjars_path.remains)
+actions+=/use_item,name=moonlit_prism
+actions+=/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any.react|buff.elunes_light.remains
 actions+=/corruption,if=remains<=tick_time+gcd
 actions+=/siphon_life,if=remains<=tick_time+gcd
 actions+=/corruption,target=soul_effigy,if=remains<=tick_time+gcd
 actions+=/siphon_life,target=soul_effigy,if=remains<=tick_time+gcd
 actions+=/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3
 actions+=/phantom_singularity
-actions+=/unstable_affliction,if=talent.contagion.enabled|(buff.valarjars_path.remains|soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)
+actions+=/unstable_affliction,if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20|buff.elunes_light.remains)
 actions+=/agony,if=remains<=duration*0.3&target.time_to_die>=remains
 actions+=/agony,target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains
 actions+=/corruption,if=remains<=duration*0.3&target.time_to_die>=remains
@@ -72,7 +72,7 @@ feet=cushioned_treads_of_glory,id=136774,bonus_id=1727
 finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant_id=5429
 finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant_id=5429
 trinket1=chrono_shard,id=137419,bonus_id=1727/1492
-trinket2=horn_of_valor,id=133642,bonus_id=1727/1492
+trinket2=moonlit_prism,id=137541,bonus_id=1727/1492
 main_hand=ulthalesh_the_deadwind_harvester,id=128942,ilevel=870
 
 # Gear Summary
@@ -80,9 +80,9 @@ main_hand=ulthalesh_the_deadwind_harvester,id=128942,ilevel=870
 # gear_stamina=17965
 # gear_intellect=19832
 # gear_crit_rating=1477
-# gear_haste_rating=4900
+# gear_haste_rating=5798
 # gear_mastery_rating=8733
-# gear_versatility_rating=1858
+# gear_versatility_rating=960
 # gear_armor=1570
 # set_bonus=journey_through_time_2pc=1
 # set_bonus=tier19p_cloth_2pc=1

@@ -5727,7 +5727,15 @@ void warlock_t::apl_affliction()
   }
   if ( true_level > 100 )
   {
-    add_action( "Reap Souls", "if=actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react|buff.valarjars_path.remains)" );
+    add_action( "Reap Souls", "if=actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react" );
+    if ( find_item( "horn_of_valor" ) )
+      action_list_str += "|buff.valarjars_path.remains";
+    if ( find_item( "moonlit_prism" ) )
+      action_list_str += "|buff.elunes_light.remains";
+    if ( find_item( "obelisk of_the_void" ) )
+      action_list_str += "|buff.collapsing_shadow.remains";
+    action_list_str += ")";
+
     action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
     add_action( "Agony", "if=remains<=tick_time+gcd" );
     add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
@@ -5747,20 +5755,30 @@ void warlock_t::apl_affliction()
         action_list_str += items[i].name();
       }
     }
+
+    action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any.react";
     if ( find_item( "horn_of_valor" ) )
-      action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|buff.valarjars_path.remains)";
-    else
-      action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react)";
+      action_list_str += "|buff.valarjars_path.remains";
+    if ( find_item( "moonlit_prism" ) )
+      action_list_str += "|buff.elunes_light.remains";
+    if ( find_item( "obelisk of_the_void" ) )
+      action_list_str += "|buff.collapsing_shadow.remains";
+
     add_action( "Corruption", "if=remains<=tick_time+gcd" );
     add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
     add_action( "Corruption", "target=soul_effigy,if=remains<=tick_time+gcd" );
     add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
     action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3";
     action_list_str += "/phantom_singularity";
+    add_action( "Unstable Affliction", "if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
     if ( find_item( "horn_of_valor" ) )
-      add_action( "Unstable Affliction", "if=talent.contagion.enabled|(buff.valarjars_path.remains|soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)" );
-    else
-      add_action( "Unstable Affliction", "if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)" );
+      action_list_str += "|buff.valarjars_path.remains";
+    if ( find_item( "moonlit_prism" ) )
+      action_list_str += "|buff.elunes_light.remains";
+    if ( find_item( "obelisk of_the_void" ) )
+      action_list_str += "|buff.collapsing_shadow.remains";
+    action_list_str += ")";
+
     add_action( "Agony", "if=remains<=duration*0.3&target.time_to_die>=remains" );
     add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
     add_action( "Corruption", "if=remains<=duration*0.3&target.time_to_die>=remains" );
