@@ -8214,9 +8214,9 @@ void mage_t::apl_fire()
 
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
-  combustion_phase -> add_action( this, "Phoenixs Flames" );
+  combustion_phase -> add_action( this, "Phoenix's Flames" );
   combustion_phase -> add_action( this, "Scorch", "if=buff.combustion.remains>cast_time" );
-  combustion_phase -> add_talent( this, "Dragons Breath", "if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
+  combustion_phase -> add_talent( this, "Dragon's Breath", "if=buff.hot_streak.down&action.fire_blast.charges<1&action.phoenixs_flames.charges<1" );
   combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454");
 
   rop_phase        -> add_talent( this, "Rune of Power" );
@@ -8224,15 +8224,15 @@ void mage_t::apl_fire()
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.up" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast" );
-  rop_phase        -> add_action( this, "Phoenixs Flames", "if=!prev_gcd.phoenixs_flames" );
+  rop_phase        -> add_action( this, "Phoenix's Flames", "if=!prev_gcd.phoenixs_flames" );
   rop_phase        -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454" );
   rop_phase        -> add_action( this, "Fireball" );
 
   active_talents   -> add_talent( this, "Flame On", "if=action.fire_blast.charges=0&(cooldown.combustion.remains>40+(talent.kindling.enabled*25)|target.time_to_die.remains<cooldown.combustion.remains)" );
-  active_talents   -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1)" );
+  active_talents   -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)" );
   active_talents   -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)" );
   active_talents   -> add_talent( this, "Cinderstorm", "if=cooldown.combustion.remains<cast_time&buff.rune_of_power.up|cooldown.combustion.remains>10*spell_haste" );
-  active_talents   -> add_action( this, "Dragons Breath", "if=equipped.132863" );
+  active_talents   -> add_action( this, "Dragon's Breath", "if=equipped.132863" );
   active_talents   -> add_talent( this, "Living Bomb", "if=active_enemies>1" );
 
   single_target    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time" );
@@ -8243,8 +8243,8 @@ void mage_t::apl_fire()
   single_target    -> add_action( "call_action_list,name=active_talents" );
   single_target    -> add_action( this, "Fire Blast", "if=!talent.kindling.enabled&buff.heating_up.up&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4" );
   single_target    -> add_action( this, "Fire Blast", "if=talent.kindling.enabled&buff.heating_up.up&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die.remains<4" );
-  single_target    -> add_action( this, "Phoenixs Flames", "if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die.remains<10" );
-  single_target    -> add_action( this, "Phoenixs Flames", "if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5" );
+  single_target    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&artifact.phoenix_reborn.enabled&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die.remains<10" );
+  single_target    -> add_action( this, "Phoenix's Flames", "if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5" );
   single_target    -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454" );
   single_target    -> add_action( this, "Fireball" );
 
