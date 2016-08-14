@@ -22,8 +22,34 @@ finger1=band_of_fused_coral,id=134532,bonus_id=1727,enchant_id=5430
 finger2=seal_of_malicious_deceit,id=134489,bonus_id=1727,enchant_id=5428
 trinket1=obelisk_of_the_void,id=137433,bonus_id=1727/1492
 trinket2=horn_of_valor,id=133642,bonus_id=1727/1492
-main_hand=scepter_of_sargeras,id=128941,ilevel=840
+main_hand=scepter_of_sargeras,id=128941,ilevel=870
 default_pet=imp
 
 save=Warlock_Destruction_T19P.simc
 
+warlock="Warlock_Affliction_T19P"
+level=110
+race=troll
+role=spell
+spec=affliction
+talents=2101021
+artifact=39:142063:141283:142063:0:915:6:918:3:919:3:920:2:922:3:924:1:926:1:929:1:999:1:1353:1
+
+head=collar_of_enclosure,id=134424,bonus_id=1727
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant_id=5439
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
+back=drape_of_the_raven_lord,id=136770,bonus_id=1727,enchant_id=5436
+chest=fetid_gutcover_apron,id=134414,bonus_id=1727
+wrists=wristbands_of_cursed_torment,id=137314,bonus_id=1727
+hands=inksmudged_handwraps,id=134421,bonus_id=1727
+waist=belt_of_eternal_torment,id=137331,bonus_id=1727
+legs=riverrider_legwraps,id=134427,bonus_id=1727
+feet=cushioned_treads_of_glory,id=136774,bonus_id=1727
+finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant_id=5429
+finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant_id=5429
+trinket1=chrono_shard,id=137419,bonus_id=1727/1492
+trinket2=horn_of_valor,id=133642,bonus_id=1727/1492
+main_hand=ulthalesh_the_deadwind_harvester,id=128942,ilevel=870
+default_pet=felhunter
+
+save=Warlock_Affliction_T19P.simc

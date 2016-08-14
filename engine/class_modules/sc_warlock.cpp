@@ -5675,51 +5675,101 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
-  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+  if ( true_level <= 100 )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
     {
-      action_list_str += "/use_item,name=";
-      action_list_str += items[i].name();
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      {
+        action_list_str += "/use_item,name=";
+        action_list_str += items[i].name();
+      }
     }
+    action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
+    add_action( "Agony", "if=remains<=tick_time+gcd" );
+    add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
+    action_list_str += "/service_pet";
+    add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
+    add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+    action_list_str += "/berserking";
+    action_list_str += "/blood_fury";
+    action_list_str += "/arcane_torrent";
+    action_list_str += init_use_profession_actions();
+    if ( find_item( "nithramus_the_allseer" ) )
+      action_list_str += "/potion,name=draenic_intellect,if=buff.nithramus.remains";
+    action_list_str += "/soul_harvest";
+    add_action( "Corruption", "if=remains<=tick_time+gcd" );
+    add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
+    add_action( "Corruption", "target=soul_effigy,if=remains<=tick_time+gcd" );
+    add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
+    action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3";
+    action_list_str += "/phantom_singularity";
+    if ( find_item( "nithramus_the_allseer" ) )
+    {
+      add_action( "Unstable Affliction", "if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains|buff.nithramus.remains)" );
+    }
+    else
+    {
+      add_action( "Unstable Affliction", "if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains)" );
+    }
+    add_action( "Agony", "if=remains<=duration*0.3" );
+    add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3" );
+    add_action( "Corruption", "if=remains<=duration*0.3" );
+    action_list_str += "/haunt";
+    add_action( "Siphon Life", "if=remains<=duration*0.3" );
+    add_action( "Corruption", "target=soul_effigy,if=remains<=duration*0.3" );
+    add_action( "Siphon Life", "target=soul_effigy,if=remains<=duration*0.3" );
+    add_action( "Life Tap", "if=mana.pct<=10" );
+    action_list_str += "/drain_soul,chain=1,interrupt=1";
+    add_action( "Drain Life", "chain=1,interrupt=1" );
   }
-  action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
-  add_action( "Agony", "if=remains<=tick_time+gcd" );
-  add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
-  action_list_str += "/service_pet";
-  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
-  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
-  action_list_str += "/berserking";
-  action_list_str += "/blood_fury";
-  action_list_str += "/arcane_torrent";
-  action_list_str += init_use_profession_actions();
-  if ( find_item( "nithramus_the_allseer" ) )
-    action_list_str += "/potion,name=draenic_intellect,if=buff.nithramus.remains";
-  action_list_str += "/soul_harvest";
-  add_action( "Corruption", "if=remains<=tick_time+gcd" );
-  add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
-  add_action( "Corruption", "target=soul_effigy,if=remains<=tick_time+gcd" );
-  add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
-  action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3";
-  action_list_str += "/phantom_singularity";
-  if ( find_item( "nithramus_the_allseer" ) )
+  if ( true_level > 100 )
   {
-    add_action( "Unstable Affliction", "if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains|buff.nithramus.remains)" );
+    add_action( "Reap Souls", "if=actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react|buff.valarjars_path.remains)" );
+    action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
+    add_action( "Agony", "if=remains<=tick_time+gcd" );
+    add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
+    action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
+    add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
+    add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+    action_list_str += "/berserking";
+    action_list_str += "/blood_fury";
+    action_list_str += "/arcane_torrent";
+    action_list_str += init_use_profession_actions();
+    action_list_str += "/soul_harvest";
+    for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+    {
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      {
+        action_list_str += "/use_item,name=";
+        action_list_str += items[i].name();
+      }
+    }
+    if ( find_item( "horn_of_valor" ) )
+      action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|buff.valarjars_path.remains)";
+    else
+      action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react)";
+    add_action( "Corruption", "if=remains<=tick_time+gcd" );
+    add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
+    add_action( "Corruption", "target=soul_effigy,if=remains<=tick_time+gcd" );
+    add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
+    action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3";
+    action_list_str += "/phantom_singularity";
+    if ( find_item( "horn_of_valor" ) )
+      add_action( "Unstable Affliction", "if=talent.contagion.enabled|(buff.valarjars_path.remains|soul_shard>=4|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)" );
+    else
+      add_action( "Unstable Affliction", "if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)" );
+    add_action( "Agony", "if=remains<=duration*0.3&target.time_to_die>=remains" );
+    add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
+    add_action( "Corruption", "if=remains<=duration*0.3&target.time_to_die>=remains" );
+    action_list_str += "/haunt";
+    add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains" );
+    add_action( "Corruption", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
+    add_action( "Siphon Life", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
+    add_action( "Life Tap", "if=mana.pct<=10" );
+    action_list_str += "/drain_soul,chain=1,interrupt=1";
+    add_action( "Drain Life", "chain=1,interrupt=1" );
   }
-  else
-  {
-    add_action( "Unstable Affliction", "if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains)" );
-  }
-  add_action( "Agony", "if=remains<=duration*0.3" );
-  add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3" );
-  add_action( "Corruption", "if=remains<=duration*0.3" );
-  action_list_str += "/haunt";
-  add_action( "Siphon Life", "if=remains<=duration*0.3" );
-  add_action( "Corruption", "target=soul_effigy,if=remains<=duration*0.3" );
-  add_action( "Siphon Life", "target=soul_effigy,if=remains<=duration*0.3" );
-  add_action( "Life Tap", "if=mana.pct<=10" );
-  action_list_str += "/drain_soul,chain=1,interrupt=1";
-  add_action( "Drain Life", "chain=1,interrupt=1" );
 }
 
 void warlock_t::apl_demonology()
