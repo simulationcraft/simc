@@ -43,7 +43,7 @@ waist=,id=137488,bonus_id=1727
 legs=,id=137453,bonus_id=1727
 feet=,id=134419,bonus_id=1727
 finger1=,id=134489,bonus_id=1727,enchant=binding_of_haste
-finger2=,id=134532,bonus_id=1727,enchant=binding_of_haste
+finger2=,id=134528,bonus_id=1727,enchant=binding_of_critical_strike
 trinket1=Naraxas_Spiked_Tongue,id=137349,bonus_id=1727
 trinket2=Oakhearts_Gnarled_Root,id=137306,bonus_id=1727
 main_hand=ebonchill,id=128862,ilevel=870
