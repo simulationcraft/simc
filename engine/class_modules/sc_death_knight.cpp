@@ -291,6 +291,7 @@ public:
     cooldown_t* bone_shield_icd;
     cooldown_t* dark_transformation;
     cooldown_t* frost_fever;
+    cooldown_t* icecap;
     cooldown_t* pillar_of_frost;
     cooldown_t* vampiric_blood;
   } cooldown;
@@ -563,6 +564,7 @@ public:
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
+    cooldown.icecap          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
     cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
 
@@ -2302,8 +2304,15 @@ void death_knight_melee_attack_t::trigger_icecap( const action_state_t* state ) 
     return;
   }
 
+  if ( p() -> cooldown.icecap -> down() )
+  {
+    return;
+  }
+
   p() -> cooldown.pillar_of_frost -> adjust( timespan_t::from_seconds(
           -p() -> talent.icecap -> effectN( 1 ).base_value() / 10.0 ) );
+
+  p() -> cooldown.icecap -> start( p() -> talent.icecap -> internal_cooldown() );
 }
 
 // death_knight_melee_attack_t::trigger_avalanche() ========================
@@ -2675,7 +2684,7 @@ struct auto_attack_t : public death_knight_melee_attack_t
   int sync_weapons;
 
   auto_attack_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "auto_attack", p ), sync_weapons( 0 )
+    death_knight_melee_attack_t( "auto_attack", p ), sync_weapons( 1 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
