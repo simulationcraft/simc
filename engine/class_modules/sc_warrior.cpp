@@ -1384,8 +1384,7 @@ struct intercept_t: public warrior_attack_t
     movement_directionality = MOVEMENT_OMNI;
     energize_type = ENERGIZE_ON_CAST;
     energize_resource = RESOURCE_RAGE;
-    //Add the amount
-    cooldown -> duration = data().cooldown();
+
     if ( p -> talents.warbringer -> ok() )
     {
       aoe = -1;
