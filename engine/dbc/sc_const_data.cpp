@@ -80,7 +80,7 @@ dbc_index_t<spell_data_t> spell_data_index;
 dbc_index_t<spelleffect_data_t> spelleffect_data_index;
 dbc_index_t<talent_data_t> talent_data_index;
 dbc_index_t<spellpower_data_t> power_data_index;
-dbc_index_t<artifact_power_rank_t> artifact_power_rank_data_index;
+ordered_dbc_index_t<artifact_power_rank_t> artifact_power_rank_data_index;
 
 std::vector< std::vector< const spell_data_t* > > class_family_index;
 std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
@@ -161,7 +161,7 @@ void dbc::init()
   spelleffect_data_index.init();
   talent_data_index.init();
   power_data_index.init();
-  //artifact_power_rank_data_index.init();
+  artifact_power_rank_data_index.init();
   init_item_data();
 
   // runtime linking, eg. from spell_data to all its effects
@@ -2789,6 +2789,11 @@ static void link_hotfix_entry_ptr( bool ptr, const std::function<const hotfix::c
 {
   auto entry = entry_fn( ptr );
   unsigned last_id = entry -> id;
+  if ( last_id == 0 )
+  {
+    return;
+  }
+
   DATA* data = DATA::find( entry -> id, ptr );
   while ( entry -> id != 0 )
   {
@@ -2821,6 +2826,6 @@ void hotfix::link_hotfix_data( bool ptr )
   link_hotfix_entry_ptr<spellpower_data_t>( ptr, power_hotfix_entry );
 
   // Next, link artifact hotfix data
-  //link_hotfix_entry_ptr<artifact_power_rank_t>( ptr, artifact_hotfix_entry );
+  link_hotfix_entry_ptr<artifact_power_rank_t>( ptr, artifact_hotfix_entry );
 }
 
