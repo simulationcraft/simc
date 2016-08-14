@@ -5514,7 +5514,10 @@ struct mark_of_aluneth_t : public arcane_mage_spell_t
   void tick( dot_t* dot ) override
   {
     arcane_mage_spell_t::tick( dot );
-    td( dot -> target ) -> debuffs.erosion -> trigger();
+    if ( p() -> talents.erosion -> ok() )
+    {
+      td( dot -> target ) -> debuffs.erosion -> trigger();
+    }
   }
 
   void last_tick( dot_t* d ) override
