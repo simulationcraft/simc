@@ -5758,7 +5758,7 @@ void warlock_t::apl_affliction()
     action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3";
     action_list_str += "/phantom_singularity";
     if ( find_item( "horn_of_valor" ) )
-      add_action( "Unstable Affliction", "if=talent.contagion.enabled|(buff.valarjars_path.remains|soul_shard>=4|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)" );
+      add_action( "Unstable Affliction", "if=talent.contagion.enabled|(buff.valarjars_path.remains|soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)" );
     else
       add_action( "Unstable Affliction", "if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)" );
     add_action( "Agony", "if=remains<=duration*0.3&target.time_to_die>=remains" );
