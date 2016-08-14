@@ -663,7 +663,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Mage
   {
-    // General tree, 25 abilities
+    // General tree, 26 abilities
     {
       120145, // Ancient Teleport: Dalaran
         1953, // Blink
@@ -677,6 +677,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       211076, // Mark of Aluneth
       211088, // Mark of Aluneth
       210726, // Mark of Aluneth (Artifact)
+      194466, // Phoenix's Flames (Artifact)
          118, // Polymorph (Sheep)
        61721, // Polymorph (Rabbit)
        61780, // Polymorph (Turkey)
