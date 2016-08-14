@@ -205,6 +205,10 @@ struct rogue_t : public player_t
     stat_buff_t* fof_p2;
     stat_buff_t* fof_p3;
 
+    // Legendary 7.0 buffs
+    buff_t* shivarran_symmetry;
+    buff_t* greenskins_waterlogged_wristcuffs;
+
     buff_t* deceit;
     buff_t* shadow_strikes;
     buff_t* deathly_shadows;
@@ -279,6 +283,7 @@ struct rogue_t : public player_t
     gain_t* goremaws_bite;
     gain_t* curse_of_the_dreadblades;
     gain_t* relentless_strikes;
+    gain_t* shadow_satyrs_walk;
 
     // CP Gains
     gain_t* empowered_fan_of_knives;
@@ -497,6 +502,8 @@ struct rogue_t : public player_t
   struct legendary_t
   {
     const spell_data_t* duskwalker_footpads;
+    const spell_data_t* denial_of_the_halfgiants;
+    const spell_data_t* zoldyck_family_training_shackles;
   } legendary;
 
   // Options
@@ -1151,7 +1158,12 @@ struct blade_flurry_attack_t : public rogue_attack_t
 
   double composite_da_multiplier( const action_state_t* ) const override
   {
-    return p() -> spec.blade_flurry -> effectN( 3 ).percent();
+    double multiplier = p() -> spec.blade_flurry -> effectN( 3 ).percent();
+    if ( p() -> buffs.shivarran_symmetry -> check() )
+    {
+      multiplier += p() -> buffs.shivarran_symmetry -> data().effectN( 1 ).percent();
+    }
+    return multiplier;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -1459,6 +1471,21 @@ struct deadly_poison_t : public rogue_poison_t
       harmful = true;
       base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
     }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = rogue_attack_t::composite_target_multiplier( target );
+
+      if ( p() -> legendary.zoldyck_family_training_shackles )
+      {
+        if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+        {
+          m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+        }
+      }
+
+      return m;
+    };
   };
 
   struct deadly_poison_dot_t : public rogue_poison_t
@@ -1494,6 +1521,21 @@ struct deadly_poison_t : public rogue_poison_t
         p() -> poisoned_enemies--;
       }
     }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = rogue_attack_t::composite_target_multiplier( target );
+
+      if ( p() -> legendary.zoldyck_family_training_shackles )
+      {
+        if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+        {
+          m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+        }
+      }
+
+      return m;
+    };
   };
 
   deadly_poison_dd_t*  proc_instant;
@@ -1546,6 +1588,21 @@ struct wound_poison_t : public rogue_poison_t
       harmful          = true;
       base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
     }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = rogue_attack_t::composite_target_multiplier( target );
+
+      if ( p() -> legendary.zoldyck_family_training_shackles )
+      {
+        if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+        {
+          m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+        }
+      }
+
+      return m;
+    };
 
     void impact( action_state_t* state ) override
     {
@@ -1934,8 +1991,10 @@ void rogue_attack_t::execute()
     p() -> buffs.shadow_strikes -> expire();
     double cp = player -> resources.max[ RESOURCE_COMBO_POINT ] - player -> resources.current[ RESOURCE_COMBO_POINT ];
 
-    if ( cp > 0 )
+    if ( cp > 0 ) 
+    {
       player -> resource_gain( RESOURCE_COMBO_POINT, cp, p() -> gains.t17_4pc_subtlety );
+    }
   }
 
   p() -> trigger_relentless_strikes( execute_state );
@@ -2205,6 +2264,8 @@ struct backstab_t : public rogue_attack_t
 
 struct between_the_eyes_t : public rogue_attack_t
 {
+  const spell_data_t* greenskins_waterlogged_wristcuffs; // 7.0 legendary Greenskin's Waterlogged Wristcuffs
+
   between_the_eyes_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
         options_str )
@@ -2223,6 +2284,14 @@ struct between_the_eyes_t : public rogue_attack_t
     {
       p() -> trigger_true_bearing( cast_state( execute_state ) -> cp );
     }
+    if ( greenskins_waterlogged_wristcuffs )
+    {
+      const rogue_attack_state_t* rs = rogue_attack_t::cast_state( execute_state );
+      if ( rng().roll( greenskins_waterlogged_wristcuffs -> effectN( 1 ).percent() * rs -> cp ) )
+      {
+        p() -> buffs.greenskins_waterlogged_wristcuffs -> trigger();
+      }
+    }
   }
 };
 
@@ -2230,6 +2299,8 @@ struct between_the_eyes_t : public rogue_attack_t
 
 struct blade_flurry_t : public rogue_attack_t
 {
+  const spell_data_t* shivarran_symmetry; // 7.0 legendary Shivarran Symmetry
+
   blade_flurry_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str )
   {
@@ -2242,9 +2313,20 @@ struct blade_flurry_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     if ( ! p() -> buffs.blade_flurry -> check() )
+    {
       p() -> buffs.blade_flurry -> trigger();
+      if ( shivarran_symmetry )
+      {
+        p() -> buffs.shivarran_symmetry -> trigger();
+      }
+    }
     else
+    {
       p() -> buffs.blade_flurry -> expire();
+      p() -> buffs.shivarran_symmetry -> expire(); 
+      // To be confirmed that turning Blade Flurry off removes also Shivarran 
+      // Symmetry
+    }
   }
 };
 
@@ -2619,6 +2701,22 @@ struct garrote_t : public rogue_attack_t
     return m;
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    if ( p() -> legendary.zoldyck_family_training_shackles )
+    {
+      if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+      {
+        m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+      }
+    }
+
+    return m;
+  };
+
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t duration = rogue_attack_t::composite_dot_duration( s );
@@ -2891,6 +2989,14 @@ struct kingsbane_t : public rogue_attack_t
     m *= 1.0 + td( target ) -> debuffs.kingsbane -> stack_value();
     m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
 
+    if ( p() -> legendary.zoldyck_family_training_shackles )
+    {
+      if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+      {
+        m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+      }
+    }
+
     return m;
   }
 
@@ -3024,6 +3130,18 @@ struct pistol_shot_t : public shot_base_t
     blunderbuss( new blunderbuss_t( p ) )
   {
     add_child( blunderbuss );
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> buffs.greenskins_waterlogged_wristcuffs -> up() )
+    {
+      m *= 1.0 + p() -> buffs.greenskins_waterlogged_wristcuffs -> data().effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   void execute() override
@@ -3386,11 +3504,20 @@ struct rupture_t : public rogue_attack_t
     return m;
   }
 
+
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
     m *= 1.0 + td( target ) -> debuffs.blood_of_the_assassinated -> stack_value();
+
+    if ( p() -> legendary.zoldyck_family_training_shackles )
+    {
+      if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+      {
+        m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+      }
+    }
 
     return m;
   }
@@ -3675,6 +3802,8 @@ struct shadowstep_t : public rogue_attack_t
 
 struct shadowstrike_t : public rogue_attack_t
 {
+  const spell_data_t* shadow_satyrs_walk; // 7.0 legendary Shadow Satyr's Walk
+
   struct akaaris_soul_event_t : public event_t
   {
     rogue_t* rogue;
@@ -3726,6 +3855,21 @@ struct shadowstrike_t : public rogue_attack_t
     {
       p() -> trigger_combo_point_gain( p() -> sets.set( ROGUE_SUBTLETY, T19, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
           p() -> gains.t19_4pc_subtlety, this );
+    }
+
+    if ( shadow_satyrs_walk )
+    {
+      const spell_data_t* base_proc = p() -> find_spell( 224914 );
+      // To be fixed
+      // Distance set to 5y as a default value
+      double distance = 5;
+      double grant_energy = base_proc -> effectN( 1 ).base_value();
+      while (distance > shadow_satyrs_walk -> effectN( 2 ).base_value())
+      {
+        grant_energy += shadow_satyrs_walk -> effectN( 1 ).base_value();
+        distance -= shadow_satyrs_walk -> effectN( 2 ).base_value();
+      }
+      p() -> resource_gain( RESOURCE_ENERGY, grant_energy, p() -> gains.shadow_satyrs_walk );
     }
   }
 
@@ -5089,6 +5233,12 @@ void rogue_t::spend_combo_points( const action_state_t* state )
 
   double max_spend = std::min( resources.current[ RESOURCE_COMBO_POINT ], consume_cp_max() );
 
+  if ( legendary.denial_of_the_halfgiants && buffs.shadow_blades -> up() )
+  {
+    timespan_t adjustment = timespan_t::from_seconds( max_spend / 10.0 * legendary.denial_of_the_halfgiants -> effectN( 1 ).base_value() );
+    buffs.shadow_blades -> extend_duration( this, adjustment );
+  }
+
   state -> action -> stats -> consume_resource( RESOURCE_COMBO_POINT, max_spend );
   resource_loss( RESOURCE_COMBO_POINT, max_spend, nullptr, state ? state -> action : nullptr );
 }
@@ -5804,6 +5954,15 @@ double rogue_t::composite_player_target_multiplier( player_t* target ) const
     if ( artifact.poison_knives.rank() )
     {
       stack_value *= 1.0 + artifact.poison_knives.percent() / artifact.poison_knives.data().effectN( 2 ).base_value();
+    }
+    // To be confirmed: behavior of Zoldyck Family Training Shackles with
+    // Agonizing Poison
+    if ( legendary.zoldyck_family_training_shackles )
+    {
+      if ( target -> health_percentage() < legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+      {
+        stack_value *= 1.0 + legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+      }
     }
     m *= 1.0 + stack_value;
   }
@@ -6562,37 +6721,38 @@ void rogue_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.adrenaline_rush         = get_gain( "adrenaline_rush"    );
-  gains.combat_potency          = get_gain( "combat_potency"     );
-  gains.deceit                  = get_gain( "deceit" );
-  gains.empowered_fan_of_knives = get_gain( "empowered_fan_of_knives" );
-  gains.energetic_recovery      = get_gain( "energetic_recovery" );
-  gains.energy_refund           = get_gain( "energy_refund"      );
-  gains.legendary_daggers       = get_gain( "legendary_daggers" );
-  gains.murderous_intent        = get_gain( "murderous_intent"   );
-  gains.overkill                = get_gain( "overkill"           );
-  gains.seal_fate               = get_gain( "seal_fate" );
-  gains.shadow_strikes          = get_gain( "shadow_strikes" );
-  gains.t17_2pc_assassination   = get_gain( "t17_2pc_assassination" );
-  gains.t17_4pc_assassination   = get_gain( "t17_4pc_assassination" );
-  gains.t17_2pc_subtlety        = get_gain( "t17_2pc_subtlety" );
-  gains.t17_4pc_subtlety        = get_gain( "t17_4pc_subtlety" );
-  gains.t18_2pc_assassination   = get_gain( "Assassination T18 2PC" );
-  gains.venomous_wounds         = get_gain( "Venomous Vim"       );
-  gains.venomous_wounds_death   = get_gain( "Venomous Vim (death) ");
-  gains.quick_draw = get_gain( "Quick Draw" );
-  gains.broadsides = get_gain( "Broadsides" );
-  gains.ruthlessness = get_gain( "Ruthlessness" );
-  gains.shadow_techniques = get_gain( "Shadow Techniques" );
-  gains.master_of_shadows = get_gain( "Master of Shadows" );
-  gains.shadow_blades = get_gain( "Shadow Blades" );
-  gains.energetic_stabbing = get_gain( "Energetic Stabbing" );
-  gains.enveloping_shadows = get_gain( "Enveloping Shadows" );
-  gains.urge_to_kill = get_gain( "Urge to Kill" );
-  gains.goremaws_bite = get_gain( "Goremaw's Bite" );
+  gains.adrenaline_rush          = get_gain( "adrenaline_rush"    );
+  gains.combat_potency           = get_gain( "combat_potency"     );
+  gains.deceit                   = get_gain( "deceit" );
+  gains.empowered_fan_of_knives  = get_gain( "empowered_fan_of_knives" );
+  gains.energetic_recovery       = get_gain( "energetic_recovery" );
+  gains.energy_refund            = get_gain( "energy_refund"      );
+  gains.legendary_daggers        = get_gain( "legendary_daggers" );
+  gains.murderous_intent         = get_gain( "murderous_intent"   );
+  gains.overkill                 = get_gain( "overkill"           );
+  gains.seal_fate                = get_gain( "seal_fate" );
+  gains.shadow_strikes           = get_gain( "shadow_strikes" );
+  gains.t17_2pc_assassination    = get_gain( "t17_2pc_assassination" );
+  gains.t17_4pc_assassination    = get_gain( "t17_4pc_assassination" );
+  gains.t17_2pc_subtlety         = get_gain( "t17_2pc_subtlety" );
+  gains.t17_4pc_subtlety         = get_gain( "t17_4pc_subtlety" );
+  gains.t18_2pc_assassination    = get_gain( "Assassination T18 2PC" );
+  gains.venomous_wounds          = get_gain( "Venomous Vim"       );
+  gains.venomous_wounds_death    = get_gain( "Venomous Vim (death) ");
+  gains.quick_draw               = get_gain( "Quick Draw" );
+  gains.broadsides               = get_gain( "Broadsides" );
+  gains.ruthlessness             = get_gain( "Ruthlessness" );
+  gains.shadow_techniques        = get_gain( "Shadow Techniques" );
+  gains.master_of_shadows        = get_gain( "Master of Shadows" );
+  gains.shadow_blades            = get_gain( "Shadow Blades" );
+  gains.energetic_stabbing       = get_gain( "Energetic Stabbing" );
+  gains.enveloping_shadows       = get_gain( "Enveloping Shadows" );
+  gains.urge_to_kill             = get_gain( "Urge to Kill" );
+  gains.goremaws_bite            = get_gain( "Goremaw's Bite" );
   gains.curse_of_the_dreadblades = get_gain( "Curse of the Dreadblades" );
-  gains.relentless_strikes = get_gain( "Relentless Strikes" );
-  gains.t19_4pc_subtlety = get_gain( "Tier 19 4PC Set Bonus" );
+  gains.relentless_strikes       = get_gain( "Relentless Strikes" );
+  gains.t19_4pc_subtlety         = get_gain( "Tier 19 4PC Set Bonus" );
+  gains.shadow_satyrs_walk       = get_gain( "Shadow Satyr's Walk" );
 }
 
 // rogue_t::init_procs ======================================================
@@ -6788,6 +6948,10 @@ void rogue_t::create_buffs()
   buffs.fof_p3            = stat_buff_creator_t( this, "shadows_of_the_destroyer", find_spell( 109939 ) -> effectN( 1 ).trigger() )
                             .add_stat( STAT_AGILITY, find_spell( 109939 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
                             .chance( fof_p3 );
+
+  // Legendary 7.0 buffs
+  buffs.shivarran_symmetry = buff_creator_t( this, "shivarran_symmetry", find_spell(226318) );
+  buffs.greenskins_waterlogged_wristcuffs = buff_creator_t( this, "greenskins_waterlogged_wristcuffs", find_spell(209423) );
 
   buffs.fof_fod           = new buffs::fof_fod_t( this );
 
@@ -7422,6 +7586,51 @@ struct thraxis_tricksy_treads_t : public unique_gear::scoped_action_callback_t<a
   { action -> ttt_multiplier = e.driver() -> effectN( 1 ).percent(); }
 };
 
+struct denial_of_the_halfgiants_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  denial_of_the_halfgiants_t() : super( ROGUE_SUBTLETY )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.denial_of_the_halfgiants = e.driver(); }
+};
+
+struct shivarran_symmetry_t : public unique_gear::scoped_action_callback_t<actions::blade_flurry_t>
+{
+  shivarran_symmetry_t() : super( ROGUE_OUTLAW, "blade_flurry" )
+  { }
+
+  void manipulate( actions::blade_flurry_t* action, const special_effect_t& e ) override
+  { action -> shivarran_symmetry = e.driver(); }
+};
+
+struct greenskins_waterlogged_wristcuffs_t : public unique_gear::scoped_action_callback_t<actions::between_the_eyes_t>
+{
+  greenskins_waterlogged_wristcuffs_t() : super( ROGUE_OUTLAW, "between_the_eyes" )
+  { }
+
+  void manipulate( actions::between_the_eyes_t* action, const special_effect_t& e ) override
+  { action -> greenskins_waterlogged_wristcuffs = e.driver(); }
+};
+
+struct zoldyck_family_training_shackles_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  zoldyck_family_training_shackles_t() : super( ROGUE_ASSASSINATION )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.zoldyck_family_training_shackles = e.driver(); }
+};
+
+struct shadow_satyrs_walk_t : public unique_gear::scoped_action_callback_t<actions::shadowstrike_t>
+{
+  shadow_satyrs_walk_t() : super( ROGUE_SUBTLETY, "shadowstrike" )
+  { }
+
+  void manipulate( actions::shadowstrike_t* action, const special_effect_t& e ) override
+  { action -> shadow_satyrs_walk = e.driver(); }
+};
+
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -7438,11 +7647,16 @@ struct rogue_module_t : public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184916, toxic_mutilator_t()    );
-    unique_gear::register_special_effect( 184917, eviscerating_blade_t() );
-    unique_gear::register_special_effect( 184918, from_the_shadows_t()   );
-    unique_gear::register_special_effect( 208895, duskwalker_footpads_t() );
-    unique_gear::register_special_effect( 212539, thraxis_tricksy_treads_t() );
+    unique_gear::register_special_effect( 184916, toxic_mutilator_t()                   );
+    unique_gear::register_special_effect( 184917, eviscerating_blade_t()                );
+    unique_gear::register_special_effect( 184918, from_the_shadows_t()                  );
+    unique_gear::register_special_effect( 208895, duskwalker_footpads_t()               );
+    unique_gear::register_special_effect( 212539, thraxis_tricksy_treads_t()            );
+    unique_gear::register_special_effect( 208892, denial_of_the_halfgiants_t()          );
+    unique_gear::register_special_effect( 226045, shivarran_symmetry_t()                );
+    unique_gear::register_special_effect( 209420, greenskins_waterlogged_wristcuffs_t() );
+    unique_gear::register_special_effect( 214569, zoldyck_family_training_shackles_t()  );
+    unique_gear::register_special_effect( 208436, shadow_satyrs_walk_t()                );
   }
 
   virtual void register_hotfixes() const override
