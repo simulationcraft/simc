@@ -33,6 +33,8 @@ generate_Paladin_T19P.simc
 
 generate_Monk_T19P.simc
 
-#generate_Mage_T19P.simc
+# Mage
+generate_Mage_T19P.simc
 
 generate_Warrior_T19P.simc
+
