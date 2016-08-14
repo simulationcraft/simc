@@ -1971,6 +1971,8 @@ void item::legendary_ring( special_effect_t& effect )
       range = -1;
       travel_speed = 0.0;
       item = originaleffect.item;
+      if ( originaleffect.player -> level() == 110 )
+        damage_coeff = 0.0;
     }
 
     void init() override
@@ -2033,6 +2035,8 @@ void item::legendary_ring( special_effect_t& effect )
           boom = new legendary_ring_damage_t( originaleffect, damagespell );
         }
         p -> buffs.legendary_aoe_ring = this;
+        if ( p -> level() == 110 ) // No damage boost at level 110.
+          default_value = 0;
       }
 
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override

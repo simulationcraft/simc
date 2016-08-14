@@ -9,15 +9,6 @@
 namespace
 {  // UNNAMED NAMESPACE ==========================================
 
-struct compare_hat_donor_interval
-{
-  bool operator()( const player_t* l, const player_t* r ) const
-  {
-    return ( l->procs.hat_donor->interval_sum.mean() <
-             r->procs.hat_donor->interval_sum.mean() );
-  }
-};
-
 void simplify_html( std::string& buffer )
 {
   util::replace_all( buffer, "&lt;", "<" );
@@ -1064,35 +1055,6 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
   }
 }
 
-void print_text_hat_donors( FILE* file, sim_t* sim )
-{
-  std::vector<player_t*> hat_donors;
-
-  int num_players = (int)sim->players_by_name.size();
-  for ( int i = 0; i < num_players; i++ )
-  {
-    player_t* p = sim->players_by_name[ i ];
-    if ( p->procs.hat_donor->count.mean() )
-      hat_donors.push_back( p );
-  }
-
-  int num_donors = (int)hat_donors.size();
-  if ( num_donors )
-  {
-    range::sort( hat_donors, compare_hat_donor_interval() );
-
-    util::fprintf( file, "\nHonor Among Thieves Donor Report:\n" );
-
-    for ( int i = 0; i < num_donors; i++ )
-    {
-      player_t* p  = hat_donors[ i ];
-      proc_t* proc = p->procs.hat_donor;
-      util::fprintf( file, "  %.2fsec | %.3fcps : %s\n",
-                     proc->interval_sum.mean(),
-                     ( 1.0 / proc->interval_sum.mean() ), p->name() );
-    }
-  }
-}
 struct sort_by_event_stopwatch
 {
   bool operator()( player_t* l, player_t* r )
@@ -1338,7 +1300,6 @@ void print_text_report( FILE* file, sim_t* sim, bool detail )
 
   if ( detail )
   {
-    print_text_hat_donors( file, sim );
     print_text_waiting_all( file, sim );
     print_text_iteration_data( file, sim );
     print_text_performance( file, sim );

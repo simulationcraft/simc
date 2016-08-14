@@ -3880,7 +3880,6 @@ struct player_t : public actor_t
     buff_t* body_and_soul;
     buff_t* darkflight;
     buff_t* devotion_aura;
-    buff_t* earth_shield;
     buff_t* exhaustion;
     buff_t* guardian_spirit;
     buff_t* blessing_of_sacrifice;
@@ -3895,7 +3894,6 @@ struct player_t : public actor_t
     buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
-    buff_t* weakened_soul;
 
     haste_buff_t* berserking;
     haste_buff_t* bloodlust;
@@ -3971,7 +3969,6 @@ struct player_t : public actor_t
 
   struct procs_t
   {
-    proc_t* hat_donor;
     proc_t* parry_haste;
   } procs;
 

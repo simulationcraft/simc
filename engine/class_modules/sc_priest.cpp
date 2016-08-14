@@ -262,7 +262,6 @@ public:
     const spell_data_t* meditation_disc;
     const spell_data_t* mysticism;
     const spell_data_t* spirit_shell;
-    const spell_data_t* strength_of_soul;
     const spell_data_t* enlightenment;
 
     // Holy
@@ -1174,28 +1173,6 @@ action_t* void_tendril_pet_t::create_action( const std::string& name,
 
 }  // END pets NAMESPACE
 
-namespace buffs
-{
-struct weakened_soul_t final : public buff_t
-{
-  weakened_soul_t( player_t* p )
-    : buff_t(
-          buff_creator_t( p, "weakened_soul" ).spell( p->find_spell( 6788 ) ) )
-  {
-  }
-
-  /* Use this function to trigger weakened souls, and NOT buff_t::trigger
-   * It automatically deduces the duration with which weakened souls should be
-   * applied,
-   * depending on the triggering priest
-   */
-  bool trigger_weakened_souls( priest_t& )
-  {
-    return buff_t::trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
-  }
-};
-}  // namespace buffs
-
 namespace actions
 {
 /* This is a template for common code between priest_spell_t, priest_heal_t and
@@ -1670,17 +1647,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
         else
           priest.procs.serendipity->occur();
       }
-    }
-  }
-
-  void trigger_strength_of_soul( player_t* t )
-  {
-    if ( priest.specs.strength_of_soul->ok() && t->buffs.weakened_soul->up() )
-    {
-      t->buffs.weakened_soul->extend_duration(
-          player,
-          timespan_t::from_seconds(
-              -1 * priest.specs.strength_of_soul->effectN( 1 ).base_value() ) );
     }
   }
 
@@ -4337,9 +4303,6 @@ struct flash_heal_t final : public priest_heal_t
   {
     priest_heal_t::impact( s );
 
-    if ( !priest.buffs.spirit_shell->check() )
-      trigger_strength_of_soul( s->target );
-
     trigger_naarus_discipline( s );
   }
 
@@ -4410,9 +4373,6 @@ struct _heal_t final : public priest_heal_t
   void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
-
-    if ( !priest.buffs.spirit_shell->check() )
-      trigger_strength_of_soul( s->target );
 
     trigger_naarus_discipline( s );
   }
@@ -4622,14 +4582,6 @@ struct penance_heal_t final : public priest_heal_t
 
     tick_action = new penance_heal_tick_t( p );
   }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_heal_t::impact( s );
-
-    if ( !priest.buffs.spirit_shell->check() )
-      trigger_strength_of_soul( s->target );
-  }
 };
 
 // Power Word: Shield Spell =================================================
@@ -4653,22 +4605,11 @@ struct power_word_shield_t final : public priest_absorb_t
   {
     priest_absorb_t::impact( s );
 
-    buffs::weakened_soul_t* weakened_soul =
-        debug_cast<buffs::weakened_soul_t*>( s->target->buffs.weakened_soul );
-    weakened_soul->trigger_weakened_souls( priest );
     priest.buffs.borrowed_time->trigger();
 
     // Talent
     if ( priest.talents.body_and_soul->ok() )
       s->target->buffs.body_and_soul->trigger();
-  }
-
-  bool ready() override
-  {
-    if ( !ignore_debuff && target->buffs.weakened_soul->check() )
-      return false;
-
-    return priest_absorb_t::ready();
   }
 };
 
@@ -6283,7 +6224,6 @@ void priest_t::init_spells()
       "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
   specs.mysticism        = find_specialization_spell( "Mysticism" );
   specs.spirit_shell     = find_specialization_spell( "Spirit Shell" );
-  specs.strength_of_soul = find_specialization_spell( "Strength of Soul" );
   specs.enlightenment    = find_specialization_spell( "Enlightenment" );
 
   // Holy
@@ -7432,7 +7372,6 @@ struct priest_module_t final : public module_t
         p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.naarus_discipline =
         buff_creator_t( p, "naarus_discipline", p->find_spell( 185103 ) );
-    p->buffs.weakened_soul = new buffs::weakened_soul_t( p );
   }
   void static_init() const override
   {

@@ -390,7 +390,6 @@ public:
     // Restoration
     const spell_data_t* ancestral_awakening;
     const spell_data_t* ancestral_focus;
-    const spell_data_t* earth_shield;
     const spell_data_t* meditation;
     const spell_data_t* purification;
     const spell_data_t* resurgence;
@@ -1536,8 +1535,6 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = base_t::composite_target_multiplier( target );
-    if ( target -> buffs.earth_shield -> up() )
-      m *= 1.0 + p() -> spec.earth_shield -> effectN( 2 ).percent();
     return m;
   }
 
@@ -5695,7 +5692,6 @@ void shaman_t::init_spells()
   // Restoration
   spec.ancestral_awakening   = find_specialization_spell( "Ancestral Awakening" );
   spec.ancestral_focus       = find_specialization_spell( "Ancestral Focus" );
-  spec.earth_shield          = find_specialization_spell( "Earth Shield" );
   spec.meditation            = find_specialization_spell( "Meditation" );
   spec.purification          = find_specialization_spell( "Purification" );
   spec.resurgence            = find_specialization_spell( "Resurgence" );
@@ -7653,9 +7649,6 @@ struct shaman_module_t : public module_t
   {
     p -> buffs.bloodlust  = haste_buff_creator_t( p, "bloodlust", p -> find_spell( 2825 ) )
                             .max_stack( 1 );
-
-    p -> buffs.earth_shield = buff_creator_t( p, "earth_shield", p -> find_spell( 974 ) )
-                              .cd( timespan_t::from_seconds( 2.0 ) );
 
     p -> buffs.exhaustion = buff_creator_t( p, "exhaustion", p -> find_spell( 57723 ) )
                             .max_stack( 1 )

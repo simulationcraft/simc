@@ -1913,7 +1913,6 @@ void player_t::init_procs()
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing procs for player (%s)", name() );
 
-  procs.hat_donor    = get_proc( "hat_donor"   );
   procs.parry_haste  = get_proc( "parry_haste" );
 }
 
