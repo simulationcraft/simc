@@ -6495,7 +6495,16 @@ void death_knight_t::create_buffs()
     .add_invalidate( CACHE_ATTACK_SPEED )
     .trigger_spell( talent.unholy_frenzy )
     .default_value( 1.0 / ( 1.0 + find_spell( 207290 ) -> effectN( 1 ).percent() ) )
-    .refresh_behavior( BUFF_REFRESH_EXTEND );
+    .refresh_behavior( BUFF_REFRESH_CUSTOM )
+    // Unholy Frenzy duration is hard capped at 10 seconds
+    .refresh_duration_callback( []( const buff_t* b, const timespan_t& duration ) {
+      timespan_t total_duration = b -> remains() + duration;
+      if ( total_duration > timespan_t::from_seconds( 10 ) )
+      {
+        total_duration = timespan_t::from_seconds( 10 );
+      }
+      return total_duration;
+    } );
   buffs.necrosis = buff_creator_t( this, "necrosis", find_spell( 216974 ) )
     .default_value( find_spell( 216974 ) -> effectN( 1 ).percent() )
     .trigger_spell( talent.necrosis );
