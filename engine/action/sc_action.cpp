@@ -1494,63 +1494,6 @@ void action_t::last_tick( dot_t* d )
   }
 }
 
-// action_t::update_resolve ======================================================
-
-void action_t::update_resolve( dmg_e type,
-                                 action_state_t* s )
-{
-  // pointers to make life easy
-  player_t* source = s -> action -> player;
-  player_t* target = s -> target;
-
-  // check that the target has Resolve, check for damage type, and check that the source player is an enemy
-  if ( target -> resolve_manager.is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && source -> is_enemy() )
-  {
-    assert( source -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a unspawned player! Something is seriously broken in player_t::arise/demise." );
-
-    // bool for auto attack, to make code easier to read
-    bool is_auto_attack = ( player -> main_hand_attack && s -> action == player -> main_hand_attack )
-      || ( player -> off_hand_attack && s -> action == player -> off_hand_attack ) ||
-      !s -> action -> special;
-
-    // Resolve is only updated on damage taken events. The one exception is auto-attacks, which grant Resolve even on a dodge/parry.
-    // If this is a miss that isn't an auto-attack, we can bail out early (and not recalculate)
-    if ( result_is_miss( s -> result ) && ! is_auto_attack )
-      return;
-
-    // Store raw damage of attack result
-    double raw_resolve_amount = s -> result_raw;
-
-    // If the attack does zero damage, it's irrelevant for the purposes
-    // Skip updating the Resolve tables if the damage is zero to limit unnecessary events
-    if ( raw_resolve_amount > 0.0 )
-    {
-      // modify according to damage type; spell damage and bleeds give 2.5x as much Resolve
-      if ( get_school() != SCHOOL_PHYSICAL || type == DMG_OVER_TIME )
-        raw_resolve_amount *= 2.5;
-
-      // Diminishing Returns hotfixed out 10/2/2014 - will clean up code once we're sure this is a permanent change
-      // http://us.battle.net/wow/en/forum/topic/14058407204?page=10#198
-      //// update the player's resolve diminishing return list first!
-      //target -> resolve_manager.add_diminishing_return_entry( source, source -> get_raw_dps( s ), sim -> current_time() );
-
-      //assert( source -> actor_spawn_index >= 0 && "Trying to register resolve damage event from a unspawned player!" );
-
-      //// get diminishing returns - done at the time of the event, never recalculated
-      //// see http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
-      //int rank = target -> resolve_manager.get_diminsihing_return_rank( source -> actor_spawn_index );
-
-      // update the player's resolve damage table
-      target -> resolve_manager.add_damage_event( raw_resolve_amount, sim -> current_time() );
-
-      // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
-      target -> resolve_manager.update();
-    }
-
-
-  } // END Resolve
-}
-
 // action_t::assess_damage ==================================================
 
 void action_t::assess_damage( dmg_e type, action_state_t* s )
@@ -1975,15 +1918,11 @@ void action_t::init()
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
   {
     snapshot_flags |= STATE_SP;
-    if ( player -> resolve_manager.is_init() )
-      snapshot_flags |= STATE_RESOLVE;
   }
 
   if ( ( weapon_power_mod > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
   {
     snapshot_flags |= STATE_AP;
-    if ( player -> resolve_manager.is_init() )
-      snapshot_flags |= STATE_RESOLVE;
   }
 
   if ( dot_duration > timespan_t::zero() && ( hasted_ticks || channeled ) )
@@ -3004,9 +2943,6 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, dmg_e r
 
   if ( flags & STATE_TGT_ARMOR )
     state -> target_armor = target_armor( state -> target );
-
-  if ( flags & STATE_RESOLVE )
-    state -> resolve = composite_resolve( state );
 }
 
 void action_t::consolidate_snapshot_flags()

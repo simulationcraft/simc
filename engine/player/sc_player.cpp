@@ -520,7 +520,6 @@ player_t::player_t( sim_t*             s,
   gcd_haste_type( HASTE_NONE ), gcd_current_haste_value( 1.0 ),
   started_waiting( timespan_t::min() ),
   pet_list(), active_pets(),
-  resolve_manager( *this ),
   invert_scaling( 0 ),
   // Reaction
   reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
@@ -1853,8 +1852,6 @@ void player_t::init_spells()
   racials.endurance               = find_racial_spell( "Endurance" );
   racials.viciousness             = find_racial_spell( "Viciousness" );
 
-  resolve_manager.resolve = find_specialization_spell( "Resolve" );
-
   if ( ! is_enemy() )
   {
     const spell_data_t* s = find_mastery_spell( specialization() );
@@ -1875,8 +1872,7 @@ void player_t::init_spells()
     {
       heal_t::init();
 
-      snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY |
-                                      /* STATE_RESOLVE | */ STATE_MUL_PERSISTENT;
+      snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT;
     }
   };
 
@@ -2332,16 +2328,6 @@ bool player_t::init_actions()
 // player_t::init_assessors =================================================
 void player_t::init_assessors()
 {
-  // Resolve assessor, only needed for tank role(?)
-  // TODO: Resolve is gone anyhow, so this should be removed too?
-  if ( ! is_enemy() && role == ROLE_TANK )
-  {
-    assessor_out_damage.add( assessor::RESOLVE, []( dmg_e dmg_type, action_state_t* state )
-    {
-      state -> action -> update_resolve( dmg_type, state );
-      return assessor::CONTINUE;
-    } );
-  }
 
   // Target related mitigation
   assessor_out_damage.add( assessor::TARGET_MITIGATION, []( dmg_e dmg_type, action_state_t* state )
@@ -2609,7 +2595,7 @@ void player_t::create_buffs()
                                         .spell( find_racial_spell( "Blood Fury" ) )
                                         .add_invalidate( CACHE_SPELL_POWER )
                                         .add_invalidate( CACHE_ATTACK_POWER );
-      buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).add_invalidate( CACHE_STAMINA ).activated( false );
+      buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
       buffs.shadowmeld                = buff_creator_t( this, "shadowmeld", find_spell( 58984 ) ).cd( timespan_t::zero() );
 
       buffs.archmages_greater_incandescence_agi = buff_creator_t( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
@@ -2628,14 +2614,6 @@ void player_t::create_buffs()
 
       // Legendary meta haste buff
       buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
-
-      // Resolve
-      buffs.resolve = buff_creator_t( this, "resolve" )
-                        .can_cancel( false )
-                        .max_stack( 1 )
-                        .duration( timespan_t::zero() )
-                        .default_value( 0 )
-                        .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
       buffs.darkflight         = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
 
@@ -2666,10 +2644,6 @@ void player_t::create_buffs()
                           .spell( find_spell( 121557 ) )
                           .max_stack( 1 )
                           .duration( timespan_t::from_seconds( 6.0 ) );
-
-  buffs.invigorating_roar = buff_creator_t( this, "invigorating_roar", find_spell( 191124 ) )
-                            .default_value( find_spell( 191124 ) -> effectN( 1 ).percent() )
-                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   struct raid_movement_buff_t : public buff_t
   {
@@ -3217,9 +3191,6 @@ double player_t::composite_player_multiplier( school_e /* school */ ) const
   if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring -> up() )
     m *= 1.0 + buffs.legendary_aoe_ring -> default_value;
 
-  if ( buffs.invigorating_roar )
-    m *= 1.0 + buffs.invigorating_roar -> value();
-
   return m;
 }
 
@@ -3764,8 +3735,6 @@ void player_t::datacollection_begin()
     collected_data.health_changes_tmi.timeline.clear(); // Drop Data
     collected_data.health_changes_tmi.timeline_normalized.clear();
   }
-
-  collected_data.resolve_timeline.iteration_timeline.clear();
 
   range::for_each( buff_list, std::mem_fn(&buff_t::datacollection_begin ) );
   range::for_each( stats_list, std::mem_fn(&stats_t::datacollection_begin ) );
@@ -4392,9 +4361,6 @@ void player_t::demise()
   }
 
   event_t::cancel( off_gcd );
-
-  // stops resolve and clear resolve_source_list
-  resolve_manager.stop();
 
   for ( size_t i = 0; i < callbacks_on_demise.size(); ++i )
   {
@@ -10657,7 +10623,6 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
 
   health_changes.merged_timeline.merge( other.health_changes.merged_timeline );
   health_changes_tmi.merged_timeline.merge( other.health_changes_tmi.merged_timeline );
-  resolve_timeline.merged_timeline.merge( other.resolve_timeline.merged_timeline );
 }
 
 void player_collected_data_t::analyze( const player_t& p )
@@ -10705,8 +10670,6 @@ void player_collected_data_t::analyze( const player_t& p )
   // health changes need their own divisor
   health_changes.merged_timeline.adjust( *p.sim );
   health_changes_tmi.merged_timeline.adjust( *p.sim );
-
-  resolve_timeline.merged_timeline.adjust( *p.sim );
 }
 
 //This is pretty much only useful for dev debugging at this point, would need to modify to make it useful to users
@@ -10877,10 +10840,6 @@ void player_collected_data_t::collect_data( const player_t& p )
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
 
-  // Resolve Timeline - Only nonzero for tanks
-  if ( resolve_timeline.iteration_timeline.data().size() > 0 )
-    resolve_timeline.merged_timeline.merge( resolve_timeline.iteration_timeline );
-
   // Health Change Calculations - only needed for tanks
   double tank_metric = 0;
   if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
@@ -10994,286 +10953,6 @@ std::string player_talent_points_t::to_string() const
 
   return ss.str();
 }
-
-namespace resolve {
-
-/* Resolve Diminishing Returns List
- * this is the sorted list of actors used to determine Resolve diminishing returns.
- * sorted according to auto-attack DPS
- */
-
-struct manager_t::diminishing_returns_list_t
-{
-  // 2014/06/17 http://us.battle.net/wow/en/forum/topic/13087818929?page=6#105
-  static const unsigned purge_entries_after_millis = 5000;
-
-  diminishing_returns_list_t() :
-    actor_list()
-  { }
-
-  // Reset the diminishing return list
-  void reset()
-  { actor_list.clear(); }
-
-  /* Get the Diminishing Return Divisor for a actor ( given his actor_spawn_index )
-   * pre-condition: actor_list sorted by raw dps
-   */
-  int get_diminishing_return_factor( int actor_spawn_index )
-  {
-
-    std::vector<actor_entry_t>::iterator found = find_actor( actor_spawn_index );
-    assert( found != actor_list.end() && "Resolve attacker not found in resolve list!" );
-    return as<int>(std::distance( actor_list.begin(), found ) + 1);
-  }
-
-  /* Add average auto-attack dps values to the Diminishing Return list.
-   * Update every time something is added.
-   */
-  void add( const player_t* actor, double raw_dps, timespan_t current_time )
-  {
-    std::vector<actor_entry_t>::iterator found = find_actor( actor -> actor_spawn_index );
-
-    if ( found != actor_list.end() )
-    {
-      // We already have the actor in the list, update:
-      update_actor_entry( *found, raw_dps, current_time );
-    }
-    else
-    {
-      // We do not have the actor in the list, create new entry:
-      actor_entry_t a;
-      a.actor_spawn_index = actor -> actor_spawn_index;
-      a.raw_dps = raw_dps;
-      a.last_attack = current_time;
-
-      actor_list.push_back( a );
-    }
-
-    update( current_time );
-  }
-
-  /* Update the Diminishing Return list by purging old entries and sorting it by DPS
-   */
-  void update( timespan_t current_time )
-  {
-    // Purge any actors that haven't hit you in 5 seconds or more
-    actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), was_inactive( current_time ) ), actor_list.end() );
-
-    // Sort the list by DPS
-    std::sort( actor_list.begin(), actor_list.end(), compare_DPS );
-  }
-private:
-  // structure that contains the relevant information for each actor entry in the list
-  struct actor_entry_t {
-    int actor_spawn_index;
-    double raw_dps;
-    timespan_t last_attack;
-  };
-
-  std::vector<actor_entry_t> actor_list; // vector of actor entries
-
-  // comparator function for sorting the list
-  static bool compare_DPS( const actor_entry_t &a, const actor_entry_t &b )
-  { return a.raw_dps > b.raw_dps; }
-
-  // comparator functor for purging inactive players
-  struct was_inactive {
-    was_inactive( const timespan_t& current_time ) :
-      current_time( current_time )
-    {}
-    bool operator()( const actor_entry_t& a ) const
-    { return a.last_attack + timespan_t::from_millis( purge_entries_after_millis ) < current_time; }
-    const timespan_t& current_time;
-  };
-
-  // method for finding actor - used while cycling through list
-  std::vector<actor_entry_t>::iterator find_actor( int actor_spawn_index )
-  {
-    return range::find_if( actor_list,
-                        [actor_spawn_index]( const actor_entry_t& ae ) {
-                          return ae.actor_spawn_index == actor_spawn_index;
-                        } );
-  }
-
-  // method to update_actor_entry
-  void update_actor_entry( actor_entry_t& a, double raw_dps, timespan_t last_attack )
-  {
-      a.raw_dps = raw_dps;
-      a.last_attack = last_attack;
-  }
-};
-
-/* Resolve Event List
- * This is the list of the damage events that have occurred. Used every time Resolve is updated
- */
-struct manager_t::damage_event_list_t
-{
-  damage_event_list_t() :
-    _event_list()
-  { }
-
-  // called after each iteration in player_t::resolve_stop()
-  void reset()
-  { _event_list.clear(); }
-
-  /* Add a damage event to the Resolve Damage Event list
-   */
-  void add( double amount, timespan_t current_time )
-  {
-    // Add a new entry
-    event_entry_t e;
-    e.event_amount = amount;
-    e.event_time = current_time;
-
-    _event_list.push_back( e );
-  }
-
-  // structure that contains the relevant information for each actor entry in the list
-  struct event_entry_t {
-    double event_amount;
-    timespan_t event_time;
-
-  };
-  typedef std::vector<event_entry_t> list_t;
-  list_t _event_list; // vector of actor entries
-};
-
-// periodic update event for resolve
-struct manager_t::update_event_t : public player_event_t
-{
-  update_event_t( player_t& p ) :
-    player_event_t( p )
-  {
-    add_event( timespan_t::from_seconds( 1.0 ) ); // this is the automatic resolve update interval
-  }
-  virtual const char* name() const override
-  { return "resolve_update_event_t"; }
-  virtual void execute() override
-  {
-    assert( p() -> resolve_manager._update_event == this );
-    p() -> resolve_manager.update(); // update resolve
-    p() -> resolve_manager._update_event = new ( sim() ) update_event_t( *p() ); // schedule next update/add
-  }
-};
-
-manager_t::manager_t( player_t& p ) :
-    resolve( spell_data_t::not_found() ),
-    _player( p ),
-    _update_event( nullptr ),
-    _init( false ),
-    _started( false ),
-    _damage_list( new damage_event_list_t() ),
-    _diminishing_return_list( new diminishing_returns_list_t() )
-{
-}
-
-/* Initialize Resolve
-*/
-void manager_t::init()
-{
-  // this is just for testing if the spec has the effect
-  _init = true;
-}
-
-/* Start Resolve
- */
-void manager_t::start()
-{
-  assert( !_started && "Trying to start a already started Resolve Manager." );
-
-  _diminishing_return_list -> reset();
-  _damage_list -> reset();
-
-  _started = true;
-
-  // Make sure we get the buff up right now, to activate the stamina part.
-  update();
-
-  // Start periodic update event
-  _update_event = new (*_player.sim) update_event_t( _player );
-
-}
-
-/* Stop Resolve
- */
-void manager_t::stop()
-{
-  if ( !_started )
-    return;
-
-  _diminishing_return_list -> reset();
-  _damage_list -> reset();
-  update_event_t::cancel( _update_event );
-
-  _started = false;
-}
-
-/* Recalculate the resolve value
- */
-void manager_t::update()
-{
-  assert( _started && "Trying to update Resolve for a unstarted Resolve Manager." );
-
-  // Relevant constants
-  static const double damage_mod_coefficient = 1 / ( 10 * _player.dbc.resolve_level_scaling( _player.level() ) ); // multiplier for the resolve damage component
-  //const double resolve_sta_mod = 1 / 250.0 /  _player.dbc.resolve_item_scaling( _player.level );
-  static const timespan_t max_interval = timespan_t::from_seconds( 10.0 );
-
-  // cycle through the resolve damage table and add the appropriate amount of Resolve from each event
-  double damage_mod = 0;
-
-  // Iterate through the Resolve event list, retrieving each event's details
-  const damage_event_list_t::list_t& list= _damage_list -> _event_list;
-  damage_event_list_t::list_t::const_reverse_iterator i, end;
-  for ( i = list.rbegin(), end = list.rend(); i != end; ++i )
-  {
-    // Only loop from the end until we are over the 10s mark, then break the loop
-    if ( ( _player.sim -> current_time() - (*i).event_time ) > max_interval )
-      break;
-
-    // temp variable for current event's contribution
-    // note that this already includes the 2.5x multiplier for spell damage, diminishing returns,
-    // and the normalization by player max health. See action_t::update_resolve()
-    double contribution = (*i).event_amount;
-
-    // apply time-based decay
-    double delta_t = ( _player.sim -> current_time() - (*i).event_time ).total_seconds();
-    contribution *= 2.0 * ( 10.0 - delta_t ) / 10.0;
-
-    // add to existing amount
-    damage_mod += contribution;
-  }
-
-  // multiply by damage modifier
-  damage_mod *= damage_mod_coefficient;
-
-  // multiply by 100 for display purposes
-  double new_resolve = 100 * std::max( 0.0, 3.4 * ( 1 - std::exp( - 0.045 * damage_mod ) ) - 1.0 );
-
-  // updatee the buff
-  _player.buffs.resolve -> trigger( 1, new_resolve, 1, timespan_t::zero() );
-
-  // Add to the Resolve timeline
-  _player.collected_data.resolve_timeline.add_max( _player.sim -> current_time(), _player.buffs.resolve -> value() );
-}
-
-void manager_t::add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time )
-{
-  _diminishing_return_list -> add( actor, raw_dps, current_time );
-}
-
-int manager_t::get_diminsihing_return_rank( int actor_spawn_index )
-{
-  return _diminishing_return_list -> get_diminishing_return_factor( actor_spawn_index );
-}
-
-void manager_t::add_damage_event( double amount, timespan_t current_time )
-{
-
-  _damage_list -> add( amount, current_time );
-}
-
-} // end namespace resolve
 
 luxurious_sample_data_t::luxurious_sample_data_t( player_t& p, std::string n ) :
     extended_sample_data_t( n, p.sim -> statistics_level < 3 ),

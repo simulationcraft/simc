@@ -1114,7 +1114,6 @@ enum snapshot_state_e
   STATE_TGT_CRIT   = 0x000100,
   STATE_TGT_MUL_DA = 0x000200,
   STATE_TGT_MUL_TA = 0x000400,
-  STATE_RESOLVE    = 0x000800,
 
   STATE_USER_1 = 0x001000,
   STATE_USER_2 = 0x002000,
@@ -1125,14 +1124,14 @@ enum snapshot_state_e
   STATE_TGT_MITG_TA = 0x020000,
   STATE_TGT_ARMOR   = 0x040000,
 
-  // No multiplier herlper, use in action_t::init() (after parent init) by
+  // No multiplier helper, use in action_t::init() (after parent init) by
   // issuing snapshot_flags &= STATE_NO_MULTIPLIER (and/or update_flags &=
   // STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including
-  // versatility, resolve, and any/all persistent multipliers the action would
+  // versatility, and any/all persistent multipliers the action would
   // use.
   STATE_NO_MULTIPLIER = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY |
                            STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
-                           STATE_TGT_MUL_TA | STATE_RESOLVE | STATE_TGT_ARMOR )
+                           STATE_TGT_MUL_TA | STATE_TGT_ARMOR )
 };
 
 enum ready_e

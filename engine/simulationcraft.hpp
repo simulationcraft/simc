@@ -3318,31 +3318,6 @@ struct player_collected_data_t
   health_changes_timeline_t health_changes;     //records all health changes
   health_changes_timeline_t health_changes_tmi; //records only health changes due to damage and self-healng/self-absorb
 
-  struct resolve_timeline_t
-  {
-    sc_timeline_t iteration_timeline;
-    sc_timeline_t merged_timeline;
-
-    resolve_timeline_t() {}
-
-    // Add 'value' at corresponding time, replacing existing entry if new value is larger
-    void add_max( timespan_t current_time, double new_value )
-    {
-      size_t index = static_cast< size_t >( current_time.total_millis() / 1000 / iteration_timeline.bin_size );
-
-      // if data doesn't exist in this element, add it
-      if ( iteration_timeline.data().size() == 0 || iteration_timeline.data().size() <= index )
-        iteration_timeline.add( current_time, new_value );
-      // otherwise store only the maximum value
-      else if ( new_value > iteration_timeline.data().at( index ) )
-      {
-        iteration_timeline.add( current_time, new_value - iteration_timeline.data().at( index ) );
-      }
-    }
-  };
-
-  resolve_timeline_t resolve_timeline;
-
   struct action_sequence_data_t
   {
     const action_t* action;
@@ -3458,38 +3433,6 @@ struct actor_t : private noncopyable
   { return name_str.c_str(); }
 };
 
-namespace resolve {
-/* Encapsulations of Resolve interface so we can keep most things out of player_t (bloated enough)
- */
-struct manager_t
-{
-  manager_t( player_t& );
-  void init();
-  void start();
-  void stop();
-  void update();
-  bool is_started() const
-  { return _started; }
-  bool is_init() const
-  { return _init; }
-  void add_diminishing_return_entry( const player_t* actor, double raw_dps, timespan_t current_time );
-  int get_diminsihing_return_rank( int actor_spawn_index );
-  void add_damage_event( double amount, timespan_t current_time );
-  const spell_data_t* resolve;
-private:
-  struct update_event_t;
-  struct diminishing_returns_list_t;
-  struct damage_event_list_t;
-  player_t& _player;
-  event_t* _update_event;
-  bool _init;
-  bool _started;
-  std::unique_ptr<damage_event_list_t >_damage_list;
-  std::unique_ptr<diminishing_returns_list_t> _diminishing_return_list;
-};
-
-} // resolve
-
 /* Player Report Extension
  * Allows class modules to write extension to the report sections
  * based on the dynamic class of the player
@@ -3517,7 +3460,6 @@ namespace assessor
   // Default assessor priorities
   enum priority
   {
-    RESOLVE           = 0U,      // Resolve updating
     TARGET_MITIGATION = 100U,    // Target assessing (mitigation etc)
     TARGET_DAMAGE     = 200U,    // Do damage to target (and related functionality)
     LOG               = 300U,    // Logging (including debug output)
@@ -3657,7 +3599,6 @@ struct player_t : public actor_t
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
   std::map<unsigned,instant_absorb_t*> instant_absorb_list;
-  resolve::manager_t resolve_manager;
 
   int         invert_scaling;
 
@@ -3955,7 +3896,6 @@ struct player_t : public actor_t
     buff_t* stoneform;
     buff_t* stunned;
     buff_t* weakened_soul;
-    buff_t* resolve;
 
     haste_buff_t* berserking;
     haste_buff_t* bloodlust;
@@ -3990,9 +3930,6 @@ struct player_t : public actor_t
 
     haste_buff_t* fel_winds; // T18 LFR Plate Melee Attack Speed buff
     buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
-
-    // Legion Enchants
-    buff_t* invigorating_roar; // Mark of the Loyal Druid (Versatility)
   } buffs;
 
   struct debuffs_t
@@ -5006,7 +4943,6 @@ struct action_state_t : private noncopyable
   double          attack_power;
   double          spell_power;
   // Snapshotted multipliers
-  double          resolve;
   double          versatility;
   double          da_multiplier;
   double          ta_multiplier;
@@ -5043,10 +4979,10 @@ struct action_state_t : private noncopyable
   { return versatility; }
 
   virtual double composite_da_multiplier() const
-  { return da_multiplier * persistent_multiplier * target_da_multiplier * versatility * resolve; }
+  { return da_multiplier * persistent_multiplier * target_da_multiplier * versatility; }
 
   virtual double composite_ta_multiplier() const
-  { return ta_multiplier * persistent_multiplier * target_ta_multiplier * versatility * resolve; }
+  { return ta_multiplier * persistent_multiplier * target_ta_multiplier * versatility; }
 
   virtual double composite_target_mitigation_da_multiplier() const
   { return target_mitigation_da_multiplier; }
@@ -5717,9 +5653,6 @@ public:
   virtual double composite_versatility( const action_state_t* ) const
   { return 1.0; }
 
-  virtual double composite_resolve( const action_state_t* ) const
-  { return 1.0; }
-
   virtual double composite_leech( const action_state_t* ) const
   { return player -> cache.leech(); }
 
@@ -5824,8 +5757,6 @@ public:
   virtual void tick(dot_t* d);
 
   virtual void last_tick(dot_t* d);
-
-  virtual void update_resolve(dmg_e, action_state_t* assess_state);
 
   virtual void assess_damage(dmg_e, action_state_t* assess_state);
 
@@ -6144,25 +6075,6 @@ public:
   virtual double composite_versatility( const action_state_t* state ) const override
   { return spell_base_t::composite_versatility( state ) + player -> cache.heal_versatility(); }
 
-  virtual double composite_resolve( const action_state_t* state ) const override
-  {
-    double m = 1.0;
-
-    if ( player -> resolve_manager.is_started() )
-    {
-      if ( ( state -> result_type == HEAL_OVER_TIME && tick_pct_heal == 0.0 ) || ( state -> result_type == HEAL_DIRECT && base_pct_heal == 0.0 ) )
-      {
-        // apply -60% healing effect
-        // m *= 1.0 + player -> resolve_manager.resolve -> effectN( 3 ).percent();
-
-        // apply variable bonus based on current value
-        if ( state -> target == player )
-          m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
-      }
-    }
-    return m;
-  }
-
   virtual expr_t* create_expression( const std::string& name ) override;
 };
 
@@ -6225,24 +6137,6 @@ struct absorb_t : public spell_base_t
   }
   virtual double composite_versatility( const action_state_t* state ) const override
   { return spell_base_t::composite_versatility( state ) + player -> cache.heal_versatility(); }
-
-  virtual double composite_resolve( const action_state_t* state ) const override
-  {
-    double m = 1.0;
-
-    if ( player -> resolve_manager.is_started() )
-    {
-      // apply -60% healing effect
-      // m *= 1.0 + player -> resolve_manager.resolve -> effectN( 2 ).percent();
-
-      // apply variable bonus based on current value
-      if ( state -> target == player )
-        m *= 1.0 + player -> buffs.resolve -> current_value / 100.0;
-    }
-
-    return m;
-  }
-
 };
 
 // Sequence =================================================================

@@ -2647,30 +2647,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     os << ts.to_target_div();
     p.sim->add_chart_data( ts );
   }
-
-  if ( p.collected_data.resolve_timeline.merged_timeline.mean() > 0 )
-  {
-    highchart::time_series_t resolve( highchart::build_id( p, "resolve" ),
-                                      *p.sim );
-    if ( p.sim->player_no_pet_list.size() > 1 )
-    {
-      resolve.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
-    }
-
-    resolve.set_yaxis_title( "Attack Power" );
-    resolve.set_title( p.name_str + " Resolve attack power" );
-    resolve.add_simple_series(
-        "area", "#FF0000", "Attack Power",
-        p.collected_data.resolve_timeline.merged_timeline.data() );
-    resolve.set_mean(
-        p.collected_data.resolve_timeline.merged_timeline.mean() );
-    resolve.set_max( p.collected_data.resolve_timeline.merged_timeline.max() );
-    resolve.set_xaxis_max( p.sim->simulation_length.max() );
-
-    os << resolve.to_target_div();
-    p.sim->add_chart_data( resolve );
-  }
-
+  
   highchart::histogram_chart_t chart( highchart::build_id( p, "dps_dist" ),
                                       *p.sim );
   if ( chart::generate_distribution(

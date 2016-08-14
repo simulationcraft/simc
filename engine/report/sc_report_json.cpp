@@ -289,13 +289,6 @@ js::sc_js_t to_json(
   return node;
 }
 
-js::sc_js_t to_json( const player_collected_data_t::resolve_timeline_t& rtl )
-{
-  js::sc_js_t node;
-  node.set( "merged_timeline", to_json( rtl.merged_timeline ) );
-  return node;
-}
-
 js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
 {
   js::sc_js_t node;
@@ -461,7 +454,6 @@ js::sc_js_t to_json( const player_collected_data_t& cd )
   }
   node.set( "health_changes", to_json( cd.health_changes ) );
   node.set( "health_changes", to_json( cd.health_changes_tmi ) );
-  node.set( "resolve_timeline", to_json( cd.resolve_timeline ) );
   for ( const auto& asd : cd.action_sequence )
   {
     node.add( "action_sequence", to_json( *asd ) );

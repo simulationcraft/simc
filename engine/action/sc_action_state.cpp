@@ -86,7 +86,6 @@ void action_state_t::copy_state( const action_state_t* o )
   spell_power = o -> spell_power;
 
   versatility = o -> versatility;
-  resolve = o -> resolve;
   da_multiplier = o -> da_multiplier;
   ta_multiplier = o -> ta_multiplier;
   persistent_multiplier = o -> persistent_multiplier;
@@ -107,7 +106,7 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   result_absorbed( 0 ), result_amount( 0 ), blocked_amount( 0 ), self_absorb_amount( 0 ),
   haste( 0 ), crit_chance( 0 ), target_crit_chance( 0 ),
   attack_power( 0 ), spell_power( 0 ),
-  resolve( 1.0 ), versatility( 1.0 ), da_multiplier( 1.0 ), ta_multiplier( 1.0 ), persistent_multiplier( 1.0 ),
+  versatility( 1.0 ), da_multiplier( 1.0 ), ta_multiplier( 1.0 ), persistent_multiplier( 1.0 ),
   target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 ),
   target_mitigation_da_multiplier( 1.0 ), target_mitigation_ta_multiplier( 1.0 ), target_armor( 1.0 )
 {
@@ -177,7 +176,6 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " per_mul=" << persistent_multiplier;
   s << " tgt_da_mul=" << target_da_multiplier;
   s << " tgt_ta_mul=" << target_ta_multiplier;
-  s << " resolve=" << resolve;
 
   s << " tgt_mitg_da_mul=" << target_mitigation_da_multiplier;
   s << " tgt_mitg_ta_mul=" << target_mitigation_ta_multiplier;
@@ -244,7 +242,6 @@ std::string action_state_t::flags_to_str( unsigned flags )
   concat_flag_str( str, "HST",        STATE_HASTE,          flags );
   concat_flag_str( str, "CRIT",       STATE_CRIT,           flags );
   concat_flag_str( str, "VERS",       STATE_VERSATILITY,    flags );
-  concat_flag_str( str, "RES",        STATE_RESOLVE,        flags );
   concat_flag_str( str, "MUL_DA",     STATE_MUL_DA,         flags );
   concat_flag_str( str, "MUL_TA",     STATE_MUL_TA,         flags );
   concat_flag_str( str, "MUL_PER",    STATE_MUL_PERSISTENT, flags );
