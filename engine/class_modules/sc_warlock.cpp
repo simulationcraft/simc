@@ -2050,7 +2050,6 @@ struct warlock_heal_t: public heal_t
 
 struct warlock_spell_t: public spell_t
 {
-  bool demo_mastery;
 private:
   void _init_warlock_spell_t()
   {
@@ -2062,6 +2061,7 @@ private:
     havoc_proc = nullptr;
 
     affected_by_contagion = true;
+    destro_mastery = true;
 
     parse_spell_coefficient( *this );
   }
@@ -2074,6 +2074,7 @@ public:
 
   bool affected_by_contagion;
   bool affected_by_flamelicked;
+  bool destro_mastery;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
   // if it's enabled
@@ -2344,7 +2345,7 @@ public:
 
     if( p() -> mastery_spells.chaotic_energies -> ok() )
     {
-      double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
+      double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() && destro_mastery );
       pm *= 1.0 + chaotic_energies_rng;
     }
     if ( p()->specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
@@ -4666,6 +4667,7 @@ struct demonic_power_damage_t : public warlock_spell_t
     background = true;
     proc = true;
     base_multiplier *= 1.0 + p -> artifact.impish_incineration.data().effectN( 3 ).percent();
+    destro_mastery = false;
   }
 };
 
