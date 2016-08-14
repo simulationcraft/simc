@@ -4680,7 +4680,7 @@ struct enrage_t: public warrior_buff_t < buff_t >
 struct debuff_demo_shout_t: public warrior_buff_t < buff_t >
 {
   debuff_demo_shout_t( warrior_td_t& p ):
-    base_t( p, buff_creator_t( static_cast<actor_pair_t>(p), "demoralizing_shout", p.source -> find_specialization_spell( "Demoralizing Shout" ) ) )
+    base_t( p, buff_creator_t( static_cast<actor_pair_t>(p), "demoralizing_shout_debuff", p.source -> find_specialization_spell( "Demoralizing Shout" ) ) )
   {
     default_value = data().effectN( 1 ).percent();
   }
