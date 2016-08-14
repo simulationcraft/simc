@@ -1224,9 +1224,8 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         }
         s << "                 : Hotfixes: " << str;
       }
-
-      s << std::endl;
     }
+    s << std::endl;
   }
 
   if ( spell -> proc_flags() > 0 )
