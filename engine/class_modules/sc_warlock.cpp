@@ -227,7 +227,7 @@ public:
     artifact_power_t soulstealer;
 
     // Demonology
-    artifact_power_t thalkeils_consumption;
+    artifact_power_t thalkiels_consumption;
     artifact_power_t breath_of_thalkiel;
     artifact_power_t the_doom_of_azeroth;
     artifact_power_t sharpened_dreadfangs;
@@ -1175,10 +1175,10 @@ struct eye_laser_t : public warlock_pet_spell_t
 
 struct thalkiels_discord_t : public warlock_pet_spell_t
 {
-    struct thalkeils_discord_tick_t : public warlock_pet_spell_t
+    struct thalkiels_discord_tick_t : public warlock_pet_spell_t
     {
-        thalkeils_discord_tick_t( warlock_pet_t* p /*, const spell_data_t& s */):
-            warlock_pet_spell_t( "thalkeils_discord_tick", p, p->find_spell( 211727 ) )
+        thalkiels_discord_tick_t( warlock_pet_t* p /*, const spell_data_t& s */):
+            warlock_pet_spell_t( "thalkiels_discord_tick", p, p->find_spell( 211727 ) )
         {
             spell_power_mod.tick = data().effectN(1).sp_coeff();
             aoe = -1;
@@ -1187,14 +1187,14 @@ struct thalkiels_discord_t : public warlock_pet_spell_t
         }
     };
 
-    thalkeils_discord_tick_t* tick;
+    thalkiels_discord_tick_t* tick;
 
     thalkiels_discord_t( warlock_pet_t* p, const std::string& options_str ):
       warlock_pet_spell_t( "thalkiels_discord", p, p -> find_spell( 211720 ) )
     {
       parse_options( options_str );
       base_tick_time = timespan_t::from_millis( 1500 );
-      tick_action = new thalkeils_discord_tick_t( p/*, data()*/ );
+      tick_action = new thalkiels_discord_tick_t( p/*, data()*/ );
     }
 
     void init() override
@@ -2833,7 +2833,7 @@ struct life_tap_t: public warlock_spell_t
 
 struct shadow_bolt_t: public warlock_spell_t
 {
-    //thalkeils_discord_t discord;
+    //thalkeies_discord_t discord;
   shadow_bolt_t( warlock_t* p ):
     warlock_spell_t( p, "Shadow Bolt" )
   {
@@ -3557,10 +3557,10 @@ struct dimensional_rift_t : public warlock_spell_t
   }
 };
 
-struct thalkeils_consumption_t : public warlock_spell_t
+struct thalkiels_consumption_t : public warlock_spell_t
 {
-    thalkeils_consumption_t( warlock_t* p ):
-        warlock_spell_t( "thalkeils_consumption", p, p -> artifact.thalkeils_consumption )
+    thalkiels_consumption_t( warlock_t* p ):
+        warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
     {
 
     }
@@ -3586,21 +3586,21 @@ struct thalkeils_consumption_t : public warlock_spell_t
     }
 };
 
-struct thalkeils_discord_t : public warlock_spell_t
+struct thalkiels_discord_t : public warlock_spell_t
 {
     //implementation needs to change
-    //generate a thalkeil pet
-    // create a hellfire like spell called thalkeil's discord
-    // have thalkeil pulse the hellfire thalkeil's discord.
+    //generate a thalkiel pet
+    // create a hellfire like spell called thalkiel's discord
+    // have thalkiel pulse the hellfire thalkiel's discord.
     // pls gahddo you're our only hope.
-    //thalkeils_discord_tick_t* tick;
-    timespan_t thalkeils_duration;
+    //thalkiels_discord_tick_t* tick;
+    timespan_t thalkiels_duration;
 
-    thalkeils_discord_t( warlock_t* p ):
-        warlock_spell_t( "thalkeils_discord", p, p -> artifact.thalkeils_consumption )
+    thalkiels_discord_t( warlock_t* p ):
+        warlock_spell_t( "thalkiels_discord", p, p -> artifact.thalkiels_consumption )
     {
-        thalkeils_duration = p->find_spell( 211720 ) -> duration();
-        //tick = new thalkeils_discord_tick_t(p);
+        thalkiels_duration = p->find_spell( 211720 ) -> duration();
+        //tick = new thalkiels_discord_tick_t(p);
         //add_child(tick);
     }
 
@@ -3612,7 +3612,7 @@ struct thalkeils_discord_t : public warlock_spell_t
         {
             if ( p() -> warlock_pet_list.thalkiel[i] -> is_sleeping() )
             {
-                p() -> warlock_pet_list.thalkiel[i] -> summon( thalkeils_duration );
+                p() -> warlock_pet_list.thalkiel[i] -> summon( thalkiels_duration );
                 //p() -> procs.dreadstalker_debug -> occur();
                 if ( ++j == 1 ) break;
             }
@@ -5113,7 +5113,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "shadowburn"            ) a = new                        shadowburn_t( this );
   else if ( action_name == "unstable_affliction"   ) a = new               unstable_affliction_t( this );
   else if ( action_name == "hand_of_guldan"        ) a = new                    hand_of_guldan_t( this );
-  else if ( action_name == "thalkeils_consumption" ) a = new             thalkeils_consumption_t( this );
+  else if ( action_name == "thalkiels_consumption" ) a = new             thalkiels_consumption_t( this );
   else if ( action_name == "implosion"             ) a = new                         implosion_t( this );
   else if ( action_name == "havoc"                 ) a = new                             havoc_t( this );
   else if ( action_name == "seed_of_corruption"    ) a = new                seed_of_corruption_t( this );
@@ -5360,7 +5360,7 @@ void warlock_t::init_spells()
   artifact.soulharvester = find_artifact_spell( "Soulharvester" );
   artifact.soulstealer = find_artifact_spell( "Soulstealer" );
 
-  artifact.thalkeils_consumption = find_artifact_spell( "Thal'kiel's Consumption" );
+  artifact.thalkiels_consumption = find_artifact_spell( "Thal'kiel's Consumption" );
   artifact.breath_of_thalkiel = find_artifact_spell( "Breath of Thal'kiel" );
   artifact.the_doom_of_azeroth = find_artifact_spell( "The Doom of Azeroth" );
   artifact.sharpened_dreadfangs = find_artifact_spell( "Sharpened Dreadfangs" );
