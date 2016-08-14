@@ -27,7 +27,8 @@ actions.precombat+=/marked_for_death
 # Executed every time the actor is available.
 
 actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<=25|buff.adrenaline_rush.up
-actions+=/blade_flurry,if=(spell_targets.blade_flurry>=2&!buff.blade_flurry.up)|(spell_targets.blade_flurry<2&buff.blade_flurry.up)
+actions+=/cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2|spell_targets.blade_flurry<2&buff.blade_flurry.up
+actions+=/blade_flurry,if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy.deficit>40
@@ -38,8 +39,8 @@ actions+=/pool_resource,for_next=1,extra_amount=60
 actions+=/vanish,if=combo_points.deficit>=2&energy>60
 actions+=/pool_resource,for_next=1,extra_amount=60
 actions+=/shadowmeld,if=combo_points.deficit>=2&energy>60
-actions+=/slice_and_dice,if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<6
-actions+=/roll_the_bones,if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<3|buff.roll_the_bones.remains<duration*0.3%rtb_buffs|(rtb_buffs<=1|rtb_buffs=2&!buff.shark_infested_waters.up&!buff.jolly_roger.up&!(buff.broadsides.up&buff.true_bearing.up)))
+actions+=/slice_and_dice,if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<10.8
+actions+=/roll_the_bones,if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|rtb_buffs<=1)
 actions+=/killing_spree,if=energy.time_to_max>5|energy<15
 actions+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
 actions+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
@@ -50,12 +51,13 @@ actions+=/call_action_list,name=generator,if=combo_points<5+talent.deeper_strate
 # Combo Point Finishers
 
 actions.finisher=death_from_above
+actions.finisher+=/between_the_eyes,if=equipped.greenskins_waterlogged_wristcuffs&buff.shark_infested_waters.up
 actions.finisher+=/run_through
 
 # Combo Point Generators
 
-actions.generator=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<duration*0.3
-actions.generator+=/pistol_shot,if=buff.opportunity.up&energy<60
+actions.generator=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<4.5
+actions.generator+=/pistol_shot,if=buff.opportunity.up&energy.time_to_max>2
 actions.generator+=/saber_slash
 
 head=felblade_hood,id=124263

@@ -6199,7 +6199,9 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
-    def -> add_action( this, "Blade Flurry", "if=(spell_targets.blade_flurry>=2&!buff.blade_flurry.up)|(spell_targets.blade_flurry<2&buff.blade_flurry.up)" );
+    // Cancels Blade Flurry buff on CD to maximize Shiarran Symmetry effect
+    def -> add_action( "cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2|spell_targets.blade_flurry<2&buff.blade_flurry.up" );
+    def -> add_action( this, "Blade Flurry", "if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up" );
 
     for ( size_t i = 0; i < item_actions.size(); i++ )
     {
@@ -6225,9 +6227,9 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Vanish", "if=combo_points.deficit>=2&energy>60" );
     def -> add_action( "pool_resource,for_next=1,extra_amount=60" );
     def -> add_action( "shadowmeld,if=combo_points.deficit>=2&energy>60" );
-    def -> add_talent( this, "Slice and Dice", "if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<6" );
-      // Reroll unless 3+ buffs or sharks + 1 or jolly roger + 1 or broadsides + true bearing
-    def -> add_action( this, "Roll the Bones", "if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<3|buff.roll_the_bones.remains<duration*0.3%rtb_buffs|(rtb_buffs<=1|rtb_buffs=2&!buff.shark_infested_waters.up&!buff.jolly_roger.up&!(buff.broadsides.up&buff.true_bearing.up)))" );
+    def -> add_talent( this, "Slice and Dice", "if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<10.8" );
+      // Reroll unless 2+ buffs
+    def -> add_action( this, "Roll the Bones", "if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|rtb_buffs<=1)" );
     def -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
     def -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
     def -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4" );
@@ -6238,12 +6240,13 @@ void rogue_t::init_action_list()
     // Combo Point Finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo Point Finishers" );
     finisher -> add_talent( this, "Death from Above" );
+    finisher -> add_action( this, "Between the Eyes", "if=equipped.greenskins_waterlogged_wristcuffs&buff.shark_infested_waters.up" );
     finisher -> add_action( this, "Run Through" );
 
     // Combo Point Generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo Point Generators" );
-    gen -> add_talent( this, "Ghostly Strike", "if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<duration*0.3" );
-    gen -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&energy<60" );
+    gen -> add_talent( this, "Ghostly Strike", "if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<4.5" );
+    gen -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&energy.time_to_max>2" );
     gen -> add_action( this, "Saber Slash");
   }
   else if ( specialization() == ROGUE_SUBTLETY )
