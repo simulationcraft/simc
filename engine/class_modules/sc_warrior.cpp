@@ -2553,6 +2553,7 @@ struct rampage_event_t: public event_t
     }
     else
     {
+      warrior -> buff.odyns_champion -> trigger(); // Procs after last attack.
       warrior -> rampage_driver = nullptr;
       warrior -> buff.meat_cleaver -> expire();
     }
@@ -2594,7 +2595,6 @@ struct rampage_parent_t: public warrior_attack_t
 
   void execute() override
   {
-    p() -> buff.odyns_champion -> trigger();
     warrior_attack_t::execute();
 
     p() -> buff.massacre -> expire();
