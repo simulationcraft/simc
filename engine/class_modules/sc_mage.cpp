@@ -2336,7 +2336,7 @@ struct frost_mage_spell_t : public mage_spell_t
     }
   }
 
-  void handle_frozen( action_state_t* state ) 
+  void handle_frozen( action_state_t* state )
   {
     // Handle Frozen with this, but let Ice Lance take care of itself since it needs
     // to snapshot FoF/Frozen state on execute.
@@ -2344,7 +2344,7 @@ struct frost_mage_spell_t : public mage_spell_t
     {
       frozen = true;
     }
-    else if ( !td ( state -> target ) -> debuffs.winters_chill -> up() && 
+    else if ( !td ( state -> target ) -> debuffs.winters_chill -> up() &&
                state -> action -> s_data -> _id != 30455 )
     {
       frozen = false;
@@ -8202,7 +8202,7 @@ void mage_t::apl_fire()
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
   default_list -> add_action( "call_action_list,name=single_target" );
 
-  combustion_phase -> add_talent( this, "Rune of Power", "if=buff.combustion.down" ); 
+  combustion_phase -> add_talent( this, "Rune of Power", "if=buff.combustion.down" );
   combustion_phase -> add_action( "call_action_list,name=active_talents" );
   combustion_phase -> add_action( this, "Combustion" );
 
@@ -8269,7 +8269,7 @@ void mage_t::apl_frost()
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
   default_list -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
-  default_list -> add_action( this, "Water Jet", "if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)" );
+  default_list -> add_action( "water_jet,if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)" );
   default_list -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
   default_list -> add_action( this, "Flurry", "if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.frostbolt" );
   default_list -> add_talent( this, "Glacial Spike" );

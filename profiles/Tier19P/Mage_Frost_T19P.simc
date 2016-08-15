@@ -30,6 +30,7 @@ actions+=/ice_lance,if=buff.fingers_of_frost.react=0&prev_gcd.flurry
 actions+=/call_action_list,name=cooldowns
 actions+=/ice_nova,if=debuff.winters_chill.up
 actions+=/frostbolt,if=prev_off_gcd.water_jet
+actions+=/water_jet,if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)
 actions+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
 actions+=/flurry,if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.frostbolt
 actions+=/glacial_spike
@@ -75,3 +76,5 @@ main_hand=ebonchill,id=128862,ilevel=870
 # gear_versatility_rating=898
 # gear_leech_rating=404
 # gear_armor=1570
+
+
