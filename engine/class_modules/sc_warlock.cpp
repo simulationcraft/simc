@@ -1030,7 +1030,9 @@ struct doom_bolt_t: public warlock_pet_spell_t
     warlock_pet_spell_t( "Doom Bolt", p, p -> find_spell( 85692 ) )
   {
     if ( p -> o() -> talents.grimoire_of_supremacy -> ok() )
-    base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.data().effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.data().effectN( 2 ).percent();
+    if ( p-> o() -> specialization() == WARLOCK_DEMONOLOGY )
+      base_multiplier *= 0.85; // Doomguard does 15% less damage for demonology, find spelldata for this.
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
