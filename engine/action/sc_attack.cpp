@@ -445,6 +445,11 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
 
   if ( ! background )
   {
+    if ( player -> queueing == this )
+    {
+      player -> queueing = nullptr;
+    }
+
     player -> executing = this;
     player -> gcd_ready = sim -> current_time() + gcd();
     player -> gcd_haste_type = gcd_haste;
