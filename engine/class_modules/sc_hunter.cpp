@@ -6647,7 +6647,7 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 206332, wrist );
   }
 
-  virtual void init( player_t* p ) const override
+  virtual void init( player_t* ) const override
   {
   }
 

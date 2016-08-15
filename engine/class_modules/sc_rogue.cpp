@@ -3825,7 +3825,8 @@ struct shadowstrike_t : public rogue_attack_t
   };
 
   shadowstrike_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadowstrike", p, p -> find_specialization_spell( "Shadowstrike" ), options_str )
+    rogue_attack_t( "shadowstrike", p, p -> find_specialization_spell( "Shadowstrike" ), options_str ),
+    shadow_satyrs_walk( nullptr )
   {
     requires_weapon = WEAPON_DAGGER;
     requires_stealth = true;

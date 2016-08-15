@@ -5745,14 +5745,6 @@ static void najentuss_vertebrae( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> najentuss_vertebrae, effect );
 }
 
-/*
-static void ayalas_stone_heart( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> ayalas_stone_heart, effect );
-}
-*/
-
 static void aggramars_stride( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
