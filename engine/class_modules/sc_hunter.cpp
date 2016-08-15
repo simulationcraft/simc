@@ -1528,7 +1528,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
     hunter_secondary_pet_t::summon( duration );
 
     if ( o() -> talents.stomp -> ok() )
-      active.stomp -> schedule_execute();
+      active.stomp -> execute();
   }
 
   virtual double composite_player_multiplier( school_e school ) const override
@@ -1851,7 +1851,7 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
                                             .percent() * 
                                             s -> result_amount;
       jaws_of_thunder -> base_dd_max = jaws_of_thunder -> base_dd_min;
-      jaws_of_thunder -> schedule_execute();
+      jaws_of_thunder -> execute();
     }
   }
 
@@ -2760,9 +2760,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p() -> artifacts.surge_of_the_stormgod.rank() && rng().roll( p() -> artifacts.surge_of_the_stormgod.data().proc_chance() ) )
     {
       if ( p() -> active.pet )
-        p() -> active.surge_of_the_stormgod -> schedule_execute();
+        p() -> active.surge_of_the_stormgod -> execute();
       if ( p() -> hati )
-        p() -> active.surge_of_the_stormgod -> schedule_execute();
+        p() -> active.surge_of_the_stormgod -> execute();
     }
 
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B2 ) )
@@ -4583,11 +4583,11 @@ struct kill_command_t: public hunter_spell_t
 
     if ( p() -> active.pet )
     {
-      p() -> active.pet -> active.kill_command -> schedule_execute();
+      p() -> active.pet -> active.kill_command -> execute();
       trigger_tier17_2pc_bm();
     }
     if ( p() -> artifacts.master_of_beasts.rank() )
-      p() -> hati -> active.kill_command -> schedule_execute();
+      p() -> hati -> active.kill_command -> execute();
     p() -> no_steady_focus();
   }
 
