@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=2210011
-artifact=17:0:0:0:0:851:1:852:3:854:3:858:3:859:3:860:3:862:1:864:1:1349:1
+artifact=17:141277:133122:141277:0:851:1:852:3:853:3:854:3:858:3:859:3:860:3:862:1:864:1:1349:1
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.
@@ -63,15 +63,15 @@ actions.generator=shuriken_storm,if=spell_targets.shuriken_storm>=2
 actions.generator+=/gloomblade,if=energy.time_to_max<2.5
 actions.generator+=/backstab,if=energy.time_to_max<2.5
 
-head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
+head=veil_of_unseen_strikes,id=134447,bonus_id=1727
 neck=erratically_ticking_talisman,id=137418,bonus_id=1727
 shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727
-back=putrid_carapace,id=134408,bonus_id=1727
+back=mainsail_cloak,id=134406,bonus_id=1727
 chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727
-wrists=thermal_bindings,id=134461,bonus_id=1727
-hands=ravens_veil_gloves,id=139242,bonus_id=1727
+wrists=cryptwalker_bracers,id=137425,bonus_id=1727
+hands=manalanced_gloves,id=134444,bonus_id=1727
 waist=manafang_waistguard,id=137409,bonus_id=1727
-legs=charskin_legguards,id=137353,bonus_id=1727
+legs=wardens_martial_greaves,id=137515,bonus_id=1727
 feet=shellshock_footguards,id=134441,bonus_id=1727
 finger1=empowered_ring_of_the_kirin_tor,id=139599
 finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
