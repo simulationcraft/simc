@@ -4383,12 +4383,13 @@ void warrior_t::apl_fury()
   movement -> add_action( this, "Heroic Leap" );
 
   single_target -> add_action( this, "Odyn's Fury", "if=buff.battle_cry.up|target.time_to_die<cooldown.battle_cry.remains" );
+  single_target -> add_action( this, "Execute", "if=artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2)" );
   single_target -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&cooldown.dragon_roar.remains=0&buff.enrage.down" );
   single_target -> add_action( this, "Rampage", "if=rage>95|buff.massacre.react");
   single_target -> add_action( this, "Whirlwind", "if=!talent.inner_rage.enabled&buff.wrecking_ball.react" );
   single_target -> add_action( this, "Raging Blow", "if=buff.enrage.up" );
   single_target -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
-  single_target -> add_action( this, "Execute", "if=buff.enrage.up|buff.battle_cry.up|buff.stone_heart.react" );
+  single_target -> add_action( this, "Execute", "if=buff.enrage.up|buff.battle_cry.up|buff.stone_heart.react||(buff.juggernaut.up&buff.juggernaut.remains<3)" );
   single_target -> add_action( this, "Bloodthirst" );
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_talent( this, "Dragon Roar", "if=!talent.bloodbath.enabled&(cooldown.battle_cry.remains<1|cooldown.battle_cry.remains>10)|talent.bloodbath.enabled&cooldown.bloodbath.remains=0" );
