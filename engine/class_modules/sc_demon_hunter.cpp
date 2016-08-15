@@ -2009,8 +2009,12 @@ struct fel_rush_t : public demon_hunter_spell_t
   void execute() override
   {
     demon_hunter_spell_t::execute();
-
-    damage -> schedule_execute();
+    
+    // Does not benefit from momentum, so snapshot damage now.
+    action_state_t* s = damage -> get_state();
+    s -> target = target;
+    damage -> snapshot_state( s, DMG_DIRECT );
+    damage -> schedule_execute( s );
 
     // Aug 04 2016: Using Fel Rush puts VR on cooldown for 1 second.
     p() -> cooldown.vengeful_retreat_secondary -> start( timespan_t::from_seconds( 1.0 ) );
