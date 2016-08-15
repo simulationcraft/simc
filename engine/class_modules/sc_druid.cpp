@@ -4712,7 +4712,7 @@ struct lunar_strike_t : public druid_spell_t
   {
     timespan_t g = druid_spell_t::gcd();
 
-    if ( p() -> talent.starlord -> ok() && p() -> buff.solar_empowerment -> check() )
+    if ( p() -> talent.starlord -> ok() && p() -> buff.lunar_empowerment -> check() )
       g *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
 
     return g;
