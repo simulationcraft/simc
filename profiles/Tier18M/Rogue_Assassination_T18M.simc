@@ -35,7 +35,7 @@ actions+=/call_action_list,name=cds
 actions+=/rupture,if=combo_points>=2&!ticking&time<10&!artifact.urge_to_kill.enabled
 actions+=/rupture,if=combo_points>=4&!ticking
 actions+=/pool_resource,for_next=1
-actions+=/kingsbane,if=(buff.vendetta.up|cooldown.vendetta.remains>30)&dot.rupture.exsanguinated
+actions+=/kingsbane,if=dot.rupture.exsanguinated
 actions+=/run_action_list,name=exsang_combo,if=cooldown.exsanguinate.up&(buff.maalus.up|cooldown.vanish.remains>35)&talent.exsanguinate.enabled
 actions+=/call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8
 actions+=/call_action_list,name=exsang,if=dot.rupture.exsanguinated

@@ -6101,7 +6101,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Rupture", "if=combo_points>=2&!ticking&time<10&!artifact.urge_to_kill.enabled" );
     def -> add_action( this, "Rupture", "if=combo_points>=4&!ticking" );
     def -> add_action( "pool_resource,for_next=1" );
-    def -> add_action( this, "Kingsbane", "if=(buff.vendetta.up|cooldown.vendetta.remains>30)&dot.rupture.exsanguinated" );
+    def -> add_action( this, "Kingsbane", "if=dot.rupture.exsanguinated" );
     // If Maalus, should synchronize Exsanguinate with Maalus hence waiting for
     // Maalus every other Exsanguinate
     // run_action_list forbids the simulator from running the following actions
@@ -6112,7 +6112,7 @@ void rogue_t::init_action_list()
       }
       else
       {
-        def -> add_action( "run_action_list,name=exsang_combo,if=cooldown.exsanguinate.remains<3&talent.exsanguinate.enabled" );
+        def -> add_action( "run_action_list,name=exsang_combo,if=cooldown.exsanguinate.remains<3&talent.exsanguinate.enabled&(buff.vendetta.up|cooldown.vendetta.remains>10)" );
       }
     }
     def -> add_action( "call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8" );
