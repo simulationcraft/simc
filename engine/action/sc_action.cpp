@@ -154,6 +154,26 @@ struct action_execute_event_t : public player_event_t
   }
 };
 
+struct queued_action_execute_event_t : public event_t
+{
+  action_t* action;
+
+  queued_action_execute_event_t( action_t* a, const timespan_t& t ) :
+    event_t( *a -> sim ), action( a )
+  {
+    add_event( t );
+  }
+
+  const char* name() const override
+  { return "Queued-Action-Execute"; }
+
+  void execute() override
+  {
+    action -> queue_event = nullptr;
+    action -> schedule_execute();
+  }
+};
+
 struct aoe_target_list_callback_t
 {
   action_t* action;
@@ -341,15 +361,16 @@ action_t::action_t( action_e       ty,
   crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;
   base_ta_adder                  = 0.0;
-  weapon                         = NULL;
+  weapon                         = nullptr;
   weapon_multiplier              = 1.0;
   chain_multiplier               = 1.0;
   chain_bonus_damage             = 0.0;
   base_aoe_multiplier            = 1.0;
   split_aoe_damage               = false;
   normalize_weapon_speed         = false;
-  stats                          = NULL;
-  execute_event                  = 0;
+  stats                          = nullptr;
+  execute_event                  = nullptr;
+  queue_event                    = nullptr;
   travel_speed                   = 0.0;
   resource_consumed              = 0.0;
   moving                         = -1;
@@ -1528,6 +1549,23 @@ void action_t::record_data( action_state_t* data )
 
 // action_t::schedule_execute ===============================================
 
+// Should be called only by foreground action executions (i.e., Player-Ready event calls
+// player_t::execute_action() ). Background actions should (and are) directly call
+// action_t::schedule_execute.
+void action_t::queue_execute()
+{
+  auto queue_delay = cooldown -> queue_delay();
+  if ( queue_delay > timespan_t::zero() )
+  {
+    queue_event = new ( *sim ) queued_action_execute_event_t( this, queue_delay );
+    player -> queueing = this;
+  }
+  else
+  {
+    schedule_execute();
+  }
+}
+
 void action_t::schedule_execute( action_state_t* execute_state )
 {
   if ( sim -> log )
@@ -1544,6 +1582,13 @@ void action_t::schedule_execute( action_state_t* execute_state )
 
   if ( ! background )
   {
+    // We were queueing this on an almost finished cooldown, so queueing is over, and we begin
+    // executing this action.
+    if ( player -> queueing == this )
+    {
+      player -> queueing = nullptr;
+    }
+
     player -> executing = this;
     // Setup the GCD ready time, and associated haste-related values
     player -> gcd_ready = sim -> current_time() + gcd();
@@ -1690,7 +1735,7 @@ bool action_t::usable_moving() const
 bool action_t::ready()
 {
   // Check conditions that do NOT pertain to the target before cycle_targets
-  if ( cooldown -> down() )
+  if ( cooldown -> is_ready() == false )
     return false;
 
   if ( internal_cooldown -> down() )
@@ -2059,7 +2104,8 @@ void action_t::reset()
   cooldown -> reset_init();
   internal_cooldown -> reset_init();
   line_cooldown.reset_init();
-  execute_event = 0;
+  execute_event = nullptr;
+  queue_event = nullptr;
   travel_events.clear();
   target = default_target;
 
@@ -2100,18 +2146,24 @@ void action_t::cancel()
 
   bool was_busy = false;
 
+  if ( player -> queueing == this )
+  {
+    was_busy = true;
+    player -> queueing = nullptr;
+  }
   if ( player -> executing  == this )
   {
     was_busy = true;
-    player -> executing  = 0;
+    player -> executing  = nullptr;
   }
   if ( player -> channeling == this )
   {
     was_busy = true;
-    player -> channeling  = 0;
+    player -> channeling  = nullptr;
   }
 
   event_t::cancel( execute_event );
+  event_t::cancel( queue_event );
 
   player -> debuffs.casting -> expire();
 
@@ -2143,7 +2195,8 @@ void action_t::interrupt_action()
     internal_cooldown -> start( this );
   }
 
-  if ( player -> executing  == this ) player -> executing  = 0;
+  if ( player -> executing  == this ) player -> executing = nullptr;
+  if ( player -> queueing   == this ) player -> queueing = nullptr;
   if ( player -> channeling == this )
   {
     dot_t* dot = get_dot( execute_state -> target );
@@ -2152,6 +2205,7 @@ void action_t::interrupt_action()
   }
 
   event_t::cancel( execute_event );
+  event_t::cancel( queue_event );
 
   player -> debuffs.casting -> expire();
 }
@@ -2248,6 +2302,27 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( name_str == "cast_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
+  else if ( name_str == "usable" )
+  {
+    return make_mem_fn_expr( name_str, *cooldown, &cooldown_t::is_ready );
+  }
+  else if ( name_str == "usable_in" )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      if ( ! cooldown -> is_ready() )
+      {
+        return cooldown -> remains().total_seconds();
+      }
+      auto ready_at = ( cooldown -> ready - cooldown -> player -> cooldown_tolerance() );
+      auto current_time = cooldown -> sim.current_time();
+      if ( ready_at <= current_time )
+      {
+        return 0.0;
+      }
+
+      return ( ready_at - current_time ).total_seconds();
+    } );
+  }
   else if ( name_str == "cost" )
     return make_mem_fn_expr( name_str, *this, &action_t::cost );
   else if ( name_str == "target" )
@@ -3267,5 +3342,44 @@ bool action_t::has_movement_directionality() const
       return true;
     else
       return m == movement_directionality;
+  }
+}
+
+void action_t::reschedule_queue_event()
+{
+  if ( ! queue_event )
+  {
+    return;
+  }
+
+  timespan_t new_queue_delay = cooldown -> queue_delay();
+
+  if ( new_queue_delay <= timespan_t::zero() )
+  {
+    return;
+  }
+
+  timespan_t remaining = queue_event -> remains();
+
+  // The actual queue delay did not change, so no need to do anything
+  if ( new_queue_delay == remaining )
+  {
+    return;
+  }
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s %s adjusting queue-delayed execution, old=%.3f new=%.3f",
+        player -> name(), name(), remaining.total_seconds(), new_queue_delay.total_seconds() );
+  }
+
+  if ( new_queue_delay > remaining )
+  {
+    queue_event -> reschedule( new_queue_delay );
+  }
+  else
+  {
+    event_t::cancel( queue_event );
+    queue_event = new ( *sim ) queued_action_execute_event_t( this, new_queue_delay );
   }
 }

@@ -2011,6 +2011,7 @@ void haste_buff_t::increment( int stacks, double value, timespan_t duration )
     player -> adjust_dynamic_cooldowns();
     player -> adjust_global_cooldown( haste_type );
     player -> adjust_auto_attack( haste_type );
+    player -> adjust_action_queue_time();
   }
 }
 
@@ -2027,6 +2028,7 @@ void haste_buff_t::decrement( int stacks, double value )
     player -> adjust_dynamic_cooldowns();
     player -> adjust_global_cooldown( haste_type );
     player -> adjust_auto_attack( haste_type );
+    player -> adjust_action_queue_time();
   }
 }
 
@@ -2043,6 +2045,7 @@ void haste_buff_t::expire( timespan_t delay )
     player -> adjust_dynamic_cooldowns();
     player -> adjust_global_cooldown( haste_type );
     player -> adjust_auto_attack( haste_type );
+    player -> adjust_action_queue_time();
   }
 }
 
