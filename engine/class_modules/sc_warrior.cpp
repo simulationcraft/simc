@@ -5359,6 +5359,11 @@ double warrior_t::composite_melee_speed() const
     s /= 1.0 + buff.enrage -> data().effectN( 1 ).percent();
   }
 
+  if ( buff.berserking -> check() )
+  {
+    s /= 1.0 + buff.berserking -> check_value();
+  }
+
   return s;
 }
 
@@ -5375,6 +5380,8 @@ double warrior_t::composite_melee_crit_chance() const
   }
 
   c += buff.battle_cry -> check_value();
+
+  c += buff.berserking -> check_value();
 
   return c;
 }
