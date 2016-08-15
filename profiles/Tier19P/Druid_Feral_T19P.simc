@@ -3,8 +3,8 @@ level=110
 race=worgen
 role=attack
 position=back
-talents=3323323
-artifact=58:0:0:0:0:1153:1:1156:1:1157:1:1158:1:1161:3:1163:2:1164:3:1165:3:1166:3:1327:1
+talents=3323322
+artifact=58:133683:137544:142062:0:1153:1:1156:1:1157:1:1158:1:1161:6:1163:2:1164:3:1165:3:1166:3:1327:1
 spec=feral
 
 # This default action priority list is automatically created based on your character.
@@ -12,9 +12,9 @@ spec=feral
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
-
+ 
 # Executed before combat begins. Accepts non-harmful actions only.
-
+ 
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=the_hungry_magister
 actions.precombat+=/healing_touch,if=talent.bloodtalons.enabled
@@ -23,77 +23,108 @@ actions.precombat+=/prowl
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
-
+actions.precombat+=/elunes_guidance,if=talent.savage_roar.enabled
+actions.precombat+=/savage_roar
+ 
 # Executed every time the actor is available.
-
-actions=cat_form
+ 
+actions=dash,if=!buff.cat_form.up
+actions+=/cat_form
 actions+=/wild_charge
 actions+=/displacer_beast,if=movement.distance>10
 actions+=/dash,if=movement.distance&buff.displacer_beast.down&buff.wild_charge_movement.down
-actions+=/rake,if=buff.prowl.up
+actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack
 actions+=/skull_bash
-actions+=/pool_resource,wait=0.1,for_next=1,extra_amount=50
-actions+=/elunes_guidance,if=combo_points=0&(!artifact.ashamanes_bite.enabled|!dot.ashamanes_rip.ticking)
 actions+=/berserk,if=buff.tigers_fury.up
 actions+=/incarnation,if=cooldown.tigers_fury.remains<gcd
-actions+=/use_item,slot=trinket2,if=(prev.tigers_fury&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|prev.berserk|(buff.incarnation.up&time<10)
+actions+=/use_item,slot=trinket2,if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20
 actions+=/potion,name=draenic_agility,if=((buff.berserk.remains>10|buff.incarnation.remains>20)&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40
-actions+=/blood_fury,sync=tigers_fury
-actions+=/berserking,sync=tigers_fury
-actions+=/arcane_torrent,sync=tigers_fury
+actions+=/blood_fury,if=buff.tigers_fury.up
+actions+=/berserking,if=buff.tigers_fury.up
+actions+=/arcane_torrent,if=buff.tigers_fury.up
 actions+=/tigers_fury,if=(!buff.clearcasting.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)
-actions+=/tigers_fury,if=talent.sabertooth.enabled&time<10&combo_points=5
-actions+=/incarnation,if=energy.time_to_max>1
+actions+=/incarnation,if=energy.time_to_max>1&energy>=35
 # Keep Rip from falling off during execute range.
-actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.health.pct<25
-actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&((combo_points>=4&!set_bonus.tier18_4pc)|combo_points=5|buff.predatory_swiftness.remains<1.5)
-actions+=/savage_roar,if=buff.savage_roar.down
-actions+=/thrash_cat,if=set_bonus.tier18_4pc&buff.clearcasting.react&remains<=duration*0.3&combo_points+buff.bloodtalons.stack!=6
+actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>3&(target.health.pct<25|talent.sabertooth.enabled)
+# Use Healing Touch at 5 Combo Points, if Predatory Swiftness is about to fall off, at 2 Combo Points before Ashamane's Frenzy, before Elune's Guidance is cast or before the Elune's Guidance buff gives you a 5th Combo Point.  
+actions+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=5|buff.predatory_swiftness.remains<1.5|(talent.bloodtalons.enabled&combo_points=2&buff.bloodtalons.down&cooldown.ashamanes_frenzy.remains<gcd)|(talent.elunes_guidance.enabled&((cooldown.elunes_guidance.remains<gcd&combo_points=0)|(buff.elunes_guidance.up&combo_points>=4))))
+# Hard cast Healing touch during Sabertooth opener and use Tiger's Fury at 5 Combo Points to get a maximum Rip multiplier right off the bat.  Use Dash to get back into Cat Form without invoking the GCD afterwards (first line of the action list).
+actions+=/healing_touch,if=talent.sabertooth.enabled&time<20&talent.bloodtalons.enabled&combo_points=5&!buff.bloodtalons.up&!dot.rip.ticking
+actions+=/tigers_fury,if=talent.sabertooth.enabled&time<20&!dot.rip.ticking&combo_points=5
+ 
+# Following line does not work in base simcraft because you can't test for dots on the enemy with a friendly spell normally, but is a small DPS increase to use Healing Touch early at 4 Combo Points if Rake is about to expire on 1-2 targets.
+# actions.healing_touch+=/healing_touch,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&combo_points>=4&dot.rake.remains<dot.rake.duration*0.3+gcd&active_enemies<3
+ 
+# Finisher Section
+ 
+# Delay your finishers as long as possible unless another condition makes it better to use it earlier.  Increases uptime on Ashamane's Rip.
+$(finisher_conditions)=combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|set_bonus.tier18_4pc|buff.clearcasting.react|talent.soul_of_the_forest.enabled|!dot.rip.ticking|(dot.rake.remains<1.5&spell_targets.swipe_cat<6))
+$(fb_finisher_conditions)=combo_points=5&(energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|set_bonus.tier18_4pc|(talent.moment_of_clarity.enabled&buff.clearcasting.react))
+ 
+# Use Savage Roar if it's expired and you're at 5 combo points or are about to use Brutal Slash
 actions+=/pool_resource,for_next=1
-actions+=/thrash_cat,cycle_targets=1,if=remains<=duration*0.3&(spell_targets.thrash_cat>=2&set_bonus.tier17_2pc|spell_targets.thrash_cat>=4)
-actions+=/call_action_list,name=finisher,if=combo_points=5
-actions+=/savage_roar,if=buff.savage_roar.remains<gcd
-actions+=/ashamanes_frenzy,if=time<10&dot.rake.ticking&!talent.elunes_guidance.enabled
-actions+=/call_action_list,name=maintain,if=combo_points<5
+actions+=/savage_roar,if=!buff.savage_roar.up&(combo_points=5|(talent.brutal_slash.enabled&spell_targets.brutal_slash>desired_targets&action.brutal_slash.charges>0))
+# Thrash has higher priority than finishers at 5 targets
 actions+=/pool_resource,for_next=1
-actions+=/thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.thrash_cat>=2
-actions+=/call_action_list,name=generator,if=combo_points<5
+actions+=/thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.thrash_cat>=5
+# Replace Rip with Swipe at 8 targets
+actions+=/pool_resource,for_next=1
+actions+=/swipe_cat,if=spell_targets.swipe_cat>=8
+# Refresh Rip at 8 seconds or for a multiplier increase
+actions+=/rip,cycle_targets=1,if=(!ticking|(remains<8&target.health.pct>25&!talent.sabertooth.enabled)|persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die-remains>tick_time*4&$(finisher_conditions)
+# Refresh Savage Roar early with Jagged Wounds
+actions+=/savage_roar,if=(buff.savage_roar.remains<=10.5|(buff.savage_roar.remains<=7.2&!talent.jagged_wounds.enabled))&$(finisher_conditions)
+# Replace FB with Swipe at 6 targets for Bloodtalons or 3 targets otherwise.
+actions+=/swipe_cat,if=combo_points=5&(spell_targets.swipe_cat>=6|(spell_targets.swipe_cat>=3&!talent.bloodtalons.enabled))&$(fb_finisher_conditions)
+actions+=/ferocious_bite,max_energy=1,cycle_targets=1,if=$(fb_finisher_conditions)
+ 
+ 
+ 
+# Generator Section
+ 
+# Brutal Slash if there's adds up.
+actions+=/brutal_slash,cycle_targets=1,if=spell_targets.brutal_slash>desired_targets&combo_points<5
+# Use Ashamane's Frenzy with a Bloodtalons charge if talented
+actions+=/ashamanes_frenzy,if=combo_points<=2&buff.elunes_guidance.down&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(buff.savage_roar.up|!talent.savage_roar.enabled)
+# Pool energy for Elune's Guidance when it's coming off cooldown.
+actions+=/pool_resource,if=talent.elunes_guidance.enabled&combo_points=0&energy<action.ferocious_bite.cost+25-energy.regen*cooldown.elunes_guidance.remains
+actions+=/elunes_guidance,if=talent.elunes_guidance.enabled&combo_points=0&energy>=action.ferocious_bite.cost+25
+# Spam Thrash over Rake or Moonfire at 9 targets with Brutal Slash talent.
+actions+=/pool_resource,for_next=1
+actions+=/thrash_cat,if=talent.brutal_slash.enabled&spell_targets.thrash_cat>=9
+# Use Swipe over Rake or Moonfire at 6 targets.
+actions+=/pool_resource,for_next=1
+actions+=/swipe_cat,if=spell_targets.swipe_cat>=6
+# Shadowmeld to buff Rake when Tiger's Fury and Bloodtalons (if talented) are up unless you already have or will shortly have an Incarnation/Prowl buffed Rake.
+actions+=/shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
+# Refresh Rake early with Bloodtalons
+actions+=/pool_resource,for_next=1
+actions+=/rake,cycle_targets=1,if=combo_points<5&(!ticking|(!talent.bloodtalons.enabled&remains<duration*0.3)|(talent.bloodtalons.enabled&buff.bloodtalons.up&(!talent.soul_of_the_forest.enabled&remains<=7|remains<=5)&persistent_multiplier>dot.rake.pmultiplier*0.80))&target.time_to_die-remains>tick_time
+actions+=/moonfire_cat,cycle_targets=1,if=combo_points<5&remains<=4.2&target.time_to_die-remains>tick_time*2
+# Use Thrash at 2 targets.
+actions+=/pool_resource,for_next=1
+actions+=/thrash_cat,cycle_targets=1,if=remains<=duration*0.3&spell_targets.swipe_cat>=2
+# Brutal Slash if you would cap out charges before the next adds spawn
+actions+=/brutal_slash,if=combo_points<5&((raid_event.adds.exists&raid_event.adds.in>(1+max_charges-charges_fractional)*15)|(!raid_event.adds.exists&(charges_fractional>2.66&time>10)))
+# Swipe at 3 targets.
+actions+=/swipe_cat,if=combo_points<5&spell_targets.swipe_cat>=3
+actions+=/shred,if=combo_points<5&(spell_targets.swipe_cat<3|talent.brutal_slash.enabled)
 
-actions.finisher=rip,cycle_targets=1,if=remains<=duration*0.3&(target.health.pct>25|!dot.rip.ticking)
-actions.finisher+=/savage_roar,if=buff.savage_roar.remains<=7.2&(target.health.pct<25|energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|dot.rake.remains<1.5|buff.elunes_guidance.up|cooldown.tigers_fury.remains<3|(talent.moment_of_clarity.enabled&buff.clearcasting.react))
-actions.finisher+=/ferocious_bite,max_energy=1,cycle_targets=1,if=(target.health.pct<25|talent.sabertooth.enabled)&(cooldown.tigers_fury.remains<3|energy.time_to_max<1|buff.berserk.up|buff.incarnation.up|dot.rake.remains<1.5|buff.elunes_guidance.up|(talent.moment_of_clarity.enabled&buff.clearcasting.react))
-actions.finisher+=/ferocious_bite,max_energy=1,if=buff.berserk.up|buff.incarnation.up|cooldown.tigers_fury.remains<3|buff.elunes_guidance.up
-actions.finisher+=/ferocious_bite,max_energy=1,if=energy.time_to_max<1
-
-actions.maintain=rake,cycle_targets=1,if=remains<=tick_time&((target.time_to_die-remains>3&spell_targets.swipe_cat<3)|target.time_to_die-remains>6)
-actions.maintain+=/rake,cycle_targets=1,if=remains<=duration*0.3&(persistent_multiplier>=dot.rake.pmultiplier|(talent.bloodtalons.enabled&(buff.bloodtalons.up|!buff.predatory_swiftness.up)))&((target.time_to_die-remains>3&spell_targets.swipe_cat<3)|target.time_to_die-remains>6)
-actions.maintain+=/moonfire_cat,cycle_targets=1,if=remains<=4.2&spell_targets.swipe_cat<=5&target.time_to_die-remains>tick_time*5
-
-actions.generator=ashamanes_frenzy,if=combo_points<=2&buff.elunes_guidance.down
-actions.generator+=/pool_resource,for_next=1
-actions.generator+=/brutal_slash,if=spell_targets.brutal_slash>desired_targets
-actions.generator+=/pool_resource,for_next=1
-actions.generator+=/brutal_slash,if=active_enemies>=2&raid_event.adds.exists&raid_event.adds.in>(1+max_charges-charges_fractional)*15
-actions.generator+=/pool_resource,for_next=1
-actions.generator+=/brutal_slash,if=active_enemies>=2&!raid_event.adds.exists&(charges_fractional>2.66&time>10)
-actions.generator+=/swipe_cat,if=spell_targets.swipe_cat>=4
-actions.generator+=/shred,if=spell_targets.swipe_cat<=3|talent.brutal_slash.enabled
-
-head=hood_of_the_blind_executioner,id=137511
-neck=pendant_of_the_moon_temple,id=139605,enchant_id=5439
-shoulders=charskin_mantle,id=137510
-back=cloak_of_manaspun_silk,id=134410,enchant_id=5435
-chest=vest_of_rupturing_diamonds,id=137336
-wrists=shorn_batbrood_cuffs,id=136979
-hands=frostcarver_grips,id=134445
-waist=sinister_ashfall_cord,id=134455
-legs=snaggles_favorite_pants,id=140594
-feet=footpads_of_the_swift_balestra,id=137497
-finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
-finger2=utgarde_royal_signet,id=133637,enchant_id=5427
-trinket1=chaos_talisman,id=137459
-trinket2=horn_of_valor,id=133642
+head=hood_of_the_blind_executioner,id=137511,ilevel=840
+neck=pendant_of_the_moon_temple,id=139605,enchant_id=5439,ilevel=840
+shoulders=charskin_mantle,id=137510,ilevel=840
+back=cloak_of_manaspun_silk,id=134410,enchant_id=5435,ilevel=840
+chest=vest_of_rupturing_diamonds,id=137336,ilevel=840
+wrists=shorn_batbrood_cuffs,id=136979,ilevel=840
+hands=frostcarver_grips,id=134445,ilevel=840
+waist=sinister_ashfall_cord,id=134455,ilevel=840
+legs=snaggles_favorite_pants,id=140594,ilevel=840
+feet=footpads_of_the_swift_balestra,id=137497,ilevel=840
+finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427,ilevel=840
+finger2=utgarde_royal_signet,id=133637,enchant_id=5427,ilevel=840
+trinket1=chaos_talisman,id=137459,ilevel=840
+trinket2=horn_of_valor,id=133642,ilevel=840
 main_hand=fangs_of_ashamane,id=128860,bonus_id=723,ilevel=870
 off_hand=fangs_of_ashamane,id=128859,ilevel=870
 
