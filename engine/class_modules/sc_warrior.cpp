@@ -47,8 +47,7 @@ public:
   event_t* heroic_charge, *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
   std::vector<cooldown_t*> odyns_champion_cds;
-  int initial_rage;
-  bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger;
+  bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger, opportunity_strikes_once;
   double expected_max_health;
 
   // Tier 18 (WoD 6.2) class specific trinket effects
@@ -393,10 +392,9 @@ public:
     proc( procs_t() ),
     spec( spec_t() ),
     talents( talents_t() )
-  {
-    initial_rage = 0;
+  {;
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
-    warrior_fixed_time = frothing_may_trigger = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
+    warrior_fixed_time = frothing_may_trigger = opportunity_strikes_once = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
     expected_max_health = 0;
     base.distance = 5.0;
 
@@ -795,6 +793,20 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
     }
   }
 
+  virtual bool opportunity_strikes( action_state_t* s )
+  {
+    if ( special && s -> action -> s_data -> id() != p() -> active.opportunity_strikes -> s_data -> id() )
+    {
+      if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
+      {
+        p() -> active.opportunity_strikes -> target = s -> target;
+        p() -> active.opportunity_strikes -> execute(); // Blizzard Employee "What can we do to make this talent really awkward?"
+        return true;
+      }
+    }
+    return false;
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     base_t::impact( s );
@@ -813,13 +825,9 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
           target, // target
           s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
       }
-      if ( p() -> talents.opportunity_strikes -> ok() && special && s -> action -> s_data -> id() != p() -> active.opportunity_strikes -> s_data -> id() )
+      if ( p() -> talents.opportunity_strikes -> ok() )
       {
-        if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
-        {
-          p() -> active.opportunity_strikes -> target = s -> target;
-          p() -> active.opportunity_strikes -> execute(); // Blizzard Employee "What can we do to make this talent really awkward?"
-        }
+        opportunity_strikes( s );
       }
     }
   }
@@ -3201,6 +3209,17 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     weapon_multiplier *= 1.0 + p -> artifact.many_will_fall.percent();
   }
 
+  bool opportunity_strikes( action_state_t* s ) override
+  {
+    if ( p() -> opportunity_strikes_once && warrior_attack_t::opportunity_strikes( s ) )
+    {
+      p() -> opportunity_strikes_once = false;
+      return true;
+    }
+    return false;
+  }
+
+
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -3258,6 +3277,16 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
     }
+  }
+
+  bool opportunity_strikes( action_state_t* s ) override
+  {
+    if ( p() -> opportunity_strikes_once && warrior_attack_t::opportunity_strikes( s ) )
+    {
+      p() -> opportunity_strikes_once = false;
+      return true;
+    }
+    return false;
   }
 
   void assess_damage( dmg_e type, action_state_t* s ) override
@@ -3353,6 +3382,12 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
     warrior_attack_t::last_tick( d );
 
     p() -> buff.cleave -> expire();
+  }
+
+  void execute() override
+  {
+    p() -> opportunity_strikes_once = true; // Opportunity strikes rolls multiple times, but seems to only proc once per whirlwind. 
+    warrior_attack_t::execute();
   }
 
   bool ready() override
@@ -5036,11 +5071,6 @@ void warrior_t::combat_begin()
     }
   }
 
-  if ( initial_rage > 0 )
-  {
-    resources.current[RESOURCE_RAGE] = initial_rage; // User specified rage.
-  }
-
   player_t::combat_begin();
 }
 
@@ -5061,7 +5091,7 @@ void warrior_t::reset()
 
   heroic_charge = nullptr;
   rampage_driver = nullptr;
-  frothing_may_trigger = true;
+  frothing_may_trigger = opportunity_strikes_once = true;
 }
 
 // Movement related overrides. =============================================
@@ -5622,7 +5652,6 @@ void warrior_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_int( "initial_rage", initial_rage ) );
   add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
 }
@@ -5669,7 +5698,6 @@ void warrior_t::copy_from( player_t* source )
 
   warrior_t* p = debug_cast<warrior_t*>( source );
 
-  initial_rage = p -> initial_rage;
   non_dps_mechanics = p -> non_dps_mechanics;
   warrior_fixed_time = p -> warrior_fixed_time;
 }
