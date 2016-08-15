@@ -79,10 +79,11 @@ main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=870
 off_hand=the_dreadblades,id=134552,ilevel=870
 
 # Gear Summary
-# gear_ilvl=844.38
-# gear_agility=9760
-# gear_stamina=17727
-# gear_crit_rating=5996
-# gear_haste_rating=1796
-# gear_mastery_rating=9531
-# gear_armor=1957
+# gear_ilvl=842.50
+# gear_agility=9559
+# gear_stamina=17327
+# gear_crit_rating=6776
+# gear_haste_rating=4225
+# gear_mastery_rating=1347
+# gear_versatility_rating=4819
+# gear_armor=1940
