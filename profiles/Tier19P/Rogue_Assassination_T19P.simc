@@ -95,7 +95,7 @@ hands=felbat_leather_gloves,id=134371,bonus_id=1727
 waist=felbat_leather_cinch,id=134375,bonus_id=1727
 legs=leggings_of_the_uncrowned,id=139743,bonus_id=1727
 feet=felbat_leather_boots,id=134369,bonus_id=1727
-finger1=band_of_the_wyrm_matron,id=134524
+finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727
 finger2=utgarde_royal_signet,id=133637,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=obelisk_of_the_void,id=137433,bonus_id=1727
