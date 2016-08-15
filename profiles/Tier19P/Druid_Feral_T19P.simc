@@ -3,8 +3,8 @@ level=110
 race=worgen
 role=attack
 position=back
-talents=3323323
-artifact=58:0:0:0:0:1153:1:1156:1:1157:1:1158:1:1161:3:1163:2:1164:3:1165:3:1166:3:1327:1
+talents=3323322
+artifact=58:133683:137544:142062:0:1153:1:1156:1:1157:1:1158:1:1161:6:1163:2:1164:3:1165:3:1166:3:1327:1
 spec=feral
 
 # This default action priority list is automatically created based on your character.

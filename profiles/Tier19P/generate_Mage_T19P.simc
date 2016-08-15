@@ -30,7 +30,7 @@ race=orc
 role=spell
 position=back
 talents=3032011
-artifact=53:136692:132810:136692:0:783:1:786:6:788:3:789:3:790:3:792:3:793:1:796:1:1296:1
+artifact=53:137380:133768:137380:0:783:1:785:3:788:3:789:6:790:3:792:3:793:1:796:1:1296:1
 spec=frost
 head=,id=137341,bonus_id=1727
 neck=,id=137536,bonus_id=1727,enchant=mark_of_the_claw
