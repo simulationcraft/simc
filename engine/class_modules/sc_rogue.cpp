@@ -2302,7 +2302,8 @@ struct blade_flurry_t : public rogue_attack_t
   const spell_data_t* shivarran_symmetry; // 7.0 legendary Shivarran Symmetry
 
   blade_flurry_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str )
+    rogue_attack_t( "blade_flurry", p, p -> find_specialization_spell( "Blade Flurry" ), options_str ),
+    shivarran_symmetry( nullptr )
   {
     harmful = may_miss = may_crit = false;
     ignore_false_positive = true;
