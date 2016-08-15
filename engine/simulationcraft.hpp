@@ -1656,6 +1656,7 @@ struct sim_t : private sc_thread_t
   timespan_t  gcd_lag, gcd_lag_stddev;
   timespan_t  channel_lag, channel_lag_stddev;
   timespan_t  queue_gcd_reduction;
+  timespan_t  default_cooldown_tolerance;
   int         strict_gcd_queue;
   double      confidence, confidence_estimator;
   // Latency
@@ -3038,6 +3039,16 @@ struct cooldown_t
   bool down() const
   { return ready > sim.current_time(); }
 
+  // Return true if the action bound to this cooldown is ready. Cooldowns are ready either when
+  // their cooldown has elapsed, or a short while before its cooldown is finished. The latter case
+  // is in use when the cooldown is associated with a foreground action (i.e., a player button
+  // press) to model in-game behavior of queueing soon-to-be-ready abilities. Inlined below.
+  bool is_ready() const;
+
+  // Return the queueing delay for cooldowns that are queueable
+  timespan_t queue_delay() const
+  { return std::max( timespan_t::zero(), ready - sim.current_time() ); }
+
   const char* name() const
   { return name_str.c_str(); }
 
@@ -3608,6 +3619,7 @@ struct player_t : public actor_t
   timespan_t  world_lag, world_lag_stddev;
   timespan_t  brain_lag, brain_lag_stddev;
   bool        world_lag_override, world_lag_stddev_override;
+  timespan_t  cooldown_tolerance_;
 
   // Data access
   dbc_t       dbc;
@@ -3757,6 +3769,7 @@ struct player_t : public actor_t
 
   // Events
   action_t* executing;
+  action_t* queueing;
   action_t* channeling;
   action_t* strict_sequence; // Strict sequence of actions currently being executed
   event_t* readying;
@@ -4526,6 +4539,7 @@ public:
     return active_dots[ action_id ];
   }
 
+  virtual void adjust_action_queue_time();
   virtual void adjust_dynamic_cooldowns()
   { range::for_each( dynamic_cooldown_list, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } ); }
   virtual void adjust_global_cooldown( haste_type_e haste_type );
@@ -4601,6 +4615,10 @@ public:
   // Child item functionality
   slot_e parent_item_slot( const item_t& item ) const;
   slot_e child_item_slot( const item_t& item ) const;
+
+  // Actor-specific cooldown tolerance for queueable actions
+  timespan_t cooldown_tolerance() const
+  { return cooldown_tolerance_ < timespan_t::zero() ? sim -> default_cooldown_tolerance : cooldown_tolerance_; }
 
   // Assessors
 
@@ -5349,7 +5367,9 @@ public:
 
   /// action statistics, merged by action-name
   stats_t* stats;
-  event_t* execute_event;
+  /// Execute event (e.g., "casting" of the action), queue delay event (for queueing cooldowned
+  //actions shortly before they execute.
+  event_t* execute_event, *queue_event;
   timespan_t time_to_execute, time_to_travel;
   double resource_consumed;
   timespan_t last_reaction_time;
@@ -5760,6 +5780,7 @@ public:
   virtual void record_data(action_state_t* data);
 
   virtual void schedule_execute(action_state_t* execute_state = nullptr);
+  virtual void queue_execute();
 
   virtual void reschedule_execute(timespan_t time);
 
@@ -5813,6 +5834,8 @@ public:
   virtual void do_teleport( action_state_t* );
 
   virtual dot_t* get_dot( player_t* = nullptr );
+
+  void reschedule_queue_event();
 
   // ================
   // Static functions
@@ -7690,6 +7713,26 @@ public:
     return amount;
   }
 };
+
+inline bool cooldown_t::is_ready() const
+{
+  if ( up() )
+  {
+    return true;
+  }
+
+  // Cooldowns that are not bound to specific actions should not be considered as queueable in the
+  // simulator, ever, so just return up() here. This limits the actual queueable cooldowns to
+  // basically only abilities, where the user must press a button to initiate the execution.
+  if ( ! action || ! player )
+  {
+    return up();
+  }
+
+  // Cooldown is not up, and is action-bound (essentially foreground action), check if it's within
+  // the player's (or default) cooldown tolerance for queueing.
+  return ready - player -> cooldown_tolerance() <= sim.current_time();
+}
 
 template <class T>
 sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)

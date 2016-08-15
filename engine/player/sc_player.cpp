@@ -527,6 +527,7 @@ player_t::player_t( sim_t*             s,
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   brain_lag( timespan_t::zero() ), brain_lag_stddev( timespan_t::min() ),
   world_lag_override( false ), world_lag_stddev_override( false ),
+  cooldown_tolerance_( timespan_t::min() ),
   dbc( s -> dbc ),
   talent_points(),
   glyph_list(),
@@ -548,7 +549,7 @@ player_t::player_t( sim_t*             s,
   // Consumables
   consumables(),
   // Events
-  executing( 0 ), channeling( 0 ), strict_sequence( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ), first_cast( true ),
+  executing( 0 ), queueing( 0 ), channeling( 0 ), strict_sequence( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ), first_cast( true ),
   last_foreground_action( 0 ), last_gcd_action( 0 ),
   off_gcdactions(),
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
@@ -4070,9 +4071,10 @@ void player_t::reset()
 
   first_cast = true;
 
-  executing = 0;
-  channeling = 0;
-  readying = 0;
+  executing = nullptr;
+  queueing = nullptr;
+  channeling = nullptr;
+  readying = nullptr;
   strict_sequence = 0;
   off_gcd = 0;
   in_combat = false;
@@ -4142,6 +4144,7 @@ void player_t::trigger_ready()
 
   if ( readying ) return;
   if ( executing ) return;
+  if ( queueing ) return;
   if ( channeling ) return;
 
   if ( current.sleeping ) return;
@@ -4168,14 +4171,23 @@ void player_t::schedule_ready( timespan_t delta_time,
     sim -> errorf( "\nplayer_t::schedule_ready assertion error: readying == true ( player %s )\n", name() );
     assert( 0 );
   }
+
+  if ( queueing )
+  {
+    sim -> errorf( "\nplayer_t::schedule_ready assertion error: queueing == true ( player %s )\n", name() );
+    assert( 0 );
+  }
+
+  assert( ! ( queueing && executing ) && "Cannot queue and execute an ability at the same time" );
 #endif
   action_t* was_executing = ( channeling ? channeling : executing );
 
   if ( current.sleeping )
     return;
 
-  executing = 0;
-  channeling = 0;
+  executing = nullptr;
+  queueing = nullptr;
+  channeling = nullptr;
   action_queued = false;
 
   started_waiting = timespan_t::min();
@@ -4410,6 +4422,7 @@ void player_t::interrupt()
   if ( sim -> log ) sim -> out_log.printf( "%s is interrupted", name() );
 
   if ( executing  ) executing  -> interrupt_action();
+  if ( queueing   ) queueing   -> interrupt_action();
   if ( channeling ) channeling -> interrupt_action();
 
   if ( strict_sequence )
@@ -4510,7 +4523,8 @@ action_t* player_t::execute_action()
   if ( action )
   {
     action -> line_cooldown.start();
-    action -> schedule_execute();
+    //action -> schedule_execute();
+    action -> queue_execute();
     if ( ! action -> quiet )
     {
       iteration_executed_foreground_actions++;
@@ -4884,6 +4898,7 @@ void player_t::stat_gain( stat_e    stat,
       adjust_dynamic_cooldowns();
       adjust_global_cooldown( HASTE_ANY );
       adjust_auto_attack( HASTE_ANY );
+      adjust_action_queue_time();
       break;
     }
 
@@ -5051,6 +5066,7 @@ void player_t::stat_loss( stat_e    stat,
       adjust_dynamic_cooldowns();
       adjust_global_cooldown( HASTE_ANY );
       adjust_auto_attack( HASTE_ANY );
+      adjust_action_queue_time();
       break;
     }
 
@@ -9621,6 +9637,7 @@ void player_t::create_options()
     add_option( opt_func( "world_lag_stddev", parse_world_lag_stddev ) );
     add_option( opt_func( "brain_lag", parse_brain_lag ) );
     add_option( opt_func( "brain_lag_stddev", parse_brain_lag_stddev ) );
+    add_option( opt_timespan( "cooldown_tolerance", cooldown_tolerance_ ) );
     add_option( opt_bool( "scale_player", scale_player ) );
     add_option( opt_string( "tmi_output", tmi_debug_file_str ) );
     add_option( opt_float( "tmi_window", tmi_window, 0, std::numeric_limits<double>::max() ) );
@@ -11244,4 +11261,16 @@ void player_t::adjust_auto_attack( haste_type_e haste_type )
   if ( off_hand_attack ) off_hand_attack -> reschedule_auto_attack( current_attack_speed );
 
   current_attack_speed = cache.attack_speed();
+}
+
+// Adjust the queue-delayed action execution if the ability currently being executed has a hasted
+// cooldown, and haste changes
+void player_t::adjust_action_queue_time()
+{
+  if ( ! queueing )
+  {
+    return;
+  }
+
+  queueing -> reschedule_queue_event();
 }

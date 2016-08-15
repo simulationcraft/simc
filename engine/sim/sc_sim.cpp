@@ -1291,7 +1291,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   queue_lag( timespan_t::from_seconds( 0.005 ) ), queue_lag_stddev( timespan_t::zero() ),
   gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero() ),
   channel_lag( timespan_t::from_seconds( 0.250 ) ), channel_lag_stddev( timespan_t::zero() ),
-  queue_gcd_reduction( timespan_t::from_seconds( 0.032 ) ), strict_gcd_queue( 0 ),
+  queue_gcd_reduction( timespan_t::from_seconds( 0.032 ) ),
+  default_cooldown_tolerance( timespan_t::from_millis( 250 ) ),
+  strict_gcd_queue( 0 ),
   confidence( 0.95 ), confidence_estimator( 0.0 ),
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
@@ -2792,6 +2794,7 @@ void sim_t::create_options()
   add_option( opt_timespan( "queue_lag_stddev", queue_lag_stddev ) );
   add_option( opt_timespan( "queue_gcd_reduction", queue_gcd_reduction ) );
   add_option( opt_bool( "strict_gcd_queue", strict_gcd_queue ) );
+  add_option( opt_timespan( "default_cooldown_tolerance", default_cooldown_tolerance ) );
   add_option( opt_timespan( "default_world_lag", world_lag ) );
   add_option( opt_timespan( "default_world_lag_stddev", world_lag_stddev ) );
   add_option( opt_timespan( "default_aura_delay", default_aura_delay ) );
