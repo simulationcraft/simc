@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=1010023
-artifact=44:0:0:0:0:1052:1:1054:1:1057:1:1060:3:1061:3:1064:3:1065:3:1066:3:1348:1
+artifact=44:136683:137472:137365:0:1052:1:1054:1:1057:1:1060:3:1061:6:1064:3:1065:3:1066:3:1348:1
 spec=outlaw
 
 # This default action priority list is automatically created based on your character.
@@ -61,18 +61,18 @@ actions.generator=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly
 actions.generator+=/pistol_shot,if=buff.opportunity.up&energy.time_to_max>2
 actions.generator+=/saber_slash
 
-head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
-neck=erratically_ticking_talisman,id=137418,bonus_id=1727
-shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727
-back=putrid_carapace,id=134408,bonus_id=1727
-chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727
-wrists=thermal_bindings,id=134461,bonus_id=1727
-hands=ravens_veil_gloves,id=139242,bonus_id=1727
-waist=manafang_waistguard,id=137409,bonus_id=1727
-legs=charskin_legguards,id=137353,bonus_id=1727
-feet=shellshock_footguards,id=134441,bonus_id=1727
-finger1=empowered_ring_of_the_kirin_tor,id=139599
-finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
+head=veil_of_unseen_strikes,id=134447,bonus_id=134372
+neck=chain_of_scorched_bones,id=134529,bonus_id=1727
+shoulders=amice_of_the_enlightened,id=133620,bonus_id=1727
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1727
+chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
+wrists=felbat_leather_wristwraps,id=134368,bonus_id=1727
+hands=felbat_leather_gloves,id=134371,bonus_id=1727
+waist=taut_halyard_waistband,id=134456,bonus_id=1727
+legs=leggings_of_the_uncrowned,id=139743,bonus_id=1727
+feet=felbat_leather_boots,id=134369,bonus_id=1727
+finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727
+finger2=utgarde_royal_signet,id=133637,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
 main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=870
