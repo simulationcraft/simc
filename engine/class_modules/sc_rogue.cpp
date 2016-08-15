@@ -6413,6 +6413,12 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return n_buffs;
     } );
   }
+  else if ( util::str_compare_ci( name_str, "stealthed" ) )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check();
+    } );
+  }
 
   // Split expressions
 
