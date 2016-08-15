@@ -813,7 +813,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
           target, // target
           s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
       }
-      if ( p() -> talents.opportunity_strikes -> ok() && s -> action -> s_data -> id() != p() -> active.opportunity_strikes -> s_data -> id() )
+      if ( p() -> talents.opportunity_strikes -> ok() && special && s -> action -> s_data -> id() != p() -> active.opportunity_strikes -> s_data -> id() )
       {
         if ( rng().roll( ( 1 - ( s -> target -> health_percentage() / 100 ) ) * p() -> talents.opportunity_strikes -> proc_chance() ) )
         {
