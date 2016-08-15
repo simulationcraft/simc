@@ -4336,7 +4336,12 @@ void warrior_t::apl_fury()
 
   if ( sim -> allow_potions )
   {
-    if ( true_level > 90 )
+
+    if ( true_level > 100 )
+    {
+      default_list -> add_action( "potion,name=potion_of_the_old_war,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30" );
+    }
+    else if ( true_level > 90 )
     {
       default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30" );
     }
@@ -4417,7 +4422,11 @@ void warrior_t::apl_arms()
   default_list -> add_action( "auto_attack" );
   if ( sim -> allow_potions )
   {
-    if ( true_level > 90 )
+    if ( true_level > 100 )
+    {
+      default_list -> add_action( "potion,name=potion_of_the_old_war,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
+    }
+    else if ( true_level > 90 )
     {
       default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
     }
@@ -4487,7 +4496,6 @@ void warrior_t::apl_arms()
 
 void warrior_t::apl_prot()
 {
-
   std::vector<std::string> racial_actions = get_racial_actions();
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );

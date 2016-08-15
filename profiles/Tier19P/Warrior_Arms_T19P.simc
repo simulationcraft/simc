@@ -26,7 +26,7 @@ actions.precombat+=/potion,name=potion_of_the_old_war
 
 actions=charge
 actions+=/auto_attack
-actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25
+actions+=/potion,name=potion_of_the_old_war,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25
 actions+=/battle_cry,sync=colossus_smash
 actions+=/battle_cry,if=debuff.colossus_smash.remains>=5|(debuff.colossus_smash.up&cooldown.colossus_smash.remains=0)
 actions+=/avatar,sync=colossus_smash
