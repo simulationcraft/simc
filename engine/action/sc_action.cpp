@@ -2178,7 +2178,8 @@ void action_t::interrupt_action()
   if ( sim -> debug )
     sim -> out_debug.printf( "action %s of %s is interrupted", name(), player -> name() );
 
-  if ( cooldown -> duration > timespan_t::zero() && ! dual )
+  // Don't start cooldown if we're queueing this action
+  if ( ! player -> queueing && cooldown -> duration > timespan_t::zero() && ! dual )
   {
     if ( sim -> debug )
       sim -> out_debug.printf( "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
@@ -2186,7 +2187,8 @@ void action_t::interrupt_action()
     cooldown -> start( this );
   }
 
-  if ( internal_cooldown -> duration > timespan_t::zero() && ! dual )
+  // Don't start internal cooldown if we're queueing this action
+  if ( ! player -> queueing && internal_cooldown -> duration > timespan_t::zero() && ! dual )
   {
     if ( sim -> debug )
       sim -> out_debug.printf( "%s starts internal_cooldown for %s (%s)",
