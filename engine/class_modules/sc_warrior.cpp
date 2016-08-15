@@ -146,6 +146,7 @@ public:
     cooldown_t* odyns_champion_icd;
     cooldown_t* odyns_fury;
     cooldown_t* rage_from_crit_block;
+    cooldown_t* rage_of_the_valarjar_icd;
     cooldown_t* raging_blow;
     cooldown_t* revenge;
     cooldown_t* revenge_reset;
@@ -1775,7 +1776,10 @@ struct execute_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p() -> buff.berserking_driver -> trigger();
+    if ( p() -> cooldown.rage_of_the_valarjar_icd -> up() && p() -> buff.berserking_driver -> trigger() )
+    {
+      p() -> cooldown.rage_of_the_valarjar_icd -> start();
+    }
     p() -> buff.sense_death -> expire();
     p() -> buff.sense_death -> trigger();
 
@@ -2594,7 +2598,10 @@ struct rampage_parent_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     p() -> buff.massacre -> expire();
-    p() -> buff.berserking_driver -> trigger();
+    if ( p() -> cooldown.rage_of_the_valarjar_icd -> up() && p() -> buff.berserking_driver -> trigger() )
+    {
+      p() -> cooldown.rage_of_the_valarjar_icd -> start();
+    }
 
     p() -> rampage_driver = new ( *sim ) rampage_event_t( p(), 0 );
   }
@@ -4040,6 +4047,8 @@ void warrior_t::init_spells()
   cooldown.odyns_fury               = get_cooldown( "odyns_fury" );
   cooldown.odyns_champion_icd       = get_cooldown( "odyns_champion_icd" );
   cooldown.odyns_champion_icd -> duration = artifact.odyns_champion.data().effectN( 1 ).trigger() -> internal_cooldown();
+  cooldown.rage_of_the_valarjar_icd = get_cooldown( "rage_of_the_valarjar_icd" );
+  cooldown.rage_of_the_valarjar_icd -> duration = artifact.rage_of_the_valarjar.data().internal_cooldown();
   cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
   cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
   cooldown.raging_blow              = get_cooldown( "raging_blow" );
