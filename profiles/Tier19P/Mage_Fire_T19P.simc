@@ -3,8 +3,8 @@ level=110
 race=orc
 role=spell
 position=back
-talents=2022021
-artifact=54:142059:137303:137492:0:748:1:749:4:751:4:754:3:755:4:756:3:759:1:763:1:1340:1
+talents=1022021
+artifact=54:142059:142056:133022:0:748:1:749:6:751:3:754:3:755:3:756:3:759:1:763:1:1340:1
 spec=fire
 
 # This default action priority list is automatically created based on your character.
@@ -73,9 +73,9 @@ actions.single_target+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_powe
 actions.single_target+=/scorch,if=target.health.pct<=25&equipped.132454
 actions.single_target+=/fireball
 
-head=hood_of_ancient_evil,id=134425,bonus_id=1727
+head=collar_of_enclosure,id=134424,bonus_id=1727
 neck=chain_of_the_underking,id=134495,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=lair_matrons_spaulders,id=137447,bonus_id=1727
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
 back=iceblood_shroud,id=134411,bonus_id=1727,enchant=binding_of_intellect
 chest=tunic_of_smoldering_ire,id=137352,bonus_id=1727
 wrists=harrowing_soulspun_bracers,id=134437,bonus_id=1727
@@ -94,7 +94,8 @@ off_hand=heart_of_the_phoenix,id=133959,ilevel=870
 # gear_ilvl=843.75
 # gear_stamina=17944
 # gear_intellect=19820
-# gear_crit_rating=10112
-# gear_haste_rating=1961
-# gear_mastery_rating=4882
+# gear_crit_rating=10246
+# gear_haste_rating=2684
+# gear_mastery_rating=4024
 # gear_armor=1570
+# set_bonus=tier19p_cloth_2pc=1
