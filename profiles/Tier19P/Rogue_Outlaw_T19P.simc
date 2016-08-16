@@ -64,7 +64,7 @@ neck=chaosforged_necklace,id=137458,bonus_id=1727
 shoulders=steelgazer_hide_mantle,id=134154,bonus_id=1727
 back=stole_of_malefic_repose,id=134404,bonus_id=1727
 chest=chestguard_of_insidious_desire,id=137514,bonus_id=1727
-wrist=thermal_bindings,id=134461,bonus_id=1727
+wrists=thermal_bindings,id=134461,bonus_id=1727
 hands=felbat_leather_gloves,id=134371,bonus_id=1727
 waist=ravens_veil_belt,id=139243,bonus_id=1727
 legs=wardens_martial_greaves,id=137515,bonus_id=1727
@@ -77,11 +77,11 @@ main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=870
 off_hand=the_dreadblades,id=134552,ilevel=870
 
 # Gear Summary
-# gear_ilvl=842.50
-# gear_agility=9559
-# gear_stamina=17327
-# gear_crit_rating=6776
-# gear_haste_rating=4225
-# gear_mastery_rating=1347
-# gear_versatility_rating=4819
-# gear_armor=1940
+# gear_ilvl=843.75
+# gear_agility=10883
+# gear_stamina=17628
+# gear_crit_rating=6404
+# gear_haste_rating=3069
+# gear_mastery_rating=4225
+# gear_versatility_rating=3559
+# gear_armor=1957
