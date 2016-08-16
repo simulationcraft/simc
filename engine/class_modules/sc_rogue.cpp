@@ -6231,10 +6231,10 @@ void rogue_t::init_action_list()
     def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     def -> add_action( this, "Ambush" );
     def -> add_action( "pool_resource,for_next=1,extra_amount=60" );
-    def -> add_action( this, "Vanish", "if=combo_points.deficit>=2&energy>60" );
+    def -> add_action( this, "Vanish", "if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60" );
     def -> add_action( "pool_resource,for_next=1,extra_amount=60" );
-    def -> add_action( "shadowmeld,if=combo_points.deficit>=2&energy>60" );
-    def -> add_talent( this, "Death from Above", "if=combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)" );
+    def -> add_action( "shadowmeld,if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60" );
+    def -> add_talent( this, "Death from Above", "if=combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)" );
       // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
     def -> add_talent( this, "Slice and Dice", "if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
       // Reroll unless 2+ buffs
@@ -6243,8 +6243,8 @@ void rogue_t::init_action_list()
     def -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
     def -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4" );
     def -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled" );
-    def -> add_action( "call_action_list,name=finish,if=combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)" );
-    def -> add_action( "call_action_list,name=build,if=combo_points<action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)" );
+    def -> add_action( "call_action_list,name=finish,if=combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
+    def -> add_action( "call_action_list,name=build,if=combo_points<action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish" );
