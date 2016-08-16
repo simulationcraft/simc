@@ -4320,6 +4320,8 @@ struct flurry_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     hasted_ticks = false;
+    //HOTFIX: Manually adjust the cost of Flurry to be 1% of base max mana, as per 8/16/2016 hotfix.
+    base_costs[ RESOURCE_MANA ] = 0.01 * player -> resources.base[ RESOURCE_MANA ];
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
     dot_duration = timespan_t::from_seconds( 0.6 );
     base_tick_time = timespan_t::from_seconds( 0.2 );
