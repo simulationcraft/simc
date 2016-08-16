@@ -6121,6 +6121,11 @@ void death_knight_t::default_apl_dps_precombat( const std::string& food_name, co
     precombat -> add_action( "food,type=" + food_name );
   }
 
+  if ( true_level >= 110 )
+  {
+    precombat -> add_action( "augmentation,type=defiled" );
+  }
+
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
@@ -6147,11 +6152,13 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* generic   = get_action_priority_list( "generic"   );
   action_priority_list_t* core      = get_action_priority_list( "core"   );
 
-  std::string food_name = ( true_level >  90 ) ? "pickled_eel" :
+  std::string food_name = ( true_level > 100 ) ? "the_hungry_magister" :
+                          ( true_level >  90 ) ? "pickled_eel" :
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                           "";
-  std::string potion_name = ( true_level >= 90 ) ? "draenic_strength" :
+  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+                            ( true_level >= 90 ) ? "draenic_strength" :
                             ( true_level >= 85 ) ? "mogu_power" :
                             ( true_level >= 80 ) ? "golemblood_potion" :
                             "";
@@ -6178,14 +6185,14 @@ void death_knight_t::default_apl_frost()
   // In-combat potion
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    def -> add_action( "potion,name=" + potion_name + ",if=cooldown.pillar_of_frost.remains<5&cooldown.thorasus_the_stone_heart_of_draenor.remains<10" );
+    def -> add_action( "potion,type=" + potion_name );
   }
 
   // Cooldowns
   def -> add_action( this, "Pillar of Frost" );
   def -> add_action( this, "Sindragosa's Fury" );
   def -> add_talent( this, "Obliteration" );
-  def -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=80" );
+  def -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
 
   // Choose APL
   def -> add_action( "run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking" );
@@ -6193,7 +6200,8 @@ void death_knight_t::default_apl_frost()
 
   // Core rotation
   core -> add_talent( this, "Glacial Advance" );
-  core -> add_talent( this, "Frostscythe", "if=buff.killing_machine.react|spell_targets.frostscythe>=4" );
+  core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
+  core -> add_talent( this, "Frostscythe", "if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)" );
   core -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
   core -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
   core -> add_action( this, "Obliterate" );
@@ -6214,30 +6222,32 @@ void death_knight_t::default_apl_frost()
   // Do core rotation
   generic -> add_action( "call_action_list,name=core" );
 
+  // Continue the generic one with Horn of Winter stuff
+  generic -> add_talent( this, "Horn of Winter", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
+  generic -> add_talent( this, "Horn of Winter", "if=!talent.breath_of_sindragosa.enabled" );
+
   // If nothing else to do, do Frost Strike
   generic -> add_action( this, "Frost Strike", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
   generic -> add_action( this, "Frost Strike", "if=!talent.breath_of_sindragosa.enabled" );
 
   // Misc actions, Breath of Sindragosa version
-  generic -> add_talent( this, "Horn of Winter", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
   generic -> add_action( this, "Empower Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
   generic -> add_talent( this, "Hungering Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
 
   // Misc actions, Bossless version
-  generic -> add_talent( this, "Horn of Winter", "if=!talent.breath_of_sindragosa.enabled" );
   generic -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
   generic -> add_talent( this, "Hungering Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
 
   // Breath of Sindragosa rotation
 
-  // Do core rotation
-  bos -> add_action( "call_action_list,name=core" );
-
   // Do keep up Frost Fevers, even in BoS
   bos -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
 
+  // Do core rotation
+  bos -> add_action( "call_action_list,name=core" );
+
   bos -> add_talent( this, "Horn of Winter" );
-  bos -> add_action( this, "Empower Rune Weapon" );
+  bos -> add_action( this, "Empower Rune Weapon", "if=runic_power<=70" );
   bos -> add_talent( this, "Hungering Rune Weapon" );
 
   // Low priority howling blasts, if they are free
@@ -6252,11 +6262,13 @@ void death_knight_t::default_apl_unholy()
   action_priority_list_t* generic   = get_action_priority_list( "generic"   );
   action_priority_list_t* aoe       = get_action_priority_list( "aoe"       );
 
-  std::string food_name = ( true_level >  90 ) ? "buttered_sturgeon" :
+  std::string food_name = ( true_level > 100 ) ? "the_hungry_magister" :
+                          ( true_level >  90 ) ? "buttered_sturgeon" :
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                           "";
-  std::string potion_name = ( true_level >= 90 ) ? "draenic_strength" :
+  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+                            ( true_level >= 90 ) ? "draenic_strength" :
                             ( true_level >= 85 ) ? "mogu_power" :
                             ( true_level >= 80 ) ? "golemblood_potion" :
                             "";
@@ -6286,8 +6298,7 @@ void death_knight_t::default_apl_unholy()
   // In-combat potion
   if ( sim -> allow_potions && true_level >= 80  )
   {
-    def -> add_action( "potion,name=" + potion_name + ",if=cooldown.summon_gargoyle.remains>165&!talent.dark_arbiter.enabled" );
-    def -> add_action( "potion,name=" + potion_name + ",if=cooldown.dark_arbiter.remains>165&talent.dark_arbiter.enabled" );
+    def -> add_action( "potion,name=" + potion_name + ",if=buff.unholy_strength.react" );
   }
 
   // Generic things that should be always done
@@ -6304,10 +6315,16 @@ void death_knight_t::default_apl_unholy()
   generic -> add_talent( this, "Dark Arbiter", "if=runic_power>80" );
   generic -> add_action( this, "Summon Gargoyle" );
 
+  // Apocalypso
+  generic -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack=8" );
+
   // Death coilage
   generic -> add_action( this, "Death Coil", "if=runic_power>80" );
   generic -> add_action( this, "Death Coil", "if=talent.dark_arbiter.enabled&buff.sudden_doom.react&cooldown.dark_arbiter.remains>5" );
   generic -> add_action( this, "Death Coil", "if=!talent.dark_arbiter.enabled&buff.sudden_doom.react" );
+
+  // FW stacking
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5" );
 
   // Soul reapering
   generic -> add_talent( this, "Soul Reaper", "if=debuff.festering_wound.stack>=3" );
@@ -6320,13 +6337,13 @@ void death_knight_t::default_apl_unholy()
   generic -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
 
   // Single target base rotation
-  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<=4" );
+  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<=3" );
   generic -> add_action( this, "Scourge Strike", "if=buff.necrosis.react" );
   generic -> add_talent( this, "Clawing Shadows", "if=buff.necrosis.react" );
   generic -> add_action( this, "Scourge Strike", "if=buff.unholy_strength.react" );
   generic -> add_talent( this, "Clawing Shadows", "if=buff.unholy_strength.react" );
-  generic -> add_action( this, "Scourge Strike", "if=rune>=3" );
-  generic -> add_talent( this, "Clawing Shadows", "if=rune>=3" );
+  generic -> add_action( this, "Scourge Strike", "if=rune>=2" );
+  generic -> add_talent( this, "Clawing Shadows", "if=rune>=2" );
 
   // Death coilage when nothing else to do
   generic -> add_action( this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15" );
@@ -6344,11 +6361,17 @@ void death_knight_t::default_apl_unholy()
   // Valkyr APL uses many a runic power
   valkyr -> add_action( this, "Death Coil" );
 
+  // Apocalypso
+  valkyr -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack=8" );
+
+  // FW stacking
+  valkyr -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5" );
+
   // Misc AOE things
   valkyr -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
 
   // Single target base rotation when Valkyr is around
-  valkyr -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<=6" );
+  valkyr -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<=3" );
   valkyr -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up" );
   valkyr -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up" );
 }

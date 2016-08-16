@@ -3,8 +3,8 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=3330021
-artifact=16:0:0:0:0:149:1:152:1:153:1:157:3:158:3:264:3:266:3:1119:3:1333:1
+talents=1220013
+artifact=16:0:0:0:0:149:1:150:1:152:1:153:1:154:1:157:1:265:3:266:6:267:3:1119:3:1333:1
 spec=unholy
 
 # This default action priority list is automatically created based on your character.
@@ -16,10 +16,11 @@ spec=unholy
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=countless_armies
-actions.precombat+=/food,type=buttered_sturgeon
+actions.precombat+=/food,type=the_hungry_magister
+actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_strength
+actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/raise_dead
 actions.precombat+=/army_of_the_dead
 
@@ -29,9 +30,7 @@ actions=auto_attack
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
-actions+=/use_item,slot=trinket2
-actions+=/potion,name=draenic_strength,if=cooldown.summon_gargoyle.remains>165&!talent.dark_arbiter.enabled
-actions+=/potion,name=draenic_strength,if=cooldown.dark_arbiter.remains>165&talent.dark_arbiter.enabled
+actions+=/potion,name=deadly_grace,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
 actions+=/dark_transformation
 actions+=/blighted_rune_weapon
@@ -39,29 +38,33 @@ actions+=/run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_
 actions+=/call_action_list,name=generic
 
 actions.valkyr=death_coil
+actions.valkyr+=/apocalypse,if=debuff.festering_wound.stack=8
+actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5
 actions.valkyr+=/call_action_list,name=aoe,if=active_enemies>=2
-actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=6
+actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=3
 actions.valkyr+=/scourge_strike,if=debuff.festering_wound.up
 actions.valkyr+=/clawing_shadows,if=debuff.festering_wound.up
 
 actions.generic=dark_arbiter,if=runic_power>80
 actions.generic+=/summon_gargoyle
+actions.generic+=/apocalypse,if=debuff.festering_wound.stack=8
 actions.generic+=/death_coil,if=runic_power>80
 actions.generic+=/death_coil,if=talent.dark_arbiter.enabled&buff.sudden_doom.react&cooldown.dark_arbiter.remains>5
 actions.generic+=/death_coil,if=!talent.dark_arbiter.enabled&buff.sudden_doom.react
+actions.generic+=/festering_strike,if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5
 actions.generic+=/soul_reaper,if=debuff.festering_wound.stack>=3
 actions.generic+=/festering_strike,if=debuff.soul_reaper.up&!debuff.festering_wound.up
 actions.generic+=/scourge_strike,if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1
 actions.generic+=/clawing_shadows,if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1
 actions.generic+=/defile
 actions.generic+=/call_action_list,name=aoe,if=active_enemies>=2
-actions.generic+=/festering_strike,if=debuff.festering_wound.stack<=4
+actions.generic+=/festering_strike,if=debuff.festering_wound.stack<=3
 actions.generic+=/scourge_strike,if=buff.necrosis.react
 actions.generic+=/clawing_shadows,if=buff.necrosis.react
 actions.generic+=/scourge_strike,if=buff.unholy_strength.react
 actions.generic+=/clawing_shadows,if=buff.unholy_strength.react
-actions.generic+=/scourge_strike,if=rune>=3
-actions.generic+=/clawing_shadows,if=rune>=3
+actions.generic+=/scourge_strike,if=rune>=2
+actions.generic+=/clawing_shadows,if=rune>=2
 actions.generic+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15
 actions.generic+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
 actions.generic+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15
@@ -73,27 +76,28 @@ actions.aoe+=/scourge_strike,if=spell_targets.scourge_strike>=2&(dot.death_and_d
 actions.aoe+=/clawing_shadows,if=spell_targets.clawing_shadows>=2&(dot.death_and_decay.ticking|dot.defile.ticking)
 actions.aoe+=/epidemic,if=spell_targets.epidemic>2
 
-head=crown_of_ash,id=137526,bonus_id=1727
-neck=anshes_pendant,id=139101,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=pauldrons_of_ancient_command,id=134510,bonus_id=1727
+head=insurmountable_skullfortress,id=137445,bonus_id=1727
+neck=pendant_of_the_stormforger,id=133767,bonus_id=1727,enchant=mark_of_the_claw
+shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
 back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727
-wrists=greystone_wristplates,id=139100,bonus_id=1727
+wrists=deepfurrow_bracers,id=137337,bonus_id=1727
 hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727
 waist=greatbelt_of_alpha_dominance,id=136773,bonus_id=1727
-legs=keelhauler_legplates,id=134514,bonus_id=1727
-feet=duskwatch_guards_boots,id=137482,bonus_id=1727
-finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_haste
-finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_haste
-trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
-trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
+legs=wracksoul_legplates,id=121280,bonus_id=1727
+feet=horizon_line_warboots,id=134505,bonus_id=1727
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_critical_strike
+finger2=gnawed_thumb_ring,id=134526,bonus_id=1727,enchant=binding_of_critical_strike
+trinket1=darkmoon_deck_dominion,id=128705,bonus_id=667
+trinket2=chaos_talisman,id=137459,bonus_id=1727
 main_hand=apocalypse,id=128403,bonus_id=718,ilevel=870,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=842.00
-# gear_strength=10183
-# gear_stamina=17964
-# gear_crit_rating=8826
-# gear_haste_rating=8348
-# gear_mastery_rating=687
+# gear_strength=11306
+# gear_stamina=17965
+# gear_crit_rating=9032
+# gear_haste_rating=6483
+# gear_mastery_rating=1445
 # gear_armor=3965
+# set_bonus=tier19p_plate_2pc=1

@@ -29,8 +29,7 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
 actions+=/use_item,slot=finger1
-actions+=/potion,name=draenic_strength,if=cooldown.summon_gargoyle.remains>165&!talent.dark_arbiter.enabled
-actions+=/potion,name=draenic_strength,if=cooldown.dark_arbiter.remains>165&talent.dark_arbiter.enabled
+actions+=/potion,name=draenic_strength,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
 actions+=/dark_transformation
 actions+=/blighted_rune_weapon
@@ -38,29 +37,33 @@ actions+=/run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_
 actions+=/call_action_list,name=generic
 
 actions.valkyr=death_coil
+actions.valkyr+=/apocalypse,if=debuff.festering_wound.stack=8
+actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5
 actions.valkyr+=/call_action_list,name=aoe,if=active_enemies>=2
-actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=6
+actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=3
 actions.valkyr+=/scourge_strike,if=debuff.festering_wound.up
 actions.valkyr+=/clawing_shadows,if=debuff.festering_wound.up
 
 actions.generic=dark_arbiter,if=runic_power>80
 actions.generic+=/summon_gargoyle
+actions.generic+=/apocalypse,if=debuff.festering_wound.stack=8
 actions.generic+=/death_coil,if=runic_power>80
 actions.generic+=/death_coil,if=talent.dark_arbiter.enabled&buff.sudden_doom.react&cooldown.dark_arbiter.remains>5
 actions.generic+=/death_coil,if=!talent.dark_arbiter.enabled&buff.sudden_doom.react
+actions.generic+=/festering_strike,if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5
 actions.generic+=/soul_reaper,if=debuff.festering_wound.stack>=3
 actions.generic+=/festering_strike,if=debuff.soul_reaper.up&!debuff.festering_wound.up
 actions.generic+=/scourge_strike,if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1
 actions.generic+=/clawing_shadows,if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1
 actions.generic+=/defile
 actions.generic+=/call_action_list,name=aoe,if=active_enemies>=2
-actions.generic+=/festering_strike,if=debuff.festering_wound.stack<=4
+actions.generic+=/festering_strike,if=debuff.festering_wound.stack<=3
 actions.generic+=/scourge_strike,if=buff.necrosis.react
 actions.generic+=/clawing_shadows,if=buff.necrosis.react
 actions.generic+=/scourge_strike,if=buff.unholy_strength.react
 actions.generic+=/clawing_shadows,if=buff.unholy_strength.react
-actions.generic+=/scourge_strike,if=rune>=3
-actions.generic+=/clawing_shadows,if=rune>=3
+actions.generic+=/scourge_strike,if=rune>=2
+actions.generic+=/clawing_shadows,if=rune>=2
 actions.generic+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15
 actions.generic+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
 actions.generic+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15
