@@ -415,17 +415,17 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim  )
 
   if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
   {
-    max_allowed = 21;
+    max_allowed = 22;
     tier_name = "T19P";
   }
   else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
   {
-    max_allowed = 29;
+    max_allowed =30;
     tier_name = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
-    max_allowed = 37;
+    max_allowed = 38;
     tier_name = "T19M";
   }
   else
@@ -435,21 +435,21 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim  )
 
   unsigned total_points = 0;
 
-  for ( size_t i = 7; i < splits.size(); i += 2 ) // We are starting at 7 instead of 5 because the first one doesn't count.
+  for ( size_t i = 5; i < splits.size(); i += 2 )
   {
     total_points += util::to_unsigned( splits[i + 1] );
   }
 
   if ( total_points > max_allowed )
   {
-    sim.errorf( "Player %s has %s artifact points, maximum allowed for %s is %s.\n",
-                 p.name(), util::to_string( total_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed ).c_str() );
+    sim.errorf( "Player %s has %s artifact points, maximum allowed (including relics) for %s is %s.\n",
+                 p.name(), util::to_string( total_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed - 1 ).c_str() );
     return false;
   }
   else if ( total_points < max_allowed && p.level() == 110 )
   {
-    sim.errorf( "Player %s has %s artifact points, maximum allowed for %s is %s. Add more!\n",
-                p.name(), util::to_string( total_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed ).c_str() );
+    sim.errorf( "Player %s has %s artifact points, maximum allowed (including relics) for %s is %s. Add more!\n",
+                p.name(), util::to_string( total_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed - 1 ).c_str() );
     return true;
   }
 
@@ -467,10 +467,10 @@ void report::print_profiles( sim_t* sim )
     if ( p->is_pet() )
       continue;
 
-    //if ( !check_artifact_points( *p, *sim ) )
-    //{
-//      continue;
-    //}
+    if ( !check_artifact_points( *p, *sim ) )
+    {
+      continue;
+    }
     k++;
 
     if ( !p->report_information.save_gear_str.empty() )  // Save gear
