@@ -22,54 +22,46 @@ actions.precombat+=/food,type=seedbattered_fish_plate
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
-actions.precombat+=/potion,name=old_war
+actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/marked_for_death
 actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
 
-actions=nightblade,if=set_bonus.tier18_4pc&refreshable&time<5
-actions+=/call_action_list,name=cds
-# Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
-actions+=/run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up
-actions+=/call_action_list,name=finish,if=combo_points>=5
-actions+=/call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1))
-actions+=/call_action_list,name=build,if=energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)
+actions=potion,name=draenic_agility,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up
+actions+=/blood_fury,if=buff.shadow_dance.up|buff.vanish.up|buff.stealth.up
+actions+=/berserking,if=buff.shadow_dance.up|buff.vanish.up|buff.stealth.up
+actions+=/arcane_torrent,if=energy.deficit>70&(buff.shadow_dance.up|buff.vanish.up|buff.stealth.up)
+actions+=/shadow_blades,if=!buff.shadow_blades.up&energy.deficit<20&(buff.shadow_dance.up|buff.vanish.up|buff.stealth.up)
+actions+=/goremaws_bite,if=(combo_points.max-combo_points>=2&energy.deficit>55&time<10)|(combo_points.max-combo_points>=4&energy.deficit>45)|target.time_to_die<8
+# Added buff.shadowmeld.down to avoid using it since it's not usable while shadowmelded yet
+actions+=/symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=10.5&buff.shadowmeld.down
+actions+=/shuriken_storm,if=buff.stealth.up&talent.premeditation.enabled&combo_points.max-combo_points>=3&spell_targets.shuriken_storm>=7
+actions+=/shuriken_storm,if=buff.stealth.up&!buff.death.up&combo_points.max-combo_points>=2&((!talent.premeditation.enabled&spell_targets.shuriken_storm>=4)|spell_targets.shuriken_storm>=8)
+actions+=/shadowstrike,if=combo_points.max-combo_points>=2
+actions+=/pool_resource,for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30
+actions+=/vanish,if=(energy.deficit<talent.master_of_shadows.enabled*30&combo_points.max-combo_points>=3&cooldown.shadow_dance.charges<2)|target.time_to_die<8
+actions+=/pool_resource,for_next=1,extra_amount=energy.max-talent.master_of_shadows.enabled*30
+actions+=/shadow_dance,if=combo_points.max-combo_points>=2&((cooldown.vanish.remains&buff.symbols_of_death.remains<=10.5&energy.deficit<talent.master_of_shadows.enabled*30)|cooldown.shadow_dance.charges>=2|target.time_to_die<25)
+actions+=/shadowmeld,if=energy>40&combo_points.max-combo_points>=3&!(buff.shadow_dance.up|buff.vanish.up|buff.stealth.up)
+actions+=/enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&((buff.enveloping_shadows.remains<=10.8+talent.deeper_strategem.enabled*1.8&combo_points>=5+talent.deeper_strategem.enabled)|buff.enveloping_shadows.remains<=6)
+actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled
+actions+=/run_action_list,name=finisher,if=combo_points>=5
+actions+=/run_action_list,name=generator,if=combo_points<5
 
-# Cooldowns
-actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up
-actions.cds+=/blood_fury,if=stealthed
-actions.cds+=/berserking,if=stealthed
-actions.cds+=/arcane_torrent,if=stealthed&energy.deficit>70
-actions.cds+=/shadow_blades,if=!buff.shadow_blades.up
-actions.cds+=/goremaws_bite,if=(combo_points.deficit>=2&energy.deficit>55&time<10)|(combo_points.deficit>=4&energy.deficit>45)|target.time_to_die<8
-actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled
+# Combo point finishers
 
-# Stealthed Rotation
-actions.stealthed=symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3&buff.shadowmeld.down
-actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5
-actions.stealthed+=/shuriken_storm,if=combo_points.deficit>=3&spell_targets.shuriken_storm>=3
-actions.stealthed+=/shadowstrike
+actions.finisher=death_from_above,if=spell_targets.death_from_above>=10
+actions.finisher+=/nightblade,if=!dot.nightblade.ticking|dot.nightblade.remains<duration*0.3
+actions.finisher+=/nightblade,cycle_targets=1,target_if=max:target.time_to_die,if=active_dot.nightblade<6&target.time_to_die>6&(!dot.nightblade.ticking|dot.nightblade.remains<duration*0.3)
+actions.finisher+=/death_from_above
+actions.finisher+=/eviscerate
 
-# Stealth Cooldowns
-actions.stealth_cds=shadow_dance,if=charges>=3
-actions.stealth_cds+=/vanish
-actions.stealth_cds+=/shadow_dance,if=charges>=2
-actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40
-actions.stealth_cds+=/shadowmeld,if=energy>=40
-actions.stealth_cds+=/shadow_dance
+# Combo point generators
 
-# Finishers
-actions.finish=enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=6*combo_points*0.3
-actions.finish+=/death_from_above,if=spell_targets.death_from_above>=10
-actions.finish+=/nightblade,target_if=max:target.time_to_die,if=target.time_to_die>10&refreshable
-actions.finish+=/death_from_above
-actions.finish+=/eviscerate
-
-# Builders
-actions.build=shuriken_storm,if=spell_targets.shuriken_storm>=2
-actions.build+=/gloomblade
-actions.build+=/backstab
+actions.generator=shuriken_storm,if=spell_targets.shuriken_storm>=2
+actions.generator+=/gloomblade,if=energy.time_to_max<2.5
+actions.generator+=/backstab,if=energy.time_to_max<2.5
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
 neck=blackened_portalstone_necklace,id=139332,bonus_id=1805
