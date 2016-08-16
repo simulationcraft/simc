@@ -7772,13 +7772,15 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
   }
 
   unsigned artifact_id = util::to_unsigned( splits[ 0 ] );
-  size_t n_relics = 0, n_excess_points = 0;
+  size_t n_relics = 0, n_excess_points = 0, relic_idx = 0;
   for ( size_t i = 1; i < 5; ++i )
   {
     if ( ! util::str_compare_ci( splits[ i ], "0" ) )
     {
-      artifact.relics[ n_relics++ ] = util::to_unsigned( splits[ i ] );
+      artifact.relics[ relic_idx ] = util::to_unsigned( splits[ i ] );
+      n_relics++;
     }
+    relic_idx++;
   }
 
   auto artifact_powers = dbc.artifact_powers( artifact_id );
