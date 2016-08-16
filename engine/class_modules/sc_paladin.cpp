@@ -675,7 +675,13 @@ namespace buffs {
   {
     shield_of_vengeance_buff_t( player_t* p ):
       absorb_buff_t( absorb_buff_creator_t( p, "shield_of_vengeance", p -> find_spell( 184662 ) ) )
-    { }
+    {
+      paladin_t* pal = static_cast<paladin_t*>( p );
+      if ( pal -> artifact.deflection.rank() )
+      {
+        cooldown -> duration += timespan_t::from_millis( pal -> artifact.deflection.value() );
+      }
+    }
 
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
@@ -1591,6 +1597,10 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
     may_crit = true;
     attack_power_mod.direct = 10;
+    if ( p -> artifact.deflection.rank() )
+    {
+      cooldown -> duration += timespan_t::from_millis( p -> artifact.deflection.value() );
+    }
   }
 
   virtual void execute() override
@@ -5567,10 +5577,6 @@ void paladin_t::target_mitigation( school_e school,
   player_t::target_mitigation( school, dt, s );
 
   // various mitigation effects, Ardent Defender goes last due to absorb/heal mechanics
-
-  // Artifact sources
-  if ( artifact.deflection.rank() )
-    s -> result_amount *= 1.0 + artifact.deflection.percent();
 
   // Passive sources (Sanctuary)
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
