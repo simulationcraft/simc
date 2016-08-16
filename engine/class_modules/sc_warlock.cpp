@@ -3185,22 +3185,6 @@ struct immolate_t: public warlock_spell_t
     {
       td( s -> target ) -> debuffs_roaring_blaze -> expire();
     }
-    
-    // 95% chance this will be nerfed.
-    if ( p() -> sets.has_set_bonus( WARLOCK_DESTRUCTION, T17, B2 ) )
-    {
-      if ( s -> result == RESULT_CRIT && rng().roll( 0.38 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-      else if ( s -> result == RESULT_HIT && rng().roll( 0.19 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-    }
-    else
-    {
-      if ( s -> result == RESULT_CRIT && rng().roll( 0.3 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-      else if ( s -> result == RESULT_HIT && rng().roll( 0.15 ) )
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.immolate );
-    }
   }
 
   virtual double composite_ta_multiplier( const action_state_t* state ) const override
@@ -5875,8 +5859,6 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled" );
   add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
   add_action( "Life Tap", "if=talent.mana_tap.enabled&mana.pct<=10" );
-  add_action( "Immolate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=0" );
-  add_action( "Immolate", "if=!talent.roaring_blaze.enabled" );
   add_action( "Incinerate" );
 }
 
