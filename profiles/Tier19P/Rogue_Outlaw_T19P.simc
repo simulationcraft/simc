@@ -60,7 +60,7 @@ actions.build+=/pistol_shot,if=buff.opportunity.up&energy.time_to_max>2
 actions.build+=/saber_slash
 
 head=steelgazer_hide_hood,id=134152,bonus_id=1727
-neck=chaos_forged_necklace,id=137458,bonus_id=1727
+neck=chaosforged_necklace,id=137458,bonus_id=1727
 shoulders=steelgazer_hide_mantle,id=134154,bonus_id=1727
 back=stole_of_malefic_repose,id=134404,bonus_id=1727
 chest=chestguard_of_insidious_desire,id=137514,bonus_id=1727

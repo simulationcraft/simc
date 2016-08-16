@@ -36,7 +36,7 @@ artifact=44:136683:137472:137365:0:1052:1:1054:1:1057:1:1060:3:1061:6:1064:3:106
 spec=outlaw
 
 head=steelgazer_hide_hood,id=134152,bonus_id=1727
-neck=chaos_forged_necklace,id=137458,bonus_id=1727
+neck=chaosforged_necklace,id=137458,bonus_id=1727
 shoulders=steelgazer_hide_mantle,id=134154,bonus_id=1727
 back=stole_of_malefic_repose,id=134404,bonus_id=1727
 chest=chestguard_of_insidious_desire,id=137514,bonus_id=1727
