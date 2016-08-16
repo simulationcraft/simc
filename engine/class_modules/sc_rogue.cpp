@@ -208,6 +208,8 @@ struct rogue_t : public player_t
     // Legendary 7.0 buffs
     buff_t* shivarran_symmetry;
     buff_t* greenskins_waterlogged_wristcuffs;
+    buff_t* the_dreadlords_deceit_assassination;
+    buff_t* the_dreadlords_deceit_subtlety;
 
     buff_t* deceit;
     buff_t* shadow_strikes;
@@ -504,6 +506,7 @@ struct rogue_t : public player_t
     const spell_data_t* duskwalker_footpads;
     const spell_data_t* denial_of_the_halfgiants;
     const spell_data_t* zoldyck_family_training_shackles;
+    const spell_data_t* the_dreadlords_deceit;
   } legendary;
 
   // Options
@@ -585,6 +588,7 @@ struct rogue_t : public player_t
   void      init_action_list() override;
   void      reset() override;
   void      arise() override;
+  void      combat_begin() override;
   void      regen( timespan_t periodicity ) override;
   timespan_t available() const override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
@@ -2657,6 +2661,20 @@ struct fan_of_knives_t: public rogue_attack_t
     energize_amount   = data().effectN( 2 ).base_value();
   }
 
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // The Dreadlord's Deceit Legendary
+    if ( p() -> buffs.the_dreadlords_deceit_assassination -> up() )
+    {
+      m *= 1.0 + p() -> buffs.the_dreadlords_deceit_assassination -> data().effectN( 1 ).percent();
+      p() -> buffs.the_dreadlords_deceit_assassination -> expire();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -3915,13 +3933,22 @@ struct shuriken_storm_t: public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
+    // Stealth Buff
     if ( p() -> buffs.stealth -> up() || p() -> buffs.shadow_dance -> up() || p() -> buffs.vanish -> up() )
     {
       m *= 1.0 + data().effectN( 3 ).percent();
     }
 
+    // The Dreadlord's Deceit Legendary
+    if ( p() -> buffs.the_dreadlords_deceit_subtlety -> up() )
+    {
+      m *= 1.0 + p() -> buffs.the_dreadlords_deceit_subtlety -> data().effectN( 1 ).percent();
+      p() -> buffs.the_dreadlords_deceit_subtlety -> expire();
+    }
+
     return m;
   }
+
 };
 
 // Shuriken Toss ============================================================
@@ -6297,7 +6324,7 @@ void rogue_t::init_action_list()
       // Added buff.shadowmeld.down to avoid using it since it's not usable while shadowmelded "yet" (soonTM ?)
     stealthed -> add_action( this, "Symbols of Death", "if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3&buff.shadowmeld.down", "Stealthed Rotation" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
-      // Dreadlords_Deceit Line : stealthed -> add_action( this, "Shuriken Storm", "if=equipped.dreadlords_deceit&buff.dreadlords_deceit.stack>=25" );
+      // the_dreadlords_deceit Line : stealthed -> add_action( this, "Shuriken Storm", "if=equipped.the_dreadlords_deceit&buff.the_dreadlords_deceit.stack>=25" );
     if (true_level <= 100 )
       stealthed -> add_action( this, "Shuriken Storm", "if=combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.bleeding_hollow_toxin_vessel*talent.premeditation.enabled" );
     else
@@ -6990,8 +7017,14 @@ void rogue_t::create_buffs()
                             .chance( fof_p3 );
 
   // Legendary 7.0 buffs
-  buffs.shivarran_symmetry = buff_creator_t( this, "shivarran_symmetry", find_spell(226318) );
-  buffs.greenskins_waterlogged_wristcuffs = buff_creator_t( this, "greenskins_waterlogged_wristcuffs", find_spell(209423) );
+  buffs.shivarran_symmetry = buff_creator_t( this, "shivarran_symmetry", find_spell( 226318 ) );
+  buffs.greenskins_waterlogged_wristcuffs = buff_creator_t( this, "greenskins_waterlogged_wristcuffs", find_spell( 209423 ) );
+  buffs.the_dreadlords_deceit_assassination = buff_creator_t( this, "the_dreadlords_deceit_assassination", find_spell( 208693 ) )
+                                          .period( find_spell( 208692 ) -> effectN( 1 ).period() )
+                                          .tick_behavior( BUFF_TICK_CLIP );
+  buffs.the_dreadlords_deceit_subtlety = buff_creator_t( this, "the_dreadlords_deceit_subtlety", find_spell( 228224 ) )
+                                     .period( find_spell( 208692 ) -> effectN( 1 ).period() )
+                                     .tick_behavior( BUFF_TICK_CLIP );
 
   buffs.fof_fod           = new buffs::fof_fod_t( this );
 
@@ -7405,6 +7438,21 @@ void rogue_t::arise()
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
 }
 
+// rogue_t::combat_begin ====================================================
+
+void rogue_t::combat_begin()
+{
+  player_t::combat_begin();
+
+  if ( legendary.the_dreadlords_deceit )
+    {
+      if ( specialization() == ROGUE_ASSASSINATION )
+        buffs.the_dreadlords_deceit_assassination -> trigger();
+      else if ( specialization() == ROGUE_SUBTLETY )
+        buffs.the_dreadlords_deceit_subtlety -> trigger();
+    }
+}
+
 // rogue_t::energy_regen_per_second =========================================
 
 double rogue_t::energy_regen_per_second() const
@@ -7671,13 +7719,22 @@ struct shadow_satyrs_walk_t : public unique_gear::scoped_action_callback_t<actio
   { action -> shadow_satyrs_walk = e.driver(); }
 };
 
+struct the_dreadlords_deceit_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  the_dreadlords_deceit_t() : super( ROGUE )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.the_dreadlords_deceit = e.driver(); }
+};
+
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
-    auto  p = new rogue_t( sim, name, r );
+    auto p = new rogue_t( sim, name, r );
     p -> report_extension = std::unique_ptr<player_report_extension_t>( new rogue_report_t( *p ) );
     return p;
   }
@@ -7697,13 +7754,14 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 209420, greenskins_waterlogged_wristcuffs_t() );
     unique_gear::register_special_effect( 214569, zoldyck_family_training_shackles_t()  );
     unique_gear::register_special_effect( 208436, shadow_satyrs_walk_t()                );
+    unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()                 );
   }
 
   virtual void register_hotfixes() const override
   {
   }
 
-  virtual void init( player_t* ) const override { }
+  virtual void init( player_t* ) const override {}
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
 };
