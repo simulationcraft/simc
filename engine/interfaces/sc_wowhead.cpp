@@ -231,7 +231,7 @@ bool wowhead::download_item_data( item_t&            item,
       // completely silly values.
       if ( i -> value.GetInt() > wowhead::WOWHEAD_STAT_MAX )
       {
-        item.sim -> errorf( "Warning, item %s has abnormal stat value (stat=%s value=%d) in XML output, ingoring ...",
+        item.sim -> errorf( "Warning, item %s has abnormal stat value (stat=%s value=%d) in XML output, ignoring ...",
           item.name(), util::stat_type_string( type ), i -> value.GetInt() );
         continue;
       }
