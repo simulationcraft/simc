@@ -35,8 +35,10 @@ struct artifact_power_data_t
 {
   unsigned    id;
   unsigned    id_artifact;
+  unsigned    power_type;
   unsigned    power_index;
   unsigned    max_rank;
+  unsigned    power_spell_id;
   const char* name; // In reality, the spell name
 
   static const artifact_power_data_t* nil()

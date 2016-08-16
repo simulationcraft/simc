@@ -2329,20 +2329,21 @@ std::string util::create_wowhead_artifact_url( const player_t& p )
 
   unsigned artifact_id = p.dbc.artifact_by_spec( p.specialization() );
   std::string artifact_str = util::to_string( artifact_id ) + ":";
-  // TODO: Relics
-  artifact_str += "0:0:0:0:";
+  range::for_each( p.artifact.relics, [ &artifact_str ]( unsigned relic_id ) {
+    artifact_str += util::to_string( relic_id ) + ":";
+  } );
 
   std::vector<const artifact_power_data_t*> artifact_powers = p.dbc.artifact_powers( artifact_id );
   for ( size_t i = 0; i < artifact_powers.size(); ++i )
   {
-    if ( p.artifact_points[ i ] == 0 )
+    if ( p.artifact.points[ i ] == 0 )
     {
       continue;
     }
 
     artifact_str += util::to_string( artifact_powers[ i ] -> id );
     artifact_str += ":";
-    artifact_str += util::to_string( +p.artifact_points[ i ] );
+    artifact_str += util::to_string( +p.artifact.points[ i ] );
 
     if ( i < artifact_powers.size() - 1 )
     {

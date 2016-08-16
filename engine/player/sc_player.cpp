@@ -375,7 +375,7 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 
 bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
 {
-  range::fill( sim -> active_player -> artifact_points, 0 );
+  range::fill( sim -> active_player -> artifact.points, 0 );
 
   if ( value.size() == 0 )
   {
@@ -531,8 +531,7 @@ player_t::player_t( sim_t*             s,
   dbc( s -> dbc ),
   talent_points(),
   glyph_list(),
-  artifact_points(),
-  artifact_( -1 ),
+  artifact( artifact_data_t() ),
   base(),
   initial(),
   current(),
@@ -617,6 +616,9 @@ player_t::player_t( sim_t*             s,
   base.skill = sim -> default_skill;
   base.mastery = 8.0;
   base.movement_direction = MOVEMENT_NONE;
+
+  artifact.artificial_stamina = spell_data_t::not_found();
+  artifact.artificial_damage = spell_data_t::not_found();
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
@@ -1884,6 +1886,30 @@ void player_t::init_spells()
   else
   {
     spell.leech = 0;
+  }
+
+  if ( artifact.n_purchased_points > 0 )
+  {
+    auto artifact_id = dbc.artifact_by_spec( specialization() );
+    auto artifact_powers = dbc.artifact_powers( artifact_id );
+
+    auto damage_it = range::find_if( artifact_powers, [ this ]( const artifact_power_data_t* power ) {
+      auto spell_data = find_spell( power -> power_spell_id );
+      return util::str_compare_ci( spell_data -> name_cstr(), "Artificial Damage" );
+    } );
+
+    artifact.artificial_damage = damage_it != artifact_powers.end()
+      ? find_spell( ( *damage_it ) -> power_spell_id )
+      : spell_data_t::not_found();
+
+    auto stamina_it = range::find_if( artifact_powers, [ this ]( const artifact_power_data_t* power ) {
+      auto spell_data = find_spell( power -> power_spell_id );
+      return util::str_compare_ci( spell_data -> name_cstr(), "Artificial Stamina" );
+    } );
+
+    artifact.artificial_stamina = stamina_it != artifact_powers.end()
+      ? find_spell( ( *stamina_it ) -> power_spell_id )
+      : spell_data_t::not_found();
   }
 }
 
@@ -3191,6 +3217,8 @@ double player_t::composite_player_multiplier( school_e /* school */ ) const
   if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring -> up() )
     m *= 1.0 + buffs.legendary_aoe_ring -> default_value;
 
+  m *= 1.0 + artifact.artificial_damage -> effectN( 2 ).percent() * .01 * artifact.n_purchased_points;
+
   return m;
 }
 
@@ -3349,6 +3377,8 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       if ( buffs.amplification_2 )
         m *= 1.0 + passive_values.amplification_2;
       break;
+    case ATTR_STAMINA:
+      m *= 1.0 + artifact.artificial_stamina -> effectN( 2 ).percent() * .01 * artifact.n_purchased_points;
     default:
       break;
   }
@@ -7721,8 +7751,11 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
       continue;
     }
 
-    artifact_points[ idx * 2 ] = value & 0x7;
-    artifact_points[ idx * 2 + 1 ] = (value & 0x38) >> 3;
+    artifact.points[ idx * 2 ] = value & 0x7;
+    artifact.points[ idx * 2 + 1 ] = (value & 0x38) >> 3;
+
+    artifact.n_points += artifact.points[ idx * 2 ];
+    artifact.n_points += artifact.points[ idx * 2 + 1 ];
   }
 
   return true;
@@ -7739,8 +7772,16 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
   }
 
   unsigned artifact_id = util::to_unsigned( splits[ 0 ] );
+  size_t n_relics = 0, n_excess_points = 0;
+  for ( size_t i = 1; i < 5; ++i )
+  {
+    if ( ! util::str_compare_ci( splits[ i ], "0" ) )
+    {
+      artifact.relics[ n_relics++ ] = util::to_unsigned( splits[ i ] );
+    }
+  }
 
-  std::vector<const artifact_power_data_t*> artifact_powers = sim -> active_player -> dbc.artifact_powers( artifact_id );
+  auto artifact_powers = dbc.artifact_powers( artifact_id );
   for ( size_t i = 5; i < splits.size(); i += 2 )
   {
     unsigned power_id = util::to_unsigned( splits[ i ] );
@@ -7753,9 +7794,20 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
 
     if ( pos != artifact_powers.end() )
     {
-      sim -> active_player -> artifact_points[ pos - artifact_powers.begin() ] = rank;
+      artifact.points[ pos - artifact_powers.begin() ] = rank;
+      // Sanitize the input on any ranks > 3 so that we can get accurate purchased ranks for the
+      // user, even if the string contains zero relic ids. Note the power type check, power type 5
+      // is the 20 rank "final" power.
+      if ( n_relics == 0 && rank > 3 && ( *pos ) -> power_type != 5 )
+      {
+        n_excess_points += rank - 3;
+      }
+
+      artifact.n_points += rank;
     }
   }
+
+  artifact.n_purchased_points = artifact.n_points - ( n_relics == 0 ? n_excess_points : n_relics );
 
   return true;
 }
@@ -7849,7 +7901,7 @@ void player_t::override_artifact( const std::vector<const artifact_power_data_t*
       this -> name(), name.c_str(), override_rank );
   }
 
-  artifact_points[ power_index ] = override_rank;
+  artifact.points[ power_index ] = override_rank;
 }
 
 // player_t::replace_spells =================================================
@@ -8104,20 +8156,20 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
   }
 
   // User input did not select this power
-  if ( artifact_points[ power_index ] == 0 )
+  if ( artifact.points[ power_index ] == 0 )
   {
     return artifact_power_t();
   }
 
   // Single rank powers can only be set to 0 or 1
-  if ( power_data -> max_rank == 1 && artifact_points[ power_index ] > 1 )
+  if ( power_data -> max_rank == 1 && artifact.points[ power_index ] > 1 )
   {
     return artifact_power_t();
   }
 
   // 1 rank powers use the zeroth (only) entry, multi-rank spells have 0 -> max rank entries
   std::vector<const artifact_power_rank_t*> ranks = dbc.artifact_power_ranks( power_data -> id );
-  unsigned rank_index = artifact_points[ power_index ] - 1;
+  unsigned rank_index = artifact.points[ power_index ] - 1;
 
   // Rank data missing for the power
   if ( rank_index > ranks.size() - 1 )
@@ -8125,7 +8177,7 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s (iondex %u)",
-          this -> name(), artifact_points[ power_index ], ranks.size(),
+          this -> name(), artifact.points[ power_index ], ranks.size(),
           power_data -> name ? power_data -> name : "Unknown", power_index );
     }
 
@@ -8133,7 +8185,7 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
   }
 
   // Finally, all checks satisfied, return a real spell
-  return artifact_power_t( artifact_points[ power_index ],
+  return artifact_power_t( artifact.points[ power_index ],
                            find_spell( ranks[ rank_index ] -> id_spell() ),
                            power_data,
                            ranks[ rank_index ] );
@@ -11092,11 +11144,11 @@ player_t* player_t::actor_by_name_str( const std::string& name ) const
 
 bool player_t::artifact_enabled() const
 {
-  if ( artifact_ == 1 )
+  if ( artifact.artifact_ == 1 )
   {
     return true;
   }
-  else if ( artifact_ == 0 )
+  else if ( artifact.artifact_ == 0 )
   {
     return false;
   }

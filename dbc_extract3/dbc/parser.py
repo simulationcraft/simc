@@ -598,7 +598,8 @@ class LegionWDBParser(DBCParserBase):
             fields.append('o_id_block=%u' % self.id_block_offset)
         if self.offset_map_offset > 0:
             fields.append('o_offset_map=%u' % self.offset_map_offset)
-        fields.append('flags=%#.8x' % self.flags)
+        if hasattr(self, 'flags'):
+            fields.append('flags=%#.8x' % self.flags)
 
         return fields
 
