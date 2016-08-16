@@ -45,6 +45,7 @@ namespace buffs {
                   struct wings_of_liberty_driver_t;
                   struct liadrins_fury_unleashed_t;
                   struct forbearance_t;
+                  struct shield_of_vengeance_buff_t;
                 }
 
 // ==========================================================================
@@ -82,6 +83,7 @@ public:
   heal_t*   active_beacon_of_light;
   heal_t*   active_enlightened_judgments;
   action_t* active_blessing_of_might_proc;
+  action_t* active_shield_of_vengeance_proc;
   action_t* active_holy_shield_proc;
   action_t* active_painful_truths_proc;
   action_t* active_tyrs_enforcer_proc;
@@ -109,6 +111,7 @@ public:
     buffs::ardent_defender_buff_t* ardent_defender;
     buffs::avenging_wrath_buff_t* avenging_wrath;
     buffs::crusade_buff_t* crusade;
+    buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
     buff_t* divine_protection;
     buff_t* divine_shield;
     buff_t* guardian_of_ancient_kings;
@@ -351,6 +354,7 @@ public:
 
   double fixed_holy_wrath_health_pct;
   bool fake_gbom;
+  bool fake_sov;
 
   paladin_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, PALADIN, name, r ),
@@ -368,7 +372,8 @@ public:
     extra_regen_percent( 0.0 ),
     last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
     fixed_holy_wrath_health_pct( -1.0 ),
-    fake_gbom( true )
+    fake_gbom( true ),
+    fake_sov( false )
   {
     last_retribution_trinket_target = nullptr;
     retribution_trinket = nullptr;
@@ -378,6 +383,7 @@ public:
     active_beacon_of_light             = nullptr;
     active_enlightened_judgments       = nullptr;
     active_blessing_of_might_proc      = nullptr;
+    active_shield_of_vengeance_proc    = nullptr;
     active_holy_shield_proc            = nullptr;
     active_tyrs_enforcer_proc          = nullptr;
     active_painful_truths_proc         = nullptr;
@@ -665,6 +671,33 @@ namespace buffs {
     double haste_bonus;
   };
 
+  struct shield_of_vengeance_buff_t : public absorb_buff_t
+  {
+    shield_of_vengeance_buff_t( player_t* p ):
+      absorb_buff_t( absorb_buff_creator_t( p, "shield_of_vengeance", p -> find_spell( 184662 ) ) )
+    {
+      paladin_t* pal = static_cast<paladin_t*>( p );
+      if ( pal -> artifact.deflection.rank() )
+      {
+        cooldown -> duration += timespan_t::from_millis( pal -> artifact.deflection.value() );
+      }
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      absorb_buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      paladin_t* p = static_cast<paladin_t*>( player );
+      // do thing
+      if ( p -> fake_sov )
+      {
+        // TODO(mserrano): This is a horrible hack
+        p -> active_shield_of_vengeance_proc -> base_dd_max = p -> active_shield_of_vengeance_proc -> base_dd_min = current_value;
+        p -> active_shield_of_vengeance_proc -> execute();
+      }
+    }
+  };
+
   struct forbearance_t : public debuff_t
   {
     paladin_t* paladin;
@@ -808,7 +841,7 @@ public:
   {
     ab::impact( s );
 
-    if ( should_trigger_bom )
+    if ( ab::harmful && should_trigger_bom )
       trigger_blessing_of_might( s );
 
     if ( td( s -> target ) -> buffs.judgment_of_light -> up() )
@@ -1546,6 +1579,35 @@ struct divine_protection_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p() -> buffs.divine_protection -> trigger();
+  }
+};
+
+// SoV
+
+struct shield_of_vengeance_t : public paladin_absorb_t
+{
+  shield_of_vengeance_t( paladin_t* p, const std::string& options_str ) :
+    paladin_absorb_t( "shield_of_vengeance", p, p -> find_spell( 184662 ) )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+    use_off_gcd = true;
+    trigger_gcd = timespan_t::zero();
+
+    may_crit = true;
+    attack_power_mod.direct = 10;
+    if ( p -> artifact.deflection.rank() )
+    {
+      cooldown -> duration += timespan_t::from_millis( p -> artifact.deflection.value() );
+    }
+  }
+
+  virtual void execute() override
+  {
+    paladin_absorb_t::execute();
+
+    p() -> buffs.shield_of_vengeance -> trigger();
   }
 };
 
@@ -3406,6 +3468,30 @@ struct blessing_of_might_proc_t : public paladin_melee_attack_t
   }
 };
 
+struct shield_of_vengeance_proc_t : public paladin_spell_t
+{
+  shield_of_vengeance_proc_t( paladin_t* p )
+    : paladin_spell_t( "shield_of_vengeance_proc", p, spell_data_t::nil() )
+  {
+    school = SCHOOL_HOLY;
+    may_miss    = false;
+    may_dodge   = false;
+    may_parry   = false;
+    may_glance  = false;
+    background  = true;
+    trigger_gcd = timespan_t::zero();
+    id = 184689;
+
+    may_crit = true;
+    aoe = -1;
+  }
+
+  virtual void execute() override
+  {
+    paladin_spell_t::execute();
+  }
+};
+
 // Judgment =================================================================
 
 struct judgment_t : public paladin_melee_attack_t
@@ -3977,7 +4063,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "blessed_hammer"            ) return new blessed_hammer_t           ( this, options_str );
   if ( name == "greater_blessing_of_might" ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "blessing_of_protection"    ) return new blessing_of_protection_t   ( this, options_str );
-  if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str);
+  if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str );
   if ( name == "blinding_light"            ) return new blinding_light_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
@@ -4016,6 +4102,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
   if ( name == "lay_on_hands"              ) return new lay_on_hands_t             ( this, options_str );
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
+  if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -4300,6 +4387,7 @@ void paladin_t::create_buffs()
                                           .duration( timespan_t::from_seconds( 3.0 ) ).chance( 1.0 ).default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
   buffs.whisper_of_the_nathrezim       = buff_creator_t( this, "whisper_of_the_nathrezim" ).spell( find_spell( 207635 ) );
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
+  buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
 
   // Tier Bonuses
   // T17
@@ -4856,6 +4944,7 @@ void paladin_t::init_action_list()
   }
 
   active_blessing_of_might_proc      = new blessing_of_might_proc_t     ( this );
+  active_shield_of_vengeance_proc    = new shield_of_vengeance_proc_t   ( this );
 
   // create action priority lists
   if ( action_list_str.empty() )
@@ -5489,10 +5578,6 @@ void paladin_t::target_mitigation( school_e school,
 
   // various mitigation effects, Ardent Defender goes last due to absorb/heal mechanics
 
-  // Artifact sources
-  if ( artifact.deflection.rank() )
-    s -> result_amount *= 1.0 + artifact.deflection.percent();
-
   // Passive sources (Sanctuary)
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
 
@@ -5801,6 +5886,7 @@ void paladin_t::create_options()
   // TODO: figure out a better solution for this.
   add_option( opt_float( "paladin_fixed_holy_wrath_health_pct", fixed_holy_wrath_health_pct ) );
   add_option( opt_bool( "paladin_fake_gbom", fake_gbom ) );
+  add_option( opt_bool( "paladin_fake_sov", fake_sov ) );
   player_t::create_options();
 }
 
