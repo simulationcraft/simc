@@ -2481,7 +2481,7 @@ struct agony_t: public warlock_spell_t
 
 
     double active_agonies = p() -> get_active_dots( internal_id );
-    double accumulator_increment = rng().range( 0.0, 0.32 ) / sqrt( active_agonies );
+    double accumulator_increment = rng().range( 0.0, p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.48 : 0.32 ) / sqrt( active_agonies );
 
     p() -> shard_accumulator += accumulator_increment;
 
@@ -2626,6 +2626,9 @@ struct unstable_affliction_t : public warlock_spell_t
     base_multiplier *= dot_duration / base_tick_time;
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
     affected_by_contagion = false;
+
+    if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
+      base_multiplier *= 1.0 + p -> sets.set( WARLOCK_DEMONOLOGY, T19, B2 ) -> effectN( 1 ).percent();
   }
 
   double cost() const override
@@ -4064,7 +4067,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
     warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) )
   {
     harmful = may_crit = false;
-    dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
+    dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets.set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
     dreadstalker_count = data().effectN( 1 ).base_value();
     improved_dreadstalkers = p -> talents.improved_dreadstalkers -> effectN( 1 ).base_value();
   }

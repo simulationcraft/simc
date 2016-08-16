@@ -404,6 +404,71 @@ std::string report::pretty_spell_text( const spell_data_t& default_spell,
   return tooltip_parser_t( p, default_spell, text ).parse();
 }
 
+// report::check_gear_ilevel ============================================
+// This is to make sure our default profiles are using the same number of artifact points.
+
+bool report::check_gear_ilevel( player_t& p, sim_t& sim )
+{
+  int max_ilevel_allowed = 0;
+  int max_weapon_ilevel_allowed = 0;
+  bool return_value = true;
+  std::string tier_name = "";
+
+  if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
+  {
+    max_ilevel_allowed = 840;
+    max_weapon_ilevel_allowed = 880;
+    tier_name = "T19P";
+  }
+  else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
+  {
+    max_ilevel_allowed = 865;
+    max_weapon_ilevel_allowed = 900;
+    tier_name = "T19H";
+  }
+  else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
+  {
+    max_ilevel_allowed = 880;
+    max_weapon_ilevel_allowed = 910;
+    tier_name = "T19M";
+  }
+  else
+  {
+    return return_value;
+  }
+
+  const slot_e SLOT_OUT_ORDER[] =
+  {
+    SLOT_HEAD, SLOT_NECK, SLOT_SHOULDERS, SLOT_BACK, SLOT_CHEST, SLOT_SHIRT, SLOT_TABARD, SLOT_WRISTS,
+    SLOT_HANDS, SLOT_WAIST, SLOT_LEGS, SLOT_FEET, SLOT_FINGER_1, SLOT_FINGER_2, SLOT_TRINKET_1, SLOT_TRINKET_2,
+    SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED,
+  };
+
+  for ( auto & slot : SLOT_OUT_ORDER )
+  {
+    item_t& item = p.items[slot];
+
+    if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND || slot == SLOT_RANGED )
+    {
+      if ( item.parsed.data.level > max_weapon_ilevel_allowed )
+      {
+        sim.errorf( "Player %s has weapon of ilevel %s, maximum allowed ilevel for %s is %s.\n",
+                    p.name(), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_weapon_ilevel_allowed ).c_str() );
+        return_value = false;
+      }
+    }
+    else if ( item.parsed.data.level > max_ilevel_allowed )
+    {
+      sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n",
+                  p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
+      return_value = false;
+    }
+  }
+
+  return return_value;
+}
+
+
 // report::check_artifact_points ============================================
 // This is to make sure our default profiles are using the same number of artifact points.
 
@@ -473,6 +538,11 @@ void report::print_profiles( sim_t* sim )
       continue;
 
     if ( !check_artifact_points( *p, *sim ) )
+    {
+      continue;
+    }
+
+    if ( !check_gear_ilevel( *p, *sim ) )
     {
       continue;
     }
