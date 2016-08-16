@@ -2668,7 +2668,7 @@ struct fan_of_knives_t: public rogue_attack_t
     // The Dreadlord's Deceit Legendary
     if ( p() -> buffs.the_dreadlords_deceit_assassination -> up() )
     {
-      m *= 1.0 + p() -> buffs.the_dreadlords_deceit_assassination -> data().effectN( 1 ).percent();
+      m *= 1.0 + p() -> buffs.the_dreadlords_deceit_assassination -> stack_value();
       p() -> buffs.the_dreadlords_deceit_assassination -> expire();
     }
 
@@ -3942,7 +3942,7 @@ struct shuriken_storm_t: public rogue_attack_t
     // The Dreadlord's Deceit Legendary
     if ( p() -> buffs.the_dreadlords_deceit_subtlety -> up() )
     {
-      m *= 1.0 + p() -> buffs.the_dreadlords_deceit_subtlety -> data().effectN( 1 ).percent();
+      m *= 1.0 + p() -> buffs.the_dreadlords_deceit_subtlety -> stack_value();
       p() -> buffs.the_dreadlords_deceit_subtlety -> expire();
     }
 
@@ -7754,7 +7754,7 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 209420, greenskins_waterlogged_wristcuffs_t() );
     unique_gear::register_special_effect( 214569, zoldyck_family_training_shackles_t()  );
     unique_gear::register_special_effect( 208436, shadow_satyrs_walk_t()                );
-    unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()                 );
+    unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()             );
   }
 
   virtual void register_hotfixes() const override
