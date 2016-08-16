@@ -4,7 +4,7 @@ race=orc
 role=spell
 position=back
 talents=3032011
-artifact=53:137380:133768:137380:0:783:1:785:3:788:3:789:6:790:3:792:3:793:1:796:1:1296:1
+artifact=53:140831:139269:140831:0:783:1:786:3:788:3:789:6:790:3:792:3:793:1:796:1:1296:1
 spec=frost
 
 # This default action priority list is automatically created based on your character.
@@ -50,29 +50,30 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 
-head=cragshapers_fitted_hood,id=137341,bonus_id=1727
+head=collar_of_enclosure,id=134424,bonus_id=1727
 neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=amice_of_cruel_laughter,id=137503,bonus_id=1727
-back=goldscar_pelt,id=133639,bonus_id=1727,enchant=binding_of_intellect
-chest=flameheart_vestment,id=137504,bonus_id=1727
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
+back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_intellect
+chest=fluxflow_robes,id=134413,bonus_id=1727
 wrists=armbands_of_slaughter,id=134436,bonus_id=1727
 hands=satin_throatclutchers,id=134422,bonus_id=1727
-waist=cord_of_wicked_pyromania,id=137488,bonus_id=1727
-legs=legwraps_of_rampant_turmoil,id=137453,bonus_id=1727
-feet=slippers_of_heedless_sacrifice,id=134419,bonus_id=1727
+waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727
+legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1727
+feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727
 finger1=seal_of_malicious_deceit,id=134489,bonus_id=1727,enchant=binding_of_haste
-finger2=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_critical_strike
+finger2=band_of_fused_coral,id=134532,bonus_id=1727,enchant=binding_of_haste
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
 trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
 main_hand=ebonchill,id=128862,ilevel=870
 
 # Gear Summary
 # gear_ilvl=842.00
-# gear_stamina=17964
+# gear_stamina=17965
 # gear_intellect=18709
-# gear_crit_rating=7038
-# gear_haste_rating=8326
+# gear_crit_rating=5566
+# gear_haste_rating=9800
 # gear_mastery_rating=1603
 # gear_versatility_rating=898
 # gear_leech_rating=404
 # gear_armor=1570
+# set_bonus=tier19p_cloth_2pc=1
