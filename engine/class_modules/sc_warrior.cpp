@@ -2459,8 +2459,8 @@ struct neltharions_fury_flame_t: public warrior_attack_t
     warrior_attack_t( "neltharions_fury_shadowflame", p, p -> artifact.neltharions_fury.data().effectN( 2 ).trigger() )
   {
     aoe = -1;
-    may_block = may_parry = may_dodge = false;
-    hasted_ticks = false;
+    may_block = may_parry = may_dodge = hasted_ticks = false;
+    dual = background = true;
   }
 };
 
