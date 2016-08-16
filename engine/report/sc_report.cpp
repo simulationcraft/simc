@@ -467,10 +467,10 @@ void report::print_profiles( sim_t* sim )
     if ( p->is_pet() )
       continue;
 
-    if ( !check_artifact_points( *p, *sim ) )
-    {
-      continue;
-    }
+    //if ( !check_artifact_points( *p, *sim ) )
+    //{
+//      continue;
+    //}
     k++;
 
     if ( !p->report_information.save_gear_str.empty() )  // Save gear
