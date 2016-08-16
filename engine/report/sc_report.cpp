@@ -415,17 +415,17 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim  )
 
   if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
   {
-    max_allowed = 22;
+    max_allowed = 21;
     tier_name = "T19P";
   }
   else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
   {
-    max_allowed =30;
+    max_allowed =29;
     tier_name = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
-    max_allowed = 38;
+    max_allowed = 37;
     tier_name = "T19M";
   }
   else
@@ -440,16 +440,21 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim  )
     total_points += util::to_unsigned( splits[i + 1] );
   }
 
+  if ( total_points > 0 )
+  {
+    total_points--; //Subtract one point that is automatically given with the artifact. 
+  }
+
   if ( total_points > max_allowed )
   {
     sim.errorf( "Player %s has %s artifact points, maximum allowed (including relics) for %s is %s.\n",
-                 p.name(), util::to_string( total_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed - 1 ).c_str() );
+                 p.name(), util::to_string( total_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return false;
   }
   else if ( total_points < max_allowed && p.level() == 110 )
   {
     sim.errorf( "Player %s has %s artifact points, maximum allowed (including relics) for %s is %s. Add more!\n",
-                p.name(), util::to_string( total_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed - 1 ).c_str() );
+                p.name(), util::to_string( total_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return true;
   }
 
