@@ -6242,8 +6242,8 @@ void rogue_t::init_action_list()
     def -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
     def -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4" );
     def -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled" );
-    def -> add_action( "call_action_list,name=finish,if=combo_points>=5+talent.deeper_strategem.enabled" );
-    def -> add_action( "call_action_list,name=build,if=combo_points<5+talent.deeper_strategem.enabled" );
+    def -> add_action( "call_action_list,name=finish,if=combo_points>=5+talent.deeper_strategem.enabled-buff.broadsides.up" );
+    def -> add_action( "call_action_list,name=build,if=combo_points<5+talent.deeper_strategem.enabled-buff.broadsides.up" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish" );

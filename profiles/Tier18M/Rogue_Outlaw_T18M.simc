@@ -46,8 +46,8 @@ actions+=/killing_spree,if=energy.time_to_max>5|energy<15
 actions+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
 actions+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
 actions+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled
-actions+=/call_action_list,name=finish,if=combo_points>=5+talent.deeper_strategem.enabled
-actions+=/call_action_list,name=build,if=combo_points<5+talent.deeper_strategem.enabled
+actions+=/call_action_list,name=finish,if=combo_points>=5+talent.deeper_strategem.enabled-buff.broadsides.up
+actions+=/call_action_list,name=build,if=combo_points<5+talent.deeper_strategem.enabled-buff.broadsides.up
 
 # Finishers
 actions.finish=death_from_above
