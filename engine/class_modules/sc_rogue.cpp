@@ -208,8 +208,8 @@ struct rogue_t : public player_t
     // Legendary 7.0 buffs
     buff_t* shivarran_symmetry;
     buff_t* greenskins_waterlogged_wristcuffs;
-    buff_t* the_dreadlords_deceit_assassination;
-    buff_t* the_dreadlords_deceit_subtlety;
+    buff_t* the_dreadlords_deceit;
+    buff_t* the_dreadlords_deceit_driver;
 
     buff_t* deceit;
     buff_t* shadow_strikes;
@@ -2666,10 +2666,10 @@ struct fan_of_knives_t: public rogue_attack_t
     double m = rogue_attack_t::action_multiplier();
 
     // The Dreadlord's Deceit Legendary
-    if ( p() -> buffs.the_dreadlords_deceit_assassination -> up() )
+    if ( p() -> buffs.the_dreadlords_deceit -> up() )
     {
-      m *= 1.0 + p() -> buffs.the_dreadlords_deceit_assassination -> stack_value();
-      p() -> buffs.the_dreadlords_deceit_assassination -> expire();
+      m *= 1.0 + p() -> buffs.the_dreadlords_deceit -> check_stack_value();
+      p() -> buffs.the_dreadlords_deceit -> expire();
     }
 
     return m;
@@ -3940,10 +3940,10 @@ struct shuriken_storm_t: public rogue_attack_t
     }
 
     // The Dreadlord's Deceit Legendary
-    if ( p() -> buffs.the_dreadlords_deceit_subtlety -> up() )
+    if ( p() -> buffs.the_dreadlords_deceit -> up() )
     {
-      m *= 1.0 + p() -> buffs.the_dreadlords_deceit_subtlety -> stack_value();
-      p() -> buffs.the_dreadlords_deceit_subtlety -> expire();
+      m *= 1.0 + p() -> buffs.the_dreadlords_deceit -> check_stack_value();
+      p() -> buffs.the_dreadlords_deceit -> expire();
     }
 
     return m;
@@ -7019,12 +7019,15 @@ void rogue_t::create_buffs()
   // Legendary 7.0 buffs
   buffs.shivarran_symmetry = buff_creator_t( this, "shivarran_symmetry", find_spell( 226318 ) );
   buffs.greenskins_waterlogged_wristcuffs = buff_creator_t( this, "greenskins_waterlogged_wristcuffs", find_spell( 209423 ) );
-  buffs.the_dreadlords_deceit_assassination = buff_creator_t( this, "the_dreadlords_deceit_assassination", find_spell( 208693 ) )
-                                          .period( find_spell( 208692 ) -> effectN( 1 ).period() )
-                                          .tick_behavior( BUFF_TICK_CLIP );
-  buffs.the_dreadlords_deceit_subtlety = buff_creator_t( this, "the_dreadlords_deceit_subtlety", find_spell( 228224 ) )
+  const spell_data_t* tddid = ( specialization() == ROGUE_ASSASSINATION ) ? find_spell( 208693 ) : ( specialization() == ROGUE_SUBTLETY ) ? find_spell( 228224 ) : spell_data_t::not_found();
+  buffs.the_dreadlords_deceit = buff_creator_t( this, "the_dreadlords_deceit", tddid )
+                                .default_value( tddid -> effectN( 1 ).percent() );
+  buffs.the_dreadlords_deceit_driver = buff_creator_t( this, "the_dreadlords_deceit_driver", find_spell( 208692 ) )
                                      .period( find_spell( 208692 ) -> effectN( 1 ).period() )
-                                     .tick_behavior( BUFF_TICK_CLIP );
+                                     .quiet( true )
+                                     .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
+                                      buffs.the_dreadlords_deceit -> trigger(); } )
+                                     .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );    
 
   buffs.fof_fod           = new buffs::fof_fod_t( this );
 
@@ -7445,12 +7448,7 @@ void rogue_t::combat_begin()
   player_t::combat_begin();
 
   if ( legendary.the_dreadlords_deceit )
-    {
-      if ( specialization() == ROGUE_ASSASSINATION )
-        buffs.the_dreadlords_deceit_assassination -> trigger();
-      else if ( specialization() == ROGUE_SUBTLETY )
-        buffs.the_dreadlords_deceit_subtlety -> trigger();
-    }
+    buffs.the_dreadlords_deceit_driver -> trigger();
 }
 
 // rogue_t::energy_regen_per_second =========================================
