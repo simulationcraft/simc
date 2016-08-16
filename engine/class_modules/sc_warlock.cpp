@@ -2481,7 +2481,7 @@ struct agony_t: public warlock_spell_t
 
 
     double active_agonies = p() -> get_active_dots( internal_id );
-    double accumulator_increment = rng().range( 0.0, 0.32 ) / sqrt( active_agonies );
+    double accumulator_increment = rng().range( 0.0, p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.48 : 0.32 ) / sqrt( active_agonies );
 
     p() -> shard_accumulator += accumulator_increment;
 
@@ -2626,6 +2626,9 @@ struct unstable_affliction_t : public warlock_spell_t
     base_multiplier *= dot_duration / base_tick_time;
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
     affected_by_contagion = false;
+
+    if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
+      base_multiplier *= 1.0 + p -> sets.set( WARLOCK_DEMONOLOGY, T19, B2 ) -> effectN( 1 ).percent();
   }
 
   double cost() const override
