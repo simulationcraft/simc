@@ -4067,7 +4067,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
     warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) )
   {
     harmful = may_crit = false;
-    dreadstalker_duration = p -> find_spell( 193332 ) -> duration();
+    dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets.set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
     dreadstalker_count = data().effectN( 1 ).base_value();
     improved_dreadstalkers = p -> talents.improved_dreadstalkers -> effectN( 1 ).base_value();
   }
