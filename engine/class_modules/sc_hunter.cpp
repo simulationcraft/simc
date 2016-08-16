@@ -4656,7 +4656,7 @@ struct dire_frenzy_t: public hunter_spell_t
     if ( p() -> active.pet )
     {
       // Execute number of attacks listed in spell data
-      for ( size_t i = 0; i < data().effectN( 1 ).base_value(); i++ )
+      for ( int i = 0; i < data().effectN( 1 ).base_value(); i++ )
         p() -> active.pet -> active.dire_frenzy -> schedule_execute();
 
       p() -> active.pet -> buffs.dire_frenzy -> trigger();
