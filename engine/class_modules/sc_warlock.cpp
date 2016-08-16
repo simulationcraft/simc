@@ -3578,7 +3578,7 @@ struct thalkiels_consumption_t : public warlock_spell_t
             {
                 if( !lock_pet->is_sleeping() )
                 {
-                    damage += (double)(lock_pet->resources.max[RESOURCE_HEALTH]) * 0.1;
+                    damage += (double)(lock_pet->resources.max[RESOURCE_HEALTH]) * 0.06; //spelldata
                 }
             }
         }

@@ -4,7 +4,7 @@ race=orc
 role=spell
 position=back
 talents=3032011
-artifact=53:136692:132810:136692:0:783:1:786:6:788:3:789:3:790:3:792:3:793:1:796:1:1296:1
+artifact=53:137380:133768:137380:0:783:1:785:3:788:3:789:6:790:3:792:3:793:1:796:1:1296:1
 spec=frost
 
 # This default action priority list is automatically created based on your character.
@@ -76,6 +76,3 @@ main_hand=ebonchill,id=128862,ilevel=870
 # gear_versatility_rating=898
 # gear_leech_rating=404
 # gear_armor=1570
-
-
-

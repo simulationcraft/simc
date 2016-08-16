@@ -39,26 +39,24 @@ actions+=/pool_resource,for_next=1,extra_amount=60
 actions+=/vanish,if=combo_points.deficit>=2&energy>60
 actions+=/pool_resource,for_next=1,extra_amount=60
 actions+=/shadowmeld,if=combo_points.deficit>=2&energy>60
-actions+=/slice_and_dice,if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<10.8
+actions+=/slice_and_dice,if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
 actions+=/roll_the_bones,if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|rtb_buffs<=1)
 actions+=/killing_spree,if=energy.time_to_max>5|energy<15
 actions+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
 actions+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
-actions+=/marked_for_death,cycle_targets=1,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled
-actions+=/call_action_list,name=finisher,if=combo_points>=5+talent.deeper_strategem.enabled
-actions+=/call_action_list,name=generator,if=combo_points<5+talent.deeper_strategem.enabled
+actions+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled
+actions+=/call_action_list,name=finish,if=combo_points>=5+talent.deeper_strategem.enabled
+actions+=/call_action_list,name=build,if=combo_points<5+talent.deeper_strategem.enabled
 
-# Combo Point Finishers
+# Finishers
+actions.finish=death_from_above
+actions.finish+=/between_the_eyes,if=equipped.greenskins_waterlogged_wristcuffs&buff.shark_infested_waters.up
+actions.finish+=/run_through
 
-actions.finisher=death_from_above
-actions.finisher+=/between_the_eyes,if=equipped.greenskins_waterlogged_wristcuffs&buff.shark_infested_waters.up
-actions.finisher+=/run_through
-
-# Combo Point Generators
-
-actions.generator=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<4.5
-actions.generator+=/pistol_shot,if=buff.opportunity.up&energy.time_to_max>2
-actions.generator+=/saber_slash
+# Builders
+actions.build=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<4.5
+actions.build+=/pistol_shot,if=buff.opportunity.up&energy.time_to_max>2
+actions.build+=/saber_slash
 
 head=felblade_hood,id=124263,bonus_id=566
 neck=choker_of_the_great_betrayer,id=124210,bonus_id=566,enchant_id=5321

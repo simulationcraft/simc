@@ -73,7 +73,7 @@ feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727
 finger1=band_of_fused_coral,id=134532,bonus_id=1727,enchant_id=5428
 finger2=seal_of_malicious_deceit,id=134489,bonus_id=1727,enchant_id=5428
 trinket1=portable_manacracker,id=137398,bonus_id=1727/1492
-trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727/1492
+trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727/1492
 main_hand=scepter_of_sargeras,id=128941,ilevel=870
 
 # Gear Summary
@@ -82,8 +82,7 @@ main_hand=scepter_of_sargeras,id=128941,ilevel=870
 # gear_intellect=19832
 # gear_crit_rating=6046
 # gear_haste_rating=9320
-# gear_mastery_rating=705
-# gear_versatility_rating=898
+# gear_mastery_rating=1603
 # gear_armor=1570
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=imp
