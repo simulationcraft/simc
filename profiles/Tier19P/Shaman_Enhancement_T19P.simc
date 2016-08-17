@@ -70,15 +70,15 @@ finger1=grasping_tentacle_loop,id=133634,bonus_id=1727,enchant_id=5429
 finger2=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant_id=5429
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=horn_of_valor,id=133642,bonus_id=1727
-main_hand=doomhammer,id=128819,bonus_id=741,ilevel=855
-off_hand=fury_of_the_stonemother,id=128873,ilevel=855
+main_hand=doomhammer,id=128819,bonus_id=741,ilevel=870,relic_id=3412/3412/3412
+off_hand=fury_of_the_stonemother,id=128873,ilevel=870
 
 # Gear Summary
-# gear_ilvl=841.88
-# gear_agility=9784
-# gear_stamina=17364
-# gear_crit_rating=578
+# gear_ilvl=843.75
+# gear_agility=9960
+# gear_stamina=17628
+# gear_crit_rating=612
 # gear_haste_rating=5868
-# gear_mastery_rating=10547
+# gear_mastery_rating=10579
 # gear_versatility_rating=898
 # gear_armor=2433

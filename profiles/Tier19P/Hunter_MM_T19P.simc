@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=ranged_back
 talents=1103021
-artifact=55:140842:141283:137307:0:307:1:308:1:310:1:312:6:313:2:315:3:319:3:320:3:322:1:1337:1
+artifact=55:137550:137350:137307:0:307:1:308:1:310:1:312:6:313:2:315:3:319:3:320:3:322:1:1337:1
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -80,7 +80,7 @@ finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=200mastery
 finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=200mastery
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
 trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=137550/137350/137307,relic_id=1727/1727/1727
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=137550/137350/137307,relic_id=3412/3412/3412
 
 # Gear Summary
 # gear_ilvl=842.00

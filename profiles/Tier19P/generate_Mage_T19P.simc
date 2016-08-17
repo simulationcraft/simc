@@ -20,8 +20,8 @@ finger1=,id=134525,bonus_id=1727,enchant=binding_of_critical_strike
 finger2=,id=134528,bonus_id=1727,enchant=binding_of_critical_strike
 trinket1=Naraxas_Spiked_Tongue,id=137349,bonus_id=1727
 trinket2=Portable_Manacracker,id=137398,bonus_id=1727
-main_hand=felomelorn,id=128820,ilevel=855
-off_hand=heart_of_the_phoenix,id=133959,ilevel=855
+main_hand=felomelorn,id=128820,gem_id=142059/142056/133022,relic_id=3412/3412/3412
+off_hand=heart_of_the_phoenix,id=133959
 save=Mage_Fire_T19P.simc
 
 mage="Mage_Frost_T19P"
@@ -46,6 +46,6 @@ finger1=,id=134489,bonus_id=1727,enchant=binding_of_haste
 finger2=,id=134532,bonus_id=1727,enchant=binding_of_haste
 trinket1=,id=137349,bonus_id=1727
 trinket2=,id=137306,bonus_id=1727
-main_hand=ebonchill,id=128862,ilevel=855
+main_hand=ebonchill,id=128862,gem_id=140831/139269/140831,relic_id=3412/3412/3412
 save=Mage_Frost_T19P.simc
 

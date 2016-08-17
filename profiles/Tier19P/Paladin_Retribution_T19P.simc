@@ -144,7 +144,7 @@ finger1=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=binding_of_haste
 finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=spiked_counterweight,id=136715,bonus_id=1727/1492
-main_hand=ashbringer,id=120978,bonus_id=737,gem_id=136717/137316/136717,relic_id=1727/1727/1727
+main_hand=ashbringer,id=120978,bonus_id=737,gem_id=136717/137316/136717,relic_id=3412/3412/3412
 
 # Gear Summary
 # gear_ilvl=842.00

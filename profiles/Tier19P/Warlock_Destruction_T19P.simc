@@ -72,15 +72,15 @@ finger1=band_of_fused_coral,id=134532,bonus_id=1727,enchant_id=5428
 finger2=seal_of_malicious_deceit,id=134489,bonus_id=1727,enchant_id=5428
 trinket1=portable_manacracker,id=137398,bonus_id=1727/1492
 trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727/1492
-main_hand=scepter_of_sargeras,id=128941,ilevel=855
+main_hand=scepter_of_sargeras,id=128941,ilevel=870,relic_id=3412/3412/3412
 
 # Gear Summary
-# gear_ilvl=841.00
-# gear_stamina=17659
-# gear_intellect=18515
+# gear_ilvl=842.00
+# gear_stamina=17965
+# gear_intellect=19832
 # gear_crit_rating=6046
-# gear_haste_rating=9281
-# gear_mastery_rating=1564
+# gear_haste_rating=9320
+# gear_mastery_rating=1603
 # gear_armor=1570
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=imp

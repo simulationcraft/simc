@@ -21,8 +21,8 @@ finger1=,id=134528,bonus_id=1727,enchant=binding_of_haste
 finger2=,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,relic_id=137546/137365/137472
-off_hand=warswords_of_the_valarjar,id=134553
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=137546/137365/137472,relic_id=3412/3412/3412,ilevel=870
+off_hand=warswords_of_the_valarjar,id=134553,ilevel=870
 save=Warrior_Fury_T19P.simc
 
 # Warrior Arms T19P
@@ -48,7 +48,7 @@ finger1=,id=134528,bonus_id=1727,enchant=binding_of_haste
 finger2=,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,relic_id=1727/1727/1727,gem_id=140815/141523/140822,ilevel=855
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/141523/140822,relic_id=3412/3412/3412
 save=Warrior_Arms_T19P.simc
 
 # Warrior Protection T19P
@@ -74,6 +74,6 @@ finger1=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=binding_of_versat
 finger2=ring_of_contempt,id=134490,bonus_id=1727,enchant=binding_of_versatility
 trinket1=horn_of_valor,id=133642,bonus_id=1727
 trinket2=coagulated_nightwell_residue,id=137400,bonus_id=1727
-main_hand=scaleshard,id=128288,ilevel=855
-off_hand=scale_of_the_earthwarder,id=128289,ilevel=855
+main_hand=scaleshard,id=128288,relic_id=3412/3412/3412,ilevel=870
+off_hand=scale_of_the_earthwarder,id=128289,ilevel=870
 save=Warrior_Protection_T19P.simc

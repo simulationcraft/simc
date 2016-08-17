@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=ranged_back
 talents=3102012
-artifact=56:137365:132810:140817:0:869:3:870:3:872:3:874:3:875:3:878:1:881:1:882:1:1095:3:1336:1
+artifact=56:137550:137547:137543:0:869:3:870:3:872:3:874:3:875:3:878:1:881:1:882:1:1095:3:1336:1
 spec=beast_mastery
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
@@ -21,7 +21,7 @@ finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=200mastery
 finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=200mastery
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
 trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
-main_hand=titanstrike,id=128861,gem_id=137550/137547/137543,relic_id=1727/1727/1727
+main_hand=titanstrike,id=128861,gem_id=137550/137547/137543,relic_id=3412/3412/3412
 save=Hunter_BM_T19P.simc
 
 hunter="Hunter_MM_T19P"
@@ -30,7 +30,7 @@ race=blood_elf
 role=attack
 position=ranged_back
 talents=1103021
-artifact=55:140842:141283:137307:0:307:1:308:1:310:1:312:6:313:2:315:3:319:3:320:3:322:1:1337:1
+artifact=55:137550:137350:137307:0:307:1:308:1:310:1:312:6:313:2:315:3:319:3:320:3:322:1:1337:1
 spec=marksmanship
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
@@ -47,7 +47,7 @@ finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=200mastery
 finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=200mastery
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
 trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=137550/137350/137307,relic_id=1727/1727/1727
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=137550/137350/137307,relic_id=3412/3412/3412
 save=Hunter_MM_T19P.simc
 
 hunter="Hunter_SV_T19P"
@@ -56,7 +56,7 @@ race=blood_elf
 role=attack
 position=back
 talents=3302022
-artifact=34:132303:140815:141523:0:1068:1:1070:2:1072:3:1073:3:1075:6:1076:3:1080:1:1082:1:1084:1:1338:1
+artifact=34:137550:137350:137543:0:1068:1:1070:2:1072:3:1073:3:1075:6:1076:3:1080:1:1082:1:1084:1:1338:1
 spec=survival
 
 head=helm_of_endless_dunes,id=134471,bonus_id=1727
@@ -73,5 +73,5 @@ finger1=ring_of_contempt,id=134490,bonus_id=1727,enchant=200vers
 finger2=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=200vers
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=talonclaw,id=128808,gem_id=137550/137350/137543,relic_id=1727/1727/1727
+main_hand=talonclaw,id=128808,gem_id=137550/137350/137543,relic_id=3412/3412/3412
 save=Hunter_SV_T19P.simc

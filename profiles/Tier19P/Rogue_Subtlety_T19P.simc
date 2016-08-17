@@ -85,15 +85,15 @@ finger1=ring_of_minute_mirrors,id=137533,bonus_id=1727
 finger2=ring_of_mindshielding,id=137432,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=memento_of_angerboda,id=133644,bonus_id=1727
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,ilevel=855
-off_hand=fangs_of_the_devourer,id=128479,ilevel=855
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,ilevel=870,relic_id=3412/3412/3412
+off_hand=fangs_of_the_devourer,id=128479,ilevel=870
 
 # Gear Summary
-# gear_ilvl=841.88
-# gear_agility=10707
-# gear_stamina=17366
-# gear_crit_rating=3877
+# gear_ilvl=843.75
+# gear_agility=10883
+# gear_stamina=17630
+# gear_crit_rating=3911
 # gear_haste_rating=1988
-# gear_mastery_rating=6494
+# gear_mastery_rating=6526
 # gear_versatility_rating=3930
 # gear_armor=1957

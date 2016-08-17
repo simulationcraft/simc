@@ -90,14 +90,14 @@ finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_c
 finger2=gnawed_thumb_ring,id=134526,bonus_id=1727,enchant=binding_of_critical_strike
 trinket1=darkmoon_deck_dominion,id=128705,bonus_id=667
 trinket2=chaos_talisman,id=137459,bonus_id=1727
-main_hand=apocalypse,id=128403,bonus_id=718,ilevel=855,enchant=rune_of_the_fallen_crusader
+main_hand=apocalypse,id=128403,bonus_id=718,ilevel=870,relic_id=3412/3412/3412,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=841.00
-# gear_strength=11102
-# gear_stamina=17659
-# gear_crit_rating=8993
+# gear_ilvl=842.00
+# gear_strength=11306
+# gear_stamina=17965
+# gear_crit_rating=9032
 # gear_haste_rating=6483
-# gear_mastery_rating=1407
+# gear_mastery_rating=1445
 # gear_armor=3965
 # set_bonus=tier19p_plate_2pc=1
