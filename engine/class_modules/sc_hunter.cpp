@@ -1733,25 +1733,6 @@ struct hunter_main_pet_attack_t: public hunter_main_pet_action_t < melee_attack_
     return base_t::ready();
   }
 
-  virtual void execute() override
-  {
-    base_t::execute();
-
-    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
-    {
-      double proc_chance = p() -> o() -> cache.mastery_value() * 0.25;
-
-      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
-        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
-
-      if ( rng().roll( proc_chance ) )
-      {
-        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
-        p() -> o() -> procs.hunting_companion -> occur();
-      }
-    }
-  }
-
   virtual double composite_crit_chance() const override
   {
     double cc = base_t::composite_crit_chance();
@@ -1967,6 +1948,25 @@ struct pet_melee_t: public hunter_main_pet_attack_t
     school = SCHOOL_PHYSICAL;
     special = false;
   }
+  
+  virtual void execute() override
+  {
+    hunter_main_pet_attack_t::execute();
+
+    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
+    {
+      double proc_chance = p() -> o() -> cache.mastery_value() * 0.50;
+
+      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
+        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
+
+      if ( rng().roll( proc_chance ) )
+      {
+        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
+        p() -> o() -> procs.hunting_companion -> occur();
+      }
+    }
+  }
 
   virtual void impact( action_state_t* s ) override
   {
@@ -2027,6 +2027,25 @@ struct basic_attack_t: public hunter_main_pet_attack_t
     return p() -> resources.current[RESOURCE_FOCUS] > 50;
   }
 
+  virtual void execute() override
+  {
+    hunter_main_pet_attack_t::execute();
+
+    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
+    {
+      double proc_chance = p() -> o() -> cache.mastery_value() * 0.50;
+
+      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
+        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
+
+      if ( rng().roll( proc_chance ) )
+      {
+        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
+        p() -> o() -> procs.hunting_companion -> occur();
+      }
+    }
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     hunter_main_pet_attack_t::impact( s );
@@ -2079,6 +2098,28 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     {
       impact_action = new bestial_ferocity_t( p );
       add_child( impact_action );
+    }
+  }
+
+  virtual void execute() override
+  {
+    hunter_main_pet_attack_t::execute();
+
+    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
+    {
+      double proc_chance = p() -> o() -> cache.mastery_value();
+      
+      if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
+        proc_chance *= p() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
+
+      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
+        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
+
+      if ( rng().roll( proc_chance ) )
+      {
+        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
+        p() -> o() -> procs.hunting_companion -> occur();
+      }
     }
   }
 
@@ -3769,20 +3810,6 @@ struct flanking_strike_t: hunter_melee_attack_t
 
     if ( p() -> active.pet )
       p() -> active.pet -> active.flanking_strike -> execute();
-
-    double proc_chance = p() -> cache.mastery_value() * 0.50;
-
-    if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
-      proc_chance *= p() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
-
-    if ( p() -> buffs.aspect_of_the_eagle -> up() )
-      proc_chance *= 1.0 + p() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
-
-    if ( rng().roll( proc_chance ) )
-    {
-      p() -> cooldowns.mongoose_bite -> reset( true );
-      p() -> procs.hunting_companion -> occur();
-    }
 
     if ( p() -> talents.animal_instincts -> ok() )
     {
@@ -5717,6 +5744,7 @@ void hunter_t::create_buffs()
       .default_value( find_spell( 190931 ) 
                    -> effectN( 1 )
                      .percent() )
+      .duration( timespan_t::from_seconds( 14.0 ) )
       .refresh_behavior( BUFF_REFRESH_DISABLED )
       .max_stack( 6 );
 
