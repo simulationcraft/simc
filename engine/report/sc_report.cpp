@@ -411,6 +411,9 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   int max_ilevel_allowed = 0;
   int max_weapon_ilevel_allowed = 0;
   bool return_value = true;
+  int max_legendary_ilevel_allowed = 0;
+  int equipped_legendary_items = 0;
+  int legendary_items_allowed = 0;
   std::string tier_name = "";
 
   if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
@@ -430,6 +433,8 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     max_ilevel_allowed = 880;
     max_weapon_ilevel_allowed = 910;
     tier_name = "T19M";
+    max_legendary_ilevel_allowed = max_ilevel_allowed += 15;
+    legendary_items_allowed = 1;
   }
   else
   {
@@ -451,23 +456,29 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     {
       if ( item.parsed.data.level > max_weapon_ilevel_allowed )
       {
-        sim.errorf( "Player %s has weapon of ilevel %s, maximum allowed ilevel for %s is %s.\n",
+        sim.errorf( "Player %s has weapon of ilevel %s, maximum allowed ilevel for %s weapons is %s.\n",
                     p.name(), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_weapon_ilevel_allowed ).c_str() );
         return_value = false;
       }
     }
-    else if ( item.parsed.data.level > max_ilevel_allowed && item.parsed.data.quality != 5 )
+    else if ( item.parsed.data.quality == 5 && ( item.parsed.data.level > max_legendary_ilevel_allowed ) )
+    {
+      sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s legendarys is %s.\n",
+                  p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_legendary_ilevel_allowed ).c_str() );
+      return_value = false;
+    }
+    else if ( item.parsed.data.quality != 5 && ( item.parsed.data.level > max_ilevel_allowed ) )
     {
       sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n",
                   p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
       return_value = false;
     }
-    else if ( item.parsed.data.level > ( max_ilevel_allowed + 15 ) && ( item.parsed.data.quality == 5 && tier_name == "T19M" ) )
-    {
-      sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n",
-                  p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_ilevel_allowed + 15 ).c_str() );
-      return_value = false;
-    }
+  }
+  if ( equipped_legendary_items > legendary_items_allowed )
+  {
+    sim.errorf( "Player %s has %s legendary items. %s allows %s legendarys with a maximum ilevel of %s each.\n",
+                p.name(), util::to_string( equipped_legendary_items ).c_str(), tier_name.c_str(), util::to_string( legendary_items_allowed ).c_str(), util::to_string( max_legendary_ilevel_allowed ).c_str() );
+    return_value = false;
   }
 
   return return_value;
