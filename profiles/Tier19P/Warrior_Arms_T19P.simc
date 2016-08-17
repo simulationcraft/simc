@@ -85,13 +85,13 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_has
 finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,ilevel=870,gem_id=140815/141523/140822,relic_id=1727/1727/1727
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,ilevel=855,gem_id=140815/141523/140822,relic_id=1727/1727/1727
 
 # Gear Summary
-# gear_ilvl=842.00
-# gear_strength=10183
-# gear_stamina=17964
-# gear_crit_rating=8826
+# gear_ilvl=841.00
+# gear_strength=9979
+# gear_stamina=17658
+# gear_crit_rating=8787
 # gear_haste_rating=8348
-# gear_mastery_rating=687
+# gear_mastery_rating=649
 # gear_armor=3965

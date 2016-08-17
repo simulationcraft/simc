@@ -73,15 +73,15 @@ finger1=gnawed_thumb_ring,id=134526,bonus_id=1727
 finger2=band_of_the_wyrm_matron,id=134524,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=hunger_of_the_pack,id=136975,bonus_id=1727
-main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=870
-off_hand=the_dreadblades,id=134552,ilevel=870
+main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=855
+off_hand=the_dreadblades,id=134552,ilevel=855
 
 # Gear Summary
-# gear_ilvl=843.75
-# gear_agility=10883
-# gear_stamina=17628
-# gear_crit_rating=6404
+# gear_ilvl=841.88
+# gear_agility=10707
+# gear_stamina=17364
+# gear_crit_rating=6370
 # gear_haste_rating=3069
-# gear_mastery_rating=4225
+# gear_mastery_rating=4193
 # gear_versatility_rating=3559
 # gear_armor=1957
