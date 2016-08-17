@@ -2374,7 +2374,9 @@ struct light_of_the_protector_t : public paladin_heal_t
       background = true;
 
     // light of the titans object attached to this
-    titans_proc = new light_of_the_titans_t( p );
+    if ( p -> artifact.light_of_the_titans.rank() ){
+      titans_proc = new light_of_the_titans_t( p );
+    }
   }
 
   double action_multiplier() const override
@@ -2430,7 +2432,9 @@ struct hand_of_the_protector_t : public paladin_heal_t
       background = true;
 
     // light of the titans object attached to this
-    titans_proc = new light_of_the_titans_t( p );
+    if ( p -> artifact.light_of_the_titans.rank() ){
+      titans_proc = new light_of_the_titans_t( p );
+    }
   }
 
   double action_multiplier() const override
