@@ -21,8 +21,8 @@ finger1=,id=134528,bonus_id=1727,enchant=binding_of_mastery
 finger2=,id=137438,bonus_id=1727,enchant=binding_of_mastery
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=137546/137365/137472,relic_id=3412/3412/3412,ilevel=870
-off_hand=warswords_of_the_valarjar,id=134553,ilevel=870
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=137546/137365/137472,relic_id=3412/3412/3412
+off_hand=warswords_of_the_valarjar,id=134553
 save=Warrior_Fury_T19P.simc
 
 # Warrior Arms T19P
