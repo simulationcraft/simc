@@ -6772,7 +6772,6 @@ void druid_t::init_scaling()
   {
     scales_with[ STAT_WEAPON_DPS ] = false;
     scales_with[ STAT_PARRY_RATING ] = false;
-    scales_with[ STAT_BONUS_ARMOR ] = true;
   }
 
   scales_with[ STAT_STRENGTH ] = false;
