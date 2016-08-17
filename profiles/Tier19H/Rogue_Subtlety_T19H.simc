@@ -48,7 +48,7 @@ actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.
 # Stealthed Rotation
 actions.stealthed=symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3&buff.shadowmeld.down
 actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5
-actions.stealthed+=/shuriken_storm,if=combo_points.deficit>=3&spell_targets.shuriken_storm>=3
+actions.stealthed+=/shuriken_storm,if=(combo_points.deficit>=3&spell_targets.shuriken_storm>=3)|buff.the_dreadlords_deceit.stack>=29
 actions.stealthed+=/shadowstrike
 
 # Stealth Cooldowns
@@ -60,7 +60,7 @@ actions.stealth_cds+=/shadowmeld,if=energy>=40
 actions.stealth_cds+=/shadow_dance
 
 # Finishers
-actions.finish=enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=6*combo_points*0.3
+actions.finish=enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8
 actions.finish+=/death_from_above,if=spell_targets.death_from_above>=10
 actions.finish+=/nightblade,target_if=max:target.time_to_die,if=target.time_to_die>10&refreshable
 actions.finish+=/death_from_above

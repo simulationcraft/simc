@@ -6324,11 +6324,10 @@ void rogue_t::init_action_list()
       // Added buff.shadowmeld.down to avoid using it since it's not usable while shadowmelded "yet" (soonTM ?)
     stealthed -> add_action( this, "Symbols of Death", "if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3&buff.shadowmeld.down", "Stealthed Rotation" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
-      // the_dreadlords_deceit Line : stealthed -> add_action( this, "Shuriken Storm", "if=equipped.the_dreadlords_deceit&buff.the_dreadlords_deceit.stack>=25" );
     if (true_level <= 100 )
       stealthed -> add_action( this, "Shuriken Storm", "if=combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.bleeding_hollow_toxin_vessel*talent.premeditation.enabled" );
     else
-      stealthed -> add_action( this, "Shuriken Storm", "if=combo_points.deficit>=3&spell_targets.shuriken_storm>=3" );
+      stealthed -> add_action( this, "Shuriken Storm", "if=(combo_points.deficit>=3&spell_targets.shuriken_storm>=3)|buff.the_dreadlords_deceit.stack>=29" );
     stealthed -> add_action( this, "Shadowstrike" );
 
     // Stealth Cooldowns
@@ -6342,7 +6341,8 @@ void rogue_t::init_action_list()
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish" );
-    finish -> add_talent( this, "Enveloping Shadows", "if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=6*combo_points*0.3", "Finishers" );
+      // Pandemic is 6 * CP * 0.3, ie CP * 1.8
+    finish -> add_talent( this, "Enveloping Shadows", "if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8", "Finishers" );
     finish -> add_talent( this, "Death from Above", "if=spell_targets.death_from_above>=10" );
       // TODO : Check if there is some gain by playing around Finality Nightblade
     finish -> add_action( this, "Nightblade", "target_if=max:target.time_to_die,if=target.time_to_die>10&refreshable" );
