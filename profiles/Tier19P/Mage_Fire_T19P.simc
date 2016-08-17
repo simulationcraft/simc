@@ -4,7 +4,7 @@ race=orc
 role=spell
 position=back
 talents=1022021
-artifact=54:142059:142056:133022:0:748:1:749:6:751:3:754:3:755:3:756:3:759:1:763:1:1340:1
+artifact=54:133683:137420:133022:0:748:1:749:6:751:3:754:3:755:3:756:3:759:1:763:1:1340:1
 spec=fire
 
 # This default action priority list is automatically created based on your character.
@@ -87,15 +87,15 @@ finger1=seal_of_the_nazjatar_empire,id=134525,bonus_id=1727,enchant=binding_of_c
 finger2=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_critical_strike
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
 trinket2=portable_manacracker,id=137398,bonus_id=1727
-main_hand=felomelorn,id=128820,gem_id=142059/142056/133022,relic_id=3412/3412/3412
+main_hand=felomelorn,id=128820,gem_id=133683/137420/133022,relic_id=3412/3412/3412
 off_hand=heart_of_the_phoenix,id=133959
 
 # Gear Summary
-# gear_ilvl=838.75
-# gear_stamina=17220
-# gear_intellect=16679
-# gear_crit_rating=10212
-# gear_haste_rating=2564
-# gear_mastery_rating=3981
+# gear_ilvl=843.75
+# gear_stamina=17944
+# gear_intellect=19820
+# gear_crit_rating=10246
+# gear_haste_rating=2684
+# gear_mastery_rating=4024
 # gear_armor=1570
 # set_bonus=tier19p_cloth_2pc=1
