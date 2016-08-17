@@ -4915,6 +4915,8 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_MASTERY_RATING:
     case STAT_VERSATILITY_RATING:
     case STAT_LEECH_RATING:
+    case STAT_AVOIDANCE_RATING:
+    case STAT_SPEED_RATING:
       current.stats.add_stat( stat, amount );
       invalidate_cache( cache_type );
       break;
@@ -5039,6 +5041,8 @@ void player_t::stat_loss( stat_e    stat,
     case STAT_MASTERY_RATING:
     case STAT_VERSATILITY_RATING:
     case STAT_LEECH_RATING:
+    case STAT_AVOIDANCE_RATING:
+    case STAT_SPEED_RATING:
       current.stats.add_stat( stat, -amount );
       invalidate_cache( cache_type );
       break;
