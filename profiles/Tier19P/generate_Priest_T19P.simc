@@ -28,7 +28,7 @@ hands=satin_throatclutchers,id=134422,bonus_id=1727
 waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727
 legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1727
 feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727
-finger1=empowered_ring_of_the_kirin_tor,id=139599,enchant=200haste
+finger1=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=200haste
 finger2=band_of_fused_coral,id=134532,bonus_id=1727,enchant=200haste
 trinket1=chrono_shard,id=137419,bonus_id=1727
 trinket2=obelisk_of_the_void,id=137433,bonus_id=1727
@@ -56,7 +56,7 @@ hands=satin_throatclutchers,id=134422,bonus_id=1727
 waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727
 legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1727
 feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727
-finger1=empowered_ring_of_the_kirin_tor,id=139599,enchant=200haste
+finger1=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=200haste
 finger2=band_of_fused_coral,id=134532,bonus_id=1727,enchant=200haste
 trinket1=chrono_shard,id=137419,bonus_id=1727
 trinket2=obelisk_of_the_void,id=137433,bonus_id=1727

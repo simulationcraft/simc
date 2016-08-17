@@ -890,10 +890,11 @@ struct fiend_melee_t : public priest_pet_melee_t
         {
           p().o().resource_gain(
               RESOURCE_INSANITY,
-              ( amount * ( 1.0 +
-                           p().o()
-                               .talents.surrender_to_madness->effectN( 1 )
-                               .percent() ) ) -
+              ( amount * ( 1.0 + 1.5
+                           // p().o()
+                           //    .talents.surrender_to_madness->effectN( 1 )
+                           //    .percent()
+                           ) ) -
                   amount,
               p().o().gains.insanity_surrender_to_madness );
         }
@@ -1925,16 +1926,17 @@ struct priest_spell_t : public priest_action_t<spell_t>
            priest.buffs.power_infusion->check() )
       {
         double total_amount =
-            amount *
-            ( 1.0 +
-              priest.buffs.power_infusion->data().effectN( 3 ).percent() ) *
-            ( 1.0 +
-              priest.talents.surrender_to_madness->effectN( 1 ).percent() );
+          amount *
+          (1.0 +
+          priest.buffs.power_infusion->data().effectN(3).percent()) *
+          (1.0 + 1.5);
+              //priest.talents.surrender_to_madness->effectN( 1 ).percent() );
 
         amount_from_surrender_to_madness =
-            ( amount * ( 1.0 +
-                         priest.talents.surrender_to_madness->effectN( 1 )
-                             .percent() ) ) -
+            ( amount * ( 1.0 + 1.5
+                         //priest.talents.surrender_to_madness->effectN( 1 )
+                         //    .percent() 
+                             ) ) -
             amount;
 
         // Since this effect is multiplicitive, we'll give the extra to Power
@@ -1953,9 +1955,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
       else if ( priest.buffs.surrender_to_madness->check() )
       {
         amount_from_surrender_to_madness =
-            ( amount * ( 1.0 +
-                         priest.talents.surrender_to_madness->effectN( 1 )
-                             .percent() ) ) -
+            ( amount * ( 1.0 + 1.5
+                         // priest.talents.surrender_to_madness->effectN( 1 )
+                         //    .percent()
+                         ) ) -
             amount;
       }
       else if ( priest.buffs.power_infusion->check() )
@@ -6654,9 +6657,9 @@ void priest_t::apl_shadow()
 
   // Main APL
   main->add_action(
-      "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_"
+      "surrender_to_madness,if=talent.surrender_to_madness.enabled&0.8*(target.time_"
       "to_die<=45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+("
-      "2*artifact.mass_hysteria.rank)))" );
+      "2*artifact.mass_hysteria.rank))))" );
   main->add_action( "mindbender,if=talent.mindbender.enabled" );
   main->add_action(
       "shadow_word_pain,if=dot.shadow_word_pain.remains<(3+(4%3))*gcd" );
@@ -6710,9 +6713,9 @@ void priest_t::apl_shadow()
   vf->add_action(
       "surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>="
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
-      "death.up|buff.shadowy_insight.up)&target.time_to_die<=45+((raw_haste_"
+      "death.up|buff.shadowy_insight.up)&target.time_to_die<=0.8*(45+((raw_haste_"
       "pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_"
-      "hysteria.rank)))-buff.insanity_drain_stacks.stack" );
+      "hysteria.rank))))-buff.insanity_drain_stacks.stack" );
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action( "mindbender,if=talent.mindbender.enabled" );
   vf->add_action(
