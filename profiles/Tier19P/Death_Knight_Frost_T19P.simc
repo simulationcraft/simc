@@ -80,16 +80,16 @@ finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_c
 finger2=gnawed_thumb_ring,id=134526,bonus_id=1727,enchant=binding_of_critical_strike
 trinket1=faulty_countermeasure,id=137539,bonus_id=1727
 trinket2=chaos_talisman,id=137459,bonus_id=1727
-main_hand=blades_of_the_fallen_prince,id=128292,ilevel=870,enchant=rune_of_razorice
+main_hand=blades_of_the_fallen_prince,id=128292,ilevel=855,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=843.75
-# gear_strength=9960
-# gear_stamina=17629
-# gear_crit_rating=7427
+# gear_ilvl=841.88
+# gear_strength=9784
+# gear_stamina=17365
+# gear_crit_rating=7393
 # gear_haste_rating=5600
-# gear_mastery_rating=2677
+# gear_mastery_rating=2645
 # gear_versatility_rating=1952
 # gear_armor=3965
 # set_bonus=tier19p_plate_2pc=1

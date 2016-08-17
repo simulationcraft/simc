@@ -94,14 +94,14 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant_id=5427
 finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1727,enchant_id=5427
 trinket1=portable_manacracker,id=137398,bonus_id=1727
 trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,ilevel=870
+main_hand=the_fist_of_raden,id=128935,bonus_id=744,ilevel=855
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=843.75
-# gear_stamina=17944
-# gear_intellect=19820
-# gear_crit_rating=10303
+# gear_ilvl=841.88
+# gear_stamina=17640
+# gear_intellect=18500
+# gear_crit_rating=10264
 # gear_haste_rating=5068
-# gear_mastery_rating=1578
+# gear_mastery_rating=1541
 # gear_armor=2433

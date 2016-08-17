@@ -72,15 +72,15 @@ finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant_id=5429
 finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant_id=5429
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727/1492
 trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727/1492
-main_hand=ulthalesh_the_deadwind_harvester,id=128942,ilevel=870
+main_hand=ulthalesh_the_deadwind_harvester,id=128942,ilevel=855
 
 # Gear Summary
-# gear_ilvl=842.00
-# gear_stamina=17965
-# gear_intellect=18709
+# gear_ilvl=841.00
+# gear_stamina=17659
+# gear_intellect=17392
 # gear_crit_rating=1477
-# gear_haste_rating=4900
-# gear_mastery_rating=9631
+# gear_haste_rating=4861
+# gear_mastery_rating=9592
 # gear_versatility_rating=1858
 # gear_armor=1570
 # set_bonus=tier19p_cloth_2pc=1

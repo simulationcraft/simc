@@ -20,7 +20,7 @@ finger1=,id=134542,bonus_id=1727,enchant=binding_of_critical_strike
 finger2=,id=134526,bonus_id=1727,enchant=binding_of_critical_strike
 trinket1=,id=137539,bonus_id=1727
 trinket2=,id=137459,bonus_id=1727
-main_hand=,id=128292,enchant=rune_of_razorice,ilevel=870
+main_hand=,id=128292,enchant=rune_of_razorice,ilevel=855
 off_hand=,id=128293,enchant=rune_of_the_fallen_crusader
 save=Death_Knight_Frost_T19P.simc
 
@@ -46,5 +46,5 @@ finger1=,id=134542,bonus_id=1727,enchant=binding_of_critical_strike
 finger2=,id=134526,bonus_id=1727,enchant=binding_of_critical_strike
 trinket1=,id=128705,bonus_id=667
 trinket2=,id=137459,bonus_id=1727
-main_hand=,id=128403,enchant=rune_of_the_fallen_crusader,bonus_id=718,ilevel=870
+main_hand=,id=128403,enchant=rune_of_the_fallen_crusader,bonus_id=718,ilevel=855
 save=Death_Knight_Unholy_T19P.simc

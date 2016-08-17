@@ -81,15 +81,15 @@ finger1=braided_silver_ring,id=134539,bonus_id=1727
 finger2=loop_of_eightfold_eyes,id=134527,bonus_id=1727
 trinket1=tiny_oozeling_in_a_jar,id=137439,bonus_id=1727
 trinket2=chaos_talisman,id=137459,bonus_id=1727
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=870
-off_hand=fists_of_the_heavens,id=133948,ilevel=870
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=855
+off_hand=fists_of_the_heavens,id=133948,ilevel=855
 
 # Gear Summary
-# gear_ilvl=843.75
-# gear_agility=9760
-# gear_stamina=17629
-# gear_crit_rating=2502
+# gear_ilvl=841.88
+# gear_agility=9584
+# gear_stamina=17365
+# gear_crit_rating=2468
 # gear_haste_rating=1511
-# gear_mastery_rating=9720
+# gear_mastery_rating=9688
 # gear_versatility_rating=3523
 # gear_armor=1957
