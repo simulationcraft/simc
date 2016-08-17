@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 talents=3110131
-artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1
+artifact=43:139268:139261:139260:0:323:3:324:3:325:4:326:3:327:3:328:5:329:3:330:3:331:3:332:1:333:1:334:1:335:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
 # This default action priority list is automatically created based on your character.
@@ -87,26 +87,26 @@ actions.build+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
 neck=blackened_portalstone_necklace,id=139332,bonus_id=1806
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=the_dreadlords_deceit,id=137021
+back=gossamerspun_greatcloak,id=138221,bonus_id=1806
 chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1806
-wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
+wrists=zoldyck_family_training_shackles,id=137098,bonus_id=1811
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
-feet=stained_maggot_squishers,id=139200,bonus_id=1806
-finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1806
+feet=boots_of_endless_betrayal,id=139199,bonus_id=1806
+finger1=dingy_suramar_mercantile_signet,id=141492
 finger2=grubby_silver_ring,id=139236,bonus_id=1806
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
-trinket2=natures_call,id=139334,bonus_id=1806
+trinket2=thriceaccursed_compass,id=141537
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1806/1806/1806
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=884.19
-# gear_agility=15873
-# gear_stamina=25705
-# gear_crit_rating=9969
-# gear_haste_rating=3288
-# gear_mastery_rating=4022
-# gear_versatility_rating=1751
+# gear_ilvl=881.69
+# gear_agility=17226
+# gear_stamina=25459
+# gear_crit_rating=9800
+# gear_haste_rating=3434
+# gear_mastery_rating=3275
+# gear_versatility_rating=2296
 # gear_armor=2244

@@ -456,10 +456,16 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
         return_value = false;
       }
     }
-    else if ( item.parsed.data.level > max_ilevel_allowed )
+    else if ( item.parsed.data.level > max_ilevel_allowed && item.parsed.data.quality != 5 )
     {
       sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n",
                   p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
+      return_value = false;
+    }
+    else if ( item.parsed.data.level > ( max_ilevel_allowed + 15 ) && ( item.parsed.data.quality == 5 && tier_name == "T19M" ) )
+    {
+      sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n",
+                  p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_ilevel_allowed + 15 ).c_str() );
       return_value = false;
     }
   }
