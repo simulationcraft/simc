@@ -2628,7 +2628,7 @@ struct unstable_affliction_t : public warlock_spell_t
     affected_by_contagion = false;
 
     if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
-      base_multiplier *= 1.0 + p -> sets.set( WARLOCK_DEMONOLOGY, T19, B2 ) -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> sets.set( WARLOCK_AFFLICTION, T19, B2 ) -> effectN( 1 ).percent();
   }
 
   double cost() const override
@@ -3449,6 +3449,8 @@ struct chaos_bolt_t: public warlock_spell_t
 
     if ( p() -> artifact.soulsnatcher.rank() && rng().roll( p() -> artifact.soulsnatcher.percent() ) )
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.soulsnatcher );
+
+    p() -> buffs.embrace_chaos -> trigger();
   }
 
   // Force spell to always crit
