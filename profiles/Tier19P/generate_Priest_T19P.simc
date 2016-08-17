@@ -16,7 +16,7 @@ role=dps
 position=back
 talents=1211111
 spec=shadow
-artifact=47:142063:142057:142063:0:764:1:767:3:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
+artifact=47:142063:142057:142063:0:764:1:767:4:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
 neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_claw
@@ -44,7 +44,7 @@ role=dps
 position=back
 talents=1212233
 spec=shadow
-artifact=47:142063:142057:142063:0:764:1:767:3:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
+artifact=47:142063:142057:142063:0:764:1:767:4:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
 neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_claw

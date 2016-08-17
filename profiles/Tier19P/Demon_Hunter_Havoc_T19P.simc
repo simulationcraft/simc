@@ -7,7 +7,7 @@ position=back
 talents=1130111
 talent_override=blind_fury,if=desired_targets+raid_event.adds.count>=4
 talent_override=chaos_cleave,if=desired_targets>1|raid_event.adds.exists
-artifact=3:0:0:0:0:1001:3:1002:3:1003:3:1005:2:1006:3:1010:1:1012:1:1013:1:1016:1:1330:1
+artifact=3:0:0:0:0:1001:3:1002:3:1003:3:1005:3:1006:3:1010:1:1012:1:1013:1:1016:1:1330:1
 spec=havoc
 
 # This default action priority list is automatically created based on your character.

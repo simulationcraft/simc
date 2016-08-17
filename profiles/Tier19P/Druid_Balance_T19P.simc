@@ -5,7 +5,7 @@ timeofday=day
 role=spell
 position=back
 talents=2200221
-artifact=59:0:0:0:0:1035:3:1036:3:1039:2:1040:3:1042:3:1044:1:1046:1:1047:1:1049:1:1294:1
+artifact=59:0:0:0:0:1035:3:1036:3:1039:3:1040:3:1042:3:1044:1:1046:1:1047:1:1049:1:1294:1
 spec=balance
 
 # This default action priority list is automatically created based on your character.

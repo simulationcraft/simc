@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=ranged_back
 talents=3302022
-artifact=34:137550:137350:137543:0:1068:1:1070:2:1072:3:1073:3:1075:6:1076:3:1080:1:1082:1:1084:1:1338:1
+artifact=34:137550:137408:137544:0:1068:1:1070:6:1072:3:1073:3:1075:3:1076:3:1080:1:1082:1:1084:1:1338:1
 spec=survival
 
 # This default action priority list is automatically created based on your character.
@@ -62,7 +62,7 @@ finger1=ring_of_contempt,id=134490,bonus_id=1727,enchant=200vers
 finger2=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=200vers
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=talonclaw,id=128808,gem_id=137550/137350/137543,relic_id=3412/3412/3412
+main_hand=talonclaw,id=128808,gem_id=137550/137408/137544,relic_id=3412/3412/3412
 
 # Gear Summary
 # gear_ilvl=842.00
