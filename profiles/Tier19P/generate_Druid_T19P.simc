@@ -5,7 +5,7 @@ role=attack
 talents=2200221
 spec=balance
 
-artifact=59:0:0:0:0:1035:3:1036:3:1039:2:1040:3:1042:3:1044:1:1046:1:1047:1:1049:1:1294:1
+artifact=59:0:0:0:0:1035:3:1036:3:1039:3:1040:3:1042:3:1044:1:1046:1:1047:1:1049:1:1294:1
 head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
 neck=pendant_of_the_moon_temple,id=139605,bonus_id=1727,enchant_id=5439
 shoulders=charskin_mantle,id=137510,bonus_id=1727
@@ -20,7 +20,7 @@ finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,bonus_id=1727,enchant_id=5427
 trinket1=darkmoon_deck_hellfire,id=128709
 trinket2=portable_manacracker,id=137398,bonus_id=1727
-main_hand=scythe_of_elune,id=128858,bonus_id=722,ilevel=870
+main_hand=scythe_of_elune,id=128858,bonus_id=722,relic_id=3412/3412/3412,ilevel=870
 save=Druid_Balance_T19P.simc
 
 druid="Druid_Feral_T19P"
@@ -30,7 +30,7 @@ timeofday=night
 role=attack
 position=back
 talents=3323322
-artifact=58:133683:137544:142062:0:1153:1:1156:1:1157:1:1158:1:1161:6:1163:2:1164:3:1165:3:1166:3:1327:1
+artifact=58:133683:137544:142062:0:1153:1:1156:1:1157:1:1158:1:1161:6:1163:3:1164:3:1165:3:1166:3:1327:1
 
 spec=feral
 head=hood_of_the_blind_executioner,id=137511,ilevel=840
@@ -47,7 +47,7 @@ finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427,ilevel=840
 finger2=utgarde_royal_signet,id=133637,enchant_id=5427,ilevel=840
 trinket1=chaos_talisman,id=137459,ilevel=840
 trinket2=horn_of_valor,id=133642,ilevel=840
-main_hand=fangs_of_ashamane,id=128860,bonus_id=723,ilevel=870
+main_hand=fangs_of_ashamane,id=128860,bonus_id=723,relic_id=3412/3412/3412,ilevel=870
 off_hand=fangs_of_ashamane,id=128859,ilevel=870
 save=Druid_Feral_T19P.simc
 
@@ -75,6 +75,6 @@ finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,enchant_id=5427
 trinket1=chaos_talisman,id=137459
 trinket2=horn_of_valor,id=133642
-main_hand=claws_of_ursoc,id=128821,bonus_id=724,ilevel=840
-off_hand=claws_of_ursoc,id=128822,ilevel=840
+main_hand=claws_of_ursoc,id=128821,bonus_id=724,relic_id=3412/3412/3412,ilevel=870
+off_hand=claws_of_ursoc,id=128822,ilevel=870
 save=Druid_Guardian_T19P.simc

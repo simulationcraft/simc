@@ -26,18 +26,18 @@ actions=auto_attack
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
 actions+=/berserking
-actions+=/potion,name=draenic_strength,if=cooldown.pillar_of_frost.remains<5&cooldown.thorasus_the_stone_heart_of_draenor.remains<10
+actions+=/potion,type=draenic_strength
 actions+=/pillar_of_frost
 actions+=/sindragosas_fury
 actions+=/obliteration
-actions+=/breath_of_sindragosa,if=runic_power>=80
+actions+=/breath_of_sindragosa,if=runic_power>=50
 actions+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
 actions+=/call_action_list,name=generic
 
-actions.bos=call_action_list,name=core
-actions.bos+=/howling_blast,target_if=!dot.frost_fever.ticking
+actions.bos=howling_blast,target_if=!dot.frost_fever.ticking
+actions.bos+=/call_action_list,name=core
 actions.bos+=/horn_of_winter
-actions.bos+=/empower_rune_weapon
+actions.bos+=/empower_rune_weapon,if=runic_power<=70
 actions.bos+=/hungering_rune_weapon
 actions.bos+=/howling_blast,if=buff.rime.react
 
@@ -45,17 +45,18 @@ actions.generic=howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/howling_blast,if=buff.rime.react
 actions.generic+=/frost_strike,if=runic_power>=80
 actions.generic+=/call_action_list,name=core
+actions.generic+=/horn_of_winter,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
+actions.generic+=/horn_of_winter,if=!talent.breath_of_sindragosa.enabled
 actions.generic+=/frost_strike,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
 actions.generic+=/frost_strike,if=!talent.breath_of_sindragosa.enabled
-actions.generic+=/horn_of_winter,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
 actions.generic+=/empower_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
 actions.generic+=/hungering_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
-actions.generic+=/horn_of_winter,if=!talent.breath_of_sindragosa.enabled
 actions.generic+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 actions.generic+=/hungering_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 
 actions.core=glacial_advance
-actions.core+=/frostscythe,if=buff.killing_machine.react|spell_targets.frostscythe>=4
+actions.core+=/frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
+actions.core+=/frostscythe,if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)
 actions.core+=/obliterate,if=buff.killing_machine.react
 actions.core+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
 actions.core+=/obliterate

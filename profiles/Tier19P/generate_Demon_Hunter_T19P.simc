@@ -5,7 +5,7 @@ timeofday=night
 role=attack
 position=back
 talents=1130111
-artifact=3:0:0:0:0:1001:3:1002:3:1003:3:1005:2:1006:3:1010:1:1012:1:1013:1:1016:1:1330:1
+artifact=3:0:0:0:0:1001:3:1002:3:1003:3:1005:3:1006:3:1010:1:1012:1:1013:1:1016:1:1330:1
 spec=havoc
 head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727/1492
 neck=breathless_choker,id=137461,bonus_id=1727/1492,enchant_id=5439
@@ -21,8 +21,8 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727/1492,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,bonus_id=1727/1492,enchant_id=5427
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,ilevel=870
-off_hand=twinblades_of_the_deceiver,id=127830,ilevel=870
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,relic_id=3412/3412/3412,ilevel=870
+off_hand=twinblades_of_the_deceiver,id=127830
 save=Demon_Hunter_Havoc_T19P.simc
 
 demonhunter="Demon_Hunter_Vengeance_T19P"
@@ -46,7 +46,7 @@ feet=footpads_of_the_swift_balestra,id=137497
 legs=snaggles_favorite_pants,id=140594
 finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,enchant_id=5427
-main_hand=aldrachi_warblades,id=128832,bonus_id=721,ilevel=870
+main_hand=aldrachi_warblades,id=128832,bonus_id=721,relic_id=3412/3412/3412,ilevel=870
 off_hand=aldrachi_warblades,id=128831,ilevel=870
 trinket1=chaos_talisman,id=137459
 trinket2=horn_of_valor,id=133642

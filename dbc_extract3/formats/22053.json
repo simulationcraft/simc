@@ -20,7 +20,7 @@
     { "data_type": "f", "field": "f2" },
     { "data_type": "f", "field": "f3" },
     { "data_type": "B", "field": "id_artifact", "formats": { "cpp": "%3u" } },
-    { "data_type": "B", "field": "f6" },
+    { "data_type": "B", "field": "type", "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "max_rank", "formats": { "cpp": "%3u" } },
     { "data_type": "H", "field": "id" },
     { "data_type": "B", "field": "index", "formats": { "cpp": "%2u" } }

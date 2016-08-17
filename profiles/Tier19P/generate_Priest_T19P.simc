@@ -16,7 +16,7 @@ role=dps
 position=back
 talents=1211111
 spec=shadow
-artifact=47:142063:142057:142063:0:764:1:767:3:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
+artifact=47:142063:142057:142063:0:764:1:767:4:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
 neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_claw
@@ -32,7 +32,7 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599,enchant=200haste
 finger2=band_of_fused_coral,id=134532,bonus_id=1727,enchant=200haste
 trinket1=chrono_shard,id=137419,bonus_id=1727
 trinket2=obelisk_of_the_void,id=137433,bonus_id=1727
-main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=142063/142057/142063
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=142063/142057/142063,relic_id=3412/3412/3412
 off_hand=secrets_of_the_void,id=133958
 save=Priest_Shadow_T19P.simc
 
@@ -44,7 +44,7 @@ role=dps
 position=back
 talents=1212233
 spec=shadow
-artifact=47:142063:142057:142063:0:764:1:767:3:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
+artifact=47:142063:142057:142063:0:764:1:767:4:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
 neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_claw
@@ -60,6 +60,6 @@ finger1=empowered_ring_of_the_kirin_tor,id=139599,enchant=200haste
 finger2=band_of_fused_coral,id=134532,bonus_id=1727,enchant=200haste
 trinket1=chrono_shard,id=137419,bonus_id=1727
 trinket2=obelisk_of_the_void,id=137433,bonus_id=1727
-main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=142063/142057/142063
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=142063/142057/142063,relic_id=3412/3412/3412
 off_hand=secrets_of_the_void,id=133958
 save=Priest_Shadow_T19P_S2M.simc

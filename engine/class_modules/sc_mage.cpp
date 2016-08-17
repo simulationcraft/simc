@@ -4320,6 +4320,8 @@ struct flurry_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     hasted_ticks = false;
+    //HOTFIX: Manually adjust the cost of Flurry to be 1% of base max mana, as per 8/16/2016 hotfix.
+    base_costs[ RESOURCE_MANA ] = 0.01 * player -> resources.base[ RESOURCE_MANA ];
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
     dot_duration = timespan_t::from_seconds( 0.6 );
     base_tick_time = timespan_t::from_seconds( 0.2 );
@@ -7726,7 +7728,9 @@ void mage_t::create_buffs()
   //TODO: Remove hardcoded duration once spelldata contains the value
   buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190447 ) )
                                   .duration( timespan_t::from_seconds( 15.0 ) );
-  buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) );
+  // HOTFIX: Hotfix the duration of Bone Chilling to 8s from 6s, as per 8/16/2016 hotfix
+  buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) )
+                                  .duration( timespan_t::from_seconds( 8.0 ) );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
                                               sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +

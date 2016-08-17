@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=2210011
-artifact=17:141277:133122:141277:0:851:1:852:3:853:3:854:3:858:3:859:3:860:3:862:1:864:1:1349:1
+artifact=17:141277:133122:141277:0:851:1:852:3:853:3:854:3:858:3:859:3:860:3:862:1:864:1:866:1:1349:1
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.
@@ -48,7 +48,7 @@ actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.
 # Stealthed Rotation
 actions.stealthed=symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3&buff.shadowmeld.down
 actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5
-actions.stealthed+=/shuriken_storm,if=combo_points.deficit>=3&spell_targets.shuriken_storm>=3
+actions.stealthed+=/shuriken_storm,if=(combo_points.deficit>=3&spell_targets.shuriken_storm>=3)|buff.the_dreadlords_deceit.stack>=29
 actions.stealthed+=/shadowstrike
 
 # Stealth Cooldowns
@@ -60,7 +60,7 @@ actions.stealth_cds+=/shadowmeld,if=energy>=40
 actions.stealth_cds+=/shadow_dance
 
 # Finishers
-actions.finish=enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=6*combo_points*0.3
+actions.finish=enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8
 actions.finish+=/death_from_above,if=spell_targets.death_from_above>=10
 actions.finish+=/nightblade,target_if=max:target.time_to_die,if=target.time_to_die>10&refreshable
 actions.finish+=/death_from_above
@@ -85,7 +85,7 @@ finger1=ring_of_minute_mirrors,id=137533,bonus_id=1727
 finger2=ring_of_mindshielding,id=137432,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=memento_of_angerboda,id=133644,bonus_id=1727
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,ilevel=870
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,ilevel=870,relic_id=3412/3412/3412
 off_hand=fangs_of_the_devourer,id=128479,ilevel=870
 
 # Gear Summary

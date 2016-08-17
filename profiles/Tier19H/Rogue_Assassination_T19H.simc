@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 talents=3110131
-artifact=43:0:0:0:0:323:3:324:3:325:3:327:2:328:3:330:3:331:3:332:1:334:1:335:1:337:1:346:1:347:1:1276:1
+artifact=43:139268:139261:139260:0:323:3:324:3:325:4:327:2:328:5:330:3:331:3:332:1:334:1:335:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
 # This default action priority list is automatically created based on your character.
@@ -85,28 +85,28 @@ actions.build+=/mutilate,if=combo_points.deficit<=1&energy.deficit<=30
 actions.build+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1805
-shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1805
-back=gossamerspun_greatcloak,id=138221,bonus_id=1805
+neck=soultrappers_pendant,id=141506
+shoulders=mantle_of_the_aspiring_spellgiant,id=141445
+back=drape_of_the_manastarved,id=141543
 chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1805
-wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1805
-hands=dreamsculptors_gloves,id=139202,bonus_id=1805
+wrists=dragonspur_wristguards,id=138219,bonus_id=1805
+hands=seaweed_leather_mitts,id=141440
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
-feet=stained_maggot_squishers,id=139200,bonus_id=1805
-finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805
+feet=boots_of_endless_betrayal,id=139199,bonus_id=1805
+finger1=dingy_suramar_mercantile_signet,id=141492
 finger2=grubby_silver_ring,id=139236,bonus_id=1805
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
-trinket2=natures_call,id=139334,bonus_id=1805
+trinket2=thriceaccursed_compass,id=141537
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1805/1805/1805
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=868.63
-# gear_agility=13721
-# gear_stamina=22227
-# gear_crit_rating=9282
-# gear_haste_rating=3108
-# gear_mastery_rating=3910
-# gear_versatility_rating=1655
-# gear_armor=2126
+# gear_ilvl=866.75
+# gear_agility=14934
+# gear_stamina=21902
+# gear_crit_rating=10393
+# gear_haste_rating=2273
+# gear_mastery_rating=2726
+# gear_versatility_rating=2744
+# gear_armor=2117

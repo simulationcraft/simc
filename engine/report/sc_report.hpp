@@ -217,6 +217,7 @@ void print_spell_query( std::ostream& out, const sim_t& sim,
                         const spell_data_expr_t&, unsigned level );
 void print_spell_query( xml_node_t* out, FILE* file, const sim_t& sim,
                         const spell_data_expr_t&, unsigned level );
+bool check_gear_ilevel( player_t& p, sim_t& sim );
 bool check_artifact_points( const player_t& p, sim_t& sim );
 void print_profiles( sim_t* );
 void print_text( sim_t*, bool detail );

@@ -3451,21 +3451,22 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
     {
       os.format( "<tr class=\"left\">\n<th>Artifact</th>\n<td><ul class=\"float\">\n" );
       os << "<li><a href=\"" << util::create_wowhead_artifact_url( p ) << "\" target=\"_blank\">Calculator (Wowhead.com)</a></li>";
+      os << "<li>Purchased points: " << +p.artifact.n_purchased_points << ", total " << +p.artifact.n_points << "</li>";
       os << "</ul></td></tr>";
       os.format( "<tr class=\"left\">\n<th></th><td><ul class=\"float\">\n" );
-      unsigned artifact_id = p.dbc.artifact_by_spec( p.specialization() );
-      std::vector<const artifact_power_data_t*> artifact_powers = p.dbc.artifact_powers( artifact_id );
+      auto artifact_id = p.dbc.artifact_by_spec( p.specialization() );
+      auto artifact_powers = p.dbc.artifact_powers( artifact_id );
       for ( size_t idx = 0; idx < artifact_powers.size(); ++idx )
       {
-        if ( p.artifact_points[ idx ] == 0 )
+        if ( p.artifact.points[ idx ] == 0 )
         {
           continue;
         }
 
-        unsigned spell_id = p.dbc.artifact_power_spell_id( p.specialization(), ( unsigned ) idx, p.artifact_points[ idx ] );
+        unsigned spell_id = p.dbc.artifact_power_spell_id( p.specialization(), ( unsigned ) idx, p.artifact.points[ idx ] );
         const spell_data_t* spell = p.dbc.spell( spell_id );
 
-        std::string rank_str = util::to_string( +p.artifact_points[ idx ] );
+        std::string rank_str = util::to_string( +p.artifact.points[ idx ] );
         os << "<li>" << ( spell ? report::decorated_spell_name( sim, *spell, "artifactRank=" + rank_str ) : artifact_powers[ idx ] -> name );
         if ( artifact_powers[ idx ] -> max_rank > 1 )
         {

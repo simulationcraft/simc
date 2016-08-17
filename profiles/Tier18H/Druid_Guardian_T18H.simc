@@ -1,7 +1,7 @@
 druid="Druid_Guardian_T18H"
 level=100
 race=night_elf
-timeofday=night
+timeofday=day
 role=tank
 position=front
 talents=0301022

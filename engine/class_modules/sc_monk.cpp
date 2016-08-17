@@ -7762,7 +7762,7 @@ void monk_t::apl_pre_brewmaster()
   {
     
 //    if ( true_level > 100)
-//      pre -> add_action( "flask, type=flask_of_the_seventh_demon" );
+//      pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
     if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
     else if ( true_level >= 85 )
@@ -7809,10 +7809,10 @@ void monk_t::apl_pre_windwalker()
 
   if ( sim -> allow_flasks )
   {
-    // Flask
-//    if ( true_level > 100)
-//      pre -> add_action( "flask, type=flask_of_the_seventh_demon" );
-    if ( true_level > 90 )
+  // Flask
+    if ( true_level > 100)
+      pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
+    else if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
     else if ( true_level >= 85 )
       pre -> add_action( "flask,type=spring_blossoms" );
@@ -7827,7 +7827,9 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_food )
   {
     // Food
-    if ( level() > 90 )
+    if ( level() > 100 )
+      pre -> add_action( "food,type=nightborne_delicacy_platter" );
+    else if ( level() > 90 )
       pre -> add_action( "food,type=salty_squid_roll" );
     else if ( level() >= 85 )
       pre -> add_action( "food,type=sea_mist_rice_noodles" );
@@ -7844,7 +7846,9 @@ void monk_t::apl_pre_windwalker()
   if ( sim -> allow_potions )
   {
     // Prepotion
-    if ( true_level > 90 )
+    if ( true_level > 100 )
+      pre -> add_action( "potion,name=deadly_grace" );
+    else if ( true_level > 90 )
       pre -> add_action( "potion,name=draenic_agility" );
     else if ( true_level >= 85 )
       pre -> add_action( "potion,name=virmens_bite" );
@@ -7864,12 +7868,11 @@ void monk_t::apl_pre_mistweaver()
 
   if ( sim -> allow_flasks )
   {
-    
-//    if ( true_level > 100)
-//      pre -> add_action( "flask, type=flask_of_the_whispered_pact" );
-    if ( true_level > 90 )
-      pre -> add_action( "flask,type=greater_draenic_intellect_flask" );
     // Flask
+    if ( true_level > 100)
+      pre -> add_action( "flask,type=flask_of_the_whispered_pact" );
+    else if ( true_level > 90 )
+      pre -> add_action( "flask,type=greater_draenic_intellect_flask" );
     else if ( true_level >= 85 )
       pre -> add_action( "flask,type=warm_sun" );
     else if ( true_level > 80 )
@@ -7879,7 +7882,9 @@ void monk_t::apl_pre_mistweaver()
   if ( sim -> allow_food )
   {
     // Food
-    if ( level() > 90 )
+    if ( level() > 100 )
+      pre -> add_action( "food,type=nightborne_delicacy_platter" );
+    else if ( level() > 90 )
       pre -> add_action( "food,type=salty_squid_roll" );
     else if ( level() >= 85 )
       pre -> add_action( "food,type=mogu_fish_stew" );
@@ -7892,7 +7897,9 @@ void monk_t::apl_pre_mistweaver()
   if ( sim -> allow_potions )
   {
     // Prepotion
-    if ( true_level > 90 )
+    if ( true_level > 100 )
+      pre -> add_action( "potion,name=deadly_grace" );
+    else if ( true_level > 90 )
       pre -> add_action( "potion,name=draenic_intellect_potion" );
     else if ( true_level >= 85 )
       pre -> add_action( "potion,name=jade_serpent_potion" );
@@ -7986,17 +7993,27 @@ void monk_t::apl_combat_windwalker()
 
   if ( sim -> allow_potions )
   {
-    if ( true_level == 100 )
+    if ( true_level > 100 )
+      def -> add_action( "potion,name=deadly_grace,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
+    else if ( true_level > 90 )
       def -> add_action( "potion,name=draenic_agility,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
     else if ( true_level >= 85 )
       def -> add_action( "potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
 
+  def -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled" );
+  def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
+
   int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      def -> add_action( "use_item,name=" + items[i].name_str );
+    {
+      if ( items[i].name_str == "tiny_oozeling_in_a_jar" )
+        def -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.congealing_goo.stack>=6" );
+      else
+        def -> add_action( "use_item,name=" + items[i].name_str );
+    }
   }
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
@@ -8006,9 +8023,6 @@ void monk_t::apl_combat_windwalker()
       def -> add_action( racial_actions[i]  );
   }
 
-  def -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled" );
-  def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&!talent.serenity.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
-  def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&talent.serenity.enabled&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
   def -> add_action( this, "Storm, Earth, and Fire", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
   def -> add_action( this, "Storm, Earth, and Fire", "if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
   def -> add_talent( this, "Serenity", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
@@ -8016,7 +8030,7 @@ void monk_t::apl_combat_windwalker()
   def -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1&buff.serenity.down" );
   def -> add_talent( this, "Rising Sun Kick", "if=buff.serenity.up" );
   def -> add_talent( this, "Rushing Jade Wind", "if=buff.serenity.up&!prev_gcd.rushing_jade_wind" );
-  def -> add_action( this, "Strike of the Windlord", "if=artifact.strike_of_the_windlord.enabled" );
+  def -> add_action( this, "Strike of the Windlord" );
   def -> add_talent( this, "Whirling Dragon Punch" );
   def -> add_action( this, "Fists of Fury" );
   
@@ -8025,11 +8039,9 @@ void monk_t::apl_combat_windwalker()
 
   // Single Target & Non-Chi Explosion Cleave
   st -> add_action( this, "Rising Sun Kick" );
-  st -> add_action( this, "Strike of the Windlord" );
   st -> add_talent( this, "Rushing Jade Wind", "if=chi>1&!prev_gcd.rushing_jade_wind" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2|buff.serenity.down" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2|buff.serenity.down" );
-//  st -> add_action( this, "Spinning Crane Kick", "if=buff.serenity.up&!prev_gcd.spinning_crane_kick" );
   st -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&buff.serenity.down&!prev_gcd.blackout_kick" );
   st -> add_action( this, "Tiger Palm", "if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm" );
 

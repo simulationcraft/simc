@@ -59,7 +59,7 @@ finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,enchant_id=5427
 trinket1=chaos_talisman,id=137459
 trinket2=horn_of_valor,id=133642
-main_hand=aldrachi_warblades,id=128832,bonus_id=721,ilevel=870
+main_hand=aldrachi_warblades,id=128832,bonus_id=721,ilevel=870,relic_id=3412/3412/3412
 off_hand=aldrachi_warblades,id=128831,ilevel=870
 
 # Gear Summary

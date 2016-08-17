@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=1010023
-artifact=44:136683:137472:137365:0:1052:1:1054:1:1057:1:1060:3:1061:6:1064:3:1065:3:1066:3:1348:1
+artifact=44:136683:137472:137365:0:1052:1:1054:1:1057:1:1060:3:1061:6:1063:1:1064:3:1065:3:1066:3:1348:1
 spec=outlaw
 
 # This default action priority list is automatically created based on your character.
@@ -37,24 +37,24 @@ actions+=/adrenaline_rush,if=!buff.adrenaline_rush.up
 actions+=/pool_resource,for_next=1
 actions+=/ambush
 actions+=/pool_resource,for_next=1,extra_amount=60
-actions+=/vanish,if=combo_points.deficit>=2&energy>60
+actions+=/vanish,if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60
 actions+=/pool_resource,for_next=1,extra_amount=60
-actions+=/shadowmeld,if=combo_points.deficit>=2&energy>60
+actions+=/shadowmeld,if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60
+actions+=/death_from_above,if=combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)
 actions+=/slice_and_dice,if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
 actions+=/roll_the_bones,if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|rtb_buffs<=1)
 actions+=/killing_spree,if=energy.time_to_max>5|energy<15
 actions+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
 actions+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
 actions+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled
-actions+=/call_action_list,name=finish,if=combo_points>=5+talent.deeper_strategem.enabled
-actions+=/call_action_list,name=build,if=combo_points<5+talent.deeper_strategem.enabled
+actions+=/call_action_list,name=finish,if=combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up
+actions+=/call_action_list,name=build,if=combo_points<action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up
 
-# Finishers
-actions.finish=death_from_above
-actions.finish+=/between_the_eyes,if=equipped.greenskins_waterlogged_wristcuffs&buff.shark_infested_waters.up
-actions.finish+=/run_through
+#  Finishers
+actions.finish=between_the_eyes,if=equipped.greenskins_waterlogged_wristcuffs&buff.shark_infested_waters.up
+actions.finish+=/run_through,if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5
 
-# Builders
+#  Builders
 actions.build=ghostly_strike,if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<4.5
 actions.build+=/pistol_shot,if=buff.opportunity.up&energy.time_to_max>2
 actions.build+=/saber_slash
@@ -73,7 +73,7 @@ finger1=gnawed_thumb_ring,id=134526,bonus_id=1727
 finger2=band_of_the_wyrm_matron,id=134524,bonus_id=1727
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=hunger_of_the_pack,id=136975,bonus_id=1727
-main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=870
+main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=870,relic_id=3412/3412/3412
 off_hand=the_dreadblades,id=134552,ilevel=870
 
 # Gear Summary

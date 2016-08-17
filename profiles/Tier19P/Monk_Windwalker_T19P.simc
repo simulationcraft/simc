@@ -1,9 +1,9 @@
 monk="Monk_Windwalker_T19P"
 level=110
 race=blood_elf
-role=hybrid
+role=dps
 position=back
-talents=3020022
+talents=3030032
 artifact=50:0:0:0:0:800:3:821:3:824:3:828:1:829:3:831:1:832:1:833:1:1094:3:1341:1
 spec=windwalker
 
@@ -15,29 +15,29 @@ spec=windwalker
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/food,type=salty_squid_roll
+actions.precombat=flask,type=flask_of_the_seventh_demon
+actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/potion,name=deadly_grace
 
 # Executed every time the actor is available.
 
 actions=auto_attack
 actions+=/invoke_xuen
-actions+=/potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/potion,name=deadly_grace,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
+actions+=/touch_of_death,if=!artifact.gale_burst.enabled
+actions+=/touch_of_death,if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
+actions+=/use_item,name=tiny_oozeling_in_a_jar,if=buff.congealing_goo.stack>=6
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=chi.max-chi>=1
-actions+=/touch_of_death,if=!artifact.gale_burst.enabled
-actions+=/touch_of_death,if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&!talent.serenity.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
-actions+=/touch_of_death,if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&talent.serenity.enabled&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
 actions+=/storm_earth_and_fire,if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
 actions+=/storm_earth_and_fire,if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
 actions+=/serenity,if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
 actions+=/serenity,if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
 actions+=/energizing_elixir,if=energy<energy.max&chi<=1&buff.serenity.down
 actions+=/rushing_jade_wind,if=buff.serenity.up&!prev_gcd.rushing_jade_wind
-actions+=/strike_of_the_windlord,if=artifact.strike_of_the_windlord.enabled
+actions+=/strike_of_the_windlord
 actions+=/whirling_dragon_punch
 actions+=/fists_of_fury
 actions+=/call_action_list,name=st,if=active_enemies<3
@@ -47,13 +47,13 @@ actions.opener=blood_fury
 actions.opener+=/berserking
 actions.opener+=/arcane_torrent,if=chi.max-chi>=1
 actions.opener+=/fists_of_fury,if=buff.serenity.up&buff.serenity.remains<1.5
+actions.opener+=/use_item,name=tiny_oozeling_in_a_jar
 actions.opener+=/rising_sun_kick
 actions.opener+=/blackout_kick,if=chi.max-chi<=1&cooldown.chi_brew.up|buff.serenity.up
 actions.opener+=/serenity,if=chi.max-chi<=2
 actions.opener+=/tiger_palm,if=chi.max-chi>=2&!buff.serenity.up
 
 actions.st=rising_sun_kick
-actions.st+=/strike_of_the_windlord
 actions.st+=/rushing_jade_wind,if=chi>1&!prev_gcd.rushing_jade_wind
 actions.st+=/chi_wave,if=energy.time_to_max>2|buff.serenity.down
 actions.st+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
@@ -68,27 +68,28 @@ actions.aoe+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
 actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
 
 head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
-neck=erratically_ticking_talisman,id=137418,bonus_id=1727
+neck=chaosforged_necklace,id=137458,bonus_id=1727
 shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727
-back=putrid_carapace,id=134408,bonus_id=1727
+back=cape_of_valarjar_courage,id=133765,bonus_id=1727
 chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727
-wrists=thermal_bindings,id=134461,bonus_id=1727
+wrists=cryptwalker_bracers,id=137425,bonus_id=1727
 hands=ravens_veil_gloves,id=139242,bonus_id=1727
-waist=manafang_waistguard,id=137409,bonus_id=1727
-legs=charskin_legguards,id=137353,bonus_id=1727
+waist=sash_of_the_twilight_princess,id=134457,bonus_id=1727
+legs=wardens_martial_greaves,id=137515,bonus_id=1727
 feet=shellshock_footguards,id=134441,bonus_id=1727
-finger1=empowered_ring_of_the_kirin_tor,id=139599
-finger2=signet_of_the_highborne_magi,id=134537,bonus_id=1727
-trinket1=chaos_talisman,id=137459,bonus_id=1727
-trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=870
+finger1=braided_silver_ring,id=134539,bonus_id=1727
+finger2=loop_of_eightfold_eyes,id=134527,bonus_id=1727
+trinket1=tiny_oozeling_in_a_jar,id=137439,bonus_id=1727
+trinket2=chaos_talisman,id=137459,bonus_id=1727
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,ilevel=870,relic_id=3412/3412/3412
 off_hand=fists_of_the_heavens,id=133948,ilevel=870
 
 # Gear Summary
-# gear_ilvl=844.38
+# gear_ilvl=843.75
 # gear_agility=9760
-# gear_stamina=17727
-# gear_crit_rating=5996
-# gear_haste_rating=1796
-# gear_mastery_rating=9531
+# gear_stamina=17629
+# gear_crit_rating=2502
+# gear_haste_rating=1511
+# gear_mastery_rating=9720
+# gear_versatility_rating=3523
 # gear_armor=1957

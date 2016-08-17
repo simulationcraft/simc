@@ -4156,12 +4156,14 @@ class ArtifactDataGenerator(DataGenerator):
 
         ranks = []
         for power in sorted(powers, key = lambda v: (v['data'].id_artifact, v['data'].id)) + [{ 'data': dbc.data.ArtifactPower.default(), 'ranks': [] }]:
-            fields = power['data'].field('id', 'id_artifact', 'index', 'max_rank')
+            fields = power['data'].field('id', 'id_artifact', 'type', 'index', 'max_rank')
             if len(power['ranks']) > 0:
                 spell = self._spell_db[power['ranks'][0].id_spell]
+                fields += spell.field('id')
                 fields += spell.field('name')
                 self._out.write('  { %s }, // %s (id=%u, n_ranks=%u)\n' % (', '.join(fields), spell.name, power['ranks'][0].id_spell, len(power['ranks'])))
             else:
+                fields += spell.field('id')
                 fields += self._spell_db[0].field('name')
                 self._out.write('  { %s },\n' % (', '.join(fields)))
             ranks += power['ranks']

@@ -404,6 +404,87 @@ std::string report::pretty_spell_text( const spell_data_t& default_spell,
   return tooltip_parser_t( p, default_spell, text ).parse();
 }
 
+// report::check_gear_ilevel ============================================
+
+bool report::check_gear_ilevel( player_t& p, sim_t& sim )
+{
+  int max_ilevel_allowed = 0;
+  int max_weapon_ilevel_allowed = 0;
+  bool return_value = true;
+  int max_legendary_ilevel_allowed = 0;
+  int equipped_legendary_items = 0;
+  int legendary_items_allowed = 0;
+  std::string tier_name = "";
+
+  if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
+  {
+    max_ilevel_allowed = 840;
+    max_weapon_ilevel_allowed = 870;
+    tier_name = "T19P";
+  }
+  else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
+  {
+    max_ilevel_allowed = 865;
+    max_weapon_ilevel_allowed = 900;
+    tier_name = "T19H";
+  }
+  else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
+  {
+    max_ilevel_allowed = 880;
+    max_weapon_ilevel_allowed = 910;
+    tier_name = "T19M";
+    max_legendary_ilevel_allowed = max_ilevel_allowed += 15;
+    legendary_items_allowed = 1;
+  }
+  else
+  {
+    return return_value;
+  }
+
+  const slot_e SLOT_OUT_ORDER[] =
+  {
+    SLOT_HEAD, SLOT_NECK, SLOT_SHOULDERS, SLOT_BACK, SLOT_CHEST, SLOT_SHIRT, SLOT_TABARD, SLOT_WRISTS,
+    SLOT_HANDS, SLOT_WAIST, SLOT_LEGS, SLOT_FEET, SLOT_FINGER_1, SLOT_FINGER_2, SLOT_TRINKET_1, SLOT_TRINKET_2,
+    SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED,
+  };
+
+  for ( auto & slot : SLOT_OUT_ORDER )
+  {
+    item_t& item = p.items[slot];
+
+    if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND || slot == SLOT_RANGED )
+    {
+      if ( item.parsed.data.level > max_weapon_ilevel_allowed )
+      {
+        sim.errorf( "Player %s has weapon of ilevel %s, maximum allowed ilevel for %s weapons is %s.\n",
+                    p.name(), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_weapon_ilevel_allowed ).c_str() );
+        return_value = false;
+      }
+    }
+    else if ( item.parsed.data.quality == 5 && ( item.parsed.data.level > max_legendary_ilevel_allowed ) )
+    {
+      sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s legendarys is %s.\n",
+                  p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_legendary_ilevel_allowed ).c_str() );
+      return_value = false;
+    }
+    else if ( item.parsed.data.quality != 5 && ( item.parsed.data.level > max_ilevel_allowed ) )
+    {
+      sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n",
+                  p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
+      return_value = false;
+    }
+  }
+  if ( equipped_legendary_items > legendary_items_allowed )
+  {
+    sim.errorf( "Player %s has %s legendary items. %s allows %s legendarys with a maximum ilevel of %s each.\n",
+                p.name(), util::to_string( equipped_legendary_items ).c_str(), tier_name.c_str(), util::to_string( legendary_items_allowed ).c_str(), util::to_string( max_legendary_ilevel_allowed ).c_str() );
+    return_value = false;
+  }
+
+  return return_value;
+}
+
+
 // report::check_artifact_points ============================================
 // This is to make sure our default profiles are using the same number of artifact points.
 
@@ -415,17 +496,17 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim  )
 
   if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
   {
-    max_allowed = 21;
+    max_allowed = 19;
     tier_name = "T19P";
   }
   else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
   {
-    max_allowed = 29;
+    max_allowed = 26;
     tier_name = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
-    max_allowed = 37;
+    max_allowed = 34;
     tier_name = "T19M";
   }
   else
@@ -433,23 +514,16 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim  )
     return true;
   }
 
-  unsigned total_points = 0;
-
-  for ( size_t i = 7; i < splits.size(); i += 2 ) // We are starting at 7 instead of 5 because the first one doesn't count.
+  if ( p.artifact.n_purchased_points > max_allowed )
   {
-    total_points += util::to_unsigned( splits[i + 1] );
-  }
-
-  if ( total_points > max_allowed )
-  {
-    sim.errorf( "Player %s has %s artifact points, maximum allowed for %s is %s.\n",
-                 p.name(), util::to_string( total_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed ).c_str() );
+    sim.errorf( "Player %s has %s artifact points, maximum allowed (excluding relics) for %s is %s.\n",
+                 p.name(), util::to_string( p.artifact.n_purchased_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return false;
   }
-  else if ( total_points < max_allowed && p.level() == 110 )
+  else if ( p.artifact.n_purchased_points < max_allowed && p.level() == 110 )
   {
-    sim.errorf( "Player %s has %s artifact points, maximum allowed for %s is %s. Add more!\n",
-                p.name(), util::to_string( total_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed ).c_str() );
+    sim.errorf( "Player %s has %s artifact points, maximum allowed (excluding relics) for %s is %s. Add more!\n",
+                p.name(), util::to_string( p.artifact.n_purchased_points ).c_str(), tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return true;
   }
 
@@ -468,6 +542,11 @@ void report::print_profiles( sim_t* sim )
       continue;
 
     if ( !check_artifact_points( *p, *sim ) )
+    {
+      continue;
+    }
+
+    if ( !check_gear_ilevel( *p, *sim ) )
     {
       continue;
     }

@@ -6,7 +6,7 @@ role=attack
 spec=fury
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!1121022
 talent_override=massacre
-artifact=35:140835:139262:140817:0:982:1:984:1:985:1:988:3:990:6:991:3:995:3:996:3:1357:1
+artifact=35:137546:137365:137472:0:980:1:982:1:984:1:985:1:988:3:990:6:991:3:995:3:996:3:1357:1
 head=,id=137526,bonus_id=1727
 neck=,id=139101,bonus_id=1727,enchant=mark_of_the_claw
 shoulders=,id=134510,bonus_id=1727
@@ -17,11 +17,11 @@ hands=,id=133628,bonus_id=1727
 waist=,id=136773,bonus_id=1727
 legs=,id=134514,bonus_id=1727
 feet=,id=137482,bonus_id=1727
-finger1=,id=134528,bonus_id=1727,enchant=binding_of_haste
-finger2=,id=137438,bonus_id=1727,enchant=binding_of_haste
+finger1=,id=134528,bonus_id=1727,enchant=binding_of_mastery
+finger2=,id=137438,bonus_id=1727,enchant=binding_of_mastery
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,ilevel=870,gem_id=140835/140817/139262,relic_id=1807/1807/1807
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=137546/137365/137472,relic_id=3412/3412/3412,ilevel=870
 off_hand=warswords_of_the_valarjar,id=134553,ilevel=870
 save=Warrior_Fury_T19P.simc
 
@@ -32,23 +32,24 @@ race=blood_elf
 spec=Arms
 role=attack
 position=back
-talents=1111122
-artifact=36:140815:141523:140822:0:1136:1:1137:1:1139:1:1142:1:1145:3:1147:2:1148:3:1149:6:1150:3:1356:1
-head=,id=137526,bonus_id=1727
-neck=,id=139101,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=,id=134510,bonus_id=1727
-back=,id=137531,bonus_id=1727,enchant=binding_of_strength
-chest=,id=134503,bonus_id=1727
-wrists=,id=139100,bonus_id=1727
-hands=,id=133628,bonus_id=1727
-waist=,id=136773,bonus_id=1727
-legs=,id=134514,bonus_id=1727
-feet=,id=137482,bonus_id=1727
-finger1=,id=134528,bonus_id=1727,enchant=binding_of_haste
-finger2=,id=137438,bonus_id=1727,enchant=binding_of_haste
+talents=2332122
+artifact=36:140815:141523:140822:0:1136:1:1137:1:1139:1:1142:1:1145:3:1147:3:1148:3:1149:6:1150:3:1356:1
+ 
+head=crown_of_ash,id=137526,bonus_id=1727
+neck=anshes_pendant,id=139101,bonus_id=1727,enchant=mark_of_the_claw
+shoulders=pauldrons_of_ancient_command,id=134510,bonus_id=1727
+back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
+chest=inferno_breastplate,id=134503,bonus_id=1727
+wrists=greystone_wristplates,id=139100,bonus_id=1727
+hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727
+waist=greatbelt_of_alpha_dominance,id=136773,bonus_id=1727
+legs=keelhauler_legplates,id=134514,bonus_id=1727
+feet=duskwatch_guards_boots,id=137482,bonus_id=1727
+finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_mastery
+finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_mastery
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,relic_id=1727/1727/1727,gem_id=140815/141523/140822,ilevel=870
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/141523/140822,relic_id=3412/3412/3412
 save=Warrior_Arms_T19P.simc
 
 # Warrior Protection T19P
@@ -74,6 +75,6 @@ finger1=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=binding_of_versat
 finger2=ring_of_contempt,id=134490,bonus_id=1727,enchant=binding_of_versatility
 trinket1=horn_of_valor,id=133642,bonus_id=1727
 trinket2=coagulated_nightwell_residue,id=137400,bonus_id=1727
-main_hand=scaleshard,id=128288,ilevel=870
+main_hand=scaleshard,id=128288,relic_id=3412/3412/3412,ilevel=870
 off_hand=scale_of_the_earthwarder,id=128289,ilevel=870
 save=Warrior_Protection_T19P.simc

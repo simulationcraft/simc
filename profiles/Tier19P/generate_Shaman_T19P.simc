@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 talents=3003112
-artifact=41:0:0:0:0:899:1:901:1:902:1:903:1:904:1:905:1:909:3:910:3:911:3:912:3:1351:1
+artifact=41:137358:137469:137421:0:899:1:901:1:902:1:903:1:904:1:905:1:906:1:907:3:909:3:910:3:911:3:912:3:1351:1
 spec=enhancement
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
 neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant_id=5890
@@ -20,7 +20,7 @@ finger1=grasping_tentacle_loop,id=133634,bonus_id=1727,enchant_id=5429
 finger2=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant_id=5429
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=horn_of_valor,id=133642,bonus_id=1727
-main_hand=doomhammer,id=128819,bonus_id=741,ilevel=870
+main_hand=doomhammer,id=128819,bonus_id=741,gem_id=137358/137469/137421,relic_id=3412/3412/3412
 off_hand=fury_of_the_stonemother,id=128873,ilevel=870
 save=Shaman_Enhancement_T19P.simc
 
@@ -31,7 +31,7 @@ role=attack
 position=ranged_back
 talents=3112211
 spec=elemental
-artifact=40:0:0:0:0:291:1:292:1:294:1:296:1:298:2:300:3:301:3:302:3:303:3:1350:1
+artifact=40:137365:137272:137365:0:291:1:292:1:294:1:296:1:298:3:300:6:301:3:302:3:303:3:1350:1
 head=vilescale_helm,id=121319,bonus_id=1727
 neck=breathless_choker,id=137461,bonus_id=1727,enchant=mark_of_the_claw
 shoulders=arcane_exterminators_shoulderguards,id=134472,bonus_id=1727
@@ -46,6 +46,6 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant_id=5427
 finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1727,enchant_id=5427
 trinket1=portable_manacracker,id=137398,bonus_id=1727
 trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,ilevel=870
-off_hand=,id=128936
+main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=137365/137272/137365,relic_id=3412/3412/3412
+off_hand=,id=128936,ilevel=870
 save=Shaman_Elemental_T19P.simc

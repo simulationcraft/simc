@@ -17,7 +17,7 @@ role=dps
 position=back
 talents=1211311
 spec=shadow
-artifact=47:139251:139257:139251:0:764:1:765:1:766:1:767:3:768:1:769:1:770:1:771:3:772:3:773:3:774:3:775:3:776:3:777:3:778:3:779:1:1347:1
+artifact=47:139251:139257:139251:0:764:1:765:1:766:1:767:3:768:1:769:1:770:1:771:3:772:5:773:3:774:3:775:3:776:4:777:3:778:3:779:1:1347:1
 
 head=hood_of_darkened_visions,id=139189,bonus_id=1806
 neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_claw
@@ -38,14 +38,14 @@ off_hand=secrets_of_the_void,id=133958
 save=Priest_Shadow_T19M.simc
 
 # Shadow S2M
-copy="Priest_Shadow_T19M_S2M"
+priest="Priest_Shadow_T19M_S2M"
 level=110
 race=troll
 role=dps
 position=back
 talents=1212233
 spec=shadow
-artifact=47:139251:139257:139251:0:764:1:765:1:766:1:767:3:768:1:769:1:770:1:771:3:772:3:773:3:774:3:775:3:776:3:777:3:778:3:779:1:1347:1
+artifact=47:139251:139257:139251:0:764:1:765:1:766:1:767:3:768:1:769:1:770:1:771:3:772:5:773:3:774:3:775:3:776:4:777:3:778:3:779:1:1347:1
 
 head=hood_of_darkened_visions,id=139189,bonus_id=1806
 neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_claw

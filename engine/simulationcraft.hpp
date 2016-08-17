@@ -3644,8 +3644,15 @@ struct player_t : public actor_t
   std::array<int, PROFESSION_MAX> profession;
 
   // Artifact
-  std::array<uint8_t, MAX_ARTIFACT_POWER> artifact_points;
-  int artifact_;
+  struct artifact_data_t
+  {
+    std::array<uint8_t, MAX_ARTIFACT_POWER> points;
+    std::array<unsigned, MAX_ARTIFACT_RELIC> relics;
+    unsigned n_points, n_purchased_points;
+    int artifact_;
+    const spell_data_t* artificial_stamina;
+    const spell_data_t* artificial_damage;
+  } artifact;
 
   bool artifact_enabled() const;
 

@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=2210011
-artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1
+artifact=17:139267:138226:139267:0:851:1:852:3:853:3:854:3:855:4:856:3:857:3:858:5:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.
@@ -48,7 +48,7 @@ actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.
 # Stealthed Rotation
 actions.stealthed=symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3&buff.shadowmeld.down
 actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5
-actions.stealthed+=/shuriken_storm,if=combo_points.deficit>=3&spell_targets.shuriken_storm>=3
+actions.stealthed+=/shuriken_storm,if=(combo_points.deficit>=3&spell_targets.shuriken_storm>=3)|buff.the_dreadlords_deceit.stack>=29
 actions.stealthed+=/shadowstrike
 
 # Stealth Cooldowns
@@ -60,7 +60,7 @@ actions.stealth_cds+=/shadowmeld,if=energy>=40
 actions.stealth_cds+=/shadow_dance
 
 # Finishers
-actions.finish=enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=6*combo_points*0.3
+actions.finish=enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8
 actions.finish+=/death_from_above,if=spell_targets.death_from_above>=10
 actions.finish+=/nightblade,target_if=max:target.time_to_die,if=target.time_to_die>10&refreshable
 actions.finish+=/death_from_above
@@ -72,28 +72,28 @@ actions.build+=/gloomblade
 actions.build+=/backstab
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806
+neck=krakentooth_necklace,id=141473
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=the_dreadlords_deceit,id=137021
-chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1806
+back=gossamerspun_greatcloak,id=138221,bonus_id=1806
+chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
-feet=stained_maggot_squishers,id=139200,bonus_id=1806
-finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1806
+feet=shadow_satyrs_walk,id=137032,bonus_id=1811
+finger1=ring_of_deep_sea_pearls,id=141545
 finger2=grubby_silver_ring,id=139236,bonus_id=1806
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
-trinket2=natures_call,id=139334,bonus_id=1806
+trinket2=unstable_arcanocrystal,id=141482
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=139267/138226/139267,relic_id=1806/1806/1806
 off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
-# gear_ilvl=884.19
-# gear_agility=15873
-# gear_stamina=25705
-# gear_crit_rating=9969
-# gear_haste_rating=3288
-# gear_mastery_rating=4022
-# gear_versatility_rating=1751
-# gear_armor=2244
+# gear_ilvl=880.44
+# gear_agility=15920
+# gear_stamina=25283
+# gear_crit_rating=6501
+# gear_haste_rating=2783
+# gear_mastery_rating=7785
+# gear_versatility_rating=3865
+# gear_armor=2249

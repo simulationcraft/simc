@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 talents=2301022
-artifact=38:0:0:0:0:803:1:804:2:807:4:809:4:811:3:812:3:815:1:817:1:818:1:1355:1
+artifact=38:137476:137316:137476:0:803:1:804:3:807:6:809:3:811:3:812:3:815:1:817:1:818:1:1355:1
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -55,8 +55,6 @@ actions+=/cataclysm
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled
 actions+=/immolate,if=!talent.roaring_blaze.enabled&remains<=duration*0.3
 actions+=/life_tap,if=talent.mana_tap.enabled&mana.pct<=10
-actions+=/immolate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=0
-actions+=/immolate,if=!talent.roaring_blaze.enabled
 actions+=/incinerate
 actions+=/life_tap
 
@@ -74,7 +72,7 @@ finger1=band_of_fused_coral,id=134532,bonus_id=1727,enchant_id=5428
 finger2=seal_of_malicious_deceit,id=134489,bonus_id=1727,enchant_id=5428
 trinket1=portable_manacracker,id=137398,bonus_id=1727/1492
 trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727/1492
-main_hand=scepter_of_sargeras,id=128941,ilevel=870
+main_hand=scepter_of_sargeras,id=128941,gem_id=137476/137316/137476,relic_id=3412/3412/3412
 
 # Gear Summary
 # gear_ilvl=842.00

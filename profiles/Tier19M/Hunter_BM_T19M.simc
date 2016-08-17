@@ -20,7 +20,7 @@ actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/potion,name=deadly_grace
 
 # Executed every time the actor is available.
 
@@ -29,15 +29,16 @@ actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
 actions+=/a_murder_of_crows
-actions+=/stampede,if=(buff.bloodlust.up)|target.time_to_die<=15
+actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
 actions+=/dire_beast,if=cooldown.bestial_wrath.remains>2
 actions+=/dire_frenzy,if=cooldown.bestial_wrath.remains>2
 actions+=/aspect_of_the_wild,if=buff.bestial_wrath.up
 actions+=/barrage,if=spell_targets.barrage>1|(spell_targets.barrage=1&focus>90)
-actions+=/titans_thunder,if=cooldown.dire_beast.remains>=3|talent.dire_frenzy.enabled
+actions+=/titans_thunder,if=cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active
 actions+=/bestial_wrath
-actions+=/multishot,if=spell_targets.multi_shot>=3&pet.buff.beast_cleave.down
+actions+=/multishot,if=spell_targets.multi_shot>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)
 actions+=/kill_command
+actions+=/multishot,if=spell_targets.multi_shot>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)
 actions+=/chimaera_shot,if=focus<90
 actions+=/cobra_shot,if=talent.killer_cobra.enabled&(cooldown.bestial_wrath.remains>=4&(buff.bestial_wrath.up&cooldown.kill_command.remains>=2)|focus>119)|!talent.killer_cobra.enabled&focus>90
 

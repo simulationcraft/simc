@@ -5898,7 +5898,21 @@ void hunter_t::init_action_list()
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
     //Pre-pot
-    add_potion_action( precombat, "draenic_agility", "virmens_bite" );
+    if ( sim -> allow_potions )
+    {
+      if ( true_level > 100 )
+      {
+        if ( specialization() == HUNTER_SURVIVAL )
+          precombat -> add_action( "potion,name=potion_of_the_old_war");
+        else
+          precombat -> add_action( "potion,name=deadly_grace" );
+      }
+      else if ( true_level > 90 )
+        precombat -> add_action( "potion,name=draenic_agility" );
+      else if ( true_level >= 80 )
+        precombat -> add_action( "potion,name=virmens_bite" );
+    }
+
 
     switch ( specialization() )
     {
@@ -5972,15 +5986,16 @@ void hunter_t::apl_bm()
   add_racial_actions( default_list );
 
   default_list -> add_talent( this, "A Murder of Crows" );
-  default_list -> add_talent( this, "Stampede", "if=(buff.bloodlust.up)|target.time_to_die<=15" );
+  default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>2" );
   default_list -> add_talent( this, "Dire Frenzy", "if=cooldown.bestial_wrath.remains>2" );
   default_list -> add_action( this, "Aspect of the Wild", "if=buff.bestial_wrath.up" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1|(spell_targets.barrage=1&focus>90)" );
-  default_list -> add_action( this, "Titan's Thunder", "if=cooldown.dire_beast.remains>=3|talent.dire_frenzy.enabled" );
+  default_list -> add_action( this, "Titan's Thunder", "if=cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active" );
   default_list -> add_action( this, "Bestial Wrath" );
-  default_list -> add_action( this, "Multi-shot", "if=spell_targets.multi_shot>=3&pet.buff.beast_cleave.down" );
+  default_list -> add_action( this, "Multi-shot", "if=spell_targets.multi_shot>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)" );
   default_list -> add_action( this, "Kill Command" );
+  default_list -> add_action( this, "Multi-shot", "if=spell_targets.multi_shot>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)" );
   default_list -> add_talent( this, "Chimaera Shot", "if=focus<90" );
   default_list -> add_action( this, "Cobra Shot", "if=talent.killer_cobra.enabled&(cooldown.bestial_wrath.remains>=4&(buff.bestial_wrath.up&cooldown.kill_command.remains>=2)|focus>119)|!talent.killer_cobra.enabled&focus>90" );
 }
@@ -6069,25 +6084,25 @@ void hunter_t::apl_surv()
 
   add_racial_actions( default_list );
   add_item_actions( default_list );
-
+  
+  default_list -> add_talent( this, "Steel Trap" );
   default_list -> add_action( this, "Explosive Trap" );
   default_list -> add_talent( this, "Dragonsfire Grenade" );
-  default_list -> add_action( this, "Carve", "if=talent.serpent_sting.enabled&active_enemies>=3&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)" );
+  default_list -> add_talent( this, "Caltrops" );
+  default_list -> add_action( this, "Carve", "cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies>=3&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)" );
   default_list -> add_action( this, "Raptor Strike", "cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies<=2&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)|talent.way_of_the_moknathal.enabled&(buff.moknathal_tactics.remains<gcd.max|buff.moknathal_tactics.down)" );
   default_list -> add_action( this, "Aspect of the Eagle" );
-  default_list -> add_action( this, "Fury of the Eagle", "if=buff.mongoose_fury.up&buff.mongoose_fury.remains<=gcd.max*2" );
-  default_list -> add_action( this, "Mongoose Bite", "if=buff.mongoose_fury.up|cooldown.fury_of_the_eagle.remains<5|charges=3" );
-  default_list -> add_action( this, "Caltrops", "if=!dot.caltrops.ticking" );
-  default_list -> add_talent( this, "Steel Trap" );
+  default_list -> add_action( this, "Fury of the Eagle", "if=buff.mongoose_fury.up&(buff.mongoose_fury.stack=6|action.mongoose_bite.charges=0&cooldown.snake_hunter.remains|buff.mongoose_fury.remains<=gcd.max*2)" );
+  default_list -> add_action( this, "Mongoose Bite", "if=buff.aspect_of_the_eagle.up&(charges>=2|charges>=1&cooldown.mongoose_bite.remains<=2)|(buff.mongoose_fury.up|cooldown.fury_of_the_eagle.remains<5|charges=3)" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_action( this, "Lacerate", "if=dot.lacerate.ticking&dot.lacerate.remains<=3|target.time_to_die>=5" );
-  default_list -> add_talent( this, "Snake Hunter", "if=action.mongoose_bite.charges<=1&buff.mongoose_fury.remains>gcd.max*4" );
-  default_list -> add_action( this, "Flanking Strike", "if=talent.way_of_the_moknathal.enabled&(focus>=55&buff.moknathal_tactics.remains>=3)|focus>=55" );
+  default_list -> add_talent( this, "Snake Hunter", "if=action.mongoose_bite.charges<=1&buff.mongoose_fury.remains>gcd.max*4|action.mongoose_bite.charges=0&buff.aspect_of_the_eagle.up" );
+  default_list -> add_action( this, "Flanking Strike", "if=talent.way_of_the_moknathal.enabled&(buff.moknathal_tactics.remains>=3)|!talent.way_of_the_moknathal.enabled" );
   default_list -> add_talent( this, "Butchery", "if=spell_targets.butchery>=2" );
   default_list -> add_action( this, "Carve", "if=spell_targets.carve>=4" );
   default_list -> add_talent( this, "Spitting Cobra" );
   default_list -> add_talent( this, "Throwing Axes" );
-  default_list -> add_action( this, "Raptor Strike", "if=focus>75-cooldown.flanking_strike.remains*focus.regen" );
+  default_list -> add_action( this, "Raptor Strike", "if=!talent.throwing_axes.enabled&focus>75-cooldown.flanking_strike.remains*focus.regen" );
 }
 
 // NO Spec Combat Action Priority List ======================================

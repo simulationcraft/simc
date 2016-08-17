@@ -528,7 +528,7 @@ spell_t* special_effect_t::initialize_resource_action() const
   else if ( driver() -> id() > 0 )
     s = driver();
 
-  proc_resource_t* spell = new proc_resource_t( name(), player, s, item );
+  proc_resource_t* spell = new proc_resource_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
   spell -> init();
   return spell;
 }
@@ -564,7 +564,7 @@ spell_t* special_effect_t::initialize_offensive_spell_action() const
   else if ( driver() -> id() > 0 )
     s = driver();
 
-  proc_spell_t* spell = new proc_spell_t( name(), player, s, item );
+  proc_spell_t* spell = new proc_spell_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
   spell -> init();
   return spell;
 }
@@ -600,7 +600,7 @@ heal_t* special_effect_t::initialize_heal_action() const
   else if ( driver() -> id() > 0 )
     s = driver();
 
-  proc_heal_t* heal = new proc_heal_t( name(), player, s, item );
+  proc_heal_t* heal = new proc_heal_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
   heal -> init();
   return heal;
 }
@@ -630,7 +630,7 @@ attack_t* special_effect_t::initialize_attack_action() const
   else if ( driver() -> id() > 0 )
     s = driver();
 
-  proc_attack_t* attack = new proc_attack_t( name(), player, s, item );
+  proc_attack_t* attack = new proc_attack_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
   attack -> init();
   return attack;
 }

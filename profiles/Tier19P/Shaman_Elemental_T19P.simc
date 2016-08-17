@@ -4,7 +4,7 @@ race=orc
 role=spell
 position=ranged_back
 talents=3112211
-artifact=40:0:0:0:0:291:1:292:1:294:1:296:1:298:2:300:3:301:3:302:3:303:3:1350:1
+artifact=40:137365:137272:137365:0:291:1:292:1:294:1:296:1:298:3:300:6:301:3:302:3:303:3:1350:1
 spec=elemental
 
 # This default action priority list is automatically created based on your character.
@@ -94,8 +94,8 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant_id=5427
 finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1727,enchant_id=5427
 trinket1=portable_manacracker,id=137398,bonus_id=1727
 trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,ilevel=870
-off_hand=the_highkeepers_ward,id=128936
+main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=137365/137272/137365,relic_id=3412/3412/3412
+off_hand=the_highkeepers_ward,id=128936,ilevel=870
 
 # Gear Summary
 # gear_ilvl=843.75
