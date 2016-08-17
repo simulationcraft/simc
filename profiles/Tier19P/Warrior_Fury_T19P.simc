@@ -89,8 +89,8 @@ hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727
 waist=greatbelt_of_alpha_dominance,id=136773,bonus_id=1727
 legs=keelhauler_legplates,id=134514,bonus_id=1727
 feet=duskwatch_guards_boots,id=137482,bonus_id=1727
-finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_haste
-finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_haste
+finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_mastery
+finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_mastery
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
 main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,ilevel=870,gem_id=137546/137365/137472,relic_id=3412/3412/3412
@@ -101,6 +101,6 @@ off_hand=warswords_of_the_valarjar,id=134553,ilevel=870
 # gear_strength=11746
 # gear_stamina=20309
 # gear_crit_rating=9541
-# gear_haste_rating=8348
-# gear_mastery_rating=1374
+# gear_haste_rating=7948
+# gear_mastery_rating=1774
 # gear_armor=3965
