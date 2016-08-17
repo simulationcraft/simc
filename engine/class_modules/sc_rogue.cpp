@@ -738,6 +738,7 @@ struct rogue_attack_t : public melee_attack_t
     bool vendetta;
     bool agonizing_poison;
     bool alacrity;
+    bool adrenaline_rush_gcd;
   } affected_by;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
@@ -810,6 +811,7 @@ struct rogue_attack_t : public melee_attack_t
                                ( weapon_multiplier > 0 || attack_power_mod.direct > 0 );
     affected_by.agonizing_poison = p() -> talent.agonizing_poison -> ok();
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
+    affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
   }
 
   bool init_finished() override
@@ -849,6 +851,19 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     melee_attack_t::update_ready( cd_duration );
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t t = melee_attack_t::gcd();
+
+    if ( affected_by.adrenaline_rush_gcd &&
+         t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
+    {
+      t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+    }
+
+    return t;
   }
 
 
