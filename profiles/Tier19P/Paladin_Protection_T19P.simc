@@ -1,16 +1,35 @@
-enemy="MyCustomEnemy"
-level=113
-race=humanoid
+paladin="Paladin_Protection_T19P"
+level=110
+race=blood_elf
 role=tank
 position=front
-spec=unknown
+talents=2231223
+spec=protection
+artifact=49:137548:136778:137547:0:1120:1:1121:3:1124:3:1125:1:1126:3:1128:6:1129:3:1133:1:1135:1:1343:1
 
-# Executed every time the actor is available.
 
-actions=auto_attack,damage=3300000,range=1000000,attack_speed=1.5
-actions+=/spell_nuke,damage=3000000,cooldown=30
+head=casque_of_the_deep,id=134512,bonus_id=1727
+neck=chain_of_scorched_bones,id=134529,bonus_id=1727,enchant_id=5439
+shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
+back=shadowfeather_shawl,id=136977,bonus_id=1727,enchant_id=5435
+chest=inferno_breastplate,id=134503,bonus_id=1727
+wrists=detention_wristclamps,id=134522,bonus_id=1727
+hands=rumblestone_gauntlets,id=137355,bonus_id=1727
+waist=roaring_shellbreaker_greatbelt,id=137361,bonus_id=1727
+legs=tassets_of_ravenous_euphoria,id=134516,bonus_id=1727
+feet=rockbound_sabatons,id=134141,bonus_id=1727
+finger1=ring_of_contempt,id=134490,bonus_id=1727,enchant_id=5427
+finger2=ring_of_looming_menace,id=134533,bonus_id=1727,enchant_id=5427
+trinket1=horn_of_valor,id=133642,bonus_id=1727
+trinket2=infernal_alchemist_stone,id=127842,bonus_id=667
+main_hand=oathseeker,id=128867,gem_id=137548/136778/137547,relic_id=3412/3412/3412
+off_hand=truthguard,id=128866,ilevel=870
+
+
+enemy=MyCustomEnemy
+enemy_tank=Paladin_Protection_T19P
+actions=auto_attack,damage=1600000,range=1000000,attack_speed=1.5
+actions+=/spell_nuke,damage=1500000,cooldown=30
 actions+=/spell_dot,damage=50000,cooldown=20
-
-
-# Gear Summary
-# gear_ilvl=0.00
+raid_events+=/heal,cooldown=1,amount=100000
+raid_events+=/heal,cooldown=4,amount=1400000
