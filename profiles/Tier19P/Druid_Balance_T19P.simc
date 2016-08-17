@@ -1,7 +1,7 @@
 druid="Druid_Balance_T19P"
 level=110
 race=night_elf
-timeofday=night
+timeofday=day
 role=spell
 position=back
 talents=2200221
