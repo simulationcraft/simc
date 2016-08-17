@@ -2056,16 +2056,13 @@ void player_t::init_scaling()
     }
 
     scales_with[ STAT_SPEED_RATING              ] = has_movement;
-    scales_with[ STAT_AVOIDANCE_RATING          ] = tank; // todo: check for damage sources present?
+    // scales_with[ STAT_AVOIDANCE_RATING          ] = tank; // Waste of sim time vast majority of the time. Can be enabled manually.
     scales_with[ STAT_LEECH_RATING              ] = tank;
-    scales_with[ STAT_DODGE_RATING              ] = tank;
-    scales_with[ STAT_PARRY_RATING              ] = tank;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = false;
 
     scales_with[ STAT_ARMOR          ] = tank;
-    scales_with[ STAT_BONUS_ARMOR    ] = tank;
 
     if ( sim -> scaling -> scale_stat != STAT_NONE && scale_player )
     {
