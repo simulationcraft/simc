@@ -3624,8 +3624,8 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    handle_frozen( s );
     snapshot_state( s, amount_type ( s ) );
+    handle_frozen( s );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
@@ -4290,9 +4290,8 @@ struct flurry_bolt_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    handle_frozen( s );
     snapshot_state( s, amount_type ( s ) );
-
+    handle_frozen( s );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
@@ -4435,8 +4434,8 @@ struct frost_bomb_explosion_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    handle_frozen( s );
     snapshot_state( s, amount_type ( s ) );
+    handle_frozen( s );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
@@ -4622,8 +4621,8 @@ struct frostbolt_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    handle_frozen( s );
     snapshot_state( s, amount_type ( s ) );
+    handle_frozen( s );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
@@ -4760,6 +4759,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     add_child( frozen_orb_bolt );
     may_miss       = false;
     may_crit       = false;
+    travel_speed = 20;
   }
 
   void tick( dot_t* d ) override
@@ -4922,8 +4922,8 @@ struct glacial_spike_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    handle_frozen( s );
     snapshot_state( s, amount_type ( s ) );
+    handle_frozen( s );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
     frost_mage_spell_t::impact( s );
@@ -5093,8 +5093,9 @@ struct ice_lance_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    handle_frozen( s );
+
     snapshot_state( s, amount_type ( s ) );
+    handle_frozen( s );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
@@ -5225,9 +5226,8 @@ struct ice_nova_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    handle_frozen( s );
-
     snapshot_state( s, amount_type ( s ) );
+    handle_frozen( s );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
