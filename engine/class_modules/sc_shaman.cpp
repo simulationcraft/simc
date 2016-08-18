@@ -6427,9 +6427,7 @@ void shaman_t::init_action_list_elemental()
   precombat -> add_action( this, "Stormkeeper" );
   precombat -> add_talent( this, "Totem Mastery" );
 
-  // All Shamans Bloodlust and Wind Shear by default
-  def -> add_action( this, "Wind Shear" );
-
+  // All Shamans Bloodlust by default
   def -> add_action( this, "Bloodlust", generate_bloodlust_options(),
     "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
 
