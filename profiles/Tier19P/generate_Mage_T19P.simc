@@ -4,7 +4,7 @@ race=orc
 role=spell
 position=back
 talents=1022021
-artifact=54:137470:137420:133022:0:748:1:749:6:751:3:754:3:755:3:756:3:759:1:762:1:763:1:1340:1
+artifact=54:133022:137420:133022:0:748:1:749:6:751:3:754:3:755:3:756:3:759:1:762:1:763:1:1340:1
 spec=fire
 head=,id=134424,bonus_id=1727
 neck=chain_of_the_underking,id=134495,bonus_id=1727,enchant=mark_of_the_claw
@@ -30,7 +30,7 @@ race=orc
 role=spell
 position=back
 talents=3032011
-artifact=53:140831:139269:140831:0:783:1:788:3:789:6:790:3:791:3:792:3:793:1:796:1:797:1:1296:1
+artifact=53:133056:132810:133056:0:783:1:785:3:786:3:788:3:789:3:790:3:792:3:793:1:796:1:798:1:1296:1
 spec=frost
 head=,id=134424,bonus_id=1727
 neck=,id=137536,bonus_id=1727,enchant=mark_of_the_claw
