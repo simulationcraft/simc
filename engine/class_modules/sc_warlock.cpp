@@ -1360,7 +1360,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + o() -> find_spell( 216187 ) -> effectN( 1 ).percent();
   }
 
-  if( o() -> mastery_spells.master_demonologist -> ok() )
+  if( o() -> mastery_spells.master_demonologist -> ok() && buffs.demonic_empowerment -> check() )
   {
      m *= 1.0 +  o() -> cache.mastery_value();
   }
@@ -3097,6 +3097,15 @@ struct hand_of_guldan_t: public warlock_spell_t
       r = false;
 
     return r;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    m *= resource_consumed;
+
+    return m;
   }
 
   void consume_resource() override
@@ -6685,6 +6694,17 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Warlock", "2015-08-16", "Roaring Blaze reduced to 25%.", 303923 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 25 )
+      .verification_value( 60 );
+
+    hotfix::register_effect( "Warlock", "2015-08-16", "Incinerate damage increased to 190%.", 288276 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.9 )
+      .verification_value( 1.7 );
   }
 
   virtual bool valid() const override { return true; }
