@@ -34,6 +34,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy.deficit>40
 actions+=/adrenaline_rush,if=!buff.adrenaline_rush.up
+actions+=/sprint,if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up
 actions+=/pool_resource,for_next=1
 actions+=/ambush
 actions+=/pool_resource,for_next=1,extra_amount=60
@@ -66,9 +67,9 @@ back=gossamerspun_greatcloak,id=138221,bonus_id=1806
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
-waist=cinidaria_the_symbiote,id=133976,bonus_id=1811
+waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
-feet=stained_maggot_squishers,id=139200,bonus_id=1806
+feet=thraxis_tricksy_treads,id=137031,bonus_id=1811
 finger1=ring_of_deep_sea_pearls,id=141545
 finger2=grubby_silver_ring,id=139236,bonus_id=1806
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
@@ -80,8 +81,8 @@ off_hand=the_dreadblades,id=134552
 # gear_ilvl=881.69
 # gear_agility=15920
 # gear_stamina=25530
-# gear_crit_rating=8513
-# gear_haste_rating=3196
-# gear_mastery_rating=6561
-# gear_versatility_rating=2812
-# gear_armor=2246
+# gear_crit_rating=8596
+# gear_haste_rating=2742
+# gear_mastery_rating=6478
+# gear_versatility_rating=3266
+# gear_armor=2249

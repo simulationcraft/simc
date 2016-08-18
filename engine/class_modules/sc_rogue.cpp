@@ -6264,6 +6264,7 @@ void rogue_t::init_action_list()
 
     // Rotation
     def -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
+    def -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
     def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     def -> add_action( this, "Ambush" );
     def -> add_action( "pool_resource,for_next=1,extra_amount=60" );

@@ -33,6 +33,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy.deficit>40
 actions+=/adrenaline_rush,if=!buff.adrenaline_rush.up
+actions+=/sprint,if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up
 actions+=/pool_resource,for_next=1
 actions+=/ambush
 actions+=/pool_resource,for_next=1,extra_amount=60
