@@ -40,7 +40,7 @@ actions+=/pool_resource,for_next=1,extra_amount=60
 actions+=/vanish,if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60
 actions+=/pool_resource,for_next=1,extra_amount=60
 actions+=/shadowmeld,if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60
-actions+=/death_from_above,if=combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)
+actions+=/death_from_above,if=energy.time_to_max>2&combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)
 actions+=/slice_and_dice,if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
 actions+=/roll_the_bones,if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|rtb_buffs<=1)
 actions+=/killing_spree,if=energy.time_to_max>5|energy<15

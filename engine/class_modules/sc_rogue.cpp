@@ -6269,7 +6269,7 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Vanish", "if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60" );
     def -> add_action( "pool_resource,for_next=1,extra_amount=60" );
     def -> add_action( "shadowmeld,if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60" );
-    def -> add_talent( this, "Death from Above", "if=combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)" );
+    def -> add_talent( this, "Death from Above", "if=energy.time_to_max>2&combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)" );
       // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
     def -> add_talent( this, "Slice and Dice", "if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
       // Reroll unless 2+ buffs
