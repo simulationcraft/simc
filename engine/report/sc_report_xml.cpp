@@ -1530,6 +1530,9 @@ void print_xml( sim_t* sim )
   writer.print_attribute( "ptr", sim->dbc.ptr ? "true" : "false" );
   writer.print_attribute( "wow_build",
                           util::to_string( sim->dbc.build_level() ) );
+#if defined( SC_GIT_REV )
+  writer.print_attribute( "sc_git_build", SC_GIT_REV );
+#endif
 
 #if SC_BETA
 
