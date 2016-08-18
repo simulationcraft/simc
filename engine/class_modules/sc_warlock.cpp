@@ -111,7 +111,6 @@ public:
     static const int DOOMGUARD_LIMIT = 1;
     static const int LORD_OF_FLAMES_INFERNAL_LIMIT = 3;
     static const int DARKGLARE_LIMIT = 1;
-    static const int THALKIEL_LIMIT = 1;
     std::array<pets::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
     std::array<pets::t18_illidari_satyr_t*, T18_PET_LIMIT> t18_illidari_satyr;
     std::array<pets::t18_prince_malchezaar_t*, T18_PET_LIMIT> t18_prince_malchezaar;
@@ -123,7 +122,6 @@ public:
     std::array<pets::infernal_t*, INFERNAL_LIMIT> infernal;
     std::array<pets::doomguard_t*, DOOMGUARD_LIMIT> doomguard;
     std::array<pets::lord_of_flames_infernal_t*, LORD_OF_FLAMES_INFERNAL_LIMIT> lord_of_flames_infernal;
-    std::array<pets::thal_kiel_t*, THALKIEL_LIMIT> thalkiel;
     std::array<pets::darkglare_t*, DARKGLARE_LIMIT> darkglare;
 
     pets::soul_effigy_t* soul_effigy;
@@ -134,6 +132,7 @@ public:
   struct active_t
   {
     action_t* demonic_power_proc;
+    action_t* thalkiels_discord;
     action_t* harvester_of_souls;
     spell_t* rain_of_fire;
   } active;
@@ -1175,54 +1174,6 @@ struct eye_laser_t : public warlock_pet_spell_t
   }*/
 };
 
-struct thalkiels_discord_t : public warlock_pet_spell_t
-{
-    struct thalkiels_discord_tick_t : public warlock_pet_spell_t
-    {
-        thalkiels_discord_tick_t( warlock_pet_t* p /*, const spell_data_t& s */):
-            warlock_pet_spell_t( "thalkiels_discord_tick", p, p->find_spell( 211727 ) )
-        {
-            spell_power_mod.tick = data().effectN(1).sp_coeff();
-            aoe = -1;
-            background = true;
-            may_crit = true;
-        }
-    };
-
-    thalkiels_discord_tick_t* tick;
-
-    thalkiels_discord_t( warlock_pet_t* p, const std::string& options_str ):
-      warlock_pet_spell_t( "thalkiels_discord", p, p -> find_spell( 211720 ) )
-    {
-      parse_options( options_str );
-      base_tick_time = timespan_t::from_millis( 1500 );
-      tick_action = new thalkiels_discord_tick_t( p/*, data()*/ );
-    }
-
-    void init() override
-    {
-      warlock_pet_spell_t::init();
-
-      // Explicitly snapshot haste, as the spell actually has no duration in spell data
-      snapshot_flags |= STATE_HASTE;
-    }
-
-    timespan_t composite_dot_duration( const action_state_t* ) const override
-    {
-      return player -> sim -> expected_iteration_time * 2;
-    }
-
-    virtual void cancel() override
-    {
-      dot_t* dot = find_dot( target );
-      if ( dot && dot -> is_ticking() )
-      {
-        dot -> cancel();
-      }
-      action_t::cancel();
-    }
-};
-
 struct soul_effigy_t : public warlock_pet_spell_t
 {
   soul_effigy_t( warlock_pet_t* p ) :
@@ -1934,24 +1885,6 @@ struct dreadstalker_t : public warlock_pet_t
   }
 };
 
-struct thal_kiel_t : public warlock_pet_t
-{
-    thal_kiel_t( sim_t* sim, warlock_t* owner ) :
-      warlock_pet_t( sim, owner, "thal'keil", PET_THAL_KIEL )
-    {
-        action_list_str = "thal_kiel_discord,if=!ticking";
-        is_demonbolt_enabled = false;
-        regen_type = REGEN_DISABLED;
-    }
-
-    virtual action_t* create_action(const std::string &name, const std::string &options_str) override
-    {
-        if( name == "thal_kiel_discord" ) return new actions::thalkiels_discord_t(this, options_str);
-        return warlock_pet_t::create_action( name, options_str );
-    }
-
-};
-
 struct darkglare_t : public warlock_pet_t
 {
   darkglare_t( sim_t* sim, warlock_t* owner ) :
@@ -2349,10 +2282,6 @@ public:
     {
       double chaotic_energies_rng = rng().range( 0, p() -> cache.mastery_value() );
       pm *= 1.0 + chaotic_energies_rng;
-    }
-    if ( p()->specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
-    {
-        pm *= 1.0 + p()->artifact.breath_of_thalkiel.percent();
     }
 
     return pm;
@@ -2834,11 +2763,8 @@ struct life_tap_t: public warlock_spell_t
 
 // Demonology Spells
 
-
-
 struct shadow_bolt_t: public warlock_spell_t
 {
-    //thalkeies_discord_t discord;
   shadow_bolt_t( warlock_t* p ):
     warlock_spell_t( p, "Shadow Bolt" )
   {
@@ -2846,15 +2772,15 @@ struct shadow_bolt_t: public warlock_spell_t
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 1;
 
-    if(p->sets.set(WARLOCK_DEMONOLOGY, T17, B4))
+    if ( p->sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) )
     {
-        if(rng().roll(p->sets.set(WARLOCK_DEMONOLOGY, T17, B4)->effectN(1).percent()))
-        {
-            energize_amount++;
-        }
+      if ( rng().roll( p->sets.set( WARLOCK_DEMONOLOGY, T17, B4 )->effectN( 1 ).percent() ) )
+      {
+        energize_amount++;
+      }
     }
 
-    base_crit += p->artifact.maw_of_shadows.percent();
+    base_crit += p -> artifact.maw_of_shadows.percent();
   }
 
   virtual bool ready() override
@@ -2877,11 +2803,11 @@ struct shadow_bolt_t: public warlock_spell_t
   virtual double action_multiplier()const override
   {
       double m = warlock_spell_t::action_multiplier();
-      if(p()->buffs.stolen_power->up())
+      if( p() -> buffs.stolen_power -> up() )
       {
-          p()->procs.stolen_power_used->occur();
-          m *= 1.0 + p()->buffs.stolen_power->data().effectN( 1 ).percent();
-          p()->buffs.stolen_power->reset();
+          p() -> procs.stolen_power_used -> occur();
+          m *= 1.0 + p() -> buffs.stolen_power -> data().effectN( 1 ).percent();
+          p() -> buffs.stolen_power->reset();
       }
       return m;
   }
@@ -2896,26 +2822,26 @@ struct shadow_bolt_t: public warlock_spell_t
     if ( p() -> buffs.shadowy_inspiration -> check() )
       p() -> buffs.shadowy_inspiration -> expire();
 
-    if( p()->artifact.thalkiels_discord.rank())
+    if ( p() -> artifact.thalkiels_discord.rank() )
     {
-        if( rng().roll(0.15) )
-        {
-            timespan_t thalkiels_duration = timespan_t::from_millis(6000);
-            int j = 0;
-            for ( size_t i = 0; i < p() -> warlock_pet_list.thalkiel.size(); i++ )
-            {
-                if ( p() -> warlock_pet_list.thalkiel[i] -> is_sleeping() )
-                {
-                    p() -> warlock_pet_list.thalkiel[i] -> summon( thalkiels_duration );
-                    p()->procs.thalkiels_discord->occur();
-                    if ( ++j == 1 ) break;
-                }
-            }
-        }
+      if ( rng().roll( p() -> artifact.thalkiels_discord.data().proc_chance() ) )
+      {
+        new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+          .target( execute_state -> target )
+          .x( execute_state -> target -> x_position )
+          .y( execute_state -> target -> y_position )
+          .pulse_time( timespan_t::from_millis( 1500 ) )
+          .duration( p() -> find_spell( 211729 ) -> duration() )
+          .start_time( sim -> current_time() )
+          .action( p() -> active.thalkiels_discord ) );
+
+        p() -> procs.thalkiels_discord -> occur();
+      }
     }
-    if(p()->sets.set(WARLOCK_DEMONOLOGY, T18, B2))
+
+    if( p() -> sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) )
     {
-        p()->buffs.tier18_2pc_demonology->trigger(1);
+        p() -> buffs.tier18_2pc_demonology -> trigger( 1 );
     }
   }
 };
@@ -3498,6 +3424,25 @@ struct chaos_bolt_t: public warlock_spell_t
 
 // ARTIFACT SPELLS
 
+struct thalkiels_discord_t : public warlock_spell_t
+{
+  thalkiels_discord_t( warlock_t* p ) :
+    warlock_spell_t( "thalkiels_discord", p, p -> find_spell( 211727 ) )
+  {
+    aoe = -1;
+    background = dual = true;
+    callbacks = false;
+  }
+
+  void init() override
+  {
+    warlock_spell_t::init();
+
+    // Explicitly snapshot haste, as the spell actually has no duration in spell data
+    snapshot_flags |= STATE_HASTE;
+  }
+};
+
 struct dimensional_rift_t : public warlock_spell_t
 {
   timespan_t shadowy_tear_duration;
@@ -3584,48 +3529,6 @@ struct thalkiels_consumption_t : public warlock_spell_t
         this->base_dd_max = damage;
         //do other stuff
     }
-};
-
-struct thalkiels_discord_t : public warlock_spell_t
-{
-    //implementation needs to change
-    //generate a thalkiel pet
-    // create a hellfire like spell called thalkiel's discord
-    // have thalkiel pulse the hellfire thalkiel's discord.
-    // pls gahddo you're our only hope.
-    //thalkiels_discord_tick_t* tick;
-    timespan_t thalkiels_duration;
-
-    thalkiels_discord_t( warlock_t* p ):
-        warlock_spell_t( "thalkiels_discord", p, p -> artifact.thalkiels_consumption )
-    {
-        thalkiels_duration = p->find_spell( 211720 ) -> duration();
-        //tick = new thalkiels_discord_tick_t(p);
-        //add_child(tick);
-    }
-
-    virtual void execute() override
-    {
-        warlock_spell_t::execute();
-        int j = 0;
-        for ( size_t i = 0; i < p() -> warlock_pet_list.thalkiel.size(); i++ )
-        {
-            if ( p() -> warlock_pet_list.thalkiel[i] -> is_sleeping() )
-            {
-                p() -> warlock_pet_list.thalkiel[i] -> summon( thalkiels_duration );
-                //p() -> procs.dreadstalker_debug -> occur();
-                if ( ++j == 1 ) break;
-            }
-        }
-    }
-
-/*
-    void tick( dot_t* d ) override
-    {
-      tick -> execute();
-      warlock_spell_t::tick( d );
-    }*/
-
 };
 
 // AOE SPELLS
@@ -3781,8 +3684,6 @@ struct rain_of_fire_t : public warlock_spell_t
       .action( p() -> active.rain_of_fire ) );
   }
 };
-
-
 
 struct demonwrath_tick_t: public warlock_spell_t
 {
@@ -4149,26 +4050,26 @@ struct summon_soul_effigy_t : public warlock_spell_t
 
 
 
-struct demonbolt_t: public warlock_spell_t
+struct demonbolt_t : public warlock_spell_t
 {
-  demonbolt_t( warlock_t* p ):
+  demonbolt_t( warlock_t* p ) :
     warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
+  {
+
+    energize_type = ENERGIZE_ON_CAST;
+    energize_resource = RESOURCE_SOUL_SHARD;
+    energize_amount = 1;
+
+    if ( p->sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) )
     {
-
-        energize_type = ENERGIZE_ON_CAST;
-        energize_resource = RESOURCE_SOUL_SHARD;
-        energize_amount = 1;
-
-        if(p->sets.set(WARLOCK_DEMONOLOGY, T17, B4))
-        {
-            if(rng().roll(p->sets.set(WARLOCK_DEMONOLOGY, T17, B4)->effectN(1).percent()))
-            {
-                energize_amount++;
-            }
-        }
-
-        base_crit += p->artifact.maw_of_shadows.percent();
+      if ( rng().roll( p->sets.set( WARLOCK_DEMONOLOGY, T17, B4 )->effectN( 1 ).percent() ) )
+      {
+        energize_amount++;
+      }
     }
+
+    base_crit += p->artifact.maw_of_shadows.percent();
+  }
 
   //fix this
   virtual double action_multiplier() const override
@@ -4176,23 +4077,23 @@ struct demonbolt_t: public warlock_spell_t
     double pm = spell_t::action_multiplier();
     double pet_counter = 0.0;
 
-    for( auto& pet : p() -> pet_list )
+    for ( auto& pet : p()->pet_list )
     {
-      pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
+      pets::warlock_pet_t *lock_pet = static_cast< pets::warlock_pet_t* > ( pet );
 
-      if( lock_pet != NULL )
+      if ( lock_pet != NULL )
       {
-        if( !lock_pet -> is_sleeping() )
+        if ( !lock_pet->is_sleeping() )
         {
-            pet_counter += data().effectN( 3 ).percent();
+          pet_counter += data().effectN( 3 ).percent();
         }
       }
     }
-    if( p() -> buffs.stolen_power -> up() )
+    if ( p()->buffs.stolen_power->up() )
     {
-        p() -> procs.stolen_power_used -> occur();
-        pm *= 1.0 + p() -> buffs.stolen_power -> data().effectN( 1 ).percent();
-        p() -> buffs.stolen_power -> reset();
+      p()->procs.stolen_power_used->occur();
+      pm *= 1.0 + p()->buffs.stolen_power->data().effectN( 1 ).percent();
+      p()->buffs.stolen_power->reset();
     }
 
     pm *= 1 + pet_counter;
@@ -4201,45 +4102,45 @@ struct demonbolt_t: public warlock_spell_t
 
   virtual timespan_t execute_time() const override
   {
-    if ( p() -> buffs.shadowy_inspiration -> check() )
+    if ( p()->buffs.shadowy_inspiration->check() )
     {
       return timespan_t::zero();
     }
     return warlock_spell_t::execute_time();
   }
 
-    void execute() override
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> talents.demonic_calling -> ok() )
+      p() -> buffs.demonic_calling -> trigger();
+
+    if ( p() -> buffs.shadowy_inspiration -> check() )
+      p() -> buffs.shadowy_inspiration -> expire();
+
+    if ( p() -> artifact.thalkiels_discord.rank() )
     {
-        warlock_spell_t::execute();
+      if ( rng().roll( p() -> artifact.thalkiels_discord.data().proc_chance() ) )
+      {
+        new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+          .target( execute_state -> target )
+          .x( execute_state -> target -> x_position )
+          .y( execute_state -> target -> y_position )
+          .pulse_time( timespan_t::from_millis( 1500 ) )
+          .duration( p() -> find_spell( 211729 ) -> duration() )
+          .start_time( sim -> current_time() )
+          .action( p() -> active.thalkiels_discord ) );
 
-        if ( p() -> talents.demonic_calling -> ok() )
-          p() -> buffs.demonic_calling -> trigger();
-
-        if ( p() -> buffs.shadowy_inspiration -> check() )
-          p() -> buffs.shadowy_inspiration -> expire();
-
-        if( p()->artifact.thalkiels_discord.rank())
-        {
-            if( rng().roll(0.15) )
-            {
-                timespan_t thalkiels_duration = timespan_t::from_millis(6000);
-                int j = 0;
-                for ( size_t i = 0; i < p() -> warlock_pet_list.thalkiel.size(); i++ )
-                {
-                    if ( p() -> warlock_pet_list.thalkiel[i] -> is_sleeping() )
-                    {
-                        p()->procs.thalkiels_discord->occur();
-                        p() -> warlock_pet_list.thalkiel[i] -> summon( thalkiels_duration );
-                        if ( ++j == 1 ) break;
-                    }
-                }
-            }
-        }
-        if(p()->sets.set(WARLOCK_DEMONOLOGY, T18, B2))
-        {
-            p()->buffs.tier18_2pc_demonology->trigger(1);
-        }
+        p() -> procs.thalkiels_discord -> occur();
       }
+    }
+
+    if ( p() -> sets.set( WARLOCK_DEMONOLOGY, T18, B2 ) )
+    {
+      p() -> buffs.tier18_2pc_demonology -> trigger( 1 );
+    }
+  }
 };
 
 struct implosion_t : public warlock_spell_t
@@ -4942,6 +4843,11 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.flames_of_the_pit.percent();
   }
 
+  if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_SHADOW, school ) || dbc::is_school( SCHOOL_SHADOWFLAME, school ) ) )
+  {
+    m *= 1.0 + artifact.breath_of_thalkiel.percent();
+  }
+
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     m *= 1.0 + artifact.soulstealer.percent() * ( buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
@@ -5227,10 +5133,6 @@ void warlock_t::create_pets()
     {
       warlock_pet_list.darkglare[i] = new pets::darkglare_t( sim, this );
     }    
-    for( size_t i = 0; i < warlock_pet_list.thalkiel.size(); i++)
-    {
-        warlock_pet_list.thalkiel[i] = new pets::thal_kiel_t( sim, this );
-    }
     if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
     {
       for ( size_t i = 0; i < warlock_pet_list.t18_illidari_satyr.size(); i++ )
@@ -5401,6 +5303,7 @@ void warlock_t::init_spells()
 
   // Active Spells
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
+  active.thalkiels_discord = new actions::thalkiels_discord_t( this );
   active.harvester_of_souls = new actions::harvester_of_souls_t( this );
 }
 
