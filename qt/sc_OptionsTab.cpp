@@ -484,9 +484,9 @@ void SC_OptionsTab::createScalingTab()
   appendCheckBox( tr( "Off-hand Weapon DPS"        ), "wohdps",     tr( "Calculate scale factors for Off-hand Weapon DPS"            ), scalingButtonsLayout, scalingButtonGroup );
   appendCheckBox( tr( "Armor"                      ), "armor",      tr( "Calculate scale factors for Armor"                          ), scalingButtonsLayout, scalingButtonGroup );
   appendCheckBox( tr( "Bonus Armor"                ), "bonusarmor", tr( "Calculate scale factors for Bonus Armor"                    ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Avoidance (tertiary)"       ), "avoidance",  tr( "Calculate scale factors for Avoidance (tertiary stat)"      ), scalingButtonsLayout, scalingButtonGroup );
+  //appendCheckBox( tr( "Avoidance (tertiary)"       ), "avoidance",  tr( "Calculate scale factors for Avoidance (tertiary stat)"      ), scalingButtonsLayout, scalingButtonGroup );
   appendCheckBox( tr( "Leech (tertiary)"           ), "leech",      tr( "Calculate scale factors for Leech (tertiary stat)"          ), scalingButtonsLayout, scalingButtonGroup );
-  appendCheckBox( tr( "Movement Speed (tertiary)"  ), "speed",      tr( "Calculate scale factors for Movement Speed (tertiary stat)" ), scalingButtonsLayout, scalingButtonGroup );
+  appendCheckBox( tr( "Movement Speed (tertiary)"  ), "runspeed",   tr( "Calculate scale factors for Movement Speed (tertiary stat)" ), scalingButtonsLayout, scalingButtonGroup );
   appendCheckBox( tr( "Latency"                    ), "latency",    tr( "Calculate scale factors for Latency"                        ), scalingButtonsLayout, scalingButtonGroup );
 
   // spacer to eat up rest of space (makes scalingButtonsGroupBoxLayout look less silly)
@@ -572,6 +572,9 @@ void SC_OptionsTab::createPlotsTab()
   appendCheckBox( tr( "Weapon OH DPS"      ), "wohdps",     tr( "Generate Scaling curve for Weapon OH DPS"      ), plotButtonsLayout, plotsButtonGroup );
   appendCheckBox( tr( "Armor"              ), "armor",      tr( "Generate Scaling curve for Armor"              ), plotButtonsLayout, plotsButtonGroup );
   appendCheckBox( tr( "Bonus Armor"        ), "bonusarmor", tr( "Generate Scaling curve for Bonus Armor"        ), plotButtonsLayout, plotsButtonGroup );
+  //appendCheckBox( tr( "Avoidance (tertiary)"       ), "avoidance",  tr( "Generate Scaling curve for Avoidance (tertiary stat)"      ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Leech (tertiary)"           ), "leech",      tr( "Generate Scaling curve for Leech (tertiary stat)"          ), plotButtonsLayout, plotsButtonGroup );
+  appendCheckBox( tr( "Movement Speed (tertiary)"  ), "runspeed",      tr( "Generate Scaling curve for Movement Speed (tertiary stat)" ), plotButtonsLayout, plotsButtonGroup );
 
   // spacer to eat up rest of space (makes plotsButtonGroupBox look less silly)
   QSpacerItem* spacer1 = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Expanding );
