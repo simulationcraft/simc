@@ -1068,13 +1068,13 @@ struct meteor_strike_t: public warlock_pet_spell_t
   }
 };
 
-struct wild_firebolt_t: public warlock_pet_spell_t
+struct fel_firebolt_t: public warlock_pet_spell_t
 {
-  wild_firebolt_t( warlock_pet_t* p ):
+  fel_firebolt_t( warlock_pet_t* p ):
     warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
   {
-      base_multiplier += 1.0 + p->o()->artifact.infernal_furnace.percent();
-      this->base_crit += p->o()->artifact.imperator.percent();
+      base_multiplier *= 1.0 + p -> o() -> artifact.infernal_furnace.percent();
+      this -> base_crit += p -> o() -> artifact.imperator.percent();
   }
 
   virtual bool ready() override
@@ -1342,28 +1342,28 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( o() -> race == RACE_ORC )
     m *= 1.0 + command -> effectN( 1 ).percent();
 
-  m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
+  //m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
 
-  if ( buffs.demonic_synergy -> up() )
-    m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
+  //if ( buffs.demonic_synergy -> up() )
+  //  m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
-  if( buffs.the_expendables -> up() )
-  {
-      m*= 1.0 + buffs.the_expendables->stack_value();
-  }
+  //if( buffs.the_expendables -> up() )
+  //{
+  //    m*= 1.0 + buffs.the_expendables -> stack_value();
+  //}
 
-  if ( o() -> buffs.soul_harvest -> check() )
-    m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
+  //if ( o() -> buffs.soul_harvest -> check() )
+  //  m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
 
-  if ( is_grimoire_of_service )
-  {
-      m *= 1.0 + o() -> find_spell( 216187 ) -> effectN( 1 ).percent();
-  }
+  //if ( is_grimoire_of_service )
+  //{
+  //    m *= 1.0 + o() -> find_spell( 216187 ) -> effectN( 1 ).percent();
+  //}
 
-  if( o() -> mastery_spells.master_demonologist -> ok() && buffs.demonic_empowerment -> check() )
-  {
-     m *= 1.0 +  o() -> cache.mastery_value();
-  }
+  //if( o() -> mastery_spells.master_demonologist -> ok() && buffs.demonic_empowerment -> check() )
+  //{
+  //   m *= 1.0 +  o() -> cache.mastery_value();
+  //}
   return m;
 }
 
@@ -1811,11 +1811,11 @@ struct doomguard_t: public warlock_pet_t
 
 struct wild_imp_pet_t: public warlock_pet_t
 {
-  stats_t** firebolt_stats;
+  stats_t** fel_firebolt_stats;
   stats_t* regular_stats;
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), firebolt_stats( nullptr ), regular_stats(nullptr)
+    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), fel_firebolt_stats( nullptr ), regular_stats(nullptr)
   {
   }
 
@@ -1823,7 +1823,7 @@ struct wild_imp_pet_t: public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
 
-    action_list_str = "firebolt";
+    action_list_str = "fel_firebolt";
 
     resources.base[RESOURCE_ENERGY] = 1000;
     base_energy_regen_per_second = 0;
@@ -1850,10 +1850,10 @@ struct wild_imp_pet_t: public warlock_pet_t
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str ) override
   {
-    if ( name == "firebolt" )
+    if ( name == "fel_firebolt" )
     {
-      action_t* a = new actions::wild_firebolt_t( this );
-      firebolt_stats = &( a -> stats );
+      action_t* a = new actions::fel_firebolt_t( this );
+      fel_firebolt_stats = &( a -> stats );
       if ( this == o() -> warlock_pet_list.wild_imps[ 0 ] || sim -> report_pets_separately )
       {
         regular_stats = a -> stats;
@@ -1870,7 +1870,7 @@ struct wild_imp_pet_t: public warlock_pet_t
 
   void trigger()
   {
-    *firebolt_stats = regular_stats;
+    *fel_firebolt_stats = regular_stats;
       summon( timespan_t::from_millis( 12000 ) );
   }
 };
