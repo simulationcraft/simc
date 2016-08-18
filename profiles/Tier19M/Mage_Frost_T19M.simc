@@ -1,0 +1,80 @@
+mage="Mage_Frost_T19M"
+level=110
+race=orc
+role=spell
+position=back
+talents=3032011
+artifact=53:137272:133052:133056:0:783:1:784:3:785:3:786:6:787:3:788:3:789:3:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1
+spec=frost
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=flask_of_the_whispered_pact
+actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/water_elemental
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mirror_image
+actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/frostbolt
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/ice_lance,if=buff.fingers_of_frost.react=0&prev_gcd.flurry
+actions+=/call_action_list,name=cooldowns
+actions+=/ice_nova,if=debuff.winters_chill.up
+actions+=/frostbolt,if=prev_off_gcd.water_jet
+actions+=/water_jet,if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0
+actions+=/ray_of_frost,if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)
+actions+=/flurry,if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.frostbolt
+actions+=/glacial_spike
+actions+=/frozen_touch,if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)
+actions+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0
+actions+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2
+actions+=/frozen_orb
+actions+=/ice_nova
+actions+=/blizzard,if=(talent.arctic_gale.enabled&active_enemies>1)|active_enemies>3
+actions+=/ebonbolt,if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)
+actions+=/frostbolt
+
+actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10
+actions.cooldowns+=/icy_veins,if=buff.icy_veins.down
+actions.cooldowns+=/mirror_image
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/arcane_torrent
+
+head=collar_of_enclosure,id=134424,ilevel=880
+neck=pendant_of_the_watchful_eye,id=137536,ilevel=880,enchant=mark_of_the_claw
+shoulders=amice_of_the_unfurling_tempest,id=134432,ilevel=880
+back=cloak_of_enthralling_darkness,id=137531,ilevel=880,enchant=binding_of_intellect
+chest=fluxflow_robes,id=134413,ilevel=880
+wrists=armbands_of_slaughter,id=134436,ilevel=880
+hands=satin_throatclutchers,id=134422,ilevel=880
+waist=waistband_of_spiritual_doom,id=137507,ilevel=880
+legs=legwraps_of_reverberating_shadows,id=137404,ilevel=880
+feet=mistbound_helarjar_footwraps,id=133608,ilevel=880
+finger1=seal_of_malicious_deceit,id=134489,ilevel=880,enchant=binding_of_haste
+finger2=band_of_fused_coral,id=134532,ilevel=880,enchant=binding_of_haste
+trinket1=naraxas_spiked_tongue,id=137349,ilevel=880
+trinket2=oakhearts_gnarled_root,id=137306,ilevel=880
+main_hand=ebonchill,id=128862,ilevel=890
+
+# Gear Summary
+# gear_ilvl=880.67
+# gear_stamina=25503
+# gear_intellect=24577
+# gear_crit_rating=6465
+# gear_haste_rating=11260
+# gear_mastery_rating=1802
+# gear_versatility_rating=1043
+# gear_leech_rating=469
+# gear_armor=1810
+# set_bonus=tier19p_cloth_2pc=1
