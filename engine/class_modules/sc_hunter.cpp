@@ -182,7 +182,6 @@ public:
   struct procs_t
   {
     proc_t* lock_and_load;
-    proc_t* hunters_mark;
     proc_t* wild_call;
     proc_t* tier17_2pc_bm;
     proc_t* tier18_4pc_bm;
@@ -196,6 +195,8 @@ public:
     proc_t* no_vuln_marked_shot;
     proc_t* zevrims_hunger;
     proc_t* convergence;
+    proc_t* marking_targets;
+    proc_t* wasted_marking_targets;
   } procs;
 
   real_ppm_t* ppm_hunters_mark;
@@ -2591,7 +2592,13 @@ struct auto_shot_t: public ranged_t
     ranged_t::execute();
 
     if ( p() -> specialization() == HUNTER_MARKSMANSHIP && p() -> ppm_hunters_mark -> trigger() )
+    {
+      if ( p() -> buffs.marking_targets -> up() )
+        p() -> procs.wasted_marking_targets -> occur();
+
       p() -> buffs.marking_targets -> trigger();
+      p() -> procs.marking_targets -> occur();
+    }
 
     if ( p() -> buffs.volley -> up() )
       volley_tick -> execute();
@@ -2791,7 +2798,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
           for ( size_t i = 0; i < multi_shot_targets.size(); i++ )
             td( multi_shot_targets[i] ) -> debuffs.hunters_mark -> trigger();
 
-          p() -> procs.hunters_mark -> occur();
           p() -> buffs.hunters_mark_exists -> trigger();
           p() -> buffs.marking_targets -> expire();
         }
@@ -3243,7 +3249,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
       if ( p() -> buffs.trueshot -> up() || p() -> buffs.marking_targets -> up() )
       {
         td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
-        p() -> procs.hunters_mark -> occur();
         p() -> buffs.hunters_mark_exists -> trigger();
         p() -> buffs.marking_targets -> expire();
       }
@@ -3567,7 +3572,6 @@ struct sidewinders_t: hunter_ranged_attack_t
 
       if ( marking )
       {
-        p() -> procs.hunters_mark -> occur();
         p() -> buffs.hunters_mark_exists -> trigger();
         p() -> buffs.marking_targets -> expire();
       }
@@ -5817,7 +5821,6 @@ void hunter_t::init_procs()
   player_t::init_procs();
 
   procs.lock_and_load                = get_proc( "lock_and_load" );
-  procs.hunters_mark                 = get_proc( "hunters_mark" );
   procs.wild_call                    = get_proc( "wild_call" );
   procs.tier17_2pc_bm                = get_proc( "tier17_2pc_bm" );
   procs.tier18_4pc_bm                = get_proc( "tier18_4pc_bm" );
@@ -5831,6 +5834,8 @@ void hunter_t::init_procs()
   procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
   procs.convergence                  = get_proc( "convergence" );
+  procs.marking_targets              = get_proc( "marking_targets" );
+  procs.wasted_marking_targets       = get_proc( "wasted_marking_targets" );
 }
 
 // hunter_t::init_rng =======================================================
