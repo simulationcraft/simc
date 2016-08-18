@@ -5,7 +5,7 @@ race=blood_elf
 role=hybrid
 position=back
 talents=3030032
-artifact=50:0:0:0:0:800:3:821:3:824:3:828:1:829:3:831:1:832:1:833:1:1094:3:1341:1
+artifact=50:137313:137543:137313:0:800:3:821:3:824:3:825:3:828:1:829:3:831:1:832:1:833:1:1094:3:1341:1
 spec=windwalker
 
 head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
@@ -22,6 +22,6 @@ finger1=braided_silver_ring,id=134539,bonus_id=1727
 finger2=loop_of_eightfold_eyes,id=134527,bonus_id=1727
 trinket1=tiny_oozeling_in_a_jar,id=137439,bonus_id=1727
 trinket2=chaos_talisman,id=137459,bonus_id=1727
-main_hand=fists_of_the_heavens,id=128940,ilevel=870,bonus_id=734,relic_id=3412/3412/3412
-off_hand=fists_of_the_heavens,id=133948,ilevel=870
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313,relic_id=3412/3412/3412
+off_hand=fists_of_the_heavens,id=133948
 save=Monk_Windwalker_T19P.simc
