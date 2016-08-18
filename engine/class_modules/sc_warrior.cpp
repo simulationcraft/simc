@@ -450,7 +450,7 @@ public:
   double    temporary_movement_modifier() const override;
   bool      has_t18_class_trinket() const override;
 
-  void              apl_precombat();
+  void      default_apl_dps_precombat( const std::string& food, const std::string& potion );
   void              apl_default();
   void              apl_fury();
   void              apl_arms();
@@ -4213,146 +4213,56 @@ bool warrior_t::has_t18_class_trinket() const
 
 // Pre-combat Action Priority List============================================
 
-void warrior_t::apl_precombat()
+void warrior_t::default_apl_dps_precombat( const std::string& food_name, const std::string& potion_name )
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  std::string flask_name = ( true_level > 100 ) ? "countless_armies" :
+    ( true_level >= 90 ) ? "greater_draenic_strength_flask" :
+    ( true_level >= 85 ) ? "winters_bite" :
+    ( true_level >= 80 ) ? "titanic_strength" :
+    "";
 
   // Flask
   if ( sim -> allow_flasks && true_level >= 80 )
   {
-    std::string flask_action = "flask,type=";
-    if ( true_level > 100 ) {
-      flask_action += "countless_armies";
-    }
-    else if ( true_level > 90 )
-    {
-      flask_action += "greater_draenic_strength_flask";
-    }
-    else
-    {
-      if ( primary_role() == ROLE_ATTACK )
-      {
-        flask_action += "winters_bite";
-      }
-      else if ( primary_role() == ROLE_TANK )
-      {
-        flask_action += "earth";
-      }
-    }
-    precombat -> add_action( flask_action );
+    precombat -> add_action( "flask,type=" + flask_name );
   }
 
   // Food
-  if ( sim -> allow_food )
+  if ( sim -> allow_food && true_level >= 80 )
   {
-    std::string food_action = "food,type=";
-    if ( specialization() == WARRIOR_FURY )
-    {
-      if ( level() > 100 )
-      {
-        food_action += "azshari_salad";
-      }
-      else if ( level() > 90 )
-      {
-        food_action += "pickled_eel";
-      }
-      else
-      {
-        food_action += "black_pepper_ribs_and_shrimp";
-      }
-    }
-    else if ( specialization() == WARRIOR_ARMS )
-    {
-      if ( level() > 100 )
-      {
-        food_action += "nightborne_delicacy_platter";
-      }
-      else if ( level() > 90 )
-      {
-        food_action += "sleeper_sushi";
-      }
-      else
-      {
-        food_action += "black_pepper_ribs_and_shrimp";
-      }
-    }
-    else
-    {
-      if ( level() > 100 )
-      {
-        food_action += "azshari_salad";
-      }
-      else if ( level() > 90 )
-      {
-        food_action += "sleeper_sushi";
-      }
-      else
-      {
-        food_action += "chun_tian_spring_rolls";
-      }
-    }
-    precombat -> add_action( food_action );
+    precombat -> add_action( "food,type=" + food_name );
   }
 
   if ( true_level > 100 )
     precombat -> add_action( "augmentation,type=defiled" );
-  /*
-  if ( specialization() == WARRIOR_ARMS )
-  {
-    talent_overrides_str +=
-  }
-  else if ( specialization() == WARRIOR_FURY )
-  {
-    talent_overrides_str +=
-  }
-  */
+
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  //Pre-pot
-  if ( sim -> allow_potions )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
-    if ( true_level > 100 )
-    {
-      if ( specialization() == WARRIOR_PROTECTION )
-      {
-        precombat -> add_action( "potion,name=unbending_potion" );
-      }
-      else
-      {
-        precombat -> add_action( "potion,name=potion_of_the_old_war" );
-      }
-    }
-    else if ( true_level > 90 )
-    {
-      if ( specialization() != WARRIOR_PROTECTION )
-      {
-        precombat -> add_action( "potion,name=draenic_strength" );
-      }
-      else
-      {
-        precombat -> add_action( "potion,name=draenic_strength" );
-      }
-    }
-    else if ( true_level >= 80 )
-    {
-      if ( primary_role() == ROLE_ATTACK )
-      {
-        precombat -> add_action( "potion,name=mogu_power" );
-      }
-      else if ( primary_role() == ROLE_TANK )
-      {
-        precombat -> add_action( "potion,name=mountains" );
-      }
-    }
+    precombat -> add_action( "potion,name=" + potion_name );
   }
 }
-
 
 // Fury Warrior Action Priority List ========================================
 
 void warrior_t::apl_fury()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
+
+  std::string food_name = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+    ( true_level >  90 ) ? "buttered_sturgeon" :
+    ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+    ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+    "";
+  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+    ( true_level >= 90 ) ? "draenic_strength" :
+    ( true_level >= 85 ) ? "mogu_power" :
+    ( true_level >= 80 ) ? "golemblood_potion" :
+    "";
+
+  default_apl_dps_precombat( food_name, potion_name );
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* movement = get_action_priority_list( "movement" );
@@ -4378,21 +4288,9 @@ void warrior_t::apl_fury()
     }
   }
 
-  if ( sim -> allow_potions )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
-
-    if ( true_level > 100 )
-    {
-      default_list -> add_action( "potion,name=potion_of_the_old_war,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30" );
-    }
-    else if ( true_level > 90 )
-    {
-      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30" );
-    }
-    else if ( true_level >= 80 )
-    {
-      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=30" );
-    }
+    default_list -> add_action( "potion,name=" + potion_name + ",if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<30" );
   }
 
   default_list -> add_action( this, "Battle Cry", "if=(artifact.odyns_fury.enabled&cooldown.odyns_fury.remains=0&(cooldown.bloodthirst.remains=0|(buff.enrage.remains>cooldown.bloodthirst.remains)))|!artifact.odyns_fury.enabled" );
@@ -4459,26 +4357,28 @@ void warrior_t::apl_arms()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
+  std::string food_name = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+    ( true_level >  90 ) ? "buttered_sturgeon" :
+    ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+    ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+    "";
+  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+    ( true_level >= 90 ) ? "draenic_strength" :
+    ( true_level >= 85 ) ? "mogu_power" :
+    ( true_level >= 80 ) ? "golemblood_potion" :
+    "";
+
+  default_apl_dps_precombat( food_name, potion_name );
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* single_target = get_action_priority_list( "single" );
   action_priority_list_t* execute = get_action_priority_list( "execute" );
 
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
-  if ( sim -> allow_potions )
+
+  if ( sim -> allow_potions && true_level >= 80 )
   {
-    if ( true_level > 100 )
-    {
-      default_list -> add_action( "potion,name=potion_of_the_old_war,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
-    }
-    else if ( true_level > 90 )
-    {
-      default_list -> add_action( "potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
-    }
-    else if ( true_level >= 80 )
-    {
-      default_list -> add_action( "potion,name=mogu_power,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
-    }
+    default_list -> add_action( "potion,name=" + potion_name + ",if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25" );
   }
 
   default_list -> add_action( this, "Battle Cry", "sync=colossus_smash" );
@@ -4543,6 +4443,19 @@ void warrior_t::apl_prot()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
+  std::string food_name = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+    ( true_level >  90 ) ? "buttered_sturgeon" :
+    ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
+    ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+    "";
+  std::string potion_name = ( true_level > 100 ) ? "unbending_potion" :
+    ( true_level >= 90 ) ? "draenic_strength" :
+    ( true_level >= 85 ) ? "mogu_power" :
+    ( true_level >= 80 ) ? "golemblood_potion" :
+    "";
+
+  default_apl_dps_precombat( food_name, potion_name );
+
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* prot = get_action_priority_list( "prot" );
   action_priority_list_t* prot_aoe = get_action_priority_list( "prot_aoe" );
@@ -4574,20 +4487,9 @@ void warrior_t::apl_prot()
   prot -> add_action( this, "Stoneform", "if=incoming_damage_2500ms>health.max*0.15" );
 
   //potion
-  if ( sim -> allow_potions )
+  if ( sim -> allow_potions && true_level >= 80 )
   {
-    if ( true_level > 100 )
-    {
-      prot -> add_action( "potion,name=unbending_potion,if=(incoming_damage_2500ms>health.max*0.15&!buff.unbending_potion.up)|target.time_to_die<=25" );
-    }
-    if ( true_level > 90 )
-    {
-      prot -> add_action( "potion,name=draenic_strength,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
-    }
-    else if ( true_level >= 80 )
-    {
-      prot -> add_action( "potion,name=mountains,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
-    }
+    prot -> add_action( "potion,name=" + potion_name + ",if=(incoming_damage_2500ms>health.max*0.15&!buff.unbending_potion.up)|target.time_to_die<=25" );
   }
 
   //dps-single-target
@@ -5014,8 +4916,6 @@ void warrior_t::init_action_list()
   }
 
   clear_action_priority_lists();
-
-  apl_precombat();
 
   switch ( specialization() )
   {
