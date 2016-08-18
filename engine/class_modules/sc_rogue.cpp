@@ -1321,6 +1321,7 @@ struct poison_bomb_t : public rogue_attack_t
     rogue_attack_t( "poison_bomb", p, p -> find_spell( 192660 ) )
   {
     background = true;
+    aoe = -1;
   }
 
   double composite_target_multiplier( player_t* target ) const override
