@@ -7846,6 +7846,9 @@ void monk_t::apl_pre_windwalker()
       pre -> add_action( "food,type=warp_burger" );
   }
 
+  if ( true_level > 100 )
+    pre -> add_action( "augmentation,type=defiled" );
+
   pre -> add_action( "snapshot_stats" );
 
   if ( sim -> allow_potions )
