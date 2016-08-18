@@ -569,8 +569,10 @@ class SpecializationEnumGenerator(DataGenerator):
 
         # Ugliness abound, but the easiest way to iterate over all specs is this ...
         self._out.write('namespace specdata {\n')
-        self._out.write('static const unsigned n_specs = %u;\n\n' % len(spec_arr))
-        self._out.write('static const unsigned spec_to_idx_map_len = %u;\n\n' % len(spec_to_idx_map))
+        # enums can be negative. using int avoids warnings when comparing.
+        # src: http://stackoverflow.com/questions/159034/are-c-enums-signed-or-unsigned/159308#159308
+        self._out.write('static const int n_specs = %u;\n\n' % len(spec_arr))
+        self._out.write('static const int spec_to_idx_map_len = %u;\n\n' % len(spec_to_idx_map))
         self._out.write('static const specialization_e __specs[%u] = {\n  %s\n};\n\n' % (len(spec_arr), ', \n  '.join(spec_arr)))
         self._out.write('static const int __idx_specs[%u] = {%s\n};\n\n' % (len(spec_to_idx_map), spec_idx_str))
         self._out.write('} // namespace specdata\n')

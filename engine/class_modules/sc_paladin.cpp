@@ -2350,7 +2350,7 @@ struct light_of_the_protector_t : public paladin_heal_t
 {
   double health_diff_pct;
   light_of_the_titans_t* titans_proc;
-
+  int checker;
   light_of_the_protector_t( paladin_t* p, const std::string& options_str )
     : paladin_heal_t( "light_of_the_protector", p, p -> find_specialization_spell( "Light of the Protector" ) ), health_diff_pct( 0 )
   {
@@ -2374,7 +2374,10 @@ struct light_of_the_protector_t : public paladin_heal_t
       background = true;
 
     // light of the titans object attached to this
-    titans_proc = new light_of_the_titans_t( p );
+    if ( p -> artifact.light_of_the_titans.rank() ){
+      titans_proc = new light_of_the_titans_t( p );
+      checker = 1;
+    }
   }
 
   double action_multiplier() const override
@@ -2395,8 +2398,9 @@ struct light_of_the_protector_t : public paladin_heal_t
     base_dd_min = base_dd_max = health_diff_pct * ( p() -> resources.max[ RESOURCE_HEALTH ] - std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) );
 
     paladin_heal_t::execute();
-
-    titans_proc -> schedule_execute();
+    if ( checker ){
+      titans_proc -> schedule_execute();
+    }
   }
 
 };
@@ -2407,7 +2411,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
 {
   double health_diff_pct;
   light_of_the_titans_t* titans_proc;
-
+  int checker;
   hand_of_the_protector_t( paladin_t* p, const std::string& options_str )
     : paladin_heal_t( "hand_of_the_protector", p, p -> find_talent_spell( "Hand of the Protector" ) ), health_diff_pct( 0 )
   {
@@ -2430,7 +2434,10 @@ struct hand_of_the_protector_t : public paladin_heal_t
       background = true;
 
     // light of the titans object attached to this
-    titans_proc = new light_of_the_titans_t( p );
+    if ( p -> artifact.light_of_the_titans.rank() ){
+      titans_proc = new light_of_the_titans_t( p );
+      checker = 1;
+    }
   }
 
   double action_multiplier() const override
@@ -2453,7 +2460,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     // Light of the Titans only works if self-cast
-    if ( target == p() )
+    if ( checker && target == p() )
       titans_proc -> schedule_execute();
   }
 
@@ -4638,6 +4645,9 @@ void paladin_t::generate_action_prio_list_ret()
 
     precombat -> add_action( food_action );
   }
+
+  if ( true_level > 100 )
+    precombat -> add_action( "augmentation,type=defiled" );
 
   precombat -> add_action( this, "Greater Blessing of Might" );
 

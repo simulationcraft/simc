@@ -1657,7 +1657,10 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     struct react_expr_t : public buff_expr_t
     {
       react_expr_t( std::string bn, action_t* a, buff_t* b ) :
-        buff_expr_t( "buff_react", bn, a, b ) {}
+        buff_expr_t( "buff_react", bn, a, b )
+      {
+        if ( b ) b -> reactable = true;
+      }
       buff_t* create() const override
       { auto b = buff_expr_t::create(); b -> reactable = true; return b; }
       double evaluate() override
@@ -1670,7 +1673,10 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     struct react_pct_expr_t : public buff_expr_t
     {
       react_pct_expr_t( std::string bn, action_t* a, buff_t* b ) :
-        buff_expr_t( "buff_react_pct", bn, a, b ) {}
+        buff_expr_t( "buff_react_pct", bn, a, b )
+      {
+        if ( b ) b -> reactable = true;
+      }
       buff_t* create() const override
       { auto b = buff_expr_t::create(); b -> reactable = true; return b; }
       double evaluate() override

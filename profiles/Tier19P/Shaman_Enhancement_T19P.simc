@@ -69,7 +69,7 @@ feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727
 finger1=grasping_tentacle_loop,id=133634,bonus_id=1727,enchant_id=5429
 finger2=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant_id=5429
 trinket1=chaos_talisman,id=137459,bonus_id=1727
-trinket2=horn_of_valor,id=133642,bonus_id=1727
+trinket2=faulty_countermeasure,id=137539,bonus_id=1727
 main_hand=doomhammer,id=128819,bonus_id=741,gem_id=137358/137469/137421,relic_id=3412/3412/3412
 off_hand=fury_of_the_stonemother,id=128873,ilevel=870
 
@@ -77,8 +77,7 @@ off_hand=fury_of_the_stonemother,id=128873,ilevel=870
 # gear_ilvl=843.75
 # gear_agility=9960
 # gear_stamina=17628
-# gear_crit_rating=612
+# gear_crit_rating=1510
 # gear_haste_rating=5868
 # gear_mastery_rating=10579
-# gear_versatility_rating=898
 # gear_armor=2433

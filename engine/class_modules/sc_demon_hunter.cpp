@@ -6092,6 +6092,8 @@ void demon_hunter_t::apl_precombat()
     else
       pre -> add_action( "food,type=pickled_eel" );
   }
+  if ( true_level > 100 )
+    pre -> add_action( "augmentation,type=defiled" );
 
   // Snapshot Stats
   pre -> add_action( "snapshot_stats",
@@ -6101,9 +6103,9 @@ void demon_hunter_t::apl_precombat()
   // Pre-Potion
   if ( sim -> allow_potions )
   {
-    /* if ( true_level > 100 )
+    if ( true_level > 100 )
       pre -> add_action( "potion,name=potion_of_the_old_war" );
-    else */
+    
     pre -> add_action( "potion,name=draenic_agility_potion" );
   }
 }
@@ -6280,7 +6282,7 @@ void demon_hunter_t::apl_havoc()
     "&(!talent.nemesis.enabled|debuff.nemesis.up|cooldown.nemesis.ready)",
     "Use Metamorphosis if Nemesis and Chaos Blades are ready." );
   cd -> add_action(
-    "potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25" );
+    "potion,name=potion_of_the_old_war,if=buff.metamorphosis.remains>25" );
 }
 
 // demon_hunter_t::apl_vengeance ============================================

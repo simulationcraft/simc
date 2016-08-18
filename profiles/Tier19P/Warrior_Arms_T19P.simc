@@ -20,13 +20,13 @@ actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=potion_of_the_old_war
+actions.precombat+=/potion,name=deadly_grace
 
 # Executed every time the actor is available.
 
 actions=charge
 actions+=/auto_attack
-actions+=/potion,name=potion_of_the_old_war,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25
+actions+=/potion,name=deadly_grace,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25
 actions+=/battle_cry,sync=colossus_smash
 actions+=/battle_cry,if=debuff.colossus_smash.remains>=5|(debuff.colossus_smash.up&cooldown.colossus_smash.remains=0)
 actions+=/avatar,sync=colossus_smash

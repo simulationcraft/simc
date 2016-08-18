@@ -738,6 +738,7 @@ struct rogue_attack_t : public melee_attack_t
     bool vendetta;
     bool agonizing_poison;
     bool alacrity;
+    bool adrenaline_rush_gcd;
   } affected_by;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
@@ -810,6 +811,7 @@ struct rogue_attack_t : public melee_attack_t
                                ( weapon_multiplier > 0 || attack_power_mod.direct > 0 );
     affected_by.agonizing_poison = p() -> talent.agonizing_poison -> ok();
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
+    affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
   }
 
   bool init_finished() override
@@ -849,6 +851,19 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     melee_attack_t::update_ready( cd_duration );
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t t = melee_attack_t::gcd();
+
+    if ( affected_by.adrenaline_rush_gcd &&
+         t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
+    {
+      t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+    }
+
+    return t;
   }
 
 
@@ -2366,13 +2381,6 @@ struct curse_of_the_dreadblades_t : public rogue_attack_t
   curse_of_the_dreadblades_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "curse_of_the_dreadblades", p, p -> artifact.curse_of_the_dreadblades, options_str )
   { }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    affected_by.blurred_time = false;
-  }
 
   void execute() override
   {
@@ -7089,7 +7097,8 @@ void rogue_t::create_buffs()
 
   buffs.hidden_blade = buff_creator_t( this, "hidden_blade", artifact.hidden_blade.data().effectN( 1 ).trigger() )
     .trigger_spell( artifact.hidden_blade );
-  buffs.curse_of_the_dreadblades = buff_creator_t( this, "curse_of_the_dreadblades", artifact.curse_of_the_dreadblades );
+  buffs.curse_of_the_dreadblades = buff_creator_t( this, "curse_of_the_dreadblades", artifact.curse_of_the_dreadblades )
+    .cd( timespan_t::zero() ); // Handled by the action
   buffs.blurred_time = new buffs::blurred_time_t( this );
   buffs.death = buff_creator_t( this, "death", spec.symbols_of_death -> effectN( 3 ).trigger() );
   buffs.t19_4pc_outlaw = buff_creator_t( this, "swordplay" )

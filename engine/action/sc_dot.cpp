@@ -508,7 +508,7 @@ expr_t* dot_t::create_expression( action_t* action,
         d -> current_action -> snapshot_state( state, DMG_OVER_TIME );
         timespan_t new_duration = d -> current_action -> composite_dot_duration( state );
 
-        return action -> dot_refreshable( d, new_duration );
+        return d -> current_action -> dot_refreshable( d, new_duration );
       }
     };
 
