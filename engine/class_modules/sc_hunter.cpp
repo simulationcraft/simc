@@ -3116,16 +3116,6 @@ struct legacy_of_the_windrunners_t: aimed_shot_base_t
     proc = true;
     weapon_multiplier = p -> find_spell( 191043 ) -> effectN( 2 ).percent();
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = aimed_shot_base_t::action_multiplier();
-
-    if ( p() -> buffs.trick_shot -> up() )
-      am *= 1.0 + p() -> buffs.trick_shot -> default_value;
-
-    return am;
-  }
 };
 
 // Aimed Shot =========================================================================
@@ -3220,16 +3210,6 @@ struct aimed_shot_t: public aimed_shot_base_t
       t = timespan_t::zero();
 
     return t;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = aimed_shot_base_t::action_multiplier();
-
-    if ( p() -> buffs.trick_shot -> up() )
-      am *= 1.0 + p() -> buffs.trick_shot -> default_value;
-
-    return am;
   }
 
   virtual bool usable_moving() const override
@@ -3379,6 +3359,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
       if ( p() -> clear_next_hunters_mark )
         td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> expire();
     }
+
     if ( p() -> clear_next_hunters_mark )
       p() -> buffs.hunters_mark_exists -> expire();
 
@@ -4234,6 +4215,73 @@ struct harpoon_t: public hunter_melee_attack_t
   }
 };
 
+
+// A Murder of Crows ========================================================
+
+struct peck_t: public hunter_ranged_attack_t
+{
+  peck_t( hunter_t* player, const std::string& name ):
+    hunter_ranged_attack_t( name, player, player -> find_spell( 131900 ) )
+  {
+    dual = true;
+    may_crit = true;
+    may_parry = false;
+    may_block = false;
+    may_dodge = false;
+    travel_speed = 0.0;
+  }
+
+  hunter_t* p() const { return static_cast<hunter_t*>( player ); }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+    am *= p() -> beast_multiplier();
+
+    if ( p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
+};
+
+// TODO this should reset CD if the target dies
+struct moc_t: public hunter_ranged_attack_t
+{
+  peck_t* peck;
+  moc_t( hunter_t* player, const std::string& options_str ):
+    hunter_ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows ),
+    peck( new peck_t( player, "crow_peck" ) )
+  {
+    parse_options( options_str );
+    add_child( peck );
+    hasted_ticks = false;
+    callbacks = false;
+    may_crit = false;
+    may_miss = false;
+    may_parry = false;
+    may_block = false;
+    may_dodge = false;
+    tick_zero = true;
+
+    starved_proc = player -> get_proc( "starved: a_murder_of_crows" );
+  }
+
+  hunter_t* p() const { return static_cast<hunter_t*>( player ); }
+
+  void tick( dot_t*d ) override
+  {
+    hunter_ranged_attack_t::tick( d );
+    peck -> execute();
+  }
+
+  virtual void execute() override
+  {
+    p() -> no_steady_focus();
+    hunter_ranged_attack_t::execute();
+  }
+};
+
 } // end attacks
 
 // ==========================================================================
@@ -4300,73 +4348,6 @@ struct sentinel_t : public hunter_spell_t
 //==============================
 // Shared spells
 //==============================
-
-
-// A Murder of Crows ========================================================
-
-struct peck_t: public ranged_attack_t
-{
-  peck_t( hunter_t* player, const std::string& name ):
-    ranged_attack_t( name, player, player -> find_spell( 131900 ) )
-  {
-    dual = true;
-    may_crit = true;
-    may_parry = false;
-    may_block = false;
-    may_dodge = false;
-    travel_speed = 0.0;
-  }
-
-  hunter_t* p() const { return static_cast<hunter_t*>( player ); }
-
-  virtual double action_multiplier() const override
-  {
-    double am = ranged_attack_t::action_multiplier();
-    am *= p() -> beast_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
-};
-
-// TODO this should reset CD if the target dies
-struct moc_t: public ranged_attack_t
-{
-  peck_t* peck;
-  moc_t( hunter_t* player, const std::string& options_str ):
-    ranged_attack_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows ),
-    peck( new peck_t( player, "crow_peck" ) )
-  {
-    parse_options( options_str );
-    add_child( peck );
-    hasted_ticks = false;
-    callbacks = false;
-    may_crit = false;
-    may_miss = false;
-    may_parry = false;
-    may_block = false;
-    may_dodge = false;
-    tick_zero = true;
-
-    starved_proc = player -> get_proc( "starved: a_murder_of_crows" );
-  }
-
-  hunter_t* p() const { return static_cast<hunter_t*>( player ); }
-
-  void tick( dot_t*d ) override
-  {
-    ranged_attack_t::tick( d );
-    peck -> execute();
-  }
-
-  virtual void execute() override
-  {
-    p() -> no_steady_focus();
-    ranged_attack_t::execute();
-  }
-};
 
 
 
