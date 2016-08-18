@@ -16,7 +16,7 @@ spec=protection
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=countless_armies
-actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -39,7 +39,6 @@ actions.prot+=/demoralizing_shout,if=incoming_damage_2500ms>health.max*0.20
 actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.50
 actions.prot+=/last_stand,if=incoming_damage_2500ms>health.max*0.50&!cooldown.shield_wall.remains=0
 actions.prot+=/potion,name=unbending_potion,if=(incoming_damage_2500ms>health.max*0.15&!buff.unbending_potion.up)|target.time_to_die<=25
-actions.prot+=/potion,name=draenic_strength,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25
 actions.prot+=/call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>=3
 actions.prot+=/battle_cry
 actions.prot+=/demoralizing_shout,if=talent.booming_voice.enabled&rage<=50

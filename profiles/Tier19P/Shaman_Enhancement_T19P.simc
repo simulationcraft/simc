@@ -20,7 +20,7 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/food,type=nightborne_delicacy_platter
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_agility
+actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/lightning_shield
 
 # Executed every time the actor is available.
@@ -31,7 +31,7 @@ actions+=/bloodlust,if=target.health.pct<25|time>0.500
 actions+=/auto_attack
 actions+=/feral_spirit
 actions+=/use_item,slot=trinket2
-actions+=/potion,name=draenic_agility,if=pet.feral_spirit.remains>10|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5|target.time_to_die<=30
+actions+=/potion,name=deadly_grace,if=pet.feral_spirit.remains>10|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5|target.time_to_die<=30
 actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
 actions+=/blood_fury
 actions+=/boulderfist,if=buff.boulderfist.remains<gcd|charges_fractional>1.75
@@ -77,8 +77,7 @@ off_hand=fury_of_the_stonemother,id=128873,ilevel=870
 # gear_ilvl=843.75
 # gear_agility=9960
 # gear_stamina=17628
-# gear_crit_rating=612
+# gear_crit_rating=1510
 # gear_haste_rating=5868
 # gear_mastery_rating=10579
-# gear_versatility_rating=898
 # gear_armor=2433

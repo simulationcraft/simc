@@ -20,14 +20,15 @@ actions.precombat=flask,type=flask_of_the_whispered_pact
 actions.precombat+=/food,type=azshari_salad
 actions.precombat+=/moonkin_form
 actions.precombat+=/blessing_of_elune
+actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/new_moon
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_intellect,if=buff.celestial_alignment.up|buff.incarnation.up
+actions=potion,name=deadly_grace,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/berserking,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up

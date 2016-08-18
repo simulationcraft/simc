@@ -17,6 +17,7 @@ spec=windwalker
 
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=nightborne_delicacy_platter
+actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
 

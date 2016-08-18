@@ -6384,7 +6384,8 @@ void shaman_t::init_action_list_elemental()
   action_priority_list_t* single    = get_action_priority_list( "single", "Single target action priority list" );
   action_priority_list_t* aoe       = get_action_priority_list( "aoe", "Multi target action priority list" );
 
-  std::string potion_name = ( true_level >= 90 ) ? "draenic_intellect" :
+  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+                            ( true_level >= 90 ) ? "draenic_intellect" :
                             ( true_level >= 85 ) ? "jade_serpent" :
                             ( true_level >= 80 ) ? "volcanic" :
                             "";
@@ -6393,7 +6394,8 @@ void shaman_t::init_action_list_elemental()
                             ( true_level >= 85 ) ? "warm_sun" :
                             ( true_level >= 80 ) ? "draconic_mind" :
                             "";
-  std::string food_name   = ( true_level > 90  ) ? "salty_squid_roll" :
+  std::string food_name   = ( true_level > 100 ) ? "azshari_salad" :
+                            ( true_level > 90  ) ? "salty_squid_roll" :
                             ( true_level >= 85 ) ? "mogu_fish_stew" :
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                             "";
@@ -6410,6 +6412,10 @@ void shaman_t::init_action_list_elemental()
     precombat -> add_action( "food,type=" + food_name );
   }
 
+
+  if ( true_level > 100 )
+    precombat -> add_action( "augmentation,type=defiled" );
+
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
@@ -6421,9 +6427,7 @@ void shaman_t::init_action_list_elemental()
   precombat -> add_action( this, "Stormkeeper" );
   precombat -> add_talent( this, "Totem Mastery" );
 
-  // All Shamans Bloodlust and Wind Shear by default
-  def -> add_action( this, "Wind Shear" );
-
+  // All Shamans Bloodlust by default
   def -> add_action( this, "Bloodlust", generate_bloodlust_options(),
     "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. " );
 
@@ -6530,7 +6534,8 @@ void shaman_t::init_action_list_enhancement()
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                           "";
-  std::string potion_name = ( true_level >= 90 ) ? "draenic_agility" :
+  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+                            ( true_level >= 90 ) ? "draenic_agility" :
                             ( true_level >= 85 ) ? "virmens_bite" :
                             ( true_level >= 80 ) ? "tolvir" :
                             "";

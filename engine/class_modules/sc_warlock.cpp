@@ -5633,6 +5633,10 @@ void warlock_t::apl_precombat()
   precombat_list += "/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)";
   precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3";
   precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3";
+
+  if ( true_level > 100 )
+    precombat_list += "/augmentation,type=defiled";
+
   precombat_list += "/snapshot_stats";
 
   if ( specialization() != WARLOCK_DEMONOLOGY )

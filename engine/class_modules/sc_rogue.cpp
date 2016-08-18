@@ -2382,13 +2382,6 @@ struct curse_of_the_dreadblades_t : public rogue_attack_t
     rogue_attack_t( "curse_of_the_dreadblades", p, p -> artifact.curse_of_the_dreadblades, options_str )
   { }
 
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    affected_by.blurred_time = false;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
@@ -7104,7 +7097,8 @@ void rogue_t::create_buffs()
 
   buffs.hidden_blade = buff_creator_t( this, "hidden_blade", artifact.hidden_blade.data().effectN( 1 ).trigger() )
     .trigger_spell( artifact.hidden_blade );
-  buffs.curse_of_the_dreadblades = buff_creator_t( this, "curse_of_the_dreadblades", artifact.curse_of_the_dreadblades );
+  buffs.curse_of_the_dreadblades = buff_creator_t( this, "curse_of_the_dreadblades", artifact.curse_of_the_dreadblades )
+    .cd( timespan_t::zero() ); // Handled by the action
   buffs.blurred_time = new buffs::blurred_time_t( this );
   buffs.death = buff_creator_t( this, "death", spec.symbols_of_death -> effectN( 3 ).trigger() );
   buffs.t19_4pc_outlaw = buff_creator_t( this, "swordplay" )

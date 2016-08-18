@@ -4,7 +4,7 @@ race=orc
 role=spell
 position=back
 talents=3032011
-artifact=53:140831:139269:140831:0:783:1:788:3:789:6:790:3:791:3:792:3:793:1:796:1:797:1:1296:1
+artifact=53:133056:132810:133056:0:783:1:785:3:786:3:788:3:789:3:790:3:792:3:793:1:796:1:798:1:1296:1
 spec=frost
 
 # This default action priority list is automatically created based on your character.
@@ -17,6 +17,7 @@ spec=frost
 
 actions.precombat=flask,type=flask_of_the_whispered_pact
 actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image

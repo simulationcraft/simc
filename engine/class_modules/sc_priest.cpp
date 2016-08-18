@@ -5623,6 +5623,46 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
     } );
   }
 
+  // Get the number of actors in the simulation that do not have execute abilities
+  else if (name_str == "nonexecute_actors_pct")
+  {
+    return make_fn_expr(name_str, [this]() {
+      double execute = 0.0;
+      double nonexecute = 0.0;
+
+      for (size_t i = 0; i < sim->player_list.size(); ++i)
+      {
+        player_t* p = sim->player_list[i];
+
+        if (p->role != ROLE_NONE)
+        {
+          switch (p->specialization())
+          {
+          case HUNTER_MARKSMANSHIP:
+            if (p->true_level > 100) // Assume Bullseye artifact trait
+            {
+              execute += 1.0;
+            }
+            else
+            {
+              nonexecute += 1.0;
+            }
+            break;
+          case PRIEST_SHADOW:
+          case WARRIOR_ARMS:
+          case WARRIOR_FURY:
+            execute += 1.0;
+            break;
+          default:
+            nonexecute += 1.0;
+          }
+        }
+      }
+
+      return nonexecute / (nonexecute + execute);
+    });
+  }
+
   return player_t::create_expression( a, name_str );
 }
 
@@ -6520,7 +6560,9 @@ void priest_t::apl_precombat()
     precombat->add_action( food_action );
   }
 
-  precombat->add_action( this, "Power Word: Fortitude", "if=!aura.stamina.up" );
+  if ( true_level > 100 )
+    precombat -> add_action( "augmentation,type=defiled" );
+
 
   // Snapshot stats
   precombat->add_action( "snapshot_stats",
@@ -6657,9 +6699,9 @@ void priest_t::apl_shadow()
 
   // Main APL
   main->add_action(
-      "surrender_to_madness,if=talent.surrender_to_madness.enabled&0.8*(target.time_"
-      "to_die<=45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+("
-      "2*artifact.mass_hysteria.rank))))" );
+      "surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_"
+      "to_die<=0.8*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+("
+      "2*artifact.mass_hysteria.rank))))-(25*nonexecute_actors_pct)" );
   main->add_action( "mindbender,if=talent.mindbender.enabled" );
   main->add_action(
       "shadow_word_pain,if=dot.shadow_word_pain.remains<(3+(4%3))*gcd" );
@@ -6715,7 +6757,7 @@ void priest_t::apl_shadow()
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=0.8*(45+((raw_haste_"
       "pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_"
-      "hysteria.rank))))-buff.insanity_drain_stacks.stack" );
+      "hysteria.rank))))-(buff.insanity_drain_stacks.stack+25*nonexecute_actors_pct)" );
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action( "mindbender,if=talent.mindbender.enabled" );
   vf->add_action(
