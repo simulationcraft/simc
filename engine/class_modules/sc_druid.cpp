@@ -6421,6 +6421,9 @@ void druid_t::apl_precombat()
     precombat -> add_action( "blessing_of_elune" );
   }
 
+  if ( true_level > 100 )
+    precombat -> add_action( "augmentation,type=defiled" );
+
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
@@ -6430,7 +6433,9 @@ void druid_t::apl_precombat()
     std::string potion_action = "potion,name=";
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
-      if ( true_level > 90 )
+      if ( true_level > 100 )
+        potion_action += "potion_of_the_old_war";
+      else if ( true_level > 90 )
         potion_action += "draenic_agility";
       else if ( true_level > 85 )
         potion_action += "tolvir";
@@ -6441,7 +6446,9 @@ void druid_t::apl_precombat()
     else if ( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ) && ( primary_role() == ROLE_SPELL
               || primary_role() == ROLE_HEAL ) )
     {
-      if ( true_level > 90 )
+      if ( true_level > 100 )
+        potion_action += "deadly_grace";
+      else if ( true_level > 90 )
         potion_action += "draenic_intellect";
       else if ( true_level > 85 )
         potion_action += "jade_serpent";

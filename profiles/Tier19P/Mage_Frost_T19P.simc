@@ -17,6 +17,7 @@ spec=frost
 
 actions.precombat=flask,type=flask_of_the_whispered_pact
 actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image

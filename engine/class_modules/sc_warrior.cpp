@@ -4408,7 +4408,6 @@ void warrior_t::apl_arms()
   default_list -> add_action( "run_action_list,name=single,if=target.health.pct>=20" );
   default_list -> add_action( "run_action_list,name=execute,if=target.health.pct<20" );
 
-
   single_target -> add_action( this, "Mortal Strike" );
   single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
   single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );

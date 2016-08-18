@@ -6520,7 +6520,9 @@ void priest_t::apl_precombat()
     precombat->add_action( food_action );
   }
 
-  precombat->add_action( this, "Power Word: Fortitude", "if=!aura.stamina.up" );
+  if ( true_level > 100 )
+    precombat -> add_action( "augmentation,type=defiled" );
+
 
   // Snapshot stats
   precombat->add_action( "snapshot_stats",

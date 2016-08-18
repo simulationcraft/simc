@@ -8048,6 +8048,9 @@ void mage_t::apl_precombat()
     precombat -> add_action( get_food_action() );
   }
 
+  if ( true_level > 100 )
+    precombat -> add_action( "augmentation,type=defiled" );
+
   // Water Elemental
   if ( specialization() == MAGE_FROST )
     precombat -> add_action( "water_elemental" );

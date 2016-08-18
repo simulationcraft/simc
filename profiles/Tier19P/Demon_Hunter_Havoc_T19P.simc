@@ -20,8 +20,10 @@ spec=havoc
 
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=the_hungry_magister
+actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=potion_of_the_old_war
 actions.precombat+=/potion,name=draenic_agility_potion
 
 # Executed every time the actor is available.
@@ -72,7 +74,7 @@ actions.cooldown+=/nemesis,sync=metamorphosis,if=!raid_event.adds.exists
 actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.remains>100|target.time_to_die<20
 # Use Metamorphosis if Nemesis and Chaos Blades are ready.
 actions.cooldown+=/metamorphosis,if=buff.metamorphosis.down&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready)&(!talent.nemesis.enabled|debuff.nemesis.up|cooldown.nemesis.ready)
-actions.cooldown+=/potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25
+actions.cooldown+=/potion,name=potion_of_the_old_war,if=buff.metamorphosis.remains>25
 
 head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727/1492
 neck=breathless_choker,id=137461,bonus_id=1727/1492,enchant_id=5439

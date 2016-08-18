@@ -7761,8 +7761,8 @@ void monk_t::apl_pre_brewmaster()
   if ( sim -> allow_flasks && true_level >= 80 )
   {
     
-//    if ( true_level > 100)
-//      pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
+    if ( true_level > 100)
+      pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
     if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
     else if ( true_level >= 85 )
@@ -7777,6 +7777,8 @@ void monk_t::apl_pre_brewmaster()
 
   if ( sim -> allow_food && level() >= 80 )
   {
+    if ( level() > 100 )
+      pre -> add_action( "food,type=nightborne_delicacy_platter" ); //fixmewithproperfood
     if ( level() > 90)
       pre -> add_action( "food,type=sleeper_sushi" );
     else if ( level() >= 80 )
@@ -7786,6 +7788,9 @@ void monk_t::apl_pre_brewmaster()
     else
       pre -> add_action( "food,type=warp_burger" );
   }
+
+  if ( true_level > 100 )
+    pre -> add_action( "augmentation,type=defiled" );
 
   pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 

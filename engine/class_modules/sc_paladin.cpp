@@ -4646,6 +4646,9 @@ void paladin_t::generate_action_prio_list_ret()
     precombat -> add_action( food_action );
   }
 
+  if ( true_level > 100 )
+    precombat -> add_action( "augmentation,type=defiled" );
+
   precombat -> add_action( this, "Greater Blessing of Might" );
 
   // Snapshot stats

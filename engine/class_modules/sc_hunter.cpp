@@ -5941,6 +5941,9 @@ void hunter_t::init_action_list()
         precombat -> add_action( "potion,name=virmens_bite" );
     }
 
+    if ( true_level > 100 )
+      precombat -> add_action( "augmentation,type=defiled" );
+
 
     switch ( specialization() )
     {
