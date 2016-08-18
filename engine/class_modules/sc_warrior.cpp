@@ -4810,11 +4810,13 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_CRIT_CHANCE );
 
   buff.tier17_4pc_fury_driver = buff_creator_t( this, "rampage_driver", sets.set( WARRIOR_FURY, T17, B4 ) -> effectN( 1 ).trigger() )
-    .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.tier17_4pc_fury -> trigger( 1 ); } );
+    .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.tier17_4pc_fury -> trigger( 1 ); } )
+    .quiet( true );
 
   buff.berserking_driver = buff_creator_t( this, "berserking_driver", artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() )
       .trigger_spell(  artifact.rage_of_the_valarjar )
-      .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.berserking -> trigger( 1 ); } );
+      .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buff.berserking -> trigger( 1 ); } )
+      .quiet( true );
   buff.berserking = buff_creator_t( this, "berserking_", artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
       .default_value( artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
       .add_invalidate( CACHE_ATTACK_SPEED )
