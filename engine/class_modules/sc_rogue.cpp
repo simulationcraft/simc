@@ -6230,6 +6230,7 @@ void rogue_t::init_action_list()
       // Replaces Envenom with Fan of Knives after 7 targets / 9 with Vendetta
     build -> add_action( this, "Fan of Knives", "if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|spell_targets>=7+2*debuff.vendetta.up" );
       // Single
+    build -> add_action( this, "Fan of Knives", "if=equipped.the_dreadlords_deceit&((buff.the_dreadlords_deceit.stack>=29|buff.the_dreadlords_deceit.stack>=15&debuff.vendetta.remains<=3)&debuff.vendetta.up|buff.the_dreadlords_deceit.stack>=5&cooldown.vendetta.remains>60&cooldown.vendetta.remains<65)" );
     build -> add_talent( this, "Hemorrhage", "if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&(dot.rupture.exsanguinated&dot.rupture.remains<=2|cooldown.exsanguinate.remains<=2))" );
     build -> add_action( this, "Mutilate", "if=combo_points.deficit<=1&energy.deficit<=30" );
     if (true_level <= 100 )

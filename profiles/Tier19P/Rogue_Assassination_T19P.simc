@@ -81,6 +81,7 @@ actions.finish+=/envenom,if=combo_points>=cp_max_spend&!dot.rupture.refreshable&
 # Builders
 actions.build=hemorrhage,cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4
 actions.build+=/fan_of_knives,if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|spell_targets>=7+2*debuff.vendetta.up
+actions.build+=/fan_of_knives,if=equipped.the_dreadlords_deceit&((buff.the_dreadlords_deceit.stack>=29|buff.the_dreadlords_deceit.stack>=15&debuff.vendetta.remains<=3)&debuff.vendetta.up|buff.the_dreadlords_deceit.stack>=5&cooldown.vendetta.remains>60&cooldown.vendetta.remains<65)
 actions.build+=/hemorrhage,if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&(dot.rupture.exsanguinated&dot.rupture.remains<=2|cooldown.exsanguinate.remains<=2))
 actions.build+=/mutilate,if=combo_points.deficit<=1&energy.deficit<=30
 actions.build+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
