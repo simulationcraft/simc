@@ -28,7 +28,7 @@ actions.precombat+=/new_moon
 
 # Executed every time the actor is available.
 
-actions=potion,name=draenic_intellect,if=buff.celestial_alignment.up|buff.incarnation.up
+actions=potion,name=deadly_grace,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/berserking,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
