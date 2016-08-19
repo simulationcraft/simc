@@ -14,7 +14,7 @@ race=troll
 role=spell
 spec=destruction
 talents=2301022
-artifact=38:137476:137316:137476:0:803:1:804:3:807:6:809:3:811:3:812:3:815:1:817:1:818:1:1355:1
+artifact=38:137476:140837:137476:0:803:1:804:3:807:5:809:4:811:3:812:3:815:1:817:1:818:1:1355:1
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
 neck=tightweb_choker,id=134541,bonus_id=1727,enchant_id=5439
