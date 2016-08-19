@@ -29,16 +29,52 @@ char* skip_white_space( char* s )
 
 // option_db_t::open_file ===================================================
 
-io::cfile open_file( const std::vector<std::string>& splits, const std::string& name )
+io::cfile open_file( const std::vector<std::string>& splits, const std::string& name, std::string& actual_name )
 {
   for ( size_t i = 0; i < splits.size(); i++ )
   {
-    FILE* f = io::fopen( splits[ i ] + "/" + name, "r" );
+    auto file_path = splits[ i ] + "/" + name;
+    FILE* f = io::fopen( file_path, "r" );
     if ( f )
+    {
+      actual_name = file_path;
       return io::cfile(f);
+    }
   }
 
+  actual_name = name;
   return io::cfile( name, "r" );
+}
+
+std::string base_name( const std::string& file_path )
+{
+#if defined( SC_WINDOWS )
+  auto base_it = file_path.rfind('\\');
+#else
+  auto base_it = file_path.rfind('/');
+#endif
+  std::string file_name;
+  if ( base_it != std::string::npos )
+  {
+    file_name = file_path.substr( base_it + 1 );
+  }
+  else
+  {
+    file_name = file_path;
+  }
+
+  auto extension_it = file_name.find('.');
+  std::string base_name;
+  if ( extension_it != std::string::npos )
+  {
+    base_name = file_name.substr( 0, extension_it );
+  }
+  else
+  {
+    base_name = file_name;
+  }
+
+  return base_name;
 }
 
 } // UNNAMED NAMESPACE ======================================================
@@ -692,7 +728,8 @@ void option_db_t::parse_token( const std::string& token )
 
   if ( cut_pt == token.npos )
   {
-    io::cfile file = open_file( auto_path, token );
+    std::string actual_name;
+    io::cfile file = open_file( auto_path, token, actual_name );
     if ( ! file )
     {
       std::stringstream s;
@@ -733,14 +770,31 @@ void option_db_t::parse_token( const std::string& token )
   }
   else if ( name == "input" )
   {
-    io::cfile file( open_file( auto_path, value ) );
+    std::string current_base_name;
+    auto base_name_it = var_map.find( "current_base_name" );
+    if ( base_name_it != var_map.end() )
+    {
+      current_base_name = base_name_it -> second;
+    }
+
+    std::string actual_name;
+    io::cfile file( open_file( auto_path, value, actual_name ) );
     if ( ! file )
     {
       std::stringstream s;
       s << "Unable to open input parameter file '" << value << "'";
       throw std::invalid_argument( s.str() );
     }
+    else
+    {
+      var_map[ "current_base_name" ] = base_name( actual_name );
+    }
     parse_file( file );
+
+    if ( base_name_it != var_map.end() )
+    {
+      var_map[ "current_base_name" ] = current_base_name;
+    }
   }
   else
   {
