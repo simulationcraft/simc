@@ -6266,12 +6266,9 @@ void rogue_t::init_action_list()
     // Rotation
     def -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
     def -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
-    def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     def -> add_action( this, "Ambush" );
-    def -> add_action( "pool_resource,for_next=1,extra_amount=60" );
-    def -> add_action( this, "Vanish", "if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60" );
-    def -> add_action( "pool_resource,for_next=1,extra_amount=60" );
-    def -> add_action( "shadowmeld,if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60" );
+    def -> add_action( this, "Vanish", "if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up" );
+    def -> add_action( "shadowmeld,if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up" );
     def -> add_talent( this, "Death from Above", "if=energy.time_to_max>2&combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)" );
       // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
     def -> add_talent( this, "Slice and Dice", "if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );

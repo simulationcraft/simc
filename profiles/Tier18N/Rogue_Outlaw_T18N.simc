@@ -34,12 +34,9 @@ actions+=/berserking
 actions+=/arcane_torrent,if=energy.deficit>40
 actions+=/adrenaline_rush,if=!buff.adrenaline_rush.up
 actions+=/sprint,if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up
-actions+=/pool_resource,for_next=1
 actions+=/ambush
-actions+=/pool_resource,for_next=1,extra_amount=60
-actions+=/vanish,if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60
-actions+=/pool_resource,for_next=1,extra_amount=60
-actions+=/shadowmeld,if=combo_points.deficit>=2+2*(!debuff.ghostly_strike.up)&energy>60
+actions+=/vanish,if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up
+actions+=/shadowmeld,if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up
 actions+=/death_from_above,if=energy.time_to_max>2&combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)
 actions+=/slice_and_dice,if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
 actions+=/roll_the_bones,if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|rtb_buffs<=1)
