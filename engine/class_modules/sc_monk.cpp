@@ -1912,10 +1912,22 @@ public:
   {
     if ( p() -> artifact.gale_burst.rank() )
     {
-      if ( td( s -> target ) -> dots.touch_of_death -> is_ticking() )
+      if ( td( s -> target ) -> dots.touch_of_death -> is_ticking() && s -> action -> name_str != "gale_burst" )
       {
         if ( s -> action -> harmful )
-          p() -> gale_burst_touch_of_death_bonus += ( p() -> artifact.gale_burst.percent() * ( p() -> buff.storm_earth_and_fire -> up() ? 3 : 1 ) ) * s -> result_amount;
+        {
+          double gale_burst = s -> result_amount;
+          if ( p() -> buff.storm_earth_and_fire -> up() )
+            gale_burst *= 3;
+          p() -> gale_burst_touch_of_death_bonus += gale_burst;
+          if ( sim -> debug )
+          {
+            sim -> out_debug.printf( "%s added %.2f towards Gale Burst. Current Gale Burst amount that is saved up is %.2f.",
+                player -> name(),
+                gale_burst,
+                p() -> gale_burst_touch_of_death_bonus );
+          }
+        }
       }
     }
     ab::impact( s );
@@ -3547,7 +3559,12 @@ struct gale_burst_t: public monk_spell_t
     school = SCHOOL_PHYSICAL;
   }
 
-  virtual double target_armor( player_t* ) const override { return 0; }
+  void init() override
+  {
+    monk_spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
 };
 
 struct touch_of_death_t: public monk_spell_t
@@ -3584,7 +3601,7 @@ struct touch_of_death_t: public monk_spell_t
     double amount = p() -> resources.max[RESOURCE_HEALTH];
 
     amount *= p() -> spec.touch_of_death -> effectN( 2 ).percent(); // 50% HP
-
+ 
     if ( p() -> buff.combo_strikes -> up() )
       amount *= 1 + p() -> cache.mastery_value();
 
@@ -3595,14 +3612,22 @@ struct touch_of_death_t: public monk_spell_t
   {
     if ( p() -> artifact.gale_burst.rank() )
     {
-      gale_burst -> base_dd_min = p() -> gale_burst_touch_of_death_bonus;
-      gale_burst -> base_dd_max = p() -> gale_burst_touch_of_death_bonus;
+      gale_burst -> base_dd_min = p() -> gale_burst_touch_of_death_bonus * p() -> artifact.gale_burst.percent();
+      gale_burst -> base_dd_max = p() -> gale_burst_touch_of_death_bonus * p() -> artifact.gale_burst.percent();
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s executed '%s'. Amount sent before modifiers is %.2f.",
+            player -> name(),
+            gale_burst -> name(),
+            p() -> gale_burst_touch_of_death_bonus );
+      }
+
       gale_burst -> execute();
       p() -> gale_burst_touch_of_death_bonus = 0;
     }
- 
-    monk_spell_t::last_tick( dot );
- }
+    monk_spell_t::last_tick(dot);
+}
 
   virtual void execute() override
   {
@@ -6790,8 +6815,8 @@ void monk_t::create_buffs()
                               .cd( timespan_t::zero() );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
-  // The proc gives 1%; even though tooltip and datamining say 5% per stack
-    .default_value( artifact.transfer_the_power.rank() ?  0.1 /* artifact.transfer_the_power.percent() */ : 0 ); 
+  // The proc gives 3%; even though tooltip and datamining say 5% per stack
+    .default_value( artifact.transfer_the_power.rank() ?  0.3 /* artifact.transfer_the_power.percent() */ : 0 ); 
 
   // Legendaries
   buff.hidden_masters_forbidden_touch = buff_creator_t( this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
