@@ -1109,29 +1109,6 @@ public:
     return p() -> get_target_data( t );
   }
 
-  virtual void init() override
-  {
-    ab::init();
-
-    if ( p() -> specialization() == DEMON_HUNTER_HAVOC )
-    {
-      if ( ( ab::weapon && ab::weapon_multiplier ) ||
-           ab::attack_power_mod.direct || ab::attack_power_mod.tick )
-      {
-        if ( dbc::is_school( ab::school, SCHOOL_CHAOS ) + demonic_presence ==
-             1 )
-        {
-          if ( p() -> bugs )
-            ab::sim -> errorf( "%s (%u) school and %s benefit do not match!",
-                             ab::name_str.c_str(), ab::data().id(),
-                             p() -> mastery_spell.demonic_presence -> name_cstr() );
-          else
-            demonic_presence = !demonic_presence;
-        }
-      }
-    }
-  }
-
   virtual timespan_t gcd() const override
   {
     timespan_t g = ab::gcd();
