@@ -77,6 +77,45 @@ std::string base_name( const std::string& file_path )
   return base_name;
 }
 
+void do_replace( const option_db_t& opts, std::string& str, std::string::size_type begin, int depth )
+{
+  if ( depth > 10 )
+  {
+    std::stringstream s;
+    s << "Nesting depth exceeded for: '" << str << "'";
+    throw std::invalid_argument( s.str() );
+  }
+
+  if ( begin == std::string::npos )
+  {
+    return;
+  }
+
+  auto next = str.find( "$(", begin + 2 );
+  if ( next != std::string::npos )
+  {
+    do_replace( opts, str, next, ++depth );
+  }
+
+  auto end = str.find( ")", begin + 2 );
+  if ( end == std::string::npos )
+  {
+    std::stringstream s;
+    s << "Unbalanced parenthesis in template variable for: '" << str << "'";
+    throw std::invalid_argument( s.str() );
+  }
+
+  auto var = str.substr( begin + 2, ( end - begin ) - 2 );
+  if ( opts.var_map.find( var ) == opts.var_map.end() )
+  {
+    std::stringstream s;
+    s << "Missing template variable: '" << var << "'";
+    throw std::invalid_argument( s.str() );
+  }
+
+  str.replace( begin, end - begin + 1, opts.var_map.at( var ) );
+}
+
 } // UNNAMED NAMESPACE ======================================================
 
 namespace opts {
@@ -742,20 +781,7 @@ void option_db_t::parse_token( const std::string& token )
 
   std::string name( token, 0, cut_pt ), value( token, cut_pt + 1, token.npos );
 
-  std::string::size_type start = 0;
-  while ( ( start = value.find( "$(", start ) ) != std::string::npos )
-  {
-    std::string::size_type end = value.find( ')', start );
-    if ( end == std::string::npos )
-    {
-      std::stringstream s;
-      s << "Variable syntax error: '" << token << "'";
-      throw std::invalid_argument( s.str() );
-    }
-
-    value.replace( start, ( end - start ) + 1,
-                   var_map[ value.substr( start + 2, ( end - start ) - 2 ) ] );
-  }
+  do_replace( *this, value, value.find( "$(" ), 1 );
 
   if ( name.size() >= 1 && name[ 0 ] == '$' )
   {
@@ -765,7 +791,8 @@ void option_db_t::parse_token( const std::string& token )
       s << "Variable syntax error: '" << token << "'";
       throw std::invalid_argument( s.str() );
     }
-    std::string var_name( name, 2, name.size() - 3 );
+    auto var_name = name.substr( 2, name.size() - 3 );
+    do_replace( *this, var_name, var_name.find( "$(" ), 1 );
     var_map[ var_name ] = value;
   }
   else if ( name == "input" )
