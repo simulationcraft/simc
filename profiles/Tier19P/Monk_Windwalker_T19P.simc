@@ -1,10 +1,10 @@
 monk="Monk_Windwalker_T19P"
 level=110
 race=blood_elf
-role=dps
+role=hybrid
 position=back
 talents=3030032
-artifact=50:137313:137543:137313:0:800:3:821:3:824:3:825:3:828:1:829:3:831:1:832:1:833:1:1094:3:1341:1
+artifact=50:137313:137543:137313:0:800:3:801:3:820:3:822:3:825:6:827:1:830:1:831:1:833:1:1341:1
 spec=windwalker
 
 # This default action priority list is automatically created based on your character.
@@ -27,7 +27,7 @@ actions=auto_attack
 actions+=/invoke_xuen
 actions+=/potion,name=deadly_grace,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
 actions+=/touch_of_death,if=!artifact.gale_burst.enabled
-actions+=/touch_of_death,if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
+actions+=/touch_of_death,if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
 actions+=/use_item,name=tiny_oozeling_in_a_jar,if=buff.congealing_goo.stack>=6
 actions+=/blood_fury
 actions+=/berserking
@@ -82,7 +82,7 @@ finger1=braided_silver_ring,id=134539,bonus_id=1727
 finger2=loop_of_eightfold_eyes,id=134527,bonus_id=1727
 trinket1=tiny_oozeling_in_a_jar,id=137439,bonus_id=1727
 trinket2=chaos_talisman,id=137459,bonus_id=1727
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313,relic_id=3412/3412/3412
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313,relic_id=1727/1727/1727
 off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary

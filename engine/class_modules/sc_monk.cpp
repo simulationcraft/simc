@@ -2362,10 +2362,8 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
 {
 
   rising_sun_kick_tornado_kick_t( monk_t* p ) :
-    monk_melee_attack_t( "rising_sun_kick_torndo_kick", p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
+    monk_melee_attack_t( "rising_sun_kick_tornado_kick", p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
   {
-//    sef_ability = SEF_RISING_SUN_KICK_TORNADO_KICK; // Right now SEF does not benefit from Tornado Kicks
-
     may_miss = may_dodge = may_parry = may_crit = may_block = true;
 
     cooldown -> duration = timespan_t::zero();
@@ -3278,7 +3276,22 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
     dual = true;
     weapon = &( p -> off_hand_weapon );
     aoe = -1;
+    radius = data().effectN( 2 ).base_value();
+
+    if ( sim -> pvp_crit )
+      base_multiplier *= 0.70; // 08/03/2016
   }
+
+  double composite_persistent_multiplier( const action_state_t* action_state ) const override
+  {
+    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
+
+    if ( p() -> buff.combo_strikes -> up() )
+      pm *= 1 + p() -> cache.mastery_value();
+
+    return pm;
+  }
+
 };
 
 struct strike_of_the_windlord_t: public monk_melee_attack_t
@@ -3291,7 +3304,10 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     parse_options( options_str );
     may_dodge = may_parry = may_block = true;
     aoe = -1;
-    weapon_multiplier = p -> artifact.strike_of_the_windlord.data().effectN( 3 ).percent();
+    weapon_multiplier = data().effectN( 3 ).trigger() -> effectN( 1 ).percent();
+    weapon = &( p -> main_hand_weapon );
+    normalize_weapon_speed = true;
+    radius = data().effectN( 3 ).trigger() -> effectN( 2 ).base_value();
 
     oh_attack = new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
     add_child( oh_attack );
@@ -3626,7 +3642,7 @@ struct touch_of_death_t: public monk_spell_t
       gale_burst -> execute();
       p() -> gale_burst_touch_of_death_bonus = 0;
     }
-    monk_spell_t::last_tick(dot);
+    monk_spell_t::last_tick( dot );
 }
 
   virtual void execute() override
@@ -8035,7 +8051,7 @@ void monk_t::apl_combat_windwalker()
   }
 
   def -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled" );
-  def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
+  def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
 
   int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
