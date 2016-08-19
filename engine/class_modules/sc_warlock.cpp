@@ -4838,7 +4838,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( buffs.instability -> check() )
     m *= 1.0 + find_spell( 216472 ) -> effectN( 1 ).percent();
 
-  if ( specialization() == WARLOCK_DESTRUCTION && ( dbc::is_school( SCHOOL_FIRE, school ) ) )
+  if ( specialization() == WARLOCK_DESTRUCTION && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_CHROMATIC, school ) ) )
   {
     m *= 1.0 + artifact.flames_of_the_pit.percent();
   }
