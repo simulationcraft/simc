@@ -1922,7 +1922,7 @@ public:
           p() -> gale_burst_touch_of_death_bonus += gale_burst;
           if ( ab::sim -> debug )
           {
-            sim -> out_debug.printf( "%s added %.2f towards Gale Burst. Current Gale Burst amount that is saved up is %.2f.",
+            ab::sim -> out_debug.printf( "%s added %.2f towards Gale Burst. Current Gale Burst amount that is saved up is %.2f.",
                 ab::player -> name(),
                 gale_burst,
                 p() -> gale_burst_touch_of_death_bonus );
