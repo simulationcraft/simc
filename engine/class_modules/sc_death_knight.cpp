@@ -24,6 +24,7 @@ struct death_knight_t;
 struct runes_t;
 
 namespace pets {
+  struct death_knight_pet_t;
   struct valkyr_pet_t;
   struct dancing_rune_weapon_pet_t;
   struct dt_pet_t;
@@ -513,11 +514,11 @@ public:
   // Pets and Guardians
   struct pets_t
   {
-    std::array< pet_t*, 8 > army_ghoul;
+    std::array< pets::death_knight_pet_t*, 8 > army_ghoul;
     std::array< pet_t*, 8 > apocalypse_ghoul;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
     pets::dt_pet_t* ghoul_pet; // Covers both Ghoul and Sludge Belcher
-    pet_t* gargoyle;
+    pets::death_knight_pet_t* gargoyle;
     pets::valkyr_pet_t* dark_arbiter;
     pet_t* risen_skulker;
   } pets;
@@ -881,9 +882,11 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack;
   const spell_data_t* command;
+  buff_t* taktheritrix;
 
   death_knight_pet_t( death_knight_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true ) :
-    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack ), command(nullptr)
+    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack ),
+    command( nullptr ), taktheritrix( nullptr )
   {
     if ( auto_attack )
     {
@@ -927,6 +930,11 @@ struct death_knight_pet_t : public pet_t
 
     m *= 1.0 + o() -> artifact.fleshsearer.percent();
 
+    if ( taktheritrix )
+    {
+      m *= 1.0 + taktheritrix -> check_value();
+    }
+    
     return m;
   }
 
@@ -3369,6 +3377,8 @@ struct dark_transformation_t : public death_knight_spell_t
     p() -> buffs.dark_transformation -> trigger();
     p() -> buffs.t18_4pc_unholy -> trigger();
     p() -> pets.ghoul_pet -> crazed_monstrosity -> trigger();
+
+    trigger_taktheritrixs_command();
   }
 
   bool ready() override
@@ -3379,6 +3389,27 @@ struct dark_transformation_t : public death_knight_spell_t
     }
 
     return death_knight_spell_t::ready();
+  }
+
+  void trigger_taktheritrixs_command()
+  {
+    if ( p() -> pets.dark_arbiter && p() -> pets.dark_arbiter -> taktheritrix )
+    {
+      p() -> pets.dark_arbiter -> taktheritrix -> trigger();
+    }
+    
+    if ( p() -> pets.gargoyle && p() -> pets.gargoyle -> taktheritrix )
+	{
+      p() -> pets.gargoyle -> taktheritrix -> trigger();
+    }
+
+    for ( size_t i = 0; i < p() -> pets.army_ghoul.size(); i++ )
+    {
+      if ( p() -> pets.army_ghoul[ i ] && p() -> pets.army_ghoul[ i ] -> taktheritrix )
+      {
+        p() -> pets.army_ghoul[ i ] -> taktheritrix -> trigger();
+      }
+    }
   }
 };
 
@@ -7357,6 +7388,33 @@ struct reapers_harvest_blood_t : public scoped_action_callback_t<marrowrend_t>
   }
 };
 
+struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knight_t>
+{
+  taktheritrixs_shoulderpads_t() : super( DEATH_KNIGHT_UNHOLY )
+  {}
+
+  void manipulate( death_knight_t* p, const special_effect_t& /* e */ ) override
+  {
+    create_buff( p -> pets.gargoyle );
+    create_buff( p -> pets.dark_arbiter );
+
+    for ( size_t i = 0; i < p -> pets.army_ghoul.size(); i++ )
+    {
+      create_buff( p -> pets.army_ghoul[ i ] );
+    }
+  }
+
+  void create_buff( pets::death_knight_pet_t* pet )
+  {
+	if ( ! pet )
+	  return;
+
+    pet -> taktheritrix = buff_creator_t( pet, "taktheritrixs_command", pet -> find_spell( 215069 ) )
+      .default_value( pet -> find_spell( 215069 ) -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -7377,6 +7435,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 184898, reapers_harvest_frost_t( "obliterate_offhand" ) );
     unique_gear::register_special_effect( 184983, reapers_harvest_unholy_t() );
     unique_gear::register_special_effect( 184897, reapers_harvest_blood_t()  );
+    unique_gear::register_special_effect( 215068, taktheritrixs_shoulderpads_t() );
   }
 
   void register_hotfixes() const override {}
