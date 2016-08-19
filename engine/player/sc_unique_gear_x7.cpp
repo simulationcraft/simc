@@ -1163,11 +1163,45 @@ void item::faulty_countermeasures( special_effect_t& effect )
 
 void item::stabilized_energy_pendant( special_effect_t& effect )
 {
-  effect.custom_buff = buff_creator_t( effect.player, "stabilized_energy", effect.driver(), effect.item )
-      .activated( effect.player -> resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.driver() -> effectN( 1 ).percent() )
-      .activated( effect.player -> resources.base_multiplier[ RESOURCE_RAGE ] *= 1.0 + effect.driver() -> effectN( 1 ).percent() )
-      .activated( effect.player -> resources.base_multiplier[ RESOURCE_ENERGY ] *= 1.0 + effect.driver() -> effectN( 1 ).percent() )
-      .activated( effect.player -> resources.base_multiplier[ RESOURCE_RUNIC_POWER ]*= 1.0 + effect.driver() -> effectN( 1 ).percent() );
+  double value = 1.0 + effect.driver() -> effectN( 1 ).percent();
+  switch ( effect.player -> type )
+  {
+    case DEATH_KNIGHT:
+      effect.player -> resources.initial_multiplier[ RESOURCE_RUNIC_POWER ] *= value;
+      break;
+    case DEMON_HUNTER:
+      effect.player -> resources.initial_multiplier[ RESOURCE_FURY ] *= value;
+      break;
+    case DRUID:
+      effect.player -> resources.initial_multiplier[ RESOURCE_MANA ] *= value;
+      effect.player -> resources.initial_multiplier[ RESOURCE_ENERGY ] *= value;
+      effect.player -> resources.initial_multiplier[ RESOURCE_RAGE ] *= value;
+      break;
+    case HUNTER:
+      effect.player -> resources.initial_multiplier[ RESOURCE_FOCUS ] *= value;
+      break;
+    case MONK:
+      effect.player -> resources.initial_multiplier[ RESOURCE_MANA ] *= value;
+      effect.player -> resources.initial_multiplier[ RESOURCE_ENERGY ] *= value;
+      break;
+    case PRIEST:
+      effect.player -> resources.initial_multiplier[ RESOURCE_MANA ] *= value;
+      effect.player -> resources.initial_multiplier[ RESOURCE_INSANITY ] *= value;
+      break;
+    case ROGUE:
+      effect.player -> resources.initial_multiplier[ RESOURCE_ENERGY ] *= value;
+      break;
+    case SHAMAN:
+      effect.player -> resources.initial_multiplier[ RESOURCE_MANA ] *= value;
+      effect.player -> resources.initial_multiplier[ RESOURCE_MAELSTROM ] *= value;
+      break;
+    case WARRIOR:
+      effect.player -> resources.initial_multiplier[ RESOURCE_RAGE ] *= value;
+      break;
+    default:
+      effect.player -> resources.initial_multiplier[ RESOURCE_MANA ] *= value;
+      break;
+  }
 }
 // Stormsinger Fulmination Charge ===========================================
 
