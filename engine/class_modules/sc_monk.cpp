@@ -8116,9 +8116,9 @@ void monk_t::apl_combat_windwalker()
       def -> add_action( racial_actions[i]  );
   }
 
-  def -> add_action( this, "Storm, Earth, and Fire", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
+  def -> add_action( this, "Storm, Earth, and Fire", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
   def -> add_action( this, "Storm, Earth, and Fire", "if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
-  def -> add_talent( this, "Serenity", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
+  def -> add_talent( this, "Serenity", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<7&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
   def -> add_talent( this, "Serenity", "if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
   def -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1&buff.serenity.down" );
   def -> add_talent( this, "Rising Sun Kick", "if=buff.serenity.up" );

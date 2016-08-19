@@ -1,7 +1,7 @@
 monk="Monk_Windwalker_T19P"
 level=110
 race=blood_elf
-role=hybrid
+role=dps
 position=back
 talents=3030032
 artifact=50:137313:137543:137313:0:800:3:801:3:820:3:822:3:825:6:827:1:830:1:831:1:833:1:1341:1
@@ -32,9 +32,9 @@ actions+=/use_item,name=tiny_oozeling_in_a_jar,if=buff.congealing_goo.stack>=6
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=chi.max-chi>=1
-actions+=/storm_earth_and_fire,if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
+actions+=/storm_earth_and_fire,if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
 actions+=/storm_earth_and_fire,if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5
-actions+=/serenity,if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.up&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
+actions+=/serenity,if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<7&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
 actions+=/serenity,if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8
 actions+=/energizing_elixir,if=energy<energy.max&chi<=1&buff.serenity.down
 actions+=/rushing_jade_wind,if=buff.serenity.up&!prev_gcd.rushing_jade_wind
