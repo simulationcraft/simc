@@ -1920,10 +1920,10 @@ public:
           if ( p() -> buff.storm_earth_and_fire -> up() )
             gale_burst *= 3;
           p() -> gale_burst_touch_of_death_bonus += gale_burst;
-          if ( sim -> debug )
+          if ( ab::sim -> debug )
           {
             sim -> out_debug.printf( "%s added %.2f towards Gale Burst. Current Gale Burst amount that is saved up is %.2f.",
-                player -> name(),
+                ab::player -> name(),
                 gale_burst,
                 p() -> gale_burst_touch_of_death_bonus );
           }
