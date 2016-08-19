@@ -43,6 +43,7 @@ namespace item
   void portable_manacracker( special_effect_t& );
   void shivermaws_jawbone( special_effect_t& );
   void spiked_counterweight( special_effect_t& );
+  void stabilized_energy_pendant( special_effect_t& );
   void stormsinger_fulmination_charge( special_effect_t& );
   void terrorbound_nexus( special_effect_t& ); // NYI
   void tiny_oozeling_in_a_jar( special_effect_t& );
@@ -1158,6 +1159,16 @@ void item::faulty_countermeasures( special_effect_t& effect )
     } );
 }
 
+// Stabilized Energy Pendant ================================================
+
+void item::stabilized_energy_pendant( special_effect_t& effect )
+{
+  effect.custom_buff = buff_creator_t( effect.player, "stabilized_energy", effect.driver(), effect.item )
+      .activated( effect.player -> resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.driver() -> effectN( 1 ).percent() )
+      .activated( effect.player -> resources.base_multiplier[ RESOURCE_RAGE ] *= 1.0 + effect.driver() -> effectN( 1 ).percent() )
+      .activated( effect.player -> resources.base_multiplier[ RESOURCE_ENERGY ] *= 1.0 + effect.driver() -> effectN( 1 ).percent() )
+      .activated( effect.player -> resources.base_multiplier[ RESOURCE_RUNIC_POWER ]*= 1.0 + effect.driver() -> effectN( 1 ).percent() );
+}
 // Stormsinger Fulmination Charge ===========================================
 
 // 9 seconds ascending, 2 seconds at max stacks, 9 seconds descending. TOCHECK
@@ -2013,6 +2024,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 215857, item::portable_manacracker           );
   register_special_effect( 214584, item::shivermaws_jawbone             );
   register_special_effect( 214168, item::spiked_counterweight           );
+  register_special_effect( 228450, item::stabilized_energy_pendant      );
   register_special_effect( 215630, item::stormsinger_fulmination_charge );
   register_special_effect( 215127, item::tiny_oozeling_in_a_jar         );
   register_special_effect( 215658, item::tirathons_betrayal             );
