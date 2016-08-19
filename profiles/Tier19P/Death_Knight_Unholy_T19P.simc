@@ -86,8 +86,8 @@ hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727
 waist=greatbelt_of_alpha_dominance,id=136773,bonus_id=1727
 legs=wracksoul_legplates,id=121280,bonus_id=1727
 feet=horizon_line_warboots,id=134505,bonus_id=1727
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_critical_strike
-finger2=gnawed_thumb_ring,id=134526,bonus_id=1727,enchant=binding_of_critical_strike
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_haste
+finger2=gnawed_thumb_ring,id=134526,bonus_id=1727,enchant=binding_of_haste
 trinket1=darkmoon_deck_dominion,id=128705,bonus_id=667
 trinket2=chaos_talisman,id=137459,bonus_id=1727
 main_hand=apocalypse,id=128403,bonus_id=718,ilevel=870,relic_id=3412/3412/3412,enchant=rune_of_the_fallen_crusader
