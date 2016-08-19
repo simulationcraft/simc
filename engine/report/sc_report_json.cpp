@@ -586,10 +586,6 @@ js::sc_js_t to_json( const player_t& p )
   node.set( "world_lag_override", p.world_lag_override );
   node.set( "world_lag_stddev_override", p.world_lag_stddev_override );
   node.set( "dbc", to_json( p.dbc ) );
-  for ( const auto& glyph : p.glyph_list )
-  {
-    node.add( "glyphst", to_json( glyph ) );
-  }
   for ( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
   {
     if ( p.profession[ i ] > 0 )
