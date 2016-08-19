@@ -4701,6 +4701,7 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Crusade", "if=holy_power>=5" );
   def -> add_action( this, "Wake of Ashes", "if=holy_power>=0&time<2" );
+  def -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.67)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)" );
 
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
