@@ -369,6 +369,7 @@ public:
     gain_t* reverse_entropy;
     gain_t* soulsnatcher;
     gain_t* t18_4pc_destruction;
+    gain_t* t19_2pc_demonology;
   } gains;
 
   // Procs
@@ -2886,14 +2887,17 @@ struct doom_t: public warlock_spell_t
   virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
-    if(  d -> state -> result == RESULT_HIT || result_is_hit( d->state->result) )
-    { 
-        if(p() -> talents.impending_doom -> ok())
-        {
-            trigger_wild_imp( p() );
-            p() -> procs.impending_doom -> occur();
-        }
 
+    if(  d -> state -> result == RESULT_HIT || result_is_hit( d -> state -> result) )
+    { 
+      if( p() -> talents.impending_doom -> ok() )
+      {
+        trigger_wild_imp( p() );
+        p() -> procs.impending_doom -> occur();
+      }
+
+      if ( p()->sets.has_set_bonus( WARLOCK_DEMONOLOGY, T19, B2 ) && rng().roll( p() -> sets.set( WARLOCK_DEMONOLOGY, T19, B2 ) -> effectN( 1 ).percent() ) )
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.t19_2pc_demonology );
     }
   }
 };
@@ -5477,6 +5481,7 @@ void warlock_t::init_gains()
   gains.power_trip          = get_gain( "power_trip" );
   gains.t18_4pc_destruction = get_gain( "t18_4pc_destruction" );
   gains.demonwrath          = get_gain( "demonwrath" );
+  gains.t19_2pc_demonology  = get_gain( "t19_2pc_demonology" );
 }
 
 // warlock_t::init_procs ===============================================
