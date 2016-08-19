@@ -8323,7 +8323,7 @@ double mage_t::mana_regen_per_second() const
 
   if ( spec.savant -> ok() )
   {
-    mps *= 1.0 + composite_mastery() * spec.savant -> effectN( 1 ).sp_coeff();
+    mps *= 1.0 + composite_mastery() * spec.savant -> effectN( 1 ).mastery_value();
   }
 
   return mps;
