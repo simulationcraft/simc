@@ -32,6 +32,7 @@ actions+=/holy_wrath
 actions+=/avenging_wrath
 actions+=/crusade,if=holy_power>=5
 actions+=/wake_of_ashes,if=holy_power>=0&time<2
+actions+=/execution_sentence,if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.67)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
