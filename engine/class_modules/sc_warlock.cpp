@@ -233,7 +233,7 @@ public:
     artifact_power_t fel_skin; //NYI
     artifact_power_t firm_resolve; //NYI
     artifact_power_t thalkiels_discord;
-    artifact_power_t legionwrath; //NYI
+    artifact_power_t legionwrath;
     artifact_power_t dirty_hands;
     artifact_power_t doom_doubled;
     artifact_power_t infernal_furnace;
@@ -1337,7 +1337,7 @@ double warlock_pet_t::composite_melee_haste() const
 
   if ( buffs.demonic_empowerment -> up() )
   {
-      mh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
+      mh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent() + o() -> artifact.summoners_prowess.percent();
   }
 
   return mh;
@@ -1348,7 +1348,7 @@ double warlock_pet_t::composite_spell_haste() const
   double sh = pet_t::composite_spell_haste();
 
   if ( buffs.demonic_empowerment -> up() )
-      sh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent() + o()->artifact.summoners_prowess.percent();
+      sh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent() + o() -> artifact.summoners_prowess.percent();
 
   return sh;
 }
@@ -1841,7 +1841,7 @@ struct dreadstalker_t : public warlock_pet_t
   virtual double composite_melee_crit_chance() const override
   {
       double pw = warlock_pet_t::composite_melee_crit_chance();
-      pw += o()->artifact.sharpened_dreadfangs.percent();
+      pw += o() -> artifact.sharpened_dreadfangs.percent();
 
       return pw;
   }
@@ -1849,7 +1849,7 @@ struct dreadstalker_t : public warlock_pet_t
   virtual double composite_spell_crit_chance() const override
   {
       double pw = warlock_pet_t::composite_spell_crit_chance();
-      pw += o()->artifact.sharpened_dreadfangs.percent();
+      pw += o() -> artifact.sharpened_dreadfangs.percent();
       return pw;
   }
 
@@ -2873,15 +2873,15 @@ struct doom_t: public warlock_spell_t
 
   virtual double action_multiplier()const override
   {
-      double m = warlock_spell_t::action_multiplier();
-      if( p()->artifact.doom_doubled.rank() )
+    double m = warlock_spell_t::action_multiplier();
+    if ( p() -> artifact.doom_doubled.rank() )
+    {
+      if ( rng().roll( 0.25 ) )
       {
-          if( rng().roll(0.25) )
-          {
-              m += 1;
-          }
+        m *= 2.0;
       }
-      return m;
+    }
+    return m;
   }
 
   virtual void tick( dot_t* d ) override
@@ -3693,6 +3693,7 @@ struct demonwrath_tick_t: public warlock_spell_t
   {
     aoe = -1;
     background = true;
+    base_multiplier *= 1.0 + p -> artifact.legionwrath.percent();
   }
 
   void impact( action_state_t* s ) override
@@ -4068,7 +4069,7 @@ struct demonbolt_t : public warlock_spell_t
       }
     }
 
-    base_crit += p->artifact.maw_of_shadows.percent();
+    base_crit += p -> artifact.maw_of_shadows.percent();
   }
 
   //fix this
