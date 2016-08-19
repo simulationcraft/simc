@@ -5919,10 +5919,10 @@ void hunter_t::init_action_list()
     {
       if ( true_level > 100 )
       {
-        if ( specialization() == HUNTER_SURVIVAL )
+        /* if ( specialization() == HUNTER_SURVIVAL )
           precombat -> add_action( "potion,name=potion_of_the_old_war");
-        else
-          precombat -> add_action( "potion,name=deadly_grace" );
+        else */
+        precombat -> add_action( "potion,name=deadly_grace" );
       }
       else if ( true_level > 90 )
         precombat -> add_action( "potion,name=draenic_agility" );

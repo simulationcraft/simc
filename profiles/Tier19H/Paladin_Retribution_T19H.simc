@@ -21,13 +21,13 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/greater_blessing_of_might
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=the_old_war
+actions.precombat+=/potion,name=deadly_grace
 
 # Executed every time the actor is available.
 
 actions=auto_attack
 actions+=/rebuke
-actions+=/potion,name=the_old_war
+actions+=/potion,name=deadly_grace
 actions+=/holy_wrath
 actions+=/avenging_wrath
 actions+=/crusade,if=holy_power>=5

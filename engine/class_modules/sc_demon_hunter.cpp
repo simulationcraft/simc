@@ -6092,6 +6092,8 @@ void demon_hunter_t::apl_precombat()
     else
       pre -> add_action( "food,type=pickled_eel" );
   }
+
+  // Augmentation Rune
   if ( true_level > 100 )
     pre -> add_action( "augmentation,type=defiled" );
 
@@ -6103,10 +6105,14 @@ void demon_hunter_t::apl_precombat()
   // Pre-Potion
   if ( sim -> allow_potions )
   {
-    if ( true_level > 100 )
-      pre -> add_action( "potion,name=potion_of_the_old_war" );
-    
-    pre -> add_action( "potion,name=draenic_agility_potion" );
+	std::string potion;
+
+	if ( specialization() == DEMON_HUNTER_HAVOC )
+	  potion = true_level > 100 ? "deadly_grace" : "draenic_agility";
+	else
+	  potion = true_level > 100 ? "unbending_potion" : "draenic_versatility";
+
+    pre -> add_action( "potion,name=" + potion );
   }
 }
 
@@ -6281,8 +6287,15 @@ void demon_hunter_t::apl_havoc()
     "ready)&(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready)"
     "&(!talent.nemesis.enabled|debuff.nemesis.up|cooldown.nemesis.ready)",
     "Use Metamorphosis if Nemesis and Chaos Blades are ready." );
-  cd -> add_action(
-    "potion,name=potion_of_the_old_war,if=buff.metamorphosis.remains>25" );
+
+  // Pre-Potion
+  if ( sim -> allow_potions )
+  {
+    if ( true_level > 100 )
+      cd -> add_action( "potion,name=deadly_grace,if=buff.metamorphosis.remains>25" );
+	else
+	  cd -> add_action( "potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25" );
+  }
 }
 
 // demon_hunter_t::apl_vengeance ============================================
