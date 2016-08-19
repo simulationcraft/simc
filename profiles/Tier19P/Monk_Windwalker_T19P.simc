@@ -69,9 +69,9 @@ actions.aoe+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
 actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
 
 head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
-neck=chaosforged_necklace,id=137458,bonus_id=1727
+neck=chaosforged_necklace,id=137458,bonus_id=1727,enchant_id=5890
 shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727
-back=cape_of_valarjar_courage,id=133765,bonus_id=1727
+back=cape_of_valarjar_courage,id=133765,bonus_id=1727,enchant_id=5435
 chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727
 wrists=cryptwalker_bracers,id=137425,bonus_id=1727
 hands=ravens_veil_gloves,id=139242,bonus_id=1727
@@ -79,18 +79,18 @@ waist=sash_of_the_twilight_princess,id=134457,bonus_id=1727
 legs=wardens_martial_greaves,id=137515,bonus_id=1727
 feet=shellshock_footguards,id=134441,bonus_id=1727
 finger1=braided_silver_ring,id=134539,bonus_id=1727
-finger2=loop_of_eightfold_eyes,id=134527,bonus_id=1727
-trinket1=tiny_oozeling_in_a_jar,id=137439,bonus_id=1727
+finger2=loop_of_eightfold_eyes,id=134527,bonus_id=1727,enchant_id=5429
+trinket1=tiny_oozeling_in_a_jar,id=137439,bonus_id=1727,enchant_id=5429
 trinket2=chaos_talisman,id=137459,bonus_id=1727
 main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313
 off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary
-# gear_ilvl=843.75
-# gear_agility=9760
-# gear_stamina=17629
-# gear_crit_rating=2502
+# gear_ilvl=841.88
+# gear_agility=9784
+# gear_stamina=17365
+# gear_crit_rating=2468
 # gear_haste_rating=1511
-# gear_mastery_rating=9720
+# gear_mastery_rating=10388
 # gear_versatility_rating=3523
 # gear_armor=1957
