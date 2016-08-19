@@ -108,7 +108,7 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   attack_power( 0 ), spell_power( 0 ),
   versatility( 1.0 ), da_multiplier( 1.0 ), ta_multiplier( 1.0 ), persistent_multiplier( 1.0 ),
   target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 ),
-  target_mitigation_da_multiplier( 1.0 ), target_mitigation_ta_multiplier( 1.0 ), target_armor( 1.0 )
+  target_mitigation_da_multiplier( 1.0 ), target_mitigation_ta_multiplier( 1.0 ), target_armor( 0 )
 {
   assert( target );
 }
