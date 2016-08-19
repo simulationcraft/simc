@@ -381,6 +381,7 @@ action_t::action_t( action_e       ty,
   cycle_players                  = 0;
   max_cycle_targets              = 0;
   target_number                  = 0;
+  interrupt_immediate            = 0;
   round_base_dmg                 = true;
   if_expr_str.clear();
   if_expr                        = NULL;
@@ -501,6 +502,9 @@ action_t::action_t( action_e       ty,
   add_option( opt_string( "target", target_str ) );
   add_option( opt_timespan( "line_cd", line_cooldown.duration ) );
   add_option( opt_float( "action_skill", action_skill ) );
+  // Interrupt_immediate forces a channeled action to interrupt on tick (if requested), even if the
+  // GCD has not elapsed.
+  add_option( opt_bool( "interrupt_immediate", interrupt_immediate ) );
 }
 
 action_t::~action_t()
@@ -2705,8 +2709,14 @@ expr_t* action_t::create_expression( const std::string& name_str )
             else
               gcd_time *= action.player -> cache.spell_haste();
 
-            if ( gcd_time < 1.0 )
-              gcd_time = 1.0;
+            auto min_gcd = action.min_gcd.total_seconds();
+            if ( min_gcd == 0 )
+            {
+              min_gcd = 0.750;
+            }
+
+            if ( gcd_time < min_gcd )
+              gcd_time = min_gcd;
             return gcd_time;
           }
         };

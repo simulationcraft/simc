@@ -5385,7 +5385,7 @@ public:
   /// Marker for sample action priority list reporting
   char marker;
   // options
-  int moving, wait_on_ready, interrupt, chain, cycle_targets, cycle_players, max_cycle_targets, target_number;
+  int moving, wait_on_ready, interrupt, chain, cycle_targets, cycle_players, max_cycle_targets, target_number, interrupt_immediate;
   std::string if_expr_str;
   expr_t* if_expr;
   std::string target_if_str;
