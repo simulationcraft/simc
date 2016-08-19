@@ -566,7 +566,7 @@ namespace pets {
     struct buffs_t
     {
       buff_t* demonic_synergy;
-      buff_t* demonic_empowerment;
+      haste_buff_t* demonic_empowerment;
       buff_t* the_expendables;
     } buffs;
 
@@ -1265,10 +1265,9 @@ void warlock_pet_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
 
-  buffs.demonic_empowerment = buff_creator_t( this, "demonic_empowerment", find_spell(193396))
-    .add_invalidate( CACHE_HASTE )
-          .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-    .chance(1);
+  buffs.demonic_empowerment = haste_buff_creator_t( this, "demonic_empowerment", find_spell( 193396 ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .chance( 1 );
 
   buffs.the_expendables = buff_creator_t( this, "the_expendables", find_spell(211218))
           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -1337,7 +1336,7 @@ double warlock_pet_t::composite_melee_haste() const
 
   if ( buffs.demonic_empowerment -> up() )
   {
-      mh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent() + o() -> artifact.summoners_prowess.percent();
+    mh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent() + o() -> artifact.summoners_prowess.percent();
   }
 
   return mh;
@@ -1348,7 +1347,7 @@ double warlock_pet_t::composite_spell_haste() const
   double sh = pet_t::composite_spell_haste();
 
   if ( buffs.demonic_empowerment -> up() )
-      sh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent() + o() -> artifact.summoners_prowess.percent();
+    sh /= 1.0 + buffs.demonic_empowerment -> data().effectN( 2 ).percent() + o() -> artifact.summoners_prowess.percent();
 
   return sh;
 }
@@ -2948,9 +2947,7 @@ struct hand_of_guldan_t: public warlock_spell_t
       player_event_t( *p ), initiator( init ), count( c )//Use original corruption until DBC acts more friendly.
     {
       add_event( rng().range( timespan_t::from_millis( 500 ),
-        timespan_t::from_millis( 1200 ) ) );
-      //UPDATE THIS TO MULTIMODAL DISTRIBUTION
-      //player = p;
+        timespan_t::from_millis( 1500 ) ) );
     }
 
     virtual const char* name() const override
