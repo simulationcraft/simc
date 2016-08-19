@@ -22,6 +22,6 @@ finger1=braided_silver_ring,id=134539,bonus_id=1727
 finger2=loop_of_eightfold_eyes,id=134527,bonus_id=1727
 trinket1=tiny_oozeling_in_a_jar,id=137439,bonus_id=1727
 trinket2=chaos_talisman,id=137459,bonus_id=1727
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313,relic_id=1727/1727/1727
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313
 off_hand=fists_of_the_heavens,id=133948
 save=Monk_Windwalker_T19P.simc
