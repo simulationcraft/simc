@@ -8243,11 +8243,11 @@ void mage_t::apl_fire()
   active_talents   -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up" );
   active_talents   -> add_talent( this, "Cinderstorm", "if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up" );
   active_talents   -> add_action( this, "Dragon's Breath", "if=equipped.132863" );
-  active_talents   -> add_talent( this, "Living Bomb", "if=active_enemies>1" );
-
+  active_talents   -> add_talent( this, "Living Bomb", "if=active_enemies>3&buff.combustion.down" );
+  
   single_target    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time" );
   single_target    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&!prev_gcd.pyroblast" );
-  single_target    -> add_action( this, "Flamestrike", "if=talent.flame_patch.enabled&active_enemies>2" );
+  single_target    -> add_action( this, "Flamestrike", "if=talent.flame_patch.enabled&active_enemies>3&buff.hot_streak.up" );
   single_target    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&target.health.pct<=25&equipped.132454" );
   single_target    -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.up" );
   single_target    -> add_action( "call_action_list,name=active_talents" );

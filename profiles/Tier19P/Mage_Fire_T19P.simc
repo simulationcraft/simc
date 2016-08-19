@@ -59,11 +59,11 @@ actions.active_talents+=/blast_wave,if=(buff.combustion.down)|(buff.combustion.u
 actions.active_talents+=/meteor,if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up
 actions.active_talents+=/cinderstorm,if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up
 actions.active_talents+=/dragons_breath,if=equipped.132863
-actions.active_talents+=/living_bomb,if=active_enemies>1
+actions.active_talents+=/living_bomb,if=active_enemies>3&buff.combustion.down
 
 actions.single_target=pyroblast,if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time
 actions.single_target+=/pyroblast,if=buff.hot_streak.up&!prev_gcd.pyroblast
-actions.single_target+=/flamestrike,if=talent.flame_patch.enabled&active_enemies>2
+actions.single_target+=/flamestrike,if=talent.flame_patch.enabled&active_enemies>3&buff.hot_streak.up
 actions.single_target+=/pyroblast,if=buff.hot_streak.up&target.health.pct<=25&equipped.132454
 actions.single_target+=/pyroblast,if=buff.kaelthas_ultimate_ability.up
 actions.single_target+=/call_action_list,name=active_talents
