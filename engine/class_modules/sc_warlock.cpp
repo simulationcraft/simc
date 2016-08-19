@@ -4843,7 +4843,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.flames_of_the_pit.percent();
   }
 
-  if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_SHADOW, school ) || dbc::is_school( SCHOOL_SHADOWFLAME, school ) ) )
+  if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_FIRE, school ) || dbc::is_school( SCHOOL_SHADOW, school ) || dbc::is_school( SCHOOL_SHADOWFLAME, school ) || dbc::is_school( SCHOOL_CHAOS, school ) ) )
   {
     m *= 1.0 + artifact.breath_of_thalkiel.percent();
   }
