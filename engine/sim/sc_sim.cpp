@@ -2088,8 +2088,6 @@ bool sim_t::init_actor( player_t* p )
     ret = false;
   }
 
-  p -> register_callbacks();
-
   // Finally, initialize all action objects
   if ( ! p -> init_actions() )
   {

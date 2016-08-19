@@ -4072,7 +4072,6 @@ struct player_t : public actor_t
   virtual void init_distance_targeting();
   virtual void init_absorb_priority();
   virtual void init_assessors();
-  virtual void register_callbacks();
 
   virtual bool create_actions();
   virtual bool init_actions();

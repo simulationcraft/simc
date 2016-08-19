@@ -2039,7 +2039,28 @@ void consumable::pepper_breath( special_effect_t& effect )
 
 // Journey Through Time =====================================================
 
-void set_bonus::journey_through_time( special_effect_t& /* effect */ ) {}
+// TODO: Run speed
+void set_bonus::journey_through_time( special_effect_t& effect )
+{
+  // The stat buff will not be created at this point, but the special effect for the (trinket) will
+  // be there. So, in an effort to confuse everyone, fiddle with that special effect and compute the
+  // actual stats in this method, hardcoding them.
+  auto e = unique_gear::find_special_effect( effect.player, 214120, SPECIAL_EFFECT_EQUIP );
+  if ( e == nullptr )
+  {
+    return;
+  }
+
+  auto base_value = e -> trigger() -> effectN( 1 ).average( e -> item );
+  // Apply legion Combat rating penalty to the effect
+  base_value *= effect.player -> dbc.combat_rating_multiplier( e -> item -> item_level() );
+  // And presume that the extra 1k haste is not penalized as it's not strictly sourced from an item
+  base_value += effect.driver() -> effectN( 2 ).average( effect.player );
+
+  // Manually apply stats here to the trinket effect
+  e -> stat = STAT_HASTE_RATING; // Really should not be hardcoded but it'll do
+  e -> stat_amount = base_value;
+}
 
 void unique_gear::register_special_effects_x7()
 {

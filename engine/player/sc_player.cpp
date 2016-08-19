@@ -791,12 +791,6 @@ std::string player_t::base_initial_current_t::to_string()
   return s.str();
 }
 
-void player_t::register_callbacks()
-{
-  for (auto & elem : callbacks.all_callbacks)
-    elem -> initialize();
-}
-
 // player_t::init ===========================================================
 
 void player_t::init()
@@ -1342,6 +1336,9 @@ bool player_t::init_special_effects()
 
   // ..and then move on to second phase initialization of all special effects.
   unique_gear::init( this );
+
+  for (auto & elem : callbacks.all_callbacks)
+    elem -> initialize();
 
   return true;
 }
