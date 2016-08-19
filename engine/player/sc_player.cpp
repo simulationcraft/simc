@@ -1365,7 +1365,6 @@ void player_t::init_resources( bool force )
         resources.initial[ i ] += floor( stamina() ) * current.health_per_stamina;
 
       resources.initial[ i ] *= resources.initial_multiplier[ i ];
-
     }
   }
 

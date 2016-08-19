@@ -89,19 +89,19 @@ waist=goresmeared_abyssal_waistplate,id=140892,bonus_id=1806
 legs=legplates_of_the_obsidian_aspect,id=138360,bonus_id=1806
 feet=immaculately_polished_boots,id=140904,bonus_id=1806
 finger1=ring_of_braided_stems,id=140896,bonus_id=1806,enchant=binding_of_haste
-finger2=ring_of_the_scoured_clan,id=140897,bonus_id=1806,enchant=binding_of_haste
+finger2=ring_of_the_scoured_clan,id=137052,bonus_id=1811,enchant=binding_of_mastery
 trinket1=convergence_of_fates,id=140806,bonus_id=1806
 trinket2=entwined_elemental_foci,id=140796,bonus_id=1806
 main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=140835/140817/139262,relic_id=1806/1806/1806
 off_hand=warswords_of_the_valarjar,id=134553
 
 # Gear Summary
-# gear_ilvl=883.25
+# gear_ilvl=884.19
 # gear_strength=16795
-# gear_stamina=29237
-# gear_crit_rating=7829
-# gear_haste_rating=8378
-# gear_mastery_rating=5717
+# gear_stamina=29454
+# gear_crit_rating=9226
+# gear_haste_rating=7591
+# gear_mastery_rating=5226
 # gear_versatility_rating=336
 # gear_armor=4338
 # set_bonus=tier19_2pc=1
