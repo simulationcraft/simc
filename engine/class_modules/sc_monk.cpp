@@ -99,6 +99,8 @@ enum sef_ability_e {
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
   SEF_WHIRLING_DRAGON_PUNCH,
+  SEF_STRIKE_OF_THE_WINDLORD,
+  SEF_STRIKE_OF_THE_WINDLORD_OH,
   SEF_ATTACK_MAX,
   // Attacks end here
 
@@ -1279,6 +1281,41 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_strike_of_the_windlord_oh_t : public sef_melee_attack_t
+  {
+    sef_strike_of_the_windlord_oh_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "strike_of_the_windlord_offhand", player, player -> o() -> artifact.strike_of_the_windlord.data().effectN( 4 ).trigger() )
+    {
+      may_dodge = may_parry = may_block = may_miss = true;
+      dual = true;
+      aoe = -1;
+      radius = data().effectN( 2 ).base_value();
+      if ( player -> dual_wield() )
+      {
+        weapon = &( player -> off_hand_weapon );
+      }
+      else
+      {
+        weapon = &( player -> main_hand_weapon );
+        weapon_multiplier *= 0.5;
+      }
+    }
+  };
+
+  struct sef_strike_of_the_windlord_t : public sef_melee_attack_t
+  {
+    sef_strike_of_the_windlord_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "strike_of_the_windlord", player, player -> o() -> artifact.strike_of_the_windlord.data().effectN( 3 ).trigger() )
+    {
+      may_dodge = may_parry = may_block = may_miss = true;
+      dual = true;
+      aoe = -1;
+      radius = data().effectN( 2 ).base_value();
+      weapon = &( player -> main_hand_weapon );
+      normalize_weapon_speed = true;
+    }
+  };
+
   struct sef_chi_wave_damage_t : public sef_spell_t
   {
     sef_chi_wave_damage_t( storm_earth_and_fire_pet_t* player ) :
@@ -1434,6 +1471,10 @@ public:
     attacks.at( SEF_RUSHING_JADE_WIND ) = new sef_rushing_jade_wind_t( this );
     attacks.at( SEF_WHIRLING_DRAGON_PUNCH ) =
         new sef_whirling_dragon_punch_t( this );
+    attacks.at( SEF_STRIKE_OF_THE_WINDLORD ) = 
+        new sef_strike_of_the_windlord_t( this );
+    attacks.at( SEF_STRIKE_OF_THE_WINDLORD_OH ) = 
+        new sef_strike_of_the_windlord_oh_t( this );
 
     spells.at( sef_spell_idx( SEF_CHI_BURST ) ) = new sef_chi_burst_t( this );
     spells.at( sef_spell_idx( SEF_CHI_WAVE ) )  = new sef_chi_wave_t( this );
@@ -3272,6 +3313,7 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
   strike_of_the_windlord_off_hand_t( monk_t* p, const char* name, const spell_data_t* s ):
     monk_melee_attack_t( name, p, s )
   {
+    sef_ability = SEF_STRIKE_OF_THE_WINDLORD_OH;
     may_dodge = may_parry = may_block = may_miss = true;
     dual = true;
     weapon = &( p -> off_hand_weapon );
@@ -3301,6 +3343,8 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     monk_melee_attack_t( "strike_of_the_windlord", p, &( p -> artifact.strike_of_the_windlord.data() ) ),
     oh_attack( nullptr )
   {
+    sef_ability = SEF_STRIKE_OF_THE_WINDLORD;
+
     parse_options( options_str );
     may_dodge = may_parry = may_block = true;
     aoe = -1;
