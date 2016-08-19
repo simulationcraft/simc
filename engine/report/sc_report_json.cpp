@@ -389,7 +389,7 @@ js::sc_js_t to_json(
   return node;
 }
 
-js::sc_js_t to_json( const player_collected_data_t& cd )
+js::sc_js_t to_json( const player_collected_data_t& cd, const sim_t& sim )
 {
   js::sc_js_t node;
   node.set( "fight_length", to_json( cd.fight_length ) );
@@ -428,41 +428,44 @@ js::sc_js_t to_json( const player_collected_data_t& cd )
 
   node.set( "target_metric", to_json( cd.target_metric ) );
 
-  js::sc_js_t resource_lost;
-  for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+  if ( sim.report_details != 0 )
   {
-    resource_lost.set( util::resource_type_string( r ),
-                       to_json( cd.resource_lost[ r ] ) );
-  }
-  node.set( "resource_lost", resource_lost );
+    js::sc_js_t resource_lost;
+    for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+    {
+      resource_lost.set( util::resource_type_string( r ),
+                         to_json( cd.resource_lost[ r ] ) );
+    }
+    node.set( "resource_lost", resource_lost );
 
-  js::sc_js_t combat_end_resource;
-  for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
-  {
-    combat_end_resource.set( util::resource_type_string( r ),
-                             to_json( cd.combat_end_resource[ r ] ) );
-  }
-  node.set( "combat_end_resource", combat_end_resource );
+    js::sc_js_t combat_end_resource;
+    for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+    {
+      combat_end_resource.set( util::resource_type_string( r ),
+                               to_json( cd.combat_end_resource[ r ] ) );
+    }
+    node.set( "combat_end_resource", combat_end_resource );
 
-  for ( const auto& rtl : cd.resource_timelines )
-  {
-    node.add( "resource_timelines", to_json( rtl ) );
+    for ( const auto& rtl : cd.resource_timelines )
+    {
+      node.add( "resource_timelines", to_json( rtl ) );
+    }
+    for ( const auto& stl : cd.stat_timelines )
+    {
+      node.add( "stat_timelines", to_json( stl ) );
+    }
+    node.set( "health_changes", to_json( cd.health_changes ) );
+    node.set( "health_changes", to_json( cd.health_changes_tmi ) );
+    for ( const auto& asd : cd.action_sequence )
+    {
+      node.add( "action_sequence", to_json( *asd ) );
+    }
+    for ( const auto& asd : cd.action_sequence_precombat )
+    {
+      node.add( "action_sequence_precombat", to_json( *asd ) );
+    }
+    node.set( "buffed_stats_snapshot", to_json( cd.buffed_stats_snapshot ) );
   }
-  for ( const auto& stl : cd.stat_timelines )
-  {
-    node.add( "stat_timelines", to_json( stl ) );
-  }
-  node.set( "health_changes", to_json( cd.health_changes ) );
-  node.set( "health_changes", to_json( cd.health_changes_tmi ) );
-  for ( const auto& asd : cd.action_sequence )
-  {
-    node.add( "action_sequence", to_json( *asd ) );
-  }
-  for ( const auto& asd : cd.action_sequence_precombat )
-  {
-    node.add( "action_sequence_precombat", to_json( *asd ) );
-  }
-  node.set( "buffed_stats_snapshot", to_json( cd.buffed_stats_snapshot ) );
 
   return node;
 }
@@ -610,25 +613,29 @@ js::sc_js_t to_json( const player_t& p )
 
   // TODO
 
-  node.set( "collected_data", to_json( p.collected_data ) );
+  node.set( "collected_data", to_json( p.collected_data, p.sim ) );
   // TODO
 
-  for ( const auto& buff : p.buff_list )
+  if ( p.sim -> report_details != 0 )
   {
-    node.add( "buffs", to_json( *buff ) );
+    for ( const auto& buff : p.buff_list )
+    {
+      node.add( "buffs", to_json( *buff ) );
+    }
+    for ( const auto& proc : p.proc_list )
+    {
+      node.add( "procs", to_json( *proc ) );
+    }
+    for ( const auto& gain : p.gain_list )
+    {
+      node.add( "gains", to_json( *gain ) );
+    }
+    for ( const auto& stat : p.stats_list )
+    {
+      node.add( "stats", to_json( *stat ) );
+    }
   }
-  for ( const auto& proc : p.proc_list )
-  {
-    node.add( "procs", to_json( *proc ) );
-  }
-  for ( const auto& gain : p.gain_list )
-  {
-    node.add( "gains", to_json( *gain ) );
-  }
-  for ( const auto& stat : p.stats_list )
-  {
-    node.add( "stats", to_json( *stat ) );
-  }
+
   return node;
 }
 
@@ -723,13 +730,16 @@ js::sc_js_t to_json( const sim_t& sim )
   {
     node.add( "players", to_json( *player ) );
   }
-  for ( const auto& healing : sim.healing_no_pet_list.data() )
+  if ( sim.report_details != 0 )
   {
-    node.add( "healing_players", to_json( *healing ) );
-  }
-  for ( const auto& target : sim.target_list.data() )
-  {
-    node.add( "target", to_json( *target ) );
+    for ( const auto& healing : sim.healing_no_pet_list.data() )
+    {
+      node.add( "healing_players", to_json( *healing ) );
+    }
+    for ( const auto& target : sim.target_list.data() )
+    {
+      node.add( "target", to_json( *target ) );
+    }
   }
   node.set( "queue_lag", to_json( sim.queue_lag ) );
   node.set( "queue_lag_stddev", to_json( sim.queue_lag_stddev ) );
