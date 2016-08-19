@@ -2398,7 +2398,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
                                               .base_value() ) );
     }
 
-    if ( !background && p() -> legendary.mm_feet )
+    if ( !background && special && p() -> legendary.mm_feet )
     {
       p() -> cooldowns.trueshot 
         -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet 
@@ -3076,6 +3076,7 @@ struct trick_shot_t: public aimed_shot_base_t
     // Simulated as aoe for simplicity
     aoe               = -1;
     background        = true;
+    base_costs[ RESOURCE_FOCUS ] = 0;
     dual              = true;
     weapon_multiplier *= p -> find_talent_spell( "Trick Shot" ) -> effectN( 1 ).percent();
   }
@@ -4227,6 +4228,7 @@ struct peck_t: public hunter_ranged_attack_t
   peck_t( hunter_t* player, const std::string& name ):
     hunter_ranged_attack_t( name, player, player -> find_spell( 131900 ) )
   {
+    background = true;
     dual = true;
     may_crit = true;
     may_parry = false;
@@ -5667,6 +5669,7 @@ void hunter_t::create_buffs()
 
   buffs.trueshot = 
     buff_creator_t( this, "trueshot", specs.trueshot )
+      .default_value( specs.trueshot -> effectN( 1 ).percent() )
       .cd( timespan_t::zero() )
       .add_invalidate( CACHE_HASTE );
 
