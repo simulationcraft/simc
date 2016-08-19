@@ -1299,7 +1299,7 @@ struct ghoul_pet_t : public dt_pet_t
   {
     dt_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = .8;
   }
 
   void init_action_list() override
@@ -1370,7 +1370,7 @@ struct sludge_belcher_pet_t : public dt_pet_t
   {
     dt_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = .8;
   }
 
   void init_action_list() override
