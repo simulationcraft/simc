@@ -6303,7 +6303,8 @@ void rogue_t::init_action_list()
       precombat -> add_action( this, "Vanish", "if=set_bonus.tier18_4pc" );
 
     // Main Rotation
-    def -> add_action( this, "Nightblade", "if=set_bonus.tier18_4pc&refreshable&time<5" );
+    if (true_level <= 100 )
+      def -> add_action( this, "Nightblade", "if=set_bonus.tier18_4pc&refreshable&time<5" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5" );

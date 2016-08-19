@@ -28,8 +28,7 @@ actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
 
-actions=nightblade,if=set_bonus.tier18_4pc&refreshable&time<5
-actions+=/call_action_list,name=cds
+actions=call_action_list,name=cds
 # Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
 actions+=/run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up
 actions+=/call_action_list,name=finish,if=combo_points>=5
