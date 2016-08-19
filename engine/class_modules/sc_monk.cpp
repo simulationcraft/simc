@@ -2986,8 +2986,8 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     sef_ability = SEF_SPINNING_CRANE_KICK;
 
-    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    tick_zero = channeled = true;
+    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = interrupt = false;
+    tick_zero = channeled = interrupt_auto_attack = true;
 
     spell_power_mod.direct = 0.0;
 
@@ -4126,7 +4126,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     parse_options( options_str );
 
-    channeled = tick_may_crit = true;
+    channeled = tick_may_crit = interrupt = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     interrupt_auto_attack = true;
   }
