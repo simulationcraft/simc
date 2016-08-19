@@ -1293,28 +1293,28 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( o() -> race == RACE_ORC )
     m *= 1.0 + command -> effectN( 1 ).percent();
 
-  //m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
+  m *= 1.0 + o() -> buffs.tier18_2pc_demonology -> stack_value();
 
-  //if ( buffs.demonic_synergy -> up() )
-  //  m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
+  if ( buffs.demonic_synergy -> up() )
+    m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
-  //if( buffs.the_expendables -> up() )
-  //{
-  //    m*= 1.0 + buffs.the_expendables -> stack_value();
-  //}
+  if( buffs.the_expendables -> up() )
+  {
+      m*= 1.0 + buffs.the_expendables -> stack_value();
+  }
 
-  //if ( o() -> buffs.soul_harvest -> check() )
-  //  m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
+  if ( o() -> buffs.soul_harvest -> check() )
+    m *= 1.0 + o() -> talents.soul_harvest -> effectN( 1 ).percent();
 
-  //if ( is_grimoire_of_service )
-  //{
-  //    m *= 1.0 + o() -> find_spell( 216187 ) -> effectN( 1 ).percent();
-  //}
+  if ( is_grimoire_of_service )
+  {
+      m *= 1.0 + o() -> find_spell( 216187 ) -> effectN( 1 ).percent();
+  }
 
-  //if( o() -> mastery_spells.master_demonologist -> ok() && buffs.demonic_empowerment -> check() )
-  //{
-  //   m *= 1.0 +  o() -> cache.mastery_value();
-  //}
+  if( o() -> mastery_spells.master_demonologist -> ok() && buffs.demonic_empowerment -> check() )
+  {
+     m *= 1.0 +  o() -> cache.mastery_value();
+  }
   return m;
 }
 
