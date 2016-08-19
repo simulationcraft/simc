@@ -515,7 +515,7 @@ public:
   struct pets_t
   {
     std::array< pets::death_knight_pet_t*, 8 > army_ghoul;
-    std::array< pet_t*, 8 > apocalypse_ghoul;
+    std::array< pets::death_knight_pet_t*, 8 > apocalypse_ghoul;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
     pets::dt_pet_t* ghoul_pet; // Covers both Ghoul and Sludge Belcher
     pets::death_knight_pet_t* gargoyle;
@@ -3399,7 +3399,7 @@ struct dark_transformation_t : public death_knight_spell_t
     }
     
     if ( p() -> pets.gargoyle && p() -> pets.gargoyle -> taktheritrix )
-	{
+    {
       p() -> pets.gargoyle -> taktheritrix -> trigger();
     }
 
@@ -3408,6 +3408,15 @@ struct dark_transformation_t : public death_knight_spell_t
       if ( p() -> pets.army_ghoul[ i ] && p() -> pets.army_ghoul[ i ] -> taktheritrix )
       {
         p() -> pets.army_ghoul[ i ] -> taktheritrix -> trigger();
+      }
+    }
+
+    for ( size_t i = 0; i < p() -> pets.apocalypse_ghoul.size(); i++ )
+    {
+      if ( p() -> pets.apocalypse_ghoul[ i ] &&
+        p() -> pets.apocalypse_ghoul[ i ] -> taktheritrix )
+      {
+        p() -> pets.apocalypse_ghoul[ i ] -> taktheritrix -> trigger();
       }
     }
   }
@@ -7402,12 +7411,17 @@ struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knigh
     {
       create_buff( p -> pets.army_ghoul[ i ] );
     }
+
+    for ( size_t i = 0; i < p -> pets.apocalypse_ghoul.size(); i++ )
+    {
+      create_buff( p -> pets.apocalypse_ghoul[ i ] );
+    }
   }
 
   void create_buff( pets::death_knight_pet_t* pet )
   {
-	if ( ! pet )
-	  return;
+    if ( ! pet )
+      return;
 
     pet -> taktheritrix = buff_creator_t( pet, "taktheritrixs_command", pet -> find_spell( 215069 ) )
       .default_value( pet -> find_spell( 215069 ) -> effectN( 1 ).percent() )
