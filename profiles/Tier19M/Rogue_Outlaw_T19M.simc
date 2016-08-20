@@ -27,26 +27,35 @@ actions.precombat+=/marked_for_death
 
 # Executed every time the actor is available.
 
-actions=potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=25|buff.adrenaline_rush.up
-actions+=/cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2|spell_targets.blade_flurry<2&buff.blade_flurry.up
-actions+=/blade_flurry,if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up
-actions+=/blood_fury
-actions+=/berserking
-actions+=/arcane_torrent,if=energy.deficit>40
-actions+=/adrenaline_rush,if=!buff.adrenaline_rush.up
-actions+=/sprint,if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up
-actions+=/ambush
-actions+=/vanish,if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up
-actions+=/shadowmeld,if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up
+actions=call_action_list,name=bf
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=stealth
 actions+=/death_from_above,if=energy.time_to_max>2&combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)
 actions+=/slice_and_dice,if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
-actions+=/roll_the_bones,if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|rtb_buffs<=1)
+actions+=/roll_the_bones,if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|(rtb_buffs<=1&(!equipped.thraxis_tricksy_treads|!buff.true_bearing.up)))
 actions+=/killing_spree,if=energy.time_to_max>5|energy<15
-actions+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
-actions+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
-actions+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled
 actions+=/call_action_list,name=finish,if=combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up
 actions+=/call_action_list,name=build,if=combo_points<action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up
+
+# Blade Flurry
+actions.bf=cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2|spell_targets.blade_flurry<2&buff.blade_flurry.up
+actions.bf+=/blade_flurry,if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up
+
+# Cooldowns
+actions.cds=potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=25|buff.adrenaline_rush.up
+actions.cds+=/blood_fury
+actions.cds+=/berserking
+actions.cds+=/arcane_torrent,if=energy.deficit>40
+actions.cds+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
+actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up
+actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled
+actions.cds+=/sprint,if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up
+actions.cds+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
+
+# Stealth
+actions.stealth=ambush
+actions.stealth+=/vanish,if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up
+actions.stealth+=/shadowmeld,if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up
 
 #  Finishers
 actions.finish=between_the_eyes,if=equipped.greenskins_waterlogged_wristcuffs&buff.shark_infested_waters.up
@@ -58,17 +67,17 @@ actions.build+=/pistol_shot,if=buff.opportunity.up&energy.time_to_max>2
 actions.build+=/saber_slash
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_distant_army
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=gossamerspun_greatcloak,id=138221,bonus_id=1806
+back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=200agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=thraxis_tricksy_treads,id=137031,bonus_id=1811
-finger1=ring_of_deep_sea_pearls,id=141545
-finger2=grubby_silver_ring,id=139236,bonus_id=1806
+finger1=ring_of_deep_sea_pearls,id=141545,enchant=200versatility
+finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=200versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=unstable_arcanocrystal,id=141482
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=139260/139261/139262,relic_id=1806/1806/1806
@@ -76,10 +85,10 @@ off_hand=the_dreadblades,id=134552
 
 # Gear Summary
 # gear_ilvl=881.69
-# gear_agility=15920
+# gear_agility=16120
 # gear_stamina=25530
 # gear_crit_rating=8596
 # gear_haste_rating=2742
 # gear_mastery_rating=6478
-# gear_versatility_rating=3266
+# gear_versatility_rating=3666
 # gear_armor=2249

@@ -32,7 +32,7 @@ actions=nightblade,if=set_bonus.tier18_4pc&refreshable&time<5
 actions+=/call_action_list,name=cds
 # Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
 actions+=/run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up
-actions+=/call_action_list,name=finish,if=combo_points>=5
+actions+=/call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)
 actions+=/call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1))
 actions+=/call_action_list,name=build,if=energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)
 
@@ -46,9 +46,9 @@ actions.cds+=/goremaws_bite,if=(combo_points.deficit>=2&energy.deficit>55&time<1
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled
 
 # Stealthed Rotation
-actions.stealthed=symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3&buff.shadowmeld.down
+actions.stealthed=symbols_of_death,if=buff.shadowmeld.down&buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3
 actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5
-actions.stealthed+=/shuriken_storm,if=combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.bleeding_hollow_toxin_vessel*talent.premeditation.enabled
+actions.stealthed+=/shuriken_storm,if=buff.shadowmeld.down&combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.bleeding_hollow_toxin_vessel*talent.premeditation.enabled
 actions.stealthed+=/shadowstrike
 
 # Stealth Cooldowns

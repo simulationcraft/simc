@@ -87,17 +87,17 @@ actions.build+=/mutilate,if=combo_points.deficit<=1&energy.deficit<=30
 actions.build+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
 
 head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
-neck=stabilized_energy_pendant,id=134488,bonus_id=1727
+neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_distant_army
 shoulders=felbat_leather_pauldrons,id=134374,bonus_id=1727
-back=cloak_of_manaspun_silk,id=134410,bonus_id=1727
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant=200agility
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
 wrists=felbat_leather_wristwraps,id=134368,bonus_id=1727
 hands=felbat_leather_gloves,id=134371,bonus_id=1727
 waist=felbat_leather_cinch,id=134375,bonus_id=1727
 legs=leggings_of_the_uncrowned,id=139743,bonus_id=1727
 feet=felbat_leather_boots,id=134369,bonus_id=1727
-finger1=band_of_the_wyrm_matron,id=134524
-finger2=utgarde_royal_signet,id=133637,bonus_id=1727
+finger1=band_of_the_wyrm_matron,id=134524,enchant=200versatility
+finger2=utgarde_royal_signet,id=133637,bonus_id=1727,enchant=200versatility
 trinket1=hunger_of_the_pack,id=136975,bonus_id=1727
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727
 main_hand=the_kingslayers,id=128870,bonus_id=741,ilevel=870,relic_id=3412/3412/3412
@@ -105,9 +105,9 @@ off_hand=the_kingslayers,id=128869,ilevel=870
 
 # Gear Summary
 # gear_ilvl=842.50
-# gear_agility=12006
+# gear_agility=12206
 # gear_stamina=17459
 # gear_crit_rating=10676
 # gear_mastery_rating=1001
-# gear_versatility_rating=4556
+# gear_versatility_rating=4956
 # gear_armor=1957

@@ -31,7 +31,7 @@ actions.precombat+=/symbols_of_death
 actions=call_action_list,name=cds
 # Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
 actions+=/run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up
-actions+=/call_action_list,name=finish,if=combo_points>=5
+actions+=/call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)
 actions+=/call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1))
 actions+=/call_action_list,name=build,if=energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)
 
@@ -45,9 +45,9 @@ actions.cds+=/goremaws_bite,if=(combo_points.deficit>=2&energy.deficit>55&time<1
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled
 
 # Stealthed Rotation
-actions.stealthed=symbols_of_death,if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3&buff.shadowmeld.down
+actions.stealthed=symbols_of_death,if=buff.shadowmeld.down&buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3
 actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5
-actions.stealthed+=/shuriken_storm,if=(combo_points.deficit>=3&spell_targets.shuriken_storm>=3)|buff.the_dreadlords_deceit.stack>=29
+actions.stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=3)|buff.the_dreadlords_deceit.stack>=29)
 actions.stealthed+=/shadowstrike
 
 # Stealth Cooldowns
@@ -71,17 +71,17 @@ actions.build+=/gloomblade
 actions.build+=/backstab
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=krakentooth_necklace,id=141473
+neck=krakentooth_necklace,id=141473,enchant=mark_of_the_distant_army
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=gossamerspun_greatcloak,id=138221,bonus_id=1806
+back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=200agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=shadow_satyrs_walk,id=137032,bonus_id=1811
-finger1=ring_of_deep_sea_pearls,id=141545
-finger2=grubby_silver_ring,id=139236,bonus_id=1806
+finger1=ring_of_deep_sea_pearls,id=141545,enchant=200versatility
+finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=200versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=unstable_arcanocrystal,id=141482
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=139267/138226/139267,relic_id=1806/1806/1806
@@ -89,10 +89,10 @@ off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
 # gear_ilvl=880.44
-# gear_agility=15920
+# gear_agility=16120
 # gear_stamina=25283
 # gear_crit_rating=6501
 # gear_haste_rating=2783
 # gear_mastery_rating=7785
-# gear_versatility_rating=3865
+# gear_versatility_rating=4265
 # gear_armor=2249

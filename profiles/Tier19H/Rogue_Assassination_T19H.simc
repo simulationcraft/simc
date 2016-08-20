@@ -86,17 +86,17 @@ actions.build+=/mutilate,if=combo_points.deficit<=1&energy.deficit<=30
 actions.build+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=soultrappers_pendant,id=141506
+neck=soultrappers_pendant,id=141506,enchant=mark_of_the_distant_army
 shoulders=mantle_of_the_aspiring_spellgiant,id=141445
-back=drape_of_the_manastarved,id=141543
+back=drape_of_the_manastarved,id=141543,enchant=200agility
 chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1805
 wrists=dragonspur_wristguards,id=138219,bonus_id=1805
 hands=seaweed_leather_mitts,id=141440
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
 feet=boots_of_endless_betrayal,id=139199,bonus_id=1805
-finger1=dingy_suramar_mercantile_signet,id=141492
-finger2=grubby_silver_ring,id=139236,bonus_id=1805
+finger1=dingy_suramar_mercantile_signet,id=141492,enchant=200versatility
+finger2=grubby_silver_ring,id=139236,bonus_id=1805,enchant=200versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
 trinket2=thriceaccursed_compass,id=141537
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1805/1805/1805
@@ -104,10 +104,10 @@ off_hand=the_kingslayers,id=128869
 
 # Gear Summary
 # gear_ilvl=866.75
-# gear_agility=14934
+# gear_agility=15134
 # gear_stamina=21902
 # gear_crit_rating=10393
 # gear_haste_rating=2273
 # gear_mastery_rating=2726
-# gear_versatility_rating=2744
+# gear_versatility_rating=3144
 # gear_armor=2117

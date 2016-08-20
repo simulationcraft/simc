@@ -86,17 +86,17 @@ actions.build+=/mutilate,if=combo_points.deficit<=1&energy.deficit<=30
 actions.build+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_distant_army
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=gossamerspun_greatcloak,id=138221,bonus_id=1806
+back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=200agility
 chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1806
 wrists=zoldyck_family_training_shackles,id=137098,bonus_id=1811
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=boots_of_endless_betrayal,id=139199,bonus_id=1806
-finger1=dingy_suramar_mercantile_signet,id=141492
-finger2=grubby_silver_ring,id=139236,bonus_id=1806
+finger1=dingy_suramar_mercantile_signet,id=141492,enchant=200versatility
+finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=200versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=thriceaccursed_compass,id=141537
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1806/1806/1806
@@ -104,10 +104,10 @@ off_hand=the_kingslayers,id=128869
 
 # Gear Summary
 # gear_ilvl=881.69
-# gear_agility=17226
+# gear_agility=17426
 # gear_stamina=25459
 # gear_crit_rating=9800
 # gear_haste_rating=3434
 # gear_mastery_rating=3275
-# gear_versatility_rating=2296
+# gear_versatility_rating=2696
 # gear_armor=2244
