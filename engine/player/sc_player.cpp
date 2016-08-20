@@ -584,6 +584,7 @@ player_t::player_t( sim_t*             s,
   item_cooldown( cooldown_t( "item_cd", *this ) ),
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
+  auto_attack_multiplier( 0.0 ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -1790,7 +1791,7 @@ void player_t::init_artifact()
 
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing artifact for player (%s)", name() );
-  
+
   std::vector<const artifact_power_data_t*> powers = dbc.artifact_powers( artifact_id );
 
   if ( ! artifact_overrides_str.empty() )
@@ -3273,7 +3274,7 @@ double player_t::composite_player_critical_healing_multiplier() const
 double player_t::temporary_movement_modifier() const
 {
   double temporary = 0;
-  
+
   if ( ! is_enemy() )
   {
     if ( buffs.windwalking_movement_aura -> up() )
@@ -7887,7 +7888,7 @@ void player_t::override_artifact( const std::vector<const artifact_power_data_t*
     sim -> errorf( "artifact_override: Override artifact power %s not found for player %s.\n", override_str.c_str(), this -> name() );
     return;
   }
-  
+
   unsigned override_rank = util::to_unsigned( override_rank_str );
 
   // 1 rank powers use the zeroth (only) entry, multi-rank spells have 0 -> max rank entries

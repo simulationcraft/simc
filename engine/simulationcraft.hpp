@@ -3876,6 +3876,9 @@ struct player_t : public actor_t
   double warlords_unseeing_eye;
   stats_t* warlords_unseeing_eye_stats;
 
+  // auto attack multiplier (for Jeweled Signet of Melandrus and similar effects)
+  double auto_attack_multiplier;
+
   // Scale Factors
   std::array<gear_stats_t, SCALE_METRIC_MAX> scaling;
   std::array<gear_stats_t, SCALE_METRIC_MAX> scaling_normalized;
@@ -5900,6 +5903,16 @@ struct attack_t : public action_t
   virtual double  block_chance( action_state_t* s ) const override;
   virtual double  crit_block_chance( action_state_t* s ) const override;
 
+  virtual double action_multiplier() const override
+  {
+    double mul = action_t::action_multiplier();
+    if ( auto_attack )
+    {
+      mul *= player -> auto_attack_multiplier;
+    }
+    return mul;
+  }
+
   virtual double composite_hit() const override
   { return action_t::composite_hit() + player -> cache.attack_hit(); }
 
@@ -7129,7 +7142,7 @@ struct proc_spell_t : public spell_t
       may_crit = tick_may_crit = true;
     if ( radius > 0 )
       aoe = -1;
-    
+
     // Reparse effect data for any item-dependent variables.
     for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
@@ -7151,7 +7164,7 @@ struct proc_heal_t : public heal_t
       may_crit = tick_may_crit = true;
     if ( radius > 0 )
       aoe = -1;
-    
+
     // Reparse effect data for any item-dependent variables.
     for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
@@ -7173,7 +7186,7 @@ struct proc_attack_t : public attack_t
       may_crit = tick_may_crit = true;
     if ( radius > 0 )
       aoe = -1;
-    
+
     // Reparse effect data for any item-dependent variables.
     for ( size_t i = 1; i <= data().effect_count(); i++ )
     {

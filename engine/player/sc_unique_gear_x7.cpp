@@ -49,6 +49,7 @@ namespace item
   void tiny_oozeling_in_a_jar( special_effect_t& );
   void tirathons_betrayal( special_effect_t& );
   void windscar_whetstone( special_effect_t& );
+  void jeweled_signet_of_melandrus( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -180,7 +181,7 @@ struct gaseous_bubble_t : public absorb_buff_t
 {
   action_t* explosion;
 
-  gaseous_bubble_t( special_effect_t& effect, action_t* a ) : 
+  gaseous_bubble_t( special_effect_t& effect, action_t* a ) :
     absorb_buff_t( absorb_buff_creator_t( effect.player, "gaseous_bubble", effect.driver(), effect.item ) ),
     explosion( a )
   {
@@ -261,7 +262,7 @@ struct ice_bomb_t : public proc_spell_t
 {
   buff_t* buff;
 
-  ice_bomb_t( special_effect_t& effect ) : 
+  ice_bomb_t( special_effect_t& effect ) :
     proc_spell_t( "ice_bomb", effect.player, effect.driver(), effect.item )
   {
     buff = stat_buff_creator_t( effect.player, "frigid_armor", effect.player -> find_spell( 214589 ), effect.item );
@@ -302,7 +303,7 @@ struct haymaker_damage_t : public proc_spell_t
 struct haymaker_driver_t : public dbc_proc_callback_t
 {
   struct haymaker_event_t;
-  
+
   debuff_t* debuff;
   const special_effect_t& effect;
   double multiplier;
@@ -335,7 +336,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
         action -> schedule_execute();
         debuff -> current_value -= damage;
       }
-      
+
       if ( debuff -> current_value > 0 && debuff -> check() )
         callback -> accumulator = new ( *action -> player -> sim ) haymaker_event_t( callback, action, debuff );
       else
@@ -364,7 +365,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
       return;
 
     actor_target_data_t* td = effect.player -> get_target_data( trigger_state -> target );
-    
+
     if ( td && td -> debuff.brutal_haymaker -> check() )
       accumulator -> damage += trigger_state -> result_amount * multiplier;
   }
@@ -386,7 +387,7 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
     else
     {
       assert( ! td -> debuff.brutal_haymaker );
-      
+
       // Vulnerability: Deal x% of the damage dealt to the debuffed target, up to the limit.
 
       // Create effect for the callback.
@@ -638,7 +639,7 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
     buff_t* congealing_goo;
     action_t* damage;
 
-    fetid_regurgitation_buff_t( special_effect_t& effect, buff_t* cg ) : 
+    fetid_regurgitation_buff_t( special_effect_t& effect, buff_t* cg ) :
       buff_t( buff_creator_t( effect.player, "fetid_regurgitation", effect.driver(), effect.item )
         .activated( false )
         .tick_zero( true )
@@ -703,7 +704,7 @@ struct taint_of_the_sea_t : public proc_spell_t
   void execute() override
   {
     buff_t* d = player -> get_target_data( target ) -> debuff.taint_of_the_sea;
-    
+
     assert( d && d -> check() );
 
     base_dd_min = base_dd_max = std::min( base_dd_min, d -> current_value / base_multiplier );
@@ -858,7 +859,7 @@ struct nightfall_t : public proc_spell_t
 {
   proc_spell_t* damage_spell;
 
-  nightfall_t( special_effect_t& effect ) : 
+  nightfall_t( special_effect_t& effect ) :
     proc_spell_t( "nightfall", effect.player, effect.player -> find_spell( 213785 ), effect.item )
   {
     const spell_data_t* tick_spell = effect.player -> find_spell( 213786 );
@@ -909,7 +910,7 @@ struct darkmoon_deck_t
   buff_t* top_card;
   timespan_t shuffle_period;
 
-  darkmoon_deck_t( special_effect_t& effect, std::array<unsigned, 8> c ) : 
+  darkmoon_deck_t( special_effect_t& effect, std::array<unsigned, 8> c ) :
     player( effect.player ), top_card( nullptr ),
     shuffle_period( effect.driver() -> effectN( 1 ).period() )
   {
@@ -940,7 +941,7 @@ struct shuffle_event_t : public event_t
 {
   darkmoon_deck_t* deck;
 
-  shuffle_event_t( darkmoon_deck_t* d, bool initial = false ) : 
+  shuffle_event_t( darkmoon_deck_t* d, bool initial = false ) :
     event_t( *d -> player ), deck( d )
   {
     /* Shuffle when we schedule an event instead of when it executes.
@@ -956,7 +957,7 @@ struct shuffle_event_t : public event_t
       add_event( deck -> shuffle_period );
     }
   }
-  
+
   const char* name() const override
   { return "shuffle_event"; }
 
@@ -991,7 +992,7 @@ void item::darkmoon_deck( special_effect_t& effect )
   darkmoon_deck_t* d = new darkmoon_deck_t( effect, cards );
 
   effect.player -> sim -> player_non_sleeping_list.register_callback([ d, &effect ]( player_t* player ) {
-    // Arise time gets set to timespan_t::min() in demise, before the actor is removed from the 
+    // Arise time gets set to timespan_t::min() in demise, before the actor is removed from the
     // non-sleeping list. In arise, the arise_time is set to current time before the actor is added
     // to the non-sleeping list.
     if ( player != effect.player || player -> arise_time < timespan_t::zero() )
@@ -1007,7 +1008,7 @@ void item::darkmoon_deck( special_effect_t& effect )
 
 struct aw_nuts_t : public proc_spell_t
 {
-  aw_nuts_t( special_effect_t& effect ) : 
+  aw_nuts_t( special_effect_t& effect ) :
     proc_spell_t( "aw_nuts", effect.player, effect.player -> find_spell( 216099 ), effect.item )
   {
     travel_speed = 7.0; // "Charge"!
@@ -1015,7 +1016,7 @@ struct aw_nuts_t : public proc_spell_t
     // Set damage amount, as the scaled value isn't stored in the damage spell.
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( item );
   }
-   
+
   void init() override
   {
     proc_spell_t::init();
@@ -1375,7 +1376,7 @@ struct wriggling_sinew_constructor_t : public item_targetdata_initializer_t
   {
     action_t* action;
 
-    maddening_whispers_debuff_t( const special_effect_t& effect, actor_target_data_t& td ) : 
+    maddening_whispers_debuff_t( const special_effect_t& effect, actor_target_data_t& td ) :
       debuff_t( buff_creator_t( td, "maddening_whispers", effect.trigger(), effect.item ) ),
       action( effect.player -> find_action( "maddening_whispers" ) )
     {}
@@ -1418,7 +1419,7 @@ struct maddening_whispers_cb_t : public dbc_proc_callback_t
 {
   buff_t* buff;
 
-  maddening_whispers_cb_t( const special_effect_t& effect, buff_t* b ) : 
+  maddening_whispers_cb_t( const special_effect_t& effect, buff_t* b ) :
     dbc_proc_callback_t( effect.player, effect ), buff( b )
   {}
 
@@ -1440,7 +1441,7 @@ struct maddening_whispers_t : public buff_t
 {
   dbc_proc_callback_t* callback;
 
-  maddening_whispers_t( const special_effect_t& effect ) : 
+  maddening_whispers_t( const special_effect_t& effect ) :
     buff_t( buff_creator_t( effect.player, "maddening_whispers", effect.driver(), effect.item ) )
   {
     // Stack gain effect
@@ -1455,7 +1456,7 @@ struct maddening_whispers_t : public buff_t
     callback -> initialize();
     callback -> deactivate();
   }
-  
+
   void start( int, double value, timespan_t duration ) override
   {
     // Always start at max stacks.
@@ -1467,7 +1468,7 @@ struct maddening_whispers_t : public buff_t
   void expire_override( int stacks, timespan_t remaining ) override
   {
     buff_t::expire_override( stacks, remaining );
-    
+
     callback -> deactivate();
 
     for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); i++ ) {
@@ -1528,7 +1529,7 @@ struct convergence_of_fates_callback_t : public dbc_proc_callback_t
   std::vector<cooldown_t*> cooldowns;
   timespan_t amount;
 
-  convergence_of_fates_callback_t( const special_effect_t& effect ) : 
+  convergence_of_fates_callback_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.item, effect ),
     amount( timespan_t::from_seconds( -effect.driver() -> effectN( 1 ).base_value() ) )
   {
@@ -1540,7 +1541,7 @@ struct convergence_of_fates_callback_t : public dbc_proc_callback_t
         cd++;
         continue;
       }
-      
+
       for ( size_t i = 0; i < 3; i++ )
       {
         if ( ! cd -> cooldowns[ i ] )
@@ -1581,13 +1582,13 @@ struct tormenting_cyclone_t : public proc_spell_t
 {
   proc_spell_t* damage_spell;
 
-  tormenting_cyclone_t( special_effect_t& effect ) : 
+  tormenting_cyclone_t( special_effect_t& effect ) :
     proc_spell_t( "tormenting_cyclone", effect.player, effect.trigger(), effect.item )
   {
     damage_spell = new proc_spell_t( "tormenting_cyclone_tick", effect.player, effect.player -> find_spell( 221865 ), effect.item );
     damage_spell -> dual = true;
     damage_spell -> stats = stats;
-    damage_spell -> base_dd_min = damage_spell -> base_dd_max = 
+    damage_spell -> base_dd_min = damage_spell -> base_dd_max =
       effect.driver() -> effectN( 1 ).average( effect.item );
   }
 
@@ -1638,7 +1639,7 @@ struct bloodthirsty_instinct_cb_t : public dbc_proc_callback_t
     action_state_t* s = static_cast<action_state_t*>( call_data );
 
     assert( s -> target );
-    
+
     // Set RPPM modifier by target's health percentage. Linear chance increase from 0% to 100% health deficit.
     double mod = ( 200.0 - s -> target -> health_percentage() ) / 100.0;
 
@@ -1663,13 +1664,13 @@ struct infested_ground_t : public proc_spell_t
 {
   proc_spell_t* damage_spell;
 
-  infested_ground_t( special_effect_t& effect ) : 
+  infested_ground_t( special_effect_t& effect ) :
     proc_spell_t( "infested_ground", effect.player, effect.driver(), effect.item )
   {
     damage_spell = new proc_spell_t( "infested_ground_tick", effect.player, effect.player -> find_spell( 221804 ), effect.item );
     damage_spell -> dual = damage_spell -> ground_aoe = true;
     damage_spell -> stats = stats;
-    damage_spell -> base_dd_min = damage_spell -> base_dd_max = 
+    damage_spell -> base_dd_min = damage_spell -> base_dd_max =
       effect.driver() -> effectN( 2 ).average( effect.item );
   }
 
@@ -2064,6 +2065,13 @@ void set_bonus::journey_through_time( special_effect_t& effect )
   e -> stat_amount = base_value;
 }
 
+// Jeweled Signet of Melandrus
+void item::jeweled_signet_of_melandrus( special_effect_t& effect )
+{
+  double value = 1.0 + effect.driver() -> effectN( 1 ).percent();
+  effect.player -> auto_attack_multiplier *= value;
+}
+
 void unique_gear::register_special_effects_x7()
 {
   /* Legion 7.0 Dungeon */
@@ -2091,6 +2099,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 215813, "ProcOn/Hit_1Tick_215816Trigger"     );
   register_special_effect( 214492, "ProcOn/Hit_1Tick_214494Trigger"     );
   register_special_effect( 214340, "ProcOn/Hit_1Tick_214342Trigger"     );
+  register_special_effect( 228462, item::jeweled_signet_of_melandrus    );
 
   /* Legion 7.0 Raid */
   register_special_effect( 221786, item::bloodthirsty_instinct  );
