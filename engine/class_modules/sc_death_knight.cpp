@@ -2671,7 +2671,7 @@ struct melee_t : public death_knight_melee_attack_t
 
       if ( p() -> buffs.blighted_rune_weapon -> up() )
       {
-        td( s -> target ) -> debuff.festering_wound -> trigger();
+        td( s -> target ) -> debuff.festering_wound -> trigger( 2 );
         p() -> buffs.blighted_rune_weapon -> decrement();
       }
 
