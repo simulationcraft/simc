@@ -139,10 +139,10 @@ back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_st
 chest=inferno_breastplate,id=134503,bonus_id=1727
 wrists=greystone_wristplates,id=139100,bonus_id=1727
 hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727
-waist=arcane_defenders_belt,id=134269,bonus_id=1727
+waist=coralplate_girdle,id=134225,bonus_id=1727
 legs=keelhauler_legplates,id=134514,bonus_id=1727
 feet=duskwatch_guards_boots,id=137482,bonus_id=1727
-finger1=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=binding_of_haste
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_haste
 finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=spiked_counterweight,id=136715,bonus_id=1727/1492
