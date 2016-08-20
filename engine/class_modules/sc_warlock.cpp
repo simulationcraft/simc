@@ -2650,11 +2650,6 @@ struct corruption_t: public warlock_spell_t
     }
   }
 
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_millis( 100 );
-  }
-
   virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
@@ -2864,11 +2859,6 @@ struct doom_t: public warlock_spell_t
     energize_type = ENERGIZE_PER_TICK;
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 1;
-  }
-
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_millis( 100 );
   }
 
   virtual double action_multiplier()const override
