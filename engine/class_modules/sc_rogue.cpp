@@ -6119,7 +6119,7 @@ void rogue_t::init_action_list()
         } 
         else 
         {
-          def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up");
+          def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|dot.rupture.exsanguinated");
         }
       }
     }
@@ -6270,7 +6270,7 @@ void rogue_t::init_action_list()
       if ( items[ i ].name_str != "maalus_the_blood_drinker" )
         cds -> add_action( item_actions[i] );
       else
-        cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|buff.adrenaline_rush.up" );
+        cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2" );
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
