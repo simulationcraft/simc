@@ -998,7 +998,13 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
   pet_melee_attack_t( T_PET* pet, const std::string& name,
     const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     pet_action_t<T_PET, melee_attack_t>( pet, name, spell, options )
-  { }
+  {
+    if ( this -> school == SCHOOL_NONE )
+    {
+      this -> school = SCHOOL_PHYSICAL;
+      this -> stats -> school = SCHOOL_PHYSICAL;
+    }
+  }
 
   void init() override
   {
@@ -1007,12 +1013,6 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
     if ( ! this -> background && this -> trigger_gcd == timespan_t::zero() )
     {
       this -> trigger_gcd = timespan_t::from_seconds( 1.5 );
-    }
-
-    if ( this -> school == SCHOOL_NONE )
-    {
-      this -> school = SCHOOL_PHYSICAL;
-      this -> stats -> school = SCHOOL_PHYSICAL;
     }
   }
 };
