@@ -4179,7 +4179,6 @@ struct pyrosurge_flamestrike_t : public fire_mage_spell_t
     if ( p -> artifact.aftershocks.rank() )
     {
       aftershocks = new aftershocks_t( p );
-      add_child( aftershocks );
     }
   }
 
