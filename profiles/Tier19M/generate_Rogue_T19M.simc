@@ -8,17 +8,17 @@ artifact=43:139268:139261:139260:0:323:3:324:3:325:4:326:3:327:3:328:5:329:3:330
 spec=assassination
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_distant_army
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=gossamerspun_greatcloak,id=138221,bonus_id=1806
+back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=200agility
 chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1806
 wrists=zoldyck_family_training_shackles,id=137098,bonus_id=1811
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=boots_of_endless_betrayal,id=139199,bonus_id=1806
-finger1=dingy_suramar_mercantile_signet,id=141492
-finger2=grubby_silver_ring,id=139236,bonus_id=1806
+finger1=dingy_suramar_mercantile_signet,id=141492,enchant=200versatility
+finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=200versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=thriceaccursed_compass,id=141537
 main_hand=,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1806/1806/1806
@@ -36,17 +36,17 @@ artifact=44:139260:139261:139262:0:1052:1:1053:1:1054:1:1055:1:1056:1:1057:1:105
 spec=outlaw
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_distant_army
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=gossamerspun_greatcloak,id=138221,bonus_id=1806
+back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=200agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=thraxis_tricksy_treads,id=137031,bonus_id=1811
-finger1=ring_of_deep_sea_pearls,id=141545
-finger2=grubby_silver_ring,id=139236,bonus_id=1806
+finger1=ring_of_deep_sea_pearls,id=141545,enchant=200versatility
+finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=200versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=unstable_arcanocrystal,id=141482
 main_hand=,id=128872,bonus_id=742,gem_id=139260/139261/139262,relic_id=1806/1806/1806
@@ -64,17 +64,17 @@ artifact=17:139267:138226:139267:0:851:1:852:3:853:3:854:3:855:4:856:3:857:3:858
 spec=subtlety
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=krakentooth_necklace,id=141473
+neck=krakentooth_necklace,id=141473,enchant=mark_of_the_distant_army
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=gossamerspun_greatcloak,id=138221,bonus_id=1806
+back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=200agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=shadow_satyrs_walk,id=137032,bonus_id=1811
-finger1=ring_of_deep_sea_pearls,id=141545
-finger2=grubby_silver_ring,id=139236,bonus_id=1806
+finger1=ring_of_deep_sea_pearls,id=141545,enchant=200versatility
+finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=200versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=unstable_arcanocrystal,id=141482
 main_hand=,id=128476,bonus_id=743,gem_id=139267/138226/139267,relic_id=1806/1806/1806

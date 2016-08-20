@@ -8,17 +8,17 @@ artifact=43:137399:133763:137412:0:323:3:325:3:328:6:330:3:331:3:332:1:337:1:346
 spec=assassination
 
 head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
-neck=stabilized_energy_pendant,id=134488,bonus_id=1727
+neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_distant_army
 shoulders=felbat_leather_pauldrons,id=134374,bonus_id=1727
-back=cloak_of_manaspun_silk,id=134410,bonus_id=1727
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant=200agility
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
 wrists=felbat_leather_wristwraps,id=134368,bonus_id=1727
 hands=felbat_leather_gloves,id=134371,bonus_id=1727
 waist=felbat_leather_cinch,id=134375,bonus_id=1727
 legs=leggings_of_the_uncrowned,id=139743,bonus_id=1727
 feet=felbat_leather_boots,id=134369,bonus_id=1727
-finger1=band_of_the_wyrm_matron,id=134524
-finger2=utgarde_royal_signet,id=133637,bonus_id=1727
+finger1=band_of_the_wyrm_matron,id=134524,enchant=200versatility
+finger2=utgarde_royal_signet,id=133637,bonus_id=1727,enchant=200versatility
 trinket1=hunger_of_the_pack,id=136975,bonus_id=1727
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727
 main_hand=the_kingslayers,id=128870,bonus_id=741,relic_id=3412/3412/3412,ilevel=870
@@ -36,17 +36,17 @@ artifact=44:136683:137472:137365:0:1052:1:1054:1:1057:1:1060:3:1061:6:1063:1:106
 spec=outlaw
 
 head=steelgazer_hide_hood,id=134152,bonus_id=1727
-neck=chaosforged_necklace,id=137458,bonus_id=1727
+neck=chaosforged_necklace,id=137458,bonus_id=1727,enchant=mark_of_the_distant_army
 shoulders=steelgazer_hide_mantle,id=134154,bonus_id=1727
-back=stole_of_malefic_repose,id=134404,bonus_id=1727
+back=stole_of_malefic_repose,id=134404,bonus_id=1727,enchant=200agility
 chest=chestguard_of_insidious_desire,id=137514,bonus_id=1727
 wrist=thermal_bindings,id=134461,bonus_id=1727
 hands=felbat_leather_gloves,id=134371,bonus_id=1727
 waist=ravens_veil_belt,id=139243,bonus_id=1727
 legs=wardens_martial_greaves,id=137515,bonus_id=1727
 feet=dreadhide_boots,id=121293,bonus_id=1727
-finger1=gnawed_thumb_ring,id=134526,bonus_id=1727
-finger2=band_of_the_wyrm_matron,id=134524,bonus_id=1727
+finger1=gnawed_thumb_ring,id=134526,bonus_id=1727,enchant=200versatility
+finger2=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=200versatility
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=hunger_of_the_pack,id=136975,bonus_id=1727
 main_hand=the_dreadblades,id=128872,bonus_id=742,relic_id=3412/3412/3412,ilevel=870
@@ -64,17 +64,17 @@ artifact=17:141277:133122:141277:0:851:1:852:3:853:3:854:3:858:3:859:3:860:3:862
 spec=subtlety
 
 head=veil_of_unseen_strikes,id=134447,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_distant_army
 shoulders=spaulders_of_unstable_experiments,id=134454,bonus_id=1727
-back=cape_of_valarjar_courage,id=133765,bonus_id=1727
+back=cape_of_valarjar_courage,id=133765,bonus_id=1727,enchant=200agility
 chest=felbat_leather_vest,id=134373,bonus_id=1727
 wrist=shorn_batbrood_cuffs,id=136979,bonus_id=1727
 hands=manalanced_gloves,id=134444,bonus_id=1727
 waist=swordsingers_belt,id=134287,bonus_id=1727
 legs=felbat_leather_leggings,id=134370,bonus_id=1727
 feet=dreadhide_boots,id=121293,bonus_id=1727
-finger1=ring_of_minute_mirrors,id=137533,bonus_id=1727
-finger2=ring_of_mindshielding,id=137432,bonus_id=1727
+finger1=ring_of_minute_mirrors,id=137533,bonus_id=1727,enchant=200versatility
+finger2=ring_of_mindshielding,id=137432,bonus_id=1727,enchant=200versatility
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=memento_of_angerboda,id=133644,bonus_id=1727
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,relic_id=3412/3412/3412,ilevel=870

@@ -6098,7 +6098,7 @@ void rogue_t::init_action_list()
     else if ( specialization() == ROGUE_SUBTLETY )
       potion_action += "|buff.shadow_blades.up";
 
-    if ( specialization() != ROGUE_SUBTLETY )
+    if ( specialization() == ROGUE_ASSASSINATION )
       def -> add_action( potion_action );
   }
 
@@ -6243,43 +6243,53 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
-    // Cancels Blade Flurry buff on CD to maximize Shiarran Symmetry effect
-    def -> add_action( "cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2|spell_targets.blade_flurry<2&buff.blade_flurry.up" );
-    def -> add_action( this, "Blade Flurry", "if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up" );
-
-    for ( size_t i = 0; i < item_actions.size(); i++ )
-    {
-      if ( items[ i ].name_str != "maalus_the_blood_drinker" )
-        def -> add_action( item_actions[i] );
-      else
-        def -> add_action( item_actions[i] + ",if=buff.bloodlust.react|buff.adrenaline_rush.up|target.time_to_die<20" );
-    }
-
-    for ( size_t i = 0; i < racial_actions.size(); i++ )
-    {
-      if ( racial_actions[i] == "arcane_torrent" )
-        def -> add_action( racial_actions[i] + ",if=energy.deficit>40" );
-      else
-        def -> add_action( racial_actions[i] );
-    }
-
-    // Rotation
-    def -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
-    def -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
-    def -> add_action( this, "Ambush" );
-    def -> add_action( this, "Vanish", "if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up" );
-    def -> add_action( "shadowmeld,if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up" );
+    // Main Rotation
+    def -> add_action( "call_action_list,name=bf" );
+    def -> add_action( "call_action_list,name=cds" );
+    def -> add_action( "call_action_list,name=stealth" );
     def -> add_talent( this, "Death from Above", "if=energy.time_to_max>2&combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)" );
       // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
     def -> add_talent( this, "Slice and Dice", "if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
-      // Reroll unless 2+ buffs
-    def -> add_action( this, "Roll the Bones", "if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|rtb_buffs<=1)" );
+      // Reroll unless 2+ buffs or legendary boot & true bearing
+    def -> add_action( this, "Roll the Bones", "if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|(rtb_buffs<=1&(!equipped.thraxis_tricksy_treads|!buff.true_bearing.up)))" );
     def -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
-    def -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
-    def -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4" );
-    def -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
     def -> add_action( "call_action_list,name=build,if=combo_points<action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
+
+    // Blade Flurry
+    action_priority_list_t* bf = get_action_priority_list( "bf" );
+      // Cancels Blade Flurry buff on CD to maximize Shiarran Symmetry effect
+    bf -> add_action( "cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.up&buff.blade_flurry.up&spell_targets.blade_flurry>=2|spell_targets.blade_flurry<2&buff.blade_flurry.up", "Blade Flurry" );
+    bf -> add_action( this, "Blade Flurry", "if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up" );
+
+    // Cooldowns
+    action_priority_list_t* cds = get_action_priority_list( "cds" );
+    cds -> add_action( potion_action, "Cooldowns" );
+    for ( size_t i = 0; i < item_actions.size(); i++ )
+    {
+      if ( items[ i ].name_str != "maalus_the_blood_drinker" )
+        cds -> add_action( item_actions[i] );
+      else
+        cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|buff.adrenaline_rush.up" );
+    }
+    for ( size_t i = 0; i < racial_actions.size(); i++ )
+    {
+      if ( racial_actions[i] == "arcane_torrent" )
+        cds -> add_action( racial_actions[i] + ",if=energy.deficit>40" );
+      else
+        cds -> add_action( racial_actions[i] );
+    }
+    cds -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
+    cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
+    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled" );
+    cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
+    cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4" );
+
+    // Stealth
+    action_priority_list_t* stealth = get_action_priority_list( "stealth" );
+    stealth -> add_action( this, "Ambush", "", "Stealth" );
+    stealth -> add_action( this, "Vanish", "if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up" );
+    stealth -> add_action( "shadowmeld,if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish" );
@@ -6304,7 +6314,7 @@ void rogue_t::init_action_list()
       def -> add_action( this, "Nightblade", "if=set_bonus.tier18_4pc&refreshable&time<5" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
-    def -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
+    def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
       // TODO : Improve Energy Threshold according to Vigor, Shadow Focus, Energetic Stabbing, Shadow Satyr's Walk
     def -> add_action( "call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1))" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)" );
@@ -6331,12 +6341,12 @@ void rogue_t::init_action_list()
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed" );
       // Added buff.shadowmeld.down to avoid using it since it's not usable while shadowmelded "yet" (soonTM ?)
-    stealthed -> add_action( this, "Symbols of Death", "if=buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3&buff.shadowmeld.down", "Stealthed Rotation" );
+    stealthed -> add_action( this, "Symbols of Death", "if=buff.shadowmeld.down&buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3", "Stealthed Rotation" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
     if (true_level <= 100 )
-      stealthed -> add_action( this, "Shuriken Storm", "if=combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.bleeding_hollow_toxin_vessel*talent.premeditation.enabled" );
+      stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.bleeding_hollow_toxin_vessel*talent.premeditation.enabled" );
     else
-      stealthed -> add_action( this, "Shuriken Storm", "if=(combo_points.deficit>=3&spell_targets.shuriken_storm>=3)|buff.the_dreadlords_deceit.stack>=29" );
+      stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=3)|buff.the_dreadlords_deceit.stack>=29)" );
     stealthed -> add_action( this, "Shadowstrike" );
 
     // Stealth Cooldowns
