@@ -375,6 +375,8 @@ public:
   // Procs
   struct procs_t
   {
+    //aff
+    proc_t* fatal_echos;
     proc_t* wild_imp;
     proc_t* fragment_wild_imp;
     proc_t* t18_2pc_affliction;
@@ -2487,6 +2489,8 @@ struct unstable_affliction_t : public warlock_spell_t
 {
   struct unstable_affliction_dot_t : public residual_action::residual_periodic_action_t <warlock_spell_t>
   {
+     unstable_affliction_t* echos;
+
     unstable_affliction_dot_t( warlock_t* p ) :
       base_t( "unstable_affliction", p, p -> spec.unstable_affliction )
     {
@@ -2543,18 +2547,86 @@ struct unstable_affliction_t : public warlock_spell_t
 
       warlock_spell_t::tick( d );
     }
+
+    void last_tick( dot_t* d ) override
+    {
+        action_state_t * s = d->state;
+        trigger_fatal_echos(s);
+      bool refreshed = false;
+      if(!refreshed)
+        warlock_spell_t::last_tick( d );
+    }
+
+    void trigger_fatal_echos( const action_state_t* source_state ) const
+    {
+      struct fatal_echos_event_t : public event_t
+      {
+        action_state_t* state;
+
+        fatal_echos_event_t( action_state_t* s ) :
+          event_t( *s -> action -> player ), state( s )
+        {
+          add_event( timespan_t::from_millis( 50 ) );
+        }
+
+        ~fatal_echos_event_t()
+        { if ( state ) action_state_t::release( state ); }
+
+        const char* name() const override
+        { return "fatal_echos_event_t"; }
+
+        void execute() override
+        {
+          state -> action -> schedule_execute( state );
+          state = nullptr;
+        }
+      };
+
+      if ( ! p()->artifact.fatal_echoes.rank() )
+      {
+        return;
+      }
+
+
+      if ( ! echos )
+      {
+        return;
+      }
+
+      //p()->procs.fatal_echos->occur();
+
+      if(rng().roll( p()->artifact.fatal_echoes.data().effectN(1).percent() *
+                     ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 ) ) )
+      {
+          p()->procs.fatal_echos->occur();
+          action_state_t* s = echos->get_state();
+          echos->snapshot_state( s, DMG_OVER_TIME );
+          s->target = source_state->target;
+
+          echos->execute();
+      }
+    }
   };
 
   unstable_affliction_dot_t* ua_dot;
 
-  unstable_affliction_t( warlock_t* p ) :
+  int echosLevel;
+
+  unstable_affliction_t( warlock_t* p, int echos = 0 ) :
     warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
-    ua_dot( new unstable_affliction_dot_t( p ) )
+    ua_dot( new unstable_affliction_dot_t( p ) ), echosLevel(echos)
   {
     spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
     base_multiplier *= dot_duration / base_tick_time;
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
     affected_by_contagion = false;
+
+    // we're going to cap echos initialization to 3
+    int i = echosLevel + 1;
+    if(echosLevel < 3)
+    {
+        this->ua_dot->echos = new unstable_affliction_t( p, i );
+    }
 
     if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
       base_multiplier *= 1.0 + p -> sets.set( WARLOCK_AFFLICTION, T19, B2 ) -> effectN( 1 ).percent();
@@ -2610,6 +2682,8 @@ struct unstable_affliction_t : public warlock_spell_t
     p() -> procs.t18_2pc_affliction -> occur();
     p() -> buffs.compounding_horror -> expire();
   }
+
+
 };
 
 struct corruption_t: public warlock_spell_t
@@ -5480,6 +5554,7 @@ void warlock_t::init_procs()
 {
   player_t::init_procs();
 
+  procs.fatal_echos = get_proc( "fatal_echos" );
   procs.wild_imp = get_proc( "wild_imp" );
   procs.fragment_wild_imp = get_proc( "fragment_wild_imp" );
   procs.t18_2pc_affliction = get_proc( "t18_2pc_affliction" );
