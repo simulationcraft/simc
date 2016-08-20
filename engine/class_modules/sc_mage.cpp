@@ -324,7 +324,8 @@ public:
           * chilled_to_the_core;
 
     // Legendary
-    buff_t* kaelthas_ultimate_ability,
+    buff_t* cord_of_infinity,
+          * kaelthas_ultimate_ability,
           * lady_vashjs_grasp,
           * magtheridons_might,
           * rhonins_assaulting_armwraps,
@@ -362,6 +363,7 @@ public:
     bool lady_vashjs_grasp;
     bool shard_of_the_exodar;
     bool shatterlance;
+    bool cord_of_infinity;
     double shatterlance_effect;
     double zannesu_journey_multiplier;
   } legendary;
@@ -2006,7 +2008,14 @@ struct arcane_mage_spell_t : public mage_spell_t
     timespan_t t = mage_spell_t::gcd();
     return t;
   }
-
+  virtual void execute() override
+  {
+    mage_spell_t::execute();
+    if( ( p() -> resources.current[ RESOURCE_MANA ] / p() -> resources.max[ RESOURCE_MANA ] ) <= p() -> buffs.cord_of_infinity -> default_value )
+    {
+      p() -> buffs.cord_of_infinity -> trigger();
+    }
+  }
   virtual void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
@@ -7780,6 +7789,8 @@ void mage_t::create_buffs()
                                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Legendary
+  buffs.cord_of_infinity   = buff_creator_t( this, "cord_of_infinity", find_spell( 209316 ) )
+                                             .default_value( find_spell( 209311 ) -> effectN( 1 ).percent() );
   buffs.magtheridons_might = buff_creator_t( this, "magtheridons_might", find_spell( 214404 ) );
   buffs.zannesu_journey    = buff_creator_t( this, "zannesu_journey", find_spell( 226852 ) );
   buffs.lady_vashjs_grasp  = buff_creator_t( this, "lady_vashjs_grasp", find_spell( 208147 ) ).tick_callback(
@@ -8325,6 +8336,15 @@ double mage_t::mana_regen_per_second() const
   if ( spec.savant -> ok() )
   {
     mps *= 1.0 + composite_mastery() * spec.savant -> effectN( 1 ).mastery_value();
+  }
+
+  // This, technically, is not correct. The buff itself, ticking every 1s, should
+  // be granting mana regen. However, the total regan gained should be
+  // similar doing it here, or doing it in the buff tick.
+  // TODO: Move to buff ticks.
+  if ( buffs.cord_of_infinity -> up() )
+  {
+    mps *= 1.0 + buffs.cord_of_infinity -> data().effectN( 1 ).percent();
   }
 
   return mps;
@@ -9155,6 +9175,14 @@ struct rhonins_assaulting_armwraps_t : public scoped_action_callback_t<arcane_mi
   { action -> rhonins_assaulting_armwraps_proc_rate = e.driver() -> effectN( 1 ).percent(); }
 };
 
+struct cord_of_infinity_t : public scoped_actor_callback_t<mage_t>
+{
+  cord_of_infinity_t(): super( MAGE )
+  { }
+
+  void manipulate( mage_t* actor, const special_effect_t& /* e */) override
+  { actor -> legendary.cord_of_infinity = true; }
+};
 // Fire Legendary Items
 struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
 {
@@ -9271,6 +9299,7 @@ public:
     unique_gear::register_special_effect( 184903, wild_arcanist );
     unique_gear::register_special_effect( 184904, pyrosurge_t() );
     unique_gear::register_special_effect( 184905, shatterlance_t() );
+    unique_gear::register_special_effect( 209311, cord_of_infinity_t() );
     unique_gear::register_special_effect( 208099, koralons_burning_touch_t() );
     unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t() );
     unique_gear::register_special_effect( 206397, zannesu_journey_t() );
