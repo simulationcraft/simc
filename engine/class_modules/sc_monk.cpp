@@ -243,6 +243,7 @@ public:
     buff_t* light_on_your_feet;
     buff_t* masterful_strikes;
     buff_t* power_strikes;
+    buff_t* spinning_crane_kick;
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
     buff_t* transfer_the_power;
@@ -2910,7 +2911,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     parse_options( options_str );
 
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    tick_zero = hasted_ticks = true;
+    tick_zero = true;
 
     spell_power_mod.direct = 0.0;
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
@@ -2986,14 +2987,26 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     sef_ability = SEF_SPINNING_CRANE_KICK;
 
-    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = interrupt = false;
-    tick_zero = channeled = interrupt_auto_attack = true;
+    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+    tick_zero = interrupt_auto_attack = true;
 
     spell_power_mod.direct = 0.0;
-
-    dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics
+    dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
+  }
+
+  void init() override
+  {
+    monk_melee_attack_t::init();
+
+    update_flags &= ~STATE_HASTE;
+  }
+
+  // N full ticks, but never additional ones.
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
   int mark_of_the_crane_counter() const
@@ -3044,6 +3057,11 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     combo_strikes_trigger( CS_SPINNING_CRANE_KICK );
 
     monk_melee_attack_t::execute();
+
+    p() -> buff.spinning_crane_kick -> trigger( 1,
+        buff_t::DEFAULT_VALUE(),
+        1.0,
+        composite_dot_duration( execute_state ) );
   }
 
   virtual void last_tick( dot_t* dot ) override
@@ -6806,7 +6824,12 @@ void monk_t::create_buffs()
     .default_value( artifact.light_on_your_feet_mw.rank() ? artifact.light_on_your_feet_mw.percent() : 0 );
 
   buff.refreshing_jade_wind = buff_creator_t( this, "refreshing_jade_wind", talent.refreshing_jade_wind )
-    .default_value( talent.refreshing_jade_wind->effectN( 2 ).percent() );
+    .default_value( talent.refreshing_jade_wind -> effectN( 2 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+
+  buff.spinning_crane_kick = buff_creator_t( this, "spinning_crane_kick", spec.spinning_crane_kick )
+    .default_value( spec.spinning_crane_kick -> effectN( 2 ).percent() )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
 
   buff.teachings_of_the_monastery = buff_creator_t( this, "teachings_of_the_monastery", passives.teachings_of_the_monastery_buff )
     .default_value( passives.teachings_of_the_monastery_buff -> effectN( 1 ).percent() );
