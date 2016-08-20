@@ -6119,7 +6119,7 @@ void rogue_t::init_action_list()
         } 
         else 
         {
-          def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|dot.rupture.exsanguinated");
+          def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up");
         }
       }
     }
