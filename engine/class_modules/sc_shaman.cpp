@@ -6351,6 +6351,7 @@ bool shaman_t::init_special_effects()
     special_effects.push_back( effect );
 
     stormlash_buff -> callback = new stormlash_callback_t( this, *effect );
+    stormlash_buff -> callback -> initialize();
   }
 
   return ret;
