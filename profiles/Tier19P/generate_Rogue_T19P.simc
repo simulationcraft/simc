@@ -8,17 +8,17 @@ artifact=43:137399:133763:137412:0:323:3:325:3:328:6:330:3:331:3:332:1:337:1:346
 spec=assassination
 
 head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
-neck=subtle_shadowruby_pendant,id=130236,bonus_id=667,stats=1768vers,enchant_id=5438,gems=200agi
+neck=subtle_shadowruby_pendant,id=130236,bonus_id=667/1784,enchant_id=5438,gem_id=130247
 shoulders=felbat_leather_pauldrons,id=134374,bonus_id=1727
-back=imbued_silkweave_drape,id=127020,bonus_id=667,stats=665agi_707crit,enchant=200agi
+back=imbued_silkweave_drape,id=127020,bonus_id=667/1719,enchant_id=5435
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
 wrists=felbat_leather_wristwraps,id=134368,bonus_id=1727
 hands=guileful_intruder_handguards,id=137480,bonus_id=1727
 waist=felbat_leather_cinch,id=134375,bonus_id=1727
 legs=felbat_leather_leggings,id=134370,bonus_id=1727
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=200crit
-finger2=prophetic_band,id=130229,bonus_id=667,stats=1768crit,gems=250crit,enchant=200vers
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant_id=5430
+finger2=prophetic_band,id=130229,bonus_id=667/1719,gem_id=130219,enchant_id=5430
 trinket1=hunger_of_the_pack,id=136975,bonus_id=1727
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727
 main_hand=the_kingslayers,id=128870,bonus_id=741,ilevel=870,relic_id=3412/3412/3412
@@ -36,17 +36,17 @@ artifact=44:136683:137472:137365:0:1052:1:1054:1:1057:1:1060:3:1061:6:1063:1:106
 spec=outlaw
 
 head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727
-neck=subtle_shadowruby_pendant,id=130236,bonus_id=667,stats=1768vers,enchant_id=5438,gems=200agi
+neck=subtle_shadowruby_pendant,id=130236,bonus_id=667/1785,enchant_id=5438,gem_id=130247
 shoulders=charskin_mantle,id=137510,bonus_id=1727
-back=imbued_silkweave_drape,id=127020,bonus_id=667,stats=665agi_707vers,enchant=200agi
+back=imbued_silkweave_drape,id=127020,bonus_id=667/1719,enchant_id=5435
 chest=chestguard_of_insidious_desire,id=137514,bonus_id=1727
 wrists=cryptwalker_bracers,id=137425,bonus_id=1727
 hands=guileful_intruder_handguards,id=137480,bonus_id=1727
 waist=ravens_veil_belt,id=139243,bonus_id=1727
 legs=brinewashed_leather_pants,id=134238,bonus_id=1727
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=200haste
-finger2=prophetic_band,id=130229,bonus_id=667,stats=1768vers,gems=250haste,enchant=200haste
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant_id=5430
+finger2=maelstrom_band,id=130230,bonus_id=667/1720,gem_id=130221,enchant_id=5430
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727
 main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=870,relic_id=3412/3412/3412
@@ -64,17 +64,17 @@ artifact=17:141277:133122:141277:0:851:1:852:3:853:3:854:3:858:3:859:3:860:3:862
 spec=subtlety
 
 head=veil_of_unseen_strikes,id=134447,bonus_id=1727
-neck=subtle_shadowruby_pendant,id=130236,bonus_id=667,stats=1768mastery,enchant_id=5438,gems=200agi
+neck=subtle_shadowruby_pendant,id=130236,bonus_id=667/1787,enchant_id=5438,gem_id=130247
 shoulders=charskin_mantle,id=137510,bonus_id=1727
-back=imbued_silkweave_drape,id=127020,bonus_id=667,stats=665agi_707mastery,enchant=200agi
+back=imbued_silkweave_drape,id=127020,bonus_id=667/1719,enchant_id=5435
 chest=tranquil_bought_vest,id=139071,bonus_id=1727
 wrists=cryptwalker_bracers,id=137425,bonus_id=1727
 hands=guileful_intruder_handguards,id=137480,bonus_id=1727
 waist=swordsingers_belt,id=134287,bonus_id=1727
 legs=brinewashed_leather_pants,id=134238,bonus_id=1727
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=200mastery
-finger2=prophetic_band,id=130229,bonus_id=667,stats=1768vers,gems=250mastery,enchant=200vers
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant_id=5429
+finger2=maelstrom_band,id=130230,bonus_id=667/1721,gem_id=130222,enchant_id=5430
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,ilevel=870,relic_id=3412/3412/3412
