@@ -2526,6 +2526,8 @@ struct unstable_affliction_t : public warlock_spell_t
     {
       base_t::init();
 
+
+
       if ( p() -> affliction_trinket )
       {
         const spell_data_t* data = p() -> affliction_trinket -> driver();
@@ -2559,29 +2561,6 @@ struct unstable_affliction_t : public warlock_spell_t
 
     void trigger_fatal_echos( const action_state_t* source_state ) const
     {
-      struct fatal_echos_event_t : public event_t
-      {
-        action_state_t* state;
-
-        fatal_echos_event_t( action_state_t* s ) :
-          event_t( *s -> action -> player ), state( s )
-        {
-          add_event( timespan_t::from_millis( 50 ) );
-        }
-
-        ~fatal_echos_event_t()
-        { if ( state ) action_state_t::release( state ); }
-
-        const char* name() const override
-        { return "fatal_echos_event_t"; }
-
-        void execute() override
-        {
-          state -> action -> schedule_execute( state );
-          state = nullptr;
-        }
-      };
-
       if ( ! p()->artifact.fatal_echoes.rank() )
       {
         return;
@@ -2682,8 +2661,6 @@ struct unstable_affliction_t : public warlock_spell_t
     p() -> procs.t18_2pc_affliction -> occur();
     p() -> buffs.compounding_horror -> expire();
   }
-
-
 };
 
 struct corruption_t: public warlock_spell_t
