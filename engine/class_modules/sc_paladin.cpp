@@ -3439,12 +3439,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 // Don't forget to add Hammer Time's action multiplier effect (see hotr)
 
 // Blessing of Might proc
-// TODO: is this a melee attack?
-struct blessing_of_might_proc_t : public paladin_melee_attack_t
+struct blessing_of_might_proc_t : public paladin_spell_t
 {
   // TODO: there is an actual spell here: 205729
   blessing_of_might_proc_t( paladin_t* p )
-    : paladin_melee_attack_t( "blessing_of_might_proc", p, spell_data_t::nil(), false )
+    : paladin_spell_t( "blessing_of_might_proc", p, spell_data_t::nil() )
   {
     school = SCHOOL_HOLY;
     may_miss    = false;
@@ -4693,7 +4692,7 @@ void paladin_t::generate_action_prio_list_ret()
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       std::string item_str;
-      item_str = "use_item,name=" + items[i].name_str + ",if=buff.avenging_wrath.up";
+      item_str = "use_item,name=" + items[i].name_str + ",if=(buff.avenging_wrath.up|buff.crusade.up)";
       def -> add_action( item_str );
     }
   }
