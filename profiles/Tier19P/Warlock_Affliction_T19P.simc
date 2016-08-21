@@ -28,37 +28,54 @@ actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 
 # Executed every time the actor is available.
 
-actions=reap_souls,if=actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react)
-actions+=/soul_effigy,if=!pet.soul_effigy.active
-actions+=/agony,if=remains<=tick_time+gcd
-actions+=/agony,target=soul_effigy,if=remains<=tick_time+gcd
-actions+=/service_pet,if=dot.corruption.remains&dot.agony.remains
-actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3
-actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3
+actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
+
+#summon pets always else bad
+actions=summon_doomguard,if=!talent.demonic_servitude.enabled&spell_targets.infernal_awakening<3
+actions+=/service_felhunter,if=soul_shard>0
+
+#reap cast conditionals
+actions+=/reap_souls,if=buff.tormented_souls.stack=12
+actions+=/reap_souls,if=buff.tormented_souls.stack>0&(trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react)&!buff.deadwind_harvester.up
+actions+=/reap_souls,if=buff.tormented_souls.stack>0&soul_shard>=4&!buff.deadwind_harvester.up
+actions+=/reap_souls,if=buff.tormented_souls.stack>0&buff.soul_harvest.up&!buff.deadwind_harvester.up
+
+#reap modifiers on UA
+actions+=/unstable_affliction,if=buff.deadwind_harvester.remains<gcd+4&soul_shard>0
+actions+=/unstable_affliction,if=buff.deadwind_harvester.up&buff.compounding_horror.stack=3&soul_shard>0
+actions+=/unstable_affliction,if=buff.deadwind_harvester.up&soul_shard>0&(trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react)
+
+#other modifiers on shard spending
+actions+=/unstable_affliction,if=soul_shard=5
+actions+=/unstable_affliction,if=buff.compounding_horror.react=4&soul_shard>0
+actions+=/unstable_affliction,if=buff.compounding_horror.remains<gcd+1&soul_shard>0
+actions+=/unstable_affliction,if=buff.soul_harvest.remains<gcd+3&soul_shard>0
+
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/soul_harvest
-actions+=/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any.react
-actions+=/corruption,if=remains<=tick_time+gcd
-actions+=/siphon_life,if=remains<=tick_time+gcd
+
+#effigy stuff
+actions+=/soul_effigy,if=!pet.soul_effigy.active
+actions+=/agony,target=soul_effigy,if=remains<=tick_time+gcd
 actions+=/corruption,target=soul_effigy,if=remains<=tick_time+gcd
 actions+=/siphon_life,target=soul_effigy,if=remains<=tick_time+gcd
+
+#general dots
+actions+=/agony,if=(!ticking|remains<=tick_time+gcd)
+actions+=/corruption,if=(!ticking|remains<=tick_time+gcd)
+actions+=/siphon_life,if=(!ticking|remains<=tick_time+gcd)
+
+#fillers
 actions+=/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3
-actions+=/phantom_singularity
-actions+=/unstable_affliction,if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)
-actions+=/agony,if=remains<=duration*0.3&target.time_to_die>=remains
-actions+=/agony,target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains
-actions+=/corruption,if=remains<=duration*0.3&target.time_to_die>=remains
-actions+=/haunt
-actions+=/siphon_life,if=remains<=duration*0.3&target.time_to_die>=remains
-actions+=/corruption,target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains
-actions+=/siphon_life,target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains
 actions+=/life_tap,if=mana.pct<=10
 actions+=/drain_soul,chain=1,interrupt=1
 actions+=/drain_life,chain=1,interrupt=1
-actions+=/life_tap
-
 head=collar_of_enclosure,id=134424,bonus_id=1727
 neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant_id=5439
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
