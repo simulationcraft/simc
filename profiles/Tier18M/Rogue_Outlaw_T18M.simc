@@ -22,7 +22,7 @@ actions.precombat+=/food,type=jumbo_sea_dog
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
 actions.precombat+=/potion,name=draenic_agility
-actions.precombat+=/marked_for_death
+actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 
 # Executed every time the actor is available.
 
@@ -48,7 +48,7 @@ actions.cds+=/berserking
 actions.cds+=/arcane_torrent,if=energy.deficit>40
 actions.cds+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up
-actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled
+actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)
 actions.cds+=/sprint,if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up
 actions.cds+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
 

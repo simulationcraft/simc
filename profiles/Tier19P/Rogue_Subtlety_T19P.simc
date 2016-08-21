@@ -23,7 +23,7 @@ actions.precombat+=/food,type=seedbattered_fish_plate
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
 actions.precombat+=/potion,name=deadly_grace
-actions.precombat+=/marked_for_death
+actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
@@ -43,7 +43,7 @@ actions.cds+=/berserking,if=stealthed
 actions.cds+=/arcane_torrent,if=stealthed&energy.deficit>70
 actions.cds+=/shadow_blades,if=!buff.shadow_blades.up
 actions.cds+=/goremaws_bite,if=(combo_points.deficit>=2&energy.deficit>55&time<10)|(combo_points.deficit>=4&energy.deficit>45)|target.time_to_die<8
-actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled
+actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)
 
 # Stealthed Rotation
 actions.stealthed=symbols_of_death,if=buff.shadowmeld.down&buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3
