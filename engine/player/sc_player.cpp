@@ -3211,8 +3211,8 @@ double player_t::composite_player_multiplier( school_e /* school */ ) const
 
   if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring -> up() )
     m *= 1.0 + buffs.legendary_aoe_ring -> default_value;
-
-  m *= 1.0 + artifact.artificial_damage -> effectN( 2 ).percent() * .01 * artifact.n_purchased_points;
+                                                                          // Artifacts get a free +6 purchased
+  m *= 1.0 + artifact.artificial_damage -> effectN( 2 ).percent() * .01 * ( artifact.n_purchased_points + 6.0 );
 
   return m;
 }
@@ -3372,8 +3372,8 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       if ( buffs.amplification_2 )
         m *= 1.0 + passive_values.amplification_2;
       break;
-    case ATTR_STAMINA:
-      m *= 1.0 + artifact.artificial_stamina -> effectN( 2 ).percent() * .01 * artifact.n_purchased_points;
+    case ATTR_STAMINA:                                                         // Artifacts get a free +6 purchased
+      m *= 1.0 + artifact.artificial_stamina -> effectN( 2 ).percent() * .01 * ( artifact.n_purchased_points + 6 );
     default:
       break;
   }
