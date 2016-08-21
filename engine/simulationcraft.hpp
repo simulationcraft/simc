@@ -5888,7 +5888,6 @@ struct call_action_list_t : public action_t
 struct attack_t : public action_t
 {
   double base_attack_expertise;
-  bool auto_attack;
 
   attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
@@ -5909,10 +5908,12 @@ struct attack_t : public action_t
   virtual double action_multiplier() const override
   {
     double mul = action_t::action_multiplier();
-    if ( auto_attack )
+
+    if ( ! special )
     {
       mul *= player -> auto_attack_multiplier;
     }
+
     return mul;
   }
 

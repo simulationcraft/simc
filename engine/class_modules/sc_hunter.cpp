@@ -1942,7 +1942,6 @@ struct pet_melee_t: public hunter_main_pet_attack_t
   {
     weapon = &p -> main_hand_weapon;
 
-    auto_attack = true;
     background = true;
     base_execute_time = weapon -> swing_time;
     repeating = true;

@@ -1309,7 +1309,7 @@ struct temporal_hero_melee_attack_t : public mage_pet_melee_attack_t
     : mage_pet_melee_attack_t( "melee", p )
   {
     may_crit   = true;
-    background = repeating = auto_attack = true;
+    background = repeating = true;
     school            = SCHOOL_PHYSICAL;
     special           = false;
     weapon            = &( p->main_hand_weapon );

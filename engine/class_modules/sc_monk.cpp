@@ -1001,7 +1001,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       base_execute_time = w -> swing_time;
       trigger_gcd = timespan_t::zero();
       special = false;
-      auto_attack = true;
 
       if ( player -> dual_wield() )
       {
@@ -3419,7 +3418,6 @@ struct melee_t: public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
     special = false;
     school = SCHOOL_PHYSICAL;
-    auto_attack = true;
 
     if ( player -> main_hand_weapon.group() == WEAPON_1H )
     {

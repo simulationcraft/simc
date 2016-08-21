@@ -3008,7 +3008,7 @@ struct melee_t : public demon_hunter_attack_t
   {
     school     = SCHOOL_PHYSICAL;
     special    = false;
-    background = repeating = auto_attack = may_glance = true;
+    background = repeating = may_glance = true;
     trigger_gcd = timespan_t::zero();
 
     status.main_hand = status.off_hand = LOST_CONTACT_RANGE;

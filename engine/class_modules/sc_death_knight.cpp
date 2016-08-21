@@ -1135,7 +1135,7 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
   auto_attack_melee_t( T* player, const std::string& name = "main_hand" ) :
     pet_melee_attack_t<T>( player, name )
   {
-    this -> background = this -> auto_attack = this -> repeating = true;
+    this -> background = this -> repeating = true;
     this -> special = false;
     this -> weapon = &( player -> main_hand_weapon );
     this -> base_execute_time = this -> weapon -> swing_time;
@@ -2605,7 +2605,6 @@ struct melee_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first ( true ),
     frozen_pulse( p -> talent.frozen_pulse -> ok() ? new frozen_pulse_t( p ) : nullptr )
   {
-    auto_attack     = true;
     school          = SCHOOL_PHYSICAL;
     may_glance      = true;
     background      = true;

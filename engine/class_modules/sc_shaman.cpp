@@ -1812,7 +1812,7 @@ struct spirit_wolf_t : public base_wolf_t
       wf( p() -> owner -> sets.has_set_bonus( SHAMAN_ENHANCEMENT, T17, B4 ) ? new windfury_t( player ) : nullptr ),
       maelstrom( player -> find_spell( 190185 ) ), wf_driver( player -> find_spell( 170523 ) )
     {
-      background = auto_attack = repeating = true;
+      background = repeating = true;
       special = false;
     }
 
@@ -1874,7 +1874,7 @@ struct doom_wolf_base_t : public base_wolf_t
     dw_melee_t( doom_wolf_base_t* player ) : super( player, "melee" ),
       maelstrom( player -> find_spell( 190185 ) )
     {
-      background = auto_attack = repeating = true;
+      background = repeating = true;
       special = false;
     }
 
@@ -2140,7 +2140,6 @@ struct primal_elemental_t : public shaman_pet_t
     auto attack = new pet_melee_attack_t<primal_elemental_t>( this, "melee" );
     attack -> background = true;
     attack -> repeating = true;
-    attack -> auto_attack = true;
     attack -> special = false;
     attack -> school = SCHOOL_PHYSICAL;
     return attack;
@@ -2846,7 +2845,6 @@ struct melee_t : public shaman_attack_t
     shaman_attack_t( name, player, s ), sync_weapons( sw ),
     first( true ), swing_timer_variance( stv )
   {
-    auto_attack = true;
     background = repeating = may_glance = true;
     special           = false;
     trigger_gcd       = timespan_t::zero();
