@@ -2279,8 +2279,6 @@ public:
     if ( p() -> talents.eradication -> ok() && td -> debuffs_eradication -> check() )
       m *= 1.0 + p() -> find_spell( 196414 ) -> effectN( 1 ).percent();
 
-    m *= 1.2;
-
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
