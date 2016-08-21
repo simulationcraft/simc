@@ -54,8 +54,8 @@ level=110
 race=orc
 role=spell
 position=back
-talents=3032011
-artifact=53:133056:132810:133056:0:783:1:785:3:786:3:788:3:789:3:790:3:792:3:793:1:796:1:798:1:1296:1
+talents=3022011
+artifact=53:132791:133030:132791:0:783:1:785:3:788:6:789:3:790:3:792:3:793:1:796:1:798:1:1296:1
 spec=frost
 head=,id=134424,bonus_id=1727
 neck=,id=137536,bonus_id=1727,enchant=mark_of_the_claw
