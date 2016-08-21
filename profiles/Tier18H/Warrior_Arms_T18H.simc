@@ -44,6 +44,7 @@ actions+=/run_action_list,name=execute,if=target.health.pct<20
 
 actions.single=mortal_strike
 actions.single+=/colossus_smash,if=buff.shattered_defenses.down&buff.precise_strikes.down
+actions.single+=/execute,if=buff.stone_heart.react
 actions.single+=/warbreaker,if=buff.shattered_defenses.down
 actions.single+=/focused_rage,if=buff.focused_rage.stack<3|(talent.deadly_calm.enabled&buff.battle_cry.up)
 actions.single+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&!talent.focused_rage.enabled|talent.deadly_calm.enabled&buff.battle_cry.up|buff.cleave.up
@@ -61,6 +62,7 @@ actions.execute+=/execute,if=debuff.colossus_smash.up&(buff.shattered_defenses.u
 actions.execute+=/mortal_strike,if=talent.in_for_the_kill.enabled&buff.shattered_defenses.down
 actions.execute+=/colossus_smash,if=buff.shattered_defenses.down&buff.precise_strikes.down
 actions.execute+=/warbreaker,if=buff.shattered_defenses.down
+actions.execute+=/execute,if=buff.stone_heart.react
 actions.execute+=/mortal_strike
 actions.execute+=/execute,if=debuff.colossus_smash.up|rage>=100
 actions.execute+=/focused_rage,if=talent.deadly_calm.enabled&buff.battle_cry.up

@@ -3,7 +3,7 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=1112112
+talents=1111112
 artifact=2:136717:137316:136717:0:40:1:41:3:42:3:47:1:50:3:51:3:53:6:350:1:353:1:1275:1
 spec=retribution
 
@@ -29,6 +29,7 @@ actions=auto_attack
 actions+=/rebuke
 actions+=/potion,name=deadly_grace,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up|target.time_to_die<=40)
 actions+=/use_item,name=faulty_countermeasure,if=(buff.avenging_wrath.up|buff.crusade.up)
+actions+=/use_item,name=horn_of_valor,if=(buff.avenging_wrath.up|buff.crusade.up)
 actions+=/holy_wrath
 actions+=/avenging_wrath
 actions+=/crusade,if=holy_power>=5
@@ -136,7 +137,7 @@ feet=duskwatch_guards_boots,id=137482,bonus_id=1727
 finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_haste
 finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1492
-trinket2=chrono_shard,id=137419,bonus_id=1727/1492
+trinket2=horn_of_valor,id=133642,bonus_id=1727/1492
 main_hand=ashbringer,id=120978,bonus_id=737,gem_id=136717/137316/136717,relic_id=3412/3412/3412
 
 # Gear Summary

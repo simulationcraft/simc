@@ -1753,9 +1753,9 @@ struct execute_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> mastery.colossal_might -> ok() && !p() -> buff.ayalas_stone_heart -> up() )
+    if ( p() -> mastery.colossal_might -> ok() )
     {
-      am *= 4.0 * (std::min( 40.0, (p() -> resources.current[RESOURCE_RAGE]) ) / 40);
+      am *= 4.0 * (std::min( 40.0, ( p() -> buff.ayalas_stone_heart -> up() ? 40.0 : p() -> resources.current[RESOURCE_RAGE] ) ) / 40);
     }
     else if ( p() -> has_shield_equipped() )
     { am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent(); }
@@ -4445,6 +4445,7 @@ void warrior_t::apl_arms()
 
   single_target -> add_action( this, "Mortal Strike" );
   single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
+  single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
   single_target -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3|(talent.deadly_calm.enabled&buff.battle_cry.up)" );
   single_target -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&!talent.focused_rage.enabled|talent.deadly_calm.enabled&buff.battle_cry.up|buff.cleave.up" );
@@ -4462,6 +4463,7 @@ void warrior_t::apl_arms()
   execute -> add_action( this, "Mortal Strike", "if=talent.in_for_the_kill.enabled&buff.shattered_defenses.down" );
   execute -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
   execute -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
+  execute -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   execute -> add_action( this, "Mortal Strike" );
   execute -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>=100" );
   execute -> add_talent( this, "Focused Rage", "if=talent.deadly_calm.enabled&buff.battle_cry.up" );
