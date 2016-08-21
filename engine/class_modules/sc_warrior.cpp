@@ -2183,12 +2183,13 @@ struct mortal_strike_t: public warrior_attack_t
     warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
   {
     parse_options( options_str );
-    cooldown = p -> cooldown.mortal_strike;
+
     cooldown -> duration = data().charge_cooldown();
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
     weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
+    cooldown -> hasted = true; // Doesn't show up in spelldata for some reason. 
   }
 
   double composite_crit_chance() const override
