@@ -88,29 +88,29 @@ actions.build+=/mutilate,if=combo_points.deficit<=1&energy.deficit<=30
 actions.build+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
 
 head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
-neck=subtle_shadowruby_pendant,id=130236,bonus_id=667,stats=1768vers,gems=200agi,enchant_id=5438
+neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_distant_army
 shoulders=felbat_leather_pauldrons,id=134374,bonus_id=1727
-back=imbued_silkweave_drape,id=127020,bonus_id=667,stats=665agi_707crit,enchant=200agi
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant=binding_of_agility
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
 wrists=felbat_leather_wristwraps,id=134368,bonus_id=1727
 hands=guileful_intruder_handguards,id=137480,bonus_id=1727
 waist=felbat_leather_cinch,id=134375,bonus_id=1727
 legs=felbat_leather_leggings,id=134370,bonus_id=1727
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=200crit
-finger2=prophetic_band,id=130229,bonus_id=667,stats=1768crit,gems=250crit,enchant=200vers
+finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_versatility
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_versatility
 trinket1=hunger_of_the_pack,id=136975,bonus_id=1727
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727
-main_hand=the_kingslayers,id=128870,bonus_id=741,ilevel=870,relic_id=3412/3412/3412
-off_hand=the_kingslayers,id=128869,ilevel=870
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137399/133763/137412,relic_id=1727/1727/1727
+off_hand=the_kingslayers,id=128869
 
 # Gear Summary
 # gear_ilvl=843.75
-# gear_agility=12406
-# gear_stamina=14638
-# gear_crit_rating=10779
+# gear_agility=12206
+# gear_stamina=17629
+# gear_crit_rating=10431
 # gear_haste_rating=1518
 # gear_mastery_rating=1001
-# gear_versatility_rating=3710
+# gear_versatility_rating=3809
 # gear_armor=1957
 # set_bonus=tier19p_leather_2pc=1
