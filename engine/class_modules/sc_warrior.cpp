@@ -4445,6 +4445,7 @@ void warrior_t::apl_arms()
 
   single_target -> add_action( this, "Mortal Strike" );
   single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
+  single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
   single_target -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3|(talent.deadly_calm.enabled&buff.battle_cry.up)" );
   single_target -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&!talent.focused_rage.enabled|talent.deadly_calm.enabled&buff.battle_cry.up|buff.cleave.up" );
@@ -4462,6 +4463,7 @@ void warrior_t::apl_arms()
   execute -> add_action( this, "Mortal Strike", "if=talent.in_for_the_kill.enabled&buff.shattered_defenses.down" );
   execute -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
   execute -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
+  execute -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   execute -> add_action( this, "Mortal Strike" );
   execute -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>=100" );
   execute -> add_talent( this, "Focused Rage", "if=talent.deadly_calm.enabled&buff.battle_cry.up" );
