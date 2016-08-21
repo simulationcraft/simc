@@ -1,9 +1,10 @@
-mage="Mage_Arcane_T18N"
-level=100
-race=gnome
+mage="Mage_Arcane_T19P"
+level=110
+race=troll
 role=spell
 position=back
-talents=3003222
+talents=1021012
+artifact=4:132810:136692:132810:0:73:1:74:3:75:6:80:1:81:3:82:3:84:3:87:1:290:1:1339:1
 spec=arcane
 
 # This default action priority list is automatically created based on your character.
@@ -14,12 +15,13 @@ spec=arcane
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=buttered_sturgeon
+actions.precombat=flask,type=flask_of_the_whispered_pact
+actions.precombat+=/food,type=the_hungry_magister
+actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/summon_arcane_familiar
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
-actions.precombat+=/potion,name=draenic_intellect
+actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/arcane_blast
 
 # Executed every time the actor is available.
@@ -72,30 +74,29 @@ actions.burn+=/arcane_explosion,if=active_enemies>1
 actions.burn+=/arcane_blast
 actions.burn+=/evocation
 
-head=demon_princes_ascendant_crown,id=124159
-neck=vial_of_immiscible_liquid,id=124212,enchant=gift_of_haste
-shoulders=mantle_of_the_arcanic_conclave,id=124177
-back=cloak_of_hideous_unity,id=124138,enchant=gift_of_haste
-chest=robe_of_the_arcanic_conclave,id=124171
-wrists=contemptuous_wristguards,id=124186
-hands=gloves_of_the_arcanic_conclave,id=124154
-waist=demonbuckle_sash_of_argus,id=124200
-legs=pantaloons_of_the_arcanic_conclave,id=124165
-feet=dessicated_soulrender_slippers,id=124150
-finger1=loathful_encrusted_band,id=124192,enchant=gift_of_haste
-finger2=spellbound_runic_band_of_the_allseeing_eye,id=118306,enchant=gift_of_haste
-trinket1=tome_of_shifting_words,id=124516
-trinket2=prophecy_of_fear,id=124230
-main_hand=edict_of_argus,id=124382,enchant=mark_of_warsong
+head=collar_of_enclosure,id=134424,bonus_id=1727
+neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_claw
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant=binding_of_intellect
+chest=flameheart_vestment,id=137504,bonus_id=1727
+wrists=tunnel_fiend_bracers,id=134435,bonus_id=1727
+hands=scarabcaller_grips,id=134418,bonus_id=1727
+waist=cord_of_wicked_pyromania,id=137488,bonus_id=1727
+legs=legwraps_of_rampant_turmoil,id=137453,bonus_id=1727
+feet=treads_of_light,id=139280,bonus_id=1727
+finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_critical_strike
+finger2=ring_of_contempt,id=134490,bonus_id=1727,enchant=binding_of_critical_strike
+trinket1=oakhearts_gnarled_root,id=137306,bonus_id=1727
+trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727
+main_hand=aluneth,id=127857,ilevel=870
 
 # Gear Summary
-# gear_ilvl=700.67
-# gear_stamina=4734
-# gear_intellect=5270
-# gear_crit_rating=980
-# gear_haste_rating=1673
-# gear_mastery_rating=1701
-# gear_versatility_rating=108
-# gear_armor=889
-# set_bonus=tier18_2pc=1
-# set_bonus=tier18_4pc=1
+# gear_ilvl=842.00
+# gear_stamina=17964
+# gear_intellect=18709
+# gear_crit_rating=7967
+# gear_haste_rating=3966
+# gear_mastery_rating=1603
+# gear_versatility_rating=4329
+# gear_armor=1570
+# set_bonus=tier19p_cloth_2pc=1

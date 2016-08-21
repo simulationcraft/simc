@@ -548,6 +548,18 @@ public:
     return p() -> get_target_data( t );
   }
 
+  double tactician_cost() const
+  {
+    double c = ab::cost();
+
+    if ( dauntless )
+    {
+      c *= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
+    }
+
+    return c;
+  }
+
   virtual double cost() const override
   {
     double c = ab::cost();
@@ -685,11 +697,15 @@ public:
       anger_management( rage );
     }
 
-    if ( tactician_per_rage && ab::rng().roll( tactician_per_rage * rage ) )
+    if ( tactician_per_rage )
     {
-      p() -> cooldown.colossus_smash -> reset( true );
-      p() -> cooldown.mortal_strike -> reset( true );
-      p() -> proc.tactician -> occur();
+      double tact_rage = tactician_cost(); //Tactician resets based on cost before deadly calm makes it free.
+      if ( ab::rng().roll( tactician_per_rage * tact_rage ) )
+      {
+        p() -> cooldown.colossus_smash -> reset( true );
+        p() -> cooldown.mortal_strike -> reset( true );
+        p() -> proc.tactician -> occur();
+      }
     }
 
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
@@ -2191,8 +2207,8 @@ struct mortal_strike_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    am *= 1.0 + p() -> buff.shattered_defenses -> check_value();
-    am *= 1.0 + p() -> buff.focused_rage -> check_value();
+    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
+    am *= 1.0 + p() -> buff.focused_rage -> stack_value();
 
     return am;
   }
@@ -4411,7 +4427,7 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Mortal Strike" );
   single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
   single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
-  single_target -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3|talent.deadly_calm.enabled&buff.battle_cry.up" );
+  single_target -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3|(talent.deadly_calm.enabled&buff.battle_cry.up)" );
   single_target -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&!talent.focused_rage.enabled|talent.deadly_calm.enabled&buff.battle_cry.up|buff.cleave.up" );
   single_target -> add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&!talent.focused_rage.enabled|talent.deadly_calm.enabled&buff.battle_cry.up" );
   single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
