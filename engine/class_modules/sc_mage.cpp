@@ -8065,7 +8065,8 @@ void mage_t::apl_precombat()
   // Water Elemental
   if ( specialization() == MAGE_FROST )
     precombat -> add_action( "water_elemental" );
-
+  if ( specialization() == MAGE_ARCANE )
+    precombat -> add_action( "summon_arcane_familiar" ) ;
   // Snapshot Stats
   precombat -> add_action( "snapshot_stats" );
 
@@ -8124,7 +8125,7 @@ std::string mage_t::get_food_action()
   {
     if ( specialization() == MAGE_ARCANE )
     {
-      food_action += "nightborne_delicacy_platter" ;
+      food_action += "the_hungry_magister" ;
     }
     else if ( specialization() == MAGE_FIRE )
     {
@@ -8174,10 +8175,16 @@ void mage_t::apl_arcane()
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"          );
   action_priority_list_t* conserve            = get_action_priority_list( "conserve"         );
+  action_priority_list_t* rop_phase           = get_action_priority_list( "rop_phase"        );
+  action_priority_list_t* build               = get_action_priority_list( "build"            );
+  action_priority_list_t* cooldowns           = get_action_priority_list( "cooldowns"        );
+  action_priority_list_t* burn                = get_action_priority_list( "burn"             );
+  
 
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
+  default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down" );
   default_list -> add_action( this, "Mark of Aluneth", "if=buff.rune_of_power.up|!talent.rune_of_power.enabled" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max" );
   default_list -> add_action( "start_burn_phase,if=(((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains<=action.rune_of_power.cast_time+gcd|target.time_to_die<cooldown.arcane_power.remains+13)&!prev_gcd.evocation&buff.arcane_charge.stack=4" );
@@ -8191,7 +8198,43 @@ void mage_t::apl_arcane()
   conserve     -> add_talent( this, "Supernova", "if=mana.pct<100" );
   conserve     -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)" );
   conserve     -> add_action( this, "Arcane Missiles" );
+  conserve     -> add_action( this, "Arcane Explosion", "if=mana.pct>=82&equipped.132451&active_enemies>1" );
+  conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>=82&equipped.132451" );
   conserve     -> add_action( this, "Arcane Barrage" );
+
+  rop_phase    -> add_talent( this, "Super Nova", "if=mana.pct<100" );
+  rop_phase    -> add_talent( this, "Nether Tempest", ",if=dot.nether_tempest.remains<=2|!ticking" );
+  rop_phase    -> add_action( this, "Arcane Missiles" );
+  rop_phase    -> add_action( this, "Arcane Explosion", "if=active_enemies>2" );
+  rop_phase    -> add_action( this, "Arcane Blast" );
+
+  build        -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<=1" );
+  build        -> add_talent( this, "Arcane Orb" );
+  build        -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
+  build        -> add_action( this, "Arcane Blast" );
+
+  cooldowns    -> add_talent( this, "Rune of Power" );
+  cooldowns    -> add_action( this, "Arcane Power" );
+  for( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    cooldowns -> add_action( racial_actions[i] );
+  }
+  for( size_t i = 0; i < item_actions.size(); i++ )
+  {
+    cooldowns -> add_action( item_actions[i] );
+  }
+  cooldowns -> add_action( "potion,name=deadly_grace,if=buff.arcane_power.up" );
+
+  burn      -> add_action( "call_action_list,name=cooldowns" );
+  burn      -> add_action( this, "Mark of Aluneth" );
+  burn      -> add_talent( this, "Supernova", "if=mana.pct<100" );
+  burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
+  burn      -> add_talent( this, "Presence of Mind", "if=buff.arcane_power.remains>2*gcd" );
+  burn      -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up" );
+  burn      -> add_action( this, "Arcane Missiles" );
+  burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
+  burn      -> add_action( this, "Arcane Blast" );
+  burn      -> add_action( this, "Evocation" );
 
 
   /*
@@ -8215,6 +8258,7 @@ void mage_t::apl_fire()
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
   default_list -> add_action( this, "Shard of the Exodar Warp", "if=buff.bloodlust.down&buff.combustion.up&time>=5" );
+  default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&(cooldown.flame_on.remains<5|cooldown.flame_on.remains>30)&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
   default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)|buff.combustion.up" );
@@ -8224,7 +8268,7 @@ void mage_t::apl_fire()
   combustion_phase -> add_talent( this, "Rune of Power", "if=buff.combustion.down" );
   combustion_phase -> add_action( "call_action_list,name=active_talents" );
   combustion_phase -> add_action( this, "Combustion" );
-
+  combustion_phase -> add_action( get_potion_action() );
   for( size_t i = 0; i < racial_actions.size(); i++ )
   {
     combustion_phase -> add_action( racial_actions[i] );
@@ -8286,6 +8330,8 @@ void mage_t::apl_frost()
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.flurry" );
+  default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
+  default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
   default_list -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
@@ -8315,6 +8361,7 @@ void mage_t::apl_frost()
   {
     cooldowns -> add_action( racial_actions[i] );
   }
+    cooldowns -> add_action( get_potion_action() );
 }
 
 // Default Action List ========================================================
