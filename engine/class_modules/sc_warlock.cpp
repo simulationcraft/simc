@@ -1213,6 +1213,7 @@ pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_
 {
   owner_coeff.ap_from_sp = 1.0;
   owner_coeff.sp_from_sp = 1.0;
+  owner_coeff.health = 0.5;
   command = find_spell( 21563 );
 }
 
@@ -1685,6 +1686,7 @@ struct infernal_t: public warlock_pet_t
   infernal_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
+    owner_coeff.health = 0.4;
   }
 
   virtual void init_base_stats() override
@@ -1743,6 +1745,7 @@ struct doomguard_t: public warlock_pet_t
     doomguard_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD )
   {
+    owner_coeff.health = 0.4;
     action_list_str = "doom_bolt";
   }
 
@@ -1770,6 +1773,7 @@ struct wild_imp_pet_t: public warlock_pet_t
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), fel_firebolt_stats( nullptr ), regular_stats(nullptr)
   {
+    owner_coeff.health = 0.15;
   }
 
   virtual void init_base_stats() override
@@ -1838,6 +1842,7 @@ struct dreadstalker_t : public warlock_pet_t
   {
     action_list_str = "travel/dreadbite";
     regen_type = REGEN_DISABLED;
+    owner_coeff.health = 0.4;
   }
 
   virtual double composite_melee_crit_chance() const override
@@ -1894,6 +1899,7 @@ struct darkglare_t : public warlock_pet_t
   {
     action_list_str = "eye_laser";
     regen_type = REGEN_DISABLED;
+    owner_coeff.health = 0.4;
   }
 
   void init_base_stats() override
