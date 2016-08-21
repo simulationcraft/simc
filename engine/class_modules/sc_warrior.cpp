@@ -1753,9 +1753,9 @@ struct execute_t: public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> mastery.colossal_might -> ok() && !p() -> buff.ayalas_stone_heart -> up() )
+    if ( p() -> mastery.colossal_might -> ok() )
     {
-      am *= 4.0 * (std::min( 40.0, (p() -> resources.current[RESOURCE_RAGE]) ) / 40);
+      am *= 4.0 * (std::min( 40.0, ( p() -> buff.ayalas_stone_heart -> up() ? 40.0 : p() -> resources.current[RESOURCE_RAGE] ) ) / 40);
     }
     else if ( p() -> has_shield_equipped() )
     { am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent(); }
