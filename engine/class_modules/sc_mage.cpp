@@ -2011,7 +2011,8 @@ struct arcane_mage_spell_t : public mage_spell_t
   virtual void execute() override
   {
     mage_spell_t::execute();
-    if( ( p() -> resources.current[ RESOURCE_MANA ] / p() -> resources.max[ RESOURCE_MANA ] ) <= p() -> buffs.cord_of_infinity -> default_value )
+    if( ( p() -> resources.current[ RESOURCE_MANA ] / p() -> resources.max[ RESOURCE_MANA ] ) <= p() -> buffs.cord_of_infinity -> default_value &&
+         p() -> legendary.cord_of_infinity == true )
     {
       p() -> buffs.cord_of_infinity -> trigger();
     }
@@ -8172,26 +8173,27 @@ void mage_t::apl_arcane()
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"          );
-  /*
-  action_priority_list_t* movement            = get_action_priority_list( "movement"         );
-  action_priority_list_t* init_burn           = get_action_priority_list( "init_burn"        );
-  action_priority_list_t* init_crystal        = get_action_priority_list( "init_crystal"     );
-  action_priority_list_t* crystal_sequence    = get_action_priority_list( "crystal_sequence" );
-  action_priority_list_t* cooldowns           = get_action_priority_list( "cooldowns"        );
-  action_priority_list_t* aoe                 = get_action_priority_list( "aoe"              );
-  action_priority_list_t* burn                = get_action_priority_list( "burn"             );
   action_priority_list_t* conserve            = get_action_priority_list( "conserve"         );
-  */
 
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
+  default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
+  default_list -> add_action( this, "Mark of Aluneth", "if=buff.rune_of_power.up|!talent.rune_of_power.enabled" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max" );
-  default_list -> add_action( this, "Time Warp",
-                              "if=target.health.pct<25|time>5" );
-  default_list -> add_talent( this, "Rune of Power",
-                              "if=buff.rune_of_power.remains<2*spell_haste" );
-  default_list -> add_talent( this, "Mirror Image" );
-  default_list -> add_action( this, "Arcane Blast" );
+  default_list -> add_action( "start_burn_phase,if=(((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains<=action.rune_of_power.cast_time+gcd|target.time_to_die<cooldown.arcane_power.remains+13)&!prev_gcd.evocation&buff.arcane_charge.stack=4" );
+  default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4" );
+  default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
+  default_list -> add_talent( this, "Rune of Power", "if=recharge_time<cooldown.arcane_power.remains" );
+  default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up" );
+  default_list -> add_action( "call_action_list,name=conserve" );
+
+  conserve     -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
+  conserve     -> add_talent( this, "Supernova", "if=mana.pct<100" );
+  conserve     -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)" );
+  conserve     -> add_action( this, "Arcane Missiles" );
+  conserve     -> add_action( this, "Arcane Barrage" );
+
+
   /*
   TODO: Arcane APL needs love :<
   */
