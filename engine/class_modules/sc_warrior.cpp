@@ -699,18 +699,23 @@ public:
 
     if ( tactician_per_rage )
     {
-      double tact_rage = tactician_cost(); //Tactician resets based on cost before deadly calm makes it free.
-      if ( ab::rng().roll( tactician_per_rage * tact_rage ) )
-      {
-        p() -> cooldown.colossus_smash -> reset( true );
-        p() -> cooldown.mortal_strike -> reset( true );
-        p() -> proc.tactician -> occur();
-      }
+      tactician();
     }
 
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
     {
       p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
+    }
+  }
+
+  virtual void tactician()
+  {
+    double tact_rage = tactician_cost(); //Tactician resets based on cost before deadly calm makes it free.
+    if ( ab::rng().roll( tactician_per_rage * tact_rage ) )
+    {
+      p() -> cooldown.colossus_smash -> reset( true );
+      p() -> cooldown.mortal_strike -> reset( true );
+      p() -> proc.tactician -> occur();
     }
   }
 
@@ -2183,12 +2188,13 @@ struct mortal_strike_t: public warrior_attack_t
     warrior_attack_t( "mortal_strike", p, p -> spec.mortal_strike )
   {
     parse_options( options_str );
-    cooldown = p -> cooldown.mortal_strike;
+
     cooldown -> duration = data().charge_cooldown();
     weapon = &( p -> main_hand_weapon );
     base_costs[RESOURCE_RAGE] += p -> sets.set( WARRIOR_ARMS, T17, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
     weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
+    cooldown -> hasted = true; // Doesn't show up in spelldata for some reason. 
   }
 
   double composite_crit_chance() const override
@@ -2222,6 +2228,11 @@ struct mortal_strike_t: public warrior_attack_t
     return c;
   }
 
+  void tactician() override
+  { //Mortal Strike is special, it can reset itself so we need to do it after the cooldown has been reset. 
+  }
+
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -2236,7 +2247,7 @@ struct mortal_strike_t: public warrior_attack_t
       if ( p() -> talents.in_for_the_kill -> ok() && execute_state -> target -> health_percentage() <= 20 )
       {
         p() -> resource_gain( RESOURCE_RAGE, p() -> talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ),
-                            p() -> gain.in_for_the_kill );
+                              p() -> gain.in_for_the_kill );
       }
 
       p() -> buff.focused_rage -> expire();
@@ -2247,6 +2258,14 @@ struct mortal_strike_t: public warrior_attack_t
     if ( p() -> archavons_heavy_hand )
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
+    }
+
+    double tact_rage = tactician_cost(); //Tactician resets based on cost before deadly calm makes it free.
+    if ( rng().roll( tactician_per_rage * tact_rage ) )
+    {
+      p() -> cooldown.colossus_smash -> reset( true );
+      p() -> cooldown.mortal_strike -> reset( true );
+      p() -> proc.tactician -> occur();
     }
   }
 

@@ -448,6 +448,12 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED,
   };
 
+  const slot_e SLOT_DUPLICATES[] =
+  {
+    SLOT_FINGER_1, SLOT_FINGER_2, SLOT_TRINKET_1, SLOT_TRINKET_2,
+  };
+
+
   for ( auto & slot : SLOT_OUT_ORDER )
   {
     item_t& item = p.items[slot];
@@ -472,6 +478,34 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
       sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n",
                   p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
       return_value = false;
+    }
+    /*else if ( item.parsed.gem_id.size() > 0 )
+    {
+      sim.errorf( "Player %s has gems equipped in slot %s, there are no gems allowed in default profiles even if they have a slot by default, this is to ensure that all default profiles within %s are as equal as possible.\n",
+                  p.name(), util::slot_type_string( slot ), tier_name.c_str() );
+      return_value = false;
+    }
+    */
+    if ( slot == SLOT_FINGER_1 || SLOT_FINGER_2 || SLOT_TRINKET_1 || SLOT_TRINKET_2 )
+    {
+      for ( auto & slot2 : SLOT_DUPLICATES )
+      {
+        item_t& unique = p.items[slot2];
+        if ( slot2 == slot )
+          continue;
+        if ( p.dbc.item( unique.parsed.data.id ) == nullptr )
+          continue;
+        if ( p.dbc.item( item.parsed.data.id ) == nullptr )
+          continue;
+
+        if ( unique.parsed.data.id == item.parsed.data.id )
+        {
+          if ( p.dbc.item( unique.parsed.data.id ) -> flags_1 == 524288 && p.dbc.item( item.parsed.data.id ) -> flags_1 == 524288 )
+            sim.errorf( "Player %s has equipped more than 1 of a unique item in slots %s and %s, please remove one of the unique items.\n",
+                        p.name(), util::slot_type_string( slot ), util::slot_type_string( slot2 ) );
+          return_value = false;
+        }
+      }
     }
   }
   if ( equipped_legendary_items > legendary_items_allowed )

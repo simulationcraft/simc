@@ -5,7 +5,7 @@ timeofday=day
 role=attack
 position=back
 talents=2210011
-artifact=17:141277:133122:141277:0:851:1:852:3:853:3:854:3:858:3:859:3:860:3:862:1:864:1:866:1:1349:1
+artifact=17:136721:137377:136721:0:851:1:852:3:853:3:854:3:858:3:859:3:860:3:862:1:864:1:866:1:1349:1
 spec=subtlety
 
 # This default action priority list is automatically created based on your character.
@@ -71,29 +71,30 @@ actions.build=shuriken_storm,if=spell_targets.shuriken_storm>=2
 actions.build+=/gloomblade
 actions.build+=/backstab
 
-head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
-neck=subtle_shadowruby_pendant,id=130236,bonus_id=667,stats=1768mastery,gems=200agi,enchant_id=5438
-shoulders=felbat_leather_pauldrons,id=134374,bonus_id=1727
-back=imbued_silkweave_drape,id=127020,bonus_id=667,stats=665agi_707vers,enchant=200agi
-chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727
-wrists=shorn_batbrood_cuffs,id=136979,bonus_id=1727
-hands=manalanced_gloves,id=134444,bonus_id=1727
+head=veil_of_unseen_strikes,id=134447,bonus_id=1727
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_distant_army
+shoulders=charskin_mantle,id=137510,bonus_id=1727
+back=cape_of_valarjar_courage,id=133765,bonus_id=1727,enchant=binding_of_agility
+chest=tranquil_bought_vest,id=139071,bonus_id=1727
+wrists=cryptwalker_bracers,id=137425,bonus_id=1727
+hands=guileful_intruder_handguards,id=137480,bonus_id=1727
 waist=swordsingers_belt,id=134287,bonus_id=1727
 legs=brinewashed_leather_pants,id=134238,bonus_id=1727
-feet=brinewashed_leather_boots,id=134237,bonus_id=1727
-finger1=prophetic_band,id=130229,bonus_id=667,stats=1768mastery,gems=250mastery,enchant=200mastery
-finger2=prophetic_band,id=130229,bonus_id=667,stats=1768vers,gems=250mastery,enchant=200mastery
+feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
+finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_versatility
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_versatility
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,ilevel=870,relic_id=3412/3412/3412
-off_hand=fangs_of_the_devourer,id=128479,ilevel=870
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=136721/137377/136721,relic_id=1727/1727/1727
+off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
 # gear_ilvl=843.75
-# gear_agility=11283
-# gear_stamina=13641
-# gear_crit_rating=2872
-# gear_haste_rating=1268
-# gear_mastery_rating=8904
-# gear_versatility_rating=4215
+# gear_agility=11083
+# gear_stamina=17630
+# gear_crit_rating=4188
+# gear_haste_rating=3630
+# gear_mastery_rating=4786
+# gear_versatility_rating=4153
 # gear_armor=1957
+# set_bonus=tier19p_leather_2pc=1

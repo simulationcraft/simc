@@ -4282,6 +4282,7 @@ struct death_from_above_t : public rogue_attack_t
       if ( player -> main_hand_attack -> execute_event -> remains() < timespan_t::from_seconds( 0.8 ) )
         player -> main_hand_attack -> execute_event -> reschedule( timespan_t::from_seconds( 0.8 ) );
     }
+
     if ( player -> off_hand_attack && player -> off_hand_attack -> execute_event )
     {
       if ( player -> off_hand_attack -> execute_event -> remains() < timespan_t::from_seconds( 0.8 ) )
@@ -6118,7 +6119,7 @@ void rogue_t::init_action_list()
         } 
         else 
         {
-          def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up");
+          def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
         }
       }
     }
@@ -6151,7 +6152,7 @@ void rogue_t::init_action_list()
         def -> add_action( "run_action_list,name=exsang_combo,if=cooldown.exsanguinate.remains<3&talent.exsanguinate.enabled&(buff.vendetta.up|cooldown.vendetta.remains>15)" );
       }
     }
-    def -> add_action( "call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8" );
+    def -> add_action( "call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8-artifact.bag_of_tricks.enabled" );
     def -> add_action( "call_action_list,name=exsang,if=dot.rupture.exsanguinated" );
     // Refresh Rupture early to ensure a full pandemic Rupture when casting 
     // Exsanguinate if the timing is not good
@@ -6189,7 +6190,7 @@ void rogue_t::init_action_list()
     exsang_combo -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&(!talent.nightstalker.enabled|buff.vanish.up|cooldown.vanish.remains>15)&cooldown.exsanguinate.remains<1" );
       // Some safeguards to make sure Exsanguinate is casted at the right moment
     exsang_combo -> add_talent( this, "Exsanguinate", "if=prev_gcd.rupture&dot.rupture.remains>22+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10" );
-    exsang_combo -> add_action( "call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8" );
+    exsang_combo -> add_action( "call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8-artifact.bag_of_tricks.enabled" );
       // AoE
     exsang_combo -> add_talent( this, "Hemorrhage", "if=spell_targets.fan_of_knives>=2&!ticking" );
     exsang_combo -> add_action( "call_action_list,name=build" );
@@ -6205,29 +6206,30 @@ void rogue_t::init_action_list()
     // Exsanguinated Finishers
     action_priority_list_t* exsang = get_action_priority_list( "exsang" );
       // AoE
-    exsang -> add_action( this, "Rupture", "cycle_targets=1,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6", "Exsanguinated Finishers" );
+    exsang -> add_action( this, "Rupture", "cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6", "Exsanguinated Finishers" );
       // Single
       // Wait for Combo Points if Rupture is about to expire to reapply it as soon as possible
     exsang -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend&ticks_remain<2" );
-    exsang -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1&(dot.rupture.remains>3|dot.rupture.remains>2&spell_targets.fan_of_knives>=3)&spell_targets.fan_of_knives<=6+2*debuff.vendetta.up" );
-    exsang -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&(dot.rupture.remains>3|dot.rupture.remains>2&spell_targets.fan_of_knives>=3)&spell_targets.fan_of_knives<=6+2*debuff.vendetta.up" );
+    exsang -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1&(dot.rupture.remains>3|dot.rupture.remains>2&spell_targets.fan_of_knives>=3)&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6+2*debuff.vendetta.up)" );
+    exsang -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&(dot.rupture.remains>3|dot.rupture.remains>2&spell_targets.fan_of_knives>=3)&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6+2*debuff.vendetta.up)" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish" );
       // AoE
-    finish -> add_action( this, "Rupture", "cycle_targets=1,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6", "Finishers" );
+    finish -> add_action( this, "Rupture", "cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6", "Finishers" );
       // Single
     finish -> add_action( this, "Rupture", "if=combo_points>=cp_max_spend-1&refreshable&!exsanguinated" );
-    finish -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1&spell_targets.fan_of_knives<=7" );
-    finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&spell_targets.fan_of_knives<=6" );
-    finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&spell_targets.fan_of_knives<=6" );
+    finish -> add_talent( this, "Death from Above", "if=combo_points>=cp_max_spend-1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)" );
+    finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)" );
+    finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)" );
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build" );
       // AoE
     build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4", "Builders" );
+    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,max_cycle_targets=3,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives=5" );
       // Replaces Envenom with Fan of Knives after 7 targets / 9 with Vendetta
-    build -> add_action( this, "Fan of Knives", "if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|spell_targets>=7+2*debuff.vendetta.up" );
+    build -> add_action( this, "Fan of Knives", "if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|(!artifact.bag_of_tricks.enabled&spell_targets>=7+2*debuff.vendetta.up)" );
       // Single
     build -> add_action( this, "Fan of Knives", "if=equipped.the_dreadlords_deceit&((buff.the_dreadlords_deceit.stack>=29|buff.the_dreadlords_deceit.stack>=15&debuff.vendetta.remains<=3)&debuff.vendetta.up|buff.the_dreadlords_deceit.stack>=5&cooldown.vendetta.remains>60&cooldown.vendetta.remains<65)" );
     build -> add_talent( this, "Hemorrhage", "if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&(dot.rupture.exsanguinated&dot.rupture.remains<=2|cooldown.exsanguinate.remains<=2))" );

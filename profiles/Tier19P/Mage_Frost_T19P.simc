@@ -4,7 +4,7 @@ race=orc
 role=spell
 position=back
 talents=3022011
-artifact=53:132791:133030:132791:0:783:1:785:3:788:6:789:3:790:3:792:3:793:1:796:1:798:1:1296:1
+artifact=53:132791:133030:132791:0:783:1:786:3:788:6:789:3:790:3:792:3:793:1:795:1:796:1:1296:1
 spec=frost
 
 # This default action priority list is automatically created based on your character.

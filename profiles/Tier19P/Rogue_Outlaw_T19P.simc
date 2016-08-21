@@ -68,28 +68,29 @@ actions.build+=/pistol_shot,if=buff.opportunity.up&energy.time_to_max>2
 actions.build+=/saber_slash
 
 head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727
-neck=subtle_shadowruby_pendant,id=130236,bonus_id=667,stats=1768vers,gems=200agi,enchant_id=5438
-shoulders=steelgazer_hide_mantle,id=134154,bonus_id=1727
-back=imbued_silkweave_drape,id=127020,bonus_id=667,stats=665agi_707vers,enchant=200agi
+neck=chaosforged_necklace,id=137458,bonus_id=1727,enchant=mark_of_the_distant_army
+shoulders=charskin_mantle,id=137510,bonus_id=1727
+back=stole_of_malefic_repose,id=134404,bonus_id=1727,enchant=binding_of_agility
 chest=chestguard_of_insidious_desire,id=137514,bonus_id=1727
-wrists=thermal_bindings,id=134461,bonus_id=1727
-hands=gravelworn_handguards,id=134443,bonus_id=1727
+wrists=cryptwalker_bracers,id=137425,bonus_id=1727
+hands=guileful_intruder_handguards,id=137480,bonus_id=1727
 waist=ravens_veil_belt,id=139243,bonus_id=1727
-legs=wardens_martial_greaves,id=137515,bonus_id=1727
-feet=felbat_leather_boots,id=134369,bonus_id=1727
-finger1=prophetic_band,id=130229,bonus_id=667,stats=1768vers,gems=250crit,enchant=200crit
-finger2=prophetic_band,id=130229,bonus_id=667,stats=1768vers,gems=250crit,enchant=200crit
+legs=brinewashed_leather_pants,id=134238,bonus_id=1727
+feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
+finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_versatility
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_versatility
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727
-main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=870,relic_id=3412/3412/3412
-off_hand=the_dreadblades,id=134552,ilevel=870
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=136683/137472/137365,relic_id=1727/1727/1727
+off_hand=the_dreadblades,id=134552
 
 # Gear Summary
 # gear_ilvl=843.75
-# gear_agility=11283
-# gear_stamina=13640
-# gear_crit_rating=4845
-# gear_haste_rating=2886
-# gear_mastery_rating=2078
-# gear_versatility_rating=7448
+# gear_agility=11083
+# gear_stamina=17629
+# gear_crit_rating=6306
+# gear_haste_rating=3260
+# gear_mastery_rating=3706
+# gear_versatility_rating=3486
 # gear_armor=1957
+# set_bonus=tier19p_leather_2pc=1

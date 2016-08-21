@@ -251,6 +251,7 @@ public:
 
   // Miscellaneous
   double distance_from_rune,
+         global_cinder_count,
          incanters_flow_stack_mult,
          iv_haste,
          pet_multiplier;
@@ -573,6 +574,7 @@ public:
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
   virtual void      create_buffs() override;
+  virtual void      create_options() override;
   virtual void      init_gains() override;
   virtual void      init_procs() override;
   virtual void      init_benefits() override;
@@ -3486,11 +3488,15 @@ struct cinderstorm_t : public fire_mage_spell_t
     parse_options( options_str );
 
     cooldown -> hasted = true;
-    add_child(cinder);
+    add_child( cinder );
   }
 
   virtual void execute() override
   {
+    if ( p() -> global_cinder_count > 0 )
+    {
+      cinder_count = p() -> global_cinder_count;
+    }
     fire_mage_spell_t::execute();
 
     double target_dist = player -> current.distance;
@@ -7307,6 +7313,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   shatterlance( nullptr ),
   last_summoned( temporal_hero_e::INVALID ),
   distance_from_rune( 0.0 ),
+  global_cinder_count( 0 ),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
   pet_multiplier( 1.0 ),
@@ -7475,7 +7482,13 @@ action_t* mage_t::create_proc_action( const std::string& name, const special_eff
   return nullptr;
 }
 
+// mage_t::create_options =====================================================
+void mage_t::create_options()
+{
+  add_option( opt_float( "global_cinder_count", global_cinder_count ) );
 
+  player_t::create_options();
+}
 // mage_t::create_pets ========================================================
 
 void mage_t::create_pets()

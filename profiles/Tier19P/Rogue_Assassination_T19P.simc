@@ -38,7 +38,7 @@ actions+=/rupture,if=combo_points>=4&!ticking
 actions+=/pool_resource,for_next=1
 actions+=/kingsbane,if=!talent.exsanguinate.enabled&(buff.vendetta.up|cooldown.vendetta.remains>10)|talent.exsanguinate.enabled&dot.rupture.exsanguinated
 actions+=/run_action_list,name=exsang_combo,if=cooldown.exsanguinate.remains<3&talent.exsanguinate.enabled&(buff.vendetta.up|cooldown.vendetta.remains>15)
-actions+=/call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8
+actions+=/call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8-artifact.bag_of_tricks.enabled
 actions+=/call_action_list,name=exsang,if=dot.rupture.exsanguinated
 actions+=/rupture,if=talent.exsanguinate.enabled&remains-cooldown.exsanguinate.remains<(4+cp_max_spend*4)*0.3&new_duration-cooldown.exsanguinate.remains>=(4+cp_max_spend*4)*0.3+3
 actions+=/call_action_list,name=finish
@@ -55,7 +55,7 @@ actions.cds+=/vanish,if=talent.subterfuge.enabled&combo_points<=2&!dot.rupture.e
 actions.exsang_combo=vanish,if=talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&gcd.remains=0&energy>=25
 actions.exsang_combo+=/rupture,if=combo_points>=cp_max_spend&(!talent.nightstalker.enabled|buff.vanish.up|cooldown.vanish.remains>15)&cooldown.exsanguinate.remains<1
 actions.exsang_combo+=/exsanguinate,if=prev_gcd.rupture&dot.rupture.remains>22+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10
-actions.exsang_combo+=/call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8
+actions.exsang_combo+=/call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8-artifact.bag_of_tricks.enabled
 actions.exsang_combo+=/hemorrhage,if=spell_targets.fan_of_knives>=2&!ticking
 actions.exsang_combo+=/call_action_list,name=build
 
@@ -66,50 +66,51 @@ actions.garrote+=/pool_resource,for_next=1
 actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated
 
 # Exsanguinated Finishers
-actions.exsang=rupture,cycle_targets=1,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
+actions.exsang=rupture,cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
 actions.exsang+=/rupture,if=combo_points>=cp_max_spend&ticks_remain<2
-actions.exsang+=/death_from_above,if=combo_points>=cp_max_spend-1&(dot.rupture.remains>3|dot.rupture.remains>2&spell_targets.fan_of_knives>=3)&spell_targets.fan_of_knives<=6+2*debuff.vendetta.up
-actions.exsang+=/envenom,if=combo_points>=cp_max_spend-1&(dot.rupture.remains>3|dot.rupture.remains>2&spell_targets.fan_of_knives>=3)&spell_targets.fan_of_knives<=6+2*debuff.vendetta.up
+actions.exsang+=/death_from_above,if=combo_points>=cp_max_spend-1&(dot.rupture.remains>3|dot.rupture.remains>2&spell_targets.fan_of_knives>=3)&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6+2*debuff.vendetta.up)
+actions.exsang+=/envenom,if=combo_points>=cp_max_spend-1&(dot.rupture.remains>3|dot.rupture.remains>2&spell_targets.fan_of_knives>=3)&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6+2*debuff.vendetta.up)
 
 # Finishers
-actions.finish=rupture,cycle_targets=1,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
+actions.finish=rupture,cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
 actions.finish+=/rupture,if=combo_points>=cp_max_spend-1&refreshable&!exsanguinated
-actions.finish+=/death_from_above,if=combo_points>=cp_max_spend-1&spell_targets.fan_of_knives<=7
-actions.finish+=/envenom,if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&spell_targets.fan_of_knives<=6
-actions.finish+=/envenom,if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&spell_targets.fan_of_knives<=6
+actions.finish+=/death_from_above,if=combo_points>=cp_max_spend-1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
+actions.finish+=/envenom,if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
+actions.finish+=/envenom,if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
 
 # Builders
 actions.build=hemorrhage,cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4
-actions.build+=/fan_of_knives,if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|spell_targets>=7+2*debuff.vendetta.up
+actions.build+=/hemorrhage,cycle_targets=1,max_cycle_targets=3,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives=5
+actions.build+=/fan_of_knives,if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|(!artifact.bag_of_tricks.enabled&spell_targets>=7+2*debuff.vendetta.up)
 actions.build+=/fan_of_knives,if=equipped.the_dreadlords_deceit&((buff.the_dreadlords_deceit.stack>=29|buff.the_dreadlords_deceit.stack>=15&debuff.vendetta.remains<=3)&debuff.vendetta.up|buff.the_dreadlords_deceit.stack>=5&cooldown.vendetta.remains>60&cooldown.vendetta.remains<65)
 actions.build+=/hemorrhage,if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&(dot.rupture.exsanguinated&dot.rupture.remains<=2|cooldown.exsanguinate.remains<=2))
 actions.build+=/mutilate,if=combo_points.deficit<=1&energy.deficit<=30
 actions.build+=/mutilate,if=combo_points.deficit>=2&cooldown.garrote.remains>2
 
 head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
-neck=subtle_shadowruby_pendant,id=130236,bonus_id=667,stats=1768vers,gems=200agi,enchant_id=5438
+neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_distant_army
 shoulders=felbat_leather_pauldrons,id=134374,bonus_id=1727
-back=imbued_silkweave_drape,id=127020,bonus_id=667,stats=665agi_707crit,enchant=200agi
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant=binding_of_agility
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
 wrists=felbat_leather_wristwraps,id=134368,bonus_id=1727
 hands=guileful_intruder_handguards,id=137480,bonus_id=1727
 waist=felbat_leather_cinch,id=134375,bonus_id=1727
 legs=felbat_leather_leggings,id=134370,bonus_id=1727
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=200crit
-finger2=prophetic_band,id=130229,bonus_id=667,stats=1768crit,gems=250crit,enchant=200vers
+finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_versatility
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_versatility
 trinket1=hunger_of_the_pack,id=136975,bonus_id=1727
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727
-main_hand=the_kingslayers,id=128870,bonus_id=741,ilevel=870,relic_id=3412/3412/3412
-off_hand=the_kingslayers,id=128869,ilevel=870
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137399/133763/137412,relic_id=1727/1727/1727
+off_hand=the_kingslayers,id=128869
 
 # Gear Summary
 # gear_ilvl=843.75
-# gear_agility=12406
-# gear_stamina=14638
-# gear_crit_rating=10779
+# gear_agility=12206
+# gear_stamina=17629
+# gear_crit_rating=10431
 # gear_haste_rating=1518
 # gear_mastery_rating=1001
-# gear_versatility_rating=3710
+# gear_versatility_rating=3809
 # gear_armor=1957
 # set_bonus=tier19p_leather_2pc=1

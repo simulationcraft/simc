@@ -2,11 +2,13 @@
 # Tier 19 Pre-Raid
 # * Ilvl Cap: 840
 # * Artifact Rank Cap: 18
-# * Standard Mythic 5 Man Loot Only
+# * Standard Mythic 5 Man Loot Only (ie. No Crafted Gear)
 # * No Legendaries
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Warforged/Titanforged)
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 optimal_raid=1
 # tmi_boss=TMI_Standard_Boss_T17L
