@@ -123,8 +123,8 @@ actions.DH+=/zeal,if=holy_power<=4
 actions.DH+=/crusader_strike,if=holy_power<=4
 
 head=crown_of_ash,id=137526,bonus_id=1727
-neck=anshes_pendant,id=139101,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=pauldrons_of_the_allfather,id=133631,bonus_id=1727
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_claw
+shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
 back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727
 wrists=greystone_wristplates,id=139100,bonus_id=1727
@@ -135,7 +135,7 @@ feet=duskwatch_guards_boots,id=137482,bonus_id=1727
 finger1=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=binding_of_haste
 finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_haste
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
-trinket2=spiked_counterweight,id=136715,bonus_id=1727/1492
+trinket2=chrono_shard,id=137419,bonus_id=1727/1492
 main_hand=ashbringer,id=120978,bonus_id=737,gem_id=136717/137316/136717,relic_id=3412/3412/3412
 
 # Gear Summary
