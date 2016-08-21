@@ -24,11 +24,21 @@ actions.precombat+=/arcane_blast
 # Executed every time the actor is available.
 
 actions=counterspell,if=target.debuff.casting.react
+actions+=/time_warp,if=target.health.pct<25|time=0
+actions+=/mark_of_aluneth,if=buff.rune_of_power.up|!talent.rune_of_power.enabled
 actions+=/stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max
-actions+=/time_warp,if=target.health.pct<25|time>5
-actions+=/rune_of_power,if=buff.rune_of_power.remains<2*spell_haste
-actions+=/mirror_image
-actions+=/arcane_blast
+actions+=/start_burn_phase,if=(((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains<=action.rune_of_power.cast_time+gcd|target.time_to_die<cooldown.arcane_power.remains+13)&!prev_gcd.evocation&buff.arcane_charge.stack=4
+actions+=/call_action_list,name=build,if=buff.arcane_charge.stack<4
+actions+=/call_action_list,name=burn,if=burn_phase
+actions+=/rune_of_power,if=recharge_time<cooldown.arcane_power.remains
+actions+=/call_action_list,name=rop_phase,if=buff.rune_of_power.up
+actions+=/call_action_list,name=conserve
+
+actions.conserve=arcane_missiles,if=buff.arcane_missiles.react=3
+actions.conserve+=/supernova,if=mana.pct<100
+actions.conserve+=/nether_tempest,if=(refreshable|!ticking)
+actions.conserve+=/arcane_missiles
+actions.conserve+=/arcane_barrage
 
 head=demon_princes_ascendant_crown,id=124159
 neck=vial_of_immiscible_liquid,id=124212,enchant=gift_of_haste

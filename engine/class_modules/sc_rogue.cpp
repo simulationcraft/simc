@@ -6102,7 +6102,7 @@ void rogue_t::init_action_list()
       def -> add_action( potion_action );
   }
 
-  precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
+  precombat -> add_talent( this, "Marked for Death" );
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
@@ -6119,7 +6119,7 @@ void rogue_t::init_action_list()
         } 
         else 
         {
-          def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up");
+          def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
         }
       }
     }
@@ -6163,7 +6163,7 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds" );
       // Targets the target who will die the sooner to fresh MfD
-    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5", "Cooldowns" );
+    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=combo_points.deficit>=5", "Cooldowns" );
       // If Maalus, simply sync Vendetta with Maalus
     {
       if ( has_maalus )
@@ -6281,7 +6281,7 @@ void rogue_t::init_action_list()
     }
     cds -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
     cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
-    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
+    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled" );
     cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
     cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4" );
 
@@ -6336,7 +6336,7 @@ void rogue_t::init_action_list()
     }
     cds -> add_action( this, "Shadow Blades", "if=!buff.shadow_blades.up" );
     cds -> add_action( this, "Goremaw's Bite", "if=(combo_points.deficit>=2&energy.deficit>55&time<10)|(combo_points.deficit>=4&energy.deficit>45)|target.time_to_die<8" );
-    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
+    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled" );
     
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed" );
