@@ -1844,7 +1844,7 @@ public:
   // Used to trigger Windwalker's Combo Strike Mastery; Triggers prior to calculating damage
   void combo_strikes_trigger( combo_strikes_e new_ability )
   {
-    if ( ( !compare_previous_combo_strikes( new_ability ) && p() -> previous_combo_strike != CS_NONE ) && p() -> mastery.combo_strikes -> ok() )
+    if ( !compare_previous_combo_strikes( new_ability )  && p() -> mastery.combo_strikes -> ok() )
     {
       if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
       {
