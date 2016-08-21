@@ -1332,6 +1332,7 @@ void action_t::execute()
 
   hit_any_target = false;
   num_targets_hit = 0;
+  interrupt_immediate_occurred = false;
 
   if ( harmful )
   {
@@ -2111,6 +2112,7 @@ void action_t::reset()
   line_cooldown.reset_init();
   execute_event = nullptr;
   queue_event = nullptr;
+  interrupt_immediate_occurred = false;
   travel_events.clear();
   target = default_target;
 

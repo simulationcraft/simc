@@ -6673,7 +6673,7 @@ void priest_t::apl_shadow()
   {
     if (true_level > 100)
       default_list->add_action(
-      "potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=40");
+      "potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=40|buff.voidform.stack>80");
     else if (true_level > 90)
       default_list->add_action(
       "potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_"
@@ -6691,17 +6691,17 @@ void priest_t::apl_shadow()
 
   // Choose which APL to use based on talents and fight conditions.
 
+  default_list->add_action("variable,name=s2mcheck,value=0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(5*nonexecute_actors_pct)");
   default_list->add_action(
       "call_action_list,name=s2m,if=buff.voidform.up&buff.surrender_to_madness."
       "up" );
   default_list->add_action( "call_action_list,name=vf,if=buff.voidform.up" );
   default_list->add_action( "call_action_list,name=main" );
 
-
   // Main APL
-  main->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_to_die<=0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(5*nonexecute_actors_pct)");
+  main->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled&target.time_to_die<=variable.s2mcheck");
   main->add_action("mindbender,if=talent.mindbender.enabled&!talent.surrender_to_madness.enabled");
-  main->add_action("mindbender,if=talent.mindbender.enabled&talent.surrender_to_madness.enabled&target.time_to_die>0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(5*nonexecute_actors_pct)+60");
+  main->add_action("mindbender,if=talent.mindbender.enabled&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck+60");
   main->add_action("shadow_word_pain,if=dot.shadow_word_pain.remains<(3+(4%3))*gcd");
   main->add_action("vampiric_touch,if=dot.vampiric_touch.remains<(4+(4%3))*gcd");
   main->add_action("void_eruption,if=insanity>=85|(talent.auspicious_spirits.enabled&insanity>=(80-shadowy_apparitions_in_flight*4))");
@@ -6723,23 +6723,23 @@ void priest_t::apl_shadow()
   main->add_action("shadow_word_pain");
 
   // Voidform APL
-  vf->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_death.up|buff.shadowy_insight.up)&target.time_to_die<=0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(buff.insanity_drain_stacks.stack+5*nonexecute_actors_pct)");
+  vf->add_action("surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-(buff.insanity_drain_stacks.stack)");
   vf->add_action("shadow_crash,if=talent.shadow_crash.enabled");
   vf->add_action("mindbender,if=talent.mindbender.enabled&!talent.surrender_to_madness.enabled");
-  vf->add_action("mindbender,if=talent.mindbender.enabled&talent.surrender_to_madness.enabled&target.time_to_die>0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(buff.insanity_drain_stacks.stack+10*nonexecute_actors_pct)+30");
+  vf->add_action("mindbender,if=talent.mindbender.enabled&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+30");
   vf->add_action("dispersion,if=!buff.power_infusion.up&!buff.berserking.up&!buff.bloodlust.up&artifact.void_torrent.rank&!talent.surrender_to_madness.enabled");
-  vf->add_action("dispersion,if=!buff.power_infusion.up&!buff.berserking.up&!buff.bloodlust.up&artifact.void_torrent.rank&talent.surrender_to_madness.enabled&target.time_to_die>0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(buff.insanity_drain_stacks.stack+10*nonexecute_actors_pct)+(120-10*artifact.from_the_shadows.rank)");
+  vf->add_action("dispersion,if=!buff.power_infusion.up&!buff.berserking.up&!buff.bloodlust.up&artifact.void_torrent.rank&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+(120-10*artifact.from_the_shadows.rank)");
   vf->add_action("power_infusion,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<=30&!talent.surrender_to_madness.enabled");
-  vf->add_action("power_infusion,if=buff.voidform.stack>=10&talent.surrender_to_madness.enabled&target.time_to_die>0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(buff.insanity_drain_stacks.stack+10*nonexecute_actors_pct)+15");
+  vf->add_action("power_infusion,if=buff.voidform.stack>=10&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+15");
   vf->add_action("berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<=20&!talent.surrender_to_madness.enabled");
-  vf->add_action("berserking,if=buff.voidform.stack>=10&talent.surrender_to_madness.enabled&target.time_to_die>0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(buff.insanity_drain_stacks.stack+10*nonexecute_actors_pct)+70");
+  vf->add_action("berserking,if=buff.voidform.stack>=10&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+70");
   vf->add_action("void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&dot.vampiric_touch.remains<3.5*gcd&target.time_to_die>10,cycle_targets=1");
   vf->add_action("void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&(talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled)&target.time_to_die>10,cycle_targets=1");
   vf->add_action("void_bolt,if=dot.vampiric_touch.remains<3.5*gcd&(talent.sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank))&target.time_to_die>10,cycle_targets=1");
   vf->add_action("void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&artifact.sphere_of_insanity.rank&target.time_to_die>10,cycle_targets=1");
   vf->add_action("void_bolt");
   vf->add_action("void_torrent,if=!talent.surrender_to_madness.enabled");
-  vf->add_action("void_torrent,if=talent.surrender_to_madness.enabled&target.time_to_die>0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(buff.insanity_drain_stacks.stack+10*nonexecute_actors_pct)+60");
+  vf->add_action("void_torrent,if=talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+60");
   vf->add_action("shadow_word_death,if=!talent.reaper_of_souls.enabled&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+10)<100");
   vf->add_action("shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+30)<100");
   vf->add_action("wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd.max*0.25");
