@@ -619,8 +619,8 @@ public:
       pet( pets_t() ),
       user_options( options_t() ),
       light_stagger_threshold( 0 ),
-      moderate_stagger_threshold( 0.035 ),
-      heavy_stagger_threshold( 0.065 )
+      moderate_stagger_threshold( 0.0175 ),
+      heavy_stagger_threshold( 0.0325 )
   {
     // actives
     active_celestial_fortune_proc = nullptr;
@@ -1844,7 +1844,7 @@ public:
   // Used to trigger Windwalker's Combo Strike Mastery; Triggers prior to calculating damage
   void combo_strikes_trigger( combo_strikes_e new_ability )
   {
-    if ( !compare_previous_combo_strikes( new_ability )  && p() -> mastery.combo_strikes -> ok() )
+    if ( !compare_previous_combo_strikes( new_ability ) && p() -> mastery.combo_strikes -> ok() )
     {
       if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
       {
@@ -3178,23 +3178,16 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    return pm;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
     if ( p() -> buff.transfer_the_power -> up() )
     {
-      am *= 1 + p() -> buff.transfer_the_power -> stack_value();
+      pm *= 1 + p() -> buff.transfer_the_power -> stack_value();
       p() -> buff.transfer_the_power -> expire();
     }
 
     if ( p() -> artifact.fists_of_the_wind.rank() )
-      am *= 1 + p() -> artifact.fists_of_the_wind.percent();
+      pm *= 1 + p() -> artifact.fists_of_the_wind.percent();
 
-    return am;
+    return pm;
   }
 
   virtual bool ready() override
