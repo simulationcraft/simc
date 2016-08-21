@@ -2279,6 +2279,8 @@ public:
     if ( p() -> talents.eradication -> ok() && td -> debuffs_eradication -> check() )
       m *= 1.0 + p() -> find_spell( 196414 ) -> effectN( 1 ).percent();
 
+    m *= 1.2;
+
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
@@ -3552,31 +3554,38 @@ struct dimensional_rift_t : public warlock_spell_t
 
 struct thalkiels_consumption_t : public warlock_spell_t
 {
-    thalkiels_consumption_t( warlock_t* p ):
-        warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
-    {
+  thalkiels_consumption_t( warlock_t* p ) :
+    warlock_spell_t( "thalkiels_consumption", p, p -> artifact.thalkiels_consumption )
+  {
 
-    }
+  }
 
-    void execute() override
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    double ta_mult = p() -> composite_player_target_multiplier( p() -> target );
+    double p_mult = p() -> composite_player_multiplier( school );
+    double damage = 0;
+
+    for ( auto& pet : p() -> pet_list )
     {
-        warlock_spell_t::execute();
-        double damage = 0;
-        for( auto& pet : p() -> pet_list )
+      pets::warlock_pet_t *lock_pet = static_cast< pets::warlock_pet_t* > ( pet );
+      if ( lock_pet != NULL )
+      {
+        if ( !lock_pet -> is_sleeping() )
         {
-            pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-            if( lock_pet != NULL )
-            {
-                if( !lock_pet->is_sleeping() )
-                {
-                    damage += (double)(lock_pet->resources.max[RESOURCE_HEALTH]) * 0.06; //spelldata
-                }
-            }
+          damage += ( double ) ( lock_pet->resources.max[RESOURCE_HEALTH] ) * 0.06; //spelldata
         }
-        this->base_dd_min = damage;
-        this->base_dd_max = damage;
-        //do other stuff
+      }
     }
+    damage *= ta_mult;
+    damage *= p_mult;
+
+    this -> base_dd_min = damage;
+    this -> base_dd_max = damage;
+    //do other stuff
+  }
 };
 
 // AOE SPELLS
@@ -4923,10 +4932,6 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.deadwind_harvester -> data().effectN( 1 ).percent();
   }
 
-  if ( specialization() == WARLOCK_DEMONOLOGY && ( dbc::is_school( SCHOOL_SHADOW, school ) || dbc::is_school( SCHOOL_FIRE, school ) ) )
-  {
-    m *= 1.0 + artifact.breath_of_thalkiel.percent();
-  }
   return m;
 }
 
