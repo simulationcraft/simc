@@ -22,7 +22,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/apply_poison
 actions.precombat+=/stealth
 actions.precombat+=/potion,name=draenic_agility
-actions.precombat+=/marked_for_death
+actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 
 # Executed every time the actor is available.
 
@@ -44,7 +44,7 @@ actions+=/call_action_list,name=finish
 actions+=/call_action_list,name=build
 
 # Cooldowns
-actions.cds=marked_for_death,target_if=min:target.time_to_die,if=combo_points.deficit>=5
+actions.cds=marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5
 actions.cds+=/vendetta,if=target.time_to_die<20|buff.maalus.react
 actions.cds+=/vanish,if=talent.subterfuge.enabled&combo_points<=2&!dot.rupture.exsanguinated|talent.shadow_focus.enabled&!dot.rupture.exsanguinated&combo_points.deficit>=2
 
