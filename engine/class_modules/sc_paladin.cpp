@@ -3469,7 +3469,7 @@ struct blessing_of_might_proc_t : public paladin_spell_t
   // Disable multipliers in init() so that it doesn't double-dip on anything
   virtual void init() override
   {
-    paladin_melee_attack_t::init();
+    paladin_spell_t::init();
     // Disable the snapshot_flags for all multipliers
     snapshot_flags &= STATE_NO_MULTIPLIER;
   }
