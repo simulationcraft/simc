@@ -4250,7 +4250,7 @@ void player_t::schedule_ready( timespan_t delta_time,
       {
         lag = timespan_t::zero();
       }
-      else if ( last_foreground_action -> channeled )
+      else if ( last_foreground_action -> channeled && !last_foreground_action->interrupt_immediate_occurred)
       {
         lag = rng().gauss( sim -> channel_lag, sim -> channel_lag_stddev );
       }

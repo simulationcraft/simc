@@ -6315,7 +6315,7 @@ void priest_t::create_buffs()
   base_t::create_buffs();
 
   // Talents
-  buffs.power_infusion = buff_creator_t( this, "power_infusion" )
+  buffs.power_infusion = haste_buff_creator_t( this, "power_infusion" )
                              .spell( talents.power_infusion )
                              .add_invalidate( CACHE_SPELL_HASTE )
                              .add_invalidate( CACHE_HASTE );
@@ -6398,7 +6398,7 @@ void priest_t::create_buffs()
 
   buffs.voidform = new buffs::voidform_t( *this );
 
-  buffs.lingering_insanity = buff_creator_t( this, "lingering_insanity" )
+  buffs.lingering_insanity = haste_buff_creator_t( this, "lingering_insanity" )
                                  .spell( find_spell( 197937 ) )
                                  .add_invalidate( CACHE_HASTE );
 

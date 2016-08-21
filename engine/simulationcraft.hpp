@@ -5343,6 +5343,9 @@ public:
   /// Used with tick_action, tells tick_action to update state on every tick.
   bool dynamic_tick_action;
 
+  /// Did a channel action have an interrupt_immediate used to cancel it on it
+  bool interrupt_immediate_occurred;
+
   /// This action will execute every tick
   action_t* tick_action;
 

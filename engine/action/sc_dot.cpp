@@ -784,6 +784,10 @@ bool dot_t::channel_interrupt()
         sim.out_debug.printf( "Dot interrupt check: gcd_ready=%d action_available=%d.", gcd_ready, action_available );
       if ( ( gcd_ready || current_action -> interrupt_immediate ) && action_available )
       {
+        if (current_action->interrupt_immediate)
+        {
+          current_action->interrupt_immediate_occurred = true;
+        }
         // cancel dot
         last_tick();
         return true;
