@@ -1760,13 +1760,15 @@ struct doomguard_t: public warlock_pet_t
 
 struct wild_imp_pet_t: public warlock_pet_t
 {
+  action_t* firebolt;
   stats_t** fel_firebolt_stats;
   stats_t* regular_stats;
+  bool isnotdoge;
 
   wild_imp_pet_t( sim_t* sim, warlock_t* owner ):
-    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), fel_firebolt_stats( nullptr ), regular_stats(nullptr)
+    warlock_pet_t( sim, owner, "wild_imp", PET_WILD_IMP ), fel_firebolt_stats( nullptr ),
+    regular_stats(nullptr)
   {
-    owner_coeff.health = 0.15;
   }
 
   virtual void init_base_stats() override
@@ -1781,19 +1783,20 @@ struct wild_imp_pet_t: public warlock_pet_t
 
   void dismiss( bool expired ) override
   {
-    if ( expired && o() -> artifact.the_expendables.rank() )
-    {
-      for ( auto& pet : o() -> pet_list )
+      if(expired && o()->artifact.the_expendables.rank())
       {
-        pets::warlock_pet_t *lock_pet = static_cast< pets::warlock_pet_t* > ( pet );
-        if ( lock_pet && !lock_pet -> is_sleeping() && lock_pet != this )
-        {
-          lock_pet -> buffs.the_expendables -> trigger();
-          o() -> procs.the_expendables -> occur();
-        }
+          for( auto& pet : o()->pet_list )
+          {
+              pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
+              if( lock_pet && !lock_pet->is_sleeping() && lock_pet != this )
+              {
+                  lock_pet->buffs.the_expendables->bump(1,
+                        buffs.the_expendables->data().effectN( 1 ).percent());
+                  //lock_pet->procs.the_expendable->occur();
+              }
+          }
       }
-    }
-    pet_t::dismiss( expired );
+      pet_t::dismiss( expired );
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1801,26 +1804,37 @@ struct wild_imp_pet_t: public warlock_pet_t
   {
     if ( name == "fel_firebolt" )
     {
-      action_t* a = new actions::fel_firebolt_t( this );
-      fel_firebolt_stats = &( a -> stats );
+      firebolt = new actions::fel_firebolt_t( this );
+      fel_firebolt_stats = &( firebolt -> stats );
       if ( this == o() -> warlock_pet_list.wild_imps[ 0 ] || sim -> report_pets_separately )
       {
-        regular_stats = a -> stats;
+        regular_stats = firebolt -> stats;
       }
       else
       {
         regular_stats = o() -> warlock_pet_list.wild_imps[ 0 ] -> get_stats( "fel_firebolt" );
       }
-      return a;
+      return firebolt;
     }
 
     return warlock_pet_t::create_action( name, options_str );
   }
 
-  void trigger()
+  void arise() override
   {
+      warlock_pet_t::arise();
+
+      if(isnotdoge)
+      {
+         firebolt->cooldown->start(timespan_t::from_millis(rng().range( 500 , 1500 )));         firebolt->cooldown->start(timespan_t::from_millis(rng().range( 500 , 1500 )));
+      }
+  }
+
+  void trigger(bool isdoge = false)
+  {
+    isnotdoge = !isdoge;
     *fel_firebolt_stats = regular_stats;
-      summon( timespan_t::from_millis( 12000 ) );
+    summon( timespan_t::from_millis( 12001 ) );
   }
 };
 
@@ -2327,14 +2341,14 @@ public:
       td -> dots_seed_of_corruption -> cancel();
   }
 
-  static void trigger_wild_imp( warlock_t* p )
+  static void trigger_wild_imp( warlock_t* p, bool doge = false )
   {
     for ( size_t i = 0; i < p -> warlock_pet_list.wild_imps.size(); i++ )
     {
       if ( p -> warlock_pet_list.wild_imps[i] -> is_sleeping() )
       {
 
-        p -> warlock_pet_list.wild_imps[i] -> trigger();
+        p -> warlock_pet_list.wild_imps[i] -> trigger(doge);
         p -> procs.wild_imp -> occur();
         return;
       }
@@ -2989,8 +3003,9 @@ struct hand_of_guldan_t: public warlock_spell_t
     trigger_imp_event_t( warlock_t* p, int c, bool init = false ) :
       player_event_t( *p ), initiator( init ), count( c )//Use original corruption until DBC acts more friendly.
     {
-      add_event( rng().range( timespan_t::from_millis( 500 ),
-        timespan_t::from_millis( 1500 ) ) );
+      //add_event( rng().range( timespan_t::from_millis( 500 ),
+      //  timespan_t::from_millis( 1500 ) ) );
+      add_event(timespan_t::from_millis(1));
     }
 
     virtual const char* name() const override
@@ -4064,7 +4079,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
     {
       for ( size_t i = 0; i < improved_dreadstalkers; i++ )
       {
-        trigger_wild_imp( p() );
+        trigger_wild_imp( p(), true );
         p() -> procs.improved_dreadstalkers -> occur();
       }
     }
