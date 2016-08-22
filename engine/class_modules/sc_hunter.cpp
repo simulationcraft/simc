@@ -3323,6 +3323,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
     travel_speed      = 0.0;
     weapon            = &p -> main_hand_weapon;
     weapon_multiplier = p -> find_spell( 212621 ) -> effectN( 2 ).percent();
+    normalize_weapon_speed = true;
 
     if ( p -> artifacts.windrunners_guidance.rank() )
       base_multiplier *= 1.0 + p -> artifacts.windrunners_guidance.percent();
