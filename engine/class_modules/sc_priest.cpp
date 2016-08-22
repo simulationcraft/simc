@@ -6691,7 +6691,11 @@ void priest_t::apl_shadow()
 
   // Choose which APL to use based on talents and fight conditions.
 
-  default_list->add_action("variable,name=s2mcheck,value=0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(5*nonexecute_actors_pct)");
+  default_list->add_action("variable,op=set,name=actors_fight_time_mod,value=0");
+  default_list->add_action("variable,op=set,name=actors_fight_time_mod,value=-((-(450)+(time+target.time_to_die))%10),if=time+target.time_to_die>450&time+target.time_to_die<600");
+  default_list->add_action("variable,op=set,name=actors_fight_time_mod,value=((450-(time+target.time_to_die))%5),if=time+target.time_to_die<=450");
+  default_list->add_action("variable,op=set,name=s2mcheck,value=0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(variable.actors_fight_time_mod*nonexecute_actors_pct)");
+  default_list->add_action("variable,op=min,name=s2mcheck,value=180");
   default_list->add_action(
       "call_action_list,name=s2m,if=buff.voidform.up&buff.surrender_to_madness."
       "up" );
