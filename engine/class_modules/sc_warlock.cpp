@@ -582,7 +582,7 @@ namespace pets {
     {
       travel_t( player_t* player ): action_t( ACTION_OTHER, "travel", player ) {}
       void execute() override { player -> current.distance = 1; }
-      timespan_t execute_time() const override { return timespan_t::from_seconds( player -> current.distance / 35.0 ); }
+      timespan_t execute_time() const override { return timespan_t::from_seconds( player -> current.distance / 33.0 ); }
       bool ready() override { return ( player -> current.distance > 1 ); }
       bool usable_moving() const override { return true; }
     };
@@ -1708,7 +1708,7 @@ struct lord_of_flames_infernal_t : public warlock_pet_t
   lord_of_flames_infernal_t( sim_t* sim, warlock_t* owner ) :
     warlock_pet_t( sim, owner, "lord_of_flames_infernal", PET_INFERNAL )
   {
-    duration = o() -> find_spell( 226804 ) -> duration();
+    duration = o() -> find_spell( 226804 ) -> duration() + timespan_t::from_millis( 1 );
   }
 
   virtual void init_base_stats() override
@@ -3507,9 +3507,9 @@ struct dimensional_rift_t : public warlock_spell_t
   dimensional_rift_t( warlock_t* p ):
     warlock_spell_t( "dimensional_rift", p, p -> artifact.dimensional_rift )
   {
-    shadowy_tear_duration = timespan_t::from_millis( 14000 );
-    chaos_tear_duration = timespan_t::from_millis( 5000 );
-    chaos_portal_duration = timespan_t::from_millis( 5500 );
+    shadowy_tear_duration = timespan_t::from_millis( 14001 );
+    chaos_tear_duration = timespan_t::from_millis( 5001 );
+    chaos_portal_duration = timespan_t::from_millis( 5501 );
   }
 
   void execute() override
@@ -3924,7 +3924,7 @@ struct summon_doomguard_t: public warlock_spell_t
     if ( p -> talents.grimoire_of_supremacy -> ok() )
       doomguard_duration = timespan_t::from_seconds( -1 );
     else
-      doomguard_duration = p -> find_spell( 111685 ) -> duration();
+      doomguard_duration = p -> find_spell( 111685 ) -> duration() + timespan_t::from_millis( 1 );
   }
 
   virtual void execute() override
@@ -3973,7 +3973,7 @@ struct summon_infernal_t : public warlock_spell_t
       infernal_duration = timespan_t::from_seconds( -1 );
     else
     {
-      infernal_duration = p -> find_spell( 111685 ) -> duration();
+      infernal_duration = p -> find_spell( 111685 ) -> duration() + timespan_t::from_millis( 1 );
       infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
       infernal_awakening -> stats = stats;
     }
@@ -4015,7 +4015,7 @@ struct summon_darkglare_t : public warlock_spell_t
 
     //cooldown = p -> cooldowns.doomguard;
     //cooldown->duration = data().cooldown();
-    darkglare_duration = data().duration();
+    darkglare_duration = data().duration() + timespan_t::from_millis( 1 );
   }
 
   virtual void execute() override
@@ -4656,7 +4656,7 @@ struct grimoire_of_service_t: public summon_pet_t
   {
     cooldown = p -> get_cooldown( "grimoire_of_service" );
     cooldown -> duration = data().cooldown();
-    summoning_duration = data().duration();
+    summoning_duration = data().duration() + timespan_t::from_millis( 1 );
 
   }
 
