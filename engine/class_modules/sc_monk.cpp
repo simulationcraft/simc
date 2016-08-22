@@ -6890,7 +6890,7 @@ void monk_t::create_buffs()
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
   // The proc gives 3%; even though tooltip and datamining say 5% per stack
-    .default_value( artifact.transfer_the_power.rank() ?  0.3 /* artifact.transfer_the_power.percent() */ : 0 ); 
+    .default_value( artifact.transfer_the_power.rank() ?  0.03 /* artifact.transfer_the_power.percent() */ : 0 ); 
 
   // Legendaries
   buff.hidden_masters_forbidden_touch = buff_creator_t( this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
