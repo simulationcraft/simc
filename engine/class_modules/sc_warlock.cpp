@@ -1267,7 +1267,7 @@ void warlock_pet_t::create_buffs()
 
   buffs.the_expendables = buff_creator_t( this, "the_expendables", find_spell( 211218 ))
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .chance(1)
+    .chance( 1 )
     .default_value( find_spell( 211218 ) -> effectN( 1 ).percent() );
 }
 
@@ -4100,17 +4100,20 @@ struct summon_soul_effigy_t : public warlock_spell_t
 
 struct demonbolt_t : public warlock_spell_t
 {
+  cooldown_t* icd;
+
   demonbolt_t( warlock_t* p ) :
     warlock_spell_t( "demonbolt", p, p -> talents.demonbolt )
   {
-
     energize_type = ENERGIZE_ON_CAST;
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 1;
 
-    if ( p->sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) )
+    icd = p -> get_cooldown( "discord_icd" );
+
+    if ( p -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) )
     {
-      if ( rng().roll( p->sets.set( WARLOCK_DEMONOLOGY, T17, B4 )->effectN( 1 ).percent() ) )
+      if ( rng().roll( p -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) -> effectN( 1 ).percent() ) )
       {
         energize_amount++;
       }
@@ -4167,7 +4170,7 @@ struct demonbolt_t : public warlock_spell_t
     if ( p() -> buffs.shadowy_inspiration -> check() )
       p() -> buffs.shadowy_inspiration -> expire();
 
-    if ( p() -> artifact.thalkiels_discord.rank() )
+    if ( p() -> artifact.thalkiels_discord.rank() && icd -> up() )
     {
       if ( rng().roll( p() -> artifact.thalkiels_discord.data().proc_chance() ) )
       {
@@ -4181,6 +4184,7 @@ struct demonbolt_t : public warlock_spell_t
           .action( p() -> active.thalkiels_discord ) );
 
         p() -> procs.thalkiels_discord -> occur();
+        icd -> start( timespan_t::from_seconds( 6.0 ));
       }
     }
 
