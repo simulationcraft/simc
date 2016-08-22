@@ -6368,7 +6368,7 @@ void druid_t::apl_precombat()
       switch ( specialization() )
       {
         case DRUID_FERAL:
-          food = "the_hungry_magister";
+          food = "nightborne_delicacy_platter";
           break;
         default: // placeholder
           food = "azshari_salad";
@@ -6398,6 +6398,10 @@ void druid_t::apl_precombat()
       precombat -> add_action( "food,type=" + food );
   }
 
+  // Augmentation Rune
+  if ( true_level > 100 )
+    precombat -> add_action( "augmentation,type=defiled" );
+
   // Mark of the Wild
   precombat -> add_action( this, "Mark of the Wild", "if=!aura.str_agi_int.up" );
 
@@ -6420,9 +6424,6 @@ void druid_t::apl_precombat()
     precombat -> add_action( this, "Moonkin Form" );
     precombat -> add_action( "blessing_of_elune" );
   }
-
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -6521,8 +6522,6 @@ void druid_t::apl_feral()
     potion_action += "deadly_grace";
   else if ( true_level > 90 )
     potion_action += "draenic_agility";
-  else if ( true_level > 85 )
-    potion_action += "tolvir";
   else
     potion_action += "tolvir";
 

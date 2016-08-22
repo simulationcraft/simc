@@ -18,9 +18,9 @@ spec=balance
 
 actions.precombat=flask,type=flask_of_the_whispered_pact
 actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/moonkin_form
 actions.precombat+=/blessing_of_elune
-actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
