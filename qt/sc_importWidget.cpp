@@ -114,7 +114,7 @@ void BattleNetImportWidget::parseRealmListFile( QFile& file )
     {
         auto model = new QStandardItemModel( this );
         //model -> insertRows( 0, realmList.size() );
-        for ( size_t i = 0, end = realmList.size(); i < end; ++i )
+        for ( int i = 0, end = realmList.size(); i < end; ++i )
         {
             const auto& data = realmList[ i ];
             QStandardItem* item = new QStandardItem( data.first );

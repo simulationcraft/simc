@@ -351,8 +351,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   loadHistory();
 
 #if defined( Q_OS_MAC ) || defined( VS_NEW_BUILD_SYSTEM )
-  auto newImport = new BattleNetImportWindow( this );
-  connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), newImport -> widget(), SLOT( armoryRegionChanged( const QString& ) ) );
+  new BattleNetImportWindow( this );
 #endif /* Q_OS_MAC || VS_NEW_BUILD_SYSTEM */
 }
 
