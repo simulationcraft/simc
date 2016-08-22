@@ -442,6 +442,9 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
 
   execute_event = start_action_execute_event( time_to_execute, execute_state );
 
+  if ( trigger_gcd > timespan_t::zero() )
+    player -> off_gcdactions.clear();
+
   if ( ! background )
   {
     if ( player -> queueing == this )
