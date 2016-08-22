@@ -2563,8 +2563,20 @@ struct necrobomb_t : public death_knight_spell_t
     death_knight_spell_t( "necrobomb", p, p -> find_spell( 191758 ) )
   {
     background = true;
-    may_crit = false;
     aoe = -1;
+  }
+
+  // 2016-08-22 Necrobomb is not affected by Feast of Souls because reasons.
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    if ( p() -> artifact.feast_of_souls.rank() )
+    {
+      m /= 1.0 + p() -> artifact.feast_of_souls.percent();
+    }
+
+    return m;
   }
 
   void init() override
