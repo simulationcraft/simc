@@ -266,6 +266,10 @@ public:
 
   } artifact;
 
+  struct legendary_t
+  {
+  } legendary;
+
   // Glyphs
   struct glyphs_t
   {
@@ -2924,6 +2928,12 @@ struct doom_t: public warlock_spell_t
     energize_amount = 1;
   }
 
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t duration = warlock_spell_t::composite_dot_duration( s );
+    return duration * p() -> cache.spell_haste();
+  }
+
   virtual double action_multiplier()const override
   {
     double m = warlock_spell_t::action_multiplier();
@@ -4873,7 +4883,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     shard_react( timespan_t::zero() ),
     affliction_trinket( nullptr ),
     demonology_trinket( nullptr ),
-    destruction_trinket( nullptr )
+    destruction_trinket( nullptr ),
+    legendary( legendary_t() )
 {
   base.distance = 40;
 
