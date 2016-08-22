@@ -4433,6 +4433,18 @@ void warrior_t::apl_arms()
     }
   }
 
+  for ( size_t i = 0; i < items.size(); i++ )
+  {
+    if ( items[i].name_str == "thorasus_the_stone_heart_of_draenor" )
+    {
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
+    }
+    else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
+    }
+  }
+
   default_list -> add_action( this, "Heroic Leap", "if=buff.shattered_defenses.down" );
   default_list -> add_talent( this, "Rend", "if=remains<gcd" );
   default_list -> add_action( this, "Hamstring", "if=talent.deadly_calm.enabled&buff.battle_cry.up" );
