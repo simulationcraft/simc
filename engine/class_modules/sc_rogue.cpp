@@ -6103,6 +6103,11 @@ void rogue_t::init_action_list()
 
   precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
 
+  if ( specialization() == ROGUE_OUTLAW )
+  {
+    precombat -> add_action( this, "Roll the Bones", "if=!talent.slice_and_dice.enabled" );
+  }
+
   if ( specialization() == ROGUE_ASSASSINATION )
   {
     bool has_maalus = false;
@@ -6244,17 +6249,21 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_OUTLAW )
   {
     // Main Rotation
-    def -> add_action( "call_action_list,name=bf" );
+    def -> add_action( "variable,name=rtb_reroll,value=((!talent.slice_and_dice.enabled)&(rtb_buffs<=1&!(equipped.thraxis_tricksy_treads&buff.true_bearing.up)))", " Condition to continue rerolling RtB; if SnD, consider that you never have to reroll" );
+    def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))", " Condition to use Saber Slash when not rerolling RtB or when using SnD" );
+    def -> add_action( "variable,name=ss_useable,value=((talent.anticipation.enabled&(combo_points<4))|(!talent.anticipation.enabled&(variable.rtb_reroll&(combo_points<4+talent.deeper_stratagem.enabled)|!variable.rtb_reroll&variable.ss_useable_noreroll)))", " Condition to use Saber Slash, when you have RtB or not" );
+    def -> add_action( "call_action_list,name=bf", " Normal rotation" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=stealth" );
-    def -> add_talent( this, "Death from Above", "if=energy.time_to_max>2&combo_points>=action.run_through.cp_max_spend-(buff.broadsides.up&buff.jolly_roger.up)" );
+      // Make DfA have priority over RtB
+    def -> add_talent( this, "Death from Above", "if=energy.time_to_max>2&!variable.ss_useable_noreroll" );
       // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
-    def -> add_talent( this, "Slice and Dice", "if=combo_points>=5&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
+    def -> add_talent( this, "Slice and Dice", "if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
       // Reroll unless 2+ buffs or legendary boot & true bearing
-    def -> add_action( this, "Roll the Bones", "if=combo_points>=5&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|(rtb_buffs<=1&(!equipped.thraxis_tricksy_treads|!buff.true_bearing.up)))" );
+    def -> add_action( this, "Roll the Bones", "if=!variable.ss_useable&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
     def -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
-    def -> add_action( "call_action_list,name=finish,if=combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
-    def -> add_action( "call_action_list,name=build,if=combo_points<action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
+    def -> add_action( "call_action_list,name=build" );
+    def -> add_action( "call_action_list,name=finish,if=!variable.ss_useable" );
 
     // Blade Flurry
     action_priority_list_t* bf = get_action_priority_list( "bf" );
@@ -6282,14 +6291,15 @@ void rogue_t::init_action_list()
     cds -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
     cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
-    cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&combo_points>=action.run_through.cp_max_spend-1-(buff.broadsides.up&buff.jolly_roger.up)+cooldown.death_from_above.up" );
-    cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4" );
+    cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&!variable.ss_useable" );
+    cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth" );
+    stealth -> add_action( "variable,name=stealth_condition,value=(combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&!buff.hidden_blade.up&!buff.curse_of_the_dreadblades.up)", " Condition to use stealth abilities" );
     stealth -> add_action( this, "Ambush", "", "Stealth" );
-    stealth -> add_action( this, "Vanish", "if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up" );
-    stealth -> add_action( "shadowmeld,if=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up&artifact.hidden_blade.enabled&!buff.curse_of_the_dreadblades.up" );
+    stealth -> add_action( this, "Vanish", "if=variable.stealth_condition" );
+    stealth -> add_action( "shadowmeld,if=variable.stealth_condition" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish" );
@@ -6298,9 +6308,9 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build" );
-    build -> add_talent( this, "Ghostly Strike", "if=talent.ghostly_strike.enabled&debuff.ghostly_strike.remains<4.5", " Builders" );
-    build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&energy.time_to_max>2" );
-    build -> add_action( this, "Saber Slash");
+    build -> add_talent( this, "Ghostly Strike", "if=talent.ghostly_strike.enabled&(debuff.ghostly_strike.remains<4.5|cooldown.curse_of_the_dreadblades.remains<3)&combo_points.deficit>=1+buff.broadsides.up&!buff.curse_of_the_dreadblades.up&(combo_points>=3|variable.rtb_reroll&time>=10)", " Builders" );
+    build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&energy.time_to_max>2-talent.quick_draw.enabled&combo_points.deficit>=1+buff.broadsides.up" );
+    build -> add_action( this, "Saber Slash", "if=variable.ss_useable" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
