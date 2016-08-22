@@ -26,7 +26,7 @@ actions.precombat+=/potion,name=unbending_potion
 # Executed every time the actor is available.
 
 actions=auto_attack
-actions+=/use_item,slot=trinket1
+actions+=/use_item,name=shivermaws_jawbone
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -73,7 +73,7 @@ actions.prot_aoe+=/hammer_of_the_righteous
 # Invoke by adding "actions+=/run_action_list,name=max_dps" to the beginning of the default APL.
 
 actions.max_dps=auto_attack
-actions.max_dps+=/use_item,name=horn_of_valor
+actions.max_dps+=/use_item,name=shivermaws_jawbone
 actions.max_dps+=/blood_fury
 actions.max_dps+=/berserking
 actions.max_dps+=/arcane_torrent
@@ -82,7 +82,7 @@ actions.max_dps+=/arcane_torrent
 # Invoke by adding "actions+=/run_action_list,name=max_survival" to the beginning of the default APL.
 
 actions.max_survival=auto_attack
-actions.max_survival+=/use_item,name=horn_of_valor
+actions.max_survival+=/use_item,name=shivermaws_jawbone
 actions.max_survival+=/blood_fury
 actions.max_survival+=/berserking
 actions.max_survival+=/arcane_torrent
@@ -101,19 +101,17 @@ finger1=ring_of_contempt,id=134490,bonus_id=1727,enchant_id=5427
 finger2=ring_of_looming_menace,id=134533,bonus_id=1727,enchant_id=5427
 trinket1=shivermaws_jawbone,id=137440,bonus_id=1727
 trinket2=impenetrable_nerubian_husk,id=137430,bonus_id=1727
-#trinket1=horn_of_valor,id=133642,bonus_id=1727
-#trinket2=infernal_alchemist_stone,id=127842,bonus_id=667
 main_hand=oathseeker,id=128867,gem_id=137548/136778/137547,relic_id=3412/3412/3412
 off_hand=truthguard,id=128866,ilevel=870
 
 # Gear Summary
 # gear_ilvl=843.75
 # gear_strength=9969
-# gear_stamina=17944
+# gear_stamina=19067
 # gear_crit_rating=1891
-# gear_haste_rating=8656
+# gear_haste_rating=9554
 # gear_mastery_rating=680
-# gear_versatility_rating=6616
+# gear_versatility_rating=4820
 # gear_armor=3965
 # set_bonus=march_of_the_legion_2pc=1
 # set_bonus=tier19p_plate_2pc=1
