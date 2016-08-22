@@ -343,6 +343,7 @@ public:
   struct artifact_spells_t
   {
     // Beast Mastery
+    artifact_power_t hatis_bond;
     artifact_power_t beast_master;
     artifact_power_t titans_thunder;
     artifact_power_t master_of_beasts;
@@ -5296,7 +5297,7 @@ void hunter_t::create_pets()
       pet_dire_beasts[ i ] = new pets::dire_critter_t( *this  );
   }
 
-  if ( artifact_enabled() && specialization() == HUNTER_BEAST_MASTERY )
+  if ( artifacts.hatis_bond.rank() )
     hati = new pets::hati_t( *this );
 
   if ( talents.black_arrow -> ok() )
@@ -5435,6 +5436,7 @@ void hunter_t::init_spells()
 
 
   // Artifact spells
+  artifacts.hatis_bond               = find_artifact_spell( "Hati's Bond" );
   artifacts.titans_thunder           = find_artifact_spell( "Titan's Thunder" );
   artifacts.beast_master             = find_artifact_spell( "Beast Master" );
   artifacts.master_of_beasts         = find_artifact_spell( "Master of Beasts" );
