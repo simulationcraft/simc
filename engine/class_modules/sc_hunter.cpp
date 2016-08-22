@@ -5297,7 +5297,7 @@ void hunter_t::create_pets()
       pet_dire_beasts[ i ] = new pets::dire_critter_t( *this  );
   }
 
-  if ( artifacts.hatis_bond.rank() && specialization() == HUNTER_BEAST_MASTERY )
+  if ( artifacts.hatis_bond.rank() )
     hati = new pets::hati_t( *this );
 
   if ( talents.black_arrow -> ok() )
