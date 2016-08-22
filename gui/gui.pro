@@ -68,6 +68,9 @@ win32 {
   #RC_FILE = ../qt/simcqt.rc
   RC_ICONS = ../qt/icon/Simcraft2.ico
   DEFINES += VS_NEW_BUILD_SYSTEM
+  CONFIG(debug, debug|release) {
+    CONFIG += console
+  }
 }
 
 # Deplopyment for Linux, note, the cli project also copies profiles
