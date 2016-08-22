@@ -6146,9 +6146,7 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 void demon_hunter_t::apl_havoc()
 {
   talent_overrides_str +=
-    "/blind_fury,if=desired_targets+raid_event.adds.count>=4";
-  talent_overrides_str +=
-    "/chaos_cleave,if=desired_targets>1|raid_event.adds.exists";
+    "/fel_barrage,if=desired_targets>1|raid_event.adds.exists";
 
   action_priority_list_t* def = get_action_priority_list( "default" );
 
