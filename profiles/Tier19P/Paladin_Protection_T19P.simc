@@ -26,7 +26,7 @@ actions.precombat+=/potion,name=unbending_potion
 # Executed every time the actor is available.
 
 actions=auto_attack
-actions+=/use_item,name=horn_of_valor
+actions+=/use_item,slot=trinket1
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -99,8 +99,8 @@ legs=tassets_of_ravenous_euphoria,id=134516,bonus_id=1727
 feet=rockbound_sabatons,id=134141,bonus_id=1727
 finger1=ring_of_contempt,id=134490,bonus_id=1727,enchant_id=5427
 finger2=ring_of_looming_menace,id=134533,bonus_id=1727,enchant_id=5427
-trinket1=horn_of_valor,id=133642,bonus_id=1727
-trinket2=infernal_alchemist_stone,id=127842,bonus_id=667
+trinket1=shivermaws_jawbone,id=137440,bonus_id=1727
+trinket2=impenetrable_nerubian_husk,id=137430,bonus_id=1727
 main_hand=oathseeker,id=128867,gem_id=137548/136778/137547,relic_id=3412/3412/3412
 off_hand=truthguard,id=128866,ilevel=870
 
