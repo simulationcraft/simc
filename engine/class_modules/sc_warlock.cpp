@@ -404,6 +404,7 @@ public:
     proc_t* stolen_power_used;
     proc_t* t18_demo_4p;
     proc_t* souls_consumed;
+    proc_t* the_expendables;
   } procs;
 
   struct spells_t
@@ -573,11 +574,6 @@ namespace pets {
       buff_t* the_expendables;
     } buffs;
 
-    struct procs_t
-    {
-      proc_t* the_expendable;
-    } procs;
-
     bool is_grimoire_of_service = false;
     bool is_demonbolt_enabled = true;
     bool is_lord_of_flames = false;
@@ -597,10 +593,6 @@ namespace pets {
       if ( name == "travel" ) return new travel_t( this );
 
       return pet_t::create_action( name, options_str );
-    }
-    void init_procs() override
-    {
-        procs.the_expendable = get_proc( "the_expendables" );
     }
   };
 
@@ -1273,9 +1265,10 @@ void warlock_pet_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .chance( 1 );
 
-  buffs.the_expendables = buff_creator_t( this, "the_expendables", find_spell(211218))
-          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-          .chance(1);
+  buffs.the_expendables = buff_creator_t( this, "the_expendables", find_spell( 211218 ))
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .chance(1)
+    .default_value( find_spell( 211218 ) -> effectN( 1 ).percent() );
 }
 
 void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
@@ -1788,20 +1781,19 @@ struct wild_imp_pet_t: public warlock_pet_t
 
   void dismiss( bool expired ) override
   {
-      if(expired && o()->artifact.the_expendables.rank())
+    if ( expired && o() -> artifact.the_expendables.rank() )
+    {
+      for ( auto& pet : o() -> pet_list )
       {
-          for( auto& pet : o()->pet_list )
-          {
-              pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-              if( lock_pet && !lock_pet->is_sleeping() && lock_pet != this )
-              {
-                  lock_pet->buffs.the_expendables->bump(1,
-                        buffs.the_expendables->data().effectN( 1 ).percent());
-                  lock_pet->procs.the_expendable->occur();
-              }
-          }
+        pets::warlock_pet_t *lock_pet = static_cast< pets::warlock_pet_t* > ( pet );
+        if ( lock_pet && !lock_pet -> is_sleeping() && lock_pet != this )
+        {
+          lock_pet -> buffs.the_expendables -> trigger();
+          o() -> procs.the_expendables -> occur();
+        }
       }
-      pet_t::dismiss( expired );
+    }
+    pet_t::dismiss( expired );
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -5567,6 +5559,7 @@ void warlock_t::init_procs()
   procs.soul_conduit = get_proc( "soul_conduit" );
   procs.t18_demo_4p = get_proc( "t18_demo_4p" );
   procs.souls_consumed = get_proc( "souls_consumed" );
+  procs.the_expendables = get_proc( "the_expendables" );
 }
 
 void warlock_t::apl_precombat()
