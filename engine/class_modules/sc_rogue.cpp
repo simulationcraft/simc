@@ -3161,7 +3161,7 @@ struct pistol_shot_t : public shot_base_t
 
   double action_multiplier() const override
   {
-    double m = rogue_attack_t::action_multiplier();
+    double m = shot_base_t::action_multiplier();
 
     if ( p() -> buffs.greenskins_waterlogged_wristcuffs -> up() )
     {
