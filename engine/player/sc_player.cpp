@@ -4150,8 +4150,8 @@ void player_t::reset()
 
   resource_threshold_trigger = 0;
 
-  for(auto & elem : variables)
-    elem.reset();
+  for ( auto& elem : variables )
+    elem -> reset();
 
 #ifndef NDEBUG
   for (auto & elem : active_dots)
@@ -6156,19 +6156,19 @@ struct variable_t : public action_t
     }
 
     // Find the variable
-    for (auto & elem : player -> variables)
+    for ( auto& elem : player -> variables )
     {
-      if ( util::str_compare_ci( elem.name_, name_ ) )
+      if ( util::str_compare_ci( elem -> name_, name_ ) )
       {
-        var = &( elem );
+        var = elem;
         break;
       }
     }
 
     if ( ! var )
     {
-      player -> variables.push_back( action_variable_t( name_, default_ ) );
-      var = &( player -> variables.back() );
+      player -> variables.push_back( new action_variable_t( name_, default_ ) );
+      var = player -> variables.back();
     }
   }
 
@@ -8559,11 +8559,11 @@ expr_t* player_t::create_expression( action_t* a,
       variable_expr_t( player_t* p, const std::string& name ) :
         expr_t( "variable" ), player_( p ), var_( 0 )
       {
-        for (auto & elem : player_ -> variables)
+        for ( auto& elem : player_ -> variables )
         {
-          if ( util::str_compare_ci( name, elem.name_ ) )
+          if ( util::str_compare_ci( name, elem -> name_ ) )
           {
-            var_ = &( elem );
+            var_ = elem;
             break;
           }
         }

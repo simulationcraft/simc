@@ -4430,7 +4430,7 @@ struct player_t : public actor_t
 
   rng::rng_t& rng() { return sim -> rng(); }
   rng::rng_t& rng() const { return sim -> rng(); }
-  std::vector<action_variable_t> variables;
+  auto_dispose<std::vector<action_variable_t*>> variables;
   // Add 1ms of time to ensure that we finish this run. This is necessary due
   // to the millisecond accuracy in our timing system.
   virtual timespan_t time_to_move() const

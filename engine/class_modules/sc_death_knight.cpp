@@ -9,7 +9,6 @@
 // - Festering Strike Festering Wound generation probability distribution
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // - Portal to the Underworld damage is messed up (by ~3%).
-// - "The Shambler" is not benefiting from mastery in game
 // - Armies of the Damned is not implemented
 // Blood
 //
