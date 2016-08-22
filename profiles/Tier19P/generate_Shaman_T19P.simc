@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 talents=3003112
-artifact=41:137358:137469:137421:0:899:1:901:1:902:1:903:1:904:1:905:1:906:1:907:3:909:3:910:3:911:3:912:3:1351:1
+artifact=41:137316:137543:133682:0:899:1:901:1:902:1:903:1:904:1:905:1:906:1:907:3:909:3:910:3:911:3:912:3:1351:1
 spec=enhancement
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
 neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant_id=5890
@@ -20,7 +20,7 @@ finger1=grasping_tentacle_loop,id=133634,bonus_id=1727,enchant_id=5429
 finger2=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant_id=5429
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727
-main_hand=doomhammer,id=128819,bonus_id=741,gem_id=137358/137469/137421,relic_id=3412/3412/3412
+main_hand=doomhammer,id=128819,bonus_id=741,gem_id=137316/137543/133682,relic_id=3412/3412/3412
 off_hand=fury_of_the_stonemother,id=128873,ilevel=870
 save=Shaman_Enhancement_T19P.simc
 
