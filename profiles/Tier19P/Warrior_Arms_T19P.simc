@@ -34,6 +34,7 @@ actions+=/avatar,if=debuff.colossus_smash.remains>=5|(debuff.colossus_smash.up&c
 actions+=/blood_fury,if=buff.battle_cry.up
 actions+=/berserking,if=buff.battle_cry.up
 actions+=/arcane_torrent,if=rage<rage.max-40
+actions+=/use_item,name=faulty_countermeasure,if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)
 actions+=/heroic_leap,if=buff.shattered_defenses.down
 actions+=/rend,if=remains<gcd
 actions+=/hamstring,if=talent.deadly_calm.enabled&buff.battle_cry.up
