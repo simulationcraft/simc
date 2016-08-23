@@ -763,23 +763,32 @@ void option_db_t::parse_token( const std::string& token )
     return;
   }
 
-  std::string::size_type cut_pt = token.find( '=' );
+  std::string parsed_token = token;
+  std::string::size_type cut_pt = parsed_token.find( '=' );
+
+  // Expand the token with template variables, and try to find '=' again
+  if ( cut_pt == std::string::npos )
+  {
+    do_replace( *this, parsed_token, parsed_token.find( "$(" ), 1 );
+
+    cut_pt = parsed_token.find( "=" );
+  }
 
   if ( cut_pt == token.npos )
   {
     std::string actual_name;
-    io::cfile file = open_file( auto_path, token, actual_name );
+    io::cfile file = open_file( auto_path, parsed_token, actual_name );
     if ( ! file )
     {
       std::stringstream s;
-      s << "Unexpected parameter '" << token << "'. Expected format: name=value";
+      s << "Unexpected parameter '" << parsed_token << "'. Expected format: name=value";
       throw std::invalid_argument( s.str() );
     }
     parse_file( file );
     return;
   }
 
-  std::string name( token, 0, cut_pt ), value( token, cut_pt + 1, token.npos );
+  std::string name( parsed_token, 0, cut_pt ), value( parsed_token, cut_pt + 1, std::string::npos );
 
   do_replace( *this, value, value.find( "$(" ), 1 );
 
@@ -788,7 +797,7 @@ void option_db_t::parse_token( const std::string& token )
     if ( name.size() < 3 || name[ 1 ] != '(' || name[ name.size() - 1 ] != ')' )
     {
       std::stringstream s;
-      s << "Variable syntax error: '" << token << "'";
+      s << "Variable syntax error: '" << parsed_token << "'";
       throw std::invalid_argument( s.str() );
     }
     auto var_name = name.substr( 2, name.size() - 3 );
