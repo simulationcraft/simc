@@ -233,6 +233,7 @@ public:
   // Active
   double runic_power_decay_rate;
   double fallen_crusader, fallen_crusader_rppm;
+  double aotd_proc_chance;
   double antimagic_shell_absorbed;
 
   // Counters
@@ -541,6 +542,7 @@ public:
     runic_power_decay_rate(),
     fallen_crusader( 0 ),
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
+    aotd_proc_chance( 0.2 ),
     antimagic_shell_absorbed( 0.0 ),
     pestilent_pustules( 0 ),
     antimagic_shell( nullptr ),
@@ -1414,8 +1416,8 @@ struct army_pet_t : public base_ghoul_pet_t
         return;
       }
 
-      // Presume 10% chance to trigger per claw execute
-      if ( ! rng().roll( p() -> o() -> artifact.armies_of_the_damned.data().effectN( 1 ).percent() ) )
+      // 2016-08-23 Add a 20% default proc chance
+      if ( ! rng().roll( p() -> o() -> aotd_proc_chance ) )
       {
         return;
       }
@@ -7131,6 +7133,7 @@ void death_knight_t::create_options()
 
   add_option( opt_float( "fallen_crusader_str", fallen_crusader ) );
   add_option( opt_float( "fallen_crusader_rppm", fallen_crusader_rppm ) );
+  add_option( opt_float( "aotd_proc_chance", aotd_proc_chance ) );
 
 }
 
