@@ -7093,7 +7093,11 @@ void priest_t::combat_begin()
       bool found_non_stm_players =
           ( sim->player_list.end() !=
             range::find_if( sim->player_list, [this]( const player_t* p ) {
-              if ( p->specialization() != PRIEST_SHADOW )
+              if (p->role == ROLE_NONE)
+              {
+                return false;
+              }
+              else if (p->specialization() != PRIEST_SHADOW)
               {
                 return true;
               }
