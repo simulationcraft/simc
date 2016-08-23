@@ -6889,8 +6889,7 @@ void monk_t::create_buffs()
                               .cd( timespan_t::zero() );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
-  // The proc gives 3%; even though tooltip and datamining say 5% per stack
-    .default_value( artifact.transfer_the_power.rank() ?  0.03 /* artifact.transfer_the_power.percent() */ : 0 ); 
+    .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
 
   // Legendaries
   buff.hidden_masters_forbidden_touch = buff_creator_t( this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
@@ -8637,6 +8636,18 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Monk", "2016-08-23", "[unannounced] Transfer the Power has been reduced to 3% per stack (was 5%).", 286702 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 5 );
+
+    hotfix::register_effect( "Monk", "2016-08-23", "[unannounced] Transfer the Power has been reduced to 3% per stack (was 5%).", 286727 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 5 );
+
   }
 
   virtual void init( player_t* p ) const override
