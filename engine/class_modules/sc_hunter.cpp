@@ -2683,6 +2683,7 @@ struct barrage_t: public hunter_ranged_attack_t
       may_crit = true;
       weapon = &( player -> main_hand_weapon );
       aoe = -1;
+      base_aoe_multiplier = 0.5;
       range = radius;
       range = 0;
       travel_speed = 0.0;
