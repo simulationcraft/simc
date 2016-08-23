@@ -3268,12 +3268,18 @@ struct chains_of_ice_t : public death_knight_spell_t
 
 // Clawing Shadows ==========================================================
 
-struct clawing_shadows_t : public death_knight_spell_t
+struct clawing_shadows_t : public death_knight_melee_attack_t
 {
   clawing_shadows_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "clawing_shadows", p, p -> talent.clawing_shadows )
+    death_knight_melee_attack_t( "clawing_shadows", p, p -> talent.clawing_shadows )
   {
     parse_options( options_str );
+
+    weapon = &( player -> main_hand_weapon );
+
+    // HOTFIX 2016-08-23: Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).
+    weapon_multiplier = 1.3;
+    normalize_weapon_speed = true;
   }
 
   int n_targets() const override
@@ -3281,7 +3287,7 @@ struct clawing_shadows_t : public death_knight_spell_t
 
   double action_multiplier() const override
   {
-    double m = death_knight_spell_t::action_multiplier();
+    double m = death_knight_melee_attack_t::action_multiplier();
 
     if ( p() -> buffs.necrosis -> up() )
     {
@@ -3293,14 +3299,14 @@ struct clawing_shadows_t : public death_knight_spell_t
 
   void execute() override
   {
-    death_knight_spell_t::execute();
+    death_knight_melee_attack_t::execute();
 
     p() -> buffs.necrosis -> decrement();
   }
 
   void impact( action_state_t* state ) override
   {
-    death_knight_spell_t::impact( state );
+    death_knight_melee_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
@@ -7470,9 +7476,8 @@ struct death_knight_module_t : public module_t {
     hotfix::register_effect( "Death Knight", "2016-08-23", "Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).", 324719 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.30 )
-      .verification_value( 1.50 );
-
+      .modifier( 0 )
+      .verification_value( 1.5 );
   }
 
   void init( player_t* ) const override {}
