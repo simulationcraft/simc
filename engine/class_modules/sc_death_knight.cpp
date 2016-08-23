@@ -7478,6 +7478,12 @@ struct death_knight_module_t : public module_t {
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0 )
       .verification_value( 1.5 );
+
+    hotfix::register_effect( "Death Knight", "2016-08-23", "Blood Boil's damage has been reduced by 39%.", 43101 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1 - 0.39 )
+      .verification_value( 3.75 );
   }
 
   void init( player_t* ) const override {}
