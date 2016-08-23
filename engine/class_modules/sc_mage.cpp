@@ -2756,6 +2756,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     wild_arcanist_effect( 0.0 )
   {
     parse_options( options_str );
+    base_costs[ RESOURCE_MANA ] = 0.03 * player -> resources.base[ RESOURCE_MANA ];
     triggers_arcane_missiles = false; // Disable default AM proc logic.
     base_multiplier *= 1.0 + p -> artifact.blasting_rod.percent();
 
@@ -9374,6 +9375,24 @@ public:
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Mage", "2016-8-23", "Critical Mass critical strike multiplier lowered from 1.3 to 1.1.", 132772 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10 )
+      .verification_value( 30 );
+
+    hotfix::register_effect( "Mage", "2016-8-23", "Fire Mage critical strike chance has been increased by 5%. (modeled into molten armor)", 20069 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20 )
+      .verification_value( 15 );
+
+   /* TODO: Add the resource field to .field() in order to do this.
+   hotfix::register_spell( "Mage", "2016-8-23", "Arcane Blast mana cost has been decreased to 3.0% base mana (was 3.2%).", 30451 )
+      .field( "pct_cost" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3.0 )
+      .verification_value( 3.2 );*/
   }
 
   virtual bool valid() const override { return true; }
