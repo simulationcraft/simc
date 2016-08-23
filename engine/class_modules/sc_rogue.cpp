@@ -7785,8 +7785,31 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()             );
   }
 
-  virtual void register_hotfixes() const override
+  void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2016-08-23", "Envenom damage has been increased to 60% Attack Power per point (was 50%).", 22420 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.6 )
+      .verification_value( 0.5 );
+
+    hotfix::register_effect( "Rogue", "2016-08-23", "Deadly Poison instant damage has been increased to 17% Attack Power (was 14.2%).", 126788 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.17 )
+      .verification_value( 0.142 );
+
+    hotfix::register_effect( "Rogue", "2016-08-23", "Rupture damage has been decreased to 25% Attack Power (was 30%).", 586 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.25 )
+      .verification_value( 0.3 );
+
+    hotfix::register_spell( "Rogue", "2016-08-23", "Agonizing Poison now stacks 5 times (was 4).", 200803 )
+      .field( "max_stack" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 5 )
+      .verification_value( 4 );
   }
 
   virtual void init( player_t* ) const override {}

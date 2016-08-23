@@ -7465,7 +7465,16 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 215068, taktheritrixs_shoulderpads_t() );
   }
 
-  void register_hotfixes() const override {}
+  void register_hotfixes() const override
+  {
+    hotfix::register_effect( "Death Knight", "2016-08-23", "Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).", 324719 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.30 )
+      .verification_value( 1.50 );
+
+  }
+
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}
