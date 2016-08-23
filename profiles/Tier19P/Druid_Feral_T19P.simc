@@ -100,7 +100,7 @@ actions.sbt_opener=healing_touch,if=talent.bloodtalons.enabled&combo_points=5&!b
 actions.sbt_opener+=/tigers_fury,if=!dot.rip.ticking&combo_points=5
 
 head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
-neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727,enchant=mark_of_the_hidden_satyr
+neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727,enchant=mark_of_the_distant_army
 shoulders=mantle_of_the_dark_sea,id=137332,bonus_id=1727
 back=mainsail_cloak,id=134406,bonus_id=1727,enchant=binding_of_agility
 chest=biornskin_vest,id=134197,bonus_id=1727
