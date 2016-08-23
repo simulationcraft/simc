@@ -6172,6 +6172,11 @@ struct variable_t : public action_t
     }
   }
 
+  ~variable_t()
+  {
+    delete value_expression;
+  }
+
   // Note note note, doesn't do anything that a real action does
   void execute() override
   {
