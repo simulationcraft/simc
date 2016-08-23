@@ -17,8 +17,7 @@ namespace { // UNNAMED NAMESPACE
   Affinity active components
   Artifact 20 rank traits?
   Ekowraith, Creator of Worlds legendary
-  Cinidaria, the Symbiote
-  Sephuz's Secret
+  Weapon Damage scaling issue
 
   Feral =====================================================================
   Predator vs. adds
@@ -41,7 +40,6 @@ namespace { // UNNAMED NAMESPACE
   Statistics?
   Incarnation CD modifier rework
   Check Galactic Guardian proc sources
-  New rage from damage taken formula (Bristling Fur)
 
   Resto =====================================================================
   All the things

@@ -2,7 +2,7 @@
 if exist simc_cache.dat del /s simc_cache.dat
 :: Preraid doesn't match the typical pattern
 ::cd profiles/PreRaid
-::%~dp0\simc64.exe generate_PreRaid.simc
+::%~dp0\simc.exe generate_PreRaid.simc
 ::cd ../
 
 if exist simc.exe goto 32
