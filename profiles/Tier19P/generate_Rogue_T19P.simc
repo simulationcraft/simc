@@ -31,7 +31,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=1310023
+talents=1310022
 artifact=44:136683:137472:137365:0:1052:1:1054:1:1057:1:1060:3:1061:6:1063:1:1064:3:1065:3:1066:3:1348:1
 spec=outlaw
 
