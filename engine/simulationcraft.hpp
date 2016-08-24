@@ -2613,6 +2613,7 @@ struct item_t
     timespan_t               initial_cd;
     unsigned                 drop_level;
     std::array<std::vector<unsigned>, 4> relic_data;
+    std::array<unsigned, 4> relic_bonus_ilevel;
 
     parsed_input_t() :
       item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
@@ -2623,6 +2624,7 @@ struct item_t
       range::fill( gem_id, 0 );
       range::fill( bonus_id, 0 );
       range::fill( gem_color, SOCKET_COLOR_NONE );
+      range::fill( relic_bonus_ilevel, 0 );
     }
   } parsed;
 
