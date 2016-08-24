@@ -540,6 +540,9 @@ public:
 
     double toravons;
 
+    // Unholy
+    unsigned the_instructors_fourth_lesson;
+
   } legendary;
 
   // Runes
@@ -4734,11 +4737,18 @@ struct remorseless_winter_t : public death_knight_spell_t
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
+
+  std::array<double, 6> instructors_chance;
+
   scourge_strike_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell )
   {
     weapon = &( player -> main_hand_weapon );
+
+    instructors_chance = { { .2, .4, .2, .1, .05, .05 } };
   }
+
+  
 
   int n_targets() const override
   { return td( target ) -> in_aoe_radius() ? -1 : 0; }
@@ -4785,6 +4795,24 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
       if ( p() -> talent.castigator -> ok() && state -> result == RESULT_CRIT )
       {
         n_burst += p() -> talent.castigator -> effectN( 2 ).base_value();
+      }
+
+      if (p()->legendary.the_instructors_fourth_lesson)
+      {
+        assert(instructors_chance.size() == p()->legendary.instructors_fourth_lesson + 1);
+        double roll = rng().real();
+        double sum = 0;
+        
+        for (size_t i = 0; i < instructors_chance.size(); i++)
+        {
+          sum += instructors_chance[i];
+
+          if (roll <= sum)
+          {
+            n_burst += i;
+            break;
+          }
+        }
       }
 
       burst_festering_wound( state, n_burst );
@@ -6990,6 +7018,8 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.t18_4pc_unholy -> data().effectN( 2 ).percent();
   }
 
+
+
   return m;
 }
 
@@ -7392,18 +7422,18 @@ struct reapers_harvest_unholy_t : public scoped_action_callback_t<virulent_plagu
   }
 };
 
-struct reapers_harvest_blood_t : public scoped_action_callback_t<marrowrend_t>
+struct reapers_harvest_blood_t : public scoped_action_callback_t < marrowrend_t >
 {
-  reapers_harvest_blood_t() : super( DEATH_KNIGHT_BLOOD, "marrowrend" )
+  reapers_harvest_blood_t() : super(DEATH_KNIGHT_BLOOD, "marrowrend")
   { }
 
-  void manipulate( marrowrend_t* action, const special_effect_t& e ) override
+  void manipulate(marrowrend_t* action, const special_effect_t& e) override
   {
-    double coeff = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
+    double coeff = e.driver()->effectN(1).average(e.item) / 100.0;
 
-    action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).average( e.item ) / 100.0;
-    action -> unholy_coil_coeff = coeff;
-    action -> unholy_coil = new unholy_coil_t( action -> p(), e.item );
+    action->base_multiplier *= 1.0 + e.driver()->effectN(2).average(e.item) / 100.0;
+    action->unholy_coil_coeff = coeff;
+    action->unholy_coil = new unholy_coil_t(action->p(), e.item);
   }
 };
 
@@ -7439,6 +7469,7 @@ struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knigh
     }
   }
 
+
   void create_buff( pets::death_knight_pet_t* pet )
   {
     if ( ! pet )
@@ -7447,6 +7478,17 @@ struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knigh
     pet -> taktheritrix = buff_creator_t( pet, "taktheritrixs_command", pet -> find_spell( 215069 ) )
       .default_value( pet -> find_spell( 215069 ) -> effectN( 1 ).percent() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+};
+
+struct the_instructors_fourth_lesson_t : public scoped_actor_callback_t < death_knight_t >
+{
+  the_instructors_fourth_lesson_t() : super(DEATH_KNIGHT_UNHOLY)
+  {}
+
+  void manipulate(death_knight_t* p, const special_effect_t& e) override
+  {
+    p->legendary.the_instructors_fourth_lesson = e.driver()->effectN(1).base_value();
   }
 };
 
@@ -7472,6 +7514,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 184897, reapers_harvest_blood_t()  );
     unique_gear::register_special_effect( 215068, taktheritrixs_shoulderpads_t() );
     unique_gear::register_special_effect(205658, toravons_bindings_t());
+    unique_gear::register_special_effect(208713, the_instructors_fourth_lesson_t());
   }
 
   void register_hotfixes() const override
@@ -7495,7 +7538,7 @@ struct death_knight_module_t : public module_t {
   void combat_end( sim_t* ) const override {}
 };
 
-} // UNNAMED NAMESPACE
+}// UNNAMED NAMESPACE
 
 const module_t* module_t::death_knight() {
   static death_knight_module_t m;
