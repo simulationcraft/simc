@@ -534,6 +534,14 @@ public:
     proc_t* km_natural_expiration;
   } procs;
 
+  // Legendaries
+  struct {
+    // Frost
+
+    double toravons;
+
+  } legendary;
+
   // Runes
   runes_t _runes;
 
@@ -6524,11 +6532,12 @@ void death_knight_t::create_buffs()
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
   buffs.obliteration        = buff_creator_t( this, "obliteration", talent.obliteration )
                               .cd( timespan_t::zero() ); // Handled by action
-  buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
-                              .cd( timespan_t::zero() )
-                              .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() )
-                              .add_invalidate( CACHE_STRENGTH )
-                              .add_invalidate( artifact.frozen_core.rank() ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE );
+  buffs.pillar_of_frost = buff_creator_t(this, "pillar_of_frost", find_class_spell("Pillar of Frost"))
+                              .cd(timespan_t::zero())
+                              .default_value(find_class_spell("Pillar of Frost")->effectN(1).percent())
+                              .add_invalidate(CACHE_STRENGTH)
+                              .add_invalidate(artifact.frozen_core.rank() ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE)
+                              .add_invalidate(legendary.toravons ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE);
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.rime );
   buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
@@ -6964,9 +6973,10 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     if ( mastery.frozen_heart -> ok() )
       m *= 1.0 + cache.mastery_value();
 
-    if ( artifact.frozen_core.rank() && buffs.pillar_of_frost -> up() )
+    if ( buffs.pillar_of_frost -> up() )
     {
       m *= 1.0 + artifact.frozen_core.percent();
+      m *= 1.0 + legendary.toravons;
     }
 
     m *= 1.0 + artifact.cold_as_ice.percent();
@@ -7397,6 +7407,17 @@ struct reapers_harvest_blood_t : public scoped_action_callback_t<marrowrend_t>
   }
 };
 
+struct toravons_bindings_t : public scoped_actor_callback_t < death_knight_t >
+{
+  toravons_bindings_t() : super(DEATH_KNIGHT_FROST)
+   {}
+  
+    void manipulate(death_knight_t* p, const special_effect_t& e) override
+    {
+    p->legendary.toravons = e.driver()->effectN(1).percent();
+    }
+ };
+
 struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knight_t>
 {
   taktheritrixs_shoulderpads_t() : super( DEATH_KNIGHT_UNHOLY )
@@ -7450,6 +7471,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 184983, reapers_harvest_unholy_t() );
     unique_gear::register_special_effect( 184897, reapers_harvest_blood_t()  );
     unique_gear::register_special_effect( 215068, taktheritrixs_shoulderpads_t() );
+    unique_gear::register_special_effect(205658, toravons_bindings_t());
   }
 
   void register_hotfixes() const override
