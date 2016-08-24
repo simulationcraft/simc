@@ -7886,12 +7886,6 @@ struct rogue_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 30 )
       .verification_value( 40 );
-
-    hotfix::register_effect( "Rogue", "2016-08-23-3", "[unannounced] Master Poisoner effectiveness has been decreased to 30% (was 40%).", 343395 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15 )
-      .verification_value( 20 );
   }
 
   virtual void init( player_t* ) const override {}
