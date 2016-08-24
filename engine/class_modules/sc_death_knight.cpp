@@ -3266,55 +3266,6 @@ struct chains_of_ice_t : public death_knight_spell_t
   }
 };
 
-// Clawing Shadows ==========================================================
-
-struct clawing_shadows_t : public death_knight_melee_attack_t
-{
-  clawing_shadows_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "clawing_shadows", p, p -> talent.clawing_shadows )
-  {
-    parse_options( options_str );
-
-    weapon = &( player -> main_hand_weapon );
-
-    // HOTFIX 2016-08-23: Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).
-    weapon_multiplier = 1.3;
-    normalize_weapon_speed = true;
-  }
-
-  int n_targets() const override
-  { return td( target ) -> in_aoe_radius() ? -1 : 0; }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_melee_attack_t::action_multiplier();
-
-    if ( p() -> buffs.necrosis -> up() )
-    {
-      m *= 1.0 + p() -> buffs.necrosis -> stack_value();
-    }
-
-    return m;
-  }
-
-  void execute() override
-  {
-    death_knight_melee_attack_t::execute();
-
-    p() -> buffs.necrosis -> decrement();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_melee_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      burst_festering_wound( state, 1 );
-    }
-  }
-};
-
 // Dancing Rune Weapon ======================================================
 
 struct dancing_rune_weapon_t : public death_knight_spell_t
@@ -4771,9 +4722,82 @@ struct remorseless_winter_t : public death_knight_spell_t
   }
 };
 
-// Scourge Strike ===========================================================
+// Scourge Strike and Clawing Shadows =======================================
 
-struct scourge_strike_t : public death_knight_melee_attack_t
+struct scourge_strike_base_t : public death_knight_melee_attack_t
+{
+  scourge_strike_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
+    death_knight_melee_attack_t( name, p, spell )
+  {
+    weapon = &( player -> main_hand_weapon );
+  }
+
+  int n_targets() const override
+  { return td( target ) -> in_aoe_radius() ? -1 : 0; }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_melee_attack_t::action_multiplier();
+
+    if ( p() -> buffs.necrosis -> up() )
+    {
+      m *= 1.0 + p() -> buffs.necrosis -> stack_value();
+    }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
+
+    m *= 1.0 + td( target ) -> debuff.scourge_of_worlds -> stack_value();
+
+    return m;
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    p() -> buffs.necrosis -> decrement();
+    if ( rng().roll( p() -> artifact.scourge_the_unbeliever.percent() ) )
+    {
+      p() -> replenish_rune( 1, p() -> gains.scourge_the_unbeliever );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_melee_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      int n_burst = 1;
+      if ( p() -> talent.castigator -> ok() && state -> result == RESULT_CRIT )
+      {
+        n_burst += p() -> talent.castigator -> effectN( 2 ).base_value();
+      }
+
+      burst_festering_wound( state, n_burst );
+    }
+  }
+};
+
+struct clawing_shadows_t : public scourge_strike_base_t
+{
+  clawing_shadows_t( death_knight_t* p, const std::string& options_str ) :
+    scourge_strike_base_t( "clawing_shadows", p, p -> talent.clawing_shadows )
+  {
+    parse_options( options_str );
+
+    // HOTFIX 2016-08-23: Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).
+    weapon_multiplier = 1.3;
+    normalize_weapon_speed = true;
+  }
+};
+
+struct scourge_strike_t : public scourge_strike_base_t
 {
   struct scourge_strike_shadow_t : public death_knight_melee_attack_t
   {
@@ -4822,7 +4846,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
   scourge_strike_shadow_t* scourge_strike_shadow;
 
   scourge_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "scourge_strike", p, p -> find_class_spell( "Scourge Strike" ) ),
+    scourge_strike_base_t( "scourge_strike", p, p -> find_specialization_spell( "Scourge Strike" ) ),
     scourge_strike_shadow( new scourge_strike_shadow_t( p ) )
   {
     parse_options( options_str );
@@ -4830,58 +4854,15 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     add_child( scourge_strike_shadow );
   }
 
-  int n_targets() const override
-  { return td( target ) -> in_aoe_radius() ? -1 : 0; }
-
-  void execute() override
-  {
-    death_knight_melee_attack_t::execute();
-
-    p() -> buffs.necrosis -> decrement();
-    if ( rng().roll( p() -> artifact.scourge_the_unbeliever.percent() ) )
-    {
-      p() -> replenish_rune( 1, p() -> gains.scourge_the_unbeliever );
-    }
-  }
-
   void impact( action_state_t* state ) override
   {
-    death_knight_melee_attack_t::impact( state );
+    scourge_strike_base_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
       scourge_strike_shadow -> target = state -> target;
       scourge_strike_shadow -> execute();
-
-      int n_burst = 1;
-      if ( state -> result == RESULT_CRIT && p() -> talent.castigator -> ok() )
-      {
-        n_burst += p() -> talent.castigator -> effectN( 2 ).base_value();
-      }
-
-      burst_festering_wound( state, n_burst );
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_melee_attack_t::action_multiplier();
-
-    if ( p() -> buffs.necrosis -> up() )
-    {
-      m *= 1.0 + p() -> buffs.necrosis -> stack_value();
-    }
-
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
-
-    m *= 1.0 + td( target ) -> debuff.scourge_of_worlds -> stack_value();
-
-    return m;
   }
 
   bool ready() override
@@ -4891,7 +4872,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       return false;
     }
 
-    return death_knight_melee_attack_t::ready();
+    return scourge_strike_base_t::ready();
   }
 };
 
