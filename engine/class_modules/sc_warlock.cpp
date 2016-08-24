@@ -268,6 +268,7 @@ public:
 
   struct legendary_t
   {
+    timespan_t wilfreds_sigil_of_superior_summoning;
   } legendary;
 
   // Glyphs
@@ -297,6 +298,7 @@ public:
     cooldown_t* doomguard;
     cooldown_t* dimensional_rift;
     cooldown_t* haunt;
+    cooldown_t* sindorei_spite_icd;
   } cooldowns;
 
   // Passives
@@ -350,6 +352,9 @@ public:
     buff_t* conflagration_of_chaos;
     buff_t* lord_of_flames;
     buff_t* embrace_chaos;
+
+    // legendary buffs
+    buff_t* sindorei_spite;
 
   } buffs;
 
@@ -1316,6 +1321,9 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   {
      m *= 1.0 +  o() -> cache.mastery_value();
   }
+
+  m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
+
   return m;
 }
 
@@ -3973,6 +3981,12 @@ struct summon_doomguard_t: public warlock_spell_t
         p() -> warlock_pet_list.doomguard[i] -> summon( doomguard_duration );
       }
     }
+    if ( p() -> cooldowns.sindorei_spite_icd -> up() )
+    {
+      p() -> buffs.sindorei_spite -> up();
+      p() -> buffs.sindorei_spite -> trigger();
+      p() -> cooldowns.sindorei_spite_icd -> start( timespan_t::from_seconds( 180.0 ) );
+    }
   }
 };
 
@@ -4033,6 +4047,13 @@ struct summon_infernal_t : public warlock_spell_t
     {
       trigger_lof_infernal( p() );
       p() -> buffs.lord_of_flames -> trigger();
+    }
+
+    if ( p() -> cooldowns.sindorei_spite_icd -> up() )
+    {
+      p() -> buffs.sindorei_spite -> up();
+      p() -> buffs.sindorei_spite -> trigger();
+      p() -> cooldowns.sindorei_spite_icd -> start( timespan_t::from_seconds( 180.0 ) );
     }
   }
 };
@@ -4922,6 +4943,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     cooldowns.doomguard = get_cooldown( "summon_doomguard" );
     cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
     cooldowns.haunt = get_cooldown( "haunt" );
+    cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -4981,6 +5003,8 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.deadwind_harvester -> data().effectN( 1 ).percent();
   }
+
+  m *= 1.0 + buffs.sindorei_spite -> check_stack_value();
 
   return m;
 }
@@ -6779,6 +6803,35 @@ struct recurrent_ritual_t : public scoped_action_callback_t<call_dreadstalkers_t
   }
 };
 
+struct wilfreds_sigil_of_superior_summoning_t : public scoped_actor_callback_t<warlock_t>
+{
+  wilfreds_sigil_of_superior_summoning_t() : super( WARLOCK )
+  {}
+
+  void manipulate( warlock_t* p, const special_effect_t& e ) override
+  {
+    p -> legendary.wilfreds_sigil_of_superior_summoning = e.driver() -> effectN( 1 ).time_value();
+  }
+};
+
+struct sindorei_spite_t : public class_buff_cb_t<warlock_t>
+{
+  sindorei_spite_t() : super( WARLOCK, "sindorei_spite" )
+  {}
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return actor( e ) -> buffs.sindorei_spite;
+  }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+      .spell( e.driver() -> effectN( 1 ).trigger() )
+      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -6801,6 +6854,8 @@ struct warlock_module_t: public module_t
     register_special_effect( 205797, hood_of_eternal_disdain_t() );
     register_special_effect( 214225, kazzaks_final_curse_t() );
     register_special_effect( 205721, recurrent_ritual_t() );
+    register_special_effect( 214345, wilfreds_sigil_of_superior_summoning_t() );
+    register_special_effect( 208868, sindorei_spite_t(), true );
   }
 
   virtual void register_hotfixes() const override
