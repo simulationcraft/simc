@@ -68,7 +68,7 @@ actions.aoe+=/blackout_kick,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,
 actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi.max-chi>1)&!prev_gcd.tiger_palm,cycle_targets=1
 
 head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_trained_solder
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_trained_soldier
 shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727
 back=cape_of_valarjar_courage,id=133765,bonus_id=1727,enchant=binding_of_agility
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
@@ -90,6 +90,6 @@ off_hand=fists_of_the_heavens,id=133948
 # gear_stamina=17365
 # gear_crit_rating=4120
 # gear_haste_rating=1511
-# gear_mastery_rating=7395
+# gear_mastery_rating=7695
 # gear_versatility_rating=4563
 # gear_armor=1957
