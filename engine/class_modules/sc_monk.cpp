@@ -2996,13 +2996,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
   }
 
-  void init() override
-  {
-    monk_melee_attack_t::init();
-
-    update_flags &= ~STATE_HASTE;
-  }
-
   // N full ticks, but never additional ones.
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
