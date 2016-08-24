@@ -984,6 +984,28 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += ", enchant: " + item.parsed.encoded_enchant;
     }
 
+    auto has_relics = range::find_if( item.parsed.relic_bonus_ilevel, []( unsigned v ) { return v != 0; } );
+    if ( has_relics != item.parsed.relic_bonus_ilevel.end() )
+    {
+      item_sim_desc += ", relics: { ";
+      auto first = true;
+      for ( auto bonus: item.parsed.relic_bonus_ilevel )
+      {
+        if ( bonus == 0 )
+        {
+          continue;
+        }
+
+        if ( ! first )
+        {
+          item_sim_desc += ", ";
+        }
+        item_sim_desc += "+" + util::to_string( bonus ) + " ilevels";
+        first = false;
+      }
+      item_sim_desc += " }";
+    }
+
     os.format(
         "<tr>\n"
         "<th class=\"left\" colspan=\"2\"></th>\n"
