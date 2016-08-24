@@ -1226,9 +1226,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
 
-    timespan_t composite_dot_duration( const action_state_t* s ) const override { return timespan_t::from_millis( 4000 ); }
+//    timespan_t composite_dot_duration( const action_state_t* s ) const override { return timespan_t::from_millis( 4000 ); }
 
-    timespan_t tick_time( const action_state_t* ) const override { return timespan_t::from_millis( 1000 ); }
+//    timespan_t tick_time( const action_state_t* ) const override { return timespan_t::from_millis( 1000 ); }
   };
 
   struct sef_spinning_crane_kick_t : public sef_melee_attack_t
@@ -1236,7 +1236,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "spinning_crane_kick", player, player -> o() -> spec.spinning_crane_kick )
     {
-      tick_zero = interrupt_auto_attack = interrupt =  true;
+      tick_zero = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
@@ -4134,7 +4134,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     parse_options( options_str );
 
-    channeled = tick_may_crit = true;
+    channeled = tick_may_crit = interrupt =  true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     interrupt_auto_attack = true;
   }
