@@ -4799,7 +4799,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
       if (p()->legendary.the_instructors_fourth_lesson)
       {
-        assert(instructors_chance.size() == p()->legendary.instructors_fourth_lesson + 1);
+        assert(instructors_chance.size() == p()->legendary.the_instructors_fourth_lesson + 1);
         double roll = rng().real();
         double sum = 0;
         
