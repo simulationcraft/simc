@@ -5623,46 +5623,6 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
     } );
   }
 
-  // Get the number of actors in the simulation that do not have execute abilities
-  else if (name_str == "nonexecute_actors_pct")
-  {
-    return make_fn_expr(name_str, [this]() {
-      double execute = 0.0;
-      double nonexecute = 0.0;
-
-      for (size_t i = 0; i < sim->player_list.size(); ++i)
-      {
-        player_t* p = sim->player_list[i];
-
-        if (p->role != ROLE_NONE)
-        {
-          switch (p->specialization())
-          {
-          case HUNTER_MARKSMANSHIP:
-            if (p->true_level > 100) // Assume Bullseye artifact trait
-            {
-              execute += 1.0;
-            }
-            else
-            {
-              nonexecute += 1.0;
-            }
-            break;
-          case PRIEST_SHADOW:
-          case WARRIOR_ARMS:
-          case WARRIOR_FURY:
-            execute += 1.0;
-            break;
-          default:
-            nonexecute += 1.0;
-          }
-        }
-      }
-
-      return nonexecute / (nonexecute + execute);
-    });
-  }
-
   return player_t::create_expression( a, name_str );
 }
 
