@@ -6808,6 +6808,28 @@ void druid_t::init_scaling()
 
   // Save a copy of the weapon
   caster_form_weapon = main_hand_weapon;
+
+  // Bear/Cat form weapons need to be scaled up if we are calculating scale factors for the weapon
+  // dps. The actual cached cat/bear form weapons are created before init_scaling is called, so the
+  // adjusted values for the "main hand weapon" have not yet been added.
+  if ( sim -> scaling -> scale_stat == STAT_WEAPON_DPS )
+  {
+    if ( cat_weapon.damage > 0 )
+    {
+      auto coeff = sim -> scaling -> scale_value * cat_weapon.swing_time.total_seconds();
+      cat_weapon.damage  += coeff;
+      cat_weapon.min_dmg += coeff;
+      cat_weapon.max_dmg += coeff;
+    }
+
+    if ( bear_weapon.damage > 0 )
+    {
+      auto coeff = sim -> scaling -> scale_value * bear_weapon.swing_time.total_seconds();
+      bear_weapon.damage  += coeff;
+      bear_weapon.min_dmg += coeff;
+      bear_weapon.max_dmg += coeff;
+    }
+  }
 }
 
 // druid_t::init ============================================================
