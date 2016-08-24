@@ -4737,7 +4737,6 @@ struct remorseless_winter_t : public death_knight_spell_t
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
-
   std::array<double, 6> instructors_chance;
 
   scourge_strike_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
@@ -4745,7 +4744,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   {
     weapon = &( player -> main_hand_weapon );
 
-    instructors_chance = { { .2, .4, .2, .1, .05, .05 } };
+    instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
   }
 
   
@@ -4792,24 +4791,26 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     if ( result_is_hit( state -> result ) )
     {
       int n_burst = 1;
+
       if ( p() -> talent.castigator -> ok() && state -> result == RESULT_CRIT )
       {
         n_burst += p() -> talent.castigator -> effectN( 2 ).base_value();
       }
 
-      if (p()->legendary.the_instructors_fourth_lesson)
+      if ( p() -> legendary.the_instructors_fourth_lesson )
       {
-        assert(instructors_chance.size() == p()->legendary.the_instructors_fourth_lesson + 1);
+        assert( instructors_chance.size() == p() -> legendary.the_instructors_fourth_lesson + 1 );
+
         double roll = rng().real();
         double sum = 0;
         
-        for (size_t i = 0; i < instructors_chance.size(); i++)
+        for ( size_t i = 0; i < instructors_chance.size(); i++ )
         {
-          sum += instructors_chance[i];
+          sum += instructors_chance[ i ];
 
-          if (roll <= sum)
+          if ( roll <= sum )
           {
-            n_burst += i;
+            n_burst += ( int ) i;
             break;
           }
         }
