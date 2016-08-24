@@ -4885,19 +4885,19 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     demonology_trinket( nullptr ),
     destruction_trinket( nullptr ),
     legendary( legendary_t() )
-{
-  base.distance = 40;
+  {
+    base.distance = 40;
 
-  cooldowns.infernal = get_cooldown( "summon_infernal" );
-  cooldowns.doomguard = get_cooldown( "summon_doomguard" );
-  cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
-  cooldowns.haunt = get_cooldown( "haunt" );
+    cooldowns.infernal = get_cooldown( "summon_infernal" );
+    cooldowns.doomguard = get_cooldown( "summon_doomguard" );
+    cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
+    cooldowns.haunt = get_cooldown( "haunt" );
 
-  regen_type = REGEN_DYNAMIC;
-  regen_caches[CACHE_HASTE] = true;
-  regen_caches[CACHE_SPELL_HASTE] = true;
-  reap_souls_modifier = 2.0;
-}
+    regen_type = REGEN_DYNAMIC;
+    regen_caches[CACHE_HASTE] = true;
+    regen_caches[CACHE_SPELL_HASTE] = true;
+    reap_souls_modifier = 2.0;
+  }
 
 
 double warlock_t::composite_player_multiplier( school_e school ) const
@@ -6711,6 +6711,21 @@ private:
 
 // WARLOCK MODULE INTERFACE =================================================
 
+using namespace unique_gear;
+using namespace actions;
+
+struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
+{
+  hood_of_eternal_disdain_t() : super( WARLOCK, "agony" )
+  {}
+
+  void manipulate( agony_t* a, const special_effect_t& e ) override
+  {
+    a -> base_tick_time *= 1.0 + e.driver() -> effectN( 2 ).percent();
+    a -> dot_duration *= 1.0 + e.driver() -> effectN( 1 ).percent();
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -6724,9 +6739,13 @@ struct warlock_module_t: public module_t
 
   virtual void static_init() const override
   {
+    // Level 100 Class Trinkets
     unique_gear::register_special_effect( 184922, affliction_trinket);
     unique_gear::register_special_effect( 184923, demonology_trinket);
     unique_gear::register_special_effect( 184924, destruction_trinket);
+
+    // Legendaries
+    register_special_effect( 205797, hood_of_eternal_disdain_t() );
   }
 
   virtual void register_hotfixes() const override
