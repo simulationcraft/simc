@@ -4,7 +4,7 @@ race=blood_elf
 role=dps
 position=back
 talents=3030032
-artifact=50:137313:137543:137313:0:800:3:801:3:820:3:822:3:825:6:827:1:830:1:831:1:833:1:1341:1
+artifact=50:137313:137543:137313:0:800:3:801:3:820:3:822:3:825:6:827:1:828:1:831:1:833:1:1341:1
 spec=windwalker
 
 # This default action priority list is automatically created based on your character.
@@ -60,24 +60,25 @@ actions.st+=/blackout_kick,if=(chi>1|buff.bok_proc.up)&buff.serenity.down&!prev_
 actions.st+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
 
 actions.aoe=spinning_crane_kick,if=!prev_gcd.spinning_crane_kick
-actions.aoe+=/strike_of_the_windlord
-actions.aoe+=/rushing_jade_wind,if=chi>=2&!prev_gcd.rushing_jade_wind
+actions.aoe+=/rising_sun_kick,cycle_targets=1
+actions.aoe+=/rushing_jade_wind,if=chi>1&!prev_gcd.rushing_jade_wind
 actions.aoe+=/chi_wave,if=energy.time_to_max>2|buff.serenity.down
 actions.aoe+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
-actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
+actions.aoe+=/blackout_kick,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,cycle_targets=1
+actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi.max-chi>1)&!prev_gcd.tiger_palm,cycle_targets=1
 
 head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant_id=5890
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_trained_soldier
 shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727
-back=cape_of_valarjar_courage,id=133765,bonus_id=1727,enchant_id=5435
+back=cape_of_valarjar_courage,id=133765,bonus_id=1727,enchant=binding_of_agility
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
 wrists=cryptwalker_bracers,id=137425,bonus_id=1727
 hands=frostcarver_grips,id=134445,bonus_id=1727
 waist=sash_of_the_twilight_princess,id=134457,bonus_id=1727
 legs=wardens_martial_greaves,id=137515,bonus_id=1727
 feet=shellshock_footguards,id=134441,bonus_id=1727
-finger1=braided_silver_ring,id=134539,bonus_id=1727,enchant_id=5429
-finger2=ring_of_minute_mirrors,id=137533,bonus_id=1727,enchant_id=5429
+finger1=braided_silver_ring,id=134539,bonus_id=1727,enchant=binding_of_mastery
+finger2=ring_of_minute_mirrors,id=137533,bonus_id=1727,enchant=binding_of_mastery
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=hunger_of_the_pack,id=136975,bonus_id=1727
 main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313

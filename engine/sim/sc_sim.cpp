@@ -2658,6 +2658,58 @@ expr_t* sim_t::create_expression( action_t* a,
   if ( util::str_compare_ci( name_str, "active_allies" ) )
     return make_ref_expr( name_str, active_allies );
 
+  // Get the number of actors in the simulation that do not have execute abilities
+  if (name_str == "nonexecute_actors_pct")
+  {
+    struct nonexecute_actors_pct_expr : public expr_t
+    {
+      double nonexecute_actors_pct;  // Cached value, created on expression
+                                     // creation
+
+      nonexecute_actors_pct_expr( const sim_t* sim )
+        : expr_t( "nonexecute_actors_pct" )
+      {
+        double execute    = 0.0;
+        double nonexecute = 0.0;
+
+        for ( const player_t* p : sim->player_list )
+        {
+          if ( p->role != ROLE_NONE )
+          {
+            switch ( p->specialization() )
+            {
+              case HUNTER_MARKSMANSHIP:
+                if ( p->true_level > 100 )  // Assume Bullseye artifact trait
+                {
+                  execute += 1.0;
+                }
+                else
+                {
+                  nonexecute += 1.0;
+                }
+                break;
+              case PRIEST_SHADOW:
+              case WARRIOR_ARMS:
+              case WARRIOR_FURY:
+                execute += 1.0;
+                break;
+              default:
+                nonexecute += 1.0;
+            }
+          }
+        }
+
+        nonexecute_actors_pct = nonexecute / ( nonexecute + execute );
+      }
+
+      double evaluate() override
+      {
+        return nonexecute_actors_pct;
+      }
+    };
+    return new nonexecute_actors_pct_expr( this );
+  }
+
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   if ( splits.size() == 3 )

@@ -1232,12 +1232,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "spinning_crane_kick", player, player -> o() -> spec.spinning_crane_kick )
     {
-      channeled = tick_zero = true;
+      tick_zero = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
 
-      tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, &( data() ) );
+      tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, 
+          player -> o() -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
     }
   };
 
@@ -2938,15 +2939,15 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
+    if (p()->specialization() == MONK_BREWMASTER)
+      pm *= 1 + p()->passives.aura_brewmaster_monk->effectN(4).percent();
+
     return pm;
   }
 
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
-    
-    if ( p() -> specialization() == MONK_BREWMASTER )
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent(); 
 
     return am;
   }
@@ -2995,13 +2996,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     tick_action = new tick_action_t( "spinning_crane_kick_tick", p, p -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
   }
 
-  void init() override
-  {
-    monk_melee_attack_t::init();
-
-    update_flags &= ~STATE_HASTE;
-  }
-
   // N full ticks, but never additional ones.
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
@@ -3031,6 +3025,14 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
+    pm *= 1 + ( mark_of_the_crane_counter() * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent() );
+
+    if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
+      pm *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
+
+    if ( p() -> specialization() == MONK_MISTWEAVER )
+      pm *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 12 ).percent();
+
     return pm;
   }
 
@@ -3038,13 +3040,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + mark_of_the_crane_counter() * p() -> spec.spinning_crane_kick -> effectN( 2 ).percent();
-
-    if ( p() -> artifact.power_of_a_thousand_cranes.rank() )
-      am *= 1 + p() -> artifact.power_of_a_thousand_cranes.percent();
-
-    if ( p() -> specialization() == MONK_MISTWEAVER )
-      am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 12 ).percent();
 
     return am;
   }
@@ -6889,8 +6884,7 @@ void monk_t::create_buffs()
                               .cd( timespan_t::zero() );
 
   buff.transfer_the_power = buff_creator_t( this, "transfer_the_power", artifact.transfer_the_power.data().effectN( 1 ).trigger() )
-  // The proc gives 3%; even though tooltip and datamining say 5% per stack
-    .default_value( artifact.transfer_the_power.rank() ?  0.03 /* artifact.transfer_the_power.percent() */ : 0 ); 
+    .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
 
   // Legendaries
   buff.hidden_masters_forbidden_touch = buff_creator_t( this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
@@ -8155,11 +8149,12 @@ void monk_t::apl_combat_windwalker()
   // AoE while SEF is not up
   // TODO: Add tab targeting somehow
   aoe -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
-  aoe -> add_action( this, "Strike of the Windlord" );
-  aoe -> add_talent( this, "Rushing Jade Wind", "if=chi>=2&!prev_gcd.rushing_jade_wind" );
+  aoe -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
+  aoe -> add_talent( this, "Rushing Jade Wind", "if=chi>1&!prev_gcd.rushing_jade_wind" );
   aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2|buff.serenity.down" );
   aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2|buff.serenity.down" );
-  aoe -> add_action( this, "Tiger Palm", "if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm" );
+  aoe -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,cycle_targets=1" );
+  aoe -> add_action( this, "Tiger Palm", "if=(buff.serenity.down&chi.max-chi>1)&!prev_gcd.tiger_palm,cycle_targets=1" );
 
   // Chi Brew & Serenity Opener
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -8173,7 +8168,12 @@ void monk_t::apl_combat_windwalker()
   for (int i = 0; i < num_items; i++)
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      opener -> add_action( "use_item,name=" + items[i].name_str );
+    {
+      if ( items[i].name_str == "tiny_oozeling_in_a_jar" )
+        opener -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.congealing_goo.stack>=6" );
+      else
+        opener -> add_action( "use_item,name=" + items[i].name_str );
+    }
   }
   opener -> add_action( this, "Rising Sun Kick" );
   opener -> add_action( this, "Blackout Kick", "if=chi.max-chi<=1&cooldown.chi_brew.up|buff.serenity.up" );
@@ -8225,7 +8225,7 @@ void monk_t::apl_combat_mistweaver()
   st -> add_talent( this, "Chi Burst" );
   st -> add_action( this, "Tiger Palm", "if=buff.teachings_of_the_monastery.down" );
 
-  aoe -> add_action( this, "Spinning Crane Kick", "if=!talent.refreshing_jade_wind.enabled" );
+  aoe -> add_action( this, "Spinning Crane Kick" );
   aoe -> add_talent( this, "Refreshing Jade Wind" );
   aoe -> add_talent( this, "Chi Burst" );
   aoe -> add_action( this, "Blackout Kick" );
@@ -8637,6 +8637,18 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Monk", "2016-08-23", "[unannounced] Transfer the Power has been reduced to 3% per stack (was 5%).", 286702 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 5 );
+
+    hotfix::register_effect( "Monk", "2016-08-23", "[unannounced] Transfer the Power has been reduced to 3% per stack (was 5%).", 286727 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 5 );
+
   }
 
   virtual void init( player_t* p ) const override

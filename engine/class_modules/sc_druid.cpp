@@ -17,8 +17,7 @@ namespace { // UNNAMED NAMESPACE
   Affinity active components
   Artifact 20 rank traits?
   Ekowraith, Creator of Worlds legendary
-  Cinidaria, the Symbiote
-  Sephuz's Secret
+  Weapon Damage scaling issue
 
   Feral =====================================================================
   Predator vs. adds
@@ -41,7 +40,6 @@ namespace { // UNNAMED NAMESPACE
   Statistics?
   Incarnation CD modifier rework
   Check Galactic Guardian proc sources
-  New rage from damage taken formula (Bristling Fur)
 
   Resto =====================================================================
   All the things
@@ -6810,6 +6808,28 @@ void druid_t::init_scaling()
 
   // Save a copy of the weapon
   caster_form_weapon = main_hand_weapon;
+
+  // Bear/Cat form weapons need to be scaled up if we are calculating scale factors for the weapon
+  // dps. The actual cached cat/bear form weapons are created before init_scaling is called, so the
+  // adjusted values for the "main hand weapon" have not yet been added.
+  if ( sim -> scaling -> scale_stat == STAT_WEAPON_DPS )
+  {
+    if ( cat_weapon.damage > 0 )
+    {
+      auto coeff = sim -> scaling -> scale_value * cat_weapon.swing_time.total_seconds();
+      cat_weapon.damage  += coeff;
+      cat_weapon.min_dmg += coeff;
+      cat_weapon.max_dmg += coeff;
+    }
+
+    if ( bear_weapon.damage > 0 )
+    {
+      auto coeff = sim -> scaling -> scale_value * bear_weapon.swing_time.total_seconds();
+      bear_weapon.damage  += coeff;
+      bear_weapon.min_dmg += coeff;
+      bear_weapon.max_dmg += coeff;
+    }
+  }
 }
 
 // druid_t::init ============================================================
@@ -7695,9 +7715,6 @@ void druid_t::assess_heal( school_e school,
     s -> result_total *= 1.0 + pct;
   }
 
-  if ( mastery.natures_guardian -> ok() )
-    s -> result_total *= 1.0 + cache.mastery_value();
-
   player_t::assess_heal( school, dmg_type, s );
 
   trigger_natures_guardian( s );
@@ -8368,7 +8385,91 @@ struct druid_module_t : public module_t
     // register_special_effect( 208191, essence_of_infusion_t() );
   }
 
-  virtual void register_hotfixes() const override {}
+  virtual void register_hotfixes() const override {
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Blessing of Elune now increases Astral Power generation by 25% (was 40%).", 298910 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 25 )
+      .verification_value( 40 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Blessing of An'she now grants 2 Astral Power every 3 seconds (was 2 Astral Power every 2.5 seconds).", 298913 )
+      .field( "period" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3000 )
+      .verification_value( 2500 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Lunar Strike now generates 12 Astral Power (was 10).", 284977 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 120 )
+      .verification_value( 100 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Mastery: Starlight bonus has been increased to 2%/point (was 1.75%).", 68110 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2.00 )
+      .verification_value( 1.75 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Mastery: Starlight bonus has been increased to 2%/point (was 1.75%). #2", 90627 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2.00 )
+      .verification_value( 1.75 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Moonfire DoT damage decreased to 50% SP per tick (was 55%).", 232410 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.50 )
+      .verification_value( 0.55 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Sunfire DoT damage decreased to 50% SP per tick (was 55%).", 232417 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.50 )
+      .verification_value( 0.55 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Shooting Stars gives 4 Astral Power (was 5).", 298537 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 40 )
+      .verification_value( 50 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Solar Wrath now generates 8 Astral Power (was 6).", 280099 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 80 )
+      .verification_value( 60 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Nature’s Guardian now increases health by 4% (was 8%). ", 216520 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_DIV )
+      .modifier( 2 )
+      .verification_value( 1.00 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Nature’s Guardian now increases healing received by 4% (was 8%). ", 345062 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_DIV )
+      .modifier( 2 )
+      .verification_value( 1.00 );
+
+    hotfix::register_effect( "Druid", "2016-08-23",
+      "Ironfur now increases Armor by 100% (was 75%).", 281770 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 100 )
+      .verification_value( 75 );
+  }
 
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}

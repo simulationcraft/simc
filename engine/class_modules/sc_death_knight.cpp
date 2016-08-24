@@ -534,6 +534,17 @@ public:
     proc_t* km_natural_expiration;
   } procs;
 
+  // Legendaries
+  struct {
+    // Frost
+
+    double toravons;
+
+    // Unholy
+    unsigned the_instructors_fourth_lesson;
+
+  } legendary;
+
   // Runes
   runes_t _runes;
 
@@ -3266,49 +3277,6 @@ struct chains_of_ice_t : public death_knight_spell_t
   }
 };
 
-// Clawing Shadows ==========================================================
-
-struct clawing_shadows_t : public death_knight_spell_t
-{
-  clawing_shadows_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "clawing_shadows", p, p -> talent.clawing_shadows )
-  {
-    parse_options( options_str );
-  }
-
-  int n_targets() const override
-  { return td( target ) -> in_aoe_radius() ? -1 : 0; }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_spell_t::action_multiplier();
-
-    if ( p() -> buffs.necrosis -> up() )
-    {
-      m *= 1.0 + p() -> buffs.necrosis -> stack_value();
-    }
-
-    return m;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    p() -> buffs.necrosis -> decrement();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      burst_festering_wound( state, 1 );
-    }
-  }
-};
-
 // Dancing Rune Weapon ======================================================
 
 struct dancing_rune_weapon_t : public death_knight_spell_t
@@ -4765,9 +4733,108 @@ struct remorseless_winter_t : public death_knight_spell_t
   }
 };
 
-// Scourge Strike ===========================================================
+// Scourge Strike and Clawing Shadows =======================================
 
-struct scourge_strike_t : public death_knight_melee_attack_t
+struct scourge_strike_base_t : public death_knight_melee_attack_t
+{
+  std::array<double, 6> instructors_chance;
+
+  scourge_strike_base_t( const std::string& name, death_knight_t* p, const spell_data_t* spell ) :
+    death_knight_melee_attack_t( name, p, spell )
+  {
+    weapon = &( player -> main_hand_weapon );
+
+    instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
+  }
+
+  
+
+  int n_targets() const override
+  { return td( target ) -> in_aoe_radius() ? -1 : 0; }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_melee_attack_t::action_multiplier();
+
+    if ( p() -> buffs.necrosis -> up() )
+    {
+      m *= 1.0 + p() -> buffs.necrosis -> stack_value();
+    }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
+
+    m *= 1.0 + td( target ) -> debuff.scourge_of_worlds -> stack_value();
+
+    return m;
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    p() -> buffs.necrosis -> decrement();
+    if ( rng().roll( p() -> artifact.scourge_the_unbeliever.percent() ) )
+    {
+      p() -> replenish_rune( 1, p() -> gains.scourge_the_unbeliever );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_melee_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+    {
+      int n_burst = 1;
+
+      if ( p() -> talent.castigator -> ok() && state -> result == RESULT_CRIT )
+      {
+        n_burst += p() -> talent.castigator -> effectN( 2 ).base_value();
+      }
+
+      if ( p() -> legendary.the_instructors_fourth_lesson )
+      {
+        assert( instructors_chance.size() == p() -> legendary.the_instructors_fourth_lesson + 1 );
+
+        double roll = rng().real();
+        double sum = 0;
+        
+        for ( size_t i = 0; i < instructors_chance.size(); i++ )
+        {
+          sum += instructors_chance[ i ];
+
+          if ( roll <= sum )
+          {
+            n_burst += ( int ) i;
+            break;
+          }
+        }
+      }
+
+      burst_festering_wound( state, n_burst );
+    }
+  }
+};
+
+struct clawing_shadows_t : public scourge_strike_base_t
+{
+  clawing_shadows_t( death_knight_t* p, const std::string& options_str ) :
+    scourge_strike_base_t( "clawing_shadows", p, p -> talent.clawing_shadows )
+  {
+    parse_options( options_str );
+
+    // HOTFIX 2016-08-23: Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).
+    weapon_multiplier = 1.3;
+    normalize_weapon_speed = true;
+  }
+};
+
+struct scourge_strike_t : public scourge_strike_base_t
 {
   struct scourge_strike_shadow_t : public death_knight_melee_attack_t
   {
@@ -4816,7 +4883,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
   scourge_strike_shadow_t* scourge_strike_shadow;
 
   scourge_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "scourge_strike", p, p -> find_class_spell( "Scourge Strike" ) ),
+    scourge_strike_base_t( "scourge_strike", p, p -> find_specialization_spell( "Scourge Strike" ) ),
     scourge_strike_shadow( new scourge_strike_shadow_t( p ) )
   {
     parse_options( options_str );
@@ -4824,58 +4891,15 @@ struct scourge_strike_t : public death_knight_melee_attack_t
     add_child( scourge_strike_shadow );
   }
 
-  int n_targets() const override
-  { return td( target ) -> in_aoe_radius() ? -1 : 0; }
-
-  void execute() override
-  {
-    death_knight_melee_attack_t::execute();
-
-    p() -> buffs.necrosis -> decrement();
-    if ( rng().roll( p() -> artifact.scourge_the_unbeliever.percent() ) )
-    {
-      p() -> replenish_rune( 1, p() -> gains.scourge_the_unbeliever );
-    }
-  }
-
   void impact( action_state_t* state ) override
   {
-    death_knight_melee_attack_t::impact( state );
+    scourge_strike_base_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
       scourge_strike_shadow -> target = state -> target;
       scourge_strike_shadow -> execute();
-
-      int n_burst = 1;
-      if ( state -> result == RESULT_CRIT && p() -> talent.castigator -> ok() )
-      {
-        n_burst += p() -> talent.castigator -> effectN( 2 ).base_value();
-      }
-
-      burst_festering_wound( state, n_burst );
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_melee_attack_t::action_multiplier();
-
-    if ( p() -> buffs.necrosis -> up() )
-    {
-      m *= 1.0 + p() -> buffs.necrosis -> stack_value();
-    }
-
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = death_knight_melee_attack_t::composite_target_multiplier( target );
-
-    m *= 1.0 + td( target ) -> debuff.scourge_of_worlds -> stack_value();
-
-    return m;
   }
 
   bool ready() override
@@ -4885,7 +4909,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       return false;
     }
 
-    return death_knight_melee_attack_t::ready();
+    return scourge_strike_base_t::ready();
   }
 };
 
@@ -6537,11 +6561,12 @@ void death_knight_t::create_buffs()
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
   buffs.obliteration        = buff_creator_t( this, "obliteration", talent.obliteration )
                               .cd( timespan_t::zero() ); // Handled by action
-  buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
-                              .cd( timespan_t::zero() )
-                              .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() )
-                              .add_invalidate( CACHE_STRENGTH )
-                              .add_invalidate( artifact.frozen_core.rank() ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE );
+  buffs.pillar_of_frost = buff_creator_t(this, "pillar_of_frost", find_class_spell("Pillar of Frost"))
+                              .cd(timespan_t::zero())
+                              .default_value(find_class_spell("Pillar of Frost")->effectN(1).percent())
+                              .add_invalidate(CACHE_STRENGTH)
+                              .add_invalidate(artifact.frozen_core.rank() ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE)
+                              .add_invalidate(legendary.toravons ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE);
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.rime );
   buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
@@ -6977,9 +7002,10 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     if ( mastery.frozen_heart -> ok() )
       m *= 1.0 + cache.mastery_value();
 
-    if ( artifact.frozen_core.rank() && buffs.pillar_of_frost -> up() )
+    if ( buffs.pillar_of_frost -> up() )
     {
       m *= 1.0 + artifact.frozen_core.percent();
+      m *= 1.0 + legendary.toravons;
     }
 
     m *= 1.0 + artifact.cold_as_ice.percent();
@@ -6992,6 +7018,8 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.t18_4pc_unholy -> data().effectN( 2 ).percent();
   }
+
+
 
   return m;
 }
@@ -7395,20 +7423,31 @@ struct reapers_harvest_unholy_t : public scoped_action_callback_t<virulent_plagu
   }
 };
 
-struct reapers_harvest_blood_t : public scoped_action_callback_t<marrowrend_t>
+struct reapers_harvest_blood_t : public scoped_action_callback_t < marrowrend_t >
 {
-  reapers_harvest_blood_t() : super( DEATH_KNIGHT_BLOOD, "marrowrend" )
+  reapers_harvest_blood_t() : super(DEATH_KNIGHT_BLOOD, "marrowrend")
   { }
 
-  void manipulate( marrowrend_t* action, const special_effect_t& e ) override
+  void manipulate(marrowrend_t* action, const special_effect_t& e) override
   {
-    double coeff = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
+    double coeff = e.driver()->effectN(1).average(e.item) / 100.0;
 
-    action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).average( e.item ) / 100.0;
-    action -> unholy_coil_coeff = coeff;
-    action -> unholy_coil = new unholy_coil_t( action -> p(), e.item );
+    action->base_multiplier *= 1.0 + e.driver()->effectN(2).average(e.item) / 100.0;
+    action->unholy_coil_coeff = coeff;
+    action->unholy_coil = new unholy_coil_t(action->p(), e.item);
   }
 };
+
+struct toravons_bindings_t : public scoped_actor_callback_t < death_knight_t >
+{
+  toravons_bindings_t() : super(DEATH_KNIGHT_FROST)
+   {}
+  
+    void manipulate(death_knight_t* p, const special_effect_t& e) override
+    {
+    p->legendary.toravons = e.driver()->effectN(1).percent();
+    }
+ };
 
 struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knight_t>
 {
@@ -7431,6 +7470,7 @@ struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knigh
     }
   }
 
+
   void create_buff( pets::death_knight_pet_t* pet )
   {
     if ( ! pet )
@@ -7439,6 +7479,17 @@ struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knigh
     pet -> taktheritrix = buff_creator_t( pet, "taktheritrixs_command", pet -> find_spell( 215069 ) )
       .default_value( pet -> find_spell( 215069 ) -> effectN( 1 ).percent() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+};
+
+struct the_instructors_fourth_lesson_t : public scoped_actor_callback_t < death_knight_t >
+{
+  the_instructors_fourth_lesson_t() : super(DEATH_KNIGHT_UNHOLY)
+  {}
+
+  void manipulate(death_knight_t* p, const special_effect_t& e) override
+  {
+    p->legendary.the_instructors_fourth_lesson = e.driver()->effectN(1).base_value();
   }
 };
 
@@ -7463,16 +7514,32 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 184983, reapers_harvest_unholy_t() );
     unique_gear::register_special_effect( 184897, reapers_harvest_blood_t()  );
     unique_gear::register_special_effect( 215068, taktheritrixs_shoulderpads_t() );
+    unique_gear::register_special_effect(205658, toravons_bindings_t());
+    unique_gear::register_special_effect(208713, the_instructors_fourth_lesson_t());
   }
 
-  void register_hotfixes() const override {}
+  void register_hotfixes() const override
+  {
+    hotfix::register_effect( "Death Knight", "2016-08-23", "Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).", 324719 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0 )
+      .verification_value( 1.5 );
+
+    hotfix::register_effect( "Death Knight", "2016-08-23", "Blood Boil's damage has been reduced by 39%.", 43101 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1 - 0.39 )
+      .verification_value( 3.75 );
+  }
+
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
 };
 
-} // UNNAMED NAMESPACE
+}// UNNAMED NAMESPACE
 
 const module_t* module_t::death_knight() {
   static death_knight_module_t m;

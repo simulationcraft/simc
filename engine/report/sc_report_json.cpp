@@ -548,6 +548,30 @@ js::sc_js_t to_json( const player_t::consumables_t& )
   return node;
 }
 
+js::sc_js_t to_json( const player_t& p, const player_processed_report_information_t& ri )
+{
+  js::sc_js_t node;
+    if ( p.sim -> scaling -> has_scale_factors() )
+    {
+      if ( p.sim -> report_precision < 0 )
+        p.sim -> report_precision = 2;
+
+      scale_metric_e sm = p.sim -> scaling -> scaling_metric;
+      const gear_stats_t& sf  = ( p.sim -> scaling -> normalize_scale_factors )
+                             ? p.scaling_normalized[ sm ]
+                             : p.scaling[ sm ];
+
+      for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+      {
+        if ( p.scales_with[ i ] )
+        {
+          node.set( util::stat_type_abbrev( i ), sf.get_stat( i ) );
+        }
+      }
+    }
+  return node;
+}
+
 js::sc_js_t to_json( const player_t& p )
 {
   js::sc_js_t node;
@@ -606,7 +630,9 @@ js::sc_js_t to_json( const player_t& p )
   node.set( "off_hand_weapon", to_json( p.off_hand_weapon ) );
   node.set( "resources", to_json( p.resources ) );
   node.set( "consumables", to_json( p.consumables ) );
-
+  node.set( "scale_factors", to_json( p, p.report_information ) );
+  // TODO : "plot_data"
+  
   // TODO
 
   node.set( "collected_data", to_json( p.collected_data, p.sim ) );

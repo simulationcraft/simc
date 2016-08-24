@@ -458,6 +458,9 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   {
     item_t& item = p.items[slot];
 
+    if ( item.parsed.data.quality == 5 )
+      equipped_legendary_items++;
+
     if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND || slot == SLOT_RANGED )
     {
       if ( item.parsed.data.level > max_weapon_ilevel_allowed )
@@ -479,14 +482,25 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
                   p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
       return_value = false;
     }
-    /*else if ( item.parsed.gem_id.size() > 0 )
+
+    if ( !( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND || slot == SLOT_RANGED ) )
     {
-      sim.errorf( "Player %s has gems equipped in slot %s, there are no gems allowed in default profiles even if they have a slot by default, this is to ensure that all default profiles within %s are as equal as possible.\n",
-                  p.name(), util::slot_type_string( slot ), tier_name.c_str() );
-      return_value = false;
+      for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
+      {
+        if ( item.parsed.gem_id[jj] > 0 )
+        {
+          sim.errorf( "Player %s has gems equipped in slot %s, there are no gems allowed in default profiles even if they have a slot by default, this is to ensure that all default profiles within %s are as equal as possible.\n",
+                      p.name(), util::slot_type_string( slot ), tier_name.c_str() );
+          return_value = false;
+          break;
+        }
+      }
     }
-    */
-    if ( slot == SLOT_FINGER_1 || SLOT_FINGER_2 || SLOT_TRINKET_1 || SLOT_TRINKET_2 )
+    
+    if ( slot == SLOT_FINGER_1 || 
+         slot == SLOT_FINGER_2 || 
+         slot == SLOT_TRINKET_1 || 
+         slot == SLOT_TRINKET_2 )
     {
       for ( auto & slot2 : SLOT_DUPLICATES )
       {
@@ -510,8 +524,8 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   }
   if ( equipped_legendary_items > legendary_items_allowed )
   {
-    sim.errorf( "Player %s has %s legendary items. %s allows %s legendarys with a maximum ilevel of %s each.\n",
-                p.name(), util::to_string( equipped_legendary_items ).c_str(), tier_name.c_str(), util::to_string( legendary_items_allowed ).c_str(), util::to_string( max_legendary_ilevel_allowed ).c_str() );
+    sim.errorf( "Player %s has %s legendary items. %s allows %s legendary item(s).\n",
+                p.name(), util::to_string( equipped_legendary_items ).c_str(), tier_name.c_str(), util::to_string( legendary_items_allowed ).c_str() );
     return_value = false;
   }
 

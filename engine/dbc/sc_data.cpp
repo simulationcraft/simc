@@ -678,11 +678,25 @@ custom_dbc_data_t::~custom_dbc_data_t()
 {
   for ( size_t i = 0; i < spells_[ 0 ].size(); ++i )
   {
+    range::for_each( *spells_[ 0 ][ i ] -> _effects, []( const spelleffect_data_t* e ) {
+      if ( e && e -> _trigger_spell -> id() > 0 )
+      {
+        delete e -> _trigger_spell -> _driver;
+        e -> _trigger_spell -> _driver = nullptr;
+      }
+    } );
     delete spells_[ 0 ][ i ] -> _effects;
   }
 
   for ( size_t i = 0; i < spells_[ 1 ].size(); ++i )
   {
+    range::for_each( *spells_[ 1 ][ i ] -> _effects, []( const spelleffect_data_t* e ) {
+      if ( e && e -> _trigger_spell -> id() > 0 )
+      {
+        delete e -> _trigger_spell -> _driver;
+        e -> _trigger_spell -> _driver = nullptr;
+      }
+    } );
     delete spells_[ 1 ][ i ] -> _effects;
   }
 }

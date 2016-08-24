@@ -7682,7 +7682,51 @@ struct shaman_module_t : public module_t
     register_special_effect( 207994, eotn_buff_chill_t(), true );
   }
 
-  void register_hotfixes() const override {}
+  void register_hotfixes() const override
+  {
+    hotfix::register_spell( "Shaman", "2016-08-23", "Windfury base proc rate has been increased to 10% (was 5%.)", 33757 )
+      .field( "proc_chance" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10 )
+      .verification_value( 5 );
+
+    hotfix::register_effect( "Shaman", "2016-08-23", "Rockbiter damage has been increased to 155% Attack Power (was 135%).", 284355 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.55 )
+      .verification_value( 1.35 );
+
+    hotfix::register_effect( "Shaman", "2016-08-23", "Lightning Bolt (Enhancement) damage has been increased to 30% Spell Power (was 25%).", 273980 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.3 )
+      .verification_value( 0.25 );
+
+    hotfix::register_effect( "Shaman", "2016-08-23", "Earthen Spike debuff damage has been increased to 15% (was 10%).", 274448 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 15 )
+      .verification_value( 10 );
+
+    hotfix::register_effect( "Shaman", "2016-08-23", "Storm Elemental Wind Gust now generates 10 Maelstrom per cast (was 8).", 339432 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10 )
+      .verification_value( 8 );
+
+    hotfix::register_effect( "Shaman", "2016-08-23", "Frost Shock damage has been increased slightly to 56% (was 52%).", 288995 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.56 )
+      .verification_value( 0.52 );
+
+    hotfix::register_effect( "Shaman", "2016-08-23", "Liquid Magma Totem damage has been increased to 80% (was 70%)).", 282015 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.8 )
+      .verification_value( 0.7 );
+  }
+
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
 };

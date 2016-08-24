@@ -158,6 +158,9 @@ struct rogue_t : public player_t
   action_t* soul_rip; // Akaari
   action_t* t19_2pc_assassination;
 
+  // Legendary
+  action_t* insignia_of_ravenholdt_;
+
   // Autoattacks
   action_t* auto_attack;
   actions::melee_t* melee_main_hand;
@@ -352,6 +355,7 @@ struct rogue_t : public player_t
     const spell_data_t* shadow_focus;
     const spell_data_t* subterfuge;
     const spell_data_t* tier18_2pc_combat_ar;
+    const spell_data_t* insignia_of_ravenholdt;
   } spell;
 
   // Talents
@@ -507,6 +511,7 @@ struct rogue_t : public player_t
     const spell_data_t* denial_of_the_halfgiants;
     const spell_data_t* zoldyck_family_training_shackles;
     const spell_data_t* the_dreadlords_deceit;
+    const spell_data_t* insignia_of_ravenholdt;
   } legendary;
 
   // Options
@@ -530,6 +535,7 @@ struct rogue_t : public player_t
     poison_bomb( nullptr ),
     greed( nullptr ),
     soul_rip( nullptr ),
+    insignia_of_ravenholdt_( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
     shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
@@ -635,6 +641,7 @@ struct rogue_t : public player_t
   void trigger_true_bearing( int );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
+  void trigger_insignia_of_ravenholdt( const action_state_t* );
 
   // On-death trigger for Venomous Wounds energy replenish
   void trigger_venomous_wounds_death( player_t* );
@@ -1369,6 +1376,23 @@ struct greed_t : public rogue_attack_t
   }
 };
 
+// Legendary 7.0
+struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
+{
+  insignia_of_ravenholdt_attack_t( rogue_t* p ) :
+    rogue_attack_t( "insignia_of_ravenholdt", p, p -> find_spell( 209043 ) )
+  {
+    background = true;
+    aoe = -1;
+  }
+
+  double composite_da_multiplier( const action_state_t* ) const override
+  {
+    double multiplier = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
+    return multiplier;
+  }
+};
+
 // TODO: Check if this is an ignite or a normal dot
 using namespace residual_action;
 struct mutilated_flesh_t : public residual_periodic_action_t<melee_attack_t>
@@ -1881,6 +1905,11 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_shadow_techniques( state );
   p() -> trigger_weaponmaster( state );
   p() -> trigger_surge_of_toxins( state );
+
+  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
+  {
+    p() -> trigger_insignia_of_ravenholdt( state );
+  }
 
   if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
     p() -> trigger_seal_fate( state );
@@ -3312,6 +3341,7 @@ struct mutilate_strike_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     p() -> trigger_seal_fate( state );
+    p() -> trigger_insignia_of_ravenholdt( state );
 
     if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B2 ) && state -> result == RESULT_CRIT )
       p() -> resource_gain( RESOURCE_ENERGY,
@@ -5305,6 +5335,26 @@ bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
   return true;
 }
 
+void rogue_t::trigger_insignia_of_ravenholdt( const action_state_t* state )
+{
+  if ( !legendary.insignia_of_ravenholdt )
+  {
+    return;
+  }
+  if ( state -> result_total <= 0 )
+  {
+    return;
+  }
+  if ( !state -> action -> result_is_hit( state -> result ) )
+  {
+    return;
+  }
+  insignia_of_ravenholdt_ -> base_dd_min = state -> result_total;
+  insignia_of_ravenholdt_ -> base_dd_max = state -> result_total;
+  insignia_of_ravenholdt_ -> target = state -> target;
+  insignia_of_ravenholdt_ -> schedule_execute();
+}
+
 namespace buffs {
 // ==========================================================================
 // Buffs
@@ -6653,19 +6703,20 @@ void rogue_t::init_spells()
   mastery.executioner       = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Misc spells
-  spell.bag_of_tricks_driver= find_spell( 192661 );
-  spell.critical_strikes    = find_spell( 157442 );
-  spell.death_from_above    = find_spell( 163786 );
-  spell.fan_of_knives       = find_class_spell( "Fan of Knives" );
-  spell.fleet_footed        = find_spell( 31209 );
-  spell.master_of_shadows   = find_spell( 196980 );
-  spell.sprint              = find_class_spell( "Sprint" );
-  spell.ruthlessness_driver = find_spell( 14161 );
-  spell.ruthlessness_cp     = spec.ruthlessness -> effectN( 1 ).trigger();
-  spell.shadow_focus        = find_spell( 112942 );
-  spell.subterfuge          = find_spell( 115192 );
-  spell.tier18_2pc_combat_ar= find_spell( 186286 );
+  spell.bag_of_tricks_driver        = find_spell( 192661 );
+  spell.critical_strikes            = find_spell( 157442 );
+  spell.death_from_above            = find_spell( 163786 );
+  spell.fan_of_knives               = find_class_spell( "Fan of Knives" );
+  spell.fleet_footed                = find_spell( 31209 );
+  spell.master_of_shadows           = find_spell( 196980 );
+  spell.sprint                      = find_class_spell( "Sprint" );
+  spell.ruthlessness_driver         = find_spell( 14161 );
+  spell.ruthlessness_cp             = spec.ruthlessness -> effectN( 1 ).trigger();
+  spell.shadow_focus                = find_spell( 112942 );
+  spell.subterfuge                  = find_spell( 115192 );
+  spell.tier18_2pc_combat_ar        = find_spell( 186286 );
   spell.relentless_strikes_energize = find_spell( 98440 );
+  spell.insignia_of_ravenholdt      = find_spell( 209041 );
 
   // Talents
   talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
@@ -6763,6 +6814,9 @@ void rogue_t::init_spells()
   artifact.cursed_steel     = find_artifact_spell( "Cursed Steel" );
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
+
+  // Legendaries
+  insignia_of_ravenholdt_ = new actions::insignia_of_ravenholdt_attack_t( this );
 
   if ( mastery.main_gauche -> ok() )
     active_main_gauche = new actions::main_gauche_t( this );
@@ -7756,6 +7810,15 @@ struct the_dreadlords_deceit_t : public unique_gear::scoped_actor_callback_t<rog
   { rogue -> legendary.the_dreadlords_deceit = e.driver(); }
 };
 
+struct insignia_of_ravenholdt_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  insignia_of_ravenholdt_t() : super( ROGUE )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.insignia_of_ravenholdt = e.driver(); }
+};
+
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -7783,10 +7846,46 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 214569, zoldyck_family_training_shackles_t()  );
     unique_gear::register_special_effect( 208436, shadow_satyrs_walk_t()                );
     unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()             );
+    unique_gear::register_special_effect( 209041, insignia_of_ravenholdt_t()            );
   }
 
-  virtual void register_hotfixes() const override
+  void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2016-08-23", "Envenom damage has been increased to 60% Attack Power per point (was 50%).", 22420 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.6 )
+      .verification_value( 0.5 );
+
+    hotfix::register_effect( "Rogue", "2016-08-23", "Deadly Poison instant damage has been increased to 17% Attack Power (was 14.2%).", 126788 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.17 )
+      .verification_value( 0.142 );
+
+    hotfix::register_effect( "Rogue", "2016-08-23", "Rupture damage has been decreased to 25% Attack Power (was 30%).", 586 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.25 )
+      .verification_value( 0.3 );
+
+    hotfix::register_spell( "Rogue", "2016-08-23", "Agonizing Poison now stacks 5 times (was 4).", 200803 )
+      .field( "max_stack" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 5 )
+      .verification_value( 4 );
+
+    hotfix::register_effect( "Rogue", "2016-08-23", "[unannounced] Master Poisoner effectiveness has been decreased to 30% (was 40%).", 289047 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 40 );
+
+    hotfix::register_effect( "Rogue", "2016-08-23-2", "[unannounced] Master Poisoner effectiveness has been decreased to 30% (was 40%).", 289048 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 40 );
   }
 
   virtual void init( player_t* ) const override {}

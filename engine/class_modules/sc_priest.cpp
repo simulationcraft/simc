@@ -4896,14 +4896,16 @@ template <typename Base>
 struct priest_buff_t : public Base
 {
 public:
-  typedef priest_buff_t base_t;  // typedef for priest_buff_t<buff_base_t>
+  using base_t = priest_buff_t ;  // typedef for priest_buff_t<buff_base_t>
 
-  priest_buff_t( priest_td_t& p, const buff_creator_basics_t& params )
+  template <typename Buff_Creator>
+  priest_buff_t( priest_td_t& p, const Buff_Creator& params )
     : Base( params ), priest( p.priest )
   {
   }
 
-  priest_buff_t( priest_t& p, const buff_creator_basics_t& params )
+  template <typename Buff_Creator>
+  priest_buff_t( priest_t& p, const Buff_Creator& params )
     : Base( params ), priest( p )
   {
   }
@@ -5610,57 +5612,6 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
       return ( ( buffs.voidform->data().effectN( 2 ).base_value() / -500.0 ) +
                ( ( buffs.insanity_drain_stacks->check() - 1 ) / 2.0 ) );
     } );
-  }
-
-  // Get the actor's raw initial haste percent
-  else if ( name_str == "raw_haste_pct" )
-  {
-    return make_fn_expr( name_str, [this]() {
-      double h = std::max( 0.0, initial.stats.haste_rating ) /
-                 initial_rating().spell_haste;
-
-      return h;
-    } );
-  }
-
-  // Get the number of actors in the simulation that do not have execute abilities
-  else if (name_str == "nonexecute_actors_pct")
-  {
-    return make_fn_expr(name_str, [this]() {
-      double execute = 0.0;
-      double nonexecute = 0.0;
-
-      for (size_t i = 0; i < sim->player_list.size(); ++i)
-      {
-        player_t* p = sim->player_list[i];
-
-        if (p->role != ROLE_NONE)
-        {
-          switch (p->specialization())
-          {
-          case HUNTER_MARKSMANSHIP:
-            if (p->true_level > 100) // Assume Bullseye artifact trait
-            {
-              execute += 1.0;
-            }
-            else
-            {
-              nonexecute += 1.0;
-            }
-            break;
-          case PRIEST_SHADOW:
-          case WARRIOR_ARMS:
-          case WARRIOR_FURY:
-            execute += 1.0;
-            break;
-          default:
-            nonexecute += 1.0;
-          }
-        }
-      }
-
-      return nonexecute / (nonexecute + execute);
-    });
   }
 
   return player_t::create_expression( a, name_str );
