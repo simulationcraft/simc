@@ -97,7 +97,6 @@ public:
   player_t* havoc_target;
   double shard_accumulator;
 
-
   // Active Pet
   struct pets_t
   {
@@ -268,6 +267,7 @@ public:
 
   struct legendary_t
   {
+    bool odr_shawl_of_the_ymirjar;
     timespan_t wilfreds_sigil_of_superior_summoning;
   } legendary;
 
@@ -774,6 +774,18 @@ struct rift_shadow_bolt_t: public warlock_pet_spell_t
   {
     base_execute_time = timespan_t::from_millis( 2000 );
   }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
+      m *= 1.0 + p()->find_spell( 212173 )->effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 struct rift_chaos_bolt_t : public warlock_pet_spell_t
@@ -794,6 +806,18 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
       p() -> dismiss();
       return;
     }
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
+      m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
+
+    return m;
   }
 
   // Force spell to always crit
@@ -821,6 +845,18 @@ struct chaos_barrage_t : public warlock_pet_spell_t
     warlock_pet_spell_t( "chaos_barrage", p, p -> find_spell( 187394 ) )
   {
     base_execute_time = timespan_t::from_millis( 250 );
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
+      m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
+
+    return m;
   }
 };
 
@@ -2036,6 +2072,7 @@ public:
 
   bool affected_by_contagion;
   bool affected_by_flamelicked;
+  bool affected_by_odr_shawl_of_the_ymirjar;
   bool destro_mastery;
 
   // Warlock module overrides the "target" option handling to properly target their own Soul Effigy
@@ -2128,6 +2165,8 @@ public:
     {
       affected_by_flamelicked = false;
     }
+
+    affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p() -> find_spell( 212173 ) -> effectN( 1 ) );
   }
 
   int n_targets() const override
@@ -2291,6 +2330,9 @@ public:
     double m = 1.0;
 
     warlock_td_t* td = this -> td( t );
+
+    if ( target == p() -> havoc_target && affected_by_odr_shawl_of_the_ymirjar && p() -> legendary.odr_shawl_of_the_ymirjar )
+      m*= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
 
     if ( p() -> talents.contagion -> ok() && td -> dots_unstable_affliction -> is_ticking() && affected_by_contagion )
       m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
@@ -3172,7 +3214,8 @@ struct hand_of_guldan_t: public warlock_spell_t
 
 struct havoc_t: public warlock_spell_t
 {
-  havoc_t( warlock_t* p ): warlock_spell_t( p, "Havoc" )
+  havoc_t( warlock_t* p ):
+    warlock_spell_t( p, "Havoc" )
   {
     may_crit = false;
 
@@ -3183,8 +3226,7 @@ struct havoc_t: public warlock_spell_t
   virtual void execute() override
   {
     warlock_spell_t::execute();
-
-    p() -> buffs.havoc -> trigger( p() -> buffs.havoc -> max_stack() );
+    p() -> buffs.havoc -> trigger();
     p() -> havoc_target = execute_state -> target;
   }
 };
@@ -4888,6 +4930,7 @@ warlock( p )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_roaring_blaze = buff_creator_t( *this, "roaring_blaze", source -> find_spell( 205690 ) )
     .max_stack( 100 );
+
   if ( warlock.destruction_trinket )
   {
     debuffs_flamelicked = buff_creator_t( *this, "flamelicked", warlock.destruction_trinket -> driver() -> effectN( 1 ).trigger() )
@@ -6832,6 +6875,17 @@ struct sindorei_spite_t : public class_buff_cb_t<warlock_t>
   }
 };
 
+struct odr_shawl_of_the_ymirjar_t : public scoped_actor_callback_t<warlock_t>
+{
+  odr_shawl_of_the_ymirjar_t() : super( WARLOCK_DESTRUCTION )
+  { }
+
+  void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
+  {
+    a -> legendary.odr_shawl_of_the_ymirjar = true;
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -6856,6 +6910,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 205721, recurrent_ritual_t() );
     register_special_effect( 214345, wilfreds_sigil_of_superior_summoning_t() );
     register_special_effect( 208868, sindorei_spite_t(), true );
+    register_special_effect( 212172, odr_shawl_of_the_ymirjar_t() );
   }
 
   virtual void register_hotfixes() const override
