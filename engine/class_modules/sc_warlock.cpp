@@ -374,6 +374,7 @@ public:
     gain_t* soulsnatcher;
     gain_t* t18_4pc_destruction;
     gain_t* t19_2pc_demonology;
+    gain_t* recurrent_ritual;
   } gains;
 
   // Procs
@@ -4069,9 +4070,11 @@ struct call_dreadstalkers_t : public warlock_spell_t
   timespan_t dreadstalker_duration;
   int dreadstalker_count;
   size_t improved_dreadstalkers;
+  double recurrent_ritual;
 
   call_dreadstalkers_t( warlock_t* p ) :
-    warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) )
+    warlock_spell_t( "Call_Dreadstalkers", p, p -> find_spell( 104316 ) ),
+    recurrent_ritual( 0.0 )
   {
     harmful = may_crit = false;
     dreadstalker_duration = p -> find_spell( 193332 ) -> duration() + ( p -> sets.has_set_bonus( WARLOCK_DEMONOLOGY, T19, B4 ) ? p -> sets.set( WARLOCK_DEMONOLOGY, T19, B4 ) -> effectN( 1 ).time_value() : timespan_t::zero() );
@@ -4117,6 +4120,11 @@ struct call_dreadstalkers_t : public warlock_spell_t
     }
 
     p() -> buffs.demonic_calling -> expire();
+
+    if ( recurrent_ritual > 0 )
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, recurrent_ritual, p() -> gains.recurrent_ritual );
+    }
   }
 };
 
@@ -5576,6 +5584,7 @@ void warlock_t::init_gains()
   gains.t18_4pc_destruction = get_gain( "t18_4pc_destruction" );
   gains.demonwrath          = get_gain( "demonwrath" );
   gains.t19_2pc_demonology  = get_gain( "t19_2pc_demonology" );
+  gains.recurrent_ritual    = get_gain( "recurrent_ritual" );
 }
 
 // warlock_t::init_procs ===============================================
@@ -6738,7 +6747,7 @@ using namespace actions;
 
 struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
 {
-  hood_of_eternal_disdain_t() : super( WARLOCK, "agony" )
+  hood_of_eternal_disdain_t() : super( WARLOCK_AFFLICTION, "agony" )
   {}
 
   void manipulate( agony_t* a, const special_effect_t& e ) override
@@ -6750,12 +6759,23 @@ struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
 
 struct kazzaks_final_curse_t : public scoped_action_callback_t<doom_t>
 {
-  kazzaks_final_curse_t() : super( WARLOCK, "doom" )
+  kazzaks_final_curse_t() : super( WARLOCK_DEMONOLOGY, "doom" )
   {}
 
   void manipulate( doom_t* a, const special_effect_t& e ) override
   {
     a -> kazzaks_final_curse_multiplier = e.driver() -> effectN( 1 ).percent();
+  }
+};
+
+struct recurrent_ritual_t : public scoped_action_callback_t<call_dreadstalkers_t>
+{
+  recurrent_ritual_t() : super( WARLOCK_DEMONOLOGY, "call_dreadstalkers" )
+  { }
+
+  void manipulate( call_dreadstalkers_t* a, const special_effect_t& e ) override
+  {
+    a -> recurrent_ritual = e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
   }
 };
 
@@ -6780,6 +6800,7 @@ struct warlock_module_t: public module_t
     // Legendaries
     register_special_effect( 205797, hood_of_eternal_disdain_t() );
     register_special_effect( 214225, kazzaks_final_curse_t() );
+    register_special_effect( 205721, recurrent_ritual_t() );
   }
 
   virtual void register_hotfixes() const override
