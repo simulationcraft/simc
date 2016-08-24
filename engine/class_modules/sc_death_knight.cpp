@@ -535,7 +535,7 @@ public:
   } procs;
 
   // Legendaries
-  struct {
+  struct legendary_t {
     // Frost
 
     double toravons;
@@ -567,6 +567,7 @@ public:
     spell( spells_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
+    legendary( legendary_t() ),
     _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
