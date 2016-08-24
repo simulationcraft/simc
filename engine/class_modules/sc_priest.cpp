@@ -5612,17 +5612,6 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
     } );
   }
 
-  // Get the actor's raw initial haste percent
-  else if ( name_str == "raw_haste_pct" )
-  {
-    return make_fn_expr( name_str, [this]() {
-      double h = std::max( 0.0, initial.stats.haste_rating ) /
-                 initial_rating().spell_haste;
-
-      return h;
-    } );
-  }
-
   return player_t::create_expression( a, name_str );
 }
 

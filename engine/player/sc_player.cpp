@@ -8551,6 +8551,17 @@ expr_t* player_t::create_expression( action_t* a,
     }
   }
 
+  // Get the actor's raw initial haste percent
+  if ( name_str == "raw_haste_pct" )
+  {
+    return make_fn_expr( name_str, [this]() {
+      double h = std::max( 0.0, initial.stats.haste_rating ) /
+                 initial_rating().spell_haste;
+
+      return h;
+    } );
+  }
+
   // everything from here on requires splits
   std::vector<std::string> splits = util::string_split( expression_str, "." );
   // player variables
