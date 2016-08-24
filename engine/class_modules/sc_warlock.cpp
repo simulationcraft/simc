@@ -2911,14 +2911,17 @@ struct shadow_bolt_t: public warlock_spell_t
 
 struct doom_t: public warlock_spell_t
 {
+  double kazzaks_final_curse_multiplier;
+
   doom_t( warlock_t* p ):
-    warlock_spell_t( "doom", p, p -> spec.doom )
+    warlock_spell_t( "doom", p, p -> spec.doom ),
+    kazzaks_final_curse_multiplier( 0.0 )
   {
     base_tick_time = p -> find_spell( 603 ) -> effectN( 1 ).period();
     dot_duration = p -> find_spell( 603 ) -> duration();
     spell_power_mod.tick = p -> spec.doom -> effectN( 1 ).sp_coeff();
 
-    base_multiplier *= 1.0 + p->artifact.the_doom_of_azeroth.percent();
+    base_multiplier *= 1.0 + p -> artifact.the_doom_of_azeroth.percent();
 
     may_crit = true;
     hasted_ticks = true;
@@ -2937,12 +2940,31 @@ struct doom_t: public warlock_spell_t
   virtual double action_multiplier()const override
   {
     double m = warlock_spell_t::action_multiplier();
+    double pet_counter = 0.0;
+
     if ( p() -> artifact.doom_doubled.rank() )
     {
       if ( rng().roll( 0.25 ) )
       {
         m *= 2.0;
       }
+    }
+
+    if ( kazzaks_final_curse_multiplier > 0.0 )
+    {
+      for ( auto& pet : p() -> pet_list )
+      {
+        pets::warlock_pet_t *lock_pet = static_cast< pets::warlock_pet_t* > ( pet );
+
+        if ( lock_pet != NULL )
+        {
+          if ( !lock_pet -> is_sleeping() )
+          {
+            pet_counter += kazzaks_final_curse_multiplier;
+          }
+        }
+      }
+      m *= 1.0 + pet_counter;
     }
     return m;
   }
@@ -6726,6 +6748,17 @@ struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
   }
 };
 
+struct kazzaks_final_curse_t : public scoped_action_callback_t<doom_t>
+{
+  kazzaks_final_curse_t() : super( WARLOCK, "doom" )
+  {}
+
+  void manipulate( doom_t* a, const special_effect_t& e ) override
+  {
+    a -> kazzaks_final_curse_multiplier = e.driver() -> effectN( 1 ).percent();
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -6746,6 +6779,7 @@ struct warlock_module_t: public module_t
 
     // Legendaries
     register_special_effect( 205797, hood_of_eternal_disdain_t() );
+    register_special_effect( 214225, kazzaks_final_curse_t() );
   }
 
   virtual void register_hotfixes() const override
