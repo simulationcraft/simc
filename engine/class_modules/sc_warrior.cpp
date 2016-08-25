@@ -1251,6 +1251,11 @@ struct bloodthirst_t: public warrior_attack_t
       tc += fresh_meat_crit_chance;
     }
 
+    if ( p() -> double_bloodthirst && target -> health_percentage() <= 20.0 )
+    {
+      tc *= 2.0;
+    }
+
     return tc;
   }
 
@@ -1259,11 +1264,6 @@ struct bloodthirst_t: public warrior_attack_t
     double c = warrior_attack_t::composite_crit_chance();
 
     c += p() -> buff.taste_for_blood -> check_value();
-
-    if ( p() -> double_bloodthirst )
-    {
-      c *= 2.0;
-    }
 
     return c;
   }
