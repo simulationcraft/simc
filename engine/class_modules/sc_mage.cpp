@@ -8213,7 +8213,7 @@ void mage_t::apl_arcane()
   conserve     -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>10" );
   conserve     -> add_talent( this, "Rune of Power", "if=prev_gcd.mark_of_aluneth&cooldown.arcane_power.remains>recharge_time" );
   conserve     -> add_talent( this, "Supernova", "if=mana.pct<100" );
-  conserve     -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)" );
+  conserve     -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)|(cooldown.rune_of_power.remains<gcd.max&dot.nether_tempest.remains<10)" );
   conserve     -> add_action( this, "Arcane Blast", "if=buff.rhonins_assaulting_armwraps.up&equipped.132413" );
   conserve     -> add_action( this, "Arcane Missiles" );
   conserve     -> add_action( this, "Arcane Explosion", "if=mana.pct>=82&equipped.132451&active_enemies>1" );
