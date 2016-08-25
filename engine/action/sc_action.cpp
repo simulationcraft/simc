@@ -1390,9 +1390,9 @@ void action_t::execute()
     player -> do_dynamic_regen();
   }
 
+  update_ready(); // Based on testing with warrior mechanics, Blizz updates cooldowns before consuming resources. 
+                  // This is very rarely relevant.
   consume_resource();
-
-  update_ready();
 
   if ( ! dual && ( !player -> first_cast || !harmful ) ) stats -> add_execute( time_to_execute, target );
 
