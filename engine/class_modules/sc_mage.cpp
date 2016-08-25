@@ -4734,11 +4734,10 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     chills = true;
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual void execute() override
   {
-    frost_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
+    frost_mage_spell_t::execute();
+    if ( result_is_hit( execute_state -> result ) )
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 1 ).percent();
