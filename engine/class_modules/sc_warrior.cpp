@@ -1868,6 +1868,12 @@ struct hamstring_t: public warrior_attack_t
     use_off_gcd = true;
     weapon = &( p -> main_hand_weapon );
   }
+
+  bool opportunity_strikes( action_state_t*) override
+  {
+    //Hamstring no longer activates Opportunity Strikes. 08-24-2016
+    return false;
+  }
 };
 
 // Focused Rage ============================================================
