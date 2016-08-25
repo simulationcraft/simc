@@ -268,6 +268,7 @@ public:
   struct legendary_t
   {
     bool odr_shawl_of_the_ymirjar;
+    bool feretory_of_souls;
     timespan_t wilfreds_sigil_of_superior_summoning;
   } legendary;
 
@@ -380,6 +381,7 @@ public:
     gain_t* t18_4pc_destruction;
     gain_t* t19_2pc_demonology;
     gain_t* recurrent_ritual;
+    gain_t* feretory_of_souls;
   } gains;
 
   // Procs
@@ -782,7 +784,7 @@ struct rift_shadow_bolt_t: public warlock_pet_spell_t
     warlock_td_t* td = this -> td( target );
 
     if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
-      m *= 1.0 + p()->find_spell( 212173 )->effectN( 1 ).percent();
+      m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
 
     return m;
   }
@@ -3280,6 +3282,16 @@ struct immolate_t: public warlock_spell_t
       td( d -> target ) -> debuffs_roaring_blaze -> expire();
   }
 
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
+    }
+  }
+
   virtual void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
@@ -3360,6 +3372,11 @@ struct conflagrate_t: public warlock_spell_t
       p() -> buffs.conflagration_of_chaos -> expire();
 
     p() -> buffs.conflagration_of_chaos -> trigger();
+
+    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -3429,6 +3446,11 @@ struct incinerate_t: public warlock_spell_t
     {
       p() -> cooldowns.dimensional_rift -> adjust( -p() -> cooldowns.dimensional_rift -> duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
       p() -> procs.dimension_ripper -> occur();
+    }
+
+    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
     }
   }
 
@@ -3827,6 +3849,11 @@ struct rain_of_fire_t : public warlock_spell_t
       .duration( data().duration() * player -> cache.spell_haste() )
       .start_time( sim -> current_time() )
       .action( p() -> active.rain_of_fire ) );
+
+    if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
+    }
   }
 };
 
@@ -5652,6 +5679,7 @@ void warlock_t::init_gains()
   gains.demonwrath          = get_gain( "demonwrath" );
   gains.t19_2pc_demonology  = get_gain( "t19_2pc_demonology" );
   gains.recurrent_ritual    = get_gain( "recurrent_ritual" );
+  gains.feretory_of_souls   = get_gain( "feretory_of_souls" );
 }
 
 // warlock_t::init_procs ===============================================
@@ -6886,6 +6914,17 @@ struct odr_shawl_of_the_ymirjar_t : public scoped_actor_callback_t<warlock_t>
   }
 };
 
+struct feretory_of_souls_t : public scoped_actor_callback_t<warlock_t>
+{
+  feretory_of_souls_t() : super( WARLOCK_DESTRUCTION )
+  { }
+
+  void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
+  {
+    a -> legendary.feretory_of_souls = true;
+  }
+};
+
 struct warlock_module_t: public module_t
 {
   warlock_module_t(): module_t( WARLOCK ) {}
@@ -6911,6 +6950,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 214345, wilfreds_sigil_of_superior_summoning_t() );
     register_special_effect( 208868, sindorei_spite_t(), true );
     register_special_effect( 212172, odr_shawl_of_the_ymirjar_t() );
+    register_special_effect( 205702, feretory_of_souls_t() );
   }
 
   virtual void register_hotfixes() const override
