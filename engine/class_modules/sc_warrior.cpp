@@ -47,7 +47,8 @@ public:
   event_t* heroic_charge, *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
   std::vector<cooldown_t*> odyns_champion_cds;
-  bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger, opportunity_strikes_once;
+  bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger, opportunity_strikes_once,
+    execute_enrage, double_bloodthirst;
   double expected_max_health;
 
   // Tier 18 (WoD 6.2) class specific trinket effects
@@ -397,6 +398,7 @@ public:
     warrior_fixed_time = frothing_may_trigger = opportunity_strikes_once = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
     expected_max_health = 0;
     base.distance = 5.0;
+    execute_enrage = double_bloodthirst = false;
 
     arms_trinket = prot_trinket = nullptr;
     archavons_heavy_hand = groms_wartorn_pauldrons = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
@@ -1258,6 +1260,11 @@ struct bloodthirst_t: public warrior_attack_t
 
     c += p() -> buff.taste_for_blood -> check_value();
 
+    if ( p() -> double_bloodthirst )
+    {
+      c *= 2.0;
+    }
+
     return c;
   }
 
@@ -1720,6 +1727,10 @@ struct execute_off_hand_t: public warrior_attack_t
     if ( s -> result == RESULT_CRIT )
     {
       p() -> buff.massacre -> trigger();
+      if ( p() -> execute_enrage )
+      {
+        p() -> enrage();
+      }
     }
   }
 };
@@ -1728,7 +1739,7 @@ struct execute_t: public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
   execute_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "execute", p, p -> spec.execute )
+    warrior_attack_t( "execute", p, p -> spec.execute ), oh_attack( nullptr ) 
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -1830,6 +1841,10 @@ struct execute_t: public warrior_attack_t
     {
       p() -> buff.massacre -> trigger();
       arms_t19_4p( *s );
+      if ( p() -> execute_enrage && p() -> specialization() == WARRIOR_FURY )
+      {
+        p() -> enrage();
+      }
     }
   }
 
@@ -5610,6 +5625,8 @@ void warrior_t::create_options()
 
   add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
+  add_option( opt_bool( "execute_enrage", execute_enrage ) );
+  add_option( opt_bool( "double_bloodthirst", double_bloodthirst ) );;
 }
 
 // Discordant Chorus Trinket - T18 ================================================
@@ -5656,6 +5673,8 @@ void warrior_t::copy_from( player_t* source )
 
   non_dps_mechanics = p -> non_dps_mechanics;
   warrior_fixed_time = p -> warrior_fixed_time;
+  execute_enrage = p -> execute_enrage;
+  double_bloodthirst = p -> double_bloodthirst;
 }
 
 /* Report Extension Class
