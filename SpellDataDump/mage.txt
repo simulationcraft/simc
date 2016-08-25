@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build fe28435)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Fire Frost Mage
@@ -1216,7 +1216,7 @@ Tooltip          : Your next Ice Lance deals damage as if the target were frozen
 Name             : Flurry (id=44614) [Scaling Spell (5), Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
-Resource         : 1% Base Mana (11000 @Level 110) [Hotfixed: Percent Cost (4 -> 1)]
+Resource         : 1% Base Mana (11000 @Level 110)
 Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 3 seconds
@@ -3670,7 +3670,6 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=279088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-                   Hotfixed: Base Value (10 -> 15)
 Description      : Frostbolt has a $m1% chance to empower your next Flurry to apply Winter's Chill to the victim for $228354d and be instant cast. 
 
 Winter's Chill causes the target to take damage from your spells as if it were frozen.
@@ -4390,7 +4389,6 @@ Description      : Flame patch burning enemies.
 Tooltip          : Burning
 
 Name             : Flame Patch (id=205472) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Level      : 1
@@ -4405,7 +4403,6 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=303428)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (0.6 -> 0.25)
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Chilled (id=205708) [Spell Family (3)] 

@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build fe28435)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -710,7 +710,6 @@ Description      : Leap into the air and land with explosive force, dealing $200
 Upon landing, you are transformed into a hellish demon for $162264d, greatly empowering your Chaos Strike and Blade Dance abilities, and gaining $162264s7% Haste.
 
 Name             : Fel Rush (id=192611) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chaos
 Range            : 50000 yards
@@ -825,7 +824,6 @@ Tooltip          : Immune to damage and unable to attack.
 Movement speed increased by $s3%.
 
 Name             : Darkness (id=196718) [Spell Family (107)] 
-Hotfixed         : Spell Level, Max Spell Level
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Level      : 100
@@ -1242,8 +1240,7 @@ Description      : Place a Sigil of Silence at the target location that activate
 Silences all enemies affected by the sigil for $204490d.
 
 Name             : Sigil of Chains (id=202138) [Spell Family (107)] 
-Hotfixed         : Cooldown (120000 -> 60000)
-Class            : Vengeance Demon Hunter
+Class            : Demon Hunter
 School           : Physical
 Spell Level      : 100
 Range            : 30 yards
@@ -1538,7 +1535,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300566)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Self(1)
-                   Hotfixed: SP Coefficient (1 -> 1.5)
+                   Hotfixed: Sub Type (107 -> 4), SP Coefficient (-1.5 -> 1.5), Misc Value (12 -> 0), Affects Spells
 #2 (id=300914)   : Apply Aura (6) | Unknown effect sub type (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 #3 (id=350459)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
@@ -1673,14 +1670,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=300652)   : Weapon Damage% (31)
                    Base Value: 85 | Scaled Value: 0.85 | Target: Enemy(6)
-                   Hotfixed: Base Value (95 -> 85)
 #3 (id=300653)   : Energize Power (30)
                    Base Value: 11 | Scaled Value: 12 - 20 | Value Range: 9 | Misc Value: fury | Target: Self(1)
                    Hotfixed: Base Value (14 -> 11), Die Sides (6 -> 9)
 Description      : Inflicts $sw1 Shadow damage and generates $m3 to $M3 Fury.
 
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Level      : 100
@@ -1697,7 +1692,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #2 (id=300915)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x1 | Target: Self(1)
-                   Hotfixed: SP Coefficient (-1 -> 0)
 #3 (id=341634)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self(1)
 Description      : $@spelldesc203720
@@ -2121,7 +2115,6 @@ Effects          :
 Description      : You gain Parry equal to $s1% of your Critical Strike from gear.
 
 Name             : Soul Carver (Artifact) (id=207407) [Spell Family (107)] 
-Hotfixed         : Cooldown (60000 -> 40000)
 Class            : Demon Hunter
 School           : Fire
 Range            : 5 yards
@@ -2610,7 +2603,6 @@ Attributes       : ........ x....... ........ .......x   .....x.. ..x..... .....
 Effects          :
 #1 (id=309959)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Unknown(25)
-                   Hotfixed: Base Value (15 -> 20)
 Description      : $@spelldesc196718
 Tooltip          : Attacks against you have a $s1% chance to inflict no damage.
 
@@ -2654,7 +2646,6 @@ Description      : $@spelldesc209400
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Demonic Appetite (id=210041) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054)
@@ -3673,7 +3664,6 @@ Effects          :
 Description      : Slice your target for ${$sw1+$201428sw1} Chaos damage.  Critical strikes do not consume Fury.
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 
-Hotfixed         : Variables
 Replaces         : Chaos Strike (id=162794)
 Class            : Vengeance Demon Hunter
 School           : Physical

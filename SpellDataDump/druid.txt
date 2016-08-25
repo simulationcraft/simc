@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build fe28435)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -628,7 +628,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Target: Enemy(6)
 #2 (id=2457)     : Weapon Damage% (31)
                    Base Value: 100 | Scaled Value: 1 | Target: Enemy(6)
-                   Hotfixed: Base Value (81 -> 100)
 Description      : Maul the target for $sw2 Physical damage.
 
 Name             : Moonfire (Lunar) (id=8921) [Spell Family (7)] 
@@ -3470,7 +3469,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Displacer Beast (id=137452) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Level      : 1
@@ -4617,8 +4615,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=280158)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.40000 | Target: Enemy(6)
-#2 (id=330893)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -6219,7 +6215,6 @@ Description      : Release the natural power within G'Hanir to increase the freq
 Tooltip          : Heal over time spells are healing ${100*(1/(1+($m1/100))-1)}% faster.
 
 Name             : Oneth's Intuition (id=209405) [Spell Family (7), Passive] 
-Hotfixed         : Proc Flags (536870912 -> 65536)
 Class            : Druid
 School           : Nature
 Proc Chance      : 20%
@@ -6280,7 +6275,6 @@ Description      : $@spelldesc209405
 Tooltip          : Your next Starfall costs no Astral Power.
 
 Name             : Stag Form (Shapeshift) (id=210053) [Spell Family (7)] 
-Hotfixed         : Cooldown, GCD, Category
 Class            : Druid
 School           : Physical
 Spell Level      : 40

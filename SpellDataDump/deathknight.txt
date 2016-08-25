@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build fe28435)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -564,24 +564,6 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 6 | Target: Self(1)
 Description      : Increases Stamina by $s5% and armor by $s3%.
 Tooltip          : Stamina increased by $s5%. Base armor increased by $s3%. Chance to be critically hit reduced by $s2%. Threat generation is significantly increased. Death Grip recovers more quickly.
-
-Name             : Death's Advance (id=48265) [Spell Family (15), Passive] 
-Class            : Unholy Death Knight
-School           : Shadow
-Spell Level      : 55
-GCD              : 1 seconds
-Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...... ........ 
-                 : x....... ........ ........ ........   ........ ........ x...x... ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Cannot cancel aura (31), Disable player procs (112)
-Effects          :
-#1 (id=40421)    : Apply Aura (6) | Unknown effect sub type (129)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-Description      : Increases movement speed by $s1%.
-Tooltip          : Movement speed increased by $s1%.
 
 Name             : Anti-Magic Shell (id=48707) [Spell Family (15)] 
 Class            : Death Knight
@@ -1789,13 +1771,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=64510)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-                   Hotfixed: Type (121 -> 3), Base Value (1 -> 0)
 #2 (id=214692)   : Weapon Damage% (31)
                    Base Value: 65 | Scaled Value: 0.65 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: Target 1 (6 -> 53), Target 2 (0 -> 16)
 #3 (id=347757)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
-                   Hotfixed: NEW EFFECT
 Description      : $@spelldesc55090
 
 Name             : Mastery: Blood Shield (id=77513) [Spell Family (15), Passive] 
@@ -3961,7 +3940,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 #5 (id=330729)   : Apply Aura (6) | Dummy (4)
                    Base Value: 16 | Scaled Value: 16 | Misc Value: 5 | Target: Self(1)
-                   Hotfixed: Base Value (20 -> 16)
 Description      : Surrounds you with a barrier of whirling bones, reducing all damage you take by $s5% and increasing your Haste by $s4%. Each damaging attack consumes a charge. Lasts $d or until all charges are consumed.
 Tooltip          : Damage taken reduced by ${$m5/$m2}%.
 Haste increased by ${$m4/$m2}%.
@@ -4516,10 +4494,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303972)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-                   Hotfixed: Base Value (2 -> 1)
 #2 (id=303973)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Self(1)
-                   Hotfixed: Base Value (10 -> 6)
 Description      : Spending Runic Power will decrease the remaining cooldown on Vampiric Blood by $s1 sec per $s2 Runic Power.
 
 Name             : Anti-Magic Barrier (id=205725) [Spell Family (15)] 
@@ -4579,7 +4555,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Targets: 2 | Target: Enemy(6)
 #2 (id=306040)   : Weapon Damage% (31)
                    Base Value: 206 | Scaled Value: 2.06 | Chain Targets: 2 | Target: Enemy(6)
-                   Hotfixed: Base Value (258 -> 206)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
@@ -5309,7 +5284,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=324719)   : Weapon Damage% (31)
                    Base Value: 130 | Scaled Value: 1.3 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: Type (2 -> 31), AP Coefficient (2 -> 0), Base Value (1 -> 130)
+                   Hotfixed: Type (2 -> 31), AP Coefficient (1.5 -> 0), Base Value (1 -> 130)
 #3 (id=350135)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
                    Hotfixed: NEW EFFECT
@@ -5680,7 +5655,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Skulker Shot (id=212423) 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Range            : 35 yards
@@ -5697,14 +5671,11 @@ Attributes       : .x..x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=314938)   : Dummy (3)
                    Base Value: 75 | Scaled Value: 75 | Target: Enemy(6)
-                   Hotfixed: Type (31 -> 3), Base Value (200 -> 75)
 #2 (id=348187)   : Weapon Damage% (31)
                    Base Value: 75 | Scaled Value: 0.75 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: NEW EFFECT
 Description      : A shot that causes Physical damage.
 
 Name             : Wraith Walk (id=212552) [Spell Family (15)] 
-Hotfixed         : Cooldown (60000 -> 45000)
 Class            : Blood Frost Unholy Death Knight
 School           : Physical
 Spell Level      : 60

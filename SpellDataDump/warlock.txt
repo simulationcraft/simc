@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build fe28435)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1042,7 +1042,6 @@ Description      : An infernal falls from the sky, dealing $s1 Fire damage to al
 Tooltip          : Stunned.
 
 Name             : Seed of Corruption (id=27243) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Affliction Warlock
 School           : Shadow
 Resource         : 4.5% Base Mana (49500 @Level 110)
@@ -1155,7 +1154,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=288276)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (1.7 -> 1.9)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
 
 Name             : Unstable Affliction (id=30108) [Spell Family (5)] 
@@ -1385,7 +1383,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Rain of Fire (id=42223) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Level      : 20
@@ -3598,7 +3595,6 @@ Effects          :
 Description      : $@spelldesc187365
 
 Name             : Chaos Barrage (id=187394) [Spell Family (5)] 
-Hotfixed         : Affecting Spells, Spell Family (107 -> 5)
 Class            : Warlock
 School           : Magic
 Range            : 100 yards
@@ -3805,7 +3801,6 @@ Effects          :
 Description      : $@spelldesc348
 
 Name             : Immolate (id=193541) [Spell Family (5), Passive, Hidden] 
-Hotfixed         : Proc Flags (327680 -> 262144)
 Class            : Destruction Warlock
 School           : Physical
 Proc Chance      : 100%
@@ -3919,7 +3914,6 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=287836)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 37 | Target: Self(1)
-                   Hotfixed: Base Value (60 -> 40)
 #2 (id=322166)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Corruption (172), Corruption (146739)
@@ -4108,12 +4102,10 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
 Effects          :
 #1 (id=288215)   : Dummy (3)
                    Base Value: 120 | Scaled Value: 120 | Target: Enemy(6)
-                   Hotfixed: Type (2 -> 3), Base Value (200 -> 120)
 #2 (id=288216)   : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=348789)   : School Damage: shadow (2)
                    Base Value: 120 | Scaled Value: 120 | Target: Enemy(6)
-                   Hotfixed: NEW EFFECT
 Description      : $@spelldesc30108
 
 Name             : Backdraft (id=196406) [Spell Family (5), Passive] 
@@ -4222,7 +4214,6 @@ Effects          :
 Description      : Launches $s1 bolts of felfire over $d at random targets afflicted by your Immolate within $196449A1 yds. Each bolt deals $196448s1 Fire damage.
 
 Name             : Channel Demonfire (id=196448) [Spell Family (5)] 
-Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Fire
 Range            : 100 yards
@@ -4335,7 +4326,6 @@ Effects          :
 Description      : $@spelldesc187365
 
 Name             : Shadow Bolt (id=196657) [Spell Family (5)] 
-Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Shadow
 Spell Level      : 1
@@ -4633,7 +4623,6 @@ Effects          :
 Description      : Fires an Eye Laser that hits all Doomed targets for $s1 Shadow damage.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Range            : 40 yards
@@ -4649,7 +4638,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=303063)   : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 1.44000 | Radius: 0 - 25 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (0.72 -> 1.44)
 Description      : $@spelldesc205179
 
 Name             : Soul Effigy (id=205247) [Spell Family (5), Passive] 
@@ -4701,12 +4689,10 @@ Effects          :
 #1 (id=303923)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy(6)
                    Affected Spells: Immolate (157736), Immolate (193540)
-                   Hotfixed: Base Value (60 -> 25)
 Description      : $@spelldesc205184
 Tooltip          : Damage taken from the Warlock's Immolate increased by $s1%.
 
 Name             : Thal'kiel's Consumption (Artifact) (id=211714) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Range            : 40 yards
@@ -4765,7 +4751,6 @@ Effects          :
 Description      : Summon a Chaos Tear.
 
 Name             : Chaos Bolt (id=215279) [Spell Family (5)] 
-Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Chromatic
 Spell Level      : 1

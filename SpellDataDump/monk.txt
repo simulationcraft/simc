@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build fe28435)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -501,7 +501,7 @@ GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Category         : 1561
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2991,9 +2991,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=164151)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self(1)
-#2 (id=289259)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 Description      : Your Blackout Kick now also deals an additional $m1% damage over $128531d if behind the target or heals you for $m1% of the damage done if in front of the target.
 
 Additionally, your Rising Sun Kick now also causes Mortal Wounds to the primary target.
@@ -3247,7 +3244,6 @@ Effects          :
 #2 (id=191108)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Blackout Kick (100784), Keg Smash (121253), Blackout Strike (205523), Blackout Kick (228649)
-                   Hotfixed: Affects Spells
 #3 (id=191109)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1562 | Target: Self(1)
 #4 (id=191110)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
@@ -3372,7 +3368,6 @@ Effects          :
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -100), Misc Value (0 -> 11), Affects Spells
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191102)   : Apply Aura (6) | Dummy (4)
@@ -3397,7 +3392,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=347516)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Hotfixed: NEW EFFECT
 
 Name             : Combo Breaker (id=137384) [Scaling Spell (6), Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
@@ -3891,7 +3885,6 @@ Description      : Gain a charge of Mongoose Bite.
 Tooltip          : Gain a charge of Mongoose Bite.
 
 Name             : Hunting Companion (id=191336) [Spell Family (9), Passive] 
-Hotfixed         : Proc Chance (0 -> 100)
 Class            : Monk
 School           : Physical
 Proc Chance      : 100%
@@ -4251,7 +4244,6 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Special Delivery (id=196733) [Spell Family (53)] 
-Hotfixed         : Category
 Class            : Monk
 School           : Physical
 Range            : 100 yards
@@ -4835,7 +4827,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5185,7 +5177,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 3
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Combat Conditioning (128595), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Blackout Kick! (116768), Brewmaster Monk (137023), Mistweaver Monk (137024), Windwalker Monk (137025), Serenity (152173), Dark Skies (195265), Obsidian Fists (213051)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

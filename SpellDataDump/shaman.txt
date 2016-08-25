@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build fe28435)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1481,7 +1481,6 @@ Description      : Activates your true form, increasing current movement speed b
 Tooltip          : True form activated, movement speed increased by an additional $s1%.
 
 Name             : Unleash Life (id=73685) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Nature
 Resource         : 5% Base Mana (11000 @Level 110)
@@ -1505,7 +1504,6 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=66866)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.25000 | Target: Friend(21)
-                   Hotfixed: SP Coefficient (2.5 -> 3.25)
 #2 (id=66867)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Healing Surge (188070)
@@ -1666,7 +1664,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -5953,7 +5951,6 @@ Effects          :
 Description      : $@spelldesc192246
 
 Name             : Crashing Storm (id=210801) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
@@ -6334,7 +6331,6 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=321041)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Radius: 0 - 12 yards | Target: Unknown(87) -> AOE friendly(31)
-                   Hotfixed: SP Coefficient (0.25 -> 0.5)
 Description      : $@spelldesc73920
 
 Name             : Disabling Totem (id=216965) 

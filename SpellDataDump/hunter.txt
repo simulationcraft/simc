@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build fe28435)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -38,7 +38,6 @@ Effects          :
 Description      : Allows one-hand and off-hand weapons to be equipped in the off-hand.
 
 Name             : Disengage (id=781) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
 Spell Level      : 14
@@ -3924,7 +3923,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 #2 (id=283888)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
-                   Hotfixed: Sub Type (107 -> 4), Base Value (100 -> 25), Misc Value (18 -> 0), Affects Spells
 Description      : Grants you and your pet $s1% increased Critical Strike chance on all abilities, and increases your chance to gain charges of Mongoose Bite by $s2%. Lasts $d.
 Tooltip          : Critical Strike chance on abilities increased by $s1%.
 
@@ -4409,7 +4407,6 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=280652)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 18 | Target: Self(1)
-                   Hotfixed: Sub Type (107 -> 4), SP Coefficient (1 -> 2), Affects Spells
 Description      : Your pet's attacks have a ${$m1/4}.1% chance to grant you an additional charge of Mongoose Bite.
 
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive] 
@@ -4947,7 +4944,6 @@ Effects          :
 Description      : Hurls a dragonsfire grenade at the target that explodes into flames, inflicting $194858o1 Fire damage over $194858d and reducing movement speed by $194858s2%. The volatile flames on the target also scorch nearby enemies for $194859s2 damage every $194858t1 sec.
 
 Name             : Dragonsfire Grenade (id=194858) 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Fire
 Spell Level      : 1
@@ -4963,7 +4959,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=286030)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.42200 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (1.6 -> 1.422)
 #2 (id=286031)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc194855
@@ -4986,7 +4981,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=322543)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.42200 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: AP Coefficient (1.6 -> 1.422)
 Description      : $@spelldesc194855
 
 Name             : Wing Clip (id=195645) [Spell Family (9)] 
@@ -5631,7 +5625,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=299987)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.25000 | Radius: 0 - 8 yards | Target: At Caster(22) -> Unknown(24)
-                   Hotfixed: AP Coefficient (2.25 -> 1.25)
 Description      : Deals $s1 Physical damage in a frontal cone to enemies within a $A1 yards.
 
 Name             : Fury of the Eagle (Artifact) (id=203415) [Spell Family (9)] 
@@ -5655,7 +5648,6 @@ Attributes       : ........ ........ ........ ........   ..x...x. .xx..... .....
 Effects          :
 #1 (id=299989)   : Apply Aura (6) | Periodic Trigger Spell: Fury of the Eagle every 0.5 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 203413 | Target: Self(1)
-                   Hotfixed: Period (1000 -> 500)
 Description      : Furiously strikes all enemies in front of you, dealing ${$203413s1*5} Physical damage. Damage increased by Mongoose Fury.
 
 Name             : Windburst (Artifact) (id=204147) [Spell Family (9)] 
