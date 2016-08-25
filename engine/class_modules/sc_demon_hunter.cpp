@@ -4305,12 +4305,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
       add_child( bloodlet );
     }
 
-    if ( p -> bugs )
-    {
-      // Aug 01 2016
-      cooldown -> hasted = false;
-    }
-
     base_multiplier *= 1.0 + p -> artifact.sharpened_glaives.percent();
   }
 
