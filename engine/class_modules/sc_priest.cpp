@@ -890,10 +890,9 @@ struct fiend_melee_t : public priest_pet_melee_t
         {
           p().o().resource_gain(
               RESOURCE_INSANITY,
-              ( amount * ( 1.0 + 1.5
-                           // p().o()
-                           //    .talents.surrender_to_madness->effectN( 1 )
-                           //    .percent()
+              ( amount * ( 1.0 + p().o()
+                               .talents.surrender_to_madness->effectN( 1 )
+                               .percent()
                            ) ) -
                   amount,
               p().o().gains.insanity_surrender_to_madness );
@@ -1929,13 +1928,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
           amount *
           (1.0 +
           priest.buffs.power_infusion->data().effectN(3).percent()) *
-          (1.0 + 1.5);
-              //priest.talents.surrender_to_madness->effectN( 1 ).percent() );
+          (1.0 + priest.talents.surrender_to_madness->effectN( 1 ).percent() );
 
         amount_from_surrender_to_madness =
-            ( amount * ( 1.0 + 1.5
-                         //priest.talents.surrender_to_madness->effectN( 1 )
-                         //    .percent() 
+            ( amount * ( 1.0 + priest.talents.surrender_to_madness->effectN( 1 )
+                             .percent() 
                              ) ) -
             amount;
 
@@ -1955,9 +1952,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
       else if ( priest.buffs.surrender_to_madness->check() )
       {
         amount_from_surrender_to_madness =
-            ( amount * ( 1.0 + 1.5
-                         // priest.talents.surrender_to_madness->effectN( 1 )
-                         //    .percent()
+            ( amount * ( 1.0 + priest.talents.surrender_to_madness->effectN( 1 )
+                             .percent()
                          ) ) -
             amount;
       }
@@ -6300,9 +6296,6 @@ void priest_t::create_buffs()
       buff_creator_t( this, "void_torrent" ).spell( artifact.void_torrent );
 
   buffs.surrender_to_madness = new buffs::surrender_to_madness_t( *this );
-
-  // buffs.surrender_to_madness = buff_creator_t( this, "surrender_to_madness" )
-  //                                 .spell( talents.surrender_to_madness );
 
   buffs.surrender_to_madness_death =
       buff_creator_t( this, "surrender_to_madness_death" )
