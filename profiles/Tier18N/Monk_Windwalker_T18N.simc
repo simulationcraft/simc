@@ -58,11 +58,12 @@ actions.st+=/blackout_kick,if=(chi>1|buff.bok_proc.up)&buff.serenity.down&!prev_
 actions.st+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
 
 actions.aoe=spinning_crane_kick,if=!prev_gcd.spinning_crane_kick
-actions.aoe+=/strike_of_the_windlord
-actions.aoe+=/rushing_jade_wind,if=chi>=2&!prev_gcd.rushing_jade_wind
+actions.aoe+=/rising_sun_kick,cycle_targets=1
+actions.aoe+=/rushing_jade_wind,if=chi>1&!prev_gcd.rushing_jade_wind
 actions.aoe+=/chi_wave,if=energy.time_to_max>2|buff.serenity.down
 actions.aoe+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
-actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
+actions.aoe+=/blackout_kick,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,cycle_targets=1
+actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi.max-chi>1)&!prev_gcd.tiger_palm,cycle_targets=1
 
 head=helm_of_imagined_horrors,id=124259,upgrade=2
 neck=world_enders_gorget,id=124222,upgrade=2,enchant=gift_of_critical_strike

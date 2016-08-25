@@ -37,7 +37,7 @@ actions.st+=/blackout_kick,if=buff.teachings_of_the_monastery.up
 actions.st+=/chi_burst
 actions.st+=/tiger_palm,if=buff.teachings_of_the_monastery.down
 
-actions.aoe=spinning_crane_kick,if=!talent.refreshing_jade_wind.enabled
+actions.aoe=spinning_crane_kick
 actions.aoe+=/refreshing_jade_wind
 actions.aoe+=/chi_burst
 actions.aoe+=/blackout_kick

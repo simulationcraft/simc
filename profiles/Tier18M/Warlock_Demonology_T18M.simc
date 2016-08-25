@@ -22,6 +22,8 @@ actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&acti
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/demonic_empowerment
+actions.precombat+=/demonbolt,if=talent.demonbolt.enabled
+actions.precombat+=/shadow_bolt,if=!talent.demonbolt.enabled
 
 # Executed every time the actor is available.
 
