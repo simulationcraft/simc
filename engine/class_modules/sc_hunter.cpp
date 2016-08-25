@@ -1953,20 +1953,20 @@ struct pet_melee_t: public hunter_main_pet_attack_t
   virtual void execute() override
   {
     hunter_main_pet_attack_t::execute();
-
-    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
-    {
-      double proc_chance = p() -> o() -> cache.mastery_value() * 0.50;
-
-      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
-        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
-
-      if ( rng().roll( proc_chance ) )
-      {
-        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
-        p() -> o() -> procs.hunting_companion -> occur();
-      }
-    }
+//  pet auto attacks don't trigger Hunting Companion
+//    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
+//    {
+//      double proc_chance = p() -> o() -> cache.mastery_value() * 0.50;
+//
+//      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
+//        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
+//
+//      if ( rng().roll( proc_chance ) )
+//      {
+//        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
+//        p() -> o() -> procs.hunting_companion -> occur();
+//      }
+//    }
   }
 
   virtual void impact( action_state_t* s ) override
