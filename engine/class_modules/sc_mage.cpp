@@ -8223,7 +8223,7 @@ void mage_t::apl_arcane()
 
   rop_phase    -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
   rop_phase    -> add_talent( this, "Super Nova", "if=mana.pct<100" );
-  rop_phase    -> add_talent( this, "Nether Tempest", ",if=dot.nether_tempest.remains<=2|!ticking" );
+  rop_phase    -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   rop_phase    -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
   rop_phase    -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   rop_phase    -> add_action( this, "Arcane Blast", "if=mana.pct>45" );
