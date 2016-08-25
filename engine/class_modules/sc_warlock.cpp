@@ -269,6 +269,7 @@ public:
   {
     bool odr_shawl_of_the_ymirjar;
     bool feretory_of_souls;
+    bool wilfreds_sigil_of_superior_summoning_flag;
     timespan_t wilfreds_sigil_of_superior_summoning;
   } legendary;
 
@@ -2407,6 +2408,11 @@ public:
 
         p -> warlock_pet_list.wild_imps[i] -> trigger(doge);
         p -> procs.wild_imp -> occur();
+        if(p->legendary.wilfreds_sigil_of_superior_summoning_flag && !p->talents.grimoire_of_supremacy->ok())
+        {
+            p->cooldowns.doomguard->adjust(p->legendary.wilfreds_sigil_of_superior_summoning);
+            p->cooldowns.infernal->adjust(p->legendary.wilfreds_sigil_of_superior_summoning);
+        }
         return;
       }
     }
@@ -3120,7 +3126,8 @@ struct hand_of_guldan_t: public warlock_spell_t
         if ( wild_imp -> is_sleeping() )
         {
           count--;
-          wild_imp -> trigger();
+          //wild_imp -> trigger();
+          trigger_wild_imp(p);
           p -> procs.wild_imp -> occur();
         }
         if ( count == 0 )
@@ -4150,6 +4157,11 @@ struct summon_darkglare_t : public warlock_spell_t
       if ( p() -> warlock_pet_list.darkglare[i] -> is_sleeping() )
       {
         p() -> warlock_pet_list.darkglare[i] -> summon( darkglare_duration );
+        if(p()->legendary.wilfreds_sigil_of_superior_summoning_flag && !p()->talents.grimoire_of_supremacy->ok())
+        {
+            p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+            p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+        }
       }
     }
   }
@@ -4196,6 +4208,11 @@ struct call_dreadstalkers_t : public warlock_spell_t
       {
         p() -> warlock_pet_list.dreadstalkers[i] -> summon( dreadstalker_duration );
         p() -> procs.dreadstalker_debug -> occur();
+        if(p()->legendary.wilfreds_sigil_of_superior_summoning_flag && !p()->talents.grimoire_of_supremacy->ok())
+        {
+            p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+            p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+        }
         if ( ++j == dreadstalker_count ) break;
       }
     }
@@ -6881,6 +6898,7 @@ struct wilfreds_sigil_of_superior_summoning_t : public scoped_actor_callback_t<w
 
   void manipulate( warlock_t* p, const special_effect_t& e ) override
   {
+    p -> legendary.wilfreds_sigil_of_superior_summoning_flag = true;
     p -> legendary.wilfreds_sigil_of_superior_summoning = e.driver() -> effectN( 1 ).time_value();
   }
 };
