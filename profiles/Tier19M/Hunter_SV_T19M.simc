@@ -30,6 +30,7 @@ actions=auto_attack
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
+actions+=/potion,name=deadly_grace
 actions+=/steel_trap
 actions+=/explosive_trap
 actions+=/dragonsfire_grenade
