@@ -4830,8 +4830,10 @@ struct clawing_shadows_t : public scourge_strike_base_t
     parse_options( options_str );
 
     // HOTFIX 2016-08-23: Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).
+    /*
     weapon_multiplier = 1.3;
     normalize_weapon_speed = true;
+    */
   }
 };
 
@@ -7521,6 +7523,7 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Death Knight", "2016-08-23", "Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).", 324719 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
@@ -7532,6 +7535,7 @@ struct death_knight_module_t : public module_t {
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1 - 0.39 )
       .verification_value( 3.75 );
+    */
   }
 
   void init( player_t* ) const override {}
