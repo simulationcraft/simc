@@ -43,9 +43,9 @@ enum specialization_e {
 };
 
 namespace specdata {
-static const unsigned n_specs = 39;
+static const int n_specs = 39;
 
-static const unsigned spec_to_idx_map_len = 582;
+static const int spec_to_idx_map_len = 582;
 
 static const specialization_e __specs[39] = {
   PET_FEROCITY, 

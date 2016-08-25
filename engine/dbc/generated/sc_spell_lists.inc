@@ -107,7 +107,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 15 abilities
+    // General tree, 16 abilities
     {
        86704, // Ancient Fury
       114919, // Arcing Light
@@ -116,6 +116,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       121183, // Contemplation
        35395, // Crusader Strike
          642, // Divine Shield
+      190784, // Divine Steed
       209202, // Eye of Tyr (Artifact)
        62124, // Hand of Reckoning
       162056, // Jailer's Judgment
@@ -145,7 +146,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       183998, // Light of the Martyr
            0,
     },
-    // Protection tree, 15 abilities
+    // Protection tree, 16 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
@@ -155,6 +156,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       213644, // Cleanse Toxins
        26573, // Consecration
          498, // Divine Protection
+      190784, // Divine Steed
        19750, // Flash of Light
        86659, // Guardian of Ancient Kings
          853, // Hammer of Justice
@@ -1090,10 +1092,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       198793, // Vengeful Retreat
            0,
     },
-    // Havoc tree, 5 abilities
+    // Havoc tree, 6 abilities
     {
       202446, // Anguish
       211796, // Chaos Blades
+      196718, // Darkness
       203796, // Demon Blades
       208605, // Nemesis
       217070, // Rage of the Illidari
@@ -2101,6 +2104,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
   {
     // Specialization abilities for Havoc
     {
+      196718, // Darkness
       212612, // Havoc Demon Hunter
       178976, // Leather Specialization
       185164, // Mastery: Demonic Presence
