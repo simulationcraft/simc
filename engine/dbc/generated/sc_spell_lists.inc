@@ -1070,13 +1070,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Demon Hunter
   {
-    // General tree, 18 abilities
+    // General tree, 19 abilities
     {
       188499, // Blade Dance
       198589, // Blur
       179057, // Chaos Nova
       162794, // Chaos Strike
       183752, // Consume Magic
+      196718, // Darkness
       162243, // Demon's Bite
       198013, // Eye Beam
       195072, // Fel Rush
