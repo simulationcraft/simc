@@ -30,6 +30,8 @@ actions=auto_attack
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
+actions+=/use_item,name=tirathons_betrayal
+actions+=/potion,name=deadly_grace
 actions+=/steel_trap
 actions+=/explosive_trap
 actions+=/dragonsfire_grenade
@@ -51,10 +53,10 @@ actions+=/raptor_strike,if=!talent.throwing_axes.enabled&focus>75-cooldown.flank
 
 head=helm_of_endless_dunes,id=134471,bonus_id=1727
 neck=understone_gorget,id=134491,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=mantle_of_the_abyss,id=134479,bonus_id=1727
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
 back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
 chest=decontaminated_chain_tunic,id=134463,bonus_id=1727
-wrists=solid_gold_bracelets,id=139282,bonus_id=1727
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
 hands=gloves_of_fleshshaping,id=134468,bonus_id=1727
 waist=cinch_of_frozen_fear,id=134482,bonus_id=1727
 legs=leggings_of_acidic_venom,id=137450,bonus_id=1727
@@ -62,16 +64,17 @@ feet=plasmadrilled_steel_toes,id=137444,bonus_id=1727
 finger1=ring_of_contempt,id=134490,bonus_id=1727,enchant=200vers
 finger2=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=200vers
 trinket1=chaos_talisman,id=137459,bonus_id=1727
-trinket2=spiked_counterweight,id=136715,bonus_id=1727
-main_hand=talonclaw,id=128808,gem_id=137550/137408/137544,relic_id=3412/3412/3412
+trinket2=tirathons_betrayal,id=137537,bonus_id=1727
+main_hand=talonclaw,id=128808,ilevel=870
 
 # Gear Summary
 # gear_ilvl=842.00
-# gear_agility=10183
+# gear_agility=11306
 # gear_stamina=17965
-# gear_crit_rating=5452
-# gear_haste_rating=6383
-# gear_mastery_rating=1116
-# gear_versatility_rating=4907
+# gear_crit_rating=5224
+# gear_haste_rating=5702
+# gear_mastery_rating=1956
+# gear_versatility_rating=4077
 # gear_armor=2433
+# set_bonus=tier19p_mail_2pc=1
 summon_pet=cat

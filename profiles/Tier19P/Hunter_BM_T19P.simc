@@ -3,8 +3,8 @@ level=110
 race=orc
 role=attack
 position=ranged_back
-talents=3102012
-artifact=56:137313:133768:137543:0:868:1:869:3:872:3:874:3:875:6:878:1:881:1:882:1:1095:3:1336:1
+talents=2102012
+artifact=56:137365:132810:140417:0:869:3:870:3:872:3:874:3:875:3:878:1:880:1:881:1:882:1:1095:3:1336:1
 spec=beast_mastery
 
 # This default action priority list is automatically created based on your character.
@@ -29,6 +29,7 @@ actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
+actions+=/potion,name=deadly_grace
 actions+=/a_murder_of_crows
 actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
 actions+=/dire_beast,if=cooldown.bestial_wrath.remains>2
@@ -37,15 +38,15 @@ actions+=/aspect_of_the_wild,if=buff.bestial_wrath.up
 actions+=/barrage,if=spell_targets.barrage>1|(spell_targets.barrage=1&focus>90)
 actions+=/titans_thunder,if=cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active
 actions+=/bestial_wrath
-actions+=/multishot,if=spell_targets.multi_shot>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)
+actions+=/multi_shot,if=spell_targets.multi_shot>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)
 actions+=/kill_command
-actions+=/multishot,if=spell_targets.multi_shot>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)
+actions+=/multi_shot,if=spell_targets.multi_shot>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)
 actions+=/chimaera_shot,if=focus<90
 actions+=/cobra_shot,if=talent.killer_cobra.enabled&(cooldown.bestial_wrath.remains>=4&(buff.bestial_wrath.up&cooldown.kill_command.remains>=2)|focus>119)|!talent.killer_cobra.enabled&focus>90
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
-neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=thundercrush_pauldrons,id=134478,bonus_id=1727
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_distant_army
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
 back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
 chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
@@ -56,16 +57,18 @@ feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727
 finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=200mastery
 finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=200mastery
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
-trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
-main_hand=titanstrike,id=128861,gem_id=137313/133768/137543,relic_id=3412/3412/3412
+trinket2=chrono_shard,id=137419,bonus_id=1727
+main_hand=titanstrike,id=128861,ilevel=870
 
 # Gear Summary
 # gear_ilvl=842.00
-# gear_agility=10183
+# gear_agility=11306
 # gear_stamina=17963
-# gear_crit_rating=715
-# gear_haste_rating=4869
-# gear_mastery_rating=11376
-# gear_versatility_rating=898
+# gear_crit_rating=1307
+# gear_haste_rating=3994
+# gear_mastery_rating=10699
+# gear_versatility_rating=960
 # gear_armor=2433
+# set_bonus=journey_through_time_2pc=1
+# set_bonus=tier19p_mail_2pc=1
 summon_pet=cat

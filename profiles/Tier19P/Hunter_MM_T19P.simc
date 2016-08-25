@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=ranged_back
 talents=1103021
-artifact=55:137550:137350:137307:0:307:1:308:1:310:1:312:6:313:3:315:3:319:3:320:3:322:1:1337:1
+artifact=55:141514:133094:139263:0:307:1:308:1:310:1:312:3:313:3:315:3:318:3:319:3:320:3:322:1:1337:1
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -22,6 +22,7 @@ actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/windburst
 
 # Executed every time the actor is available.
 
@@ -29,47 +30,43 @@ actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/trueshot,if=(target.time_to_die>195|target.health.pct<5)|buff.bullseye.stack>15
-actions+=/marked_shot,if=!talent.sidewinders.enabled&prev_gcd.sentinel&debuff.hunters_mark.up
-actions+=/call_action_list,name=careful_aim,if=(talent.careful_aim.enabled&target.health.pct>80)&spell_targets.barrage=1
+actions+=/auto_shot
+actions+=/call_action_list,name=cooldowns
 actions+=/a_murder_of_crows
 actions+=/barrage
 actions+=/piercing_shot,if=!talent.patient_sniper.enabled&focus>50
-actions+=/windburst
-actions+=/call_action_list,name=patientless,if=!talent.patient_sniper.enabled
-actions+=/arcane_shot,if=(talent.steady_focus.enabled&buff.steady_focus.down&focus.time_to_max>=2)|(talent.true_aim.enabled&(debuff.true_aim.stack<1&focus.time_to_max>=2|debuff.true_aim.remains<2))
-actions+=/multishot,if=(talent.steady_focus.enabled&buff.steady_focus.down&focus.time_to_max>=2&spell_targets.multishot>1)
-actions+=/sidewinders,if=spell_targets.sidewinders>1&(!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5)))
+actions+=/windburst,if=active_enemies<2&buff.marking_targets.down&(debuff.vulnerability.down|debuff.vulnerability.remains<cast_time)
+actions+=/windburst,if=active_enemies<2&buff.marking_targets.down&focus+cast_regen>90
+actions+=/windburst,if=active_enemies<2&cooldown.sidewinders.charges=0
+actions+=/arcane_shot,if=!talent.patient_sniper.enabled&active_enemies=1&debuff.vulnerability.react<3&buff.marking_targets.react&debuff.hunters_mark.down
+actions+=/marked_shot,if=!talent.patient_sniper.enabled&debuff.vulnerability.react<3
+actions+=/marked_shot,if=prev_off_gcd.sentinel
+actions+=/sentinel,if=debuff.hunters_mark.down&buff.marking_targets.down
 actions+=/explosive_shot
+actions+=/marked_shot,if=active_enemies>=4&cooldown.sidewinders.charges_fractional>=0.8
+actions+=/sidewinders,if=active_enemies>1&debuff.hunters_mark.down&(buff.marking_targets.react|buff.trueshot.react|charges=2)
+actions+=/arcane_shot,if=talent.steady_focus.enabled&active_enemies=1&(buff.steady_focus.down|buff.steady_focus.remains<2)
+actions+=/multishot,if=talent.steady_focus.enabled&active_enemies>1&(buff.steady_focus.down|buff.steady_focus.remains<2)
+actions+=/arcane_shot,if=talent.true_aim.enabled&active_enemies=1&(debuff.true_aim.react<1|debuff.true_aim.remains<2)
+actions+=/aimed_shot,if=buff.lock_and_load.up&debuff.vulnerability.remains>gcd.max
 actions+=/piercing_shot,if=talent.patient_sniper.enabled&focus>80
-actions+=/marked_shot,if=talent.sidewinders.enabled&(!talent.patient_sniper.enabled|debuff.vulnerability.remains<2)|!talent.sidewinders.enabled
+actions+=/marked_shot,if=!talent.sidewinders.enabled&(debuff.vulnerability.remains<2|buff.marking_targets.react)
+actions+=/pool_resource,for_next=1,if=talent.sidewinders.enabled&(focus<60&cooldown.sidewinders.charges_fractional<=1.2)
 actions+=/aimed_shot,if=cast_time<debuff.vulnerability.remains&(focus+cast_regen>80|debuff.hunters_mark.down)
+actions+=/marked_shot
 actions+=/black_arrow
-actions+=/multishot,if=spell_targets.multishot>1&(!debuff.hunters_mark.up&buff.marking_targets.up&cast_regen+action.aimed_shot.cast_regen<=focus.deficit)
-actions+=/arcane_shot,if=(!debuff.hunters_mark.up&buff.marking_targets.up)|focus.time_to_max>=2
-actions+=/sidewinders,if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5))
+actions+=/sidewinders,if=debuff.hunters_mark.down&(buff.marking_targets.remains>6|buff.trueshot.react|charges=2)
+actions+=/sidewinders,if=focus<30&charges<=1&recharge_time<=5
+actions+=/multishot,if=spell_targets.barrage>1&(debuff.hunters_mark.down&buff.marking_targets.react|focus.time_to_max>=2)
+actions+=/arcane_shot,if=spell_targets.barrage=1&(debuff.hunters_mark.down&buff.marking_targets.react|focus.time_to_max>=2)
+actions+=/arcane_shot,if=focus.deficit<10
 
-actions.patientless=arcane_shot,if=debuff.vulnerability.stack<3&buff.marking_targets.up&debuff.hunters_mark.down&spell_targets.arcane_shot=1
-actions.patientless+=/marked_shot,if=debuff.vulnerability.stack<3|debuff.hunters_mark.remains<5|(focus<50|focus>80)
-actions.patientless+=/sentinel,if=!talent.sidewinders.enabled&debuff.hunters_mark.down&spell_targets.sentinel>1
-actions.patientless+=/explosive_shot
-actions.patientless+=/aimed_shot,if=debuff.hunters_mark.down&cast_time<debuff.vulnerability.remains
-actions.patientless+=/marked_shot,if=debuff.hunters_mark.remains>5
-actions.patientless+=/black_arrow
-actions.patientless+=/multishot,if=spell_targets.multishot>1&(cast_regen+action.aimed_shot.cast_regen<=focus.deficit)
-actions.patientless+=/arcane_shot,if=cast_regen+action.aimed_shot.cast_regen<=focus.deficit&spell_targets.arcane_shot=1
-
-actions.careful_aim=windburst
-actions.careful_aim+=/arcane_shot,if=(talent.steady_focus.enabled&buff.steady_focus.down&spell_targets.arcane_shot=1)|(talent.true_aim.enabled&(debuff.true_aim.stack<1&focus.time_to_max>=2|debuff.true_aim.remains<2))
-actions.careful_aim+=/marked_shot,if=talent.sidewinders.enabled&(!talent.patient_sniper.enabled|debuff.vulnerability.remains<2)|!talent.sidewinders.enabled
-actions.careful_aim+=/aimed_shot,if=debuff.hunters_mark.down&cast_time<debuff.vulnerability.remains
-actions.careful_aim+=/multishot,if=spell_targets.multishot>1&(buff.marking_targets.up|focus.time_to_max>=2)
-actions.careful_aim+=/arcane_shot,if=spell_targets.arcane_shot=1&(buff.marking_targets.up|focus.time_to_max>=2)
-actions.careful_aim+=/sidewinders,if=!debuff.hunters_mark.up&(buff.marking_targets.up|buff.trueshot.up|charges=2|focus<80&(charges<=1&recharge_time<=5))
+actions.cooldowns=potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23
+actions.cooldowns+=/trueshot,if=(buff.bloodlust.react|target.health.pct>20+(cooldown.trueshot.remains+15))|buff.bullseye.react>25
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1727
-neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=thundercrush_pauldrons,id=134478,bonus_id=1727
+neck=wolfstride_pendant,id=133633,bonus_id=1727,enchant=mark_of_the_distant_army
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
 back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=200agi
 chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
@@ -81,15 +78,16 @@ finger1=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=200mastery
 finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727,enchant=200mastery
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
 trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=137550/137350/137307,relic_id=3412/3412/3412
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,ilevel=870
 
 # Gear Summary
 # gear_ilvl=842.00
 # gear_agility=10183
 # gear_stamina=17963
-# gear_crit_rating=715
-# gear_haste_rating=4869
-# gear_mastery_rating=11376
+# gear_crit_rating=1307
+# gear_haste_rating=4499
+# gear_mastery_rating=11154
 # gear_versatility_rating=898
 # gear_armor=2433
+# set_bonus=tier19p_mail_2pc=1
 summon_pet=cat
