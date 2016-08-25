@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build fe28435)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -252,7 +252,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self(1)
 
 Name             : Deathblow X11 Goggles (id=41317) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
@@ -327,7 +327,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Quad Deathblow X44 Goggles (id=46116) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
@@ -342,7 +342,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Weakness Spectralizers (id=56481) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
@@ -372,7 +372,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Mechanized Snow Goggles (id=61481) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 2 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
@@ -405,7 +405,7 @@ Effects          :
 Description      : Reduces the damage your pet takes from creature area of effect attacks by an additional $s1%.
 
 Name             : Agile Bio-Optic Killshades (id=81722) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 5 seconds
 Mechanic         : Unknown(245)
@@ -983,7 +983,7 @@ $healing=${$<healMult>*$AP*0.867*(1+$@versadmg)}
 Name             : Renewing Mist (id=115151) [Scaling Spell (6), Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
-Resource         : 2.8% Base Mana (30799 @Level 110)
+Resource         : 3% Base Mana (33000 @Level 110) [Hotfixed: Percent Cost (2.8 -> 3)]
 Spell Level      : 24
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1771,12 +1771,14 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=134001)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.50000 | Misc Value: 24 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 10.00000 | Misc Value: 24 | Target: Self(1)
+                   Hotfixed: SP Coefficient (8.5 -> 10)
 #2 (id=287388)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=305755)   : Apply Aura (6) | Add Flat Modifier: Spell Power (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08500 | Misc Value: 24 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Misc Value: 24 | Target: Self(1)
                    Affected Spells: Gust of Mists (191894)
+                   Hotfixed: SP Coefficient (0.085 -> 0.1)
 Description      : Effuse, Renewing Mist, Enveloping Mist, and Vivify also cause a gust of healing mists, instantly healing the primary target for $191894s1.
 
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
@@ -2944,7 +2946,7 @@ Use Zen Pilgrimage again to return near to where you once were.]
 Use Zen Pilgrimage again to return near to where you once were.]
 
 Name             : Agile Retinal Armor (id=127118) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 5 seconds
 Mechanic         : Unknown(245)
@@ -3889,7 +3891,7 @@ Description      : Gain a charge of Mongoose Bite.
 Tooltip          : Gain a charge of Mongoose Bite.
 
 Name             : Hunting Companion (id=191336) [Spell Family (9), Passive] 
-Hotfixed         : Proc Flags (65556 -> 333072), Internal Cooldown (1000 -> 0)
+Hotfixed         : Proc Chance (0 -> 100)
 Class            : Monk
 School           : Physical
 Proc Chance      : 100%
@@ -4249,6 +4251,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Special Delivery (id=196733) [Spell Family (53)] 
+Hotfixed         : Category
 Class            : Monk
 School           : Physical
 Range            : 100 yards

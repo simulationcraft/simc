@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build fe28435)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -377,6 +377,7 @@ Effects          :
 Description      : Reduces damage from falling.
 
 Name             : Rupture (id=1943) [Spell Family (8)] 
+Hotfixed         : Variables
 Class            : Assassination Rogue
 School           : Physical
 Resource         : 25 Energy
@@ -395,7 +396,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.30000 | Mechanic: Bleed | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | Mechanic: Bleed | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.3 -> 0.25), Base Value (1 -> 0)
 #2 (id=239409)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy(6)
 #3 (id=293833)   : Trigger Spell: Rupture (64)
@@ -414,8 +416,8 @@ Description      : Finishing move that tears open the target, dealing Bleed dama
    6 points: ${84+$<bonus>*6*0.275*$AP*28/2} over 28 sec][]
 Tooltip          : Suffering $w1 damage every $t1 sec.
 Variables        : $resolve=$?s84601[${1.17}][${1}]
-$deeper=$?s193531[${1.2}][${1}]
-$bonus=${$<resolve>*(1+$@versadmg)*$<deeper>}
+$deeper=$?s193531[${1.1}][${1}]
+$bonus=${$<resolve>*(1+$@versadmg)*$<deeper>}/1.1
 
 Name             : Feint (id=1966) [Spell Family (8)] 
 Class            : Rogue
@@ -489,7 +491,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=622)      : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (1.2 -> 1.5)
 Description      : Lunging finishing move that causes damage per combo point and has increased range:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -1271,7 +1274,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=22420)    : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.5 -> 0.6)
 #2 (id=22421)    : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Agonizing Poison (200802)
@@ -1379,7 +1383,7 @@ Description      : Step through the shadows to appear behind your target and gai
 Tooltip          : Movement speed increased by $s2%.
 
 Name             : Deathblow X11 Goggles (id=41317) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
@@ -1430,7 +1434,7 @@ Description      : $@spelldesc31230
 Tooltip          : All damage taken reduced by $s1%.
 
 Name             : Quad Deathblow X44 Goggles (id=46116) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
@@ -1518,7 +1522,7 @@ Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Ph
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Weakness Spectralizers (id=56481) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 15 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
@@ -1679,7 +1683,7 @@ Effects          :
 Description      : Increases your Energy regeneration rate by $s1% and your Attack Power by $s2%.
 
 Name             : Mechanized Snow Goggles (id=61481) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 2 seconds
 Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
@@ -1946,7 +1950,7 @@ Effects          :
 Description      : While your Slice and Dice ability is active, you regain $s1 Energy every $5171t2 sec.
 
 Name             : Agile Bio-Optic Killshades (id=81722) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 5 seconds
 Mechanic         : Unknown(245)
@@ -2204,7 +2208,8 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=126788)   : School Damage: nature (2)
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.14200 | Target: Enemy(6)
+                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.17000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.142 -> 0.17)
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
 Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
@@ -2360,7 +2365,7 @@ Effects          :
 Description      : Strike with dark energy, dealing Shadow damage equal to $s1% weapon damage.
 
 Name             : Agile Retinal Armor (id=127118) 
-Class            : Rogue, Monk, Druid
+Class            : Rogue, Monk, Druid, Demon Hunter
 School           : Physical
 Cast Time        : 5 seconds
 Mechanic         : Unknown(245)
@@ -3552,6 +3557,7 @@ Description      : Increases damage done by $s1% for $d.
 Tooltip          : Increases damage done by $s1%.
 
 Name             : Nightblade (id=195452) [Spell Family (8)] 
+Hotfixed         : Internal Cooldown (0 -> 1000)
 Class            : Subtlety Rogue
 School           : Shadow
 Resource         : 25 Energy
@@ -3560,6 +3566,7 @@ Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
+Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
@@ -3693,11 +3700,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=289047)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Knives (192380), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Hotfixed: Base Value (40 -> 30)
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Knives (192380), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Hotfixed: Base Value (40 -> 30)
 #3 (id=289049)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961)
@@ -3942,6 +3951,7 @@ Description      : Finishing move that disembowels the target, causing damage pe
 Variables        : $mult=${(1+$@versadmg)}
 
 Name             : Finality: Nightblade (id=197395) [Spell Family (8)] 
+Hotfixed         : Variables
 Class            : Rogue
 School           : Shadow
 Resource         : 25 Energy
@@ -3974,8 +3984,8 @@ Description      : Finishing move that infects the target with shadowy energy, d
    6 points: ${$<bonus>*$m1*18/2} over 18 sec][]
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and snared by attacks.
 Variables        : $resolve=$?s84601[${1.17}][${1}]
-$deeper=$?s193531[${1.2}][${1}]
-$bonus=${$<resolve>*(1+$@versadmg)*$<deeper>}
+$deeper=$?s193531[${1.1}][${1}]
+$bonus=${$<resolve>*(1+$@versadmg)*$<deeper>}/1.1
 
 Name             : Shuriken Storm (id=197835) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -4195,7 +4205,8 @@ Attributes       : ....x... ........ x.....x. ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=294039)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.75000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.88500 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.75 -> 0.885)
 #2 (id=294040)   : Apply Aura (6) | Stun (12)
                    Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(95) | Target: Enemy(6)
 #3 (id=344382)   : Apply Aura (6) | Dummy (4)
@@ -4330,12 +4341,13 @@ Damage bonus increased by Mastery: Potent Poisons.
 Tooltip          : Each strike has a chance of causing the target to take ${$200803s1}.1% increased damage from your abilities for $200803d.
 
 Name             : Agonizing Poison (id=200803) [Spell Family (8)] 
+Hotfixed         : Max stacks (4 -> 5)
 Class            : Rogue
 School           : Nature
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Stacks           : 4 maximum
+Stacks           : 5 maximum
 Proc Chance      : 101%
 Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Poison Knives (192376), Surge of Toxins (192425), Master Poisoner (196864), 
 Triggered by     : Agonizing Poison (200802)
