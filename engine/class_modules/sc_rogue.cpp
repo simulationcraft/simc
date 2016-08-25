@@ -7851,6 +7851,7 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Rogue", "2016-08-23", "Envenom damage has been increased to 60% Attack Power per point (was 50%).", 22420 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
@@ -7886,6 +7887,7 @@ struct rogue_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 30 )
       .verification_value( 40 );
+    */
   }
 
   virtual void init( player_t* ) const override {}

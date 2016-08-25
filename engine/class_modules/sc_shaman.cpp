@@ -7684,6 +7684,7 @@ struct shaman_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_spell( "Shaman", "2016-08-23", "Windfury base proc rate has been increased to 10% (was 5%.)", 33757 )
       .field( "proc_chance" )
       .operation( hotfix::HOTFIX_SET )
@@ -7725,6 +7726,7 @@ struct shaman_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.8 )
       .verification_value( 0.7 );
+    */
   }
 
   void combat_begin( sim_t* ) const override {}
