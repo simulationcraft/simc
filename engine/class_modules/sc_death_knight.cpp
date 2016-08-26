@@ -1825,6 +1825,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       aoe = -1;
       cooldown -> duration = timespan_t::zero();
       cooldown -> charges = 0;
+
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 5 ).percent();
     }
 
     void impact( action_state_t* s ) override
@@ -3021,6 +3023,7 @@ struct blood_boil_t : public death_knight_spell_t
 
     aoe = -1;
     cooldown -> hasted = true;
+    base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 5 ).percent();
   }
 
   void execute() override
