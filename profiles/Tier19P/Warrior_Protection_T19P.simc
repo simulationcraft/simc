@@ -33,13 +33,15 @@ actions+=/berserking
 actions+=/arcane_torrent
 actions+=/call_action_list,name=prot
 
-actions.prot=shield_block
-actions.prot+=/ignore_pain
+actions.prot=shield_block,if=!buff.neltharions_fury.up
+actions.prot+=/ignore_pain,if=buff.ignore_pain.up&rage>=30|(talent.vengeance.enabled&rage>=20&!buff.ignore_pain.up&!buff.focused_rage.up)|!talent.vengeance.enabled
+actions.prot+=/focused_rage,if=(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up&buff.ultimatum.up)
 actions.prot+=/demoralizing_shout,if=incoming_damage_2500ms>health.max*0.20
 actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.50
 actions.prot+=/last_stand,if=incoming_damage_2500ms>health.max*0.50&!cooldown.shield_wall.remains=0
 actions.prot+=/potion,name=unbending_potion,if=(incoming_damage_2500ms>health.max*0.15&!buff.unbending_potion.up)|target.time_to_die<=25
 actions.prot+=/call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>=3
+actions.prot+=/focused_rage,if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled
 actions.prot+=/battle_cry
 actions.prot+=/demoralizing_shout,if=talent.booming_voice.enabled&rage<=50
 actions.prot+=/ravager,if=talent.ravager.enabled
@@ -48,7 +50,8 @@ actions.prot+=/shield_slam
 actions.prot+=/revenge
 actions.prot+=/devastate
 
-actions.prot_aoe=battle_cry
+actions.prot_aoe=focused_rage,if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled
+actions.prot_aoe+=/battle_cry
 actions.prot_aoe+=/demoralizing_shout,if=talent.booming_voice.enabled&rage<=50
 actions.prot_aoe+=/ravager,if=talent.ravager.enabled
 actions.prot_aoe+=/neltharions_fury,if=buff.battle_cry.up

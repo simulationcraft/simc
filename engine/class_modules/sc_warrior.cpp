@@ -171,6 +171,9 @@ public:
 
     buff_t* ignore_pain;
     buff_t* neltharions_fury;
+    buff_t* vengeance_ignore_pain;
+    buff_t* vengeance_focused_rage;
+    buff_t* ultimatum;
     //Legendary Items
     buff_t* bindings_of_kakushan;
     buff_t* kargaths_sacrificed_hands;
@@ -358,6 +361,7 @@ public:
     const spell_data_t* titanic_might;
     const spell_data_t* trauma;
     const spell_data_t* vengeance;
+    const spell_data_t* ultimatum;
 
     const spell_data_t* anger_management;
     const spell_data_t* carnage;
@@ -2132,10 +2136,10 @@ struct hamstring_t: public warrior_attack_t
 
 // Focused Rage ============================================================
 
-struct focused_rage_t: public warrior_attack_t
+struct focused_rage_t: public warrior_spell_t
 {
   focused_rage_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "focused_rage", p, p -> specialization() == WARRIOR_ARMS ? p -> talents.focused_rage : p -> spec.focused_rage )
+    warrior_spell_t( "focused_rage", p, p -> specialization() == WARRIOR_ARMS ? p -> talents.focused_rage : p -> spec.focused_rage )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -2143,8 +2147,19 @@ struct focused_rage_t: public warrior_attack_t
 
   void execute() override
   {
-    warrior_attack_t::execute();
+    warrior_spell_t::execute();
     p() -> buff.focused_rage -> trigger();
+    p() -> buff.vengeance_focused_rage -> expire();
+    p() -> buff.ultimatum -> expire();
+    p() -> buff.vengeance_ignore_pain -> trigger();
+  }
+
+  double cost() const override
+  {
+    double c = warrior_spell_t::cost();
+    c *= 1.0 + p() -> buff.vengeance_focused_rage -> check_value();
+    c *= 1.0 + p() -> buff.ultimatum -> check_value();
+    return c;
   }
 };
 
@@ -3141,6 +3156,11 @@ struct shield_slam_t: public warrior_attack_t
 
     p() -> buff.bindings_of_kakushan -> expire();
     p() -> buff.focused_rage -> expire();
+
+    if ( execute_state -> result == RESULT_CRIT )
+    {
+      p() -> buff.ultimatum -> trigger();
+    }
   }
 
   bool ready() override
@@ -3946,9 +3966,17 @@ struct ignore_pain_t: public warrior_spell_t
     base_dd_max = base_dd_min = 0;
   }
 
+  void execute() override
+  {
+    warrior_spell_t::execute();
+    p() -> buff.vengeance_focused_rage -> trigger();
+  }
+
   double cost() const override
   {
-    return std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
+    double c = std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
+    c *= 1.0 + p() -> buff.vengeance_ignore_pain -> check_value();
+    return c;
   }
 
   double max_ip() const
@@ -3962,6 +3990,12 @@ struct ignore_pain_t: public warrior_spell_t
 
     amount = s -> result_amount;
     amount *= ( resource_consumed / 60.0 );
+
+    if ( p() -> buff.vengeance_ignore_pain -> up() )
+    {
+      amount *= 2.0;
+      p() -> buff.vengeance_ignore_pain -> expire();
+    }
 
     amount += p() -> buff.ignore_pain -> current_value;
 
@@ -4249,6 +4283,8 @@ void warrior_t::init_spells()
   talents.warpaint              = find_talent_spell( "Warpaint" );
   talents.wrecking_ball         = find_talent_spell( "Wrecking Ball" );
   talents.indomitable           = find_talent_spell( "Indomitable" );
+  talents.ultimatum             = find_talent_spell( "Ultimatum" );
+
 
   // Artifact
   artifact.corrupted_blood_of_zakajz = find_artifact_spell( "Corrupted Blood of Zakajz" );
@@ -4824,9 +4860,9 @@ void warrior_t::apl_prot()
   default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
-  prot -> add_action( this, "Shield Block"/*, "if=!buff.neltharion's_fury.up"*/ );
-  prot -> add_action( this, "Ignore Pain"/*, "if=buff.ignore_pain.up&rage>=30|(talent.vengeance.enabled&rage>=20&!buff.ignore_pain.up&!buff.focused_rage.up)|!talent.vengeance.enabled"*/ );
-  //prot -> add_action( this, "Focused Rage"/*, "if=(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up&buff.ultimatum.up)"*/ );
+  prot -> add_action( this, "Shield Block", "if=!buff.neltharions_fury.up" );
+  prot -> add_action( this, "Ignore Pain", "if=buff.ignore_pain.up&rage>=30|(talent.vengeance.enabled&rage>=20&!buff.ignore_pain.up&!buff.focused_rage.up)|!talent.vengeance.enabled" );
+  prot -> add_action( this, "Focused Rage", "if=(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up&buff.ultimatum.up)" );
   prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20" );
   prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.50" );
   prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.50&!cooldown.shield_wall.remains=0" );
@@ -4841,7 +4877,7 @@ void warrior_t::apl_prot()
 
   //dps-single-target
   prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>=3" );
-  //prot -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
+  prot -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
   prot -> add_action( this, "Avatar", "if=talent.avatar.enabled" );
   prot -> add_action( this, "Battle Cry" );
   prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=50" );
@@ -4852,7 +4888,7 @@ void warrior_t::apl_prot()
   prot -> add_action( this, "Devastate" );
 
   //dps-aoe
-  //prot_aoe -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
+  prot_aoe -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
   prot_aoe -> add_action( this, "Avatar", "if=talent.avatar.enabled" );
   prot_aoe -> add_action( this, "Battle Cry" );
   prot_aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=50" );
@@ -5020,6 +5056,9 @@ void warrior_t::create_buffs()
 
   buff.massacre = buff_creator_t( this, "massacre", talents.massacre -> effectN( 1 ).trigger() );
 
+  buff.ultimatum = buff_creator_t( this, "ultimatum", talents.ultimatum -> effectN( 1 ).trigger() )
+    .default_value( talents.ultimatum -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
   buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
     .cd( timespan_t::zero() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -5149,6 +5188,14 @@ void warrior_t::create_buffs()
   buff.shield_wall = buff_creator_t( this, "shield_wall", spec.shield_wall )
     .default_value( spec.shield_wall -> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
+
+  buff.vengeance_ignore_pain = buff_creator_t( this, "vengeance_ignore_pain", find_spell( 202574 ) )
+    .chance( talents.vengeance -> ok() )
+    .default_value( find_spell( 202574 ) -> effectN( 1 ).percent() );
+
+  buff.vengeance_focused_rage = buff_creator_t( this, "vengeance_focused_rage", find_spell( 202573 ) )
+    .chance( talents.vengeance -> ok() )
+    .default_value( find_spell( 202574 ) -> effectN( 1 ).percent() );
 
   buff.tier17_2pc_arms = buff_creator_t( this, "tier17_2pc_arms", sets.set( WARRIOR_ARMS, T17, B2 ) -> effectN( 1 ).trigger() )
     .chance( sets.set( WARRIOR_ARMS, T17, B2 ) -> proc_chance() );
