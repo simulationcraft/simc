@@ -332,6 +332,7 @@ public:
     gain_t* overpowered;
     gain_t* t18_2pc_blood;
     gain_t* scourge_the_unbeliever;
+    gain_t* draugr_girdle_everlasting_king;
   } gains;
 
   // Specialization
@@ -542,6 +543,7 @@ public:
 
     // Unholy
     unsigned the_instructors_fourth_lesson;
+    double draugr_girdle_everlasting_king;
 
   } legendary;
 
@@ -3963,8 +3965,28 @@ struct festering_strike_t : public death_knight_melee_attack_t
         n_stacks += p() -> talent.castigator -> effectN( 1 ).base_value();
       }
       td( s -> target ) -> debuff.festering_wound -> trigger( n_stacks );
+
+      trigger_draugr_girdle_everlasting_king();
     }
   }
+
+  void trigger_draugr_girdle_everlasting_king()
+  {
+    if (!rng().roll(p()->legendary.draugr_girdle_everlasting_king))
+      return;
+
+    if (sim->debug)
+    {
+      log_rune_status(p());
+    }
+
+    if (p() -> replenish_rune(1, p()->gains.draugr_girdle_everlasting_king) && sim->debug)
+    {
+      sim->out_debug.printf("draugr_girdle_of_the_everlasting_king regenerated rune");
+      log_rune_status(p());
+    }
+  }
+
 };
 
 
@@ -6671,6 +6693,7 @@ void death_knight_t::init_gains()
   gains.overpowered                      = get_gain( "Over-Powered"               );
   gains.t18_2pc_blood                    = get_gain( "Tier18 Blood 2PC"           );
   gains.scourge_the_unbeliever           = get_gain( "Scourge the Unbeliever"     );
+  gains.draugr_girdle_everlasting_king   = get_gain("Draugr, Girdle of the Everlasting King");
 }
 
 // death_knight_t::init_procs ===============================================
@@ -7496,6 +7519,17 @@ struct the_instructors_fourth_lesson_t : public scoped_actor_callback_t < death_
   }
 };
 
+struct draugr_girdle_everlasting_king_t : public scoped_actor_callback_t < death_knight_t >
+{
+  draugr_girdle_everlasting_king_t() : super(DEATH_KNIGHT_UNHOLY)
+  {} 
+
+  void manipulate(death_knight_t* p, const special_effect_t& e) override
+  {
+    p->legendary.draugr_girdle_everlasting_king = e.driver()->proc_chance();
+  }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -7519,6 +7553,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 215068, taktheritrixs_shoulderpads_t() );
     unique_gear::register_special_effect(205658, toravons_bindings_t());
     unique_gear::register_special_effect(208713, the_instructors_fourth_lesson_t());
+    unique_gear::register_special_effect(208161, draugr_girdle_everlasting_king_t());
   }
 
   void register_hotfixes() const override

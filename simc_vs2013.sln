@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimcGUI_qt5.5.0", "vs\simcqt_vs2013.vcxproj", "{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}"
 EndProject
@@ -25,7 +25,6 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|Win32.ActiveCfg = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|x64.ActiveCfg = Debug-WebEngine|x64
-		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebEngine|x64.Build.0 = Debug-WebEngine|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|Win32.ActiveCfg = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|Win32.Build.0 = Debug-WebEngine|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug-WebKit|x64.ActiveCfg = Debug-WebKit|x64
@@ -44,8 +43,8 @@ Global
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebKit-PGO|Win32.Build.0 = WebKit-PGO|Win32
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebKit-PGO|x64.ActiveCfg = WebKit-PGO|x64
 		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.WebKit-PGO|x64.Build.0 = WebKit-PGO|x64
-		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebEngine|Win32.ActiveCfg = Debug-WebEngine|Win32
-		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebEngine|Win32.Build.0 = Debug-WebEngine|Win32
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebEngine|Win32.ActiveCfg = Debug-WebEngine|x64
+		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebEngine|Win32.Build.0 = Debug-WebEngine|x64
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebEngine|x64.ActiveCfg = Debug-WebEngine|x64
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebEngine|x64.Build.0 = Debug-WebEngine|x64
 		{D963926C-4A85-4600-8626-51FA12FDF5C1}.Debug-WebKit|Win32.ActiveCfg = Debug-WebKit|Win32
