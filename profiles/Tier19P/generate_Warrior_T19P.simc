@@ -49,7 +49,7 @@ finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_mas
 finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_mastery
 trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/141523/140822,relic_id=3412/3412/3412
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=137549/137543/136718,relic_id=3412/3412/3412
 save=Warrior_Arms_T19P.simc
 
 # Warrior Protection T19P
