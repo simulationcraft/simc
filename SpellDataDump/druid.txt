@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build d043efc)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 812a8f0)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -1798,7 +1798,7 @@ Effects          :
                    Affected Spells: Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
                    Hotfixed: SP Coefficient (1.75 -> 2)
 #2 (id=90627)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Solar Empowerment (164545), Lunar Empowerment (164547), Stellar Empowerment (197637)
 Description      : Increases Starfall and Starsurge damage, and the effect of Lunar, Solar, and Stellar Empowerments by an additional $s1%.
 
@@ -3856,10 +3856,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=216520)   : Apply Aura (6) | Unknown effect sub type (133)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Self(1)
                    Hotfixed: SP Coefficient (1 -> 0.5)
 #2 (id=345062)   : Apply Aura (6) | Modify Absorb% Done (422)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Self(1)
                    Hotfixed: SP Coefficient (1 -> 0.5)
 Description      : Increases your maximum health and healing received by $s1%.
 
