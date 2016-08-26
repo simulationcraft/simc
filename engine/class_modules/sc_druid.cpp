@@ -8132,8 +8132,13 @@ struct luffa_wrappings_t : public scoped_action_callback_t<T>
 
   void manipulate( T* a, const special_effect_t& e ) override
   {
-    a -> radius *= 1.0 + e.driver() -> effectN( 1 ).percent();
-    a -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
+    druid_t* p = debug_cast<druid_t*>( a -> player );
+
+    // Feral Druid passive modifies the strength of the effect.
+    a -> radius *= 1.0 + e.driver() -> effectN( 1 ).percent()
+      + p -> spec.feral -> effectN( 4 ).percent();
+    a -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent()
+      + p -> spec.feral -> effectN( 5 ).percent();
   }
 };
 
