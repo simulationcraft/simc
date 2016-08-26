@@ -4704,7 +4704,16 @@ void paladin_t::generate_action_prio_list_ret()
 
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    def -> add_action( racial_actions[ i ] );
+  {
+    if ( racial_actions[i] == "arcane_torrent" )
+    {
+      def -> add_action( "arcane_torrent,if=holy_power<5" );
+    }
+    else
+    {
+      def -> add_action( racial_actions[ i ] );
+    }
+  }
 
   def -> add_action( "call_action_list,name=VB,if=talent.virtues_blade.enabled" );
   def -> add_action( "call_action_list,name=BoW,if=talent.blade_of_wrath.enabled" );
@@ -4738,7 +4747,7 @@ void paladin_t::generate_action_prio_list_ret()
   VB -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
   VB -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
   VB -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=4&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
-  VB -> add_talent( this, "Zeal", "if=holy_power<=2" );
+  VB -> add_talent( this, "Zeal", "if=holy_power<=4" );
   VB -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
   VB -> add_action( this, "Divine Storm", "if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)" );
   VB -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)" );
