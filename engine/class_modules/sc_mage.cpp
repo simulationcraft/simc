@@ -330,6 +330,7 @@ public:
           * lady_vashjs_grasp,
           * magtheridons_might,
           * rhonins_assaulting_armwraps,
+          * sephuzs_secret,
           * shard_time_warp,
           * zannesu_journey;
 
@@ -362,6 +363,7 @@ public:
   {
     bool zannesu_journey;
     bool lady_vashjs_grasp;
+    bool sephuzs_secret;
     bool shard_of_the_exodar;
     bool shatterlance;
     bool cord_of_infinity;
@@ -7805,6 +7807,8 @@ void mage_t::create_buffs()
                                            { buffs.fingers_of_frost -> trigger();
                                              benefits.fingers_of_frost -> update( "Legedary Gain", 1.0 ); } );
   buffs.rhonins_assaulting_armwraps = buff_creator_t( this, "rhonins_assaulting_armwraps", find_spell( 208081 ) );
+  buffs.sephuzs_secret    = buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
+                                           .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() );
   buffs.shard_time_warp   = buff_creator_t( this, "shard_time_warp", find_spell( 2825 ) )
                                             .add_invalidate( CACHE_SPELL_HASTE );
   buffs.kaelthas_ultimate_ability = buff_creator_t( this, "kaelthas_ultimate_ability", find_spell( 209455 ) );
@@ -9217,6 +9221,14 @@ private:
 using namespace unique_gear;
 using namespace actions;
 
+struct sephuzs_secret_t : public scoped_actor_callback_t<mage_t>
+{
+  sephuzs_secret_t(): super( MAGE )
+  { }
+
+  void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
+  { actor -> legendary.sephuzs_secret = true; }
+};
 struct shard_of_the_exodar_t : public scoped_actor_callback_t<mage_t>
 {
   shard_of_the_exodar_t() : super( MAGE )
@@ -9365,19 +9377,20 @@ public:
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184903, wild_arcanist );
-    unique_gear::register_special_effect( 184904, pyrosurge_t() );
-    unique_gear::register_special_effect( 184905, shatterlance_t() );
-    unique_gear::register_special_effect( 209311, cord_of_infinity_t() );
-    unique_gear::register_special_effect( 208099, koralons_burning_touch_t() );
-    unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t() );
-    unique_gear::register_special_effect( 206397, zannesu_journey_t() );
-    unique_gear::register_special_effect( 208146, lady_vashjs_grasp_t() );
-    unique_gear::register_special_effect( 208080, rhonins_assaulting_armwraps_t() );
-    unique_gear::register_special_effect( 207547, darcklis_dragonfire_diadem_t() );
-    unique_gear::register_special_effect( 207970, shard_of_the_exodar_t() );
-    unique_gear::register_special_effect( 209450, marquee_bindings_of_the_sun_king_t() );
-    unique_gear::register_special_effect( 209280, mystic_kilt_of_the_rune_master_t() );
+    unique_gear::register_special_effect( 184903, wild_arcanist                          );
+    unique_gear::register_special_effect( 184904, pyrosurge_t()                          );
+    unique_gear::register_special_effect( 184905, shatterlance_t()                       );
+    unique_gear::register_special_effect( 209311, cord_of_infinity_t()                   );
+    unique_gear::register_special_effect( 208099, koralons_burning_touch_t()             );
+    unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t()      );
+    unique_gear::register_special_effect( 206397, zannesu_journey_t()                    );
+    unique_gear::register_special_effect( 208146, lady_vashjs_grasp_t()                  );
+    unique_gear::register_special_effect( 208080, rhonins_assaulting_armwraps_t()        );
+    unique_gear::register_special_effect( 207547, darcklis_dragonfire_diadem_t()         );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t()                     );
+    unique_gear::register_special_effect( 207970, shard_of_the_exodar_t()                );
+    unique_gear::register_special_effect( 209450, marquee_bindings_of_the_sun_king_t()   );
+    unique_gear::register_special_effect( 209280, mystic_kilt_of_the_rune_master_t()     );
   }
 
   virtual void register_hotfixes() const override
