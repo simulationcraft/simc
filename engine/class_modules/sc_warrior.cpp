@@ -41,6 +41,54 @@ struct warrior_td_t: public actor_target_data_t
   warrior_td_t( player_t* target, warrior_t& p );
 };
 
+typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
+typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
+
+struct counter_t
+{
+  const sim_t* sim;
+
+  double value, interval;
+  timespan_t last;
+
+  counter_t( warrior_t* p );
+
+  void add( double val )
+  {
+    // Skip iteration 0 for non-debug, non-log sims
+    if ( sim -> current_iteration == 0 && sim -> iterations > sim -> threads && !sim -> debug && !sim -> log )
+      return;
+
+    value += val;
+    if ( last > timespan_t::min() )
+      interval += ( sim -> current_time() - last ).total_seconds();
+    last = sim -> current_time();
+  }
+
+  void reset()
+  { last = timespan_t::min(); }
+
+  double divisor() const
+  {
+    if ( !sim -> debug && !sim -> log && sim -> iterations > sim -> threads )
+      return sim -> iterations - sim -> threads;
+    else
+      return std::min( sim -> iterations, sim -> threads );
+  }
+
+  double mean() const
+  { return value / divisor(); }
+
+  double interval_mean() const
+  { return interval / divisor(); }
+
+  void merge( const counter_t& other )
+  {
+    value += other.value;
+    interval += other.interval;
+  }
+};
+
 struct warrior_t: public player_t
 {
 public:
@@ -50,6 +98,10 @@ public:
   bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger, opportunity_strikes_once,
     execute_enrage, double_bloodthirst;
   double expected_max_health;
+
+  std::vector<counter_t*> counters;
+  auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
+  auto_dispose< std::vector<simple_data_t*> > cd_waste_iter;
 
   // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* arms_trinket, *prot_trinket;
@@ -409,6 +461,7 @@ public:
     regen_type = REGEN_DISABLED;
   }
 
+  virtual           ~warrior_t();
   // Character Definition
   void      init_spells() override;
   void      init_base_stats() override;
@@ -469,6 +522,10 @@ public:
   void       assess_damage_imminent( school_e, dmg_e, action_state_t* s ) override;
   void       assess_damage( school_e, dmg_e, action_state_t* s ) override;
   void       copy_from( player_t* source ) override;
+  void      merge( player_t& other ) override;
+
+  void     datacollection_begin() override;
+  void     datacollection_end() override;
 
   target_specific_t<warrior_td_t> target_data;
 
@@ -491,7 +548,33 @@ public:
       resource_gain( RESOURCE_RAGE, ceannar_girdle -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
   }
+  template <typename T_CONTAINER, typename T_DATA>
+  T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
+  {
+    for ( size_t i = 0; i < entries.size(); i++ )
+    {
+      if ( entries[i] -> first == name )
+      {
+        return &( entries[i] -> second );
+      }
+    }
+
+    entries.push_back( new T_DATA( name, T_CONTAINER() ) );
+    return &( entries.back() -> second );
+  }
 };
+
+warrior_t::~warrior_t()
+{
+  range::dispose( counters );
+}
+
+counter_t::counter_t( warrior_t* p ):
+  sim( p -> sim ), value( 0 ), interval( 0 ), last( timespan_t::min() )
+{
+  p -> counters.push_back( this );
+}
+
 
 namespace
 { // UNNAMED NAMESPACE
@@ -505,14 +588,18 @@ private:
   typedef Base ab; // action base, eg. spell_t
 public:
   typedef warrior_action_t base_t;
+  bool        track_cd_waste;
+  simple_sample_data_with_min_max_t* cd_wasted_exec, *cd_wasted_cumulative;
+  simple_sample_data_t* cd_wasted_iter;
   warrior_action_t( const std::string& n, warrior_t* player,
                     const spell_data_t* s = spell_data_t::nil() ):
     ab( n, player, s ),
+    track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
     dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) ),
-    tactician_per_rage( 0 ), arms_t19_4p_chance( 0 )
+    tactician_per_rage( 0 ), arms_t19_4p_chance( 0 ), cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
   {
     ab::may_crit = true;
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
@@ -523,6 +610,14 @@ public:
   void init() override
   {
     ab::init();
+
+    if ( track_cd_waste )
+    {
+      cd_wasted_exec = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_exec );
+      cd_wasted_cumulative = p() -> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
+      cd_wasted_iter = p() -> template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
+    }
+
 
     if ( sweeping_strikes )
     {
@@ -627,6 +722,32 @@ public:
     }
 
     return true;
+  }
+
+  virtual void update_ready( timespan_t cd ) override
+  {
+    if ( cd_wasted_exec &&
+      ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown -> duration > timespan_t::zero() ) ) &&
+         ab::cooldown -> current_charge == ab::cooldown -> charges &&
+         ab::cooldown -> last_charged > timespan_t::zero() &&
+         ab::cooldown -> last_charged < ab::sim -> current_time() )
+    {
+      double time_ = ( ab::sim -> current_time() - ab::cooldown -> last_charged ).total_seconds();
+      if ( p() -> sim -> debug )
+      {
+        p() -> sim -> out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f",
+                                        p() -> name(), ab::name(), time_, ab::time_to_execute.total_seconds() );
+      }
+      time_ -= ab::time_to_execute.total_seconds();
+
+      if ( time_ > 0 )
+      {
+        cd_wasted_exec -> add( time_ );
+        cd_wasted_iter -> add( time_ );
+      }
+    }
+
+    ab::update_ready( cd );
   }
 
   bool usable_moving() const override
@@ -2744,6 +2865,7 @@ struct rampage_parent_t: public warrior_attack_t
     {
       add_child( p -> rampage_attacks[i] );
     }
+    track_cd_waste = false;
     base_costs[RESOURCE_RAGE] += p -> talents.carnage -> effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
@@ -4355,6 +4477,55 @@ void warrior_t::init_base_stats()
   }
 }
 
+
+// warrior_t::merge ==========================================================
+
+void warrior_t::merge( player_t& other )
+{
+  player_t::merge( other );
+
+  const warrior_t& s = static_cast<warrior_t&>( other );
+
+  for ( size_t i = 0, end = counters.size(); i < end; i++ )
+    counters[i] -> merge( *s.counters[i] );
+
+  for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
+  {
+    cd_waste_exec[i] -> second.merge( s.cd_waste_exec[i] -> second );
+    cd_waste_cumulative[i] -> second.merge( s.cd_waste_cumulative[i] -> second );
+  }
+}
+
+// warrior_t::datacollection_begin ===========================================
+
+void warrior_t::datacollection_begin()
+{
+  if ( active_during_iteration )
+  {
+    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+    {
+      cd_waste_iter[i] -> second.reset();
+    }
+  }
+
+  player_t::datacollection_begin();
+}
+
+// warrior_t::datacollection_end =============================================
+
+void warrior_t::datacollection_end()
+{
+  if ( requires_data_collection() )
+  {
+    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
+    {
+      cd_waste_cumulative[i] -> second.add( cd_waste_iter[i] -> second.sum() );
+    }
+  }
+
+  player_t::datacollection_end();
+}
+
 // warrior_t::has_t18_class_trinket ============================================
 
 bool warrior_t::has_t18_class_trinket() const
@@ -5167,6 +5338,9 @@ void warrior_t::reset()
     buff.defensive_stance -> expire();
   }
 
+  for ( auto & elem : counters )
+    elem -> reset();
+
   heroic_charge = nullptr;
   rampage_driver = nullptr;
   execute_sweeping_strike = nullptr;
@@ -5791,9 +5965,73 @@ public:
     p( player )
   {}
 
-  virtual void html_customsection( report::sc_html_stream& /*os*/ ) override
+
+  void cdwaste_table_header( report::sc_html_stream& os )
   {
-    (void)p;
+    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+      << "<tr>\n"
+      << "<th></th>\n"
+      << "<th colspan=\"3\">Seconds per Execute</th>\n"
+      << "<th colspan=\"3\">Seconds per Iteration</th>\n"
+      << "</tr>\n"
+      << "<tr>\n"
+      << "<th>Ability</th>\n"
+      << "<th>Average</th>\n"
+      << "<th>Minimum</th>\n"
+      << "<th>Maximum</th>\n"
+      << "<th>Average</th>\n"
+      << "<th>Minimum</th>\n"
+      << "<th>Maximum</th>\n"
+      << "</tr>\n";
+  }
+
+  void cdwaste_table_footer( report::sc_html_stream& os )
+  {
+    os << "</table>\n";
+  }
+
+
+  void cdwaste_table_contents( report::sc_html_stream& os )
+  {
+    size_t n = 0;
+    for ( size_t i = 0; i < p.cd_waste_exec.size(); i++ )
+    {
+      const data_t* entry = p.cd_waste_exec[i];
+      if ( entry -> second.count() == 0 )
+      {
+        continue;
+      }
+
+      const data_t* iter_entry = p.cd_waste_cumulative[i];
+
+      action_t* a = p.find_action( entry -> first );
+      std::string name_str = entry -> first;
+      if ( a )
+      {
+        name_str = report::decorated_action_name( a, a -> stats -> name_str );
+      }
+
+      std::string row_class_str = "";
+      if ( ++n & 1 )
+        row_class_str = " class=\"odd\"";
+
+      os.format( "<tr%s>", row_class_str.c_str() );
+      os << "<td class=\"left\">" << name_str << "</td>";
+      os.format( "<td class=\"right\">%.3f</td>", entry -> second.mean() );
+      os.format( "<td class=\"right\">%.3f</td>", entry -> second.min() );
+      os.format( "<td class=\"right\">%.3f</td>", entry -> second.max() );
+      os.format( "<td class=\"right\">%.3f</td>", iter_entry -> second.mean() );
+      os.format( "<td class=\"right\">%.3f</td>", iter_entry -> second.min() );
+      os.format( "<td class=\"right\">%.3f</td>", iter_entry -> second.max() );
+      os << "</tr>\n";
+    }
+  }
+
+
+  virtual void html_customsection( report::sc_html_stream& os ) override
+  {
+    // Custom Class Section
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
     /*// Custom Class Section
     os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
     << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
@@ -5802,6 +6040,21 @@ public:
     os << p.name();
 
     os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+    if ( p.cd_waste_exec.size() > 0 )
+    {
+      os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
+        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+      cdwaste_table_header( os );
+      cdwaste_table_contents( os );
+      cdwaste_table_footer( os );
+
+      os << "\t\t\t\t\t</div>\n";
+
+      os << "<div class=\"clear\"></div>\n";
+    }
+
+    os << "\t\t\t\t\t</div>\n";
   }
 private:
   warrior_t& p;
