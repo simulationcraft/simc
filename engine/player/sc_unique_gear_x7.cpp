@@ -392,6 +392,7 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
 
       // Create effect for the callback.
       special_effect_t* effect2 = new special_effect_t( effect -> item );
+      effect2 -> source = SPECIAL_EFFECT_SOURCE_ITEM;
       effect2 -> name_str = "brutal_haymaker_accumulator";
       effect2 -> proc_chance_ = 1.0;
       effect2 -> proc_flags_ = PF_ALL_DAMAGE;
@@ -550,6 +551,7 @@ void item::tirathons_betrayal( special_effect_t& effect )
 
   // Special effect to drive the AOE damage callback
   special_effect_t* dmg_effect = new special_effect_t( effect.item );
+  dmg_effect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
   dmg_effect -> name_str = "darkstrikes_driver";
   dmg_effect -> spell_id = effect.driver() -> id();
   dmg_effect -> cooldown_ = timespan_t::zero();
@@ -626,7 +628,7 @@ void item::tiny_oozeling_in_a_jar( special_effect_t& effect )
   buff_t* charges = buff_creator_t( effect.player, "congealing_goo", effect.player -> find_spell( 215126 ), effect.item );
 
   special_effect_t* goo_effect = new special_effect_t( effect.item );
-  goo_effect -> item = effect.item;
+  goo_effect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
   goo_effect -> spell_id = 215120;
   goo_effect -> proc_flags_ = PROC1_MELEE | PROC1_MELEE_ABILITY;
   goo_effect -> proc_flags2_ = PF2_ALL_HIT;
@@ -768,6 +770,7 @@ struct figurehead_of_the_naglfar_constructor_t : public item_targetdata_initiali
 
       // Create special effect for the damage transferral.
       special_effect_t* effect2 = new special_effect_t( effect -> item );
+      effect2 -> source = SPECIAL_EFFECT_SOURCE_ITEM;
       effect2 -> name_str = "taint_of_the_sea_driver";
       effect2 -> proc_chance_ = 1.0;
       effect2 -> proc_flags_ = PF_ALL_DAMAGE;
@@ -1103,6 +1106,7 @@ void item::moonlit_prism( special_effect_t& effect )
 {
   // Create stack gain driver
   special_effect_t* effect2 = new special_effect_t( effect.item );
+  effect2 -> source = SPECIAL_EFFECT_SOURCE_ITEM;
   effect2 -> name_str     = "moonlit_prism_driver";
   effect2 -> proc_chance_ = 1.0;
   effect2 -> spell_id = effect.driver() -> id();
@@ -1137,6 +1141,7 @@ void item::faulty_countermeasures( special_effect_t& effect )
 {
   // Create effect & callback for the damage proc
   special_effect_t* effect2 = new special_effect_t( effect.item );
+  effect2 -> source         = SPECIAL_EFFECT_SOURCE_ITEM;
   effect2 -> name_str       = "brittle";
   effect2 -> spell_id       = effect.driver() -> id();
   effect2 -> cooldown_      = timespan_t::zero();
@@ -1446,6 +1451,7 @@ struct maddening_whispers_t : public buff_t
   {
     // Stack gain effect
     special_effect_t* effect2 = new special_effect_t( effect.item );
+    effect2 -> source       = SPECIAL_EFFECT_SOURCE_ITEM;
     effect2 -> name_str     = "maddening_whispers_driver";
     effect2 -> proc_chance_ = 1.0;
     effect2 -> proc_flags_  = PF_SPELL | PF_AOE_SPELL;
