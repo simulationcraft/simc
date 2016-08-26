@@ -7290,19 +7290,7 @@ public:
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Demon Hunter", "2016-08-23",
-      "Demon Blades now generates 12-20 Fury (was 15-20).", 300653 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 11 )
-      .verification_value( 14 );
 
-    hotfix::register_effect( "Demon Hunter", "2016-08-23",
-      "Demon Blades now generates 12-20 Fury (was 15-20). #2", 300653 )
-      .field( "die_sides" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 9 )
-      .verification_value( 6 );
   }
 
   void combat_begin( sim_t* ) const override

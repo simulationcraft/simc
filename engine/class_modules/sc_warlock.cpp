@@ -6973,17 +6973,7 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Warlock", "2015-08-16", "Roaring Blaze reduced to 25%.", 303923 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 25 )
-      .verification_value( 60 );
 
-    hotfix::register_effect( "Warlock", "2015-08-16", "Incinerate damage increased to 190%.", 288276 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.9 )
-      .verification_value( 1.7 );
   }
 
   virtual bool valid() const override { return true; }

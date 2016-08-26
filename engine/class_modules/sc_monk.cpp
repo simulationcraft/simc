@@ -8641,18 +8641,6 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Monk", "2016-08-23", "[unannounced] Transfer the Power has been reduced to 3% per stack (was 5%).", 286702 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3 )
-      .verification_value( 5 );
-
-    hotfix::register_effect( "Monk", "2016-08-23", "[unannounced] Transfer the Power has been reduced to 3% per stack (was 5%).", 286727 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3 )
-      .verification_value( 5 );
-
   }
 
   virtual void init( player_t* p ) const override
