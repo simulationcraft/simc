@@ -1241,6 +1241,7 @@ class SpellDataGenerator(DataGenerator):
          207694,                   # Symbiote Strike for Cinidaria, the Symbiote
          201639, 201640, 201641,   # 7.0 Lavish Suramar Feast food buffs
          201635, 201636, 201637,   # 7.0 Hearty Feast food buffs
+         215047,                   # Terrorbound Nexus trinket
         ),
 
         # Warrior:

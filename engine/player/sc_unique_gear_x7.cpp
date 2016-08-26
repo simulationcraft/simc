@@ -45,7 +45,7 @@ namespace item
   void spiked_counterweight( special_effect_t& );
   void stabilized_energy_pendant( special_effect_t& );
   void stormsinger_fulmination_charge( special_effect_t& );
-  void terrorbound_nexus( special_effect_t& ); // NYI
+  void terrorbound_nexus( special_effect_t& );
   void tiny_oozeling_in_a_jar( special_effect_t& );
   void tirathons_betrayal( special_effect_t& );
   void windscar_whetstone( special_effect_t& );
@@ -1258,6 +1258,42 @@ void item::stormsinger_fulmination_charge( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Terrorbound Nexus ========================================================
+
+struct shadow_wave_callback_t : public dbc_proc_callback_t
+{
+  action_t* shadow_wave;
+
+  shadow_wave_callback_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect ),
+    shadow_wave( effect.player -> find_action( "shadow_wave" ) )
+  {}
+
+  void execute( action_t* a, action_state_t* s ) override
+  {
+    // 2 second return time, from in-game combat logs.
+    new ( *effect.player -> sim  ) ground_aoe_event_t( effect.player, ground_aoe_params_t()
+      .target( s -> target )
+      .x( effect.player -> x_position )
+      .y( effect.player -> y_position )
+      .duration( timespan_t::from_seconds( 2.0 ) )
+      .start_time( effect.player -> sim -> current_time() )
+      .action( shadow_wave )
+      .pulse_time( timespan_t::from_seconds( 2.0 ) ), true );
+  }
+};
+
+void item::terrorbound_nexus( special_effect_t& effect )
+{
+  effect.trigger_spell_id = 215047;
+  action_t* a = effect.initialize_offensive_spell_action();
+  a -> aoe = -1;
+  a -> radius = 15;
+  a -> base_dd_min = a -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+
+  new shadow_wave_callback_t( effect );
+}
+
 // Portable Manacracker =====================================================
 
 struct volatile_magic_debuff_t : public debuff_t
@@ -2097,6 +2133,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 214168, item::spiked_counterweight           );
   register_special_effect( 228450, item::stabilized_energy_pendant      );
   register_special_effect( 215630, item::stormsinger_fulmination_charge );
+  register_special_effect( 215089, item::terrorbound_nexus              );
   register_special_effect( 215127, item::tiny_oozeling_in_a_jar         );
   register_special_effect( 215658, item::tirathons_betrayal             );
   register_special_effect( 214980, item::windscar_whetstone             );
