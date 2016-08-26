@@ -1724,7 +1724,8 @@ struct sephuzs_secret_buff_t : public buff_t
   cooldown_t* icd;
   sephuzs_secret_buff_t( mage_t* p ) :
     buff_t( buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
-                            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() ) )
+                            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() )
+                            .add_invalidate( CACHE_SPELL_HASTE ) )
   {
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
     icd  -> duration = p -> find_spell( 226262 ) -> duration();
@@ -8683,6 +8684,11 @@ double mage_t::composite_spell_haste() const
   if ( buffs.shard_time_warp -> check() )
   {
     h *= 1.0 / ( 1.0 + buffs.shard_time_warp -> data().effectN( 1 ).percent() );
+  }
+
+  if ( buffs.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> default_value );
   }
 
   if ( buffs.frost_armor -> check() )
