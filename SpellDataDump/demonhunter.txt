@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build d043efc)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1427,6 +1427,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300260)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self(1)
+#2 (id=350250)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: -8 | Scaled Value: -8 | Misc Value: 3
+                   Affected Spells: Anger of the Half-Giants (208827)
+                   Hotfixed: NEW EFFECT
 Description      : Your auto attacks have a $s1% chance to deal additional Shadow damage and generate Fury.
 
 Name             : Master of the Glaive (id=203556) [Spell Family (107), Passive] 

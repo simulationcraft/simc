@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build d043efc)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -2715,6 +2715,7 @@ School           : Physical
 Spell Level      : 14
 Range            : 5 yards
 Stance Mask      : 0x00000011
+Affecting spells : Luffa Wrappings (208681), 
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2994,6 +2995,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 72 | Target: Self(1)
 
 Name             : Nature's Vigil (id=124974) [Spell Family (7)] 
+Hotfixed         : Affecting Spells
 Class            : Druid
 School           : Nature
 Spell Level      : 1
@@ -3331,14 +3333,22 @@ Effects          :
                    Affected Spells: Healing Touch (5185)
 #3 (id=191155)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 917504 | Target: Self(1)
-#4 (id=191156)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#5 (id=191157)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#6 (id=260767)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#7 (id=260768)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=191156)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Luffa Wrappings (208681)
+                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 50), Misc Value (0 -> 3), Affects Spells
+#5 (id=191157)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self(1)
+                   Affected Spells: Luffa Wrappings (208681)
+                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 50), Misc Value (0 -> 12), Affects Spells
+#6 (id=260767)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 23 | Target: Self(1)
+                   Affected Spells: Luffa Wrappings (208681)
+                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 50), Misc Value (0 -> 23), Affects Spells
+#7 (id=260768)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 32 | Target: Self(1)
+                   Affected Spells: Luffa Wrappings (208681)
+                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 50), Misc Value (0 -> 32), Affects Spells
 #8 (id=260769)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260770)   : Apply Aura (6) | Dummy (4)
@@ -4676,7 +4686,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Astral Influence (197524), Jagged Claws (200409), Rend and Tear (204053), Elize's Everlasting Encasement (208342), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Astral Influence (197524), Jagged Claws (200409), Rend and Tear (204053), Elize's Everlasting Encasement (208342), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

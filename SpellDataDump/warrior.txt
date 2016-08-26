@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build d043efc)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior

@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build d043efc)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Fire Frost Mage
@@ -828,7 +828,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=20069)    : Apply Aura (6) | Modify Spell Crit% (57)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 #2 (id=132597)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -6 | Scaled Value: -6 | Misc Value: 0x1 | Target: Self(1)
 Description      : Increases your spell critical strike chance by $s1% and reduces all Physical damage you take by $s2%.
@@ -3592,7 +3592,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 8 seconds
 Proc Chance      : 100%
-Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Mage (137018), The Storm Rages (195352), Ice Form (198144), Arctic Gale (205038), Zann'esu Journey (226852)
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Mage (137018), The Storm Rages (195352), Ice Form (198144), Arctic Gale (205038), 
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3611,7 +3611,7 @@ Class            : Mage
 School           : Frost
 Spell Level      : 44
 Range            : 100 yards
-Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Ice Form (198144), Arctic Gale (205038), Zann'esu Journey (226852)
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), The Storm Rages (195352), Ice Form (198144), Arctic Gale (205038), 
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 

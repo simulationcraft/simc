@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build d043efc)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2235,7 +2235,7 @@ Spell Level      : 22
 Range            : 20 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Item - Monk WoD PvP Windwalker 2P Bonus (180743)
+Affecting spells : Item - Monk WoD PvP Windwalker 2P Bonus (180743), Cenedril, Reflector of Hatred (208842)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ .......x ...x.... 
