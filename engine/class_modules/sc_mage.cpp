@@ -1718,6 +1718,27 @@ struct icy_veins_buff_t : public buff_t
     }
   }
 };
+
+struct sephuzs_secret_buff_t : public buff_t
+{
+  cooldown_t* icd;
+  sephuzs_secret_buff_t( mage_t* p ) :
+    buff_t( buff_creator_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+                            .default_value( p -> find_spell( 208502 ) -> effectN( 2 ).percent() ) )
+  {
+    icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
+    icd  -> duration = p -> find_spell( 226262 ) -> duration();
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    if ( icd -> down() )
+      return;
+    buff_t::execute( stacks, value, duration );
+    icd -> start();
+  }
+};
+
 struct incanters_flow_t : public buff_t
 {
   incanters_flow_t( mage_t* p ) :
@@ -3147,12 +3168,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       p() -> buffs.quickening -> trigger();
     }
 
-    //TODO: Is this rolled on Execute or spell Impact?
-    if ( rhonins_assaulting_armwraps_proc_rate > 0 && rng().roll( rhonins_assaulting_armwraps_proc_rate ) )
-    {
-      p() -> buffs.rhonins_assaulting_armwraps -> trigger();
-    }
-
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
       p() -> cooldowns.evocation
@@ -3160,6 +3175,16 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
   }
 
+  void tick ( dot_t* d ) override
+  {
+
+    if ( rhonins_assaulting_armwraps_proc_rate > 0 && rng().roll( rhonins_assaulting_armwraps_proc_rate ) )
+    {
+      p() -> buffs.rhonins_assaulting_armwraps -> trigger();
+    }
+
+    arcane_mage_spell_t::tick( d );
+  }
   void last_tick ( dot_t * d ) override
   {
     arcane_mage_spell_t::last_tick( d );
@@ -3759,6 +3784,14 @@ struct dragons_breath_t : public fire_mage_spell_t
     triggers_pyretic_incantation = true;
   }
 
+  virtual void execute() override
+  {
+    fire_mage_spell_t::execute();
+    if ( p() -> legendary.sephuzs_secret )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
+  }
   virtual double action_multiplier() const override
   {
     double am = fire_mage_spell_t::action_multiplier();
@@ -4706,7 +4739,27 @@ struct frostbolt_t : public frost_mage_spell_t
   }
 };
 
+// Frost Nova Spell ========================================================
 
+struct frost_nova_t : public mage_spell_t
+{
+  frost_nova_t( mage_t* p, const std::string& options_str ) :
+    mage_spell_t( "frost_nova", p, p -> find_class_spell( "Frost Nova" ) )
+  {
+    parse_options( options_str );
+    triggers_arcane_missiles = true;
+  }
+
+  virtual void execute() override
+  {
+    mage_spell_t::execute();
+
+    if ( p() -> legendary.sephuzs_secret )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
+  }
+};
 // Frozen Orb Spell =========================================================
 
 struct frozen_orb_bolt_t : public frost_mage_spell_t
@@ -4941,6 +4994,10 @@ struct glacial_spike_t : public frost_mage_spell_t
     s -> result_amount = calculate_direct_amount( s );
     frost_mage_spell_t::impact( s );
     p() -> buffs.icicles -> expire();
+    if ( p() -> legendary.sephuzs_secret )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
   }
 };
 
@@ -5245,6 +5302,10 @@ struct ice_nova_t : public frost_mage_spell_t
     s -> result_amount = calculate_direct_amount( s );
 
     frost_mage_spell_t::impact( s );
+    if ( p() -> legendary.sephuzs_secret )
+    {
+      p() -> buffs.sephuzs_secret -> trigger();
+    }
   }
 };
 
@@ -7415,6 +7476,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "flurry"            ) return new                  flurry_t( this, options_str );
   if ( name == "frost_bomb"        ) return new              frost_bomb_t( this, options_str );
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
+  if ( name == "frost_nova"        ) return new              frost_nova_t( this, options_str );
   if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
   if ( name == "frozen_touch"      ) return new            frozen_touch_t( this, options_str );
   if ( name == "glacial_spike"     ) return new           glacial_spike_t( this, options_str );
@@ -7807,8 +7869,8 @@ void mage_t::create_buffs()
                                            { buffs.fingers_of_frost -> trigger();
                                              benefits.fingers_of_frost -> update( "Legedary Gain", 1.0 ); } );
   buffs.rhonins_assaulting_armwraps = buff_creator_t( this, "rhonins_assaulting_armwraps", find_spell( 208081 ) );
-  buffs.sephuzs_secret    = buff_creator_t( this, "sephuzs_secret", find_spell( 208052 ) )
-                                           .default_value( find_spell( 208052 ) -> effectN( 2 ).percent() );
+  buffs.sephuzs_secret    = new buffs::sephuzs_secret_buff_t( this );
+
   buffs.shard_time_warp   = buff_creator_t( this, "shard_time_warp", find_spell( 2825 ) )
                                             .add_invalidate( CACHE_SPELL_HASTE );
   buffs.kaelthas_ultimate_ability = buff_creator_t( this, "kaelthas_ultimate_ability", find_spell( 209455 ) );
