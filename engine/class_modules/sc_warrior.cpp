@@ -3186,7 +3186,7 @@ struct slam_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> artifact.crushing_blows.percent();
 
-    base_costs[RESOURCE_RAGE] += 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).resource(RESOURCE_RAGE);
+    base_costs[RESOURCE_RAGE] += p-> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).resource( RESOURCE_RAGE );
     if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T18, B2 ) )
     {
       t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
