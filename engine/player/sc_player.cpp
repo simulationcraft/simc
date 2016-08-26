@@ -3374,6 +3374,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       break;
     case ATTR_STAMINA:                                                         // Artifacts get a free +6 purchased
       m *= 1.0 + artifact.artificial_stamina -> effectN( 2 ).percent() * .01 * ( artifact.n_purchased_points + 6 );
+      break;
     default:
       break;
   }
@@ -7815,7 +7816,15 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
     }
   }
 
-  artifact.n_purchased_points = artifact.n_points - ( n_relics == 0 ? n_excess_points : n_relics );
+  if ( artifact.n_points < ( n_relics == 0 ? n_excess_points : n_relics ) )
+  {
+    artifact.n_purchased_points = 0;
+  }
+  else
+  {
+    artifact.n_purchased_points = artifact.n_points - ( n_relics == 0 ? n_excess_points : n_relics );
+  }
+
   // The initial power does not count towards the purchased points
   if ( artifact.n_purchased_points > 0 )
   {
