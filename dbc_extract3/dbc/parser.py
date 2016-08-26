@@ -889,6 +889,8 @@ class WCH7Parser(LegionWCHParser):
     def __init__(self, options, wdb_parser, fname):
         super().__init__(options, wdb_parser, fname)
 
+        self.wch7_unk_data = []
+
     # Completely rewrite WCH7 parser, since the base header gained a new field
     def parse_header(self):
         self.magic = self.data[:4]
@@ -908,6 +910,11 @@ class WCH7Parser(LegionWCHParser):
         if self.string_block_size > 2:
             self.string_block_offset = self.parse_offset + self.records * self.record_size
 
+        # If self.wch7_unk > 0, parse out the unknown data. For now presume it's a bunch of 4 byte fields
+        for idx in range(0, self.wch7_unk):
+            v = _ID.unpack_from(self.data, self.parse_offset + self.records * self.record_size + self.string_block_size + idx * 4)[0]
+            self.wch7_unk_data.append(v)
+
         # Offset map contains offset into file, record size entries in a sparse structure
         if self.has_offset_map():
             self.offset_map_offset = self.parse_offset
@@ -917,7 +924,7 @@ class WCH7Parser(LegionWCHParser):
         # Has ID block
         if self.has_id_block():
             self.id_block_offset = self.parse_offset + self.records * self.record_size + self.string_block_size
-            # A mysterious offset appears, for what reason, nobody knows
+            # A mysterious offset appears, for what reason, somebody probably knows
             self.id_block_offset += self.wch7_unk * 4
 
         return True
@@ -926,5 +933,8 @@ class WCH7Parser(LegionWCHParser):
         fields = super().fields_str()
 
         fields.append('unk_wch7=%u' % self.wch7_unk)
+        if len(self.wch7_unk_data) > 0:
+            arr = [str(x) for x in self.wch7_unk_data]
+            fields.append('unk_wch7_data={ %s }' % ', '.join(arr))
 
         return fields
