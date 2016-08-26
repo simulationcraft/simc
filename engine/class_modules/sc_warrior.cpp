@@ -1774,7 +1774,7 @@ struct sweeping_execute_t: public event_t
   {
     player_t* new_target = nullptr;
     // Gotta find a target for this bastard to hit. Also if the target dies in the 0.5 seconds between the original execute and this, we don't want to continue.
-    for ( size_t i; execute_sweep -> target_cache.list.size() <= i; ++i )
+    for ( size_t i = 0; execute_sweep -> target_cache.list.size() <= i; ++i )
     {
       if ( execute_sweep -> target_cache.list[i] == original_target )
         continue;
@@ -2912,28 +2912,11 @@ struct enraged_regeneration_t: public warrior_heal_t
 
 struct rend_t: public warrior_attack_t
 {
-  double t18_2pc_chance;
   rend_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "rend", p, p -> talents.rend ),
-    t18_2pc_chance( 0 )
+    warrior_attack_t( "rend", p, p -> talents.rend )
   {
     parse_options( options_str );
     tick_may_crit = true;
-    base_tick_time /= 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).percent();
-    if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T18, B2 ) )
-    {
-      t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
-    }
-  }
-
-  void tick( dot_t* d ) override
-  {
-    warrior_attack_t::tick( d );
-
-    if ( rng().roll( t18_2pc_chance ) )
-    {
-      p() -> cooldown.mortal_strike -> reset( true );
-    }
   }
 
   bool ready() override
@@ -3053,12 +3036,19 @@ struct shield_slam_t: public warrior_attack_t
 
 struct slam_t: public warrior_attack_t
 {
+  double t18_2pc_chance;
   slam_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "slam", p, p -> spec.slam )
+    warrior_attack_t( "slam", p, p -> spec.slam ), t18_2pc_chance( 0 )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier *= 1.0 + p -> artifact.crushing_blows.percent();
+
+    base_costs[RESOURCE_RAGE] += 1.0 + p -> sets.set( WARRIOR_ARMS, T18, B4 ) -> effectN( 1 ).resource(RESOURCE_RAGE);
+    if ( p -> sets.has_set_bonus( WARRIOR_ARMS, T18, B2 ) )
+    {
+      t18_2pc_chance = p -> sets.set( WARRIOR_ARMS, T18, B2 ) -> proc_chance();
+    }
   }
 
   void assess_damage( dmg_e type, action_state_t* s ) override
@@ -3071,6 +3061,13 @@ struct slam_t: public warrior_attack_t
         s -> target, // target
         p() -> talents.trauma -> effectN( 1 ).percent() * s -> result_amount );
     }
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    if ( rng().roll( t18_2pc_chance ) )
+      p() -> cooldown.mortal_strike -> reset( true );
   }
 
   void impact( action_state_t* s ) override
