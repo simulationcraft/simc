@@ -7114,6 +7114,11 @@ struct anger_of_the_halfgiants_t : public scoped_action_callback_t<T>
   void manipulate( T* action, const special_effect_t& e ) override
   {
     action -> energize_die_sides += e.driver() -> effectN( 1 ).base_value();
+
+    // Demon Blades modifies the effect of the legendary.
+    demon_hunter_t* p = debug_cast<demon_hunter_t*>( action -> player );
+    assert( ! p -> talent.demon_blades -> ok() || e.driver() -> affected_by( p -> talent.demon_blades ) );
+    action -> energize_die_sides += p -> talent.demon_blades -> effectN( 2 ).base_value();
   }
 };
 
