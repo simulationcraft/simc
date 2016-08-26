@@ -34,7 +34,7 @@ actions+=/wake_of_ashes,if=holy_power>=0&time<2
 actions+=/execution_sentence,if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.67)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
 actions+=/blood_fury
 actions+=/berserking
-actions+=/arcane_torrent
+actions+=/arcane_torrent,if=holy_power<5
 actions+=/call_action_list,name=VB,if=talent.virtues_blade.enabled
 actions+=/call_action_list,name=BoW,if=talent.blade_of_wrath.enabled
 actions+=/call_action_list,name=DH,if=talent.divine_hammer.enabled
@@ -63,7 +63,7 @@ actions.VB+=/justicars_vengeance,if=debuff.judgment.up&buff.divine_purpose.react
 actions.VB+=/templars_verdict,if=debuff.judgment.up&buff.divine_purpose.react
 actions.VB+=/templars_verdict,if=debuff.judgment.up&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)
 actions.VB+=/templars_verdict,if=debuff.judgment.up&holy_power>=4&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)
-actions.VB+=/zeal,if=holy_power<=2
+actions.VB+=/zeal,if=holy_power<=4
 actions.VB+=/crusader_strike,if=holy_power<=4
 actions.VB+=/divine_storm,if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)
 actions.VB+=/templars_verdict,if=debuff.judgment.up&holy_power>=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)
