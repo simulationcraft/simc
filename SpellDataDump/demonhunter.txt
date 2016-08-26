@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -50,6 +50,98 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Interrupts casting for $d.
 Tooltip          : Interrupted.
+
+Name             : Deathblow X11 Goggles (id=41317) 
+Class            : Rogue, Monk, Druid, Demon Hunter
+School           : Physical
+Cast Time        : 15 seconds
+Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Tradeskill ability (5)
+Effects          :
+#1 (id=32742)    : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+
+Name             : Quad Deathblow X44 Goggles (id=46116) 
+Class            : Rogue, Monk, Druid, Demon Hunter
+School           : Physical
+Cast Time        : 15 seconds
+Attributes       : .....x.. x....... x....... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Tradeskill ability (5)
+Effects          :
+#1 (id=38209)    : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+
+Name             : Weakness Spectralizers (id=56481) 
+Class            : Rogue, Monk, Druid, Demon Hunter
+School           : Physical
+Cast Time        : 15 seconds
+Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Tradeskill ability (5)
+Effects          :
+#1 (id=49563)    : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+
+Name             : Mechanized Snow Goggles (id=61481) 
+Class            : Rogue, Monk, Druid, Demon Hunter
+School           : Physical
+Cast Time        : 2 seconds
+Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Tradeskill ability (5)
+Effects          :
+#1 (id=55365)    : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+
+Name             : Agile Bio-Optic Killshades (id=81722) 
+Class            : Rogue, Monk, Druid, Demon Hunter
+School           : Physical
+Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
+Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Tradeskill ability (5)
+Effects          :
+#1 (id=81208)    : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+
+Name             : Agile Retinal Armor (id=127118) 
+Class            : Rogue, Monk, Druid, Demon Hunter
+School           : Physical
+Cast Time        : 5 seconds
+Mechanic         : Unknown(245)
+Attributes       : .....x.. ........ x....... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Tradeskill ability (5)
+Effects          :
+#1 (id=161558)   : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Glide (id=131347) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -295,10 +387,10 @@ Description      : Unleash an eruption of fel energy, stunning all nearby enemie
 Tooltip          : Stunned.
 
 Name             : Consume Magic (id=183752) [Spell Family (107)] 
+Hotfixed         : Velocity (40 -> 0)
 Class            : Demon Hunter
 School           : Chromatic
 Range            : 20 yards
-Velocity         : 40 yards/sec
 Duration         : 3 seconds
 Cooldown         : 15 seconds
 Category         : 88
@@ -618,7 +710,6 @@ Description      : Leap into the air and land with explosive force, dealing $200
 Upon landing, you are transformed into a hellish demon for $162264d, greatly empowering your Chaos Strike and Blade Dance abilities, and gaining $162264s7% Haste.
 
 Name             : Fel Rush (id=192611) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chaos
 Range            : 50000 yards
@@ -731,6 +822,24 @@ Effects          :
 Description      : Slip into the nether, increasing movement speed by $s3% and becoming immune to damage, but unable to attack. Lasts $d.
 Tooltip          : Immune to damage and unable to attack.
 Movement speed increased by $s3%.
+
+Name             : Darkness (id=196718) [Spell Family (107)] 
+Class            : Havoc Demon Hunter
+School           : Physical
+Spell Level      : 100
+Duration         : 8 seconds
+Cooldown         : 180 seconds
+Attributes       : ....x... ........ ........ ........   .....x.. ..x..... ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ...x....   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=288808)   : Unknown effect type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 6615 | Target: Unknown(125)
+Description      : Summons darkness around you in an 8 yd radius, cloaking friendly targets and granting a $209426s1% chance to avoid all damage from an attack.  Lasts $d.
 
 Name             : Chaos Strike (Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
@@ -1131,8 +1240,7 @@ Description      : Place a Sigil of Silence at the target location that activate
 Silences all enemies affected by the sigil for $204490d.
 
 Name             : Sigil of Chains (id=202138) [Spell Family (107)] 
-Hotfixed         : Cooldown (120000 -> 60000)
-Class            : Vengeance Demon Hunter
+Class            : Demon Hunter
 School           : Physical
 Spell Level      : 100
 Range            : 30 yards
@@ -1426,9 +1534,14 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=300566)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Self(1)
+                   Hotfixed: Sub Type (107 -> 4), SP Coefficient (-1.5 -> 1.5), Misc Value (12 -> 0), Affects Spells
 #2 (id=300914)   : Apply Aura (6) | Unknown effect sub type (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
+#3 (id=350459)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.50000 | Misc Value: 12 | Target: Self(1)
+                   Affected Spells: Demon Spikes (203819)
+                   Hotfixed: NEW EFFECT
 Description      : Demon Spikes reduces Physical damage taken by an additional ${$S1}.2%.
 
 Also increases your attack power by $s2%.
@@ -1557,9 +1670,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=300652)   : Weapon Damage% (31)
                    Base Value: 85 | Scaled Value: 0.85 | Target: Enemy(6)
-                   Hotfixed: Base Value (95 -> 85)
 #3 (id=300653)   : Energize Power (30)
-                   Base Value: 14 | Scaled Value: 15 - 20 | Value Range: 6 | Misc Value: fury | Target: Self(1)
+                   Base Value: 11 | Scaled Value: 12 - 20 | Value Range: 9 | Misc Value: fury | Target: Self(1)
+                   Hotfixed: Base Value (14 -> 11), Die Sides (6 -> 9)
 Description      : Inflicts $sw1 Shadow damage and generates $m3 to $M3 Fury.
 
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
@@ -1567,18 +1680,18 @@ Class            : Demon Hunter
 School           : Physical
 Spell Level      : 100
 Duration         : 6 seconds
-Affecting spells : Razor Spikes (209400)
+Affecting spells : Mastery: Fel Blood (203747), Razor Spikes (209400)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #2 (id=300915)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | SP Coefficient: -1.00000 | Misc Value: 0x1 | Target: Self(1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x1 | Target: Self(1)
 #3 (id=341634)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self(1)
 Description      : $@spelldesc203720
@@ -2007,7 +2120,7 @@ School           : Fire
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Cooldown         : 60 seconds
+Cooldown         : 40 seconds
 Artifact Power   : Id: 1096, Max Rank: 1
 Affecting spells : Metamorphosis (162264), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Triggered by     : Push Active Ability to Bar (225864)
@@ -2475,6 +2588,24 @@ Effects          :
                    Affected Spells: Demon Spikes (203819)
 Description      : While Demon Spikes is active, you deal $s1% increased Physical damage and your melee attacks snare targets by $210003s1% for $210003d.
 
+Name             : Darkness (id=209426) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Range            : 100 yards
+Duration         : 8 seconds
+Attributes       : ........ x....... ........ .......x   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot cancel aura (31), Does not break stealth (37), Disable player procs (112), Disable target procs (113)
+Effects          :
+#1 (id=309959)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Unknown(25)
+Description      : $@spelldesc196718
+Tooltip          : Attacks against you have a $s1% chance to inflict no damage.
+
 Name             : Fracture (id=209795) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
@@ -2515,7 +2646,6 @@ Description      : $@spelldesc209400
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Demonic Appetite (id=210041) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Affecting spells : Item - Demon Hunter T19 Havoc 2P Bonus (211054)
@@ -2877,8 +3007,9 @@ Effects          :
 #3 (id=315237)   : Apply Aura (6) | Add Flat Modifier: Spell Critical Chance (107)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 7 | Target: Self(1)
                    Affected Spells: Eye Beam (198030)
-#4 (id=315238)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=315238)   : Apply Aura (6) | Unknown effect sub type (457)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1612 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 457), Misc Value (0 -> 1612)
 #5 (id=315239)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=315240)   : Apply Aura (6) | Dummy (4)
@@ -3185,7 +3316,6 @@ Effects          :
 Description      : Gain $s1% Leech while Metamorphosis is active.
 
 Name             : Empower Wards (id=218256) [Spell Family (107)] 
-Replaces         :  (id=196718)
 Class            : Vengeance Demon Hunter
 School           : Fire
 Spell Level      : 100
@@ -3561,7 +3691,7 @@ Description      : Viciously strike all enemies in front of you for up to $<clea
 
 Consumes all Soul Fragments within $s1 yds.
 Variables        : $cleaveDamage=${2*$228478sw1}
-$cleaveHeal=${2*$AP*4.5*(1+$@versadmg)}
+$cleaveHeal=${2*$AP*5.5*(1+$@versadmg)}
 
 Name             : Soul Cleave (id=228478) [Spell Family (107)] 
 Class            : Demon Hunter

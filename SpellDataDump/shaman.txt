@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -643,10 +643,11 @@ Effects          :
 Description      : $@spelldesc8232
 
 Name             : Windfury (id=33757) [Spell Family (11), Passive] 
+Hotfixed         : Proc Chance (5 -> 10)
 Class            : Enhancement Shaman
 School           : Nature
 Spell Level      : 30
-Proc Chance      : 5%
+Proc Chance      : 10%
 Proc Flags       : ..x.x... ........ ......xx ........ 
                  : White Melee, Yellow Melee, Melee Off-Hand
 Affecting spells : Mastery: Enhanced Elements (77223), Doom Winds (204945), 
@@ -932,7 +933,6 @@ Description      : Summons two Spirit $?s147783[Raptors][Wolves] that aid you in
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
 Name             : Tidal Waves (id=51564) [Spell Family (11), Passive] 
-Hotfixed         : Proc Flags (4 -> 17408)
 Class            : Restoration Shaman
 School           : Physical
 Spell Level      : 50
@@ -1481,7 +1481,6 @@ Description      : Activates your true form, increasing current movement speed b
 Tooltip          : True form activated, movement speed increased by an additional $s1%.
 
 Name             : Unleash Life (id=73685) [Spell Family (11)] 
-Hotfixed         : Affecting Spells
 Class            : Shaman
 School           : Nature
 Resource         : 5% Base Mana (11000 @Level 110)
@@ -1505,7 +1504,6 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=66866)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.25000 | Target: Friend(21)
-                   Hotfixed: SP Coefficient (2.5 -> 3.25)
 #2 (id=66867)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Healing Surge (188070)
@@ -1666,7 +1664,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -3420,7 +3418,8 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273980)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.25 -> 0.3)
 Description      : Fires a bolt of lightning at the target, dealing $?s210727[up to ${(1+$210727m2/100)*$s1}][$s1] Nature damage.
 
 Name             : Crash Lightning (id=187874) [Spell Family (11)] 
@@ -3543,7 +3542,8 @@ Effects          :
 #1 (id=274380)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.00000 | Target: Enemy(6)
 #2 (id=274448)   : Apply Aura (6) | Unknown effect sub type (270)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 9 | Target: Enemy(6)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 9 | Target: Enemy(6)
+                   Hotfixed: Base Value (10 -> 15)
 Description      : Summons an Earthen Spike under an enemy, dealing $s1 Physical damage and increasing Physical and Nature damage you deal to the target by $s2% for $d.
 Tooltip          : Suffering $s2% increased Nature and Physical damage from the Shaman.
 
@@ -4127,7 +4127,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=282015)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.70000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (0.7 -> 0.8)
 Description      : $@spelldesc192222
 
 Name             : Tempest (id=192234) [Spell Family (11), Passive, Hidden] 
@@ -4228,7 +4229,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=284355)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.35000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.55000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (1.35 -> 1.55)
 #2 (id=284413)   : Energize Power (30)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: maelstrom | Target: Self(1)
 Description      : Assaults your target with earthen power, dealing $s1 Nature damage.
@@ -4464,7 +4466,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288995)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.52000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.56000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.52 -> 0.56)
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #3 (id=313061)   : Dummy (3)
@@ -5948,7 +5951,6 @@ Effects          :
 Description      : $@spelldesc192246
 
 Name             : Crashing Storm (id=210801) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
@@ -6328,7 +6330,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=321041)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 12 yards | Target: Unknown(87) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Radius: 0 - 12 yards | Target: Unknown(87) -> AOE friendly(31)
 Description      : $@spelldesc73920
 
 Name             : Disabling Totem (id=216965) 
@@ -6507,7 +6509,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=339432)   : Energize Power (30)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: maelstrom | Target: Friend(21)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: maelstrom | Target: Friend(21)
+                   Hotfixed: Base Value (8 -> 10)
 Description      : $@spelldesc157331
 
 Name             : Totem Mastery (id=226772) [Spell Family (5)] 

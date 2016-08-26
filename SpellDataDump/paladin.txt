@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -315,7 +315,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Target: Enemy(6)
 #2 (id=336161)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
-                   Hotfixed: Base Value (2 -> 1)
 #3 (id=343343)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Enemy(6)
 #4 (id=343346)   : Dummy (3)
@@ -959,7 +958,6 @@ Description      : Hammers the current target for $53595sw1 Physical damage.$?s2
 While you are standing in your Consecration, Hammer of the Righteous also causes a wave of light that hits all other targets within $88263A1 yds for $88263sw1 Holy damage.][]
 
 Name             : Shield of the Righteous (id=53600) [Spell Family (10)] 
-Hotfixed         : Spell Level (38 -> 24)
 Class            : Protection Paladin
 School           : Holy
 Spell Level      : 24
@@ -1639,13 +1637,14 @@ Effects          :
 Description      : Unleash the fury of ancient kings, causing $s1 Holy damage per application of Ancient Power, divided evenly among all targets within $a1 yards.
 
 Name             : Hammer of the Righteous (id=88263) [Scaling Spell (7), Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Level      : 1
 Range            : 50000 yards
 Affecting spells : Hammer Time (209229)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
+                 : x....... ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
@@ -2161,7 +2160,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Shield of the Righteous (id=132403) [Spell Family (10)] 
-Hotfixed         : Spell Level (40 -> 1)
 Class            : Paladin
 School           : Holy
 Spell Level      : 1
@@ -2793,7 +2791,7 @@ Description      : $@spelldesc179546
 Name             : Hand of Hindrance (id=183218) [Spell Family (10)] 
 Class            : Retribution Paladin
 School           : Holy
-Resource         : 27% Base Mana (59400 @Level 110)
+Resource         : 13% Base Mana (28600 @Level 110)
 Spell Level      : 26
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -3018,9 +3016,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=266740)   : Direct Heal (10)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
 #2 (id=303002)   : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
 Description      : Calls down the Light to heal you for $s1% of your missing health.$?s26573[
 
 While you are standing in your Consecration, Light of the Protector's healing is increased by $188370s2%.][]
@@ -3053,7 +3051,6 @@ Description      : Strikes an enemy with the Blade of Justice, dealing $sw2 Phys
 |cFFFFFFFFGenerates $s3 Holy Power.|r
 
 Name             : Shield of Vengeance (id=184662) [Spell Family (10)] 
-Hotfixed         : GCD (1500 -> 0)
 Class            : Retribution Paladin
 School           : Holy
 Spell Level      : 24
@@ -3119,14 +3116,12 @@ Tooltip          : Hammer of the Righteous also causes a wave of light that hits
 Increases the effects of Shield of the Righteous and Light of the Protector by $s2%
 
 Name             : Divine Steed (id=190784) [Spell Family (10)] 
-Hotfixed         : Spell Level (58 -> 28), Cooldown (45000 -> 0), Charges, Charge Cooldown, Category (0 -> 1662)
-Class            : Protection Paladin
+Class            : Paladin
 School           : Holy
 Spell Level      : 28
 GCD              : 1.5 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1662
-Mechanic         : Unknown(180)
 Affecting spells : Knight Templar (204139)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3258,7 +3253,6 @@ Description      : Mastery: Lightbringer now increases your healing based on the
 The healing and range of Light of Dawn are increased by $s1%.
 
 Name             : Divine Purpose (id=197646) [Spell Family (10), Passive] 
-Hotfixed         : Proc Chance (20 -> 15), Proc Flags (2184192 -> 81920), Internal Cooldown (15000 -> 0)
 Class            : Paladin
 School           : Physical
 Spell Level      : 1
@@ -3374,7 +3368,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=293299)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Blessing of Freedom (1044)
 Description      : Blessing of Freedom also increases movement speed by $m1%.
 
@@ -3592,6 +3586,8 @@ School           : Physical
 Resource         : 1 - 5 Holy Power
 Spell Level      : 1
 Range            : 100 yards
+Duration         : 20 seconds
+Affecting spells : Divine Purpose (223819)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3631,7 +3627,6 @@ Effects          :
 Description      : Reduces the cooldown of Crusader Strike by ${$m2/-1000}.1 sec and gives it a $h% chance to reduce the cost of your next damaging or healing Holy Power ability by $209785s1.
 
 Name             : Greater Blessing of Might (id=203528) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Retribution Paladin
 School           : Holy
 Spell Level      : 42
@@ -4010,10 +4005,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=301267)   : Apply Aura (6) | Unknown effect sub type (454)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1662 | Target: Self(1)
-                   Hotfixed: Sub Type (108 -> 454), Misc Value (11 -> 1662), Affects Spells
 #2 (id=301268)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Divine Steed (190784)
+                   Affected Spells: Divine Steed (190784), Divine Steed (221883)
 Description      : Reduces the cooldown of Divine Steed by $s1% and reduces all damage taken while mounted on your Divine Steed by $s2%.
 
 Name             : Aegis of Light (id=204150) [Spell Family (10)] 
@@ -4394,9 +4388,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=316999)   : Direct Heal (10)
-                   Base Value: 25 | Scaled Value: 25 | Target: Friend(21)
+                   Base Value: 35 | Scaled Value: 35 | Target: Friend(21)
 #2 (id=317000)   : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
 Description      : Calls down the Light to heal a friendly target for $s1% of the target's missing health.
 
 Name             : Execution Sentence (id=213757) [Spell Family (10)] 
@@ -4421,10 +4415,12 @@ Description      : A hammer slowly falls from the sky, dealing $s2 Holy damage a
 Tooltip          : Taking $s2 Holy damage when this expires.
 
 Name             : Rule of Law (id=214202) [Spell Family (10)] 
+Hotfixed         : Cooldown, GCD
 Class            : Paladin
 School           : Holy
 Spell Level      : 1
 Duration         : 10 seconds
+Cooldown         : 1.5 seconds
 Charges          : 2 (30 seconds cooldown)
 Category         : 1643
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -4436,7 +4432,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=318059)   : Apply Aura (6) | Add Percent Modifier: Spell Range (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Lay on Hands (633), Cleanse (4987), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644)
+                   Affected Spells: Lay on Hands (633), Cleanse (4987), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644), Bestow Faith (223306)
+                   Hotfixed: Affects Spells
 #2 (id=318060)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Light of Dawn (85222), Light of Dawn (225311)
@@ -4582,6 +4579,29 @@ Effects          :
 #1 (id=327109)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Self(1)
 
+Name             : Divine Steed (id=221883) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Level      : 1
+GCD              : 1.5 seconds
+Duration         : 3 seconds
+Affecting spells : Knight Templar (204139)
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+Effects          :
+#1 (id=331128)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self(1)
+#2 (id=331129)   : Apply Aura (6) | Unknown effect sub type (172)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=331131)   : Server Side Script (77)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+Description      : $@spelldesc190784
+Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
+
 Name             : Bestow Faith (id=223306) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
@@ -4591,6 +4611,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 12 seconds
+Affecting spells : Rule of Law (214202)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4604,7 +4625,6 @@ Description      : Infuse a friendly target with faith for $d, healing them for 
 Tooltip          : Will be healed for $s1 upon expiration.
 
 Name             : Fervent Martyr (Passive Talent) (id=223316) [Spell Family (10)] 
-Hotfixed         : Max stacks (0 -> 2), Proc Flags (4436 -> 0)
 Class            : Paladin
 School           : Physical
 Duration         : 30 seconds
@@ -4659,7 +4679,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=334770)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Seraphim (152262), Word of Glory (210191), Execution Sentence (213757), Justicar's Vengeance (215661)
+                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Seraphim (152262), Seal of Light (202273), Word of Glory (210191), Execution Sentence (213757), Justicar's Vengeance (215661)
+                   Hotfixed: Affects Spells
 Description      : $@spelldesc223817
 Tooltip          : Your next Holy Power consuming ability will cost no Holy Power.
 
@@ -4768,7 +4789,6 @@ Effects          :
 Description      : Your maximum health is increased by $s1%.
 
 Name             : Cavalier (id=230332) [Passive] 
-Hotfixed         : NEW SPELL
 Class            : Paladin
 School           : Holy
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4781,7 +4801,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=347617)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1662 | Target: Self(1)
-                   Hotfixed: NEW EFFECT
 Description      : Divine Steed now has ${1+$m1} charges.
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -208,7 +208,6 @@ Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing 
 Tooltip          : $?s199023[Demoralized, dealing $s1% less damage.][Demoralized, dealing $s1% less damage to the shouting Warrior.]
 
 Name             : Slam (id=1464) [Spell Family (4)] 
-Hotfixed         : Max Spell Level (20 -> 0)
 Class            : Arms Warrior
 School           : Physical
 Resource         : 20 Rage
@@ -229,7 +228,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=119511)   : Weapon Damage% (31)
                    Base Value: 226 | Scaled Value: 2.26 | Target: Enemy(6)
-                   Hotfixed: Base Value (125 -> 226), Points per Level (4 -> 0)
 Description      : Slams an opponent, causing $sw2 Physical damage.
 
 Name             : Whirlwind (id=1680) [Spell Family (4)] 
@@ -459,7 +457,6 @@ Effects          :
 Description      : Attempt to finish off a wounded foe, causing ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Protection Warrior
 School           : Physical
 Spell Level      : 16
@@ -477,9 +474,9 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=2203)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.83800 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.83800 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage$?s199045[, rooting them for $199042d and reducing their movement speed by $s2% for $d.][ and reduces their movement speed by $s2% for $d.]
 Tooltip          : Movement speed reduced by $s2%.
 
@@ -541,7 +538,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2316)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 4.72500 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.78000 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=159566)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self(1)
 Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
@@ -689,7 +686,6 @@ Effects          :
 Description      : While wielding a two-handed melee weapon, you deal $s1% increased damage.
 
 Name             : Meat Cleaver (id=12950) [Spell Family (4), Passive] 
-Hotfixed         : Spell Level (58 -> 28)
 Class            : Fury Warrior
 School           : Physical
 Spell Level      : 28
@@ -2633,7 +2629,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
-Hotfixed         : Max stacks (20 -> 0), Proc Chance (101 -> 100), Proc Flags (0 -> 12)
 Class            : Arms Warrior
 School           : Physical
 Proc Chance      : 100%
@@ -2647,8 +2642,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179733)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#1 (id=179733)   : Apply Aura (6) | Unknown effect sub type (213)
+                   Base Value: 297 | Scaled Value: 297 | Target: Self(1)
 #2 (id=186754)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191014)   : Apply Aura (6) | Dummy (4)
@@ -2677,6 +2672,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=261056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#16 (id=348275)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Fury Warrior (id=137050) [Spell Family (4), Passive, Hidden] 
 Class            : Fury Warrior
@@ -2689,8 +2686,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179734)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#1 (id=179734)   : Apply Aura (6) | Unknown effect sub type (213)
+                   Base Value: -20 | Scaled Value: -20 | Target: Self(1)
 #2 (id=191010)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191011)   : Apply Aura (6) | Dummy (4)
@@ -2718,6 +2715,8 @@ Effects          :
 #14 (id=261045)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=261046)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#16 (id=348285)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Item - Warrior T16 DPS 4P Bonus (id=144441) [Spell Family (4), Passive, Hidden] 
@@ -3076,8 +3075,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=267205)   : Apply Aura (6) | Proc Trigger Spell: Enrage (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 184362 | Target: Self(1)
-#3 (id=267821)   : Apply Aura (6) | Unknown effect sub type (213)
-                   Base Value: -20 | Scaled Value: -20 | Target: Self(1)
 Description      : Bloodthirst critical strikes $?a206320[or activating Berserker Rage ][]will Enrage you, increasing your attack speed by $184362s1% and damage you take by $184362s2% for $184362d.
 
 Name             : Enrage (id=184362) [Spell Family (4)] 
@@ -3216,8 +3213,8 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=267878)   : Apply Aura (6) | Unknown effect sub type (213)
-                   Base Value: 300 | Scaled Value: 300 | Target: Self(1)
+#1 (id=267878)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=294133)   : Apply Aura (6) | Proc Trigger Spell: Tactician (42)
                    Base Value: 65 | Scaled Value: 65 | Trigger Spell: 199854 | Target: Self(1)
 Description      : You have a ${$m2/100}.2% chance per Rage spent to reset the remaining cooldown on Colossus Smash and Mortal Strike.
@@ -3895,7 +3892,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298627)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self(1)
+                   Base Value: 75 | Scaled Value: 75 | Misc Value: 11 | Target: Self(1)
 Description      : Ignore Pain will ignore up to $s1% more damage, based on your missing health.
 
 Name             : Vengeance (id=202572) [Spell Family (4), Passive, Hidden] 
@@ -4212,7 +4209,6 @@ Effects          :
 Description      : $@spelldesc203524
 
 Name             : Focused Rage (id=204488) [Spell Family (4)] 
-Hotfixed         : Spell Level (52 -> 44)
 Class            : Protection Warrior
 School           : Physical
 Resource         : 30 Rage
@@ -4623,17 +4619,18 @@ Description      : Reflects all spells cast on you and on all party and raid mem
 Tooltip          : Reflects all spells cast on you.
 
 Name             : Trauma (id=215537) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Range            : 5 yards
+Range            : 20 yards
 Duration         : 6 seconds
 Mechanic         : Bleed
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .......x .....x..   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x .....x..   ........ ........ .......x xx...... 
+                 : x....... .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=320479)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)

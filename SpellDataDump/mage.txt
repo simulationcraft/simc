@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 6e247bb)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 09557dd)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Fire Frost Mage
@@ -760,7 +760,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Arcane Blast (id=30451) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
-Resource         : 3.2% Base Mana (35200 @Level 110)
+Resource         : 3% Base Mana (33000 @Level 110) [Hotfixed: Percent Cost (3.2 -> 3)]
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
@@ -828,7 +828,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=20069)    : Apply Aura (6) | Modify Spell Crit% (57)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #2 (id=132597)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -6 | Scaled Value: -6 | Misc Value: 0x1 | Target: Self(1)
 Description      : Increases your spell critical strike chance by $s1% and reduces all Physical damage you take by $s2%.
@@ -858,6 +858,7 @@ Description      : Reduces the target's movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
 Name             : Dragon's Breath (id=31661) [Scaling Spell (5), Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Fire Mage
 School           : Fire
 Resource         : 4% Base Mana (44000 @Level 110)
@@ -872,7 +873,7 @@ Proc Flags       : ...x.x.x .x...x.. .x...... ........
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Shatter (12982), Darckli's Dragonfire Diadem (207547), Big Mouth (215796)
 Attributes       : ........ ........ x...x... ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1215,12 +1216,12 @@ Tooltip          : Your next Ice Lance deals damage as if the target were frozen
 Name             : Flurry (id=44614) [Scaling Spell (5), Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
-Resource         : 4% Base Mana (44000 @Level 110)
+Resource         : 1% Base Mana (11000 @Level 110)
 Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Critical Mass (117216), Mage (137018), Enhanced Pyrotechnics (157644), Ice Form (198144), 
+Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Mage (137018), Enhanced Pyrotechnics (157644), Ice Form (198144), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1734,7 +1735,6 @@ Description      : Your offensive spells have a chance to activate Arcane Missil
 Tooltip          : Arcane Missiles activated.
 
 Name             : Arcane Missiles (id=79684) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Proc Flags (17408 -> 65536)
 Class            : Arcane Mage
 School           : Physical
 Spell Level      : 14
@@ -2023,7 +2023,6 @@ Effects          :
 Description      : Enables Worgens to switch between human and Worgan forms
 
 Name             : Ice Floes (id=108839) [Spell Family (3)] 
-Hotfixed         : Max stacks (0 -> 3), Proc Stacks (0 -> 1), Proc Flags (65536 -> 87040), Internal Cooldown (0 -> 100)
 Class            : Mage
 School           : Frost
 Spell Level      : 1
@@ -2398,8 +2397,9 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=132772)   : Apply Aura (6) | Add Percent Modifier: Spell Critical Chance (108)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 7 | Target: Self(1)
-                   Affected Spells: Fireball (133), Scorch (2948), Pyroblast (11366), Flurry (44614), Phoenix's Flames (194466), Phoenix's Flames (224637)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self(1)
+                   Affected Spells: Fireball (133), Scorch (2948), Pyroblast (11366)
+                   Hotfixed: Base Value (30 -> 10), Affects Spells
 #2 (id=132773)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Multiplies the critical strike chance of your Fireball, Pyroblast, and Scorch by ${1+$m1/100}.1.
@@ -2612,8 +2612,9 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Target: Self(1)
 #3 (id=191126)   : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self(1)
-#4 (id=191127)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=191127)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+                   Hotfixed: Sub Type (4 -> 290), Base Value (0 -> 5)
 #5 (id=191128)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260857)   : Apply Aura (6) | Dummy (4)
@@ -2636,6 +2637,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260866)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#16 (id=350048)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: NEW EFFECT
 
 Name             : Frost Mage (id=137020) [Spell Family (3), Passive, Hidden] 
 Class            : Frost Mage
@@ -3666,7 +3670,6 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=279088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-                   Hotfixed: Base Value (10 -> 15)
 Description      : Frostbolt has a $m1% chance to empower your next Flurry to apply Winter's Chill to the victim for $228354d and be instant cast. 
 
 Winter's Chill causes the target to take damage from your spells as if it were frozen.
@@ -3784,7 +3787,6 @@ Charges          : 3 (45 seconds cooldown)
 Category         : 1633
 Proc Chance      : 101%
 Artifact Power   : Id: 748, Max Rank: 1
-Affecting spells : Critical Mass (117216)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4387,7 +4389,6 @@ Description      : Flame patch burning enemies.
 Tooltip          : Burning
 
 Name             : Flame Patch (id=205472) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Level      : 1
@@ -4402,7 +4403,6 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=303428)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (0.6 -> 0.25)
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Chilled (id=205708) [Spell Family (3)] 
@@ -4427,7 +4427,7 @@ Name             : Bone Chilling (id=205766) [Spell Family (3)]
 Class            : Mage
 School           : Frost
 Spell Level      : 1
-Duration         : 6 seconds
+Duration         : 8 seconds
 Stacks           : 12 maximum
 Proc Chance      : 101%
 Triggered by     : Bone Chilling (205027)
@@ -4802,7 +4802,6 @@ School           : Fire
 Spell Level      : 12
 Range            : 40 yards
 Proc Chance      : 101%
-Affecting spells : Critical Mass (117216)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

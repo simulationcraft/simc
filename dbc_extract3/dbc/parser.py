@@ -917,6 +917,8 @@ class WCH7Parser(LegionWCHParser):
         # Has ID block
         if self.has_id_block():
             self.id_block_offset = self.parse_offset + self.records * self.record_size + self.string_block_size
+            # A mysterious offset appears, for what reason, nobody knows
+            self.id_block_offset += self.wch7_unk * 4
 
         return True
 

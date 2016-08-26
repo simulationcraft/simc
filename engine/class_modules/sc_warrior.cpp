@@ -44,7 +44,7 @@ struct warrior_td_t: public actor_target_data_t
 struct warrior_t: public player_t
 {
 public:
-  event_t* heroic_charge, *rampage_driver;
+  event_t* heroic_charge, *rampage_driver, *execute_sweeping_strike;
   std::vector<attack_t*> rampage_attacks;
   std::vector<cooldown_t*> odyns_champion_cds;
   bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger, opportunity_strikes_once,
@@ -383,7 +383,9 @@ public:
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ):
     player_t( sim, WARRIOR, name, r ),
     heroic_charge( nullptr ),
-    rampage_driver( nullptr ), rampage_attacks( 0 ),
+    rampage_driver( nullptr ),
+    execute_sweeping_strike( nullptr ),
+    rampage_attacks( 0 ),
     active( active_t() ),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
@@ -550,16 +552,9 @@ public:
     return p() -> get_target_data( t );
   }
 
-  double tactician_cost() const
+  virtual double tactician_cost() const
   {
-    double c = ab::cost();
-
-    if ( dauntless )
-    {
-      c *= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
-    }
-
-    return c;
+    return ab::cost();
   }
 
   virtual double cost() const override
@@ -685,6 +680,11 @@ public:
 
   virtual void consume_resource() override
   {
+    if ( tactician_per_rage )
+    {
+      tactician();
+    }
+
     ab::consume_resource();
 
     double rage = ab::resource_consumed;
@@ -699,11 +699,6 @@ public:
       anger_management( rage );
     }
 
-    if ( tactician_per_rage )
-    {
-      tactician();
-    }
-
     if ( ab::result_is_miss( ab::execute_state -> result ) && rage > 0 && !ab::aoe )
     {
       p() -> resource_gain( RESOURCE_RAGE, rage*0.8, p() -> gain.avoided_attacks );
@@ -712,7 +707,7 @@ public:
 
   virtual void tactician()
   {
-    double tact_rage = tactician_cost(); //Tactician resets based on cost before deadly calm makes it free.
+    double tact_rage = tactician_cost(); //Tactician resets based on cost before things make it cost less.
     if ( ab::rng().roll( tactician_per_rage * tact_rage ) )
     {
       p() -> cooldown.colossus_smash -> reset( true );
@@ -1694,6 +1689,109 @@ struct dragon_roar_t: public warrior_attack_t
 
 // Execute ==================================================================
 
+struct execute_sweep_t: public warrior_attack_t
+{
+  double original;
+  bool free;
+  execute_sweep_t( warrior_t* p, double original_cost, bool was_it_free ):
+    warrior_attack_t( "execute", p, p -> spec.execute ), original( original_cost ), free( was_it_free )
+  {
+    weapon = &( p -> main_hand_weapon );
+
+    base_crit += p -> artifact.deathblow.percent();
+    base_crit += p -> artifact.deathdealer.percent();
+    energize_amount = 0;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> mastery.colossal_might -> ok() )
+    {
+      am *= 4.0 * ( std::min( 40.0, ( free ? 40.0 : original ) ) / 40 );
+    }
+
+    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
+
+    return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    if ( p() -> buff.shattered_defenses -> check() )
+    {
+      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+    }
+
+    return cc;
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    p() -> execute_sweeping_strike = nullptr;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT )
+    {
+      arms_t19_4p( *s );
+    }
+  }
+};
+
+struct sweeping_execute_t: public event_t
+{
+  timespan_t duration;
+  execute_sweep_t* execute_sweep;
+  player_t* original_target;
+  warrior_t* warrior;
+  sweeping_execute_t( warrior_t*p, double cost, bool free, player_t* target ):
+    event_t( *p -> sim ), execute_sweep( nullptr ), original_target( target ), warrior( p )
+  {
+    duration = next_execute();
+    add_event( duration );
+    execute_sweep = new execute_sweep_t( p, cost, free );
+  }
+
+  timespan_t next_execute() const
+  {
+    return timespan_t::from_millis( 500 );
+  }
+
+  void execute() override
+  {
+    player_t* new_target = nullptr;
+    // Gotta find a target for this bastard to hit. Also if the target dies in the 0.5 seconds between the original execute and this, we don't want to continue.
+    for ( size_t i; execute_sweep -> target_cache.list.size() <= i; ++i )
+    {
+      if ( execute_sweep -> target_cache.list[i] == original_target )
+        continue;
+      new_target = execute_sweep -> target_cache.list[i];
+    }
+    if ( new_target )
+    {
+      execute_sweep -> target = new_target;
+      execute_sweep -> execute();
+    }
+    else
+    {
+      warrior -> execute_sweeping_strike = nullptr;
+    }
+  }
+};
+
 struct execute_off_hand_t: public warrior_attack_t
 {
   execute_off_hand_t( warrior_t* p, const char* name, const spell_data_t* s ):
@@ -1790,6 +1888,18 @@ struct execute_t: public warrior_attack_t
     return cc;
   }
 
+  double tactician_cost() const override
+  {
+    double c = warrior_attack_t::tactician_cost();
+
+    if ( p() -> mastery.colossal_might -> ok() ) // Arms
+    {
+      c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+    }
+
+    return c;
+  }
+
   double cost() const override
   {
     double c = warrior_attack_t::cost();
@@ -1801,7 +1911,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.colossal_might -> ok() ) // Arms
     {
-      c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+      c = std::min( p() -> talents.dauntless -> ok() ? 32.0 : 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
       c *= 1.0 + p() -> buff.precise_strikes -> check_value();
     }
     else if ( p() -> buff.sense_death -> check() ) // Fury
@@ -1829,8 +1939,16 @@ struct execute_t: public warrior_attack_t
 
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
-    p() -> buff.ayalas_stone_heart -> expire();
     p() -> buff.juggernaut -> trigger( 1 );
+
+    if ( p() -> talents.sweeping_strikes -> ok() && target_cache.list.size() > 1 )
+    {
+      p() -> execute_sweeping_strike = new ( *sim ) sweeping_execute_t( p(),
+                                                                        resource_consumed,
+                                                                        p() -> buff.ayalas_stone_heart -> up(),
+                                                                        execute_state -> target );
+    }
+    p() -> buff.ayalas_stone_heart -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -2240,6 +2358,11 @@ struct mortal_strike_t: public warrior_attack_t
     return am;
   }
 
+  double tactician_cost() const override
+  {
+    return warrior_attack_t::cost();
+  }
+
   double cost() const override
   {
     double c = warrior_attack_t::cost();
@@ -2248,11 +2371,6 @@ struct mortal_strike_t: public warrior_attack_t
 
     return c;
   }
-
-  void tactician() override
-  { //Mortal Strike is special, it can reset itself so we need to do it after the cooldown has been reset. 
-  }
-
 
   void execute() override
   {
@@ -2279,14 +2397,6 @@ struct mortal_strike_t: public warrior_attack_t
     if ( p() -> archavons_heavy_hand )
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> archavons_heavy_hand -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.archavons_heavy_hand );
-    }
-
-    double tact_rage = tactician_cost(); //Tactician resets based on cost before deadly calm makes it free.
-    if ( rng().roll( tactician_per_rage * tact_rage ) )
-    {
-      p() -> cooldown.colossus_smash -> reset( true );
-      p() -> cooldown.mortal_strike -> reset( true );
-      p() -> proc.tactician -> occur();
     }
   }
 
@@ -5062,6 +5172,7 @@ void warrior_t::reset()
 
   heroic_charge = nullptr;
   rampage_driver = nullptr;
+  execute_sweeping_strike = nullptr;
   frothing_may_trigger = opportunity_strikes_once = true;
 }
 
@@ -5080,10 +5191,6 @@ void warrior_t::interrupt()
   if ( heroic_charge )
   {
     event_t::cancel( heroic_charge );
-  }
-  if ( rampage_driver )
-  {
-    event_t::cancel( rampage_driver );
   }
   player_t::interrupt();
 }
