@@ -3405,15 +3405,12 @@ struct blizzard_t : public frost_mage_spell_t
     timespan_t duration = frost_mage_spell_t::composite_dot_duration( s );
     return duration * ( tick_time( s ) / base_tick_time );
   }
-  //TODO: Fix this so that the last tick has the modifier.
+
   virtual void last_tick( dot_t* d ) override
   {
     frost_mage_spell_t::last_tick( d );
-    if ( p() -> legendary.zannesu_journey )
-    {
-      p() -> legendary.zannesu_journey_multiplier = 0;
-    }
-    }
+
+  }
 };
 
 // Charged Up Spell =========================================================
