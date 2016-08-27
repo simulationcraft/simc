@@ -776,6 +776,28 @@ public:
 
 struct rift_shadow_bolt_t: public warlock_pet_spell_t
 {
+  struct rift_shadow_bolt_tick_t : public warlock_pet_spell_t
+  {
+    rift_shadow_bolt_tick_t( warlock_pet_t* p ) :
+      warlock_pet_spell_t( "shadow_bolt", p, p -> find_spell( 196657 ) )
+    {
+      background = dual = true;
+      base_execute_time = timespan_t::zero();
+    }
+
+    virtual double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+      warlock_td_t* td = this -> td( target );
+
+      if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
+        m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+  
   rift_shadow_bolt_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "shadow_bolt", p, p -> find_spell( 196657 ) )
   {
@@ -783,29 +805,45 @@ struct rift_shadow_bolt_t: public warlock_pet_spell_t
     tick_may_crit = hasted_ticks = true;
     spell_power_mod.direct = 0;
     base_dd_min = base_dd_max = 0;
-    spell_power_mod.tick = data().effectN( 1 ).sp_coeff();
     dot_duration = timespan_t::from_millis( 14000 );
     base_tick_time = timespan_t::from_millis( 2000 );
     base_execute_time = timespan_t::zero();
 
-    cooldown -> duration = timespan_t::from_seconds( 15 );
+    tick_action = new rift_shadow_bolt_tick_t( p );
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const override
+  void execute() override
   {
-    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+    warlock_pet_spell_t::execute();
 
-    warlock_td_t* td = this -> td( target );
-
-    if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
-      m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
-
-    return m;
+    cooldown -> start( timespan_t::from_seconds( 16 ) );
   }
 };
 
 struct chaos_barrage_t : public warlock_pet_spell_t
 {
+  struct chaos_barrage_tick_t : public warlock_pet_spell_t
+  {
+    chaos_barrage_tick_t( warlock_pet_t* p ) :
+      warlock_pet_spell_t( "chaos_barrage", p, p -> find_spell( 187394 ) )
+    {
+      background = dual = true;
+      base_execute_time = timespan_t::zero();
+    }
+
+    virtual double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+      warlock_td_t* td = this -> td( target );
+
+      if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
+        m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
   chaos_barrage_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "chaos_barrage", p, p -> find_spell( 187394 ) )
   {
@@ -813,23 +851,18 @@ struct chaos_barrage_t : public warlock_pet_spell_t
     tick_may_crit = hasted_ticks = true;
     spell_power_mod.direct = 0;
     base_dd_min = base_dd_max = 0;
-    spell_power_mod.tick = data().effectN( 1 ).sp_coeff();
     dot_duration = timespan_t::from_millis( 5500 );
     base_tick_time = timespan_t::from_millis( 250 );
     base_execute_time = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( 6 );
+
+    tick_action = new chaos_barrage_tick_t( p );
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const override
+  void execute() override
   {
-    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+    warlock_pet_spell_t::execute();
 
-    warlock_td_t* td = this -> td( target );
-
-    if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
-      m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
-
-    return m;
+    cooldown -> start( timespan_t::from_seconds( 6 ) );
   }
 };
 
