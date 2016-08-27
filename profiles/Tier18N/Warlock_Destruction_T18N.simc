@@ -45,7 +45,6 @@ actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets
 actions+=/soul_harvest
 actions+=/channel_demonfire,if=dot.immolate.remains>cast_time
 actions+=/chaos_bolt,if=soul_shard>3
-actions+=/dimensional_rift
 actions+=/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3
 actions+=/chaos_bolt
 actions+=/cataclysm
