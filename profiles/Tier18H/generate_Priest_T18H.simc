@@ -35,6 +35,16 @@ main_hand=edict_of_argus,id=124382,bonus_id=566,upgrade=2,enchant=mark_of_warson
 off_hand=
 save=Priest_Shadow_T18H.simc
 
+# Discipline
+copy="Priest_Discipline_T18H"
+talents=3113321
+level=100
+race=troll
+spec=discipline
+role=spell
+position=back
+save=Priest_Discipline_T18H.simc
+
 priest="Priest_Shadow_T18H_S2M"
 talents=1212233
 level=100
