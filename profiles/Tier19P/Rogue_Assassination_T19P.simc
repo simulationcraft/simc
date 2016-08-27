@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 talents=3110131
-artifact=43:137399:133763:137412:0:323:3:325:3:328:6:330:3:331:3:332:1:337:1:346:1:347:1:1276:1
+artifact=43:0:0:0:0:323:3:325:3:328:3:330:3:331:3:332:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
 # This default action priority list is automatically created based on your character.
