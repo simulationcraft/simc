@@ -3499,13 +3499,88 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
 };
 
 // Judgment =================================================================
+struct judgment_aoe_t : public paladin_melee_attack_t
+{
+  judgment_aoe_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "judgment_aoe", p, p -> find_spell( 228288 ), true )
+  {
+    parse_options( options_str );
+
+    may_glance = may_block = may_parry = may_dodge = false;
+
+    weapon_multiplier = 0;
+
+    background = true;
+
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    {
+      aoe = 1 + p -> passives.retribution_paladin -> effectN( 3 ).base_value();
+
+      base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
+
+      if ( p -> talents.greater_judgment -> ok() )
+      {
+        aoe += p -> talents.greater_judgment -> effectN( 2 ).base_value();
+      }
+    } else {
+      assert( false );
+    }
+  }
+
+  virtual bool impact_targeting( action_state_t* s ) const
+  {
+    // this feels like some kind of horrifying hack
+    if ( s -> chain_target == 0 )
+      return false;
+    return paladin_melee_attack_t::impact_targeting( s );
+  }
+
+  virtual double composite_target_crit_chance( player_t* t ) const override
+  {
+    double cc = paladin_melee_attack_t::composite_target_crit_chance( t );
+
+    if ( p() -> talents.greater_judgment -> ok() )
+    {
+      double threshold = p() -> talents.greater_judgment -> effectN( 1 ).base_value();
+      if ( ( t -> health_percentage() > threshold ) )
+      {
+        // TODO: is this correct? where does this come from?
+        return 1.0;
+      }
+    }
+
+    return cc;
+  }
+
+  // Special things that happen when Judgment damages target
+  virtual void impact( action_state_t* s ) override
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> buffs.debuffs_judgment -> trigger();
+
+      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T17, B4 ) )
+        p() -> buffs.blazing_resolve -> trigger();
+    }
+
+    paladin_melee_attack_t::impact( s );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    // todo: refer to actual spelldata instead of magic constant
+    am *= 1.0 + 2 * p() -> get_divine_judgment();
+    return am;
+  }
+};
 
 struct judgment_t : public paladin_melee_attack_t
 {
   timespan_t sotr_cdr; // needed for sotr interaction for protection
 
   judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true )
+    : paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ), true )
   {
     parse_options( options_str );
 
@@ -3519,13 +3594,8 @@ struct judgment_t : public paladin_melee_attack_t
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       base_costs[ RESOURCE_MANA ] = 0;
-      aoe = 1 + p -> passives.retribution_paladin -> effectN( 3 ).base_value();
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
-
-      if ( p -> talents.greater_judgment -> ok() )
-      {
-        aoe += p -> talents.greater_judgment -> effectN( 2 ).base_value();
-      }
+      impact_action = new judgment_aoe_t( p, options_str );
     }
     else if ( p -> specialization() == PALADIN_HOLY )
     {
