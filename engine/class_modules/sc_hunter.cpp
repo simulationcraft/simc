@@ -104,6 +104,7 @@ public:
     const special_effect_t* mm_feet;
     const special_effect_t* mm_ring;
     const special_effect_t* mm_waist;
+    const special_effect_t* magnetized_blasting_cap_launcher;
   } legendary;
 
   // Buffs
@@ -622,6 +623,12 @@ static void mm_waist( special_effect_t& effect )
 {
   hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
   init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.mm_waist, effect );
+}
+
+static void magnetized_blasting_cap_launcher( special_effect_t& effect )
+{
+  hunter_t* hunter = debug_cast<hunter_t*>( effect.player );
+  init_special_effect( hunter, HUNTER_MARKSMANSHIP, hunter -> legendary.magnetized_blasting_cap_launcher, effect );
 }
 
 // Template for common hunter action code. See priest_action_t.
@@ -2998,6 +3005,28 @@ struct black_arrow_t: public hunter_ranged_attack_t
   }
 };
 
+// Bursting Shot ======================================================================
+
+struct bursting_shot_t : public hunter_ranged_attack_t
+{
+  bursting_shot_t( hunter_t* player, const std::string& options_str ) :
+    hunter_ranged_attack_t( "bursting_shot", player, player -> find_spell( 186387 ) )
+  {
+    parse_options( options_str );
+  }
+
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+    am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+    if ( p() -> legendary.magnetized_blasting_cap_launcher )
+    {
+      am *= 1.0 + p() -> legendary.magnetized_blasting_cap_launcher -> driver() -> effectN( 2 ).percent();
+    }
+    return am;
+  }
+};
 // Aimed Shot base class ==============================================================
 
 struct aimed_shot_base_t: public hunter_ranged_attack_t
@@ -5194,6 +5223,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "barrage"               ) return new                barrage_t( this, options_str );
   if ( name == "bestial_wrath"         ) return new          bestial_wrath_t( this, options_str );
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
+  if ( name == "bursting_shot"         ) return new          bursting_shot_t( this, options_str );
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
   if ( name == "caltrops"              ) return new               caltrops_t( this, options_str );
   if ( name == "carve"                 ) return new                  carve_t( this, options_str );
@@ -6663,6 +6693,7 @@ struct hunter_module_t: public module_t
     unique_gear::register_special_effect( 206889, mm_feet );
     unique_gear::register_special_effect( 224550, mm_ring );
     unique_gear::register_special_effect( 208912, mm_waist );
+    unique_gear::register_special_effect( 226841, magnetized_blasting_cap_launcher );
     unique_gear::register_special_effect( 206332, wrist );
   }
 
