@@ -499,6 +499,13 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
     relic.parsed.bonus_id.push_back( as<int>( id ) );
   } );
 
+  auto powers = item.player -> dbc.artifact_powers( item.parsed.data.id_artifact );
+  // If the artifact= option already specified relics, we presume that the added ranks are
+  // already in the artifact powers provided by artifact= option.
+  bool has_relics = std::count( item.player -> artifact.relics.begin(),
+                                item.player -> artifact.relics.end(), 0 ) !=
+                    as<int>( item.player -> artifact.relics.size() );
+
   for ( size_t i = 0, end = sizeof_array( data.ench_type ); i < end; ++i )
   {
     switch ( data.ench_type[ i ] )
@@ -520,6 +527,37 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
         range::for_each( bonuses, [ &relic ]( const item_bonus_entry_t* entry ) {
           item_database::apply_item_bonus( relic, *entry );
         } );
+        break;
+      }
+      case ITEM_ENCHANTMENT_RELIC_RANK:
+      {
+        if ( has_relics || data.ench_amount[ i ] <= 0 )
+        {
+          break;
+        }
+
+        auto trait_index = data.ench_prop[ i ];
+        auto power_it = range::find_if( powers, [ trait_index ]( const artifact_power_data_t* data ) {
+          return trait_index == data -> power_index;
+        } );
+
+        if ( power_it == powers.end() )
+        {
+          break;
+        }
+
+        if ( item.player -> sim -> debug )
+        {
+          item.player -> sim -> out_debug.printf( "%s %s: Adding +%u rank to %s power",
+            item.player -> name(), relic.name(), data.ench_amount[ i ], ( *power_it ) -> name );
+        }
+
+        // Our internal artifact power data is organized in ascending power id order (per artifact),
+        // so we need to map the blizzard's indexing system to our own (seemingly arbitrary indexing
+        // based on development cycle).
+        auto internal_power_index = std::distance( powers.begin(), power_it );
+        item.player -> artifact.points[ internal_power_index ] += data.ench_amount[ i ];
+        item.player -> artifact.n_points += data.ench_amount[ i ];
         break;
       }
       default:

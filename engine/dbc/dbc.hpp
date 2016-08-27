@@ -1506,6 +1506,7 @@ public:
   std::vector<const artifact_power_data_t*> artifact_powers( unsigned artifact_id ) const;
   std::vector<const artifact_power_rank_t*> artifact_power_ranks( unsigned power_id ) const;
   unsigned artifact_power_spell_id( specialization_e spec, unsigned power_index, unsigned rank ) const;
+  std::pair<unsigned, unsigned> artifact_relic_rank_index( unsigned artifact_id, unsigned relic_item_id ) const;
 
   // Child items
   unsigned child_item( unsigned ) const;

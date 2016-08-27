@@ -2698,6 +2698,63 @@ unsigned dbc_t::artifact_power_spell_id( specialization_e spec, unsigned power_i
   return ranks[ rank - 1 ] -> id_spell();
 }
 
+// Returns the ( power_id, rank_increase ) pair for a given artifact id, relic item id combination
+std::pair<unsigned, unsigned> dbc_t::artifact_relic_rank_index( unsigned artifact_id, unsigned relic_item_id ) const
+{
+  auto relic_data = item( relic_item_id );
+  if ( ! relic_data )
+  {
+    return { 0, 0 };
+  }
+
+  auto gem_prop = gem_property( relic_data -> gem_properties );
+  if ( ! gem_prop.id || ! ( gem_prop.color & SOCKET_COLOR_RELIC ) )
+  {
+    return { 0, 0 };
+  }
+
+  auto enchantment_data = item_enchantment( gem_prop.enchant_id );
+  if ( ! enchantment_data.id )
+  {
+    return { 0, 0 };
+  }
+
+  unsigned amount = 0, trait_index = 0;
+  for ( size_t i = 0, end = sizeof_array( enchantment_data.ench_type ); i < end; ++i )
+  {
+    if ( enchantment_data.ench_type[ i ] != ITEM_ENCHANTMENT_RELIC_RANK )
+    {
+      continue;
+    }
+
+    if ( enchantment_data.ench_amount[ i ] < 0 )
+    {
+      continue;
+    }
+
+    amount = enchantment_data.ench_amount[ i ];
+    trait_index = enchantment_data.ench_prop[ i ];
+    break;
+  }
+
+  if ( amount == 0 || trait_index == 0 )
+  {
+    return { 0, 0 };
+  }
+
+  auto powers = artifact_powers( artifact_id );
+  auto power_it = range::find_if( powers, [ trait_index ]( const artifact_power_data_t* data ) {
+    return trait_index == data -> power_index;
+  } );
+
+  if ( power_it == powers.end() )
+  {
+    return { 0, 0 };
+  }
+
+  return { ( *power_it ) -> id, amount };
+}
+
 // Hotfix data handling
 
 

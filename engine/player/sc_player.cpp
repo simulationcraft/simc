@@ -3212,7 +3212,7 @@ double player_t::composite_player_multiplier( school_e /* school */ ) const
   if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring -> up() )
     m *= 1.0 + buffs.legendary_aoe_ring -> default_value;
                                                                           // Artifacts get a free +6 purchased
-  m *= 1.0 + artifact.artificial_damage -> effectN( 2 ).percent() * .01 * ( artifact.n_purchased_points + 6.0 );
+  m *= 1.0 + artifact.artificial_damage -> effectN( 2 ).percent() * .01 * ( artifact.n_purchased_points + 6 );
 
   return m;
 }
