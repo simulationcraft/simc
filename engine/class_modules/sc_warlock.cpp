@@ -302,7 +302,7 @@ public:
   {
     cooldown_t* infernal;
     cooldown_t* doomguard;
-    //cooldown_t* dimensional_rift;
+    cooldown_t* dimensional_rift;
     cooldown_t* haunt;
     cooldown_t* sindorei_spite_icd;
   } cooldowns;
@@ -782,16 +782,42 @@ struct rift_shadow_bolt_t: public warlock_pet_spell_t
     may_crit = may_miss = false;
     tick_may_crit = hasted_ticks = true;
     spell_power_mod.direct = 0;
+    base_dd_min = base_dd_max = 0;
     spell_power_mod.tick = data().effectN( 1 ).sp_coeff();
-    dot_duration = timespan_t::from_millis( 1400 );
+    dot_duration = timespan_t::from_millis( 14000 );
     base_tick_time = timespan_t::from_millis( 2000 );
-    base_costs[RESOURCE_ENERGY] = 1.0;
     base_execute_time = timespan_t::zero();
+
+    cooldown -> duration = timespan_t::from_seconds( 15 );
   }
 
-  virtual timespan_t travel_time() const override
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
-    return timespan_t::zero();
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
+      m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
+
+    return m;
+  }
+};
+
+struct chaos_barrage_t : public warlock_pet_spell_t
+{
+  chaos_barrage_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "chaos_barrage", p, p -> find_spell( 187394 ) )
+  {
+    may_crit = may_miss = false;
+    tick_may_crit = hasted_ticks = true;
+    spell_power_mod.direct = 0;
+    base_dd_min = base_dd_max = 0;
+    spell_power_mod.tick = data().effectN( 1 ).sp_coeff();
+    dot_duration = timespan_t::from_millis( 5500 );
+    base_tick_time = timespan_t::from_millis( 250 );
+    base_execute_time = timespan_t::zero();
+    cooldown -> duration = timespan_t::from_seconds( 6 );
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -813,18 +839,7 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
     warlock_pet_spell_t( "chaos_bolt", p, p -> find_spell( 215279 ) )
   { 
     base_execute_time = timespan_t::from_millis( 3000 );
-    base_costs[RESOURCE_ENERGY] = 1.0;
-  }
-
-  virtual void execute() override
-  {
-    warlock_pet_spell_t::execute();
-
-    if ( player -> resources.current[RESOURCE_ENERGY] <= 0 )
-    {
-      p() -> dismiss();
-      return;
-    }
+    cooldown->duration = timespan_t::from_seconds( 5.5 );
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -855,39 +870,6 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
     state -> result_total *= 1.0 + player -> cache.spell_crit_chance() + state -> target_crit_chance;
 
     return state -> result_total;
-  }
-};
-
-struct chaos_barrage_t : public warlock_pet_spell_t
-{
-  chaos_barrage_t( warlock_pet_t* p ) :
-    warlock_pet_spell_t( "chaos_barrage", p, p -> find_spell( 187394 ) )
-  {
-    may_crit = may_miss = false;
-    tick_may_crit = hasted_ticks = true;
-    spell_power_mod.direct = 0;
-    spell_power_mod.tick = data().effectN( 1 ).sp_coeff();
-    dot_duration = timespan_t::from_millis( 5500 );
-    base_tick_time = timespan_t::from_millis( 250 );
-    base_costs[RESOURCE_ENERGY] = 1.0;
-    base_execute_time = timespan_t::zero();
-  }
-
-  virtual timespan_t travel_time() const override
-  {
-    return timespan_t::zero();
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_pet_spell_t::composite_target_multiplier( target );
-
-    warlock_td_t* td = this -> td( target );
-
-    if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
-      m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
-
-    return m;
   }
 };
 
@@ -1573,7 +1555,6 @@ struct chaos_tear_t : public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
-    resources.base[RESOURCE_ENERGY] = 1;
   }
 
   virtual action_t* create_action( const std::string& name,
@@ -1628,7 +1609,6 @@ namespace shadowy_tear {
     {
       warlock_pet_t::init_base_stats();
       base_energy_regen_per_second = 0;
-      resources.base[RESOURCE_ENERGY] = 1;
     }
 
     shadowy_tear_td_t* td( player_t* t ) const
@@ -1702,7 +1682,6 @@ namespace chaos_portal {
     {
       warlock_pet_t::init_base_stats();
       base_energy_regen_per_second = 0;
-      resources.base[RESOURCE_ENERGY] = 1;
     }
 
     chaos_portal_td_t* td( player_t* t ) const
@@ -3543,11 +3522,11 @@ struct incinerate_t: public warlock_spell_t
   {
     warlock_spell_t::execute();
     
-    //if ( p() -> artifact.dimension_ripper.rank() && rng().roll( dimension_ripper ) && p() -> cooldowns.dimensional_rift -> current_charge < p() -> cooldowns.dimensional_rift -> charges )
-    //{
-    //  p() -> cooldowns.dimensional_rift -> adjust( -p() -> cooldowns.dimensional_rift -> duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
-    //  p() -> procs.dimension_ripper -> occur();
-    //}
+    if ( p() -> artifact.dimension_ripper.rank() && rng().roll( dimension_ripper ) && p() -> cooldowns.dimensional_rift -> current_charge < p() -> cooldowns.dimensional_rift -> charges )
+    {
+      p() -> cooldowns.dimensional_rift -> adjust( -p() -> cooldowns.dimensional_rift -> duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
+      p() -> procs.dimension_ripper -> occur();
+    }
 
     if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
     {
@@ -3704,64 +3683,64 @@ struct thalkiels_discord_t : public warlock_spell_t
   }
 };
 
-//struct dimensional_rift_t : public warlock_spell_t
-//{
-//  timespan_t shadowy_tear_duration;
-//  timespan_t chaos_tear_duration;
-//  timespan_t chaos_portal_duration;
-//
-//  dimensional_rift_t( warlock_t* p ):
-//    warlock_spell_t( "dimensional_rift", p, p -> artifact.dimensional_rift )
-//  {
-//    shadowy_tear_duration = timespan_t::from_millis( 14001 );
-//    chaos_tear_duration = timespan_t::from_millis( 5001 );
-//    chaos_portal_duration = timespan_t::from_millis( 5501 );
-//  }
-//
-//  void execute() override
-//  {
-//    warlock_spell_t::execute();
-//
-//    double rift = rng().range( 0.0, 1.0 );
-//
-//    if ( rift <= ( 1.0 / 3.0 ) )
-//    {
-//      for ( size_t i = 0; i < p() ->warlock_pet_list.shadowy_tear.size(); i++ )
-//      {
-//        if ( p() -> warlock_pet_list.shadowy_tear[i] -> is_sleeping() )
-//        {
-//          p() -> warlock_pet_list.shadowy_tear[i] -> summon( shadowy_tear_duration );
-//          p() -> procs.shadowy_tear -> occur();
-//          break;
-//        }
-//      }
-//    }
-//    else if ( rift >= ( 2.0 / 3.0 ) )
-//    {
-//      for ( size_t i = 0; i < p() -> warlock_pet_list.chaos_tear.size(); i++ )
-//      {
-//        if ( p() -> warlock_pet_list.chaos_tear[i] -> is_sleeping() )
-//        {
-//          p() -> warlock_pet_list.chaos_tear[i] -> summon( chaos_tear_duration );
-//          p() -> procs.chaos_tear -> occur();
-//          break;
-//        }
-//      }
-//    }
-//    else
-//    {
-//      for ( size_t i = 0; i < p() -> warlock_pet_list.chaos_portal.size(); i++ )
-//      {
-//        if ( p() -> warlock_pet_list.chaos_portal[i] -> is_sleeping() )
-//        {
-//          p() -> warlock_pet_list.chaos_portal[i] -> summon( chaos_tear_duration );
-//          p() -> procs.chaos_portal -> occur();
-//          break;
-//        }
-//      }
-//    }
-//  }
-//};
+struct dimensional_rift_t : public warlock_spell_t
+{
+  timespan_t shadowy_tear_duration;
+  timespan_t chaos_tear_duration;
+  timespan_t chaos_portal_duration;
+
+  dimensional_rift_t( warlock_t* p ):
+    warlock_spell_t( "dimensional_rift", p, p -> artifact.dimensional_rift )
+  {
+    shadowy_tear_duration = timespan_t::from_millis( 14001 );
+    chaos_tear_duration = timespan_t::from_millis( 5001 );
+    chaos_portal_duration = timespan_t::from_millis( 5501 );
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    double rift = rng().range( 0.0, 1.0 );
+
+    if ( rift <= ( 1.0 / 3.0 ) )
+    {
+      for ( size_t i = 0; i < p() ->warlock_pet_list.shadowy_tear.size(); i++ )
+      {
+        if ( p() -> warlock_pet_list.shadowy_tear[i] -> is_sleeping() )
+        {
+          p() -> warlock_pet_list.shadowy_tear[i] -> summon( shadowy_tear_duration );
+          p() -> procs.shadowy_tear -> occur();
+          break;
+        }
+      }
+    }
+    else if ( rift >= ( 2.0 / 3.0 ) )
+    {
+      for ( size_t i = 0; i < p() -> warlock_pet_list.chaos_tear.size(); i++ )
+      {
+        if ( p() -> warlock_pet_list.chaos_tear[i] -> is_sleeping() )
+        {
+          p() -> warlock_pet_list.chaos_tear[i] -> summon( chaos_tear_duration );
+          p() -> procs.chaos_tear -> occur();
+          break;
+        }
+      }
+    }
+    else
+    {
+      for ( size_t i = 0; i < p() -> warlock_pet_list.chaos_portal.size(); i++ )
+      {
+        if ( p() -> warlock_pet_list.chaos_portal[i] -> is_sleeping() )
+        {
+          p() -> warlock_pet_list.chaos_portal[i] -> summon( chaos_tear_duration );
+          p() -> procs.chaos_portal -> occur();
+          break;
+        }
+      }
+    }
+  }
+};
 
 struct thalkiels_consumption_t : public warlock_spell_t
 {
@@ -5122,7 +5101,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
 
     cooldowns.infernal = get_cooldown( "summon_infernal" );
     cooldowns.doomguard = get_cooldown( "summon_doomguard" );
-    //cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
+    cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
     cooldowns.haunt = get_cooldown( "haunt" );
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
 
@@ -5337,7 +5316,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "demonwrath"            ) a = new                        demonwrath_t( this );
   else if ( action_name == "shadowflame"           ) a = new                       shadowflame_t( this );
   else if ( action_name == "reap_souls"            ) a = new                        reap_souls_t( this );
-  //else if ( action_name == "dimensional_rift"      ) a = new                  dimensional_rift_t( this );
+  else if ( action_name == "dimensional_rift"      ) a = new                  dimensional_rift_t( this );
   else if ( action_name == "call_dreadstalkers"    ) a = new                call_dreadstalkers_t( this );
   else if ( action_name == "soul_effigy"           ) a = new                summon_soul_effigy_t( this );
   else if ( action_name == "summon_infernal"       ) a = new                   summon_infernal_t( this );
@@ -6116,8 +6095,8 @@ void warlock_t::apl_destruction()
     }
   }
 
-  //if ( true_level > 100 )
-  //  add_action( "Dimensional Rift", "if=charges=3" );
+  if ( true_level > 100 )
+    add_action( "Dimensional Rift", "if=charges=3" );
 
   add_action( "Immolate", "if=remains<=tick_time" );
   add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd))" );
@@ -6142,8 +6121,8 @@ void warlock_t::apl_destruction()
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Chaos Bolt", "if=soul_shard>3" );
 
-  // artifact check
-  //add_action( "Dimensional Rift" );
+   //artifact check
+  add_action( "Dimensional Rift" );
 
   action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3";
   add_action( "Chaos Bolt" );
