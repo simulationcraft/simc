@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 812a8f0)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build efaeaad)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -923,7 +923,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
 #5 (id=134930)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
+                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
 Description      : Increases your total Stamina by $s2% and your block chance by $s5%.
 
 Reduces the chance you will be critically hit by melee attacks by $s4%.
@@ -1358,7 +1358,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Target: Self(1)
 #3 (id=318075)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
+                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
 Description      : Increases Judgment damage by $s3%, and causes Judgment to increase damage taken from your Holy Power spenders by $s1%.
 
 Name             : Consecration (id=81297) [Spell Family (10)] 
@@ -2193,10 +2193,10 @@ Effects          :
                    Base Value: 220 | Scaled Value: 220 | Target: Self(1)
 #2 (id=191096)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Divine Hammer (198137), Blade of Wrath (202270), Consecration (205228), Hand of the Protector (213652), Execution Sentence (213757), Judgment (214222), Light of Dawn (225311)
+                   Affected Spells: Judgment (20271), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Divine Hammer (198137), Blade of Wrath (202270), Consecration (205228), Hand of the Protector (213652), Execution Sentence (213757), Judgment (214222), Light of Dawn (225311), Judgment (228288)
 #3 (id=191097)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Blade of Wrath (202270), Eye for an Eye (205191), Hand of the Protector (213652), Judgment (214222), Justicar's Vengeance (215661), Zeal (217020)
+                   Affected Spells: Judgment (20271), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Light of the Protector (184092), Blade of Justice (184575), Judgment (197277), Blade of Wrath (202270), Eye for an Eye (205191), Hand of the Protector (213652), Judgment (214222), Justicar's Vengeance (215661), Zeal (217020), Judgment (228288)
 #4 (id=191098)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 1543 | Target: Self(1)
 #5 (id=191099)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -2250,7 +2250,7 @@ Effects          :
                    Affected Spells: Flash of Light (19750)
 #3 (id=191093)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
+                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
 #4 (id=191094)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191095)   : Apply Aura (6) | Dummy (4)
@@ -2299,7 +2299,7 @@ Effects          :
                    Affected Spells: Flash of Light (19750)
 #3 (id=191089)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
+                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
 #4 (id=191090)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191091)   : Apply Aura (6) | Dummy (4)
@@ -2354,7 +2354,7 @@ Effects          :
                    Affected Spells: Crusader Strike (35395)
 #6 (id=260927)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
-                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222)
+                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
 #7 (id=260928)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260929)   : Apply Aura (6) | Dummy (4)
@@ -4787,6 +4787,24 @@ Effects          :
 #1 (id=341087)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Your maximum health is increased by $s1%.
+
+Name             : Judgment (id=228288) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Level      : 1
+Range            : 100 yards
+Affecting spells : Seal of the Crusader Judgment Increase (23300), Proc Mana Regen (38334), Guarded by the Light (53592), Item - Icecrown 25 Normal Tank Weapon Proc (71871), Item - Icecrown 25 Heroic Slow Melee Weapon Proc (71878), Item - Icecrown 25 Normal Dagger Proc (71880), Mastery: Divine Judgment (76672), Item - Proc Mastery Rating (95878), Paladin (137026), Retribution Paladin (137027), Protection Paladin (137028), Holy Paladin (137029), Lucidity (137288), Seal of the Crusader Judgment Increase (144307), Seal of the Crusader Judgment Increase (144310), Seal of the Crusader Judgment Increase (144311), Highlord's Judgment (186941), Stern Judgment (209217)
+Attributes       : ........ ........ x.x..x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot dodge/parry/block (21)
+Effects          :
+#1 (id=343604)   : School Damage: holy (2)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000 | Target: Enemy(6)
+Description      : $@spelldesc20271
 
 Name             : Cavalier (id=230332) [Passive] 
 Class            : Paladin

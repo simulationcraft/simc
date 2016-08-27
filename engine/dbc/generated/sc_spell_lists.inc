@@ -107,7 +107,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 16 abilities
+    // General tree, 17 abilities
     {
        86704, // Ancient Fury
       114919, // Arcing Light
@@ -120,6 +120,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       209202, // Eye of Tyr (Artifact)
        62124, // Hand of Reckoning
       162056, // Jailer's Judgment
+      228288, // Judgment
        20271, // Judgment
          633, // Lay on Hands
       200652, // Tyr's Deliverance (Artifact)

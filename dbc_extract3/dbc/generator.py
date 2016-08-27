@@ -1276,7 +1276,8 @@ class SpellDataGenerator(DataGenerator):
             ( 186805, 0 ),          # echoed Templar's Verdict (speculative)
             ( 193115, 0 ),          # Blade of Light (speculative)
             ( 180290, 0 ),          # ashen strike (speculative)
-            ( 221883, 0 ),          # Divine Steed 
+            ( 221883, 0 ),          # Divine Steed
+			( 228288, 0, True ),
         ),
 
         # Hunter:
