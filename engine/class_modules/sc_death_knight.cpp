@@ -1168,28 +1168,28 @@ namespace { // UNNAMED NAMESPACE
         return pet_melee_attack_t<T>::ready();
       }
 
-      void impact(action_state_t* s) override
+      void impact( action_state_t* s ) override
       {
-        pet_melee_attack_t<T>::impact(s);
+        pet_melee_attack_t<T>::impact( s );
 
-        if (result_is_hit(s->result)) {
-          if (!rng().roll(p()->o()->legendary.uvanimor_the_unbeautiful))
+        if ( this -> result_is_hit( s -> result ) ) {
+          if ( ! this -> rng().roll( this -> p() -> o() -> legendary.uvanimor_the_unbeautiful ) )
             return;
 
-          if (sim->debug)
+          if ( this -> sim -> debug )
           {
-            log_rune_status(p()->o());
+            log_rune_status( this -> p() -> o() );
           }
 
-          if (p()->o()->replenish_rune(1, p()->o()->gains.uvanimor_the_unbeautiful) && sim->debug)
+          if ( this -> p() -> o() -> replenish_rune( 1, this -> p() -> o() -> gains.uvanimor_the_unbeautiful ) &&
+               this -> sim -> debug)
           {
-            sim->out_debug.printf("uvanimor_the_unbeautiful regenerated rune");
-            log_rune_status(p()->o());
+            this -> sim -> out_debug.printf( "%s uvanimor_the_unbeautiful regenerated rune",
+                this -> p() -> o() -> name());
+            log_rune_status( this -> p() -> o() );
           }
         }
       }
-
-
     };
 
     // Generic auto attack for meleeing pets
