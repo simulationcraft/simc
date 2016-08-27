@@ -28,20 +28,22 @@ actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
 
-actions=call_action_list,name=cds
+actions=variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10-floor(target.distance*0.5))
+actions+=/variable,name=ed_threshold,value=energy.deficit<=(20+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_er)
+actions+=/call_action_list,name=cds
 # Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
 actions+=/run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up
 actions+=/call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)
-actions+=/call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1))
-actions+=/call_action_list,name=build,if=energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)
+actions+=/call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(variable.ed_threshold|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1))
+actions+=/call_action_list,name=build,if=variable.ed_threshold
 
 # Cooldowns
 actions.cds=potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up
 actions.cds+=/blood_fury,if=stealthed
 actions.cds+=/berserking,if=stealthed
 actions.cds+=/arcane_torrent,if=stealthed&energy.deficit>70
-actions.cds+=/shadow_blades,if=!buff.shadow_blades.up
-actions.cds+=/goremaws_bite,if=(combo_points.deficit>=2&energy.deficit>55&time<10)|(combo_points.deficit>=4&energy.deficit>45)|target.time_to_die<8
+actions.cds+=/shadow_blades,if=!(stealthed|buff.shadowmeld.up)
+actions.cds+=/goremaws_bite,if=!buff.shadow_dance.up&((combo_points.deficit>=4-(time<10)*2&energy.deficit>55+talent.vigor.enabled*25-(time>=10)*10)|target.time_to_die<8)
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)
 
 # Stealthed Rotation
@@ -53,10 +55,10 @@ actions.stealthed+=/shadowstrike
 # Stealth Cooldowns
 actions.stealth_cds=shadow_dance,if=charges>=3
 actions.stealth_cds+=/vanish
-actions.stealth_cds+=/shadow_dance,if=charges>=2
-actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40
-actions.stealth_cds+=/shadowmeld,if=energy>=40
-actions.stealth_cds+=/shadow_dance
+actions.stealth_cds+=/shadow_dance,if=charges>=2&combo_points<=1
+actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40-variable.ssw_er
+actions.stealth_cds+=/shadowmeld,if=energy>=40-variable.ssw_er
+actions.stealth_cds+=/shadow_dance,if=combo_points<=1
 
 # Finishers
 actions.finish=enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8
@@ -73,15 +75,15 @@ actions.build+=/backstab
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
 neck=krakentooth_necklace,id=141473,enchant=mark_of_the_distant_army
 shoulders=mantle_of_the_aspiring_spellgiant,id=141445
-back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=200agility
+back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=binding_of_agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1805
 wrists=dragonspur_wristguards,id=138219,bonus_id=1805
 hands=saltstained_tuskarr_gloves,id=141475
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
 feet=stained_maggot_squishers,id=139200,bonus_id=1805
-finger1=ring_of_deep_sea_pearls,id=141545,enchant=200versatility
-finger2=mindrend_band,id=138220,bonus_id=1805,enchant=200versatility
+finger1=ring_of_deep_sea_pearls,id=141545,enchant=binding_of_versatility
+finger2=mindrend_band,id=138220,bonus_id=1805,enchant=binding_of_versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
 trinket2=unstable_arcanocrystal,id=141482
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=139267/138226/139267,relic_id=1805/1805/1805

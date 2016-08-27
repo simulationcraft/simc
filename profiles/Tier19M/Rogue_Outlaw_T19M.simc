@@ -79,26 +79,26 @@ actions.build+=/saber_slash,if=variable.ss_useable
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
 neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_distant_army
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=200agility
+back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=binding_of_agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
-feet=thraxis_tricksy_treads,id=137031,bonus_id=1811
-finger1=ring_of_deep_sea_pearls,id=141545,enchant=200versatility
-finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=200versatility
+feet=stained_maggot_squishers,id=139200,bonus_id=1806
+finger1=insignia_of_ravenholdt,id=137049,enchant=binding_of_versatility
+finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=unstable_arcanocrystal,id=141482
 main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=139260/139261/139262,relic_id=1806/1806/1806
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=881.69
-# gear_agility=16120
-# gear_stamina=25530
-# gear_crit_rating=8596
-# gear_haste_rating=2742
-# gear_mastery_rating=6478
-# gear_versatility_rating=3666
-# gear_armor=2249
+# gear_ilvl=882.94
+# gear_agility=15928
+# gear_stamina=25705
+# gear_crit_rating=9248
+# gear_haste_rating=3196
+# gear_mastery_rating=6284
+# gear_versatility_rating=2958
+# gear_armor=2236
