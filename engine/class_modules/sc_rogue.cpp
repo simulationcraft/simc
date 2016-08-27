@@ -6361,6 +6361,7 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_SUBTLETY )
   {
     // Pre-Combat
+    precombat -> add_action( this, "Enveloping Shadows", "if=combo_points>=5" );
     precombat -> add_action( this, "Symbols of Death" );
     if (true_level <= 100 )
       precombat -> add_action( this, "Vanish", "if=set_bonus.tier18_4pc" );
@@ -6368,12 +6369,14 @@ void rogue_t::init_action_list()
     // Main Rotation
     if (true_level <= 100 )
       def -> add_action( this, "Nightblade", "if=set_bonus.tier18_4pc&refreshable&time<5" );
+    def -> add_action( "variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10-floor(target.distance*0.5))" );
+    def -> add_action( "variable,name=ed_threshold,value=energy.deficit<=(20+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_er)" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
       // TODO : Improve Energy Threshold according to Vigor, Shadow Focus, Energetic Stabbing, Shadow Satyr's Walk
-    def -> add_action( "call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1))" );
-    def -> add_action( "call_action_list,name=build,if=energy.deficit<=20|(energy.deficit<=45&talent.master_of_shadows.enabled)" );
+    def -> add_action( "call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(variable.ed_threshold|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1))" );
+    def -> add_action( "call_action_list,name=build,if=variable.ed_threshold" );
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds" );
@@ -6390,8 +6393,8 @@ void rogue_t::init_action_list()
       else
         cds -> add_action( racial_actions[i] + ",if=stealthed" );
     }
-    cds -> add_action( this, "Shadow Blades", "if=!buff.shadow_blades.up" );
-    cds -> add_action( this, "Goremaw's Bite", "if=(combo_points.deficit>=2&energy.deficit>55&time<10)|(combo_points.deficit>=4&energy.deficit>45)|target.time_to_die<8" );
+    cds -> add_action( this, "Shadow Blades", "if=!(stealthed|buff.shadowmeld.up)" );
+    cds -> add_action( this, "Goremaw's Bite", "if=!buff.shadow_dance.up&((combo_points.deficit>=4-(time<10)*2&energy.deficit>55+talent.vigor.enabled*25-(time>=10)*10)|target.time_to_die<8)" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
     
     // Stealthed Rotation
@@ -6409,10 +6412,10 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges>=3", "Stealth Cooldowns" );
     stealth_cds -> add_action( this, "Vanish" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=charges>=2" );
-    stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40" );
-    stealth_cds -> add_action( "shadowmeld,if=energy>=40" );
-    stealth_cds -> add_action( this, "Shadow Dance");
+    stealth_cds -> add_action( this, "Shadow Dance", "if=charges>=2&combo_points<=1" );
+    stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40-variable.ssw_er" );
+    stealth_cds -> add_action( "shadowmeld,if=energy>=40-variable.ssw_er" );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points<=1" );
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish" );
