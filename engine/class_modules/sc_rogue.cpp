@@ -1389,6 +1389,11 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
   double composite_da_multiplier( const action_state_t* ) const override
   {
     double multiplier = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
+
+    if ( p() -> specialization() == ROGUE_ASSASSINATION )
+    {
+      multiplier += p() -> find_spell( 137037 ) -> effectN( 1 ).percent();
+    }
     return multiplier;
   }
 };
