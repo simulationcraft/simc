@@ -333,6 +333,7 @@ public:
     gain_t* t18_2pc_blood;
     gain_t* scourge_the_unbeliever;
     gain_t* draugr_girdle_everlasting_king;
+    gain_t* uvanimor_the_unbeautiful;
   } gains;
 
   // Specialization
@@ -544,6 +545,7 @@ public:
     // Unholy
     unsigned the_instructors_fourth_lesson;
     double draugr_girdle_everlasting_king;
+    double uvanimor_the_unbeautiful;
 
   } legendary;
 
@@ -1132,7 +1134,7 @@ struct dt_melee_ability_t : public pet_melee_attack_t<T>
 
   bool ready() override
   {
-    bool dt_state = pet_melee_attack_t<T>::p() -> o() -> buffs.dark_transformation -> check() > 0;
+    bool dt_state = this -> p() -> o() -> buffs.dark_transformation -> check() > 0;
 
     if ( usable_in_dt != dt_state )
     {
@@ -1140,6 +1142,30 @@ struct dt_melee_ability_t : public pet_melee_attack_t<T>
     }
 
     return pet_melee_attack_t<T>::ready();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    pet_melee_attack_t<T>::impact( s );
+
+    if ( this -> result_is_hit( s -> result ) )
+    {
+      if ( ! this -> rng().roll( this -> p() -> o() -> legendary.uvanimor_the_unbeautiful ) )
+        return;
+
+      if ( this -> sim -> debug )
+      {
+        log_rune_status( this -> p() -> o() );
+      }
+
+      if ( this -> p() -> o() -> replenish_rune( 1, this -> p() -> o() -> gains.uvanimor_the_unbeautiful ) &&
+           this -> sim -> debug )
+      {
+        this -> sim -> out_debug.printf( "%s uvanimor_the_unbeautiful regenerated rune",
+            this -> p() -> o() -> name() );
+        log_rune_status( this -> p() -> o() );
+      }
+    }
   }
 };
 
@@ -1211,6 +1237,39 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 // Unholy Dark Transformable pet
 // ==========================================================================
 
+// Dark Transformable pet auto attack
+template <typename T>
+struct dt_pet_auto_attack_t : public auto_attack_melee_t<T>
+{
+  dt_pet_auto_attack_t( T* player, const std::string& name = "main_hand" ) :
+    auto_attack_melee_t<T>( player, name )
+  { }
+
+  void impact( action_state_t* s ) override
+  {
+    auto_attack_melee_t<T>::impact( s );
+
+    if ( this -> result_is_hit( s -> result ) )
+    {
+      if ( ! this -> rng().roll( this -> p() -> o() -> legendary.uvanimor_the_unbeautiful ) )
+        return;
+
+      if ( this -> sim -> debug )
+      {
+        log_rune_status( this -> p() -> o() );
+      }
+
+      if ( this -> p() -> o() -> replenish_rune( 1, this -> p() -> o() -> gains.uvanimor_the_unbeautiful ) &&
+           this -> sim -> debug )
+      {
+        this -> sim -> out_debug.printf( "%s uvanimor_the_unbeautiful regenerated rune",
+            this -> p() -> o() -> name() );
+        log_rune_status( this -> p() -> o() );
+      }
+    }
+  }
+};
+
 struct dt_pet_t : public base_ghoul_pet_t
 {
   // Unholy T18 4pc buff
@@ -1219,6 +1278,9 @@ struct dt_pet_t : public base_ghoul_pet_t
   dt_pet_t( death_knight_t* owner, const std::string& name ) :
     base_ghoul_pet_t( owner, name, false ), crazed_monstrosity( nullptr )
   { }
+
+  attack_t* create_auto_attack() override
+  { return new dt_pet_auto_attack_t< dt_pet_t >( this ); }
 
   void create_buffs() override
   {
@@ -6696,7 +6758,8 @@ void death_knight_t::init_gains()
   gains.overpowered                      = get_gain( "Over-Powered"               );
   gains.t18_2pc_blood                    = get_gain( "Tier18 Blood 2PC"           );
   gains.scourge_the_unbeliever           = get_gain( "Scourge the Unbeliever"     );
-  gains.draugr_girdle_everlasting_king   = get_gain("Draugr, Girdle of the Everlasting King");
+  gains.draugr_girdle_everlasting_king   = get_gain( "Draugr, Girdle of the Everlasting King" );
+  gains.uvanimor_the_unbeautiful         = get_gain( "Uvanimor, the Unbeautiful" );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -7525,11 +7588,22 @@ struct the_instructors_fourth_lesson_t : public scoped_actor_callback_t < death_
 struct draugr_girdle_everlasting_king_t : public scoped_actor_callback_t < death_knight_t >
 {
   draugr_girdle_everlasting_king_t() : super(DEATH_KNIGHT_UNHOLY)
-  {} 
+  {}
 
   void manipulate(death_knight_t* p, const special_effect_t& e) override
   {
     p->legendary.draugr_girdle_everlasting_king = e.driver()->proc_chance();
+  }
+};
+
+struct uvanimor_the_unbeautiful_t : public scoped_actor_callback_t < death_knight_t >
+{
+  uvanimor_the_unbeautiful_t() : super( DEATH_KNIGHT_UNHOLY )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  {
+    p -> legendary.uvanimor_the_unbeautiful = e.driver() -> effectN( 1 ).percent();
   }
 };
 
@@ -7545,18 +7619,19 @@ struct death_knight_module_t : public module_t {
 
   void static_init() const override
   {
-    unique_gear::register_special_effect(  50401,    runeforge::razorice_attack );
-    unique_gear::register_special_effect(  51714,    runeforge::razorice_debuff );
-    unique_gear::register_special_effect( 166441,    runeforge::fallen_crusader );
+    unique_gear::register_special_effect(  50401, runeforge::razorice_attack );
+    unique_gear::register_special_effect(  51714, runeforge::razorice_debuff );
+    unique_gear::register_special_effect( 166441, runeforge::fallen_crusader );
     unique_gear::register_special_effect(  62157, runeforge::stoneskin_gargoyle );
     unique_gear::register_special_effect( 184898, reapers_harvest_frost_t( "obliterate_mh" ) );
     unique_gear::register_special_effect( 184898, reapers_harvest_frost_t( "obliterate_offhand" ) );
     unique_gear::register_special_effect( 184983, reapers_harvest_unholy_t() );
     unique_gear::register_special_effect( 184897, reapers_harvest_blood_t()  );
     unique_gear::register_special_effect( 215068, taktheritrixs_shoulderpads_t() );
-    unique_gear::register_special_effect(205658, toravons_bindings_t());
-    unique_gear::register_special_effect(208713, the_instructors_fourth_lesson_t());
-    unique_gear::register_special_effect(208161, draugr_girdle_everlasting_king_t());
+    unique_gear::register_special_effect( 205658, toravons_bindings_t() );
+    unique_gear::register_special_effect( 208713, the_instructors_fourth_lesson_t() );
+    unique_gear::register_special_effect( 208161, draugr_girdle_everlasting_king_t() );
+    unique_gear::register_special_effect( 208786, uvanimor_the_unbeautiful_t() );
   }
 
   void register_hotfixes() const override
