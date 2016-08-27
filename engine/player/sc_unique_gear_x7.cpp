@@ -149,13 +149,12 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
   if ( ! effect.execute_action )
   {
     action_t* a = new proc_spell_t( "mark_of_the_hidden_satyr",
-      effect.player, effect.player -> find_spell( 191259 ), effect.item );
-    a -> spell_power_mod.direct = 1.0; // Jun 27 2016
+      effect.player, effect.player -> find_spell( 191259 ), nullptr );
 
     effect.execute_action = a;
   }
 
-  effect.proc_flags_ = PF_ALL_DAMAGE; // DBC says procs off heals. Let's not.
+  effect.proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC; // DBC says procs off heals. Let's not.
 
   new dbc_proc_callback_t( effect.item, effect );
 }
