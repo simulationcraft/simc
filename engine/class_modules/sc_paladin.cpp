@@ -3555,6 +3555,11 @@ struct judgment_aoe_t : public paladin_melee_attack_t
   // Special things that happen when Judgment damages target
   virtual void impact( action_state_t* s ) override
   {
+    paladin_melee_attack_t::impact( s );
+
+    if ( !impact_targeting( s ) )
+      return;
+
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
@@ -3562,8 +3567,6 @@ struct judgment_aoe_t : public paladin_melee_attack_t
       if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T17, B4 ) )
         p() -> buffs.blazing_resolve -> trigger();
     }
-
-    paladin_melee_attack_t::impact( s );
   }
 
   double action_multiplier() const override
