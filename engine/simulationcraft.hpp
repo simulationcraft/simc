@@ -7751,7 +7751,7 @@ inline bool cooldown_t::is_ready() const
   // basically only abilities, where the user must press a button to initiate the execution. Note
   // that off gcd abilities that bypass schedule_execute (i.e., action_t::use_off_gcd is set to
   // true) will for now not use the queueing system.
-  if ( ! action || ! player || action -> use_off_gcd )
+  if ( ! action || ! player || ( action -> use_off_gcd && player -> gcd_ready > sim.current_time() ) )
   {
     return up();
   }
