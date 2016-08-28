@@ -79,6 +79,7 @@ struct warlock_td_t: public actor_target_data_t
   buff_t* debuffs_flamelicked;
   buff_t* debuffs_eradication;
   buff_t* debuffs_roaring_blaze;
+  buff_t* debuffs_havoc;
 
   int agony_stack;
   double soc_threshold;
@@ -2137,6 +2138,7 @@ private:
     weapon_multiplier = 0.0;
     gain = player -> get_gain( name_str );
 
+    can_havoc = false;
     havoc_proc = nullptr;
 
     affected_by_contagion = true;
@@ -2147,8 +2149,9 @@ private:
 
 public:
   gain_t* gain;
-  mutable std::vector< player_t* > havoc_targets;
 
+  mutable std::vector< player_t* > havoc_targets;
+  bool can_havoc;
   proc_t* havoc_proc;
 
   bool affected_by_contagion;
@@ -2190,7 +2193,7 @@ public:
 
   bool use_havoc() const
   {
-    if ( ! p() -> havoc_target || target == p() -> havoc_target )
+    if ( ! p() -> havoc_target || target == p() -> havoc_target || ! can_havoc )
       return false;
 
     return true;
@@ -3301,6 +3304,8 @@ struct hand_of_guldan_t: public warlock_spell_t
 
 struct havoc_t: public warlock_spell_t
 {
+  timespan_t havoc_duration;
+
   havoc_t( warlock_t* p ):
     warlock_spell_t( p, "Havoc" )
   {
@@ -3308,13 +3313,22 @@ struct havoc_t: public warlock_spell_t
 
     if ( p -> talents.wreak_havoc -> ok() )
       cooldown -> duration = timespan_t::from_seconds( 0 );
+    havoc_duration = p -> find_spell( 80240 ) -> duration();
+    if ( p -> talents.wreak_havoc -> ok() )
+      havoc_duration += p -> find_spell( 196410 ) -> effectN( 1 ).time_value();
   }
 
   virtual void execute() override
   {
     warlock_spell_t::execute();
-    p() -> buffs.havoc -> trigger();
     p() -> havoc_target = execute_state -> target;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    td( s -> target ) -> debuffs_havoc -> trigger( 1, buff_t::DEFAULT_VALUE(),-1, havoc_duration );
   }
 };
 
@@ -5063,6 +5077,7 @@ warlock( p )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_roaring_blaze = buff_creator_t( *this, "roaring_blaze", source -> find_spell( 205690 ) )
     .max_stack( 100 );
+  debuffs_havoc = buff_creator_t( *this, "havoc", source -> find_spell( 80240 ) );
 
   if ( warlock.destruction_trinket )
   {
@@ -5641,18 +5656,6 @@ void warlock_t::init_scaling()
   player_t::init_scaling();
 }
 
-struct havoc_buff_t : public buff_t
-{
-  havoc_buff_t( warlock_t* p ) :
-    buff_t( buff_creator_t( p, "havoc", p -> find_specialization_spell( "Havoc" ) ).cd( timespan_t::zero() ) )
-  { 
-    if ( p -> talents.wreak_havoc -> ok() )
-    {
-      buff_duration = timespan_t::from_seconds( 20 );
-    }
-  }
-};
-
 struct t18_4pc_driver_t : public buff_t        //kept to force imps to proc
 {
   timespan_t illidari_satyr_duration;
@@ -5743,7 +5746,6 @@ void warlock_t::create_buffs()
 
   //destruction buffs
   buffs.backdraft = buff_creator_t( this, "backdraft", find_spell( 117828 ) );
-  buffs.havoc = new havoc_buff_t( this );
   buffs.lord_of_flames = buff_creator_t( this, "lord_of_flames", find_spell( 226802 ) )
     .tick_behavior( BUFF_TICK_NONE );
   buffs.conflagration_of_chaos = buff_creator_t( this, "conflagration_of_chaos", artifact.conflagration_of_chaos.data().effectN( 1 ).trigger() )
