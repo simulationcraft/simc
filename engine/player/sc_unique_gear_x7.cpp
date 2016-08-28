@@ -211,7 +211,10 @@ void item::giant_ornamental_pearl( special_effect_t& effect )
 
 void item::impact_tremor( special_effect_t& effect )
 {
+  // Use automagic action creation
+  effect.trigger_spell_id = effect.trigger() -> effectN( 1 ).trigger() -> id();
   action_t* stampede = effect.create_action();
+  effect.trigger_spell_id = 0;
 
   effect.custom_buff = buff_creator_t( effect.player, "devilsaurs_stampede", effect.driver() -> effectN( 1 ).trigger(), effect.item )
     .tick_zero( true )
@@ -220,7 +223,7 @@ void item::impact_tremor( special_effect_t& effect )
     } );
 
   // Disable automatic creation of a trigger spell.
-  effect.trigger_spell_id = 1;
+  effect.action_disabled = true;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
