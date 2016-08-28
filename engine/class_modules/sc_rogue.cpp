@@ -6359,7 +6359,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build" );
-    build -> add_talent( this, "Ghostly Strike", "if=talent.ghostly_strike.enabled&(debuff.ghostly_strike.remains<4.5|cooldown.curse_of_the_dreadblades.remains<3)&combo_points.deficit>=1+buff.broadsides.up&!buff.curse_of_the_dreadblades.up&(combo_points>=3|variable.rtb_reroll&time>=10)", " Builders" );
+    build -> add_talent( this, "Ghostly Strike", "if=talent.ghostly_strike.enabled&(debuff.ghostly_strike.remains<debuff.ghostly_strike.duration*0.3|(cooldown.curse_of_the_dreadblades.remains<3&debuff.ghostly_strike.remains<14))&combo_points.deficit>=1+buff.broadsides.up&!buff.curse_of_the_dreadblades.up&(combo_points>=3|variable.rtb_reroll&time>=10)", " Builders" );
     build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&energy.time_to_max>2-talent.quick_draw.enabled&combo_points.deficit>=1+buff.broadsides.up" );
     build -> add_action( this, "Saber Slash", "if=variable.ss_useable" );
   }
