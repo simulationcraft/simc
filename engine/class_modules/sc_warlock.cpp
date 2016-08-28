@@ -3789,8 +3789,11 @@ struct seed_of_corruption_t: public warlock_spell_t
 {
   struct seed_of_corruption_aoe_t: public warlock_spell_t
   {
+    corruption_t* corruption;
+
     seed_of_corruption_aoe_t( warlock_t* p ):
-      warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
+      warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ),
+      corruption( new corruption_t( p ) )
     {
       aoe = -1;
       dual = true;
@@ -3798,6 +3801,11 @@ struct seed_of_corruption_t: public warlock_spell_t
       callbacks = false;
 
       p -> spells.seed_of_corruption_aoe = this;
+
+      corruption -> background = true;
+      corruption -> dual = true;
+      corruption -> may_crit = false;
+      corruption -> base_costs[RESOURCE_MANA] = 0;
     }
 
     virtual double action_multiplier() const override
@@ -3812,6 +3820,9 @@ struct seed_of_corruption_t: public warlock_spell_t
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
+
+      //corruption -> target = s -> target;
+      //corruption -> execute();
 
       if ( result_is_hit( s -> result ) )
       {
@@ -3830,12 +3841,10 @@ struct seed_of_corruption_t: public warlock_spell_t
   double sow_the_seeds_targets;
   double sow_the_seeds_cost;
   seed_of_corruption_aoe_t* explosion;
-  corruption_t* corruption;
 
   seed_of_corruption_t( warlock_t* p ):
     warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ),
-    explosion( new seed_of_corruption_aoe_t( p ) ),
-    corruption( new corruption_t( p ) )
+    explosion( new seed_of_corruption_aoe_t( p ) )
   {
     may_crit = false;
     threshold_mod = 3.0;
@@ -3846,11 +3855,6 @@ struct seed_of_corruption_t: public warlock_spell_t
     sow_the_seeds_cost    = 1.0;
 
     add_child( explosion );
-
-    corruption -> background = true;
-    corruption -> dual = true;
-    corruption -> may_crit = false;
-    corruption -> base_costs[RESOURCE_MANA] = 0;
   }
 
   void init() override
@@ -3886,9 +3890,6 @@ struct seed_of_corruption_t: public warlock_spell_t
     {
       td( s -> target ) -> soc_threshold = s -> composite_spell_power() * threshold_mod;
     }
-
-    corruption->target = s->target;
-    corruption->execute();
 
     warlock_spell_t::impact( s );
   }
@@ -6046,6 +6047,7 @@ void warlock_t::apl_demonology()
     action_list_str += "/implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&buff.demonic_synergy.remains";
     action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains";
     action_list_str += "/implosion,if=wild_imp_count<=4&wild_imp_remaining_duration<=action.shadow_bolt.execute_time&spell_targets.implosion>1";
+    action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=6&spell_targets.implosion>2";
     action_list_str += "/shadowflame,if=debuff.shadowflame.stack=1&dot.shadowflame.remains<=dot.shadowflame.duration*0.3+travel_time";
     action_list_str += "/shadowflame,if=debuff.shadowflame.stack=2";
     action_list_str += "/service_pet,if=cooldown.summon_doomguard.remains<=gcd&soul_shard>=2";
