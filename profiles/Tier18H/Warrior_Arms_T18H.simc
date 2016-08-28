@@ -44,16 +44,17 @@ actions+=/run_action_list,name=aoe,if=spell_targets.whirlwind>=2&!talent.sweepin
 actions+=/run_action_list,name=single
 
 actions.single=mortal_strike
-actions.single+=/execute,if=buff.stone_heart.react
+actions.single+=/execute,if=buff.stone_heart.react|(buff.battle_cry.up&talent.deadly_calm.enabled)
 actions.single+=/colossus_smash,if=buff.shattered_defenses.down&buff.precise_strikes.down
 actions.single+=/warbreaker,if=buff.shattered_defenses.down
+actions.single+=/execute,if=debuff.colossus_smash.up&rage.deficit<60
 actions.single+=/focused_rage,if=buff.focused_rage.stack<3|(talent.deadly_calm.enabled&buff.battle_cry.up)
-actions.single+=/slam,if=!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up))
-actions.single+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up)|buff.cleave.up)
+actions.single+=/slam,if=target.health.pct>20&!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up))
+actions.single+=/whirlwind,if=target.health.pct>20&talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up)|buff.cleave.up)
 actions.single+=/rend,if=remains<=duration*0.3
 actions.single+=/heroic_charge
-actions.single+=/whirlwind,if=talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)
-actions.single+=/slam,if=!talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)
+actions.single+=/whirlwind,if=target.health.pct>20&talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)
+actions.single+=/slam,if=target.health.pct>20&!talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)
 actions.single+=/shockwave
 actions.single+=/storm_bolt
 actions.single+=/bladestorm,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
