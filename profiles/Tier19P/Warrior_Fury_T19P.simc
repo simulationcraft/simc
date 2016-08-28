@@ -29,7 +29,7 @@ actions+=/charge
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
-actions+=/use_item,name=gift_of_radiance,if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)
+actions+=/use_item,name=faulty_countermeasure,if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)
 actions+=/potion,name=deadly_grace,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<30
 actions+=/battle_cry,if=(artifact.odyns_fury.enabled&cooldown.odyns_fury.remains=0&(cooldown.bloodthirst.remains=0|(buff.enrage.remains>cooldown.bloodthirst.remains)))|!artifact.odyns_fury.enabled
 actions+=/avatar,if=buff.battle_cry.up|(target.time_to_die<(cooldown.battle_cry.remains+10))
@@ -78,29 +78,28 @@ actions.aoe+=/whirlwind
 
 actions.bladestorm=bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
 
-head=vision_of_the_spider_queen,id=137451,bonus_id=1727
-neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727,enchant=mark_of_the_distant_army
-shoulders=mortar_guard_shoulderplates,id=137524,bonus_id=1727
-back=stole_of_malefic_repose,id=134404,bonus_id=1727,enchant=binding_of_strength
-chest=etheldrins_breastplate,id=136976,bonus_id=1727
-wrists=exomesh_carpalform_armplates_mk._vii,id=134502,bonus_id=1727
-hands=reinforced_mook_handguards,id=140596,bonus_id=1727
-waist=roaring_breeze_waistguard,id=137499,bonus_id=1727
-legs=legplates_of_the_swarm,id=134506,bonus_id=1727
-feet=leadfoot_earthshakers,id=134507,bonus_id=1727
-finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1727,enchant=binding_of_mastery
-finger2=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=binding_of_mastery
-trinket1=gift_of_radiance,id=133647,bonus_id=1727
-trinket2=terrorbound_nexus,id=137406,bonus_id=1727
+head=crown_of_ash,id=137526,bonus_id=1727
+neck=anshes_pendant,id=139101,bonus_id=1727,enchant=mark_of_the_claw
+shoulders=pauldrons_of_ancient_command,id=134510,bonus_id=1727
+back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
+chest=inferno_breastplate,id=134503,bonus_id=1727
+wrists=greystone_wristplates,id=139100,bonus_id=1727
+hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727
+waist=greatbelt_of_alpha_dominance,id=136773,bonus_id=1727
+legs=keelhauler_legplates,id=134514,bonus_id=1727
+feet=duskwatch_guards_boots,id=137482,bonus_id=1727
+finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_mastery
+finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_mastery
+trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
+trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
 main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=137546/137365/137472,relic_id=3412/3412/3412
 off_hand=warswords_of_the_valarjar,id=134553
 
 # Gear Summary
 # gear_ilvl=843.75
-# gear_strength=12701
-# gear_stamina=20310
-# gear_crit_rating=1699
-# gear_haste_rating=2229
-# gear_mastery_rating=13183
-# gear_versatility_rating=2013
+# gear_strength=11746
+# gear_stamina=20309
+# gear_crit_rating=9541
+# gear_haste_rating=7948
+# gear_mastery_rating=1774
 # gear_armor=3965
