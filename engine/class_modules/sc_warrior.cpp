@@ -650,6 +650,13 @@ public:
 
   virtual double tactician_cost() const
   {
+    if ( ab::sim -> log )
+    {
+      ab::sim -> out_debug.printf( "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f",
+                                   ab::name(),
+                                   ab::cost(),
+                                   base_t::cost() );
+    }
     return ab::cost();
   }
 
@@ -1954,8 +1961,10 @@ struct execute_off_hand_t: public warrior_attack_t
 struct execute_t: public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
+  double max_rage;
   execute_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "execute", p, p -> spec.execute ), oh_attack( nullptr ) 
+    warrior_attack_t( "execute", p, p -> spec.execute ), oh_attack( nullptr ),
+    max_rage( 0 )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -1974,6 +1983,7 @@ struct execute_t: public warrior_attack_t
     base_crit += p -> artifact.deathblow.percent();
     base_crit += p -> artifact.deathdealer.percent();
     energize_amount = 0;
+    max_rage = p -> talents.dauntless -> ok() ? 32 : 40;
   }
 
   double action_multiplier() const override
@@ -1982,7 +1992,8 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.colossal_might -> ok() )
     {
-      am *= 4.0 * (std::min( 40.0, ( p() -> buff.ayalas_stone_heart -> up() ? 40.0 : p() -> resources.current[RESOURCE_RAGE] ) ) / 40);
+      bool free = ( p() -> buff.ayalas_stone_heart -> up() || ( p() -> buff.battle_cry -> up() && p() -> talents.deadly_calm -> ok() ) );
+      am *= 4.0 * ( std::min( max_rage, ( free ? max_rage : p() -> resources.current[RESOURCE_RAGE] ) ) / max_rage );
     }
     else if ( p() -> has_shield_equipped() )
     { am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent(); }
@@ -2008,11 +2019,21 @@ struct execute_t: public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = warrior_attack_t::tactician_cost();
+    double c = 0;
 
-    if ( p() -> mastery.colossal_might -> ok() ) // Arms
+    c = std::min( max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+
+    if ( p() -> talents.dauntless -> ok() )
     {
-      c = std::min( 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+      c /= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
+    }
+
+    if ( sim -> log )
+    {
+      sim -> out_debug.printf( "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f",
+                                   name(),
+                                   c,
+                                   cost() );
     }
 
     return c;
@@ -2027,9 +2048,14 @@ struct execute_t: public warrior_attack_t
       return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
     }
 
+    if ( p() -> talents.deadly_calm -> ok() && p() -> buff.battle_cry -> check() )
+    {
+      return c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
+    }
+
     if ( p() -> mastery.colossal_might -> ok() ) // Arms
     {
-      c = std::min( p() -> talents.dauntless -> ok() ? 32.0 : 40.0, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+      c = std::min( max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
       c *= 1.0 + p() -> buff.precise_strikes -> check_value();
     }
     else if ( p() -> buff.sense_death -> check() ) // Fury
