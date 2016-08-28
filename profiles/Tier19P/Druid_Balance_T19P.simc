@@ -32,7 +32,7 @@ actions=potion,name=deadly_grace,if=buff.celestial_alignment.up|buff.incarnation
 actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/berserking,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
-actions+=/call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elue.remains<target.time_to_die
+actions+=/call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die
 actions+=/new_moon,if=(charges=2&recharge_time<5)|charges=3
 actions+=/half_moon,if=(charges=2&recharge_time<5)|charges=3|(target.time_to_die<15&charges=2)
 actions+=/full_moon,if=(charges=2&recharge_time<5)|charges=3|target.time_to_die<15

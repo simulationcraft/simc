@@ -6679,7 +6679,7 @@ void druid_t::apl_balance()
   default_list -> add_action( this, spec.blessing_of_elune, "blessing_of_elune", "moving=0" );
   default_list -> add_action( this, spec.blessing_of_anshe, "blessing_of_anshe", "moving=1" );
   // default_list -> add_talent( this, "Force of Nature" );
-  default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elue.remains<target.time_to_die" );
+  default_list -> add_action( "call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die" );
   default_list -> add_action( this, "New Moon", "if=(charges=2&recharge_time<5)|charges=3" );
   default_list -> add_action( this, "Half Moon", "if=(charges=2&recharge_time<5)|charges=3|(target.time_to_die<15&charges=2)");
   default_list -> add_action( this, "Full Moon", "if=(charges=2&recharge_time<5)|charges=3|target.time_to_die<15");
