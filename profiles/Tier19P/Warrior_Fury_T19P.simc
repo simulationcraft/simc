@@ -4,7 +4,6 @@ race=tauren
 role=attack
 position=back
 talents=2232133
-talent_override=massacre
 artifact=35:137546:137365:137472:0:980:1:982:1:984:1:985:1:988:3:990:6:991:3:995:3:996:3:1357:1
 spec=fury
 

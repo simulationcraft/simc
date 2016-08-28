@@ -4713,7 +4713,8 @@ void warrior_t::apl_arms()
   default_apl_dps_precombat( food_name, potion_name );
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* single_target = get_action_priority_list( "single" );
-  action_priority_list_t* execute = get_action_priority_list( "execute" );
+  action_priority_list_t* cleave = get_action_priority_list( "cleave" );
+  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   default_list -> add_action( this, "Charge" );
   default_list -> add_action( "auto_attack" );
@@ -4724,9 +4725,9 @@ void warrior_t::apl_arms()
   }
 
   default_list -> add_action( this, "Battle Cry", "sync=colossus_smash" );
-  default_list -> add_action( this, "Battle Cry", "if=debuff.colossus_smash.remains>=5|(debuff.colossus_smash.up&cooldown.colossus_smash.remains=0)" );
+  default_list -> add_action( this, "Battle Cry" );
   default_list -> add_talent( this, "Avatar", "sync=colossus_smash" );
-  default_list -> add_talent( this, "Avatar", "if=debuff.colossus_smash.remains>=5|(debuff.colossus_smash.up&cooldown.colossus_smash.remains=0)" );
+  default_list -> add_talent( this, "Avatar" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
@@ -4742,54 +4743,65 @@ void warrior_t::apl_arms()
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[i].name_str == "thorasus_the_stone_heart_of_draenor" )
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
-    }
-    else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str  );
     }
   }
 
-  default_list -> add_action( this, "Heroic Leap", "if=buff.shattered_defenses.down" );
+  default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   default_list -> add_talent( this, "Rend", "if=remains<gcd" );
   default_list -> add_action( this, "Hamstring", "if=talent.deadly_calm.enabled&buff.battle_cry.up" );
   default_list -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
   default_list -> add_action( this, "Warbreaker", "if=debuff.colossus_smash.down" );
   default_list -> add_talent( this, "Ravager" );
   default_list -> add_talent( this, "Overpower" );
-  default_list -> add_action( "run_action_list,name=single,if=target.health.pct>=20" );
-  default_list -> add_action( "run_action_list,name=execute,if=target.health.pct<20" );
+  default_list -> add_action( "run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled" );
+  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.whirlwind>=2&!talent.sweeping_strikes.enabled" );
+  default_list -> add_action( "run_action_list,name=single" );
 
   single_target -> add_action( this, "Mortal Strike" );
-  single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
   single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
+  single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
+
   single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
   single_target -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3|(talent.deadly_calm.enabled&buff.battle_cry.up)" );
-  single_target -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&!talent.focused_rage.enabled|talent.deadly_calm.enabled&buff.battle_cry.up|buff.cleave.up" );
-  single_target -> add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&!talent.focused_rage.enabled|talent.deadly_calm.enabled&buff.battle_cry.up" );
+  single_target -> add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up))" );
+  single_target -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up)|buff.cleave.up)" );
   single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
   single_target -> add_action( "heroic_charge" );
   single_target -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)" );
   single_target -> add_action( this, "Slam", "if=!talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)" );
-  single_target -> add_action( this, "Execute" );
   single_target -> add_talent( this, "Shockwave" );
   single_target -> add_talent( this, "Storm Bolt" );
+  single_target -> add_action( this, "Bladestorm", "if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets" );
 
-  execute -> add_action( this, "Mortal Strike", "if=buff.shattered_defenses.up&buff.focused_rage.stack=3" );
-  execute -> add_action( this, "Execute", "if=debuff.colossus_smash.up&(buff.shattered_defenses.up|rage>100|talent.deadly_calm.enabled&buff.battle_cry.up)" );
-  execute -> add_action( this, "Mortal Strike", "if=talent.in_for_the_kill.enabled&buff.shattered_defenses.down" );
-  execute -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
-  execute -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
-  execute -> add_action( this, "Execute", "if=buff.stone_heart.react" );
-  execute -> add_action( this, "Mortal Strike" );
-  execute -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>=100" );
-  execute -> add_talent( this, "Focused Rage", "if=talent.deadly_calm.enabled&buff.battle_cry.up" );
-  execute -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
-  execute -> add_action( "heroic_charge" );
-  execute -> add_talent( this, "Shockwave" );
-  execute -> add_talent( this, "Storm Bolt" );
+  cleave -> add_action( this, "Mortal Strike" );
+  cleave -> add_action( this, "Execute", "if=buff.stone_heart.react" );
+  cleave -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
+  cleave -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
+  cleave -> add_talent( this, "Focused Rage", "if=buff.shattered_defenses.down" );
+  cleave -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up)|buff.cleave.up)" );
+  cleave -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
+  cleave -> add_action( "heroic_charge" );
+  cleave -> add_action( this, "Bladestorm" );
+  cleave -> add_action( this, "Cleave" );
+  cleave -> add_action( this, "Whirlwind", "if=rage>=100|buff.focused_rage.stack=3" );
+  cleave -> add_talent( this, "Shockwave" );
+  cleave -> add_talent( this, "Storm Bolt" );
+
+  aoe -> add_action( this, "Mortal Strike" );
+  aoe -> add_action( this, "Execute", "if=buff.stone_heart.react" );
+  aoe -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
+  aoe -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
+  aoe -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up)|buff.cleave.up)" );
+  aoe -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
+  aoe -> add_action( "heroic_charge" );
+  aoe -> add_action( this, "Bladestorm" );
+  aoe -> add_action( this, "Cleave" );
+  aoe -> add_action( this, "Whirlwind", "if=rage>=60" );
+  aoe -> add_talent( this, "Shockwave" );
+  aoe -> add_talent( this, "Storm Bolt" );
 }
 
 // Protection Warrior Action Priority List ========================================
