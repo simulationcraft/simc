@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=back
 talents=1332311
-artifact=36:140815:141523:140822:0:1136:1:1137:1:1139:1:1142:1:1145:3:1147:3:1148:3:1149:6:1150:3:1356:1
+artifact=36:137469:137363:137377:0:1136:1:1137:1:1139:1:1142:1:1145:3:1147:3:1148:3:1149:3:1150:6:1356:1
 spec=arms
 
 # This default action priority list is automatically created based on your character.
@@ -34,7 +34,7 @@ actions+=/avatar
 actions+=/blood_fury,if=buff.battle_cry.up
 actions+=/berserking,if=buff.battle_cry.up
 actions+=/arcane_torrent,if=rage<rage.max-40
-actions+=/use_item,name=faulty_countermeasure
+actions+=/use_item,name=gift_of_radiance
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/rend,if=remains<gcd
 actions+=/hamstring,if=talent.deadly_calm.enabled&buff.battle_cry.up
@@ -88,27 +88,28 @@ actions.aoe+=/whirlwind,if=rage>=60
 actions.aoe+=/shockwave
 actions.aoe+=/storm_bolt
 
-head=crown_of_ash,id=137526,bonus_id=1727
-neck=anshes_pendant,id=139101,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=pauldrons_of_ancient_command,id=134510,bonus_id=1727
-back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
-chest=inferno_breastplate,id=134503,bonus_id=1727
-wrists=greystone_wristplates,id=139100,bonus_id=1727
-hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727
-waist=greatbelt_of_alpha_dominance,id=136773,bonus_id=1727
-legs=keelhauler_legplates,id=134514,bonus_id=1727
-feet=duskwatch_guards_boots,id=137482,bonus_id=1727
-finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_mastery
-finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_mastery
-trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
-trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=137549/137543/136718,relic_id=3412/3412/3412
+head=vision_of_the_spider_queen,id=137451,bonus_id=1727
+neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727,enchant=mark_of_the_distant_army
+shoulders=mortar_guard_shoulderplates,id=137524,bonus_id=1727
+back=stole_of_malefic_repose,id=134404,bonus_id=1727,enchant=binding_of_strength
+chest=etheldrins_breastplate,id=136976,bonus_id=1727
+wrists=exomesh_carpalform_armplates_mk._vii,id=134502,bonus_id=1727
+hands=reinforced_mook_handguards,id=140596,bonus_id=1727
+waist=roaring_breeze_waistguard,id=137499,bonus_id=1727
+legs=legplates_of_the_swarm,id=134506,bonus_id=1727
+feet=leadfoot_earthshakers,id=134507,bonus_id=1727
+finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1727,enchant=binding_of_mastery
+finger2=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=binding_of_mastery
+trinket1=gift_of_radiance,id=133647,bonus_id=1727
+trinket2=terrorbound_nexus,id=137406,bonus_id=1727
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=137469/137363/137377,relic_id=3412/3412/3412
 
 # Gear Summary
 # gear_ilvl=842.00
-# gear_strength=10183
-# gear_stamina=17964
-# gear_crit_rating=8826
-# gear_haste_rating=7948
-# gear_mastery_rating=1087
+# gear_strength=11138
+# gear_stamina=17965
+# gear_crit_rating=984
+# gear_haste_rating=2229
+# gear_mastery_rating=12496
+# gear_versatility_rating=2013
 # gear_armor=3965
