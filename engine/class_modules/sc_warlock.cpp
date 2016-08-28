@@ -3858,10 +3858,12 @@ struct seed_of_corruption_t: public warlock_spell_t
   double sow_the_seeds_targets;
   double sow_the_seeds_cost;
   seed_of_corruption_aoe_t* explosion;
+  corruption_t* corruption;
 
   seed_of_corruption_t( warlock_t* p ):
     warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ),
-    explosion( new seed_of_corruption_aoe_t( p ) )
+    explosion( new seed_of_corruption_aoe_t( p ) ),
+    corruption( new corruption_t( p ) )
   {
     may_crit = false;
     threshold_mod = 3.0;
@@ -3872,6 +3874,11 @@ struct seed_of_corruption_t: public warlock_spell_t
     sow_the_seeds_cost    = 1.0;
 
     add_child( explosion );
+
+    corruption -> background = true;
+    corruption -> dual = true;
+    corruption -> may_crit = false;
+    corruption -> base_costs[RESOURCE_MANA] = 0;
   }
 
   void init() override
@@ -3907,6 +3914,9 @@ struct seed_of_corruption_t: public warlock_spell_t
     {
       td( s -> target ) -> soc_threshold = s -> composite_spell_power() * threshold_mod;
     }
+
+    corruption->target = s->target;
+    corruption->execute();
 
     warlock_spell_t::impact( s );
   }
