@@ -1226,39 +1226,11 @@ struct eye_laser_t : public warlock_pet_spell_t
 
   virtual void execute() override
   {
-      warlock_pet_spell_t::execute();
+    warlock_pet_spell_t::execute();
 
-      for( auto t : target_list())
-      {
-          eye_laser->target = t;
-          eye_laser->execute();
-
-      }
-      /*if(target_list().size() > 0)
-      {
-          std::vector<player_t*> targets = target_list();
-
-          for( auto &target : targets)
-          {
-              if(target != NULL)
-              {
-                  eye_laser->target = target;
-                  eye_laser->execute();
-              }
-          }
-      }*/
+    eye_laser->target = execute_state -> target;
+    eye_laser->execute();
   }
-
-  /*virtual void impact( action_state_t* s ) override
-  {
-    warlock_pet_spell_t::impact( s );
-
-    if ( targets.size() > 0 )
-    {
-      eye_laser -> target = targets[static_cast<size_t>( rng().range( 0, targets.size() ) )];
-      eye_laser -> execute();
-    }
-  }*/
 };
 
 struct soul_effigy_t : public warlock_pet_spell_t
