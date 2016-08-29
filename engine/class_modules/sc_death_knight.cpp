@@ -6422,124 +6422,169 @@ void death_knight_t::default_apl_frost()
 
 void death_knight_t::default_apl_unholy()
 {
-  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  action_priority_list_t* def       = get_action_priority_list( "default"   );
-  action_priority_list_t* valkyr    = get_action_priority_list( "valkyr"    );
-  action_priority_list_t* generic   = get_action_priority_list( "generic"   );
-  action_priority_list_t* aoe       = get_action_priority_list( "aoe"       );
+  action_priority_list_t* precombat = get_action_priority_list("precombat");
+  action_priority_list_t* def = get_action_priority_list("default");
+  action_priority_list_t* valkyr = get_action_priority_list("valkyr");
+  action_priority_list_t* generic = get_action_priority_list("generic");
+  action_priority_list_t* aoe = get_action_priority_list("aoe");
+  action_priority_list_t* standard = get_action_priority_list("standard");
+  action_priority_list_t* castigator = get_action_priority_list("castigator");
+  action_priority_list_t* instructors = get_action_priority_list("instructors");
 
-  std::string food_name = ( true_level > 100 ) ? "the_hungry_magister" :
-                          ( true_level >  90 ) ? "buttered_sturgeon" :
-                          ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
-                          ( true_level >= 80 ) ? "seafood_magnifique_feast" :
-                          "";
-  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
-                            ( true_level >= 90 ) ? "draenic_strength" :
-                            ( true_level >= 85 ) ? "mogu_power" :
-                            ( true_level >= 80 ) ? "golemblood_potion" :
-                            "";
+  std::string food_name = (true_level > 100) ? "the_hungry_magister" :
+    (true_level >  90) ? "buttered_sturgeon" :
+    (true_level >= 85) ? "sea_mist_rice_noodles" :
+    (true_level >= 80) ? "seafood_magnifique_feast" :
+    "";
+  std::string potion_name = (true_level > 100) ? "deadly_grace" :
+    (true_level >= 90) ? "draenic_strength" :
+    (true_level >= 85) ? "mogu_power" :
+    (true_level >= 80) ? "golemblood_potion" :
+    "";
 
   // Setup precombat APL for DPS spec
-  default_apl_dps_precombat( food_name, potion_name );
+  default_apl_dps_precombat(food_name, potion_name);
 
-  precombat -> add_action( this, "Raise Dead" );
-  precombat -> add_action( this, "Army of the Dead" );
+  precombat->add_action(this, "Raise Dead");
+  precombat->add_action(this, "Army of the Dead");
 
-  def -> add_action( "auto_attack" );
+  def->add_action("auto_attack");
 
   // Racials
-  def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
-  def -> add_action( "blood_fury" );
-  def -> add_action( "berserking" );
+  def->add_action("arcane_torrent,if=runic_power.deficit>20");
+  def->add_action("blood_fury");
+  def->add_action("berserking");
 
   // On-use items
-  for ( const auto& item : items )
+  for (const auto& item : items)
   {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if (item.has_special_effect(SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE))
     {
-      def -> add_action( "use_item,slot=" + std::string( item.slot_name() ) );
+      def->add_action("use_item,slot=" + std::string(item.slot_name()));
     }
   }
 
   // In-combat potion
-  if ( sim -> allow_potions && true_level >= 80  )
+  if (sim->allow_potions && true_level >= 80)
   {
-    def -> add_action( "potion,name=" + potion_name + ",if=buff.unholy_strength.react" );
+    def->add_action("potion,name=" + potion_name + ",if=buff.unholy_strength.react");
   }
 
   // Generic things that should be always done
-  def -> add_action( this, "Outbreak", "target_if=!dot.virulent_plague.ticking" );
-  def -> add_action( this, "Dark Transformation" );
-  def -> add_talent( this, "Blighted Rune Weapon" );
+  def->add_action(this, "Outbreak", "target_if=!dot.virulent_plague.ticking");
+  def->add_action(this, "Dark Transformation", "if=equipped.137075&cooldown.dark_arbiter.remains>165");
+  def->add_action(this, "Dark Transformation", "if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>55");
+  def->add_action(this, "Dark Transformation", "if=equipped.137075&talent.shadow_infusion.enabled&cooldown.dark_arbiter.remains>35");
+  def->add_action(this, "Dark Transformation", "if=equipped.137075&target.time_to_die<cooldown.dark_arbiter.remains-8");
+  def->add_action(this, "Dark Transformation", "if=equipped.137075&cooldown.summon_gargoyle.remains>160");
+  def->add_action(this, "Dark Transformation", "if=equipped.137075&!talent.shadow_infusion.enabled&cooldown.summon_gargoyle.remains>55");
+  def->add_action(this, "Dark Transformation", "if=equipped.137075&talent.shadow_infusion.enabled&cooldown.summon_gargoyle.remains>35");
+  def->add_action(this, "Dark Transformation", "if=equipped.137075&target.time_to_die<cooldown.summon_gargoyle.remains-8");
+  def->add_action(this, "Dark Transformation", "if=!equipped.137075&rune<=3");
+  def->add_talent(this, "Blighted Rune Weapon", "if=rune<=3");
 
   // Pick an APL to run
-  def -> add_action( "run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_battlemaiden.active" );
-  def -> add_action( "call_action_list,name=generic" );
+  def->add_action("run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_battlemaiden.active");
+  def->add_action("call_action_list,name=generic");
 
   // Default generic target APL
 
-  generic -> add_talent( this, "Dark Arbiter", "if=runic_power>80" );
-  generic -> add_action( this, "Summon Gargoyle" );
+  generic->add_talent(this, "Dark Arbiter", "if=!equipped.137075&runic_power.deficit<30");
+  generic->add_talent(this, "Dark Arbiter", "if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2");
+  generic->add_action(this, "Summon Gargoyle", "if=!equipped.137075,if=rune<=3");
+  generic->add_action(this, "Summon Gargoyle", "if=equipped.137075&cooldown.dark_transformation.remains<10&rune<=3");
 
   // Apocalypso
-  generic -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack=8" );
+  generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=7&cooldown.apocalypse.remains<2");
+  generic->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack>=7");
 
   // Death coilage
-  generic -> add_action( this, "Death Coil", "if=runic_power>80" );
-  generic -> add_action( this, "Death Coil", "if=talent.dark_arbiter.enabled&buff.sudden_doom.react&cooldown.dark_arbiter.remains>5" );
-  generic -> add_action( this, "Death Coil", "if=!talent.dark_arbiter.enabled&buff.sudden_doom.react" );
+  generic->add_action(this, "Death Coil", "if=runic_power.deficit<30");
+  generic->add_action(this, "Death Coil", "if=!talent.dark_arbiter.enabled&buff.sudden_doom.up&!buff.necrosis.up&rune<=3");
+  generic->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&buff.sudden_doom.up&cooldown.dark_arbiter.remains>5&rune<=3");
 
   // FW stacking
-  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5" );
+  generic->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<7&cooldown.apocalypse.remains<5");
+
+  //Wait if apocalypse not casted
+  generic->add_action("wait,sec=1,if=cooldown.apocalypse.remains<=1");
 
   // Soul reapering
-  generic -> add_talent( this, "Soul Reaper", "if=debuff.festering_wound.stack>=3" );
-  generic -> add_action( this, "Festering Strike", "if=debuff.soul_reaper.up&!debuff.festering_wound.up" );
-  generic -> add_action( this, "Scourge Strike", "if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1" );
-  generic -> add_talent( this, "Clawing Shadows", "if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1" );
+  generic->add_talent(this, "Soul Reaper", "if=debuff.festering_wound.stack>=3");
+  generic->add_action(this, "Festering Strike", "if=debuff.soul_reaper.up&!debuff.festering_wound.up");
+  generic->add_action(this, "Scourge Strike", "if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1");
+  generic->add_talent(this, "Clawing Shadows", "if=debuff.soul_reaper.up&debuff.festering_wound.stack>=1");
 
-  // Misc AOE things
-  generic -> add_talent( this, "Defile" );
-  generic -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
+  // Misc things
+  generic->add_talent(this, "Defile");
+  generic->add_action("call_action_list,name=aoe,if=active_enemies>=2");
+  generic->add_action("call_action_list,name=instructors,if=equipped.132448");
+  generic->add_action("call_action_list,name=standard,if=!talent.castigator.enabled&!equipped.132448");
+  generic->add_action("call_action_list,name=castigator,if=talent.castigator.enabled&!equipped.132448");
 
-  // Single target base rotation
-  generic -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<=3" );
-  generic -> add_action( this, "Scourge Strike", "if=buff.necrosis.react" );
-  generic -> add_talent( this, "Clawing Shadows", "if=buff.necrosis.react" );
-  generic -> add_action( this, "Scourge Strike", "if=buff.unholy_strength.react" );
-  generic -> add_talent( this, "Clawing Shadows", "if=buff.unholy_strength.react" );
-  generic -> add_action( this, "Scourge Strike", "if=rune>=2" );
-  generic -> add_talent( this, "Clawing Shadows", "if=rune>=2" );
 
-  // Death coilage when nothing else to do
-  generic -> add_action( this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15" );
-  generic -> add_action( this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up" );
-  generic -> add_action( this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15" );
-  generic -> add_action( this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled" );
+  // Standard single target base rotation
+  standard->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=4&runic_power.deficit>23");
+  standard->add_action(this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3");
+  standard->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>15");
+  standard->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=1&runic_power.deficit>15");
+  standard->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>15");
+  standard->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=1&runic_power.deficit>15");
+  standard->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>15");
+  standard->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=1&runic_power.deficit>15");
+  standard->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15");
+  standard->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up");
+  standard->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15");
+  standard->add_action(this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled");
+
+  // Standard single target castigator rotation
+  castigator->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=4&runic_power.deficit>23");
+  castigator->add_action(this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3");
+  castigator->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>23");
+  castigator->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>23");
+  castigator->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>23");
+  castigator->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15");
+  castigator->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up");
+  castigator->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15");
+  castigator->add_action(this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled");
+
+  // Standard single target instructors rotation
+  instructors->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=4&runic_power.deficit>23");
+  instructors->add_action(this, "Death Coil", "if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3");
+  instructors->add_action(this, "Scourge Strike", "if=buff.necrosis.react&debuff.festering_wound.stack>=5&runic_power.deficit>29");
+  instructors->add_talent(this, "Clawing Shadows", "if=buff.necrosis.react&debuff.festering_wound.stack>=5&runic_power.deficit>29");
+  instructors->add_action(this, "Scourge Strike", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=5&runic_power.deficit>29");
+  instructors->add_talent(this, "Clawing Shadows", "if=buff.unholy_strength.react&debuff.festering_wound.stack>=5&runic_power.deficit>29");
+  instructors->add_action(this, "Scourge Strike", "if=rune>=2&debuff.festering_wound.stack>=5&runic_power.deficit>29");
+  instructors->add_talent(this, "Clawing Shadows", "if=rune>=2&debuff.festering_wound.stack>=5&runic_power.deficit>29");
+  instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15");
+  instructors->add_action(this, "Death Coil", "if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up");
+  instructors->add_action(this, "Death Coil", "if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15");
+  instructors->add_action(this, "Death Coil", "if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled");
 
   // Generic AOE actions to be done
-  aoe -> add_action( this, "Death and Decay", "if=spell_targets.death_and_decay>=2" );
-  aoe -> add_talent( this, "Epidemic", "if=spell_targets.epidemic>4" );
-  aoe -> add_action( this, "Scourge Strike", "if=spell_targets.scourge_strike>=2&(dot.death_and_decay.ticking|dot.defile.ticking)" );
-  aoe -> add_talent( this, "Clawing Shadows", "if=spell_targets.clawing_shadows>=2&(dot.death_and_decay.ticking|dot.defile.ticking)" );
-  aoe -> add_talent( this, "Epidemic", "if=spell_targets.epidemic>2" );
+  aoe->add_action(this, "Death and Decay", "if=spell_targets.death_and_decay>=2");
+  aoe->add_talent(this, "Epidemic", "if=spell_targets.epidemic>4");
+  aoe->add_action(this, "Scourge Strike", "if=spell_targets.scourge_strike>=2&(dot.death_and_decay.ticking|dot.defile.ticking)");
+  aoe->add_talent(this, "Clawing Shadows", "if=spell_targets.clawing_shadows>=2&(dot.death_and_decay.ticking|dot.defile.ticking)");
+  aoe->add_talent(this, "Epidemic", "if=spell_targets.epidemic>2");
 
   // Valkyr APL uses many a runic power
-  valkyr -> add_action( this, "Death Coil" );
+  valkyr->add_action(this, "Death Coil");
 
   // Apocalypso
-  valkyr -> add_action( this, "Apocalypse", "if=debuff.festering_wound.stack=8" );
+  valkyr->add_action(this, "Apocalypse", "if=debuff.festering_wound.stack=8");
 
   // FW stacking
-  valkyr -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5" );
+  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5");
 
   // Misc AOE things
-  valkyr -> add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
+  valkyr->add_action("call_action_list,name=aoe,if=active_enemies>=2");
 
   // Single target base rotation when Valkyr is around
-  valkyr -> add_action( this, "Festering Strike", "if=debuff.festering_wound.stack<=3" );
-  valkyr -> add_action( this, "Scourge Strike", "if=debuff.festering_wound.up" );
-  valkyr -> add_talent( this, "Clawing Shadows", "if=debuff.festering_wound.up" );
+  valkyr->add_action(this, "Festering Strike", "if=debuff.festering_wound.stack<=3");
+  valkyr->add_action(this, "Scourge Strike", "if=debuff.festering_wound.up");
+  valkyr->add_talent(this, "Clawing Shadows", "if=debuff.festering_wound.up");
 }
 
 // death_knight_t::init_actions =============================================
