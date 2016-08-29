@@ -41,6 +41,10 @@ class PaperdollProfile;
 
 #include "sc_importWindow.hpp"
 
+#if defined( Q_OS_MAC ) || defined( VS_NEW_BUILD_SYSTEM )
+#include "sc_importWindow.hpp"
+#endif /* Q_OS_MAC || VS_NEW_BUILD_SYSTEM */
+
 enum main_tabs_e
 {
   TAB_WELCOME = 0,
@@ -60,13 +64,13 @@ enum main_tabs_e
 
 enum import_tabs_e
 {
-  TAB_BATTLE_NET = 0,
+  TAB_IMPORT_NEW = 0,
+  TAB_BATTLE_NET,
   TAB_BIS,
   TAB_HISTORY,
   TAB_RECENT,
   TAB_AUTOMATION,
   TAB_CUSTOM,
-  TAB_IMPORT_NEW // Not a real tab but .. the GUI is convoluted. Use this to indicate a "new style" import
 };
 
 class SC_WebView;
@@ -699,6 +703,7 @@ public:
   PaperdollProfile* paperdollProfile;
 #endif
 
+  BattleNetImportWindow* newBattleNetView;
   SC_WebView* battleNetView;
   SC_WebView* helpView;
   SC_WebView* visibleWebView;

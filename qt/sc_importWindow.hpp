@@ -22,9 +22,10 @@ class BattleNetImportWindow : public QWidget
     SC_MainWindow*         m_mainWindow;
     QShortcut*             m_shortcut;
     BattleNetImportWidget* m_importWidget;
+    bool                   m_embedded;
 
 public:
-    BattleNetImportWindow( SC_MainWindow* parent );
+    BattleNetImportWindow( SC_MainWindow* parent, bool embedded = false );
 
     QSize sizeHint() const override
     { return m_importWidget -> sizeHint(); }
