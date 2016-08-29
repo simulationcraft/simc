@@ -355,7 +355,6 @@ public:
 
     //destruction_buffs
     buff_t* backdraft;
-    buff_t* havoc;
     buff_t* conflagration_of_chaos;
     buff_t* lord_of_flames;
     buff_t* embrace_chaos;
@@ -790,8 +789,6 @@ struct rift_shadow_bolt_t: public warlock_pet_spell_t
     {
       double m = warlock_pet_spell_t::composite_target_multiplier( target );
 
-      warlock_td_t* td = this -> td( target );
-
       if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
         m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
 
@@ -836,8 +833,6 @@ struct chaos_barrage_t : public warlock_pet_spell_t
     {
       double m = warlock_pet_spell_t::composite_target_multiplier( target );
 
-      warlock_td_t* td = this -> td( target );
-
       if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
         m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
 
@@ -879,8 +874,6 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
   virtual double composite_target_multiplier( player_t* target ) const override
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
-
-    warlock_td_t* td = this -> td( target );
 
     if ( target == p() -> o() -> havoc_target && p() -> o() -> legendary.odr_shawl_of_the_ymirjar )
       m *= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
@@ -2139,6 +2132,8 @@ private:
     gain = player -> get_gain( name_str );
 
     can_havoc = false;
+    if ( aoe == 0 )
+      can_havoc = true;
     havoc_proc = nullptr;
 
     affected_by_contagion = true;
@@ -2350,10 +2345,7 @@ public:
     if ( use_havoc() )
     {
       havoc_proc -> occur();
-
-      if ( p() -> buffs.havoc -> check() == 0 )
-        p() -> havoc_target = nullptr;
-    }
+    }      
 
     if ( resource_current == RESOURCE_SOUL_SHARD && p() -> talents.soul_conduit -> ok() )
     {
@@ -3318,7 +3310,7 @@ struct havoc_t: public warlock_spell_t
       havoc_duration += p -> find_spell( 196410 ) -> effectN( 1 ).time_value();
   }
 
-  virtual void execute() override
+  void execute() override
   {
     warlock_spell_t::execute();
     p() -> havoc_target = execute_state -> target;
@@ -5049,12 +5041,53 @@ struct channel_demonfire_t: public warlock_spell_t
 
 } // end actions namespace
 
+namespace buffs
+{
+template <typename Base>
+struct warlock_buff_t: public Base
+{
+public:
+  typedef warlock_buff_t base_t;
+  warlock_buff_t( warlock_td_t& p, const buff_creator_basics_t& params ):
+    Base( params ), warlock( p.warlock )
+  {}
+
+  warlock_buff_t( warlock_t& p, const buff_creator_basics_t& params ):
+    Base( params ), warlock( p )
+  {}
+
+  warlock_td_t& get_td( player_t* t ) const
+  {
+    return *( warlock.get_target_data( t ) );
+  }
+
+protected:
+  warlock_t& warlock;
+};
+
+struct debuff_havoc_t: public warlock_buff_t < buff_t >
+{
+  debuff_havoc_t( warlock_td_t& p ):
+    base_t( p, buff_creator_t( static_cast<actor_pair_t>( p ), "havoc", p.source -> find_spell( 80240 ) ) )
+  {
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    base_t::expire_override( expiration_stacks, remaining_duration );
+    warlock.havoc_target = nullptr;
+  }
+};
+
+}
+
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p ):
 actor_target_data_t( target, &p ),
 agony_stack( 1 ),
 soc_threshold( 0 ),
 warlock( p )
 {
+  using namespace buffs;
   dots_corruption = target -> get_dot( "corruption", &p );
   dots_unstable_affliction = target -> get_dot( "unstable_affliction", &p );
   dots_agony = target -> get_dot( "agony", &p );
@@ -5077,7 +5110,8 @@ warlock( p )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_roaring_blaze = buff_creator_t( *this, "roaring_blaze", source -> find_spell( 205690 ) )
     .max_stack( 100 );
-  debuffs_havoc = buff_creator_t( *this, "havoc", source -> find_spell( 80240 ) );
+
+  debuffs_havoc = new buffs::debuff_havoc_t( *this );
 
   if ( warlock.destruction_trinket )
   {
