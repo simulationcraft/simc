@@ -277,8 +277,7 @@ public:
     bool wilfreds_sigil_of_superior_summoning_flag;
     bool stretens_insanity;
     timespan_t wilfreds_sigil_of_superior_summoning;
-    bool power_cord_of_lethtendris_flag;
-    double power_cord_of_lethtendris_multiplier;
+    double power_cord_of_lethtendris_chance;
   } legendary;
 
   // Glyphs
@@ -2793,18 +2792,18 @@ struct unstable_affliction_t: public warlock_spell_t
 
   virtual void execute() override
   {
-    bool flag = td( this->target )->dots_unstable_affliction->is_ticking();
+    bool flag = td( this -> target ) -> dots_unstable_affliction -> is_ticking();
     warlock_spell_t::execute();
 
     p() -> buffs.shard_instability -> expire();
     p() -> procs.t18_2pc_affliction -> occur();
     p() -> buffs.compounding_horror -> expire();
 
-    if ( flag )
+    if ( flag && rng().roll( p() -> legendary.power_cord_of_lethtendris_chance ) )
     {
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.power_cord_of_lethtendris );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.power_cord_of_lethtendris );
     }
-    else
+    if ( !flag )
     { // Only increment if the dot wasn't already there.
       p() -> buffs.stretens_insanity -> increment( 1 );
     }
@@ -7003,13 +7002,12 @@ using namespace actions;
 
 struct power_cord_of_lethtendris_t : public scoped_actor_callback_t<warlock_t>
 {
-    power_cord_of_lethtendris_t() : super( WARLOCK )
+    power_cord_of_lethtendris_t() : super( WARLOCK_AFFLICTION )
     {}
 
     void manipulate (warlock_t* p, const special_effect_t& e) override
     {
-        p->legendary.power_cord_of_lethtendris_flag = true;
-        p->legendary.power_cord_of_lethtendris_multiplier = e.driver()->effectN( 1 ).percent();
+        p -> legendary.power_cord_of_lethtendris_chance = e.driver() -> effectN( 1 ).percent();
     }
 };
 
@@ -7090,7 +7088,7 @@ struct odr_shawl_of_the_ymirjar_t : public scoped_actor_callback_t<warlock_t>
 
 struct stretens_insanity_t: public scoped_actor_callback_t<warlock_t>
 {
-  stretens_insanity_t(): super( WARLOCK_DESTRUCTION )
+  stretens_insanity_t(): super( WARLOCK_AFFLICTION )
   {}
 
   void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
@@ -7137,6 +7135,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 212172, odr_shawl_of_the_ymirjar_t() );
     register_special_effect( 205702, feretory_of_souls_t() );
     register_special_effect( 208821, stretens_insanity_t() );
+    register_special_effect( 205753, power_cord_of_lethtendris_t() );
   }
 
   virtual void register_hotfixes() const override
