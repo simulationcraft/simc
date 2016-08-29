@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build efaeaad)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 1dfbf63)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1505,8 +1505,9 @@ Effects          :
 #1 (id=66866)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.25000 | Target: Friend(21)
 #2 (id=66867)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 45 | Scaled Value: 45 | Target: Self(1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Healing Surge (188070)
+                   Hotfixed: Base Value (30 -> 45)
 #3 (id=90747)    : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Riptide (61295)
@@ -4748,7 +4749,8 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=290989)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.75000 | Target: Friend(21)
+                   Hotfixed: SP Coefficient (3 -> 3.75)
 Description      : $@spelldesc197995
 
 Name             : Fire Elemental (id=198067) [Spell Family (11)] 

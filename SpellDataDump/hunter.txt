@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build efaeaad)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 1dfbf63)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -2256,7 +2256,7 @@ Effects          :
 Description      : Disengage also activates a web trap which immobilizes all targets within $115928A1 yards for $136634d.
 
 Name             : Exhilaration (id=109304) [Spell Family (9)] 
-Class            : Beast Mastery Survival Hunter
+Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Physical
 Spell Level      : 36
 Range            : 45 yards
@@ -2674,7 +2674,8 @@ Attributes       : ........ ........ x....x.x ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=170318)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.35000 | Target: Unknown(25)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.62000 | Target: Unknown(25)
+                   Hotfixed: AP Coefficient (1.35 -> 1.62)
 Description      : Deals $s1 physical damage.
 
 Name             : Flare (id=132950) [Spell Family (9)] 
@@ -2856,8 +2857,9 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
 #2 (id=191138)   : Apply Aura (6) | Add Flat Modifier: Generic Modifier (107)
-                   Base Value: -35 | Scaled Value: -35 | Target: Self(1)
+                   Base Value: -45 | Scaled Value: -45 | Target: Self(1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), A Murder of Crows (206505)
+                   Hotfixed: Base Value (-35 -> -45)
 #3 (id=191139)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191140)   : Apply Aura (6) | Dummy (4)
@@ -4808,7 +4810,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=285355)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient (0.75 -> 1)
 Description      : $@spelldesc194386
 
 Name             : Way of the Cobra (id=194397) [Spell Family (9), Passive] 

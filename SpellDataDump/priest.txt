@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build efaeaad)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 1dfbf63)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -1182,7 +1182,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39897)    : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | Target: Unknown(77)
+                   Hotfixed: SP Coefficient (1.75 -> 1.9)
 Description      : $@spelldesc47540
 
 Name             : Penance (id=47750) [Spell Family (6)] 
@@ -1202,7 +1203,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39995)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.75000 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Target: Unknown(77)
+                   Hotfixed: SP Coefficient (2.75 -> 3)
 Description      : $@spelldesc47540
 
 Name             : Shield Discipline (id=47755) 
@@ -2641,11 +2643,13 @@ Effects          :
 #1 (id=179716)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
+                   Hotfixed: Base Value (0 -> 7)
 #3 (id=191073)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
+                   Hotfixed: Base Value (0 -> 7)
 #4 (id=191074)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
@@ -3909,7 +3913,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301385)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.42000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.48000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.42 -> 0.48)
 Description      : $@spelldesc204197
 Tooltip          : $w1 Fire damage every $t1 seconds.
 
@@ -4013,6 +4018,7 @@ Description      : Blasts the target's mind for $s1 Shadow damage.
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
 
 Name             : Mind Control (id=205364) [Spell Family (6)] 
+Hotfixed         : Cooldown (180000 -> 120000)
 Class            : Priest
 School           : Shadow
 Resource         : 0.5% Base Mana (5500 @Level 110)
@@ -4021,7 +4027,7 @@ Range            : 30 yards
 Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Cooldown         : 180 seconds
+Cooldown         : 120 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Unknown(2)
@@ -4411,7 +4417,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=318771)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.25000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (4 -> 4.25)
 #2 (id=318779)   : Apply Aura (6) | Unknown effect sub type (270)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 127 | Target: Enemy(6)
 Description      : Attack the enemy's soul with a surge of Shadow energy, dealing $s1 Shadow damage and increasing damage that you deal to the target by $s2% for $d.

@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build efaeaad)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 1dfbf63)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -940,7 +940,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Scroll of Touch of Death (168797)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Scroll of Touch of Death (168797), Hidden Master's Forbidden Touch (213114)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ x....... ........ .....x..   ........ ........ .......x .....x.. 
@@ -4979,6 +4979,42 @@ Effects          :
 #1 (id=314340)   : Unknown effect type (172)
                    Base Value: 35 | Scaled Value: 35 | Radius: 100 yards | Target: Unknown(119)
 Description      : Returns all dead party members to life with $s1% of maximum health and mana.  Cannot be cast when in combat.
+
+Name             : Hidden Master's Forbidden Touch (id=213112) [Spell Family (53), Passive] 
+Class            : Monk
+School           : Physical
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ x....... ........ 
+                 : Yellow Melee, Hostile Spell
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=316119)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
+Description      : Touch of Death can be used a second time within $s1 sec before its cooldown is triggered.
+
+Name             : Hidden Master's Forbidden Touch (id=213114) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Level      : 5
+Duration         : 3 seconds
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=316122)   : Apply Aura (6) | Unknown effect sub type (383)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Affected Spells: Touch of Death (115080)
+Description      : $@spelldesc213112
+Tooltip          : You may cast Touch of Death again before the cooldown is triggered.
 
 Name             : Exploding Keg (Artifact) (id=214326) [Spell Family (53)] 
 Class            : Monk

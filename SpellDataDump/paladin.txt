@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build efaeaad)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 1dfbf63)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2860,7 +2860,8 @@ Effects          :
 #3 (id=311461)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75
 #4 (id=311462)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 15 | Scaled Value: 15
+                   Hotfixed: Base Value (10 -> 15)
 Description      : While you are above $s3% health, $s1% of all damage taken by allies within $s2 yds is redirected to you. 
 
 While Aura Mastery is active, $s4% of all effective healing you deal is replicated to all allies in the aura.

@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build efaeaad)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 1dfbf63)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -491,7 +491,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=622)      : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.42000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (1.5 -> 1.42)
 Description      : Lunging finishing move that causes damage per combo point and has increased range:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -1813,16 +1814,19 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Knives (192380), Agonizing Poison (200803), Goremaw's Bite (220901)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Target: Self(1)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Knives (192380), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Hotfixed: SP Coefficient (3.5 -> 4), Affects Spells
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Knives (192380), Agonizing Poison (200803), Goremaw's Bite (220901)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Knives (192380), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Hotfixed: SP Coefficient (3.5 -> 4), Affects Spells
 #3 (id=92122)    : Apply Aura (6) | Dummy (4)
                    Base Value: 350 | Scaled Value: 350 | Target: Self(1)
 #4 (id=322527)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Agonizing Poison (200803)
+                   Hotfixed: SP Coefficient (1.75 -> 2)
 Description      : Increases the damage done by your poisons by $76803s1%.
 
 Name             : Mastery: Main Gauche (id=76806) [Spell Family (8), Passive] 
@@ -3177,7 +3181,7 @@ Proc Chance      : 101%
 Artifact Power   : Id: 346, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Kingsbane (192853), Master Poisoner (196864), 
+Affecting spells : Mastery: Potent Poisons (76803), Kingsbane (192853), Master Poisoner (196864), 
 Triggered by     : Push Active Ability to Bar (225882)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3193,7 +3197,8 @@ Effects          :
 #3 (id=318298)   : Trigger Spell: Kingsbane (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 50 | Trigger Spell: 192760 | Target: Enemy(6)
 #4 (id=318299)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
-                   Base Value: 5 | Scaled Value: 5 | AP Coefficient: 0.45000 | Target: Enemy(6)
+                   Base Value: 5 | Scaled Value: 5 | AP Coefficient: 0.36000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.45 -> 0.36)
 #5 (id=318312)   : Apply Aura (6) | Proc Trigger Spell: Kingsbane (42)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 192853 | Target: Self(1)
 Description      : Releases lethal poison within |cFFFFCC99The Kingslayers|r and injects it into your target, dealing ${$222062sw1+$192760sw1} Nature damage instantly and an additional $o4 Nature damage over $d. 
@@ -3205,7 +3210,7 @@ Name             : Kingsbane (id=192760) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
-Affecting spells : Kingsbane (192853), Master Poisoner (196864), 
+Affecting spells : Mastery: Potent Poisons (76803), Kingsbane (192853), Master Poisoner (196864), 
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -3215,7 +3220,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=282815)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
+                   Base Value: 240 | Scaled Value: 2.4 | Target: Enemy(6)
+                   Hotfixed: Base Value (300 -> 240)
 #2 (id=318311)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc192759
@@ -3548,7 +3554,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=284088)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self(1)
+                   Hotfixed: Base Value (12 -> 15)
 Description      : Increases damage done by $s1% for $d.
 Tooltip          : Increases damage done by $s1%.
 
@@ -4199,7 +4206,8 @@ Attributes       : ....x... ........ x.....x. ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=294039)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.88500 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.85000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.885 -> 0.85)
 #2 (id=294040)   : Apply Aura (6) | Stun (12)
                    Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(95) | Target: Enemy(6)
 #3 (id=344382)   : Apply Aura (6) | Dummy (4)
@@ -4756,7 +4764,7 @@ Class            : Rogue
 School           : Shadow
 Range            : 8 yards
 Duration         : 6 seconds
-Affecting spells : Blade Flurry (13877), Mastery: Potent Poisons (76803), Vendetta (79140), Shadow Blades (121471)
+Affecting spells : Blade Flurry (13877), Vendetta (79140), Shadow Blades (121471)
 Triggered by     : Goremaw's Bite (209782)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -4808,7 +4816,7 @@ Name             : Kingsbane (id=222062) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
-Affecting spells : Kingsbane (192853), Master Poisoner (196864), 
+Affecting spells : Mastery: Potent Poisons (76803), Kingsbane (192853), Master Poisoner (196864), 
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4818,7 +4826,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=331411)   : Weapon Damage% (31)
-                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
+                   Base Value: 240 | Scaled Value: 2.4 | Target: Enemy(6)
+                   Hotfixed: Base Value (300 -> 240)
 #2 (id=331412)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc192759

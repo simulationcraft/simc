@@ -235,7 +235,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2643, // Multi-Shot
            0,
     },
-    // Marksmanship tree, 10 abilities
+    // Marksmanship tree, 11 abilities
     {
        19434, // Aimed Shot
       185358, // Arcane Shot
@@ -243,6 +243,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5116, // Concussive Shot
       147362, // Counter Shot
       194291, // Exhilaration
+      109304, // Exhilaration
       185901, // Marked Shot
        34477, // Misdirection
         2643, // Multi-Shot
@@ -915,7 +916,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 14 abilities
+    // Windwalker tree, 15 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
@@ -924,6 +925,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116694, // Effuse
       113656, // Fists of Fury
       101545, // Flying Serpent Kick
+      213114, // Hidden Master's Forbidden Touch
       228287, // Mark of the Crane
       107428, // Rising Sun Kick
       116705, // Spear Hand Strike
@@ -1404,6 +1406,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         5116, // Concussive Shot
       147362, // Counter Shot
          781, // Disengage
+      109304, // Exhilaration
       194291, // Exhilaration
       185987, // Hunter's Mark
       212658, // Hunting Party
@@ -6256,12 +6259,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4698,  1039,  3, 202433,     24.000, 0x00000000, 0 },
   { 4699,  1039,  4, 202433,     30.000, 0x00000000, 0 },
   { 4700,  1039,  5, 202433,     36.000, 0x00000000, 0 },
-  { 4701,  1040,  0, 202445,     15.000, 0x00000000, 0 },
-  { 4702,  1040,  1, 202445,     30.000, 0x00000000, 0 },
-  { 4703,  1040,  2, 202445,     45.000, 0x00000000, 0 },
-  { 4704,  1040,  3, 202445,     60.000, 0x00000000, 0 },
-  { 4705,  1040,  4, 202445,     75.000, 0x00000000, 0 },
-  { 4706,  1040,  5, 202445,     90.000, 0x00000000, 0 },
+  { 4701,  1040,  0, 202445,     10.000, 0x00000010, 0 },
+  { 4702,  1040,  1, 202445,     20.000, 0x00000010, 0 },
+  { 4703,  1040,  2, 202445,     30.000, 0x00000010, 0 },
+  { 4704,  1040,  3, 202445,     40.000, 0x00000010, 0 },
+  { 4705,  1040,  4, 202445,     50.000, 0x00000010, 0 },
+  { 4706,  1040,  5, 202445,     60.000, 0x00000010, 0 },
   { 4713,  1041,  0, 202466,      7.000, 0x00000000, 0 },
   { 4714,  1041,  1, 202466,     14.000, 0x00000000, 0 },
   { 4715,  1041,  2, 202466,     21.000, 0x00000000, 0 },
@@ -6385,12 +6388,12 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 4865,  1076,  3, 203673,     13.000, 0x00000000, 0 },
   { 4866,  1076,  4, 203673,     16.000, 0x00000000, 0 },
   { 4867,  1076,  5, 203673,     20.000, 0x00000000, 0 },
-  { 4814,  1077,  0, 224764,      3.000, 0x00000000, 0 },
-  { 4868,  1077,  1, 224764,      6.000, 0x00000000, 0 },
-  { 4869,  1077,  2, 224764,     10.000, 0x00000000, 0 },
-  { 4870,  1077,  3, 224764,     13.000, 0x00000000, 0 },
-  { 4871,  1077,  4, 224764,     16.000, 0x00000000, 0 },
-  { 4872,  1077,  5, 224764,     20.000, 0x00000000, 0 },
+  { 4814,  1077,  0, 224764,     10.000, 0x00000010, 0 },
+  { 4868,  1077,  1, 224764,     20.000, 0x00000010, 0 },
+  { 4869,  1077,  2, 224764,     30.000, 0x00000010, 0 },
+  { 4870,  1077,  3, 224764,     40.000, 0x00000010, 0 },
+  { 4871,  1077,  4, 224764,     50.000, 0x00000010, 0 },
+  { 4872,  1077,  5, 224764,     60.000, 0x00000010, 0 },
   { 4815,  1078,  0, 203749,      5.000, 0x00000000, 0 },
   { 4873,  1078,  1, 203749,     10.000, 0x00000000, 0 },
   { 4874,  1078,  2, 203749,     15.000, 0x00000000, 0 },
@@ -7731,10 +7734,22 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
   { 6525,  1456,  0, 226829,      0.000, 0x00000000, 0 },
   {    0,     0,  0,      0,      0.000, 0x00000000, 0 },
 };
-#define ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
+#define ARTIFACT_POWER_RANK_HOTFIX_SIZE (12)
 
-// 0 artifact_power_rank hotfix entries, wow build level 22522
+// 12 artifact_power_rank hotfix entries, wow build level 22522
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
+  {   4701,  4, 15.000000, 10.000000 },
+  {   4702,  4, 30.000000, 20.000000 },
+  {   4703,  4, 45.000000, 30.000000 },
+  {   4704,  4, 60.000000, 40.000000 },
+  {   4705,  4, 75.000000, 50.000000 },
+  {   4706,  4, 90.000000, 60.000000 },
+  {   4814,  4, 3.000000, 10.000000 },
+  {   4868,  4, 6.000000, 20.000000 },
+  {   4869,  4, 10.000000, 30.000000 },
+  {   4870,  4, 13.000000, 40.000000 },
+  {   4871,  4, 16.000000, 50.000000 },
+  {   4872,  4, 20.000000, 60.000000 },
   {      0,  0, 0, 0 },
 };
 

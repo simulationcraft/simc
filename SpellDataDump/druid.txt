@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build efaeaad)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 1dfbf63)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -4004,8 +4004,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=222957)   : Apply Aura (6) | Unknown effect sub type (166)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Self(1)
-                   Hotfixed: SP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 Description      : $@spelldesc155783
 
 Name             : Primal Fury (id=159286) [Spell Family (7), Passive] 
@@ -4751,7 +4750,8 @@ Effects          :
                    Base Value: 120 | Scaled Value: 120 | Misc Value: astral_power | Target: Self(1)
                    Hotfixed: Base Value (100 -> 120)
 #3 (id=295015)   : Dummy (3)
-                   Base Value: 18 | Scaled Value: 18 | Radius: 0 - 5 yards | Target: Enemy(6)
+                   Base Value: 35 | Scaled Value: 35 | Radius: 0 - 5 yards | Target: Enemy(6)
+                   Hotfixed: Base Value (18 -> 35)
 #4 (id=298448)   : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : Call down a strike of lunar energy, causing $s1 Arcane damage to the target, and ${$m1*$m3/100} Arcane damage to all other enemies within $A1 yards.

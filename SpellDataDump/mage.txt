@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build efaeaad)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 1dfbf63)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Fire Frost Mage
@@ -4866,7 +4866,8 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=343734)   : School Damage: frost (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 0.90000 | Target: Enemy(6)
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.05000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.9 -> 1.05)
 #2 (id=343735)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc44614
@@ -4888,7 +4889,8 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344284)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.70000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.85000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (1.7 -> 1.85)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)] 
