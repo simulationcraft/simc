@@ -597,13 +597,14 @@ public:
   warrior_action_t( const std::string& n, warrior_t* player,
                     const spell_data_t* s = spell_data_t::nil() ):
     ab( n, player, s ),
-    track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
     dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) ),
     deadly_calm( ab::data().affected_by( player -> spec.battle_cry -> effectN( 4 ) ) ),
-    tactician_per_rage( 0 ), arms_t19_4p_chance( 0 ), cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
+    tactician_per_rage( 0 ), arms_t19_4p_chance( 0 ),
+    track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
+    cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
   {
     ab::may_crit = true;
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );

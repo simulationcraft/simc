@@ -548,7 +548,7 @@ js::sc_js_t to_json( const player_t::consumables_t& )
   return node;
 }
 
-js::sc_js_t to_json( const player_t& p, const player_processed_report_information_t& ri )
+js::sc_js_t to_json( const player_t& p, const player_processed_report_information_t& /* ri */ )
 {
   js::sc_js_t node;
     if ( p.sim -> scaling -> has_scale_factors() )

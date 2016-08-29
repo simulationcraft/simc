@@ -5147,6 +5147,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     warlock_pet_list( pets_t() ),
     active( active_t() ),
     talents( talents_t() ),
+    legendary( legendary_t() ),
     glyphs( glyphs_t() ),
     mastery_spells( mastery_spells_t() ),
     cooldowns( cooldowns_t() ),
@@ -5160,8 +5161,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     shard_react( timespan_t::zero() ),
     affliction_trinket( nullptr ),
     demonology_trinket( nullptr ),
-    destruction_trinket( nullptr ),
-    legendary( legendary_t() )
+    destruction_trinket( nullptr )
   {
     base.distance = 40;
 

@@ -1271,7 +1271,7 @@ struct shadow_wave_callback_t : public dbc_proc_callback_t
     shadow_wave( effect.player -> find_action( "shadow_wave" ) )
   {}
 
-  void execute( action_t* a, action_state_t* s ) override
+  void execute( action_t* /* a */, action_state_t* s ) override
   {
     // 2 second return time, from in-game combat logs.
     new ( *effect.player -> sim  ) ground_aoe_event_t( effect.player, ground_aoe_params_t()

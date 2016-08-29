@@ -3021,8 +3021,8 @@ struct mind_sear_t final : public priest_spell_t
       return;
     }
 
-    std::array<dot_t*, 2> dots = {td->dots.shadow_word_pain,
-                                  td->dots.vampiric_touch};
+    std::array<dot_t*, 2> dots = { { td->dots.shadow_word_pain,
+                                     td->dots.vampiric_touch } };
 
     // First check if there is even a dot active, otherwise we can bail out as
     // well.
