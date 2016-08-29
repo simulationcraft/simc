@@ -4189,7 +4189,7 @@ class ArtifactDataGenerator(DataGenerator):
         hotfix_data = {}
         for rank in sorted(ranks, key = lambda v: (v.id_power, v.index)) + [dbc.data.ArtifactPowerRank.default()]:
             fields = rank.field('id', 'id_power', 'index', 'id_spell', 'value')
-            f, hfd = rank.get_hotfix_info(('id_power', 2), ('index', 3), ('id_spell', 4), ('value', 5))
+            f, hfd = rank.get_hotfix_info(('id_power', 1), ('index', 2), ('id_spell', 3), ('value', 4))
             fields += [ '%#.8x' % f, '0' ]
             if f > 0:
                 hotfix_data[rank.id] = hfd

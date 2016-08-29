@@ -164,13 +164,13 @@ class DBCRecord(RawDBCRecord):
 
         return False
 
-    def value(self, *args):
-        v = [ ]
-        for attr in args:
-            idx = self._cd[attr]
-            v.append(self._d[idx])
-
-        return v
+    #def value(self, *args):
+    #    v = [ ]
+    #    for attr in args:
+    #        idx = self._cd[attr]
+    #        v.append(self._d[idx])
+    #
+    #    return v
 
     def field_names(self, delim):
         fields = [ None ] * len(self._cd)
