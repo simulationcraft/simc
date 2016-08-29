@@ -2134,7 +2134,6 @@ private:
     can_havoc = false;
     if ( aoe == 0 )
       can_havoc = true;
-    havoc_proc = nullptr;
 
     affected_by_contagion = true;
     destro_mastery = true;
@@ -2147,7 +2146,6 @@ public:
 
   mutable std::vector< player_t* > havoc_targets;
   bool can_havoc;
-  proc_t* havoc_proc;
 
   bool affected_by_contagion;
   bool affected_by_flamelicked;
@@ -2341,11 +2339,6 @@ public:
   void consume_resource() override
   {
     spell_t::consume_resource();
-
-    if ( use_havoc() )
-    {
-      havoc_proc -> occur();
-    }      
 
     if ( resource_current == RESOURCE_SOUL_SHARD && p() -> talents.soul_conduit -> ok() )
     {
