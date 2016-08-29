@@ -7855,6 +7855,41 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2016-08-26", "Run Through damage reduced to 142% of Attack Power (was 150%).", 622 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.42 )
+      .verification_value( 1.50 );
+
+    hotfix::register_effect( "Rogue", "2016-08-26", "Between the Eyes damage reduced to 85 % of Attack Power( was 88.5% ).", 294039 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.85 )
+      .verification_value( 0.885 );
+
+    hotfix::register_effect( "Rogue", "2016-08-26", "Mastery: Potent Poisons now provides a damage bonus of 4% per point (was 3.5%) and a bonus to Agonizing Poison of 2.0% per point (was 1.75%).", 68022 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4.00 )
+      .verification_value( 3.50 );
+
+    hotfix::register_effect( "Rogue", "2016-08-26", "Mastery: Potent Poisons now provides a damage bonus of 4% per point (was 3.5%) and a bonus to Agonizing Poison of 2.0% per point (was 1.75%)._2", 68023 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4.00 )
+      .verification_value( 3.50 );
+
+    hotfix::register_effect( "Rogue", "2016-08-26", "Mastery: Potent Poisons now provides a damage bonus of 4% per point (was 3.5%) and a bonus to Agonizing Poison of 2.0% per point (was 1.75%)._3", 322527 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2.00 )
+      .verification_value( 1.75 );
+
+    hotfix::register_effect( "Rogue", "2016-08-26", "Elaborate Planning now makes your finishing move grant a 15% bonus to damage (was 12%).", 284088 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 15 )
+      .verification_value( 12 );
     /*
     hotfix::register_effect( "Rogue", "2016-08-23", "Envenom damage has been increased to 60% Attack Power per point (was 50%).", 22420 )
       .field( "ap_coefficient" )

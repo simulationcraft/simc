@@ -9470,6 +9470,17 @@ public:
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Mage", "2016-08-26", "Frostbolt damage increased to 185% of Spell Power (was 170%).", 344284 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.85 )
+      .verification_value( 1.70 );
+
+    hotfix::register_effect( "Mage", "2016-08-26", "Flurry damage increased to 105% of Spell Power (was 90%).", 343734 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.05 )
+      .verification_value( 0.90 );
   }
 
   virtual bool valid() const override { return true; }

@@ -6703,6 +6703,17 @@ struct hunter_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Hunter", "2016-08-26", "Volley now deals additional damage at 100% of Attack Power (was 75%).", 285355 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.00 )
+      .verification_value( 0.75 );
+
+    hotfix::register_effect( "Hunter", "2016-08-26", "Murder of Crows (Marksmanship) now deals damage equal to 162% of Attack Power (was 135%).", 170318 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.62 )
+      .verification_value( 1.35 );
   }
 
   virtual void combat_begin( sim_t* ) const override {}
