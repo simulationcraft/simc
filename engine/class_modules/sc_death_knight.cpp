@@ -21,6 +21,7 @@ using namespace unique_gear;
 
 struct death_knight_t;
 struct runes_t;
+struct rune_t;
 
 namespace pets {
   struct death_knight_pet_t;
@@ -37,6 +38,11 @@ namespace runeforge {
   void stoneskin_gargoyle( special_effect_t& );
 }
 
+enum {
+  // http://us.battle.net/wow/en/forum/topic/20743504316?page=9#163
+  CRYSTALLINE_SWORDS_MAX = 9
+};
+
 // ==========================================================================
 // Death Knight Runes
 // ==========================================================================
@@ -45,11 +51,6 @@ namespace runeforge {
 enum disease_type { DISEASE_NONE = 0, DISEASE_BLOOD_PLAGUE, DISEASE_FROST_FEVER, DISEASE_VIRULENT_PLAGUE = 4 };
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
-enum {
-  // http://us.battle.net/wow/en/forum/topic/20743504316?page=9#163
-  CRYSTALLINE_SWORDS_MAX = 9
-};
-
 const double RUNIC_POWER_REFUND = 0.9;
 const double RUNE_REGEN_BASE = 10;
 const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
@@ -57,34 +58,200 @@ const double RUNE_REGEN_BASE_SEC = ( 1 / RUNE_REGEN_BASE );
 const size_t MAX_RUNES = 6;
 const size_t MAX_REGENERATING_RUNES = 3;
 
+template <typename T>
+struct dynamic_event_t : public event_t
+{
+  double m_coefficient;
+  T**    m_ptr;
+
+  dynamic_event_t( sim_t* s ) : event_t( *s ), m_coefficient( 1.0 ), m_ptr( nullptr )
+  { }
+
+  const char* name() const override
+  { return "Dynamic-Event-Base"; }
+
+  static T* create( sim_t* s )
+  { return new ( *s ) T( s ); }
+
+  virtual T* clone() = 0;
+
+  virtual timespan_t adjust( const timespan_t& by_time )
+  {
+    auto this_ = this;
+    // Execute early and cancel the event, if the adjustment would trigger the event
+    if ( by_time >= remains() )
+    {
+      execute();
+      event_t::cancel( this_ );
+      return timespan_t::zero();
+    }
+
+    auto new_remains = remains() - by_time;
+    if ( sim().debug )
+    {
+      sim().out_debug.printf( "%s adjust time by %.3f, remains=%.3f new_remains=%f",
+        name(), by_time.total_seconds(), remains().total_seconds(), new_remains.total_seconds() );
+    }
+
+    // Otherwise, just clone this event and schedule it with the new time, bypassing the coefficient
+    // adjustment
+    create_clone() -> schedule( new_remains, false );
+
+    event_t::cancel( this_ );
+    return new_remains;
+  }
+
+  // Create a clone of this event
+  virtual T* create_clone()
+  {
+    auto cloned = clone();
+    if ( m_ptr )
+    {
+      cloned -> ptr( *m_ptr );
+      *m_ptr = cloned;
+    }
+    cloned -> coefficient( m_coefficient );
+
+    return cloned;
+  }
+
+  virtual void execute_event() = 0;
+
+  // Update the duration coefficient, causing an adjustment to the remaining event duration to be
+  // made
+  virtual T* update_coefficient( double new_coefficient )
+  {
+    if ( new_coefficient == 0 || new_coefficient == m_coefficient )
+    {
+      return cast();
+    }
+
+    auto ratio = new_coefficient / m_coefficient;
+    auto remains = this -> remains(), new_duration = remains * ratio;
+    if ( sim().debug )
+    {
+      sim().out_debug.printf( "%s coefficient change, remains=%.3f old_coeff=%f new_coeff=%f ratio=%f new_remains=%f",
+        name(), remains.total_seconds(), m_coefficient, new_coefficient, ratio, new_duration.total_seconds() );
+    }
+
+    // Duration increases, so reschedule the event
+    if ( ratio > 1 )
+    {
+      reschedule( new_duration );
+      m_coefficient = new_coefficient;
+      return cast();
+    }
+    // Duration decreases, cannot reschedule so clone the event and schedule it with the new
+    // remaining duration, bypassing the coefficient adjustment (since it is already included in the
+    // duration)
+    else
+    {
+      auto cloned = create_clone();
+      cloned -> coefficient( new_coefficient )
+             -> schedule( new_duration, false );
+
+      // Cancel wants ref to a ptr, but we don't really care
+      auto this_ = this;
+      event_t::cancel( this_ );
+      return cast( cloned );
+    }
+  }
+
+  static T* cast( event_t* event )
+  { return static_cast<T*>( event ); }
+
+  T* cast() const
+  { return static_cast<T*>( this ); }
+
+  T* cast()
+  { return static_cast<T*>( this ); }
+
+  T* ptr( T*& value )
+  { m_ptr = &value; return cast(); }
+
+  T* ptr() const
+  { return m_ptr ? *m_ptr : nullptr; }
+
+  T* coefficient( double value )
+  { m_coefficient = value; return cast(); }
+
+  double coefficient() const
+  { return m_coefficient; }
+
+  // Actually schedules the event into the core event system, by default, applies the coefficient
+  // associated with the event to the duration given
+  T* schedule( const timespan_t& duration, bool use_coeff = true )
+  { add_event( duration * ( use_coeff ? coefficient() : 1.0 ) ); return cast(); }
+
+  void execute() override
+  {
+    execute_event();
+
+    if ( m_ptr )
+    {
+      *m_ptr = nullptr;
+    }
+  }
+};
+
+struct rune_event_t : public dynamic_event_t<rune_event_t>
+{
+  typedef dynamic_event_t<rune_event_t> super;
+
+  rune_t* m_rune;
+
+  rune_event_t( sim_t* s );
+
+  const char* name() const override
+  { return "Rune-Regen-Event"; }
+
+  rune_event_t* clone() override
+  { return create( &sim() ) -> rune( *m_rune ); }
+
+  rune_t* rune() const
+  { return m_rune; }
+
+  rune_event_t* rune( rune_t& r )
+  { m_rune = &r; return this; }
+
+  void execute_event() override;
+};
+
 struct rune_t
 {
   runes_t*   runes;     // Back reference to runes_t array so we can adjust rune state
   rune_state state;     // DEPLETED, REGENERATING, FULL
-  double     value;     // 0.0 to 1.0, with 1.0 being full
+  rune_event_t* event;  // Regen event
+  timespan_t regen_start; // Start time of the regeneration
+  timespan_t regenerated; // Timestamp when rune regenerated to full
 
-  rune_t() : runes( nullptr ), state( STATE_FULL ), value( 0.0 )
+  rune_t() : runes( nullptr ), state( STATE_FULL ), event( nullptr ), regen_start( timespan_t::min() )
   { }
 
-  rune_t( runes_t* r ) : runes( r ), state( STATE_FULL ), value( 0.0 )
+  rune_t( runes_t* r ) : runes( r ), state( STATE_FULL ), event( nullptr ), regen_start( timespan_t::min() )
   { }
 
   bool is_ready()    const     { return state == STATE_FULL    ; }
   bool is_regenerating() const { return state == STATE_REGENERATING; }
   bool is_depleted() const     { return state == STATE_DEPLETED; }
 
-  // Regenerate this rune for periodicity seconds
-  void regen_rune( timespan_t periodicity, bool rc = false );
+  double fill_level() const;
+
+  void update_coefficient();
 
   // Consume this rune and adjust internal rune state
   rune_t* consume();
   // Fill this rune and adjust internal rune state
   rune_t* fill_rune( gain_t* gain = nullptr );
+  // Start regenerating the rune
+  void start_regenerating();
 
   void reset()
   {
+    regen_start = timespan_t::min();
+    regenerated = timespan_t::zero();
+    event = nullptr;
     state = STATE_FULL;
-    value = 1.0;
   }
 };
 
@@ -92,21 +259,29 @@ struct runes_t
 {
   death_knight_t* dk;
   std::array<rune_t, MAX_RUNES> slot;
+  timespan_t waste_start;
+  // Cumulative waste per iteration in seconds
+  extended_sample_data_t cumulative_waste;
+  // Individual waste times per rune in seconds
+  extended_sample_data_t rune_waste;
+  // Per iteration waste counter, added into cumulative_waste on reset
+  timespan_t iteration_waste_sum;
 
-  runes_t( death_knight_t* p ) : dk( p )
-  {
-    for ( auto& rune: slot )
-    {
-      rune = rune_t( this );
-    }
-  }
+  runes_t( death_knight_t* p );
+
+  void update_coefficient()
+  { range::for_each( slot, []( rune_t& r ) { r.update_coefficient(); } ); }
 
   void reset()
   {
-    for ( auto& rune : slot)
+    range::for_each( slot, []( rune_t& r ) { r.reset(); } );
+
+    waste_start = timespan_t::zero();
+    if ( iteration_waste_sum > timespan_t::zero() )
     {
-      rune.reset();
+      cumulative_waste.add( iteration_waste_sum.total_seconds() );
     }
+    iteration_waste_sum = timespan_t::zero();
   }
 
   std::string string_representation() const
@@ -125,7 +300,7 @@ struct runes_t
         rune_letter = 'r';
       }
 
-      std::string rune_val = util::to_string( rune.value, 2 );
+      std::string rune_val = util::to_string( rune.fill_level(), 2 );
 
       rune_str += rune_letter;
       rune_val_str += '[' + rune_val + ']';
@@ -587,60 +762,60 @@ public:
     cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
 
     regen_type = REGEN_DYNAMIC;
-    regen_caches[ CACHE_HASTE ] = true;
-    regen_caches[ CACHE_ATTACK_HASTE ] = true;
   }
 
   // Character Definition
-  virtual void      init_spells() override;
-  virtual void      init_action_list() override;
-  virtual bool      init_actions() override;
-  virtual void      init_rng() override;
-  virtual void      init_base_stats() override;
-  virtual void      init_scaling() override;
-  virtual void      create_buffs() override;
-  virtual void      init_gains() override;
-  virtual void      init_procs() override;
-  virtual void      init_resources( bool force ) override;
-  void              init_absorb_priority() override;
-  virtual double    composite_armor_multiplier() const override;
-  virtual double    composite_melee_attack_power() const override;
-  virtual double    composite_attack_power_multiplier() const override;
-  virtual double    composite_melee_speed() const override;
-  virtual double    composite_melee_haste() const override;
-  virtual double    composite_spell_haste() const override;
-  virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
-  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-  virtual double    composite_parry_rating() const override;
-  virtual double    composite_parry() const override;
-  virtual double    composite_dodge() const override;
-  virtual double    composite_leech() const override;
-  virtual double    composite_melee_expertise( const weapon_t* ) const override;
-  virtual double    composite_player_multiplier( school_e school ) const override;
-  virtual double    composite_player_target_multiplier( player_t* target ) const override;
-  virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  virtual double    composite_crit_avoidance() const override;
-  virtual double    passive_movement_modifier() const override;
-  virtual void      regen( timespan_t periodicity ) override;
-  virtual void      reset() override;
-  virtual void      arise() override;
-  virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
-  virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
-  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
-  virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
-  void              do_damage( action_state_t* ) override;
-  virtual void      combat_begin() override;
-  virtual action_t* create_action( const std::string& name, const std::string& options ) override;
-  virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
-  virtual void      create_pets() override;
-  virtual void      create_options() override;
-  virtual resource_e primary_resource() const override { return RESOURCE_RUNIC_POWER; }
-  virtual role_e    primary_role() const override;
-  virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
-  virtual void      invalidate_cache( cache_e ) override;
+  void      init_spells() override;
+  void      init_action_list() override;
+  bool      init_actions() override;
+  void      init_rng() override;
+  void      init_base_stats() override;
+  void      init_scaling() override;
+  void      create_buffs() override;
+  void      init_gains() override;
+  void      init_procs() override;
+  void      init_resources( bool force ) override;
+  void      init_absorb_priority() override;
+  double    composite_armor_multiplier() const override;
+  double    composite_melee_attack_power() const override;
+  double    composite_attack_power_multiplier() const override;
+  double    composite_melee_speed() const override;
+  double    composite_melee_haste() const override;
+  double    composite_spell_haste() const override;
+  double    composite_attribute_multiplier( attribute_e attr ) const override;
+  double    matching_gear_multiplier( attribute_e attr ) const override;
+  double    composite_parry_rating() const override;
+  double    composite_parry() const override;
+  double    composite_dodge() const override;
+  double    composite_leech() const override;
+  double    composite_melee_expertise( const weapon_t* ) const override;
+  double    composite_player_multiplier( school_e school ) const override;
+  double    composite_player_target_multiplier( player_t* target ) const override;
+  double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
+  double    composite_crit_avoidance() const override;
+  double    passive_movement_modifier() const override;
+  void      reset() override;
+  void      arise() override;
+  void      adjust_dynamic_cooldowns() override;
+  void      assess_heal( school_e, dmg_e, action_state_t* ) override;
+  void      assess_damage( school_e, dmg_e, action_state_t* ) override;
+  void      assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
+  void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
+  void      do_damage( action_state_t* ) override;
+  action_t* create_action( const std::string& name, const std::string& options ) override;
+  expr_t*   create_expression( action_t*, const std::string& name ) override;
+  void      create_pets() override;
+  void      create_options() override;
+  resource_e primary_resource() const override { return RESOURCE_RUNIC_POWER; }
+  role_e    primary_role() const override;
+  stat_e    convert_hybrid_stat( stat_e s ) const override;
+  void      invalidate_cache( cache_e ) override;
   double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
+  void      merge( player_t& other ) override;
+  void      analyze( sim_t& sim ) override;
 
   double    runes_per_second() const;
+  double    rune_regen_coefficient() const;
   void      trigger_runic_empowerment( double rpcost );
   void      trigger_runic_corruption( double rpcost );
   void      apply_diseases( action_state_t* state, unsigned diseases );
@@ -670,6 +845,22 @@ public:
   }
 };
 
+inline rune_event_t::rune_event_t( sim_t* sim ) :
+  super( sim ), m_rune( nullptr )
+{ }
+
+inline void rune_event_t::execute_event()
+{
+  if ( sim().debug )
+  {
+    sim().out_debug.printf( "%s regenerates a rune, start_time=%.3f, regen_time=%.3f current_coeff=%f",
+      m_rune -> runes -> dk -> name(), m_rune -> regen_start.total_seconds(),
+      ( sim().current_time() - m_rune -> regen_start ).total_seconds(),
+      m_coefficient );
+  }
+
+  m_rune -> fill_rune();
+}
 
 inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* death_knight ) :
   actor_target_data_t( target, death_knight )
@@ -725,14 +916,12 @@ static std::pair<int, double> rune_ready_in( const death_knight_t* p )
   int fastest_remaining = -1;
   double t = std::numeric_limits<double>::max();
 
-  double rps = 1.0 / 10.0 / p -> cache.attack_haste();
-  if ( p -> buffs.runic_corruption -> check() ) {
-    rps *= 2.0;
-  }
+  double rps = p -> runes_per_second();
 
   for ( size_t j = 0; j < MAX_RUNES; ++j ) {
-    double ttr = ( 1.0 - (p -> _runes.slot[j]).value ) / rps;
-    if (ttr < t) {
+    double ttr = ( 1.0 - ( p -> _runes.slot[ j ] ).fill_level() ) / rps;
+    if (ttr < t)
+    {
       t = ttr;
       fastest_remaining = ( int ) j;
     }
@@ -748,18 +937,26 @@ static double ready_in( const death_knight_t* p, int n_runes )
   if ( p -> sim -> debug )
     log_rune_status( p, true );
 
-  double rps = 1.0 / 10.0 / p -> cache.attack_haste();
-  if ( p -> buffs.runic_corruption -> check() ) {
-    rps *= 2.0;
-  }
+  double rps = p -> runes_per_second();
 
   std::vector< double > ready_times;
   for ( size_t j = 0; j < MAX_RUNES; ++j) {
-    ready_times.push_back( (1.0 - (p -> _runes.slot[j]).value) / rps);
+    ready_times.push_back( ( 1.0 - ( p -> _runes.slot[ j ] ).fill_level() ) / rps );
   }
-  std::sort(ready_times.begin(), ready_times.end());
+  std::sort( ready_times.begin(), ready_times.end() );
 
-  return ready_times[n_runes];
+  return ready_times[ n_runes ];
+}
+
+inline runes_t::runes_t( death_knight_t* p ) : dk( p ),
+  cumulative_waste( dk -> name_str + "_Iteration_Rune_Waste", false ),
+  rune_waste( dk -> name_str + "_Rune_Waste", false ),
+  iteration_waste_sum( timespan_t::zero() )
+{
+  for ( auto& rune: slot )
+  {
+    rune = rune_t( this );
+  }
 }
 
 inline void runes_t::consume( unsigned runes )
@@ -771,10 +968,77 @@ inline void runes_t::consume( unsigned runes )
     assert( 0 );
   }
 #endif
-  while ( runes-- ) first_full_rune() -> consume();
+  auto n_full_runes = runes_full();
+  int n_wasting_runes = n_full_runes - MAX_REGENERATING_RUNES;
+  auto disable_waste = n_full_runes - runes <= MAX_REGENERATING_RUNES;
+
+  while ( runes-- )
+  {
+    auto rune = first_full_rune();
+    if ( n_wasting_runes > 0 )
+    {
+      // Waste time for a given rune is determined as the time the actor went past the maximum
+      // regenerating runesa (waste_start), or if later in time, the time this specific rune
+      // replenished (rune -> regenerated).
+      auto wasted_time = dk -> sim -> current_time() - std::max( rune -> regenerated, waste_start );
+      if ( wasted_time > timespan_t::zero() )
+      {
+        assert( wasted_time > timespan_t::zero() );
+        iteration_waste_sum += wasted_time;
+        rune_waste.add( wasted_time.total_seconds() );
+
+        if ( dk -> sim -> debug )
+        {
+          dk -> sim -> out_debug.printf( "%s rune waste, n_full_runes=%u rune_regened=%.3f waste_started=%.3f wasted_time=%.3f",
+              dk -> name(), n_full_runes, rune -> regenerated.total_seconds(), waste_start.total_seconds(), wasted_time.total_seconds() );
+        }
+        n_wasting_runes--;
+      }
+    }
+    rune -> consume();
+  }
+
   if ( dk -> sim -> debug )
   {
     log_rune_status( dk );
+  }
+
+  // Full runes will be going below the maximum number of regenerating runes, so there's no longer
+  // going to be any waste time.
+  if ( disable_waste && waste_start >= timespan_t::zero() )
+  {
+    if ( dk -> sim -> debug )
+    {
+      dk -> sim -> out_debug.printf( "%s rune waste, waste ended, n_full_runes=%u",
+          dk -> name(), runes_full() );
+    }
+
+    waste_start = timespan_t::min();
+  }
+}
+
+inline double rune_t::fill_level() const
+{
+  if ( state == STATE_FULL )
+  {
+    return 1.0;
+  }
+  else if ( state == STATE_DEPLETED )
+  {
+    return 0.0;
+  }
+
+  auto regen_time_elapsed = runes -> dk -> sim -> current_time() - regen_start;
+  auto total_rune_time = regen_time_elapsed + event -> remains();
+
+  return 1.0 - event -> remains() / total_rune_time;
+}
+
+inline void rune_t::update_coefficient()
+{
+  if ( event )
+  {
+    event -> update_coefficient( runes -> dk -> rune_regen_coefficient() );
   }
 }
 
@@ -782,16 +1046,17 @@ inline rune_t* rune_t::consume()
 {
   rune_t* new_regenerating_rune = nullptr;
 
+  assert( state == STATE_FULL && event == nullptr );
+
   state = STATE_DEPLETED;
-  value = 0.0;
 
   // Immediately update the state of the next regenerating rune, since rune_t::regen_rune presumes
   // that the internal state of each invidual rune is always consistent with the rune regeneration
   // rules
   if ( runes -> runes_regenerating() < MAX_REGENERATING_RUNES )
   {
-    rune_t* new_regenerating_rune = runes -> first_depleted_rune();
-    new_regenerating_rune -> state = STATE_REGENERATING;
+    new_regenerating_rune = runes -> first_depleted_rune();
+    new_regenerating_rune -> start_regenerating();
   }
 
   // Internal state consistency for current rune regeneration rules
@@ -804,14 +1069,20 @@ inline rune_t* rune_t::consume()
 inline rune_t* rune_t::fill_rune( gain_t* gain )
 {
   rune_t* new_regenerating_rune = nullptr;
+  // Cancel regeneration event if this rune was regenerating
+  if ( state == STATE_REGENERATING )
+  {
+    assert( event );
+    event_t::cancel( event );
+  }
 
   if ( state != STATE_FULL )
   {
     runes -> dk -> procs.ready_rune -> occur();
   }
 
-  value = 1.0;
   state = STATE_FULL;
+  regenerated = runes -> dk -> sim -> current_time();
 
   // Update actor rune resources, so we can re-use a lot of the normal resource mechanisms that the
   // sim core offers
@@ -822,71 +1093,40 @@ inline rune_t* rune_t::fill_rune( gain_t* gain )
   // rules
   if ( runes -> runes_depleted() > 0 && runes -> runes_regenerating() < MAX_REGENERATING_RUNES )
   {
-    rune_t* new_regenerating_rune = runes -> first_depleted_rune();
-    new_regenerating_rune -> state = STATE_REGENERATING;
+    auto new_regenerating_rune = runes -> first_depleted_rune();
+    new_regenerating_rune -> start_regenerating();
   }
 
   // Internal state consistency for current rune regeneration rules
   assert( runes -> runes_regenerating() <= MAX_REGENERATING_RUNES );
   assert( runes -> runes_depleted() == MAX_RUNES - runes -> runes_full() - runes -> runes_regenerating() );
 
+  // If the actor goes past the maximum number of regenerating runes, mark the waste start
+  if ( runes -> waste_start < timespan_t::zero() && runes -> runes_full() > MAX_REGENERATING_RUNES )
+  {
+    if ( runes -> dk -> sim -> debug )
+    {
+      runes -> dk -> sim -> out_debug.printf( "%s rune waste, waste started, n_full_runes=%u",
+          runes -> dk -> name(), runes -> runes_full() );
+    }
+    runes -> waste_start = runes -> dk -> sim -> current_time();
+  }
+
   return new_regenerating_rune;
 }
 
-inline void rune_t::regen_rune( timespan_t periodicity, bool rc )
+inline void rune_t::start_regenerating()
 {
-  gain_t* gain = rc ? runes -> dk -> gains.rc : runes -> dk -> gains.rune;
+  assert( event == nullptr );
+  state = STATE_REGENERATING;
+  regen_start = runes -> dk -> sim -> current_time();
 
-  if ( state == STATE_FULL )
-  {
-    if ( runes -> runes_regenerating() < MAX_REGENERATING_RUNES )
-    {
-      double regen_amount = periodicity.total_seconds() * runes -> dk -> runes_per_second();
-      gain -> add( RESOURCE_RUNE, 0, regen_amount );
-    }
-    return;
-  }
-  // Depleted, rune won't be regenerating
-  else if ( state == STATE_DEPLETED )
-  {
-    return;
-  }
-
-  double regen_amount = periodicity.total_seconds() * runes -> dk -> runes_per_second();
-
-  double new_value = value + regen_amount;
-  double overflow = 0.0;
-  if ( new_value > 1.0 )
-  {
-    overflow = new_value - 1.0;
-  }
-
-  rune_t* overflow_rune = nullptr;
-  if ( new_value >= 1.0 )
-  {
-    overflow_rune = fill_rune();
-  }
-  else
-  {
-    value = new_value;
-  }
-
-  // If we got an overflow rune (filling up this rune caused a depleted rune to become
-  // regenerating), oveflow into that one
-  if ( overflow_rune )
-  {
-    overflow_rune -> value += overflow;
-    assert( overflow_rune -> value < 1.0 ); // Sanity check, should never happen
-    gain -> add( RESOURCE_RUNE, regen_amount, 0 );
-  }
-  // No depleted runes found, so overflow into the aether
-  else
-  {
-    gain -> add( RESOURCE_RUNE, 0, overflow );
-  }
-
-  if ( state == STATE_FULL && runes -> dk -> sim -> log )
-    log_rune_status( runes -> dk );
+  // Create a new regen event with proper parameters
+  event = rune_event_t::create( runes -> dk -> sim )
+    -> rune( *this )
+    -> ptr( event )
+    -> coefficient( runes -> dk -> rune_regen_coefficient() )
+    -> schedule( timespan_t::from_seconds( RUNE_REGEN_BASE ) );
 }
 
 namespace pets {
@@ -2894,8 +3134,8 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
       // Note that this presumes no other rune-using abilities are used
       // precombat
-      for ( size_t i = 0; i < MAX_RUNES; ++i )
-        p() -> _runes.slot[ i ].regen_rune( timespan_t::from_seconds( 5.0 ) );
+      //for ( size_t i = 0; i < MAX_RUNES; ++i )
+      //  p() -> _runes.slot[ i ].regen_rune( timespan_t::from_seconds( 5.0 ) );
 
       //simulate RP decay for that 5 seconds
       p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 5, nullptr, nullptr );
@@ -3905,8 +4145,9 @@ struct empower_rune_weapon_t : public death_knight_spell_t
       }
       else if ( rune.is_regenerating() )
       {
-        filled += 1.0 - rune.value;
-        overflow += rune.value;
+        auto fill_level = rune.fill_level();
+        filled += 1.0 - fill_level;
+        overflow += fill_level;
       }
       else
       {
@@ -5523,8 +5764,9 @@ struct runic_corruption_buff_t : public buff_t
 {
   runic_corruption_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "runic_corruption", p -> find_spell( 51460 ) )
-            .trigger_spell( p -> spec.runic_corruption ).affects_regen( true ) )
-  {  }
+            .trigger_spell( p -> spec.runic_corruption ).affects_regen( true )
+            .stack_change_callback( [ p ]( buff_t*, int, int ) { p -> _runes.update_coefficient(); } ) )
+  { }
 };
 
 // Generic health increase buff
@@ -5718,6 +5960,24 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
   }
 
   return actual_amount;
+}
+
+void death_knight_t::merge( player_t& other )
+{
+  player_t::merge( other );
+
+  death_knight_t& dk = dynamic_cast< death_knight_t& >( other );
+
+  _runes.rune_waste.merge( dk._runes.rune_waste );
+  _runes.cumulative_waste.merge( dk._runes.cumulative_waste );
+}
+
+void death_knight_t::analyze( sim_t& s )
+{
+  player_t::analyze( s );
+
+  _runes.rune_waste.analyze();
+  _runes.cumulative_waste.analyze();
 }
 
 unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
@@ -6893,13 +7153,6 @@ void death_knight_t::reset() {
   _runes.reset();
 }
 
-// death_knight_t::combat_begin =============================================
-
-void death_knight_t::combat_begin()
-{
-  player_t::combat_begin();
-}
-
 // death_knight_t::assess_heal ==============================================
 
 void death_knight_t::assess_heal( school_e school, dmg_e t, action_state_t* s )
@@ -7328,22 +7581,8 @@ stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-// death_knight_t::regen ====================================================
-void death_knight_t::regen( timespan_t periodicity ) {
-  player_t::regen( periodicity );
-
-  if ( sim -> debug )
-    log_rune_status( this );
-
-  for ( rune_t& rune : _runes.slot) {
-    rune.regen_rune(periodicity);
-  }
-
-  if ( sim -> debug )
-    log_rune_status( this );
-}
-
 // death_knight_t::runes_per_second =========================================
+
 // Base rune regen rate is 10 seconds; we want the per-second regen
 // rate, so divide by 10.0.  Haste is a multiplier (so 30% haste
 // means composite_attack_haste is 1/1.3), so we invert it.  Haste
@@ -7366,6 +7605,25 @@ inline double death_knight_t::runes_per_second() const
   }
 
   return rps;
+}
+
+inline double death_knight_t::rune_regen_coefficient() const
+{
+  auto coeff = cache.attack_haste();
+  // Runic corruption doubles rune regeneration speed
+  if ( buffs.runic_corruption -> check() )
+  {
+    coeff *= .5;
+  }
+
+  if ( buffs.soulgorge -> check() )
+  {
+    // Note, don't use stack_value() here, since the correct (fractional) value is triggered in the
+    // buff when soulgorge consumes blood plagues.
+    coeff *= 1.0 / ( 1.0 + buffs.soulgorge -> check_value() );
+  }
+
+  return coeff;
 }
 
 // death_knight_t::trigger_runic_empowerment ================================
@@ -7427,7 +7685,7 @@ double death_knight_t::ready_runes_count( bool fractional ) const
     const rune_t& r = _runes.slot[ rune_idx ];
     if ( fractional || r.is_ready() )
     {
-      result += r.value;
+      result += r.fill_level();
     }
   }
 
@@ -7482,13 +7740,22 @@ double death_knight_t::runes_cooldown_max( ) const
 
 double death_knight_t::runes_cooldown_time( const rune_t& rune ) const
 {
-  return rune.is_ready() ? 0.0 : ( 1.0 - rune.value ) / runes_per_second();
+  return rune.is_ready() ? 0.0 : ( 1.0 - rune.fill_level() ) / runes_per_second();
 }
+
+// death_knight_t::arise ====================================================
 
 void death_knight_t::arise()
 {
   player_t::arise();
   runeforge.rune_of_the_stoneskin_gargoyle -> trigger();
+}
+
+void death_knight_t::adjust_dynamic_cooldowns()
+{
+  player_t::adjust_dynamic_cooldowns();
+
+  _runes.update_coefficient();
 }
 
 /* Report Extension Class
@@ -7497,23 +7764,74 @@ void death_knight_t::arise()
 class death_knight_report_t : public player_report_extension_t
 {
 public:
-  death_knight_report_t( death_knight_t& player ) :
-      p( player )
-  {
+  death_knight_report_t( death_knight_t& player ) : p( player )
+  { }
 
+  void html_rune_waste( report::sc_html_stream& os ) const
+  {
+    os << "<h3 class=\"toggle open\">Rune waste details (<strong>experimental</strong>)</h3>\n"
+       << "<div class=\"toggle-content\">\n";
+
+    os << "<p style=\"width: 75%\">"
+      << "In the table below, &quot;Seconds per Rune&quot; denotes the time in seconds an individual "
+      << "rune is wasting regeneration. The &quot;Total Seconds per Iteration&quot; denotes the cumulative "
+      << "time in seconds all runes wasted during a single iteration."
+      << "</p>\n";
+
+    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+         << "<tr>\n"
+           << "<th colspan=\"5\">Seconds per Rune (n=" << p._runes.rune_waste.count() << ")</th>\n"
+         << "</tr>\n"
+         << "<tr>\n"
+           << "<th>Minimum</th>\n"
+           << "<th>5<sup>th</sup> percentile</th>\n"
+           << "<th>Mean / Median</th>\n"
+           << "<th>95<sup>th</sup> percentile</th>\n"
+           << "<th>Maximum</th>\n"
+         << "</tr>\n";
+
+    os << "<tr>\n";
+    os.format( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.min() );
+    os.format( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.percentile( .05 ) );
+    os.format( "<td class=\"right\">%.3f / %.3f</td>", p._runes.rune_waste.mean(), p._runes.rune_waste.percentile( .5 ) );
+    os.format( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.percentile( .95 ) );
+    os.format( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.max() );
+    os  << "</tr>\n";
+    os << "</table>\n";
+
+    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+         << "<tr>\n"
+           << "<th colspan=\"5\">Total Seconds per Iteration (n=" << p._runes.cumulative_waste.count() << ")</th>\n"
+         << "</tr>\n"
+         << "<tr>\n"
+           << "<th>Minimum</th>\n"
+           << "<th>5<sup>th</sup> percentile</th>\n"
+           << "<th>Mean / Median</th>\n"
+           << "<th>95<sup>th</sup> percentile</th>\n"
+           << "<th>Maximum</th>\n"
+         << "</tr>\n";
+
+    os.format( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.min() );
+    os.format( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.percentile( .05 ) );
+    os.format( "<td class=\"right\">%.3f / %.3f</td>", p._runes.cumulative_waste.mean(), p._runes.cumulative_waste.percentile( .5 ) );
+    os.format( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.percentile( .95 ) );
+    os.format( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.max() );
+    os  << "</tr>\n";
+
+    os << "</table>\n";
+
+    os << "</div>\n";
   }
 
-  virtual void html_customsection( report::sc_html_stream& /* os*/ ) override
+  void html_customsection( report::sc_html_stream& os ) override
   {
-    (void) p; // Stop annoying compiler nag
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-        << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-        << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-    os << p.name();
-
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+    if ( p._runes.cumulative_waste.percentile( .5 ) > 0 )
+    {
+      os << "<div class=\"player-section custom_section\">\n";
+      html_rune_waste( os );
+      os << "<div class=\"clear\"></div>\n";
+      os << "</div>\n";
+    }
   }
 private:
   death_knight_t& p;
