@@ -453,6 +453,8 @@ public:
     buff_t* soulgorge;
     buff_t* antimagic_barrier;
     absorb_buff_t* tombstone;
+
+    stat_buff_t* t19oh_8pc;
   } buffs;
 
   struct runeforge_t {
@@ -1062,6 +1064,13 @@ inline rune_t* rune_t::consume()
   // Internal state consistency for current rune regeneration rules
   assert( runes -> runes_regenerating() <= MAX_REGENERATING_RUNES );
   assert( runes -> runes_depleted() == MAX_RUNES - runes -> runes_full() - runes -> runes_regenerating() );
+
+  if ( runes -> dk -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T19OH, B8 ) ||
+       runes -> dk -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T19OH, B8 ) ||
+       runes -> dk -> sets.has_set_bonus( DEATH_KNIGHT_BLOOD, T19OH, B8 ) )
+  {
+    runes -> dk -> buffs.t19oh_8pc -> trigger();
+  }
 
   return new_regenerating_rune;
 }
@@ -7035,6 +7044,9 @@ void death_knight_t::create_buffs()
   buffs.antimagic_barrier = new antimagic_barrier_buff_t( this );
   buffs.tombstone = absorb_buff_creator_t( this, "tombstone", talent.tombstone )
     .cd( timespan_t::zero() ); // Handled by the action
+  buffs.t19oh_8pc = stat_buff_creator_t( this, "deathlords_might" )
+    .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
+    .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
 }
 
 // death_knight_t::init_gains ===============================================
