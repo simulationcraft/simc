@@ -54,9 +54,10 @@ actions.single+=/focused_rage,if=buff.focused_rage.stack<3|buff.battle_cry_deadl
 actions.single+=/slam,if=target.health.pct>20&!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up)
 actions.single+=/whirlwind,if=target.health.pct>20&talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
 actions.single+=/rend,if=remains<=duration*0.3
-actions.single+=/heroic_charge
 actions.single+=/whirlwind,if=target.health.pct>20&talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)
 actions.single+=/slam,if=target.health.pct>20&!talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)
+actions.single+=/execute,if=equipped.137060
+actions.single+=/slam,if=equipped.137060
 actions.single+=/shockwave
 actions.single+=/storm_bolt
 actions.single+=/bladestorm,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
@@ -68,7 +69,6 @@ actions.cleave+=/warbreaker,if=buff.shattered_defenses.down
 actions.cleave+=/focused_rage,if=buff.shattered_defenses.down
 actions.cleave+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
 actions.cleave+=/rend,if=remains<=duration*0.3
-actions.cleave+=/heroic_charge
 actions.cleave+=/bladestorm
 actions.cleave+=/cleave
 actions.cleave+=/whirlwind,if=rage>=100|buff.focused_rage.stack=3
@@ -81,7 +81,6 @@ actions.aoe+=/colossus_smash,if=buff.shattered_defenses.down&buff.precise_strike
 actions.aoe+=/warbreaker,if=buff.shattered_defenses.down
 actions.aoe+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
 actions.aoe+=/rend,if=remains<=duration*0.3
-actions.aoe+=/heroic_charge
 actions.aoe+=/bladestorm
 actions.aoe+=/cleave
 actions.aoe+=/whirlwind,if=rage>=60
@@ -91,7 +90,7 @@ actions.aoe+=/storm_bolt
 head=warhelm_of_the_obsidian_aspect,id=138357,bonus_id=1806
 neck=zealous_timestone_pendant,id=140894,bonus_id=1806,enchant=mark_of_the_claw
 shoulders=shoulderplates_of_the_obsidian_aspect,id=138363,bonus_id=1806
-back=cloak_of_temporal_recalibration,id=140910,bonus_id=1806,enchant=binding_of_strength
+back=greatcloak_of_the_obsidian_aspect,id=138374,bonus_id=1806,enchant=binding_of_strength
 chest=breastplate_of_the_remembered_king,id=140913,bonus_id=1806
 wrists=jagged_carapace_wristclamps,id=140902,bonus_id=1806
 hands=archavons_heavy_hand,id=137060,bonus_id=1811
@@ -108,9 +107,10 @@ main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/141523/14
 # gear_ilvl=882.73
 # gear_strength=14801
 # gear_stamina=26247
-# gear_crit_rating=5659
-# gear_haste_rating=4740
-# gear_mastery_rating=9196
+# gear_crit_rating=5413
+# gear_haste_rating=4470
+# gear_mastery_rating=9712
 # gear_versatility_rating=1124
 # gear_armor=4353
 # set_bonus=tier19_2pc=1
+# set_bonus=tier19_4pc=1

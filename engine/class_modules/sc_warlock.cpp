@@ -3825,8 +3825,11 @@ struct seed_of_corruption_t: public warlock_spell_t
     {
       warlock_spell_t::impact( s );
 
-      p() -> active.corruption -> target = s -> target;
-      p() -> active.corruption -> schedule_execute();
+      if ( p() -> active.corruption )
+      {
+        p() -> active.corruption -> target = s -> target;
+        p() -> active.corruption -> schedule_execute();
+      }
 
       if ( result_is_hit( s -> result ) )
       {
@@ -5661,8 +5664,11 @@ void warlock_t::init_spells()
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
   active.thalkiels_discord = new actions::thalkiels_discord_t( this );
   active.harvester_of_souls = new actions::harvester_of_souls_t( this );
-  active.corruption = new actions::corruption_t( this );
-  active.corruption -> background = true; 
+  if ( specialization() == WARLOCK_AFFLICTION )
+  {
+    active.corruption = new actions::corruption_t( this );
+    active.corruption -> background = true;
+  }
 }
 
 void warlock_t::init_base_stats()

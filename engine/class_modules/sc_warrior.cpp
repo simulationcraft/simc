@@ -4839,9 +4839,12 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Slam", "if=target.health.pct>20&!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up)" );
   single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)" );
   single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
-  single_target -> add_action( "heroic_charge" );
+  //single_target -> add_action( "heroic_charge" );
   single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)" );
   single_target -> add_action( this, "Slam", "if=target.health.pct>20&!talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)" );
+  single_target -> add_action( this, "Execute", "if=equipped.137060" );
+  single_target -> add_action( this, "Slam", "if=equipped.137060" );
+  single_target -> add_action( this, "Focused Rage", "if=equipped.137060" );
   single_target -> add_talent( this, "Shockwave" );
   single_target -> add_talent( this, "Storm Bolt" );
   single_target -> add_action( this, "Bladestorm", "if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets" );
@@ -4853,7 +4856,7 @@ void warrior_t::apl_arms()
   cleave -> add_talent( this, "Focused Rage", "if=buff.shattered_defenses.down" );
   cleave -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)" );
   cleave -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
-  cleave -> add_action( "heroic_charge" );
+  //cleave -> add_action( "heroic_charge" );
   cleave -> add_action( this, "Bladestorm" );
   cleave -> add_action( this, "Cleave" );
   cleave -> add_action( this, "Whirlwind", "if=rage>=100|buff.focused_rage.stack=3" );
@@ -4866,7 +4869,7 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
   aoe -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)" );
   aoe -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
-  aoe -> add_action( "heroic_charge" );
+  //aoe -> add_action( "heroic_charge" );
   aoe -> add_action( this, "Bladestorm" );
   aoe -> add_action( this, "Cleave" );
   aoe -> add_action( this, "Whirlwind", "if=rage>=60" );

@@ -52,9 +52,10 @@ actions.single+=/focused_rage,if=buff.focused_rage.stack<3|buff.battle_cry_deadl
 actions.single+=/slam,if=target.health.pct>20&!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up)
 actions.single+=/whirlwind,if=target.health.pct>20&talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
 actions.single+=/rend,if=remains<=duration*0.3
-actions.single+=/heroic_charge
 actions.single+=/whirlwind,if=target.health.pct>20&talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)
 actions.single+=/slam,if=target.health.pct>20&!talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)
+actions.single+=/execute,if=equipped.137060
+actions.single+=/slam,if=equipped.137060
 actions.single+=/shockwave
 actions.single+=/storm_bolt
 actions.single+=/bladestorm,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
@@ -66,7 +67,6 @@ actions.cleave+=/warbreaker,if=buff.shattered_defenses.down
 actions.cleave+=/focused_rage,if=buff.shattered_defenses.down
 actions.cleave+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
 actions.cleave+=/rend,if=remains<=duration*0.3
-actions.cleave+=/heroic_charge
 actions.cleave+=/bladestorm
 actions.cleave+=/cleave
 actions.cleave+=/whirlwind,if=rage>=100|buff.focused_rage.stack=3
@@ -79,7 +79,6 @@ actions.aoe+=/colossus_smash,if=buff.shattered_defenses.down&buff.precise_strike
 actions.aoe+=/warbreaker,if=buff.shattered_defenses.down
 actions.aoe+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
 actions.aoe+=/rend,if=remains<=duration*0.3
-actions.aoe+=/heroic_charge
 actions.aoe+=/bladestorm
 actions.aoe+=/cleave
 actions.aoe+=/whirlwind,if=rage>=60

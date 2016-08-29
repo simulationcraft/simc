@@ -1,9 +1,9 @@
 deathknight="Death_Knight_Unholy_T19P"
 level=110
-race=blood_elf
+race=draenei
 role=attack
 position=back
-talents=1220013
+talents=1220023
 artifact=16:0:0:0:0:149:1:150:1:152:1:153:1:154:1:157:2:265:3:266:6:267:3:1119:3:1333:1
 spec=unholy
 

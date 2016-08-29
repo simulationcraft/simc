@@ -38,7 +38,7 @@ artifact=36:140815:141523:140822:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:114
 head=,id=138357,bonus_id=1806
 neck=,id=140894,bonus_id=1806,enchant=mark_of_the_claw
 shoulders=,id=138363,bonus_id=1806
-back=,id=140910,bonus_id=1806,enchant=binding_of_strength
+back=,id=138374,bonus_id=1806,enchant=binding_of_strength
 chest=,id=140913,bonus_id=1806
 wrists=,id=140902,bonus_id=1806
 hands=,id=137060,bonus_id=1811
