@@ -7141,29 +7141,7 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Warlock", "2016-08-26", "Drain Life now does damage of 35% of Spell Power per tick (was 30%).", 271 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( .35 )
-      .verification_value( .30 );
 
-    hotfix::register_effect( "Warlock", "2016-08-26", "Drain Soul now does damage of 52% of Spell Power per tick (was 44%).", 291909 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.52 )
-      .verification_value( 0.44 );
-
-    hotfix::register_effect( "Warlock", "2016-08-26", "Haunt damage increased to 700% of Spell Power (was 600%).", 40331 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 7.00 )
-      .verification_value( 6.00 );
-
-    hotfix::register_effect( "Warlock", "2016-08-26", "Incinerate damage increased to 210% of Spell Power (was 190%).", 288276 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2.10 )
-      .verification_value( 1.90 );
   }
 
   virtual bool valid() const override { return true; }

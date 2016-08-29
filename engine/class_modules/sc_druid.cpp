@@ -8391,11 +8391,6 @@ struct druid_module_t : public module_t
   }
 
   virtual void register_hotfixes() const override {
-    hotfix::register_effect( "Druid", "2016-08-26", "Lunar Strike splash damage increased to 35% of initial damage (was 18%).", 295015 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 35 )
-      .verification_value( 18 );
 
   }
 
