@@ -139,6 +139,8 @@ public:
     action_t* thalkiels_discord;
     action_t* harvester_of_souls;
     spell_t* rain_of_fire;
+    spell_t* corruption;
+
   } active;
 
   // Talents
@@ -2384,7 +2386,7 @@ public:
   {
     spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && td( s -> target ) -> dots_seed_of_corruption -> is_ticking()
+    if ( s -> result_amount > 0 && result_is_hit( s -> result ) && td( s -> target ) -> dots_seed_of_corruption -> is_ticking()
          && id != p() -> spells.seed_of_corruption_aoe -> id )
     {
       accumulate_seed_of_corruption( td( s -> target ), s -> result_amount );
@@ -2792,8 +2794,8 @@ struct unstable_affliction_t: public warlock_spell_t
 
   virtual void execute() override
   {
-    bool flag = td( this -> target ) -> dots_unstable_affliction -> is_ticking();
     warlock_spell_t::execute();
+    bool flag = td( target ) -> dots_unstable_affliction -> is_ticking();
 
     p() -> buffs.shard_instability -> expire();
     p() -> procs.t18_2pc_affliction -> occur();
@@ -2803,7 +2805,7 @@ struct unstable_affliction_t: public warlock_spell_t
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.power_cord_of_lethtendris );
     }
-    if ( !flag )
+    else if ( !flag )
     { // Only increment if the dot wasn't already there.
       p() -> buffs.stretens_insanity -> increment( 1 );
     }
@@ -3800,26 +3802,18 @@ struct seed_of_corruption_t: public warlock_spell_t
 {
   struct seed_of_corruption_aoe_t: public warlock_spell_t
   {
-    corruption_t* corruption;
-
     seed_of_corruption_aoe_t( warlock_t* p ):
-      warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ),
-      corruption( new corruption_t( p ) )
+      warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
     {
       aoe = -1;
       dual = true;
       background = true;
-      callbacks = false;
 
       p -> spells.seed_of_corruption_aoe = this;
-
-      corruption -> background = true;
-      corruption -> dual = true;
-      corruption -> may_crit = false;
-      corruption -> base_costs[RESOURCE_MANA] = 0;
+      impact_action = p -> active.corruption;
     }
 
-    virtual double action_multiplier() const override
+    double action_multiplier() const override
     {
       double m = warlock_spell_t::action_multiplier();
 
@@ -3831,9 +3825,6 @@ struct seed_of_corruption_t: public warlock_spell_t
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
-
-      //corruption -> target = s -> target;
-      //corruption -> execute();
 
       if ( result_is_hit( s -> result ) )
       {
@@ -5668,6 +5659,8 @@ void warlock_t::init_spells()
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
   active.thalkiels_discord = new actions::thalkiels_discord_t( this );
   active.harvester_of_souls = new actions::harvester_of_souls_t( this );
+  active.corruption = new actions::corruption_t( this );
+  active.corruption -> background = true; 
 }
 
 void warlock_t::init_base_stats()
