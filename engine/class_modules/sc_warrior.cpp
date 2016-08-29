@@ -2056,18 +2056,13 @@ struct execute_t: public warrior_attack_t
 
   double tactician_cost() const override
   {
-    double c = 0;
+    double c = 40;
 
-    if ( is_it_free() )
-     c = 40;
-    else
+    if ( !is_it_free() )
     {
-      c = std::min( max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
-
-      if ( p() -> talents.dauntless -> ok() )
-      {
-        c /= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
-      }
+      double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
+      c = std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] );
+      c = ( c / temp_max_rage ) * 40;
     }
 
     if ( sim -> log )
@@ -2103,8 +2098,8 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.colossal_might -> ok() ) // Arms
     {
-      c = std::min( max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
-      c *= 1.0 + p() -> buff.precise_strikes -> check_value();
+      double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
+      c = std::min( temp_max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
     }
     else if ( p() -> buff.sense_death -> check() ) // Fury
     {
