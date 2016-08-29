@@ -4958,6 +4958,7 @@ struct channel_demonfire_tick_t : public warlock_spell_t
     background = true;
     may_miss = false;
     dual = true;
+    can_havoc = true;
   }
 };
 
@@ -4973,6 +4974,7 @@ struct channel_demonfire_t: public warlock_spell_t
     channeled = true;
     hasted_ticks = true;
     may_crit = false;
+    can_havoc = false;
 
     channel_demonfire = new channel_demonfire_tick_t( p );
     add_child( channel_demonfire );
