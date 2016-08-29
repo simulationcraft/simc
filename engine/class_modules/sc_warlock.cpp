@@ -2414,6 +2414,7 @@ public:
     if ( p() -> talents.eradication -> ok() && td -> debuffs_eradication -> check() )
       m *= 1.0 + p() -> find_spell( 196414 ) -> effectN( 1 ).percent();
 
+
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
@@ -5233,6 +5234,11 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( buffs.deadwind_harvester -> check() )
   {
     m *= 1.0 + buffs.deadwind_harvester -> data().effectN( 1 ).percent();
+  }
+  if ( legendary.stretens_sleepless_shackles_flag )
+  {
+      int counter = get_active_dots(30108);
+      m*= 1.0 + (counter * this->legendary.stretens_sleepless_shackles_multiplier);
   }
 
   m *= 1.0 + buffs.sindorei_spite -> check_stack_value();
