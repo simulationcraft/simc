@@ -2022,8 +2022,15 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.colossal_might -> ok() )
     {
-      bool free = ( p() -> buff.ayalas_stone_heart -> up() || p() -> buff.battle_cry_deadly_calm -> up() );
-      am *= 4.0 * ( std::min( max_rage, ( free ? max_rage : p() -> resources.current[RESOURCE_RAGE] ) ) / max_rage );
+      if ( is_it_free() )
+      {
+        am *= 4.0;
+      }
+      else
+      {
+        double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
+        am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
+      }
     }
     else if ( p() -> has_shield_equipped() )
     { am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent(); }
@@ -2051,11 +2058,16 @@ struct execute_t: public warrior_attack_t
   {
     double c = 0;
 
-    c = std::min( max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
-
-    if ( p() -> talents.dauntless -> ok() )
+    if ( is_it_free() )
+     c = 40;
+    else
     {
-      c /= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
+      c = std::min( max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+
+      if ( p() -> talents.dauntless -> ok() )
+      {
+        c /= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
+      }
     }
 
     if ( sim -> log )
@@ -2068,6 +2080,12 @@ struct execute_t: public warrior_attack_t
 
     return c;
   }
+
+  bool is_it_free() const
+  {
+    return ( p() -> buff.ayalas_stone_heart -> up() || p() -> buff.battle_cry_deadly_calm -> up() );
+  }
+
 
   double cost() const override
   {
@@ -2540,11 +2558,6 @@ struct mortal_strike_t: public warrior_attack_t
     am *= 1.0 + p() -> buff.focused_rage -> stack_value();
 
     return am;
-  }
-
-  double tactician_cost() const override
-  {
-    return warrior_attack_t::cost();
   }
 
   double cost() const override
