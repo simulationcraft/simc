@@ -277,8 +277,6 @@ public:
     bool wilfreds_sigil_of_superior_summoning_flag;
     bool stretens_insanity;
     timespan_t wilfreds_sigil_of_superior_summoning;
-    bool stretens_sleepless_shackles_flag;
-    double stretens_sleepless_shackles_multiplier;
     bool power_cord_of_lethtendris_flag;
     double power_cord_of_lethtendris_multiplier;
   } legendary;
@@ -5241,11 +5239,6 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.deadwind_harvester -> data().effectN( 1 ).percent();
   }
-  if ( legendary.stretens_sleepless_shackles_flag )
-  {
-      int counter = get_active_dots(30108);
-      m*= 1.0 + (counter * this->legendary.stretens_sleepless_shackles_multiplier);
-  }
 
   m *= 1.0 + buffs.sindorei_spite -> check_stack_value();
 
@@ -7017,18 +7010,6 @@ struct power_cord_of_lethtendris_t : public scoped_actor_callback_t<warlock_t>
     {
         p->legendary.power_cord_of_lethtendris_flag = true;
         p->legendary.power_cord_of_lethtendris_multiplier = e.driver()->effectN( 1 ).percent();
-    }
-};
-
-struct stretens_sleepless_shackles_t : public scoped_actor_callback_t<warlock_t>
-{
-    stretens_sleepless_shackles_t() : super( WARLOCK )
-    {}
-
-    void manipulate(warlock_t* p, const special_effect_t& e) override
-    {
-        p->legendary.stretens_sleepless_shackles_flag = true;
-        p->legendary.stretens_sleepless_shackles_multiplier = e.driver()->effectN( 1 ).percent();
     }
 };
 
