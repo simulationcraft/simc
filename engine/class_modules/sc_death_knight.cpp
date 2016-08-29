@@ -2787,6 +2787,7 @@ struct frozen_pulse_t : public death_knight_spell_t
   {
     aoe = -1;
     background = true;
+    may_crit = false;
   }
 };
 
