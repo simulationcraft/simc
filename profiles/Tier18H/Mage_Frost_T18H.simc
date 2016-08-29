@@ -40,6 +40,7 @@ actions+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&b
 actions+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2
 actions+=/frozen_orb
 actions+=/ice_nova
+actions+=/comet_storm
 actions+=/blizzard,if=(talent.arctic_gale.enabled&active_enemies>1)|active_enemies>3
 actions+=/ebonbolt,if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)
 actions+=/frostbolt
