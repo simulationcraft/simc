@@ -2365,7 +2365,7 @@ public:
   {
     spell_t::tick( d );
 
-    if ( result_is_hit( d -> state -> result ) && td( d -> target ) -> dots_seed_of_corruption -> is_ticking()
+    if ( d -> state -> result > 0 && result_is_hit( d -> state -> result ) && td( d -> target ) -> dots_seed_of_corruption -> is_ticking()
          && id != p() -> spells.seed_of_corruption_aoe -> id )
     {
       accumulate_seed_of_corruption( td( d -> target ), d -> state -> result_amount );
@@ -3810,7 +3810,6 @@ struct seed_of_corruption_t: public warlock_spell_t
       background = true;
 
       p -> spells.seed_of_corruption_aoe = this;
-      impact_action = p -> active.corruption;
     }
 
     double action_multiplier() const override
@@ -3825,6 +3824,9 @@ struct seed_of_corruption_t: public warlock_spell_t
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
+
+      p() -> active.corruption -> target = s -> target;
+      p() -> active.corruption -> schedule_execute();
 
       if ( result_is_hit( s -> result ) )
       {
