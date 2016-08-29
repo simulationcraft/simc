@@ -4879,6 +4879,7 @@ struct demonic_power_damage_t : public warlock_spell_t
   demonic_power_damage_t( warlock_t* p ) :
     warlock_spell_t( "demonic_power", p, p -> find_spell( 196100 ) )
   {
+    aoe = -1;
     background = true;
     proc = true;
     base_multiplier *= 1.0 + p -> artifact.impish_incineration.data().effectN( 3 ).percent();
