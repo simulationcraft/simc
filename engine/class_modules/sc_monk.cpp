@@ -10,12 +10,9 @@ NOTES:
 TODO:
 
 GENERAL:
+- Add Legendaries
 
 WINDWALKER:
-- Check if the Tornado Kick can proc the T18 trinket
-- Check if Whirling Dragon Punch works with T18 trinket
-- Check if SEF uses Strike of the Windlord
-- Update Crosswinds targeting system.
 - Add Cyclone Strike Counter as an expression
 
 MISTWEAVER: 
@@ -574,6 +571,36 @@ public:
     const spell_data_t* hidden_masters_forbidden_touch;
   } passives;
 
+  struct legendary_t
+  {
+    // General
+    const spell_data_t* cinidaria_the_symbiote;
+    const spell_data_t* prydaz_xavarics_magnum_opus;
+    const spell_data_t* sephuzs_secret;
+
+    // Brewmaster
+    const spell_data_t* fundamental_observation;
+    const spell_data_t* gai_plins_soothing_sash;
+    const spell_data_t* jewel_of_the_lost_abbey;
+    const spell_data_t* salsalabims_lost_tunic;
+
+    // Mistweaver
+    const spell_data_t* eithas_lunar_glides_of_eramas;
+    const spell_data_t* eye_of_collidus_the_warp_watcher;
+    const spell_data_t* leggings_of_the_black_flame;
+    const spell_data_t* ovyds_winter_wrap;
+    const spell_data_t* petrichor_lagniappe;
+    const spell_data_t* unison_spaulders;
+
+    // Windwalker
+    const spell_data_t* cenedril_reflector_of_hatred;
+    const spell_data_t* drinking_horn_cover;
+    const spell_data_t* firestone_walkers;
+    const spell_data_t* hidden_masters_forbidden_touch;
+    const spell_data_t* katsuos_eclipse;
+    const spell_data_t* march_of_the_legion;
+  } legendary;
+
   struct pets_t
   {
     pets::storm_earth_and_fire_pet_t* sef[ SEF_PET_MAX ];
@@ -616,6 +643,7 @@ public:
       mastery( mastery_spells_t() ),
       cooldown( cooldowns_t() ),
       passives( passives_t() ),
+      legendary( legendary_t() ),
       pet( pets_t() ),
       user_options( options_t() ),
       light_stagger_threshold( 0 ),
