@@ -85,20 +85,19 @@ legs=leggings_of_swirling_runes,id=133610,bonus_id=1727
 feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727
 finger1=band_of_fused_coral,id=134532,bonus_id=1727,enchant_id=5428
 finger2=seal_of_malicious_deceit,id=134489,bonus_id=1727,enchant_id=5428
-trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727/1492
-trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727/1492
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
+trinket2=chrono_shard,id=137419,bonus_id=1727
 main_hand=spine_of_thalkiel,id=137246,ilevel=870
 off_hand=skull_of_the_manari,id=128943,ilevel=870,gem_id=137459/137492/133764,relic_id=3412/3412/3412
 
 # Gear Summary
 # gear_ilvl=843.75
 # gear_stamina=17943
-# gear_intellect=10170
+# gear_intellect=11293
 # gear_spell_power=8954
 # gear_crit_rating=4752
 # gear_haste_rating=9868
 # gear_mastery_rating=2333
-# gear_versatility_rating=898
 # gear_leech_rating=404
 # gear_armor=1570
 # set_bonus=tier19p_cloth_2pc=1
