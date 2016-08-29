@@ -309,7 +309,7 @@ void SC_MainWindowCommandLine::initImportStates()
   // special cases for all TAB_IMPORT subtabs
   // button_main: text_import
   // button_queue: text_import
-  for ( import_tabs_e tab = TAB_BATTLE_NET; tab <= TAB_CUSTOM; tab++ )
+  for ( import_tabs_e tab = TAB_IMPORT_NEW; tab <= TAB_CUSTOM; tab++ )
   {
     tabs_e subtab = convertTabsEnum( tab );
     setText( IDLE, subtab, BUTTON_MAIN, &text_import );
@@ -353,14 +353,11 @@ void SC_MainWindowCommandLine::initProgressBarStates()
   {
     // import: TAB_IMPORT and all subtabs have the importing state
     setProgressBarState( state, CMDLINE_TAB_IMPORT, PROGRESSBAR_IMPORTING );
-    for ( import_tabs_e tab = TAB_BATTLE_NET; tab <= TAB_CUSTOM; tab++ )
+    for ( import_tabs_e tab = TAB_IMPORT_NEW; tab <= TAB_CUSTOM; tab++ )
     {
       tabs_e importSubtabs = convertTabsEnum( tab );
       setProgressBarState( state, importSubtabs, PROGRESSBAR_IMPORTING );
     }
-    // battlenet: battlenet has its own state
-    setProgressBarState( state, CMDLINE_TAB_BATTLE_NET,
-                         PROGRESSBAR_BATTLE_NET );
     // help: has its own state
     setProgressBarState( state, CMDLINE_TAB_HELP, PROGRESSBAR_HELP );
   }

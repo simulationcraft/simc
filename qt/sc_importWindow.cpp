@@ -4,22 +4,25 @@
 
 #include "sc_OptionsTab.hpp"
 
-BattleNetImportWindow::BattleNetImportWindow( SC_MainWindow* parent ) :
+BattleNetImportWindow::BattleNetImportWindow( SC_MainWindow* parent, bool embedded ) :
     QWidget( parent, Qt::Tool ),
     m_mainWindow( parent ),
-    m_shortcut( new QShortcut( QKeySequence( "Ctrl+I" ), parent ) ),
-    m_importWidget( new BattleNetImportWidget( this ) )
+    m_shortcut( embedded ? nullptr : new QShortcut( QKeySequence( "Ctrl+I" ), parent ) ),
+    m_importWidget( new BattleNetImportWidget( this ) ),
+    m_embedded( embedded )
 {
-    setWindowTitle( tr( "Import a character" ) );
+    if ( ! m_embedded )
+    {
+        setWindowTitle( tr( "Import a character" ) );
 
-    m_shortcut -> setContext( Qt::ApplicationShortcut );
-    connect( m_shortcut, SIGNAL( activated() ), this, SLOT( toggle() ) );
+        m_shortcut -> setContext( Qt::ApplicationShortcut );
+        connect( m_shortcut, SIGNAL( activated() ), this, SLOT( toggle() ) );
+        connect( m_mainWindow -> optionsTab, SIGNAL( armory_region_changed( const QString& ) ),
+                 m_importWidget, SLOT( armoryRegionChanged( const QString& ) ) );
+    }
+
     connect( m_importWidget, SIGNAL( importTriggered( const QString&, const QString&, const QString&, const QString&) ),
              m_mainWindow, SLOT( startNewImport( const QString&, const QString&, const QString&, const QString& ) ) );
-    connect( m_mainWindow -> optionsTab, SIGNAL( armory_region_changed( const QString& ) ),
-             m_importWidget, SLOT( armoryRegionChanged( const QString& ) ) );
-
-    m_importWidget -> armoryRegionChanged( m_mainWindow -> optionsTab -> choice.armory_region -> currentText() );
 }
 
 void BattleNetImportWindow::toggle()

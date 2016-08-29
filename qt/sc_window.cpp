@@ -22,10 +22,6 @@
 #include <QStandardPaths>
 #include <QDateTime>
 
-#if defined( Q_OS_MAC ) || defined( VS_NEW_BUILD_SYSTEM )
-#include "sc_importWindow.hpp"
-#endif /* Q_OS_MAC || VS_NEW_BUILD_SYSTEM */
-
 static int SC_GUI_HISTORY_VERSION = 650;
 
 namespace { // UNNAMED NAMESPACE
@@ -394,12 +390,16 @@ void SC_MainWindow::createOptionsTab()
   mainTab -> addTab( optionsTab, tr( "Options" ) );
 
   connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
+  connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), newBattleNetView -> widget(), SLOT( armoryRegionChanged( const QString& ) ) );
 }
 
 void SC_MainWindow::createImportTab()
 {
   importTab = new SC_ImportTab( this );
   mainTab -> addTab( importTab, tr( "Import" ) );
+
+  newBattleNetView = new BattleNetImportWindow( this, true );
+  importTab -> addTab( newBattleNetView, tr( "Import" ) );
 
   battleNetView = new SC_WebView( this );
   battleNetView -> setUrl( QUrl( "http://us.battle.net/wow/en" ) );
@@ -1485,7 +1485,8 @@ void SC_MainWindow::importTabChanged( int index )
        index == TAB_CUSTOM ||
        index == TAB_HISTORY ||
        index == TAB_AUTOMATION ||
-       index == TAB_RECENT )
+       index == TAB_RECENT ||
+       index == TAB_IMPORT_NEW )
   {
     cmdLine -> setTab( static_cast<import_tabs_e>( index ) );
   }

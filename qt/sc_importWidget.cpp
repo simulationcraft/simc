@@ -62,7 +62,7 @@ void BattleNetImportWidget::loadRealmData()
         }
     }
 
-    populateComboBox( "US" ); // Populate with default data
+    populateComboBox( m_settings.value( "options/armory_region", "US" ).toString() ); // Populate with default data
 }
 
 void BattleNetImportWidget::parseRealmListFile( QFile& file )

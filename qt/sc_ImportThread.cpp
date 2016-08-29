@@ -75,6 +75,8 @@ void SC_ImportThread::importBattleNet()
 
 void SC_ImportThread::start( sim_t* s, const QString& reg, const QString& rea, const QString& cha, const QString& spe )
 {
+  mainWindow -> soloChar -> start( 50 );
+
   tab             = TAB_IMPORT_NEW;
   item_db_sources = mainWindow -> optionsTab -> get_db_order();
   api             = mainWindow -> optionsTab -> get_api_key();
