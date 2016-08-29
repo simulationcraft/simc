@@ -792,7 +792,7 @@ public:
   double    composite_leech() const override;
   double    composite_melee_expertise( const weapon_t* ) const override;
   double    composite_player_multiplier( school_e school ) const override;
-  double    composite_player_target_multiplier( player_t* target ) const override;
+  double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double    composite_crit_avoidance() const override;
   double    passive_movement_modifier() const override;
@@ -2382,23 +2382,6 @@ struct death_knight_action_t : public Base
     }
 
     return base_gcd;
-  }
-
-
-  virtual double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = action_base_t::composite_target_multiplier( t );
-
-    if ( dbc::is_school( this -> school, SCHOOL_FROST ) )
-    {
-      death_knight_td_t* tdata = td( t );
-      double debuff = tdata -> debuff.razorice -> data().effectN( 1 ).percent();
-
-      m *= 1.0 + tdata -> debuff.razorice -> check() * debuff;
-
-    }
-
-    return m;
   }
 
   virtual void burst_festering_wound( const action_state_t* state, unsigned n = 1 ) const
@@ -7426,11 +7409,18 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double death_knight_t::composite_player_target_multiplier( player_t* target ) const
+double death_knight_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
-  double m = player_t::composite_player_target_multiplier( target );
+  double m = player_t::composite_player_target_multiplier( target, school );
 
-  m *= 1.0 + get_target_data( target ) -> debuff.death -> stack_value();
+  death_knight_td_t* td = get_target_data( target );
+  m *= 1.0 + td -> debuff.death -> stack_value();
+
+  if ( dbc::is_school( school, SCHOOL_FROST ) )
+  {
+    double debuff = td -> debuff.razorice -> data().effectN( 1 ).percent();
+    m *= 1.0 + td -> debuff.razorice -> check() * debuff;
+  }
 
   return m;
 }

@@ -611,7 +611,7 @@ struct rogue_t : public player_t
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_attack_power_multiplier() const override;
   double    composite_player_multiplier( school_e school ) const override;
-  double    composite_player_target_multiplier( player_t* target ) const override;
+  double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    energy_regen_per_second() const override;
   double    passive_movement_modifier() const override;
   double    temporary_movement_modifier() const override;
@@ -6016,9 +6016,9 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
 // rogue_t::composite_player_target_multiplier ==============================
 
-double rogue_t::composite_player_target_multiplier( player_t* target ) const
+double rogue_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
-  double m = player_t::composite_player_target_multiplier( target );
+  double m = player_t::composite_player_target_multiplier( target, school );
 
   rogue_td_t* tdata = get_target_data( target );
 

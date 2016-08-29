@@ -4144,7 +4144,7 @@ struct player_t : public actor_t
   // Persistent multipliers that are snapshot at the beginning of the spell application/execution
   virtual double composite_persistent_multiplier( school_e ) const
   { return 1.0; }
-  virtual double composite_player_target_multiplier( player_t* /* target */ ) const
+  virtual double composite_player_target_multiplier( player_t* /* target */, school_e /* school */ ) const
   { return 1.0; }
 
   virtual double composite_player_heal_multiplier( const action_state_t* s ) const;
@@ -5667,7 +5667,7 @@ public:
   {
     double m = target -> composite_player_vulnerability( get_school() );
 
-    m *= player -> composite_player_target_multiplier( target );
+    m *= player -> composite_player_target_multiplier( target, get_school() );
 
     if ( target -> race == RACE_DEMON &&
          player -> buffs.demon_damage_buff &&

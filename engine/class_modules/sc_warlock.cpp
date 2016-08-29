@@ -2099,7 +2099,7 @@ struct soul_effigy_t : public warlock_pet_t
 
     if ( incoming_state -> result_amount > 0 )
     {
-      double multiplier = o()->composite_player_target_multiplier(o()->target);
+      double multiplier = o()->composite_player_target_multiplier(o()->target, incoming_state -> action -> get_school() );
       double amount = soul_effigy_passive -> effectN( 1 ).percent() * incoming_state -> result_amount * multiplier;
       damage -> target = target;
       damage -> base_dd_min = damage -> base_dd_max = amount;
@@ -3772,7 +3772,7 @@ struct thalkiels_consumption_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    double ta_mult = p() -> composite_player_target_multiplier( p() -> target );
+    double ta_mult = p() -> composite_player_target_multiplier( p() -> target, get_school() );
     double p_mult = p() -> composite_player_multiplier( school );
     double damage = 0;
 

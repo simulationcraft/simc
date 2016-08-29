@@ -480,7 +480,7 @@ public:
       const action_state_t* s ) const override;
   double composite_player_heal_multiplier(
       const action_state_t* s ) const override;
-  double composite_player_target_multiplier( player_t* t ) const override;
+  double composite_player_target_multiplier( player_t* t, school_e school ) const override;
   double temporary_movement_modifier() const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
@@ -5822,9 +5822,9 @@ double priest_t::composite_player_absorb_multiplier(
   return m;
 }
 
-double priest_t::composite_player_target_multiplier( player_t* t ) const
+double priest_t::composite_player_target_multiplier( player_t* t, school_e school ) const
 {
-  double m = player_t::composite_player_target_multiplier( t );
+  double m = player_t::composite_player_target_multiplier( t, school );
 
   if ( auto td = find_target_data( t ) )
   {
