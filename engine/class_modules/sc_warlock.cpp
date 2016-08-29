@@ -275,6 +275,7 @@ public:
     bool odr_shawl_of_the_ymirjar;
     bool feretory_of_souls;
     bool wilfreds_sigil_of_superior_summoning_flag;
+    bool stretens_insanity;
     timespan_t wilfreds_sigil_of_superior_summoning;
     bool stretens_sleepless_shackles_flag;
     double stretens_sleepless_shackles_multiplier;
@@ -366,6 +367,7 @@ public:
     // legendary buffs
     buff_t* sindorei_spite;
 
+    buff_t* stretens_insanity;
   } buffs;
 
   // Gains
@@ -2565,13 +2567,7 @@ struct agony_t: public warlock_spell_t
 
     if ( p() -> shard_accumulator > 1 )
     {
-
-      if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T17, B2 ) && ( td( d -> state -> target ) -> dots_drain_soul -> is_ticking() || td( d -> state -> target ) -> dots_drain_life -> is_ticking() ) && td( d -> state -> target ) -> dots_corruption -> is_ticking() && td( d -> state-> target ) -> dots_agony -> is_ticking() && td( d -> state->target ) -> dots_unstable_affliction -> is_ticking() ) //Caster Has T17 2pc and UA/Agony are ticking as well on the target
-      {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 2.0, p() -> gains.agony );
-      }
-      else
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.agony );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.agony );
       p() -> shard_accumulator -= 1.0;
 
       // If going from 0 to 1 shard was a surprise, the player would have to react to it
@@ -2632,13 +2628,13 @@ struct agony_t: public warlock_spell_t
   }
 };
 
-struct unstable_affliction_t : public warlock_spell_t
+struct unstable_affliction_t: public warlock_spell_t
 {
-  struct unstable_affliction_dot_t : public residual_action::residual_periodic_action_t <warlock_spell_t>
+  struct unstable_affliction_dot_t: public residual_action::residual_periodic_action_t <warlock_spell_t>
   {
-     unstable_affliction_t* echos;
+    unstable_affliction_t* echos;
 
-    unstable_affliction_dot_t( warlock_t* p ) :
+    unstable_affliction_dot_t( warlock_t* p ):
       base_t( "unstable_affliction", p, p -> spec.unstable_affliction )
     {
       dual = true;
@@ -2648,7 +2644,7 @@ struct unstable_affliction_t : public warlock_spell_t
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
-      return s -> action -> tick_time( s ) * 4.0; 
+      return s -> action -> tick_time( s ) * 4.0;
     }
 
     double composite_crit_chance() const override
@@ -2673,8 +2669,6 @@ struct unstable_affliction_t : public warlock_spell_t
     {
       base_t::init();
 
-
-
       if ( p() -> affliction_trinket )
       {
         const spell_data_t* data = p() -> affliction_trinket -> driver();
@@ -2686,7 +2680,7 @@ struct unstable_affliction_t : public warlock_spell_t
       snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_HASTE;
     }
 
-    virtual void tick( dot_t* d ) override
+    void tick( dot_t* d ) override
     {
 
       if ( p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T18, B4 ) )
@@ -2699,37 +2693,36 @@ struct unstable_affliction_t : public warlock_spell_t
 
     void last_tick( dot_t* d ) override
     {
-        action_state_t * s = d->state;
-        trigger_fatal_echos(s);
+      action_state_t * s = d->state;
+      trigger_fatal_echos( s );
       bool refreshed = false;
-      if(!refreshed)
+      if ( !refreshed )
         warlock_spell_t::last_tick( d );
     }
 
     void trigger_fatal_echos( const action_state_t* source_state ) const
     {
-      if ( ! p()->artifact.fatal_echoes.rank() )
+      if ( !p()->artifact.fatal_echoes.rank() )
       {
         return;
       }
 
-
-      if ( ! echos )
+      if ( !echos )
       {
         return;
       }
 
       //p()->procs.fatal_echos->occur();
 
-      if(rng().roll( p()->artifact.fatal_echoes.data().effectN(1).percent() *
-                     ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 ) ) )
+      if ( rng().roll( p()->artifact.fatal_echoes.data().effectN( 1 ).percent() *
+        ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 ) ) )
       {
-          p()->procs.fatal_echos->occur();
-          action_state_t* s = echos->get_state();
-          echos->snapshot_state( s, DMG_OVER_TIME );
-          s->target = source_state->target;
+        p()->procs.fatal_echos->occur();
+        action_state_t* s = echos->get_state();
+        echos->snapshot_state( s, DMG_OVER_TIME );
+        s->target = source_state->target;
 
-          echos->execute();
+        echos->execute();
       }
     }
   };
@@ -2738,9 +2731,9 @@ struct unstable_affliction_t : public warlock_spell_t
 
   int echosLevel;
 
-  unstable_affliction_t( warlock_t* p, int echos = 0 ) :
+  unstable_affliction_t( warlock_t* p, int echos = 0 ):
     warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
-    ua_dot( new unstable_affliction_dot_t( p ) ), echosLevel(echos)
+    ua_dot( new unstable_affliction_dot_t( p ) ), echosLevel( echos )
   {
     spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
     base_multiplier *= dot_duration / base_tick_time;
@@ -2749,9 +2742,9 @@ struct unstable_affliction_t : public warlock_spell_t
 
     // we're going to cap echos initialization to 3
     int i = echosLevel + 1;
-    if(echosLevel < 3)
+    if ( echosLevel < 3 )
     {
-        this->ua_dot->echos = new unstable_affliction_t( p, i );
+      this->ua_dot->echos = new unstable_affliction_t( p, i );
     }
 
     if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
@@ -2809,10 +2802,20 @@ struct unstable_affliction_t : public warlock_spell_t
     p() -> procs.t18_2pc_affliction -> occur();
     p() -> buffs.compounding_horror -> expire();
 
-    if(flag)
+    if ( flag )
     {
-      p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.power_cord_of_lethtendris);
+      p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.power_cord_of_lethtendris );
     }
+    else
+    { // Only increment if the dot wasn't already there.
+      p() -> buffs.stretens_insanity -> increment( 1 );
+    }
+  }
+
+  void last_tick( dot_t*d ) override
+  {
+    warlock_spell_t::last_tick( d );
+    p() -> buffs.stretens_insanity -> decrement( 1 );
   }
 };
 
@@ -5192,6 +5195,8 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( buffs.demonic_synergy -> check() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
+  m *= 1.0 + buffs.stretens_insanity -> check_stack_value();
+
   if ( buffs.mana_tap -> check() )
     m *= 1.0 + talents.mana_tap -> effectN( 1 ).percent();
 
@@ -5760,6 +5765,11 @@ void warlock_t::create_buffs()
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
     .tick_behavior( BUFF_TICK_NONE );
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.stretens_insanity = buff_creator_t( this, "stretens_insanity", find_spell( 208822 ) )
+    .chance( legendary.stretens_insanity )
+    .default_value( find_spell( 208822 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   //affliction buffs
@@ -7097,6 +7107,17 @@ struct odr_shawl_of_the_ymirjar_t : public scoped_actor_callback_t<warlock_t>
   }
 };
 
+struct stretens_insanity_t: public scoped_actor_callback_t<warlock_t>
+{
+  stretens_insanity_t(): super( WARLOCK_DESTRUCTION )
+  {}
+
+  void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
+  {
+    a -> legendary.stretens_insanity = true;
+  }
+};
+
 struct feretory_of_souls_t : public scoped_actor_callback_t<warlock_t>
 {
   feretory_of_souls_t() : super( WARLOCK_DESTRUCTION )
@@ -7134,6 +7155,7 @@ struct warlock_module_t: public module_t
     register_special_effect( 208868, sindorei_spite_t(), true );
     register_special_effect( 212172, odr_shawl_of_the_ymirjar_t() );
     register_special_effect( 205702, feretory_of_souls_t() );
+    register_special_effect( 208821, stretens_insanity_t() );
   }
 
   virtual void register_hotfixes() const override
