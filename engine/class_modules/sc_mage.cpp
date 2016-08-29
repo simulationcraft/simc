@@ -8253,46 +8253,44 @@ void mage_t::apl_arcane()
   action_priority_list_t* build               = get_action_priority_list( "build"            );
   action_priority_list_t* cooldowns           = get_action_priority_list( "cooldowns"        );
   action_priority_list_t* burn                = get_action_priority_list( "burn"             );
+  action_priority_list_t* init_burn           = get_action_priority_list( "init_burn"        );
 
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
   default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down&burn_phase" );
-
-  default_list -> add_action( this, "Mark of Aluneth", "if=(cooldown.mark_of_aluneth.remains<3|cooldown.mark_of_aluneth.remains>20)&cooldown.arcane_power.remains<=action.rune_of_power.cast_time+gcd&remains<10&buff.arcane_charge.stack=4&!burn_phase|buff.rune_of_power.up|!talent.rune_of_power.enabled" );
-  default_list -> add_talent( this, "Rune of Power", "if=prev_gcd.mark_of_aluneth&recharge_time<cooldown.arcane_power.remains" );
-  default_list -> add_talent( this, "Nether Tempest", "if=(cooldown.mark_of_aluneth.remains<3|cooldown.mark_of_aluneth.remains>20)&cooldown.arcane_power.remains<=action.rune_of_power.cast_time+gcd&remains<10&buff.arcane_charge.stack=4&!burn_phase" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max" );
-  default_list -> add_action( "start_burn_phase,if=(((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|(cooldown.mark_of_aluneth.remains<3|cooldown.mark_of_aluneth.remains>20)&cooldown.arcane_power.remains<=action.rune_of_power.cast_time+gcd)&!prev_gcd.evocation&buff.arcane_charge.stack=4|target.time_to_die<cooldown.arcane_power.remains+13" );
+  default_list -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>20" );
+  default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4&(mana.pct>=70|(cooldown.arcane_power.remains<3|(talent.rune_of_power.enabled&action.rune_of_power.recharge_time<cooldown.arcane_power.remains)))|(buff.arcane_charge.stack<3&mana.pct>=50)|buff.arcane_charge.stack<2" );
+  default_list -> add_action( "call_action_list,name=init_burn,if=buff.arcane_power.down&buff.arcane_charge.stack=4&(cooldown.mark_of_aluneth.remains=0|cooldown.mark_of_aluneth.remains>20)&(!talent.rune_of_power.enabled|(cooldown.arcane_power.remains<=action.rune_of_power.cast_time|action.rune_of_power.recharge_time<cooldown.arcane_power.remains))|target.time_to_die<45" );
+  default_list -> add_action( "call_action_list,name=burn,if=burn_phase|((equipped.132413|equipped.132451)&mana.pct>30&cooldown.arcane_power.remains>40)" );
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&!burn_phase" );
-  default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4" );
-  default_list -> add_action( "call_action_list,name=burn,if=burn_phase" );
   default_list -> add_action( "call_action_list,name=conserve" );
 
   conserve     -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
+  conserve     -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time" );
   conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>99" );
-  conserve     -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>10" );
-  conserve     -> add_talent( this, "Rune of Power", "if=prev_gcd.mark_of_aluneth&cooldown.arcane_power.remains>recharge_time" );
-  conserve     -> add_talent( this, "Supernova", "if=mana.pct<100" );
   conserve     -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)|(cooldown.rune_of_power.remains<gcd.max&dot.nether_tempest.remains<10)" );
   conserve     -> add_action( this, "Arcane Blast", "if=buff.rhonins_assaulting_armwraps.up&equipped.132413" );
   conserve     -> add_action( this, "Arcane Missiles" );
+  conserve     -> add_talent( this, "Supernova", "if=mana.pct<100" );
+  conserve     -> add_action( this, "Frost Nova", "if=equipped.132452" );
   conserve     -> add_action( this, "Arcane Explosion", "if=mana.pct>=82&equipped.132451&active_enemies>1" );
-  conserve     -> add_action( this, "Arcane Blast", "if=cooldown.mark_of_aluneth.remains<cast_time*2" );
   conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>=82&equipped.132451" );
-  conserve     -> add_action( this, "Arcane Barrage", "if=mana.pct<100" );
+  conserve     -> add_action( this, "Arcane Barrage", "if=mana.pct<100&cooldown.arcane_power.remains>5" );
+  conserve     -> add_action( this, "Arcane Blast" );
 
   rop_phase    -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-  rop_phase    -> add_talent( this, "Super Nova", "if=mana.pct<100" );
+  rop_phase    -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time" );
   rop_phase    -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   rop_phase    -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
+  rop_phase    -> add_talent( this, "Super Nova", "if=mana.pct<100" );
   rop_phase    -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   rop_phase    -> add_action( this, "Arcane Blast", "if=mana.pct>45" );
   rop_phase    -> add_action( this, "Arcane Barrage" );
 
   build        -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<=1" );
   build        -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-  build        -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>10" );
   build        -> add_talent( this, "Arcane Orb" );
   build        -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
   build        -> add_action( this, "Arcane Blast" );
@@ -8309,14 +8307,23 @@ void mage_t::apl_arcane()
   }
   cooldowns -> add_action( "potion,name=deadly_grace,if=buff.arcane_power.up" );
 
+  init_burn -> add_action( this, "Mark of Aluneth" );
+  init_burn -> add_action( this, "Frost Nova", "if=equipped.132452" );
+  init_burn -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<10&(prev_gcd.mark_of_aluneth|(talent.rune_of_power.enabled&cooldown.rune_of_power.remains<gcd.max))" );
+  init_burn -> add_talent( this, "Rune of Power" );
+  init_burn -> add_action( "start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55" );
+
   burn      -> add_action( "call_action_list,name=cooldowns" );
-  burn      -> add_talent( this, "Supernova", "if=mana.pct<100" );
-  burn      -> add_action( this, "Arcane Blast", "if=mana.pct%10*execute_time>target.time_to_die" );
+  burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
+  burn      -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time" );
   burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
+  burn      -> add_action( this, "Arcane Blast", "if=mana.pct%10*execute_time>target.time_to_die" );
   burn      -> add_talent( this, "Presence of Mind", "if=buff.arcane_power.remains>2*gcd" );
-  burn      -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up" );
+  burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react>1" );
+  burn      -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up|buff.arcane_power.remains>cast_time" );
+  burn      -> add_talent( this, "Supernova", "if=mana.pct<100" );
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_power.up|mana.pct>10" );
-  burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
+  burn      -> add_action( this, "Arcane Explosion", "if=active_enemies>1+talent.unstable_magic.enabled" );
   burn      -> add_action( this, "Arcane Blast" );
   burn      -> add_action( this, "Evocation" );
 
@@ -8428,7 +8435,7 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2" );
   default_list -> add_action( this, "Frozen Orb" );
   default_list -> add_talent( this, "Ice Nova" );
-  default_list -> add_action( this, "Comet Storm" );
+  default_list -> add_talent( this, "Comet Storm" );
   default_list -> add_action( this, "Blizzard", "if=(talent.arctic_gale.enabled&active_enemies>1)|active_enemies>3" );
   default_list -> add_action( this, "Ebonbolt", "if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)" );
   default_list -> add_action( this, "Frostbolt" );
