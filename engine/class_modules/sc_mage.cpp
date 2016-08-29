@@ -6417,7 +6417,7 @@ struct shard_of_the_exodar_warp_t : public mage_spell_t
 
   virtual bool ready() override
   {
-    if ( p() -> legendary.shard_of_the_exodar )
+    if ( p() -> legendary.shard_of_the_exodar && !p() -> player_t::buffs.bloodlust -> up() )
       return mage_spell_t::ready();
 
     return false;
@@ -6426,7 +6426,12 @@ struct shard_of_the_exodar_warp_t : public mage_spell_t
   virtual void execute() override
   {
     mage_spell_t::execute();
+    if ( p() -> player_t::buffs.bloodlust ->up() )
+    {
+      p() -> player_t::buffs.bloodlust -> expire();
+    }
     p() -> buffs.shard_time_warp -> trigger();
+
   }
 };
 
@@ -8258,7 +8263,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
-  default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down&burn_phase" );
+  default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down&burn_phase&time>3" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max" );
   default_list -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>20" );
   default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<4&(mana.pct>=70|(cooldown.arcane_power.remains<3|(talent.rune_of_power.enabled&action.rune_of_power.recharge_time<cooldown.arcane_power.remains)))|(buff.arcane_charge.stack<3&mana.pct>=50)|buff.arcane_charge.stack<2" );
@@ -8422,7 +8427,7 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.flurry" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
-  default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down" );
+  default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down&time>5" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
   default_list -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
