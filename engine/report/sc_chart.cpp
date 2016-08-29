@@ -1671,7 +1671,7 @@ bool chart::generate_actor_dps_series( highchart::time_series_t& ts,
   ts.set_mean(
       util::round( p.collected_data.dps.mean(), p.sim->report_precision ) );
 
-  return false;
+  return true;
 }
 
 highchart::time_series_t& chart::generate_actor_timeline(

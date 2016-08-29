@@ -2625,24 +2625,11 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
   os << "</div>\n"
      << "<div class=\"charts\">\n";
 
-  if ( p.collected_data.timeline_dmg.mean() > 0 )
+  highchart::time_series_t ts( highchart::build_id( p, "dps" ), *p.sim );
+  if ( chart::generate_actor_dps_series( ts, p ) )
   {
-    highchart::time_series_t dps( highchart::build_id( p, "dps" ), *p.sim );
-    sc_timeline_t timeline_dps;
-    p.collected_data.timeline_dmg.build_derivative_timeline( timeline_dps );
-    dps.set_yaxis_title( "Damage per Second" );
-    dps.set_title( p.name_str + " Damage per Second" );
-    dps.add_simple_series( "area", color::class_color( p.type ).str(), "DPS",
-                           timeline_dps.data() );
-    dps.set_mean( timeline_dps.mean() );
-
-    if ( p.sim->player_no_pet_list.size() > 1 )
-    {
-      dps.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
-    }
-
-    os << dps.to_target_div();
-    p.sim->add_chart_data( dps );
+    os << ts.to_target_div();
+    p.sim->add_chart_data( ts );
   }
 
   highchart::chart_t ac( highchart::build_id( p, "reforge_plot" ), *p.sim );
@@ -2663,13 +2650,6 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     p.sim->add_chart_data( bc );
   }
 
-  highchart::time_series_t ts( highchart::build_id( p, "dps" ), *p.sim );
-  if ( chart::generate_actor_dps_series( ts, p ) )
-  {
-    os << ts.to_target_div();
-    p.sim->add_chart_data( ts );
-  }
-  
   highchart::histogram_chart_t chart( highchart::build_id( p, "dps_dist" ),
                                       *p.sim );
   if ( chart::generate_distribution(
