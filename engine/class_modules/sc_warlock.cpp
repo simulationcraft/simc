@@ -276,6 +276,10 @@ public:
     bool feretory_of_souls;
     bool wilfreds_sigil_of_superior_summoning_flag;
     timespan_t wilfreds_sigil_of_superior_summoning;
+    bool stretens_sleepless_shackles_flag;
+    double stretens_sleepless_shackles_multiplier;
+    bool power_cord_of_lethtendris_flag;
+    double power_cord_of_lethtendris_multiplier;
   } legendary;
 
   // Glyphs
@@ -387,6 +391,7 @@ public:
     gain_t* t19_2pc_demonology;
     gain_t* recurrent_ritual;
     gain_t* feretory_of_souls;
+    gain_t* power_cord_of_lethtendris;
   } gains;
 
   // Procs
@@ -2796,11 +2801,17 @@ struct unstable_affliction_t : public warlock_spell_t
 
   virtual void execute() override
   {
+    bool flag = td( this->target )->dots_unstable_affliction->is_ticking();
     warlock_spell_t::execute();
 
     p() -> buffs.shard_instability -> expire();
     p() -> procs.t18_2pc_affliction -> occur();
     p() -> buffs.compounding_horror -> expire();
+
+    if(flag)
+    {
+      p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.power_cord_of_lethtendris);
+    }
   }
 };
 
@@ -5798,25 +5809,26 @@ void warlock_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.life_tap            = get_gain( "life_tap" );
-  gains.agony               = get_gain( "agony" );
-  gains.conflagrate         = get_gain( "conflagrate" );
-  gains.immolate            = get_gain( "immolate" );
-  gains.shadowburn_shard    = get_gain( "shadowburn_shard" );
-  gains.miss_refund         = get_gain( "miss_refund" );
-  gains.seed_of_corruption  = get_gain( "seed_of_corruption" );
-  gains.drain_soul          = get_gain( "drain_soul" );
-  gains.mana_tap            = get_gain( "mana_tap" );
-  gains.shadow_bolt         = get_gain( "shadow_bolt" );
-  gains.soul_conduit        = get_gain( "soul_conduit" );
-  gains.reverse_entropy     = get_gain( "reverse_entropy" );
-  gains.soulsnatcher        = get_gain( "soulsnatcher" );
-  gains.power_trip          = get_gain( "power_trip" );
-  gains.t18_4pc_destruction = get_gain( "t18_4pc_destruction" );
-  gains.demonwrath          = get_gain( "demonwrath" );
-  gains.t19_2pc_demonology  = get_gain( "t19_2pc_demonology" );
-  gains.recurrent_ritual    = get_gain( "recurrent_ritual" );
-  gains.feretory_of_souls   = get_gain( "feretory_of_souls" );
+  gains.life_tap                    = get_gain( "life_tap" );
+  gains.agony                       = get_gain( "agony" );
+  gains.conflagrate                 = get_gain( "conflagrate" );
+  gains.immolate                    = get_gain( "immolate" );
+  gains.shadowburn_shard            = get_gain( "shadowburn_shard" );
+  gains.miss_refund                 = get_gain( "miss_refund" );
+  gains.seed_of_corruption          = get_gain( "seed_of_corruption" );
+  gains.drain_soul                  = get_gain( "drain_soul" );
+  gains.mana_tap                    = get_gain( "mana_tap" );
+  gains.shadow_bolt                 = get_gain( "shadow_bolt" );
+  gains.soul_conduit                = get_gain( "soul_conduit" );
+  gains.reverse_entropy             = get_gain( "reverse_entropy" );
+  gains.soulsnatcher                = get_gain( "soulsnatcher" );
+  gains.power_trip                  = get_gain( "power_trip" );
+  gains.t18_4pc_destruction         = get_gain( "t18_4pc_destruction" );
+  gains.demonwrath                  = get_gain( "demonwrath" );
+  gains.t19_2pc_demonology          = get_gain( "t19_2pc_demonology" );
+  gains.recurrent_ritual            = get_gain( "recurrent_ritual" );
+  gains.feretory_of_souls           = get_gain( "feretory_of_souls" );
+  gains.power_cord_of_lethtendris   = get_gain( "power_cord_of_lethtendris" );
 }
 
 // warlock_t::init_procs ===============================================
@@ -6978,6 +6990,30 @@ private:
 
 using namespace unique_gear;
 using namespace actions;
+
+struct power_cord_of_lethtendris_t : public scoped_actor_callback_t<warlock_t>
+{
+    power_cord_of_lethtendris_t() : super( WARLOCK )
+    {}
+
+    void manipulate (warlock_t* p, const special_effect_t& e) override
+    {
+        p->legendary.power_cord_of_lethtendris_flag = true;
+        p->legendary.power_cord_of_lethtendris_multiplier = e.driver()->effectN( 1 ).percent();
+    }
+};
+
+struct stretens_sleepless_shackles_t : public scoped_actor_callback_t<warlock_t>
+{
+    stretens_sleepless_shackles_t() : super( WARLOCK )
+    {}
+
+    void manipulate(warlock_t* p, const special_effect_t& e) override
+    {
+        p->legendary.stretens_sleepless_shackles_flag = true;
+        p->legendary.stretens_sleepless_shackles_multiplier = e.driver()->effectN( 1 ).percent();
+    }
+};
 
 struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
 {
