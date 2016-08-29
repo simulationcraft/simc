@@ -78,7 +78,7 @@ actions.single_target+=/scorch,if=target.health.pct<=25&equipped.132454
 actions.single_target+=/fireball
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
-neck=chain_of_the_underking,id=134495,bonus_id=1727,enchant=mark_of_the_claw
+neck=chain_of_the_underking,id=134495,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
 back=iceblood_shroud,id=134411,bonus_id=1727,enchant=binding_of_intellect
 chest=tunic_of_smoldering_ire,id=137352,bonus_id=1727

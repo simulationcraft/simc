@@ -92,7 +92,7 @@ actions.init_burn+=/rune_of_power
 actions.init_burn+=/start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
-neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_claw
+neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
 back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant=binding_of_intellect
 chest=flameheart_vestment,id=137504,bonus_id=1727
