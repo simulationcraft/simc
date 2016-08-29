@@ -6127,6 +6127,7 @@ void warlock_t::apl_demonology()
     add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
     add_action( "Life Tap", "if=mana.pct<=30" );
     add_action( "Demonwrath", "chain=1,interrupt=1,if=spell_targets.demonwrath>=3" );
+    add_action( "Demonwrath", "moving=1,chain=1,interrupt=1" );
     action_list_str += "/demonbolt";
     add_action( "Shadow Bolt" );
   }

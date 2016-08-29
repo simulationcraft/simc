@@ -85,7 +85,7 @@ feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727
 finger1=band_of_fused_coral,id=134532,bonus_id=1727,enchant_id=5428
 finger2=seal_of_malicious_deceit,id=134489,bonus_id=1727,enchant_id=5428
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
-trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
+trinket2=chrono_shard,id=137419,bonus_id=1727
 main_hand=scepter_of_sargeras,id=128941,gem_id=137476/137316/137476,relic_id=3412/3412/3412
 default_pet=imp
 
