@@ -8681,7 +8681,7 @@ struct prydaz_xavarics_magnum_opus_t : public unique_gear::scoped_actor_callback
 
   void manipulate( monk_t* monk, const special_effect_t& e ) override
   {
-    monk->legendary.prydaz_xavarics_magnum_opus = e.driver();
+    monk -> legendary.prydaz_xavarics_magnum_opus = e.driver();
   }
 };
 
@@ -8692,7 +8692,130 @@ struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<monk_t>
 
   void manipulate( monk_t* monk, const special_effect_t& e ) override
   {
-    monk->legendary.sephuzs_secret = e.driver();
+    monk -> legendary.sephuzs_secret = e.driver();
+  }
+};
+
+// Brewmaster Legendary Effects
+struct firestone_walkers_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  firestone_walkers_t() : super( MONK_BREWMASTER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.firestone_walkers = e.driver();
+  }
+};
+
+struct fundamental_observation_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  fundamental_observation_t() : super( MONK_BREWMASTER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.fundamental_observation = e.driver();
+  }
+};
+
+struct gai_plins_soothing_sash_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  gai_plins_soothing_sash_t() : super( MONK_BREWMASTER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.gai_plins_soothing_sash = e.driver();
+  }
+};
+
+struct jewel_of_the_lost_abbey_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  jewel_of_the_lost_abbey_t() : super( MONK_BREWMASTER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.jewel_of_the_lost_abbey = e.driver();
+  }
+};
+
+struct salsalabims_lost_tunic_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  salsalabims_lost_tunic_t() : super( MONK_BREWMASTER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.salsalabims_lost_tunic = e.driver();
+  }
+};
+
+// Mistweaver
+struct eithas_lunar_glides_of_eramas_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  eithas_lunar_glides_of_eramas_t() : super( MONK_MISTWEAVER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.eithas_lunar_glides_of_eramas = e.driver();
+  }
+};
+
+struct eye_of_collidus_the_warp_watcher_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  eye_of_collidus_the_warp_watcher_t() : super( MONK_MISTWEAVER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.eye_of_collidus_the_warp_watcher = e.driver();
+  }
+};
+
+struct leggings_of_the_black_flame_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  leggings_of_the_black_flame_t() : super( MONK_MISTWEAVER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.leggings_of_the_black_flame = e.driver();
+  }
+};
+
+struct ovyds_winter_wrap_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  ovyds_winter_wrap_t() : super( MONK_MISTWEAVER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.ovyds_winter_wrap = e.driver();
+  }
+};
+
+struct petrichor_lagniappe_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  petrichor_lagniappe_t() : super( MONK_MISTWEAVER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.petrichor_lagniappe = e.driver();
+  }
+};
+
+struct unison_spaulders_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  unison_spaulders_t() : super( MONK_MISTWEAVER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk -> legendary.unison_spaulders = e.driver();
   }
 };
 
@@ -8756,7 +8879,7 @@ struct monk_module_t: public module_t
 
   virtual void static_init() const override
   {
-    // WoD's Legendary Rings
+    // WoD's Archemonde Trinkets
     unique_gear::register_special_effect( 184906, eluding_movements );
     unique_gear::register_special_effect( 184907, soothing_breeze );
     unique_gear::register_special_effect( 184908, furious_sun );
@@ -8766,15 +8889,26 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 214483, sheilun_staff_of_the_mists );
     unique_gear::register_special_effect( 214852, fu_zan_the_wanderers_companion );
 
-    // TODO: Add the Legion Legendary effects
+    // Legion Legendary Effects
     // General
     unique_gear::register_special_effect( 207692, cinidaria_the_symbiote_t() );
     unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t() );
     unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
 
     // Brewmaster
+    unique_gear::register_special_effect( 224489, firestone_walkers_t() );
+    unique_gear::register_special_effect( 208878, fundamental_observation_t() );
+    unique_gear::register_special_effect( 208837, gai_plins_soothing_sash_t() );
+    unique_gear::register_special_effect( 208881, jewel_of_the_lost_abbey_t() );
+    unique_gear::register_special_effect( 212935, salsalabims_lost_tunic_t() );
 
     // Mistweaver
+    unique_gear::register_special_effect( 217153, eithas_lunar_glides_of_eramas_t() );
+    unique_gear::register_special_effect( 217473, eye_of_collidus_the_warp_watcher_t() );
+    unique_gear::register_special_effect( 216506, leggings_of_the_black_flame_t() );
+    unique_gear::register_special_effect( 217634, ovyds_winter_wrap_t() );
+    unique_gear::register_special_effect( 206902, petrichor_lagniappe_t() );
+    unique_gear::register_special_effect( 212123, unison_spaulders_t() );
 
     // Windwalker
     unique_gear::register_special_effect( 208842, cenedril_reflector_of_hatred_t() );

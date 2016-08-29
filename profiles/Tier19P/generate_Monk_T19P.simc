@@ -22,6 +22,6 @@ finger1=braided_silver_ring,id=134539,bonus_id=1727,enchant=binding_of_mastery
 finger2=ring_of_minute_mirrors,id=137533,bonus_id=1727,enchant=binding_of_mastery
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=hunger_of_the_pack,id=136975,bonus_id=1727
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313
+main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313,relic_id=3412/3412/3412
 off_hand=fists_of_the_heavens,id=133948
 save=Monk_Windwalker_T19P.simc
