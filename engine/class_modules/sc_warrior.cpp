@@ -9,12 +9,10 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// Implement ignore pain + rage from damage taken
-// Implement Wall of Steel + Neltharion's Fury + scales of earth
+
 // Add back second wind
 // Legendary items not completely implemented yet
-// Archavon's Heavy Hand - 137060 - Heroic throw deals 25% increased damage for every yard between you and the target - 207326
-// Grom's Wartorn Pauldrons - 137077 - While battle cry or berserker rage is active, charge has no cooldown - 205597
+
 // Kargath's Sacrificed Hands - 138489 - Activating ignore pain regenerates 5% of your maximum hp over 5 seconds - 207845
 // Thundergod's Vigor - 137089 - Each enemy you hit with thunderclap reduces cd of demo shout by 1 second - 215176
 // The Walls Fell - 137054 - Shield slam extends the duration of shield wall by 2 seconds - 215057
@@ -127,6 +125,7 @@ public:
     buff_t* avatar;
     buff_t* ayalas_stone_heart;
     buff_t* battle_cry;
+    buff_t* battle_cry_deadly_calm;
     buff_t* berserker_rage;
     buff_t* berserking;
     buff_t* berserking_driver;
@@ -146,31 +145,34 @@ public:
     buff_t* focused_rage;
     buff_t* frenzy;
     buff_t* frothing_berserker;
-    haste_buff_t* fury_trinket;
+    buff_t* furious_charge;
     buff_t* heroic_leap_movement;
+    buff_t* ignore_pain;
+    buff_t* intercept_movement;
     buff_t* intervene_movement;
     buff_t* juggernaut;
     buff_t* last_stand;
     buff_t* massacre;
     buff_t* meat_cleaver;
+    buff_t* neltharions_fury;
     buff_t* odyns_champion;
     buff_t* overpower;
     buff_t* precise_strikes;
     buff_t* ravager;
     buff_t* ravager_protection;
+    buff_t* renewed_fury;
     buff_t* sense_death;
     buff_t* shattered_defenses;
     buff_t* shield_block;
     buff_t* shield_wall;
-    buff_t* taste_for_blood;
-    buff_t* wrecking_ball;
     buff_t* spell_reflection;
-
-    buff_t* ignore_pain;
-    buff_t* neltharions_fury;
-    buff_t* vengeance_ignore_pain;
-    buff_t* vengeance_focused_rage;
+    buff_t* taste_for_blood;
     buff_t* ultimatum;
+    buff_t* vengeance_focused_rage;
+    buff_t* vengeance_ignore_pain;
+    buff_t* wrecking_ball;
+    haste_buff_t* fury_trinket;
+
     //Legendary Items
     buff_t* bindings_of_kakushan;
     buff_t* kargaths_sacrificed_hands;
@@ -222,6 +224,7 @@ public:
     gain_t* revenge;
     gain_t* shield_slam;
     gain_t* will_of_the_first_king;
+    gain_t* booming_voice;
 
     // Legendarys
     gain_t* ceannar_rage;
@@ -329,24 +332,23 @@ public:
     const spell_data_t* fervor_of_battle;
     const spell_data_t* outburst;
     const spell_data_t* rend;
-    const spell_data_t* renewed_fury; //
+    const spell_data_t* renewed_fury;
     const spell_data_t* wrecking_ball;
 
     const spell_data_t* bounding_stride;
-    const spell_data_t* crackling_thunder; //
-    const spell_data_t* die_by_the_sword; //
-    const spell_data_t* furious_charge; //
-    const spell_data_t* second_wind; //
-    const spell_data_t* warpaint; //
+    const spell_data_t* crackling_thunder;
+    const spell_data_t* furious_charge;
+    const spell_data_t* second_wind; // NYI
+    const spell_data_t* warpaint;
 
-    const spell_data_t* best_served_cold; //
+    const spell_data_t* best_served_cold;
     const spell_data_t* bladestorm;
     const spell_data_t* frothing_berserker;
     const spell_data_t* in_for_the_kill;
-    const spell_data_t* indomitable; //
+    const spell_data_t* indomitable;
     const spell_data_t* massacre;
     const spell_data_t* mortal_combo;
-    const spell_data_t* never_surrender; //
+    const spell_data_t* never_surrender; // SORTA NYI
 
     const spell_data_t* bloodbath;
     const spell_data_t* booming_voice;
@@ -354,7 +356,7 @@ public:
     const spell_data_t* focused_rage;
     const spell_data_t* frenzy;
     const spell_data_t* inner_rage;
-    const spell_data_t* into_the_fray;
+    const spell_data_t* into_the_fray; // NYI
     const spell_data_t* titanic_might;
     const spell_data_t* trauma;
     const spell_data_t* vengeance;
@@ -583,7 +585,7 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless;
+  bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, deadly_calm;
   double tactician_per_rage, arms_t19_4p_chance;
 private:
   typedef Base ab; // action base, eg. spell_t
@@ -600,6 +602,7 @@ public:
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
     dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) ),
+    deadly_calm( ab::data().affected_by( player -> spec.battle_cry -> effectN( 4 ) ) ),
     tactician_per_rage( 0 ), arms_t19_4p_chance( 0 ), cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
   {
     ab::may_crit = true;
@@ -669,7 +672,7 @@ public:
       c *= 1.0 + p() -> talents.dauntless -> effectN( 1 ).percent();
     }
 
-    if ( p() -> talents.deadly_calm -> ok() && p() -> buff.battle_cry -> check() )
+    if ( p() -> buff.battle_cry_deadly_calm -> check() && deadly_calm )
     {
       c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
@@ -1328,6 +1331,15 @@ struct bloodthirst_heal_t: public warrior_heal_t
     background = true;
   }
 
+  double action_multiplier() const
+  {
+    double am = warrior_heal_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.furious_charge -> value();
+
+    return am;
+  }
+
   resource_e current_resource() const override { return RESOURCE_NONE; }
 };
 
@@ -1404,6 +1416,7 @@ struct bloodthirst_t: public warrior_attack_t
       if ( bloodthirst_heal )
       {
         bloodthirst_heal -> execute();
+        p() -> buff.furious_charge -> expire();
       }
 
       if ( execute_state -> result == RESULT_CRIT )
@@ -1498,6 +1511,8 @@ struct charge_t: public warrior_attack_t
 
     warrior_attack_t::execute();
 
+    p() -> buff.furious_charge -> trigger();
+
     if ( first_charge )
     {
       first_charge = !first_charge;
@@ -1531,7 +1546,8 @@ struct charge_t: public warrior_attack_t
   }
 };
 
-
+// Intercept ===========================================================================
+// FIXME: Min range on bad dudes, no min range on good dudes. 
 struct intercept_t: public warrior_attack_t
 {
   double movement_speed_increase, min_range, rage_gain;
@@ -1562,7 +1578,7 @@ struct intercept_t: public warrior_attack_t
   {
     if ( p() -> current.distance_to_move > 5 )
     {
-      p() -> buff.charge_movement -> trigger( 1, movement_speed_increase, 1, timespan_t::from_seconds(
+      p() -> buff.intercept_movement -> trigger( 1, movement_speed_increase, 1, timespan_t::from_seconds(
         p() -> current.distance_to_move / (p() -> base_movement_speed * (1 + p() -> passive_movement_modifier() + movement_speed_increase)) ) );
       p() -> current.moving_away = 0;
     }
@@ -1572,7 +1588,7 @@ struct intercept_t: public warrior_attack_t
 
   bool ready() override
   {
-    if ( p() -> buff.charge_movement -> check() || p() -> buff.heroic_leap_movement -> check() || p() -> buff.intervene_movement -> check() )
+    if ( p() -> buff.heroic_leap_movement -> check() )
     {
       return false;
     }
@@ -1737,16 +1753,29 @@ struct opportunity_strikes_t : public warrior_attack_t
 
 struct demoralizing_shout: public warrior_attack_t
 {
+  double rage_gain;
   demoralizing_shout( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "demoralizing_shout", p, p -> spec.demoralizing_shout )
+    warrior_attack_t( "demoralizing_shout", p, p -> spec.demoralizing_shout ),
+    rage_gain( 0 )
   {
     parse_options( options_str );
+    rage_gain += p -> talents.booming_voice -> effectN( 1 ).resource( RESOURCE_RAGE );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p() -> buff.demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
+    if ( rage_gain > 0 )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.booming_voice );
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    p() -> buff.demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent() );
     td( s -> target ) -> debuffs_demoralizing_shout -> trigger( 1, data().effectN( 1 ).percent(), 1.0, p() -> spec.demoralizing_shout -> duration() * ( 1.0 + p() -> artifact.rumbling_voice.percent() ) );
   }
 };
@@ -1992,7 +2021,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> mastery.colossal_might -> ok() )
     {
-      bool free = ( p() -> buff.ayalas_stone_heart -> up() || ( p() -> buff.battle_cry -> up() && p() -> talents.deadly_calm -> ok() ) );
+      bool free = ( p() -> buff.ayalas_stone_heart -> up() || p() -> buff.battle_cry_deadly_calm -> up() );
       am *= 4.0 * ( std::min( max_rage, ( free ? max_rage : p() -> resources.current[RESOURCE_RAGE] ) ) / max_rage );
     }
     else if ( p() -> has_shield_equipped() )
@@ -2048,7 +2077,7 @@ struct execute_t: public warrior_attack_t
       return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
     }
 
-    if ( p() -> talents.deadly_calm -> ok() && p() -> buff.battle_cry -> check() )
+    if ( p() -> buff.battle_cry_deadly_calm -> check() )
     {
       return c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
@@ -2262,7 +2291,7 @@ struct heroic_leap_t: public warrior_attack_t
 
   bool ready() override
   {
-    if ( p() -> buff.intervene_movement -> check() || p() -> buff.charge_movement -> check() )
+    if ( p() -> buff.intervene_movement -> check() || p() -> buff.charge_movement -> check() || p() -> buff.intercept_movement -> check() )
     {
       return false;
     }
@@ -3009,6 +3038,15 @@ struct revenge_t: public warrior_attack_t
     return am;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+    if ( p() -> talents.best_served_cold -> ok() )
+    {
+      p() -> resource_gain( RESOURCE_RAGE, p() -> talents.best_served_cold -> effectN( 1 ).resource(RESOURCE_RAGE), p() -> gain.revenge );
+    }
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3335,6 +3373,8 @@ struct thunder_clap_t: public warrior_attack_t
     aoe = -1;
     may_dodge = may_parry = may_block = false;
     attack_power_mod.direct *= 1.0 + p -> artifact.thunder_crash.percent();
+
+    radius *= 1.0 + p -> talents.crackling_thunder -> effectN( 1 ).percent();
   }
 };
 
@@ -3831,7 +3871,7 @@ struct defensive_stance_t: public warrior_spell_t
 struct die_by_the_sword_t: public warrior_spell_t
 {
   die_by_the_sword_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "die_by_the_sword", p, p -> spec.die_by_the_sword ? p -> spec.die_by_the_sword : p -> talents.die_by_the_sword )
+    warrior_spell_t( "die_by_the_sword", p, p -> spec.die_by_the_sword )
   {
     parse_options( options_str );
     range = -1;
@@ -3920,6 +3960,7 @@ struct battle_cry_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.battle_cry -> trigger( 1, bonus_crit );
+    p() -> buff.battle_cry_deadly_calm -> trigger();
     p() -> buff.corrupted_blood_of_zakajz -> trigger();
   }
 };
@@ -3960,6 +4001,7 @@ struct ignore_pain_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
     p() -> buff.vengeance_focused_rage -> trigger();
+    p() -> buff.renewed_fury -> trigger();
   }
 
   double cost() const override
@@ -3986,6 +4028,14 @@ struct ignore_pain_t: public warrior_spell_t
       amount *= 2.0;
       p() -> buff.vengeance_ignore_pain -> expire();
     }
+
+    /*  Need to figure out a way to keep the warrior about 0 percent health. 
+    if ( p() -> talents.never_surrender -> ok() )
+    {
+      double percent_health = ( 1 - ( p() -> health_percentage() / 100 ) ) * p() -> talents.never_surrender -> effectN( 1 ).percent();
+      amount *= 1.0 + percent_health;
+    }
+    */
 
     amount += p() -> buff.ignore_pain -> current_value;
 
@@ -4189,11 +4239,9 @@ void warrior_t::init_spells()
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
 
   // Spec Passives
-  spec.victory_rush             = find_specialization_spell( "Victory Rush" );
-  spec.revenge_trigger          = find_specialization_spell( "Revenge Trigger" );
-  spec.berserker_rage           = find_specialization_spell( "Berserker Rage" );
   spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense" );
   spec.battle_cry               = find_specialization_spell( "Battle Cry" );
+  spec.berserker_rage           = find_specialization_spell( "Berserker Rage" );
   spec.bladestorm               = find_specialization_spell( "Bladestorm" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
   spec.cleave                   = find_specialization_spell( "Cleave" );
@@ -4207,17 +4255,21 @@ void warrior_t::init_spells()
   spec.enrage                   = find_specialization_spell( "Enrage" );
   spec.enraged_regeneration     = find_specialization_spell( "Enraged Regeneration" );
   spec.execute                  = find_specialization_spell( "Execute" );
+  spec.focused_rage             = find_specialization_spell( "Focused Rage" );
+  spec.focused_rage             = find_specialization_spell( "Focused Rage" );
   spec.furious_slash            = find_specialization_spell( "Furious Slash" );
   spec.hamstring                = find_specialization_spell( "Hamstring" );
+  spec.ignore_pain              = find_specialization_spell( "Ignore Pain" );
+  spec.intercept                = find_specialization_spell( "Intercept" );
   spec.last_stand               = find_specialization_spell( "Last Stand" );
   spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver" );
-  spec.focused_rage             = find_specialization_spell( "Focused Rage" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
   spec.piercing_howl            = find_specialization_spell( "Piercing Howl" );
   spec.protection               = find_specialization_spell( "Protection" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.rampage                  = find_specialization_spell( "Rampage" );
   spec.revenge                  = find_specialization_spell( "Revenge" );
+  spec.revenge_trigger          = find_specialization_spell( "Revenge Trigger" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
   spec.shield_block             = find_specialization_spell( "Shield Block" );
@@ -4225,15 +4277,13 @@ void warrior_t::init_spells()
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
   spec.singleminded_fury        = find_specialization_spell( "Single-Minded Fury" );
   spec.slam                     = find_specialization_spell( "Slam" );
+  spec.spell_reflection         = find_specialization_spell( "Spell Reflection" );
   spec.tactician                = find_specialization_spell( "Tactician" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
   spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
+  spec.victory_rush             = find_specialization_spell( "Victory Rush" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
-  spec.ignore_pain              = find_specialization_spell( "Ignore Pain" );
-  spec.intercept                = find_specialization_spell( "Intercept" );
-  spec.focused_rage             = find_specialization_spell( "Focused Rage" );
-  spec.spell_reflection         = find_specialization_spell( "Spell Reflection" );
 
   // Talents
   talents.anger_management      = find_talent_spell( "Anger Management" );
@@ -4248,7 +4298,6 @@ void warrior_t::init_spells()
   talents.dauntless             = find_talent_spell( "Dauntless" );
   talents.deadly_calm           = find_talent_spell( "Deadly Calm" );
   talents.defensive_stance      = find_talent_spell( "Defensive Stance" );
-  talents.die_by_the_sword      = find_talent_spell( "Die by the Sword" );
   talents.double_time           = find_talent_spell( "Double Time" );
   talents.dragon_roar           = find_talent_spell( "Dragon Roar" );
   talents.endless_rage          = find_talent_spell( "Endless Rage" );
@@ -4260,6 +4309,7 @@ void warrior_t::init_spells()
   talents.furious_charge        = find_talent_spell( "Furious Charge");
   talents.heavy_repercussions   = find_talent_spell( "Heavy Repercussions" );
   talents.in_for_the_kill       = find_talent_spell( "In For The Kill" );
+  talents.indomitable           = find_talent_spell( "Indomitable" );
   talents.inner_rage            = find_talent_spell( "Inner Rage" );
   talents.into_the_fray         = find_talent_spell( "Into The Fray" );
   talents.massacre              = find_talent_spell( "Massacre" );
@@ -4278,72 +4328,69 @@ void warrior_t::init_spells()
   talents.sweeping_strikes      = find_talent_spell( "Sweeping Strikes" );
   talents.titanic_might         = find_talent_spell( "Titanic Might" );
   talents.trauma                = find_talent_spell( "Trauma" );
+  talents.ultimatum             = find_talent_spell( "Ultimatum" );
   talents.vengeance             = find_talent_spell( "Vengeance" );
   talents.war_machine           = find_talent_spell( "War Machine" );
   talents.warbringer            = find_talent_spell( "Warbringer" );
   talents.warpaint              = find_talent_spell( "Warpaint" );
   talents.wrecking_ball         = find_talent_spell( "Wrecking Ball" );
-  talents.indomitable           = find_talent_spell( "Indomitable" );
-  talents.ultimatum             = find_talent_spell( "Ultimatum" );
 
 
   // Artifact
+  artifact.battle_scars              = find_artifact_spell( "Battle Scars" );
+  artifact.bloodcraze                = find_artifact_spell( "Bloodcraze" );
   artifact.corrupted_blood_of_zakajz = find_artifact_spell( "Corrupted Blood of Zakajz" );
   artifact.corrupted_rage            = find_artifact_spell( "Corrupted Rage" );
   artifact.crushing_blows            = find_artifact_spell( "Crushing Blows" );
   artifact.deathblow                 = find_artifact_spell( "Deathblow" );
+  artifact.deathdealer               = find_artifact_spell( "Deathdealer" );
   artifact.defensive_measures        = find_artifact_spell( "Defensive Measures" );
+  artifact.dragon_scales             = find_artifact_spell( "Dragon Scales" );
+  artifact.dragon_skin               = find_artifact_spell( "Dragon Skin" );
   artifact.exploit_the_weakness      = find_artifact_spell( "Exploit the Weakness" );
   artifact.focus_in_battle           = find_artifact_spell( "Focus in Battle" );
-  artifact.one_against_many          = find_artifact_spell( "One Against Many" );
-  artifact.precise_strikes           = find_artifact_spell( "Precise Strikes" );
-  artifact.shattered_defenses        = find_artifact_spell( "Shattered Defenses" );
-  artifact.tactical_advance          = find_artifact_spell( "Tactical Advance" );
-  artifact.thoradins_might           = find_artifact_spell( "Thoradin's Might" );
-  artifact.touch_of_zakajz           = find_artifact_spell( "Touch of Zakajz" );
-  artifact.unending_rage             = find_artifact_spell( "Unending Rage" );
-  artifact.void_cleave               = find_artifact_spell( "Void Cleave" );
-  artifact.warbreaker                = find_artifact_spell( "Warbreaker" );
-  artifact.many_will_fall            = find_artifact_spell( "Many Will Fall" );
-
-  artifact.battle_scars              = find_artifact_spell( "Battle Scars" );
-  artifact.bloodcraze                = find_artifact_spell( "Bloodcraze" );
-  artifact.deathdealer               = find_artifact_spell( "Deathdealer" );
   artifact.focus_in_chaos            = find_artifact_spell( "Focus in Chaos" );
   artifact.helyas_wrath              = find_artifact_spell( "Helya's Wrath" );
+  artifact.intolerance               = find_artifact_spell( "Intolerance" );
   artifact.juggernaut                = find_artifact_spell( "Juggernaut" );
+  artifact.leaping_giants            = find_artifact_spell( "Leaping Giants" );
+  artifact.many_will_fall            = find_artifact_spell( "Many Will Fall" );
+  artifact.might_of_the_vrykul       = find_artifact_spell( "Might of the Vrykul" );
+  artifact.neltharions_fury          = find_artifact_spell( "Neltharion's Fury" );
   artifact.odyns_champion            = find_artifact_spell( "Odyn's Champion" );
   artifact.odyns_fury                = find_artifact_spell( "Odyn's Fury" );
+  artifact.one_against_many          = find_artifact_spell( "One Against Many" );
+  artifact.precise_strikes           = find_artifact_spell( "Precise Strikes" );
+  artifact.rage_of_the_fallen        = find_artifact_spell( "Rage of the Fallen" );
   artifact.rage_of_the_valarjar      = find_artifact_spell( "Rage of the Valarjar" );
   artifact.raging_berserker          = find_artifact_spell( "Raging Berserker" );
+  artifact.reflective_plating        = find_artifact_spell( "Reflective Plating" );
+  artifact.rumbling_voice            = find_artifact_spell( "Rumbling Voice" );
+  artifact.scales_of_earth           = find_artifact_spell( "Scales of Earth" );
   artifact.sense_death               = find_artifact_spell( "Sense Death" );
-  artifact.titanic_power             = find_artifact_spell( "Titanic Power" );
+  artifact.shatter_the_bones         = find_artifact_spell( "Shatter the Bones" );
+  artifact.shattered_defenses        = find_artifact_spell( "Shattered Defenses" );
+  artifact.strength_of_the_earth_aspect = find_artifact_spell( "Strength of the Earth Aspect" );
+  artifact.tactical_advance          = find_artifact_spell( "Tactical Advance" );
   artifact.thirst_for_battle         = find_artifact_spell( "Thirst for Battle" );
+  artifact.thoradins_might           = find_artifact_spell( "Thoradin's Might" );
+  artifact.thunder_crash             = find_artifact_spell( "Thunder Crash" );
+  artifact.titanic_power             = find_artifact_spell( "Titanic Power" );
+  artifact.touch_of_zakajz           = find_artifact_spell( "Touch of Zakajz" );
+  artifact.toughness                 = find_artifact_spell( "Toughness" );
   artifact.unbreakable_steel         = find_artifact_spell( "Unbreakable Steel" );
   artifact.uncontrolled_rage         = find_artifact_spell( "Uncontrolled Rage" );
+  artifact.unending_rage             = find_artifact_spell( "Unending Rage" );
   artifact.unrivaled_strength        = find_artifact_spell( "Unrivaled Strength" );
   artifact.unstoppable               = find_artifact_spell( "Unstoppable" );
-  artifact.will_of_the_first_king    = find_artifact_spell( "Will of the First King" );
+  artifact.void_cleave               = find_artifact_spell( "Void Cleave" );
+  artifact.vrykul_shield_training    = find_artifact_spell( "Vrykul Shield Training" );
+  artifact.wall_of_steel             = find_artifact_spell( "Wall of Steel" );
+  artifact.warbreaker                = find_artifact_spell( "Warbreaker" );
   artifact.wild_slashes              = find_artifact_spell( "Wild Slashes" );
+  artifact.will_of_the_first_king    = find_artifact_spell( "Will of the First King" );
+  artifact.will_to_survive           = find_artifact_spell( "Will to Survive" );
   artifact.wrath_and_fury            = find_artifact_spell( "Wrath and Fury" );
-
-  artifact.neltharions_fury             = find_artifact_spell( "Neltharion's Fury" );
-  artifact.strength_of_the_earth_aspect = find_artifact_spell( "Strength of the Earth Aspect" );
-  artifact.shatter_the_bones            = find_artifact_spell( "Shatter the Bones" );
-  artifact.rage_of_the_fallen           = find_artifact_spell( "Rage of the Fallen" );
-  artifact.vrykul_shield_training       = find_artifact_spell( "Vrykul Shield Training" );
-  artifact.will_to_survive              = find_artifact_spell( "Will to Survive" );
-  artifact.toughness                    = find_artifact_spell( "Toughness" );
-  artifact.rumbling_voice               = find_artifact_spell( "Rumbling Voice" );
-  artifact.might_of_the_vrykul          = find_artifact_spell( "Might of the Vrykul" );
-  artifact.wall_of_steel                = find_artifact_spell( "Wall of Steel" );
-  artifact.leaping_giants               = find_artifact_spell( "Leaping Giants" );
-  artifact.scales_of_earth              = find_artifact_spell( "Scales of Earth" );
-  artifact.intolerance                  = find_artifact_spell( "Intolerance" );
-  artifact.thunder_crash                = find_artifact_spell( "Thunder Crash" );
-  artifact.dragon_skin                  = find_artifact_spell( "Dragon Skin" );
-  artifact.reflective_plating           = find_artifact_spell( "Reflective Plating" );
-  artifact.dragon_scales                = find_artifact_spell( "Dragon Scales" );
 
   // Generic spells
   spell.charge                  = find_class_spell( "Charge" );
@@ -4398,13 +4445,13 @@ void warrior_t::init_spells()
   cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
   cooldown.last_stand               = get_cooldown( "last_stand" );
   cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
-  cooldown.odyns_fury               = get_cooldown( "odyns_fury" );
   cooldown.odyns_champion_icd       = get_cooldown( "odyns_champion_icd" );
   cooldown.odyns_champion_icd -> duration = artifact.odyns_champion.data().effectN( 1 ).trigger() -> internal_cooldown();
-  cooldown.rage_of_the_valarjar_icd = get_cooldown( "rage_of_the_valarjar_icd" );
-  cooldown.rage_of_the_valarjar_icd -> duration = artifact.rage_of_the_valarjar.data().internal_cooldown();
+  cooldown.odyns_fury               = get_cooldown( "odyns_fury" );
   cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block" );
   cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
+  cooldown.rage_of_the_valarjar_icd = get_cooldown( "rage_of_the_valarjar_icd" );
+  cooldown.rage_of_the_valarjar_icd -> duration = artifact.rage_of_the_valarjar.data().internal_cooldown();
   cooldown.raging_blow              = get_cooldown( "raging_blow" );
   cooldown.revenge                  = get_cooldown( "revenge" );
   cooldown.revenge_reset            = get_cooldown( "revenge_reset" );
@@ -4773,7 +4820,7 @@ void warrior_t::apl_arms()
 
   default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   default_list -> add_talent( this, "Rend", "if=remains<gcd" );
-  default_list -> add_action( this, "Hamstring", "if=talent.deadly_calm.enabled&buff.battle_cry.up" );
+  default_list -> add_action( this, "Hamstring", "if=buff.battle_cry_deadly_calm.up" );
   default_list -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
   default_list -> add_action( this, "Warbreaker", "if=debuff.colossus_smash.down" );
   default_list -> add_talent( this, "Ravager" );
@@ -4783,13 +4830,13 @@ void warrior_t::apl_arms()
   default_list -> add_action( "run_action_list,name=single" );
 
   single_target -> add_action( this, "Mortal Strike" );
-  single_target -> add_action( this, "Execute", "if=buff.stone_heart.react|(buff.battle_cry.up&talent.deadly_calm.enabled)" );
+  single_target -> add_action( this, "Execute", "if=buff.stone_heart.react|buff.battle_cry_deadly_calm.up" );
   single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
   single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up&rage.deficit<60" );
-  single_target -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3|(talent.deadly_calm.enabled&buff.battle_cry.up)" );
-  single_target -> add_action( this, "Slam", "if=target.health.pct>20&!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up))" );
-  single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up)|buff.cleave.up)" );
+  single_target -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3|buff.battle_cry_deadly_calm.up" );
+  single_target -> add_action( this, "Slam", "if=target.health.pct>20&!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up)" );
+  single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)" );
   single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
   single_target -> add_action( "heroic_charge" );
   single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)" );
@@ -4803,7 +4850,7 @@ void warrior_t::apl_arms()
   cleave -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
   cleave -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
   cleave -> add_talent( this, "Focused Rage", "if=buff.shattered_defenses.down" );
-  cleave -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up)|buff.cleave.up)" );
+  cleave -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)" );
   cleave -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
   cleave -> add_action( "heroic_charge" );
   cleave -> add_action( this, "Bladestorm" );
@@ -4816,7 +4863,7 @@ void warrior_t::apl_arms()
   aoe -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   aoe -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
   aoe -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
-  aoe -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|(talent.deadly_calm.enabled&buff.battle_cry.up)|buff.cleave.up)" );
+  aoe -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)" );
   aoe -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
   aoe -> add_action( "heroic_charge" );
   aoe -> add_action( this, "Bladestorm" );
@@ -5068,6 +5115,14 @@ void warrior_t::create_buffs()
 
   using namespace buffs;
 
+  buff.renewed_fury = buff_creator_t( this, "renewed_fury", talents.renewed_fury -> effectN( 1 ).trigger() )
+    .default_value( talents.renewed_fury -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buff.furious_charge = buff_creator_t( this, "furious_charge", find_spell( 202225 ) )
+    .chance( talents.furious_charge -> ok() )
+    .default_value( find_spell( 202225 ) -> effectN( 1 ).percent() );
+
   buff.massacre = buff_creator_t( this, "massacre", talents.massacre -> effectN( 1 ).trigger() );
 
   buff.ultimatum = buff_creator_t( this, "ultimatum", talents.ultimatum -> effectN( 1 ).trigger() )
@@ -5109,7 +5164,8 @@ void warrior_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); 
 
   buff.demoralizing_shout = buff_creator_t( this, "demoralizing_shout", spec.demoralizing_shout )
-    .duration( spec.demoralizing_shout -> duration() * ( 1.0 + artifact.rumbling_voice.percent() ) );
+    .duration( spec.demoralizing_shout -> duration() * ( 1.0 + artifact.rumbling_voice.percent() ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.die_by_the_sword = buff_creator_t( this, "die_by_the_sword", spec.die_by_the_sword )
     .default_value( spec.die_by_the_sword -> effectN( 2 ).percent() )
@@ -5122,6 +5178,7 @@ void warrior_t::create_buffs()
     .cd( timespan_t::zero() );
 
   buff.dragon_scales = buff_creator_t( this, "dragon_scales", artifact.dragon_scales.data().effectN( 1 ).trigger() )
+    .cd( artifact.dragon_scales.data().internal_cooldown() )
     .chance( artifact.dragon_scales.data().proc_chance() )
     .default_value( artifact.dragon_scales.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
@@ -5134,6 +5191,7 @@ void warrior_t::create_buffs()
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
   buff.intervene_movement = buff_creator_t( this, "intervene_movement" );
+  buff.intercept_movement = buff_creator_t( this, "intercept_movement" );
 
   buff.focused_rage = buff_creator_t( this, "focused_rage", talents.focused_rage -> ok() ? talents.focused_rage : spec.focused_rage )
     .default_value( talents.focused_rage -> ok() ? talents.focused_rage -> effectN( 1 ).percent() : spec.focused_rage -> effectN( 1 ).percent() )
@@ -5184,6 +5242,12 @@ void warrior_t::create_buffs()
     .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
     .add_invalidate( CACHE_CRIT_CHANCE )
     .cd( timespan_t::zero() );
+
+  buff.battle_cry_deadly_calm = buff_creator_t( this, "battle_cry_deadly_calm", spec.battle_cry )
+    .duration( spec.battle_cry -> duration() + sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
+    .chance( talents.deadly_calm -> ok() )
+    .cd( timespan_t::zero() )
+    .quiet( true );
 
   buff.shattered_defenses = buff_creator_t( this, "shattered_defenses", artifact.shattered_defenses.data().effectN( 1 ).trigger() )
     .default_value( artifact.shattered_defenses.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -5250,6 +5314,7 @@ void warrior_t::init_gains()
   gain.revenge = get_gain( "revenge" );
   gain.shield_slam = get_gain( "shield_slam" );
   gain.will_of_the_first_king = get_gain( "will_of_the_first_king" );
+  gain.booming_voice = get_gain( "booming_voice" );
 
   gain.ceannar_rage = get_gain( "ceannar_rage" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
@@ -5391,6 +5456,7 @@ void warrior_t::interrupt()
   buff.charge_movement -> expire();
   buff.heroic_leap_movement -> expire();
   buff.intervene_movement -> expire();
+  buff.intercept_movement -> expire();
   if ( heroic_charge )
   {
     event_t::cancel( heroic_charge );
@@ -5437,6 +5503,12 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifact.raging_berserker.percent();
     m *= 1.0 + cache.mastery_value();
   }
+  else if ( talents.booming_voice -> ok() && buff.demoralizing_shout -> check() )
+  {
+    m *= 1.0 + talents.booming_voice -> effectN( 2 ).percent();
+  }
+
+  m *= 1.0 + buff.renewed_fury -> check_value();
 
   if ( main_hand_weapon.group() == WEAPON_1H &&
        off_hand_weapon.group() == WEAPON_1H )
@@ -5746,6 +5818,10 @@ double warrior_t::temporary_movement_modifier() const
   {
     temporary = std::max( buff.intervene_movement -> value(), temporary );
   }
+  else if ( buff.intercept_movement -> up() )
+  {
+    temporary = std::max( buff.intercept_movement -> value(), temporary );
+  }
   else if ( buff.bounding_stride -> up() )
   {
     temporary = std::max( buff.bounding_stride -> value(), temporary );
@@ -5882,6 +5958,10 @@ void warrior_t::assess_damage( school_e school,
     else if ( buff.die_by_the_sword -> up() )
     {
       s -> result_amount *= 1.0 + buff.die_by_the_sword -> default_value;
+    }
+    else if ( buff.enrage -> up() )
+    { // yay we're furious and we take more damage
+      s -> result_amount *= 1.0 + ( buff.enrage -> data().effectN( 2 ).percent() + talents.warpaint -> effectN( 1 ).percent() );
     }
   }
 
