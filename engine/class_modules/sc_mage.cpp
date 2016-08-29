@@ -8441,7 +8441,7 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Frozen Orb" );
   default_list -> add_talent( this, "Ice Nova" );
   default_list -> add_talent( this, "Comet Storm" );
-  default_list -> add_action( this, "Blizzard", "if=(talent.arctic_gale.enabled&active_enemies>1)|active_enemies>3" );
+  default_list -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>3|buff.zannesu_journey.stack>4|buff.zannesu_journey.remains<cast_time+1" );
   default_list -> add_action( this, "Ebonbolt", "if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)" );
   default_list -> add_action( this, "Frostbolt" );
 
