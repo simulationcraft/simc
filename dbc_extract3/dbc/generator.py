@@ -1460,7 +1460,6 @@ class SpellDataGenerator(DataGenerator):
         # Monk:
         (
           # General
-          #( 140737, 0 ), # Way of the Monk 2-Hander Weapon Speed modifier - Comment out for time being
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 124503, 0 ), # Gift of the Ox Orb Left
@@ -1479,6 +1478,8 @@ class SpellDataGenerator(DataGenerator):
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
           ( 196061, 0 ), # Crosswinds Artifact trait damage spell
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff
+          # Legendary
+          ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
         ),
 
         # Druid:

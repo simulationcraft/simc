@@ -14,6 +14,7 @@ GENERAL:
 
 WINDWALKER:
 - Add Cyclone Strike Counter as an expression
+- Redo how Gale Bursts works with Hidden master's Forbidden Touch
 
 MISTWEAVER: 
 - Gusts of Mists - Check calculations
@@ -579,6 +580,7 @@ public:
     const spell_data_t* sephuzs_secret;
 
     // Brewmaster
+    const spell_data_t* firestone_walkers;
     const spell_data_t* fundamental_observation;
     const spell_data_t* gai_plins_soothing_sash;
     const spell_data_t* jewel_of_the_lost_abbey;
@@ -593,12 +595,11 @@ public:
     const spell_data_t* unison_spaulders;
 
     // Windwalker
-    const spell_data_t* cenedril_reflector_of_hatred;
-    const spell_data_t* drinking_horn_cover;
-    const spell_data_t* firestone_walkers;
-    const spell_data_t* hidden_masters_forbidden_touch;
-    const spell_data_t* katsuos_eclipse;
-    const spell_data_t* march_of_the_legion;
+    const spell_data_t* cenedril_reflector_of_hatred; // The amount of damage that Touch of Karma can redirect is increased by x% of your maximum health.
+    const spell_data_t* drinking_horn_cover; //The duration of Storm, Earth, and Fire is extended by x sec for every Chi you spend.
+    const spell_data_t* hidden_masters_forbidden_touch; // Touch of Death can be used a second time within 3 sec before its cooldown is triggered.
+    const spell_data_t* katsuos_eclipse; // Reduce the cost of Fists of Fury by x Chi.
+    const spell_data_t* march_of_the_legion; // Increase the movement speed bonus of Windwalking by x%.
   } legendary;
 
   struct pets_t
@@ -3225,6 +3226,16 @@ struct fists_of_fury_t: public monk_melee_attack_t
     return monk_melee_attack_t::ready();
   }
 
+  virtual double cost() const override
+  {
+    double c = monk_melee_attack_t::cost();
+
+    if ( p() -> legendary.katsuos_eclipse )
+      c += p() -> legendary.katsuos_eclipse -> effectN( 1 ).base_value(); // saved as -2
+
+    return c;
+  }
+
   void execute() override
   {
     // Trigger Combo Strikes
@@ -3734,6 +3745,14 @@ struct touch_of_death_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> gale_burst_touch_of_death_bonus = 0.0;
+
+    if ( p() -> legendary.hidden_masters_forbidden_touch )
+    {
+      if ( p() -> buff.hidden_masters_forbidden_touch -> up() )
+        p() -> buff.hidden_masters_forbidden_touch -> expire();
+      else
+        p() -> buff.hidden_masters_forbidden_touch -> execute();
+    }
   }
 };
 
@@ -3771,6 +3790,8 @@ struct touch_of_karma_t: public monk_melee_attack_t
     base_dd_min = base_dd_max = 0;
 
     double max_pct = data().effectN( 3 ).percent();
+    if ( p -> legendary.cenedril_reflector_of_hatred )
+      max_pct += p -> legendary.cenedril_reflector_of_hatred -> effectN( 1 ).percent();
     if ( pct_health > max_pct ) // Does a maximum of 50% of the monk's HP.
       pct_health = max_pct;
 
@@ -8600,6 +8621,7 @@ static void do_trinket_init( monk_t*                  player,
   ptr = &( effect );
 }
 
+// 6.2 Monk Trinket Effects -----------------------------------------------------
 static void eluding_movements( special_effect_t& effect )
 {
   monk_t* monk = debug_cast<monk_t*>( effect.player );
@@ -8617,6 +8639,8 @@ static void furious_sun( special_effect_t& effect )
   monk_t* monk = debug_cast<monk_t*>( effect.player );
   do_trinket_init( monk, MONK_WINDWALKER, monk -> furious_sun, effect );
 }
+
+// Legion Artifact Effects --------------------------------------------------------
 
 // Brewmaster Legion Artifact
 static void fu_zan_the_wanderers_companion( special_effect_t& effect )
@@ -8638,6 +8662,85 @@ static void fists_of_the_heavens( special_effect_t& effect )
   monk_t* monk = debug_cast<monk_t*> ( effect.player );
   do_trinket_init( monk, MONK_WINDWALKER, monk -> fists_of_the_heavens, effect );
 }
+
+// Legion Legendary Effects ---------------------------------------------------------
+// General Legendary Effects
+struct cinidaria_the_symbiote_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  cinidaria_the_symbiote_t() : super( MONK )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  { monk -> legendary.cinidaria_the_symbiote = e.driver(); }
+};
+
+struct prydaz_xavarics_magnum_opus_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  prydaz_xavarics_magnum_opus_t() : super( MONK )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk->legendary.prydaz_xavarics_magnum_opus = e.driver();
+  }
+};
+
+struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  sephuzs_secret_t() : super( MONK )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  {
+    monk->legendary.sephuzs_secret = e.driver();
+  }
+};
+
+// Windwalker Legendary Effects
+struct cenedril_reflector_of_hatred_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  cenedril_reflector_of_hatred_t() : super( MONK_WINDWALKER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  { monk -> legendary.cenedril_reflector_of_hatred = e.driver(); }
+};
+
+struct drinking_horn_cover_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  drinking_horn_cover_t() : super( MONK_WINDWALKER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  { monk -> legendary.drinking_horn_cover = e.driver(); }
+};
+
+struct hidden_masters_forbidden_touch_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  hidden_masters_forbidden_touch_t() : super( MONK_WINDWALKER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  { monk -> legendary.hidden_masters_forbidden_touch = e.driver(); }
+};
+
+struct katsuos_eclipse_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  katsuos_eclipse_t() : super( MONK_WINDWALKER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  { monk -> legendary.katsuos_eclipse = e.driver(); }
+};
+
+struct march_of_the_legion_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  march_of_the_legion_t() : super( MONK_WINDWALKER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  { monk -> legendary.march_of_the_legion = e.driver(); }
+};
 
 struct monk_module_t: public module_t
 {
@@ -8664,6 +8767,21 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 214852, fu_zan_the_wanderers_companion );
 
     // TODO: Add the Legion Legendary effects
+    // General
+    unique_gear::register_special_effect( 207692, cinidaria_the_symbiote_t() );
+    unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t() );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
+
+    // Brewmaster
+
+    // Mistweaver
+
+    // Windwalker
+    unique_gear::register_special_effect( 208842, cenedril_reflector_of_hatred_t() );
+    unique_gear::register_special_effect( 209256, drinking_horn_cover_t() );
+    unique_gear::register_special_effect( 213112, hidden_masters_forbidden_touch_t() );
+    unique_gear::register_special_effect( 208045, katsuos_eclipse_t() );
+    unique_gear::register_special_effect( 212132, march_of_the_legion_t() );
   }
 
 
