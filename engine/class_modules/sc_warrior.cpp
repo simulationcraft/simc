@@ -2099,6 +2099,7 @@ struct execute_t: public warrior_attack_t
     if ( p() -> mastery.colossal_might -> ok() ) // Arms
     {
       double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
+      c *= 1.0 + p() -> buff.precise_strikes -> check_value();
       c = std::min( temp_max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
     }
     else if ( p() -> buff.sense_death -> check() ) // Fury
