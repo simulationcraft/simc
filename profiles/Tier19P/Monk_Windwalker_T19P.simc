@@ -67,16 +67,16 @@ actions.aoe+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
 actions.aoe+=/blackout_kick,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,cycle_targets=1
 actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi.max-chi>1)&!prev_gcd.tiger_palm,cycle_targets=1
 
-head=gaze_of_fleeting_hours,id=137415,bonus_id=1727
+head=veil_of_unseen_strikes,id=134447,bonus_id=1727
 neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_trained_soldier
 shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727
 back=cape_of_valarjar_courage,id=133765,bonus_id=1727,enchant=binding_of_agility
-chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
+chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727
 wrists=cryptwalker_bracers,id=137425,bonus_id=1727
-hands=frostcarver_grips,id=134445,bonus_id=1727
+hands=guileful_intruder_handguards,id=137480,bonus_id=1727
 waist=sash_of_the_twilight_princess,id=134457,bonus_id=1727
 legs=wardens_martial_greaves,id=137515,bonus_id=1727
-feet=shellshock_footguards,id=134441,bonus_id=1727
+feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
 finger1=braided_silver_ring,id=134539,bonus_id=1727,enchant=binding_of_mastery
 finger2=ring_of_minute_mirrors,id=137533,bonus_id=1727,enchant=binding_of_mastery
 trinket1=chaos_talisman,id=137459,bonus_id=1727
@@ -88,8 +88,9 @@ off_hand=fists_of_the_heavens,id=133948
 # gear_ilvl=843.75
 # gear_agility=11083
 # gear_stamina=17629
-# gear_crit_rating=4154
-# gear_haste_rating=1511
-# gear_mastery_rating=7727
-# gear_versatility_rating=4563
+# gear_crit_rating=3465
+# gear_haste_rating=2069
+# gear_mastery_rating=8155
+# gear_versatility_rating=4267
 # gear_armor=1957
+# set_bonus=tier19p_leather_2pc=1
