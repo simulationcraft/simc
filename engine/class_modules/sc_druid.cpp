@@ -4671,7 +4671,6 @@ struct lunar_beam_t : public druid_spell_t
 struct lunar_strike_t : public druid_spell_t
 {
   timespan_t natures_balance;
-
   lunar_strike_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "lunar_strike", player,
       player -> find_affinity_spell( "Lunar Strike" ), options_str )
@@ -4729,19 +4728,22 @@ struct lunar_strike_t : public druid_spell_t
     return et;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    druid_spell_t::impact( s );
+    // Nature's Balance only extends Moonfire on the primary target.
+    if ( natures_balance > timespan_t::zero() && hit_any_target )
+    {
+      td( s -> target ) -> dots.moonfire -> extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
+    }
+  }
+
   void execute() override
   {
     p() -> buff.lunar_empowerment -> up();
     p() -> buff.warrior_of_elune -> up();
 
     druid_spell_t::execute();
-
-    // Nature's Balance only extends Moonfire on the primary target.
-    if ( natures_balance > timespan_t::zero() && hit_any_target )
-    {
-      td( execute_state -> target ) -> dots.moonfire ->
-        extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
-    }
 
     p() -> buff.lunar_empowerment -> decrement();
     p() -> buff.warrior_of_elune -> decrement();
