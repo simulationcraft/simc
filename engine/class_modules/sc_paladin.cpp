@@ -2350,7 +2350,7 @@ struct light_of_the_protector_t : public paladin_heal_t
 {
   double health_diff_pct;
   light_of_the_titans_t* titans_proc;
-  int checker;
+
   light_of_the_protector_t( paladin_t* p, const std::string& options_str )
     : paladin_heal_t( "light_of_the_protector", p, p -> find_specialization_spell( "Light of the Protector" ) ), health_diff_pct( 0 )
   {
@@ -2376,7 +2376,8 @@ struct light_of_the_protector_t : public paladin_heal_t
     // light of the titans object attached to this
     if ( p -> artifact.light_of_the_titans.rank() ){
       titans_proc = new light_of_the_titans_t( p );
-      checker = 1;
+    } else {
+      titans_proc = nullptr;
     }
   }
 
@@ -2398,7 +2399,7 @@ struct light_of_the_protector_t : public paladin_heal_t
     base_dd_min = base_dd_max = health_diff_pct * ( p() -> resources.max[ RESOURCE_HEALTH ] - std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) );
 
     paladin_heal_t::execute();
-    if ( checker ){
+    if ( titans_proc ){
       titans_proc -> schedule_execute();
     }
   }
@@ -2411,7 +2412,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
 {
   double health_diff_pct;
   light_of_the_titans_t* titans_proc;
-  int checker;
+
   hand_of_the_protector_t( paladin_t* p, const std::string& options_str )
     : paladin_heal_t( "hand_of_the_protector", p, p -> find_talent_spell( "Hand of the Protector" ) ), health_diff_pct( 0 )
   {
@@ -2436,7 +2437,8 @@ struct hand_of_the_protector_t : public paladin_heal_t
     // light of the titans object attached to this
     if ( p -> artifact.light_of_the_titans.rank() ){
       titans_proc = new light_of_the_titans_t( p );
-      checker = 1;
+    } else {
+      titans_proc = nullptr;
     }
   }
 
@@ -2460,7 +2462,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     // Light of the Titans only works if self-cast
-    if ( checker && target == p() )
+    if ( titans_proc && target == p() )
       titans_proc -> schedule_execute();
   }
 
