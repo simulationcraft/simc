@@ -1236,7 +1236,7 @@ bool report::output_scale_factors( const player_t* p )
   return true;
 }
 
-std::string report::decoration_domain( const sim_t& )
+std::string report::decoration_domain( const sim_t& sim )
 {
 #if SC_BETA == 0
   if ( maybe_ptr( sim.dbc.ptr ) )
