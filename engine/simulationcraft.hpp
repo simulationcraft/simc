@@ -54,6 +54,11 @@
 #include <Availability.h>
 #endif
 
+// Needed for usleep in engine/interface/sc_bcp_api.cpp when default apikey builds are done
+#if defined( SC_DEFAULT_APIKEY ) && ! defined( SC_WINDOWS )
+#include <unistd.h>
+#endif
+
 // Forward Declarations =====================================================
 
 struct absorb_buff_t;
