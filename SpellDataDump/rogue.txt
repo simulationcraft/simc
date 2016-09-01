@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 1f13f92)
+SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5d6f91d)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -4189,6 +4189,7 @@ Description      : Grants $s1% chance to parry for $d, and each time you parry a
 Tooltip          : Parry chance increased by $s1% and riposting attacks.
 
 Name             : Between the Eyes (id=199804) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 35 Energy
@@ -4203,7 +4204,7 @@ Attributes       : ....x... ........ x.....x. ........   ........ .x...... .....
                  : ........ ........ ........ ....x...   ........ ........ ........ ...x.... 
                  : ........ ........ .....x.. ....x...   ........ ........ .......x x....... 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294039)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.85000 | Target: Enemy(6)
