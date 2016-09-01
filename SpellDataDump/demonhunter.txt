@@ -1,4 +1,4 @@
-SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 8d14f9d)
+SimulationCraft 703-01 for World of Warcraft 7.0.3 legion-BETA (wow build 22423, git build 1f13f92)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -144,17 +144,18 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 
 Name             : Glide (id=131347) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Duration         : Aura (infinite)
 Cooldown         : 1.5 seconds
-Attributes       : ........ ........ .......x x.......   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ....x...   ........ .x...... xx...... ........ 
+Attributes       : ........ ........ .......x x.......   .....x.. ..x..... ........ ........ 
+                 : ........ ......x. ........ ....x...   ........ .x...... xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+                 : Does not break stealth (37), Not a proc (105), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #2 (id=288193)   : Apply Aura (6) | Unknown effect sub type (409)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
