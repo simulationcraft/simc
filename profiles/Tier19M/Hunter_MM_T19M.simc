@@ -28,6 +28,7 @@ actions.precombat+=/windburst
 actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)
 actions+=/berserking,if=buff.trueshot.up
+actions+=/silencing_shot
 actions+=/blood_fury,if=buff.trueshot.up
 actions+=/volley,toggle=on
 actions+=/variable,name=safe_to_build,value=debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down)
