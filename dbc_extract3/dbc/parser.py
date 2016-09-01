@@ -884,7 +884,7 @@ class LegionWCHParser(LegionWDBParser):
             self.record_parser = self.__do_parse
 
 class WCH7Parser(LegionWCHParser):
-    def is_magic(self): return self.magic == b'WCH7'
+    def is_magic(self): return self.magic == b'WCH7' or self.magic == b'WCH8'
 
     def __init__(self, options, wdb_parser, fname):
         super().__init__(options, wdb_parser, fname)
