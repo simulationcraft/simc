@@ -84,7 +84,7 @@ static std::vector<player_t*> __check_distance_targeting( const action_t* action
         local_attempts++; // Only count failures towards the limit-cap.
       }
       // If we run out of targets to hit, or have hit 5 already. Break.
-      if ( static_cast<int>( current_attempt.size() ) == aoe || current_attempt.size() == num_targets ) 
+      if ( static_cast<int>( current_attempt.size() ) == aoe || current_attempt.size() == num_targets )
       {
         stop_trying = true;
         break;
@@ -101,7 +101,7 @@ static std::vector<player_t*> __check_distance_targeting( const action_t* action
   }
 
   if ( sim -> log )
-    sim -> out_debug.printf( "%s Total attempts at finding path: %.3f - %.3f targets found - %s target is first chain", 
+    sim -> out_debug.printf( "%s Total attempts at finding path: %.3f - %.3f targets found - %s target is first chain",
       player -> name(), static_cast<double>(attempts), static_cast<double>( best_so_far.size() ), target -> name() );
   tl.swap( best_so_far );
   return tl;
@@ -3975,7 +3975,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     timespan_t d = cooldown -> duration;
 
-    // Lava Surge has procced during the cast of Lava Burst, the cooldown 
+    // Lava Surge has procced during the cast of Lava Burst, the cooldown
     // reset is deferred to the finished cast, instead of "eating" it.
     if ( p() -> lava_surge_during_lvb )
     {
@@ -6393,7 +6393,7 @@ void shaman_t::init_action_list_elemental()
                             ( true_level >= 85 ) ? "warm_sun" :
                             ( true_level >= 80 ) ? "draconic_mind" :
                             "";
-  std::string food_name   = ( true_level > 100 ) ? "azshari_salad" :
+  std::string food_name   = ( true_level > 100 ) ? "pickled_eel" :
                             ( true_level > 90  ) ? "salty_squid_roll" :
                             ( true_level >= 85 ) ? "mogu_fish_stew" :
                             ( true_level >= 80 ) ? "seafood_magnifique_feast" :
