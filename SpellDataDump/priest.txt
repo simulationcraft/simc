@@ -3232,7 +3232,6 @@ Spell Level      : 10
 Duration         : Aura (infinite)
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Affecting spells : Void Infused (220335)
 Triggered by     : Insanity (194251)
 Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 

@@ -3702,6 +3702,7 @@ Effects          :
 Description      : $@spelldesc104316
 
 Name             : Demonic Empowerment (id=193396) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Demonology Warlock
 School           : Shadow
 Resource         : 6% Base Mana (66000 @Level 110)
@@ -3712,7 +3713,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Affecting spells : Mastery: Master Demonologist (77219), Summoner's Prowess (211108), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ....x... ....x... ........ ........   ........ ........ ........ ........ 
@@ -3758,6 +3759,7 @@ Effects          :
 Description      : $@spelldesc193440
 
 Name             : Demonwrath (id=193440) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Demonology Warlock
 School           : Shadow
 Resource         : 0% Base Mana and 2.5% Base Mana (27500 @Level 110) per second or tick
@@ -3767,7 +3769,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Affecting spells : Legionwrath (211126)
 Attributes       : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ...x.... ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ...x.... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ....x... ....x... .x...... ........   ........ ........ ........ ........ 
@@ -4697,6 +4699,7 @@ Description      : $@spelldesc205184
 Tooltip          : Damage taken from the Warlock's Immolate increased by $s1%.
 
 Name             : Thal'kiel's Consumption (Artifact) (id=211714) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Range            : 40 yards
@@ -4705,7 +4708,7 @@ GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Artifact Power   : Id: 1170, Max Rank: 1
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ......x. .....x..   ........ ........ .x...... ........ 
+                 : ..x..... ........ ......x. .....x..   ........ ........ .x...... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
