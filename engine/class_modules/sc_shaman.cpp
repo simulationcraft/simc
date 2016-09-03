@@ -1588,15 +1588,23 @@ struct shaman_pet_t : public pet_t
     command = owner -> find_racial_spell( "Command" );
   }
 
-  void init_action_list() override
+  virtual void create_default_apl()
   {
     action_priority_list_t* def = get_action_priority_list( "default" );
     if ( use_auto_attack )
     {
       def -> add_action( "auto_attack" );
     }
+  }
 
+  void init_action_list() override
+  {
     pet_t::init_action_list();
+
+    if ( action_list_str.empty() )
+    {
+      create_default_apl();
+    }
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override;
@@ -1949,9 +1957,9 @@ struct frost_wolf_t : public doom_wolf_base_t
     return doom_wolf_base_t::create_action( name, options_str );
   }
 
-  void init_action_list() override
+  void create_default_apl() override
   {
-    doom_wolf_base_t::init_action_list();
+    doom_wolf_base_t::create_default_apl();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     // TODO: Proper delay
@@ -1996,9 +2004,9 @@ struct fire_wolf_t : public doom_wolf_base_t
     return doom_wolf_base_t::create_action( name, options_str );
   }
 
-  void init_action_list() override
+  void create_default_apl() override
   {
-    doom_wolf_base_t::init_action_list();
+    doom_wolf_base_t::create_default_apl();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     // TODO: Proper delay
@@ -2068,9 +2076,9 @@ struct lightning_wolf_t : public doom_wolf_base_t
     return doom_wolf_base_t::create_action( name, options_str );
   }
 
-  void init_action_list() override
+  void create_default_apl() override
   {
-    doom_wolf_base_t::init_action_list();
+    doom_wolf_base_t::create_default_apl();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     // TODO: Proper delay
@@ -2097,7 +2105,7 @@ struct primal_elemental_t : public shaman_pet_t
     shaman_pet_t( owner, name, guardian, auto_attack )
   { }
 
-  void init_action_list() override
+  void create_default_apl() override
   {
     if ( use_auto_attack )
     {
@@ -2106,7 +2114,7 @@ struct primal_elemental_t : public shaman_pet_t
       def -> add_action( "travel" );
     }
 
-    shaman_pet_t::init_action_list();
+    shaman_pet_t::create_default_apl();
   }
 
   action_t* create_action( const std::string& name,
@@ -2200,9 +2208,9 @@ struct fire_elemental_t : public primal_elemental_t
     owner_coeff.sp_from_sp = 1.0;
   }
 
-  void init_action_list() override
+  void create_default_apl() override
   {
-    pet_t::init_action_list();
+    primal_elemental_t::create_default_apl();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
 
@@ -2273,13 +2281,13 @@ struct storm_elemental_t : public primal_elemental_t
     owner_coeff.sp_from_sp = 1.0000;
   }
 
-  void init_action_list() override
+  void create_default_apl() override
   {
+    primal_elemental_t::create_default_apl();
+
     action_priority_list_t* def = get_action_priority_list( "default" );
     def -> add_action( "call_lightning" );
     def -> add_action( "wind_gust" );
-
-    primal_elemental_t::init_action_list();
   }
 
   void create_buffs() override
@@ -2352,9 +2360,9 @@ struct greater_lightning_elemental_t : public shaman_pet_t
     return shaman_pet_t::create_action( name, options_str );
   }
 
-  void init_action_list() override
+  void create_default_apl() override
   {
-    shaman_pet_t::init_action_list();
+    shaman_pet_t::create_default_apl();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     def -> add_action( "lightning_blast" );
@@ -5494,12 +5502,12 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "fire_elemental_pet"       ) return new pet::fire_elemental_t( this, false );
-  if ( pet_name == "fire_elemental_guardian"  ) return new pet::fire_elemental_t( this, true );
-  if ( pet_name == "storm_elemental_pet"      ) return new pet::storm_elemental_t( this, false );
-  if ( pet_name == "storm_elemental_guardian" ) return new pet::storm_elemental_t( this, true );
-  if ( pet_name == "earth_elemental_pet"      ) return new pet::earth_elemental_t( this, false );
-  if ( pet_name == "earth_elemental_guardian" ) return new pet::earth_elemental_t( this, true );
+  if ( pet_name == "primal_fire_elemental"    ) return new pet::fire_elemental_t( this, false );
+  if ( pet_name == "greater_fire_elemental"   ) return new pet::fire_elemental_t( this, true );
+  if ( pet_name == "primal_storm_elemental"   ) return new pet::storm_elemental_t( this, false );
+  if ( pet_name == "greater_storm_elemental"  ) return new pet::storm_elemental_t( this, true );
+  if ( pet_name == "primal_earth_elemental"   ) return new pet::earth_elemental_t( this, false );
+  if ( pet_name == "greater_earth_elemental"  ) return new pet::earth_elemental_t( this, true );
   if ( pet_name == "liquid_magma_totem"       ) return new liquid_magma_totem_t( this );
 
   return nullptr;
@@ -5513,34 +5521,34 @@ void shaman_t::create_pets()
   {
     if ( find_action( "fire_elemental" )  )
     {
-      pet.pet_fire_elemental = create_pet( "fire_elemental_pet" );
+      pet.pet_fire_elemental = create_pet( "primal_fire_elemental" );
     }
 
     if ( find_action( "earth_elemental" ) )
     {
-      pet.pet_earth_elemental = create_pet( "earth_elemental_pet" );
+      pet.pet_earth_elemental = create_pet( "primal_earth_elemental" );
     }
 
     if ( talent.storm_elemental -> ok() && find_action( "storm_elemental" ) )
     {
-      pet.pet_storm_elemental = create_pet( "storm_elemental_pet" );
+      pet.pet_storm_elemental = create_pet( "primal_storm_elemental" );
     }
   }
   else
   {
     if ( find_action( "fire_elemental" ) )
     {
-      pet.guardian_fire_elemental = create_pet( "fire_elemental_guardian" );
+      pet.guardian_fire_elemental = create_pet( "greater_fire_elemental" );
     }
 
     if ( find_action( "earth_elemental" ) )
     {
-      pet.guardian_earth_elemental = create_pet( "earth_elemental_guardian" );
+      pet.guardian_earth_elemental = create_pet( "greater_earth_elemental" );
     }
 
     if ( talent.storm_elemental -> ok() && find_action( "storm_elemental" ) )
     {
-      pet.guardian_storm_elemental = create_pet( "storm_elemental_guardian" );
+      pet.guardian_storm_elemental = create_pet( "greater_storm_elemental" );
     }
   }
 
