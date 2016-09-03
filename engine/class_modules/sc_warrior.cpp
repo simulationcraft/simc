@@ -4839,18 +4839,18 @@ void warrior_t::apl_arms()
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.whirlwind>=2&!talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=single" );
 
-  single_target -> add_action( this, "Mortal Strike" );
-  single_target -> add_action( this, "Execute", "if=buff.stone_heart.react|buff.battle_cry_deadly_calm.up" );
   single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
   single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
+  single_target -> add_action( this, "Execute", "if=buff.stone_heart.react|buff.battle_cry_deadly_calm.up" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up&rage.deficit<60" );
-  single_target -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3|buff.battle_cry_deadly_calm.up" );
-  single_target -> add_action( this, "Slam", "if=target.health.pct>20&!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up)" );
+  single_target -> add_action( this, "Mortal Strike" );
+  single_target -> add_talent( this, "Focused Rage", "if=(buff.focused_rage.stack<3&((talent.dauntless.enabled&rage>27)|(!talent.dauntless.enabled&rage>34)))|buff.battle_cry_deadly_calm.up" );
+  single_target -> add_action( this, "Slam", "if=target.health.pct>20&!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40|buff.battle_cry_deadly_calm.up)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up)" );
   single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)" );
   single_target -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
   //single_target -> add_action( "heroic_charge" );
-  single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)" );
-  single_target -> add_action( this, "Slam", "if=target.health.pct>20&!talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage>100|buff.focused_rage.stack=3)" );
+  single_target -> add_action( this, "Whirlwind", "if=target.health.pct>20&talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage.deficit<20|buff.focused_rage.stack=3)" );
+  single_target -> add_action( this, "Slam", "if=target.health.pct>20&!talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage.deficit<20|buff.focused_rage.stack=3)" );
   single_target -> add_action( this, "Execute", "if=equipped.137060" );
   single_target -> add_action( this, "Slam", "if=equipped.137060" );
   single_target -> add_action( this, "Focused Rage", "if=equipped.137060" );
