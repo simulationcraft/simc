@@ -2321,7 +2321,7 @@ struct between_the_eyes_t : public rogue_attack_t
 
   between_the_eyes_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
-        options_str )
+        options_str ), greenskins_waterlogged_wristcuffs( nullptr )
   {
     crit_bonus_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
