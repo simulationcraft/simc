@@ -3716,6 +3716,20 @@ struct death_sweep_t : public blade_dance_base_t
     dodge_buff = p -> buff.death_sweep;
   }
 
+  void execute() override
+  {
+    blade_dance_base_t::execute();
+
+    assert( p() -> buff.metamorphosis -> check() );
+
+    // If Metamorphosis has less than 1s remaining, it gets extended so the whole Death Sweep happens during Meta.
+    if ( p() -> buff.metamorphosis -> remains_lt( p() -> buff.death_sweep -> buff_duration ) )
+    {
+      p() -> buff.metamorphosis -> trigger( 1, p() -> buff.metamorphosis -> current_value, -1.0,
+        p() -> buff.death_sweep -> buff_duration );
+    }
+  }
+
   bool ready() override
   {
     if ( !p() -> buff.metamorphosis -> check() )
