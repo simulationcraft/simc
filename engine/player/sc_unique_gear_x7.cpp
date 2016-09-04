@@ -54,6 +54,7 @@ namespace item
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
   void infernal_alchemist_stone( special_effect_t& ); // WIP
+  void sixfeather_fan( special_effect_t& );
 
   // 7.0 Raid
   void bloodthirsty_instinct( special_effect_t& );
@@ -2109,11 +2110,58 @@ void set_bonus::journey_through_time( special_effect_t& effect )
   e -> stat_amount = base_value;
 }
 
-// Jeweled Signet of Melandrus
+// Jeweled Signet of Melandrus ==============================================
+
 void item::jeweled_signet_of_melandrus( special_effect_t& effect )
 {
   double value = 1.0 + effect.driver() -> effectN( 1 ).percent();
   effect.player -> auto_attack_multiplier *= value;
+}
+
+// Six-Feather Fan ==========================================================
+
+struct wind_bolt_callback_t : public dbc_proc_callback_t
+{
+  action_t* wind_bolt;
+
+  wind_bolt_callback_t( const item_t* i, const special_effect_t& effect, action_t* a ) : 
+    dbc_proc_callback_t( i, effect ), wind_bolt( a )
+  {}
+
+  void execute( action_t*, action_state_t* s ) override
+  {
+    wind_bolt -> target = s -> target;
+    effect.custom_buff -> trigger();
+  }
+};
+
+void item::sixfeather_fan( special_effect_t& effect )
+{
+  action_t* bolt = effect.player -> find_action( "wind_bolt" );
+  if ( ! bolt )
+  {
+    bolt = effect.player -> create_proc_action( "wind_bolt", effect );
+  }
+
+  if ( ! bolt )
+  {
+    // Set trigger spell so we can magically create the proc action.
+    effect.trigger_spell_id = effect.trigger() -> effectN( 1 ).trigger() -> id();
+
+    bolt = effect.initialize_offensive_spell_action();
+
+    // Reset trigger spell ID so it does not trigger an action on proc.
+    effect.trigger_spell_id = 0;
+  }
+
+  effect.custom_buff = buff_creator_t( effect.player, "sixfeather_fan", effect.trigger(), effect.item )
+    .tick_callback( [ = ]( buff_t*, int, const timespan_t& ) {
+      bolt -> schedule_execute();
+    } )
+    .tick_zero( true )
+    .tick_behavior( BUFF_TICK_CLIP ); // TOCHECK
+
+  new wind_bolt_callback_t( effect.item, effect, bolt );
 }
 
 void unique_gear::register_special_effects_x7()
@@ -2161,6 +2209,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 191563, item::darkmoon_deck                  );
   register_special_effect( 191611, item::darkmoon_deck                  );
   register_special_effect( 191632, item::darkmoon_deck                  );
+  register_special_effect( 227868, item::sixfeather_fan                 );
 
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );
