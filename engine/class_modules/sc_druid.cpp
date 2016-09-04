@@ -4418,8 +4418,19 @@ struct full_moon_t : public druid_spell_t
     druid_spell_t( "full_moon", player, player -> find_spell( 202771 ), options_str )
   {
     aoe = -1;
-    split_aoe_damage = true; // Apr 16 2016: Splits AoE damage even though tooltip does not say so.
+    split_aoe_damage = true;
     cooldown = player -> cooldown.moon_cd;
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    double c = druid_spell_t::calculate_direct_amount( state );
+
+    if ( state -> target == execute_state -> target )
+    {
+      c *= state -> n_targets; // Main target takes full damage, this reverses the divisor in action_t::calculate_direct_amount
+    }//Hotfixed 9/3/2016
+    return c;
   }
 
   void execute() override
