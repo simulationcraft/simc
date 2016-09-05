@@ -9,7 +9,7 @@ echo Version is: $MAJOR_VERSION $MINOR_VERSION
 
 if [ -d $DEPLOY_DIR ]; then
   touch $DEPLOY_DIR/.Trash
-  cp -rf "SimulationCraft.app" $DEPLOY_DIR
+  cp -pPR "SimulationCraft.app" $DEPLOY_DIR
   sed -i -e "s/GIT-REV-PARSE-HERE/$REVISION/" $DEPLOY_DIR/SimulationCraft.app/Contents/Info.plist
   sed -i -e "s/VERSION-PARSE-HERE/$MAJOR_VERSION\.$MINOR_VERSION/" $DEPLOY_DIR/SimulationCraft.app/Contents/Info.plist
 
