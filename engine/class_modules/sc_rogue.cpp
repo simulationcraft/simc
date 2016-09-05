@@ -6300,9 +6300,9 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_OUTLAW )
   {
     // Main Rotation
-    def -> add_action( "variable,name=rtb_reroll,value=((!talent.slice_and_dice.enabled)&(rtb_buffs<=1&!(equipped.thraxis_tricksy_treads&buff.true_bearing.up)))", " Condition to continue rerolling RtB; if SnD, consider that you never have to reroll" );
+    def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1&!(equipped.thraxis_tricksy_treads&buff.true_bearing.up))", " Condition to continue rerolling RtB; if SnD, consider that you never have to reroll" );
     def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))", " Condition to use Saber Slash when not rerolling RtB or when using SnD" );
-    def -> add_action( "variable,name=ss_useable,value=((talent.anticipation.enabled&(combo_points<4))|(!talent.anticipation.enabled&(variable.rtb_reroll&(combo_points<4+talent.deeper_stratagem.enabled)|!variable.rtb_reroll&variable.ss_useable_noreroll)))", " Condition to use Saber Slash, when you have RtB or not" );
+    def -> add_action( "variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<4)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))", " Condition to use Saber Slash, when you have RtB or not" );
     def -> add_action( "call_action_list,name=bf", " Normal rotation" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=stealth" );
@@ -6359,8 +6359,8 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build" );
-    build -> add_talent( this, "Ghostly Strike", "if=talent.ghostly_strike.enabled&(debuff.ghostly_strike.remains<debuff.ghostly_strike.duration*0.3|(cooldown.curse_of_the_dreadblades.remains<3&debuff.ghostly_strike.remains<14))&combo_points.deficit>=1+buff.broadsides.up&!buff.curse_of_the_dreadblades.up&(combo_points>=3|variable.rtb_reroll&time>=10)", " Builders" );
-    build -> add_action( this, "Pistol Shot", "if=buff.opportunity.up&energy.time_to_max>2-talent.quick_draw.enabled&combo_points.deficit>=1+buff.broadsides.up" );
+    build -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadsides.up&!buff.curse_of_the_dreadblades.up&(debuff.ghostly_strike.remains<debuff.ghostly_strike.duration*0.3|(cooldown.curse_of_the_dreadblades.remains<3&debuff.ghostly_strike.remains<14))&(combo_points>=3|(variable.rtb_reroll&time>=10))", " Builders" );
+    build -> add_action( this, "Pistol Shot", "if=combo_points.deficit>=1+buff.broadsides.up&buff.opportunity.up&energy.time_to_max>2-talent.quick_draw.enabled" );
     build -> add_action( this, "Saber Slash", "if=variable.ss_useable" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
@@ -6379,7 +6379,6 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
-      // TODO : Improve Energy Threshold according to Vigor, Shadow Focus, Energetic Stabbing, Shadow Satyr's Walk
     def -> add_action( "call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(variable.ed_threshold|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1))" );
     def -> add_action( "call_action_list,name=build,if=variable.ed_threshold" );
 
@@ -6428,6 +6427,7 @@ void rogue_t::init_action_list()
     finish -> add_talent( this, "Enveloping Shadows", "if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8", "Finishers" );
     finish -> add_talent( this, "Death from Above", "if=spell_targets.death_from_above>=10" );
       // TODO : Check if there is some gain by playing around Finality Nightblade
+      // TODO : Implement an expression to check if the current nightlbade is a finality or not.
     finish -> add_action( this, "Nightblade", "target_if=max:target.time_to_die,if=target.time_to_die>10&refreshable" );
     finish -> add_talent( this, "Death from Above" );
     finish -> add_action( this, "Eviscerate" );
