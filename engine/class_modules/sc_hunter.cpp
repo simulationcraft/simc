@@ -1935,6 +1935,7 @@ static void trigger_beast_cleave( action_state_t* s )
 
   if ( p -> o() -> hati && p -> o() -> artifacts.master_of_beasts.rank() )
   {
+    cleave *= 0.75; //Hotfix in game for Hati, no spelldata for it though. 2016-09-05
     p -> o() -> hati -> active.beast_cleave -> base_dd_min = cleave;
     p -> o() -> hati -> active.beast_cleave -> base_dd_max = cleave;
     p -> o() -> hati -> active.beast_cleave -> execute();
