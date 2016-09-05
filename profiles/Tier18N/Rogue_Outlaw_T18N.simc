@@ -28,11 +28,11 @@ actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
 # Executed every time the actor is available.
 
 #  Condition to continue rerolling RtB; if SnD, consider that you never have to reroll
-actions=variable,name=rtb_reroll,value=((!talent.slice_and_dice.enabled)&(rtb_buffs<=1&!(equipped.thraxis_tricksy_treads&buff.true_bearing.up)))
+actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1&!(equipped.thraxis_tricksy_treads&buff.true_bearing.up))
 #  Condition to use Saber Slash when not rerolling RtB or when using SnD
 actions+=/variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))
 #  Condition to use Saber Slash, when you have RtB or not
-actions+=/variable,name=ss_useable,value=((talent.anticipation.enabled&(combo_points<4))|(!talent.anticipation.enabled&(variable.rtb_reroll&(combo_points<4+talent.deeper_stratagem.enabled)|!variable.rtb_reroll&variable.ss_useable_noreroll)))
+actions+=/variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<4)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))
 #  Normal rotation
 actions+=/call_action_list,name=bf
 actions+=/call_action_list,name=cds
@@ -71,8 +71,8 @@ actions.finish=between_the_eyes,if=equipped.greenskins_waterlogged_wristcuffs&bu
 actions.finish+=/run_through,if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5
 
 #  Builders
-actions.build=ghostly_strike,if=talent.ghostly_strike.enabled&(debuff.ghostly_strike.remains<debuff.ghostly_strike.duration*0.3|(cooldown.curse_of_the_dreadblades.remains<3&debuff.ghostly_strike.remains<14))&combo_points.deficit>=1+buff.broadsides.up&!buff.curse_of_the_dreadblades.up&(combo_points>=3|variable.rtb_reroll&time>=10)
-actions.build+=/pistol_shot,if=buff.opportunity.up&energy.time_to_max>2-talent.quick_draw.enabled&combo_points.deficit>=1+buff.broadsides.up
+actions.build=ghostly_strike,if=combo_points.deficit>=1+buff.broadsides.up&!buff.curse_of_the_dreadblades.up&(debuff.ghostly_strike.remains<debuff.ghostly_strike.duration*0.3|(cooldown.curse_of_the_dreadblades.remains<3&debuff.ghostly_strike.remains<14))&(combo_points>=3|(variable.rtb_reroll&time>=10))
+actions.build+=/pistol_shot,if=combo_points.deficit>=1+buff.broadsides.up&buff.opportunity.up&energy.time_to_max>2-talent.quick_draw.enabled
 actions.build+=/saber_slash,if=variable.ss_useable
 
 head=felblade_hood,id=124263
