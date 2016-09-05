@@ -59,7 +59,7 @@ spec=protection
 role=tank
 position=front
 talents=0111201
-artifact=11:133763:137412:133686:0:91:1:92:1:93:1:99:3:100:6:101:3:102:3:103:1:104:1:1358:1
+artifact=11:0:0:0:0:91:1:92:1:93:1:95:2:99:3:100:3:101:3:102:3:103:1:104:1:1358:1
 head=casque_of_the_deep,id=134512,bonus_id=1727
 neck=brulstone_pendant,id=134161,bonus_id=1727,enchant=mark_of_the_heavy_hide
 shoulders=rockbound_pauldrons,id=134140,bonus_id=1727
@@ -70,10 +70,10 @@ hands=rumblestone_gauntlets,id=137355,bonus_id=1727
 waist=rockbound_girdle,id=134137,bonus_id=1727
 legs=tassets_of_ravenous_euphoria,id=134516,bonus_id=1727
 feet=wardbreaker_warboots,id=136731,bonus_id=1727
-finger1=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=binding_of_versatility
-finger2=ring_of_contempt,id=134490,bonus_id=1727,enchant=binding_of_versatility
-trinket1=horn_of_valor,id=133642,bonus_id=1727
-trinket2=coagulated_nightwell_residue,id=137400,bonus_id=1727
-main_hand=scaleshard,id=128288,relic_id=3412/3412/3412,ilevel=870
-off_hand=scale_of_the_earthwarder,id=128289,ilevel=870
+finger1=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=binding_of_haste
+finger2=ring_of_contempt,id=134490,bonus_id=1727,enchant=binding_of_haste
+trinket1=memento_of_angerboda,id=133644,bonus_id=1727
+trinket2=impenetrable_nerubian_husk,id=137430,bonus_id=1727
+main_hand=scaleshard,id=128288
+off_hand=scale_of_the_earthwarder,id=128289,gem_id=133763/137412/133686,relic_id=3412/3412/3412
 save=Warrior_Protection_T19P.simc
