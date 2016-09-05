@@ -1548,7 +1548,7 @@ struct charge_t: public warrior_attack_t
 };
 
 // Intercept ===========================================================================
-// FIXME: Min range on bad dudes, no min range on good dudes. 
+// FIXME: Min range on bad dudes, no min range on good dudes.
 struct intercept_t: public warrior_attack_t
 {
   double movement_speed_increase, min_range, rage_gain;
@@ -2531,7 +2531,7 @@ struct mortal_strike_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
     cooldown -> charges += p -> talents.mortal_combo -> effectN( 1 ).base_value();
     weapon_multiplier *= 1.0 + p -> artifact.thoradins_might.percent();
-    cooldown -> hasted = true; // Doesn't show up in spelldata for some reason. 
+    cooldown -> hasted = true; // Doesn't show up in spelldata for some reason.
   }
 
   double composite_crit_chance() const override
@@ -3736,7 +3736,7 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
 
   void execute() override
   {
-    p() -> opportunity_strikes_once = true; // Opportunity strikes rolls multiple times, but seems to only proc once per whirlwind. 
+    p() -> opportunity_strikes_once = true; // Opportunity strikes rolls multiple times, but seems to only proc once per whirlwind.
     warrior_attack_t::execute();
   }
 
@@ -4039,7 +4039,7 @@ struct ignore_pain_t: public warrior_spell_t
       p() -> buff.vengeance_ignore_pain -> expire();
     }
 
-    /*  Need to figure out a way to keep the warrior about 0 percent health. 
+    /*  Need to figure out a way to keep the warrior about 0 percent health.
     if ( p() -> talents.never_surrender -> ok() )
     {
       double percent_health = ( 1 - ( p() -> health_percentage() / 100 ) ) * p() -> talents.never_surrender -> effectN( 1 ).percent();
@@ -4892,7 +4892,7 @@ void warrior_t::apl_prot()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  std::string food_name = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+  std::string food_name = ( true_level > 100 ) ? "seedbattered_fish_plate" :
     ( true_level >  90 ) ? "buttered_sturgeon" :
     ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
     ( true_level >= 80 ) ? "seafood_magnifique_feast" :
@@ -4926,9 +4926,9 @@ void warrior_t::apl_prot()
   default_list -> add_action( "call_action_list,name=prot" );
 
   //defensive
-  prot -> add_action( this, "Shield Block", "if=!buff.neltharions_fury.up" );
-  prot -> add_action( this, "Ignore Pain", "if=buff.ignore_pain.up&rage>=30|(talent.vengeance.enabled&rage>=20&!buff.ignore_pain.up&!buff.focused_rage.up)|!talent.vengeance.enabled" );
-  prot -> add_action( this, "Focused Rage", "if=(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up&buff.ultimatum.up)" );
+  prot -> add_action( this, "Shield Block", "if=!buff.neltharions_fury.up&((cooldown.shield_slam.remains<6&!buff.shield_block.up)|(cooldown.shield_slam.remains<6+buff.shield_block.remains&buff.shield_block.up))" );
+  prot -> add_action( this, "Ignore Pain", "if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&buff.ultimatum.up)|(buff.vengeance_ignore_pain.up&rage>=30)|(talent.vengeance.enabled&!buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage<30)" );
+  prot -> add_action( this, "Focused Rage", "if=(buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(buff.ultimatum.up&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage>=30)|(buff.ultimatum.up&buff.vengeance_ignore_pain.up&cooldown.shield_slam.remains=0&rage<10)|(rage>=100)" );
   prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20" );
   prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.50" );
   prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.50&!cooldown.shield_wall.remains=0" );
@@ -4938,31 +4938,31 @@ void warrior_t::apl_prot()
   //potion
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    prot -> add_action( "potion,name=" + potion_name + ",if=(incoming_damage_2500ms>health.max*0.15&!buff.unbending_potion.up)|target.time_to_die<=25" );
+    prot -> add_action( "potion,name=" + potion_name + ",if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
   }
 
   //dps-single-target
-  prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.thunder_clap>=3" );
+  prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.neltharions_fury>=2" );
   prot -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
-  prot -> add_action( this, "Avatar", "if=talent.avatar.enabled" );
-  prot -> add_action( this, "Battle Cry" );
-  prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=50" );
-  prot -> add_action( this, "Ravager", "if=talent.ravager.enabled" );
-  prot -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
-  prot -> add_action( this, "Shield Slam" );
-  prot -> add_action( this, "Revenge" );
+  prot -> add_action( this, "Battle Cry", "if=(talent.vengeance.enabled&talent.ultimatum.enabled&cooldown.shield_slam.remains<=5-gcd.max-0.5)|!talent.vengeance.enabled" );
+  prot -> add_action( this, "Avatar", "if=talent.avatar.enabled&buff.battle_cry.up" );
+  prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&buff.battle_cry.up" );
+  prot -> add_action( this, "Ravager", "if=talent.ravager.enabled&buff.battle_cry.up" );
+  prot -> add_action( this, "Neltharion's Fury", "if=incoming_damage_2500ms>health.max*0.20&!buff.shield_block.up" );
+  prot -> add_action( this, "Shield Slam", "if=!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up&talent.heavy_repercussions.enabled)" );
+  prot -> add_action( this, "Revenge", "if=cooldown.shield_slam.remains<=gcd.max*2" );
   prot -> add_action( this, "Devastate" );
 
   //dps-aoe
   prot_aoe -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
-  prot_aoe -> add_action( this, "Avatar", "if=talent.avatar.enabled" );
-  prot_aoe -> add_action( this, "Battle Cry" );
-  prot_aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<=50" );
-  prot_aoe -> add_action( this, "Ravager", "if=talent.ravager.enabled" );
+  prot_aoe -> add_action( this, "Battle Cry", "if=(talent.vengeance.enabled&talent.ultimatum.enabled&cooldown.shield_slam.remains<=5-gcd.max-0.5)|!talent.vengeance.enabled" );
+  prot_aoe -> add_action( this, "Avatar", "if=talent.avatar.enabled&buff.battle_cry.up" );
+  prot_aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&buff.battle_cry.up" );
+  prot_aoe -> add_action( this, "Ravager", "if=talent.ravager.enabled&buff.battle_cry.up" );
   prot_aoe -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
-  prot_aoe -> add_action( this, "Shield Slam" );
+  prot_aoe -> add_action( this, "Shield Slam", "if=!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up&talent.heavy_repercussions.enabled)" );
   prot_aoe -> add_action( this, "Revenge" );
-  prot_aoe -> add_action( this, "Thunder Clap" );
+  prot_aoe -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap>=3" );
   prot_aoe -> add_action( this, "Devastate" );
 }
 
@@ -5174,7 +5174,7 @@ void warrior_t::create_buffs()
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", talents.defensive_stance )
     .activated( true )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); 
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.demoralizing_shout = buff_creator_t( this, "demoralizing_shout", spec.demoralizing_shout )
     .duration( spec.demoralizing_shout -> duration() * ( 1.0 + artifact.rumbling_voice.percent() ) )
