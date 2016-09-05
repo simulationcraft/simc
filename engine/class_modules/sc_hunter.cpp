@@ -1933,7 +1933,7 @@ static void trigger_beast_cleave( action_state_t* s )
   p -> active.beast_cleave -> base_dd_max = cleave;
   p -> active.beast_cleave -> execute();
 
-  if ( p -> o() -> hati )
+  if ( p -> o() -> hati && p -> o() -> artifacts.master_of_beasts.rank() )
   {
     p -> o() -> hati -> active.beast_cleave -> base_dd_min = cleave;
     p -> o() -> hati -> active.beast_cleave -> base_dd_max = cleave;
