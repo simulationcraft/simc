@@ -6619,9 +6619,9 @@ void death_knight_t::default_apl_frost()
   // Core rotation
   core -> add_talent( this, "Glacial Advance" );
   core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
+  core -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
   core -> add_talent( this, "Frostscythe", "if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)" );
   core -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
-  core -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
   core -> add_action( this, "Obliterate" );
 
   // Empty out runes if Frozen Pulse is used
