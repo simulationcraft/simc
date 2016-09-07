@@ -183,6 +183,99 @@ bool parse_talents( player_t*  p,
 
 // parse_items ==============================================================
 
+void parse_artifact( item_t& item, const rapidjson::Value& artifact )
+{
+  if ( ! artifact.HasMember( "artifactId" ) )
+  {
+    return;
+  }
+
+  if ( artifact.HasMember( "artifactTraits" ) && artifact[ "artifactTraits" ].Size() == 0 )
+  {
+    return;
+  }
+
+  auto artifact_id = artifact[ "artifactId" ].GetUint();
+  auto powers = item.player -> dbc.artifact_powers( artifact_id );
+  for ( auto power_idx = 0U, end = artifact[ "artifactTraits" ].Size(); power_idx < end; ++power_idx )
+  {
+    const auto& trait = artifact[ "artifactTraits" ][ power_idx ];
+    if ( ! trait.HasMember( "id" ) || ! trait.HasMember( "rank" ) )
+    {
+      continue;
+    }
+
+    auto trait_id = trait[ "id" ].GetUint();
+    auto rank = trait[ "rank" ].GetUint();
+
+    auto it = range::find_if( powers, [ trait_id ]( const artifact_power_data_t* p ) {
+      return p -> id == trait_id;
+    } );
+
+    if ( it == powers.end() )
+    {
+      continue;
+    }
+
+    // Internal trait index (we order by id), might differ from blizzard's ordering
+    auto trait_index = std::distance( powers.begin(), it );
+    item.player -> artifact.points[ trait_index ] = rank;
+  }
+
+  // If no relics inserted, bail out early
+  if ( ! artifact.HasMember( "relics" ) || artifact[ "relics" ].Size() == 0 )
+  {
+    return;
+  }
+
+  for ( auto relic_idx = 0U, end = artifact[ "relics" ].Size(); relic_idx < end; ++relic_idx )
+  {
+    const auto& relic = artifact[ "relics" ][ relic_idx ];
+    if ( ! relic.HasMember( "socket" ) )
+    {
+      continue;
+    }
+
+    auto relic_socket = relic[ "socket" ].GetUint();
+    if ( relic.HasMember( "bonusLists" ) )
+    {
+      const auto& bonuses = relic[ "bonusLists" ];
+      for ( auto bonus_idx = 0U, end = bonuses.Size(); bonus_idx < end; ++bonus_idx )
+      {
+        item.parsed.relic_data[ relic_socket ].push_back( bonuses[ bonus_idx ].GetUint() );
+      }
+    }
+  }
+
+  // Finally, for some completely insane reason Blizzard decided to put in the Relic-based ilevel
+  // increases as bonus ids to the base item. Thus, we need to remove those since we actually use
+  // the relic data to figure out the ilevel increases properly. Sigh. Since we do not know which
+  // would be real ones and which not, just remove all bonus ids that "adjust ilevel" from the
+  // artifact weapon itself.
+  auto it = item.parsed.bonus_id.begin();
+  while ( it != item.parsed.bonus_id.end() )
+  {
+    if ( *it == 0 )
+    {
+      continue;
+    }
+
+    const auto bonus_data = item.player -> dbc.item_bonus( *it );
+    auto ilevel_it = range::find_if( bonus_data, []( const item_bonus_entry_t* entry ) {
+      return entry -> type == ITEM_BONUS_ILEVEL;
+    } );
+
+    if ( ilevel_it != bonus_data.end() )
+    {
+      it = item.parsed.bonus_id.erase( it );
+    }
+    else
+    {
+      ++it;
+    }
+  }
+}
+
 bool parse_items( player_t*  p,
                   const rapidjson::Value& items )
 {
@@ -248,6 +341,12 @@ bool parse_items( player_t*  p,
     {
       const rapidjson::Value& upgrade = params[ "upgrade" ];
       if ( upgrade.HasMember( "current" ) ) item.parsed.upgrade_level = upgrade[ "current" ].GetUint();
+    }
+
+    // Artifact
+    if ( data.HasMember( "quality" ) && data[ "quality" ].GetUint() == ITEM_QUALITY_ARTIFACT )
+    {
+      parse_artifact( item, data );
     }
   }
 

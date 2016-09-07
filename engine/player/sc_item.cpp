@@ -868,9 +868,60 @@ std::string item_t::encoded_item() const
 
   if ( ! option_gem_id_str.empty() )
     s << ",gem_id=" << option_gem_id_str;
+  // With artifact, we need to output gems (relics). This probably would need a more thorough
+  // checking but artifact doubtful will ever support normal gems, so there's not going to ever be a
+  // "gems" option for them.
+  else if ( slot == SLOT_MAIN_HAND &&
+            player -> artifact_enabled() &&
+            range::find_if( parsed.gem_id, []( int id ) { return id != 0; } ) != parsed.gem_id.end() )
+  {
+    s << ",gem_id=";
+    for ( size_t gem_idx = 0; gem_idx < parsed.gem_id.size(); ++gem_idx )
+    {
+      s << parsed.gem_id[ gem_idx ];
+      if ( gem_idx < parsed.gem_id.size() - 1 )
+      {
+        s << "/";
+      }
+    }
+  }
+
+  // Figure out if any relics have "relic data" (relic bonus ids)
+  auto relic_data_it = range::find_if( parsed.relic_data, []( const std::vector<unsigned> v ) {
+    return v.size() > 0;
+  } );
 
   if ( ! option_relic_id_str.empty() )
     s << ",relic_id=" << option_relic_id_str;
+  else if ( relic_data_it != parsed.relic_data.end() )
+  {
+    s << ",relic_id=";
+    for ( size_t relic_idx = 0; relic_idx < parsed.relic_data.size(); ++relic_idx )
+    {
+      const auto& relic_data = parsed.relic_data[ relic_idx ];
+      if ( relic_data.size() == 0 )
+      {
+        s << "0";
+      }
+      else
+      {
+        for ( size_t relic_bonus_idx = 0; relic_bonus_idx < relic_data.size(); ++relic_bonus_idx )
+        {
+          s << relic_data[ relic_bonus_idx ];
+
+          if ( relic_bonus_idx < relic_data.size() - 1 )
+          {
+            s << ":";
+          }
+        }
+      }
+
+      if ( relic_idx < parsed.relic_data.size() - 1 )
+      {
+        s << "/";
+      }
+    }
+  }
 
   if ( ! option_enchant_str.empty() )
     s << ",enchant=" << encoded_enchant();
