@@ -14,8 +14,8 @@ spec=frost
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_strength_flask
-actions.precombat+=/food,type=pickled_eel
+actions.precombat=flask,name=greater_draenic_strength_flask
+actions.precombat+=/food,name=pickled_eel
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
@@ -27,7 +27,7 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
 actions+=/berserking
 actions+=/use_item,slot=finger1
-actions+=/potion,type=draenic_strength
+actions+=/potion,name=draenic_strength
 actions+=/pillar_of_frost
 actions+=/sindragosas_fury
 actions+=/obliteration

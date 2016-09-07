@@ -15,9 +15,9 @@ spec=subtlety
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_agility_flask
-actions.precombat+=/augmentation,type=hyper
-actions.precombat+=/food,type=jumbo_sea_dog
+actions.precombat=flask,name=greater_draenic_agility_flask
+actions.precombat+=/augmentation,name=hyper
+actions.precombat+=/food,name=jumbo_sea_dog
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth

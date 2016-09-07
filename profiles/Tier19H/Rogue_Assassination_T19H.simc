@@ -15,9 +15,9 @@ spec=assassination
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/augmentation,type=defiled
-actions.precombat+=/food,type=seedbattered_fish_plate
+actions.precombat=flask,name=flask_of_the_seventh_demon
+actions.precombat+=/augmentation,name=defiled
+actions.precombat+=/food,name=seedbattered_fish_plate
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/apply_poison

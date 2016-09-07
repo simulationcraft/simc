@@ -14,8 +14,8 @@ spec=unholy
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=greater_draenic_strength_flask
-actions.precombat+=/food,type=buttered_sturgeon
+actions.precombat=flask,name=greater_draenic_strength_flask
+actions.precombat+=/food,name=buttered_sturgeon
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength

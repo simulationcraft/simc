@@ -15,9 +15,9 @@ spec=frost
 
 # Executed before combat begins. Accepts non-harmful actions only.
 
-actions.precombat=flask,type=countless_armies
-actions.precombat+=/food,type=the_hungry_magister
-actions.precombat+=/augmentation,type=defiled
+actions.precombat=flask,name=countless_armies
+actions.precombat+=/food,name=the_hungry_magister
+actions.precombat+=/augmentation,name=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
@@ -29,7 +29,7 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
 actions+=/berserking
 actions+=/use_item,slot=trinket1
-actions+=/potion,type=deadly_grace
+actions+=/potion,name=deadly_grace
 actions+=/pillar_of_frost
 actions+=/sindragosas_fury
 actions+=/obliteration

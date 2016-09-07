@@ -6530,18 +6530,18 @@ void death_knight_t::default_apl_dps_precombat( const std::string& food_name, co
   // Flask
   if ( sim -> allow_flasks && true_level >= 80 )
   {
-    precombat -> add_action( "flask,type=" + flask_name );
+    precombat -> add_action( "flask,name=" + flask_name );
   }
 
   // Food
   if ( sim -> allow_food && true_level >= 80 )
   {
-    precombat -> add_action( "food,type=" + food_name );
+    precombat -> add_action( "food,name=" + food_name );
   }
 
   if ( true_level >= 110 )
   {
-    precombat -> add_action( "augmentation,type=defiled" );
+    precombat -> add_action( "augmentation,name=defiled" );
   }
 
   // Snapshot stats
@@ -6603,7 +6603,7 @@ void death_knight_t::default_apl_frost()
   // In-combat potion
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    def -> add_action( "potion,type=" + potion_name );
+    def -> add_action( "potion,name=" + potion_name );
   }
 
   // Cooldowns

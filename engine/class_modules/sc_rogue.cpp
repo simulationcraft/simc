@@ -6090,7 +6090,7 @@ void rogue_t::init_action_list()
   // Flask
   if ( sim -> allow_flasks && true_level >= 85 )
   {
-    std::string flask_action = "flask,type=";
+    std::string flask_action = "flask,name=";
     flask_action += ( ( true_level >= 110 ) ? "flask_of_the_seventh_demon" : ( true_level >= 100 ) ? "greater_draenic_agility_flask" : ( true_level >= 90 ) ? "spring_blossoms" : ( true_level >= 85 ) ? "winds" : "" );
 
     precombat -> add_action( flask_action );
@@ -6098,7 +6098,7 @@ void rogue_t::init_action_list()
     // Added Rune if Flask are allowed since there is no "allow_runes" bool.
     if ( true_level >= 100 )
     {
-      std::string rune_action = "augmentation,type=";
+      std::string rune_action = "augmentation,name=";
       rune_action += ( ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "hyper" : "" );
 
       precombat -> add_action( rune_action );
@@ -6108,7 +6108,7 @@ void rogue_t::init_action_list()
   // Food
   if ( sim -> allow_food && level() >= 85 )
   {
-    std::string food_action = "food,type=";
+    std::string food_action = "food,name=";
     if ( specialization() == ROGUE_ASSASSINATION )
       food_action += ( ( level() >= 110 ) ? "seedbattered_fish_plate" : ( level() >= 100 ) ? "jumbo_sea_dog" : ( level() >= 90 ) ? "sea_mist_rice_noodles" : ( level() >= 85 ) ? "seafood_magnifique_feast" : "" );
     else if ( specialization() == ROGUE_OUTLAW )
