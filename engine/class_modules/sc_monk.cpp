@@ -2446,11 +2446,6 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  virtual bool ready() override
-  {
-    return p() -> artifact.tornado_kicks.rank();
-  }
-
   // Force 250 milliseconds for the animation, but not delay the overall GCD
   timespan_t execute_time() const override
   {
@@ -2473,21 +2468,6 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
   virtual double cost() const override
   {
     return 0;
-  }
-
-  virtual void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
-    // TODO: This is a possible bug where it is removing a stack before adding 2 stacks
-    if ( p() -> buff.masterful_strikes -> up() )
-      p() -> buff.masterful_strikes -> decrement();
-
-    if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T18, B2 ) )
-      p() -> buff.masterful_strikes -> trigger( ( int ) p() -> sets.set( MONK_WINDWALKER,T18, B2 ) -> effect_count() );
   }
 
   virtual void impact( action_state_t* s ) override
