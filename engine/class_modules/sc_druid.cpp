@@ -690,6 +690,7 @@ public:
     t16_2pc_sun_bolt( nullptr ),
     starshards( 0.0 ),
     initial_astral_power( 0 ),
+    predator_rppm_rate( 0.0 ),
     initial_moon_stage( NEW_MOON ),
     active( active_actions_t() ),
     pet_fey_moonwing(),
@@ -4424,13 +4425,15 @@ struct full_moon_t : public druid_spell_t
 
   double calculate_direct_amount( action_state_t* state ) const override
   {
-    double c = druid_spell_t::calculate_direct_amount( state );
-
-    if ( state -> target == execute_state -> target )
+    double da = druid_spell_t::calculate_direct_amount( state );
+    
+    // Sep 3 2016: Main target takes full damage, this reverses the divisor in action_t::calculate_direct_amount (hotfixed).
+    if ( state -> chain_target == 0 )
     {
-      c *= state -> n_targets; // Main target takes full damage, this reverses the divisor in action_t::calculate_direct_amount
-    }//Hotfixed 9/3/2016
-    return c;
+      da *= state -> n_targets;
+    }
+
+    return da;
   }
 
   void execute() override
