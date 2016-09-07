@@ -9405,6 +9405,29 @@ void player_t::recreate_talent_str( talent_format_e format )
 
 // player_t::create_profile =================================================
 
+std::string generate_artifact_str( player_t* player )
+{
+  std::ostringstream s;
+
+  s << "artifact=";
+  s << player -> dbc.artifact_by_spec( player -> specialization() );
+  s << ":0:0:0:0";
+
+  const auto powers = player -> dbc.artifact_powers( player -> dbc.artifact_by_spec( player -> specialization() ) );
+  for ( size_t i = 0; i < player -> artifact.points.size(); ++i )
+  {
+    if ( player -> artifact.points[ i ] == 0 )
+    {
+      continue;
+    }
+
+    s << ":" << powers[ i ] -> id << ":" << +player -> artifact.points[ i ];
+  }
+  s << std::endl;
+
+  return s.str();
+}
+
 std::string player_t::create_profile( save_e stype )
 {
   std::string profile_str;
@@ -9474,6 +9497,10 @@ std::string player_t::create_profile( save_e stype )
     if ( artifact_str.size() > 0 )
     {
       profile_str += "artifact=" + artifact_str + term;
+    }
+    else if ( artifact.n_points > 0 )
+    {
+      profile_str += generate_artifact_str( this );
     }
   }
 
