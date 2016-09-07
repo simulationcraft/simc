@@ -2457,7 +2457,13 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     if ( p() -> artifact.tornado_kicks.rank() )
+    {
       am *= p() -> artifact.tornado_kicks.data().effectN( 1 ).percent();
+
+      // Mastery from the base damage is not factored into Tornado Kick. 
+      // Need to remove mastery from the damage.
+      am /= 1 + p() -> cache.mastery_value();
+    }
 
     return am;
   }
