@@ -16,7 +16,7 @@ spec=elemental
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=greater_draenic_intellect_flask
-actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/food,name=pickled_eel
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect

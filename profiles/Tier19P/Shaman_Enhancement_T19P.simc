@@ -17,7 +17,7 @@ spec=enhancement
 
 actions.precombat=flask,type=seventh_demon
 actions.precombat+=/augmentation,type=defiled
-actions.precombat+=/food,type=nightborne_delicacy_platter
+actions.precombat+=/food,name=azshari_salad
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace

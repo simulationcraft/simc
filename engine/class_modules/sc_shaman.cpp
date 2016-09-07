@@ -6401,10 +6401,10 @@ void shaman_t::init_action_list_elemental()
                             ( true_level >= 85 ) ? "warm_sun" :
                             ( true_level >= 80 ) ? "draconic_mind" :
                             "";
-  std::string food_name   = ( true_level > 100 ) ? "pickled_eel" :
-                            ( true_level > 90  ) ? "salty_squid_roll" :
-                            ( true_level >= 85 ) ? "mogu_fish_stew" :
-                            ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+  std::string food_name   = ( true_level > 100  ) ? "the_hungry_magister" :
+                            ( true_level > 90   ) ? "pickled_eel" :
+                            ( true_level >= 90  ) ? "mogu_fish_stew" :
+                            ( true_level >= 80  ) ? "seafood_magnifique_feast" :
                             "";
 
   // Flask
@@ -6416,7 +6416,7 @@ void shaman_t::init_action_list_elemental()
   // Food
   if ( sim -> allow_food && true_level >= 80 )
   {
-    precombat -> add_action( "food,type=" + food_name );
+    precombat -> add_action( "food,name=" + food_name );
   }
 
 
@@ -6536,10 +6536,10 @@ void shaman_t::init_action_list_enhancement()
                            ( true_level >= 85  ) ? "spring_blossoms" :
                            ( true_level >= 80  ) ? "winds" :
                            "";
-  std::string food_name = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
-                          ( true_level >= 90 ) ? "buttered_sturgeon" :
-                          ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
-                          ( true_level >= 80 ) ? "seafood_magnifique_feast" :
+  std::string food_name = ( true_level >  100 ) ? "azshari_salad" :
+                          ( true_level >  90  ) ? "buttered_sturgeon" :
+                          ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
+                          ( true_level >= 80  ) ? "seafood_magnifique_feast" :
                           "";
   std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
                             ( true_level >= 90 ) ? "draenic_agility" :
@@ -6565,7 +6565,7 @@ void shaman_t::init_action_list_enhancement()
   // Food
   if ( sim -> allow_food && true_level >= 80 )
   {
-    precombat -> add_action( "food,type=" + food_name );
+    precombat -> add_action( "food,name=" + food_name );
   }
 
   // Snapshot stats

@@ -17,7 +17,7 @@ spec=enhancement
 
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/augmentation,type=hyper
-actions.precombat+=/food,type=buttered_sturgeon
+actions.precombat+=/food,name=buttered_sturgeon
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
