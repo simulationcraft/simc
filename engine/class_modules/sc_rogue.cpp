@@ -3025,6 +3025,35 @@ struct kingsbane_strike_t : public rogue_attack_t
     weapon = w;
     base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 3 ).percent();
   }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> mastery.potent_poisons -> ok() )
+    {
+      m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = rogue_attack_t::composite_target_multiplier( target );
+
+    // TODO: Does this work?
+    //m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
+    if ( p() -> legendary.zoldyck_family_training_shackles )
+    {
+      if ( target -> health_percentage() < p() -> legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+      {
+        m *= 1.0 + p() -> legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+      }
+    }
+
+    return m;
+  }
 };
 
 struct kingsbane_t : public rogue_attack_t
@@ -3041,12 +3070,25 @@ struct kingsbane_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 3 ).percent();
   }
 
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> mastery.potent_poisons -> ok() )
+    {
+      m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return m;
+  }
+
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
     m *= 1.0 + td( target ) -> debuffs.kingsbane -> stack_value();
-    m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
+    // TODO: Does this work?
+    //m *= 1.0 + td( target ) -> debuffs.surge_of_toxins -> stack_value();
 
     if ( p() -> legendary.zoldyck_family_training_shackles )
     {
