@@ -50,6 +50,7 @@ namespace item
   void tirathons_betrayal( special_effect_t& );
   void windscar_whetstone( special_effect_t& );
   void jeweled_signet_of_melandrus( special_effect_t& );
+  void caged_horror( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -2118,6 +2119,23 @@ void item::jeweled_signet_of_melandrus( special_effect_t& effect )
   effect.player -> auto_attack_multiplier *= value;
 }
 
+// Caged Horror =============================================================
+
+void item::caged_horror( special_effect_t& effect )
+{
+  double amount = effect.driver() -> effectN( 1 ).average( effect.item );
+  auto nuke = new unique_gear::proc_spell_t( "dark_blast", effect.player,
+    effect.player -> find_spell( 215407 ), effect.item );
+  // Need to manually adjust the damage and properties, since it's not available in the nuke
+  nuke -> aoe = -1; // TODO: Fancier targeting, this should probably not hit all targets
+  nuke -> radius = 5; // TODO: How wide is the "line" ?
+  nuke -> base_dd_min = nuke -> base_dd_max = amount;
+
+  effect.execute_action = nuke;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Six-Feather Fan ==========================================================
 
 struct wind_bolt_callback_t : public dbc_proc_callback_t
@@ -2188,7 +2206,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 215658, item::tirathons_betrayal             );
   register_special_effect( 214980, item::windscar_whetstone             );
   register_special_effect( 214054, "214052Trigger"                      );
-  register_special_effect( 215444, "215407Trigger"                      );
+  register_special_effect( 215444, item::caged_horror                   );
   register_special_effect( 215813, "ProcOn/Hit_1Tick_215816Trigger"     );
   register_special_effect( 214492, "ProcOn/Hit_1Tick_214494Trigger"     );
   register_special_effect( 214340, "ProcOn/Hit_1Tick_214342Trigger"     );
