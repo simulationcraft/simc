@@ -2446,6 +2446,11 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
+  virtual bool ready() override
+  {
+    return p() -> artifact.tornado_kicks.rank();
+  }
+
   // Force 250 milliseconds for the animation, but not delay the overall GCD
   timespan_t execute_time() const override
   {
@@ -2456,14 +2461,11 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    if ( p() -> artifact.tornado_kicks.rank() )
-    {
-      am *= p() -> artifact.tornado_kicks.data().effectN( 1 ).percent();
+    // Mastery from the base damage is not factored into Tornado Kick. 
+    // Need to remove mastery from the damage.
+    am /= 1 + p() -> cache.mastery_value();
 
-      // Mastery from the base damage is not factored into Tornado Kick. 
-      // Need to remove mastery from the damage.
-      am /= 1 + p() -> cache.mastery_value();
-    }
+    am *= p() -> artifact.tornado_kicks.data().effectN( 1 ).percent();
 
     return am;
   }
@@ -2623,14 +2625,16 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
       // Apply Mortal Wonds
       if ( p() -> specialization() == MONK_WINDWALKER )
+      {
         s -> target -> debuffs.mortal_wounds -> trigger();
 
-      if ( p() -> artifact.tornado_kicks.rank() )
-      {
-        rsk_tornado_kick -> target = s -> target;
-        rsk_tornado_kick -> base_dd_max = s -> result_raw;
-        rsk_tornado_kick -> base_dd_min = s -> result_raw;
-        rsk_tornado_kick -> execute();
+        if ( p() -> artifact.tornado_kicks.rank() )
+        {
+          rsk_tornado_kick -> target = s -> target;
+          rsk_tornado_kick -> base_dd_max = s -> result_raw;
+          rsk_tornado_kick -> base_dd_min = s -> result_raw;
+          rsk_tornado_kick -> execute();
+        }
       }
     }
   }
