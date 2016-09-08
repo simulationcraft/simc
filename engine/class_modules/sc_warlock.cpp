@@ -1913,16 +1913,16 @@ struct wild_imp_pet_t: public warlock_pet_t
 
   void dismiss( bool expired ) override
   {
-      if(expired && o()->artifact.the_expendables.rank())
+      if( expired && o() -> artifact.the_expendables.rank() )
       {
-          for( auto& pet : o()->pet_list )
+          for( auto& pet : o() -> pet_list )
           {
               pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
-              if( lock_pet && !lock_pet->is_sleeping() && lock_pet != this )
+              if( lock_pet && !lock_pet -> is_sleeping() && lock_pet != this )
               {
-                  lock_pet->buffs.the_expendables->bump(1,
-                        buffs.the_expendables->data().effectN( 1 ).percent());
-                  //lock_pet->procs.the_expendable->occur();
+                  lock_pet -> buffs.the_expendables -> bump( 1,
+                              buffs.the_expendables -> data().effectN( 1 ).percent() );
+                  //lock_pet -> procs.the_expendable -> occur();
               }
           }
       }
@@ -1954,9 +1954,9 @@ struct wild_imp_pet_t: public warlock_pet_t
   {
       warlock_pet_t::arise();
 
-      if(isnotdoge)
+      if( isnotdoge )
       {
-         firebolt->cooldown->start(timespan_t::from_millis(rng().range( 500 , 1500 )));         firebolt->cooldown->start(timespan_t::from_millis(rng().range( 500 , 1500 )));
+         firebolt -> cooldown -> start( timespan_t::from_millis( rng().range( 500 , 1500 )));
       }
   }
 
