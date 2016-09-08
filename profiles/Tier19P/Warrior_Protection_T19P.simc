@@ -58,18 +58,18 @@ actions.prot_aoe+=/revenge
 actions.prot_aoe+=/thunder_clap,if=spell_targets.thunder_clap>=3
 actions.prot_aoe+=/devastate
 
-head=casque_of_the_deep,id=134512,bonus_id=1727
-neck=brulstone_pendant,id=134161,bonus_id=1727,enchant=mark_of_the_heavy_hide
+head=vision_of_the_spider_queen,id=137451,bonus_id=1727
+neck=raven_filigree_pendant,id=134499,bonus_id=1727,enchant=mark_of_the_heavy_hide
 shoulders=rockbound_pauldrons,id=134140,bonus_id=1727
-back=trembling_mightstone_drape,id=134158,bonus_id=1727,enchant=binding_of_strength
-chest=wardbreaker_chestplate,id=136725,bonus_id=1727
-wrists=detention_wristclamps,id=134522,bonus_id=1727
-hands=rumblestone_gauntlets,id=137355,bonus_id=1727
-waist=rockbound_girdle,id=134137,bonus_id=1727
-legs=tassets_of_ravenous_euphoria,id=134516,bonus_id=1727
-feet=wardbreaker_warboots,id=136731,bonus_id=1727
-finger1=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=binding_of_haste
-finger2=ring_of_contempt,id=134490,bonus_id=1727,enchant=binding_of_haste
+back=mainsail_cloak,id=134406,bonus_id=1727,enchant=binding_of_strength
+chest=etheldrins_breastplate,id=136976,bonus_id=1727
+wrists=wristbands_of_magnificent_splendor,id=139283,bonus_id=1727
+hands=bloodspattered_gauntlets,id=137525,bonus_id=1727
+waist=greatbelt_of_disruption,id=137310,bonus_id=1727
+legs=greaves_of_ruinous_dominion,id=134515,bonus_id=1727
+feet=leadfoot_earthshakers,id=134507,bonus_id=1727
+finger1=band_of_crystalline_bone,id=134493,bonus_id=1727,enchant=binding_of_versatility
+finger2=braided_silver_ring,id=134539,bonus_id=1727,enchant=binding_of_versatility
 trinket1=memento_of_angerboda,id=133644,bonus_id=1727
 trinket2=impenetrable_nerubian_husk,id=137430,bonus_id=1727
 main_hand=scaleshard,id=128288
@@ -79,8 +79,8 @@ off_hand=scale_of_the_earthwarder,id=128289,gem_id=133763/137412/133686,relic_id
 # gear_ilvl=836.25
 # gear_strength=10841
 # gear_stamina=17267
-# gear_crit_rating=550
-# gear_haste_rating=9034
-# gear_mastery_rating=528
-# gear_versatility_rating=6525
+# gear_crit_rating=813
+# gear_haste_rating=1910
+# gear_mastery_rating=6954
+# gear_versatility_rating=6958
 # gear_armor=3965

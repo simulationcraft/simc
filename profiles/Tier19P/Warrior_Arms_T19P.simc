@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=back
 talents=1332311
-artifact=36:137469:137363:137377:0:1136:1:1137:1:1139:1:1142:1:1145:3:1147:3:1148:3:1149:3:1150:6:1356:1
+artifact=36:0:0:0:0:1136:1:1137:1:1139:1:1142:1:1145:3:1146:3:1148:3:1149:3:1150:3:1356:1
 spec=arms
 
 # This default action priority list is automatically created based on your character.
@@ -102,7 +102,7 @@ finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1727,enchant=binding_of_master
 finger2=archdruids_tainted_seal,id=134487,bonus_id=1727,enchant=binding_of_mastery
 trinket1=gift_of_radiance,id=133647,bonus_id=1727
 trinket2=terrorbound_nexus,id=137406,bonus_id=1727
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=137469/137363/137377,relic_id=3412/3412/3412
+main_hand=stromkar_the_warbreaker,id=128910,gem_id=137469/137363/137377,relic_id=3412/3412/3412
 
 # Gear Summary
 # gear_ilvl=842.00
