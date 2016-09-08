@@ -1,4 +1,4 @@
-SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build a80613e)
+SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build 202d9ab)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Fire Frost Mage
@@ -858,7 +858,7 @@ Description      : Reduces the target's movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
 Name             : Dragon's Breath (id=31661) [Scaling Spell (5), Spell Family (3)] 
-Hotfixed         : Attributes
+Hotfixed         : Proc Flags (139944 -> 664232), Attributes
 Class            : Fire Mage
 School           : Fire
 Resource         : 4% Base Mana (44000 @Level 110)
@@ -869,8 +869,8 @@ Cooldown         : 20 seconds
 Category         : 1215
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Shatter (12982), Darckli's Dragonfire Diadem (207547), Big Mouth (215796)
 Attributes       : ........ ........ x...x... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
