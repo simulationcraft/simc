@@ -1242,6 +1242,10 @@ class SpellDataGenerator(DataGenerator):
          201639, 201640, 201641,   # 7.0 Lavish Suramar Feast food buffs
          201635, 201636, 201637,   # 7.0 Hearty Feast food buffs
          215047,                   # Terrorbound Nexus trinket
+         # Eyasu's Mulligan stuff
+         227394, 227397,
+         227392, 227395,
+         227396, 227393,
         ),
 
         # Warrior:

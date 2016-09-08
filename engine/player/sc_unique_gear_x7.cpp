@@ -56,6 +56,7 @@ namespace item
   void darkmoon_deck( special_effect_t& );
   void infernal_alchemist_stone( special_effect_t& ); // WIP
   void sixfeather_fan( special_effect_t& );
+  void eyasus_mulligan( special_effect_t& );
 
   // 7.0 Raid
   void bloodthirsty_instinct( special_effect_t& );
@@ -569,6 +570,7 @@ void item::tirathons_betrayal( special_effect_t& effect )
   effect.custom_buff = buff_creator_t( effect.player, "darkstrikes", effect.driver(), effect.item )
     .chance( 1 ) // overrride RPPM
     .activated( false )
+    .cd( timespan_t::zero() )
     .stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
     {
       if ( old == 0 ) {
@@ -2182,6 +2184,118 @@ void item::sixfeather_fan( special_effect_t& effect )
   new wind_bolt_callback_t( effect.item, effect, bolt );
 }
 
+// Eyasu's Mulligan =========================================================
+
+struct eyasus_driver_t : public spell_t
+{
+  std::array<stat_buff_t*, 4> stat_buffs;
+  std::array<buff_t*, 4> mulligan_buffs;
+  unsigned current_roll;
+  cooldown_t* base_cd;
+  bool first_roll, used_mulligan;
+
+  eyasus_driver_t( const special_effect_t& effect ) :
+    spell_t( "eyasus_mulligan", effect.player, effect.player -> find_spell( 227389 ) ),
+    current_roll( 0 ), base_cd( effect.player -> get_cooldown( effect.cooldown_name() ) ),
+    first_roll( true ), used_mulligan( false )
+  {
+    callbacks = harmful = hasted_ticks = false;
+    background = quiet = true;
+
+    base_tick_time = data().duration();
+    dot_duration = data().duration();
+
+    double amount = effect.driver() -> effectN( 1 ).average( effect.item );
+    amount *= effect.item -> sim -> dbc.combat_rating_multiplier( effect.item -> item_level() );
+
+    // Initialize stat buffs
+    stat_buffs[ 0 ] = stat_buff_creator_t( effect.player, "lethal_on_board",
+      effect.player -> find_spell( 227390 ), effect.item )
+      .add_stat( STAT_CRIT_RATING, amount );
+    stat_buffs[ 1 ] = stat_buff_creator_t( effect.player, "the_coin",
+      effect.player -> find_spell( 227392 ), effect.item )
+      .add_stat( STAT_HASTE_RATING, amount );
+    stat_buffs[ 2 ] = stat_buff_creator_t( effect.player, "top_decking",
+      effect.player -> find_spell( 227393 ), effect.item )
+      .add_stat( STAT_MASTERY_RATING, amount );
+    stat_buffs[ 3 ] = stat_buff_creator_t( effect.player, "full_hand",
+      effect.player -> find_spell( 227394 ), effect.item )
+      .add_stat( STAT_VERSATILITY_RATING, amount );
+
+    // Initialize mulligan buffs
+    mulligan_buffs[ 0 ] = buff_creator_t( effect.player, "lethal_on_board_mulligan",
+      effect.player -> find_spell( 227389 ), effect.item );
+    mulligan_buffs[ 1 ] = buff_creator_t( effect.player, "the_coin_mulligan",
+      effect.player -> find_spell( 227395 ), effect.item );
+    mulligan_buffs[ 2 ] = buff_creator_t( effect.player, "top_decking_mulligan",
+      effect.player -> find_spell( 227396 ), effect.item );
+    mulligan_buffs[ 3 ] = buff_creator_t( effect.player, "full_hand_mulligan",
+      effect.player -> find_spell( 227397 ), effect.item );
+  }
+
+  void trigger_dot( action_state_t* state ) override
+  {
+    if ( ! first_roll )
+    {
+      return;
+    }
+
+    spell_t::trigger_dot( state );
+  }
+
+  void execute() override
+  {
+    spell_t::execute();
+
+    // Choose a buff and trigger the mulligan one
+    range::for_each( mulligan_buffs, [ this ]( buff_t* b ) { b -> expire(); } );
+    current_roll = static_cast<unsigned>( rng().range( 0, mulligan_buffs.size() ) );
+    mulligan_buffs[ current_roll ] -> trigger();
+    if ( ! first_roll )
+    {
+      used_mulligan = true;
+    }
+
+    first_roll = false;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    spell_t::last_tick( d );
+
+    mulligan_buffs[ current_roll ] -> expire();
+    stat_buffs[ current_roll ] -> trigger();
+    first_roll = true;
+    used_mulligan = false;
+
+    // Hardcoded .. for now, need to dig into spell data to see where this is hidden
+    base_cd -> start( timespan_t::from_seconds( 120 ) );
+  }
+
+  void reset() override
+  {
+    spell_t::reset();
+
+    first_roll = true;
+    used_mulligan = false;
+  }
+
+  bool ready() override
+  {
+    if ( used_mulligan )
+    {
+      return false;
+    }
+
+    return spell_t::ready();
+  }
+};
+
+void item::eyasus_mulligan( special_effect_t& effect )
+{
+  effect.execute_action = new eyasus_driver_t( effect );
+}
+
 void unique_gear::register_special_effects_x7()
 {
   /* Legion 7.0 Dungeon */
@@ -2228,6 +2342,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 191611, item::darkmoon_deck                  );
   register_special_effect( 191632, item::darkmoon_deck                  );
   register_special_effect( 227868, item::sixfeather_fan                 );
+  register_special_effect( 227388, item::eyasus_mulligan                );
 
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );
