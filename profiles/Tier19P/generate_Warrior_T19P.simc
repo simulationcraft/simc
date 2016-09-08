@@ -74,6 +74,6 @@ finger1=band_of_crystalline_bone,id=134493,bonus_id=1727,enchant=binding_of_vers
 finger2=braided_silver_ring,id=134539,bonus_id=1727,enchant=binding_of_versatility
 trinket1=memento_of_angerboda,id=133644,bonus_id=1727
 trinket2=impenetrable_nerubian_husk,id=137430,bonus_id=1727
-main_hand=scaleshard,id=128288
+main_hand=scaleshard,id=128288,ilevel=870
 off_hand=scale_of_the_earthwarder,id=128289,gem_id=133763/137412/133686,relic_id=3412/3412/3412
 save=Warrior_Protection_T19P.simc

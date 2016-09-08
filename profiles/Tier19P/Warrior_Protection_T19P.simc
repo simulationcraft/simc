@@ -72,15 +72,15 @@ finger1=band_of_crystalline_bone,id=134493,bonus_id=1727,enchant=binding_of_vers
 finger2=braided_silver_ring,id=134539,bonus_id=1727,enchant=binding_of_versatility
 trinket1=memento_of_angerboda,id=133644,bonus_id=1727
 trinket2=impenetrable_nerubian_husk,id=137430,bonus_id=1727
-main_hand=scaleshard,id=128288
+main_hand=scaleshard,id=128288,ilevel=870
 off_hand=scale_of_the_earthwarder,id=128289,gem_id=133763/137412/133686,relic_id=3412/3412/3412
 
 # Gear Summary
-# gear_ilvl=836.25
-# gear_strength=10841
-# gear_stamina=17267
-# gear_crit_rating=813
+# gear_ilvl=843.75
+# gear_strength=11292
+# gear_stamina=17944
+# gear_crit_rating=971
 # gear_haste_rating=1910
-# gear_mastery_rating=6954
+# gear_mastery_rating=7106
 # gear_versatility_rating=6958
 # gear_armor=3965
