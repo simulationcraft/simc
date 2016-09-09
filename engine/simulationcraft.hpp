@@ -5800,7 +5800,7 @@ public:
   virtual void record_data(action_state_t* data);
 
   virtual void schedule_execute(action_state_t* execute_state = nullptr);
-  virtual void queue_execute();
+  virtual void queue_execute( bool off_gcd );
 
   virtual void reschedule_execute(timespan_t time);
 
@@ -7757,7 +7757,7 @@ inline bool cooldown_t::is_ready() const
   // basically only abilities, where the user must press a button to initiate the execution. Note
   // that off gcd abilities that bypass schedule_execute (i.e., action_t::use_off_gcd is set to
   // true) will for now not use the queueing system.
-  if ( ! action || ! player || ( action -> use_off_gcd && player -> gcd_ready > sim.current_time() ) )
+  if ( ! action || ! player )
   {
     return up();
   }

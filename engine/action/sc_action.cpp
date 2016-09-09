@@ -22,38 +22,59 @@ struct player_gcd_event_t : public player_event_t
     add_event( delta_time );
   }
 
-  virtual const char* name() const override
+  const char* name() const override
   { return "Player-Ready-GCD"; }
 
-  virtual void execute() override
+  void select_action( action_priority_list_t* alist )
   {
-    for ( std::vector<action_t*>::const_iterator i = p() -> active_off_gcd_list -> off_gcd_actions.begin();
+    for ( auto i = p() -> active_off_gcd_list -> off_gcd_actions.begin();
           i < p() -> active_off_gcd_list -> off_gcd_actions.end(); ++i )
     {
       action_t* a = *i;
-      if ( a -> ready() )
+      if ( ! a -> ready() )
       {
-        action_priority_list_t* alist = p() -> active_action_list;
+        continue;
+      }
 
-        a -> execute();
-        a -> line_cooldown.start();
-        if ( ! a -> quiet )
+      if ( p() -> queueing != a )
+      {
+        auto queue_delay = a -> cooldown -> queue_delay();
+        // Don't queue the action if GCD would elapse before the action is usable again
+        if ( queue_delay == timespan_t::zero() ||
+             ( a -> player -> readying &&
+             sim().current_time() + queue_delay < a -> player -> readying -> occurs() ) )
         {
-          p() -> iteration_executed_foreground_actions++;
-          a -> total_executions++;
-
-          p() -> sequence_add( a, a -> target, sim().current_time() );
-        }
-
-        // Need to restart because the active action list changed
-        if ( alist != p() -> active_action_list )
-        {
-          p() -> activate_action_list( p() -> active_action_list, true );
-          execute();
-          p() -> activate_action_list( alist, true );
-          return;
+          a -> queue_execute( true );
         }
       }
+
+      // Need to restart because the active action list changed
+      if ( alist != p() -> active_action_list )
+      {
+        p() -> activate_action_list( p() -> active_action_list, true );
+        select_action( p() -> active_action_list );
+        p() -> activate_action_list( alist, true );
+      }
+
+      // If we're queueing an action, no point looking for more
+      if ( p() -> queueing )
+      {
+        break;
+      }
+    }
+  }
+
+  void execute() override
+  {
+    p() -> off_gcd = nullptr;
+
+    select_action( p() -> active_action_list );
+
+    // Create a new Off-GCD event only in the case we didnt find anything to queue (could use an
+    // ability right away) and the action we executed was not a run_action_list.
+    if ( ! p() -> queueing && ! p() -> restore_action_list )
+    {
+      p() -> off_gcd = new ( sim() ) player_gcd_event_t( *p(), timespan_t::from_seconds( 0.1 ) );
     }
 
     if ( p() -> restore_action_list != 0 )
@@ -61,10 +82,67 @@ struct player_gcd_event_t : public player_event_t
       p() -> activate_action_list( p() -> restore_action_list );
       p() -> restore_action_list = 0;
     }
-
-    p() -> off_gcd = new ( sim() ) player_gcd_event_t( *p(), timespan_t::from_seconds( 0.1 ) );
   }
 };
+
+// Hack to bypass some of the full execution chain to be able to re-use normal actions as "off gcd
+// actions" (usable during gcd). Will directly execute the action (instead of going through
+// schedule_execute processing), and parts of our execution chain where relevant (e.g., line
+// cooldown, stats tracking).
+void do_off_gcd_execute( action_t* action )
+{
+  action -> execute();
+  action -> line_cooldown.start();
+  if ( ! action -> quiet )
+  {
+    action -> player -> iteration_executed_foreground_actions++;
+    action -> total_executions++;
+    action -> player -> sequence_add( action, action -> target, action -> sim -> current_time() );
+  }
+
+  // If we executed a queued off-gcd action, we need to re-kick the player gcd event if there's
+  // still time to poll for new actions to use.
+  timespan_t interval = timespan_t::from_seconds( 0.1 );
+  if ( ! action -> player -> off_gcd &&
+       action -> sim -> current_time() + interval < action -> player -> gcd_ready )
+  {
+    action -> player -> off_gcd = new ( *action -> sim ) player_gcd_event_t( *action -> player, interval );
+  }
+
+  if ( action -> player -> queueing == action )
+  {
+    action -> player -> queueing = nullptr;
+  }
+}
+
+struct queued_action_execute_event_t : public event_t
+{
+  action_t* action;
+  bool off_gcd;
+
+  queued_action_execute_event_t( action_t* a, const timespan_t& t, bool off_gcd ) :
+    event_t( *a -> sim ), action( a ), off_gcd( off_gcd )
+  {
+    add_event( t );
+  }
+
+  const char* name() const override
+  { return "Queued-Action-Execute"; }
+
+  void execute() override
+  {
+    action -> queue_event = nullptr;
+    if ( off_gcd )
+    {
+      do_off_gcd_execute( action );
+    }
+    else
+    {
+      action -> schedule_execute();
+    }
+  }
+};
+
 // Action Execute Event =====================================================
 
 struct action_execute_event_t : public player_event_t
@@ -149,28 +227,10 @@ struct action_execute_event_t : public player_event_t
     // Kick off the during-gcd checker, first run is immediately after
     event_t::cancel( p() -> off_gcd );
 
-    if ( ! p() -> channeling )
+    if ( ! p() -> channeling && p() -> gcd_ready > sim().current_time() )
+    {
       p() -> off_gcd = new ( sim() ) player_gcd_event_t( *p(), timespan_t::zero() );
-  }
-};
-
-struct queued_action_execute_event_t : public event_t
-{
-  action_t* action;
-
-  queued_action_execute_event_t( action_t* a, const timespan_t& t ) :
-    event_t( *a -> sim ), action( a )
-  {
-    add_event( t );
-  }
-
-  const char* name() const override
-  { return "Queued-Action-Execute"; }
-
-  void execute() override
-  {
-    action -> queue_event = nullptr;
-    action -> schedule_execute();
+    }
   }
 };
 
@@ -1557,18 +1617,26 @@ void action_t::record_data( action_state_t* data )
 
 // Should be called only by foreground action executions (i.e., Player-Ready event calls
 // player_t::execute_action() ). Background actions should (and are) directly call
-// action_t::schedule_execute.
-void action_t::queue_execute()
+// action_t::schedule_execute. Off gcd actions will either directly execute the action, or schedule
+// a queued off-gcd execution.
+void action_t::queue_execute( bool off_gcd )
 {
   auto queue_delay = cooldown -> queue_delay();
   if ( queue_delay > timespan_t::zero() )
   {
-    queue_event = new ( *sim ) queued_action_execute_event_t( this, queue_delay );
+    queue_event = new ( *sim ) queued_action_execute_event_t( this, queue_delay, off_gcd );
     player -> queueing = this;
   }
   else
   {
-    schedule_execute();
+    if ( off_gcd )
+    {
+      do_off_gcd_execute( this );
+    }
+    else
+    {
+      schedule_execute();
+    }
   }
 }
 
@@ -3394,7 +3462,9 @@ void action_t::reschedule_queue_event()
   }
   else
   {
+    bool off_gcd = debug_cast<queued_action_execute_event_t*>( queue_event ) -> off_gcd;
+
     event_t::cancel( queue_event );
-    queue_event = new ( *sim ) queued_action_execute_event_t( this, new_queue_delay );
+    queue_event = new ( *sim ) queued_action_execute_event_t( this, new_queue_delay, off_gcd );
   }
 }
