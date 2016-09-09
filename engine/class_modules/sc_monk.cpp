@@ -1324,15 +1324,9 @@ struct storm_earth_and_fire_pet_t : public pet_t
       dual = true;
       aoe = -1;
       radius = data().effectN( 2 ).base_value();
-      if ( player -> dual_wield() )
-      {
-        weapon = &( player -> off_hand_weapon );
-      }
-      else
-      {
-        weapon = &( player -> main_hand_weapon );
-        weapon_multiplier *= 0.5;
-      }
+      // Unlike the player, SEF don't have a damage variance. Possible bug
+      sim -> average_range = 1;
+      weapon = &( player -> off_hand_weapon );
     }
   };
 
@@ -1346,6 +1340,8 @@ struct storm_earth_and_fire_pet_t : public pet_t
       aoe = -1;
       radius = data().effectN( 2 ).base_value();
       weapon = &( player -> main_hand_weapon );
+      // Unlike the player, SEF don't have a damage variance. Possible bug
+      sim -> average_range = 1;
       normalize_weapon_speed = true;
     }
   };
@@ -1390,6 +1386,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_spell_t( "chi_burst_damage", player, player -> o() -> passives.chi_burst_damage)
     {
       dual = true;
+      aoe = -1;
     }
   };
 
@@ -1400,7 +1397,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_spell_t( "chi_burst", player, player -> o() -> talent.chi_burst ),
       damage( new sef_chi_burst_damage_t( player ) )
     { 
-      aoe = -1;
     }
 
     virtual void execute() override
@@ -3357,6 +3353,8 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
     weapon = &( p -> off_hand_weapon );
     aoe = -1;
     radius = data().effectN( 2 ).base_value();
+    // Force the Sim to use damage range
+    sim -> average_range = 0;
 
     if ( sim -> pvp_crit )
       base_multiplier *= 0.70; // 08/03/2016
@@ -3390,6 +3388,8 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
     weapon = &( p -> main_hand_weapon );
     normalize_weapon_speed = true;
     radius = data().effectN( 3 ).trigger() -> effectN( 2 ).base_value();
+    // Force the sim to use damage range
+    sim -> average_range = 0;
 
     oh_attack = new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
     add_child( oh_attack );
@@ -4267,6 +4267,7 @@ struct dragonfire_brew : public monk_spell_t
       background = true;
       tick_may_crit = may_crit = true;
       hasted_ticks = false;
+      aoe = -1;
 
       // TODO: Suspect the damage part is a placeholder
       base_dd_min = base_dd_max = p.passives.dragonfire_brew_damage -> effectN( 1 ).base_value();
@@ -4323,7 +4324,6 @@ struct breath_of_fire_t: public monk_spell_t
     dot_action( new periodic_t( p ) )
   {
     parse_options( options_str );
-    aoe = -1;
 
     add_child( dragonfire );
   }
@@ -5751,6 +5751,7 @@ struct chi_burst_heal_t: public monk_heal_t
   {
     background = true;
     target = p();
+    aoe = -1;
     attack_power_mod.direct = 4.125; // Hard code 06/21/16
   }
 
@@ -5776,6 +5777,7 @@ struct chi_burst_damage_t: public monk_spell_t
     monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage)
   {
     background = true;
+    aoe = -1;
     attack_power_mod.direct = 4.125; // Hard code 06/21/16
   }
 
@@ -5803,7 +5805,6 @@ struct chi_burst_t: public monk_spell_t
     parse_options( options_str );
     heal = new chi_burst_heal_t( *player );
     damage = new chi_burst_damage_t( *player );
-    aoe = -1;
     interrupt_auto_attack = false;
   }
 
