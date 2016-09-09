@@ -3,8 +3,8 @@ level=110
 race=tauren
 role=attack
 position=back
-talents=1121022
-artifact=35:0:0:0:0:982:1:984:1:985:1:986:1:988:3:990:3:991:3:995:3:996:3:1357:1
+talents=2232133
+artifact=35:137546:137365:137472:0:980:1:982:1:984:1:985:1:988:3:990:6:991:3:995:3:996:3:1357:1
 spec=fury
 
 # This default action priority list is automatically created based on your character.
@@ -90,9 +90,9 @@ legs=keelhauler_legplates,id=134514,bonus_id=1727
 feet=duskwatch_guards_boots,id=137482,bonus_id=1727
 finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_mastery
 finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_mastery
-trinket1=chaos_talisman,id=137459,bonus_id=1727
-trinket2=faulty_countermeasure,id=137539,bonus_id=1727
-main_hand=warswords_of_the_valarjar,id=128908,gem_id=137546/137365/137472,relic_id=3412/3412/3412
+trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
+trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=137546/137365/137472,relic_id=3412/3412/3412
 off_hand=warswords_of_the_valarjar,id=134553
 
 # Gear Summary
