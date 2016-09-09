@@ -1063,16 +1063,58 @@ bool player_t::init_items()
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     slots[ i ] = ! util::is_match_slot( i );
 
+  // We need to simple-parse the items first, this will set up some base information, and parse out
+  // simple options
   for ( size_t i = 0; i < items.size(); i++ )
   {
     item_t& item = items[ i ];
 
-    // If the item has been specified in options we want to start from scratch, forgetting about lingering stuff from profile copy
+    // If the item has been specified in options we want to start from scratch, forgetting about
+    // lingering stuff from profile copy
     if ( ! item.options_str.empty() )
     {
       item = item_t( this, item.options_str );
       item.slot = static_cast<slot_e>( i );
     }
+
+    if ( ! item.parse_options() )
+    {
+      sim -> errorf( "Unable to parse item '%s' options on player '%s'\n", item.name(), name() );
+      sim -> cancel();
+      return false;
+    }
+
+    if ( ! item.initialize_data() )
+    {
+      sim -> errorf( "Unable to initialize item '%s' base data on player '%s'\n", item.name(), name() );
+      sim -> cancel();
+      return false;
+    }
+  }
+
+  // Slot initialization order vector. Needed to ensure parents of children get initialized first
+  std::vector<slot_e> init_slots;
+  range::for_each( items, [ &init_slots ]( const item_t& i ) { init_slots.push_back( i.slot ); } );
+
+  // Sort items with children before items without children
+  range::sort( init_slots, [ this ]( slot_e first, slot_e second ) {
+    const item_t& fi = items[ first ], si = items[ second ];
+    if ( fi.parent_slot != SLOT_INVALID && si.parent_slot == SLOT_INVALID )
+    {
+      return false;
+    }
+    else if ( fi.parent_slot == SLOT_INVALID && si.parent_slot != SLOT_INVALID )
+    {
+      return true;
+    }
+
+    return false;
+  } );
+
+  for ( size_t i = 0; i < init_slots.size(); i++ )
+  {
+    slot_e slot = init_slots[ i ];
+    item_t& item = items[ slot ];
 
     if ( ! item.init() )
     {

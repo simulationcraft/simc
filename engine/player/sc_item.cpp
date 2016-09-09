@@ -756,6 +756,33 @@ bool item_t::parse_options()
   return true;
 }
 
+// item_t::initialize_data ==================================================
+
+// Initializes the base data of the item, so we can perform full initialization later. Must be
+// called after item_t::parse_options (so that the item has an id and potential data source
+// overrides)
+bool item_t::initialize_data()
+{
+  // Item specific source list has to be decoded first so we can properly
+  // download the item from the correct source
+  if ( ! decode_data_source() )
+    return false;
+
+  if ( parsed.data.id > 0 )
+  {
+    if ( ! item_t::download_item( *this ) &&
+         option_stats_str.empty() && option_weapon_str.empty() )
+      return false;
+  }
+  else
+    name_str = option_name_str;
+
+  // Determine Parent - Child relationship. Requires that an item has an id
+  parent_slot = player -> parent_item_slot( *this );
+
+  return true;
+}
+
 // item_t::encoded_item =====================================================
 
 void item_t::encoded_item( xml_writer_t& writer )
@@ -1232,30 +1259,8 @@ bool item_t::verify_slot()
 
 bool item_t::init()
 {
-  if ( ! parse_options() )
-    return false;
-
-  // Item specific source list has to be decoded first so we can properly
-  // download the item from the correct source
-  if ( ! decode_data_source() )
-    return false;
-
-  if ( parsed.data.id > 0 )
-  {
-    if ( ! item_t::download_item( *this ) &&
-         option_stats_str.empty() && option_weapon_str.empty() )
-      return false;
-  }
-  else
-    name_str = option_name_str;
-
   if ( name_str.empty() || name_str == "empty" || name_str == "none" )
     return true;
-
-  // Determine Parent - Child relationship. Note that this presumes items are initialized in the
-  // order parent - child, for now. A safer option would be to split item initialization up more so
-  // that the ordering does not matter
-  parent_slot = player -> parent_item_slot( *this );
 
   // Process basic stats
   if ( ! decode_warforged()                        ) return false;

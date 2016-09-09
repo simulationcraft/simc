@@ -2685,6 +2685,7 @@ struct item_t
   weapon_t* weapon() const;
   bool init();
   bool parse_options();
+  bool initialize_data(); // Initializes item data from a data source
   inventory_type inv_type() const;
 
   bool is_matching_type() const;
