@@ -6127,12 +6127,20 @@ void warlock_t::apl_demonology()
     add_action( "Demonic Empowerment", "if=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0" );
     action_list_str += "/felguard:felstorm";
     add_action( "Doom", "cycle_targets=1,if=!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3)" );
-    for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+
+    if ( find_item( "eyasus_mulligan" ) )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      action_list_str += "/use_item,name=eyasus_mulligan,if=!buff.the_coin_mulligan.remains&!buff.full_hand_mulligan.remains&!buff.top_decking_mulligan.remains&!buff.lethal_on_board_mulligan.remains";
+    }
+    if ( !find_item( "eyasus_mulligan" ) )
+    {
+      for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
       {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[i].name();
+        if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+        {
+          action_list_str += "/use_item,name=";
+          action_list_str += items[i].name();
+        }
       }
     }
     action_list_str += "/arcane_torrent";
@@ -6157,12 +6165,21 @@ void warlock_t::apl_destruction()
 
   // artifact check
 
-  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+  if ( find_item( "eyasus_mulligan" ) )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      action_list_str += "/use_item,name=eyasus_mulligan,if=!buff.the_coin_mulligan.remains&!buff.full_hand_mulligan.remains&!buff.top_decking_mulligan.remains&!buff.lethal_on_board_mulligan.remains";
+      action_list_str += "/use_item,name=eyasus_mulligan,if=buff.top_decking_mulligan.remains";
+  }
+
+  if ( !find_item( "eyasus_mulligan" ) )
+  {
+    for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
     {
-      action_list_str += "/use_item,name=";
-      action_list_str += items[i].name();
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      {
+        action_list_str += "/use_item,name=";
+        action_list_str += items[i].name();
+      }
     }
   }
 
