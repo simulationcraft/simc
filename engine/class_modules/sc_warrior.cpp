@@ -3120,7 +3120,7 @@ struct shield_block_hr_t: public warrior_attack_t
   double extension;
   shield_block_hr_t( warrior_t* p ):
     warrior_attack_t( "shield_block_heavy_repercussions", p, p -> spec.shield_block ),
-    extension( p -> talents.heavy_repercussions -> effectN( 1 ).base_value() / 100 )
+    extension( p -> talents.heavy_repercussions -> effectN( 1 ).base_value() / 100.0 )
   {
     background = true;
     base_costs[RESOURCE_RAGE] = 0;
