@@ -36,7 +36,9 @@ struct player_gcd_event_t : public player_event_t
         continue;
       }
 
-      if ( p() -> queueing != a )
+      // Don't attempt to execute an off gcd action that's already being queued (this should not
+      // happen anyhow), or being executed (very rare occasion)
+      if ( p() -> queueing != a && p() -> executing != a )
       {
         auto queue_delay = a -> cooldown -> queue_delay();
         // Don't queue the action if GCD would elapse before the action is usable again
