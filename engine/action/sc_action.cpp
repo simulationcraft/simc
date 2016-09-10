@@ -2807,6 +2807,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
           double evaluate() override
           {
             gcd_remains = ( action.player -> gcd_ready - action.sim -> current_time() ).total_seconds();
+            if ( gcd_remains < 0 ) // It's possible for this to return negative numbers.
+              gcd_remains = 0;
             return gcd_remains;
           }
         };
