@@ -57,6 +57,7 @@ namespace item
   void infernal_alchemist_stone( special_effect_t& ); // WIP
   void sixfeather_fan( special_effect_t& );
   void eyasus_mulligan( special_effect_t& );
+  void marfisis_giant_censer( special_effect_t& );
 
   // 7.0 Raid
   void bloodthirsty_instinct( special_effect_t& );
@@ -1393,6 +1394,19 @@ void item::infernal_alchemist_stone( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Marfisis's Giant Censer ==================================================
+
+void item::marfisis_giant_censer( special_effect_t& effect )
+{
+  const spell_data_t* driver = effect.player -> find_spell( effect.spell_id );
+  effect.player -> buffs.incensed = buff_creator_t( effect.player, "incensed", driver -> effectN( 1 ).trigger() )
+    .default_value( driver -> effectN( 1 ).trigger() -> effectN( 1 ).average( effect.item ) / 100 )
+    .chance ( 1 );
+  effect.custom_buff = effect.player -> buffs.incensed;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Spontaneous Appendages ===================================================
 
 void item::spontaneous_appendages( special_effect_t& effect )
@@ -2343,6 +2357,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 191632, item::darkmoon_deck                  );
   register_special_effect( 227868, item::sixfeather_fan                 );
   register_special_effect( 227388, item::eyasus_mulligan                );
+  register_special_effect( 228141, item::marfisis_giant_censer          );
 
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );

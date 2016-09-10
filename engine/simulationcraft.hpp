@@ -3952,6 +3952,9 @@ struct player_t : public actor_t
     buff_t* natures_fury;
     buff_t* brute_strength;
 
+    // 7.0 trinket proxy buffs
+    buff_t* incensed;
+
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
     buff_t* tyrants_immortality; // Tyrant's Decree trinket proc
