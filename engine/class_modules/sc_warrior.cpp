@@ -5929,6 +5929,8 @@ void warrior_t::assess_damage_imminent( school_e school, dmg_e dmg, action_state
     buff.ignore_pain -> current_value -= remove;
     iteration_absorb_taken += remove;
     s -> self_absorb_amount += remove;
+    if ( buff.ignore_pain -> current_value <= 0 )
+      buff.ignore_pain -> expire();
   }
   player_t::assess_damage_imminent( school, dmg, s );
 }

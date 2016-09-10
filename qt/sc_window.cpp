@@ -22,7 +22,7 @@
 #include <QStandardPaths>
 #include <QDateTime>
 
-static int SC_GUI_HISTORY_VERSION = 703;
+static int SC_GUI_HISTORY_VERSION = 704;
 
 namespace { // UNNAMED NAMESPACE
 
