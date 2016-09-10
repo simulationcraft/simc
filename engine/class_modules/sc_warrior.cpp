@@ -3117,10 +3117,10 @@ struct rend_t: public warrior_attack_t
 
 struct shield_block_hr_t: public warrior_attack_t
 {
-  timespan_t extension;
+  double extension;
   shield_block_hr_t( warrior_t* p ):
     warrior_attack_t( "shield_block_heavy_repercussions", p, p -> spec.shield_block ),
-    extension( p -> talents.heavy_repercussions -> effectN( 1 ).time_value() )
+    extension( p -> talents.heavy_repercussions -> effectN( 1 ).base_value() / 100 )
   {
     background = true;
     base_costs[RESOURCE_RAGE] = 0;
@@ -3130,7 +3130,7 @@ struct shield_block_hr_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    p() -> buff.shield_block -> extend_duration( p(), extension );
+    p() -> buff.shield_block -> extend_duration( p(), timespan_t::from_seconds( extension ) );
   }
 };
 
