@@ -257,6 +257,7 @@ struct rogue_t : public player_t
     cooldown_t* vanish;
     cooldown_t* between_the_eyes;
     cooldown_t* blind;
+    cooldown_t* gouge;
     cooldown_t* cloak_of_shadows;
     cooldown_t* riposte;
     cooldown_t* grappling_hook;
@@ -405,6 +406,9 @@ struct rogue_t : public player_t
 
     // Outlaw - Level 30 (NYI)
     const spell_data_t* hit_and_run;
+
+    // Outlaw - Level 75 (Partially Implemented for Gouge)
+    const spell_data_t* dirty_tricks;
 
     // Outlaw - Level 90
     const spell_data_t* cannonball_barrage;
@@ -564,6 +568,7 @@ struct rogue_t : public player_t
     cooldowns.vanish              = get_cooldown( "vanish"              );
     cooldowns.between_the_eyes    = get_cooldown( "between_the_eyes"    );
     cooldowns.blind               = get_cooldown( "blind"               );
+    cooldowns.gouge               = get_cooldown( "gouge"               );
     cooldowns.cannonball_barrage  = get_cooldown( "cannon_ball_barrage" );
     cooldowns.cloak_of_shadows    = get_cooldown( "cloak_of_shadows"    );
     cooldowns.death_from_above    = get_cooldown( "death_from_above"    );
@@ -2775,6 +2780,36 @@ struct garrote_t : public rogue_attack_t
   }
 };
 
+// Gouge ==================================================================
+struct gouge_t : public rogue_attack_t
+{
+  gouge_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "gouge", p, p -> find_specialization_spell( "Gouge" ), options_str )
+  {
+    requires_stealth  = false;
+  }
+
+  double cost() const override
+  {
+    if ( p() -> talent.dirty_tricks -> ok() )
+    {
+      return 0;
+    }
+
+    return rogue_attack_t::cost();
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    if ( result_is_hit (execute_state -> result ) && p() -> buffs.broadsides -> up() )
+    {
+      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
+          p() -> gains.broadsides, this );
+    }
+  }
+};
+
 // Ghostly Strike ===========================================================
 
 struct ghostly_strike_t : public rogue_attack_t
@@ -3294,6 +3329,7 @@ struct run_through_t: public rogue_attack_t
     p() -> buffs.t19_4pc_outlaw -> trigger();
   }
 };
+
 
 // Marked for Death =========================================================
 
@@ -6509,6 +6545,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "fan_of_knives"       ) return new fan_of_knives_t      ( this, options_str );
   if ( name == "feint"               ) return new feint_t              ( this, options_str );
   if ( name == "garrote"             ) return new garrote_t            ( this, options_str );
+  if ( name == "gouge"               ) return new gouge_t              ( this, options_str );
   if ( name == "ghostly_strike"      ) return new ghostly_strike_t     ( this, options_str );
   if ( name == "gloomblade"          ) return new gloomblade_t         ( this, options_str );
   if ( name == "goremaws_bite"       ) return new goremaws_bite_t      ( this, options_str );
@@ -6784,6 +6821,8 @@ void rogue_t::init_spells()
   talent.ghostly_strike     = find_talent_spell( "Ghostly Strike" );
   talent.swordmaster        = find_talent_spell( "Swordmaster" );
   talent.quick_draw         = find_talent_spell( "Quick Draw" );
+
+  talent.dirty_tricks       = find_talent_spell( "Dirty Tricks" );
 
   talent.cannonball_barrage = find_talent_spell( "Cannonball Barrage" );
   talent.killing_spree      = find_talent_spell( "Killing Spree" );
