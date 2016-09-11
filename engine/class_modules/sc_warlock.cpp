@@ -1205,7 +1205,7 @@ struct eye_laser_t : public warlock_pet_spell_t
     add_child( eye_laser );
   }
 
-  size_t available_targets(std::vector<player_t *> &tl) const override
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
       warlock_pet_spell_t::available_targets( tl );
 
@@ -1224,12 +1224,12 @@ struct eye_laser_t : public warlock_pet_spell_t
       return tl.size();
   }
 
-  virtual void execute() override
+  void impact( action_state_t* state ) override
   {
-    warlock_pet_spell_t::execute();
+    warlock_pet_spell_t::impact( state );
 
-    eye_laser->target = execute_state -> target;
-    eye_laser->execute();
+    eye_laser -> target = execute_state -> target;
+    eye_laser -> execute();
   }
 };
 
