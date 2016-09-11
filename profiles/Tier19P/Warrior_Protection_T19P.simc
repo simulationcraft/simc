@@ -3,7 +3,7 @@ level=110
 race=tauren
 role=tank
 position=front
-talents=0111201
+talents=1222312
 artifact=11:0:0:0:0:91:1:92:1:93:1:95:2:99:3:100:3:101:3:102:3:103:1:104:1:1358:1
 spec=protection
 
