@@ -6418,7 +6418,7 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] );
     }
     cds -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
-    cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
+    cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(time>20|energy.deficit>0)" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
     cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&!variable.ss_useable" );
     cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)" );
