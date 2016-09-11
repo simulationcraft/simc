@@ -490,6 +490,8 @@ public:
   virtual void      combat_begin() override;
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
 
+  void trigger_lof_infernal();
+
   target_specific_t<warlock_td_t> target_data;
 
   virtual warlock_td_t* get_target_data( player_t* target ) const override
@@ -1142,15 +1144,17 @@ struct meteor_strike_t: public warlock_pet_spell_t
     aoe = -1;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     warlock_pet_spell_t::execute();
 
-    //if ( p() -> o() -> artifact.lord_of_flames.rank() && p() -> o() -> talents.grimoire_of_supremacy -> ok() && !p() -> buffs.lord_of_flames -> up() )
-    //{ 
-    //  p() -> o() -> trigger_lof_infernal();
-    //  p() -> o() -> buffs.lord_of_flames -> trigger();
-    //}
+    if ( p() -> o() -> artifact.lord_of_flames.rank() &&
+         p() -> o() -> talents.grimoire_of_supremacy -> ok() &&
+         ! p() -> o() -> buffs.lord_of_flames -> up() )
+    {
+      p() -> o() -> trigger_lof_infernal();
+      p() -> o() -> buffs.lord_of_flames -> trigger();
+    }
   }
 };
 
@@ -1858,7 +1862,7 @@ struct lord_of_flames_infernal_t : public warlock_pet_t
 
   void trigger()
   {
-    if ( !o() -> buffs.lord_of_flames -> up() )
+    if ( ! o() -> buffs.lord_of_flames -> up() )
       summon( duration );
   }
 };
@@ -2493,20 +2497,6 @@ public:
     //assert( false ); // Will only get here if there are no available imps
   }
 
-  static void trigger_lof_infernal( warlock_t* p )
-  {
-    int infernal_count = p -> artifact.lord_of_flames.data().effectN( 1 ).base_value();
-    int j = 0;
-
-    for ( size_t i = 0; i < p -> warlock_pet_list.lord_of_flames_infernal.size(); i++ )
-    {
-      if ( p -> warlock_pet_list.lord_of_flames_infernal[i] -> is_sleeping() )
-      {
-        p -> warlock_pet_list.lord_of_flames_infernal[i] -> trigger();
-        if ( ++j == infernal_count ) break;
-      }
-    }
-  }
 };
 
 // Affliction Spells
@@ -4215,9 +4205,10 @@ struct summon_infernal_t : public warlock_spell_t
       }
     }
 
-    if ( p() -> artifact.lord_of_flames.rank() && !p() -> talents.grimoire_of_supremacy -> ok() && !p() -> buffs.lord_of_flames -> up() )
+    if ( p() -> artifact.lord_of_flames.rank() && ! p() -> talents.grimoire_of_supremacy -> ok() &&
+         ! p() -> buffs.lord_of_flames -> up() )
     {
-      trigger_lof_infernal( p() );
+      p() -> trigger_lof_infernal();
       p() -> buffs.lord_of_flames -> trigger();
     }
 
@@ -6985,6 +6976,21 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
   else
   {
     return player_t::create_expression( a, name_str );
+  }
+}
+
+void warlock_t::trigger_lof_infernal()
+{
+  int infernal_count = artifact.lord_of_flames.data().effectN( 1 ).base_value();
+  int j = 0;
+
+  for ( size_t i = 0; i < warlock_pet_list.lord_of_flames_infernal.size(); i++ )
+  {
+    if ( warlock_pet_list.lord_of_flames_infernal[ i ] -> is_sleeping() )
+    {
+      warlock_pet_list.lord_of_flames_infernal[ i ] -> trigger();
+      if ( ++j == infernal_count ) break;
+    }
   }
 }
 
