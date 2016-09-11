@@ -1505,7 +1505,7 @@ static int get_bonus_id_sockets( const std::vector<const item_bonus_entry_t*>& e
   return 0;
 }
 
-std::vector<std::pair<item_mod_type, double> > get_bonus_id_stats(
+std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_stats(
     const std::vector<const item_bonus_entry_t*>& entries )
 {
   double total = 0;
@@ -1518,13 +1518,16 @@ std::vector<std::pair<item_mod_type, double> > get_bonus_id_stats(
     }
   }
 
-  std::vector<std::pair<item_mod_type, double> > data;
+  std::vector<std::tuple<item_mod_type, double, double> > data;
   for ( size_t i = 0; i < entries.size(); ++i )
   {
     if ( entries[ i ] -> type == ITEM_BONUS_MOD )
     {
-      data.push_back( std::pair<item_mod_type, double>( static_cast<item_mod_type>( entries[ i ] -> value_1 ),
-            entries[ i ] -> value_2 / total ) );
+      data.push_back( std::make_tuple(
+            static_cast<item_mod_type>( entries[ i ] -> value_1 ),
+            entries[ i ] -> value_2 / total,
+            entries[ i ] -> value_2 / 10000.0
+      ) );
     }
   }
 
@@ -1576,7 +1579,7 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     int ilevel = get_bonus_id_ilevel( entries );
     int sockets = get_bonus_id_sockets( entries );
     int base_ilevel = get_bonus_id_base_ilevel( entries );
-    std::vector<std::pair<item_mod_type, double> > stats = get_bonus_id_stats( entries );
+    auto stats = get_bonus_id_stats( entries );
     std::pair< std::pair<int, double>, std::pair<int, double> > scaling = get_bonus_id_scaling( dbc, entries );
 
     std::vector<std::string> fields;
@@ -1617,8 +1620,9 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
       std::string stats_str = "stats={ ";
       for ( size_t j = 0; j < stats.size(); ++j )
       {
-        stats_str += util::to_string( util::round( stats[ j ].second * 100.0, 0 ) ) + "% ";
-        stats_str += util::stat_type_abbrev( util::translate_item_mod( stats[ j ].first ) );
+        stats_str += util::to_string( util::round( std::get<1>( stats[ j ] ) * 100.0, 0 ) ) + "% ";
+        stats_str += util::stat_type_abbrev( util::translate_item_mod( std::get<0>( stats[ j ] ) ) );
+        stats_str += " [" + util::to_string( util::round( std::get<2>( stats[ j ] ), 4 ), 4 ) + "]";
         if ( j < stats.size() - 1 )
         {
           stats_str += ", ";
