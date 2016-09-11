@@ -6801,8 +6801,8 @@ namespace enchant
   bool passive_enchant( item_t& item, unsigned spell_id );
 
   bool initialize_item_enchant( item_t& item, std::vector< stat_pair_t >& stats, special_effect_source_e source, const item_enchantment_data_t& enchant );
-  item_socket_color initialize_gem( item_t& item, unsigned gem_id );
-  item_socket_color initialize_relic( item_t& item, unsigned gem_id, const gem_property_data_t& gem_property );
+  item_socket_color initialize_gem( item_t& item, size_t gem_idx );
+  item_socket_color initialize_relic( item_t& item, size_t relic_idx, const gem_property_data_t& gem_property );
 }
 
 // Unique Gear ==============================================================

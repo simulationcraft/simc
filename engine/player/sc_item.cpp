@@ -1615,7 +1615,7 @@ bool item_t::decode_gems()
   {
     // Gems
     for ( size_t i = 0, end = parsed.gem_id.size(); i < end; i++ )
-      parsed.gem_color[ i ] = enchant::initialize_gem( *this, parsed.gem_id[ i ] );
+      parsed.gem_color[ i ] = enchant::initialize_gem( *this, i );
 
     // Socket bonus
     if ( socket_color_match() )

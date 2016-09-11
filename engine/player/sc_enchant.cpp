@@ -434,8 +434,9 @@ meta_gem_e enchant::meta_gem_type( const dbc_t&                   dbc,
  * stats in a separate place (such as player_t::init_meta_gem()) is no longer
  * necessary.
  */
-item_socket_color enchant::initialize_gem( item_t& item, unsigned gem_id )
+item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
 {
+  auto gem_id = item.parsed.gem_id[ gem_idx ];
   if ( gem_id == 0 )
     return SOCKET_COLOR_NONE;
 
@@ -450,7 +451,7 @@ item_socket_color enchant::initialize_gem( item_t& item, unsigned gem_id )
   // Relics get handled elsewhere, because they are .. complicated
   if ( gem_prop.color & SOCKET_COLOR_RELIC )
   {
-    return initialize_relic( item, gem_id, gem_prop );
+    return initialize_relic( item, gem_idx, gem_prop );
   }
 
   const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_prop.enchant_id );
@@ -471,7 +472,7 @@ item_socket_color enchant::initialize_gem( item_t& item, unsigned gem_id )
 }
 
 item_socket_color enchant::initialize_relic( item_t&                    item,
-                                             unsigned                   gem_id,
+                                             size_t                     relic_idx,
                                              const gem_property_data_t& gem_property )
 {
   const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_property.enchant_id );
@@ -480,22 +481,23 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
     return SOCKET_COLOR_NONE;
   }
 
-  const item_data_t* gem = item.player -> dbc.item( gem_id );
-  if ( ! gem )
+  auto relic_id = item.parsed.gem_id[ relic_idx ];
+  auto relic_data = item.player -> dbc.item( relic_id );
+  if ( ! relic_data )
   {
     return SOCKET_COLOR_NONE;
   }
 
-  size_t gem_idx = range::find( item.parsed.gem_id, gem_id ) - item.parsed.gem_id.begin();
-
   // Make a fake relic item and apply bonuses to it
   item_t relic( item.player, "" );
 
-  relic.parsed.data = *gem;
-  relic.name_str = gem -> name;
+  // Apply base stats to relic
+  relic.parsed.data = *relic_data;
+  relic.name_str = relic_data -> name;
   util::tokenize( relic.name_str );
+
   // Apply evil relic data as relic bonus ids, so we can scale the relic ilevel correctly
-  range::for_each( item.parsed.relic_data[ gem_idx ], [ &relic ]( unsigned id ) {
+  range::for_each( item.parsed.relic_data[ relic_idx ], [ &relic ]( unsigned id ) {
     relic.parsed.bonus_id.push_back( as<int>( id ) );
   } );
 
@@ -579,7 +581,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
     item.player -> sim -> out_debug << debug_str;
   }
 
-  item.parsed.relic_bonus_ilevel[ gem_idx ] = util::floor( ilevel_value );
+  item.parsed.relic_bonus_ilevel[ relic_idx ] = util::floor( ilevel_value );
   item.parsed.data.level += util::floor( ilevel_value );
 
   return SOCKET_COLOR_RELIC;
