@@ -14,7 +14,6 @@ spec=windwalker
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/augmentation,type=defiled
@@ -22,7 +21,6 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
 
 # Executed every time the actor is available.
-
 actions=auto_attack
 actions+=/invoke_xuen
 actions+=/potion,name=deadly_grace,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60

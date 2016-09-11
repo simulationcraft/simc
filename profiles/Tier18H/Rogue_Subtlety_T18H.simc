@@ -14,7 +14,6 @@ spec=subtlety
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,name=greater_draenic_agility_flask
 actions.precombat+=/augmentation,name=hyper
 actions.precombat+=/food,name=jumbo_sea_dog
@@ -27,7 +26,6 @@ actions.precombat+=/symbols_of_death
 actions.precombat+=/vanish,if=set_bonus.tier18_4pc
 
 # Executed every time the actor is available.
-
 actions=nightblade,if=set_bonus.tier18_4pc&refreshable&time<5
 actions+=/variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10-floor(target.distance*0.5))
 actions+=/variable,name=ed_threshold,value=energy.deficit<=(20+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_er)

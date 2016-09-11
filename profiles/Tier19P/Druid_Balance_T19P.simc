@@ -15,7 +15,6 @@ spec=balance
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=flask_of_the_whispered_pact
 actions.precombat+=/food,type=azshari_salad
 actions.precombat+=/augmentation,type=defiled
@@ -27,7 +26,6 @@ actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/new_moon
 
 # Executed every time the actor is available.
-
 actions=potion,name=deadly_grace,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/berserking,if=buff.celestial_alignment.up|buff.incarnation.up

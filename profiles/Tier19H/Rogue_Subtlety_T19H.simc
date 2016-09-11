@@ -15,7 +15,6 @@ spec=subtlety
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,name=flask_of_the_seventh_demon
 actions.precombat+=/augmentation,name=defiled
 actions.precombat+=/food,name=seedbattered_fish_plate
@@ -27,7 +26,6 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
-
 actions=variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10-floor(target.distance*0.5))
 actions+=/variable,name=ed_threshold,value=energy.deficit<=(20+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_er)
 actions+=/call_action_list,name=cds

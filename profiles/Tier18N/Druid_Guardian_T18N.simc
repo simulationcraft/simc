@@ -14,7 +14,6 @@ spec=guardian
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=sleeper_sushi
 actions.precombat+=/bear_form
@@ -22,7 +21,6 @@ actions.precombat+=/bear_form
 actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
-
 actions=auto_attack
 actions+=/skull_bash
 actions+=/blood_fury

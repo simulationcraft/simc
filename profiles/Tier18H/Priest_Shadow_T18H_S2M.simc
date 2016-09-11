@@ -13,7 +13,6 @@ spec=shadow
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=buttered_sturgeon
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -22,7 +21,6 @@ actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/mind_blast
 
 # Executed every time the actor is available.
-
 actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/variable,op=set,name=actors_fight_time_mod,value=0
 actions+=/variable,op=set,name=actors_fight_time_mod,value=-((-(450)+(time+target.time_to_die))%10),if=time+target.time_to_die>450&time+target.time_to_die<600

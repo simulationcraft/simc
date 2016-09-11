@@ -13,7 +13,6 @@ spec=arms
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=greater_draenic_strength_flask
 actions.precombat+=/food,type=buttered_sturgeon
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -21,7 +20,6 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_strength
 
 # Executed every time the actor is available.
-
 actions=charge
 actions+=/auto_attack
 actions+=/potion,name=draenic_strength,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=26
