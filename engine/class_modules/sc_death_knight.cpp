@@ -3063,11 +3063,14 @@ struct auto_attack_t : public death_knight_melee_attack_t
 struct apocalypse_t : public death_knight_melee_attack_t
 {
   const spell_data_t* summon;
+  timespan_t duration_penalty;
 
   apocalypse_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "apocalypse", p, p -> artifact.apocalypse ),
-    summon( p -> find_spell( 221180 ) )
+    summon( p -> find_spell( 221180 ) ), duration_penalty( timespan_t::from_seconds( 5 ) )
   {
+    add_option( opt_timespan( "duration_penalty", duration_penalty ) );
+
     parse_options( options_str );
 
     weapon = &( p -> main_hand_weapon );
@@ -3085,7 +3088,13 @@ struct apocalypse_t : public death_knight_melee_attack_t
 
     for ( int i = 0; i < n_wounds; ++i )
     {
-      p() -> pets.apocalypse_ghoul[ i ] -> summon( summon -> duration() );
+      timespan_t duration = summon -> duration() - duration_penalty;
+      if ( duration <= timespan_t::zero() )
+      {
+        duration = timespan_t::from_seconds( 1 );
+      }
+
+      p() -> pets.apocalypse_ghoul[ i ] -> summon( duration );
     }
   }
 };
