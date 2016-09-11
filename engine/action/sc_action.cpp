@@ -134,6 +134,27 @@ struct queued_action_execute_event_t : public event_t
   void execute() override
   {
     action -> queue_event = nullptr;
+
+    // Sanity check assert to catch violations. Will only trigger (if ever) with off gcd actions,
+    // and even then only in the case of bugs.
+    assert( action -> cooldown -> ready <= sim().current_time() );
+
+    // On very very rare occasions, charge-based cooldowns (which update through an event, but
+    // indicate readiness through cooldown_t::ready) can have their recharge event and the
+    // queued-action-execute event occur on the same timestamp in such a way that the events flip to
+    // the wrong order (queued-action-execute comes before recharge event). If this is the case, we
+    // need to flip them around to ensure that the sim internal state checks do not fail. The
+    // solution is to simply recreate the queued-action-execute event on the same timestamp, which
+    // will once again flip the ordering (i.e., lets the recharge event occur first).
+    if ( action -> cooldown -> charges > 1 && action -> cooldown -> current_charge == 0 &&
+         action -> cooldown -> recharge_event &&
+         action -> cooldown -> recharge_event -> remains() == timespan_t::zero() )
+    {
+      action -> queue_event = new ( sim() ) queued_action_execute_event_t( action, timespan_t::zero(), off_gcd );
+      // Note, processing ends here
+      return;
+    }
+
     if ( off_gcd )
     {
       do_off_gcd_execute( action );
@@ -1611,7 +1632,9 @@ void action_t::record_data( action_state_t* data )
   stats -> add_result( data -> result_amount, data -> result_total,
                        report_amount_type( data ),
                        data -> result,
-                       ( may_block || player -> position() != POSITION_BACK ) ? data -> block_result : BLOCK_RESULT_UNKNOWN,
+                       ( may_block || player -> position() != POSITION_BACK )
+                         ? data -> block_result
+                         : BLOCK_RESULT_UNKNOWN,
                        data -> target );
 }
 
