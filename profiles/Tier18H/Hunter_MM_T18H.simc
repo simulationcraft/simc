@@ -13,6 +13,7 @@ spec=marksmanship
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/summon_pet
@@ -21,6 +22,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
+
 actions=auto_shot
 actions+=/use_item,name=mirror_of_the_blademaster
 actions+=/arcane_torrent,if=focus.deficit>=30

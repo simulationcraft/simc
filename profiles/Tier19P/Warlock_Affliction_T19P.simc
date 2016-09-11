@@ -14,6 +14,7 @@ spec=affliction
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=whispered_pact
 actions.precombat+=/food,type=azshari_salad
 actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
@@ -26,6 +27,7 @@ actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 
 # Executed every time the actor is available.
+
 actions=reap_souls,if=actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react)
 actions+=/soul_effigy,if=!pet.soul_effigy.active
 actions+=/agony,if=remains<=tick_time+gcd

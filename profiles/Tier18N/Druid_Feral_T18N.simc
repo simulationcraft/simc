@@ -14,6 +14,7 @@ spec=feral
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/healing_touch,if=talent.bloodtalons.enabled
@@ -25,6 +26,7 @@ actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/incarnation
 
 # Executed every time the actor is available.
+
 actions=dash,if=!buff.cat_form.up
 actions+=/cat_form
 actions+=/wild_charge

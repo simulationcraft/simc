@@ -13,6 +13,7 @@ spec=survival
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=pickled_eel
 actions.precombat+=/summon_pet
@@ -22,6 +23,7 @@ actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/harpoon
 
 # Executed every time the actor is available.
+
 actions=auto_attack
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury

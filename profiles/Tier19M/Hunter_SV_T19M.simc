@@ -14,6 +14,7 @@ spec=survival
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=seedbattered_fish_plate
 actions.precombat+=/summon_pet
@@ -24,6 +25,7 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/harpoon
 
 # Executed every time the actor is available.
+
 actions=auto_attack
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury

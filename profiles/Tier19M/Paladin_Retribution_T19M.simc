@@ -14,6 +14,7 @@ spec=retribution
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=flask_of_the_countless_armies
 actions.precombat+=/food,type=azshari_salad
 actions.precombat+=/augmentation,type=defiled
@@ -23,6 +24,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
 
 # Executed every time the actor is available.
+
 actions=auto_attack
 actions+=/rebuke
 actions+=/potion,name=deadly_grace,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up|target.time_to_die<=40)

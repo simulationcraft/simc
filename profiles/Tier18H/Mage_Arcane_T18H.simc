@@ -13,6 +13,7 @@ spec=arcane
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=buttered_sturgeon
 actions.precombat+=/summon_arcane_familiar
@@ -22,6 +23,7 @@ actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/arcane_blast
 
 # Executed every time the actor is available.
+
 actions=counterspell,if=target.debuff.casting.react
 actions+=/time_warp,if=target.health.pct<25|time=0
 actions+=/shard_of_the_exodar_warp,if=buff.bloodlust.down&burn_phase&time>3

@@ -15,6 +15,7 @@ spec=vengeance
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=the_hungry_magister
 actions.precombat+=/augmentation,type=defiled
@@ -23,6 +24,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=unbending_potion
 
 # Executed every time the actor is available.
+
 actions=auto_attack
 actions+=/fiery_brand,if=buff.demon_spikes.down&buff.metamorphosis.down
 actions+=/demon_spikes,if=charges=2|buff.demon_spikes.down&!dot.fiery_brand.ticking&buff.metamorphosis.down

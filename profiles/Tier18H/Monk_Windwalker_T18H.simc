@@ -13,12 +13,14 @@ spec=windwalker
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_agility
 
 # Executed every time the actor is available.
+
 actions=auto_attack
 actions+=/invoke_xuen
 actions+=/potion,name=draenic_agility,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60

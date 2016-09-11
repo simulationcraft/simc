@@ -13,6 +13,7 @@ spec=discipline
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=salty_squid_roll
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -21,6 +22,7 @@ actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/smite
 
 # Executed every time the actor is available.
+
 actions=potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/mindbender,if=talent.mindbender.enabled
 actions+=/shadowfiend,if=!talent.mindbender.enabled

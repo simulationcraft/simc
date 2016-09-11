@@ -14,6 +14,7 @@ spec=arms
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=countless_armies
 actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/augmentation,type=defiled
@@ -22,6 +23,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
 
 # Executed every time the actor is available.
+
 actions=charge
 actions+=/auto_attack
 actions+=/potion,name=deadly_grace,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=26
