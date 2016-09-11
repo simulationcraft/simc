@@ -51,6 +51,7 @@ namespace item
   void windscar_whetstone( special_effect_t& );
   void jeweled_signet_of_melandrus( special_effect_t& );
   void caged_horror( special_effect_t& );
+  void tempered_egg_of_serpentrix( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -2152,6 +2153,113 @@ void item::caged_horror( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Tempered Egg of Serpentrix ===============================================
+
+struct spawn_of_serpentrix_t : public pet_t
+{
+  struct magma_spit_t : public spell_t
+  {
+    magma_spit_t( player_t* player, double damage ) :
+      spell_t( "magma_spit", player, player -> find_spell( 215754 ) )
+    {
+      may_crit = true;
+      base_dd_min = base_dd_max = damage;
+    }
+
+    // Not really true, but lets at least make haste not work on this, until Blizzard takes a better
+    // look at the whole pet.
+    double composite_haste() const override
+    { return 1.0; }
+
+    void init() override
+    {
+      spell_t::init();
+
+      if ( ! sim -> report_pets_separately )
+      {
+        player_t* owner = player -> cast_pet() -> owner;
+
+        auto it = range::find_if( owner -> pet_list, [ this ]( pet_t* pet ) {
+          return this -> player -> name_str == pet -> name_str;
+        } );
+
+        if ( it != owner -> pet_list.end() && player != *it )
+        {
+          stats = ( *it ) -> get_stats( name(), this );
+        }
+      }
+    }
+  };
+
+  double damage_amount;
+
+  spawn_of_serpentrix_t( const special_effect_t& effect ) :
+    pet_t( effect.player -> sim, effect.player, "spawn_of_serpentrix", true, true ),
+    damage_amount( effect.driver() -> effectN( 1 ).average( effect.item ) )
+  { }
+
+  void init_action_list() override
+  {
+    pet_t::init_action_list();
+
+    if ( action_list_str.empty() )
+    {
+      action_priority_list_t* def = get_action_priority_list( "default" );
+      def -> add_action( "magma_spit" );
+    }
+  }
+
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str ) override
+  {
+    if ( name == "magma_spit" ) return new magma_spit_t( this, damage_amount );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
+struct spawn_of_serpentrix_cb_t : public dbc_proc_callback_t
+{
+  const spell_data_t* summon;
+  std::array<spawn_of_serpentrix_t*, 5> pets;
+
+  spawn_of_serpentrix_cb_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.item, effect ),
+    summon( effect.player -> find_spell( 215750 ) )
+  {
+    for ( size_t i = 0; i < pets.size(); ++i )
+    {
+      pets[ i ] = new spawn_of_serpentrix_t( effect );
+    }
+  }
+
+  void execute( action_t* /* a */, action_state_t* /* state */ ) override
+  {
+    bool spawned = false;
+
+    for ( size_t i = 0; i < pets.size(); ++i )
+    {
+      if ( pets[ i ] -> is_sleeping() )
+      {
+        pets[ i ] -> summon( summon -> duration() );
+        spawned = true;
+        break;
+      }
+    }
+
+    if ( ! spawned )
+    {
+      listener -> sim -> errorf( "%s spawn_of_serpentrix could not spawn a pet, increase the count",
+        listener -> name() );
+    }
+  }
+};
+
+void item::tempered_egg_of_serpentrix( special_effect_t& effect )
+{
+  new spawn_of_serpentrix_cb_t( effect );
+}
+
 // Six-Feather Fan ==========================================================
 
 struct wind_bolt_callback_t : public dbc_proc_callback_t
@@ -2339,6 +2447,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 214492, "ProcOn/Hit_1Tick_214494Trigger"     );
   register_special_effect( 214340, "ProcOn/Hit_1Tick_214342Trigger"     );
   register_special_effect( 228462, item::jeweled_signet_of_melandrus    );
+  register_special_effect( 215745, item::tempered_egg_of_serpentrix     );
 
   /* Legion 7.0 Raid */
   register_special_effect( 221786, item::bloodthirsty_instinct  );

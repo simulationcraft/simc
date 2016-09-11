@@ -1246,6 +1246,7 @@ class SpellDataGenerator(DataGenerator):
          227394, 227397,
          227392, 227395,
          227396, 227393,
+         215754, 215750,           # Magma Spit / summon spell for Spawn of Serpentrix
         ),
 
         # Warrior:
