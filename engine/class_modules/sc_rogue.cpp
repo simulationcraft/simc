@@ -3729,7 +3729,7 @@ struct saber_slash_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( saberslash_proc_event || ! result_is_hit( execute_state -> result ) )
+    if ( ! result_is_hit( execute_state -> result ) )
     {
       return;
     }
