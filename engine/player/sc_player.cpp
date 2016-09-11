@@ -9582,7 +9582,7 @@ std::string player_t::create_profile( save_e stype )
           alist_str = a -> action_list -> name_str;
           const action_priority_list_t* alist = get_action_priority_list( alist_str );
           if ( ! alist -> action_list_comment_str.empty() )
-            profile_str += term + "# " + alist -> action_list_comment_str + term;
+            profile_str += term + "# " + alist -> action_list_comment_str;
           profile_str += term;
         }
 
