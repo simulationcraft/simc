@@ -2299,6 +2299,11 @@ struct ambush_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
+    if ( p() -> buffs.broadsides -> up() )
+    {
+      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
+          p() -> gains.broadsides, this );
+    }
 
     p() -> buffs.hidden_blade -> trigger();
   }
