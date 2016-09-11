@@ -26,41 +26,37 @@ actions.precombat+=/potion,name=deadly_grace
 
 actions=charge
 actions+=/auto_attack
-actions+=/potion,name=deadly_grace,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<25
-actions+=/battle_cry,sync=colossus_smash
-actions+=/battle_cry
-actions+=/avatar,sync=colossus_smash
-actions+=/avatar
-actions+=/blood_fury,if=buff.battle_cry.up
-actions+=/berserking,if=buff.battle_cry.up
-actions+=/arcane_torrent,if=rage<rage.max-40
+actions+=/potion,name=deadly_grace,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=26
+actions+=/battle_cry,if=(buff.bloodlust.up|time>=1)&!gcd.remains
+actions+=/avatar,if=(buff.bloodlust.up|time>=1)&!gcd.remains
+actions+=/blood_fury,if=buff.battle_cry.up|target.time_to_die<=16
+actions+=/berserking,if=buff.battle_cry.up|target.time_to_die<=11
+actions+=/arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40
+actions+=/hamstring,if=buff.battle_cry_deadly_calm.remains>cooldown.hamstring.remains
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/rend,if=remains<gcd
-actions+=/hamstring,if=buff.battle_cry_deadly_calm.up
+actions+=/focused_rage,if=buff.battle_cry_deadly_calm.remains>cooldown.focused_rage.remains&(buff.focused_rage.stack<3|cooldown.mortal_strike.remains)
 actions+=/colossus_smash,if=debuff.colossus_smash.down
 actions+=/warbreaker,if=debuff.colossus_smash.down
 actions+=/ravager
 actions+=/overpower
 actions+=/run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled
 actions+=/run_action_list,name=aoe,if=spell_targets.whirlwind>=2&!talent.sweeping_strikes.enabled
+actions+=/run_action_list,name=execute,if=target.health.pct<=20
 actions+=/run_action_list,name=single
 
-actions.single=colossus_smash,if=buff.shattered_defenses.down&buff.precise_strikes.down
-actions.single+=/warbreaker,if=buff.shattered_defenses.down
-actions.single+=/execute,if=buff.stone_heart.react|buff.battle_cry_deadly_calm.up
-actions.single+=/execute,if=debuff.colossus_smash.up&rage.deficit<60
+actions.single=mortal_strike,if=buff.battle_cry.up&buff.focused_rage.stack>=1&buff.battle_cry.remains<gcd
+actions.single+=/colossus_smash,if=buff.shattered_defenses.down
+actions.single+=/warbreaker,if=buff.shattered_defenses.down&cooldown.mortal_strike.remains<gcd
+actions.single+=/focused_rage,if=buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains)
 actions.single+=/mortal_strike
-actions.single+=/focused_rage,if=(buff.focused_rage.stack<3&((talent.dauntless.enabled&rage>27)|(!talent.dauntless.enabled&rage>34)))|buff.battle_cry_deadly_calm.up
-actions.single+=/slam,if=target.health.pct>20&!talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<40|buff.battle_cry_deadly_calm.up)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up)
-actions.single+=/whirlwind,if=target.health.pct>20&talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
-actions.single+=/rend,if=remains<=duration*0.3
-actions.single+=/whirlwind,if=target.health.pct>20&talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage.deficit<20|buff.focused_rage.stack=3)
-actions.single+=/slam,if=target.health.pct>20&!talent.fervor_of_battle.enabled&(!talent.focused_rage.enabled|rage.deficit<20|buff.focused_rage.stack=3)
+actions.single+=/slam,if=buff.battle_cry_deadly_calm.up|buff.focused_rage.stack=3|rage.deficit<=30
 actions.single+=/execute,if=equipped.137060
 actions.single+=/slam,if=equipped.137060
-actions.single+=/shockwave
-actions.single+=/storm_bolt
-actions.single+=/bladestorm,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
+actions.single+=/focused_rage,if=equipped.137060
+# actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)
+#Remove the # above to run out of melee and charge back in for rage.
+actions.single+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
 
 actions.cleave=mortal_strike
 actions.cleave+=/execute,if=buff.stone_heart.react
@@ -86,6 +82,18 @@ actions.aoe+=/cleave
 actions.aoe+=/whirlwind,if=rage>=60
 actions.aoe+=/shockwave
 actions.aoe+=/storm_bolt
+
+actions.execute=focused_rage,if=buff.focused_rage.stack<3&debuff.colossus_smash.down
+actions.execute+=/mortal_strike,if=buff.battle_cry.up&(buff.focused_rage.stack=3|buff.focused_rage.stack=2&buff.battle_cry.remains<gcd)
+actions.execute+=/execute,if=buff.battle_cry_deadly_calm.up
+actions.execute+=/colossus_smash,if=buff.shattered_defenses.down
+actions.execute+=/warbreaker,if=buff.shattered_defenses.down&rage<=30
+actions.execute+=/execute,if=buff.shattered_defenses.up
+actions.execute+=/mortal_strike,if=buff.focused_rage.stack=3
+actions.execute+=/execute,if=debuff.colossus_smash.up
+# actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)
+#Remove the # above to run out of melee and charge back in for rage.
+actions.execute+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
 
 head=warhelm_of_the_obsidian_aspect,id=138357,bonus_id=1806
 neck=zealous_timestone_pendant,id=140894,bonus_id=1806,enchant=mark_of_the_claw
