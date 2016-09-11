@@ -65,7 +65,7 @@ actions.stealth_cds+=/shadow_dance,if=combo_points<=1
 # Finishers
 actions.finish=enveloping_shadows,if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8
 actions.finish+=/death_from_above,if=spell_targets.death_from_above>=10
-actions.finish+=/nightblade,target_if=max:target.time_to_die,if=target.time_to_die>10&refreshable
+actions.finish+=/nightblade,target_if=max:target.time_to_die,if=target.time_to_die>10&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time)
 actions.finish+=/death_from_above
 actions.finish+=/eviscerate
 
