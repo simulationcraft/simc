@@ -899,7 +899,14 @@ double action_t::cost() const
   // determine the cost, if the default behavior is not universal.
   else
   {
-    c = std::min( base_cost(), player -> resources.current[ cr ] );
+    if ( player -> resources.current[ cr ] >= base_costs[ cr ] )
+    {
+      c = std::min( base_cost(), player -> resources.current[ cr ] );
+    }
+    else
+    {
+      c = base_costs[ cr ];
+    }
   }
 
   c -= player -> current.resource_reduction[ get_school() ];
