@@ -4521,7 +4521,11 @@ struct shadowflame_t : public warlock_spell_t
     base_tick_time = data().effectN( 2 ).period();
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* state ) const override
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot,
+                                             timespan_t triggered_duration ) const override
+  { return dot -> time_to_next_tick() + triggered_duration; }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
   {
     double m = warlock_spell_t::composite_ta_multiplier( state );
 
@@ -4531,14 +4535,14 @@ struct shadowflame_t : public warlock_spell_t
     return m;
   }
 
-  virtual void last_tick( dot_t* d ) override
+  void last_tick( dot_t* d ) override
   {
     warlock_spell_t::last_tick( d );
 
     td( d -> state -> target ) -> debuffs_shadowflame -> expire();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
