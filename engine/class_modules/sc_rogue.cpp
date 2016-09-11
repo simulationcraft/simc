@@ -17,6 +17,11 @@
 
 namespace { // UNNAMED NAMESPACE
 
+enum
+{
+  COMBO_POINT_MAX = 5
+};
+
 struct rogue_t;
 namespace actions
 {
@@ -138,9 +143,6 @@ struct rogue_t : public player_t
   // Shadow techniques swing counter;
   unsigned shadow_techniques;
 
-  // Finality related flags
-  bool finality_eviscerate, finality_nightblade;
-
   // Venom Rush poison tracking
   unsigned poisoned_enemies;
 
@@ -231,6 +233,8 @@ struct rogue_t : public player_t
     buff_t* t19_4pc_outlaw;
     buff_t* t19oh_8pc;
     buff_t* blunderbuss;
+    buff_t* finality_eviscerate;
+    buff_t* finality_nightblade;
 
     // Roll the bones
     buff_t* roll_the_bones;
@@ -522,7 +526,6 @@ struct rogue_t : public player_t
     player_t( sim, ROGUE, name, r ),
     df_counter( 0 ),
     shadow_techniques( 0 ),
-    finality_eviscerate( false ), finality_nightblade( false ),
     poisoned_enemies( 0 ),
     active_blade_flurry( nullptr ),
     active_lethal_poison( nullptr ),
@@ -647,7 +650,7 @@ struct rogue_t : public player_t
   void trigger_venomous_wounds_death( player_t* );
 
   double consume_cp_max() const
-  { return 5.0 + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
+  { return COMBO_POINT_MAX + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
 
   target_specific_t<rogue_td_t> target_data;
 
@@ -1104,15 +1107,25 @@ struct rogue_attack_t : public melee_attack_t
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
+  expr_t* create_nightblade_expression();
   expr_t* create_expression( const std::string& name_str ) override;
 };
 
 struct secondary_ability_trigger_t : public event_t
 {
+  action_t* action;
   action_state_t* state;
+  player_t* target;
+  int cp;
 
   secondary_ability_trigger_t( action_state_t* s, const timespan_t& delay = timespan_t::zero() ) :
-    event_t( *s -> action -> player ), state( s )
+    event_t( *s -> action -> sim ), action( s -> action ), state( s ), target( nullptr ), cp( 0 )
+  {
+    add_event( delay );
+  }
+
+  secondary_ability_trigger_t( player_t* target, action_t* action, int cp, const timespan_t& delay = timespan_t::zero() ) :
+    event_t( *action -> sim ), action( action ), state( nullptr ), target( target ), cp( cp )
   {
     add_event( delay );
   }
@@ -1122,13 +1135,26 @@ struct secondary_ability_trigger_t : public event_t
 
   void execute() override
   {
-    actions::rogue_attack_t* attack = rogue_t::cast_attack( state -> action );
+    actions::rogue_attack_t* attack = rogue_t::cast_attack( action );
     auto bg = attack -> background, d = attack -> dual, r = attack -> repeating;
 
     attack -> background = attack -> dual = attack -> secondary_trigger = true;
     attack -> repeating = false;
-    attack -> target = state -> target;
-    attack -> pre_execute_state = state;
+    if ( state )
+    {
+      attack -> pre_execute_state = state;
+    }
+    // No state, construct one by snapshotting, but also grap combo points from the event instead of
+    // current CP amount.
+    else
+    {
+      auto s = attack -> get_state();
+      s -> target = target;
+      attack -> snapshot_state( s, attack -> amount_type( s ) );
+      actions::rogue_attack_t::cast_state( s ) -> cp = cp;
+
+      attack -> pre_execute_state = s;
+    }
     attack -> execute();
     attack -> secondary_trigger = false;
     attack -> background = bg;
@@ -2545,11 +2571,10 @@ struct envenom_t : public rogue_attack_t
 
 // Eviscerate ===============================================================
 
-struct eviscerate_base_t : public rogue_attack_t
+struct eviscerate_t : public rogue_attack_t
 {
-  eviscerate_base_t( rogue_t* p, const std::string& name, const spell_data_t* spell,
-                     const std::string& options_str = std::string() ) :
-    rogue_attack_t( name, p, spell, options_str )
+  eviscerate_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "eviscerate", p, p -> find_specialization_spell( "Eviscerate" ), options_str )
   {
     weapon = &( player -> main_hand_weapon );
     base_crit += p -> artifact.gutripper.percent();
@@ -2561,6 +2586,8 @@ struct eviscerate_base_t : public rogue_attack_t
 
     if ( p() -> buffs.death_from_above -> up() )
       m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
+
+    m *= 1.0 + p() -> buffs.finality_eviscerate -> stack_value();
 
     return m;
   }
@@ -2588,84 +2615,14 @@ struct eviscerate_base_t : public rogue_attack_t
       v *= cast_state( execute_state ) -> cp;
       p() -> cooldowns.vanish -> adjust( v, false );
     }
-  }
-};
 
-struct finality_eviscerate_t : public eviscerate_base_t
-{
-  finality_eviscerate_t( rogue_t* p ) :
-    eviscerate_base_t( p, "finality_eviscerate", p -> find_spell( 197393 ) )
-  { background = true; }
-};
-
-struct eviscerate_action_t : public eviscerate_base_t
-{
-  eviscerate_action_t( rogue_t* p ) :
-    eviscerate_base_t( p, "eviscerate", p -> find_specialization_spell( "Eviscerate" ) )
-  { background = true; }
-};
-
-// Eviscerate action itself is just a "button press". The damage is done by eviscerate_action_t or
-// finality_eviscerate_t.
-struct eviscerate_t : public eviscerate_base_t
-{
-  eviscerate_action_t* eviscerate;
-  finality_eviscerate_t* finality;
-
-  eviscerate_t( rogue_t* p, const std::string& options_str ) :
-    eviscerate_base_t( p, "eviscerate", p -> find_specialization_spell( "Eviscerate" ), options_str ),
-    eviscerate( new eviscerate_action_t( p ) ),
-    finality( p -> artifact.finality.rank() > 0 ? new finality_eviscerate_t( p ) : nullptr )
-  {
-    callbacks = may_miss = may_crit = false;
-    dual = true;
-
-    if ( finality )
-      add_child( finality );
-  }
-
-  void init() override
-  {
-    eviscerate_base_t::init();
-
-    // The eviscerate button does not actually do any damage, but it'll snapshot the stats for the
-    // damaging Eviscerate or Finality: Eviscerate
-    attack_power_mod.direct = 0;
-
-    // Don't proc anything rogue-specific Eviscerate stuff
-    memset( &affected_by, 0, sizeof( affected_by ) );
-
-    // .. except weaponmaster, so we can have finality swap correctly
-    affected_by.weaponmaster = true;
-  }
-
-  // Don't consume anything
-  void consume_resource() override
-  { }
-
-  // Completely disable result recording on the base eviscerate button
-  void record_data( action_state_t* ) override
-  { }
-
-  void execute() override
-  {
-    eviscerate_base_t::execute();
-
-    rogue_attack_t* a = ! p() -> finality_eviscerate ? rogue_t::cast_attack( eviscerate )
-                                                     : rogue_t::cast_attack( finality );
-
-    a -> pre_execute_state = a -> get_state( execute_state );
-    a -> target = execute_state -> target;
-    // If this is secondary triggered, we'll need to also secondary trigger the actual damaging
-    // ability so it will not perform logic that is not supposed to be done by a secondary trigger.
-    // Currently this occurs only when Death from Above is used.
-    a -> secondary_trigger = secondary_trigger;
-    a -> execute();
-    a -> secondary_trigger = false;
-
-    if ( finality )
+    if ( p() -> buffs.finality_eviscerate -> check() )
     {
-      p() -> finality_eviscerate = ! p() -> finality_eviscerate;
+      p() -> buffs.finality_eviscerate -> expire();
+    }
+    else
+    {
+      p() -> buffs.finality_eviscerate -> trigger( cast_state( execute_state ) -> cp );
     }
   }
 };
@@ -3452,14 +3409,55 @@ struct mutilate_t : public rogue_attack_t
 
 // Nightblade ===============================================================
 
-struct nightblade_base_t : public rogue_attack_t
+struct nightblade_state_t : public rogue_attack_state_t
 {
-  nightblade_base_t( rogue_t* p, const std::string& name, const spell_data_t* spell,
-                     const std::string& options_str = std::string() ) :
-    rogue_attack_t( name, p, spell, options_str )
+  bool finality;
+
+  nightblade_state_t( action_t* action, player_t* target ) :
+    rogue_attack_state_t( action, target ), finality( false )
+  { }
+
+  void initialize() override
+  { rogue_attack_state_t::initialize(); finality = false; }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    rogue_attack_state_t::debug_str( s ) << " finality=" << finality;
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    rogue_attack_state_t::copy_state( o );
+    const nightblade_state_t* st = debug_cast<const nightblade_state_t*>( o );
+    finality = st -> finality;
+  }
+};
+
+struct nightblade_t : public rogue_attack_t
+{
+  nightblade_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "nightblade", p, p -> find_specialization_spell( "Nightblade" ), options_str )
   {
     may_crit = false;
     base_multiplier *= 1.0 + p -> artifact.demons_kiss.percent();
+    if ( p -> talent.weaponmaster -> ok() )
+    {
+      add_child( p -> weaponmaster_dot_strike );
+    }
+  }
+
+  action_state_t* new_state() override
+  { return new nightblade_state_t( this, target ); }
+
+  void snapshot_state( action_state_t* state, dmg_e type ) override
+  {
+    rogue_attack_t::snapshot_state( state, type );
+
+    if ( p() -> buffs.finality_nightblade -> check() )
+    {
+      debug_cast<nightblade_state_t*>( state ) -> finality = true;
+    }
   }
 
   void init() override
@@ -3469,13 +3467,17 @@ struct nightblade_base_t : public rogue_attack_t
     affected_by.weaponmaster = true;
   }
 
-  // Nightblade dots overwrite eachother
-  dot_t* get_dot( player_t* t = nullptr ) override
-  { return td( t ? t : target ) -> dots.nightblade; }
-
+  // Nightblade does not gain power from combo points like typical damage effects
   double attack_tick_power_coefficient( const action_state_t* s ) const override
+  { return melee_attack_t::attack_tick_power_coefficient( s ); }
+
+  double composite_persistent_multiplier( const action_state_t* state ) const override
   {
-    return melee_attack_t::attack_tick_power_coefficient( s );
+    double m = rogue_attack_t::composite_persistent_multiplier( state );
+
+    m *= 1.0 + p() -> buffs.finality_nightblade -> stack_value();
+
+    return m;
   }
 
   void execute() override
@@ -3489,9 +3491,13 @@ struct nightblade_base_t : public rogue_attack_t
       p() -> cooldowns.vanish -> adjust( v, false );
     }
 
-    if ( p() -> artifact.finality.rank() )
+    if ( ! p() -> buffs.finality_nightblade -> check() )
     {
-      p() -> finality_nightblade = ! p() -> finality_nightblade;
+      p() -> buffs.finality_nightblade -> trigger( cast_state( execute_state ) -> cp );
+    }
+    else
+    {
+      p() -> buffs.finality_nightblade -> expire();
     }
   }
 
@@ -3502,47 +3508,17 @@ struct nightblade_base_t : public rogue_attack_t
 
     return data().duration() + base_per_tick * cast_state( s ) -> cp;
   }
-};
 
-struct finality_nightblade_t : public nightblade_base_t
-{
-  finality_nightblade_t( rogue_t* p ) :
-    nightblade_base_t( p, "finality_nightblade", p -> find_spell( 197395 ) )
-  { }
-};
-
-struct nightblade_t : public nightblade_base_t
-{
-  finality_nightblade_t* finality;
-
-  nightblade_t( rogue_t* p, const std::string& options_str ) :
-    nightblade_base_t( p, "nightblade", p -> find_specialization_spell( "Nightblade" ), options_str ),
-    finality( p -> artifact.finality.rank() ? new finality_nightblade_t( p ) : nullptr )
+  expr_t* create_expression( const std::string& name_str ) override
   {
-    if ( finality )
+    if ( util::str_compare_ci( name_str, "finality" ) )
     {
-      add_child( finality );
+      return create_nightblade_expression();
     }
 
-    if ( p -> talent.weaponmaster -> ok() )
-    {
-      add_child( p -> weaponmaster_dot_strike );
-    }
-  }
-
-  void schedule_execute( action_state_t* state = nullptr ) override
-  {
-    if ( p() -> finality_nightblade )
-    {
-      finality -> target = target;
-      finality -> schedule_execute( state );
-    }
-    else {
-      nightblade_base_t::schedule_execute( state );
-    }
+    return rogue_attack_t::create_expression( name_str );
   }
 };
-
 
 // Roll the Bones ===========================================================
 
@@ -4234,7 +4210,7 @@ struct death_from_above_t : public rogue_attack_t
     // Create appropriate finisher for the players spec. Associate its stats
     // with the DfA's stats.
     action_t* finisher = nullptr;
-    switch ( p->specialization() )
+    switch ( p -> specialization() )
     {
       case ROGUE_ASSASSINATION:
       {
@@ -4246,16 +4222,9 @@ struct death_from_above_t : public rogue_attack_t
       // Subtlety needs special handling because of Finality artifact power
       case ROGUE_SUBTLETY:
       {
-        eviscerate_t* f = new eviscerate_t( p, "" );
-        f -> stats = player -> get_stats( "eviscerate_dfa", f );
-        f -> eviscerate -> stats = f -> stats;
-        stats -> add_child( f -> eviscerate -> stats );
-        if ( f -> finality )
-        {
-          f -> finality -> stats = player -> get_stats( "finality_eviscerate_dfa", f -> finality );
-          stats -> add_child( f -> finality -> stats );
-        }
-        finisher = f;
+        finisher = new eviscerate_t( p, "" );
+        finisher -> stats = player -> get_stats( "eviscerate_dfa", finisher );
+        stats -> add_child( finisher -> stats );
         break;
       }
       case ROGUE_OUTLAW:
@@ -4606,6 +4575,25 @@ struct exsanguinated_expr_t : public expr_t
   }
 };
 
+// rogue_attack_t::create_nightblade_expression ==============================
+
+expr_t* actions::rogue_attack_t::create_nightblade_expression()
+{
+  return make_fn_expr( "finality", [ this ]() {
+    rogue_td_t* td_ = td( target );
+    if ( ! td_ -> dots.nightblade -> is_ticking() )
+    {
+      return 0.0;
+    }
+
+    return debug_cast<const nightblade_state_t*>( td_ -> dots.nightblade -> state ) -> finality
+      ? 1.0
+      : 0.0;
+  } );
+}
+
+// rogue_attack_t::create_expression =========================================
+
 expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str )
 {
   if ( util::str_compare_ci( name_str, "cp_gain" ) )
@@ -4625,6 +4613,10 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
       return tdata -> dots.garrote -> is_ticking() +
              tdata -> dots.rupture -> is_ticking();
     } );
+  }
+  else if ( util::str_compare_ci( name_str, "dot.nightblade.finality" ) )
+  {
+    return create_nightblade_expression();
   }
 
   return melee_attack_t::create_expression( name_str );
@@ -5095,10 +5087,13 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
   }
 
   procs.weaponmaster -> occur();
+  // Direct damage re-computes on execute
   if ( s -> result_type == DMG_DIRECT )
   {
-    new ( *sim ) actions::secondary_ability_trigger_t( s -> action -> get_state( s ) );
+    new ( *sim ) actions::secondary_ability_trigger_t( s -> target, s -> action,
+        actions::rogue_attack_t::cast_state( s ) -> cp );
   }
+  // Dot damage is always a "snapshot"
   else
   {
     weaponmaster_dot_strike -> base_dd_min = weaponmaster_dot_strike -> base_dd_max = s -> result_amount;
@@ -5703,9 +5698,8 @@ struct roll_the_bones_t : public buff_t
 
   unsigned random_roll()
   {
-    std::array<unsigned, 6> rolls;
-    range::fill( rolls, 0 );
-    for ( size_t i = 0; i < 6; ++i )
+    std::array<unsigned, 6> rolls = { { 0, 0, 0, 0, 0, 0 } };
+    for ( size_t i = 0; i < rolls.size(); ++i )
     {
       rolls[ rng().range( 0, buffs.size() ) ]++;
     }
@@ -6566,14 +6560,6 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
     }
   }
-  else if ( util::str_compare_ci( name_str, "finality_eviscerate" ) )
-  {
-    return make_ref_expr( name_str, finality_eviscerate );
-  }
-  else if ( util::str_compare_ci( name_str, "finality_nightblade" ) )
-  {
-    return make_ref_expr( name_str, finality_nightblade );
-  }
   else if ( util::str_compare_ci( name_str, "rtb_buffs" ) )
   {
     if ( specialization() != ROGUE_OUTLAW || talent.slice_and_dice -> ok() )
@@ -7230,6 +7216,14 @@ void rogue_t::create_buffs()
     .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
   buffs.blunderbuss = buff_creator_t( this, "blunderbuss", find_spell( 202848 ) )
     .chance( artifact.blunderbuss.data().effectN( 2 ).percent() );
+  buffs.finality_eviscerate = buff_creator_t( this, "finality_eviscerate", find_spell( 197496 ) )
+    .trigger_spell( artifact.finality )
+    .default_value( find_spell( 197496 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
+    .max_stack( consume_cp_max() );
+  buffs.finality_nightblade = buff_creator_t( this, "finality_nightblade", find_spell( 197498 ) )
+    .trigger_spell( artifact.finality )
+    .default_value( find_spell( 197498 ) -> effectN( 1 ).percent() / COMBO_POINT_MAX )
+    .max_stack( consume_cp_max() );
 }
 
 // rogue_t::create_options ==================================================
@@ -7493,8 +7487,6 @@ void rogue_t::reset()
 
   df_counter = 0;
   shadow_techniques = rng().range( 3, 5 );
-
-  finality_eviscerate = finality_nightblade = false;
 
   weapon_data[ WEAPON_MAIN_HAND ].reset();
   weapon_data[ WEAPON_OFF_HAND ].reset();
