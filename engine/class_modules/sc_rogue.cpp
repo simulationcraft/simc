@@ -5737,7 +5737,7 @@ struct roll_the_bones_t : public buff_t
     rogue -> buffs.buried_treasure -> expire();
   }
 
-  unsigned random_roll()
+  unsigned random_roll( timespan_t duration )
   {
     std::array<unsigned, 6> rolls = { { 0, 0, 0, 0, 0, 0 } };
     for ( size_t i = 0; i < rolls.size(); ++i )
@@ -5755,28 +5755,29 @@ struct roll_the_bones_t : public buff_t
         continue;
       }
 
-      buffs[ i ] -> trigger();
+      buffs[ i ] -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
       n_groups++;
     }
 
     return n_groups;
   }
 
-  unsigned fixed_roll()
+  unsigned fixed_roll( timespan_t duration )
   {
-    range::for_each( rogue -> fixed_rtb, [ this ]( size_t idx ) { buffs[ idx ] -> trigger(); } );
+    range::for_each( rogue -> fixed_rtb, [this, duration]( size_t idx )
+    { buffs[idx] -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration ); } );
     return as<unsigned>( rogue -> fixed_rtb.size() );
   }
 
-  unsigned roll_the_bones()
+  unsigned roll_the_bones( timespan_t duration )
   {
     if ( rogue -> fixed_rtb.size() == 0 )
     {
-      return random_roll();
+      return random_roll( duration );
     }
     else
     {
-      return fixed_roll();
+      return fixed_roll( duration );
     }
   }
 
@@ -5786,7 +5787,7 @@ struct roll_the_bones_t : public buff_t
 
     expire_secondary_buffs();
 
-    switch ( roll_the_bones() )
+    switch ( roll_the_bones( duration ) )
     {
       case 1:
         rogue -> procs.roll_the_bones_1 -> occur();
