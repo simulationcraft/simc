@@ -490,6 +490,8 @@ public:
   virtual void      combat_begin() override;
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
 
+  void trigger_lof_infernal();
+
   target_specific_t<warlock_td_t> target_data;
 
   virtual warlock_td_t* get_target_data( player_t* target ) const override
@@ -1142,15 +1144,17 @@ struct meteor_strike_t: public warlock_pet_spell_t
     aoe = -1;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     warlock_pet_spell_t::execute();
 
-    //if ( p() -> o() -> artifact.lord_of_flames.rank() && p() -> o() -> talents.grimoire_of_supremacy -> ok() && !p() -> buffs.lord_of_flames -> up() )
-    //{ 
-    //  p() -> o() -> trigger_lof_infernal();
-    //  p() -> o() -> buffs.lord_of_flames -> trigger();
-    //}
+    if ( p() -> o() -> artifact.lord_of_flames.rank() &&
+         p() -> o() -> talents.grimoire_of_supremacy -> ok() &&
+         ! p() -> o() -> buffs.lord_of_flames -> up() )
+    {
+      p() -> o() -> trigger_lof_infernal();
+      p() -> o() -> buffs.lord_of_flames -> trigger();
+    }
   }
 };
 
@@ -1205,7 +1209,7 @@ struct eye_laser_t : public warlock_pet_spell_t
     add_child( eye_laser );
   }
 
-  size_t available_targets(std::vector<player_t *> &tl) const override
+  size_t available_targets( std::vector< player_t* >& tl ) const override
   {
       warlock_pet_spell_t::available_targets( tl );
 
@@ -1224,12 +1228,12 @@ struct eye_laser_t : public warlock_pet_spell_t
       return tl.size();
   }
 
-  virtual void execute() override
+  void impact( action_state_t* state ) override
   {
-    warlock_pet_spell_t::execute();
+    warlock_pet_spell_t::impact( state );
 
-    eye_laser->target = execute_state -> target;
-    eye_laser->execute();
+    eye_laser -> target = execute_state -> target;
+    eye_laser -> execute();
   }
 };
 
@@ -1858,7 +1862,7 @@ struct lord_of_flames_infernal_t : public warlock_pet_t
 
   void trigger()
   {
-    if ( !o() -> buffs.lord_of_flames -> up() )
+    if ( ! o() -> buffs.lord_of_flames -> up() )
       summon( duration );
   }
 };
@@ -2493,20 +2497,6 @@ public:
     //assert( false ); // Will only get here if there are no available imps
   }
 
-  static void trigger_lof_infernal( warlock_t* p )
-  {
-    int infernal_count = p -> artifact.lord_of_flames.data().effectN( 1 ).base_value();
-    int j = 0;
-
-    for ( size_t i = 0; i < p -> warlock_pet_list.lord_of_flames_infernal.size(); i++ )
-    {
-      if ( p -> warlock_pet_list.lord_of_flames_infernal[i] -> is_sleeping() )
-      {
-        p -> warlock_pet_list.lord_of_flames_infernal[i] -> trigger();
-        if ( ++j == infernal_count ) break;
-      }
-    }
-  }
 };
 
 // Affliction Spells
@@ -4215,9 +4205,10 @@ struct summon_infernal_t : public warlock_spell_t
       }
     }
 
-    if ( p() -> artifact.lord_of_flames.rank() && !p() -> talents.grimoire_of_supremacy -> ok() && !p() -> buffs.lord_of_flames -> up() )
+    if ( p() -> artifact.lord_of_flames.rank() && ! p() -> talents.grimoire_of_supremacy -> ok() &&
+         ! p() -> buffs.lord_of_flames -> up() )
     {
-      trigger_lof_infernal( p() );
+      p() -> trigger_lof_infernal();
       p() -> buffs.lord_of_flames -> trigger();
     }
 
@@ -4521,7 +4512,11 @@ struct shadowflame_t : public warlock_spell_t
     base_tick_time = data().effectN( 2 ).period();
   }
 
-  virtual double composite_ta_multiplier( const action_state_t* state ) const override
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot,
+                                             timespan_t triggered_duration ) const override
+  { return dot -> time_to_next_tick() + triggered_duration; }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
   {
     double m = warlock_spell_t::composite_ta_multiplier( state );
 
@@ -4531,14 +4526,14 @@ struct shadowflame_t : public warlock_spell_t
     return m;
   }
 
-  virtual void last_tick( dot_t* d ) override
+  void last_tick( dot_t* d ) override
   {
     warlock_spell_t::last_tick( d );
 
     td( d -> state -> target ) -> debuffs_shadowflame -> expire();
   }
 
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     warlock_spell_t::impact( s );
 
@@ -6101,8 +6096,7 @@ void warlock_t::apl_demonology()
     action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains";
     action_list_str += "/implosion,if=wild_imp_count<=4&wild_imp_remaining_duration<=action.shadow_bolt.execute_time&spell_targets.implosion>1";
     action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2";
-    action_list_str += "/shadowflame,if=debuff.shadowflame.stack=1&dot.shadowflame.remains<=dot.shadowflame.duration*0.3+travel_time";
-    action_list_str += "/shadowflame,if=debuff.shadowflame.stack=2";
+    action_list_str += "/shadowflame,if=debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time";
     action_list_str += "/service_pet,if=cooldown.summon_doomguard.remains<=gcd&soul_shard>=2";
     action_list_str += "/service_pet,if=cooldown.summon_doomguard.remains>25";
     add_action( "Summon Doomguard", "if=talent.grimoire_of_service.enabled&prev.service_felguard&spell_targets.infernal_awakening<3" );
@@ -6127,12 +6121,20 @@ void warlock_t::apl_demonology()
     add_action( "Demonic Empowerment", "if=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0" );
     action_list_str += "/felguard:felstorm";
     add_action( "Doom", "cycle_targets=1,if=!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3)" );
-    for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+
+    if ( find_item( "eyasus_mulligan" ) )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      action_list_str += "/use_item,name=eyasus_mulligan,if=!buff.the_coin_mulligan.remains&!buff.full_hand_mulligan.remains&!buff.top_decking_mulligan.remains&!buff.lethal_on_board_mulligan.remains";
+    }
+    if ( !find_item( "eyasus_mulligan" ) )
+    {
+      for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
       {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[i].name();
+        if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+        {
+          action_list_str += "/use_item,name=";
+          action_list_str += items[i].name();
+        }
       }
     }
     action_list_str += "/arcane_torrent";
@@ -6157,12 +6159,21 @@ void warlock_t::apl_destruction()
 
   // artifact check
 
-  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+  if ( find_item( "eyasus_mulligan" ) )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      action_list_str += "/use_item,name=eyasus_mulligan,if=!buff.the_coin_mulligan.remains&!buff.full_hand_mulligan.remains&!buff.top_decking_mulligan.remains&!buff.lethal_on_board_mulligan.remains";
+      action_list_str += "/use_item,name=eyasus_mulligan,if=buff.top_decking_mulligan.remains";
+  }
+
+  if ( !find_item( "eyasus_mulligan" ) )
+  {
+    for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
     {
-      action_list_str += "/use_item,name=";
-      action_list_str += items[i].name();
+      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+      {
+        action_list_str += "/use_item,name=";
+        action_list_str += items[i].name();
+      }
     }
   }
 
@@ -6964,6 +6975,21 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
   else
   {
     return player_t::create_expression( a, name_str );
+  }
+}
+
+void warlock_t::trigger_lof_infernal()
+{
+  int infernal_count = artifact.lord_of_flames.data().effectN( 1 ).base_value();
+  int j = 0;
+
+  for ( size_t i = 0; i < warlock_pet_list.lord_of_flames_infernal.size(); i++ )
+  {
+    if ( warlock_pet_list.lord_of_flames_infernal[ i ] -> is_sleeping() )
+    {
+      warlock_pet_list.lord_of_flames_infernal[ i ] -> trigger();
+      if ( ++j == infernal_count ) break;
+    }
   }
 }
 

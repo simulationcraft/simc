@@ -1246,6 +1246,7 @@ class SpellDataGenerator(DataGenerator):
          227394, 227397,
          227392, 227395,
          227396, 227393,
+         215754, 215750,           # Magma Spit / summon spell for Spawn of Serpentrix
         ),
 
         # Warrior:
@@ -1281,7 +1282,7 @@ class SpellDataGenerator(DataGenerator):
             ( 193115, 0 ),          # Blade of Light (speculative)
             ( 180290, 0 ),          # ashen strike (speculative)
             ( 221883, 0 ),          # Divine Steed
-			( 228288, 0, True ),
+            ( 228288, 0, True ),
         ),
 
         # Hunter:
@@ -1327,6 +1328,7 @@ class SpellDataGenerator(DataGenerator):
             ( 197393, 0 ), ( 197395, 0 ), # Finality spells
             ( 192380, 0 ),          # Poisoned Knives damage component
             ( 202848, 0 ),          # Blunderbuss driver
+            ( 197496, 0 ), ( 197498, 0 ), # New nightblade buffs
         ),
 
         # Priest:

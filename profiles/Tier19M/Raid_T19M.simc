@@ -2,13 +2,13 @@
 # Tier 19 Mythic
 # * Ilvl Cap: 880
 # * Artifact Rank Cap: 34
-# * No items from Nighthold (including set bonuses)
+# * 3 Relics with max ilevel of 880
 # * Only One Legendary can be used
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Warforged/Titanforged)
+# * No Mythic+ Gear
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 optimal_raid=1

@@ -2685,6 +2685,7 @@ struct item_t
   weapon_t* weapon() const;
   bool init();
   bool parse_options();
+  bool initialize_data(); // Initializes item data from a data source
   inventory_type inv_type() const;
 
   bool is_matching_type() const;
@@ -3950,6 +3951,9 @@ struct player_t : public actor_t
     buff_t* surge_of_energy;
     buff_t* natures_fury;
     buff_t* brute_strength;
+
+    // 7.0 trinket proxy buffs
+    buff_t* incensed;
 
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
@@ -5799,7 +5803,7 @@ public:
   virtual void record_data(action_state_t* data);
 
   virtual void schedule_execute(action_state_t* execute_state = nullptr);
-  virtual void queue_execute();
+  virtual void queue_execute( bool off_gcd );
 
   virtual void reschedule_execute(timespan_t time);
 
@@ -6797,8 +6801,8 @@ namespace enchant
   bool passive_enchant( item_t& item, unsigned spell_id );
 
   bool initialize_item_enchant( item_t& item, std::vector< stat_pair_t >& stats, special_effect_source_e source, const item_enchantment_data_t& enchant );
-  item_socket_color initialize_gem( item_t& item, unsigned gem_id );
-  item_socket_color initialize_relic( item_t& item, unsigned gem_id, const gem_property_data_t& gem_property );
+  item_socket_color initialize_gem( item_t& item, size_t gem_idx );
+  item_socket_color initialize_relic( item_t& item, size_t relic_idx, const gem_property_data_t& gem_property );
 }
 
 // Unique Gear ==============================================================
@@ -7756,7 +7760,7 @@ inline bool cooldown_t::is_ready() const
   // basically only abilities, where the user must press a button to initiate the execution. Note
   // that off gcd abilities that bypass schedule_execute (i.e., action_t::use_off_gcd is set to
   // true) will for now not use the queueing system.
-  if ( ! action || ! player || ( action -> use_off_gcd && player -> gcd_ready > sim.current_time() ) )
+  if ( ! action || ! player )
   {
     return up();
   }

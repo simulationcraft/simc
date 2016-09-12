@@ -1063,16 +1063,58 @@ bool player_t::init_items()
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     slots[ i ] = ! util::is_match_slot( i );
 
+  // We need to simple-parse the items first, this will set up some base information, and parse out
+  // simple options
   for ( size_t i = 0; i < items.size(); i++ )
   {
     item_t& item = items[ i ];
 
-    // If the item has been specified in options we want to start from scratch, forgetting about lingering stuff from profile copy
+    // If the item has been specified in options we want to start from scratch, forgetting about
+    // lingering stuff from profile copy
     if ( ! item.options_str.empty() )
     {
       item = item_t( this, item.options_str );
       item.slot = static_cast<slot_e>( i );
     }
+
+    if ( ! item.parse_options() )
+    {
+      sim -> errorf( "Unable to parse item '%s' options on player '%s'\n", item.name(), name() );
+      sim -> cancel();
+      return false;
+    }
+
+    if ( ! item.initialize_data() )
+    {
+      sim -> errorf( "Unable to initialize item '%s' base data on player '%s'\n", item.name(), name() );
+      sim -> cancel();
+      return false;
+    }
+  }
+
+  // Slot initialization order vector. Needed to ensure parents of children get initialized first
+  std::vector<slot_e> init_slots;
+  range::for_each( items, [ &init_slots ]( const item_t& i ) { init_slots.push_back( i.slot ); } );
+
+  // Sort items with children before items without children
+  range::sort( init_slots, [ this ]( slot_e first, slot_e second ) {
+    const item_t& fi = items[ first ], si = items[ second ];
+    if ( fi.parent_slot != SLOT_INVALID && si.parent_slot == SLOT_INVALID )
+    {
+      return false;
+    }
+    else if ( fi.parent_slot == SLOT_INVALID && si.parent_slot != SLOT_INVALID )
+    {
+      return true;
+    }
+
+    return false;
+  } );
+
+  for ( size_t i = 0; i < init_slots.size(); i++ )
+  {
+    slot_e slot = init_slots[ i ];
+    item_t& item = items[ slot ];
 
     if ( ! item.init() )
     {
@@ -2367,7 +2409,7 @@ void player_t::init_assessors()
   // Logging and debug .. Technically, this should probably be in action_t::assess_damage, but we
   // don't need this piece of code for the vast majority of sims, so it makes sense to yank it out
   // completely from there, and only conditionally include it if logging/debugging is enabled.
-  if ( sim -> log || sim -> debug )
+  if ( sim -> log || sim -> debug || sim -> debug_seed.size() > 0 )
   {
     assessor_out_damage.add( assessor::LOG, [ this ]( dmg_e type, action_state_t* state )
     {
@@ -3251,6 +3293,10 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
 
   m += racials.brawn -> effectN( 1 ).percent();
   m += racials.might_of_the_mountain -> effectN( 1 ).percent();
+  if ( buffs.incensed )
+  {
+    m += buffs.incensed -> check_value();
+  }
 
   return m;
 }
@@ -4105,6 +4151,10 @@ void player_t::reset()
   off_gcd = 0;
   in_combat = false;
 
+  current_attack_speed = 0;
+  gcd_current_haste_value = 1.0;
+  gcd_haste_type = HASTE_NONE;
+
   cast_delay_reaction = timespan_t::zero();
   cast_delay_occurred = timespan_t::zero();
 
@@ -4197,16 +4247,19 @@ void player_t::schedule_ready( timespan_t delta_time,
     sim -> errorf( "\nplayer_t::schedule_ready assertion error: readying == true ( player %s )\n", name() );
     assert( 0 );
   }
+#endif
+  action_t* was_executing = ( channeling ? channeling : executing );
 
   if ( queueing )
   {
-    sim -> errorf( "\nplayer_t::schedule_ready assertion error: queueing == true ( player %s )\n", name() );
-    assert( 0 );
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s canceling queued action %s at %.3f", name(), queueing -> name(),
+          queueing -> queue_event -> occurs().total_seconds() );
+    }
+    event_t::cancel( queueing -> queue_event );
+    queueing = nullptr;
   }
-
-  assert( ! ( queueing && executing ) && "Cannot queue and execute an ability at the same time" );
-#endif
-  action_t* was_executing = ( channeling ? channeling : executing );
 
   if ( current.sleeping )
     return;
@@ -4549,8 +4602,7 @@ action_t* player_t::execute_action()
   if ( action )
   {
     action -> line_cooldown.start();
-    //action -> schedule_execute();
-    action -> queue_execute();
+    action -> queue_execute( false );
     if ( ! action -> quiet )
     {
       iteration_executed_foreground_actions++;
@@ -4927,6 +4979,7 @@ void player_t::stat_gain( stat_e    stat,
       adjust_dynamic_cooldowns();
       adjust_global_cooldown( HASTE_ANY );
       adjust_auto_attack( HASTE_ANY );
+      // Queued execute must be adjusted after dynamid cooldowns / global cooldown
       adjust_action_queue_time();
       break;
     }
@@ -5098,6 +5151,7 @@ void player_t::stat_loss( stat_e    stat,
       adjust_dynamic_cooldowns();
       adjust_global_cooldown( HASTE_ANY );
       adjust_auto_attack( HASTE_ANY );
+      // Queued execute must be adjusted after dynamid cooldowns / global cooldown
       adjust_action_queue_time();
       break;
     }
@@ -9530,7 +9584,7 @@ std::string player_t::create_profile( save_e stype )
           alist_str = a -> action_list -> name_str;
           const action_priority_list_t* alist = get_action_priority_list( alist_str );
           if ( ! alist -> action_list_comment_str.empty() )
-            profile_str += term + "# " + alist -> action_list_comment_str + term;
+            profile_str += term + "# " + alist -> action_list_comment_str;
           profile_str += term;
         }
 

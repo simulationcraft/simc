@@ -5,7 +5,7 @@ spec=frost
 role=attack
 position=back
 talents=3330021
-artifact=12:0:0:0:0:108:3:110:6:113:3:114:3:119:1:120:1:122:1:123:1:1090:3:1332:1
+artifact=12:137308:133684:137308:0:108:3:109:3:110:6:113:3:119:1:120:1:122:1:123:1:1090:3:1332:1
 head=,id=137526,bonus_id=1727
 neck=,id=134499,bonus_id=1727,enchant=mark_of_the_claw
 shoulder=,id=134518,bonus_id=1727

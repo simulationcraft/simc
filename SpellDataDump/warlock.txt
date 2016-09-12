@@ -1,4 +1,4 @@
-SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build 202d9ab)
+SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build ef7af44)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock

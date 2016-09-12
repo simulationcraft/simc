@@ -5494,6 +5494,7 @@ void living_bomb_explosion_t::impact( action_state_t* s )
     }
 
     child_lb -> target = s -> target;
+    child_lb -> base_costs[ RESOURCE_MANA ] = 0;
     child_lb -> execute();
   }
 }

@@ -2,23 +2,26 @@
 # Tier 19 Heroic
 # * Ilvl Cap: 865
 # * Artifact Rank Cap: 26
-# * No items from Mythic Emerald Nightmare
+# * 3 Relics with max ilevel of 865
 # * No items from Nighthold (including set bonuses)
 # * No Legendaries
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Warforged/Titanforged)
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
+# * No Mythic+ gear
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 optimal_raid=1
-# tmi_boss=TMI_Standard_Boss_T17L
 
 # Hunter
 Hunter_BM_T19H.simc
 Hunter_MM_T19H.simc
 Hunter_SV_T19H.simc
+
+# Mage
+Mage_Fire_T19H.simc
+Mage_Frost_T19H.simc
 
 # Rogue
 Rogue_T19H.simc
