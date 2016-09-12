@@ -6096,8 +6096,7 @@ void warlock_t::apl_demonology()
     action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains";
     action_list_str += "/implosion,if=wild_imp_count<=4&wild_imp_remaining_duration<=action.shadow_bolt.execute_time&spell_targets.implosion>1";
     action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2";
-    action_list_str += "/shadowflame,if=debuff.shadowflame.stack=1&dot.shadowflame.remains<=dot.shadowflame.duration*0.3+travel_time";
-    action_list_str += "/shadowflame,if=debuff.shadowflame.stack=2";
+    action_list_str += "/shadowflame,if=debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time";
     action_list_str += "/service_pet,if=cooldown.summon_doomguard.remains<=gcd&soul_shard>=2";
     action_list_str += "/service_pet,if=cooldown.summon_doomguard.remains>25";
     add_action( "Summon Doomguard", "if=talent.grimoire_of_service.enabled&prev.service_felguard&spell_targets.infernal_awakening<3" );
