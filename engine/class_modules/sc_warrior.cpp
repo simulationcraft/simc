@@ -107,7 +107,7 @@ public:
   const special_effect_t* archavons_heavy_hand, *groms_wartorn_pauldrons, *bindings_of_kakushan,
     *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_girdle, *kazzalax_fujiedas_fury, *the_walls_fell,
     *destiny_driver, *prydaz_xavarics_magnum_opus, *verjas_protectors_of_the_berserker_king,
-    *najentuss_vertebrae, *ayalas_stone_heart, *aggramars_stride, *weight_of_the_earth;
+    *najentuss_vertebrae, *ayalas_stone_heart, *aggramars_stride, *weight_of_the_earth, *raging_fury;
 
   // Active
   struct active_t
@@ -460,7 +460,7 @@ public:
     arms_trinket = prot_trinket = nullptr;
     archavons_heavy_hand = groms_wartorn_pauldrons = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
     ceannar_girdle = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = verjas_protectors_of_the_berserker_king =
-    najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = weight_of_the_earth = nullptr;
+    najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = weight_of_the_earth = raging_fury = nullptr;
     regen_type = REGEN_DISABLED;
   }
 
@@ -1488,6 +1488,8 @@ struct charge_t: public warrior_attack_t
     energize_resource = RESOURCE_RAGE;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> artifact.uncontrolled_rage.value() / 10;
+    if ( p -> raging_fury )
+      energize_amount *= 1.0 + p -> raging_fury -> driver() -> effectN( 1 ).percent();
 
     if ( p -> talents.warbringer -> ok() )
     {
@@ -1551,17 +1553,18 @@ struct charge_t: public warrior_attack_t
 // FIXME: Min range on bad dudes, no min range on good dudes.
 struct intercept_t: public warrior_attack_t
 {
-  double movement_speed_increase, min_range, rage_gain;
+  double movement_speed_increase, min_range;
   intercept_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "intercept", p, p -> spec.intercept ),
-    movement_speed_increase( 5.0 ),
-    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
+    movement_speed_increase( 5.0 )
   {
     parse_options( options_str );
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
     energize_type = ENERGIZE_ON_CAST;
     energize_resource = RESOURCE_RAGE;
+    if ( p -> raging_fury )
+      energize_amount *= 1.0 + p -> raging_fury -> driver() -> effectN( 1 ).percent();
 
     if ( p -> talents.warbringer -> ok() )
     {
@@ -6229,6 +6232,12 @@ static void the_walls_fell( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> the_walls_fell, effect );
 }
 
+static void raging_fury( special_effect_t& effect )
+{
+  warrior_t* s = debug_cast<warrior_t*>( effect.player );
+  do_trinket_init( s, SPEC_NONE, s -> raging_fury, effect );
+}
+
 static void verjas_protectors_of_the_berserker_king( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
@@ -6400,6 +6409,7 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
     unique_gear::register_special_effect( 207438, aggramars_stride );
     unique_gear::register_special_effect( 208177, weight_of_the_earth );
+    unique_gear::register_special_effect( 222266, raging_fury );
   }
 
   virtual void register_hotfixes() const override {}
