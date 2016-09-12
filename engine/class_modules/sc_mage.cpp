@@ -8351,6 +8351,14 @@ void mage_t::apl_fire()
   action_priority_list_t* active_talents      = get_action_priority_list( "active_talents"    );
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
 
+  // Create action strings for special on use items
+
+  if ( player_t::find_item( "horn_of_valor" ) )
+  {
+  std::string special_use = "use_item,slot=";
+  std::string hov_slot = ( player_t::find_item( "horn_of_valor" ) -> slot_name() );
+  }
+
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
   default_list -> add_action( this, "Shard of the Exodar Warp", "if=buff.bloodlust.down&buff.combustion.up&time>=5" );
@@ -8369,10 +8377,7 @@ void mage_t::apl_fire()
   {
     combustion_phase -> add_action( racial_actions[i] );
   }
-  for( size_t i = 0; i < item_actions.size(); i++ )
-  {
-    combustion_phase -> add_action( item_actions[i] );
-  }
+
 
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
