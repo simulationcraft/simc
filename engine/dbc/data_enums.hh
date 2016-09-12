@@ -1,6 +1,14 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+enum artifact_trait_type
+{
+  ARTIFACT_TRAIT_NORMAL     = 0,
+  ARTIFACT_TRAIT_MAJOR      = 1, // Gold traits
+  ARTIFACT_TRAIT_DAMAGEBUFF = 5, // The trait you get after all others
+  ARTIFACT_TRAIT_INITIAL    = 18
+};
+
 enum spell_mechanic {
   MECHANIC_BLEED = 124
 };

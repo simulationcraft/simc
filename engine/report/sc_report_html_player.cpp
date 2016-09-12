@@ -3449,7 +3449,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
       os << "</tr>\n";
     }
 
-    if ( ! p.artifact_str.empty() )
+    if ( p.artifact.n_points > 0 )
     {
       os.format( "<tr class=\"left\">\n<th>Artifact</th>\n<td><ul class=\"float\">\n" );
       os << "<li><a href=\"" << util::create_wowhead_artifact_url( p ) << "\" target=\"_blank\">Calculator (Wowhead.com)</a></li>";
@@ -3460,15 +3460,24 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
       auto artifact_powers = p.dbc.artifact_powers( artifact_id );
       for ( size_t idx = 0; idx < artifact_powers.size(); ++idx )
       {
-        if ( p.artifact.points[ idx ] == 0 )
+        unsigned total_rank = p.artifact.points[ idx ].first + p.artifact.points[ idx ].second;
+        if ( total_rank == 0 )
         {
           continue;
         }
 
-        unsigned spell_id = p.dbc.artifact_power_spell_id( p.specialization(), ( unsigned ) idx, p.artifact.points[ idx ] );
+        unsigned spell_id = p.dbc.artifact_power_spell_id( p.specialization(), ( unsigned ) idx, total_rank );
         const spell_data_t* spell = p.dbc.spell( spell_id );
 
-        std::string rank_str = util::to_string( +p.artifact.points[ idx ] );
+        std::string rank_str;
+        if ( p.artifact.points[ idx ].second > 0 )
+        {
+          rank_str = util::to_string( +p.artifact.points[ idx ].first ) + " + " + util::to_string( +p.artifact.points[ idx ].second );
+        }
+        else
+        {
+          rank_str = util::to_string( +p.artifact.points[ idx ].first );
+        }
         os << "<li>" << ( spell ? report::decorated_spell_name( sim, *spell, "artifactRank=" + rank_str ) : artifact_powers[ idx ] -> name );
         if ( artifact_powers[ idx ] -> max_rank > 1 )
         {

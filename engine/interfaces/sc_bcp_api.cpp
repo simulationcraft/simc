@@ -219,7 +219,22 @@ void parse_artifact( item_t& item, const rapidjson::Value& artifact )
 
     // Internal trait index (we order by id), might differ from blizzard's ordering
     auto trait_index = std::distance( powers.begin(), it );
-    item.player -> artifact.points[ trait_index ] = rank;
+    item.player -> artifact.points[ trait_index ].first = rank;
+    item.player -> artifact.n_points += rank;
+    item.player -> artifact.n_purchased_points += rank;
+  }
+
+  // Blizzard API does not list the first talent you get so implictly add it if you have any other
+  // traits.
+  auto initial_trait_it = range::find_if( powers, []( const artifact_power_data_t* p ) {
+    return p -> power_type == ARTIFACT_TRAIT_INITIAL;
+  } );
+
+  // Note, the first point is never "purchased"
+  if ( initial_trait_it != powers.end() && item.player -> artifact.n_purchased_points > 0 )
+  {
+    auto trait_index = std::distance( powers.begin(), initial_trait_it );
+    item.player -> artifact.points[ trait_index ].first = 1; // Data has max rank at 0
   }
 
   // If no relics inserted, bail out early
@@ -243,6 +258,33 @@ void parse_artifact( item_t& item, const rapidjson::Value& artifact )
       for ( auto bonus_idx = 0U, end = bonuses.Size(); bonus_idx < end; ++bonus_idx )
       {
         item.parsed.relic_data[ relic_socket ].push_back( bonuses[ bonus_idx ].GetUint() );
+      }
+    }
+
+    // Blizzard includes both purchased and relic ranks in the same data, so we need to separate
+    // the data so our artifact data is correct.
+    auto relic_id = relic[ "itemId" ].GetUint();
+
+    auto relic_trait_data = item.player -> dbc.artifact_relic_rank_index( artifact_id, relic_id );
+    if ( relic_trait_data.first > 0 )
+    {
+      auto relic_power_idx = range::find_if( powers, [ &relic_trait_data ]( const artifact_power_data_t* p ) {
+        return p -> id == relic_trait_data.first;
+      } );
+
+      if ( relic_power_idx != powers.end() )
+      {
+        auto trait_index = std::distance( powers.begin(), relic_power_idx );
+
+        // So, Blizzard apparently decided that if your relic increases a trait you have not
+        // chosen, they don't bother adding it to the artifact trait data, so add a bounds check
+        // here so we don't go overeboard
+        if ( item.player -> artifact.points[ trait_index ].first >= relic_trait_data.second )
+        {
+          item.player -> artifact.points[ trait_index ].first -= relic_trait_data.second;
+          item.player -> artifact.n_purchased_points -= relic_trait_data.second;
+          item.player -> artifact.n_points -= relic_trait_data.second;
+        }
       }
     }
   }

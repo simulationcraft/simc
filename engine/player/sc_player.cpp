@@ -375,7 +375,7 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 
 bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
 {
-  range::fill( sim -> active_player -> artifact.points, 0 );
+  range::fill( sim -> active_player -> artifact.points, { 0, 0 } );
 
   if ( value.size() == 0 )
   {
@@ -7812,11 +7812,11 @@ bool player_t::parse_artifact_wowdb( const std::string& artifact_string )
       continue;
     }
 
-    artifact.points[ idx * 2 ] = value & 0x7;
-    artifact.points[ idx * 2 + 1 ] = (value & 0x38) >> 3;
+    artifact.points[ idx * 2 ].first = value & 0x7;
+    artifact.points[ idx * 2 + 1 ].first = (value & 0x38) >> 3;
 
-    artifact.n_points += artifact.points[ idx * 2 ];
-    artifact.n_points += artifact.points[ idx * 2 + 1 ];
+    artifact.n_points += artifact.points[ idx * 2 ].first;
+    artifact.n_points += artifact.points[ idx * 2 + 1 ].first;
   }
 
   return true;
@@ -7857,7 +7857,7 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
 
     if ( pos != artifact_powers.end() )
     {
-      artifact.points[ pos - artifact_powers.begin() ] = rank;
+      artifact.points[ pos - artifact_powers.begin() ].first = rank;
       // Sanitize the input on any ranks > 3 so that we can get accurate purchased ranks for the
       // user, even if the string contains zero relic ids. Note the power type check, power type 5
       // is the 20 rank "final" power.
@@ -7977,7 +7977,7 @@ void player_t::override_artifact( const std::vector<const artifact_power_data_t*
       this -> name(), name.c_str(), override_rank );
   }
 
-  artifact.points[ power_index ] = override_rank;
+  artifact.points[ power_index ].first = override_rank;
 }
 
 // player_t::replace_spells =================================================
@@ -8225,6 +8225,8 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
     }
   }
 
+  auto total_ranks = artifact.points[ power_index ].first + artifact.points[ power_index ].second;
+
   // No power found
   if ( ! power_data )
   {
@@ -8232,20 +8234,20 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
   }
 
   // User input did not select this power
-  if ( artifact.points[ power_index ] == 0 )
+  if ( total_ranks == 0 )
   {
     return artifact_power_t();
   }
 
   // Single rank powers can only be set to 0 or 1
-  if ( power_data -> max_rank == 1 && artifact.points[ power_index ] > 1 )
+  if ( power_data -> max_rank == 1 && total_ranks > 1 )
   {
     return artifact_power_t();
   }
 
   // 1 rank powers use the zeroth (only) entry, multi-rank spells have 0 -> max rank entries
   std::vector<const artifact_power_rank_t*> ranks = dbc.artifact_power_ranks( power_data -> id );
-  unsigned rank_index = artifact.points[ power_index ] - 1;
+  auto rank_index = total_ranks - 1;
 
   // Rank data missing for the power
   if ( rank_index > ranks.size() - 1 )
@@ -8261,7 +8263,7 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
   }
 
   // Finally, all checks satisfied, return a real spell
-  return artifact_power_t( artifact.points[ power_index ],
+  return artifact_power_t( total_ranks,
                            find_spell( ranks[ rank_index ] -> id_spell() ),
                            power_data,
                            ranks[ rank_index ] );
@@ -9470,12 +9472,12 @@ std::string generate_artifact_str( player_t* player )
   const auto powers = player -> dbc.artifact_powers( player -> dbc.artifact_by_spec( player -> specialization() ) );
   for ( size_t i = 0; i < player -> artifact.points.size(); ++i )
   {
-    if ( player -> artifact.points[ i ] == 0 )
+    if ( player -> artifact.points[ i ].first == 0 )
     {
       continue;
     }
 
-    s << ":" << powers[ i ] -> id << ":" << +player -> artifact.points[ i ];
+    s << ":" << powers[ i ] -> id << ":" << +player -> artifact.points[ i ].first;
   }
   s << std::endl;
 
