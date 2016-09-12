@@ -13,6 +13,7 @@ spec=demonology
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
+
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=frosty_stew
 actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
@@ -25,6 +26,7 @@ actions.precombat+=/demonbolt,if=talent.demonbolt.enabled
 actions.precombat+=/shadow_bolt,if=!talent.demonbolt.enabled
 
 # Executed every time the actor is available.
+
 actions=use_item,name=nithramus_the_allseer
 actions+=/berserking
 actions+=/blood_fury
