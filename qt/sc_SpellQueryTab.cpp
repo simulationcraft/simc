@@ -40,6 +40,7 @@ const QString sources[] =
   "effect",
   "spell.effect",
   "perk_spell",
+  "artifact",
   NULL
 };
 
