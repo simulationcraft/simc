@@ -65,6 +65,9 @@ class DBCParserBase:
         if self.id_format_str:
             return self.id_format_str
 
+        if self.last_id == 0:
+            return '%u'
+
         # Adjust the size of the id formatter so we get consistent length
         # id field where we use it, and don't have to guess on the length
         # in the format file.
