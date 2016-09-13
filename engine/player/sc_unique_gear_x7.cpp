@@ -1133,8 +1133,6 @@ void item::moonlit_prism( special_effect_t& effect )
 
   // Create callback; it will be enabled when the buff is active.
   dbc_proc_callback_t* callback = new dbc_proc_callback_t( effect.player, *effect2 );
-  callback -> initialize();
-  callback -> deactivate();
 
   // Create buff.
   effect.custom_buff = stat_buff_creator_t( effect.player, "elunes_light", effect.driver(), effect.item )
@@ -1151,6 +1149,9 @@ void item::moonlit_prism( special_effect_t& effect )
 
   // Assign buff to our stack gain driver.
   effect2 -> custom_buff = effect.custom_buff;
+
+  callback -> initialize();
+  callback -> deactivate();
 }
 
 // Faulty Countermeasures ===================================================
@@ -1521,7 +1522,7 @@ struct maddening_whispers_t : public buff_t
   dbc_proc_callback_t* callback;
 
   maddening_whispers_t( const special_effect_t& effect ) :
-    buff_t( buff_creator_t( effect.player, "maddening_whispers", effect.driver(), effect.item ) )
+    buff_t( buff_creator_t( effect.player, "maddening_whispers", effect.driver(), effect.item ).cd( timespan_t::zero() ) )
   {
     // Stack gain effect
     special_effect_t* effect2 = new special_effect_t( effect.item );
