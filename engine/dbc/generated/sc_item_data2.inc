@@ -23941,7 +23941,7 @@ static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZ
   {    0,    0,  0,    0,    0 },
 };
 
-#define ITEM_BONUS_SIZE (3338)
+#define ITEM_BONUS_SIZE (3339)
 
 // Item bonuses, wow build 22566
 static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
@@ -27282,6 +27282,7 @@ static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
   { 5216, 3389, 12,  52786,      0,  3 },
   { 5217, 3447, 12,  52786,      0,  0 },
   { 5218, 3387, 12,  52786,      0,  1 },
+  { 5232, 3428,  3,      4,      0,  1 },
   {    0,    0,  0,      0,      0,  0 },
 };
 
