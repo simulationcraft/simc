@@ -3775,8 +3775,9 @@ struct saber_slash_t : public rogue_attack_t
       return;
     }
 
-    if ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), saber_slash_proc_chance() ) ||
-         p() -> buffs.hidden_blade -> up() )
+    if ( ! saberslash_proc_event &&
+         ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), saber_slash_proc_chance() ) ||
+         p() -> buffs.hidden_blade -> up() ) )
     {
       saberslash_proc_event = new ( *sim ) saberslash_proc_event_t( p(), this, execute_state -> target );
     }
@@ -5387,6 +5388,12 @@ void rogue_t::spend_combo_points( const action_state_t* state )
 
   state -> action -> stats -> consume_resource( RESOURCE_COMBO_POINT, max_spend );
   resource_loss( RESOURCE_COMBO_POINT, max_spend, nullptr, state ? state -> action : nullptr );
+
+  if ( sim -> log )
+    sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", name(),
+                   max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
+                   state -> action -> name(), resources.current[ RESOURCE_COMBO_POINT ] );
+
 }
 
 bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
