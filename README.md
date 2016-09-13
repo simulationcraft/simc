@@ -64,3 +64,26 @@ SimulationCraft is different from SimCraft. Please use the full name SimulationC
 ## Migrating from GoogleCode to GitHub
 To switch the remote git repository from googlecode to github, execute the following in your simc development folder:
 - git remote set-url origin https://github.com/simulationcraft/simc.git
+
+## External Libraries
+
+This program uses the following external libraries.
+
+RapidJSON (http://rapidjson.org)
+
+Copyright (c) 2015 THL A29 Limited, a Tencent company, and Milo Yip. All rights reserved.
+MIT License (see LICENSE.MIT for more information)
+
+RapidXML (http://rapidxml.sourceforge.net/index.htm)
+
+Copyright (c) 2006, 2007 Marcin Kalicinski. All rights reserved.
+MIT License (see LICENSE.MIT for more information)
+
+The MSInttypes r29 (https://code.google.com/p/msinttypes/)
+
+Copyright (c) Alexander Chemeris. All rights reserved
+BSD 3-Clause License (see LICENSE.BSD for more information)
+
+The Qt Toolkit (http://qt.io)
+Copyright (c) 2016 The Qt Company Ltd. and other contributors.
+GNU Lesser General Public License, version 3 (see LICENSE.LGPL for more information)
