@@ -72,19 +72,24 @@ This program uses the following external libraries.
 RapidJSON (http://rapidjson.org)
 
 Copyright (c) 2015 THL A29 Limited, a Tencent company, and Milo Yip. All rights reserved.
-MIT License (see LICENSE.MIT for more information)
+MIT License (see LICENSE.MIT for more information).
 
 RapidXML (http://rapidxml.sourceforge.net/index.htm)
 
 Copyright (c) 2006, 2007 Marcin Kalicinski. All rights reserved.
-MIT License (see LICENSE.MIT for more information)
+MIT License (see LICENSE.MIT for more information).
 
 The MSInttypes r29 (https://code.google.com/p/msinttypes/)
 
-Copyright (c) Alexander Chemeris. All rights reserved
-BSD 3-Clause License (see LICENSE.BSD for more information)
+Copyright (c) Alexander Chemeris. All rights reserved.
+BSD 3-Clause License (see LICENSE.BSD for more information).
 
 The Qt Toolkit (http://qt.io)
 
-Copyright (c) 2016 The Qt Company Ltd. and other contributors.
-GNU Lesser General Public License, version 3 (see LICENSE.LGPL for more information)
+Copyright (c) 2016 The Qt Company Ltd. and other contributors. All rights reserved.
+GNU Lesser General Public License, version 3 (see LICENSE.LGPL for more information).
+
+UTF-8 CPP (http://utfcpp.sourceforge.net)
+
+Copyright (c) 2006 Nemanja Trifunovic. All rights reserved.
+Boost Software License, Version 1.0 (see LICENSE.BOOST for more information).
