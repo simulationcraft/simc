@@ -1165,7 +1165,7 @@ void item::faulty_countermeasures( special_effect_t& effect )
   effect2 -> cooldown_      = timespan_t::zero();
 
   // 2016-09-13: Enhancement RPPM hotfixed 1.8 -> 0.8, does not show in client data
-  if ( effect.player -> specialization() )
+  if ( effect.player -> specialization() == SHAMAN_ENHANCEMENT )
   {
     effect2 -> rppm_modifier_ = 0.8;
   }
