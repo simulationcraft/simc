@@ -661,7 +661,7 @@ public:
       return;
     }
 
-    if ( ab::result_is_hit( ab::execute_state -> result ) )
+    if ( execute_state && ab::result_is_hit( ab::execute_state -> result ) )
     {
         if( p() -> o() -> talents.grimoire_of_synergy -> ok())
         {
