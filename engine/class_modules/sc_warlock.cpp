@@ -1190,8 +1190,8 @@ struct eye_laser_t : public warlock_pet_spell_t
   struct eye_laser_damage_t : public warlock_pet_spell_t
   {
     eye_laser_damage_t( warlock_pet_t* p ) :
-      warlock_pet_spell_t( "eye_laser_damage", p, p -> find_spell( 205231 ) )
-    { 
+      warlock_pet_spell_t( "eye_laser", p, p -> find_spell( 205231 ) )
+    {
       background = dual = true;
       base_execute_time = timespan_t::zero();
     }
@@ -1201,39 +1201,22 @@ struct eye_laser_t : public warlock_pet_spell_t
 
   eye_laser_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "eye_laser", p, p -> find_spell( 205231 ) )
-  { 
+  {
     may_crit = false;
     base_multiplier *= 0;
 
     eye_laser = new eye_laser_damage_t( p );
-    add_child( eye_laser );
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const override
-  {
-      warlock_pet_spell_t::available_targets( tl );
-
-      auto it = tl.begin();
-      while ( it != tl.end() )
-      {
-        if ( ! td( *it ) -> dots_doom -> is_ticking())
-        {
-          it = tl.erase( it );
-        }
-        else
-        {
-          it++;
-        }
-      }
-      return tl.size();
   }
 
   void impact( action_state_t* state ) override
   {
     warlock_pet_spell_t::impact( state );
 
-    eye_laser -> target = execute_state -> target;
-    eye_laser -> execute();
+    if ( td( state -> target ) -> dots_doom -> is_ticking() )
+    {
+      eye_laser -> target = state -> target;
+      eye_laser -> execute();
+    }
   }
 };
 
