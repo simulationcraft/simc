@@ -85,5 +85,6 @@ Copyright (c) Alexander Chemeris. All rights reserved
 BSD 3-Clause License (see LICENSE.BSD for more information)
 
 The Qt Toolkit (http://qt.io)
+
 Copyright (c) 2016 The Qt Company Ltd. and other contributors.
 GNU Lesser General Public License, version 3 (see LICENSE.LGPL for more information)
