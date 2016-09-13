@@ -26,6 +26,7 @@ actions=auto_attack
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
 actions+=/berserking
+actions+=/use_item,slot=finger2
 actions+=/use_item,slot=trinket1
 actions+=/potion,name=deadly_grace
 actions+=/pillar_of_frost

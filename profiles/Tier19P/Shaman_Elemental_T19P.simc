@@ -15,7 +15,7 @@ spec=elemental
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=whispered_pact
-actions.precombat+=/food,name=the_hungry_magister
+actions.precombat+=/food,name=fishbrul_special
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -45,7 +45,8 @@ actions.single+=/earth_shock,if=maelstrom>=92
 actions.single+=/icefury,if=raid_event.movement.in<5
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
 actions.single+=/elemental_blast
-actions.single+=/flame_shock,if=maelstrom>=20,target_if=refreshable
+actions.single+=/earthquake_totem,if=buff.echoes_of_the_great_sundering.up
+actions.single+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
 actions.single+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))
 actions.single+=/frost_shock,moving=1,if=buff.icefury.up
 actions.single+=/earth_shock,if=maelstrom>=86
@@ -53,15 +54,15 @@ actions.single+=/icefury,if=maelstrom<=70&raid_event.movement.in>30&((talent.asc
 actions.single+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
 actions.single+=/stormkeeper,if=(talent.ascendance.enabled&cooldown.ascendance.remains>10)|!talent.ascendance.enabled
 actions.single+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
-actions.single+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1,target_if=!debuff.lightning_rod.up
 actions.single+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
+actions.single+=/lightning_bolt,if=buff.power_of_the_maelstrom.up,target_if=!debuff.lightning_rod.up
+actions.single+=/lightning_bolt,if=buff.power_of_the_maelstrom.up
 actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=!debuff.lightning_rod.up
 actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
 actions.single+=/lightning_bolt,target_if=!debuff.lightning_rod.up
 actions.single+=/lightning_bolt
-actions.single+=/frost_shock,if=maelstrom>=20&dot.flame_shock.remains>19
 actions.single+=/flame_shock,moving=1,target_if=refreshable
-actions.single+=/flame_shock,moving=1
+actions.single+=/earth_shock,moving=1
 
 # Multi target action priority list
 actions.aoe=stormkeeper
@@ -77,11 +78,11 @@ actions.aoe+=/lava_burst,moving=1
 actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 
 head=shadow_archers_helm,id=139244,bonus_id=1727
-neck=breathless_choker,id=137461,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=arcane_exterminators_shoulderguards,id=134472,bonus_id=1727
+neck=breathless_choker,id=137461,bonus_id=1727,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727
 back=cloak_of_fading_echoes,id=134405,bonus_id=1727,enchant=binding_of_intellect
 chest=tunic_of_screaming_earth,id=137354,bonus_id=1727
-wrists=afterlife_manacles,id=137325,bonus_id=1727
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1727
 hands=gloves_of_fleshshaping,id=134468,bonus_id=1727
 waist=permafrost_waistband,id=137520,bonus_id=1727
 legs=leggings_of_acidic_venom,id=137450,bonus_id=1727
@@ -97,8 +98,9 @@ off_hand=the_highkeepers_ward,id=128936,ilevel=870
 # gear_ilvl=843.75
 # gear_stamina=17944
 # gear_intellect=18697
-# gear_crit_rating=10793
-# gear_haste_rating=4577
-# gear_mastery_rating=1578
+# gear_crit_rating=10236
+# gear_haste_rating=4293
+# gear_mastery_rating=2418
 # gear_versatility_rating=898
 # gear_armor=2433
+# set_bonus=tier19p_mail_2pc=1

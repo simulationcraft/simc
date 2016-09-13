@@ -2214,10 +2214,14 @@ struct fire_elemental_t : public primal_elemental_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
 
-    def -> add_action( "fire_nova" );
     if ( o() -> talent.primal_elementalist -> ok() )
     {
+      def -> add_action( "fire_nova,if=active_enemies>2" );
       def -> add_action( "immolate,target_if=!ticking" );
+    }
+    else
+    {
+      def -> add_action( "fire_nova" );
     }
     def -> add_action( "fire_blast" );
   }
@@ -6401,7 +6405,7 @@ void shaman_t::init_action_list_elemental()
                             ( true_level >= 85 ) ? "warm_sun" :
                             ( true_level >= 80 ) ? "draconic_mind" :
                             "";
-  std::string food_name   = ( true_level > 100  ) ? "the_hungry_magister" :
+  std::string food_name   = ( true_level > 100  ) ? "fishbrul_special" :
                             ( true_level > 90   ) ? "pickled_eel" :
                             ( true_level >= 90  ) ? "mogu_fish_stew" :
                             ( true_level >= 80  ) ? "seafood_magnifique_feast" :
@@ -6477,7 +6481,8 @@ void shaman_t::init_action_list_elemental()
   single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&"
                                             "(cooldown_react|buff.ascendance.up)" );
   single -> add_talent( this, "Elemental Blast" );
-  single -> add_action( this, "Flame Shock", "if=maelstrom>=20,target_if=refreshable" );
+  single -> add_action( this, "Earthquake Totem", "if=buff.echoes_of_the_great_sundering.up" );
+  single -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single -> add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up&"
                                              "((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|"
                                              "buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))" );
@@ -6492,15 +6497,15 @@ void shaman_t::init_action_list_elemental()
   single -> add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<10|"
                                                "(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&"
                                                "cooldown.ascendance.remains<15)" );
-  single -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1,target_if=!debuff.lightning_rod.up" );
   single -> add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
+  single -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up,target_if=!debuff.lightning_rod.up" );
+  single -> add_action( this, "Lightning Bolt", "if=buff.power_of_the_maelstrom.up" );
   single -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1,target_if=!debuff.lightning_rod.up" );
   single -> add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
   single -> add_action( this, "Lightning Bolt", "target_if=!debuff.lightning_rod.up" );
   single -> add_action( this, "Lightning Bolt" );
-  single -> add_action( this, "Frost Shock", "if=maelstrom>=20&dot.flame_shock.remains>19" );
   single -> add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
-  single -> add_action( this, "Flame Shock", "moving=1" );
+  single -> add_action( this, "Earth Shock", "moving=1" );
 
   // Aoe APL
   aoe -> add_action( this, "Stormkeeper" );

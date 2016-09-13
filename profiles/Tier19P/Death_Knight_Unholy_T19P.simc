@@ -28,6 +28,7 @@ actions=auto_attack
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
+actions+=/use_item,slot=finger2
 actions+=/potion,name=deadly_grace,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
 actions+=/dark_transformation,if=equipped.137075&cooldown.dark_arbiter.remains>165
