@@ -1,4 +1,4 @@
-SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build ef7af44)
+SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build c89dd2a)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -2440,7 +2440,7 @@ Name             : Barrage (id=120361) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
-Range            : 43 yards
+Range            : 50 yards
 Velocity         : 30 yards/sec
 Affecting spells : Freezing Trap (3355), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), 
 Triggered by     : Barrage (120360)
@@ -2455,9 +2455,9 @@ Effects          :
 #1 (id=139841)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(77)
 #2 (id=139842)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 43 yards | Target: Cone Front(104)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Cone Front(104)
 #3 (id=139945)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 | Radius: 43 yards | Target: Cone Front(104)
+                   Base Value: 100 | Scaled Value: 1 | Radius: 50 yards | Target: Cone Front(104)
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 

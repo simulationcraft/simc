@@ -14,7 +14,6 @@ spec=shadow
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=flask_of_the_whispered_pact
 actions.precombat+=/food,type=azshari_salad
 actions.precombat+=/augmentation,type=defiled
@@ -24,7 +23,6 @@ actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/mind_blast
 
 # Executed every time the actor is available.
-
 actions=use_item,slot=trinket2
 actions+=/potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=40|buff.voidform.stack>80
 actions+=/variable,op=set,name=actors_fight_time_mod,value=0

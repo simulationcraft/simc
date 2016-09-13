@@ -1,4 +1,4 @@
-SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build ef7af44)
+SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build c89dd2a)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -4804,7 +4804,8 @@ Attributes       : ........ ........ x.x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=343604)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.00000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0 -> 2.5), AP Coefficient (2 -> 0)
 Description      : $@spelldesc20271
 
 Name             : Cavalier (id=230332) [Passive] 

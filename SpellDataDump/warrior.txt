@@ -1,4 +1,4 @@
-SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build ef7af44)
+SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build c89dd2a)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -3014,12 +3014,13 @@ Effects          :
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
+Hotfixed         : Cooldown (45000 -> 30000)
 Class            : Arms Warrior
 School           : Physical
 Spell Level      : 18
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 45 seconds
+Cooldown         : 30 seconds
 Proc Chance      : 101%
 Affecting spells : Battle Cry (1719), Mastery: Colossal Might (76838), Warrior (137047), Titanic Might (202612), Focus in Battle (209554)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -4439,8 +4440,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307672)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
                    Affected Spells: Mortal Strike (12294)
+                   Hotfixed: Base Value (50 -> 40)
 #2 (id=307673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Focus your rage on your next Mortal Strike, increasing its damage by $s1%, stacking up to $u times. Unaffected by the global cooldown

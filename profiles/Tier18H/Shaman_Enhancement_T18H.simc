@@ -14,7 +14,6 @@ spec=enhancement
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=greater_draenic_agility_flask
 actions.precombat+=/augmentation,type=hyper
 actions.precombat+=/food,name=buttered_sturgeon
@@ -24,7 +23,6 @@ actions.precombat+=/potion,name=draenic_agility
 actions.precombat+=/lightning_shield
 
 # Executed every time the actor is available.
-
 actions=wind_shear
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions+=/bloodlust,if=target.health.pct<25|time>0.500

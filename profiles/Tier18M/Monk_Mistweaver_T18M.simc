@@ -13,14 +13,12 @@ spec=mistweaver
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=salty_squid_roll
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect_potion
 
 # Executed every time the actor is available.
-
 actions=auto_attack
 actions+=/invoke_xuen
 actions+=/use_item,name=intuitions_gift

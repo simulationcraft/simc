@@ -13,7 +13,6 @@ spec=affliction
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=felmouth_frenzy
 actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
@@ -25,7 +24,6 @@ actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 
 # Executed every time the actor is available.
-
 actions=use_item,name=nithramus_the_allseer
 actions+=/soul_effigy,if=!pet.soul_effigy.active
 actions+=/agony,if=remains<=tick_time+gcd

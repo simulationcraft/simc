@@ -15,7 +15,6 @@ spec=feral
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/augmentation,type=defiled
@@ -27,7 +26,6 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
 
 # Executed every time the actor is available.
-
 actions=dash,if=!buff.cat_form.up
 actions+=/cat_form
 actions+=/wild_charge

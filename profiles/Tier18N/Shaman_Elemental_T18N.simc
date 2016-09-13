@@ -14,7 +14,6 @@ spec=elemental
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,name=pickled_eel
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -24,7 +23,6 @@ actions.precombat+=/stormkeeper
 actions.precombat+=/totem_mastery
 
 # Executed every time the actor is available.
-
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions=bloodlust,if=target.health.pct<25|time>0.500
 # In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
@@ -39,7 +37,6 @@ actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_ligh
 actions+=/run_action_list,name=single
 
 # Single target action priority list
-
 actions.single=ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
@@ -66,7 +63,6 @@ actions.single+=/flame_shock,moving=1,target_if=refreshable
 actions.single+=/flame_shock,moving=1
 
 # Multi target action priority list
-
 actions.aoe=stormkeeper
 actions.aoe+=/ascendance
 actions.aoe+=/liquid_magma_totem

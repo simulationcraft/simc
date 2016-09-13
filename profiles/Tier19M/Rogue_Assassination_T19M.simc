@@ -14,7 +14,6 @@ spec=assassination
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,name=flask_of_the_seventh_demon
 actions.precombat+=/augmentation,name=defiled
 actions.precombat+=/food,name=seedbattered_fish_plate
@@ -26,7 +25,6 @@ actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 
 # Executed every time the actor is available.
-
 actions=potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up
 actions+=/blood_fury,if=debuff.vendetta.up
 actions+=/berserking,if=debuff.vendetta.up
@@ -107,8 +105,8 @@ off_hand=the_kingslayers,id=128869
 # gear_ilvl=881.69
 # gear_agility=17473
 # gear_stamina=25530
-# gear_crit_rating=10648
-# gear_haste_rating=2911
-# gear_mastery_rating=2965
+# gear_crit_rating=9986
+# gear_haste_rating=3077
+# gear_mastery_rating=3461
 # gear_versatility_rating=2696
 # gear_armor=2249

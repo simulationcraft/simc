@@ -14,7 +14,6 @@ spec=protection
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-
 actions.precombat=flask,type=flask_of_ten_thousand_scars
 actions.precombat+=/flask,type=flask_of_the_countless_armies,if=role.attack|using_apl.max_dps
 actions.precombat+=/food,type=seedbattered_fish_plate
@@ -24,7 +23,6 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=unbending_potion
 
 # Executed every time the actor is available.
-
 actions=auto_attack
 actions+=/use_item,name=shivermaws_jawbone
 actions+=/blood_fury
@@ -71,7 +69,6 @@ actions.prot_aoe+=/hammer_of_the_righteous
 
 # This is a high-DPS (but low-survivability) configuration.
 # Invoke by adding "actions+=/run_action_list,name=max_dps" to the beginning of the default APL.
-
 actions.max_dps=auto_attack
 actions.max_dps+=/use_item,name=shivermaws_jawbone
 actions.max_dps+=/blood_fury
@@ -80,7 +77,6 @@ actions.max_dps+=/arcane_torrent
 
 # This is a high-survivability (but low-DPS) configuration.
 # Invoke by adding "actions+=/run_action_list,name=max_survival" to the beginning of the default APL.
-
 actions.max_survival=auto_attack
 actions.max_survival+=/use_item,name=shivermaws_jawbone
 actions.max_survival+=/blood_fury
