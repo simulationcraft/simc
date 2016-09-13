@@ -1163,6 +1163,13 @@ void item::faulty_countermeasures( special_effect_t& effect )
   effect2 -> name_str       = "brittle";
   effect2 -> spell_id       = effect.driver() -> id();
   effect2 -> cooldown_      = timespan_t::zero();
+
+  // 2016-09-13: Enhancement RPPM hotfixed 1.8 -> 0.8, does not show in client data
+  if ( effect.player -> specialization() )
+  {
+    effect2 -> rppm_modifier_ = 0.8;
+  }
+
   effect.player -> special_effects.push_back( effect2 );
 
   dbc_proc_callback_t* callback = new dbc_proc_callback_t( effect.player, *effect2 );

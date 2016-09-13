@@ -2483,6 +2483,7 @@ struct special_effect_t
   double proc_chance_;
   double ppm_;
   rppm_scale_e rppm_scale_;
+  double rppm_modifier_;
   timespan_t duration_, cooldown_, tick;
   bool cost_reduction;
   int refresh;
