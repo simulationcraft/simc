@@ -1187,35 +1187,15 @@ struct fel_firebolt_t: public warlock_pet_spell_t
 
 struct eye_laser_t : public warlock_pet_spell_t
 {
-  struct eye_laser_damage_t : public warlock_pet_spell_t
-  {
-    eye_laser_damage_t( warlock_pet_t* p ) :
-      warlock_pet_spell_t( "eye_laser", p, p -> find_spell( 205231 ) )
-    {
-      background = dual = true;
-      base_execute_time = timespan_t::zero();
-    }
-  };
-
-  eye_laser_damage_t* eye_laser;
-
   eye_laser_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "eye_laser", p, p -> find_spell( 205231 ) )
+  { }
+
+  void schedule_travel( action_state_t* state ) override
   {
-    may_crit = false;
-    base_multiplier *= 0;
-
-    eye_laser = new eye_laser_damage_t( p );
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    warlock_pet_spell_t::impact( state );
-
     if ( td( state -> target ) -> dots_doom -> is_ticking() )
     {
-      eye_laser -> target = state -> target;
-      eye_laser -> execute();
+      warlock_pet_spell_t::schedule_travel( state );
     }
   }
 };
