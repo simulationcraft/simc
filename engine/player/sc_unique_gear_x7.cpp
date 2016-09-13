@@ -52,6 +52,7 @@ namespace item
   void jeweled_signet_of_melandrus( special_effect_t& );
   void caged_horror( special_effect_t& );
   void tempered_egg_of_serpentrix( special_effect_t& );
+  void gnawed_thumb_ring( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -212,6 +213,15 @@ void item::giant_ornamental_pearl( special_effect_t& effect )
   effect.trigger_spell_id = 0;
 }
 
+// Gnawed Thumb Ring =======================================================
+void item::gnawed_thumb_ring( special_effect_t& effect )
+{
+  effect.custom_buff = buff_creator_t( effect.player, "taste_of_mana", effect.player -> find_spell( 228461 ), effect.item )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .default_value( effect.player -> find_spell( 228461 ) -> effectN( 1 ).percent() );
+
+  effect.player -> buffs.taste_of_mana = effect.custom_buff;
+}
 // Impact Tremor ============================================================
 
 void item::impact_tremor( special_effect_t& effect )
@@ -2448,6 +2458,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 214340, "ProcOn/Hit_1Tick_214342Trigger"     );
   register_special_effect( 228462, item::jeweled_signet_of_melandrus    );
   register_special_effect( 215745, item::tempered_egg_of_serpentrix     );
+  register_special_effect( 228461, item::gnawed_thumb_ring              );
 
   /* Legion 7.0 Raid */
   register_special_effect( 221786, item::bloodthirsty_instinct  );

@@ -3954,6 +3954,7 @@ struct player_t : public actor_t
 
     // 7.0 trinket proxy buffs
     buff_t* incensed;
+    buff_t* taste_of_mana; // Gnawed Thumb Ring buff
 
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
