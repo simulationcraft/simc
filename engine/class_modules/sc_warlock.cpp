@@ -5137,7 +5137,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     gains( gains_t() ),
     procs( procs_t() ),
     spells( spells_t() ),
-    initial_soul_shards( 1 ),
+    initial_soul_shards( 3 ),
     default_pet( "" ),
     shard_react( timespan_t::zero() ),
     affliction_trinket( nullptr ),
@@ -6276,7 +6276,7 @@ std::string warlock_t::create_profile( save_e stype )
 
   if ( stype == SAVE_ALL )
   {
-    if ( initial_soul_shards != 1 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
+    if ( initial_soul_shards != 3 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
     if ( ! default_pet.empty() )       profile_str += "default_pet=" + default_pet + "\n";
   }
 
