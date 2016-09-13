@@ -1489,13 +1489,14 @@ void action_t::execute()
   if ( pre_execute_state )
     action_state_t::release( pre_execute_state );
 
-  // The rest of the execution depends on actually executing on target
+  // The rest of the execution depends on actually executing on target. Note that execute_state
+  // can be nullptr if there are not valid targets to hit on.
   if ( num_targets > 0 )
   {
     if ( composite_teleport_distance( execute_state ) > 0 )
       do_teleport( execute_state );
 
-    if ( execute_action && result_is_hit( execute_state -> result ) )
+    if ( execute_state && execute_action && result_is_hit( execute_state -> result ) )
     {
       assert( ! execute_action -> pre_execute_state );
       execute_action -> schedule_execute( execute_action -> get_state( execute_state ) );
@@ -1503,7 +1504,7 @@ void action_t::execute()
 
     // Proc generic abilities on execute.
     proc_types pt;
-    if ( callbacks && ( pt = execute_state -> proc_type() ) != PROC1_INVALID )
+    if ( execute_state && callbacks && ( pt = execute_state -> proc_type() ) != PROC1_INVALID )
     {
       proc_types2 pt2;
 
