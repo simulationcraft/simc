@@ -3256,7 +3256,7 @@ double player_t::composite_player_multiplier( school_e /* school */ ) const
                                                                           // Artifacts get a free +6 purchased
   m *= 1.0 + artifact.artificial_damage -> effectN( 2 ).percent() * .01 * ( artifact.n_purchased_points + 6 );
 
-  if ( buffs.taste_of_mana -> up() )
+  if ( buffs.taste_of_mana && buffs.taste_of_mana -> up() )
   {
     m *= 1.0 + buffs.taste_of_mana -> default_value;
   }
