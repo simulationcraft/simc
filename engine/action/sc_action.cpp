@@ -37,8 +37,8 @@ struct player_gcd_event_t : public player_event_t
       }
 
       // Don't attempt to execute an off gcd action that's already being queued (this should not
-      // happen anyhow), or being executed (very rare occasion)
-      if ( p() -> queueing != a && p() -> executing != a )
+      // happen anyhow)
+      if ( ! p() -> queueing || ( p() -> queueing -> internal_id != a -> internal_id ) )
       {
         auto queue_delay = a -> cooldown -> queue_delay();
         // Don't queue the action if GCD would elapse before the action is usable again
@@ -46,6 +46,13 @@ struct player_gcd_event_t : public player_event_t
              ( a -> player -> readying &&
              sim().current_time() + queue_delay < a -> player -> readying -> occurs() ) )
         {
+          // If we're queueing something, it's something different from what we are about to do.
+          // Cancel existing queued (off gcd) action, and queue the new one.
+          if ( p() -> queueing )
+          {
+            event_t::cancel( p() -> queueing -> queue_event );
+            p() -> queueing = nullptr;
+          }
           a -> queue_execute( true );
         }
       }
@@ -70,7 +77,12 @@ struct player_gcd_event_t : public player_event_t
   {
     p() -> off_gcd = nullptr;
 
-    select_action( p() -> active_action_list );
+    // It is possible to orchestrate events such that an action is currently executing when an
+    // off-gcd event occurs, if this is the case, don't do anything
+    if ( ! p() -> executing )
+    {
+      select_action( p() -> active_action_list );
+    }
 
     // Create a new Off-GCD event only in the case we didnt find anything to queue (could use an
     // ability right away) and the action we executed was not a run_action_list.
