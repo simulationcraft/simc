@@ -633,6 +633,10 @@ public:
     {
       ab::cooldown -> hasted = headlongrush;
     }
+    if ( headlongrushgcd )
+    {
+      ab::gcd_haste = HASTE_ATTACK;
+    }
   }
 
   virtual ~warrior_action_t() {}
@@ -697,27 +701,6 @@ public:
   virtual void execute() override
   {
     ab::execute();
-  }
-
-  virtual timespan_t gcd() const override
-  {
-    timespan_t t = ab::action_t::gcd();
-
-    if ( t == timespan_t::zero() )
-    {
-      return t;
-    }
-
-    if ( headlongrushgcd )
-    {
-      t *= ab::player -> cache.attack_haste();
-    }
-    if ( t < ab::min_gcd )
-    {
-      t = ab::min_gcd;
-    }
-
-    return t;
   }
 
   virtual bool ready() override
