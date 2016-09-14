@@ -618,10 +618,6 @@ player_t::player_t( sim_t*             s,
   base.mastery = 8.0;
   base.movement_direction = MOVEMENT_NONE;
 
-  artifact.artifact_ = -1;
-  artifact.artificial_stamina = spell_data_t::not_found();
-  artifact.artificial_damage = spell_data_t::not_found();
-
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
     if ( sim -> debug ) sim -> out_debug.printf( "Creating Player %s", name() );

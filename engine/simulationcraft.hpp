@@ -3661,6 +3661,15 @@ struct player_t : public actor_t
     int artifact_;
     const spell_data_t* artificial_stamina;
     const spell_data_t* artificial_damage;
+
+    artifact_data_t() :
+      n_points( 0 ), n_purchased_points( 0 ), artifact_( -1 ),
+      artificial_stamina( spell_data_t::not_found() ),
+      artificial_damage( spell_data_t::not_found() )
+    {
+      range::fill( points, { 0, 0 } );
+      range::fill( relics, 0 );
+    }
   } artifact;
 
   bool artifact_enabled() const;
