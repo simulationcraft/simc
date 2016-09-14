@@ -921,6 +921,10 @@ struct rogue_attack_t : public melee_attack_t
   virtual bool procs_main_gauche() const
   { return callbacks && ! proc && weapon != nullptr && weapon -> slot == SLOT_MAIN_HAND; }
 
+  // Generic rules for proccing Combat Potency, used by rogue_t::trigger_combat_potency()
+  virtual bool procs_combat_potency() const
+  { return callbacks && ! proc && weapon != nullptr && weapon -> slot == SLOT_OFF_HAND; }
+
   virtual double proc_chance_main_gauche() const
   { return p() -> cache.mastery_value(); }
 
@@ -1190,6 +1194,9 @@ struct main_gauche_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.fortunes_strike.percent();
   }
 
+  bool procs_combat_potency() const override
+  { return true; }
+
   bool procs_poison() const override
   { return false; }
 };
@@ -1394,6 +1401,13 @@ struct greed_t : public rogue_attack_t
     background = true;
     weapon = &( p -> off_hand_weapon );
   }
+
+  bool procs_main_gauche() const override
+  { return false; }
+
+  // Greed off hand hit cannot proc combat potency, main hand would not proc anyhow
+  bool procs_combat_potency() const override
+  { return false; }
 
   void execute() override
   {
@@ -2291,6 +2305,9 @@ struct ambush_t : public rogue_attack_t
     requires_stealth  = true;
   }
 
+  bool procs_main_gauche() const override
+  { return false; }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2819,6 +2836,9 @@ struct ghostly_strike_t : public rogue_attack_t
   {
     weapon = &( p -> main_hand_weapon );
   }
+
+  bool procs_main_gauche() const override
+  { return false; }
 
   void execute() override
   {
@@ -4893,10 +4913,8 @@ void rogue_t::trigger_combat_potency( const action_state_t* state )
   if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
-  if ( ! state -> action -> weapon )
-    return;
-
-  if ( state -> action -> weapon -> slot != SLOT_OFF_HAND )
+  actions::rogue_attack_t* attack = cast_attack( state -> action );
+  if ( ! attack -> procs_combat_potency() )
     return;
 
   //double chance = spec.combat_potency -> effectN( 1 ).percent();
