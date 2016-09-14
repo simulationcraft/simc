@@ -1233,6 +1233,12 @@ int special_effect_t::cooldown_group() const
     }
   }
 
+  // On-Use trinkets use a special cooldown category to signal the shared cooldown
+  if ( driver() -> category() == ITEM_TRINKET_BURST_CATEGORY )
+  {
+    return driver() -> category();
+  }
+
   return 0;
 }
 
@@ -1249,6 +1255,13 @@ timespan_t special_effect_t::cooldown_group_duration() const
     {
       return timespan_t::from_millis( item -> parsed.data.cooldown_group_duration[ i ] );
     }
+  }
+
+  // If we're handling a trinket (the driver has a specific cooldown category), return the driver
+  // spell's duration as the cooldown group duration.
+  if ( driver() -> category() == ITEM_TRINKET_BURST_CATEGORY )
+  {
+    return driver() -> duration();
   }
 
   return timespan_t::zero();

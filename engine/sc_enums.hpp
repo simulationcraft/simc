@@ -11,11 +11,14 @@
 // annex _e to enumerations
 
 
+// Misc (legion) related constants
 enum
 {
   MAX_ARTIFACT_POWER = 20, /// Maximum number of artifact perks per weapon. Looks like max is 17 on weapons but setting higher just in case -- 2016/04/04 - Twintop
   MAX_ARTIFACT_RELIC = 4,
   RELIC_ILEVEL_BONUS_CURVE = 1718, /// Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the relic's own item level
+
+  ITEM_TRINKET_BURST_CATEGORY = 1141, /// Trinket On-Use effect default category (for shared CD)
 };
 
 enum regen_type_e
