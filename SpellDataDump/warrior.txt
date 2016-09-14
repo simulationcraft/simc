@@ -1,4 +1,4 @@
-SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build c89dd2a)
+SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build 7f66007)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -3125,6 +3125,7 @@ Description      : Reduces damage taken by $s1%, and Bloodthirst restores an add
 Tooltip          : Damage taken reduced by $s1%. Bloodthirst restores an additional $s2% health.
 
 Name             : Rampage (id=184367) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Fury Warrior
 School           : Physical
 Resource         : 85 Rage
@@ -3133,7 +3134,7 @@ Range            : 5 yards
 GCD              : 2 seconds
 Cooldown         : 1.5 seconds
 Affecting spells : Meat Cleaver (85739), Warrior (137047), Unstoppable (200853), Carnage (202922), Massacre (206316)
-Attributes       : ........ ........ ........ ........   ........ .xx..... ........ ........ 
+Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 

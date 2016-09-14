@@ -1,4 +1,4 @@
-call py -3 casc_extract.py -m batch --cdn --beta -o wow
+call py -3 casc_extract.py -m batch --cdn --ptr -o wow
 cd wow
 dir /b /a:D /O:-D>hi.txt
 set /p wowdir=<hi.txt
@@ -10,5 +10,5 @@ cd ..
 cd ..
 set curr=%cd%
 cd dbc_extract3
-call generate.bat %wowdir% %curr%\casc_extract\wow
+call generate.bat ptr=1 %wowdir% %curr%\casc_extract\wow
 pause

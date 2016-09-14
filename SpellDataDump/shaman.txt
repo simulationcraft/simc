@@ -1,4 +1,4 @@
-SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build c89dd2a)
+SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build 7f66007)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1665,7 +1665,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+Description      : A slow but efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -4495,6 +4495,7 @@ Effects          :
 Description      : $@spelldesc196884
 
 Name             : Feral Lunge (id=196884) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Level      : 1
@@ -4503,7 +4504,7 @@ GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 101%
 Affecting spells : Shaman (137038)
-Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
+Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   .x...... ........ ........ ........ 
@@ -6273,13 +6274,14 @@ Description      : $@spelldesc201900
 Tooltip          : Lava Lash damage increased by $s1% and cost reduced by $s2%.
 
 Name             : Feral Lunge (id=215802) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
