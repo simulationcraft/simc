@@ -3386,13 +3386,6 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     generate_insanity( insanity_gain,
                        priest.gains.insanity_shadow_word_pain_onhit );
-
-    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
-    {
-      generate_insanity(
-          priest.sets.set( PRIEST_SHADOW, T19, B2 )->effectN( 1 ).base_value(),
-          priest.gains.insanity_shadow_word_pain_ondamage );
-    }
   }
 
   void tick( dot_t* d ) override
