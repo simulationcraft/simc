@@ -11,7 +11,7 @@
 cd ..
 git clean -f -x -d
 set currdir=%cd%
-call C:\Qt\Qt5.7.1\5.7\msvc2015_64\bin\qtenv2.bat
+call C:\Qt\Qt5.7.0\5.7\msvc2015_64\bin\qtenv2.bat
 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64 10.0.14393.0
 cd %currdir%
 qmake -r -tp vc -spec win32-msvc2015 simulationcraft.pro PGO=1
@@ -21,7 +21,7 @@ set SIMCAPPFULLVERSION=7.0.3.02
 :: For bumping the minor version, just change the above line.  Make sure to also change setup32.iss and setup64.iss as well. 
 set simcfiles=C:\Simulationcraft\
 :: Location of source files
-set qt_dir=C:\Qt\Qt5.7.1\5.7\
+set qt_dir=C:\Qt\Qt5.7.0\5.7\
 :: Location of QT
 set redist=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\
 :: This is a really standard location for VS2015, but change it if you installed it somewhere else.
@@ -42,7 +42,7 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 robocopy "%redist%x64\Microsoft.VC140.CRT" %install%\ msvcp140.dll vccorlib140.dll vcruntime140.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
 robocopy winreleasescripts\ %install%\ qt.conf
-robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING
+robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING LICENSE.BOOST LICENSE.BSD LICENSE.LGPL LICENSE.MIT
 robocopy Profiles\ %install%\profiles\ *.* /S
 cd %install%
 %qt_dir%\msvc2015_64\bin\windeployqt.exe --no-translations simulationcraft.exe
