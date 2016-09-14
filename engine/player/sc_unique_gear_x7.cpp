@@ -76,7 +76,6 @@ namespace item
   Emerald Nightmare -------------------------
 
   void bough_of_corruption( special_effect_t& );
-  void unstable_horrorslime( special_effect_t& );
 
   Nighthold ---------------------------------
 
