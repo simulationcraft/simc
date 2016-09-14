@@ -85,8 +85,10 @@ struct player_gcd_event_t : public player_event_t
     }
 
     // Create a new Off-GCD event only in the case we didnt find anything to queue (could use an
-    // ability right away) and the action we executed was not a run_action_list.
-    if ( ! p() -> queueing && ! p() -> restore_action_list )
+    // ability right away) and the action we executed was not a run_action_list. Note also that an
+    // off-gcd event may have been created in do_off_gcd_execute() if this Player-Ready-GCD
+    // execution found an off gcd action to execute, in this case, do not create a new event.
+    if ( ! p() -> off_gcd && ! p() -> queueing && ! p() -> restore_action_list )
     {
       p() -> off_gcd = new ( sim() ) player_gcd_event_t( *p(), timespan_t::from_seconds( 0.1 ) );
     }
