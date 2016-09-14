@@ -107,10 +107,10 @@ public:
   {
     pet_t* active;
     pet_t* last;
-    static const int WILD_IMP_LIMIT = 60;
+    static const int WILD_IMP_LIMIT = 40;
     static const int T18_PET_LIMIT = 45;
     static const int DREADSTALKER_LIMIT = 4;
-    static const int DIMENSIONAL_RIFT_LIMIT = 10;
+    static const int DIMENSIONAL_RIFT_LIMIT = 6;
     static const int INFERNAL_LIMIT = 1;
     static const int DOOMGUARD_LIMIT = 1;
     static const int LORD_OF_FLAMES_INFERNAL_LIMIT = 3;
