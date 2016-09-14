@@ -68,6 +68,7 @@ namespace item
   void ravaged_seed_pod( special_effect_t& );
   void spontaneous_appendages( special_effect_t& );
   void twisting_wind( special_effect_t& );
+  void unstable_horrorslime( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
 
   /* NYI ================================================================
@@ -1320,6 +1321,47 @@ void item::terrorbound_nexus( special_effect_t& effect )
   new shadow_wave_callback_t( effect );
 }
 
+// Unstable Horrorslime =====================================================
+
+struct volatile_ichor_t : public spell_t
+{
+  volatile_ichor_t( const special_effect_t& effect ) :
+    spell_t( "volatile_ichor", effect.player, effect.player -> find_spell( 222187 ) )
+  {
+    background = may_crit = true;
+    //TODO: Is this true?
+    callbacks = false;
+    item = effect.item;
+
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+
+    aoe = -1;
+    //FIXME: Assume this is kind of slow from wording.
+    //       Get real velocity from in game data after raids open.
+    travel_speed = 25;
+  }
+
+};
+
+void item::unstable_horrorslime( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "volatile_ichor" ) ;
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "volatile_ichor", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new volatile_ichor_t( effect );
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Portable Manacracker =====================================================
 
 struct volatile_magic_debuff_t : public debuff_t
@@ -2284,7 +2326,7 @@ struct wind_bolt_callback_t : public dbc_proc_callback_t
 {
   action_t* wind_bolt;
 
-  wind_bolt_callback_t( const item_t* i, const special_effect_t& effect, action_t* a ) : 
+  wind_bolt_callback_t( const item_t* i, const special_effect_t& effect, action_t* a ) :
     dbc_proc_callback_t( i, effect ), wind_bolt( a )
   {}
 
@@ -2475,6 +2517,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 222167, item::spontaneous_appendages );
   register_special_effect( 221803, item::ravaged_seed_pod       );
   register_special_effect( 221845, item::twisting_wind          );
+  register_special_effect( 222187, item::unstable_horrorslime   );
   register_special_effect( 222046, item::wriggling_sinew        );
   register_special_effect( 221767, "ProcOn/crit" );
 
