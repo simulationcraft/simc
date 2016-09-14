@@ -1197,6 +1197,12 @@ struct eye_laser_t : public warlock_pet_spell_t
     {
       warlock_pet_spell_t::schedule_travel( state );
     }
+    // Need to release the state since it's not going to be used by a travel event, nor impacting of
+    // any kind.
+    else
+    {
+      action_state_t::release( state );
+    }
   }
 };
 
