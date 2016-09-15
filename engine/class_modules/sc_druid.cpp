@@ -1835,7 +1835,7 @@ struct moonfire_t : public druid_spell_t
     if ( player -> spec.balance -> ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount = player -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_amount = player -> spec.balance -> effectN( 4 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
     {
@@ -4885,16 +4885,6 @@ struct sunfire_t : public druid_spell_t
     sunfire_damage_t( druid_t* p ) : 
       druid_spell_t( "sunfire_dmg", p, p -> find_spell( 164815 ) )
     {
-      if ( p -> spec.balance -> ok() )
-      {
-        energize_resource = RESOURCE_ASTRAL_POWER;
-        energize_amount   = p -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-      }
-      else
-      {
-        energize_type = ENERGIZE_NONE;
-      }
-
       if ( p -> talent.shooting_stars -> ok() && ! p -> active.shooting_stars )
       {
         p -> active.shooting_stars = new shooting_stars_t( p );
@@ -4938,7 +4928,7 @@ struct sunfire_t : public druid_spell_t
     if ( player -> spec.balance -> ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount = player -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_amount = player -> spec.balance -> effectN( 4 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
     {
