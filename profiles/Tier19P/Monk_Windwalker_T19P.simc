@@ -41,6 +41,14 @@ actions+=/fists_of_fury
 actions+=/call_action_list,name=st,if=active_enemies<3
 actions+=/call_action_list,name=aoe,if=active_enemies>=3
 
+actions.aoe=spinning_crane_kick,if=!prev_gcd.spinning_crane_kick
+actions.aoe+=/rising_sun_kick,cycle_targets=1
+actions.aoe+=/rushing_jade_wind,if=chi>1&!prev_gcd.rushing_jade_wind
+actions.aoe+=/chi_wave,if=energy.time_to_max>2|buff.serenity.down
+actions.aoe+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
+actions.aoe+=/blackout_kick,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,cycle_targets=1
+actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi.max-chi>1)&!prev_gcd.tiger_palm,cycle_targets=1
+
 actions.opener=blood_fury
 actions.opener+=/berserking
 actions.opener+=/arcane_torrent,if=chi.max-chi>=1
@@ -56,14 +64,6 @@ actions.st+=/chi_wave,if=energy.time_to_max>2|buff.serenity.down
 actions.st+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
 actions.st+=/blackout_kick,if=(chi>1|buff.bok_proc.up)&buff.serenity.down&!prev_gcd.blackout_kick
 actions.st+=/tiger_palm,if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm
-
-actions.aoe=spinning_crane_kick,if=!prev_gcd.spinning_crane_kick
-actions.aoe+=/rising_sun_kick,cycle_targets=1
-actions.aoe+=/rushing_jade_wind,if=chi>1&!prev_gcd.rushing_jade_wind
-actions.aoe+=/chi_wave,if=energy.time_to_max>2|buff.serenity.down
-actions.aoe+=/chi_burst,if=energy.time_to_max>2|buff.serenity.down
-actions.aoe+=/blackout_kick,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,cycle_targets=1
-actions.aoe+=/tiger_palm,if=(buff.serenity.down&chi.max-chi>1)&!prev_gcd.tiger_palm,cycle_targets=1
 
 head=veil_of_unseen_strikes,id=134447,bonus_id=1727
 neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_trained_soldier

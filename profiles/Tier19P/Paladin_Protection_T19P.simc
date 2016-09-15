@@ -33,6 +33,22 @@ actions+=/berserking
 actions+=/arcane_torrent
 actions+=/call_action_list,name=prot
 
+# This is a high-DPS (but low-survivability) configuration.
+# Invoke by adding "actions+=/run_action_list,name=max_dps" to the beginning of the default APL.
+actions.max_dps=auto_attack
+actions.max_dps+=/use_item,name=shivermaws_jawbone
+actions.max_dps+=/blood_fury
+actions.max_dps+=/berserking
+actions.max_dps+=/arcane_torrent
+
+# This is a high-survivability (but low-DPS) configuration.
+# Invoke by adding "actions+=/run_action_list,name=max_survival" to the beginning of the default APL.
+actions.max_survival=auto_attack
+actions.max_survival+=/use_item,name=shivermaws_jawbone
+actions.max_survival+=/blood_fury
+actions.max_survival+=/berserking
+actions.max_survival+=/arcane_torrent
+
 actions.prot=seraphim,if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2
 actions.prot+=/shield_of_the_righteous,if=(!talent.seraphim.enabled|action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
 actions.prot+=/bastion_of_light,if=talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1
@@ -66,22 +82,6 @@ actions.prot_aoe+=/blessed_hammer
 actions.prot_aoe+=/judgment
 actions.prot_aoe+=/consecration
 actions.prot_aoe+=/hammer_of_the_righteous
-
-# This is a high-DPS (but low-survivability) configuration.
-# Invoke by adding "actions+=/run_action_list,name=max_dps" to the beginning of the default APL.
-actions.max_dps=auto_attack
-actions.max_dps+=/use_item,name=shivermaws_jawbone
-actions.max_dps+=/blood_fury
-actions.max_dps+=/berserking
-actions.max_dps+=/arcane_torrent
-
-# This is a high-survivability (but low-DPS) configuration.
-# Invoke by adding "actions+=/run_action_list,name=max_survival" to the beginning of the default APL.
-actions.max_survival=auto_attack
-actions.max_survival+=/use_item,name=shivermaws_jawbone
-actions.max_survival+=/blood_fury
-actions.max_survival+=/berserking
-actions.max_survival+=/arcane_torrent
 
 head=casque_of_the_deep,id=134512,bonus_id=1727
 neck=chain_of_scorched_bones,id=134529,bonus_id=1727,enchant_id=5439

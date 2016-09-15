@@ -30,6 +30,13 @@ actions+=/call_action_list,name=combustion_phase,if=cooldown.combustion.remains<
 actions+=/call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down
 actions+=/call_action_list,name=single_target
 
+actions.active_talents=flame_on,if=action.fire_blast.charges=0&(cooldown.combustion.remains>40+(talent.kindling.enabled*25)|target.time_to_die.remains<cooldown.combustion.remains)
+actions.active_talents+=/blast_wave,if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)
+actions.active_talents+=/meteor,if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up
+actions.active_talents+=/cinderstorm,if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up
+actions.active_talents+=/dragons_breath,if=equipped.132863
+actions.active_talents+=/living_bomb,if=active_enemies>3&buff.combustion.down
+
 actions.combustion_phase=rune_of_power,if=buff.combustion.down
 actions.combustion_phase+=/call_action_list,name=active_talents
 actions.combustion_phase+=/combustion
@@ -51,13 +58,6 @@ actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast
 actions.rop_phase+=/phoenixs_flames,if=!prev_gcd.phoenixs_flames
 actions.rop_phase+=/scorch,if=target.health.pct<=25&equipped.132454
 actions.rop_phase+=/fireball
-
-actions.active_talents=flame_on,if=action.fire_blast.charges=0&(cooldown.combustion.remains>40+(talent.kindling.enabled*25)|target.time_to_die.remains<cooldown.combustion.remains)
-actions.active_talents+=/blast_wave,if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)
-actions.active_talents+=/meteor,if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up
-actions.active_talents+=/cinderstorm,if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up
-actions.active_talents+=/dragons_breath,if=equipped.132863
-actions.active_talents+=/living_bomb,if=active_enemies>3&buff.combustion.down
 
 actions.single_target=pyroblast,if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time
 actions.single_target+=/phoenixs_flames,if=charges_fractional>2.7&active_enemies>2

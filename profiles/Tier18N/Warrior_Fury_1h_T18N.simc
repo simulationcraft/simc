@@ -36,6 +36,16 @@ actions+=/call_action_list,name=two_targets,if=spell_targets.whirlwind=2|spell_t
 actions+=/call_action_list,name=aoe,if=spell_targets.whirlwind>3
 actions+=/call_action_list,name=single_target
 
+actions.aoe=bloodthirst,if=buff.enrage.down|rage<50
+actions.aoe+=/call_action_list,name=bladestorm
+actions.aoe+=/whirlwind,if=buff.enrage.up
+actions.aoe+=/dragon_roar
+actions.aoe+=/rampage,if=buff.meat_cleaver.up
+actions.aoe+=/bloodthirst
+actions.aoe+=/whirlwind
+
+actions.bladestorm=bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
+
 actions.movement=heroic_leap
 
 actions.single_target=odyns_fury,if=buff.battle_cry.up|target.time_to_die<cooldown.battle_cry.remains
@@ -62,16 +72,6 @@ actions.two_targets+=/whirlwind,if=spell_targets.whirlwind>2
 actions.two_targets+=/dragon_roar
 actions.two_targets+=/bloodthirst
 actions.two_targets+=/whirlwind
-
-actions.aoe=bloodthirst,if=buff.enrage.down|rage<50
-actions.aoe+=/call_action_list,name=bladestorm
-actions.aoe+=/whirlwind,if=buff.enrage.up
-actions.aoe+=/dragon_roar
-actions.aoe+=/rampage,if=buff.meat_cleaver.up
-actions.aoe+=/bloodthirst
-actions.aoe+=/whirlwind
-
-actions.bladestorm=bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)
 
 head=faceguard_of_iron_wrath,id=124334
 neck=choker_of_sneering_superiority,id=124219,enchant=gift_of_haste

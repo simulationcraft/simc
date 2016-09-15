@@ -37,6 +37,19 @@ actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
 actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
 actions+=/run_action_list,name=single
 
+# Multi target action priority list
+actions.aoe=stormkeeper
+actions.aoe+=/ascendance
+actions.aoe+=/liquid_magma_totem
+actions.aoe+=/flame_shock,if=spell_targets.chain_lightning=3&maelstrom>=20,target_if=refreshable
+actions.aoe+=/earthquake_totem
+actions.aoe+=/lava_burst,if=buff.lava_surge.up&spell_targets.chain_lightning=3
+actions.aoe+=/lava_beam
+actions.aoe+=/chain_lightning,target_if=!debuff.lightning_rod.up
+actions.aoe+=/chain_lightning
+actions.aoe+=/lava_burst,moving=1
+actions.aoe+=/flame_shock,moving=1,target_if=refreshable
+
 # Single target action priority list
 actions.single=ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
 actions.single+=/flame_shock,if=!ticking
@@ -63,19 +76,6 @@ actions.single+=/lightning_bolt,target_if=!debuff.lightning_rod.up
 actions.single+=/lightning_bolt
 actions.single+=/flame_shock,moving=1,target_if=refreshable
 actions.single+=/earth_shock,moving=1
-
-# Multi target action priority list
-actions.aoe=stormkeeper
-actions.aoe+=/ascendance
-actions.aoe+=/liquid_magma_totem
-actions.aoe+=/flame_shock,if=spell_targets.chain_lightning=3&maelstrom>=20,target_if=refreshable
-actions.aoe+=/earthquake_totem
-actions.aoe+=/lava_burst,if=buff.lava_surge.up&spell_targets.chain_lightning=3
-actions.aoe+=/lava_beam
-actions.aoe+=/chain_lightning,target_if=!debuff.lightning_rod.up
-actions.aoe+=/chain_lightning
-actions.aoe+=/lava_burst,moving=1
-actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 
 head=shadow_archers_helm,id=139244,bonus_id=1727
 neck=breathless_choker,id=137461,bonus_id=1727,enchant=mark_of_the_hidden_satyr
