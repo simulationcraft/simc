@@ -4,7 +4,7 @@ race=night_elf
 timeofday=day
 role=spell
 position=back
-talents=2200221
+talents=3200233
 artifact=59:137303:137381:137303:0:1035:3:1036:3:1039:3:1040:3:1041:1:1042:5:1044:1:1046:1:1047:1:1049:1:1294:1
 spec=balance
 
@@ -30,6 +30,8 @@ actions=potion,name=deadly_grace,if=buff.celestial_alignment.up|buff.incarnation
 actions+=/blood_fury,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/berserking,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
+actions+=/blessing_of_elune,moving=0
+actions+=/blessing_of_anshe,moving=1
 actions+=/call_action_list,name=fury_of_elune,if=talent.fury_of_elune.enabled&cooldown.fury_of_elune.remains<target.time_to_die
 actions+=/new_moon,if=(charges=2&recharge_time<5)|charges=3
 actions+=/half_moon,if=(charges=2&recharge_time<5)|charges=3|(target.time_to_die<15&charges=2)
@@ -44,6 +46,15 @@ actions+=/solar_wrath,if=buff.solar_empowerment.stack=3
 actions+=/lunar_strike,if=buff.lunar_empowerment.stack=3
 actions+=/call_action_list,name=celestial_alignment_phase,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/call_action_list,name=single_target
+
+actions.celestial_alignment_phase=starsurge
+actions.celestial_alignment_phase+=/warrior_of_elune,if=buff.lunar_empowerment.stack>=2&((astral_power<=70&buff.blessing_of_elune.down)|(astral_power<=58&buff.blessing_of_elune.up))
+actions.celestial_alignment_phase+=/lunar_strike,if=buff.warrior_of_elune.up
+actions.celestial_alignment_phase+=/solar_wrath,if=buff.solar_empowerment.up
+actions.celestial_alignment_phase+=/lunar_strike,if=buff.lunar_empowerment.up
+actions.celestial_alignment_phase+=/solar_wrath,if=talent.natures_balance.enabled&dot.sunfire_dmg.remains<5&cast_time<dot.sunfire_dmg.remains
+actions.celestial_alignment_phase+=/lunar_strike,if=talent.natures_balance.enabled&dot.moonfire_dmg.remains<5&cast_time<dot.moonfire_dmg.remains
+actions.celestial_alignment_phase+=/solar_wrath
 
 actions.fury_of_elune=incarnation,if=astral_power>=95&cooldown.fury_of_elune.remains<=gcd
 actions.fury_of_elune+=/fury_of_elune,if=astral_power>=95
@@ -64,15 +75,6 @@ actions.fury_of_elune+=/solar_wrath,if=buff.solar_empowerment.up
 actions.fury_of_elune+=/lunar_strike,if=buff.lunar_empowerment.stack=3|(buff.lunar_empowerment.remains<5&buff.lunar_empowerment.up)
 actions.fury_of_elune+=/solar_wrath
 
-actions.celestial_alignment_phase=starsurge
-actions.celestial_alignment_phase+=/warrior_of_elune,if=buff.lunar_empowerment.stack>=2&((astral_power<=70&buff.blessing_of_elune.down)|(astral_power<=58&buff.blessing_of_elune.up))
-actions.celestial_alignment_phase+=/lunar_strike,if=buff.warrior_of_elune.up
-actions.celestial_alignment_phase+=/solar_wrath,if=buff.solar_empowerment.up
-actions.celestial_alignment_phase+=/lunar_strike,if=buff.lunar_empowerment.up
-actions.celestial_alignment_phase+=/solar_wrath,if=talent.natures_balance.enabled&dot.sunfire_dmg.remains<5&cast_time<dot.sunfire_dmg.remains
-actions.celestial_alignment_phase+=/lunar_strike,if=talent.natures_balance.enabled&dot.moonfire_dmg.remains<5&cast_time<dot.moonfire_dmg.remains
-actions.celestial_alignment_phase+=/solar_wrath
-
 actions.single_target=new_moon,if=astral_power<=90
 actions.single_target+=/half_moon,if=astral_power<=80
 actions.single_target+=/full_moon,if=astral_power<=60
@@ -85,28 +87,29 @@ actions.single_target+=/solar_wrath,if=talent.natures_balance.enabled&dot.sunfir
 actions.single_target+=/lunar_strike,if=talent.natures_balance.enabled&dot.moonfire_dmg.remains<5&cast_time<dot.moonfire_dmg.remains
 actions.single_target+=/solar_wrath
 
-head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
-neck=pendant_of_the_moon_temple,id=139605,bonus_id=1727,enchant_id=5439
-shoulders=charskin_mantle,id=137510,bonus_id=1727
-back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant_id=5435
-chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
-wrists=shorn_batbrood_cuffs,id=136979,bonus_id=1727
-hands=frostcarver_grips,id=134445,bonus_id=1727
-waist=sinister_ashfall_cord,id=134455,bonus_id=1727
-legs=snaggles_favorite_pants,id=140594,bonus_id=1727
-feet=footpads_of_the_swift_balestra,id=137497,bonus_id=1727
-finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant_id=5427
-finger2=utgarde_royal_signet,id=133637,bonus_id=1727,enchant_id=5427
-trinket1=darkmoon_deck_hellfire,id=128709
-trinket2=portable_manacracker,id=137398,bonus_id=1727
-main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=137303/137381/137303,relic_id=3412/3412/3412
+head=soulstarve_hood,id=134440,bonus_id=1727
+neck=breathless_choker,id=137461,bonus_id=1727,enchant=mark_of_the_claw
+shoulders=epaulets_of_dessicated_foliage,id=134452,bonus_id=1727
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant=binding_of_intellect
+chest=wicked_broodmothers_chestguard,id=137449,bonus_id=1727
+wrists=adorned_guardians_bracers,id=133621,bonus_id=1727
+hands=guileful_intruder_handguards,id=137480,bonus_id=1727
+waist=blightbile_waistband,id=137435,bonus_id=1727
+legs=ashen_satyr_leggings,id=134448,bonus_id=1727
+feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
+finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_haste
+finger2=utgarde_royal_signet,id=133637,bonus_id=1727,enchant=binding_of_haste
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727
+trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
+main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=137473/137478/137473,relic_id=3412/3412/3412
 
 # Gear Summary
-# gear_ilvl=840.33
-# gear_agility=200
-# gear_stamina=17964
-# gear_intellect=20522
-# gear_crit_rating=9982
-# gear_mastery_rating=1921
-# gear_versatility_rating=4159
+# gear_ilvl=842.00
+# gear_stamina=17965
+# gear_intellect=18709
+# gear_crit_rating=8978
+# gear_haste_rating=4932
+# gear_mastery_rating=1585
+# gear_versatility_rating=2362
 # gear_armor=1957
+# set_bonus=tier19p_leather_2pc=1
