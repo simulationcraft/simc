@@ -1459,11 +1459,10 @@ struct furious_slash_t: public warrior_attack_t
 struct charge_t: public warrior_attack_t
 {
   bool first_charge;
-  double movement_speed_increase, min_range, rage_gain;
+  double movement_speed_increase, min_range;
   charge_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "charge", p, p -> spell.charge ),
-    first_charge( true ), movement_speed_increase( 5.0 ), min_range( data().min_range() ),
-    rage_gain( data().effectN( 2 ).resource( RESOURCE_RAGE ) )
+    first_charge( true ), movement_speed_increase( 5.0 ), min_range( data().min_range() )
   {
     parse_options( options_str );
     ignore_false_positive = true;
@@ -1471,8 +1470,6 @@ struct charge_t: public warrior_attack_t
     energize_resource = RESOURCE_RAGE;
     energize_type = ENERGIZE_ON_CAST;
     energize_amount += p -> artifact.uncontrolled_rage.value() / 10;
-    if ( p -> raging_fury )
-      energize_amount *= 1.0 + p -> raging_fury -> driver() -> effectN( 1 ).percent();
 
     if ( p -> talents.warbringer -> ok() )
     {
@@ -6215,12 +6212,6 @@ static void the_walls_fell( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> the_walls_fell, effect );
 }
 
-static void raging_fury( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> raging_fury, effect );
-}
-
 static void verjas_protectors_of_the_berserker_king( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
@@ -6264,6 +6255,24 @@ struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buf
       .spell( e.driver() -> effectN( 1 ).trigger() )
       .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).average( e.item ) / 100.0 );
   }
+};
+
+struct raging_fury_t: public unique_gear::scoped_action_callback_t<charge_t>
+{
+  raging_fury_t(): super( WARRIOR, "charge" )
+  {}
+
+  void manipulate( charge_t* action, const special_effect_t& e ) override
+  { action -> energize_amount *= 1.0 + e.driver() -> effectN( 1 ).percent(); }
+};
+
+struct raging_fury2_t: public unique_gear::scoped_action_callback_t<intercept_t>
+{
+  raging_fury2_t(): super( WARRIOR, "intercept" )
+  {}
+
+  void manipulate( intercept_t* action, const special_effect_t& e ) override
+  { action -> energize_amount *= 1.0 + e.driver() -> effectN( 1 ).percent(); }
 };
 
 struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
@@ -6392,7 +6401,8 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
     unique_gear::register_special_effect( 207438, aggramars_stride );
     unique_gear::register_special_effect( 208177, weight_of_the_earth );
-    unique_gear::register_special_effect( 222266, raging_fury );
+    unique_gear::register_special_effect( 222266, raging_fury_t(), true );
+    unique_gear::register_special_effect( 222266, raging_fury2_t(), true );
   }
 
   virtual void register_hotfixes() const override {}
