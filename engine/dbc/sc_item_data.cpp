@@ -638,14 +638,19 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       if ( found == -1 && offset != -1 )
       {
         if ( item.sim -> debug )
-          item.player -> sim -> out_debug.printf( "Player %s item '%s' adding new stat %s offset=%d (allocation %u)", 
+          item.player -> sim -> out_debug.printf( "Player %s item '%s' adding new stat %s offset=%d (allocation %u)",
               item.player -> name(), item.name(), util::stat_type_string( util::translate_item_mod( entry.value_1 ) ), offset, entry.value_2 );
         item.parsed.data.stat_type_e[ offset ] = entry.value_1;
         item.parsed.data.stat_alloc[ offset ] = entry.value_2;
       }
-      // Existing stat, set (?) new allocation percent
+      // Existing stat, add more allocation percent
       else if ( found != -1 )
-        item.parsed.data.stat_alloc[ offset ] = entry.value_2;
+      {
+        if ( item.sim -> debug )
+          item.player -> sim -> out_debug.printf( "Player %s item '%s' adding existing stat %s offset=%d (allocation %u)",
+              item.player -> name(), item.name(), util::stat_type_string( util::translate_item_mod( entry.value_1 ) ), found , entry.value_2 );
+        item.parsed.data.stat_alloc[ found ] += entry.value_2;
+      }
       // New stat but no room, this should never happen.
       else
       {
