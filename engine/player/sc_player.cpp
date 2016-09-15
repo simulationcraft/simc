@@ -2236,27 +2236,53 @@ bool player_t::create_actions()
 
   int j = 0;
 
-  for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
+  // APLs need to always be initialized in the same order, otherwise copy= profiles may break in
+  // some cases. Order will be: precombat -> default -> alphabetical list of custom apls
+  std::vector<action_priority_list_t*> apls = action_priority_list;
+  range::sort( apls, []( const action_priority_list_t* l, const action_priority_list_t* r ) {
+    if ( l -> name_str == "precombat" && r -> name_str != "precombat" )
+    {
+      return true;
+    }
+    else if ( l -> name_str != "precombat" && r -> name_str == "precombat" )
+    {
+      return false;
+    }
+    else if ( l -> name_str == "default" && r -> name_str != "default" )
+    {
+      return true;
+    }
+    else if ( l -> name_str != "default" && r -> name_str == "default" )
+    {
+      return false;
+    }
+    else
+    {
+      return l -> name_str < r -> name_str;
+    }
+  } );
+
+  for ( auto apl : apls )
   {
-    assert( ! ( ! action_priority_list[ alist ] -> action_list_str.empty() &&
-                ! action_priority_list[ alist ] -> action_list.empty() ) );
+    assert( ! ( ! apl -> action_list_str.empty() &&
+                ! apl -> action_list.empty() ) );
 
     // Convert old style action list to new style, all lines are without comments
-    if ( ! action_priority_list[ alist ] -> action_list_str.empty() )
+    if ( ! apl -> action_list_str.empty() )
     {
-      std::vector<std::string> splits = util::string_split( action_priority_list[ alist ] -> action_list_str, "/" );
+      std::vector<std::string> splits = util::string_split( apl -> action_list_str, "/" );
       for ( size_t i = 0; i < splits.size(); i++ )
-        action_priority_list[ alist ] -> action_list.push_back( action_priority_t( splits[ i ], "" ) );
+        apl -> action_list.push_back( action_priority_t( splits[ i ], "" ) );
     }
 
     if ( sim -> debug )
       sim -> out_debug.printf( "Player %s: actions.%s=%s", name(),
-                     action_priority_list[ alist ] -> name_str.c_str(),
-                     action_priority_list[ alist ] -> action_list_str.c_str() );
+                     apl -> name_str.c_str(),
+                     apl -> action_list_str.c_str() );
 
-    for ( size_t i = 0; i < action_priority_list[ alist ] -> action_list.size(); i++ )
+    for ( size_t i = 0; i < apl -> action_list.size(); i++ )
     {
-      std::string& action_str = action_priority_list[ alist ] -> action_list[ i ].action_;
+      std::string& action_str = apl -> action_list[ i ].action_;
 
       std::string::size_type cut_pt = action_str.find( ',' );
       std::string action_name = action_str.substr( 0, cut_pt );
@@ -2309,10 +2335,10 @@ bool player_t::create_actions()
         else
         {
           //a -> action_list = action_priority_list[ alist ] -> name_str;
-          a -> action_list = action_priority_list[ alist ];
+          a -> action_list = apl;
 
           a -> signature_str = action_str;
-          a -> signature = &( action_priority_list[ alist ] -> action_list[ i ] );
+          a -> signature = &( apl -> action_list[ i ] );
 
           if ( sim -> separate_stats_by_actions > 0 && !is_pet() )
           {
