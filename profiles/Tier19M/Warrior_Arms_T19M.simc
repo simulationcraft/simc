@@ -85,6 +85,7 @@ actions.single+=/colossus_smash,if=buff.shattered_defenses.down
 actions.single+=/warbreaker,if=buff.shattered_defenses.down&cooldown.mortal_strike.remains<gcd
 actions.single+=/focused_rage,if=buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains)
 actions.single+=/mortal_strike
+actions.single+=/execute,if=buff.stone_heart.react
 actions.single+=/slam,if=buff.battle_cry_deadly_calm.up|buff.focused_rage.stack=3|rage.deficit<=30
 actions.single+=/execute,if=equipped.137060
 actions.single+=/slam,if=equipped.137060

@@ -4824,6 +4824,7 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down&cooldown.mortal_strike.remains<gcd" );
   single_target -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains)" );
   single_target -> add_action( this, "Mortal Strike" );
+  single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   single_target -> add_action( this, "Slam", "if=buff.battle_cry_deadly_calm.up|buff.focused_rage.stack=3|rage.deficit<=30" );
   single_target -> add_action( this, "Execute", "if=equipped.137060" );
   single_target -> add_action( this, "Slam", "if=equipped.137060" );
