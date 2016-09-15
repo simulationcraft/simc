@@ -182,7 +182,7 @@ struct rogue_t : public player_t
   // Buffs
   struct buffs_t
   {
-    buff_t* adrenaline_rush;
+    haste_buff_t* adrenaline_rush;
     buff_t* blade_flurry;
     buff_t* deadly_poison;
     buff_t* death_from_above;
@@ -7120,7 +7120,7 @@ void rogue_t::create_buffs()
 
   buffs.blade_flurry        = buff_creator_t( this, "blade_flurry", spec.blade_flurry )
     .cd( timespan_t::zero() );
-  buffs.adrenaline_rush     = buff_creator_t( this, "adrenaline_rush", find_class_spell( "Adrenaline Rush" ) )
+  buffs.adrenaline_rush     = haste_buff_creator_t( this, "adrenaline_rush", find_class_spell( "Adrenaline Rush" ) )
                               .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Adrenaline Rush" ) -> effectN( 2 ).percent() )
                               .affects_regen( true )
