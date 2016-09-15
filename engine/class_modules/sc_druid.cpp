@@ -5423,31 +5423,6 @@ struct stellar_flare_t : public druid_spell_t
   stellar_flare_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare, options_str )
   {}
-
-  // Dec 3 2015: Empowerments modifiers are multiplicative AND snapshot mastery.
-  double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    double pm = druid_spell_t::composite_persistent_multiplier( s );
-
-    if ( p() -> buff.lunar_empowerment -> check() )
-      pm *= 1.0 + composite_lunar_empowerment();
-
-    if ( p() -> buff.solar_empowerment -> check() )
-      pm *= 1.0 + composite_solar_empowerment();
-
-    return pm;
-  }
-
-  void execute() override
-  {
-    p() -> buff.lunar_empowerment -> up();
-    p() -> buff.solar_empowerment -> up();
-
-    druid_spell_t::execute();
-
-    p() -> buff.lunar_empowerment -> decrement();
-    p() -> buff.solar_empowerment -> decrement();
-  }
 };
 
 // Survival Instincts =======================================================
