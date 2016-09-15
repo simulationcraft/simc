@@ -496,7 +496,6 @@ public:
   void      reset() override;
   void      moving() override;
   void      create_options() override;
-  action_t* create_proc_action( const std::string& name, const special_effect_t& ) override;
   std::string      create_profile( save_e type ) override;
   void      invalidate_cache( cache_e ) override;
   double    temporary_movement_modifier() const override;
