@@ -11,15 +11,7 @@ namespace
 // Warrior
 
 // Add back second wind
-// Legendary items not completely implemented yet
-
-// Kargath's Sacrificed Hands - 138489 - Activating ignore pain regenerates 5% of your maximum hp over 5 seconds - 207845
-// Thundergod's Vigor - 137089 - Each enemy you hit with thunderclap reduces cd of demo shout by 1 second - 215176
-// The Walls Fell - 137054 - Shield slam extends the duration of shield wall by 2 seconds - 215057
-// Destiny Driver - 137018 - Intercepted Attacks grant you and your intercept target an absorb shield equal to 25% of the damage done by the attack for 10 sec  - 215090
-// Prydaz, Xavaric's Magnum Opus - 132444 - After not taking damage for 5 seconds, you gain 30% absorb shield of max hp for 30 seconds - 207428
-// Verjas, Protectors of the Berserker Kings - 137107 - You heal 1% of max hp for every 5 rage you spend - 208908
-// Aggramar's Stride - 132443 - Increases movement speed by 100% of haste - 207438
+// Legendarys
 // ==========================================================================
 
 struct warrior_t;
@@ -104,9 +96,9 @@ public:
   // Tier 18 (WoD 6.2) class specific trinket effects
   const special_effect_t* arms_trinket, *prot_trinket;
   // Legendary Items
-  const special_effect_t* archavons_heavy_hand, *groms_wartorn_pauldrons, *bindings_of_kakushan,
-    *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_girdle, *kazzalax_fujiedas_fury, *the_walls_fell,
-    *destiny_driver, *prydaz_xavarics_magnum_opus, *verjas_protectors_of_the_berserker_king,
+  const special_effect_t* archavons_heavy_hand, *bindings_of_kakushan,
+    *kargaths_sacrificed_hands, *thundergods_vigor, *ceannar_charger, *kazzalax_fujiedas_fury, *the_walls_fell,
+    *destiny_driver, *prydaz_xavarics_magnum_opus, *mannoroths_bloodletting_manacles,
     *najentuss_vertebrae, *ayalas_stone_heart, *aggramars_stride, *weight_of_the_earth, *raging_fury;
 
   // Active
@@ -458,8 +450,8 @@ public:
     execute_enrage = double_bloodthirst = false;
 
     arms_trinket = prot_trinket = nullptr;
-    archavons_heavy_hand = groms_wartorn_pauldrons = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
-    ceannar_girdle = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = verjas_protectors_of_the_berserker_king =
+    archavons_heavy_hand = bindings_of_kakushan = kargaths_sacrificed_hands = thundergods_vigor =
+    ceannar_charger = kazzalax_fujiedas_fury = the_walls_fell = destiny_driver = prydaz_xavarics_magnum_opus = mannoroths_bloodletting_manacles =
     najentuss_vertebrae = ayalas_stone_heart = aggramars_stride = weight_of_the_earth = raging_fury = nullptr;
     regen_type = REGEN_DISABLED;
   }
@@ -546,9 +538,9 @@ public:
   void enrage()
   {
     buff.enrage -> trigger();
-    if ( ceannar_girdle )
+    if ( ceannar_charger )
     {
-      resource_gain( RESOURCE_RAGE, ceannar_girdle -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
+      resource_gain( RESOURCE_RAGE, ceannar_charger -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
   }
   template <typename T_CONTAINER, typename T_DATA>
@@ -2244,9 +2236,11 @@ struct heroic_throw_t: public warrior_attack_t
 struct heroic_leap_t: public warrior_attack_t
 {
   const spell_data_t* heroic_leap_damage;
+  bool weight_of_the_earth;
   heroic_leap_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "heroic_leap", p, p -> spell.heroic_leap ),
-    heroic_leap_damage( p -> find_spell( 52174 ) )
+    heroic_leap_damage( p -> find_spell( 52174 ) ),
+    weight_of_the_earth( false )
   {
     parse_options( options_str );
     ignore_false_positive = true;
@@ -2281,7 +2275,7 @@ struct heroic_leap_t: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    if ( p() -> weight_of_the_earth )
+    if ( weight_of_the_earth )
     {
       td( s -> target ) -> debuffs_colossus_smash -> trigger();
     }
@@ -6001,28 +5995,6 @@ void warrior_t::create_options()
   add_option( opt_bool( "double_bloodthirst", double_bloodthirst ) );;
 }
 
-// Discordant Chorus Trinket - T18 ================================================
-
-struct fel_cleave_t: public warrior_attack_t
-{
-  fel_cleave_t( warrior_t* p, const special_effect_t& effect ):
-    warrior_attack_t( "fel_cleave", p, p -> find_spell( 184248 ) )
-  {
-    background = special = may_crit = true;
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
-    weapon_multiplier = 0;
-    aoe = -1;
-  }
-  void trigger_bloodbath_dot( player_t*, double ) override
-  {}
-};
-
-action_t* warrior_t::create_proc_action( const std::string& name, const special_effect_t& effect )
-{
-  if ( util::str_compare_ci( name, "fel_cleave" ) ) return new fel_cleave_t( this, effect ); // This must be added here so that it takes the damage increase from colossus smash into account.
-  return nullptr;
-}
-
 // warrior_t::create_profile ================================================
 
 std::string warrior_t::create_profile( save_e type )
@@ -6188,22 +6160,16 @@ static void archavons_heavy_hand( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> archavons_heavy_hand, effect );
 }
 
-static void groms_wartorn_pauldrons( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> groms_wartorn_pauldrons, effect );
-}
-
 static void thundergods_vigor( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
   do_trinket_init( s, SPEC_NONE, s -> thundergods_vigor, effect );
 }
 
-static void ceannar_girdle( special_effect_t& effect )
+static void ceannar_charger( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> ceannar_girdle, effect );
+  do_trinket_init( s, SPEC_NONE, s -> ceannar_charger, effect );
 }
 
 static void the_walls_fell( special_effect_t& effect )
@@ -6212,10 +6178,10 @@ static void the_walls_fell( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> the_walls_fell, effect );
 }
 
-static void verjas_protectors_of_the_berserker_king( special_effect_t& effect )
+static void mannoroths_bloodletting_manacles( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> verjas_protectors_of_the_berserker_king, effect );
+  do_trinket_init( s, SPEC_NONE, s -> mannoroths_bloodletting_manacles, effect );
 }
 
 static void najentuss_vertebrae( special_effect_t& effect )
@@ -6228,12 +6194,6 @@ static void aggramars_stride( special_effect_t& effect )
 {
   warrior_t* s = debug_cast<warrior_t*>( effect.player );
   do_trinket_init( s, SPEC_NONE, s -> aggramars_stride, effect );
-}
-
-static void weight_of_the_earth( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>(effect.player);
-  do_trinket_init( s, SPEC_NONE, s -> weight_of_the_earth, effect );
 }
 
 // WARRIOR MODULE INTERFACE =================================================
@@ -6273,6 +6233,18 @@ struct raging_fury2_t: public unique_gear::scoped_action_callback_t<intercept_t>
 
   void manipulate( intercept_t* action, const special_effect_t& e ) override
   { action -> energize_amount *= 1.0 + e.driver() -> effectN( 1 ).percent(); }
+};
+
+struct weight_of_the_earth_t: public unique_gear::scoped_action_callback_t<heroic_leap_t>
+{
+  weight_of_the_earth_t(): super( WARRIOR, "heroic_leap" )
+  {}
+
+  void manipulate( heroic_leap_t* action, const special_effect_t& e ) override
+  {
+    action -> radius *= 1.0 + e.driver() -> effectN( 1 ).percent();
+    action -> weight_of_the_earth = true;
+  }
 };
 
 struct ayalas_stone_heart_t: public unique_gear::class_buff_cb_t<warrior_t>
@@ -6387,22 +6359,21 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 184925, arms_trinket );
     unique_gear::register_special_effect( 184927, prot_trinket );
     unique_gear::register_special_effect( 205144, archavons_heavy_hand );
-    unique_gear::register_special_effect( 205597, groms_wartorn_pauldrons );
     unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
     unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), true );
-    unique_gear::register_special_effect( 215176, thundergods_vigor );
-    unique_gear::register_special_effect( 207779, ceannar_girdle );
+    unique_gear::register_special_effect( 215176, thundergods_vigor ); //NYI
+    unique_gear::register_special_effect( 207779, ceannar_charger );
     unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), true );
-    unique_gear::register_special_effect( 215057, the_walls_fell );
+    unique_gear::register_special_effect( 215057, the_walls_fell ); //NYI
     unique_gear::register_special_effect( 215090, destiny_driver_t(), true );
-    unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true );
-    unique_gear::register_special_effect( 208908, verjas_protectors_of_the_berserker_king );
+    unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true ); //Not finished
+    unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles ); //NYI
     unique_gear::register_special_effect( 215096, najentuss_vertebrae );
     unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
-    unique_gear::register_special_effect( 207438, aggramars_stride );
-    unique_gear::register_special_effect( 208177, weight_of_the_earth );
-    unique_gear::register_special_effect( 222266, raging_fury_t(), true );
-    unique_gear::register_special_effect( 222266, raging_fury2_t(), true );
+    unique_gear::register_special_effect( 207438, aggramars_stride ); // NYI
+    unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
+    unique_gear::register_special_effect( 222266, raging_fury_t() );
+    unique_gear::register_special_effect( 222266, raging_fury2_t() );
   }
 
   virtual void register_hotfixes() const override {}
