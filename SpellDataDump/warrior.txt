@@ -1,4 +1,4 @@
-SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build 7f66007)
+SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build 3effbdd)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
