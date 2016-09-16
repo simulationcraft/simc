@@ -4780,9 +4780,6 @@ void warrior_t::apl_arms()
     default_list -> add_action( "potion,name=" + potion_name + ",if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=26" );
   }
 
-  default_list -> add_action( this, "Battle Cry", "if=(buff.bloodlust.up|time>=1)&!gcd.remains" );
-  default_list -> add_talent( this, "Avatar", "if=(buff.bloodlust.up|time>=1)&!gcd.remains" );
-
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
@@ -4799,6 +4796,9 @@ void warrior_t::apl_arms()
     }
   }
 
+  default_list -> add_action( this, "Battle Cry", "if=(buff.bloodlust.up|time>=1)&!gcd.remains&(buff.shattered_defenses.up|cooldown.colossus_smash.remains&cooldown.warbreaker.remains)|target.time_to_die<=5" );
+  default_list -> add_talent( this, "Avatar", "if=(buff.bloodlust.up|time>=1)&!gcd.remains" );
+
   for ( size_t i = 0; i < items.size(); i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
@@ -4806,6 +4806,7 @@ void warrior_t::apl_arms()
       default_list -> add_action( "use_item,name=" + items[i].name_str  );
     }
   }
+
   default_list -> add_action( this, "Hamstring", "if=buff.battle_cry_deadly_calm.remains>cooldown.hamstring.remains" );
   default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   default_list -> add_talent( this, "Rend", "if=remains<gcd" );
@@ -4817,7 +4818,7 @@ void warrior_t::apl_arms()
   default_list -> add_action( "run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.whirlwind>=2&!talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=execute,if=target.health.pct<=20" );
-  default_list -> add_action( "run_action_list,name=single" );
+  default_list -> add_action( "run_action_list,name=single,if=target.health.pct>20" );
 
   single_target -> add_action( this, "Mortal Strike", "if=buff.battle_cry.up&buff.focused_rage.stack>=1&buff.battle_cry.remains<gcd" );
   single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
@@ -4831,14 +4832,11 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Focused Rage", "if=equipped.137060" );
   single_target -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
 
-  execute -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3&debuff.colossus_smash.down" );
-  execute -> add_action( this, "Mortal Strike", "if=buff.battle_cry.up&(buff.focused_rage.stack=3|buff.focused_rage.stack=2&buff.battle_cry.remains<gcd)" );
+  execute -> add_action( this, "Mortal Strike", "if=buff.battle_cry.up&buff.focused_rage.stack=3" );
   execute -> add_action( this, "Execute", "if=buff.battle_cry_deadly_calm.up" );
   execute -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
   execute -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down&rage<=30" );
-  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.up" );
-  execute -> add_action( this, "Mortal Strike", "if=buff.focused_rage.stack=3" );
-  execute -> add_action( this, "Execute", "if=debuff.colossus_smash.up" );
+  execute -> add_action( this, "Execute" );
   execute -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
 
   cleave -> add_action( this, "Mortal Strike" );
