@@ -73,7 +73,7 @@ actions.execute=mortal_strike,if=buff.battle_cry.up&buff.focused_rage.stack=3
 actions.execute+=/execute,if=buff.battle_cry_deadly_calm.up
 actions.execute+=/colossus_smash,if=buff.shattered_defenses.down
 actions.execute+=/warbreaker,if=buff.shattered_defenses.down&rage<=30
-actions.execute+=/execute
+actions.execute+=/execute,if=buff.shattered_defenses.up&rage>22|buff.shattered_defenses.down
 # actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)
 #Remove the # above to run out of melee and charge back in for rage.
 actions.execute+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets

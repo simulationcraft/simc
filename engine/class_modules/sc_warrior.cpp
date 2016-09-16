@@ -4836,7 +4836,7 @@ void warrior_t::apl_arms()
   execute -> add_action( this, "Execute", "if=buff.battle_cry_deadly_calm.up" );
   execute -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
   execute -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down&rage<=30" );
-  execute -> add_action( this, "Execute" );
+  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.up&rage>22|buff.shattered_defenses.down" );
   execute -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
 
   cleave -> add_action( this, "Mortal Strike" );
