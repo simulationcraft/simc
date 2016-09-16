@@ -8013,6 +8013,7 @@ void player_t::override_artifact( const std::vector<const artifact_power_data_t*
   }
 
   artifact.points[ power_index ].first = override_rank;
+  artifact.points[ power_index ].second = 0; // If someone is trying to override the artifact, they probably don't want to take relic gems into account. 
 }
 
 // player_t::replace_spells =================================================
