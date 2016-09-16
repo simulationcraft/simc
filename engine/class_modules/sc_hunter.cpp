@@ -3997,6 +3997,7 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
       hunter_melee_attack_t( "fury_of_the_eagle_tick", p, p -> find_spell( 203413 ) )
     {
       aoe = -1;
+      weapon_multiplier = 0;
       background = true;
       may_crit = true;
       radius = data().max_range();
@@ -4010,6 +4011,7 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
 
     channeled = true;
     tick_zero = true;
+    weapon_multiplier = 0;
     tick_action = new fury_of_the_eagle_tick_t( p );
   }
 
