@@ -3,7 +3,7 @@ level=110
 race=draenei
 role=attack
 position=back
-talents=1220023
+talents=1210023
 artifact=16:0:0:0:0:149:1:150:1:152:1:153:1:154:1:157:2:265:3:266:6:267:3:1119:3:1333:1
 spec=unholy
 
@@ -28,7 +28,7 @@ actions=auto_attack
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
-actions+=/use_item,slot=finger2
+actions+=/use_item,slot=trinket1
 actions+=/potion,name=deadly_grace,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
 actions+=/dark_transformation,if=equipped.137075&cooldown.dark_arbiter.remains>165
@@ -44,21 +44,13 @@ actions+=/blighted_rune_weapon,if=rune<=3
 actions+=/run_action_list,name=valkyr,if=talent.dark_arbiter.enabled&pet.valkyr_battlemaiden.active
 actions+=/call_action_list,name=generic
 
-actions.aoe=death_and_decay,if=spell_targets.death_and_decay>=2
-actions.aoe+=/epidemic,if=spell_targets.epidemic>4
-actions.aoe+=/scourge_strike,if=spell_targets.scourge_strike>=2&(dot.death_and_decay.ticking|dot.defile.ticking)
-actions.aoe+=/clawing_shadows,if=spell_targets.clawing_shadows>=2&(dot.death_and_decay.ticking|dot.defile.ticking)
-actions.aoe+=/epidemic,if=spell_targets.epidemic>2
-
-actions.castigator=festering_strike,if=debuff.festering_wound.stack<=4&runic_power.deficit>23
-actions.castigator+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3
-actions.castigator+=/scourge_strike,if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>23
-actions.castigator+=/scourge_strike,if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>23
-actions.castigator+=/scourge_strike,if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>23
-actions.castigator+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15
-actions.castigator+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
-actions.castigator+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15
-actions.castigator+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
+actions.valkyr=death_coil
+actions.valkyr+=/apocalypse,if=debuff.festering_wound.stack=8
+actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5
+actions.valkyr+=/call_action_list,name=aoe,if=active_enemies>=2
+actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=3
+actions.valkyr+=/scourge_strike,if=debuff.festering_wound.up
+actions.valkyr+=/clawing_shadows,if=debuff.festering_wound.up
 
 actions.generic=dark_arbiter,if=!equipped.137075&runic_power.deficit<30
 actions.generic+=/dark_arbiter,if=equipped.137075&runic_power.deficit<30&cooldown.dark_transformation.remains<2
@@ -81,18 +73,11 @@ actions.generic+=/call_action_list,name=instructors,if=equipped.132448
 actions.generic+=/call_action_list,name=standard,if=!talent.castigator.enabled&!equipped.132448
 actions.generic+=/call_action_list,name=castigator,if=talent.castigator.enabled&!equipped.132448
 
-actions.instructors=festering_strike,if=debuff.festering_wound.stack<=4&runic_power.deficit>23
-actions.instructors+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3
-actions.instructors+=/scourge_strike,if=buff.necrosis.react&debuff.festering_wound.stack>=5&runic_power.deficit>29
-actions.instructors+=/clawing_shadows,if=buff.necrosis.react&debuff.festering_wound.stack>=5&runic_power.deficit>29
-actions.instructors+=/scourge_strike,if=buff.unholy_strength.react&debuff.festering_wound.stack>=5&runic_power.deficit>29
-actions.instructors+=/clawing_shadows,if=buff.unholy_strength.react&debuff.festering_wound.stack>=5&runic_power.deficit>29
-actions.instructors+=/scourge_strike,if=rune>=2&debuff.festering_wound.stack>=5&runic_power.deficit>29
-actions.instructors+=/clawing_shadows,if=rune>=2&debuff.festering_wound.stack>=5&runic_power.deficit>29
-actions.instructors+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15
-actions.instructors+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
-actions.instructors+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15
-actions.instructors+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
+actions.aoe=death_and_decay,if=spell_targets.death_and_decay>=2
+actions.aoe+=/epidemic,if=spell_targets.epidemic>4
+actions.aoe+=/scourge_strike,if=spell_targets.scourge_strike>=2&(dot.death_and_decay.ticking|dot.defile.ticking)
+actions.aoe+=/clawing_shadows,if=spell_targets.clawing_shadows>=2&(dot.death_and_decay.ticking|dot.defile.ticking)
+actions.aoe+=/epidemic,if=spell_targets.epidemic>2
 
 actions.standard=festering_strike,if=debuff.festering_wound.stack<=4&runic_power.deficit>23
 actions.standard+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3
@@ -107,36 +92,51 @@ actions.standard+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arb
 actions.standard+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15
 actions.standard+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
 
-actions.valkyr=death_coil
-actions.valkyr+=/apocalypse,if=debuff.festering_wound.stack=8
-actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<8&cooldown.apocalypse.remains<5
-actions.valkyr+=/call_action_list,name=aoe,if=active_enemies>=2
-actions.valkyr+=/festering_strike,if=debuff.festering_wound.stack<=3
-actions.valkyr+=/scourge_strike,if=debuff.festering_wound.up
-actions.valkyr+=/clawing_shadows,if=debuff.festering_wound.up
+actions.castigator=festering_strike,if=debuff.festering_wound.stack<=4&runic_power.deficit>23
+actions.castigator+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3
+actions.castigator+=/scourge_strike,if=buff.necrosis.react&debuff.festering_wound.stack>=3&runic_power.deficit>23
+actions.castigator+=/scourge_strike,if=buff.unholy_strength.react&debuff.festering_wound.stack>=3&runic_power.deficit>23
+actions.castigator+=/scourge_strike,if=rune>=2&debuff.festering_wound.stack>=3&runic_power.deficit>23
+actions.castigator+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15
+actions.castigator+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
+actions.castigator+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15
+actions.castigator+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
 
-head=insurmountable_skullfortress,id=137445,bonus_id=1727
-neck=pendant_of_the_stormforger,id=133767,bonus_id=1727,enchant=mark_of_the_claw
+actions.instructors=festering_strike,if=debuff.festering_wound.stack<=4&runic_power.deficit>23
+actions.instructors+=/death_coil,if=!buff.necrosis.up&talent.necrosis.enabled&rune<=3
+actions.instructors+=/scourge_strike,if=buff.necrosis.react&debuff.festering_wound.stack>=5&runic_power.deficit>29
+actions.instructors+=/clawing_shadows,if=buff.necrosis.react&debuff.festering_wound.stack>=5&runic_power.deficit>29
+actions.instructors+=/scourge_strike,if=buff.unholy_strength.react&debuff.festering_wound.stack>=5&runic_power.deficit>29
+actions.instructors+=/clawing_shadows,if=buff.unholy_strength.react&debuff.festering_wound.stack>=5&runic_power.deficit>29
+actions.instructors+=/scourge_strike,if=rune>=2&debuff.festering_wound.stack>=5&runic_power.deficit>29
+actions.instructors+=/clawing_shadows,if=rune>=2&debuff.festering_wound.stack>=5&runic_power.deficit>29
+actions.instructors+=/death_coil,if=talent.shadow_infusion.enabled&talent.dark_arbiter.enabled&!buff.dark_transformation.up&cooldown.dark_arbiter.remains>15
+actions.instructors+=/death_coil,if=talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled&!buff.dark_transformation.up
+actions.instructors+=/death_coil,if=talent.dark_arbiter.enabled&cooldown.dark_arbiter.remains>15
+actions.instructors+=/death_coil,if=!talent.shadow_infusion.enabled&!talent.dark_arbiter.enabled
+
+head=crown_of_ash,id=137526,bonus_id=1727
+neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
-back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
+back=goldscar_pelt,id=133639,bonus_id=1727,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727
-wrists=deepfurrow_bracers,id=137337,bonus_id=1727
-hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727
-waist=greatbelt_of_alpha_dominance,id=136773,bonus_id=1727
-legs=wracksoul_legplates,id=121280,bonus_id=1727
-feet=horizon_line_warboots,id=134505,bonus_id=1727
+wrists=voidtouched_wristplates,id=133632,bonus_id=1727
+hands=serrated_mandible_grips,id=137429,bonus_id=1727
+waist=slack_tide_girdle,id=133770,bonus_id=1727
+legs=keelhauler_legplates,id=134514,bonus_id=1727
+feet=rook_footmans_warboots,id=139241,bonus_id=1727
 finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_haste
-finger2=gnawed_thumb_ring,id=134526,bonus_id=1727,enchant=binding_of_haste
-trinket1=darkmoon_deck_dominion,id=128705,bonus_id=667
-trinket2=chaos_talisman,id=137459,bonus_id=1727
+finger2=band_of_fused_coral,id=134532,bonus_id=1727,enchant=binding_of_haste
+trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1492
+trinket2=chaos_talisman,id=137459,bonus_id=1727/1492
 main_hand=apocalypse,id=128403,bonus_id=718,ilevel=870,relic_id=3412/3412/3412,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=842.00
-# gear_strength=11306
-# gear_stamina=17965
-# gear_crit_rating=8632
-# gear_haste_rating=6883
-# gear_mastery_rating=1445
+# gear_strength=10183
+# gear_stamina=17964
+# gear_crit_rating=6328
+# gear_haste_rating=10642
+# gear_mastery_rating=889
 # gear_armor=3965
 # set_bonus=tier19p_plate_2pc=1
