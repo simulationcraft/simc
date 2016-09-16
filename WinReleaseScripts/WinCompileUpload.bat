@@ -5,7 +5,7 @@
 ::  - "open downloads" is the command that selects the downloads alias in winscp, which for me is the simulationcraft server. Change downloads to whatever suits you.
 :: MSVC 2015 - Fully updated
 :: Git
-:: QT 5.7.1, or whatever version we are currently using
+:: QT 5.7.0, or whatever version we are currently using
 :: Inno Setup - http://www.jrsoftware.org/isinfo.php - Used to make the installer, optional if you just want a compressed file.
 
 cd ..
@@ -16,8 +16,8 @@ call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64 
 cd %currdir%
 qmake -r -tp vc -spec win32-msvc2015 simulationcraft.pro PGO=1
 
-set simcversion=703-02
-set SIMCAPPFULLVERSION=7.0.3.02
+set simcversion=703-03
+set SIMCAPPFULLVERSION=7.0.3.03
 :: For bumping the minor version, just change the above line.  Make sure to also change setup32.iss and setup64.iss as well. 
 set simcfiles=C:\Simulationcraft\
 :: Location of source files
