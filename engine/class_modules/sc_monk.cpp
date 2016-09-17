@@ -1328,6 +1328,17 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sim -> average_range = 1;
       weapon = &( player -> off_hand_weapon );
     }
+
+    // Damage must be divided on non-main target by the number of targets
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      if ( state -> target != target )
+      {
+        return 1.0 / state -> n_targets;
+      }
+
+      return 1.0;
+    }
   };
 
   struct sef_strike_of_the_windlord_t : public sef_melee_attack_t
@@ -1343,6 +1354,17 @@ struct storm_earth_and_fire_pet_t : public pet_t
       // Unlike the player, SEF don't have a damage variance. Possible bug
       sim -> average_range = 1;
       normalize_weapon_speed = true;
+    }
+
+    // Damage must be divided on non-main target by the number of targets
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      if ( state -> target != target )
+      {
+        return 1.0 / state -> n_targets;
+      }
+
+      return 1.0;
     }
   };
 
@@ -3360,6 +3382,16 @@ struct strike_of_the_windlord_off_hand_t: public monk_melee_attack_t
       base_multiplier *= 0.70; // 08/03/2016
   }
 
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    if ( state -> target != target )
+    {
+      return 1.0 / state -> n_targets;
+    }
+
+    return 1.0;
+  }
+
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
   {
     double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
@@ -3396,6 +3428,16 @@ struct strike_of_the_windlord_t: public monk_melee_attack_t
 
     if ( sim -> pvp_crit )
       base_multiplier *= 0.70; // 08/03/2016
+  }
+
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    if ( state -> target != target )
+    {
+      return 1.0 / state -> n_targets;
+    }
+
+    return 1.0;
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
@@ -8128,13 +8170,12 @@ void monk_t::apl_combat_windwalker()
   action_priority_list_t* opener = get_action_priority_list("opener");
   action_priority_list_t* st = get_action_priority_list("st");
   action_priority_list_t* aoe = get_action_priority_list("aoe");
-  //action_priority_list_t* aoe_sef = get_action_priority_list("aoe_sef");
+  action_priority_list_t* serenity = get_action_priority_list("serenity");
 
   def -> add_action( "auto_attack" );
 
   def -> add_action( "invoke_xuen" );
-
-//  def -> add_action( "call_action_list,name=opener,if=talent.serenity.enabled&talent.chi_brew.enabled&cooldown.fists_of_fury.up&time<20" );
+  def -> add_action( "call_action_list,name=opener,if=time<15" );
 
   if ( sim -> allow_potions )
   {
@@ -8146,20 +8187,28 @@ void monk_t::apl_combat_windwalker()
       def -> add_action( "potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
 
-  def -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled" );
-  def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
-
   int num_items = (int)items.size();
+
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].name_str == "tiny_oozeling_in_a_jar" )
+      if ( items[i].name_str == "unbridled_fury" )
+      {
+        def -> add_action( "use_item,name=" + items[i].name_str + ",if=!artifact.gale_burst.enabled" );
+        def -> add_action( "use_item,name=" + items[i].name_str + ",if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
+      }
+      else if ( items[i].name_str == "tiny_oozeling_in_a_jar" )
         def -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.congealing_goo.stack>=6" );
       else
         def -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
+
+  def -> add_talent( this, "Serenity", "if=artifact.gale_burst.enabled&cooldown.touch_of_death.ready&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7" );
+  def -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled" );
+  def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
+   
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
@@ -8168,47 +8217,39 @@ void monk_t::apl_combat_windwalker()
       def -> add_action( racial_actions[i]  );
   }
 
-  def -> add_action( this, "Storm, Earth, and Fire", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
+  def -> add_action( this, "Storm, Earth, and Fire", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<13&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
   def -> add_action( this, "Storm, Earth, and Fire", "if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5" );
-  def -> add_talent( this, "Serenity", "if=artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<7&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
-  def -> add_talent( this, "Serenity", "if=!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=3&cooldown.rising_sun_kick.remains<8" );
+  def -> add_talent( this, "Serenity", "if=artifact.strike_of_the_windlord.enabled&!artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7" );
+  def -> add_talent( this, "Serenity", "if=!artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7" );
+  def -> add_action( "call_action_list,name=serenity,if=buff.serenity.up" );
+  // TODO: There seems to be a haste point when less than 5% haste that provides a higher dps if you set 'chi<=0'
   def -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1&buff.serenity.down" );
-  def -> add_talent( this, "Rising Sun Kick", "if=buff.serenity.up" );
-  def -> add_talent( this, "Rushing Jade Wind", "if=buff.serenity.up&!prev_gcd.rushing_jade_wind" );
   def -> add_action( this, "Strike of the Windlord" );
-  def -> add_talent( this, "Whirling Dragon Punch" );
   def -> add_action( this, "Fists of Fury" );
+  def -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
+  def -> add_talent( this, "Whirling Dragon Punch", "if=cooldown.fists_of_fury.remains>0&cooldown.rising_sun_kick.remains>0" );
   
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
-  // Single Target & Non-Chi Explosion Cleave
-  st -> add_action( this, "Rising Sun Kick" );
-  st -> add_talent( this, "Rushing Jade Wind", "if=chi>1&!prev_gcd.rushing_jade_wind" );
-  st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2|buff.serenity.down" );
-  st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2|buff.serenity.down" );
-  st -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&buff.serenity.down&!prev_gcd.blackout_kick" );
-  st -> add_action( this, "Tiger Palm", "if=(buff.serenity.down&chi<=2)&!prev_gcd.tiger_palm" );
+  // Serenity
+  // TODO: Add Rising Sun Kick first if race = troll
+  serenity -> add_action( this, "Strike of the Windlord" );
+  serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
+  serenity -> add_action( this, "Fists of Fury" );
+  serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
+  serenity -> add_talent( this, "Rushing Jade Wind", "if=cooldown.rising_sun_kick.remains>1&!prev_gcd.rushing_jade_wind" );
+  serenity -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2" );
+  serenity -> add_talent( this, "Serenity", "if=chi.max-chi<=2" );
+  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick" );
 
-  // AoE while SEF is not up
-  // TODO: Add tab targeting somehow
-  aoe -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
-  aoe -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
-  aoe -> add_talent( this, "Rushing Jade Wind", "if=chi>1&!prev_gcd.rushing_jade_wind" );
-  aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2|buff.serenity.down" );
-  aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2|buff.serenity.down" );
-  aoe -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,cycle_targets=1" );
-  aoe -> add_action( this, "Tiger Palm", "if=(buff.serenity.down&chi.max-chi>1)&!prev_gcd.tiger_palm,cycle_targets=1" );
-
-  // Chi Brew & Serenity Opener
+  // Opener
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
-    if ( racial_actions[i] == "arcane_torrent" )
-      opener -> add_action( racial_actions[i] + ",if=chi.max-chi>=1" );
-    else
+    if ( racial_actions[i] != "arcane_torrent" )
       opener -> add_action( racial_actions[i] );
   }
-  opener -> add_action( this, "Fists of Fury", "if=buff.serenity.up&buff.serenity.remains<1.5" );
+  opener -> add_talent( this, "Energizing Elixir" );
   for (int i = 0; i < num_items; i++)
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
@@ -8219,11 +8260,41 @@ void monk_t::apl_combat_windwalker()
         opener -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
-  opener -> add_action( this, "Rising Sun Kick" );
-  opener -> add_action( this, "Blackout Kick", "if=chi.max-chi<=1&cooldown.chi_brew.up|buff.serenity.up" );
+  opener -> add_action( this, "Touch of Death" );
+  opener -> add_talent( this, "Serenity" );
+  opener -> add_action( this, "Storm, Earth, and Fire" );
+  opener -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=buff.serenity.up" );
+  opener -> add_action( this, "Strike of the Windlord" );
+  opener -> add_action( this, "Fists of Fury" );
+  opener -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
+  opener -> add_talent( this, "Whirling Dragon Punch", "if=cooldown.fists_of_fury.remains>0&cooldown.rising_sun_kick.remains>0" );
+  opener -> add_action( this, "Spinning Crane Kick", "if=buff.serenity.up&!prev_gcd.spinning_crane_kick" );
+  opener -> add_talent( this, "Rushing Jade Wind", "if=(buff.serenity.up|chi>1)&cooldown.rising_sun_kick.remains>1&!prev_gcd.rushing_jade_wind" );
   opener -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2" );
   opener -> add_talent( this, "Serenity", "if=chi.max-chi<=2" );
-  opener -> add_action( this, "Tiger Palm", "if=chi.max-chi>=2&!buff.serenity.up" );
+  opener -> add_action( this, "Blackout Kick", "cycle_targets=1,if=chi>1&!prev_gcd.blackout_kick" );
+  opener -> add_action( this, "Tiger Palm", "cycle_targets=1,if=chi.max-chi>=2&!prev_gcd.tiger_palm" );
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+  {
+    if ( racial_actions[i] == "arcane_torrent" )
+      opener -> add_action( racial_actions[i] + ",if=chi.max-chi>=1" );
+  }
+
+  // Single Target & Non-Chi Explosion Cleave
+  st -> add_talent( this, "Rushing Jade Wind", "if=chi>1&!prev_gcd.rushing_jade_wind" );
+  st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
+  st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
+  st -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick" );
+  st -> add_action( this, "Tiger Palm", "if=chi<=2&!prev_gcd.tiger_palm" );
+
+  // AoE while SEF is not up
+  aoe -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
+  aoe -> add_talent( this, "Rushing Jade Wind", "if=chi>1&!prev_gcd.rushing_jade_wind" );
+  aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
+  aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
+  aoe -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,cycle_targets=1" );
+  aoe -> add_action( this, "Tiger Palm", "if=chi.max-chi>1&!prev_gcd.tiger_palm,cycle_targets=1" );
+
 }
 
 // Mistweaver Combat Action Priority List ==================================
