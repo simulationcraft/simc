@@ -82,6 +82,39 @@ struct resource_threshold_event_t : public event_t
   }
 };
 
+// sorted_action_priority_lists =============================================
+
+// APLs need to always be initialized in the same order, otherwise copy= profiles may break in some
+// cases. Order will be: precombat -> default -> alphabetical list of custom apls
+std::vector<action_priority_list_t*> sorted_action_priority_lists( const player_t* p )
+{
+  std::vector<action_priority_list_t*> apls = p -> action_priority_list;
+  range::sort( apls, []( const action_priority_list_t* l, const action_priority_list_t* r ) {
+    if ( l -> name_str == "precombat" && r -> name_str != "precombat" )
+    {
+      return true;
+    }
+    else if ( l -> name_str != "precombat" && r -> name_str == "precombat" )
+    {
+      return false;
+    }
+    else if ( l -> name_str == "default" && r -> name_str != "default" )
+    {
+      return true;
+    }
+    else if ( l -> name_str != "default" && r -> name_str == "default" )
+    {
+      return false;
+    }
+    else
+    {
+      return l -> name_str < r -> name_str;
+    }
+  } );
+
+  return apls;
+}
+
 // has_foreground_actions ===================================================
 
 bool has_foreground_actions( const player_t& p )
@@ -2236,32 +2269,7 @@ bool player_t::create_actions()
 
   int j = 0;
 
-  // APLs need to always be initialized in the same order, otherwise copy= profiles may break in
-  // some cases. Order will be: precombat -> default -> alphabetical list of custom apls
-  std::vector<action_priority_list_t*> apls = action_priority_list;
-  range::sort( apls, []( const action_priority_list_t* l, const action_priority_list_t* r ) {
-    if ( l -> name_str == "precombat" && r -> name_str != "precombat" )
-    {
-      return true;
-    }
-    else if ( l -> name_str != "precombat" && r -> name_str == "precombat" )
-    {
-      return false;
-    }
-    else if ( l -> name_str == "default" && r -> name_str != "default" )
-    {
-      return true;
-    }
-    else if ( l -> name_str != "default" && r -> name_str == "default" )
-    {
-      return false;
-    }
-    else
-    {
-      return l -> name_str < r -> name_str;
-    }
-  } );
-
+  auto apls = sorted_action_priority_lists( this );
   for ( auto apl : apls )
   {
     assert( ! ( ! apl -> action_list_str.empty() &&
@@ -9610,33 +9618,34 @@ std::string player_t::create_profile( save_e stype )
       if ( no_action_list_provided )
         profile_str += action_list_information;
 
-      int j = 0;
-      std::string alist_str = "";
-      for ( size_t i = 0; i < action_list.size(); ++i )
+      auto apls = sorted_action_priority_lists( this );
+      for ( const auto apl : apls )
       {
-        action_t* a = action_list[ i ];
-        if ( a -> signature_str.empty() ) continue;
-        if ( a -> action_list -> name_str != alist_str )
+        if ( ! apl -> action_list_comment_str.empty() )
         {
-          j = 0;
-          alist_str = a -> action_list -> name_str;
-          const action_priority_list_t* alist = get_action_priority_list( alist_str );
-          if ( ! alist -> action_list_comment_str.empty() )
-            profile_str += term + "# " + alist -> action_list_comment_str;
-          profile_str += term;
+          profile_str += term + "# " + apl -> action_list_comment_str;
         }
+        profile_str += term;
 
-        const std::string& encoded_action = a -> signature -> action_;
-        const std::string& encoded_comment = a -> signature -> comment_;
+        bool first = true;
+        for ( const auto& action : apl -> action_list )
+        {
+          if ( ! action.comment_.empty() )
+          {
+            profile_str += "# " + action.comment_ + term;
+          }
 
-        if ( ! encoded_comment.empty() )
-          profile_str += "# " + ( encoded_comment ) + term;
-        profile_str += "actions";
-        if ( a -> action_list && a -> action_list -> name_str != "default" )
-          profile_str += "." + a -> action_list -> name_str;
-        profile_str += j ? "+=/" : "=";
-        profile_str += encoded_action + term;
-        j++;
+          profile_str += "actions";
+          if ( ! util::str_compare_ci( apl -> name_str, "default" ) )
+          {
+            profile_str += "." + apl -> name_str;
+          }
+
+          profile_str += first ? "=" : "+=/";
+          profile_str += action.action_ + term;
+
+          first = false;
+        }
       }
     }
   }
