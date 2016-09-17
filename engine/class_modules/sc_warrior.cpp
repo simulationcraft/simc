@@ -3966,7 +3966,6 @@ struct ignore_pain_t: public warrior_spell_t
     absorb_stats = p -> get_stats( "ignore_pain" );
     absorb_gain = p -> get_gain( "ignore_pain" );
     absorb_stats -> type = STATS_ABSORB;
-    absorb_stats -> school = SCHOOL_PHYSICAL; //?
     use_off_gcd = true;
     may_crit = false;
     range = -1;
@@ -3986,6 +3985,7 @@ struct ignore_pain_t: public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
+    p() -> buff.vengeance_ignore_pain -> expire();
     p() -> buff.vengeance_focused_rage -> trigger();
     p() -> buff.renewed_fury -> trigger();
   }
@@ -4012,10 +4012,9 @@ struct ignore_pain_t: public warrior_spell_t
     if ( p() -> buff.vengeance_ignore_pain -> up() )
     {
       amount *= 2.0;
-      p() -> buff.vengeance_ignore_pain -> expire();
     }
 
-    /*  Need to figure out a way to keep the warrior about 0 percent health.
+    /*  Need to figure out a way to keep the warrior above 0 percent health.
     if ( p() -> talents.never_surrender -> ok() )
     {
       double percent_health = ( 1 - ( p() -> health_percentage() / 100 ) ) * p() -> talents.never_surrender -> effectN( 1 ).percent();
@@ -5265,7 +5264,7 @@ void warrior_t::create_buffs()
 
   buff.vengeance_focused_rage = buff_creator_t( this, "vengeance_focused_rage", find_spell( 202573 ) )
     .chance( talents.vengeance -> ok() )
-    .default_value( find_spell( 202574 ) -> effectN( 1 ).percent() );
+    .default_value( find_spell( 202573 ) -> effectN( 1 ).percent() );
 
   buff.berserking_driver = buff_creator_t( this, "berserking_driver", artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() )
       .trigger_spell(  artifact.rage_of_the_valarjar )
