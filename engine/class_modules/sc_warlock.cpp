@@ -5914,211 +5914,122 @@ void warlock_t::apl_default()
 
 void warlock_t::apl_affliction()
 {
-  if ( true_level <= 100 )
+  add_action( "Reap Souls", "if=actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react" );
+  if ( find_item( "horn_of_valor" ) )
+    action_list_str += "|buff.valarjars_path.remains";
+  if ( find_item( "moonlit_prism" ) )
+    action_list_str += "|buff.elunes_light.remains";
+  if ( find_item( "obelisk of_the_void" ) )
+    action_list_str += "|buff.collapsing_shadow.remains";
+  action_list_str += ")";
+
+  action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
+  add_action( "Agony", "if=remains<=tick_time+gcd" );
+  add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
+  action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
+  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
+  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+  action_list_str += "/berserking";
+  action_list_str += "/blood_fury";
+  action_list_str += "/arcane_torrent";
+  action_list_str += init_use_profession_actions();
+  action_list_str += "/soul_harvest";
+  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
   {
-    for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[i].name();
-      }
+      action_list_str += "/use_item,name=";
+      action_list_str += items[i].name();
     }
-    action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
-    add_action( "Agony", "if=remains<=tick_time+gcd" );
-    add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
-    action_list_str += "/service_pet";
-    add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
-    add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
-    action_list_str += "/berserking";
-    action_list_str += "/blood_fury";
-    action_list_str += "/arcane_torrent";
-    action_list_str += init_use_profession_actions();
-    if ( find_item( "nithramus_the_allseer" ) )
-      action_list_str += "/potion,name=draenic_intellect,if=buff.nithramus.remains";
-    action_list_str += "/soul_harvest";
-    add_action( "Corruption", "if=remains<=tick_time+gcd" );
-    add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
-    add_action( "Corruption", "target=soul_effigy,if=remains<=tick_time+gcd" );
-    add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
-    action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&target.time_to_die>buff.mana_tap.duration*0.3";
-    action_list_str += "/phantom_singularity";
-    if ( find_item( "nithramus_the_allseer" ) )
-    {
-      add_action( "Unstable Affliction", "if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains|buff.nithramus.remains)" );
-    }
-    else
-    {
-      add_action( "Unstable Affliction", "if=(soul_shard>=4|buff.shard_instability.remains|buff.instability.remains|buff.soul_harvest.remains)" );
-    }
-    add_action( "Agony", "if=remains<=duration*0.3" );
-    add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3" );
-    add_action( "Corruption", "if=remains<=duration*0.3" );
-    action_list_str += "/haunt";
-    add_action( "Siphon Life", "if=remains<=duration*0.3" );
-    add_action( "Corruption", "target=soul_effigy,if=remains<=duration*0.3" );
-    add_action( "Siphon Life", "target=soul_effigy,if=remains<=duration*0.3" );
-    add_action( "Life Tap", "if=mana.pct<=10" );
-    action_list_str += "/drain_soul,chain=1,interrupt=1";
-    add_action( "Drain Life", "chain=1,interrupt=1" );
   }
-  if ( true_level > 100 )
-  {
-    add_action( "Reap Souls", "if=actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react" );
-    if ( find_item( "horn_of_valor" ) )
-      action_list_str += "|buff.valarjars_path.remains";
-    if ( find_item( "moonlit_prism" ) )
-      action_list_str += "|buff.elunes_light.remains";
-    if ( find_item( "obelisk of_the_void" ) )
-      action_list_str += "|buff.collapsing_shadow.remains";
-    action_list_str += ")";
 
-    action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
-    add_action( "Agony", "if=remains<=tick_time+gcd" );
-    add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
-    action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
-    add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
-    add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
-    action_list_str += "/berserking";
-    action_list_str += "/blood_fury";
-    action_list_str += "/arcane_torrent";
-    action_list_str += init_use_profession_actions();
-    action_list_str += "/soul_harvest";
-    for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
-    {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[i].name();
-      }
-    }
+  action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any.react";
+  if ( find_item( "horn_of_valor" ) )
+    action_list_str += "|buff.valarjars_path.remains";
+  if ( find_item( "moonlit_prism" ) )
+    action_list_str += "|buff.elunes_light.remains";
+  if ( find_item( "obelisk of_the_void" ) )
+    action_list_str += "|buff.collapsing_shadow.remains";
 
-    action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any.react";
-    if ( find_item( "horn_of_valor" ) )
-      action_list_str += "|buff.valarjars_path.remains";
-    if ( find_item( "moonlit_prism" ) )
-      action_list_str += "|buff.elunes_light.remains";
-    if ( find_item( "obelisk of_the_void" ) )
-      action_list_str += "|buff.collapsing_shadow.remains";
+  add_action( "Corruption", "if=remains<=tick_time+gcd" );
+  add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
+  add_action( "Corruption", "target=soul_effigy,if=remains<=tick_time+gcd" );
+  add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
+  action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3";
+  action_list_str += "/phantom_singularity";
+  add_action( "Unstable Affliction", "if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
+  if ( find_item( "horn_of_valor" ) )
+    action_list_str += "|buff.valarjars_path.remains";
+  if ( find_item( "moonlit_prism" ) )
+    action_list_str += "|buff.elunes_light.remains";
+  if ( find_item( "obelisk of_the_void" ) )
+    action_list_str += "|buff.collapsing_shadow.remains";
+  action_list_str += ")";
 
-    add_action( "Corruption", "if=remains<=tick_time+gcd" );
-    add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
-    add_action( "Corruption", "target=soul_effigy,if=remains<=tick_time+gcd" );
-    add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
-    action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3";
-    action_list_str += "/phantom_singularity";
-    add_action( "Unstable Affliction", "if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
-    if ( find_item( "horn_of_valor" ) )
-      action_list_str += "|buff.valarjars_path.remains";
-    if ( find_item( "moonlit_prism" ) )
-      action_list_str += "|buff.elunes_light.remains";
-    if ( find_item( "obelisk of_the_void" ) )
-      action_list_str += "|buff.collapsing_shadow.remains";
-    action_list_str += ")";
+  add_action( "Agony", "if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Corruption", "if=remains<=duration*0.3&target.time_to_die>=remains" );
+  action_list_str += "/haunt";
+  add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Corruption", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Siphon Life", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Life Tap", "if=mana.pct<=10" );
+  action_list_str += "/drain_soul,chain=1,interrupt=1";
+  add_action( "Drain Life", "chain=1,interrupt=1" );
 
-    add_action( "Agony", "if=remains<=duration*0.3&target.time_to_die>=remains" );
-    add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
-    add_action( "Corruption", "if=remains<=duration*0.3&target.time_to_die>=remains" );
-    action_list_str += "/haunt";
-    add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains" );
-    add_action( "Corruption", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
-    add_action( "Siphon Life", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
-    add_action( "Life Tap", "if=mana.pct<=10" );
-    action_list_str += "/drain_soul,chain=1,interrupt=1";
-    add_action( "Drain Life", "chain=1,interrupt=1" );
-  }
 }
 
 void warlock_t::apl_demonology()
 {
-  if ( true_level == 100 )
+  action_list_str += "/implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&buff.demonic_synergy.remains";
+  action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains";
+  action_list_str += "/implosion,if=wild_imp_count<=4&wild_imp_remaining_duration<=action.shadow_bolt.execute_time&spell_targets.implosion>1";
+  action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2";
+  action_list_str += "/shadowflame,if=debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time";
+  action_list_str += "/service_pet,if=cooldown.summon_doomguard.remains<=gcd&soul_shard>=2";
+  action_list_str += "/service_pet,if=cooldown.summon_doomguard.remains>25";
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_service.enabled&prev.service_felguard&spell_targets.infernal_awakening<3" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_synergy.enabled&spell_targets.infernal_awakening<3" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_service.enabled&prev.service_felguard&spell_targets.infernal_awakening>=3" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_synergy.enabled&spell_targets.infernal_awakening>=3" );
+  add_action( "Call Dreadstalkers", "if=!talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)" );
+  add_action( "Hand of Gul'dan", "if=soul_shard>=4&!talent.summon_darkglare.enabled" );
+  action_list_str += "/summon_darkglare,if=prev_gcd.hand_of_guldan";
+  action_list_str += "/summon_darkglare,if=prev_gcd.call_dreadstalkers";
+  action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains>5&soul_shard<3";
+  action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=3";
+  action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=1&buff.demonic_calling.react";
+  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains>2" );
+  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&prev_gcd.summon_darkglare" );
+  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=3" );
+  add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=1&buff.demonic_calling.react" );
+  add_action( "Hand of Gul'dan", "if=soul_shard>=3&prev_gcd.call_dreadstalkers" );
+  add_action( "Hand of Gul'dan", "if=soul_shard>=5&cooldown.summon_darkglare.remains<=action.hand_of_guldan.cast_time" );
+  add_action( "Hand of Gul'dan", "if=soul_shard>=4&cooldown.summon_darkglare.remains>2" );
+  add_action( "Demonic Empowerment", "if=wild_imp_no_de>3|prev_gcd.hand_of_guldan" );
+  add_action( "Demonic Empowerment", "if=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0" );
+  action_list_str += "/felguard:felstorm";
+  add_action( "Doom", "cycle_targets=1,if=!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3)" );
+  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
   {
-    for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[i].name();
-      }
+      action_list_str += "/use_item,name=";
+      action_list_str += items[i].name();
     }
-    action_list_str += "/berserking";
-    action_list_str += "/blood_fury";
-    action_list_str += "/arcane_torrent";
-    if ( find_item( "nithramus_the_allseer" ) )
-      action_list_str += "/potion,name=draenic_intellect,if=buff.nithramus.remains";
-    action_list_str += "/service_pet";
-    add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
-    add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
-    action_list_str += init_use_profession_actions();
-    action_list_str += "/soul_harvest,if=dot.doom.remains";
-    add_action( "Doom", "if=talent.soul_harvest.enabled&!cooldown.soul_harvest.remains&!remains" );
-    add_action( "Doom", "if=talent.impending_doom.enabled&remains<=action.hand_of_guldan.cast_time" );
-    action_list_str += "/hand_of_guldan,if=soul_shard>=1";
-    action_list_str += "/demonic_empowerment,if=wild_imp_no_de>=5";
-    add_action( "Doom", "if=talent.impending_doom.enabled&remains<=duration*0.3" );
-    action_list_str += "/demonbolt";
-    add_action( "Shadow Bolt" );
   }
-  if ( true_level > 100 )
-  {
-    action_list_str += "/implosion,if=wild_imp_remaining_duration<=action.shadow_bolt.execute_time&buff.demonic_synergy.remains";
-    action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=3&buff.demonic_synergy.remains";
-    action_list_str += "/implosion,if=wild_imp_count<=4&wild_imp_remaining_duration<=action.shadow_bolt.execute_time&spell_targets.implosion>1";
-    action_list_str += "/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2";
-    action_list_str += "/shadowflame,if=debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time";
-    action_list_str += "/service_pet,if=cooldown.summon_doomguard.remains<=gcd&soul_shard>=2";
-    action_list_str += "/service_pet,if=cooldown.summon_doomguard.remains>25";
-    add_action( "Summon Doomguard", "if=talent.grimoire_of_service.enabled&prev.service_felguard&spell_targets.infernal_awakening<3" );
-    add_action( "Summon Doomguard", "if=talent.grimoire_of_synergy.enabled&spell_targets.infernal_awakening<3" );
-    add_action( "Summon Infernal", "if=talent.grimoire_of_service.enabled&prev.service_felguard&spell_targets.infernal_awakening>=3" );
-    add_action( "Summon Infernal", "if=talent.grimoire_of_synergy.enabled&spell_targets.infernal_awakening>=3" );
-    add_action( "Call Dreadstalkers", "if=!talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)" );
-    add_action( "Hand of Gul'dan", "if=soul_shard>=4&!talent.summon_darkglare.enabled" );
-    action_list_str += "/summon_darkglare,if=prev_gcd.hand_of_guldan";
-    action_list_str += "/summon_darkglare,if=prev_gcd.call_dreadstalkers";
-    action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains>5&soul_shard<3";
-    action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=3";
-    action_list_str += "/summon_darkglare,if=cooldown.call_dreadstalkers.remains<=action.summon_darkglare.cast_time&soul_shard>=1&buff.demonic_calling.react";
-    add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains>2" );
-    add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&prev_gcd.summon_darkglare" );
-    add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=3" );
-    add_action( "Call Dreadstalkers", "if=talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)&cooldown.summon_darkglare.remains<=action.call_dreadstalkers.cast_time&soul_shard>=1&buff.demonic_calling.react" );
-    add_action( "Hand of Gul'dan", "if=soul_shard>=3&prev_gcd.call_dreadstalkers" );
-    add_action( "Hand of Gul'dan", "if=soul_shard>=5&cooldown.summon_darkglare.remains<=action.hand_of_guldan.cast_time" );
-    add_action( "Hand of Gul'dan", "if=soul_shard>=4&cooldown.summon_darkglare.remains>2" );
-    add_action( "Demonic Empowerment", "if=wild_imp_no_de>3|prev_gcd.hand_of_guldan" );
-    add_action( "Demonic Empowerment", "if=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0" );
-    action_list_str += "/felguard:felstorm";
-    add_action( "Doom", "cycle_targets=1,if=!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3)" );
-
-    if ( find_item( "eyasus_mulligan" ) )
-    {
-      action_list_str += "/use_item,name=eyasus_mulligan,if=!buff.the_coin_mulligan.remains&!buff.full_hand_mulligan.remains&!buff.top_decking_mulligan.remains&!buff.lethal_on_board_mulligan.remains";
-    }
-    if ( !find_item( "eyasus_mulligan" ) )
-    {
-      for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
-      {
-        if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-        {
-          action_list_str += "/use_item,name=";
-          action_list_str += items[i].name();
-        }
-      }
-    }
-    action_list_str += "/arcane_torrent";
-    action_list_str += "/berserking";
-    action_list_str += "/blood_fury";
-    action_list_str += "/soul_harvest";
-    action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|target.time_to_die<=30|trinket.proc.any.react";
-    action_list_str += "/shadowflame,if=charges=2";
-    add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
-    add_action( "Life Tap", "if=mana.pct<=30" );
-    add_action( "Demonwrath", "chain=1,interrupt=1,if=spell_targets.demonwrath>=3" );
-    add_action( "Demonwrath", "moving=1,chain=1,interrupt=1" );
-    action_list_str += "/demonbolt";
-    add_action( "Shadow Bolt" );
-  }
+  action_list_str += "/arcane_torrent";
+  action_list_str += "/berserking";
+  action_list_str += "/blood_fury";
+  action_list_str += "/soul_harvest";
+  action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|target.time_to_die<=30|trinket.proc.any.react";
+  action_list_str += "/shadowflame,if=charges=2";
+  add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
+  add_action( "Life Tap", "if=mana.pct<=30" );
+  add_action( "Demonwrath", "chain=1,interrupt=1,if=spell_targets.demonwrath>=3" );
+  add_action( "Demonwrath", "moving=1,chain=1,interrupt=1" );
+  action_list_str += "/demonbolt";
+  add_action( "Shadow Bolt" );
 }
 
 void warlock_t::apl_destruction()
@@ -6128,57 +6039,43 @@ void warlock_t::apl_destruction()
 
   // artifact check
 
-  if ( find_item( "eyasus_mulligan" ) )
-  {
-      action_list_str += "/use_item,name=eyasus_mulligan,if=!buff.the_coin_mulligan.remains&!buff.full_hand_mulligan.remains&!buff.top_decking_mulligan.remains&!buff.lethal_on_board_mulligan.remains";
-      action_list_str += "/use_item,name=eyasus_mulligan,if=buff.top_decking_mulligan.remains";
-  }
 
-  if ( !find_item( "eyasus_mulligan" ) )
+  for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
   {
-    for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
+    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-      {
-        action_list_str += "/use_item,name=";
-        action_list_str += items[i].name();
-      }
+      action_list_str += "/use_item,name=";
+      action_list_str += items[i].name();
     }
   }
 
-  if ( true_level > 100 )
-    add_action( "Dimensional Rift", "if=charges=3" );
-
+  add_action( "Dimensional Rift", "if=charges=3" );
   add_action( "Immolate", "if=remains<=tick_time" );
   add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd))" );
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
-  if ( find_item( "nithramus_the_allseer" ) && true_level == 100 )
-    action_list_str += "/potion,name=draenic_intellect,if=buff.nithramus.remains";
-  if ( true_level > 100 )
-    action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=30)";
+  action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=30)";
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd))" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=3&buff.bloodlust.remains" );
-  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
-  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
   action_list_str += "/service_pet";
   add_action( "Summon Infernal", "if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains" );
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
-  add_action( "Chaos Bolt", "if=soul_shard>3" );
-
-   //artifact check
+  add_action( "Chaos Bolt", "if=soul_shard>3|buff.backdraft.remains" );
+  add_action( "Chaos Bolt", "if=buff.backdraft.remains&prev_gcd.incinerate" );
+  add_action( "Incinerate", "if=buff.backdraft.remains" );
   add_action( "Dimensional Rift" );
-
   action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3";
   add_action( "Chaos Bolt" );
   action_list_str += "/cataclysm";
-  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled" );
+  add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains" );
   add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
   add_action( "Life Tap", "if=talent.mana_tap.enabled&mana.pct<=10" );
   add_action( "Incinerate" );
