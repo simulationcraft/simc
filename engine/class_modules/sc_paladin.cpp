@@ -2457,7 +2457,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
   virtual void execute() override
   {
     // heals for 25% of missing health.
-    base_dd_min = base_dd_max = health_diff_pct * ( target -> resources.max[ RESOURCE_HEALTH ] - target -> resources.current[ RESOURCE_HEALTH ] );
+	  base_dd_min = base_dd_max = health_diff_pct * (target->resources.max[RESOURCE_HEALTH] - std::max(target->resources.current[RESOURCE_HEALTH], 0.0) );
 
     paladin_heal_t::execute();
 
