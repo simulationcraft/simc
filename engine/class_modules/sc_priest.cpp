@@ -6984,6 +6984,27 @@ priest_td_t* priest_t::find_target_data( player_t* target ) const
 
 void priest_t::init_action_list()
 {
+#ifdef NDEBUG // Only restrict on release builds.
+  // Holy isn't supported atm
+  if ( specialization() == PRIEST_HOLY )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Holy priest healing for player %s is not currently supported.", name() );
+
+    quiet = true;
+    return;
+  }
+  // Discipline healing isn't supported atm
+  if ( specialization() == PRIEST_DISCIPLINE && primary_role() == ROLE_HEAL )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Discipline healing for player %s is not currently supported.", name() );
+
+    quiet = true;
+    return;
+  }
+#endif
+
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
