@@ -2712,7 +2712,8 @@ public:
       add_child( priest.active_spells.mind_spike_detonation );
     }
 
-    cooldown->hasted = true;
+    // Disable dynamic hasted cooldown scaling as it is causing a double-dip in haste. -- Twintop 2016/09/17
+    // cooldown->hasted = true;
   }
 
   void init() override
@@ -2778,13 +2779,10 @@ public:
       cd_duration = cooldown->duration;
     }
 
-    // CD is now always reduced by haste. Documented in the WoD Alpha Patch
-    // Notes, unfortunately not in any tooltip!
-    // 2014-06-17
-    cd_duration = ( cooldown->duration +
-                    priest.specs.voidform->effectN( 4 ).time_value() *
-                        priest.buffs.voidform->up() ) *
-                  composite_haste();
+    // Hardcode Mind Blast CD reduction since the spelldata for Voidform is missing effect #6. -- Twintop 2016/09/17
+    cd_duration = (cooldown->duration - timespan_t::from_seconds(3.0) * priest.buffs.voidform->up()) * composite_haste();
+
+    // cd_duration = (cooldown->duration * priest.specs.voidform->effectN(6).time_value() * priest.buffs.voidform->up() ) * composite_haste();
 
     // Shadowy Insight has proc'd during the cast of Mind Blast, the cooldown
     // reset is deferred to the finished cast, instead of "eating" it.
@@ -6631,7 +6629,7 @@ void priest_t::apl_shadow()
   default_list->add_action("variable,op=set,name=actors_fight_time_mod,value=0");
   default_list->add_action("variable,op=set,name=actors_fight_time_mod,value=-((-(450)+(time+target.time_to_die))%10),if=time+target.time_to_die>450&time+target.time_to_die<600");
   default_list->add_action("variable,op=set,name=actors_fight_time_mod,value=((450-(time+target.time_to_die))%5),if=time+target.time_to_die<=450");
-  default_list->add_action("variable,op=set,name=s2mcheck,value=0.85*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(variable.actors_fight_time_mod*nonexecute_actors_pct)");
+  default_list->add_action("variable,op=set,name=s2mcheck,value=0.8*(45+((raw_haste_pct*100)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(variable.actors_fight_time_mod*nonexecute_actors_pct)");
   default_list->add_action("variable,op=min,name=s2mcheck,value=180");
   default_list->add_action(
       "call_action_list,name=s2m,if=buff.voidform.up&buff.surrender_to_madness."
@@ -6984,27 +6982,6 @@ priest_td_t* priest_t::find_target_data( player_t* target ) const
 
 void priest_t::init_action_list()
 {
-#ifdef NDEBUG // Only restrict on release builds.
-  // Holy isn't supported atm
-  if ( specialization() == PRIEST_HOLY )
-  {
-    if ( ! quiet )
-      sim -> errorf( "Holy priest healing for player %s is not currently supported.", name() );
-
-    quiet = true;
-    return;
-  }
-  // Discipline healing isn't supported atm
-  if ( specialization() == PRIEST_DISCIPLINE && primary_role() == ROLE_HEAL )
-  {
-    if ( ! quiet )
-      sim -> errorf( "Discipline healing for player %s is not currently supported.", name() );
-
-    quiet = true;
-    return;
-  }
-#endif
-
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
