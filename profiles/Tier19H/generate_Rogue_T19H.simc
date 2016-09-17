@@ -3,12 +3,12 @@ level=110
 race=orc
 role=attack
 position=back
-talents=3110131
+talents=2110131
 artifact=43:0:0:0:0:323:3:324:3:325:3:327:2:328:3:330:3:331:3:332:1:334:1:335:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=soultrappers_pendant,id=141506,enchant=mark_of_the_distant_army
+neck=soultrappers_pendant,id=141506,enchant=mark_of_the_hidden_satyr
 shoulders=mantle_of_the_aspiring_spellgiant,id=141445
 back=drape_of_the_manastarved,id=141543,enchant=binding_of_agility
 chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1805
@@ -31,12 +31,12 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=1310322
+talents=1310022
 artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1056:1:1057:1:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1348:1
 spec=outlaw
 
 head=cowl_of_fright,id=139205,bonus_id=1805
-neck=krakentooth_necklace,id=141473,enchant=mark_of_the_distant_army
+neck=krakentooth_necklace,id=141473,enchant=mark_of_the_hidden_satyr
 shoulders=mantle_of_the_aspiring_spellgiant,id=141445
 back=coerced_wizards_cloak,id=141540,enchant=binding_of_agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1805
@@ -59,12 +59,12 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2210011
+talents=1210011
 artifact=17:0:0:0:0:851:1:852:3:853:2:854:3:857:3:858:3:859:3:860:3:861:1:862:1:864:1:865:1:866:1:1349:1
 spec=subtlety
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=krakentooth_necklace,id=141473,enchant=mark_of_the_distant_army
+neck=krakentooth_necklace,id=141473,enchant=mark_of_the_hidden_satyr
 shoulders=mantle_of_the_aspiring_spellgiant,id=141445
 back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=binding_of_agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1805
