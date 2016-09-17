@@ -6940,6 +6940,17 @@ void druid_t::init_rng()
 
 void druid_t::init_action_list()
 {
+#ifdef NDEBUG // Only restrict on release builds.
+  // Restoration isn't fully supported atm
+  if ( specialization() == DRUID_RESTORATION )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Druid restoration healing for player %s is not currently supported.", name() );
+
+    quiet = true;
+    return;
+  }
+#endif
   if ( ! action_list_str.empty() )
   {
     player_t::init_action_list();

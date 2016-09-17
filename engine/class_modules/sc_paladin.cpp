@@ -5020,6 +5020,17 @@ void paladin_t::generate_action_prio_list_holy()
 
 void paladin_t::init_action_list()
 {
+#ifdef NDEBUG // Only restrict on release builds.
+  // Holy isn't fully supported atm
+  if ( specialization() == PALADIN_HOLY )
+  {
+    if ( ! quiet )
+      sim -> errorf( "Paladin holy healing for player %s is not currently supported.", name() );
+
+    quiet = true;
+    return;
+  }
+#endif
   // sanity check - Prot/Ret can't do anything w/o main hand weapon equipped
   if ( main_hand_weapon.type == WEAPON_NONE && ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION ) )
   {
