@@ -55,7 +55,7 @@ actions.single_target+=/rampage,if=rage>95|buff.massacre.react
 actions.single_target+=/whirlwind,if=!talent.inner_rage.enabled&buff.wrecking_ball.react
 actions.single_target+=/raging_blow,if=buff.enrage.up
 actions.single_target+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
-actions.single_target+=/execute,if=buff.enrage.up|buff.battle_cry.up|buff.stone_heart.react||(buff.juggernaut.up&buff.juggernaut.remains<3)
+actions.single_target+=/execute,if=buff.enrage.up|buff.battle_cry.up|buff.stone_heart.react|(buff.juggernaut.up&buff.juggernaut.remains<3)
 actions.single_target+=/bloodthirst
 actions.single_target+=/raging_blow
 actions.single_target+=/dragon_roar,if=!talent.bloodbath.enabled&(cooldown.battle_cry.remains<1|cooldown.battle_cry.remains>10)|talent.bloodbath.enabled&cooldown.bloodbath.remains=0

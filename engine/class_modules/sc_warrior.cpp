@@ -4719,7 +4719,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Whirlwind", "if=!talent.inner_rage.enabled&buff.wrecking_ball.react" );
   single_target -> add_action( this, "Raging Blow", "if=buff.enrage.up" );
   single_target -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
-  single_target -> add_action( this, "Execute", "if=buff.enrage.up|buff.battle_cry.up|buff.stone_heart.react||(buff.juggernaut.up&buff.juggernaut.remains<3)" );
+  single_target -> add_action( this, "Execute", "if=buff.enrage.up|buff.battle_cry.up|buff.stone_heart.react|(buff.juggernaut.up&buff.juggernaut.remains<3)" );
   single_target -> add_action( this, "Bloodthirst" );
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_talent( this, "Dragon Roar", "if=!talent.bloodbath.enabled&(cooldown.battle_cry.remains<1|cooldown.battle_cry.remains>10)|talent.bloodbath.enabled&cooldown.bloodbath.remains=0" );
