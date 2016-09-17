@@ -6784,8 +6784,15 @@ void monk_t::init_scaling()
   }
   scales_with[STAT_STRENGTH] = false;
 
+  if ( specialization() == MONK_WINDWALKER )
+  {
+    // Touch of Death
+    scales_with[ STAT_STAMINA ] = true;
+  }
   if ( specialization() == MONK_BREWMASTER )
+  {
     scales_with[ STAT_BONUS_ARMOR ] = true;
+  }
 
   if ( off_hand_weapon.type != WEAPON_NONE )
     scales_with[STAT_WEAPON_OFFHAND_DPS] = true;
