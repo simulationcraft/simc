@@ -3974,6 +3974,8 @@ struct ignore_pain_t: public warrior_spell_t
     if ( p -> talents.never_surrender -> ok() )
     {
       ip_cap_ratio *= 1.0 + p -> talents.never_surrender -> effectN( 1 ).percent();
+      sim -> errorf( "In sim, never surrender is modeled by selecting a number based on a gaussian distrubution with a mean of 60 percent health" );
+      sim -> errorf( "and a range of 40-100 percent everytime ignore pain is cast. In the future, this will be user selectable." );
     }
     if ( p -> talents.indomitable -> ok() )
     {
@@ -4014,13 +4016,11 @@ struct ignore_pain_t: public warrior_spell_t
       amount *= 2.0;
     }
 
-    /*  Need to figure out a way to keep the warrior above 0 percent health.
     if ( p() -> talents.never_surrender -> ok() )
-    {
-      double percent_health = ( 1 - ( p() -> health_percentage() / 100 ) ) * p() -> talents.never_surrender -> effectN( 1 ).percent();
+    { //TODO, add options to change the gaussian distribution.
+      double percent_health = ( 1 - rng().gauss(0.7, 0.3 ) * p() -> talents.never_surrender -> effectN( 1 ).percent() );
       amount *= 1.0 + percent_health;
     }
-    */
 
     amount += p() -> buff.ignore_pain -> current_value;
 
