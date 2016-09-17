@@ -701,12 +701,6 @@ player_t::player_t( sim_t*             s,
     "# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.\n"
     "# Feel free to edit, adapt and improve it to your own needs.\n"
     "# SimulationCraft is always looking for updates and improvements to the default action lists.\n";
-
-  if( ! is_pet() &&
-      ! is_enemy() &&
-      sim -> parent &&
-      sim -> thread_index > 0 )
-    parent = sim -> parent -> find_player( name() );
 }
 
 player_t::~player_t()
@@ -802,6 +796,12 @@ std::string player_t::base_initial_current_t::to_string()
 void player_t::init()
 {
   if ( sim -> debug ) sim -> out_debug.printf( "Initializing player %s", name() );
+
+  // Find parent player in main thread
+  if( ! is_pet() && ! is_enemy() && sim -> parent && sim -> thread_index > 0 )
+  {
+    parent = sim -> parent -> find_player( name() );
+  }
 
   // Ensure the precombat and default lists are the first listed
   get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." ) -> used = true;
