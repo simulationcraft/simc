@@ -1,4 +1,4 @@
-SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build 3effbdd)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 4570e1a)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -399,9 +399,11 @@ Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...
                  : Passive (6), Does not break stealth (37)
 Effects          :
 #1 (id=59543)    : Apply Aura (6) | Unknown effect sub type (310)
-                   Base Value: -90 | Scaled Value: -90 | Misc Value: 127 | Target: Self(1)
+                   Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self(1)
+                   Hotfixed: Base Value (-90 -> -80)
 #2 (id=192584)   : Apply Aura (6) | Unknown effect sub type (229)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 127 | Target: Self(1)
+                   Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self(1)
+                   Hotfixed: Base Value (-50 -> -75)
 Description      : Reduces the damage your pet takes from creature area of effect attacks by an additional $s1%.
 
 Name             : Agile Bio-Optic Killshades (id=81722) 

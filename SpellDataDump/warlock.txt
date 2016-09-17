@@ -1,4 +1,4 @@
-SimulationCraft 703-02 for World of Warcraft 7.0.3 Live (wow build 22522, git build 3effbdd)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 4570e1a)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1322,9 +1322,11 @@ Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...
                  : Passive (6), Does not break stealth (37)
 Effects          :
 #1 (id=21973)    : Apply Aura (6) | Unknown effect sub type (310)
-                   Base Value: -90 | Scaled Value: -90 | Misc Value: 127 | Target: Self(1)
+                   Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self(1)
+                   Hotfixed: Base Value (-90 -> -80)
 #2 (id=164155)   : Apply Aura (6) | Unknown effect sub type (229)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 127 | Target: Self(1)
+                   Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self(1)
+                   Hotfixed: Base Value (-50 -> -75)
 Description      : Reduces all damage taken from area-of-effect attacks by $s1%.
 
 Name             : Interrupt (id=32747) 
