@@ -5558,13 +5558,6 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
   }
-  virtual void init() override
-  {
-    arcane_mage_spell_t::init();
-    // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
 
   virtual void execute() override
   {
