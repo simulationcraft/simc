@@ -7408,8 +7408,8 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
 
   // Options
   base.distance = 30;
-  regen_caches[ CACHE_HASTE ] = true;
-  regen_caches[ CACHE_SPELL_HASTE ] = true;
+  regen_type = REGEN_DYNAMIC;
+  regen_caches[ CACHE_MASTERY ] = true;
 
 }
 
