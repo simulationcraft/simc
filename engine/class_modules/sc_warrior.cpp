@@ -4796,8 +4796,8 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list -> add_action( this, "Battle Cry", "if=(buff.bloodlust.up|time>=1)&!gcd.remains&(buff.shattered_defenses.up|cooldown.colossus_smash.remains&cooldown.warbreaker.remains)|target.time_to_die<=5" );
-  default_list -> add_talent( this, "Avatar", "if=(buff.bloodlust.up|time>=1)&!gcd.remains" );
+  default_list -> add_action( this, "Battle Cry", "if=(buff.bloodlust.up|time>=1)&!gcd.remains&(buff.shattered_defenses.up|(cooldown.colossus_smash.remains&cooldown.warbreaker.remains))|target.time_to_die<=10" );
+  default_list -> add_talent( this, "Avatar", "if=(buff.bloodlust.up|time>=1)" );
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
@@ -4810,11 +4810,12 @@ void warrior_t::apl_arms()
   default_list -> add_action( this, "Hamstring", "if=buff.battle_cry_deadly_calm.remains>cooldown.hamstring.remains" );
   default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   default_list -> add_talent( this, "Rend", "if=remains<gcd" );
-  default_list -> add_talent( this, "Focused Rage", "if=buff.battle_cry_deadly_calm.remains>cooldown.focused_rage.remains&(buff.focused_rage.stack<3|cooldown.mortal_strike.remains)" );
+  default_list -> add_talent( this, "Focused Rage", "if=buff.battle_cry_deadly_calm.remains>cooldown.focused_rage.remains&(buff.focused_rage.stack<3|!cooldown.mortal_strike.up)&((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)",
+                              "The tl;dr of this line is to spam focused rage inside battle cry, the added nonsense is to help modeling the difficulty of timing focused rage immediately after mortal strike. \n# In game, if focused rage is used the same instant as mortal strike, rage will be deducted for focused rage, the buff is immediately consumed, but it does not buff the damage of mortal strike." );
   default_list -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
   default_list -> add_action( this, "Warbreaker", "if=debuff.colossus_smash.down" );
   default_list -> add_talent( this, "Ravager" );
-  default_list -> add_talent( this, "Overpower" );
+  default_list -> add_talent( this, "Overpower", "if=buff.overpower.react" );
   default_list -> add_action( "run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.whirlwind>=2&!talent.sweeping_strikes.enabled" );
   default_list -> add_action( "run_action_list,name=execute,if=target.health.pct<=20" );
@@ -4823,13 +4824,13 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Mortal Strike", "if=buff.battle_cry.up&buff.focused_rage.stack>=1&buff.battle_cry.remains<gcd" );
   single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
   single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down&cooldown.mortal_strike.remains<gcd" );
-  single_target -> add_talent( this, "Focused Rage", "if=buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains)" );
+  single_target -> add_talent( this, "Focused Rage", "if=((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)&buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains)" );
   single_target -> add_action( this, "Mortal Strike" );
   single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   single_target -> add_action( this, "Slam", "if=buff.battle_cry_deadly_calm.up|buff.focused_rage.stack=3|rage.deficit<=30" );
-  single_target -> add_action( this, "Execute", "if=equipped.137060" );
-  single_target -> add_action( this, "Slam", "if=equipped.137060" );
-  single_target -> add_talent( this, "Focused Rage", "if=equipped.137060" );
+  single_target -> add_action( this, "Execute", "if=equipped.archavons_heavy_hand" );
+  single_target -> add_action( this, "Slam", "if=equipped.archavons_heavy_hand" );
+  single_target -> add_talent( this, "Focused Rage", "if=equipped.archavons_heavy_hand" );
   single_target -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
 
   execute -> add_action( this, "Mortal Strike", "if=buff.battle_cry.up&buff.focused_rage.stack=3" );

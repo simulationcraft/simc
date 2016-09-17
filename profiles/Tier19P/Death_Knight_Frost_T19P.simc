@@ -43,6 +43,15 @@ actions.bos+=/empower_rune_weapon,if=runic_power<=70
 actions.bos+=/hungering_rune_weapon
 actions.bos+=/howling_blast,if=buff.rime.react
 
+actions.core=glacial_advance
+actions.core+=/frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
+actions.core+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
+actions.core+=/frostscythe,if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)
+actions.core+=/obliterate,if=buff.killing_machine.react
+actions.core+=/obliterate
+actions.core+=/frostscythe,if=talent.frozen_pulse.enabled
+actions.core+=/howling_blast,if=talent.frozen_pulse.enabled
+
 actions.generic=howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/howling_blast,if=buff.rime.react
 actions.generic+=/frost_strike,if=runic_power>=80
@@ -55,15 +64,6 @@ actions.generic+=/empower_rune_weapon,if=talent.breath_of_sindragosa.enabled&coo
 actions.generic+=/hungering_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
 actions.generic+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 actions.generic+=/hungering_rune_weapon,if=!talent.breath_of_sindragosa.enabled
-
-actions.core=glacial_advance
-actions.core+=/frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
-actions.core+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
-actions.core+=/frostscythe,if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)
-actions.core+=/obliterate,if=buff.killing_machine.react
-actions.core+=/obliterate
-actions.core+=/frostscythe,if=talent.frozen_pulse.enabled
-actions.core+=/howling_blast,if=talent.frozen_pulse.enabled
 
 head=crown_of_ash,id=137526,bonus_id=1727
 neck=raven_filigree_pendant,id=134499,bonus_id=1727,enchant=mark_of_the_claw
