@@ -4,7 +4,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2210011
+talents=1210011
 artifact=17:0:0:0:0:851:1:852:3:854:3:858:3:859:3:860:3:862:1:864:1:866:1:1349:1
 spec=subtlety
 
@@ -72,7 +72,7 @@ actions.stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.defici
 actions.stealthed+=/shadowstrike
 
 head=veil_of_unseen_strikes,id=134447,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_distant_army
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=charskin_mantle,id=137510,bonus_id=1727
 back=cape_of_valarjar_courage,id=133765,bonus_id=1727,enchant=binding_of_agility
 chest=tranquil_bough_vest,id=139071,bonus_id=1727

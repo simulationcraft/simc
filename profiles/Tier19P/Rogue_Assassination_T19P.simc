@@ -3,7 +3,7 @@ level=110
 race=orc
 role=attack
 position=back
-talents=3110131
+talents=2110131
 artifact=43:0:0:0:0:323:3:325:3:328:3:330:3:331:3:332:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
@@ -86,7 +86,7 @@ actions.garrote+=/pool_resource,for_next=1
 actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated
 
 head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
-neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_distant_army
+neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=felbat_leather_pauldrons,id=134374,bonus_id=1727
 back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant=binding_of_agility
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727

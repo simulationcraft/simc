@@ -4,7 +4,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=2210011
+talents=1210011
 artifact=17:0:0:0:0:851:1:852:3:853:3:854:3:855:3:856:3:857:3:858:3:859:3:860:3:861:1:862:1:863:1:864:1:865:1:866:1:1349:1
 spec=subtlety
 
@@ -71,7 +71,7 @@ actions.stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.defici
 actions.stealthed+=/shadowstrike
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=krakentooth_necklace,id=141473,enchant=mark_of_the_distant_army
+neck=krakentooth_necklace,id=141473,enchant=mark_of_the_hidden_satyr
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
 back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=binding_of_agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806

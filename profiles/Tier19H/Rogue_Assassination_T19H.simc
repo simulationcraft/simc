@@ -3,7 +3,7 @@ level=110
 race=orc
 role=attack
 position=back
-talents=3110131
+talents=2110131
 artifact=43:0:0:0:0:323:3:324:3:325:3:327:2:328:3:330:3:331:3:332:1:334:1:335:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
@@ -85,7 +85,7 @@ actions.garrote+=/pool_resource,for_next=1
 actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=soultrappers_pendant,id=141506,enchant=mark_of_the_distant_army
+neck=soultrappers_pendant,id=141506,enchant=mark_of_the_hidden_satyr
 shoulders=mantle_of_the_aspiring_spellgiant,id=141445
 back=drape_of_the_manastarved,id=141543,enchant=binding_of_agility
 chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1805

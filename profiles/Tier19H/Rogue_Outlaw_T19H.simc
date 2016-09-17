@@ -4,7 +4,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=1310322
+talents=1310022
 artifact=44:0:0:0:0:1052:1:1053:1:1054:1:1056:1:1057:1:1060:3:1061:3:1062:3:1063:3:1064:3:1065:3:1066:3:1348:1
 spec=outlaw
 
@@ -26,8 +26,8 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
 
 # Executed every time the actor is available.
-# Condition to continue rerolling RtB; if SnD, consider that you never have to reroll
-actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1&!(equipped.thraxis_tricksy_treads&buff.true_bearing.up))
+# Condition to continue rerolling RtB (2- or not TB alone or not SIW alone during CDs); If SnD: consider that you never have to reroll.
+actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1&!rtb_list.any.6&((!buff.curse_of_the_dreadblades.up&!buff.adrenaline_rush.up)|!rtb_list.any.5))
 # Condition to use Saber Slash when not rerolling RtB or when using SnD
 actions+=/variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))
 # Condition to use Saber Slash, when you have RtB or not
@@ -35,7 +35,8 @@ actions+=/variable,name=ss_useable,value=(talent.anticipation.enabled&combo_poin
 # Normal rotation
 actions+=/call_action_list,name=bf
 actions+=/call_action_list,name=cds
-actions+=/call_action_list,name=stealth
+# Conditions are here to avoid worthless check if nothing is available
+actions+=/call_action_list,name=stealth,if=stealthed|cooldown.vanish.up|cooldown.shadowmeld.up
 actions+=/death_from_above,if=energy.time_to_max>2&!variable.ss_useable_noreroll
 actions+=/slice_and_dice,if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
 actions+=/roll_the_bones,if=!variable.ss_useable&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)
@@ -60,7 +61,7 @@ actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/arcane_torrent,if=energy.deficit>40
 actions.cds+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
-actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&(time>20|energy.deficit>0)
+actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&energy.deficit>0
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)
 actions.cds+=/sprint,if=equipped.thraxis_tricksy_treads&!variable.ss_useable
 actions.cds+=/curse_of_the_dreadblades,if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)
@@ -77,7 +78,7 @@ actions.stealth+=/vanish,if=variable.stealth_condition
 actions.stealth+=/shadowmeld,if=variable.stealth_condition
 
 head=cowl_of_fright,id=139205,bonus_id=1805
-neck=krakentooth_necklace,id=141473,enchant=mark_of_the_distant_army
+neck=krakentooth_necklace,id=141473,enchant=mark_of_the_hidden_satyr
 shoulders=mantle_of_the_aspiring_spellgiant,id=141445
 back=coerced_wizards_cloak,id=141540,enchant=binding_of_agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1805
