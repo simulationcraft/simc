@@ -6318,6 +6318,25 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=finish" );
     def -> add_action( "call_action_list,name=build" );
 
+    // Builders
+    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+      // AoE
+    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4" );
+    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,max_cycle_targets=3,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives=5" );
+      // Replaces Envenom with Fan of Knives after 7 targets / 9 with Vendetta
+    build -> add_action( this, "Fan of Knives", "if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|(!artifact.bag_of_tricks.enabled&spell_targets>=7+2*debuff.vendetta.up)" );
+      // Single
+    build -> add_action( this, "Fan of Knives", "if=equipped.the_dreadlords_deceit&((buff.the_dreadlords_deceit.stack>=29|buff.the_dreadlords_deceit.stack>=15&debuff.vendetta.remains<=3)&debuff.vendetta.up|buff.the_dreadlords_deceit.stack>=5&cooldown.vendetta.remains>60&cooldown.vendetta.remains<65)" );
+    build -> add_talent( this, "Hemorrhage", "if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&(dot.rupture.exsanguinated&dot.rupture.remains<=2|cooldown.exsanguinate.remains<=2))" );
+    build -> add_action( this, "Mutilate", "if=combo_points.deficit<=1&energy.deficit<=30" );
+    if (true_level <= 100 )
+    {
+      build -> add_talent( this, "Hemorrhage", "if=combo_points.deficit=2&set_bonus.tier18_2pc&target.health.pct<=35" );
+      build -> add_action( this, "Mutilate", "if=cooldown.garrote.remains>2&(combo_points.deficit>=3|(combo_points.deficit>=2&!(set_bonus.tier18_2pc&target.health.pct<=35)))" );
+    }
+    else
+      build -> add_action( this, "Mutilate", "if=combo_points.deficit>=2&cooldown.garrote.remains>2" );
+
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
       // Targets the target who will die the sooner to fresh MfD
@@ -6353,14 +6372,6 @@ void rogue_t::init_action_list()
     exsang_combo -> add_talent( this, "Hemorrhage", "if=spell_targets.fan_of_knives>=2&!ticking" );
     exsang_combo -> add_action( "call_action_list,name=build" );
 
-    // Garrote
-    action_priority_list_t* garrote = get_action_priority_list( "garrote", "Garrote" );
-    garrote -> add_action( "pool_resource,for_next=1" );
-    garrote -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&!ticking&combo_points.deficit>=1&spell_targets.fan_of_knives>=2" );
-    garrote -> add_action( "pool_resource,for_next=1" );
-    garrote -> add_action( this, "Garrote", "if=combo_points.deficit>=1&!exsanguinated" );
-
-
     // Exsanguinated Finishers
     action_priority_list_t* exsang = get_action_priority_list( "exsang", "Exsanguinated Finishers" );
       // AoE
@@ -6381,34 +6392,23 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)" );
     finish -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)" );
 
-    // Builders
-    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-      // AoE
-    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4" );
-    build -> add_talent( this, "Hemorrhage", "cycle_targets=1,max_cycle_targets=3,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives=5" );
-      // Replaces Envenom with Fan of Knives after 7 targets / 9 with Vendetta
-    build -> add_action( this, "Fan of Knives", "if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|(!artifact.bag_of_tricks.enabled&spell_targets>=7+2*debuff.vendetta.up)" );
-      // Single
-    build -> add_action( this, "Fan of Knives", "if=equipped.the_dreadlords_deceit&((buff.the_dreadlords_deceit.stack>=29|buff.the_dreadlords_deceit.stack>=15&debuff.vendetta.remains<=3)&debuff.vendetta.up|buff.the_dreadlords_deceit.stack>=5&cooldown.vendetta.remains>60&cooldown.vendetta.remains<65)" );
-    build -> add_talent( this, "Hemorrhage", "if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&(dot.rupture.exsanguinated&dot.rupture.remains<=2|cooldown.exsanguinate.remains<=2))" );
-    build -> add_action( this, "Mutilate", "if=combo_points.deficit<=1&energy.deficit<=30" );
-    if (true_level <= 100 )
-    {
-      build -> add_talent( this, "Hemorrhage", "if=combo_points.deficit=2&set_bonus.tier18_2pc&target.health.pct<=35" );
-      build -> add_action( this, "Mutilate", "if=cooldown.garrote.remains>2&(combo_points.deficit>=3|(combo_points.deficit>=2&!(set_bonus.tier18_2pc&target.health.pct<=35)))" );
-    }
-    else
-      build -> add_action( this, "Mutilate", "if=combo_points.deficit>=2&cooldown.garrote.remains>2" );
+    // Garrote
+    action_priority_list_t* garrote = get_action_priority_list( "garrote", "Garrote" );
+    garrote -> add_action( "pool_resource,for_next=1" );
+    garrote -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&!ticking&combo_points.deficit>=1&spell_targets.fan_of_knives>=2" );
+    garrote -> add_action( "pool_resource,for_next=1" );
+    garrote -> add_action( this, "Garrote", "if=combo_points.deficit>=1&!exsanguinated" );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
     // Main Rotation
-    def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1&!(equipped.thraxis_tricksy_treads&buff.true_bearing.up))", "Condition to continue rerolling RtB; if SnD, consider that you never have to reroll" );
+    def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1&!rtb_list.any.6&((!buff.curse_of_the_dreadblades.up&!buff.adrenaline_rush.up)|!rtb_list.any.5))", "Condition to continue rerolling RtB (2- or not TB alone or not SIW alone during CDs); If SnD: consider that you never have to reroll." );
+      // variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1|rtb_buffs=2&!rtb_list.any.56) is better in average but not really good in practical. (Fish 3+ or 2+ TB or 2+ SIW)
     def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))", "Condition to use Saber Slash when not rerolling RtB or when using SnD" );
     def -> add_action( "variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<4)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))", "Condition to use Saber Slash, when you have RtB or not" );
     def -> add_action( "call_action_list,name=bf", "Normal rotation" );
     def -> add_action( "call_action_list,name=cds" );
-    def -> add_action( "call_action_list,name=stealth" );
+    def -> add_action( "call_action_list,name=stealth,if=stealthed|cooldown.vanish.up|cooldown.shadowmeld.up", "Conditions are here to avoid worthless check if nothing is available" );
       // Make DfA have priority over RtB
     def -> add_talent( this, "Death from Above", "if=energy.time_to_max>2&!variable.ss_useable_noreroll" );
       // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
@@ -6419,6 +6419,12 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=build" );
     def -> add_action( "call_action_list,name=finish,if=!variable.ss_useable" );
     def -> add_action( this, "Gouge", "if=talent.dirty_tricks.enabled&combo_points.deficit>=1", "Gouge is used as a CP Generator while nothing else is available and you have Dirty Tricks talent. It's unlikely that you'll be able to do this optimally in-game since it requires to move in front of the target, but it's here so you can quantifiy its value." );
+
+    // Builders
+    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+    build -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadsides.up&!buff.curse_of_the_dreadblades.up&(debuff.ghostly_strike.remains<debuff.ghostly_strike.duration*0.3|(cooldown.curse_of_the_dreadblades.remains<3&debuff.ghostly_strike.remains<14))&(combo_points>=3|(variable.rtb_reroll&time>=10))" );
+    build -> add_action( this, "Pistol Shot", "if=combo_points.deficit>=1+buff.broadsides.up&buff.opportunity.up&energy.time_to_max>2-talent.quick_draw.enabled" );
+    build -> add_action( this, "Saber Slash", "if=variable.ss_useable" );
 
     // Blade Flurry
     action_priority_list_t* bf = get_action_priority_list( "bf", "Blade Flurry" );
@@ -6444,10 +6450,15 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] );
     }
     cds -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
-    cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&(time>20|energy.deficit>0)" );
+    cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.deficit>0" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15)&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
     cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&!variable.ss_useable" );
     cds -> add_action( this, "Curse of the Dreadblades", "if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)" );
+
+    // Finishers
+    action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
+    finish -> add_action( this, "Between the Eyes", "if=equipped.greenskins_waterlogged_wristcuffs&buff.shark_infested_waters.up" );
+    finish -> add_action( this, "Run Through", "if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
@@ -6455,17 +6466,6 @@ void rogue_t::init_action_list()
     stealth -> add_action( this, "Ambush" );
     stealth -> add_action( this, "Vanish", "if=variable.stealth_condition" );
     stealth -> add_action( "shadowmeld,if=variable.stealth_condition" );
-
-    // Finishers
-    action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
-    finish -> add_action( this, "Between the Eyes", "if=equipped.greenskins_waterlogged_wristcuffs&buff.shark_infested_waters.up" );
-    finish -> add_action( this, "Run Through", "if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5" );
-
-    // Builders
-    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadsides.up&!buff.curse_of_the_dreadblades.up&(debuff.ghostly_strike.remains<debuff.ghostly_strike.duration*0.3|(cooldown.curse_of_the_dreadblades.remains<3&debuff.ghostly_strike.remains<14))&(combo_points>=3|(variable.rtb_reroll&time>=10))" );
-    build -> add_action( this, "Pistol Shot", "if=combo_points.deficit>=1+buff.broadsides.up&buff.opportunity.up&energy.time_to_max>2-talent.quick_draw.enabled" );
-    build -> add_action( this, "Saber Slash", "if=variable.ss_useable" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
@@ -6504,7 +6504,23 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Shadow Blades", "if=!(stealthed|buff.shadowmeld.up)" );
     cds -> add_action( this, "Goremaw's Bite", "if=!buff.shadow_dance.up&((combo_points.deficit>=4-(time<10)*2&energy.deficit>55+talent.vigor.enabled*25-(time>=10)*10)|target.time_to_die<8)" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
-    
+
+    // Builders
+    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+    build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2" );
+    build -> add_talent( this, "Gloomblade" );
+    build -> add_action( this, "Backstab" );
+
+    // Finishers
+    action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
+      // Pandemic is 6 * CP * 0.3, ie CP * 1.8
+    finish -> add_talent( this, "Enveloping Shadows", "if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8" );
+    finish -> add_talent( this, "Death from Above", "if=spell_targets.death_from_above>=10" );
+      // It is not worth to override a normal nightblade for a finality one outside of pandemic threshold, it is worth to wait the end of the finality to refresh it unless you already got the finality buff.
+    finish -> add_action( this, "Nightblade", "target_if=max:target.time_to_die,if=target.time_to_die>10&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time)" );
+    finish -> add_talent( this, "Death from Above" );
+    finish -> add_action( this, "Eviscerate" );
+
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
       // Added buff.shadowmeld.down to avoid using it since it's not usable while shadowmelded "yet" (soonTM ?)
@@ -6524,22 +6540,6 @@ void rogue_t::init_action_list()
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40-variable.ssw_er" );
     stealth_cds -> add_action( "shadowmeld,if=energy>=40-variable.ssw_er" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points<=1" );
-
-    // Finishers
-    action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
-      // Pandemic is 6 * CP * 0.3, ie CP * 1.8
-    finish -> add_talent( this, "Enveloping Shadows", "if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8" );
-    finish -> add_talent( this, "Death from Above", "if=spell_targets.death_from_above>=10" );
-      // It is not worth to override a normal nightblade for a finality one outside of pandemic threshold, it is worth to wait the end of the finality to refresh it unless you already got the finality buff.
-    finish -> add_action( this, "Nightblade", "target_if=max:target.time_to_die,if=target.time_to_die>10&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time)" );
-    finish -> add_talent( this, "Death from Above" );
-    finish -> add_action( this, "Eviscerate" );
-
-    // Builders
-    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2" );
-    build -> add_talent( this, "Gloomblade" );
-    build -> add_action( this, "Backstab" );
   }
 
   use_default_action_list = true;
