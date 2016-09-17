@@ -4721,16 +4721,16 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Rampage", "if=buff.enrage.down&buff.juggernaut.down" );
   single_target -> add_action( this, "Furious Slash", "if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=3)" );
   single_target -> add_action( this, "Raging Blow", "if=buff.juggernaut.down&buff.enrage.up" );
-  single_target -> add_action( this, "Whirlwind", "if=!talent.inner_rage.enabled&buff.wrecking_ball.react" );
+  single_target -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
   single_target -> add_action( this, "Execute", "if=talent.inner_rage.enabled|!talent.inner_rage.enabled&rage>50" );
   single_target -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
-  single_target -> add_action( this, "Raging Blow", "if=buff.enrage.up" );
+  single_target -> add_action( this, "Raging Blow", "if=buff.enrage.down" );
   single_target -> add_action( this, "Execute", "if=artifact.juggernaut.enabled" );
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_action( this, "Bloodthirst" );
   single_target -> add_action( this, "Furious Slash" );
   single_target -> add_action( "call_action_list,name=bladestorm" );
-  single_target -> add_talent( this, "Bloodbath", ",if=buff.frothing_berserker.up|(rage>80&!talent.frothing_berserker.enabled)" );
+  single_target -> add_talent( this, "Bloodbath", "if=buff.frothing_berserker.up|(rage>80&!talent.frothing_berserker.enabled)" );
 
   two_targets -> add_action( this, "Whirlwind", "if=buff.meat_cleaver.down" );
   two_targets -> add_action( "call_action_list,name=bladestorm" );
