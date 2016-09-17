@@ -8261,13 +8261,13 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
     }
   }
 
-  auto total_ranks = artifact.points[ power_index ].first + artifact.points[ power_index ].second;
-
   // No power found
-  if ( ! power_data )
+  if ( !power_data )
   {
     return artifact_power_t();
   }
+
+  auto total_ranks = artifact.points[ power_index ].first + artifact.points[ power_index ].second;
 
   // User input did not select this power
   if ( total_ranks == 0 )
