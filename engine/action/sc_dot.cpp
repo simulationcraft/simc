@@ -488,12 +488,11 @@ expr_t* dot_t::create_expression( action_t* action,
       action_state_t* state;
 
       refresh_expr_t( dot_t* d, action_t* a, bool dynamic ) :
-        dot_expr_t( "dot_refresh", d, a, dynamic ),
-        state( a -> get_state() )
+        dot_expr_t( "dot_refresh", d, a, dynamic ), state( nullptr )
       { }
 
       ~refresh_expr_t()
-      { action_state_t::release( state ); }
+      { if ( state ) action_state_t::release( state ); }
 
       double evaluate() override
       {
@@ -503,6 +502,11 @@ expr_t* dot_t::create_expression( action_t* action,
         if ( d == nullptr || ! d -> is_ticking() )
         {
           return 1;
+        }
+
+        if ( ! state )
+        {
+          state = d -> current_action -> get_state();
         }
 
         d -> current_action -> snapshot_state( state, DMG_OVER_TIME );
