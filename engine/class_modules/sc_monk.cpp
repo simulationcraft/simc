@@ -1255,6 +1255,18 @@ struct storm_earth_and_fire_pet_t : public pet_t
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
 
+  double composite_persistent_multiplier( const action_state_t* action_state ) const override
+  {
+    double pm = sef_melee_attack_t::composite_persistent_multiplier( action_state );
+
+    if ( o() -> buff.transfer_the_power -> up() )
+    {
+      pm /= 1 + o() -> buff.transfer_the_power -> stack_value();
+    }
+
+    return pm;
+  }
+
 //    timespan_t composite_dot_duration( const action_state_t* s ) const override { return timespan_t::from_millis( 4000 ); }
 
 //    timespan_t tick_time( const action_state_t* ) const override { return timespan_t::from_millis( 1000 ); }
@@ -3216,7 +3228,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
     if ( p() -> buff.transfer_the_power -> up() )
     {
       pm *= 1 + p() -> buff.transfer_the_power -> stack_value();
-      p() -> buff.transfer_the_power -> expire();
     }
 
     if ( p() -> artifact.fists_of_the_wind.rank() )
@@ -3269,6 +3280,11 @@ struct fists_of_fury_t: public monk_melee_attack_t
   virtual void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
+
+    // This is not when this happens but putting this here so that it's able to be checked by SEF
+    if ( p() -> buff.transfer_the_power -> up() )
+      p() -> buff.transfer_the_power -> expire();
+
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
     if ( p() -> furious_sun )
@@ -8246,9 +8262,9 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action( this, "Fists of Fury" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
   serenity -> add_talent( this, "Rushing Jade Wind", "if=cooldown.rising_sun_kick.remains>1&!prev_gcd.rushing_jade_wind" );
-  serenity -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2" );
-  serenity -> add_talent( this, "Serenity", "if=chi.max-chi<=2" );
   serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick" );
+  serenity -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
+  serenity -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
 
   // Opener
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -8277,9 +8293,9 @@ void monk_t::apl_combat_windwalker()
   opener -> add_talent( this, "Whirling Dragon Punch", "if=cooldown.fists_of_fury.remains>0&cooldown.rising_sun_kick.remains>0" );
   opener -> add_action( this, "Spinning Crane Kick", "if=buff.serenity.up&!prev_gcd.spinning_crane_kick" );
   opener -> add_talent( this, "Rushing Jade Wind", "if=(buff.serenity.up|chi>1)&cooldown.rising_sun_kick.remains>1&!prev_gcd.rushing_jade_wind" );
-  opener -> add_talent( this, "Chi Brew", "if=chi.max-chi>=2" );
-  opener -> add_talent( this, "Serenity", "if=chi.max-chi<=2" );
   opener -> add_action( this, "Blackout Kick", "cycle_targets=1,if=chi>1&!prev_gcd.blackout_kick" );
+  opener -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
+  opener -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
   opener -> add_action( this, "Tiger Palm", "cycle_targets=1,if=chi.max-chi>=2&!prev_gcd.tiger_palm" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
@@ -8289,17 +8305,17 @@ void monk_t::apl_combat_windwalker()
 
   // Single Target & Non-Chi Explosion Cleave
   st -> add_talent( this, "Rushing Jade Wind", "if=chi>1&!prev_gcd.rushing_jade_wind" );
+  st -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
-  st -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick" );
   st -> add_action( this, "Tiger Palm", "if=chi<=2&!prev_gcd.tiger_palm" );
 
   // AoE while SEF is not up
   aoe -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
   aoe -> add_talent( this, "Rushing Jade Wind", "if=chi>1&!prev_gcd.rushing_jade_wind" );
+  aoe -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,cycle_targets=1" );
   aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
   aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
-  aoe -> add_action( this, "Blackout Kick", "if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick,cycle_targets=1" );
   aoe -> add_action( this, "Tiger Palm", "if=chi.max-chi>1&!prev_gcd.tiger_palm,cycle_targets=1" );
 
 }

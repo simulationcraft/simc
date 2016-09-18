@@ -2,17 +2,9 @@
 monk="Monk_Windwalker_T18M"
 level=100
 race=blood_elf
-role=dps
-position=back
-talents=3020022
-#glyphs=touch_of_death,blackout_kick
-spec=windwalker
-
-level=100
-race=blood_elf
 role=hybrid
 position=back
-talents=3030032
+talents=3010033
 spec=windwalker
 
 head=helm_of_imagined_horrors,id=124259,bonus_id=567,upgrade=2
