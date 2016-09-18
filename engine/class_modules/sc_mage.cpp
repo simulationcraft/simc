@@ -574,9 +574,9 @@ public:
   ~mage_t();
 
   // Character Definition
-  virtual           std::vector<std::string> get_on_use_items();
-  virtual           std::vector<std::string> get_on_use_condition( const std::string& conditions = std::string() );
-  virtual           std::vector<std::string> get_on_use_action( const std::string& action = std::string() );
+  virtual           std::string get_on_use_items( const std::string& item = std::string(), bool specials = false );
+  virtual           std::vector<std::string> get_on_use_condition( const std::string& item = std::string(), bool specials = false );
+  virtual           std::vector<std::string> get_on_use_action( const std::string& item = std::string(), bool specials = false  );
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
   virtual void      create_buffs() override;
@@ -8108,28 +8108,68 @@ bool mage_t::has_t18_class_trinket() const
   return false;
 }
 
-// Build vector of all special item names.
-std::vector<std::string> mage_t::get_on_use_items()
+// This method only handles 1 item per call in order to allow the user to add special conditons and placements
+// to certain items.
+std::string mage_t::get_on_use_items( const std::string& item_name, bool specials )
 {
-  std::vector<std::string> on_use_items;
+  std::string action_string = "use_item,slot=";
+  std::string conditions;
+
+  // If we're dealing with a special item, find its special conditional.
+  if ( specials )
+  {
+    if ( item_name == "obelisk_of_the_void" )
+    {
+      conditions = "if=buff.rune_of_power.up&cooldown.combustion.remains>50";
+    }
+  }
 
   for ( const auto& item : mage_t::player_t::items )
   {
     // This will skip Addon and Enchant-based on-use effects. Addons especially are important to
     // skip from the default APLs since they will interfere with the potion timer, which is almost
     // always preferred over an Addon.
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+
+    // Special or not, we need the name and slot
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item_name == item.name_str)
     {
-      std::string action_string = item.name_str;
-      on_use_items.push_back( action_string );
+      action_string += item.slot_name();
+
+      // If special, we care about special conditions and placement. Else, we only care about placement in the APL.
+      if ( specials )
+      {
+        action_string += ",";
+        action_string += conditions;
+      }
     }
   }
-  return on_use_items;
+
+  return action_string;
 }
 
-std::vector<std::string> mage_t::get_on_use_condition( const std::string& conditions )
+// Here we build the rest of the condition string for an item
+std::vector<std::string> mage_t::get_on_use_condition( const std::string& item, bool specials )
 {
+  std::string slot;
+  std::string conditions;
+
+  slot = item.
 }
+
+
+std::vector<std::string> mage_t::get_on_use_action( const std::string& item, bool specials )
+{
+  // Grab all the on use items
+  std::vector<std::string> item_list = get_on_use_items();
+  std::string full_action = "use_item,slot=";
+  //Search for the given item we want to add an action for
+  for ( size_t i = 0; i < item_list.size(); i++ )
+  {
+    //if ( item == item_list[i] )
+      //full_action += item_list[i].item
+  }
+}
+
 //Pre-combat Action Priority List============================================
 
 void mage_t::apl_precombat()
