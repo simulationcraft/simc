@@ -4,7 +4,7 @@ level=100
 race=blood_elf
 role=hybrid
 position=back
-talents=3030032
+talents=3010033
 spec=windwalker
 
 head=helm_of_imagined_horrors,id=124259,bonus_id=0,upgrade=2

@@ -3700,7 +3700,7 @@ void output_player_damage_summary( report::sc_html_stream& os,
 void output_player_heal_summary( report::sc_html_stream& os,
                                  const player_t& actor )
 {
-  if ( actor.collected_data.heal.max() == 0 && !actor.sim->debug )
+  if ( actor.collected_data.heal.max() == 0 && !actor.sim->debug && actor.collected_data.absorb.max() == 0 )
     return;
 
   // Number of static columns in table

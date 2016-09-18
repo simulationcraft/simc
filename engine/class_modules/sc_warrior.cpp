@@ -3966,7 +3966,6 @@ struct ignore_pain_t: public warrior_spell_t
     absorb_stats = p -> get_stats( "ignore_pain" );
     absorb_gain = p -> get_gain( "ignore_pain" );
     absorb_stats -> type = STATS_ABSORB;
-    absorb_stats -> school = SCHOOL_PHYSICAL; //?
     use_off_gcd = true;
     may_crit = false;
     range = -1;
@@ -3975,6 +3974,8 @@ struct ignore_pain_t: public warrior_spell_t
     if ( p -> talents.never_surrender -> ok() )
     {
       ip_cap_ratio *= 1.0 + p -> talents.never_surrender -> effectN( 1 ).percent();
+      sim -> errorf( "In sim, never surrender is modeled by selecting a number based on a gaussian distrubution with a mean of 60 percent health" );
+      sim -> errorf( "and a range of 40-100 percent everytime ignore pain is cast. In the future, this will be user selectable." );
     }
     if ( p -> talents.indomitable -> ok() )
     {
@@ -3986,6 +3987,7 @@ struct ignore_pain_t: public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
+    p() -> buff.vengeance_ignore_pain -> expire();
     p() -> buff.vengeance_focused_rage -> trigger();
     p() -> buff.renewed_fury -> trigger();
   }
@@ -4012,16 +4014,13 @@ struct ignore_pain_t: public warrior_spell_t
     if ( p() -> buff.vengeance_ignore_pain -> up() )
     {
       amount *= 2.0;
-      p() -> buff.vengeance_ignore_pain -> expire();
     }
 
-    /*  Need to figure out a way to keep the warrior about 0 percent health.
     if ( p() -> talents.never_surrender -> ok() )
-    {
-      double percent_health = ( 1 - ( p() -> health_percentage() / 100 ) ) * p() -> talents.never_surrender -> effectN( 1 ).percent();
+    { //TODO, add options to change the gaussian distribution.
+      double percent_health = ( 1 - rng().gauss(0.7, 0.3 ) * p() -> talents.never_surrender -> effectN( 1 ).percent() );
       amount *= 1.0 + percent_health;
     }
-    */
 
     amount += p() -> buff.ignore_pain -> current_value;
 
@@ -4690,7 +4689,7 @@ void warrior_t::apl_fury()
     default_list -> add_action( "potion,name=" + potion_name + ",if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<30" );
   }
 
-  default_list -> add_action( this, "Battle Cry", "if=(artifact.odyns_fury.enabled&cooldown.odyns_fury.remains=0&(cooldown.bloodthirst.remains=0|(buff.enrage.remains>cooldown.bloodthirst.remains)))|!artifact.odyns_fury.enabled" );
+  default_list -> add_action( this, "Battle Cry", "if=(cooldown.odyns_fury.remains=0&(cooldown.bloodthirst.remains=0|(buff.enrage.remains>cooldown.bloodthirst.remains)))" );
   default_list -> add_talent( this, "Avatar", "if=buff.battle_cry.up|(target.time_to_die<(cooldown.battle_cry.remains+10))" );
   default_list -> add_talent( this, "Bloodbath", "if=buff.dragon_roar.up|(!talent.dragon_roar.enabled&(buff.battle_cry.up|cooldown.battle_cry.remains>10))" );
 
@@ -4712,20 +4711,25 @@ void warrior_t::apl_fury()
 
   movement -> add_action( this, "Heroic Leap" );
 
-  single_target -> add_action( this, "Odyn's Fury", "if=buff.battle_cry.up|target.time_to_die<cooldown.battle_cry.remains" );
-  single_target -> add_action( this, "Execute", "if=artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2)" );
-  single_target -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&cooldown.dragon_roar.remains=0&buff.enrage.down" );
-  single_target -> add_action( this, "Rampage", "if=rage>95|buff.massacre.react");
-  single_target -> add_action( this, "Whirlwind", "if=!talent.inner_rage.enabled&buff.wrecking_ball.react" );
-  single_target -> add_action( this, "Raging Blow", "if=buff.enrage.up" );
+  single_target -> add_action( this, "Bloodthirst", "if=buff.fujiedas_fury.up&buff.fujiedas_fury.remains<2" );
+  single_target -> add_action( this, "Execute", "if=(artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2))|buff.stone_heart.react" );
+  single_target -> add_action( this, "Rampage", "if=rage=100&(target.health.pct>20|target.health.pct<20&!talent.massacre.enabled)|buff.massacre.react&buff.enrage.remains<1" );
+  single_target -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&cooldown.odyns_fury.remains=0&buff.enrage.down" );
+  single_target -> add_talent( this, "Dragon Roar", "if=!cooldown.odyns_fury.remains<=10|cooldown.odyns_fury.remains<3" );
+  single_target -> add_action( this, "Odyn's Fury", "if=buff.battle_cry.up&buff.enrage.up" );
+  single_target -> add_action( this, "Rampage", "if=buff.enrage.down&buff.juggernaut.down" );
+  single_target -> add_action( this, "Furious Slash", "if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=3)" );
+  single_target -> add_action( this, "Raging Blow", "if=buff.juggernaut.down&buff.enrage.up" );
   single_target -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
-  single_target -> add_action( this, "Execute", "if=buff.enrage.up|buff.battle_cry.up|buff.stone_heart.react|(buff.juggernaut.up&buff.juggernaut.remains<3)" );
-  single_target -> add_action( this, "Bloodthirst" );
+  single_target -> add_action( this, "Execute", "if=talent.inner_rage.enabled|!talent.inner_rage.enabled&rage>50" );
+  single_target -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
+  single_target -> add_action( this, "Raging Blow", "if=buff.enrage.down" );
+  single_target -> add_action( this, "Execute", "if=artifact.juggernaut.enabled" );
   single_target -> add_action( this, "Raging Blow" );
-  single_target -> add_talent( this, "Dragon Roar", "if=!talent.bloodbath.enabled&(cooldown.battle_cry.remains<1|cooldown.battle_cry.remains>10)|talent.bloodbath.enabled&cooldown.bloodbath.remains=0" );
-  single_target -> add_action( this, "Rampage", "if=(target.health.pct>20&(cooldown.battle_cry.remains>3|buff.battle_cry.up|rage>90))" );
-  single_target -> add_action( this, "Execute", "if=rage>50|buff.battle_cry.up|buff.stone_heart.react|target.time_to_die<20" );
+  single_target -> add_action( this, "Bloodthirst" );
   single_target -> add_action( this, "Furious Slash" );
+  single_target -> add_action( "call_action_list,name=bladestorm" );
+  single_target -> add_talent( this, "Bloodbath", "if=buff.frothing_berserker.up|(rage>80&!talent.frothing_berserker.enabled)" );
 
   two_targets -> add_action( this, "Whirlwind", "if=buff.meat_cleaver.down" );
   two_targets -> add_action( "call_action_list,name=bladestorm" );
@@ -5260,7 +5264,7 @@ void warrior_t::create_buffs()
 
   buff.vengeance_focused_rage = buff_creator_t( this, "vengeance_focused_rage", find_spell( 202573 ) )
     .chance( talents.vengeance -> ok() )
-    .default_value( find_spell( 202574 ) -> effectN( 1 ).percent() );
+    .default_value( find_spell( 202573 ) -> effectN( 1 ).percent() );
 
   buff.berserking_driver = buff_creator_t( this, "berserking_driver", artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() )
       .trigger_spell(  artifact.rage_of_the_valarjar )

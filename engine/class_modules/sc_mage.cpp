@@ -2649,6 +2649,14 @@ struct aegwynns_ascendance_t : public arcane_mage_spell_t
     aoe = -1;
     trigger_gcd = timespan_t::zero();
     background = true;
+    may_crit = false;
+  }
+  virtual void init() override
+  {
+    arcane_mage_spell_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
   }
 };
 
@@ -5557,13 +5565,6 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     dot_duration = timespan_t::zero();
     base_costs[ RESOURCE_MANA ] = 0;
     trigger_gcd = timespan_t::zero();
-  }
-  virtual void init() override
-  {
-    arcane_mage_spell_t::init();
-    // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_TGT_MUL_DA;
   }
 
   virtual void execute() override

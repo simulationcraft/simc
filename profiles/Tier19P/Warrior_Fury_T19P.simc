@@ -29,7 +29,7 @@ actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
 actions+=/use_item,name=faulty_countermeasure,if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)
 actions+=/potion,name=deadly_grace,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<30
-actions+=/battle_cry,if=(artifact.odyns_fury.enabled&cooldown.odyns_fury.remains=0&(cooldown.bloodthirst.remains=0|(buff.enrage.remains>cooldown.bloodthirst.remains)))|!artifact.odyns_fury.enabled
+actions+=/battle_cry,if=(cooldown.odyns_fury.remains=0&(cooldown.bloodthirst.remains=0|(buff.enrage.remains>cooldown.bloodthirst.remains)))
 actions+=/avatar,if=buff.battle_cry.up|(target.time_to_die<(cooldown.battle_cry.remains+10))
 actions+=/bloodbath,if=buff.dragon_roar.up|(!talent.dragon_roar.enabled&(buff.battle_cry.up|cooldown.battle_cry.remains>10))
 actions+=/blood_fury,if=buff.battle_cry.up
@@ -51,20 +51,25 @@ actions.bladestorm=bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!r
 
 actions.movement=heroic_leap
 
-actions.single_target=odyns_fury,if=buff.battle_cry.up|target.time_to_die<cooldown.battle_cry.remains
-actions.single_target+=/execute,if=artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2)
-actions.single_target+=/berserker_rage,if=talent.outburst.enabled&cooldown.dragon_roar.remains=0&buff.enrage.down
-actions.single_target+=/rampage,if=rage>95|buff.massacre.react
-actions.single_target+=/whirlwind,if=!talent.inner_rage.enabled&buff.wrecking_ball.react
-actions.single_target+=/raging_blow,if=buff.enrage.up
+actions.single_target=bloodthirst,if=buff.fujiedas_fury.up&buff.fujiedas_fury.remains<2
+actions.single_target+=/execute,if=(artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2))|buff.stone_heart.react
+actions.single_target+=/rampage,if=rage=100&(target.health.pct>20|target.health.pct<20&!talent.massacre.enabled)|buff.massacre.react&buff.enrage.remains<1
+actions.single_target+=/berserker_rage,if=talent.outburst.enabled&cooldown.odyns_fury.remains=0&buff.enrage.down
+actions.single_target+=/dragon_roar,if=!cooldown.odyns_fury.remains<=10|cooldown.odyns_fury.remains<3
+actions.single_target+=/odyns_fury,if=buff.battle_cry.up&buff.enrage.up
+actions.single_target+=/rampage,if=buff.enrage.down&buff.juggernaut.down
+actions.single_target+=/furious_slash,if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=3)
+actions.single_target+=/raging_blow,if=buff.juggernaut.down&buff.enrage.up
 actions.single_target+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
-actions.single_target+=/execute,if=buff.enrage.up|buff.battle_cry.up|buff.stone_heart.react|(buff.juggernaut.up&buff.juggernaut.remains<3)
-actions.single_target+=/bloodthirst
+actions.single_target+=/execute,if=talent.inner_rage.enabled|!talent.inner_rage.enabled&rage>50
+actions.single_target+=/bloodthirst,if=buff.enrage.down
+actions.single_target+=/raging_blow,if=buff.enrage.down
+actions.single_target+=/execute,if=artifact.juggernaut.enabled
 actions.single_target+=/raging_blow
-actions.single_target+=/dragon_roar,if=!talent.bloodbath.enabled&(cooldown.battle_cry.remains<1|cooldown.battle_cry.remains>10)|talent.bloodbath.enabled&cooldown.bloodbath.remains=0
-actions.single_target+=/rampage,if=(target.health.pct>20&(cooldown.battle_cry.remains>3|buff.battle_cry.up|rage>90))
-actions.single_target+=/execute,if=rage>50|buff.battle_cry.up|buff.stone_heart.react|target.time_to_die<20
+actions.single_target+=/bloodthirst
 actions.single_target+=/furious_slash
+actions.single_target+=/call_action_list,name=bladestorm
+actions.single_target+=/bloodbath,if=buff.frothing_berserker.up|(rage>80&!talent.frothing_berserker.enabled)
 
 actions.two_targets=whirlwind,if=buff.meat_cleaver.down
 actions.two_targets+=/call_action_list,name=bladestorm

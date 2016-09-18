@@ -3004,6 +3004,15 @@ struct black_arrow_t: public hunter_ranged_attack_t
     else
       p() -> dark_minion[ 1 ] -> summon( duration );
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
 };
 
 // Bursting Shot ======================================================================
@@ -5333,6 +5342,7 @@ void hunter_t::create_pets()
 
   if ( talents.black_arrow -> ok() )
   {
+    //FIXME: Dark Minion should scale off MM Mastery
     dark_minion[ 0 ] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion" ) );
     dark_minion[ 1 ] = new pets::hunter_secondary_pet_t( *this, std::string( "dark_minion_2" ) );
   }

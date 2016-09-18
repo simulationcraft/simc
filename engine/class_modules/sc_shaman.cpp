@@ -6654,6 +6654,7 @@ void shaman_t::init_action_list()
     return;
   }
 
+#ifdef NDEBUG // Only restrict on release builds.
   // Restoration isn't supported atm
   if ( specialization() == SHAMAN_RESTORATION && primary_role() == ROLE_HEAL )
   {
@@ -6663,6 +6664,7 @@ void shaman_t::init_action_list()
     quiet = true;
     return;
   }
+#endif
 
   // After error checks, initialize secondary actions for various things
   if ( specialization() == SHAMAN_ENHANCEMENT )
