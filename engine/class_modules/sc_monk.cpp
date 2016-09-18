@@ -1986,12 +1986,24 @@ public:
     if ( !ab::execute_state ) // Fixes rare crashes at combat_end.
       return;
 
-    // Chi Savings on Dodge & Parry & Miss
-    if ( current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 )
+    
+    if ( current_resource() == RESOURCE_CHI )
     {
-      double chi_restored = ab::resource_consumed;
-      if ( !ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
-        p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.chi_refund );
+      // Drinking Horn Cover Legendary
+      if ( ab::cost() > 0 && p() -> legendary.drinking_horn_cover && p() -> buff.storm_earth_and_fire -> up() )
+      {
+        // Effect is saved as 6; duration is saved as 600 milliseconds
+        double duration = p() -> legendary.drinking_horn_cover -> effectN( 1 ).base_value() * 100;
+        double extension = duration * ab::cost();
+        p() -> buff.storm_earth_and_fire -> extend_duration( p(), timespan_t::from_millis( extension ) );
+      }
+      // Chi Savings on Dodge & Parry & Miss
+      if ( ab::resource_consumed > 0 )
+      {
+        double chi_restored = ab::resource_consumed;
+        if ( !ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
+          p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.chi_refund );
+      }
     }
 
     // Energy refund, estimated at 80%
