@@ -2365,9 +2365,11 @@ namespace attacks
 
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
+  bool may_proc_mm_feet;
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ):
-                          base_t( n, player, s )
+                          base_t( n, player, s ),
+                          may_proc_mm_feet( false )
   {
     if ( player -> main_hand_weapon.type == WEAPON_NONE )
       background = true;
@@ -2406,7 +2408,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
                                               .base_value() ) );
     }
 
-    if ( !background && special && p() -> legendary.mm_feet )
+    if ( !background && p() -> legendary.mm_feet && may_proc_mm_feet )
     {
       p() -> cooldowns.trueshot 
         -> adjust( timespan_t::from_millis( p() -> legendary.mm_feet 
@@ -2748,7 +2750,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "multi_shot", p, p -> find_class_spell( "Multi-Shot" ) )
   {
     parse_options( options_str );
-
+    may_proc_mm_feet = true;
     aoe = -1;
 
     if ( p -> artifacts.called_shot.rank() )
@@ -3179,7 +3181,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     parse_options( options_str );
 
     background = false;
-
+    may_proc_mm_feet = true;
     if ( p -> sets.has_set_bonus( HUNTER_MARKSMANSHIP, T18, B4 ) )
       base_execute_time *= 1.0 - ( p -> sets.set( HUNTER_MARKSMANSHIP, T18, B4 ) -> effectN( 2 ).percent() );
 
@@ -3271,7 +3273,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "arcane_shot", p, p -> find_specialization_spell( "Arcane Shot" ) )
   {
     parse_options( options_str );
-
+    may_proc_mm_feet = true;
     focus_gain = p -> find_spell( 187675 ) -> effectN( 1 ).base_value();
   }
 
@@ -3357,7 +3359,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ), call_of_the_hunter( nullptr )
   {
     parse_options( options_str );
-
+    may_proc_mm_feet = true;
     // Simulated as AOE for simplicity.
     aoe               = -1;
     travel_speed      = 0.0;
