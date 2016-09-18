@@ -214,6 +214,7 @@ void item::giant_ornamental_pearl( special_effect_t& effect )
 }
 
 // Gnawed Thumb Ring =======================================================
+
 void item::gnawed_thumb_ring( special_effect_t& effect )
 {
   effect.custom_buff = buff_creator_t( effect.player, "taste_of_mana", effect.player -> find_spell( 228461 ), effect.item )

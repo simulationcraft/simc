@@ -1643,6 +1643,7 @@ struct demon_spikes_t : public demon_hunter_spell_t
                             options_str )
   {
     use_off_gcd = true;
+    cooldown -> hasted = true; // Doesn't show up in spelldata
   }
 
   void execute() override
