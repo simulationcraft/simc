@@ -8262,9 +8262,6 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action( this, "Fists of Fury" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
   serenity -> add_talent( this, "Rushing Jade Wind", "if=cooldown.rising_sun_kick.remains>1&!prev_gcd.rushing_jade_wind" );
-  serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick" );
-  serenity -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
-  serenity -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
 
   // Opener
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -8294,8 +8291,8 @@ void monk_t::apl_combat_windwalker()
   opener -> add_action( this, "Spinning Crane Kick", "if=buff.serenity.up&!prev_gcd.spinning_crane_kick" );
   opener -> add_talent( this, "Rushing Jade Wind", "if=(buff.serenity.up|chi>1)&cooldown.rising_sun_kick.remains>1&!prev_gcd.rushing_jade_wind" );
   opener -> add_action( this, "Blackout Kick", "cycle_targets=1,if=chi>1&!prev_gcd.blackout_kick" );
-  opener -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
-  opener -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
+  opener -> add_talent( this, "Chi Wave" );
+  opener -> add_talent( this, "Chi Burst" );
   opener -> add_action( this, "Tiger Palm", "cycle_targets=1,if=chi.max-chi>=2&!prev_gcd.tiger_palm" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
