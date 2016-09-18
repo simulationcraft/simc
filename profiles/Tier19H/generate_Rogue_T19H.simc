@@ -9,20 +9,20 @@ spec=assassination
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
 neck=soultrappers_pendant,id=141506,enchant=mark_of_the_hidden_satyr
-shoulders=mantle_of_the_aspiring_spellgiant,id=141445
-back=drape_of_the_manastarved,id=141543,enchant=binding_of_agility
+shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1805
+back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=binding_of_agility
 chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1805
-wrists=dragonspur_wristguards,id=138219,bonus_id=1805
-hands=seaweed_leather_mitts,id=141440
+wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1805
+hands=dreamsculptors_gloves,id=139202,bonus_id=1805
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
-feet=boots_of_endless_betrayal,id=139199,bonus_id=1805
+feet=stained_maggot_squishers,id=139200,bonus_id=1805
 finger1=dingy_suramar_mercantile_signet,id=141492,enchant=binding_of_versatility
 finger2=grubby_silver_ring,id=139236,bonus_id=1805,enchant=binding_of_versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
-trinket2=thriceaccursed_compass,id=141537
-main_hand=,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1805/1805/1805
-off_hand=,id=128869
+trinket2=unstable_arcanocrystal,id=141482
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,relic_id=1727/1727/1727
+off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T19H.simc
 
 rogue="Rogue_Assassination_T19H_Exsang"

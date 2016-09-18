@@ -89,7 +89,7 @@ actions.finish_ex+=/death_from_above,if=combo_points>=cp_max_spend-1&(artifact.b
 actions.finish_ex+=/envenom,if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
 actions.finish_ex+=/envenom,if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
 
-# Finishiers no Exsanguinate
+# Finishers no Exsanguinate
 actions.finish_noex=variable,name=envenom_condition,value=!(dot.rupture.refreshable&dot.rupture.pmultiplier<1.5)&(!talent.nightstalker.enabled|cooldown.vanish.remains>=6)&dot.rupture.remains>=6&buff.elaborate_planning.remains<1.5&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
 actions.finish_noex+=/rupture,cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
 actions.finish_noex+=/rupture,if=combo_points>=cp_max_spend&(((dot.rupture.refreshable)|dot.rupture.ticks_remain<=1)|(talent.nightstalker.enabled&buff.vanish.up))
@@ -104,27 +104,27 @@ actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
 neck=soultrappers_pendant,id=141506,enchant=mark_of_the_hidden_satyr
-shoulders=mantle_of_the_aspiring_spellgiant,id=141445
-back=drape_of_the_manastarved,id=141543,enchant=binding_of_agility
+shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1805
+back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=binding_of_agility
 chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1805
-wrists=dragonspur_wristguards,id=138219,bonus_id=1805
-hands=seaweed_leather_mitts,id=141440
+wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1805
+hands=dreamsculptors_gloves,id=139202,bonus_id=1805
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
-feet=boots_of_endless_betrayal,id=139199,bonus_id=1805
+feet=stained_maggot_squishers,id=139200,bonus_id=1805
 finger1=dingy_suramar_mercantile_signet,id=141492,enchant=binding_of_versatility
 finger2=grubby_silver_ring,id=139236,bonus_id=1805,enchant=binding_of_versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
-trinket2=thriceaccursed_compass,id=141537
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1805/1805/1805
+trinket2=unstable_arcanocrystal,id=141482
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,relic_id=1727/1727/1727
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=866.75
-# gear_agility=15134
-# gear_stamina=21902
-# gear_crit_rating=10393
-# gear_haste_rating=2273
-# gear_mastery_rating=2726
-# gear_versatility_rating=3144
-# gear_armor=2117
+# gear_ilvl=864.69
+# gear_agility=13585
+# gear_stamina=21609
+# gear_crit_rating=9601
+# gear_haste_rating=2311
+# gear_mastery_rating=5096
+# gear_versatility_rating=3407
+# gear_armor=2126

@@ -8,21 +8,21 @@ artifact=43:0:0:0:0:323:3:324:3:325:3:326:3:327:3:328:3:329:3:330:3:331:3:332:1:
 spec=assassination
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_hidden_satyr
+neck=soultrappers_pendant,id=141506,enchant=mark_of_the_hidden_satyr
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
 back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=binding_of_agility
 chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1806
-wrists=dragonspur_wristguards,id=138219,bonus_id=1806
+wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
-feet=duskwalkers_footpads,id=137030
-finger1=dingy_suramar_mercantile_signet,id=141492,enchant=binding_of_versatility
+feet=stained_maggot_squishers,id=139200,bonus_id=1806
+finger1=insignia_of_ravenholdt,id=137049,enchant=binding_of_versatility,gem_id=195854
 finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
-trinket2=thriceaccursed_compass,id=141537
-main_hand=,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1806/1806/1806
-off_hand=,id=128869
+trinket2=unstable_arcanocrystal,id=141482
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,relic_id=1727/1727/1727
+off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T19M.simc
 
 rogue="Rogue_Assassination_T19M_Exsang"
