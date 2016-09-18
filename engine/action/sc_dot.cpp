@@ -491,8 +491,9 @@ expr_t* dot_t::create_expression( action_t* action,
         dot_expr_t( "dot_refresh", d, a, dynamic ), state( nullptr )
       { }
 
+      // Don't recycle the event here, since initialization order can break things
       ~refresh_expr_t()
-      { if ( state ) action_state_t::release( state ); }
+      { delete state; }
 
       double evaluate() override
       {
