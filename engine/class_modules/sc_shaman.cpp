@@ -3376,23 +3376,29 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( p() -> artifact.doom_wolves.rank() )
     {
-      range::for_each( p() -> pet.doom_wolves, [ this ]( pet_t* pet ) {
-        pet::base_wolf_t* wolf = debug_cast<pet::doom_wolf_base_t*>( pet );
-        if ( ! wolf -> is_sleeping() )
-        {
-          wolf -> trigger_alpha_wolf();
-        }
-      } );
+      if ( p() -> pet.doom_wolves[ 0 ] )
+      {
+        range::for_each( p() -> pet.doom_wolves, [ this ]( pet_t* pet ) {
+          pet::base_wolf_t* wolf = debug_cast<pet::doom_wolf_base_t*>( pet );
+          if ( ! wolf -> is_sleeping() )
+          {
+            wolf -> trigger_alpha_wolf();
+          }
+        } );
+      }
     }
     else
     {
-      range::for_each( p() -> pet.spirit_wolves, [ this ]( pet_t* pet ) {
-        pet::base_wolf_t* wolf = debug_cast<pet::spirit_wolf_t*>( pet );
-        if ( ! wolf -> is_sleeping() )
-        {
-          wolf -> trigger_alpha_wolf();
-        }
-      } );
+      if ( p() -> pet.spirit_wolves[ 0 ] )
+      {
+        range::for_each( p() -> pet.spirit_wolves, [ this ]( pet_t* pet ) {
+          pet::base_wolf_t* wolf = debug_cast<pet::spirit_wolf_t*>( pet );
+          if ( ! wolf -> is_sleeping() )
+          {
+            wolf -> trigger_alpha_wolf();
+          }
+        } );
+      }
     }
   }
 };
