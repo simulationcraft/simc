@@ -2186,16 +2186,27 @@ struct focused_rage_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
     p() -> buff.focused_rage -> trigger();
-    p() -> buff.vengeance_focused_rage -> expire();
-    p() -> buff.ultimatum -> expire();
-    p() -> buff.vengeance_ignore_pain -> trigger();
+
+    if ( p() -> buff.ultimatum -> check() )
+    {
+      p() -> buff.ultimatum -> expire();
+    }
+    else
+    {
+      p() -> buff.vengeance_focused_rage -> expire();
+      p() -> buff.vengeance_ignore_pain -> trigger();
+    }
   }
 
   double cost() const override
   {
     double c = warrior_spell_t::cost();
+    if ( p() -> buff.ultimatum -> check() )
+    {
+      c *= 1.0 + p() -> buff.ultimatum -> check_value();
+      return c;
+    }
     c *= 1.0 + p() -> buff.vengeance_focused_rage -> check_value();
-    c *= 1.0 + p() -> buff.ultimatum -> check_value();
     return c;
   }
 };
@@ -3994,9 +4005,7 @@ struct ignore_pain_t: public warrior_spell_t
 
   double cost() const override
   {
-    double c = std::min( 60.0, std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 ) );
-    c *= 1.0 + p() -> buff.vengeance_ignore_pain -> check_value();
-    return c;
+    return std::min( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ), std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );
   }
 
   double max_ip() const
@@ -4009,12 +4018,7 @@ struct ignore_pain_t: public warrior_spell_t
     double amount;
 
     amount = s -> result_amount;
-    amount *= ( resource_consumed / 60.0 );
-
-    if ( p() -> buff.vengeance_ignore_pain -> up() )
-    {
-      amount *= 2.0;
-    }
+    amount *= ( resource_consumed / ( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );
 
     if ( p() -> talents.never_surrender -> ok() )
     { //TODO, add options to change the gaussian distribution.
