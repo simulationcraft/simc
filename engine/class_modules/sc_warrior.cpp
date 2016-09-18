@@ -2301,7 +2301,9 @@ struct heroic_leap_t: public warrior_attack_t
 
   void impact( action_state_t* s ) override
   {
-    if ( !p() -> current.distance_to_move > radius && !p() -> current.moving_away > radius && ( p() -> heroic_charge != nullptr || weight_of_the_earth ) )
+    if ( p() -> current.distance_to_move <= radius &&
+         p() -> current.moving_away <= radius &&
+         ( p() -> heroic_charge != nullptr || weight_of_the_earth ) )
     {
       warrior_attack_t::impact( s );
       if ( weight_of_the_earth )
