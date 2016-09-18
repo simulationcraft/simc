@@ -2205,11 +2205,12 @@ struct focused_rage_t: public warrior_spell_t
     if ( p() -> buff.ultimatum -> check() )
     {
       p() -> buff.ultimatum -> expire();
+      p() -> buff.vengeance_ignore_pain -> trigger();
     }
     else
     {
-      p() -> buff.vengeance_focused_rage -> expire();
       p() -> buff.vengeance_ignore_pain -> trigger();
+      p() -> buff.vengeance_focused_rage -> expire();
     }
   }
 
