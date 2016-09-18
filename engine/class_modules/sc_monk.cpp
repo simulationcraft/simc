@@ -8250,7 +8250,7 @@ void monk_t::apl_combat_windwalker()
   def -> add_action( this, "Strike of the Windlord" );
   def -> add_action( this, "Fists of Fury" );
   def -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
-  def -> add_talent( this, "Whirling Dragon Punch", "if=cooldown.fists_of_fury.remains>0&cooldown.rising_sun_kick.remains>0" );
+  def -> add_talent( this, "Whirling Dragon Punch" );
   
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
@@ -8287,7 +8287,7 @@ void monk_t::apl_combat_windwalker()
   opener -> add_action( this, "Strike of the Windlord" );
   opener -> add_action( this, "Fists of Fury" );
   opener -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
-  opener -> add_talent( this, "Whirling Dragon Punch", "if=cooldown.fists_of_fury.remains>0&cooldown.rising_sun_kick.remains>0" );
+  opener -> add_talent( this, "Whirling Dragon Punch );
   opener -> add_action( this, "Spinning Crane Kick", "if=buff.serenity.up&!prev_gcd.spinning_crane_kick" );
   opener -> add_talent( this, "Rushing Jade Wind", "if=(buff.serenity.up|chi>1)&cooldown.rising_sun_kick.remains>1&!prev_gcd.rushing_jade_wind" );
   opener -> add_action( this, "Blackout Kick", "cycle_targets=1,if=chi>1&!prev_gcd.blackout_kick" );
@@ -8314,7 +8314,6 @@ void monk_t::apl_combat_windwalker()
   aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
   aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
   aoe -> add_action( this, "Tiger Palm", "if=chi.max-chi>1&!prev_gcd.tiger_palm,cycle_targets=1" );
-
 }
 
 // Mistweaver Combat Action Priority List ==================================
