@@ -353,10 +353,11 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
     {
       recharge_event = new ( sim ) recharge_event_t( this, event_duration, _override );
     }
+
     // No charges left, the cooldown won't be ready until a recharge event
     // occurs. Note, ready still needs to be properly set as it ultimately
     // controls whether a cooldown is "up".
-    else if ( current_charge == 0 )
+    if ( current_charge == 0 )
     {
       assert( recharge_event );
       ready = recharge_event -> occurs() + timespan_t::from_millis( 1 );

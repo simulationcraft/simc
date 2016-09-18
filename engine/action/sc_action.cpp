@@ -2306,7 +2306,12 @@ void action_t::interrupt_action()
     if ( sim -> debug )
       sim -> out_debug.printf( "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
 
-    cooldown -> start( this );
+    // Cooldown must be usable to start it. TODO: Is this really right? Interrupting a cooldowned
+    // cast should not start the cooldown, imo?
+    if ( cooldown -> up() )
+    {
+      cooldown -> start( this );
+    }
   }
 
   // Don't start internal cooldown if we're queueing this action
