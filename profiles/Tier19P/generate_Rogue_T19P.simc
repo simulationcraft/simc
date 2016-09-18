@@ -3,7 +3,7 @@ level=110
 race=orc
 role=attack
 position=back
-talents=2110131
+talents=2110111
 artifact=43:0:0:0:0:323:3:325:3:328:3:330:3:331:3:332:1:337:1:346:1:347:1:1276:1
 spec=assassination
 
@@ -24,6 +24,33 @@ trinket2=tirathons_betrayal,id=137537,bonus_id=1727
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137399/133763/137412,relic_id=1727/1727/1727
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T19P.simc
+
+rogue="Rogue_Assassination_T19P_Exsang"
+level=110
+race=orc
+role=attack
+position=back
+talents=2110131
+artifact=43:0:0:0:0:323:3:325:3:328:3:330:3:331:3:332:1:337:1:346:1:347:1:1276:1
+spec=assassination
+
+head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
+neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_hidden_satyr
+shoulders=felbat_leather_pauldrons,id=134374,bonus_id=1727
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant=binding_of_agility
+chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727
+wrists=felbat_leather_wristwraps,id=134368,bonus_id=1727
+hands=guileful_intruder_handguards,id=137480,bonus_id=1727
+waist=felbat_leather_cinch,id=134375,bonus_id=1727
+legs=felbat_leather_leggings,id=134370,bonus_id=1727
+feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
+finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_versatility
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_versatility
+trinket1=hunger_of_the_pack,id=136975,bonus_id=1727
+trinket2=tirathons_betrayal,id=137537,bonus_id=1727
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137399/133763/137412,relic_id=1727/1727/1727
+off_hand=the_kingslayers,id=128869
+save=Rogue_Assassination_T19P_Exsang.simc
 
 rogue="Rogue_Outlaw_T19P"
 level=110
