@@ -1639,12 +1639,24 @@ std::vector<std::string> player_t::get_item_actions( const std::string& options 
         }
         action_string += options;
       }
+      std::string if_expression = get_expression_for_item( item );
+      if ( !if_expression.empty() )
+      {
+        action_string += ",if=";
+        action_string += if_expression;
+      }
 
       actions.push_back( action_string );
     }
   }
 
   return actions;
+}
+
+/// Get specific action if-expression for on-use items.
+std::string player_t::get_expression_for_item( const item_t& )
+{
+  return std::string();
 }
 
 // player_t::init_use_profession_actions ====================================
