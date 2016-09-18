@@ -2276,6 +2276,7 @@ struct heroic_leap_t: public warrior_attack_t
     base_teleport_distance = data().max_range();
     range = -1;
     attack_power_mod.direct = heroic_leap_damage -> effectN( 1 ).ap_coeff();
+    radius = heroic_leap_damage -> effectN( 1 ).radius();
 
     cooldown -> duration = data().charge_cooldown(); // Fixes bug in spelldata for now.
     cooldown -> duration += p -> talents.bounding_stride -> effectN( 1 ).time_value();
@@ -2300,10 +2301,13 @@ struct heroic_leap_t: public warrior_attack_t
 
   void impact( action_state_t* s ) override
   {
-    warrior_attack_t::impact( s );
-    if ( weight_of_the_earth )
+    if ( !p() -> current.distance_to_move > radius && !p() -> current.moving_away > radius && ( p() -> heroic_charge != nullptr || weight_of_the_earth ) )
     {
-      td( s -> target ) -> debuffs_colossus_smash -> trigger();
+      warrior_attack_t::impact( s );
+      if ( weight_of_the_earth )
+      {
+        td( s -> target ) -> debuffs_colossus_smash -> trigger();
+      }
     }
   }
 
@@ -2491,12 +2495,12 @@ struct heroic_charge_t: public warrior_attack_t
     warrior_attack_t::execute();
 
     if ( p() -> cooldown.heroic_leap -> up() )
-    {// We are moving 10 yards, and heroic leap always executes in 0.25 seconds.
-      // Do some hacky math to ensure it will only take 0.25 seconds, since it will certainly
+    {// We are moving 10 yards, and heroic leap always executes in 0.5 seconds.
+      // Do some hacky math to ensure it will only take 0.5 seconds, since it will certainly
       // be the highest temporary movement speed buff.
       double speed;
-      speed = 10 / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / 0.25;
-      p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, timespan_t::from_millis( 250 ) );
+      speed = 10 / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / 0.5;
+      p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, timespan_t::from_millis( 500 ) );
       leap -> execute();
       p() -> trigger_movement( 10.0, MOVEMENT_BOOMERANG ); // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
       p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
@@ -2510,7 +2514,7 @@ struct heroic_charge_t: public warrior_attack_t
 
   bool ready() override
   {
-    if ( p() -> cooldown.charge -> up() && !p() -> buffs.raid_movement -> check() )
+    if ( p() -> cooldown.charge -> up() && !p() -> buffs.raid_movement -> check() && p() -> heroic_charge == nullptr )
     {
       return warrior_attack_t::ready();
     }
