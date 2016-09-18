@@ -4495,6 +4495,9 @@ struct poisoned_knife_t : public rogue_attack_t
     weapon_multiplier = 0;
   }
 
+  bool procs_insignia_of_ravenholdt() const override
+  { return false; }
+
   double composite_poison_flat_modifier( const action_state_t* ) const override
   { return 1.0; }
 };
