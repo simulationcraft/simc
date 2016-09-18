@@ -8241,8 +8241,8 @@ void monk_t::apl_combat_windwalker()
   }
 
   def -> add_talent( this, "Serenity", "if=artifact.gale_burst.enabled&cooldown.touch_of_death.ready&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7" );
-  def -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled" );
-  def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
+  def -> add_action( this, "Touch of Death", "cycle_targets=1,if=!artifact.gale_burst.enabled" );
+  def -> add_action( this, "Touch of Death", "cycle_targets=1,if=artifact.gale_burst.enabled&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
    
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
@@ -8292,7 +8292,7 @@ void monk_t::apl_combat_windwalker()
         opener -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
-  opener -> add_action( this, "Touch of Death" );
+  opener -> add_action( this, "Touch of Death,cycle_targets=1" );
   opener -> add_talent( this, "Serenity" );
   opener -> add_action( this, "Storm, Earth, and Fire" );
   opener -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=buff.serenity.up" );
