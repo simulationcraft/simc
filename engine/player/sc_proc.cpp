@@ -721,7 +721,7 @@ timespan_t special_effect_t::cooldown() const
 
   // First, check item cooldowns, since they override (in simc) whatever the
   // spell cooldown may be
-  if ( item )
+  if ( source == SPECIAL_EFFECT_SOURCE_ITEM && item )
   {
     for ( size_t i = 0; i < MAX_ITEM_EFFECT; i++ )
     {
