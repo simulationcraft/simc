@@ -925,6 +925,11 @@ struct rogue_attack_t : public melee_attack_t
   virtual bool procs_combat_potency() const
   { return callbacks && ! proc && weapon != nullptr && weapon -> slot == SLOT_OFF_HAND; }
 
+  // Generic rules for proccing Insignia of Ravenholdt, used by
+  // rogue_t::trigger_insignia_of_ravenholdt()
+  virtual bool procs_insignia_of_ravenholdt() const
+  { return energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT; }
+
   virtual double proc_chance_main_gauche() const
   { return p() -> cache.mastery_value(); }
 
@@ -1955,11 +1960,7 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_shadow_techniques( state );
   p() -> trigger_weaponmaster( state );
   p() -> trigger_surge_of_toxins( state );
-
-  if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
-  {
-    p() -> trigger_insignia_of_ravenholdt( state );
-  }
+  p() -> trigger_insignia_of_ravenholdt( state );
 
   if ( energize_type != ENERGIZE_NONE && energize_resource == RESOURCE_COMBO_POINT )
     p() -> trigger_seal_fate( state );
@@ -2685,6 +2686,9 @@ struct fan_of_knives_t: public rogue_attack_t
     energize_amount   = data().effectN( 2 ).base_value();
   }
 
+  bool procs_insignia_of_ravenholdt() const override
+  { return false; }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -3383,6 +3387,9 @@ struct mutilate_strike_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> artifact.assassins_blades.percent();
   }
 
+  bool procs_insignia_of_ravenholdt() const override
+  { return true; }
+
   double composite_crit_chance() const override
   {
     double c = rogue_attack_t::composite_crit_chance();
@@ -3402,7 +3409,6 @@ struct mutilate_strike_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     p() -> trigger_seal_fate( state );
-    p() -> trigger_insignia_of_ravenholdt( state );
 
     if ( p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B2 ) && state -> result == RESULT_CRIT )
       p() -> resource_gain( RESOURCE_ENERGY,
@@ -4048,6 +4054,9 @@ struct shuriken_storm_t: public rogue_attack_t
     energize_amount = 1;
   }
 
+  bool procs_insignia_of_ravenholdt() const override
+  { return false; }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -4077,6 +4086,9 @@ struct shuriken_toss_t : public rogue_attack_t
   shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shuriken_toss", p, p -> find_specialization_spell( "Shuriken Toss" ), options_str )
   { }
+
+  bool procs_insignia_of_ravenholdt() const override
+  { return false; }
 };
 
 // Slice and Dice ===========================================================
@@ -5441,18 +5453,27 @@ bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
 
 void rogue_t::trigger_insignia_of_ravenholdt( const action_state_t* state )
 {
-  if ( !legendary.insignia_of_ravenholdt )
+  if ( ! legendary.insignia_of_ravenholdt )
   {
     return;
   }
+
   if ( state -> result_total <= 0 )
   {
     return;
   }
-  if ( !state -> action -> result_is_hit( state -> result ) )
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
   {
     return;
   }
+
+  const actions::rogue_attack_t* attack = cast_attack( state -> action );
+  if ( ! attack -> procs_insignia_of_ravenholdt() )
+  {
+    return;
+  }
+
   insignia_of_ravenholdt_ -> base_dd_min = state -> result_total;
   insignia_of_ravenholdt_ -> base_dd_max = state -> result_total;
   insignia_of_ravenholdt_ -> target = state -> target;
