@@ -8287,7 +8287,7 @@ void monk_t::apl_combat_windwalker()
   opener -> add_action( this, "Strike of the Windlord" );
   opener -> add_action( this, "Fists of Fury" );
   opener -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
-  opener -> add_talent( this, "Whirling Dragon Punch );
+  opener -> add_talent( this, "Whirling Dragon Punch" );
   opener -> add_action( this, "Spinning Crane Kick", "if=buff.serenity.up&!prev_gcd.spinning_crane_kick" );
   opener -> add_talent( this, "Rushing Jade Wind", "if=(buff.serenity.up|chi>1)&cooldown.rising_sun_kick.remains>1&!prev_gcd.rushing_jade_wind" );
   opener -> add_action( this, "Blackout Kick", "cycle_targets=1,if=chi>1&!prev_gcd.blackout_kick" );
