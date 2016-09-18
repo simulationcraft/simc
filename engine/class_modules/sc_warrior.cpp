@@ -109,6 +109,7 @@ public:
     action_t* corrupted_blood_of_zakajz;
     action_t* opportunity_strikes;
     action_t* trauma;
+    action_t* scales_of_earth;
   } active;
 
   // Buffs
@@ -164,6 +165,7 @@ public:
     buff_t* vengeance_ignore_pain;
     buff_t* wrecking_ball;
     haste_buff_t* fury_trinket;
+    buff_t* scales_of_earth;
 
     //Legendary Items
     buff_t* bindings_of_kakushan;
@@ -1724,6 +1726,18 @@ struct opportunity_strikes_t : public warrior_attack_t
   }
 };
 
+// Scales of Earth ==============================================================
+
+struct scales_of_earth_t: public warrior_attack_t
+{
+  scales_of_earth_t( warrior_t* p ):
+    warrior_attack_t( "scales_of_earth", p, p -> artifact.scales_of_earth.data().effectN( 1 ).trigger() -> effectN( 2 ).trigger() )
+  {
+    background = true;
+    aoe = -1;
+  }
+};
+
 // Demoralizing Shout =======================================================
 
 struct demoralizing_shout: public warrior_attack_t
@@ -1735,6 +1749,7 @@ struct demoralizing_shout: public warrior_attack_t
   {
     parse_options( options_str );
     rage_gain += p -> talents.booming_voice -> effectN( 1 ).resource( RESOURCE_RAGE );
+    radius *= 1.0 + p -> artifact.rumbling_voice.data().effectN( 2 ).percent();
   }
 
   void execute() override
@@ -3056,8 +3071,7 @@ struct revenge_t: public warrior_attack_t
     }
     else
     {
-      p() -> resource_gain( RESOURCE_RAGE, rage_gain *
-        ( 1.0 + p() -> artifact.might_of_the_vrykul.percent() )* ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
+      p() -> resource_gain( RESOURCE_RAGE, rage_gain * ( 1.0 + ( p() -> buff.demoralizing_shout -> check() ? p() -> artifact.might_of_the_vrykul.percent() : 0 ) )
                             , p() -> gain.revenge );
     }
 
@@ -3985,7 +3999,7 @@ struct ignore_pain_t: public warrior_spell_t
     if ( p -> talents.never_surrender -> ok() )
     {
       ip_cap_ratio *= 1.0 + p -> talents.never_surrender -> effectN( 1 ).percent();
-      sim -> errorf( "In sim, never surrender is modeled by selecting a number based on a gaussian distrubution with a mean of 60 percent health" );
+      sim -> errorf( "In sim, never surrender is modeled by selecting a number based on a gaussian distrubution with a mean of 70 percent health" );
       sim -> errorf( "and a range of 40-100 percent everytime ignore pain is cast. In the future, this will be user selectable." );
     }
     if ( p -> talents.indomitable -> ok() )
@@ -4001,6 +4015,7 @@ struct ignore_pain_t: public warrior_spell_t
     p() -> buff.vengeance_ignore_pain -> expire();
     p() -> buff.vengeance_focused_rage -> trigger();
     p() -> buff.renewed_fury -> trigger();
+    p() -> buff.dragon_scales -> expire();
   }
 
   double cost() const override
@@ -4010,7 +4025,10 @@ struct ignore_pain_t: public warrior_spell_t
 
   double max_ip() const
   {
-    return ip_cap_ratio * ( data().effectN( 1 ).ap_coeff() * p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier() )  * p() -> cache.damage_versatility();
+    double ip_cap = 0;
+    ip_cap = ip_cap_ratio * ( data().effectN( 1 ).ap_coeff() * p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier() ) * p() -> cache.damage_versatility();
+    ip_cap *= 1.0 + p() -> buff.dragon_scales -> check_value();
+    return ip_cap;
   }
 
   void impact( action_state_t* s ) override
@@ -4022,9 +4040,11 @@ struct ignore_pain_t: public warrior_spell_t
 
     if ( p() -> talents.never_surrender -> ok() )
     { //TODO, add options to change the gaussian distribution.
-      double percent_health = ( 1 - rng().gauss(0.7, 0.3 ) * p() -> talents.never_surrender -> effectN( 1 ).percent() );
+      double percent_health = ( 1 - rng().gauss( 0.7, 0.3 ) * p() -> talents.never_surrender -> effectN( 1 ).percent() );
       amount *= 1.0 + percent_health;
     }
+
+    amount *= 1.0 + p() -> buff.dragon_scales -> check_value();
 
     amount += p() -> buff.ignore_pain -> current_value;
 
@@ -4400,6 +4420,7 @@ void warrior_t::init_spells()
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
   if ( talents.opportunity_strikes -> ok() ) active.opportunity_strikes = new opportunity_strikes_t( this );
   if ( talents.trauma -> ok() ) active.trauma = new trauma_dot_t( this );
+  if ( artifact.scales_of_earth.rank() ) active.scales_of_earth = new scales_of_earth_t( this );
   if ( artifact.corrupted_blood_of_zakajz.rank() ) active.corrupted_blood_of_zakajz = new corrupted_blood_of_zakajz_t( this );
   if ( spec.rampage -> ok() )
   {
@@ -5213,6 +5234,10 @@ void warrior_t::create_buffs()
   buff.wrecking_ball = buff_creator_t( this, "wrecking_ball", talents.wrecking_ball -> effectN( 1 ).trigger() )
     .trigger_spell( talents.wrecking_ball );
 
+  buff.scales_of_earth = buff_creator_t( this, "scales_of_earth", artifact.scales_of_earth.data().effectN( 1 ).trigger() )
+    .chance( artifact.scales_of_earth.data().proc_chance() )
+    .default_value( artifact.scales_of_earth.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
   buff.precise_strikes = buff_creator_t( this, "precise_strikes", artifact.precise_strikes.data().effectN( 1 ).trigger() )
     .default_value( artifact.precise_strikes.percent() )
     .chance( artifact.precise_strikes.rank() > 0 );
@@ -5555,7 +5580,7 @@ double warrior_t::composite_melee_haste() const
 
   a *= 1.0 / ( 1.0 + buff.frenzy -> check_stack_value() );
 
-  return a;
+  return a; 
 }
 
 // warrior_t::composite_armor_multiplier ======================================
@@ -5565,6 +5590,8 @@ double warrior_t::composite_armor_multiplier() const
   double a = player_t::composite_armor_multiplier();
 
   a += artifact.vrykul_shield_training.percent();
+
+  a += buff.scales_of_earth -> check_value();
 
   return a;
 }
@@ -5897,12 +5924,6 @@ stat_e warrior_t::convert_hybrid_stat( stat_e s ) const
 
 void warrior_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, action_state_t* s )
 {
-  if ( specialization() == WARRIOR_PROTECTION && s -> result_amount > 0 )
-  {
-    double rage_gain_from_damage_taken;
-    rage_gain_from_damage_taken = 50.0 * s -> result / expected_max_health;
-    resource_gain( RESOURCE_RAGE, rage_gain_from_damage_taken, gain.rage_from_damage_taken );
-  }
   player_t::assess_damage_imminent_pre_absorb( school, dmg, s );
 }
 
@@ -5952,6 +5973,14 @@ void warrior_t::assess_damage( school_e school,
     if ( school != SCHOOL_PHYSICAL && buff.spell_reflection -> up() )
     {
       s -> result_amount *= 1.0 + buff.spell_reflection -> data().effectN( 2 ).percent();
+      if ( !artifact.reflective_plating.rank() )
+      {
+        buff.spell_reflection -> expire();
+      }
+      else if ( !s -> action -> is_aoe() )
+      {
+        s -> result_amount = 0; // The spell is reflected. I'll add in damage done later. 
+      }
     }
     //take care of dmg reduction CDs
     if ( buff.shield_wall -> up() )
@@ -5985,6 +6014,19 @@ void warrior_t::assess_damage( school_e school,
   if ( action_t::result_is_block( s -> block_result ) )
   {
     buff.dragon_scales -> trigger();
+    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED && artifact.scales_of_earth.rank() )
+    {
+      buff.scales_of_earth -> trigger();
+      active.scales_of_earth -> target = s -> action -> player;
+      active.scales_of_earth -> execute();
+    }
+  }
+
+  if ( specialization() == WARRIOR_PROTECTION && s -> result_amount > 0 ) //This is after absorbs and damage mitigation. Boo.
+  {
+    double rage_gain_from_damage_taken;
+    rage_gain_from_damage_taken = 50.0 * s -> result / expected_max_health;
+    resource_gain( RESOURCE_RAGE, rage_gain_from_damage_taken, gain.rage_from_damage_taken );
   }
 
   player_t::assess_damage( school, dtype, s );
