@@ -30,31 +30,42 @@ actions+=/blood_fury,if=debuff.vendetta.up
 actions+=/berserking,if=debuff.vendetta.up
 actions+=/arcane_torrent,if=debuff.vendetta.up&energy.deficit>50
 actions+=/call_action_list,name=cds
-actions+=/rupture,if=combo_points>=2&!ticking&time<10&!artifact.urge_to_kill.enabled
-actions+=/rupture,if=combo_points>=4&!ticking
+actions+=/rupture,if=combo_points>=2&!ticking&time<10&!artifact.urge_to_kill.enabled&talent.exsanguinate.enabled
+actions+=/rupture,if=combo_points>=4&!ticking&talent.exsanguinate.enabled
 actions+=/pool_resource,for_next=1
 actions+=/kingsbane,if=!talent.exsanguinate.enabled&(buff.vendetta.up|cooldown.vendetta.remains>10)|talent.exsanguinate.enabled&dot.rupture.exsanguinated
 actions+=/run_action_list,name=exsang_combo,if=cooldown.exsanguinate.up&(buff.maalus.up|cooldown.vanish.remains>35)&talent.exsanguinate.enabled
 actions+=/call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8-artifact.bag_of_tricks.enabled
 actions+=/call_action_list,name=exsang,if=dot.rupture.exsanguinated
 actions+=/rupture,if=talent.exsanguinate.enabled&remains-cooldown.exsanguinate.remains<(4+cp_max_spend*4)*0.3&new_duration-cooldown.exsanguinate.remains>=(4+cp_max_spend*4)*0.3+3
-actions+=/call_action_list,name=finish
-actions+=/call_action_list,name=build
+actions+=/call_action_list,name=finish_ex,if=talent.exsanguinate.enabled
+actions+=/call_action_list,name=finish_noex,if=!talent.exsanguinate.enabled
+actions+=/call_action_list,name=build_ex,if=talent.exsanguinate.enabled
+actions+=/call_action_list,name=build_noex,if=!talent.exsanguinate.enabled
 
-# Builders
-actions.build=hemorrhage,cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4
-actions.build+=/hemorrhage,cycle_targets=1,max_cycle_targets=3,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives=5
-actions.build+=/fan_of_knives,if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|(!artifact.bag_of_tricks.enabled&spell_targets>=7+2*debuff.vendetta.up)
-actions.build+=/fan_of_knives,if=equipped.the_dreadlords_deceit&((buff.the_dreadlords_deceit.stack>=29|buff.the_dreadlords_deceit.stack>=15&debuff.vendetta.remains<=3)&debuff.vendetta.up|buff.the_dreadlords_deceit.stack>=5&cooldown.vendetta.remains>60&cooldown.vendetta.remains<65)
-actions.build+=/hemorrhage,if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&(dot.rupture.exsanguinated&dot.rupture.remains<=2|cooldown.exsanguinate.remains<=2))
-actions.build+=/mutilate,if=combo_points.deficit<=1&energy.deficit<=30
-actions.build+=/hemorrhage,if=combo_points.deficit=2&set_bonus.tier18_2pc&target.health.pct<=35
-actions.build+=/mutilate,if=cooldown.garrote.remains>2&(combo_points.deficit>=3|(combo_points.deficit>=2&!(set_bonus.tier18_2pc&target.health.pct<=35)))
+# Builders Exsanguinate
+actions.build_ex=hemorrhage,cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4
+actions.build_ex+=/hemorrhage,cycle_targets=1,max_cycle_targets=3,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives=5
+actions.build_ex+=/fan_of_knives,if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|(!artifact.bag_of_tricks.enabled&spell_targets>=7+2*debuff.vendetta.up)
+actions.build_ex+=/fan_of_knives,if=equipped.the_dreadlords_deceit&((buff.the_dreadlords_deceit.stack>=29|buff.the_dreadlords_deceit.stack>=15&debuff.vendetta.remains<=3)&debuff.vendetta.up|buff.the_dreadlords_deceit.stack>=5&cooldown.vendetta.remains>60&cooldown.vendetta.remains<65)
+actions.build_ex+=/hemorrhage,if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&(dot.rupture.exsanguinated&dot.rupture.remains<=2|cooldown.exsanguinate.remains<=2))
+actions.build_ex+=/mutilate,if=combo_points.deficit<=1&energy.deficit<=30
+actions.build_ex+=/hemorrhage,if=combo_points.deficit=2&set_bonus.tier18_2pc&target.health.pct<=35
+actions.build_ex+=/mutilate,if=cooldown.garrote.remains>2&(combo_points.deficit>=3|(combo_points.deficit>=2&!(set_bonus.tier18_2pc&target.health.pct<=35)))
+
+# Builders no Exsanguinate
+actions.build_noex=hemorrhage,cycle_targets=1,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives<=4
+actions.build_noex+=/hemorrhage,cycle_targets=1,max_cycle_targets=3,if=combo_points.deficit>=1&refreshable&dot.rupture.remains>6&spell_targets.fan_of_knives>1&spell_targets.fan_of_knives=5
+actions.build_noex+=/fan_of_knives,if=(spell_targets>=2+debuff.vendetta.up&(combo_points.deficit>=1|energy.deficit<=30))|(!artifact.bag_of_tricks.enabled&spell_targets>=7+2*debuff.vendetta.up)
+actions.build_noex+=/fan_of_knives,if=equipped.the_dreadlords_deceit&((buff.the_dreadlords_deceit.stack>=29|buff.the_dreadlords_deceit.stack>=15&debuff.vendetta.remains<=3)&debuff.vendetta.up|buff.the_dreadlords_deceit.stack>=5&cooldown.vendetta.remains>60&cooldown.vendetta.remains<65)
+actions.build_noex+=/hemorrhage,if=combo_points.deficit>=1&refreshable
+actions.build_noex+=/mutilate,if=combo_points.deficit>=1&cooldown.garrote.remains>2
 
 # Cooldowns
 actions.cds=marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5
 actions.cds+=/vendetta,if=target.time_to_die<20|buff.maalus.react
 actions.cds+=/vanish,if=talent.subterfuge.enabled&combo_points<=2&!dot.rupture.exsanguinated|talent.shadow_focus.enabled&!dot.rupture.exsanguinated&combo_points.deficit>=2
+actions.cds+=/vanish,if=!talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=5+talent.deeper_stratagem.enabled&energy>=25&gcd.remains=0
 
 # Exsanguinated Finishers
 actions.exsang=rupture,cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
@@ -68,14 +79,21 @@ actions.exsang_combo+=/rupture,if=combo_points>=cp_max_spend&(!talent.nightstalk
 actions.exsang_combo+=/exsanguinate,if=prev_gcd.rupture&dot.rupture.remains>22+4*talent.deeper_stratagem.enabled&cooldown.vanish.remains>10
 actions.exsang_combo+=/call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8-artifact.bag_of_tricks.enabled
 actions.exsang_combo+=/hemorrhage,if=spell_targets.fan_of_knives>=2&!ticking
-actions.exsang_combo+=/call_action_list,name=build
+actions.exsang_combo+=/call_action_list,name=build_ex
 
-# Finishers
-actions.finish=rupture,cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
-actions.finish+=/rupture,if=combo_points>=cp_max_spend-1&refreshable&!exsanguinated
-actions.finish+=/death_from_above,if=combo_points>=cp_max_spend-1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
-actions.finish+=/envenom,if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
-actions.finish+=/envenom,if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
+# Finishers Exsanguinate
+actions.finish_ex=rupture,cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend-1&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
+actions.finish_ex+=/rupture,if=combo_points>=cp_max_spend-1&refreshable&!exsanguinated
+actions.finish_ex+=/death_from_above,if=combo_points>=cp_max_spend-1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
+actions.finish_ex+=/envenom,if=combo_points>=cp_max_spend-1&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&energy.deficit<40&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
+actions.finish_ex+=/envenom,if=combo_points>=cp_max_spend&!dot.rupture.refreshable&buff.elaborate_planning.remains<2&cooldown.garrote.remains<1&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
+
+# Finishiers no Exsanguinate
+actions.finish_noex=variable,name=envenom_condition,value=!(dot.rupture.refreshable&dot.rupture.pmultiplier<1.5)&(!talent.nightstalker.enabled|cooldown.vanish.remains>=6)&dot.rupture.remains>=6&buff.elaborate_planning.remains<1.5&(artifact.bag_of_tricks.enabled|spell_targets.fan_of_knives<=6)
+actions.finish_noex+=/rupture,cycle_targets=1,max_cycle_targets=14-2*artifact.bag_of_tricks.enabled,if=!ticking&combo_points>=cp_max_spend&spell_targets.fan_of_knives>1&target.time_to_die-remains>6
+actions.finish_noex+=/rupture,if=combo_points>=cp_max_spend&(((dot.rupture.refreshable)|dot.rupture.ticks_remain<=1)|(talent.nightstalker.enabled&buff.vanish.up))
+actions.finish_noex+=/death_from_above,if=(combo_points>=5+talent.deeper_stratagem.enabled-2*talent.elaborate_planning.enabled)&variable.envenom_condition&(refreshable|talent.elaborate_planning.enabled&!buff.elaborate_planning.up|cooldown.garrote.remains<1)
+actions.finish_noex+=/envenom,if=(combo_points>=5+talent.deeper_stratagem.enabled-2*talent.elaborate_planning.enabled)&variable.envenom_condition&(refreshable|talent.elaborate_planning.enabled&!buff.elaborate_planning.up|cooldown.garrote.remains<1)
 
 # Garrote
 actions.garrote=pool_resource,for_next=1

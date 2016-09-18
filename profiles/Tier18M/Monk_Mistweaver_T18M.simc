@@ -6,6 +6,41 @@ position=back
 talents=1313323
 spec=mistweaver
 
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=greater_draenic_intellect_flask
+actions.precombat+=/food,type=salty_squid_roll
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=draenic_intellect_potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/invoke_xuen
+actions+=/use_item,name=intuitions_gift
+actions+=/use_item,name=mirror_of_the_blademaster
+actions+=/blood_fury,if=target.time_to_die<18
+actions+=/berserking,if=target.time_to_die<18
+actions+=/arcane_torrent,if=chi.max-chi>=1&target.time_to_die<18
+actions+=/potion,name=draenic_intellect,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/run_action_list,name=aoe,if=active_enemies>=3
+actions+=/call_action_list,name=st,if=active_enemies<3
+
+actions.aoe=spinning_crane_kick
+actions.aoe+=/refreshing_jade_wind
+actions.aoe+=/chi_burst
+actions.aoe+=/blackout_kick
+actions.aoe+=/tiger_palm,if=talent.rushing_jade_wind.enabled
+
+actions.st=rising_sun_kick,if=buff.teachings_of_the_monastery.up
+actions.st+=/blackout_kick,if=buff.teachings_of_the_monastery.up
+actions.st+=/chi_burst
+actions.st+=/tiger_palm,if=buff.teachings_of_the_monastery.down
+
 head=helm_of_the_somber_gaze,id=115556,bonus_id=567
 neck=choker_of_forbidden_indulgence,id=124391,bonus_id=567,upgrade=2,enchant=75mult
 shoulders=mantle_of_the_somber_gaze,id=115559,bonus_id=567
