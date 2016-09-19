@@ -136,6 +136,7 @@ public:
   {
     debuff_t* mark_of_the_crane;
     debuff_t* dizzing_kicks;
+    debuff_t* gale_burst;
     debuff_t* keg_smash;
     debuff_t* storm_earth_and_fire;
   } debuff;
@@ -560,6 +561,7 @@ public:
     const spell_data_t* crackling_tiger_lightning_driver;
     const spell_data_t* crosswinds;
     const spell_data_t* dizzying_kicks;
+    const spell_data_t* gale_burst;
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* whirling_dragon_punch;
@@ -6257,7 +6259,11 @@ monk( *p )
   {
     debuff.mark_of_the_crane = buff_creator_t( *this, "mark_of_the_crane" )
       .spell( p -> passives.mark_of_the_crane )
-      .default_value( p -> passives.mark_of_the_crane -> effectN( 1 ).percent() )
+      .default_value( p -> passives.mark_of_the_crane -> effectN( 1 ).percent() );
+
+    debuff.gale_burst = buff_creator_t( *this, "gale_burst" )
+      .spell( p -> passives.gale_burst )
+      .default_value( 0 )
       .quiet( true );
   }
 
@@ -6701,6 +6707,7 @@ void monk_t::init_spells()
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.crosswinds                       = find_spell( 196061 );
   passives.dizzying_kicks                   = find_spell( 196723 );
+  passives.gale_burst                       = find_spell( 195403 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.whirling_dragon_punch            = find_spell( 158221 );
@@ -8046,7 +8053,7 @@ void monk_t::apl_pre_windwalker()
   {
     // Food
     if ( level() > 100 )
-      pre -> add_action( "food,type=nightborne_delicacy_platter" );
+      pre -> add_action( "food,type=fishbrul_special" );
     else if ( level() > 90 )
       pre -> add_action( "food,type=salty_squid_roll" );
     else if ( level() >= 85 )
