@@ -47,7 +47,7 @@ finger1=,id=141533,enchant=binding_of_haste
 finger2=,id=139238,bonus_id=1807,enchant=binding_of_haste
 trinket1=,id=139321,bonus_id=1805
 trinket2=,id=139323,bonus_id=1805
-main_hand=ebonchill,id=127857,ilevel=894
+main_hand=ebonchill,id=128862,ilevel=894
 save=Mage_Frost_T19H.simc
 
 mage="Mage_Arcane_T19H"
