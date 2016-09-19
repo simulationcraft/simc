@@ -6032,7 +6032,7 @@ void warrior_t::assess_damage( school_e school,
   if ( specialization() == WARRIOR_PROTECTION && s -> result_amount > 0 ) //This is after absorbs and damage mitigation. Boo.
   {
     double rage_gain_from_damage_taken;
-    rage_gain_from_damage_taken = 50.0 * s -> result / expected_max_health;
+    rage_gain_from_damage_taken = 50.0 * s -> result_amount / expected_max_health;
     resource_gain( RESOURCE_RAGE, rage_gain_from_damage_taken, gain.rage_from_damage_taken );
   }
 
