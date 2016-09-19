@@ -86,7 +86,7 @@ hands=handwraps_of_delusional_power,id=138212,bonus_id=1805
 waist=pliable_spider_silk_cinch,id=138217,bonus_id=1805
 legs=nazaks_dusty_pantaloons,id=141415
 feet=crimson_woollined_slippers,id=139195,bonus_id=1805
-finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1807,enchant=binding_of_crit
+finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=binding_of_crit
 finger2=vastly_oversized_ring,id=141580,bonus_id=1497,enchant=binding_of_crit
 trinket1=wriggling_sinew,id=139326,bonus_id=1805
 trinket2=twisting_wind,id=139323,bonus_id=1805
@@ -94,11 +94,11 @@ main_hand=felomelorn,id=128820,ilevel=894
 off_hand=heart_of_the_phoenix,id=133959,ilevel=894
 
 # Gear Summary
-# gear_ilvl=864.56
-# gear_stamina=21833
+# gear_ilvl=865.50
+# gear_stamina=21997
 # gear_intellect=24635
-# gear_crit_rating=10795
-# gear_haste_rating=4130
+# gear_crit_rating=10868
+# gear_haste_rating=4163
 # gear_mastery_rating=2585
 # gear_versatility_rating=266
 # gear_armor=1703

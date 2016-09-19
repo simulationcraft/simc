@@ -64,16 +64,16 @@ waist=pliable_spider_silk_cinch,id=138217,bonus_id=1805
 legs=nazaks_dusty_pantaloons,id=141415
 feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1805
 finger1=ring_of_frozen_magic,id=141533,enchant=binding_of_haste
-finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1807,enchant=binding_of_haste
+finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=binding_of_haste
 trinket1=swarming_plaguehive,id=139321,bonus_id=1805
 trinket2=twisting_wind,id=139323,bonus_id=1805
 main_hand=ebonchill,id=128862,ilevel=894
 
 # Gear Summary
-# gear_ilvl=864.60
-# gear_stamina=22165
+# gear_ilvl=865.60
+# gear_stamina=22329
 # gear_intellect=24726
-# gear_crit_rating=6189
-# gear_haste_rating=9996
+# gear_crit_rating=6262
+# gear_haste_rating=10029
 # gear_mastery_rating=2172
 # gear_armor=1707

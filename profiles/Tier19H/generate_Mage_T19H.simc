@@ -17,7 +17,7 @@ hands=,id=138212,bonus_id=1805
 waist=,id=138217,bonus_id=1805
 legs=,id=141415
 feet=,id=139195,bonus_id=1805
-finger1=,id=139238,bonus_id=1807,enchant=binding_of_crit
+finger1=,id=139238,bonus_id=1805,enchant=binding_of_crit
 finger2=,id=141580,bonus_id=1497,enchant=binding_of_crit
 trinket1=,id=139326,bonus_id=1805
 trinket2=,id=139323,bonus_id=1805
@@ -44,7 +44,7 @@ waist=,id=138217,bonus_id=1805
 legs=,id=141415
 feet=,id=139194,bonus_id=1805
 finger1=,id=141533,enchant=binding_of_haste
-finger2=,id=139238,bonus_id=1807,enchant=binding_of_haste
+finger2=,id=139238,bonus_id=1805,enchant=binding_of_haste
 trinket1=,id=139321,bonus_id=1805
 trinket2=,id=139323,bonus_id=1805
 main_hand=ebonchill,id=128862,ilevel=894
@@ -68,8 +68,8 @@ hands=,id=138212,bonus_id=1805
 waist=,id=138217,bonus_id=1805
 legs=,id=139190,bonus_id=1805
 feet=,id=139195,bonus_id=1805
-finger1=,id=139236,bonus_id=1807,enchant=binding_of_crit
-finger2=,id=139238,bonus_id=1807,enchant=binding_of_crit
+finger1=,id=139236,bonus_id=1805,enchant=binding_of_crit
+finger2=,id=139238,bonus_id=1805,enchant=binding_of_crit
 trinket1=,id=139321,bonus_id=1805
 trinket2=,id=139323,bonus_id=1805
 main_hand=aluneth,id=127857,ilevel=894

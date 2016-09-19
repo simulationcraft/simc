@@ -99,18 +99,18 @@ hands=handwraps_of_delusional_power,id=138212,bonus_id=1805
 waist=pliable_spider_silk_cinch,id=138217,bonus_id=1805
 legs=ragged_horrorweave_leggings,id=139190,bonus_id=1805
 feet=crimson_woollined_slippers,id=139195,bonus_id=1805
-finger1=grubby_silver_ring,id=139236,bonus_id=1807,enchant=binding_of_crit
-finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1807,enchant=binding_of_crit
+finger1=grubby_silver_ring,id=139236,bonus_id=1805,enchant=binding_of_crit
+finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=binding_of_crit
 trinket1=swarming_plaguehive,id=139321,bonus_id=1805
 trinket2=twisting_wind,id=139323,bonus_id=1805
 main_hand=aluneth,id=127857,ilevel=894
 
 # Gear Summary
-# gear_ilvl=864.93
-# gear_stamina=22317
+# gear_ilvl=866.93
+# gear_stamina=22645
 # gear_intellect=24860
-# gear_crit_rating=7311
-# gear_haste_rating=5306
+# gear_crit_rating=7444
+# gear_haste_rating=5339
 # gear_mastery_rating=4569
-# gear_versatility_rating=786
+# gear_versatility_rating=832
 # gear_armor=1715
