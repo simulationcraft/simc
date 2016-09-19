@@ -1111,7 +1111,7 @@ struct melee_t: public warrior_attack_t
         p() -> cooldown.colossus_smash -> reset( true );
         p() -> proc.arms_trinket -> occur();
       }
-      if ( result_is_hit( execute_state -> result ) )
+      if ( result_is_hit( execute_state -> result ) && p() -> specialization() != WARRIOR_PROTECTION )
       {
         trigger_rage_gain( execute_state );
       }
