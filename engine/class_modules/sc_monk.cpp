@@ -8301,7 +8301,7 @@ void monk_t::apl_combat_windwalker()
         opener -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
-  opener -> add_action( this, "Touch of Death,cycle_targets=1" );
+  opener -> add_action( this, "Touch of Death", "cycle_targets=1" );
   opener -> add_talent( this, "Serenity" );
   opener -> add_action( this, "Storm, Earth, and Fire" );
   opener -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=buff.serenity.up" );

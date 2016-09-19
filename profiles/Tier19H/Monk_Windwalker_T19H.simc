@@ -56,6 +56,7 @@ actions.aoe+=/tiger_palm,cycle_targets=1,if=chi.max-chi>1&!prev_gcd.tiger_palm
 actions.opener=blood_fury
 actions.opener+=/berserking
 actions.opener+=/energizing_elixir
+actions.opener+=/touch_of_death,cycle_targets=1
 actions.opener+=/serenity
 actions.opener+=/storm_earth_and_fire
 actions.opener+=/rising_sun_kick,cycle_targets=1,if=buff.serenity.up
