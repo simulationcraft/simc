@@ -2087,7 +2087,7 @@ struct pepper_breath_damage_t : public spell_t
   }
 };
 
-// TODO: Multipliers?
+
 struct pepper_breath_driver_t : public spell_t
 {
   size_t balls_min, balls_max;
@@ -2117,13 +2117,23 @@ struct pepper_breath_driver_t : public spell_t
       tick_action = new pepper_breath_damage_t( effect, trigger_id );
     }
   }
-
+  virtual void init() override
+  {
+    spell_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    update_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+    update_flags |= STATE_TGT_MUL_DA;
+  }
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     auto n_ticks = static_cast<size_t>( rng().range( balls_min, balls_max + 1 ) );
     assert( n_ticks >= 4 && n_ticks <= 6 );
     return base_tick_time * n_ticks;
   }
+
+
 };
 
 void consumable::pepper_breath( special_effect_t& effect )
