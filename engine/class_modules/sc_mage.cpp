@@ -8287,7 +8287,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( "call_action_list,name=conserve" );
 
   conserve     -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-  conserve     -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time" );
+  conserve     -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
   conserve     -> add_action( this, "Arcane Blast", "if=mana.pct>99" );
   conserve     -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)|(cooldown.rune_of_power.remains<gcd.max&dot.nether_tempest.remains<10)" );
   conserve     -> add_action( this, "Arcane Blast", "if=buff.rhonins_assaulting_armwraps.up&equipped.132413" );
@@ -8300,7 +8300,7 @@ void mage_t::apl_arcane()
   conserve     -> add_action( this, "Arcane Blast" );
 
   rop_phase    -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-  rop_phase    -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time" );
+  rop_phase    -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
   rop_phase    -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   rop_phase    -> add_action( this, "Arcane Missiles", "if=buff.arcane_charge.stack=4" );
   rop_phase    -> add_talent( this, "Super Nova", "if=mana.pct<100" );
