@@ -2085,6 +2085,13 @@ struct pepper_breath_damage_t : public spell_t
     background = true;
     callbacks = false;
   }
+
+  void init() override
+  {
+    spell_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
 };
 
 
