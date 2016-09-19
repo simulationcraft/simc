@@ -3,8 +3,8 @@ level=110
 race=orc
 role=spell
 position=back
-talents=3032011
-artifact=53:137272:133052:133056:0:783:1:785:3:786:6:788:3:789:3:790:3:791:3:792:3:793:1:796:1:797:1:798:1:1296:1
+talents=3132111
+artifact=53:139259:139269:139259:0:783:1:784:1:785:3:786:5:788:3:789:4:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1
 spec=frost
 
 # This default action priority list is automatically created based on your character.
@@ -53,30 +53,27 @@ actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/potion,name=deadly_grace
 
-head=collar_of_enclosure,id=134424,ilevel=865
-neck=pendant_of_the_watchful_eye,id=137536,ilevel=865,enchant=mark_of_the_claw
-shoulders=amice_of_the_unfurling_tempest,id=134432,ilevel=865
-back=cloak_of_enthralling_darkness,id=137531,ilevel=865,enchant=binding_of_intellect
-chest=fluxflow_robes,id=134413,ilevel=865
-wrists=armbands_of_slaughter,id=134436,ilevel=865
-hands=satin_throatclutchers,id=134422,ilevel=865
-waist=waistband_of_spiritual_doom,id=137507,ilevel=865
-legs=legwraps_of_reverberating_shadows,id=137404,ilevel=865
-feet=mistbound_helarjar_footwraps,id=133608,ilevel=865
-finger1=seal_of_malicious_deceit,id=134489,ilevel=865,enchant=binding_of_haste
-finger2=band_of_fused_coral,id=134532,ilevel=865,enchant=binding_of_haste
-trinket1=naraxas_spiked_tongue,id=137349,ilevel=865
-trinket2=oakhearts_gnarled_root,id=137306,ilevel=865
-main_hand=ebonchill,id=128862,ilevel=879
+head=mana_scavengers_mask,id=141449
+neck=pendant_of_cold_flame,id=141438,enchant=mark_of_the_hidden_satyr
+shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1805
+back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=binding_of_intellect
+chest=dreamscale_inlaid_vestments,id=138215,bonus_id=1805
+wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1805
+hands=handwraps_of_delusional_power,id=138212,bonus_id=1805
+waist=pliable_spider_silk_cinch,id=138217,bonus_id=1805
+legs=nazaks_dusty_pantaloons,id=141415
+feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1805
+finger1=ring_of_frozen_magic,id=141533,enchant=binding_of_haste
+finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1807,enchant=binding_of_haste
+trinket1=swarming_plaguehive,id=139321,bonus_id=1805
+trinket2=twisting_wind,id=139323,bonus_id=1805
+main_hand=ebonchill,id=127857,ilevel=894
 
 # Gear Summary
-# gear_ilvl=865.93
-# gear_stamina=22263
-# gear_intellect=21799
-# gear_crit_rating=6109
-# gear_haste_rating=10677
-# gear_mastery_rating=1715
-# gear_versatility_rating=986
-# gear_leech_rating=443
-# gear_armor=1715
-# set_bonus=tier19p_cloth_2pc=1
+# gear_ilvl=864.60
+# gear_stamina=22165
+# gear_intellect=24726
+# gear_crit_rating=6189
+# gear_haste_rating=9996
+# gear_mastery_rating=2172
+# gear_armor=1707
