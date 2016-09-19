@@ -56,7 +56,7 @@ actions.burn+=/arcane_blast
 actions.burn+=/evocation
 
 actions.conserve=arcane_missiles,if=buff.arcane_missiles.react=3
-actions.conserve+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time
+actions.conserve+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
 actions.conserve+=/arcane_blast,if=mana.pct>99
 actions.conserve+=/nether_tempest,if=(refreshable|!ticking)|(cooldown.rune_of_power.remains<gcd.max&dot.nether_tempest.remains<10)
 actions.conserve+=/arcane_blast,if=buff.rhonins_assaulting_armwraps.up&equipped.132413
@@ -82,7 +82,7 @@ actions.init_burn+=/rune_of_power
 actions.init_burn+=/start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55
 
 actions.rop_phase=arcane_missiles,if=buff.arcane_missiles.react=3
-actions.rop_phase+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time
+actions.rop_phase+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
 actions.rop_phase+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.rop_phase+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.rop_phase+=/arcane_explosion,if=active_enemies>1
