@@ -2748,7 +2748,6 @@ struct blackout_kick_t: public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     spell_power_mod.direct = 0.0;
-    cooldown -> duration = data().cooldown();
     switch ( p -> specialization() )
     {
       case MONK_MISTWEAVER:
