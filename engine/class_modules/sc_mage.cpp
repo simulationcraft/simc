@@ -8334,7 +8334,7 @@ void mage_t::apl_arcane()
 
   burn      -> add_action( "call_action_list,name=cooldowns" );
   burn      -> add_action( this, "Arcane Missiles", "if=buff.arcane_missiles.react=3" );
-  burn      -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time" );
+  burn      -> add_action( this, "Arcane Explosion", "if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled" );
   burn      -> add_talent( this, "Nether Tempest", "if=dot.nether_tempest.remains<=2|!ticking" );
   burn      -> add_action( this, "Arcane Blast", "if=mana.pct%10*execute_time>target.time_to_die" );
   burn      -> add_talent( this, "Presence of Mind", "if=buff.arcane_power.remains>2*gcd" );
