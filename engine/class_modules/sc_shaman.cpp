@@ -1036,7 +1036,7 @@ public:
 
     trigger_maelstrom_gain( ab::execute_state );
 
-    if ( ab::harmful && ! ab::background && ab::execute_state -> result_amount > 0 )
+    if ( ab::harmful && ab::execute_state -> result_amount > 0 )
     {
       if ( dbc::is_school( ab::get_school(), SCHOOL_FIRE ) )
       {
