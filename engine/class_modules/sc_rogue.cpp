@@ -5838,7 +5838,7 @@ struct roll_the_bones_t : public buff_t
 
     expire_secondary_buffs();
 
-    switch ( roll_the_bones( duration ) )
+    switch ( roll_the_bones( remains() ) )
     {
       case 1:
         rogue -> procs.roll_the_bones_1 -> occur();
