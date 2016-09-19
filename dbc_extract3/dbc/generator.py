@@ -3911,8 +3911,6 @@ class GemPropertyDataGenerator(DataGenerator):
 
         for id in ids + [ 0 ]:
             data = self._gemproperties_db[id]
-            if data.color == 0:
-                continue;
 
             fields = data.field('id', 'id_enchant', 'color', 'min_ilevel')
             self._out.write('  { %s },\n' % (', '.join(fields)))
