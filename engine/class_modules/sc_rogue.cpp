@@ -5525,6 +5525,7 @@ struct blurred_time_t : public buff_t
     buff_t::execute( stacks, value, duration );
 
     range::for_each( r -> blurred_time_cooldowns, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } );
+    player -> adjust_action_queue_time();
   }
 
   void expire( timespan_t delay ) override
@@ -5536,6 +5537,7 @@ struct blurred_time_t : public buff_t
     if ( expired )
     {
       range::for_each( r -> blurred_time_cooldowns, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } );
+      player -> adjust_action_queue_time();
     }
   }
 };
