@@ -5893,7 +5893,7 @@ void warlock_t::apl_precombat()
     precombat_list += "/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains";
 
   if ( specialization() == WARLOCK_DESTRUCTION )
-    precombat_list += "/incinerate";
+    precombat_list += "/chaos_bolt";
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
