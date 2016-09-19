@@ -17,7 +17,7 @@ hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=stained_maggot_squishers,id=139200,bonus_id=1806
-finger1=insignia_of_ravenholdt,id=137049,enchant=binding_of_versatility,gem_id=195854
+finger1=insignia_of_ravenholdt,id=137049,enchant=binding_of_versatility
 finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=unstable_arcanocrystal,id=141482
@@ -25,7 +25,7 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,rel
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T19M.simc
 
-rogue="Rogue_Assassination_T19M_Exsang"
+rogue="Rogue_Assassination_T19M_Exsg"
 level=110
 race=orc
 role=attack
@@ -50,7 +50,7 @@ trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=thriceaccursed_compass,id=141537
 main_hand=,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1806/1806/1806
 off_hand=,id=128869
-save=Rogue_Assassination_T19M_Exsang.simc
+save=Rogue_Assassination_T19M_Exsg.simc
 
 rogue="Rogue_Outlaw_T19M"
 level=110

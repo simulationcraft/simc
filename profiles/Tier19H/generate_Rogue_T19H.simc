@@ -25,7 +25,7 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,rel
 off_hand=the_kingslayers,id=128869
 save=Rogue_Assassination_T19H.simc
 
-rogue="Rogue_Assassination_T19H_Exsang"
+rogue="Rogue_Assassination_T19H_Exsg"
 level=110
 race=orc
 role=attack
@@ -50,7 +50,7 @@ trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
 trinket2=thriceaccursed_compass,id=141537
 main_hand=,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1805/1805/1805
 off_hand=,id=128869
-save=Rogue_Assassination_T19H_Exsang.simc
+save=Rogue_Assassination_T19H_Exsg.simc
 
 rogue="Rogue_Outlaw_T19H"
 level=110
