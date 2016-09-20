@@ -5565,6 +5565,7 @@ struct mark_of_aluneth_explosion_t : public arcane_mage_spell_t
     // Override the nonsense data from their duplicated MoA spelldata.
     dot_duration = timespan_t::zero();
     base_costs[ RESOURCE_MANA ] = 0;
+    aoe = -1;
     trigger_gcd = timespan_t::zero();
   }
 
