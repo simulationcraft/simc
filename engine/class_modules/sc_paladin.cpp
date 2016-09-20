@@ -2762,13 +2762,23 @@ struct light_of_dawn_t : public paladin_heal_t
 
 struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 {
+  bool use2hspec;
+
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
-                          const spell_data_t* s = spell_data_t::nil() ):
-                          base_t( n, p, s )
+                          const spell_data_t* s = spell_data_t::nil(),
+                          bool u2h = true ):
+                          base_t( n, p, s ),
+                          use2hspec( u2h )
   {
     may_crit = true;
     special = true;
     weapon = &( p -> main_hand_weapon );
+
+    // Sword of Light boosts action_multiplier
+    if ( use2hspec && ( p -> passives.sword_of_light -> ok() ) && ( p -> main_hand_weapon.group() == WEAPON_2H ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.sword_of_light_value -> effectN( 1 ).percent();
+    }
   }
 
   virtual timespan_t gcd() const override
@@ -2812,8 +2822,9 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 struct holy_power_generator_t : public paladin_melee_attack_t
 {
   holy_power_generator_t( const std::string& n, paladin_t* p,
-                          const spell_data_t* s = spell_data_t::nil() ):
-                          paladin_melee_attack_t( n, p, s )
+                          const spell_data_t* s = spell_data_t::nil(),
+                          bool u2h = true):
+                          paladin_melee_attack_t( n, p, s, u2h )
   {
 
   }
@@ -2838,8 +2849,9 @@ struct holy_power_generator_t : public paladin_melee_attack_t
 struct holy_power_consumer_t : public paladin_melee_attack_t
 {
   holy_power_consumer_t( const std::string& n, paladin_t* p,
-                          const spell_data_t* s = spell_data_t::nil() ):
-                          paladin_melee_attack_t( n, p, s )
+                          const spell_data_t* s = spell_data_t::nil(),
+                          bool u2h = true):
+                          paladin_melee_attack_t( n, p, s, u2h )
   {
     if ( p -> sets.has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
     {
@@ -2914,7 +2926,7 @@ struct melee_t : public paladin_melee_attack_t
 {
   bool first;
   melee_t( paladin_t* p ) :
-    paladin_melee_attack_t( "melee", p, spell_data_t::nil() ),
+    paladin_melee_attack_t( "melee", p, spell_data_t::nil(), true ),
     first( true )
   {
     school = SCHOOL_PHYSICAL;
@@ -2948,7 +2960,7 @@ struct melee_t : public paladin_melee_attack_t
 struct auto_melee_attack_t : public paladin_melee_attack_t
 {
   auto_melee_attack_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "auto_attack", p, spell_data_t::nil() )
+    : paladin_melee_attack_t( "auto_attack", p, spell_data_t::nil(), true )
   {
     school = SCHOOL_PHYSICAL;
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
@@ -2984,7 +2996,7 @@ struct crusader_strike_t : public holy_power_generator_t
 {
   const spell_data_t* sword_of_light;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ) ),
+    : holy_power_generator_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
@@ -3032,7 +3044,7 @@ struct zeal_t : public holy_power_generator_t
 {
   const spell_data_t* sword_of_light;
   zeal_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "zeal", p, p -> find_talent_spell( "Zeal" ) ),
+    : holy_power_generator_t( "zeal", p, p -> find_talent_spell( "Zeal" ), true ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
@@ -3070,7 +3082,7 @@ struct blade_of_justice_t : public holy_power_generator_t
 {
   const spell_data_t* sword_of_light;
   blade_of_justice_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) ),
+    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
@@ -3095,7 +3107,7 @@ struct blade_of_wrath_t : public holy_power_generator_t
   const spell_data_t* sword_of_light;
 
   blade_of_wrath_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "blade_of_wrath", p, p -> find_talent_spell( "Blade of Wrath" ) ),
+    : holy_power_generator_t( "blade_of_wrath", p, p -> find_talent_spell( "Blade of Wrath" ), true ),
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( options_str );
@@ -3169,7 +3181,7 @@ struct divine_hammer_t : public paladin_spell_t
 struct echoed_divine_storm_t: public paladin_melee_attack_t
 {
   echoed_divine_storm_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "echoed_divine_storm", p, p -> find_spell( 224239 ) )
+    : paladin_melee_attack_t( "echoed_divine_storm", p, p -> find_spell( 224239 ), true )
   {
     parse_options( options_str );
 
@@ -3330,7 +3342,7 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
 struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t( paladin_t* p )
-    : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ) )
+    : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ), false )
   {
     // AoE effect always hits if single-target attack succeeds
     // Doesn't proc Grand Crusader
@@ -3371,7 +3383,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 {
   hammer_of_the_righteous_aoe_t* hotr_aoe;
   hammer_of_the_righteous_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ) )
+    : paladin_melee_attack_t( "hammer_of_the_righteous", p, p -> find_class_spell( "Hammer of the Righteous" ), true )
   {
     parse_options( options_str );
 
@@ -3492,7 +3504,7 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
 struct judgment_aoe_t : public paladin_melee_attack_t
 {
   judgment_aoe_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment_aoe", p, p -> find_spell( 228288 ) )
+    : paladin_melee_attack_t( "judgment_aoe", p, p -> find_spell( 228288 ), true )
   {
     parse_options( options_str );
 
@@ -3573,7 +3585,7 @@ struct judgment_t : public paladin_melee_attack_t
   timespan_t sotr_cdr; // needed for sotr interaction for protection
 
   judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+    : paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ), true )
   {
     parse_options( options_str );
 
@@ -3789,7 +3801,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 struct echoed_templars_verdict_t : public paladin_melee_attack_t
 {
   echoed_templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 224266 ) )
+    : paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 224266 ) , true )
   {
     parse_options( options_str );
 
@@ -3845,7 +3857,7 @@ struct templars_verdict_t : public holy_power_consumer_t
   };
 
   templars_verdict_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ) ),
+    : holy_power_consumer_t( "templars_verdict", p, p -> find_specialization_spell( "Templar's Verdict" ), true ),
       echoed_spell( new echoed_templars_verdict_t( p, options_str ) )
   {
     parse_options( options_str );
@@ -3925,7 +3937,7 @@ struct templars_verdict_t : public holy_power_consumer_t
 struct justicars_vengeance_t : public holy_power_consumer_t
 {
   justicars_vengeance_t( paladin_t* p, const std::string& options_str )
-    : holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance )
+    : holy_power_consumer_t( "justicars_vengeance", p, p -> talents.justicars_vengeance, true )
   {
     parse_options( options_str );
 
@@ -5462,11 +5474,6 @@ double paladin_t::composite_bonus_armor() const
 double paladin_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  // Sword of Light: Spell data says physical damage only.
-  if ( passives.sword_of_light -> ok() && main_hand_weapon.group() == WEAPON_2H &&
-    dbc::is_school( school, SCHOOL_PHYSICAL ) )
-    m *= 1.0 + passives.sword_of_light_value -> effectN( 1 ).percent();
 
   // These affect all damage done by the paladin
   // Avenging Wrath buffs everything
