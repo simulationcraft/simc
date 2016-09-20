@@ -6124,18 +6124,18 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
         std::string( "use_item,slot=" ) + p -> items[ i ].slot_name();
       if ( util::str_compare_ci( p -> items[ i ].name_str,
                                  "tiny_oozeling_in_a_jar" ) )
+      {
         line +=
           ",if=buff.congealing_goo.react=6|(buff.chaos_blades.up&buff.chaos_"
           "blades.remains<5&cooldown.chaos_blades.remains&buff.congealing_"
           "goo.up)";
-      else if ( util::str_compare_ci( p -> items[ i ].name_str,
-                                      "figurehead_of_the_naglfar" ) )
-        line += ",if=active_enemies>1";
+      }
       else
       {
         timespan_t use_cd = p -> items[ i ].special_effect().cooldown();
 
-        if ( p -> talent.chaos_blades -> cooldown() % use_cd == timespan_t::zero() )
+        if ( use_cd > timespan_t::zero() &&
+          p -> talent.chaos_blades -> cooldown() % use_cd == timespan_t::zero() )
         {
           line += ",if=buff.chaos_blades.up|!talent.chaos_blades.enabled";
 
