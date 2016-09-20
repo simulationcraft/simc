@@ -8615,7 +8615,8 @@ double mage_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == MAGE_ARCANE )
   {
-    if ( buffs.arcane_power -> check() )
+    // Spell data says magic damage only.
+    if ( buffs.arcane_power -> check() && dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
     {
       double v = buffs.arcane_power -> value();
       m *= 1.0 + v;

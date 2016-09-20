@@ -5562,7 +5562,9 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
   }
 
-  if ( main_hand_weapon.group() == WEAPON_2H && spec.seasoned_soldier -> ok() )
+  // Physical damage only.
+  if ( main_hand_weapon.group() == WEAPON_2H && spec.seasoned_soldier -> ok() &&
+    dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
   }

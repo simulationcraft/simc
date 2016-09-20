@@ -7187,8 +7187,12 @@ double druid_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.tigers_fury -> check_value();
   m *= 1.0 + buff.savage_roar -> check_value();
 
-  m *= 1.0 + buff.celestial_alignment -> check_value();
-  m *= 1.0 + buff.incarnation_moonkin -> check_value();
+  // Damage modifier applies to all "magic" damage.
+  if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+  {
+    m *= 1.0 + buff.celestial_alignment -> check_value();
+    m *= 1.0 + buff.incarnation_moonkin -> check_value();
+  }
 
   m *= 1.0 + buff.feral_instinct -> check_value();
 
