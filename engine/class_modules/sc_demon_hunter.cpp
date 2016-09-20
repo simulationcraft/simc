@@ -1783,6 +1783,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
       background = dual = true;
       aoe                  = -1;
       may_proc_fel_barrage = false;  // Can't proc itself, that would be silly!
+      school = SCHOOL_CHAOS; // override to chaos, spell data is wrong
     }
   };
 
@@ -1796,6 +1797,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
     may_proc_fel_barrage = false;
     dot_duration   = data().duration();
     base_tick_time = data().effectN( 1 ).period();
+    school = SCHOOL_CHAOS; // override to chaos, spell data is wrong
 
     damage = p -> find_action( "fel_barrage_tick" );
 
