@@ -522,7 +522,6 @@ public:
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
     const spell_data_t* dragonfire_brew_damage;
-    const spell_data_t* dragonfire_brew_reduction;
     const spell_data_t* elusive_brawler;
     const spell_data_t* elusive_dance;
     const spell_data_t* gift_of_the_ox_heal;
@@ -4122,8 +4121,8 @@ struct storm_earth_and_fire_t: public monk_spell_t
     // Don't let user needlessly trigger SEF sticky targeting mode, if the user would just be
     // triggering it on the same sticky target
     if ( p() -> buff.storm_earth_and_fire -> check() &&
-         p() -> pet.sef[ SEF_EARTH ] -> sticky_target &&
-         target == p() -> pet.sef[ SEF_EARTH ] -> target )
+         ( p() -> pet.sef[ SEF_EARTH ] -> sticky_target &&
+         target == p() -> pet.sef[ SEF_EARTH ] -> target ) )
     {
       return false;
     }
@@ -4339,25 +4338,19 @@ struct dragonfire_brew : public monk_spell_t
       tick_may_crit = may_crit = true;
       hasted_ticks = false;
       aoe = -1;
-
-      // TODO: Suspect the damage part is a placeholder
-      base_dd_min = base_dd_max = p.passives.dragonfire_brew_damage -> effectN( 1 ).base_value();
-    }
-
-    virtual void execute() override
-    {
-      monk_spell_t::execute();
-
-      p() -> buff.dragonfire_brew -> trigger();
     }
   };
 
   dragonfire_brew( monk_t& p ) :
-    monk_spell_t( "dragonfire_brew", &p, p.artifact.dragonfire_brew.data().effectN( 1 ).trigger() )
+    monk_spell_t( "dragonfire_brew", &p, p.artifact.dragonfire_brew )
   {
     background = true;
     tick_may_crit = may_crit = false;
     hasted_ticks = false;
+    // Placeholder stuff to get things working
+    dot_duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
+    base_tick_time = dot_duration / data().effectN( 1 ).base_value();
+    tick_zero = hasted_ticks = false;
 
     tick_action = new dragonfire_brew_tick( p );
   }
@@ -4413,7 +4406,15 @@ struct breath_of_fire_t: public monk_spell_t
     monk_spell_t::update_ready( cd );
   }
 
-  virtual void impact( action_state_t* s ) override
+ virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( p() -> artifact.dragonfire_brew.rank() )
+      dragonfire -> execute();
+  }
+
+ virtual void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
 
@@ -4424,9 +4425,6 @@ struct breath_of_fire_t: public monk_spell_t
       dot_action -> target = s -> target;
       dot_action -> execute();
     }
-
-    if ( p() -> artifact.dragonfire_brew.rank() )
-      dragonfire -> execute();
   }
 };
 
@@ -6667,8 +6665,7 @@ void monk_t::init_spells()
   passives.aura_brewmaster_monk             = find_spell( 137023 );
   passives.breath_of_fire_dot               = find_spell( 123725 );
   passives.celestial_fortune                = find_spell( 216521 );
-  passives.dragonfire_brew_damage           = find_spell( 213185 ); // artifact.dragonfire_brew.data().effectN( 1 ).trigger() -> effectN( 1 ).trigger()
-  passives.dragonfire_brew_reduction        = find_spell( 213186 ); // artifact.dragonfire_brew.data().effectN( 1 ).trigger() -> effectN( 2 ).trigger()
+  passives.dragonfire_brew_damage           = find_spell( 227681 ); 
   passives.elusive_brawler                  = find_spell( 195630 );
   passives.elusive_dance                    = find_spell( 196739 );
   passives.gift_of_the_ox_heal              = find_spell( 124507 );
@@ -6871,9 +6868,6 @@ void monk_t::create_buffs()
   buff.brew_stache = buff_creator_t( this, "brew_stache", artifact.brew_stache.data().effectN( 1 ).trigger() )
     .default_value( artifact.brew_stache.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_DODGE );
-
-  buff.dragonfire_brew = buff_creator_t( this, "dragonfire_brew", passives.dragonfire_brew_reduction )
-    .default_value( passives.dragonfire_brew_reduction -> effectN( 1 ).percent() ); // Saved as -2%
 
   buff.elusive_brawler = buff_creator_t( this, "elusive_brawler", mastery.elusive_brawler -> effectN( 3 ).trigger() )
     .max_stack( 100 ) // Hard code 100 stacks based on testing 07/20/16 https://twitter.com/Phazius/status/755956860583149568
