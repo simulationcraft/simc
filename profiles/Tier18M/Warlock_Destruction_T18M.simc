@@ -22,7 +22,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
-actions.precombat+=/incinerate
+actions.precombat+=/chaos_bolt
 
 # Executed every time the actor is available.
 actions=use_item,name=nithramus_the_allseer

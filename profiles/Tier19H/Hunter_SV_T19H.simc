@@ -53,7 +53,7 @@ neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_
 shoulders=matted_fur_pauldrons,id=139217,bonus_id=1805
 back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=200agi
 chest=patient_ambushers_hauberk,id=139221,bonus_id=1805
-wrists=scored_ironclaw_sabatons,id=139220,bonus_id=1805
+wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1805
 hands=gauntlets_of_malevolent_intent,id=139213,bonus_id=1805
 waist=laughing_sisters_pouchchain,id=139211,bonus_id=1805
 legs=disjointed_linkage_leggings,id=139216,bonus_id=1805
@@ -66,11 +66,11 @@ main_hand=talonclaw,id=128808,gem_id=139262/139257/139255,relic_id=1805/1805/180
 
 # Gear Summary
 # gear_ilvl=866.93
-# gear_agility=14479
-# gear_stamina=23065
-# gear_crit_rating=9859
-# gear_haste_rating=4565
-# gear_mastery_rating=2771
+# gear_agility=14199
+# gear_stamina=22645
+# gear_crit_rating=9208
+# gear_haste_rating=4636
+# gear_mastery_rating=3093
 # gear_versatility_rating=1639
-# gear_armor=2738
+# gear_armor=2630
 summon_pet=cat

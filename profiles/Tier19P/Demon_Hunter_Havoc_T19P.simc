@@ -5,7 +5,7 @@ timeofday=night
 role=attack
 position=back
 talents=1130111
-talent_override=fel_barrage,if=desired_targets>1|raid_event.adds.exists
+talent_override=fel_barrage,if=active_enemies>1|raid_event.adds.exists
 artifact=3:137407:133684:137407:0:1001:6:1002:3:1003:3:1005:3:1006:3:1010:1:1012:1:1013:1:1016:1:1330:1
 spec=havoc
 
@@ -22,44 +22,50 @@ actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/metamorphosis
 
 # Executed every time the actor is available.
 actions=auto_attack
+# "Getting ready to use meta" conditions, this is used in a few places.
+actions+=/variable,name=pooling_for_meta,value=cooldown.metamorphosis.ready&buff.metamorphosis.down&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready)&(!talent.nemesis.enabled|debuff.nemesis.up|cooldown.nemesis.ready)
+actions+=/blur,if=artifact.demon_speed.enabled&cooldown.fel_rush.charges_fractional<0.5&cooldown.vengeful_retreat.remains-buff.momentum.remains>4
+actions+=/call_action_list,name=cooldown
+# Fel Rush in at the start of combat.
+actions+=/fel_rush,animation_cancel=1,if=time=0
 actions+=/pick_up_fragment,if=talent.demonic_appetite.enabled&fury.deficit>=30
 actions+=/consume_magic
 # Vengeful Retreat backwards through the target to minimize downtime.
 actions+=/vengeful_retreat,if=(talent.prepared.enabled|talent.momentum.enabled)&buff.prepared.down&buff.momentum.down
 # Fel Rush for Momentum and for fury from Fel Mastery.
 actions+=/fel_rush,animation_cancel=1,if=(talent.momentum.enabled|talent.fel_mastery.enabled)&(!talent.momentum.enabled|(charges=2|cooldown.vengeful_retreat.remains>4)&buff.momentum.down)&(!talent.fel_mastery.enabled|fury.deficit>=25)&raid_event.movement.in>charges*10
-actions+=/eye_beam,if=talent.demonic.enabled&buff.metamorphosis.down&(!talent.first_blood.enabled|fury>=80|fury.deficit<30)
-# If Metamorphosis is ready, pool fury first before using it.
-actions+=/demons_bite,sync=metamorphosis,if=fury.deficit>=25
-actions+=/call_action_list,name=cooldown
-actions+=/fury_of_the_illidari,if=active_enemies>desired_targets|raid_event.adds.in>55
+# Use Fel Barrage at max charges, saving it for Momentum and adds if possible.
+actions+=/fel_barrage,if=charges>=5&(buff.momentum.up|!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)
+actions+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.momentum.enabled|buff.momentum.up)&charges=2
+actions+=/fury_of_the_illidari,if=active_enemies>desired_targets|raid_event.adds.in>55&(!talent.momentum.enabled|buff.momentum.up)
+actions+=/eye_beam,if=talent.demonic.enabled&buff.metamorphosis.down&fury.deficit<30
 # Use Death Sweep if it is more effective than Annihilation. See the Demon Hunter section of the wiki for how this is calculated.
 actions+=/death_sweep,if=death_sweep_worth_using
 actions+=/demons_bite,if=buff.metamorphosis.remains>gcd&cooldown.blade_dance.remains<gcd&fury<70&death_sweep_worth_using
 # Use Blade Dance if it is more effective than Chaos Strike. See the Demon Hunter section of the wiki for how this is calculated.
 actions+=/blade_dance,if=blade_dance_worth_using
-# Use Fel Barrage at max charges, saving it for Momentum and adds if possible.
-actions+=/fel_barrage,if=charges>=5&(buff.momentum.up|!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)
 actions+=/throw_glaive,if=talent.bloodlet.enabled&spell_targets>=2+talent.chaos_cleave.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)
 actions+=/fel_eruption
 actions+=/felblade,if=fury.deficit>=30+buff.prepared.up*8
 actions+=/annihilation,if=!talent.momentum.enabled|buff.momentum.up|fury.deficit<=30+buff.prepared.up*8|buff.metamorphosis.remains<2
 actions+=/throw_glaive,if=talent.bloodlet.enabled&(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)
-actions+=/eye_beam,if=!talent.demonic.enabled&(spell_targets.eye_beam_tick>desired_targets|(raid_event.adds.in>45&buff.metamorphosis.down&(artifact.anguish_of_the_deceiver.enabled|active_enemies>1|level=100)))
+actions+=/eye_beam,if=!talent.demonic.enabled&((spell_targets.eye_beam_tick>desired_targets&active_enemies>1)|(raid_event.adds.in>45&!variable.pooling_for_meta&buff.metamorphosis.down&(artifact.anguish_of_the_deceiver.enabled|active_enemies>1)))
 # Pool fury for various different upcoming abilities.
 actions+=/demons_bite,if=buff.metamorphosis.down&cooldown.blade_dance.remains<gcd&fury<55&blade_dance_worth_using
 actions+=/demons_bite,if=talent.demonic.enabled&buff.metamorphosis.down&cooldown.eye_beam.remains<gcd&fury.deficit>=20
 actions+=/demons_bite,if=talent.demonic.enabled&buff.metamorphosis.down&cooldown.eye_beam.remains<2*gcd&fury.deficit>=45
 actions+=/throw_glaive,if=buff.metamorphosis.down&spell_targets>=3
-actions+=/chaos_strike,if=!talent.momentum.enabled|buff.momentum.up|fury.deficit<=30+buff.prepared.up*8
+actions+=/chaos_strike,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<=30+buff.prepared.up*8)&!variable.pooling_for_meta&(!talent.demonic.enabled|!cooldown.eye_beam.ready)
 # Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible.
 actions+=/fel_barrage,if=charges=4&buff.metamorphosis.down&(buff.momentum.up|!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)
 actions+=/fel_rush,animation_cancel=1,if=!talent.momentum.enabled&raid_event.movement.in>charges*10
 actions+=/demons_bite
 actions+=/throw_glaive
+actions+=/felblade,if=movement.distance|buff.out_of_range.up
 actions+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)
 actions+=/vengeful_retreat,if=movement.distance>15
 
@@ -68,8 +74,7 @@ actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.e
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(cooldown.metamorphosis.remains>100|target.time_to_die<70)
 actions.cooldown+=/nemesis,sync=metamorphosis,if=!raid_event.adds.exists
 actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.remains>100|target.time_to_die<20
-# Use Metamorphosis if Nemesis and Chaos Blades are ready.
-actions.cooldown+=/metamorphosis,if=buff.metamorphosis.down&(!talent.demonic.enabled|!cooldown.eye_beam.ready)&(!talent.chaos_blades.enabled|cooldown.chaos_blades.ready)&(!talent.nemesis.enabled|debuff.nemesis.up|cooldown.nemesis.ready)
+actions.cooldown+=/metamorphosis,if=variable.pooling_for_meta&fury.deficit<30&(talent.chaos_blades.enabled|!cooldown.fury_of_the_illidari.ready&!cooldown.throw_glaive.ready)
 actions.cooldown+=/potion,name=deadly_grace,if=buff.metamorphosis.remains>25
 
 head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727/1492
