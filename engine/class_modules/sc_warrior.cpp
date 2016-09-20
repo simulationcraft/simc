@@ -4040,6 +4040,7 @@ struct ignore_pain_t: public warrior_spell_t
   void impact( action_state_t* s ) override
   {
     double amount;
+    double castAmount;
 
     amount = s -> result_amount;
     amount *= ( resource_consumed / ( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );
@@ -4052,15 +4053,20 @@ struct ignore_pain_t: public warrior_spell_t
 
     amount *= 1.0 + p() -> buff.dragon_scales -> check_value();
 
+    castAmount = amount;
+
     amount += p() -> buff.ignore_pain -> current_value;
 
-    if ( amount > max_ip() )
+    if ( amount > max_ip() ) {
       amount = max_ip();
+      castAmount = max_ip() - p() -> buff.ignore_pain -> current_value;
+    }
+
 
     p() -> buff.ignore_pain -> trigger( 1, amount );
-    absorb_stats -> add_result( amount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, p() );
+    absorb_stats -> add_result( castAmount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, p() );
     absorb_stats -> add_execute( timespan_t::zero(), p() );
-    absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
+    absorb_gain -> add( RESOURCE_HEALTH, castAmount, 0 );
   }
 
   bool ready() override
@@ -5586,7 +5592,7 @@ double warrior_t::composite_melee_haste() const
 
   a *= 1.0 / ( 1.0 + buff.frenzy -> check_stack_value() );
 
-  return a; 
+  return a;
 }
 
 // warrior_t::composite_armor_multiplier ======================================
@@ -5985,7 +5991,7 @@ void warrior_t::assess_damage( school_e school,
       }
       else if ( !s -> action -> is_aoe() )
       {
-        s -> result_amount = 0; // The spell is reflected. I'll add in damage done later. 
+        s -> result_amount = 0; // The spell is reflected. I'll add in damage done later.
       }
     }
     //take care of dmg reduction CDs
