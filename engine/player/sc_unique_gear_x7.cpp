@@ -144,6 +144,20 @@ void set_bonus::simple_callback( special_effect_t& effect )
 
 // Mark of the Distant Army =================================================
 
+struct mark_of_the_distant_army_t : public proc_spell_t
+{
+  mark_of_the_distant_army_t( player_t* p ) :
+    proc_spell_t( "mark_of_the_distant_army",
+      p, p -> find_spell( 191380 ), nullptr )
+  {
+    may_crit = tick_may_crit = false;
+  }
+
+  // Hack to force defender to mitigate the damage with armor.
+  void assess_damage( dmg_e, action_state_t* s ) override
+  { proc_spell_t::assess_damage( DMG_DIRECT, s ); }
+};
+
 void enchants::mark_of_the_distant_army( special_effect_t& effect )
 {
   effect.execute_action = effect.player -> find_action( "mark_of_the_distant_army" );
@@ -155,10 +169,7 @@ void enchants::mark_of_the_distant_army( special_effect_t& effect )
 
   if ( ! effect.execute_action )
   {
-    action_t* a = new proc_spell_t( "mark_of_the_distant_army",
-      effect.player, effect.player -> find_spell( 191380 ), nullptr );
-    a -> may_crit = false;
-    a -> tick_may_crit = false;
+    action_t* a = new mark_of_the_distant_army_t( effect.player );
 
     effect.execute_action = a;
   }
