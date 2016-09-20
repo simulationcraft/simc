@@ -3985,19 +3985,52 @@ struct battle_cry_t: public warrior_spell_t
 
 // Ignore Pain =============================================================
 
+struct ignore_pain_buff_t: public absorb_buff_t
+{
+  ignore_pain_buff_t( warrior_t* player ):
+    absorb_buff_t( absorb_buff_creator_t( player, "ignore_pain", player -> spec.ignore_pain )
+                   .source( player -> get_stats( "ignore_pain" ) )
+    .gain( player -> get_gain( "ignore_pain" ) ) )
+  {}
+
+  // Custom consume implementation to allow minimum absorb amount.
+  double consume( double amount ) override
+  {
+    // Limit the consumption to the current size of the buff.
+    amount = std::min( amount, current_value );
+
+    if ( absorb_source )
+    {
+      absorb_source -> add_result( amount, 0, ABSORB, RESULT_HIT,
+                                   BLOCK_RESULT_UNBLOCKED, player );
+    }
+
+    if ( absorb_gain )
+    {
+      absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
+    }
+
+    amount *= 0.9;
+
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s %s absorbs %.2f (remaining: %.2f)",
+                               player -> name(), name(), amount, current_value );
+    }
+
+    absorb_used( amount );
+
+    return amount;
+  }
+};
+
 struct ignore_pain_t: public warrior_spell_t
 {
   double ip_cap_ratio;
-  stats_t* absorb_stats;
-  gain_t*  absorb_gain;
   ignore_pain_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "ignore_pain", p, p -> spec.ignore_pain ), ip_cap_ratio( 0 ),
-    absorb_stats( nullptr ), absorb_gain( nullptr )
+    warrior_spell_t( "ignore_pain", p, p -> spec.ignore_pain ), ip_cap_ratio( 0 )
   {
     parse_options( options_str );
-    absorb_stats = p -> get_stats( "ignore_pain" );
-    absorb_gain = p -> get_gain( "ignore_pain" );
-    absorb_stats -> type = STATS_ABSORB;
     use_off_gcd = true;
     may_crit = false;
     range = -1;
@@ -4057,16 +4090,14 @@ struct ignore_pain_t: public warrior_spell_t
 
     amount += p() -> buff.ignore_pain -> current_value;
 
-    if ( amount > max_ip() ) {
+    if ( amount > max_ip() )
+    {
       amount = max_ip();
       castAmount = max_ip() - p() -> buff.ignore_pain -> current_value;
     }
 
 
     p() -> buff.ignore_pain -> trigger( 1, amount );
-    absorb_stats -> add_result( castAmount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, p() );
-    absorb_stats -> add_execute( timespan_t::zero(), p() );
-    absorb_gain -> add( RESOURCE_HEALTH, castAmount, 0 );
   }
 
   bool ready() override
@@ -4074,7 +4105,7 @@ struct ignore_pain_t: public warrior_spell_t
     if ( !p() -> has_shield_equipped() )
       return false;
 
-    return base_t::ready();
+    return warrior_spell_t::ready();
   }
 };
 
@@ -5264,7 +5295,7 @@ void warrior_t::create_buffs()
 
   buff.spell_reflection = buff_creator_t( this, "spell_reflection", spec.spell_reflection );
 
-  buff.ignore_pain = buff_creator_t( this, "ignore_pain", spec.ignore_pain );
+  buff.ignore_pain = new ignore_pain_buff_t( this );
 
   buff.neltharions_fury = buff_creator_t( this, "neltharions_fury", artifact.neltharions_fury )
     .default_value( artifact.neltharions_fury.data().effectN( 1 ).percent() )
@@ -5941,19 +5972,13 @@ void warrior_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, a
 
 void warrior_t::assess_damage_imminent( school_e school, dmg_e dmg, action_state_t*s )
 {
-  if ( buff.ignore_pain -> check() )
-  {
-    auto remove = std::min( buff.ignore_pain -> current_value, s -> result_amount * 0.9 );
-
-    s -> result_amount -= remove;
-    assert( buff.ignore_pain -> current_value >= remove );
-    buff.ignore_pain -> current_value -= remove;
-    iteration_absorb_taken += remove;
-    s -> self_absorb_amount += remove;
-    if ( buff.ignore_pain -> current_value <= 0 )
-      buff.ignore_pain -> expire();
-  }
   player_t::assess_damage_imminent( school, dmg, s );
+  if ( specialization() == WARRIOR_PROTECTION && s -> result_amount > 0 ) //This is after absorbs and damage mitigation. Boo.
+  {
+    double rage_gain_from_damage_taken;
+    rage_gain_from_damage_taken = 50.0 * s -> result_amount / expected_max_health;
+    resource_gain( RESOURCE_RAGE, rage_gain_from_damage_taken, gain.rage_from_damage_taken );
+  }
 }
 
 // warrior_t::assess_damage =================================================
@@ -6032,13 +6057,6 @@ void warrior_t::assess_damage( school_e school,
       active.scales_of_earth -> target = s -> action -> player;
       active.scales_of_earth -> execute();
     }
-  }
-
-  if ( specialization() == WARRIOR_PROTECTION && s -> result_amount > 0 ) //This is after absorbs and damage mitigation. Boo.
-  {
-    double rage_gain_from_damage_taken;
-    rage_gain_from_damage_taken = 50.0 * s -> result_amount / expected_max_health;
-    resource_gain( RESOURCE_RAGE, rage_gain_from_damage_taken, gain.rage_from_damage_taken );
   }
 
   player_t::assess_damage( school, dtype, s );
