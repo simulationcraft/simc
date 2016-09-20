@@ -23,6 +23,7 @@ namespace consumable
 namespace enchants
 {
   void mark_of_the_hidden_satyr( special_effect_t& );
+  void mark_of_the_distant_army( special_effect_t& );
   void mark_of_the_ancient_priestess( special_effect_t& ); // NYI
 }
 
@@ -140,6 +141,32 @@ void set_bonus::passive_stat_aura( special_effect_t& effect )
 
 void set_bonus::simple_callback( special_effect_t& effect )
 { new dbc_proc_callback_t( effect.player, effect ); }
+
+// Mark of the Distant Army =================================================
+
+void enchants::mark_of_the_distant_army( special_effect_t& effect )
+{
+  effect.execute_action = effect.player -> find_action( "mark_of_the_distant_army" );
+
+  if ( ! effect.execute_action )
+  {
+    effect.execute_action = effect.player -> create_proc_action( "mark_of_the_distant_army", effect );
+  }
+
+  if ( ! effect.execute_action )
+  {
+    action_t* a = new proc_spell_t( "mark_of_the_distant_army",
+      effect.player, effect.player -> find_spell( 191380 ), nullptr );
+    a -> may_crit = false;
+    a -> tick_may_crit = false;
+
+    effect.execute_action = a;
+  }
+
+  effect.proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC; // DBC says procs off heals. Let's not.
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
 
 // Mark of the Hidden Satyr =================================================
 
@@ -2551,7 +2578,7 @@ void unique_gear::register_special_effects_x7()
 
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );
-  register_special_effect( 190889, "191380trigger" );
+  register_special_effect( 190889, enchants::mark_of_the_distant_army );
   register_special_effect( 190890, enchants::mark_of_the_hidden_satyr );
   register_special_effect( 228398, "228399trigger" );
   register_special_effect( 228400, "228401trigger" );
