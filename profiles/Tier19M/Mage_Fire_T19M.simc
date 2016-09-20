@@ -46,6 +46,7 @@ actions.combustion_phase+=/potion,name=deadly_grace
 actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/arcane_torrent
+actions.combustion_phase+=/use_item,slot=trinket1
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.up
 actions.combustion_phase+=/fire_blast,if=buff.heating_up.up
 actions.combustion_phase+=/phoenixs_flames
@@ -75,29 +76,29 @@ actions.single_target+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_powe
 actions.single_target+=/scorch,if=target.health.pct<=25&equipped.132454
 actions.single_target+=/fireball
 
-head=collar_of_enclosure,id=134424,ilevel=880
-neck=chain_of_the_underking,id=134495,ilevel=880,enchant=mark_of_the_claw
-shoulders=amice_of_the_unfurling_tempest,id=134432,ilevel=880
-back=iceblood_shroud,id=134411,ilevel=880,enchant=binding_of_intellect
-chest=tunic_of_smoldering_ire,id=137352,ilevel=880
-wrists=harrowing_soulspun_bracers,id=134437,ilevel=880
-hands=gloves_of_unseen_evil,id=137506,ilevel=880
-waist=timebreached_waistband,id=137413,ilevel=880
-legs=burrowdweller_leggings,id=137424,ilevel=880
-feet=paranoid_sprinters,id=137319,ilevel=880
-finger1=seal_of_the_nazjatar_empire,id=134525,ilevel=880,enchant=binding_of_critical_strike
-finger2=band_of_callous_dominance,id=134528,ilevel=880,enchant=binding_of_critical_strike
-trinket1=naraxas_spiked_tongue,id=137349,ilevel=880
-trinket2=portable_manacracker,id=137398,ilevel=880
-main_hand=felomelorn,id=128820,ilevel=890
-off_hand=heart_of_the_phoenix,id=133959,ilevel=890
+head=hood_of_darkened_visions,id=139189,bonus_id=1806
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_hidden_satyr
+shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1806
+back=giants_handkerchief,id=141538,enchant=binding_of_intellect
+chest=sheer_felthreaded_robe,id=141427
+wrists=snowdrift_bracers,id=141428
+hands=handwraps_of_delusional_power,id=138212,bonus_id=1806
+waist=pliable_spider_silk_cinch,id=138217,bonus_id=1806
+legs=nazaks_dusty_pantaloons,id=141415
+feet=crimson_woollined_slippers,id=139195,bonus_id=1806
+finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1806,enchant=binding_of_crit
+finger2=vastly_oversized_ring,id=141580,bonus_id=1497,enchant=binding_of_crit
+trinket1=wriggling_sinew,id=139326,bonus_id=1806
+trinket2=twisting_wind,id=139323,bonus_id=1806
+main_hand=felomelorn,id=128820,ilevel=930
+off_hand=heart_of_the_phoenix,id=133959,ilevel=930
 
 # Gear Summary
-# gear_ilvl=881.25
-# gear_stamina=25478
-# gear_intellect=26188
-# gear_crit_rating=11816
-# gear_haste_rating=3046
-# gear_mastery_rating=4649
-# gear_armor=1810
-# set_bonus=tier19p_cloth_2pc=1
+# gear_ilvl=878.44
+# gear_stamina=24880
+# gear_intellect=30767
+# gear_crit_rating=11286
+# gear_haste_rating=4429
+# gear_mastery_rating=2725
+# gear_versatility_rating=266
+# gear_armor=1754

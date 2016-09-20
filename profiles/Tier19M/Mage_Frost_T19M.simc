@@ -53,30 +53,27 @@ actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/potion,name=deadly_grace
 
-head=collar_of_enclosure,id=134424,ilevel=880
-neck=pendant_of_the_watchful_eye,id=137536,ilevel=880,enchant=mark_of_the_claw
-shoulders=amice_of_the_unfurling_tempest,id=134432,ilevel=880
-back=cloak_of_enthralling_darkness,id=137531,ilevel=880,enchant=binding_of_intellect
-chest=fluxflow_robes,id=134413,ilevel=880
-wrists=armbands_of_slaughter,id=134436,ilevel=880
-hands=satin_throatclutchers,id=134422,ilevel=880
-waist=waistband_of_spiritual_doom,id=137507,ilevel=880
-legs=legwraps_of_reverberating_shadows,id=137404,ilevel=880
-feet=mistbound_helarjar_footwraps,id=133608,ilevel=880
-finger1=seal_of_malicious_deceit,id=134489,ilevel=880,enchant=binding_of_haste
-finger2=band_of_fused_coral,id=134532,ilevel=880,enchant=binding_of_haste
-trinket1=naraxas_spiked_tongue,id=137349,ilevel=880
-trinket2=oakhearts_gnarled_root,id=137306,ilevel=880
-main_hand=ebonchill,id=128862,ilevel=890
+head=mana_scavengers_mask,id=141449
+neck=pendant_of_cold_flame,id=141438,enchant=mark_of_the_hidden_satyr
+shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1806
+back=evergreen_vinewrap_drape,id=139248,bonus_id=1806,enchant=binding_of_intellect
+chest=dreamscale_inlaid_vestments,id=138215,bonus_id=1806
+wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
+hands=handwraps_of_delusional_power,id=138212,bonus_id=1806
+waist=pliable_spider_silk_cinch,id=138217,bonus_id=1806
+legs=nazaks_dusty_pantaloons,id=141415
+feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1806
+finger1=ring_of_frozen_magic,id=141533,enchant=binding_of_haste
+finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1806,enchant=binding_of_haste
+trinket1=swarming_plaguehive,id=139321,bonus_id=1806
+trinket2=twisting_wind,id=139323,bonus_id=1806
+main_hand=ebonchill,id=128862,ilevel=930
 
 # Gear Summary
-# gear_ilvl=880.67
-# gear_stamina=25503
-# gear_intellect=24577
-# gear_crit_rating=6465
-# gear_haste_rating=11260
-# gear_mastery_rating=1802
-# gear_versatility_rating=1043
-# gear_leech_rating=469
-# gear_armor=1810
-# set_bonus=tier19p_cloth_2pc=1
+# gear_ilvl=878.00
+# gear_stamina=25411
+# gear_intellect=31119
+# gear_crit_rating=6459
+# gear_haste_rating=10441
+# gear_mastery_rating=2365
+# gear_armor=1777
