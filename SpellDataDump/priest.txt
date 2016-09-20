@@ -3159,6 +3159,7 @@ Effects          :
 Description      : $?s73510[Mind Spike][Mind Flay] and Mind Blast deal $s3% more damage and generate $s1% more Insanity.
 
 Name             : Surrender to Madness (id=193223) [Spell Family (6)] 
+Hotfixed         : Category
 Class            : Priest
 School           : Physical
 Duration         : 180 seconds

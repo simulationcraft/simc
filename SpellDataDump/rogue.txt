@@ -2688,6 +2688,7 @@ Description      : $@spelldesc145210
 Tooltip          : Mastery increased by $s1.
 
 Name             : Death from Above (id=152150) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Resource         : 25 Energy
@@ -2702,7 +2703,7 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ x....... 
                  : ........ ....x... ........ ........   ........ ........ .......x ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... ........ .......x   ........ ........ ........ ........ 
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=210639)   : Dummy (3)
@@ -3154,12 +3155,13 @@ Increases the effect of Agonizing Poison's damage bonus by ${$m2/$<agonizingrati
 Variables        : $agonizingratio = ${2}
 
 Name             : Poison Knives (id=192380) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
 Affecting spells : Improved Poisons (14117), Venomous Totem (23726), Mastery: Potent Poisons (76803), Vendetta (79140), Master Alchemist (192318), Surge of Toxins (192425), Master Poisoner (196864), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4329,8 +4331,9 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Stealth (158188)
 #2 (id=334761)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Stealth (158188), Shadow Dance (185313)
+                   Hotfixed: Base Value (3 -> 0)
 Description      : You heal $s1% of your maximum life every $158188t2 sec while Stealth is active.
 
 Name             : Tangled Shadow (Passive Talent) (id=200778) [Spell Family (8), Passive] 

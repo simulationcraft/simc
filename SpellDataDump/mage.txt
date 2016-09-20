@@ -1214,6 +1214,7 @@ Description      : $@spelldesc112965
 Tooltip          : Your next Ice Lance deals damage as if the target were frozen.
 
 Name             : Flurry (id=44614) [Scaling Spell (5), Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Frost Mage
 School           : Frost
 Resource         : 1% Base Mana (11000 @Level 110)
@@ -1222,7 +1223,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Affecting spells : Icy Veins (12472), Shatter (12982), Ice Floes (108839), Mage (137018), Enhanced Pyrotechnics (157644), Ice Form (198144), 
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
