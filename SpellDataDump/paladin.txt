@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 4570e1a)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build a67fc05)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -461,7 +461,7 @@ GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 9 seconds
 Category         : 932
-Affecting spells : Paladin (137026), Lucidity (137288), Consecration in Flame (209218)
+Affecting spells : Paladin (137026), Protection Paladin (137028), Lucidity (137288), Consecration in Flame (209218)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ......x. 
@@ -632,7 +632,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=21607)    : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 4.35000 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 3.91500 | Chain Targets: 3 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (4.35 -> 3.915)
 #2 (id=135932)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Mechanic: Unknown(227) | Chain Targets: 65535 | Target: Enemy(6)
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
@@ -950,7 +951,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46252)    : Weapon Damage% (31)
-                   Base Value: 125 | Scaled Value: 1.25 | Target: Enemy(6)
+                   Base Value: 112 | Scaled Value: 1.12 | Target: Enemy(6)
+                   Hotfixed: Base Value (125 -> 112)
 #2 (id=171314)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Hammers the current target for $53595sw1 Physical damage.$?s26573[
@@ -974,7 +976,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46256)    : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 4.00000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.60000 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (4 -> 3.6)
 Description      : Slams the target with your shield, causing $s1 Holy damage, and reducing damage you take by ${-1*$clamp($132403m1,-80,-25)}% for $132403d.$?s26573[
 
 While you are standing in your Consecration, Shield of the Righteous' effects are increased by $188370s2%.][]
@@ -1366,7 +1369,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 6
 Range            : 50000 yards
-Affecting spells : Paladin (137026), Lucidity (137288), Consecration in Flame (209218)
+Affecting spells : Paladin (137026), Protection Paladin (137028), Lucidity (137288), Consecration in Flame (209218)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ....x.x.   x....... ........ ........ .x....x. 
                  : x......x ........ ........ ........   ...x.... ..x..... .xx..... ..x..... 
@@ -1652,7 +1655,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=90535)    : Weapon Damage% (31)
-                   Base Value: 75 | Scaled Value: 0.75 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 67 | Scaled Value: 0.67 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: Base Value (75 -> 67)
 #2 (id=171313)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc35395
@@ -1756,7 +1760,8 @@ Attributes       : ........ ........ ..x.x... ......x.   ...x...x ........ ..x..
                  : Stop attacks (20), Disable player procs (112), Requires line of sight (186)
 Effects          :
 #1 (id=115255)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.00000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.70000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Hotfixed: SP Coefficient (3 -> 2.7)
 Description      : Emits a dazzling light in all directions, blinding enemies within $A1 yards, causing them to wander disoriented for $d.
 Tooltip          : Disoriented.
 
@@ -2298,10 +2303,13 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Flash of Light (19750)
 #3 (id=191089)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
-#4 (id=191090)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: Base Value (50 -> 35)
+#4 (id=191090)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -10 | Scaled Value: -10 | Target: Self(1)
+                   Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -10), Affects Spells
 #5 (id=191091)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260917)   : Apply Aura (6) | Dummy (4)
@@ -3017,9 +3025,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=266740)   : Direct Heal (10)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Hotfixed: Base Value (35 -> 30)
 #2 (id=303002)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Hotfixed: Base Value (35 -> 30)
 Description      : Calls down the Light to heal you for $s1% of your missing health.$?s26573[
 
 While you are standing in your Consecration, Light of the Protector's healing is increased by $188370s2%.][]
@@ -3833,7 +3843,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Disable target procs (113)
 Effects          :
 #1 (id=301046)   : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04500 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.05 -> 0.045)
 Description      : $@spelldesc203797
 
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
@@ -4063,7 +4074,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301536)   : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.63800 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.57400 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.638 -> 0.574)
 #2 (id=303007)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy(6)
 Description      : $@spelldesc204019
@@ -4120,7 +4132,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 12 seconds
 Category         : 932
-Affecting spells : Paladin (137026), Lucidity (137288), Consecration in Flame (209218)
+Affecting spells : Paladin (137026), Protection Paladin (137028), Lucidity (137288), Consecration in Flame (209218)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ......x. 
@@ -4203,7 +4215,8 @@ Effects          :
 #1 (id=309632)   : Apply Aura (6) | Unknown effect sub type (269)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 127 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=309633)   : School Damage: holy (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.70000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Hotfixed: AP Coefficient (3 -> 2.7)
 #3 (id=321125)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 25 yards | Target: At Caster(22) -> AOE enemy (instant)(7)
 Description      : Releases a blinding flash from |cFFFFCC99Truthguard|r, causing $s2 Holy damage to all nearby enemies and reducing all damage they deal to you by $s1% for $d.
@@ -4389,9 +4402,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=316999)   : Direct Heal (10)
-                   Base Value: 35 | Scaled Value: 35 | Target: Friend(21)
+                   Base Value: 30 | Scaled Value: 30 | Target: Friend(21)
+                   Hotfixed: Base Value (35 -> 30)
 #2 (id=317000)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Hotfixed: Base Value (35 -> 30)
 Description      : Calls down the Light to heal a friendly target for $s1% of the target's missing health.
 
 Name             : Execution Sentence (id=213757) [Spell Family (10)] 

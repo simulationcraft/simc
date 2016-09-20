@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 4570e1a)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build a67fc05)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -474,7 +474,8 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=2203)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.83800 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.65400 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient (1.838 -> 1.654)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage$?s199045[, rooting them for $199042d and reducing their movement speed by $s2% for $d.][ and reduces their movement speed by $s2% for $d.]
@@ -538,7 +539,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2316)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.78000 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.40200 | Radius: 8 yards | Target: Cone Front(104)
+                   Hotfixed: AP Coefficient (3.78 -> 3.402)
 #2 (id=159566)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self(1)
 Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
@@ -590,7 +592,8 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Cannot dodge/parry/block (21), Requires line of sight (186)
 Effects          :
 #1 (id=3164)     : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20000 | Radius: 0 - 5 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.08000 | Radius: 0 - 5 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient (1.2 -> 1.08)
 #2 (id=297911)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : Charge an enemy, generate Rage, and stun them for $7922d.
@@ -775,7 +778,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=102316)   : Weapon Damage% (31)
-                   Base Value: 241 | Scaled Value: 3.09 | Points Per Level: 8.5 | Target: Enemy(6)
+                   Base Value: 216 | Scaled Value: 2.772 | Points Per Level: 7.65 | Target: Enemy(6)
+                   Hotfixed: Base Value (241 -> 216), Points per Level (8.5 -> 7.65)
 #2 (id=11313)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=290309)   : Dummy (3)
@@ -890,7 +894,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=14132)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 5.47500 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 4.92800 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (5.475 -> 4.928)
 #2 (id=155551)   : Dispel (38)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Enemy(6)
 #3 (id=290322)   : Energize Power (30)
@@ -1036,7 +1041,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Warrior (137047)
+Affecting spells : Warrior (137047), Protection Warrior (137048)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -1208,7 +1213,7 @@ GCD              : 1.5 seconds
 Cooldown         : 40 seconds
 Category         : 1201
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Warrior (137047)
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1979,7 +1984,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Warrior (137047)
+Affecting spells : Warrior (137047), Protection Warrior (137048)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2468,7 +2473,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 4 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Warrior (137047)
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2490,7 +2495,7 @@ Range            : 30 yards
 Velocity         : 25 yards/sec
 Duration         : 4 seconds
 Mechanic         : Unknown(95)
-Affecting spells : Warrior (137047)
+Affecting spells : Warrior (137047), Protection Warrior (137048)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ..x..... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2601,10 +2606,13 @@ Effects          :
 #2 (id=186944)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1386 | Target: Self(1)
 #3 (id=191017)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -85 | Scaled Value: -85 | Target: Self(1)
+                   Base Value: -87 | Scaled Value: -87 | Target: Self(1)
                    Affected Spells: Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
-#4 (id=191018)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: Base Value (-85 -> -87)
+#4 (id=191018)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -10 | Scaled Value: -10 | Target: Self(1)
+                   Affected Spells: Victory Rush (34428), Shockwave (46968), Storm Bolt (107570), Shockwave (132168), Storm Bolt (132169), Impending Victory (202168)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -10), Affects Spells
 #5 (id=191019)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=261027)   : Apply Aura (6) | Dummy (4)
@@ -3699,7 +3707,7 @@ Resource         : 10 Rage
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Victorious (32216), Warrior (137047)
+Affecting spells : Victorious (32216), Warrior (137047), Protection Warrior (137048)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4209,7 +4217,8 @@ Attributes       : ........ ........ .....x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=300184)   : School Damage: shadowflame (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front(104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.90000 | Radius: 12 yards | Target: Cone Front(104)
+                   Hotfixed: AP Coefficient (1 -> 0.9)
 Description      : $@spelldesc203524
 
 Name             : Focused Rage (id=204488) [Spell Family (4)] 

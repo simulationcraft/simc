@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 4570e1a)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build a67fc05)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2738,8 +2738,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179691)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+                   Base Value: 80 | Scaled Value: 80 | Target: Self(1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
+                   Hotfixed: Base Value (100 -> 80)
 #2 (id=191166)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1428 | Target: Self(1)
                    Affected Spells: Unholy Strength (53365), Death Siphon (116783)
@@ -2747,13 +2748,13 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Death and Decay (43265), Death and Decay (143375), Defile (152280)
 #4 (id=191168)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
                    Affected Spells: Death and Decay (52212), Defile (156000)
-                   Hotfixed: Affects Spells
+                   Hotfixed: Base Value (15 -> 3), Affects Spells
 #5 (id=191169)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -30 | Scaled Value: -30 | Target: Self(1)
+                   Base Value: -37 | Scaled Value: -37 | Target: Self(1)
                    Affected Spells: Blood Boil (50842)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -30), Affects Spells
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -37), Affects Spells
 #6 (id=260807)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260808)   : Apply Aura (6) | Dummy (4)
@@ -3966,7 +3967,8 @@ Effects          :
 #1 (id=286507)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=286508)   : Weapon Damage% (31)
-                   Base Value: 350 | Scaled Value: 3.5 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 315 | Scaled Value: 3.15 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (350 -> 315)
 #3 (id=286519)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Smash the target, dealing $sw2 Physical damage and generating $s3 charges of Bone Shield.
@@ -3991,7 +3993,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286689)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.3, dl=0.083) | AP Coefficient: 1.00000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.3, dl=0.083) | AP Coefficient: 0.90000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (1 -> 0.9)
 #2 (id=293371)   : Trigger Spell: Blood Plague (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 55078 | Target: Enemy(6)
 Description      : Reach out with necrotic tendrils, dealing $s1 Shadow damage and applying Blood Plague to your target.
@@ -4179,7 +4182,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288467)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.28800 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.15900 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Hotfixed: AP Coefficient (1.288 -> 1.159)
 Description      : $@spelldesc194844
 
 Name             : Bonestorm (id=196545) [Spell Family (15)] 
@@ -4455,7 +4459,8 @@ Effects          :
 #1 (id=302967)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=302968)   : Weapon Damage% (31)
-                   Base Value: 287 | Scaled Value: 2.87 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 258 | Scaled Value: 2.58 | Radius: 8 yards | Target: Cone Front(104)
+                   Hotfixed: Base Value (287 -> 258)
 #3 (id=302969)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #4 (id=302970)   : Dummy (3)
@@ -4556,7 +4561,8 @@ Effects          :
 #1 (id=306039)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 (avg=0.756) | Chain Targets: 2 | Target: Enemy(6)
 #2 (id=306040)   : Weapon Damage% (31)
-                   Base Value: 206 | Scaled Value: 2.06 | Chain Targets: 2 | Target: Enemy(6)
+                   Base Value: 185 | Scaled Value: 1.85 | Chain Targets: 2 | Target: Enemy(6)
+                   Hotfixed: Base Value (206 -> 185)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
@@ -5753,7 +5759,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=315527)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.12500 | Radius: 0 - 30 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.01300 | Radius: 0 - 30 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient (1.125 -> 1.013)
 #2 (id=315962)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Consume your Blood Plagues within $A1 yards, dealing $s1 Shadow damage to each infected enemy, and empowering you for $213003d with up to $s2% Rune regeneration per plague. Plagues closer to expiration grant more Rune regeneration.
@@ -6110,6 +6117,7 @@ Description      : Consume shadowy essence.
 Recharge time reduced by $s2 sec whenever a Bone Shield charge is consumed.
 
 Name             : Blood Mirror (id=221847) [Spell Family (7)] 
+Hotfixed         : Category
 Class            : Death Knight
 School           : Shadow
 Range            : 100 yards

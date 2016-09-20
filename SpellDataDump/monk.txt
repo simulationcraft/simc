@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 4570e1a)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build a67fc05)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -461,7 +461,7 @@ Resource         : 50 Energy w/ Windwalker Monk (id=137025)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Heightened Senses (165692), Mana Tea (197908), Item - Monk T19 Brewmaster 4P Bonus (211417), Tiger Claws (218607), Blackout Combo (228563)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Mistweaver Monk (137024), Heightened Senses (165692), Mana Tea (197908), Item - Monk T19 Brewmaster 4P Bonus (211417), Tiger Claws (218607), Blackout Combo (228563)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1091,7 +1091,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128879)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.80000 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 1.62000 | Radius: 8 yards | Target: Cone Front(104)
+                   Hotfixed: AP Coefficient (1.8 -> 1.62)
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Targets affected by Keg Smash will also burn for $123725o1 Fire damage over $123725d$?s123394[ and become Incapacitated for $123393d][].
 Tooltip          : If Dizzying Haze is on the target, they will burn for an additional $123725o1 damage over $123725d$?s123394[ and become Disoriented for $123393d.][.]
 
@@ -1517,7 +1518,7 @@ Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680), Enveloping Mist (124682), Brewmaster Monk (137023), Windwalker Monk (137025), Lucidity (137331), Extend Life (185158), Mana Tea (197908), Coalescing Mists (199364)
+Affecting spells : Thunder Focus Tea (116680), Enveloping Mist (124682), Brewmaster Monk (137023), Windwalker Monk (137025), Lucidity (137331), Extend Life (185158), Mana Tea (197908), Coalescing Mists (199364), Soothing Mist (209525)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2116,7 +2117,8 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=150037)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 6.75000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 6.07500 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient (6.75 -> 6.075)
 #2 (id=229522)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #3 (id=283420)   : Dummy (3)
@@ -2337,7 +2339,8 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=156180)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24300 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.27 -> 0.243)
 #2 (id=342380)   : Apply Aura (6) | Unknown effect sub type (269)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Enemy(6)
 Description      : $@spelldesc115181
@@ -2372,7 +2375,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2656,7 +2659,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Thunder Focus Tea (116680), Extend Life (185158), Mist Wrap (197900), Mana Tea (197908), Way of the Mistweaver (199366), The Mists of Sheilun (199888)
+Affecting spells : Thunder Focus Tea (116680), Extend Life (185158), Mist Wrap (197900), Mana Tea (197908), Way of the Mistweaver (199366), The Mists of Sheilun (199888), Soothing Mist (209525)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3064,7 +3067,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Enveloping Mist (124682), Storm, Earth, and Fire (137639), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Enveloping Mist (124682), Brewmaster Monk (137023), Storm, Earth, and Fire (137639), Extend Life (185158)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -3127,6 +3130,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 50000 yards
+Affecting spells : Brewmaster Monk (137023)
 Attributes       : ........ ...x.... x......x ...x....   .....x.x ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ....x... ..x...x. 
                  : ........ ........ ...xx... ........   .....x.. ........ ...x.... ..x..... 
@@ -3148,6 +3152,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 0.1 seconds
+Affecting spells : Brewmaster Monk (137023)
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......x. 
                  : .......x .......x ...x.... ........   ...x.... ........ .xxx.... ........ 
@@ -3249,12 +3254,17 @@ Effects          :
 #3 (id=191109)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1562 | Target: Self(1)
 #4 (id=191110)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -50 | Scaled Value: -50 | Target: Self(1)
+                   Base Value: -55 | Scaled Value: -55 | Target: Self(1)
                    Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187), Refreshing Jade Wind (196725)
-#5 (id=191111)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#6 (id=260837)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: Base Value (-50 -> -55)
+#5 (id=191111)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: -10 | Scaled Value: -10 | Target: Self(1)
+                   Affected Spells: Tiger Palm (100780), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Song of Chi-Ji (198898)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -10), Affects Spells
+#6 (id=260837)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Eye of the Tiger (196608)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -10), Misc Value (0 -> 22), Affects Spells
 #7 (id=260838)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260839)   : Apply Aura (6) | Dummy (4)
@@ -3474,7 +3484,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Extend Life (185158)
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -4102,10 +4112,12 @@ Effects          :
 Description      : Tiger Palm also applies Eye of the Tiger, dealing $196608o2 Nature damage to the enemy and $196608o1 healing to the Monk over $196608d.
 
 Name             : Eye of the Tiger (id=196608) [Spell Family (53)] 
+Hotfixed         : Affecting Spells
 Class            : Monk
 School           : Nature
 Range            : 100 yards
 Duration         : 8 seconds
+Affecting spells : Brewmaster Monk (137023)
 Triggered by     : Eye of the Tiger (196607)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4258,7 +4270,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288833)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 9.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.10000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient (9 -> 8.1)
 #2 (id=288837)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: Unknown(87) -> AOE enemy (instant)(16)
 #3 (id=335941)   : Apply Aura (6) | Dummy (4)
@@ -4658,7 +4671,7 @@ Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Extend Life (185158)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4838,7 +4851,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=303663)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.15000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.73500 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (4.15 -> 3.735)
 Description      : Strike with a blast of Chi energy, dealing $s1 Physical damage.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
@@ -4852,6 +4866,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Soothing Mist (Honor Talent) (id=209525) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Resource         : 0% Base Mana and 0.7% Base Mana (7699 @Level 110) per second or tick
@@ -4863,7 +4878,7 @@ Cooldown         : 1 seconds
 Affecting spells : Enveloping Mist (124682), Lucidity (137331), Extend Life (185158), Mist Wrap (197900), Mana Tea (197908), Soothing Remedies (199377), The Mists of Sheilun (199888)
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..x.. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..xx.. .x...... x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4871,6 +4886,10 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
 Effects          :
 #1 (id=310090)   : Apply Aura (6) | Periodic Heal: every 0.5 seconds (8)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.55000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend(21)
+#2 (id=352117)   : Apply Aura (6) | Unknown effect sub type (330)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Affected Spells: Effuse (116694), Enveloping Mist (124682)
+                   Hotfixed: NEW EFFECT
 Description      : Heals the target for $o1 over $d.
 
 While channeling, Effuse and Enveloping Mist are instant cast, and will heal the soothed target without breaking the Soothing Mist channel.
@@ -5035,7 +5054,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=318258)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 10.00000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 9.00000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient (10 -> 9)
 #2 (id=318334)   : Apply Aura (6) | Modify Hit% (54)
                    Base Value: -100 | Scaled Value: -100 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 Description      : Hurls a flaming keg at the target location, dealing $s1 Fire damage to nearby enemies and causing them to miss their melee attacks for the next $d.
