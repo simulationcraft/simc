@@ -2864,7 +2864,14 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
       buff_uptime.add_simple_series( "area", "#FF0000", "Uptime",
                                      b.uptime_array.data() );
       buff_uptime.set_mean( b.uptime_array.mean() );
-      buff_uptime.set_xaxis_max( b.sim->simulation_length.max() );
+      if ( ! b.sim -> single_actor_batch )
+      {
+        buff_uptime.set_xaxis_max( b.sim -> simulation_length.max() );
+      }
+      else
+      {
+        buff_uptime.set_xaxis_max( b.player -> collected_data.fight_length.max() );
+      }
 
       os << "<tr><td colspan=\"2\" class=\"filler\">\n";
       os << buff_uptime.to_string();
