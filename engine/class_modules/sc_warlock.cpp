@@ -5943,7 +5943,7 @@ void warlock_t::apl_affliction()
     }
   }
 
-  action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any.react";
+  action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45";
   if ( find_item( "horn_of_valor" ) )
     action_list_str += "|buff.valarjars_path.remains";
   if ( find_item( "moonlit_prism" ) )
@@ -6022,7 +6022,7 @@ void warlock_t::apl_demonology()
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/soul_harvest";
-  action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|target.time_to_die<=30|trinket.proc.any.react";
+  action_list_str += "/potion,name=deadly_grace,if=buff.soul_harvest.remains|target.time_to_die<=45|trinket.proc.any.react";
   action_list_str += "/shadowflame,if=charges=2";
   add_action( "Thal'kiel's Consumption", "if=(dreadstalker_remaining_duration>execute_time|talent.implosion.enabled&spell_targets.implosion>=3)&wild_imp_count>3&wild_imp_remaining_duration>execute_time" );
   add_action( "Life Tap", "if=mana.pct<=30" );
@@ -6055,7 +6055,7 @@ void warlock_t::apl_destruction()
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
-  action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=30)";
+  action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)";
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd))" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2" );
