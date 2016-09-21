@@ -5108,10 +5108,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
 
     p() -> buffs.necrosis -> decrement();
-    if ( rng().roll( p() -> artifact.scourge_the_unbeliever.percent() ) )
-    {
-      p() -> replenish_rune( 1, p() -> gains.scourge_the_unbeliever );
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -5144,6 +5140,11 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
             break;
           }
         }
+      }
+
+      if ( rng().roll( p() -> artifact.scourge_the_unbeliever.percent() ) )
+      {
+        p() -> replenish_rune( 1, p() -> gains.scourge_the_unbeliever );
       }
 
       burst_festering_wound( state, n_burst );
