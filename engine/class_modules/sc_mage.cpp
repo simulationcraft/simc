@@ -8111,7 +8111,7 @@ bool mage_t::has_t18_class_trinket() const
 // to certain items.
 std::string mage_t::get_special_use_items( const std::string& item_name, bool specials )
 {
-  std::string action_string = "use_item,slot=";
+  std::string actions;
   std::string conditions;
 
   // If we're dealing with a special item, find its special conditional.
@@ -8121,9 +8121,10 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
     {
       conditions = "if=buff.rune_of_power.up&cooldown.combustion.remains>50";
     }
-
     if ( item_name == "horn_of_valor" )
+    {
       conditions = "if=cooldown.combustion.remains>30";
+    }
   }
 
   for ( const auto& item : mage_t::player_t::items )
@@ -8135,6 +8136,7 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
     // Special or not, we need the name and slot
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item_name == item.name_str)
     {
+      std::string action_string = "use_item,slot=";
       action_string += item.slot_name();
 
       // If special, we care about special conditions and placement. Else, we only care about placement in the APL.
@@ -8143,10 +8145,11 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
         action_string += ",";
         action_string += conditions;
       }
+      actions = action_string;
     }
   }
 
-  return action_string;
+  return actions;
 }
 
 // Because we care about both the ability to control special conditions AND position of our on use items,
