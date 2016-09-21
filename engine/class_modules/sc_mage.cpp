@@ -606,7 +606,6 @@ public:
   virtual double    temporary_movement_modifier() const override;
   virtual void      arise() override;
   virtual action_t* select_action( const action_priority_list_t& ) override;
-  std::string       get_expression_for_item( const item_t& ) override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -8104,17 +8103,6 @@ bool mage_t::has_t18_class_trinket() const
   }
 
   return false;
-}
-
-/// Set specific action if-expression for on-use items.
-std::string mage_t::get_expression_for_item( const item_t& item )
-{
-//  if ( item.name() == "foo")
-//  {
-//    return "<special_condition_for_foo>";
-//  }
-
-  return player_t::get_expression_for_item( item );
 }
 
 //Pre-combat Action Priority List============================================
