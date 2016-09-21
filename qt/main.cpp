@@ -65,6 +65,8 @@ int main( int argc, char *argv[] )
 
   hotfix::apply();
 
+  QCoreApplication::setAttribute( Qt::AA_UseOpenGLES );
+
   QApplication a( argc, argv );
 
   QCoreApplication::setApplicationName( "SimulationCraft" );
