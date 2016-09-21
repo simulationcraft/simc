@@ -649,8 +649,8 @@ public:
       pet( pets_t() ),
       user_options( options_t() ),
       light_stagger_threshold( 0 ),
-      moderate_stagger_threshold( 0.0175 ),
-      heavy_stagger_threshold( 0.0325 )
+      moderate_stagger_threshold( 0.0167 ), // Moderate transfers at 33.3% Stagger; 1.67% every 1/2 sec
+      heavy_stagger_threshold( 0.0334 ) // Heavy transfers at 66.6% Stagger; 3.34% every 1/2 sec
   {
     // actives
     active_celestial_fortune_proc = nullptr;
@@ -4348,7 +4348,7 @@ struct dragonfire_brew : public monk_spell_t
     tick_may_crit = may_crit = false;
     hasted_ticks = false;
     // Placeholder stuff to get things working
-    dot_duration = timespan_t::from_seconds( data().effectN( 1 ).base_value() );
+    dot_duration = timespan_t::from_seconds( 3 ); // Hard code the duration to 3 seconds
     base_tick_time = dot_duration / data().effectN( 1 ).base_value();
     tick_zero = hasted_ticks = false;
 
@@ -8308,7 +8308,7 @@ void monk_t::apl_combat_windwalker()
   opener -> add_action( this, "Blackout Kick", "cycle_targets=1,if=chi>1&cooldown.rising_sun_kick.remains>1&!prev_gcd.blackout_kick" );
   opener -> add_talent( this, "Chi Wave" );
   opener -> add_talent( this, "Chi Burst" );
-  opener -> add_action( this, "Tiger Palm", "cycle_targets=1,if=chi.max-chi>=2&!prev_gcd.tiger_palm" );
+  opener -> add_action( this, "Tiger Palm", "cycle_targets=1,if=chi.max-chi>1&!prev_gcd.tiger_palm" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
@@ -8320,7 +8320,7 @@ void monk_t::apl_combat_windwalker()
   st -> add_action( this, "Blackout Kick", "cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick" );
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2" );
-  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=chi<=2&!prev_gcd.tiger_palm" );
+  st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=chi.max-chi>1&!prev_gcd.tiger_palm" );
 
   // AoE while SEF is not up
   aoe -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
