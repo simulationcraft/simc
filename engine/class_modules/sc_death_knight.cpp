@@ -511,6 +511,7 @@ public:
     gain_t* scourge_the_unbeliever;
     gain_t* draugr_girdle_everlasting_king;
     gain_t* uvanimor_the_unbeautiful;
+    gain_t* koltiras_newfound_will;
   } gains;
 
   // Specialization
@@ -716,7 +717,7 @@ public:
   // Legendaries
   struct legendary_t {
     // Frost
-
+    const spell_data_t* koltiras_newfound_will; // Koltira's Newfound Will
     double toravons;
 
     // Unholy
@@ -762,6 +763,8 @@ public:
     cooldown.icecap          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
     cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
+
+    legendary.koltiras_newfound_will = spell_data_t::not_found();
 
     regen_type = REGEN_DYNAMIC;
   }
@@ -4810,6 +4813,13 @@ struct obliterate_t : public death_knight_melee_attack_t
           p() -> gains.overpowered, this );
     }
 
+    if ( rng().roll( p() -> legendary.koltiras_newfound_will -> proc_chance() ) )
+    {
+      p() -> replenish_rune( p() -> legendary.koltiras_newfound_will -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
+          p() -> gains.koltiras_newfound_will );
+    }
+
+
     consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
   }
 
@@ -7069,7 +7079,8 @@ void death_knight_t::init_gains()
   gains.t18_2pc_blood                    = get_gain( "Tier18 Blood 2PC"           );
   gains.scourge_the_unbeliever           = get_gain( "Scourge the Unbeliever"     );
   gains.draugr_girdle_everlasting_king   = get_gain( "Draugr, Girdle of the Everlasting King" );
-  gains.uvanimor_the_unbeautiful         = get_gain( "Uvanimor, the Unbeautiful" );
+  gains.uvanimor_the_unbeautiful         = get_gain( "Uvanimor, the Unbeautiful"  );
+  gains.koltiras_newfound_will           = get_gain( "Koltira's Newfound Will"    );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -7982,6 +7993,15 @@ struct uvanimor_the_unbeautiful_t : public scoped_actor_callback_t < death_knigh
   }
 };
 
+struct koltiras_newfound_will_t : public scoped_actor_callback_t < death_knight_t >
+{
+  koltiras_newfound_will_t() : super( DEATH_KNIGHT_FROST )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.koltiras_newfound_will = e.driver(); }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -8007,6 +8027,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 208713, the_instructors_fourth_lesson_t() );
     unique_gear::register_special_effect( 208161, draugr_girdle_everlasting_king_t() );
     unique_gear::register_special_effect( 208786, uvanimor_the_unbeautiful_t() );
+    unique_gear::register_special_effect( 208782, koltiras_newfound_will_t() );
   }
 
   void register_hotfixes() const override
