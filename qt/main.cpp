@@ -30,7 +30,7 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
   }
 }
 
-#if 0
+#if 1
 namespace
 {
 std::ofstream debugStream("debug.log");
@@ -44,7 +44,7 @@ void messageOutput(QtMsgType /* type */, const QMessageLogContext& context, cons
 
 int main( int argc, char *argv[] )
 {
-#if 0
+#if 1
   qInstallMessageHandler(messageOutput);
 #endif
 
