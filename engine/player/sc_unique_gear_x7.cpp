@@ -1750,7 +1750,7 @@ struct tormenting_cyclone_t : public proc_spell_t
     damage_spell -> dual = true;
     damage_spell -> stats = stats;
     damage_spell -> base_dd_min = damage_spell -> base_dd_max =
-      effect.driver() -> effectN( 1 ).average( effect.item );
+      effect.driver() -> effectN( 1 ).average( effect.item ) / 10;
   }
 
   void execute() override
