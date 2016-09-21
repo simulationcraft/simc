@@ -2547,7 +2547,6 @@ bool sim_t::iterate()
     fflush( stdout );
   }
 
-  std::cout << "Done" << std::endl;
   reset();
 
   iterations = current_iteration + 1;
