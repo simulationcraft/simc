@@ -574,9 +574,8 @@ public:
   ~mage_t();
 
   // Character Definition
-  virtual           std::string get_on_use_items( const std::string& item = std::string(), bool specials = false );
-  virtual           std::vector<std::string> get_on_use_condition( const std::string& item = std::string(), bool specials = false );
-  virtual           std::vector<std::string> get_on_use_action( const std::string& item = std::string(), bool specials = false  );
+  virtual           std::string get_special_use_items( const std::string& item = std::string(), bool specials = false );
+  virtual           std::vector<std::string> get_non_speical_item_actions();
   virtual void      init_spells() override;
   virtual void      init_base_stats() override;
   virtual void      create_buffs() override;
@@ -8110,7 +8109,7 @@ bool mage_t::has_t18_class_trinket() const
 
 // This method only handles 1 item per call in order to allow the user to add special conditons and placements
 // to certain items.
-std::string mage_t::get_on_use_items( const std::string& item_name, bool specials )
+std::string mage_t::get_special_use_items( const std::string& item_name, bool specials )
 {
   std::string action_string = "use_item,slot=";
   std::string conditions;
@@ -8122,6 +8121,9 @@ std::string mage_t::get_on_use_items( const std::string& item_name, bool special
     {
       conditions = "if=buff.rune_of_power.up&cooldown.combustion.remains>50";
     }
+
+    if ( item_name == "horn_of_valor" )
+      conditions = "if=cooldown.combustion.remains>30";
   }
 
   for ( const auto& item : mage_t::player_t::items )
@@ -8147,27 +8149,41 @@ std::string mage_t::get_on_use_items( const std::string& item_name, bool special
   return action_string;
 }
 
-// Here we build the rest of the condition string for an item
-std::vector<std::string> mage_t::get_on_use_condition( const std::string& item, bool specials )
+// Because we care about both the ability to control special conditions AND position of our on use items,
+// we must use our own get_item_actions which knows to ignore all "special" items and let them be handled by get_on_use_items()
+std::vector<std::string> mage_t::get_non_speical_item_actions()
 {
-  std::string slot;
-  std::string conditions;
+  std::vector<std::string> actions;
+  bool special = false;
+  std::vector<std::string> specials;
 
-  slot = item.
-}
+  // very ugly construction of our list of special items
+  specials.push_back( "obelisk_of_the_void" );
+  specials.push_back( "horn_of_valor" );
 
-
-std::vector<std::string> mage_t::get_on_use_action( const std::string& item, bool specials )
-{
-  // Grab all the on use items
-  std::vector<std::string> item_list = get_on_use_items();
-  std::string full_action = "use_item,slot=";
-  //Search for the given item we want to add an action for
-  for ( size_t i = 0; i < item_list.size(); i++ )
+  for ( const auto& item : items )
   {
-    //if ( item == item_list[i] )
-      //full_action += item_list[i].item
+    // Check our list of specials to see if we're dealing with one
+    for ( size_t i = 0; i < specials.size(); i++ )
+    {
+      if ( item.name_str == specials[i] )
+        special = true;
+    }
+
+    // This will skip Addon and Enchant-based on-use effects. Addons especially are important to
+    // skip from the default APLs since they will interfere with the potion timer, which is almost
+    // always preferred over an Addon. Don't do this for specials.
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && special == false )
+    {
+      std::string action_string = "use_item,slot=";
+      action_string += item.slot_name();
+      actions.push_back( action_string );
+    }
+    // We're moving onto a new item, reset special flag.
+    special = false;
   }
+
+  return actions;
 }
 
 //Pre-combat Action Priority List============================================
@@ -8317,7 +8333,7 @@ std::string mage_t::get_potion_action()
 
 void mage_t::apl_arcane()
 {
-  std::vector<std::string> item_actions       = get_item_actions();
+  std::vector<std::string> item_actions       = get_non_speical_item_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"          );
@@ -8410,9 +8426,9 @@ void mage_t::apl_arcane()
 
 void mage_t::apl_fire()
 {
-  std::vector<std::string> item_actions       = get_item_actions();
-  std::vector<std::string> racial_actions     = get_racial_actions();
-  std::vector<std::string> actionable_items   = mage_t::get_on_use_items();
+  std::vector<std::string> non_special_item_actions       = mage_t::get_non_speical_item_actions();
+  std::vector<std::string> racial_actions                 = get_racial_actions();
+
 
   action_priority_list_t* default_list        = get_action_priority_list( "default"           );
   action_priority_list_t* combustion_phase    = get_action_priority_list( "combustion_phase"  );
@@ -8426,12 +8442,9 @@ void mage_t::apl_fire()
   default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&(cooldown.flame_on.remains<5|cooldown.flame_on.remains>30)&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
+  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
+  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
 
-  for ( size_t i = 0; i < actionable_items.size(); i++ )
-  {
-    if ( actionable_items[i] == "horn_of_valor" )
-      default_list -> add_action( "use_item,name=horn_of_valor,if=cooldown.combustion.remains>30" );
-  }
   default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)|buff.combustion.up" );
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
   default_list -> add_action( "call_action_list,name=single_target" );
@@ -8440,15 +8453,17 @@ void mage_t::apl_fire()
   combustion_phase -> add_action( "call_action_list,name=active_talents" );
   combustion_phase -> add_action( this, "Combustion" );
   combustion_phase -> add_action( get_potion_action() );
+
   for( size_t i = 0; i < racial_actions.size(); i++ )
   {
     combustion_phase -> add_action( racial_actions[i] );
   }
-  for( size_t i = 0; i < item_actions.size(); i++ )
-  {
-    combustion_phase -> add_action( item_actions[i] );
-  }
 
+  for( size_t i = 0; i < non_special_item_actions.size(); i++ )
+  {
+    combustion_phase -> add_action( non_special_item_actions[i] );
+  }
+  combustion_phase -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
   combustion_phase -> add_action( this, "Phoenix's Flames" );
