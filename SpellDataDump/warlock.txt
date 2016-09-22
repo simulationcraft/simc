@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build a67fc05)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 6f67ca6)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -4096,12 +4096,13 @@ Effects          :
 Description      : $@spelldesc157695
 
 Name             : Unstable Affliction (id=196364) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Range            : 50000 yards
 Duration         : 4 seconds
 Mechanic         : Unknown(72)
-Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ..x.....   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
