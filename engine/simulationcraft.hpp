@@ -176,6 +176,7 @@ struct sc_timeline_t : public timeline_t
   }
 
   void adjust( sim_t& sim );
+  void adjust( const extended_sample_data_t& adjustor );
 
   void build_derivative_timeline( sc_timeline_t& out ) const
   { base_t::build_sliding_average_timeline( out, 20 ); }
@@ -1650,6 +1651,7 @@ struct sim_t : private sc_thread_t
   vector_with_callback<player_t*> healing_no_pet_list;
   vector_with_callback<player_t*> healing_pet_list;
   player_t*   active_player;
+  size_t      current_index; // Current active player
   int         num_players;
   int         num_enemies;
   int         num_tanks;
@@ -1687,6 +1689,7 @@ struct sim_t : private sc_thread_t
   double      tmi_window_global;
   double      tmi_bin_size;
   bool        requires_regen_event;
+  bool        single_actor_batch;
 
   // Target options
   double      enemy_death_pct;
@@ -1840,23 +1843,59 @@ struct sim_t : private sc_thread_t
     private:
     mutex_t m;
     public:
-    int total_work, projected_work, work;
-    work_queue_t() : total_work( 0 ), projected_work( 0 ), work( 0 ) {}
-    void init( int w )    { AUTO_LOCK(m); total_work = projected_work = w; }
-    void flush()          { AUTO_LOCK(m); total_work = projected_work = work; }
-    void project( int w ) { AUTO_LOCK(m); projected_work = w; assert(w>=work); }
-    int  size()           { AUTO_LOCK(m); return total_work; }
-    bool pop()
+    std::vector<int> _total_work, _work, _projected_work;
+    size_t index;
+
+    work_queue_t() : index( 0 )
+    { _total_work.resize( 1 ); _work.resize( 1 ); _projected_work.resize( 1 ); }
+
+    void init( int w )    { AUTO_LOCK(m); range::fill( _total_work, w ); range::fill( _projected_work, w ); }
+    // Single actor batch sim init methods. Batches is the number of active actors
+    void batches( size_t n ) { AUTO_LOCK(m); _total_work.resize( n ); _work.resize( n ); _projected_work.resize( n ); }
+
+    void flush()          { AUTO_LOCK(m); _total_work[ index ] = _projected_work[ index ] = _work[ index ]; }
+    void project( int w ) { AUTO_LOCK(m); _projected_work[ index ] = w; assert( w >= _work[ index ] ); }
+    int  size()           { AUTO_LOCK(m); return _total_work[ index ]; }
+
+    // Single-actor batch pop, uses several indices of work (per active actor), each thread has it's
+    // own state on what index it is simulating
+    size_t pop()
     {
       AUTO_LOCK(m);
-      if( work >= total_work ) return false;
-      if( ++work == total_work ) projected_work = work;
-      return work < total_work;
+
+      if ( index >= _total_work.size() )
+      {
+        return index;
+      }
+
+      if ( _work[ index ] >= _total_work[ index ] )
+      {
+        ++index;
+        return index;
+      }
+
+      if ( ++_work[ index ] == _total_work[ index ] )
+      {
+        _projected_work[ index ] = _work[ index ];
+        ++index;
+        return index;
+      }
+
+      return index;
     }
+
+    // Standard progress method, normal mode sims use the single (first) index, single actor batch
+    // sims progress with the main thread's current index.
     sim_progress_t progress()
     {
       AUTO_LOCK(m);
-      return sim_progress_t{work, projected_work };
+
+      if ( index >= _total_work.size() )
+      {
+        return sim_progress_t{ _work.back(), _projected_work.back() };
+      }
+
+      return sim_progress_t{ _work[ index ], _projected_work[ index ] };
     }
   };
   std::shared_ptr<work_queue_t> work_queue;
@@ -4061,7 +4100,6 @@ struct player_t : public actor_t
   virtual std::string init_use_profession_actions( const std::string& append = std::string() );
   virtual std::string init_use_racial_actions( const std::string& append = std::string() );
   virtual std::vector<std::string> get_item_actions( const std::string& options = std::string() );
-  virtual std::string get_expression_for_item( const item_t& );
   virtual std::vector<std::string> get_profession_actions();
   virtual std::vector<std::string> get_racial_actions();
   bool add_action( std::string action, std::string options = "", std::string alist = "default" );
@@ -4110,6 +4148,9 @@ struct player_t : public actor_t
 
   virtual void datacollection_begin();
   virtual void datacollection_end();
+
+  // Single actor batch mode calls this every time the active (player) actor changes for all targets
+  virtual void actor_changed() { }
 
   virtual int level() const;
 

@@ -1895,7 +1895,7 @@ struct wild_imp_pet_t: public warlock_pet_t
               {
                   lock_pet -> buffs.the_expendables -> bump( 1,
                               buffs.the_expendables -> data().effectN( 1 ).percent() );
-                  //lock_pet -> procs.the_expendable -> occur();
+                  o() -> procs.the_expendables -> occur();
               }
           }
       }
@@ -4463,7 +4463,7 @@ struct implosion_t : public warlock_spell_t
         if( !imp -> is_sleeping() )
         {
           explosion -> execute();
-          imp -> dismiss(false);
+          imp -> dismiss(true);
         }
       }
     }

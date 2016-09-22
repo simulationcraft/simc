@@ -1000,14 +1000,33 @@ struct resource_timeline_collect_event_t : public event_t
   {
     if ( sim().iterations == 1 || sim().current_iteration > 0 )
     {
-      // Assumptions: Enemies do not have primary resource regeneration
-      for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
+      if ( ! sim().single_actor_batch )
       {
-        player_t* p = sim().player_non_sleeping_list[ i ];
-        if ( p -> primary_resource() == RESOURCE_NONE ) continue;
+        // Assumptions: Enemies do not have primary resource regeneration
+        for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
+        {
+          player_t* p = sim().player_non_sleeping_list[ i ];
+          if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
-        p -> collect_resource_timeline_information();
+          p -> collect_resource_timeline_information();
+        }
       }
+      else
+      {
+        auto p = sim().player_no_pet_list[ sim().current_index ];
+        if ( p -> primary_resource() != RESOURCE_NONE )
+        {
+          p -> collect_resource_timeline_information();
+          for ( auto pet : p -> pet_list )
+          {
+            if ( pet -> primary_resource() != RESOURCE_NONE )
+            {
+              pet -> collect_resource_timeline_information();
+            }
+          }
+        }
+      }
+
       // However, enemies do have health
       for ( size_t i = 0, actors = sim().target_non_sleeping_list.size(); i < actors; i++ )
       {
@@ -1033,14 +1052,33 @@ struct regen_event_t : public event_t
   { return "Regen Event"; }
   virtual void execute() override
   {
-    // targets do not get any resource regen for performance reasons
-    for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
+    if ( ! sim().single_actor_batch )
     {
-      player_t* p = sim().player_non_sleeping_list[ i ];
-      if ( p -> primary_resource() == RESOURCE_NONE ) continue;
-      if ( p -> regen_type != REGEN_STATIC ) continue;
+      // targets do not get any resource regen for performance reasons
+      for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* p = sim().player_non_sleeping_list[ i ];
+        if ( p -> primary_resource() == RESOURCE_NONE ) continue;
+        if ( p -> regen_type != REGEN_STATIC ) continue;
 
-      p -> regen( sim().regen_periodicity );
+        p -> regen( sim().regen_periodicity );
+      }
+    }
+    else
+    {
+      auto p = sim().player_no_pet_list[ sim().current_index ];
+      if ( p -> primary_resource() != RESOURCE_NONE && p -> regen_type == REGEN_STATIC )
+      {
+        p -> regen( sim().regen_periodicity );
+        for ( auto pet : p -> pet_list )
+        {
+          if ( ! pet -> is_sleeping() && p -> primary_resource() != RESOURCE_NONE &&
+               p -> regen_type == REGEN_STATIC )
+          {
+            pet -> regen( sim().regen_periodicity );
+          }
+        }
+      }
     }
 
     new ( sim() ) regen_event_t( sim() );
@@ -1143,12 +1181,21 @@ struct bloodlust_check_t : public event_t
           ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_percent( 0.0 ) < -sim.bloodlust_time ) ||
           ( sim.bloodlust_time     > timespan_t::zero() && sim.current_time() >  sim.bloodlust_time ) )
      {
-       for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); ++i )
+       if ( ! sim.single_actor_batch )
        {
-         player_t* p = sim.player_non_sleeping_list[ i ];
-         if ( p -> is_pet() || p -> buffs.exhaustion -> check() )
-           continue;
+         for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); ++i )
+         {
+           player_t* p = sim.player_non_sleeping_list[ i ];
+           if ( p -> is_pet() || p -> buffs.exhaustion -> check() )
+             continue;
 
+           p -> buffs.bloodlust -> trigger();
+           p -> buffs.exhaustion -> trigger();
+         }
+       }
+       else
+       {
+         auto p = sim.player_no_pet_list[ sim.current_index ];
          p -> buffs.bloodlust -> trigger();
          p -> buffs.exhaustion -> trigger();
        }
@@ -1284,6 +1331,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   player_no_pet_list(),
   player_non_sleeping_list(),
   active_player( nullptr ),
+  current_index( 0 ),
   num_players( 0 ),
   num_enemies( 0 ), num_tanks( 0 ), enemy_targets( 0 ), healing( 0 ),
   global_spawn_index( 0 ),
@@ -1308,7 +1356,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
-  requires_regen_event( false ), enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
+  requires_regen_event( false ), single_actor_batch( false ),
+  enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
   challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ), disable_artifacts( false ),
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),
@@ -1469,6 +1518,10 @@ void sim_t::cancel()
   }
 
   work_queue -> flush();
+  if ( single_actor_batch )
+  {
+    current_index = player_no_pet_list.size();
+  }
 
   canceled = 1;
   
@@ -1543,13 +1596,25 @@ void sim_t::reset()
   for ( auto& target : target_list )
     target -> reset();
 
-  for ( auto& player : player_no_pet_list )
+  if ( single_actor_batch && current_index < player_no_pet_list.size() )
   {
-    player -> reset();
-    // Make sure to reset pets after owner, or otherwards they may access uninitialized things from the owner
-    for ( auto& pet : player -> pet_list )
+    player_no_pet_list[ current_index ] -> reset();
+    // make sure to reset pets after owner, or otherwards they may access uninitialized things from the owner
+    for ( auto pet : player_no_pet_list[ current_index ] -> pet_list )
     {
       pet -> reset();
+    }
+  }
+  else
+  {
+    for ( auto& player : player_no_pet_list )
+    {
+      player -> reset();
+      // Make sure to reset pets after owner, or otherwards they may access uninitialized things from the owner
+      for ( auto& pet : player -> pet_list )
+      {
+        pet -> reset();
+      }
     }
   }
 
@@ -1616,10 +1681,21 @@ void sim_t::combat_begin()
 
   raid_event_t::combat_begin( this );
 
-  for ( size_t i = 0; i < player_list.size(); ++i )
+  if ( single_actor_batch && current_index < player_no_pet_list.size() )
   {
-    player_t* p = player_list[ i ];
-    p -> combat_begin();
+    player_no_pet_list[ current_index ] -> combat_begin();
+    for ( auto pet: player_no_pet_list[ current_index ] -> pet_list )
+    {
+      pet -> combat_begin();
+    }
+  }
+  else
+  {
+    for ( size_t i = 0; i < player_list.size(); ++i )
+    {
+      player_t* p = player_list[ i ];
+      p -> combat_begin();
+    }
   }
 
   if ( requires_regen_event )
@@ -1663,10 +1739,17 @@ void sim_t::combat_end()
 
   raid_event_t::combat_end( this );
 
-  for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+  if ( single_actor_batch && current_index < player_no_pet_list.size() )
   {
-    player_t* p = player_no_pet_list[ i ];
-    p -> combat_end();
+    player_no_pet_list[ current_index ] -> combat_end();
+  }
+  else
+  {
+    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+    {
+      player_t* p = player_no_pet_list[ i ];
+      p -> combat_end();
+    }
   }
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
@@ -1714,12 +1797,18 @@ void sim_t::datacollection_begin()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> datacollection_begin();
 
-  for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+  if ( single_actor_batch && current_index < player_no_pet_list.size() )
   {
-    player_t* p = player_no_pet_list[ i ];
-    p -> datacollection_begin();
+    player_no_pet_list[ current_index ] -> datacollection_begin();
   }
-
+  else
+  {
+    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+    {
+      player_t* p = player_no_pet_list[ i ];
+      p -> datacollection_begin();
+    }
+  }
   new ( *this ) resource_timeline_collect_event_t( *this );
 }
 
@@ -1738,10 +1827,17 @@ void sim_t::datacollection_end()
     t -> datacollection_end();
   }
 
-  for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+  if ( single_actor_batch && current_index < player_no_pet_list.size() )
   {
-    player_t* p = player_no_pet_list[ i ];
-    p -> datacollection_end();
+    player_no_pet_list[ current_index ] -> datacollection_end();
+  }
+  else
+  {
+    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
+    {
+      player_t* p = player_no_pet_list[ i ];
+      p -> datacollection_end();
+    }
   }
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
@@ -1801,22 +1897,41 @@ void sim_t::analyze_error()
 
   current_error = 0;
 
-  for ( size_t i = 0; i < actor_list.size(); i++ )
+  if ( single_actor_batch && current_index < player_no_pet_list.size() )
   {
-    player_t* p = actor_list[i];
-    player_collected_data_t& cd = p -> collected_data;
+    auto p = player_no_pet_list[ current_index ];
+    auto& cd = p -> collected_data;
     AUTO_LOCK( cd.target_metric_mutex );
     if ( cd.target_metric.size() != 0 )
     {
       cd.target_metric.analyze_basics();
       cd.target_metric.analyze_variance();
-      double mean = cd.target_metric.mean();
-      if ( mean != 0 )
+      current_mean = cd.target_metric.mean();
+      if ( current_mean != 0 )
       {
-        double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
-        if ( error > current_error ) current_error = error;
-        mean_total += mean;
-        mean_count++;
+        current_error = sim_t::distribution_mean_error( *this, cd.target_metric ) / current_mean;
+      }
+    }
+  }
+  else
+  {
+    for ( size_t i = 0; i < actor_list.size(); i++ )
+    {
+      player_t* p = actor_list[i];
+      player_collected_data_t& cd = p -> collected_data;
+      AUTO_LOCK( cd.target_metric_mutex );
+      if ( cd.target_metric.size() != 0 )
+      {
+        cd.target_metric.analyze_basics();
+        cd.target_metric.analyze_variance();
+        double mean = cd.target_metric.mean();
+        if ( mean != 0 )
+        {
+          double error = sim_t::distribution_mean_error( *this, cd.target_metric ) / mean;
+          if ( error > current_error ) current_error = error;
+          mean_total += mean;
+          mean_count++;
+        }
       }
     }
   }
@@ -2380,6 +2495,12 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
+  if ( single_actor_batch && ! parent )
+  {
+    sim_phase_str = "Generating " + player_no_pet_list[ current_index ] -> name_str;
+  }
+
+  bool more_work = true;
   do
   {
     ++current_iteration;
@@ -2393,8 +2514,32 @@ bool sim_t::iterate()
     }
 
     do_pause();
+    auto old_active = current_index;
+    current_index = work_queue -> pop();
 
-  } while( work_queue -> pop() );
+    if ( ! single_actor_batch )
+    {
+      more_work = current_index == 0;
+    }
+    else
+    {
+      more_work = current_index < player_no_pet_list.size();
+
+      if ( current_index != old_active && more_work )
+      {
+        if ( ! parent )
+        {
+          progress_bar.update( true );
+          util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
+          fflush( stdout );
+          sim_phase_str = "Generating " + player_no_pet_list[ current_index ] -> name_str;
+        }
+
+        current_iteration = -1;
+        range::for_each( target_list, []( player_t* t ) { t -> actor_changed(); } );
+      }
+    }
+  } while ( more_work && ! canceled );
 
   if ( ! canceled && progress_bar.update( true ) )
   {
@@ -2829,6 +2974,7 @@ void sim_t::create_options()
   add_option( opt_int( "stat_cache", stat_cache ) );
   add_option( opt_int( "max_aoe_enemies", max_aoe_enemies ) );
   add_option( opt_bool( "optimize_expressions", optimize_expressions ) );
+  add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
@@ -3150,6 +3296,10 @@ void sim_t::setup( sim_control_t* c )
     }
   }
 
+  if ( single_actor_batch )
+  {
+    work_queue -> batches( player_no_pet_list.size() );
+  }
   work_queue -> init( iterations );
 
   if( deterministic && ( target_error != 0 ) )
@@ -3357,6 +3507,12 @@ void sc_timeline_t::adjust( sim_t& sim )
 
   // Do the timeline adjustement
   base_t::adjust( sim.divisor_timeline_cache[ bin_size ] );
+}
+
+void sc_timeline_t::adjust( const extended_sample_data_t& adjustor )
+{
+  // Do the timeline adjustement
+  base_t::adjust( build_divisor_timeline( adjustor, bin_size ) );
 }
 
 // FIXME!  Move this to util at some point.

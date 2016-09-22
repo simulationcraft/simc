@@ -81,7 +81,19 @@ struct enemy_t : public player_t
   virtual void demise() override;
   virtual expr_t* create_expression( action_t* action, const std::string& type ) override;
   virtual timespan_t available() const override { return waiting_time; }
-  
+
+  void actor_changed() override
+  {
+    if ( sim -> overrides.target_health.size() > 0 )
+    {
+      initial_health = static_cast<double>( sim -> overrides.target_health[ enemy_id % sim -> overrides.target_health.size() ] );
+    }
+    else
+    {
+      initial_health = fixed_health;
+    }
+  }
+
   virtual bool taunt( player_t* source ) override;
 };
 

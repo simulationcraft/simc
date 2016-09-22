@@ -35,11 +35,15 @@ struct sim_signal_handler_t
       report( signal );
       if( global_sim -> scaling -> calculate_scale_factors || global_sim -> reforge_plot -> current_reforge_sim || global_sim -> plot -> current_plot_stat != STAT_NONE )
       {
-  global_sim -> cancel();
+        global_sim -> cancel();
+      }
+      else if ( global_sim -> single_actor_batch )
+      {
+        global_sim -> cancel();
       }
       else
       {
-  global_sim -> interrupt();
+        global_sim -> interrupt();
       }
     }
   }

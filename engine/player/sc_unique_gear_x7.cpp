@@ -1782,6 +1782,8 @@ void item::twisting_wind( special_effect_t& effect )
     effect.execute_action = new tormenting_cyclone_t( effect );
   }
 
+  effect.ppm_ = -1.5;
+
   new dbc_proc_callback_t( effect.item, effect );
 }
 

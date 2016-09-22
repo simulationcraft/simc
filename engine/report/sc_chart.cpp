@@ -1688,7 +1688,14 @@ highchart::time_series_t& chart::generate_actor_timeline(
   ts.set_title( p.name_str + " " + attr_str );
   ts.set_yaxis_title( "Average " + attr_str );
   ts.add_simple_series( "area", series_color, attr_str, data.data() );
-  ts.set_xaxis_max( p.sim->simulation_length.max() );
+  if ( ! p.sim -> single_actor_batch )
+  {
+    ts.set_xaxis_max( p.sim -> simulation_length.max() );
+  }
+  else
+  {
+    ts.set_xaxis_max( p.collected_data.fight_length.max() );
+  }
 
   return ts;
 }

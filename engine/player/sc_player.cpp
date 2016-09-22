@@ -1639,24 +1639,12 @@ std::vector<std::string> player_t::get_item_actions( const std::string& options 
         }
         action_string += options;
       }
-      std::string if_expression = get_expression_for_item( item );
-      if ( !if_expression.empty() )
-      {
-        action_string += ",if=";
-        action_string += if_expression;
-      }
 
       actions.push_back( action_string );
     }
   }
 
   return actions;
-}
-
-/// Get specific action if-expression for on-use items.
-std::string player_t::get_expression_for_item( const item_t& )
-{
-  return std::string();
 }
 
 // player_t::init_use_profession_actions ====================================
@@ -10750,7 +10738,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
 }
 
 player_collected_data_t::player_collected_data_t( const std::string& player_name, sim_t& s ) :
-  fight_length( player_name + " Fight Length", s.statistics_level < 2 ),
+  fight_length( player_name + " Fight Length", ! s.single_actor_batch && s.statistics_level < 2 ),
   waiting_time(player_name + " Waiting Time", s.statistics_level < 4),
   pooling_time(player_name + " Pooling Time", s.statistics_level < 4),
   executed_foreground_actions(player_name + " Executed Foreground Actions", s.statistics_level < 4),
@@ -10877,7 +10865,6 @@ void player_collected_data_t::analyze( const player_t& p )
   dpse.analyze();
   dmg_taken.analyze();
   dtps.analyze();
-  timeline_dmg_taken.adjust( *p.sim );
   // Heal
   heal.analyze();
   compound_heal.analyze();
@@ -10885,7 +10872,6 @@ void player_collected_data_t::analyze( const player_t& p )
   hpse.analyze();
   heal_taken.analyze();
   htps.analyze();
-  timeline_healing_taken.adjust( *p.sim );
   // Absorb
   absorb.analyze();
   compound_absorb.analyze();
@@ -10898,19 +10884,32 @@ void player_collected_data_t::analyze( const player_t& p )
   effective_theck_meloree_index.analyze();
   max_spike_amount.analyze();
 
-  for ( size_t i = 0; i <  resource_timelines.size(); ++i )
+  if ( ! p.sim -> single_actor_batch )
   {
-    resource_timelines[ i ].timeline.adjust( *p.sim );
-  }
+    timeline_dmg_taken.adjust( *p.sim );
+    timeline_healing_taken.adjust( *p.sim );
 
-  for ( size_t i = 0; i < stat_timelines.size(); ++i )
+    range::for_each( resource_timelines, [ &p ]( resource_timeline_t& tl ) { tl.timeline.adjust( *p.sim ); } );
+    range::for_each( stat_timelines, [ &p ]( stat_timeline_t& tl ) { tl.timeline.adjust( *p.sim ); } );
+
+    // health changes need their own divisor
+    health_changes.merged_timeline.adjust( *p.sim );
+    health_changes_tmi.merged_timeline.adjust( *p.sim );
+  }
+  // Single actor batch mode has to analyze the timelines in relation to their own fight lengths,
+  // instead of the simulation-wide fight length.
+  else
   {
-    stat_timelines[ i ].timeline.adjust( *p.sim );
-  }
+    timeline_dmg_taken.adjust( fight_length );
+    timeline_healing_taken.adjust( fight_length );
 
-  // health changes need their own divisor
-  health_changes.merged_timeline.adjust( *p.sim );
-  health_changes_tmi.merged_timeline.adjust( *p.sim );
+    range::for_each( resource_timelines, [ this ]( resource_timeline_t& tl ) { tl.timeline.adjust( fight_length ); } );
+    range::for_each( stat_timelines, [ this ]( stat_timeline_t& tl ) { tl.timeline.adjust( fight_length ); } );
+
+    // health changes need their own divisor
+    health_changes.merged_timeline.adjust( fight_length );
+    health_changes_tmi.merged_timeline.adjust( fight_length );
+  }
 }
 
 //This is pretty much only useful for dev debugging at this point, would need to modify to make it useful to users
@@ -11109,7 +11108,7 @@ void player_collected_data_t::collect_data( const player_t& p )
         // Max spike uses health_changes_tmi as well, ignores external heals - use health_changes_tmi
         max_spike = calculate_max_spike_damage( health_changes_tmi, window );
 
-  tank_metric = tmi;
+        tank_metric = tmi;
       }
     }
     theck_meloree_index.add( tmi );
@@ -11143,9 +11142,8 @@ void player_collected_data_t::collect_data( const player_t& p )
 
     player_collected_data_t& cd = p.parent ? p.parent -> collected_data : *this;
 
-    cd.target_metric_mutex.lock();
+    AUTO_LOCK( cd.target_metric_mutex );
     cd.target_metric.add( metric );
-    cd.target_metric_mutex.unlock();
   }
 }
 
