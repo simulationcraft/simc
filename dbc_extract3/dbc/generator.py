@@ -11,6 +11,13 @@ SPELL_HOTFIX_MAP_NEW  = 0xFFFFFFFFFFFFFFFF
 EFFECT_HOTFIX_MAP_NEW = 0xFFFFFFFF
 POWER_HOTFIX_MAP_NEW  = 0xFFFFFFFF
 
+# Client does not get certain hotfix data, so we need to blacklist specific
+# fields in specific DB2 files to not hotfix themselves
+HOTFIX_FIELD_BLACKLIST = {
+    # SpellProcsPerMinute.adb is not populated on client
+    "SpellAuraOptions" : [ "id_ppm" ]
+}
+
 def escape_string(tmpstr):
     tmpstr = tmpstr.replace("\\", "\\\\")
     tmpstr = tmpstr.replace("\"", "\\\"")
@@ -27,12 +34,17 @@ def hotfix_fields(orig, hotfix):
     hotfix_fields = 0
     for idx in range(0, len(orig._fo)):
         fmt = orig._fo[idx]
+        name = orig._fi[idx]
         if 'S' in fmt and orig._dbcp.get_string(orig._d[idx]) != hotfix._dbcp.get_string(hotfix._d[idx]):
-            hotfix_fields |= (1 << idx)
-            hotfix.add_hotfix(orig._fi[idx], orig)
+            # Blacklist check
+            if name not in HOTFIX_FIELD_BLACKLIST.get(orig._dbcp.class_name(), []):
+                hotfix_fields |= (1 << idx)
+                hotfix.add_hotfix(orig._fi[idx], orig)
         elif 'S' not in fmt and orig._d[idx] != hotfix._d[idx]:
-            hotfix_fields |= (1 << idx)
-            hotfix.add_hotfix(orig._fi[idx], orig)
+            # Blacklist check
+            if name not in HOTFIX_FIELD_BLACKLIST.get(orig._dbcp.class_name(), []):
+                hotfix_fields |= (1 << idx)
+                hotfix.add_hotfix(orig._fi[idx], orig)
 
     return hotfix_fields
 

@@ -69,7 +69,7 @@ actions.opener+=/rushing_jade_wind,if=(buff.serenity.up|chi>1)&cooldown.rising_s
 actions.opener+=/blackout_kick,cycle_targets=1,if=chi>1&cooldown.rising_sun_kick.remains>1&!prev_gcd.blackout_kick
 actions.opener+=/chi_wave
 actions.opener+=/chi_burst
-actions.opener+=/tiger_palm,cycle_targets=1,if=chi.max-chi>=2&!prev_gcd.tiger_palm
+actions.opener+=/tiger_palm,cycle_targets=1,if=chi.max-chi>1&!prev_gcd.tiger_palm
 actions.opener+=/arcane_torrent,if=chi.max-chi>=1
 
 actions.serenity=strike_of_the_windlord
@@ -83,7 +83,7 @@ actions.st=rushing_jade_wind,if=chi>1&!prev_gcd.rushing_jade_wind
 actions.st+=/blackout_kick,cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick
 actions.st+=/chi_wave,if=energy.time_to_max>2
 actions.st+=/chi_burst,if=energy.time_to_max>2
-actions.st+=/tiger_palm,cycle_targets=1,if=chi<=2&!prev_gcd.tiger_palm
+actions.st+=/tiger_palm,cycle_targets=1,if=chi.max-chi>1&!prev_gcd.tiger_palm
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1805,enchant=mark_of_the_trained_soldier

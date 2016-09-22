@@ -3693,9 +3693,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  577, 211074, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  581, 211077, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
 };
-#define RPPMMOD_SIZE (199)
+#define RPPMMOD_SIZE (201)
 
-// 199 RPPM Modifiers, wow build level 22594
+// 201 RPPM Modifiers, wow build level 22594
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  49530,    1,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
@@ -3878,9 +3878,11 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 221767,    0,  2,  1.0000 },
   { 221811,    4,  1,  1.0000 },
   { 221811,  256,  4,  0.2500 },
+  { 221845,    3,  1,  1.0000 },
   { 221873,    4,  1,  1.0000 },
   { 222015,    4,  1,  1.0000 },
   { 222167,    0,  1,  1.0000 },
+  { 222187,    4,  1,  1.0000 },
   { 222207,    0,  1,  1.0000 },
   { 222705,  256,  4,  0.2500 },
   { 224059,    4,  1,  1.0000 },

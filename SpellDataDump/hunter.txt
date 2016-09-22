@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build a67fc05)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 6f67ca6)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -266,7 +266,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=1072)     : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Enemy(6)
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Throwing Axes (200163), Flanking Strike (202800), Fury of the Eagle (203415), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200)
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200)
 Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
 
@@ -2808,6 +2808,7 @@ Effects          :
 #3 (id=191143)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Steel Trap (162488), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Sticky Bomb (191241), Explosive Trap (191433), Hatchet Toss (193265), Cobra Shot (193455), Aspect of the Wild (193530), Caltrops (194277), Caltrops (194279), Exhilaration (194291), Volley (194386), Volley (194392), Spitting Cobra (194407), Black Arrow (194599), Dragonsfire Grenade (194855), Wing Clip (195645), Piercing Shot (198670), Camouflage (199483), Ranger's Net (200108), Throwing Axes (200163), Stampede (201594), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), Flanking Strike (204740), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Butchery (212436), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911), Dire Frenzy (217200), Dire Frenzy (217207)
+                   Hotfixed: Affects Spells
 #4 (id=191144)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1628 | Target: Self(1)
 #5 (id=191145)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -4315,7 +4316,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=279996)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Affected Spells: Mongoose Bite (190928), Fury of the Eagle (203415)
+                   Affected Spells: Mongoose Bite (190928)
 #2 (id=343454)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
 Description      : $@spelldesc190928
@@ -5634,16 +5635,18 @@ Effects          :
 Description      : Deals $s1 Physical damage in a frontal cone to enemies within a $A1 yards.
 
 Name             : Fury of the Eagle (Artifact) (id=203415) [Spell Family (9)] 
+Hotfixed         : GCD (0 -> 1500), Category, Affecting Spells
 Class            : Hunter
 School           : Physical
 Range            : 8 yards
+GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 100%
 Artifact Power   : Id: 1068, Max Rank: 1
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Freezing Trap (3355), Hunter (137014), Guide: Sharpshooting (178549), Blackness (184902), Mongoose Fury (190931), Mastery: Sniper Training (193468), Sharpened Fang (203566)
+Affecting spells : Hunter (137014), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468)
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ...x.... 

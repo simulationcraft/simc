@@ -31,7 +31,7 @@ actions+=/immolate,if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roa
 actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
-actions+=/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=30)
+actions+=/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd))
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&prev_gcd.conflagrate
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2

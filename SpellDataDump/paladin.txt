@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build a67fc05)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 6f67ca6)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -590,11 +590,12 @@ Tooltip          : Damage taken reduced by $w1%.
 The next attack that would otherwise kill you will instead bring you to $w2% of your maximum health.
 
 Name             : Avenging Wrath (id=31884) [Spell Family (10)] 
+Hotfixed         : Cooldown (20000 -> 21000)
 Class            : Protection Retribution Paladin
 School           : Holy
 Spell Level      : 72
 Duration         : 20 seconds
-Cooldown         : 20 seconds
+Cooldown         : 21 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1550
 Affecting spells : Wrath of the Ashbringer (186945)
@@ -4741,11 +4742,12 @@ Effects          :
 Description      : A powerful weapon strike that deals $sw1 Holy damage.
 
 Name             : Crusade (id=224668) [Spell Family (10)] 
+Hotfixed         : Cooldown (20000 -> 21000)
 Class            : Paladin
 School           : Holy
 Spell Level      : 72
 Duration         : 20 seconds
-Cooldown         : 20 seconds
+Cooldown         : 21 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1550
 Stacks           : 15 maximum
