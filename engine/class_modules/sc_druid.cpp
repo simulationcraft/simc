@@ -1313,8 +1313,8 @@ public:
   {
     if ( ! check_form_restriction() && ! ( ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM ) || autoshift ) )
     {
-      if ( ab::sim -> log )
-        ab::sim -> out_log.printf( "%s ready() failed due to wrong form. form=%#.8x form_mask=%#.8x", ab::name(), p() -> get_form(), form_mask );
+      if ( ab::sim -> debug )
+        ab::sim -> out_debug.printf( "%s ready() failed due to wrong form. form=%#.8x form_mask=%#.8x", ab::name(), p() -> get_form(), form_mask );
 
       return false;
     }
@@ -2432,53 +2432,83 @@ struct rip_state_t : public action_state_t
 };
 
 // Ashamane's Frenzy ========================================================
-// FIXME: First tick sometimes occurs at 11 stacks.
 
-struct ashamanes_frenzy_t : public cat_attack_t
+struct ashamanes_frenzy_driver_t : public cat_attack_t
 {
-  struct ashamanes_frenzy_damage_t : public cat_attack_t
+  struct ashamanes_frenzy_t : public cat_attack_t
   {
-    ashamanes_frenzy_damage_t( druid_t* p ) :
-      cat_attack_t( "ashamanes_frenzy_dmg", p, p -> find_spell( 210723 ) )
+    struct ashamanes_frenzy_ignite_t : public residual_action::residual_periodic_action_t<cat_attack_t>
+    {
+      ashamanes_frenzy_ignite_t( druid_t* p ) :
+        base_t( "ashamanes_frenzy_ignite", p, p -> find_spell( 210723 ) )
+      {
+        dual = true;
+        tick_may_crit = true; // Sep 22 2016
+      }
+
+      void init() override
+      {
+        base_t::init();
+
+        snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
+      }
+    };
+
+    ashamanes_frenzy_ignite_t* ignite;
+    double ignite_multiplier;
+
+    ashamanes_frenzy_t( druid_t* p ) :
+      cat_attack_t( "ashamanes_frenzy_hit", p, p -> find_spell( 210723 ) ),
+      ignite( new ashamanes_frenzy_ignite_t( p ) )
     {
       background = dual = true;
-      dot_max_stack = p -> artifact.ashamanes_frenzy.data().effectN( 2 ).base_value();
+      snapshots_sr = snapshots_tf = false; // Sep 22 2016
+      consumes_bloodtalons = false; // BT is applied by driver.
+      ignite_multiplier = dot_duration / data().effectN( 3 ).period();
+      dot_duration = timespan_t::zero(); // DoT is applied by ignite action.
     }
-    
-    // Emulate old DoT refresh behavior.
-    timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t dur ) const override
-    { return d -> time_to_next_tick() + dur; }
+
+    void impact( action_state_t* s ) override
+    {
+      cat_attack_t::impact( s );
+
+      residual_action::trigger( ignite, s -> target, s -> result_raw * ignite_multiplier );
+    }
   };
 
-  ashamanes_frenzy_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "ashamanes_frenzy", p, &p -> artifact.ashamanes_frenzy.data(), options_str )
+  ashamanes_frenzy_t* damage;
+
+  ashamanes_frenzy_driver_t( druid_t* p, const std::string& options_str ) :
+    cat_attack_t( "ashamanes_frenzy", p, &p -> artifact.ashamanes_frenzy.data(), options_str ),
+    damage( new ashamanes_frenzy_t( p ) )
   {
-    may_miss = may_parry = may_dodge = may_crit = false;
-
-    /* Copy all the modifiers that would affect any state multipliers that
-    will be inherited from this action. This is necessary because we need
-    the state to be inherited for Bloodtalons. */
-    ashamanes_frenzy_damage_t* damage = new ashamanes_frenzy_damage_t( p );
-    snapshots_sr       = damage -> snapshots_sr;
-    snapshots_tf       = damage -> snapshots_tf;
-    razor_claws.direct = damage -> razor_claws.direct;
-    razor_claws.tick   = damage -> razor_claws.tick;
-    tick_action        = damage;
+    may_miss = may_parry = may_dodge = may_crit = tick_may_crit = false;
+    damage -> stats = damage -> ignite -> stats = stats;
   }
-
-  void init() override
-  {
-    cat_attack_t::init();
-
-    tick_action -> direct_tick = false;
-  }
-
-  // Does not trigger primal fury.
-  void trigger_primal_fury() override {}
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
   { ( void ) s; assert( s -> result_amount == 0.0 ); }
+
+  // Assure the only persistent multiplier here is Bloodtalons.
+  double composite_persistent_multiplier( const action_state_t* ) const override
+  { return 1.0 + p() -> buff.bloodtalons -> check_value(); }
+
+  void tick( dot_t* d ) override
+  {
+    cat_attack_t::tick( d );
+
+    // Create & snapshot state
+    action_state_t* s = damage -> get_state();
+    s -> target = d -> state -> target;
+    damage -> snapshot_state( s, DMG_DIRECT );
+    // Apply Bloodtalons from driver.
+    s -> persistent_multiplier *= d -> state -> persistent_multiplier;
+    damage -> schedule_execute( s );
+  }
+
+  // Does not trigger primal fury.
+  void trigger_primal_fury() override {}
 };
 
 // Ashamane's Rip ===========================================================
@@ -5656,7 +5686,7 @@ action_t* druid_t::create_action( const std::string& name,
   using namespace spells;
 
   if ( name == "ashamanes_frenzy" ||
-       name == "frenzy"                 ) return new       ashamanes_frenzy_t( this, options_str );
+       name == "frenzy"                 ) return new ashamanes_frenzy_driver_t( this, options_str );
   if ( name == "astral_communion" ||
        name == "ac" )                     return new       astral_communion_t( this, options_str );
   if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
