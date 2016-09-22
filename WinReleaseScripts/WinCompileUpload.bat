@@ -19,14 +19,13 @@ qmake -r -tp vc -spec win32-msvc2015 simulationcraft.pro PGO=1
 set simcversion=703-03
 set SIMCAPPFULLVERSION=7.0.3.03
 :: For bumping the minor version, just change the above line.  Make sure to also change setup32.iss and setup64.iss as well. 
-set simcfiles=C:\Simulationcraft\
 :: Location of source files
 set qt_dir=C:\Qt\Qt5.6.0\5.6\
 :: Location of QT
 set redist=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\redist\
 :: This is a really standard location for VS2015, but change it if you installed it somewhere else.
 
-for /F "delims=" %%i IN ('git --git-dir=%simcfiles%\.git\ rev-parse --short HEAD') do set GITREV=-%%i
+for /F "delims=" %%i IN ('git --git-dir=%currdir%\.git\ rev-parse --short HEAD') do set GITREV=-%%i
 
 cd>bla.txt
 set /p download=<bla.txt
@@ -37,7 +36,7 @@ set install=simc-%simcversion%-win64
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
-"%MSBUILDDIR%msbuild.exe" %simcfiles%\simulationcraft.sln /p:configuration=Release /nr:true
+"%MSBUILDDIR%msbuild.exe" %currdir%\simulationcraft.sln /p:configuration=Release /nr:true
 
 robocopy "%redist%x64\Microsoft.VC140.CRT" %install%\ msvcp140.dll vccorlib140.dll vcruntime140.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
