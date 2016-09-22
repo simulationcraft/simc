@@ -4091,7 +4091,10 @@ struct summon_doomguard_t: public warlock_spell_t
     harmful = may_crit = false;
 
     cooldown = p -> cooldowns.doomguard;
-    cooldown -> duration = data().cooldown();
+    if ( !p -> talents.grimoire_of_supremacy -> ok() )
+      cooldown -> duration = data().cooldown();
+    else
+      cooldown -> duration = timespan_t::zero();
 
     if ( p -> talents.grimoire_of_supremacy -> ok() )
       doomguard_duration = timespan_t::from_seconds( -1 );
@@ -4099,11 +4102,28 @@ struct summon_doomguard_t: public warlock_spell_t
       doomguard_duration = p -> find_spell( 111685 ) -> duration() + timespan_t::from_millis( 1 );
   }
 
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  {
+    warlock_spell_t::schedule_execute( state );
+
+    if ( p() -> talents.grimoire_of_supremacy -> ok() )
+    {
+      for ( auto infernal : p() -> warlock_pet_list.infernal )
+      {
+        if ( !infernal -> is_sleeping() )
+        {
+          infernal -> dismiss();
+        }
+      }
+    }
+  }
+
   virtual void execute() override
   {
     warlock_spell_t::execute();
 
-    p() -> cooldowns.infernal -> start();
+    if ( !p() -> talents.grimoire_of_supremacy -> ok() )
+      p() -> cooldowns.infernal -> start();
 
     for ( size_t i = 0; i < p() -> warlock_pet_list.doomguard.size(); i++ )
     {
@@ -4145,7 +4165,10 @@ struct summon_infernal_t : public warlock_spell_t
     harmful = may_crit = false;
 
     cooldown = p -> cooldowns.infernal;
-    cooldown -> duration = data().cooldown();
+    if ( !p -> talents.grimoire_of_supremacy -> ok() )
+      cooldown -> duration = data().cooldown();
+    else
+      cooldown -> duration = timespan_t::zero();
 
     if ( p -> talents.grimoire_of_supremacy -> ok() )
       infernal_duration = timespan_t::from_seconds( -1 );
@@ -4157,11 +4180,28 @@ struct summon_infernal_t : public warlock_spell_t
     }
   }
 
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  {
+    warlock_spell_t::schedule_execute( state );
+
+    if ( p() -> talents.grimoire_of_supremacy -> ok() )
+    {
+      for ( auto doomguard : p() -> warlock_pet_list.doomguard )
+      {
+        if ( !doomguard -> is_sleeping() )
+        {
+          doomguard -> dismiss();
+        }
+      }
+    }
+  }
+
   virtual void execute() override
   {
     warlock_spell_t::execute();
 
-    p() -> cooldowns.doomguard -> start();
+    if ( !p() -> talents.grimoire_of_supremacy -> ok() )
+      p() -> cooldowns.doomguard -> start();
 
     if ( infernal_awakening )
       infernal_awakening -> execute();
@@ -4199,8 +4239,6 @@ struct summon_darkglare_t : public warlock_spell_t
   {
     harmful = may_crit = may_miss = false;
 
-    //cooldown = p -> cooldowns.doomguard;
-    //cooldown->duration = data().cooldown();
     darkglare_duration = data().duration() + timespan_t::from_millis( 1 );
   }
 
@@ -5869,8 +5907,9 @@ void warlock_t::apl_precombat()
   }
 
   precombat_list += "/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)";
-  precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3";
+  precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0";
   precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3";
+  precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3&artifact.lord_of_flames.rank=0";
 
   if ( true_level > 100 )
     precombat_list += "/augmentation,type=defiled";
@@ -6064,6 +6103,7 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
   action_list_str += "/service_pet";
   add_action( "Summon Infernal", "if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active" );
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
   action_list_str += "/soul_harvest";
