@@ -21,7 +21,7 @@ actions.precombat+=/food,name=seedbattered_fish_plate
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=old_war
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/symbols_of_death
 
@@ -41,7 +41,7 @@ actions.build+=/gloomblade
 actions.build+=/backstab
 
 # Cooldowns
-actions.cds=potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up
+actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up
 actions.cds+=/use_item,slot=trinket2
 actions.cds+=/blood_fury,if=stealthed
 actions.cds+=/berserking,if=stealthed
