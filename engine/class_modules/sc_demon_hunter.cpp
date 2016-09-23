@@ -1587,7 +1587,7 @@ struct chaos_blades_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    p() -> buff.chaos_blades -> trigger();
+    p() -> buff.chaos_blades -> trigger( 1, p() -> cache.mastery_value() );
   }
 };
 
@@ -6612,7 +6612,7 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
   m *=
     1.0 + buff.nemesis -> check() * buff.nemesis -> data().effectN( 1 ).percent();
 
-  m *= 1.0 + buff.chaos_blades -> check() * cache.mastery_value();
+  m *= 1.0 + buff.chaos_blades -> check_value();
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> check() )
     m *= 1.0 + talent.razor_spikes -> effectN( 1 ).percent();
