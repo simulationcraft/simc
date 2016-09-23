@@ -1302,13 +1302,13 @@ public:
 
   void trigger_fel_barrage( action_state_t* s )
   {
-    if ( !p() -> talent.fel_barrage -> ok() )
+    if ( ! p() -> talent.fel_barrage -> ok() )
       return;
 
-    if ( !may_proc_fel_barrage )
+    if ( ! may_proc_fel_barrage )
       return;
 
-    if ( !ab::result_is_hit( s -> result ) )
+    if ( ! ab::result_is_hit( s -> result ) )
       return;
 
     if ( s -> result_amount <= 0 )
@@ -1317,11 +1317,22 @@ public:
     if ( p() -> cooldown.fel_barrage_proc -> down() )
       return;
 
-    if ( !p() -> rng().roll( p() -> spec.fel_barrage_proc -> proc_chance() ) )
-      return;
+    /* Sep 23 2016: Via hotfix, this ability was changed in some mysterious
+    unknown manner. Proc mechanic is now totally serverside.
+    http://blue.mmo-champion.com/topic/767333-hotfixes-september-16/
+    
+    Assuming proc chance and ICD are unchanged and that ICD starts on-attempt
+    instead of on-success now.
+    
+    As a result, chance and ICD are now hardcoded (they are no longer in the
+    spell data).*/ 
 
-    p() -> proc.fel_barrage -> occur();
-    p() -> cooldown.fel_barrage -> reset( true );
+    if ( p() -> rng().roll( 0.10 ) )
+    {
+      p() -> proc.fel_barrage -> occur();
+      p() -> cooldown.fel_barrage -> reset( true );
+    }
+
     p() -> cooldown.fel_barrage_proc -> start();
   }
 
@@ -5911,11 +5922,20 @@ void demon_hunter_t::init_spells()
   if ( talent.fel_barrage -> ok() )
   {
     spec.fel_barrage_proc = find_spell( 222703 );
-    cooldown.fel_barrage_proc -> duration =
-      spec.fel_barrage_proc -> internal_cooldown() +
-      timespan_t::from_millis( 1 );
-    // In-game, events that happen the same millisecond as the ICD ending cannot
-    // trigger a proc.
+
+    /* Sep 23 2016: Via hotfix, this ability was changed in some mysterious
+    unknown manner. Proc mechanic is now totally serverside.
+    http://blue.mmo-champion.com/topic/767333-hotfixes-september-16/
+    
+    Assuming proc chance and ICD are unchanged and that ICD starts on-attempt
+    instead of on-success now.
+    
+    As a result, chance and ICD are now hardcoded (they are no longer in the
+    spell data).*/ 
+
+    /* Subsequent Fury of the Illidari ticks (500ms interval) cannot proc,
+    so use 501ms instead of 500. */
+    cooldown.fel_barrage_proc -> duration = timespan_t::from_millis( 501 );
   }
 
   using namespace actions::attacks;
