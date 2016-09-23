@@ -6258,6 +6258,22 @@ struct fortifying_brew_t: public monk_buff_t < buff_t >
     monk.stat_loss( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
   }
 };
+
+// Hidden Master's Forbidden Touch Legendary
+struct hidden_masters_forbidden_touch_t : public monk_buff_t < buff_t >
+{
+  hidden_masters_forbidden_touch_t( monk_t& p, const std::string&n, const spell_data_t*s ):
+    base_t( p, buff_creator_t( &p, n, s ) )
+  {
+  }
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    base_t::expire_override( expiration_stacks, remaining_duration );
+    cooldown_t* touch_of_death = source -> get_cooldown( "touch_of_death" );
+    if ( touch_of_death -> up() )
+      touch_of_death -> start();
+  }
+};
 }
 
 // ==========================================================================
@@ -6354,7 +6370,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "mistwalk" ) return new                  mistwalk_t( *this, options_str );
   if ( name == "refreshing_jade_wind" ) return new      refreshing_jade_wind_t( this, options_str );
   if ( name == "rushing_jade_wind" ) return new         rushing_jade_wind_t( this, options_str );
-  if ( name == "whirling_dragon_punch" ) return new    whirling_dragon_punch_t( this, options_str );
+  if ( name == "whirling_dragon_punch" ) return new     whirling_dragon_punch_t( this, options_str );
   if ( name == "serenity" ) return new                  serenity_t( this, options_str );
   // Artifacts
   if ( name == "sheiluns_gift" ) return new             sheiluns_gift_t( *this, options_str );
@@ -7025,7 +7041,7 @@ void monk_t::create_buffs()
     .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
 
   // Legendaries
-  buff.hidden_masters_forbidden_touch = buff_creator_t( this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
+  buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
 }
 
 // monk_t::init_gains =======================================================
