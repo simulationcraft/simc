@@ -6143,7 +6143,8 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
   // On-Use Items
   for ( size_t i = 0; i < p -> items.size(); i++ )
   {
-    if ( p -> items[ i ].has_use_special_effect() )
+    if ( p -> items[ i ].has_use_special_effect() &&
+      p -> items[ i ].special_effect().source != SPECIAL_EFFECT_SOURCE_ADDON )
     {
       std::string line =
         std::string( "use_item,slot=" ) + p -> items[ i ].slot_name();
