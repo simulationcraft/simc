@@ -4731,7 +4731,7 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions && true_level >= 80 )
   {
     if ( true_level > 100 )
-      precombat -> add_action( "potion,name=deadly_grace");
+      precombat -> add_action( "potion,name=old_war" );
     else if ( true_level > 90 )
       precombat -> add_action( "potion,name=draenic_strength" );
     else
@@ -4750,7 +4750,7 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      def -> add_action( "potion,name=deadly_grace,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up|target.time_to_die<=40)" );
+      def -> add_action( "potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up|target.time_to_die<=40)" );
     else if ( true_level > 90 )
       def -> add_action( "potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
     else if ( true_level > 85 )

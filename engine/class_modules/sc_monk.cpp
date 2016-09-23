@@ -8102,7 +8102,7 @@ void monk_t::apl_pre_windwalker()
   {
     // Prepotion
     if ( true_level > 100 )
-      pre -> add_action( "potion,name=deadly_grace" );
+      pre -> add_action( "potion,name=old_war" );
     else if ( true_level > 90 )
       pre -> add_action( "potion,name=draenic_agility" );
     else if ( true_level >= 85 )
@@ -8248,7 +8248,7 @@ void monk_t::apl_combat_windwalker()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      def -> add_action( "potion,name=deadly_grace,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
+      def -> add_action( "potion,name=old_war,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
     else if ( true_level > 90 )
       def -> add_action( "potion,name=draenic_agility,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
     else if ( true_level >= 85 )

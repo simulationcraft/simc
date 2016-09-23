@@ -6626,7 +6626,7 @@ void shaman_t::init_action_list_enhancement()
                           ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80  ) ? "seafood_magnifique_feast" :
                           "";
-  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+  std::string potion_name = ( true_level > 100 ) ? "old_war" :
                             ( true_level >= 90 ) ? "draenic_agility" :
                             ( true_level >= 85 ) ? "virmens_bite" :
                             ( true_level >= 80 ) ? "tolvir" :

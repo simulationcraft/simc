@@ -6116,7 +6116,7 @@ void demon_hunter_t::apl_precombat()
     std::string potion;
 
     if ( specialization() == DEMON_HUNTER_HAVOC )
-      potion = true_level > 100 ? "deadly_grace" : "draenic_agility";
+      potion = true_level > 100 ? "old_war" : "draenic_agility";
     else
       potion = true_level > 100 ? "unbending_potion" : "draenic_versatility";
 
@@ -6311,7 +6311,7 @@ void demon_hunter_t::apl_havoc()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      cd -> add_action( "potion,name=deadly_grace,if=buff.metamorphosis.remains>25" );
+      cd -> add_action( "potion,name=old_war,if=buff.metamorphosis.remains>25" );
     else
       cd -> add_action( "potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25" );
   }

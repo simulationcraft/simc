@@ -4724,7 +4724,7 @@ void warrior_t::apl_fury()
     ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
     ( true_level >= 80 ) ? "seafood_magnifique_feast" :
     "";
-  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+  std::string potion_name = ( true_level > 100 ) ? "old_war" :
     ( true_level >= 90 ) ? "draenic_strength" :
     ( true_level >= 85 ) ? "mogu_power" :
     ( true_level >= 80 ) ? "golemblood_potion" :
@@ -4831,7 +4831,7 @@ void warrior_t::apl_arms()
     ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
     ( true_level >= 80 ) ? "seafood_magnifique_feast" :
     "";
-  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+  std::string potion_name = ( true_level > 100 ) ? "old_war" :
     ( true_level >= 90 ) ? "draenic_strength" :
     ( true_level >= 85 ) ? "mogu_power" :
     ( true_level >= 80 ) ? "golemblood_potion" :

@@ -6444,7 +6444,7 @@ void druid_t::apl_precombat()
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
       if ( true_level > 100 )
-        potion_action += "deadly_grace";
+        potion_action += "old_war";
       else if ( true_level > 90 )
         potion_action += "draenic_agility";
       else if ( true_level > 85 )
@@ -6528,7 +6528,7 @@ void druid_t::apl_feral()
 
   std::string              potion_action  = "potion,name=";
   if ( true_level > 100 )
-    potion_action += "deadly_grace";
+    potion_action += "old_war";
   else if ( true_level > 90 )
     potion_action += "draenic_agility";
   else

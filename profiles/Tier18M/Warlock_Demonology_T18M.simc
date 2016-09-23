@@ -16,8 +16,9 @@ spec=demonology
 actions.precombat=flask,type=greater_draenic_intellect_flask
 actions.precombat+=/food,type=frosty_stew
 actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
-actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3
+actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
+actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3&artifact.lord_of_flames.rank=0
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=draenic_intellect
 actions.precombat+=/demonic_empowerment

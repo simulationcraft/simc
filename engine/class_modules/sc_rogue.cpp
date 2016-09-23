@@ -6263,7 +6263,7 @@ void rogue_t::init_action_list()
   std::string potion_action = "potion,name=";
   if ( sim -> allow_potions && true_level >= 85 )
   {
-    potion_action += ( ( true_level >= 110 ) ? "deadly_grace" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
+    potion_action += ( ( true_level >= 110 ) ? "old_war" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
 
     // Pre-Pot
     precombat -> add_action( potion_action );
