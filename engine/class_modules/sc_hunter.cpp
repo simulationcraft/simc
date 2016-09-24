@@ -6718,6 +6718,25 @@ struct hunter_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+
+    hotfix::register_effect( "Hunter", "2016-09-23", "Bestial Wrath damage bonus increased to 25%", 10779 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 25 )
+      .verification_value( 20 );
+
+    hotfix::register_effect( "Hunter", "2016-09-23", "Flanking Strike increased by 62%", 288891 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.62 )
+      .verification_value( 130 );
+
+    hotfix::register_effect( "Hunter", "2016-09-23", "Barrage (non-Survival) damage reduced by 20%.", 139945 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 100 );
+
   }
 
   virtual void combat_begin( sim_t* ) const override {}
