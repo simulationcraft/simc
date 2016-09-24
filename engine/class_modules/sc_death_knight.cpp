@@ -8045,6 +8045,60 @@ struct death_knight_module_t : public module_t {
       .modifier( 1 - 0.39 )
       .verification_value( 3.75 );
     */
+
+    hotfix::register_effect( "Death Knight", "2016-09-23", "Remorseless Winter damage increased by 50%.", 288891 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.5 )
+      .verification_value( 0.24 );
+
+    hotfix::register_effect( "Death Knight", "2016-09-23", "Obliterate damage increased by 19%.", 331345 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.19 )
+      .verification_value( 320 );
+
+    hotfix::register_effect( "Death Knight", "2016-09-23", "Obliterate damage increased by 19%.-offhand", 60373 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.19 )
+      .verification_value( 320 );
+
+    hotfix::register_effect( "Death Knight", "2016-09-23", "Frost Strike damage increased by 12%.", 331348 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 250 );
+
+    hotfix::register_effect( "Death Knight", "2016-09-23", "Frost Strike damage increased by 12%.-offhand", 60369 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 250 );
+
+    hotfix::register_effect( "Death Knight", "2016-09-23", "Howling Blast damage increased by 10%.", 41296 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 0.5 );
+
+    hotfix::register_effect( "Death Knight", "2016-09-23", "Frostscythe (Talent) damage increased by 13%.", 306492 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.13 )
+      .verification_value( 120 );
+
+    hotfix::register_effect( "Death Knight", "2016-09-23", "Frozen Pulse (Talent) damage increased by 11%.", 287339 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 0.72 );
+
+    hotfix::register_effect( "Death Knight", "2016-09-23", "Breath of Sindragosa (Talent) damage increased by 17%.", 215545 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 1.5 );
   }
 
   void init( player_t* ) const override {}
