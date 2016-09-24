@@ -3004,6 +3004,9 @@ struct crusader_strike_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit       += p -> artifact.sharpened_edge.percent();
 
+    if ( p -> specialization() == PALADIN_RETRIBUTION ) // HOTFIX
+      base_multiplier *= 1.13;                          // HOTFIX
+
     if ( p -> talents.fires_of_justice -> ok() )
     {
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
@@ -3601,6 +3604,7 @@ struct judgment_t : public paladin_melee_attack_t
       base_costs[ RESOURCE_MANA ] = 0;
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
       impact_action = new judgment_aoe_t( p, options_str );
+      base_multiplier *= 1.13; // HOTFIX
     }
     else if ( p -> specialization() == PALADIN_HOLY )
     {
@@ -6174,6 +6178,37 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
+
+    hotfix::register_effect( "Paladin", "2016-09-23", "Templar’s Verdict damage increased by 10%.", 335615 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 290 );
+
+    hotfix::register_effect( "Paladin", "2016-09-23", "Divine Storm damage increased by 20%.", 335563 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.20 )
+      .verification_value( 180 );
+
+    hotfix::register_effect( "Paladin", "2016-09-23", "Blade of Justice damage increased by 13%.", 267536 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.13 )
+      .verification_value( 352 );
+
+    hotfix::register_effect( "Paladin", "2016-09-23", "Zeal (Talent) damage increased by 13%.", 322915 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.13 )
+      .verification_value( 285 );
+
+    hotfix::register_effect( "Paladin", "2016-09-23", "Blade of Wrath (Talent) damage increased by 13%.", 298132 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.13 )
+      .verification_value( 120 );
+
   }
 
   virtual void combat_begin( sim_t* ) const override {}
