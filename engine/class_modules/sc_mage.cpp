@@ -3416,7 +3416,8 @@ struct blizzard_t : public frost_mage_spell_t
     parse_options( options_str );
     may_miss     = false;
     ignore_false_positive = true;
-
+    // HOTFIX mana cost
+    base_costs[ RESOURCE_MANA ] = 22500;
     snapshot_flags = STATE_HASTE;
     dot_duration = data().duration();
     base_tick_time = timespan_t::from_seconds( 1.0 );
@@ -8153,7 +8154,7 @@ std::string mage_t::get_special_use_items( const std::string& item_name, bool sp
 }
 
 // Because we care about both the ability to control special conditions AND position of our on use items,
-// we must use our own get_item_actions which knows to ignore all "special" items and let them be handled by get_on_use_items()
+// we must use our own get_item_actions which knows to ignore all "special" items and let them be handled by get_special_use_items()
 std::vector<std::string> mage_t::get_non_speical_item_actions()
 {
   std::vector<std::string> actions;
@@ -9391,11 +9392,12 @@ private:
   mage_t& p;
 };
 // Custom Gear ==============================================================
-
-// Mage Legendary Items
 using namespace unique_gear;
 using namespace actions;
+// Legion Mage JC Neck
 
+
+// Mage Legendary Items
 struct sephuzs_secret_t : public scoped_actor_callback_t<mage_t>
 {
   sephuzs_secret_t(): super( MAGE )
@@ -9570,6 +9572,70 @@ public:
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Mage", "2016-09-24", "Arcane Missiles damage increased by 9%.", 2716 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.3815 )
+      .verification_value( 0.35000 );
+
+    hotfix::register_effect( "Mage", "2016-09-24", "Arcane Blast damage increased by 10%.", 90297 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.65 )
+      .verification_value( 1.50000 );
+
+    hotfix::register_effect( "Mage", "2016-09-24", "Frostbolt damage increased by 8%", 344284 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.998 )
+      .verification_value( 1.85 );
+
+    hotfix::register_effect( "Mage", "2016-09-24", "Ice Lance damage increased by 13%.", 344285 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.8588 )
+      .verification_value( 0.76000 );
+
+    hotfix::register_effect( "Mage", "2016-09-24", "Flurry damage increased by 38%.", 343734 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.449 )
+      .verification_value( 1.05000 );
+
+    hotfix::register_effect( "Mage", "2016-09-24", "Blizzard damage increased by 36%, and mana cost reduced by 50%.", 278848 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.449208 )
+      .verification_value( 0.33030 );
+
+    hotfix::register_effect( "Mage", "2016-09-24", "Splitting Ice (Talent) now causes 80% of normal damage (up from 50%).", 136440 )
+      .field( "scaled_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 80 )
+      .verification_value( 50 );
+    hotfix::register_effect( "Mage", "2016-09-24", "Splitting Ice (Talent) now causes 80% of normal damage (up from 50%).", 136440 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 80 )
+      .verification_value( 50 );
+
+    hotfix::register_effect( "Mage", "2016-09-24", "Ice Nova (Talent) damage increased by 13%.", 220384 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4.52 )
+      .verification_value( 4.00000 );
+
+    hotfix::register_effect( "Mage", "2016-09-24", "Ray of Frost (Talent) damage increased by 28%.", 303101 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.856 )
+      .verification_value( 1.45000 );
+
+    hotfix::register_effect( "Mage", "2016-09-24", "Glacial Spike (Talent) damage increased by 15%.", 344289 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 7.475 )
+      .verification_value( 6.50000 );
   }
 
   virtual bool valid() const override { return true; }
