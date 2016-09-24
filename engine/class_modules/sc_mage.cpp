@@ -2015,7 +2015,7 @@ struct arcane_mage_spell_t : public mage_spell_t
   {
     double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent() +
                           ( p() -> composite_mastery() *
-                           p() -> spec.savant -> effectN( 2 ).mastery_value() );
+                           ( p() -> spec.savant -> effectN( 2 ).mastery_value() * 1.2 ) ); // HOTFIX:: 1.2 mastery value hotfix, super lazy.
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
 
   }
@@ -8574,7 +8574,7 @@ double mage_t::mana_regen_per_second() const
 
   if ( spec.savant -> ok() )
   {
-    mps *= 1.0 + composite_mastery() * spec.savant -> effectN( 1 ).mastery_value();
+    mps *= 1.0 + composite_mastery() * ( spec.savant -> effectN( 1 ).mastery_value() * 1.2 ); // HOTFIX:: super lazy.
   }
 
   // This, technically, is not correct. The buff itself, ticking every 1s, should
@@ -8640,7 +8640,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
   if ( spec.savant -> ok() )
   {
     resources.max[ rt ] *= 1.0 +
-      composite_mastery() * spec.savant -> effectN( 1 ).mastery_value();
+      composite_mastery() * ( spec.savant -> effectN( 1 ).mastery_value() * 1.2 ); // HOTFIX: super lazy
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
     if ( sim -> debug )
     {
@@ -9572,7 +9572,7 @@ public:
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_effect( "Mage", "2016-09-24", "Arcane Missiles damage increased by 9%.", 2716 )
+     hotfix::register_effect( "Mage", "2016-09-24", "Arcane Missiles damage increased by 9%.", 2716 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.3815 )
