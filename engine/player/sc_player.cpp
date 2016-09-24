@@ -7429,6 +7429,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
     switch ( talent_string[ 0 ] )
     {
       case 'd' : w_class = DEATH_KNIGHT; break;
+      case 'g' : w_class = DEMON_HUNTER; break;
       case 'U' : w_class = DRUID; break;
       case 'Y' : w_class = HUNTER; break;
       case 'e' : w_class = MAGE; break;
@@ -7664,6 +7665,7 @@ void player_t::create_talents_armory()
     switch ( type )
     {
       case DEATH_KNIGHT : c = 'd'; break;
+      case DEMON_HUNTER : c = 'g'; break;
       case DRUID        : c = 'U'; break;
       case HUNTER       : c = 'Y'; break;
       case MAGE         : c = 'e'; break;
