@@ -1803,6 +1803,9 @@ struct moonfire_t : public druid_spell_t
       }
 
       base_multiplier *= 1.0 + p -> artifact.twilight_glow.percent();
+
+      if ( !p -> specialization() == DRUID_FERAL ) // HOTFIX
+        base_multiplier *= 1.1;                    // HOTFIX
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -8437,7 +8440,38 @@ struct druid_module_t : public module_t
     // register_special_effect( 208191, essence_of_infusion_t() );
   }
 
-  virtual void register_hotfixes() const override {
+  virtual void register_hotfixes() const override 
+  {
+
+    hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.", 232416 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 1.0 );
+
+    hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.-dot", 232417 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 0.5 );
+
+    hotfix::register_effect( "Druid", "2016-09-23", "Starfall damage increased by 10%.", 280158 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 0.4 );
+
+    hotfix::register_effect( "Druid", "2016-09-23", "Lunar Strike damage increased by 5%.", 284976 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 2.7 );
+
+    hotfix::register_effect( "Druid", "2016-09-23", "Solar Wrath damage increased by 5%.", 280098 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 1.9 );
 
   }
 
