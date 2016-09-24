@@ -153,6 +153,7 @@ struct rogue_t : public player_t
   action_t* active_main_gauche;
   action_t* weaponmaster_dot_strike;
   action_t* shadow_nova;
+  action_t* second_shuriken;
   action_t* poison_knives;
   action_t* from_the_shadows_;
   action_t* poison_bomb;
@@ -537,6 +538,7 @@ struct rogue_t : public player_t
     active_main_gauche( nullptr ),
     weaponmaster_dot_strike( nullptr ),
     shadow_nova( nullptr ),
+    second_shuriken( nullptr ),
     poison_knives( nullptr ),
     from_the_shadows_( nullptr ),
     poison_bomb( nullptr ),
@@ -644,6 +646,7 @@ struct rogue_t : public player_t
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_weaponmaster( const action_state_t* );
   void trigger_energetic_stabbing( const action_state_t* );
+  void trigger_second_shuriken( const action_state_t* );
   void trigger_surge_of_toxins( const action_state_t* );
   void trigger_poison_knives( const action_state_t* );
   void trigger_true_bearing( int );
@@ -1278,6 +1281,17 @@ struct weaponmaster_strike_t : public rogue_attack_t
   { return base_dd_min; }
 };
 
+struct second_shuriken_t : public rogue_attack_t
+{
+  second_shuriken_t( rogue_t* p ) :
+    rogue_attack_t( "second_shuriken", p, p -> find_spell( 197610 ) )
+  {
+    background = true;
+    callbacks = may_miss = may_dodge = may_parry = false;
+    may_crit = true;
+  }
+};
+
 struct shadow_nova_t : public rogue_attack_t
 {
   shadow_nova_t( rogue_t* p ) :
@@ -1372,6 +1386,19 @@ struct poison_bomb_t : public rogue_attack_t
   {
     background = true;
     aoe = -1;
+  }
+
+  // Scale on Mastery since 09-24 Hotfix
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> mastery.potent_poisons -> ok() )
+    {
+      m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return m;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -2018,7 +2045,7 @@ double rogue_attack_t::cost() const
 
   if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
   {
-    c += p() -> artifact.fatebringer.value();
+    c += p() -> artifact.fatebringer.value() * 0.75; //FIXME Hotfix 09-24: Hardcoded the 25% nerf. (4 per rank -> 3 per rank)
   }
 
   if ( c <= 0 )
@@ -2378,7 +2405,7 @@ struct between_the_eyes_t : public rogue_attack_t
         options_str ), greenskins_waterlogged_wristcuffs( nullptr )
   {
     crit_bonus_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
+    base_multiplier *= 1.0 + p -> artifact.black_powder.percent() * 0.75; //FIXME Hotfix 09-24: Hardcoded the 25% nerf. (8% per rank -> 6% per rank)
   }
 
   void execute() override
@@ -2590,6 +2617,7 @@ struct envenom_t : public rogue_attack_t
           .target( execute_state -> target )
           .x( player -> x_position )
           .y( player -> y_position )
+          .pulse_time( timespan_t::from_seconds( 0.5 ) ) //FIXME Hotfix 09-24: Hardcoded to 500ms instead of 1s since duration halved but damage conserved, check spell data when it'll be live.
           .duration( p() -> spell.bag_of_tricks_driver -> duration() )
           .start_time( sim -> current_time() )
           .action( p() -> poison_bomb ), true );
@@ -3290,7 +3318,7 @@ struct run_through_t: public rogue_attack_t
     rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str ),
     ttt_multiplier( 0 )
   {
-    base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
+    base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent() * 0.75; //FIXME Hotfix 09-24: Hardcoded the 25% nerf. (8% per rank -> 6% per rank)
   }
 
   double action_multiplier() const override
@@ -4075,6 +4103,13 @@ struct shuriken_storm_t: public rogue_attack_t
     }
 
     return m;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    p() -> trigger_second_shuriken( state );
   }
 
 };
@@ -5197,6 +5232,24 @@ void rogue_t::trigger_energetic_stabbing( const action_state_t* s )
   }
 }
 
+void rogue_t::trigger_second_shuriken( const action_state_t* state )
+{
+  if ( ! artifact.second_shuriken.rank() )
+  {
+    return;
+  }
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  if ( rng().roll( artifact.second_shuriken.data().proc_chance() ) )
+  {
+    second_shuriken -> execute();
+  }
+}
+
 void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
 {
   if ( ! artifact.surge_of_toxins.rank() )
@@ -5241,14 +5294,14 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
   // Poison knives double dips into some multipliers
 
   // .. first, mastery
-  //tick_base_damage *= 1.0 + cache.mastery_value(); Hotfix 2016-09-24 Poison Knives (Artifact Trait) no longer benefits twitch from Mastery.
+  //tick_base_damage *= 1.0 + cache.mastery_value(); //FIXME Hotfix 2016-09-24 Poison Knives (Artifact Trait) no longer benefits twitch from Mastery.
 
   // .. then, apparently the Master Alchemist talent
   tick_base_damage *= 1.0 + artifact.master_alchemist.percent();
 
   // Target multipliers get applied on execute, they also work
 
-  double total_damage = ( partial_tick + ticks_left ) * tick_base_damage * artifact.poison_knives.percent();
+  double total_damage = ( partial_tick + ticks_left ) * tick_base_damage * artifact.poison_knives.percent() * 2; //FIXME Hotfix 09-24: Hardcoded the 100% buff. (2% per rank -> 4% per rank)
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s poison_knives dot_remains=%.3f duration=%.3f ticks_left=%u partial=%.3f amount=%.3f total=%.3f",
@@ -6982,6 +7035,11 @@ void rogue_t::init_spells()
     shadow_nova = new actions::shadow_nova_t( this );
   }
 
+  if ( artifact.second_shuriken.rank() )
+  {
+    second_shuriken = new actions::second_shuriken_t( this );
+  }
+
   if ( artifact.poison_knives.rank() )
   {
     poison_knives = new actions::poison_knives_t( this );
@@ -8009,6 +8067,11 @@ struct rogue_module_t : public module_t
     // Bag of Tricks : radius increased to 6 yards (from 3), and now benefits from Mastery.
     // Second Shuriken (Artifact Trait) chance to activate increased to 30% (was 10%), damage increased by 30%, and now deals 200% additional damage while Stealth or Shadow Dance is active.
     // TODO
+    hotfix::register_effect( "Rogue", "2016-09-24", "Death From Above (Talent) area damage increased by 100%.", 217580 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3.666 )
+      .verification_value( 1.83300 );
     hotfix::register_effect( "Rogue", "2016-09-24", "Deadly Poison damage increased by 30%.", 853 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
@@ -8024,26 +8087,6 @@ struct rogue_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 3000 )
       .verification_value( 6000 );
-    hotfix::register_effect( "Rogue", "2016-09-24", "Poison Knives (Artifact Trait) damage per point increased to 4%.", 343569 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 4 )
-      .verification_value( 2 );
-    hotfix::register_effect( "Rogue", "2016-09-24", "Fatebringer (Artifact Trait) Energy cost reduction reduced to 3 per rank.", 298569 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -3 )
-      .verification_value( -4 );
-    hotfix::register_effect( "Rogue", "2016-09-24", "Fate’s Thirst (Artifact Trait) damage bonus to Run Through reduced to 6% per rank.", 298552 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 6 )
-      .verification_value( 8 );
-    hotfix::register_effect( "Rogue", "2016-09-24", "Black Powder (Artifact Trait) damage bonus to Between the Eyes reduced to 6% per rank.", 321632 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 6 )
-      .verification_value( 8 );
     hotfix::register_effect( "Rogue", "2016-09-24", "Eviscerate damage increased by 15%.", 288959 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
