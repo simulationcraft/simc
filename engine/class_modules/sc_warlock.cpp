@@ -1426,7 +1426,7 @@ struct felguard_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
     action_list_str = "legion_strike";
-    owner_coeff.ap_from_sp = 1.1;
+    owner_coeff.ap_from_sp = 1.1; // HOTFIX
   }
 
   virtual void init_base_stats() override
@@ -1951,7 +1951,7 @@ struct dreadstalker_t : public warlock_pet_t
     action_list_str = "travel/dreadbite";
     regen_type = REGEN_DISABLED;
     owner_coeff.health = 0.4;
-    owner_coeff.ap_from_sp = 1.1;
+    owner_coeff.ap_from_sp = 1.1; // HOTFIX
   }
 
   virtual double composite_melee_crit_chance() const override
