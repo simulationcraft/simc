@@ -1119,8 +1119,6 @@ struct doom_bolt_t: public warlock_pet_spell_t
   {
     if ( p -> o() -> talents.grimoire_of_supremacy -> ok() )
       base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.data().effectN( 2 ).percent();
-    if ( p-> o() -> specialization() == WARLOCK_DEMONOLOGY )
-      base_multiplier *= 0.85; // Doomguard does 15% less damage for demonology, find spelldata for this.
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -1428,6 +1426,7 @@ struct felguard_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
     action_list_str = "legion_strike";
+    owner_coeff.ap_from_sp = 1.1;
   }
 
   virtual void init_base_stats() override
@@ -1952,6 +1951,7 @@ struct dreadstalker_t : public warlock_pet_t
     action_list_str = "travel/dreadbite";
     regen_type = REGEN_DISABLED;
     owner_coeff.health = 0.4;
+    owner_coeff.ap_from_sp = 1.1;
   }
 
   virtual double composite_melee_crit_chance() const override
@@ -3889,7 +3889,8 @@ struct rain_of_fire_t : public warlock_spell_t
     parse_options( options_str );
     dot_duration = timespan_t::zero();
     may_miss = may_crit = false;
-    base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data)
+    base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data
+    base_execute_time = timespan_t::zero(); // HOTFIX
 
 
     if ( !p -> active.rain_of_fire )
@@ -7073,7 +7074,161 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Warlock", "2016-09-23", "Drain Life damage increased by 10%", 271 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 0.35 );
 
+    hotfix::register_effect( "Warlock", "2016-09-23", "Drain Soul damage increased by 10%", 291909 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 0.52 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Corruption damage increased by 10%", 198369 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( .3 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Agony damage increased by 5%", 374 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 0.036 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Unstable Affliction damage increased by 15%", 303066 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 0.8 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Seed of Corruption damage increased by 15%", 16922 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 1.2 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Siphon Life damage increased by 10%", 57197 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.5 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Haunt damage increased by 15%", 40331 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 7.0 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Phantom Singularity damage increased by 15%", 303063 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 1.44 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Hand of Gul’dan impact damage increased by 20%", 87492 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 0.36 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", " Demonwrath damage increased by 15%", 283783 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 0.3 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Shadowbolt damage increased by 10%", 267 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.8 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Doom damage increased by 10%", 246 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 5.0 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Wild Imps damage increased by 10%", 113740 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.14 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Demonbolt (Talent) damage increased by 10%", 219885 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.8 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Implosion (Talent) damage increased by 15%", 288085 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 2.0 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Shadowflame (Talent) damage increased by 10%", 302909 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 1.0 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Shadowflame (Talent) damage increased by 10%-2", 302911 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.35 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Darkglare (Talent) damage increased by 10%", 302984 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 1.0 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Chaos bolt damage increased by 11%", 132079 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 3.3 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Incinerate damage increased by 11%", 288276 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 2.1 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Immolate damage increased by 11%", 145 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 1.2 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Conflagrate damage increased by 11%", 9553 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 2.041 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Rain of Fire damage increased by 11%, and cast time removed", 33883 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 0.5 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Cataclysm damage increased by 11%", 210584 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 7.0 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Channel Demonfire damage increased by 11%", 288343 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 0.42 );
   }
 
   virtual bool valid() const override { return true; }
