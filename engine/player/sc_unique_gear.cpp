@@ -4438,12 +4438,6 @@ void unique_gear::unregister_special_effects()
 
 void unique_gear::register_hotfixes()
 {
-  hotfix::register_effect( "Item", "2016-08-16", "[unannounced] Potion of"
-    "the Old War damage increased by approximately 50%.", 352115 )
-    .field( "average" )
-    .operation( hotfix::HOTFIX_MUL )
-    .modifier( 1.5 )
-    .verification_value( 100 );
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
