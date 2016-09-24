@@ -3437,22 +3437,16 @@ struct shadow_word_pain_t final : public priest_spell_t
   double action_multiplier() const override
   {
     double m = priest_spell_t::action_multiplier();
-    double s;
 
     if ( priest.mastery_spells.madness->ok() )
     {
       m *= 1.0 + priest.cache.mastery_value();
     }
 
-    if ( priest.buffs.voidform->stack() >= 100 )
-      s = 100;
-
-    if ( priest.buffs.voidform->stack() < 100 )
-      s = priest.buffs.voidform->stack();
-
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * s );
+      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() *
+                   priest.buffs.voidform->stack() );
     }
 
     return m;
@@ -3620,22 +3614,16 @@ struct vampiric_touch_t final : public priest_spell_t
   double action_multiplier() const override
   {
     double m = priest_spell_t::action_multiplier();
-    double s;
 
     if ( priest.mastery_spells.madness->ok() )
     {
       m *= 1.0 + priest.cache.mastery_value();
     }
 
-    if ( priest.buffs.voidform->stack() >= 100 )
-      s = 100;
-
-    if ( priest.buffs.voidform->stack() < 100 )
-      s = priest.buffs.voidform->stack();
-
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * s );
+      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() *
+                   priest.buffs.voidform->stack() );
     }
 
     return m;
@@ -4943,7 +4931,13 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
     {
       auto priest = debug_cast<priest_t*>( player() );
 
-      priest->buffs.insanity_drain_stacks->increment();
+      // If we are currently channeling Void Torrent or Dispersion, we don't
+      // gain stacks.
+      if ( !( priest->buffs.void_torrent->check() ||
+              priest->buffs.dispersion->check() ) )
+      {
+        priest->buffs.insanity_drain_stacks->increment();
+      }
       ids->stack_increase = new ( sim() ) stack_increase_event_t( ids );
     }
   };
@@ -5047,6 +5041,18 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
       priest->resource_loss( RESOURCE_INSANITY, insanity_loss,
                              priest->gains.insanity_drain );
+
+      if ( priest->buffs.dispersion->check() )
+      {
+        priest->resource_gain( RESOURCE_INSANITY, insanity_loss,
+                               priest->gains.insanity_dispersion );
+      }
+
+      if ( priest->buffs.void_torrent->check() )
+      {
+        priest->resource_gain( RESOURCE_INSANITY, insanity_loss,
+                               priest->gains.insanity_void_torrent );
+      }
 
       // If you don't have enough insanity for the drain, you drop out
       // with however much insanity you had left. HOWEVER, there is a
