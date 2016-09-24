@@ -7859,7 +7859,7 @@ struct shaman_module_t : public module_t
       .modifier( 1.2 )
       .verification_value( 0.7 );
 
-    hotfix::register_effect( "Shaman", "2016-09-23", "Storm Elemental's Wind Gust damage has been increased by 20%", 219409 )
+    hotfix::register_effect( "Shaman", "2016-09-23", "Storm Elemental's Wind Gust damage has been increased by 20%", 219326 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )
