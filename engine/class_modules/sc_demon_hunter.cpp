@@ -6265,7 +6265,7 @@ void demon_hunter_t::apl_havoc()
                    "if=talent.demonic.enabled&buff.metamorphosis.down&cooldown."
                    "eye_beam.remains<2*gcd&fury.deficit>=45" );
   def -> add_action( this, "Throw Glaive",
-                   "if=buff.metamorphosis.down&spell_targets>=3" );
+                   "if=buff.metamorphosis.down&spell_targets>=2" );
   def -> add_action( this, "Chaos Strike",
                    "if=(!talent.momentum.enabled|buff.momentum.up|fury.defic"
     "it<=30+buff.prepared.up*8)&!variable.pooling_for_meta&(!talent.demonic."
@@ -6306,7 +6306,7 @@ void demon_hunter_t::apl_havoc()
   cd -> add_action(
     this, "Metamorphosis",
     "if=variable.pooling_for_meta&fury.deficit<30&(talent.chaos_blades.enabl"
-    "ed|!cooldown.fury_of_the_illidari.ready&!cooldown.throw_glaive.ready)" );
+    "ed|!cooldown.fury_of_the_illidari.ready)" );
 
   // Pre-Potion
   if ( sim -> allow_potions )
