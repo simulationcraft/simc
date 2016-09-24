@@ -7822,6 +7822,54 @@ struct shaman_module_t : public module_t
       .modifier( 0.8 )
       .verification_value( 0.7 );
     */
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Chain Lightning (Elemental) damage has been increased by 23%", 275203 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.23 )
+      .verification_value( 1.3 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Chain Lightning (Elemental) maelstrom generation increased to 6.", 325428 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 6 )
+      .verification_value( 4 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Lightning bolt damaged increased by 23%", 274643 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.23 )
+      .verification_value( 1.3 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Lava burst damage has been increased by 5%", 43841 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 2.1 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Elemental Mastery effects have been increased by 12.5%", 238582 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.125 )
+      .verification_value( 2 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Storm Elemental's Call Lightning damage has been increased by 20%", 219409 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 0.7 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Storm Elemental's Wind Gust damage has been increased by 20%", 219409 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 0.35 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Chain Lightning (Restoration) damage has been increased by 20%", 155 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 1.8 );
   }
 
   void combat_begin( sim_t* ) const override {}
