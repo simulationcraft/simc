@@ -5241,7 +5241,7 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
   // Poison knives double dips into some multipliers
 
   // .. first, mastery
-  tick_base_damage *= 1.0 + cache.mastery_value();
+  //tick_base_damage *= 1.0 + cache.mastery_value(); Hotfix 2016-09-24 Poison Knives (Artifact Trait) no longer benefits twitch from Mastery.
 
   // .. then, apparently the Master Alchemist talent
   tick_base_damage *= 1.0 + artifact.master_alchemist.percent();
@@ -8005,6 +8005,60 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    // TODO
+    // Bag of Tricks : radius increased to 6 yards (from 3), and now benefits from Mastery.
+    // Second Shuriken (Artifact Trait) chance to activate increased to 30% (was 10%), damage increased by 30%, and now deals 200% additional damage while Stealth or Shadow Dance is active.
+    // TODO
+    hotfix::register_effect( "Rogue", "2016-09-24", "Deadly Poison damage increased by 30%.", 853 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.3575 )
+      .verification_value( 0.27500 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Fan of Knives damage increased by 30%.", 44107 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.08108 )
+      .verification_value( 0.83160 );
+    hotfix::register_spell( "Rogue", "2016-09-24", "Bag of Tricks (Artifact Trait) duration reduced to 3 seconds (overall damage unchanged)", 192661 )
+      .field( "duration" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3000 )
+      .verification_value( 6000 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Poison Knives (Artifact Trait) damage per point increased to 4%.", 343569 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4 )
+      .verification_value( 2 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Fatebringer (Artifact Trait) Energy cost reduction reduced to 3 per rank.", 298569 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -3 )
+      .verification_value( -4 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Fate’s Thirst (Artifact Trait) damage bonus to Run Through reduced to 6% per rank.", 298552 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 6 )
+      .verification_value( 8 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Black Powder (Artifact Trait) damage bonus to Between the Eyes reduced to 6% per rank.", 321632 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 6 )
+      .verification_value( 8 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Eviscerate damage increased by 15%.", 288959 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.472 )
+      .verification_value( 1.28 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Nightblade damage increased by 15%.", 286896 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.38 )
+      .verification_value( 1.2 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Shuriken Storm damage increased by 30%.", 290720 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.72072 )
+      .verification_value( 0.55440 );
     /*
     hotfix::register_effect( "Rogue", "2016-08-23", "Envenom damage has been increased to 60% Attack Power per point (was 50%).", 22420 )
       .field( "ap_coefficient" )
