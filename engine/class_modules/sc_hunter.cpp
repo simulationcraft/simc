@@ -6725,7 +6725,7 @@ struct hunter_module_t: public module_t
       .modifier( 25 )
       .verification_value( 20 );
 
-    hotfix::register_effect( "Hunter", "2016-09-23", "Flanking Strike increased by 62%", 288891 )
+    hotfix::register_effect( "Hunter", "2016-09-23", "Flanking Strike increased by 62%", 299019 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.62 )
