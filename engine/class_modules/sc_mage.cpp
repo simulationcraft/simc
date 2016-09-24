@@ -9578,7 +9578,7 @@ public:
       .modifier( 0.3815 )
       .verification_value( 0.35000 );
 
-    hotfix::register_effect( "Mage", "2016-09-24", "Arcane Blast damage increased by 10%.", 90297 )
+    hotfix::register_effect( "Mage", "2016-09-24", "Arcane Blast damage increased by 10%.", 20028 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 1.65 )
