@@ -817,7 +817,7 @@ public:
   virtual void tactician()
   {
     double tact_rage = tactician_cost(); //Tactician resets based on cost before things make it cost less.
-    if ( ab::rng().roll( tactician_per_rage * tact_rage ) )
+    if ( ab::rng().roll( ( tactician_per_rage ) * tact_rage ) ) //FIXME
     {
       p() -> cooldown.colossus_smash -> reset( true );
       p() -> cooldown.mortal_strike -> reset( true );
@@ -3155,6 +3155,7 @@ struct shield_slam_t: public warrior_attack_t
   {
     parse_options( options_str );
     energize_type = ENERGIZE_NONE;
+    rage_gain = 10;
   }
 
   double action_multiplier() const override
@@ -3185,7 +3186,6 @@ struct shield_slam_t: public warrior_attack_t
 
     return cc;
   }
-
 
   void execute() override
   {
@@ -5259,7 +5259,8 @@ void warrior_t::create_buffs()
   buff.intercept_movement = buff_creator_t( this, "intercept_movement" );
 
   buff.focused_rage = buff_creator_t( this, "focused_rage", talents.focused_rage -> ok() ? talents.focused_rage : spec.focused_rage )
-    .default_value( talents.focused_rage -> ok() ? talents.focused_rage -> effectN( 1 ).percent() : spec.focused_rage -> effectN( 1 ).percent() )
+    //.default_value( talents.focused_rage -> ok() ? talents.focused_rage -> effectN( 1 ).percent() : spec.focused_rage -> effectN( 1 ).percent() )
+    .default_value( talents.focused_rage -> ok() ? 0.3 : spec.focused_rage -> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
@@ -5332,11 +5333,13 @@ void warrior_t::create_buffs()
 
   buff.vengeance_ignore_pain = buff_creator_t( this, "vengeance_ignore_pain", find_spell( 202574 ) )
     .chance( talents.vengeance -> ok() )
-    .default_value( find_spell( 202574 ) -> effectN( 1 ).percent() );
+    .default_value( 0.35 );
+    //.default_value( find_spell( 202574 ) -> effectN( 1 ).percent() );
 
   buff.vengeance_focused_rage = buff_creator_t( this, "vengeance_focused_rage", find_spell( 202573 ) )
     .chance( talents.vengeance -> ok() )
-    .default_value( find_spell( 202573 ) -> effectN( 1 ).percent() );
+    .default_value( 0.35 );
+    //.default_value( find_spell( 202573 ) -> effectN( 1 ).percent() );
 
   buff.berserking_driver = buff_creator_t( this, "berserking_driver", artifact.rage_of_the_valarjar.data().effectN( 1 ).trigger() )
       .trigger_spell(  artifact.rage_of_the_valarjar )
@@ -6457,7 +6460,111 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 222266, raging_fury2_t() );
   }
 
-  virtual void register_hotfixes() const override {}
+  virtual void register_hotfixes() const override
+  {
+    hotfix::register_effect( "Warrior", "2016-09-23", "Exploit the Weakness (Artifact Trait) bonus reduced to 3% per point.", 310053 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 10 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Focused Rage (Talent) damage bonus reduced to 30%.", 307672 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 40 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Vengeance (Talent) Rage cost reduction reduced to 35%.", 298648 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -35 )
+      .verification_value( -50 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Vengeance (Talent) Rage cost reduction reduced to 35%.", 298649 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -35 )
+      .verification_value( -50 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Intercept Rage generation reduced to 10.", 291445 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 100 )
+      .verification_value( 200 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Shield Slam Rage generation reduced to 10.", 290322 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 100 )
+      .verification_value( 150 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12%.", 267758 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 47 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12%.", 267762 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 95 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12%.", 296643 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 166 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12%.", 296645 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 285 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12%.", 325561 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 142 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Bloodthirst damage increased by 12%.", 134421 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 137 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Raging Blow damage increased by 5%.", 86556 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 118 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Raging Blow damage increased by 5%.", 101984 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 118 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Furious Slash damage increased by 5%.", 107866 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 171 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Execute (Fury) damage increased by 5%.", 229536 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 441 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Execute Off-Hand (Fury) damage increased by 5%.", 230086 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 441 );
+  }
+
   virtual void init( player_t* ) const override {}
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
