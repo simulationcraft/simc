@@ -124,7 +124,7 @@ actions.VB+=/divine_storm,if=debuff.judgment.up&holy_power>=3&spell_targets.divi
 actions.VB+=/templars_verdict,if=debuff.judgment.up&holy_power>=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)
 
 head=crown_of_ash,id=137526,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_claw
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
 back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727

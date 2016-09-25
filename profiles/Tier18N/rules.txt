@@ -1,8 +1,0 @@
-# TxN
-# Tier x Normal
-# * Ilvl Cap: 705
-# * No items from Heroic Hellfire Citadel.
-# * No items from Mythic BRF / Highmaul.
-# * No Sockets, Tertiary Stats, or Warforged items
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 715 Legendary Ring can be used. (accessibility)

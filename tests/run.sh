@@ -49,7 +49,7 @@ fi
 
 # Look for a suitable profile, unless supplied
 if [ -z "${SIMC_PROFILE}" ]; then
-  export SIMC_PROFILE=$(/bin/ls "${SIMC_PROFILES_PATH}"/Tier18H/Raid_T??H.simc|tail -1)
+  export SIMC_PROFILE=$(/bin/ls "${SIMC_PROFILES_PATH}"/Tier19P/Raid_T??P.simc|tail -1)
   if [ -z "${SIMC_PROFILE}" ]; then
     echo "Could not find a suitable profile and none was supplied."
     exit 1

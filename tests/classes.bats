@@ -8,6 +8,10 @@ load test_helper
 	class_sim2 Death_Knight
 }
 
+@test "Simple Demon Hunter specs test" {
+	class_sim2 Demon_Hunter
+}
+
 @test "Simple Hunter specs test" {
 	class_sim2 Hunter 
 }

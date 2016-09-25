@@ -8,7 +8,7 @@ spec=retribution
 artifact=2:136717:137316:136717:0:40:1:41:3:42:3:47:1:50:3:51:3:53:6:350:1:353:1:1275:1
 
 head=crown_of_ash,id=137526,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_claw
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
 back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727

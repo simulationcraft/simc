@@ -1,7 +1,0 @@
-# TxH
-# Tier x Heroic
-# * Ilvl Cap: 720
-# * No items from Mythic Hellfire Citadel.
-# * No Sockets, Tertiary Stats, or Warforged items
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
-# * EXCEPTION: 715 Legendary Ring can be used. (accessibility)
