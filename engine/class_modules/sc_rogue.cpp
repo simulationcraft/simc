@@ -8075,10 +8075,6 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    // TODO
-    // Bag of Tricks : radius increased to 6 yards (from 3), and now benefits from Mastery.
-    // Second Shuriken (Artifact Trait) chance to activate increased to 30% (was 10%), damage increased by 30%, and now deals 200% additional damage while Stealth or Shadow Dance is active.
-    // TODO
     hotfix::register_effect( "Rogue", "2016-09-24", "Death From Above (Talent) area damage increased by 100%.", 217580 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
