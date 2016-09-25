@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 6f67ca6)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -574,7 +574,7 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10779)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=10780)    : Trigger Spell: Bestial Wrath (64)
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 186254
 #3 (id=342782)   : Dummy (3)
@@ -2457,7 +2457,7 @@ Effects          :
 #2 (id=139842)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Cone Front(104)
 #3 (id=139945)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1 | Radius: 50 yards | Target: Cone Front(104)
+                   Base Value: 120 | Scaled Value: 1.2 | Radius: 50 yards | Target: Cone Front(104)
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
@@ -4574,7 +4574,8 @@ Effects          :
                    Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Bullheaded (63896), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Bursting Shot (186387), Mongoose Bite (190928), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Stampede (201594), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911)
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Self(1)
-                   Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), A Murder of Crows (206505), Marked Shot (212621), Piercing Shot (213678)
+                   Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Piercing Shot (213678)
+                   Hotfixed: Affects Spells
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Barrage (120361), Marked Shot (185901), Sidewinders (214579), Sidewinders (214581)
@@ -5601,7 +5602,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299019)   : Weapon Damage% (31)
-                   Base Value: 130 | Scaled Value: 2 | Points Per Level: 7 | Target: Enemy(6)
+                   Base Value: 210 | Scaled Value: 2.8 | Points Per Level: 7 | Target: Enemy(6)
 #2 (id=299020)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=299021)   : Dummy (3)
@@ -5669,7 +5670,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 20 seconds
 Artifact Power   : Id: 307, Max Rank: 1
-Affecting spells : Hunter (137014), Mastery: Sniper Training (193468)
+Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), 
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 

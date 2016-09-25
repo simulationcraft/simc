@@ -172,7 +172,6 @@ public:
 
   combo_strikes_e previous_combo_strike;
 
-  double gale_burst_touch_of_death_bonus;
   double gift_of_the_ox_proc_chance;
   unsigned int internal_id;
   // Counter for when to start the trigger for the 19 4-piece Windwalker Combo Master buff
@@ -626,7 +625,6 @@ public:
     : player_t( sim, MONK, name, r ),
       active_actions( active_actions_t() ),
       previous_combo_strike(CS_NONE),
-      gale_burst_touch_of_death_bonus(),
       gift_of_the_ox_proc_chance(),
       internal_id(),
       tier19_4pc_melee_counter(),
@@ -2035,15 +2033,21 @@ public:
         if ( s -> action -> harmful )
         {
           double gale_burst = s -> result_amount;
+
           if ( p() -> buff.storm_earth_and_fire -> up() )
             gale_burst *= 3;
-          p() -> gale_burst_touch_of_death_bonus += gale_burst;
-          if ( ab::sim -> debug )
+
+          if ( td( s -> target ) -> debuff.gale_burst -> up() )
           {
-            ab::sim -> out_debug.printf( "%s added %.2f towards Gale Burst. Current Gale Burst amount that is saved up is %.2f.",
-                ab::player -> name(),
-                gale_burst,
-                p() -> gale_burst_touch_of_death_bonus );
+            td( s -> target ) -> debuff.gale_burst -> current_value += gale_burst;
+
+            if ( ab::sim -> debug )
+            {
+              ab::sim -> out_debug.printf( "%s added %.2f towards Gale Burst. Current Gale Burst amount that is saved up is %.2f.",
+                  ab::player -> name(),
+                  gale_burst,
+                  td( s -> target ) -> debuff.gale_burst -> current_value );
+            }
           }
         }
       }
@@ -2580,7 +2584,8 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-    if ( p() -> furious_sun )
+    // Not usable at level 110
+    if ( p() -> furious_sun && p() -> level() < 110 )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
@@ -2817,7 +2822,8 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-    if ( p() -> furious_sun )
+    // Not usable at level 110
+    if ( p() -> furious_sun && p() -> level() < 110 )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
@@ -3295,7 +3301,8 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     // Windwalker Tier 18 (WoD 6.2) trinket effect is in use, adjust Rising Sun Kick proc chance based on spell data
     // of the special effect.
-    if ( p() -> furious_sun )
+    // Not usable at level 110
+    if ( p() -> furious_sun && p() -> level() < 110 )
     {
       double proc_chance = p() -> furious_sun -> driver() -> effectN( 1 ).average( p() -> furious_sun -> item ) / 100.0;
 
@@ -3751,9 +3758,6 @@ struct touch_of_death_t: public monk_spell_t
     if ( td( p() -> target ) -> dots.touch_of_death -> is_ticking() )
       return false;
 
-    if ( p() -> buff.hidden_masters_forbidden_touch -> up() )
-      return true;
-
     return monk_spell_t::ready();
   }
 
@@ -3773,21 +3777,23 @@ struct touch_of_death_t: public monk_spell_t
 
  void last_tick( dot_t* dot ) override
   {
-    if ( p() -> artifact.gale_burst.rank() )
+    if ( p() -> artifact.gale_burst.rank() && td( p() -> target ) -> debuff.gale_burst -> up() )
     {
-      gale_burst -> base_dd_min = p() -> gale_burst_touch_of_death_bonus * p() -> artifact.gale_burst.percent();
-      gale_burst -> base_dd_max = p() -> gale_burst_touch_of_death_bonus * p() -> artifact.gale_burst.percent();
+      gale_burst -> base_dd_min = td( p() -> target ) -> debuff.gale_burst -> current_value * p() -> artifact.gale_burst.percent();
+      gale_burst -> base_dd_max = td( p() -> target ) -> debuff.gale_burst -> current_value * p() -> artifact.gale_burst.percent();
 
       if ( sim -> debug )
       {
         sim -> out_debug.printf( "%s executed '%s'. Amount sent before modifiers is %.2f.",
             player -> name(),
             gale_burst -> name(),
-            p() -> gale_burst_touch_of_death_bonus );
+            td( p() -> target ) -> debuff.gale_burst -> current_value );
       }
 
+      gale_burst -> target = dot -> target;
       gale_burst -> execute();
-      p() -> gale_burst_touch_of_death_bonus = 0;
+
+      td( p() -> target ) -> debuff.gale_burst -> expire();
     }
     monk_spell_t::last_tick( dot );
 }
@@ -3800,14 +3806,29 @@ struct touch_of_death_t: public monk_spell_t
 
     monk_spell_t::execute();
 
-    p() -> gale_burst_touch_of_death_bonus = 0.0;
-
     if ( p() -> legendary.hidden_masters_forbidden_touch )
     {
       if ( p() -> buff.hidden_masters_forbidden_touch -> up() )
         p() -> buff.hidden_masters_forbidden_touch -> expire();
       else
+      {
         p() -> buff.hidden_masters_forbidden_touch -> execute();
+        this -> cooldown -> reset( true );
+      }
+    }
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    monk_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> artifact.gale_burst.rank() )
+      {
+        td( s -> target ) -> debuff.gale_burst -> trigger();
+        td( s -> target ) -> debuff.gale_burst -> current_value = 0;
+      }
     }
   }
 };
@@ -6237,6 +6258,22 @@ struct fortifying_brew_t: public monk_buff_t < buff_t >
     monk.stat_loss( STAT_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
   }
 };
+
+// Hidden Master's Forbidden Touch Legendary
+struct hidden_masters_forbidden_touch_t : public monk_buff_t < buff_t >
+{
+  hidden_masters_forbidden_touch_t( monk_t& p, const std::string&n, const spell_data_t*s ):
+    base_t( p, buff_creator_t( &p, n, s ) )
+  {
+  }
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    base_t::expire_override( expiration_stacks, remaining_duration );
+    cooldown_t* touch_of_death = source -> get_cooldown( "touch_of_death" );
+    if ( touch_of_death -> up() )
+      touch_of_death -> start();
+  }
+};
 }
 
 // ==========================================================================
@@ -6333,7 +6370,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "mistwalk" ) return new                  mistwalk_t( *this, options_str );
   if ( name == "refreshing_jade_wind" ) return new      refreshing_jade_wind_t( this, options_str );
   if ( name == "rushing_jade_wind" ) return new         rushing_jade_wind_t( this, options_str );
-  if ( name == "whirling_dragon_punch" ) return new    whirling_dragon_punch_t( this, options_str );
+  if ( name == "whirling_dragon_punch" ) return new     whirling_dragon_punch_t( this, options_str );
   if ( name == "serenity" ) return new                  serenity_t( this, options_str );
   // Artifacts
   if ( name == "sheiluns_gift" ) return new             sheiluns_gift_t( *this, options_str );
@@ -7004,7 +7041,7 @@ void monk_t::create_buffs()
     .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
 
   // Legendaries
-  buff.hidden_masters_forbidden_touch = buff_creator_t( this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
+  buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
 }
 
 // monk_t::init_gains =======================================================
@@ -8065,7 +8102,7 @@ void monk_t::apl_pre_windwalker()
   {
     // Prepotion
     if ( true_level > 100 )
-      pre -> add_action( "potion,name=deadly_grace" );
+      pre -> add_action( "potion,name=old_war" );
     else if ( true_level > 90 )
       pre -> add_action( "potion,name=draenic_agility" );
     else if ( true_level >= 85 )
@@ -8211,7 +8248,7 @@ void monk_t::apl_combat_windwalker()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      def -> add_action( "potion,name=deadly_grace,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
+      def -> add_action( "potion,name=old_war,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
     else if ( true_level > 90 )
       def -> add_action( "potion,name=draenic_agility,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
     else if ( true_level >= 85 )
@@ -8237,11 +8274,10 @@ void monk_t::apl_combat_windwalker()
   }
 
   def -> add_talent( this, "Serenity", "if=cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7" );
-  def -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.137057" );
+  def -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.137057&!prev_gcd.touch_of_death" );
   def -> add_action( this, "Touch of Death", "if=!artifact.gale_burst.enabled&!equipped.137057" );
-  def -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
+  def -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=artifact.gale_burst.enabled&equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.touch_of_death" );
   def -> add_action( this, "Touch of Death", "if=artifact.gale_burst.enabled&!equipped.137057&cooldown.strike_of_the_windlord.remains<8&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7" );
-  def -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=equipped.137057&buff.hidden_masters_forbidden_touch.up&!prev_gcd.touch_of_death" );
    
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
@@ -8291,7 +8327,8 @@ void monk_t::apl_combat_windwalker()
         opener -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
-  opener -> add_action( this, "Touch of Death", "cycle_targets=1" );
+  opener -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=equipped.137057&!prev_gcd.touch_of_death" );
+  opener -> add_action( this, "Touch of Death", "if=!equipped.137057" );
   opener -> add_talent( this, "Serenity" );
   opener -> add_action( this, "Storm, Earth, and Fire" );
   opener -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=buff.serenity.up" );

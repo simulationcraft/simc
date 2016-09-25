@@ -132,6 +132,10 @@ bool spelleffect_data_t::override_field( const std::string& field, double value 
     _real_ppl = value;
   else if ( util::str_compare_ci( field, "die_sides" ) )
     _die_sides = ( int ) value;
+  else if ( util::str_compare_ci( field, "radius" ) )
+    _radius = value;
+  else if ( util::str_compare_ci( field, "max_radius" ) )
+    _radius_max = value;
   else
     return false;
   return true;
@@ -165,6 +169,10 @@ double spelleffect_data_t::get_field( const std::string& field ) const
     return _real_ppl;
   else if ( util::str_compare_ci( field, "die_sides" ) )
     return static_cast<double>( _die_sides );
+  else if ( util::str_compare_ci( field, "radius" ) )
+    return _radius;
+  else if ( util::str_compare_ci( field, "max_radius" ) )
+    return _radius_max;
 
   return -std::numeric_limits<double>::max();
 }

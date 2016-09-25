@@ -2212,7 +2212,7 @@ struct void_bolt_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest.buffs.voidform->check() )
+    if ( priest.buffs.voidform->remains() <= cooldown->queue_delay() )
       return false;
 
     return priest_spell_t::ready();
@@ -2361,7 +2361,7 @@ struct void_eruption_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest.buffs.voidform->check() &&
+    if ( priest.buffs.voidform->remains() <= cooldown->queue_delay() &&
          ( priest.resources.current[ RESOURCE_INSANITY ] >=
                priest.resources.max[ RESOURCE_INSANITY ] ||
            ( priest.talents.legacy_of_the_void->ok() &&
@@ -3288,7 +3288,7 @@ struct void_torrent_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest.buffs.voidform->check() )
+    if ( priest.buffs.voidform->remains() <= cooldown->queue_delay() )
     {
       return false;
     }
@@ -3443,10 +3443,21 @@ struct shadow_word_pain_t final : public priest_spell_t
       m *= 1.0 + priest.cache.mastery_value();
     }
 
+    // Hotfixed 2016-09-24 The benefit of Mass Hysteria (Artifact Trait) is now capped at 100%.
+    // Note: We want it to be rewarding when you’re able to maintain Surrender to Madness for 
+    // an extremely long time, but the amount of damage this trait was contributing in those 
+    // circumstances was excessive.
+
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() *
-                   priest.buffs.voidform->stack() );
+      double stacks;
+
+      if ( priest.buffs.voidform -> stack() >= 50 )
+        stacks = 50;
+      else
+        stacks = priest.buffs.voidform -> stack();
+
+      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * stacks );
     }
 
     return m;
@@ -3620,10 +3631,21 @@ struct vampiric_touch_t final : public priest_spell_t
       m *= 1.0 + priest.cache.mastery_value();
     }
 
+    // Hotfixed 2016-09-24 The benefit of Mass Hysteria (Artifact Trait) is now capped at 100%.
+    // Note: We want it to be rewarding when you’re able to maintain Surrender to Madness for 
+    // an extremely long time, but the amount of damage this trait was contributing in those 
+    // circumstances was excessive.
+
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() *
-                   priest.buffs.voidform->stack() );
+      double stacks;
+
+      if ( priest.buffs.voidform -> stack() >= 50 )
+        stacks = 50;
+      else
+        stacks = priest.buffs.voidform -> stack();
+
+      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * stacks );
     }
 
     return m;

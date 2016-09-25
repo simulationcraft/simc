@@ -541,7 +541,7 @@ public:
     buff.enrage -> trigger();
     if ( ceannar_charger )
     {
-      resource_gain( RESOURCE_RAGE, ceannar_charger -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
+      resource_gain( RESOURCE_RAGE, ceannar_charger -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
   }
   template <typename T_CONTAINER, typename T_DATA>
@@ -601,7 +601,7 @@ public:
   {
     ab::may_crit = true;
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
-    tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
+    tactician_per_rage *= 1.0 + ( player -> artifact.exploit_the_weakness.percent() * 0.3 ); //FIXME
     arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent();
   }
 
@@ -893,9 +893,20 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::assess_damage( type, s );
 
-    if ( s -> result_amount > 0 && p() -> buff.bloodbath -> up() )
+    if ( s -> result_amount > 0 )
     {
-      trigger_bloodbath_dot( s -> target, s -> result_amount );
+      if ( p() -> buff.bloodbath -> up() )
+      {
+        trigger_bloodbath_dot( s -> target, s -> result_amount );
+      }
+
+      if ( p() -> buff.corrupted_blood_of_zakajz -> up() )
+      {
+        residual_action::trigger(
+          p() -> active.corrupted_blood_of_zakajz, // ignite spell
+          s -> target, // target
+          s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
+      }
     }
   }
 
@@ -945,13 +956,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
         p() -> buff.overpower -> trigger();
       }
 
-      if ( p() -> buff.corrupted_blood_of_zakajz -> up() )
-      {
-        residual_action::trigger(
-          p() -> active.corrupted_blood_of_zakajz, // ignite spell
-          target, // target
-          s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
-      }
       if ( p() -> talents.opportunity_strikes -> ok() )
       {
         opportunity_strikes( s );
@@ -962,14 +966,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void tick( dot_t* d ) override
   {
     base_t::tick( d );
-
-    if ( p() -> buff.corrupted_blood_of_zakajz -> up() )
-    {
-      residual_action::trigger(
-        p() -> active.corrupted_blood_of_zakajz, // ignite spell
-        target, // target
-        d -> state -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
-    }
   }
 
   virtual double calculate_weapon_damage( double attack_power ) const override
@@ -1000,16 +996,13 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
 // Bloodbath Dot ============================================================
 
-struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
+struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < warrior_spell_t >
 {
   bloodbath_dot_t( warrior_t* p ):
     base_t( "bloodbath", p, p -> find_spell( 113344 ) )
   {
     dual = true;
   }
-
-  void trigger_bloodbath_dot( player_t*, double ) override // Bloodbath doesn't trigger itself.
-  {}
 };
 
 // Melee Attack =============================================================
@@ -1658,13 +1651,27 @@ struct colossus_smash_t: public warrior_attack_t
 
 // Corrupted Blood of Zakajz ========================================================
 
-struct corrupted_blood_of_zakajz_t : public residual_action::residual_periodic_action_t<warrior_attack_t>
+struct corrupted_blood_of_zakajz_t : public residual_action::residual_periodic_action_t<warrior_spell_t>
 {
+  double composite_target_mult;
   corrupted_blood_of_zakajz_t( warrior_t* p ) :
-    residual_action::residual_periodic_action_t<warrior_attack_t>( "corrupted_blood_of_zakajz", p, p -> find_spell( 209569 ) )
+    residual_action::residual_periodic_action_t<warrior_spell_t>( "corrupted_blood_of_zakajz", p, p -> find_spell( 209569 ) ),
+    composite_target_mult( 1.0 )
   {
     background = dual = proc = true;
     may_miss = may_dodge = may_parry = false;
+  }
+
+  double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
+  {
+    dmg_multiplier *= composite_target_mult;
+    return residual_periodic_action_t::calculate_tick_amount( state, dmg_multiplier );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    residual_periodic_action_t::impact( s );
+    composite_target_mult = warrior_spell_t::composite_target_multiplier( s -> target ); // Yeah, it snapshots colossus smash. 
   }
 };
 
@@ -3186,7 +3193,6 @@ struct shield_slam_t: public warrior_attack_t
     return cc;
   }
 
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3282,7 +3288,7 @@ struct slam_t: public warrior_attack_t
 
 // Trauma Dot ============================================================
 
-struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
+struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrior_spell_t >
 {
   double crit_chance_of_last_ability;
   trauma_dot_t( warrior_t* p ):
@@ -4724,7 +4730,7 @@ void warrior_t::apl_fury()
     ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
     ( true_level >= 80 ) ? "seafood_magnifique_feast" :
     "";
-  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+  std::string potion_name = ( true_level > 100 ) ? "old_war" :
     ( true_level >= 90 ) ? "draenic_strength" :
     ( true_level >= 85 ) ? "mogu_power" :
     ( true_level >= 80 ) ? "golemblood_potion" :
@@ -4831,7 +4837,7 @@ void warrior_t::apl_arms()
     ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
     ( true_level >= 80 ) ? "seafood_magnifique_feast" :
     "";
-  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+  std::string potion_name = ( true_level > 100 ) ? "old_war" :
     ( true_level >= 90 ) ? "draenic_strength" :
     ( true_level >= 85 ) ? "mogu_power" :
     ( true_level >= 80 ) ? "golemblood_potion" :
@@ -5221,7 +5227,7 @@ void warrior_t::create_buffs()
 
   buff.corrupted_blood_of_zakajz = buff_creator_t( this, "corrupted_blood_of_zakajz",
     artifact.corrupted_blood_of_zakajz.data().effectN( 1 ).trigger() )
-    .default_value( artifact.corrupted_blood_of_zakajz.percent() )
+    .default_value( artifact.corrupted_blood_of_zakajz.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .chance( artifact.corrupted_blood_of_zakajz.rank() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", talents.defensive_stance )
@@ -5913,11 +5919,18 @@ void warrior_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( c == CACHE_MASTERY && mastery.critical_block -> ok() )
+  if ( mastery.critical_block -> ok() )
   {
-    player_t::invalidate_cache( CACHE_BLOCK );
-    player_t::invalidate_cache( CACHE_CRIT_BLOCK );
-    player_t::invalidate_cache( CACHE_ATTACK_POWER );
+    if ( c == CACHE_MASTERY )
+    {
+      player_t::invalidate_cache( CACHE_BLOCK );
+      player_t::invalidate_cache( CACHE_CRIT_BLOCK );
+      player_t::invalidate_cache( CACHE_ATTACK_POWER );
+    }
+    if ( c == CACHE_CRIT_CHANCE )
+    {
+      player_t::invalidate_cache( CACHE_PARRY );
+    }
   }
   if ( c == CACHE_MASTERY && mastery.unshackled_fury -> ok() )
   {
@@ -6457,7 +6470,111 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 222266, raging_fury2_t() );
   }
 
-  virtual void register_hotfixes() const override {}
+  virtual void register_hotfixes() const override
+  {
+    hotfix::register_effect( "Warrior", "2016-09-23", "Exploit the Weakness (Artifact Trait) bonus reduced to 3% per point.", 310053 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 10 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Focused Rage (Talent) damage bonus reduced to 30%.", 307672 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 40 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Vengeance (Talent) Rage cost reduction reduced to 35%.", 298648 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -35 )
+      .verification_value( -50 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Vengeance (Talent) Rage cost reduction reduced to 35%", 298649 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -35 )
+      .verification_value( -50 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Intercept Rage generation reduced to 10.", 291445 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 100 )
+      .verification_value( 200 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Shield Slam Rage generation reduced to 10.", 290322 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 100 )
+      .verification_value( 150 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12% - Fifth attack", 267758 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 142 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12% - Second Atttack", 267762 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 95 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12% - Third Attack", 296643 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 166 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12% -  Fourth Attack", 296645 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 285 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12% - First Attack", 325561 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 47 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Bloodthirst damage increased by 12%.", 134421 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 137 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Raging Blow damage increased by 5%.", 86556 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 118 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Raging Blow damage increased by 5% - Offhand", 101984 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 118 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Furious Slash damage increased by 5%.", 107866 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 171 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Execute (Fury) damage increased by 5%.", 229536 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 441 );
+
+    hotfix::register_effect( "Warrior", "2016-09-23", "Execute Off-Hand (Fury) damage increased by 5%.", 230086 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 441 );
+  }
+
   virtual void init( player_t* ) const override {}
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}

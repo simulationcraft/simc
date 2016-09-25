@@ -20,14 +20,15 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/greater_blessing_of_might
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=old_war
 
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/rebuke
-actions+=/potion,name=deadly_grace,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up|target.time_to_die<=40)
+actions+=/potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up|target.time_to_die<=40)
 actions+=/holy_wrath
 actions+=/avenging_wrath
+actions+=/shield_of_vengeance
 actions+=/crusade,if=holy_power>=5
 actions+=/wake_of_ashes,if=holy_power>=0&time<2
 actions+=/execution_sentence,if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.67)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)

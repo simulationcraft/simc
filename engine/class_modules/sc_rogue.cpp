@@ -5,13 +5,15 @@
 
 // TODO + BlizzardFeatures + Bugs
 // Subtlety
-// - Second Shuriken [artifact power]
-// - Does Weaponmaster attempt to proc per target or per cast?
+// - Does Weaponmaster attempt to proc per target or per cast? Seems to be per target
+// - Dreadlord's Deceit doesn't work on weaponmastered Shuriken Storm (Blizzard Bug ?)
+// - Insignia of Ravenholdt doesn't proc from Shuriken Storm nor Shuriken Toss (Blizzard Bug ?)
 //
 // Assassination
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
 // - Poisoned Knives [artifact power] does the damage doubledip in any way?
 // - Does Kingsbane debuff get procced 2x on Mutilate? (If both hands apply lethal poison).
+// - Insignia of Ravenholdt doesn't proc from Fan of Knives nor Poisoned Knife (Blizzard Bug ?)
 
 #include "simulationcraft.hpp"
 
@@ -153,6 +155,7 @@ struct rogue_t : public player_t
   action_t* active_main_gauche;
   action_t* weaponmaster_dot_strike;
   action_t* shadow_nova;
+  action_t* second_shuriken;
   action_t* poison_knives;
   action_t* from_the_shadows_;
   action_t* poison_bomb;
@@ -537,6 +540,7 @@ struct rogue_t : public player_t
     active_main_gauche( nullptr ),
     weaponmaster_dot_strike( nullptr ),
     shadow_nova( nullptr ),
+    second_shuriken( nullptr ),
     poison_knives( nullptr ),
     from_the_shadows_( nullptr ),
     poison_bomb( nullptr ),
@@ -644,6 +648,7 @@ struct rogue_t : public player_t
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_weaponmaster( const action_state_t* );
   void trigger_energetic_stabbing( const action_state_t* );
+  void trigger_second_shuriken( const action_state_t* );
   void trigger_surge_of_toxins( const action_state_t* );
   void trigger_poison_knives( const action_state_t* );
   void trigger_true_bearing( int );
@@ -1278,6 +1283,29 @@ struct weaponmaster_strike_t : public rogue_attack_t
   { return base_dd_min; }
 };
 
+struct second_shuriken_t : public rogue_attack_t
+{
+  second_shuriken_t( rogue_t* p ) :
+    rogue_attack_t( "second_shuriken", p, p -> find_spell( 197611 ) )
+  {
+    background = true;
+    may_crit = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // Stealth Buff
+    if ( p() -> buffs.stealth -> up() || p() -> buffs.shadow_dance -> up() || p() -> buffs.vanish -> up() )
+    {
+      m *= 1.0 + 2.0; //FIXME Hotfix 09-24: Hardcoded to 200% until they add it in Spell Data like Shuriken Storm.
+    }
+
+    return m;
+  }
+};
+
 struct shadow_nova_t : public rogue_attack_t
 {
   shadow_nova_t( rogue_t* p ) :
@@ -1374,6 +1402,19 @@ struct poison_bomb_t : public rogue_attack_t
     aoe = -1;
   }
 
+  // Scale on Mastery since 09-24 Hotfix
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> mastery.potent_poisons -> ok() )
+    {
+      m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    return m;
+  }
+
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
@@ -1434,6 +1475,12 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
   {
     background = true;
     aoe = -1;
+  }
+
+  // Doesn't take in account player crit chance, only "base crit chance"
+  double composite_crit_chance() const override
+  {
+    return 0.05; //FIXME Hardcoded to 5% until more data, seems to be the base crit.
   }
 
   double composite_da_multiplier( const action_state_t* ) const override
@@ -2018,7 +2065,7 @@ double rogue_attack_t::cost() const
 
   if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
   {
-    c += p() -> artifact.fatebringer.value();
+    c += p() -> artifact.fatebringer.value() * 0.75; //FIXME Hotfix 09-24: Hardcoded the 25% nerf. (4 per rank -> 3 per rank)
   }
 
   if ( c <= 0 )
@@ -2378,7 +2425,7 @@ struct between_the_eyes_t : public rogue_attack_t
         options_str ), greenskins_waterlogged_wristcuffs( nullptr )
   {
     crit_bonus_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
+    base_multiplier *= 1.0 + p -> artifact.black_powder.percent() * 0.75; //FIXME Hotfix 09-24: Hardcoded the 25% nerf. (8% per rank -> 6% per rank)
   }
 
   void execute() override
@@ -2590,6 +2637,7 @@ struct envenom_t : public rogue_attack_t
           .target( execute_state -> target )
           .x( player -> x_position )
           .y( player -> y_position )
+          .pulse_time( timespan_t::from_seconds( 0.5 ) ) //FIXME Hotfix 09-24: Hardcoded to 500ms instead of 1s since duration halved but damage conserved, check spell data when it'll be live.
           .duration( p() -> spell.bag_of_tricks_driver -> duration() )
           .start_time( sim -> current_time() )
           .action( p() -> poison_bomb ), true );
@@ -3290,7 +3338,7 @@ struct run_through_t: public rogue_attack_t
     rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str ),
     ttt_multiplier( 0 )
   {
-    base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
+    base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent() * 0.75; //FIXME Hotfix 09-24: Hardcoded the 25% nerf. (8% per rank -> 6% per rank)
   }
 
   double action_multiplier() const override
@@ -4075,6 +4123,13 @@ struct shuriken_storm_t: public rogue_attack_t
     }
 
     return m;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    p() -> trigger_second_shuriken( state );
   }
 
 };
@@ -5197,6 +5252,24 @@ void rogue_t::trigger_energetic_stabbing( const action_state_t* s )
   }
 }
 
+void rogue_t::trigger_second_shuriken( const action_state_t* state )
+{
+  if ( ! artifact.second_shuriken.rank() )
+  {
+    return;
+  }
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  if ( rng().roll( artifact.second_shuriken.data().proc_chance() ) )
+  {
+    second_shuriken -> execute();
+  }
+}
+
 void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
 {
   if ( ! artifact.surge_of_toxins.rank() )
@@ -5241,14 +5314,14 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
   // Poison knives double dips into some multipliers
 
   // .. first, mastery
-  tick_base_damage *= 1.0 + cache.mastery_value();
+  //tick_base_damage *= 1.0 + cache.mastery_value(); //FIXME Hotfix 2016-09-24 Poison Knives (Artifact Trait) no longer benefits twitch from Mastery.
 
   // .. then, apparently the Master Alchemist talent
   tick_base_damage *= 1.0 + artifact.master_alchemist.percent();
 
   // Target multipliers get applied on execute, they also work
 
-  double total_damage = ( partial_tick + ticks_left ) * tick_base_damage * artifact.poison_knives.percent();
+  double total_damage = ( partial_tick + ticks_left ) * tick_base_damage * artifact.poison_knives.percent() * 2; //FIXME Hotfix 09-24: Hardcoded the 100% buff. (2% per rank -> 4% per rank)
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s poison_knives dot_remains=%.3f duration=%.3f ticks_left=%u partial=%.3f amount=%.3f total=%.3f",
@@ -6263,7 +6336,7 @@ void rogue_t::init_action_list()
   std::string potion_action = "potion,name=";
   if ( sim -> allow_potions && true_level >= 85 )
   {
-    potion_action += ( ( true_level >= 110 ) ? "deadly_grace" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
+    potion_action += ( ( true_level >= 110 ) ? "old_war" : ( true_level >= 100 ) ? "draenic_agility" : ( true_level >= 90 ) ? "virmens_bite" : ( true_level >= 85 ) ? "tolvir" : "" );
 
     // Pre-Pot
     precombat -> add_action( potion_action );
@@ -6283,28 +6356,14 @@ void rogue_t::init_action_list()
 
   precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
 
-  if ( specialization() == ROGUE_OUTLAW )
-  {
-    precombat -> add_action( this, "Roll the Bones", "if=!talent.slice_and_dice.enabled" );
-  }
-
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    bool has_maalus = false;
     for ( size_t i = 0; i < items.size(); i++ )
     {
       if ( items[ i ].has_use_special_effect() )
       {
         std::string item_action = std::string( "use_item,slot=" ) + items[ i ].slot_name();
-        if ( items[ i ].name_str == "maalus_the_blood_drinker" )
-        {
-          has_maalus = true;
-          def -> add_action( item_action );
-        } 
-        else 
-        {
-          def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
-        }
+        def -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
       }
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6323,19 +6382,8 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Rupture", "if=combo_points>=4&!ticking&talent.exsanguinate.enabled" );
     def -> add_action( "pool_resource,for_next=1" );
     def -> add_action( this, "Kingsbane", "if=!talent.exsanguinate.enabled&(buff.vendetta.up|cooldown.vendetta.remains>10)|talent.exsanguinate.enabled&dot.rupture.exsanguinated" );
-    // If Maalus, should synchronize Exsanguinate with Maalus hence waiting for
-    // Maalus every other Exsanguinate
     // run_action_list forbids the simulator from running the following actions
-    {
-      if ( has_maalus )
-      {
-        def -> add_action( "run_action_list,name=exsang_combo,if=cooldown.exsanguinate.up&(buff.maalus.up|cooldown.vanish.remains>35)&talent.exsanguinate.enabled" );
-      }
-      else
-      {
-        def -> add_action( "run_action_list,name=exsang_combo,if=cooldown.exsanguinate.remains<3&talent.exsanguinate.enabled&(buff.vendetta.up|cooldown.vendetta.remains>25)" );
-      }
-    }
+    def -> add_action( "run_action_list,name=exsang_combo,if=cooldown.exsanguinate.remains<3&talent.exsanguinate.enabled&(buff.vendetta.up|cooldown.vendetta.remains>25)" );
     def -> add_action( "call_action_list,name=garrote,if=spell_targets.fan_of_knives<=8-artifact.bag_of_tricks.enabled" );
     def -> add_action( "call_action_list,name=exsang,if=dot.rupture.exsanguinated" );
     // Refresh Rupture early to ensure a full pandemic Rupture when casting 
@@ -6350,21 +6398,11 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
       // Targets the target who will die the sooner to fresh MfD
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5" );
-      // If Maalus, simply sync Vendetta with Maalus
-    {
-      if ( has_maalus )
-      {
-        cds -> add_action( this, "Vendetta", "if=target.time_to_die<20|buff.maalus.react" );
-      }
-      else
-      {
-        // If Urge to Kill, cast Vendetta sooner to have the time to dump the
-        // energy before Exsanguinate
-        cds -> add_action( this, "Vendetta", "if=target.time_to_die<20" );
-        cds -> add_action( this, "Vendetta", "if=artifact.urge_to_kill.enabled&dot.rupture.ticking&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5)&(energy<55|time<10|spell_targets.fan_of_knives>=2)" );
-        cds -> add_action( this, "Vendetta", "if=!artifact.urge_to_kill.enabled&dot.rupture.ticking&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<1)" );
-      }
-    }
+      // If Urge to Kill, cast Vendetta sooner to have the time to dump the
+      // energy before Exsanguinate
+    cds -> add_action( this, "Vendetta", "if=target.time_to_die<20" );
+    cds -> add_action( this, "Vendetta", "if=artifact.urge_to_kill.enabled&dot.rupture.ticking&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5)&(energy<55|time<10|spell_targets.fan_of_knives>=2)" );
+    cds -> add_action( this, "Vendetta", "if=!artifact.urge_to_kill.enabled&dot.rupture.ticking&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<1)" );
       // Gives as much time as possible to spam Garrote if Subterfuge enabled 
       // (only useful on AoE)
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&combo_points<=2&!dot.rupture.exsanguinated|talent.shadow_focus.enabled&!dot.rupture.exsanguinated&combo_points.deficit>=2" );
@@ -6403,13 +6441,7 @@ void rogue_t::init_action_list()
     build_ex -> add_action( this, "Fan of Knives", "if=equipped.the_dreadlords_deceit&((buff.the_dreadlords_deceit.stack>=29|buff.the_dreadlords_deceit.stack>=15&debuff.vendetta.remains<=3)&debuff.vendetta.up|buff.the_dreadlords_deceit.stack>=5&cooldown.vendetta.remains>60&cooldown.vendetta.remains<65)" );
     build_ex -> add_talent( this, "Hemorrhage", "if=(combo_points.deficit>=1&refreshable)|(combo_points.deficit=1&(dot.rupture.exsanguinated&dot.rupture.remains<=2|cooldown.exsanguinate.remains<=2))" );
     build_ex -> add_action( this, "Mutilate", "if=combo_points.deficit<=1&energy.deficit<=30" );
-    if (true_level <= 100 )
-    {
-      build_ex -> add_talent( this, "Hemorrhage", "if=combo_points.deficit=2&set_bonus.tier18_2pc&target.health.pct<=35" );
-      build_ex -> add_action( this, "Mutilate", "if=cooldown.garrote.remains>2&(combo_points.deficit>=3|(combo_points.deficit>=2&!(set_bonus.tier18_2pc&target.health.pct<=35)))" );
-    }
-    else
-      build_ex -> add_action( this, "Mutilate", "if=combo_points.deficit>=2&cooldown.garrote.remains>2" );
+    build_ex -> add_action( this, "Mutilate", "if=combo_points.deficit>=2&cooldown.garrote.remains>2" );
 
     // Builder no Exsanguinate
     action_priority_list_t* build_noex = get_action_priority_list( "build_noex", "Builders no Exsanguinate" );
@@ -6447,6 +6479,9 @@ void rogue_t::init_action_list()
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
+    // Pre-Combat
+    precombat -> add_action( this, "Roll the Bones", "if=!talent.slice_and_dice.enabled" );
+
     // Main Rotation
     def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1&!rtb_list.any.6&((!buff.curse_of_the_dreadblades.up&!buff.adrenaline_rush.up)|!rtb_list.any.5))", "Condition to continue rerolling RtB (2- or not TB alone or not SIW alone during CDs); If SnD: consider that you never have to reroll." );
       // variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&(rtb_buffs<=1|rtb_buffs=2&!rtb_list.any.56) is better in average but not really good in practical. (Fish 3+ or 2+ TB or 2+ SIW)
@@ -6483,10 +6518,7 @@ void rogue_t::init_action_list()
     cds -> add_action( potion_action );
     for ( size_t i = 0; i < item_actions.size(); i++ )
     {
-      if ( items[ i ].name_str != "maalus_the_blood_drinker" )
-        cds -> add_action( item_actions[i] );
-      else
-        cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2" );
+      cds -> add_action( item_actions[i] + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2" );
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
@@ -6518,12 +6550,8 @@ void rogue_t::init_action_list()
     // Pre-Combat
     precombat -> add_action( this, "Enveloping Shadows", "if=combo_points>=5" );
     precombat -> add_action( this, "Symbols of Death" );
-    if (true_level <= 100 )
-      precombat -> add_action( this, "Vanish", "if=set_bonus.tier18_4pc" );
 
     // Main Rotation
-    if (true_level <= 100 )
-      def -> add_action( this, "Nightblade", "if=set_bonus.tier18_4pc&refreshable&time<5" );
     def -> add_action( "variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10-floor(target.distance*0.5))" );
     def -> add_action( "variable,name=ed_threshold,value=energy.deficit<=(20+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_er)" );
     def -> add_action( "call_action_list,name=cds" );
@@ -6536,10 +6564,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( potion_action );
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      if ( items[ i ].name_str != "maalus_the_blood_drinker" )
-        cds -> add_action( item_actions[i] );
-      else
-        cds -> add_action( item_actions[i] + ",if=stealthed|target.time_to_die<20" );
+      cds -> add_action( item_actions[i] + ",if=stealthed|target.time_to_die<20" );
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
@@ -6572,10 +6597,7 @@ void rogue_t::init_action_list()
       // Added buff.shadowmeld.down to avoid using it since it's not usable while shadowmelded "yet" (soonTM ?)
     stealthed -> add_action( this, "Symbols of Death", "if=buff.shadowmeld.down&buff.symbols_of_death.remains<target.time_to_die-4&buff.symbols_of_death.remains<=buff.symbols_of_death.duration*0.3" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5" );
-    if (true_level <= 100 )
-      stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&combo_points.deficit>=3&spell_targets.shuriken_storm>=3+equipped.bleeding_hollow_toxin_vessel*talent.premeditation.enabled" );
-    else
-      stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=3)|buff.the_dreadlords_deceit.stack>=29)" );
+    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)" );
     stealthed -> add_action( this, "Shadowstrike" );
 
     // Stealth Cooldowns
@@ -6980,6 +7002,11 @@ void rogue_t::init_spells()
   if ( artifact.shadow_nova.rank() )
   {
     shadow_nova = new actions::shadow_nova_t( this );
+  }
+
+  if ( artifact.second_shuriken.rank() )
+  {
+    second_shuriken = new actions::second_shuriken_t( this );
   }
 
   if ( artifact.poison_knives.rank() )
@@ -8005,6 +8032,51 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Rogue", "2016-09-24", "Death From Above (Talent) area damage increased by 100%.", 217580 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3.666 )
+      .verification_value( 1.83300 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Deadly Poison damage increased by 30%.", 853 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.3575 )
+      .verification_value( 0.27500 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Fan of Knives damage increased by 30%.", 44107 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.08108 )
+      .verification_value( 0.83160 );
+    hotfix::register_spell( "Rogue", "2016-09-24", "Bag of Tricks (Artifact Trait) duration reduced to 3 seconds (overall damage unchanged).", 192661 )
+      .field( "duration" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3000 )
+      .verification_value( 6000 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Eviscerate damage increased by 15%.", 288959 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.472 )
+      .verification_value( 1.28 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Nightblade damage increased by 15%.", 286896 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.38 )
+      .verification_value( 1.2 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Shuriken Storm damage increased by 30%.", 290720 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.72072 )
+      .verification_value( 0.55440 );
+    hotfix::register_spell( "Rogue", "2016-09-24", "Second Shuriken (Artifact Trait) chance to activate increased to 30% (was 10%)", 197610 )
+      .field( "proc_chance" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 10 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Second Shuriken (Artifact Trait) damage increased by 30%", 290347 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.3432 )
+      .verification_value( 0.26400 );
     /*
     hotfix::register_effect( "Rogue", "2016-08-23", "Envenom damage has been increased to 60% Attack Power per point (was 50%).", 22420 )
       .field( "ap_coefficient" )

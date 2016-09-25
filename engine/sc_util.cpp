@@ -2379,6 +2379,8 @@ std::string util::create_blizzard_talent_url( const player_t& p )
    case DEATH_KNIGHT_BLOOD:   url += "daa"; break;
    case DEATH_KNIGHT_FROST:   url += "dZa"; break;
    case DEATH_KNIGHT_UNHOLY:  url += "dba"; break;
+   case DEMON_HUNTER_HAVOC:   url += "gaa"; break;
+   case DEMON_HUNTER_VENGEANCE: url += "gZa"; break;
    case DRUID_BALANCE:        url += "Uaa"; break;
    case DRUID_FERAL:          url += "UZa"; break;
    case DRUID_GUARDIAN:       url += "Uba"; break;

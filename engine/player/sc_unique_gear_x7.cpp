@@ -1951,8 +1951,6 @@ struct legion_potion_damage_t : public T
     T( name_str, effect.player, spell )
   {
     this -> background = this -> may_crit = this -> special = true;
-    if ( effect.spell_id == 188028 ) // Old war does not crit as of 9/19/2016. 
-      this -> may_crit = false;
     this -> callbacks = false;
     this -> base_dd_min = spell -> effectN( 1 ).min( this -> player );
     this -> base_dd_max = spell -> effectN( 1 ).max( this -> player );

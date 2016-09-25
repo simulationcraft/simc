@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 6f67ca6)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -450,7 +450,7 @@ Effects          :
 #1 (id=268504)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=309171)   : Weapon Damage% (31)
-                   Base Value: 490 | Scaled Value: 4.9 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 343 | Scaled Value: 3.43 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Throw a demonic glaive at the target, dealing $sw1 Physical damage. The glaive can ricochet to ${$x1-1} additional enemies within 10 yards.
 
 Name             : Mastery: Demonic Presence (id=185164) [Spell Family (107), Passive] 
@@ -751,7 +751,7 @@ Effects          :
 #1 (id=283035)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #2 (id=297759)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
                    Affected Spells: Fel Rush (192611)
 Description      : Increases Fel Rush damage by $s2%, and grants $s1 Fury when Fel Rush damages at least one target.
 
@@ -1199,7 +1199,7 @@ Effects          :
 #1 (id=297082)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=297083)   : Weapon Damage% (31)
-                   Base Value: 140 | Scaled Value: 1.4 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 112 | Scaled Value: 1.12 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc201467
 
 Name             : Fury of the Illidari (id=201789) [Spell Family (107)] 
@@ -1219,7 +1219,7 @@ Effects          :
 #1 (id=297377)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=297378)   : Weapon Damage% (31)
-                   Base Value: 140 | Scaled Value: 1.4 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 112 | Scaled Value: 1.12 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc201467
 
 Name             : Sigil of Silence (id=202137) [Spell Family (107)] 
@@ -2026,7 +2026,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=305358)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 Description      : Throw Glaive causes targets to bleed for $s1% of the damage inflicted over $207690d. If this effect is reapplied, any remaining damage will be added to the new Bloodlet.
 
 Name             : Chaos Cleave (id=206475) [Spell Family (107), Passive] 

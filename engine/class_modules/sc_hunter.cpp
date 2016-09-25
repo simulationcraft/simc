@@ -3652,6 +3652,15 @@ struct windburst_t: hunter_ranged_attack_t
     }
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
+
   virtual bool usable_moving() const override
   { return false; }
 };
@@ -5964,10 +5973,10 @@ void hunter_t::init_action_list()
     {
       if ( true_level > 100 )
       {
-        /* if ( specialization() == HUNTER_SURVIVAL )
+        if ( specialization() == HUNTER_SURVIVAL )
           precombat -> add_action( "potion,name=potion_of_the_old_war");
-        else */
-        precombat -> add_action( "potion,name=deadly_grace" );
+        else
+          precombat -> add_action( "potion,name=deadly_grace" );
       }
       else if ( true_level > 90 )
         precombat -> add_action( "potion,name=draenic_agility" );
@@ -6133,7 +6142,7 @@ void hunter_t::apl_surv()
   add_racial_actions( default_list );
   add_item_actions( default_list );
   
-  default_list -> add_action( "potion,name=deadly_grace" );
+  default_list -> add_action( "potion,name=old_war" );
   default_list -> add_action( "steel_trap" );
   default_list -> add_action( "explosive_trap" );
   default_list -> add_action( "dragonsfire_grenade" );
@@ -6718,6 +6727,25 @@ struct hunter_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+
+    hotfix::register_effect( "Hunter", "2016-09-23", "Bestial Wrath damage bonus increased to 25%", 10779 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 25 )
+      .verification_value( 20 );
+
+    hotfix::register_effect( "Hunter", "2016-09-23", "Flanking Strike increased by 62%", 299019 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.62 )
+      .verification_value( 130 );
+
+    hotfix::register_effect( "Hunter", "2016-09-23", "Barrage (non-Survival) damage reduced by 20%.", 139945 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 100 );
+
   }
 
   virtual void combat_begin( sim_t* ) const override {}

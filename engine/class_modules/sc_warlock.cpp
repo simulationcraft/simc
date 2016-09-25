@@ -668,16 +668,6 @@ public:
             bool procced = p() -> o() -> grimoire_of_synergy_pet -> trigger(); //check for RPPM
             if ( procced ) p() -> o() -> buffs.demonic_synergy -> trigger(); //trigger the buff
         }
-        if( p() -> specialization() == WARLOCK_DEMONOLOGY && p() -> o() -> artifact.stolen_power.rank() )
-        {
-            p()->o()->buffs.stolen_power_stacks->bump(1);
-            //p()->o()->procs.stolen_power_stack;
-            if(p()->o()->buffs.stolen_power_stacks->stack() == 100)
-            {
-                p()->o()->buffs.stolen_power_stacks->reset();
-                p()->o()->buffs.stolen_power->trigger();
-            }
-        }
     }
   }
 
@@ -1119,8 +1109,6 @@ struct doom_bolt_t: public warlock_pet_spell_t
   {
     if ( p -> o() -> talents.grimoire_of_supremacy -> ok() )
       base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.data().effectN( 2 ).percent();
-    if ( p-> o() -> specialization() == WARLOCK_DEMONOLOGY )
-      base_multiplier *= 0.85; // Doomguard does 15% less damage for demonology, find spelldata for this.
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -1171,6 +1159,18 @@ struct fel_firebolt_t: public warlock_pet_spell_t
   {
     return spell_t::ready();
   }
+
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    if ( p() -> o() -> specialization() == WARLOCK_DEMONOLOGY && p() -> o() -> artifact.stolen_power.rank() )
+    {
+      p() -> o() -> buffs.stolen_power_stacks -> trigger();
+    }
+  }
+
 
   virtual void impact( action_state_t* s ) override
   {
@@ -1428,6 +1428,7 @@ struct felguard_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
     action_list_str = "legion_strike";
+    owner_coeff.ap_from_sp = 1.1; // HOTFIX
   }
 
   virtual void init_base_stats() override
@@ -1952,6 +1953,7 @@ struct dreadstalker_t : public warlock_pet_t
     action_list_str = "travel/dreadbite";
     regen_type = REGEN_DISABLED;
     owner_coeff.health = 0.4;
+    owner_coeff.ap_from_sp = 1.1; // HOTFIX
   }
 
   virtual double composite_melee_crit_chance() const override
@@ -3889,7 +3891,8 @@ struct rain_of_fire_t : public warlock_spell_t
     parse_options( options_str );
     dot_duration = timespan_t::zero();
     may_miss = may_crit = false;
-    base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data)
+    base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data
+    base_execute_time = timespan_t::zero(); // HOTFIX
 
 
     if ( !p -> active.rain_of_fire )
@@ -4091,7 +4094,10 @@ struct summon_doomguard_t: public warlock_spell_t
     harmful = may_crit = false;
 
     cooldown = p -> cooldowns.doomguard;
-    cooldown -> duration = data().cooldown();
+    if ( !p -> talents.grimoire_of_supremacy -> ok() )
+      cooldown -> duration = data().cooldown();
+    else
+      cooldown -> duration = timespan_t::zero();
 
     if ( p -> talents.grimoire_of_supremacy -> ok() )
       doomguard_duration = timespan_t::from_seconds( -1 );
@@ -4099,11 +4105,28 @@ struct summon_doomguard_t: public warlock_spell_t
       doomguard_duration = p -> find_spell( 111685 ) -> duration() + timespan_t::from_millis( 1 );
   }
 
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  {
+    warlock_spell_t::schedule_execute( state );
+
+    if ( p() -> talents.grimoire_of_supremacy -> ok() )
+    {
+      for ( auto infernal : p() -> warlock_pet_list.infernal )
+      {
+        if ( !infernal -> is_sleeping() )
+        {
+          infernal -> dismiss();
+        }
+      }
+    }
+  }
+
   virtual void execute() override
   {
     warlock_spell_t::execute();
 
-    p() -> cooldowns.infernal -> start();
+    if ( !p() -> talents.grimoire_of_supremacy -> ok() )
+      p() -> cooldowns.infernal -> start();
 
     for ( size_t i = 0; i < p() -> warlock_pet_list.doomguard.size(); i++ )
     {
@@ -4145,7 +4168,10 @@ struct summon_infernal_t : public warlock_spell_t
     harmful = may_crit = false;
 
     cooldown = p -> cooldowns.infernal;
-    cooldown -> duration = data().cooldown();
+    if ( !p -> talents.grimoire_of_supremacy -> ok() )
+      cooldown -> duration = data().cooldown();
+    else
+      cooldown -> duration = timespan_t::zero();
 
     if ( p -> talents.grimoire_of_supremacy -> ok() )
       infernal_duration = timespan_t::from_seconds( -1 );
@@ -4157,11 +4183,28 @@ struct summon_infernal_t : public warlock_spell_t
     }
   }
 
+  virtual void schedule_execute( action_state_t* state = nullptr ) override
+  {
+    warlock_spell_t::schedule_execute( state );
+
+    if ( p() -> talents.grimoire_of_supremacy -> ok() )
+    {
+      for ( auto doomguard : p() -> warlock_pet_list.doomguard )
+      {
+        if ( !doomguard -> is_sleeping() )
+        {
+          doomguard -> dismiss();
+        }
+      }
+    }
+  }
+
   virtual void execute() override
   {
     warlock_spell_t::execute();
 
-    p() -> cooldowns.doomguard -> start();
+    if ( !p() -> talents.grimoire_of_supremacy -> ok() )
+      p() -> cooldowns.doomguard -> start();
 
     if ( infernal_awakening )
       infernal_awakening -> execute();
@@ -4199,8 +4242,6 @@ struct summon_darkglare_t : public warlock_spell_t
   {
     harmful = may_crit = may_miss = false;
 
-    //cooldown = p -> cooldowns.doomguard;
-    //cooldown->duration = data().cooldown();
     darkglare_duration = data().duration() + timespan_t::from_millis( 1 );
   }
 
@@ -4940,9 +4981,11 @@ struct channel_demonfire_t: public warlock_spell_t
   double backdraft_cast_time;
   double backdraft_tick_time;
   channel_demonfire_tick_t* channel_demonfire;
+  int immolate_action_id;
 
   channel_demonfire_t( warlock_t* p ):
-    warlock_spell_t( "channel_demonfire", p, p -> talents.channel_demonfire )
+    warlock_spell_t( "channel_demonfire", p, p -> talents.channel_demonfire ),
+    immolate_action_id( 0 )
   {
     channeled = true;
     hasted_ticks = true;
@@ -4961,6 +5004,7 @@ struct channel_demonfire_t: public warlock_spell_t
     warlock_spell_t::init();
 
     cooldown -> hasted = true;
+    immolate_action_id = p() -> find_action_id( "immolate" );
   }
 
   std::vector< player_t* >& target_list() const override
@@ -5004,6 +5048,16 @@ struct channel_demonfire_t: public warlock_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return s -> action -> tick_time( s ) * 15.0;
+  }
+
+  virtual bool ready() override
+  {
+    double active_immolates = p() -> get_active_dots( immolate_action_id );
+
+    if ( active_immolates == 0 )
+      return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -5070,8 +5124,7 @@ warlock( p )
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_eradication = buff_creator_t( *this, "eradication", source -> find_spell( 196414 ) )
@@ -5665,6 +5718,27 @@ void warlock_t::init_scaling()
   player_t::init_scaling();
 }
 
+struct stolen_power_stack_t : public buff_t
+{
+  stolen_power_stack_t( warlock_t* p ) :
+    buff_t( buff_creator_t( p, "stolen_power_stack", p -> find_spell( 211529 ) ).chance( 1.0 ) )
+  {
+  }
+
+  void execute( int a, double b, timespan_t t ) override
+  {
+    warlock_t* p = debug_cast<warlock_t*>( player );
+
+    buff_t::execute( a, b, t );
+
+    if ( p -> buffs.stolen_power_stacks -> stack() == 100 )
+    {
+      p -> buffs.stolen_power_stacks -> reset();
+      p -> buffs.stolen_power -> trigger();
+    }
+  }
+};
+
 struct t18_4pc_driver_t : public buff_t        //kept to force imps to proc
 {
   timespan_t illidari_satyr_duration;
@@ -5753,7 +5827,7 @@ void warlock_t::create_buffs()
   buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() )
     .chance( find_spell( 205145 ) -> proc_chance() );
   buffs.t18_4pc_driver = new t18_4pc_driver_t( this );
-  buffs.stolen_power_stacks = buff_creator_t( this, "stolen_power_stacks", find_spell( 211529 ) );
+  buffs.stolen_power_stacks = new stolen_power_stack_t( this );
   buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell( 211583 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -5869,8 +5943,9 @@ void warlock_t::apl_precombat()
   }
 
   precombat_list += "/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)";
-  precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3";
+  precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0";
   precombat_list += "/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3";
+  precombat_list += "/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3&artifact.lord_of_flames.rank=0";
 
   if ( true_level > 100 )
     precombat_list += "/augmentation,type=defiled";
@@ -6049,14 +6124,15 @@ void warlock_t::apl_destruction()
     }
   }
 
+  add_action( "Havoc", ",target=2,if=active_enemies>1&active_enemies<6&!debuff.havoc.remains" );
   add_action( "Dimensional Rift", "if=charges=3" );
   add_action( "Immolate", "if=remains<=tick_time" );
-  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd))" );
+  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" );
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
   action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)";
-  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd))" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd)|target.time_to_die<24)" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=3&buff.bloodlust.remains" );
@@ -6064,6 +6140,7 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
   action_list_str += "/service_pet";
   add_action( "Summon Infernal", "if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active" );
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
   action_list_str += "/soul_harvest";
@@ -6071,6 +6148,7 @@ void warlock_t::apl_destruction()
   add_action( "Chaos Bolt", "if=soul_shard>3|buff.backdraft.remains" );
   add_action( "Chaos Bolt", "if=buff.backdraft.remains&prev_gcd.incinerate" );
   add_action( "Incinerate", "if=buff.backdraft.remains" );
+  add_action( "Havoc", "if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains" );
   add_action( "Dimensional Rift" );
   action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3";
   add_action( "Chaos Bolt" );
@@ -7033,7 +7111,161 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_effect( "Warlock", "2016-09-23", "Drain Life damage increased by 10%", 271 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 0.35 );
 
+    hotfix::register_effect( "Warlock", "2016-09-23", "Drain Soul damage increased by 10%", 291909 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 0.52 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Corruption damage increased by 10%", 198369 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( .3 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Agony damage increased by 5%", 374 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 0.036 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Unstable Affliction damage increased by 15%", 303066 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 0.8 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Seed of Corruption damage increased by 15%", 16922 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 1.2 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Siphon Life damage increased by 10%", 57197 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.5 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Haunt damage increased by 15%", 40331 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 7.0 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Phantom Singularity damage increased by 15%", 303063 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 1.44 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Hand of Gul’dan impact damage increased by 20%", 87492 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 0.36 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", " Demonwrath damage increased by 15%", 283783 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 0.3 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Shadowbolt damage increased by 10%", 267 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.8 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Doom damage increased by 10%", 246 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 5.0 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Wild Imps damage increased by 10%", 113740 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.14 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Demonbolt (Talent) damage increased by 10%", 219885 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.8 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Implosion (Talent) damage increased by 15%", 288085 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.15 )
+      .verification_value( 2.0 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Shadowflame (Talent) damage increased by 10%", 302909 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 1.0 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Shadowflame (Talent) damage increased by 10%-2", 302911 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 0.35 );
+
+    hotfix::register_effect( "Warlock", "2015-09-23", "Darkglare (Talent) damage increased by 10%", 302984 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.1 )
+      .verification_value( 1.0 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Chaos bolt damage increased by 11%", 132079 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 3.3 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Incinerate damage increased by 11%", 288276 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 2.1 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Immolate damage increased by 11%", 145 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 1.2 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Conflagrate damage increased by 11%", 9553 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 2.041 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Rain of Fire damage increased by 11%, and cast time removed", 33883 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 0.5 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Cataclysm damage increased by 11%", 210584 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 7.0 );
+
+    hotfix::register_effect( "Warlock", "2016-09-23", "Channel Demonfire damage increased by 11%", 288343 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.11 )
+      .verification_value( 0.42 );
   }
 
   virtual bool valid() const override { return true; }

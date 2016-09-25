@@ -20,15 +20,16 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/greater_blessing_of_might
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=old_war
 
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/rebuke
-actions+=/potion,name=deadly_grace,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up|target.time_to_die<=40)
+actions+=/potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up|target.time_to_die<=40)
 actions+=/use_item,name=faulty_countermeasure,if=(buff.avenging_wrath.up|buff.crusade.up)
 actions+=/holy_wrath
 actions+=/avenging_wrath
+actions+=/shield_of_vengeance
 actions+=/crusade,if=holy_power>=5
 actions+=/wake_of_ashes,if=holy_power>=0&time<2
 actions+=/execution_sentence,if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.67)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
@@ -124,7 +125,7 @@ actions.VB+=/divine_storm,if=debuff.judgment.up&holy_power>=3&spell_targets.divi
 actions.VB+=/templars_verdict,if=debuff.judgment.up&holy_power>=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)
 
 head=crown_of_ash,id=137526,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_claw
+neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
 back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727

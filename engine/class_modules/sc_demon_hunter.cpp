@@ -509,6 +509,7 @@ public:
   } legendary;
 
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
+  ~demon_hunter_t();
 
   // overridden player_t init functions
   stat_e convert_hybrid_stat( stat_e s ) const override;
@@ -1302,13 +1303,13 @@ public:
 
   void trigger_fel_barrage( action_state_t* s )
   {
-    if ( !p() -> talent.fel_barrage -> ok() )
+    if ( ! p() -> talent.fel_barrage -> ok() )
       return;
 
-    if ( !may_proc_fel_barrage )
+    if ( ! may_proc_fel_barrage )
       return;
 
-    if ( !ab::result_is_hit( s -> result ) )
+    if ( ! ab::result_is_hit( s -> result ) )
       return;
 
     if ( s -> result_amount <= 0 )
@@ -1317,11 +1318,22 @@ public:
     if ( p() -> cooldown.fel_barrage_proc -> down() )
       return;
 
-    if ( !p() -> rng().roll( p() -> spec.fel_barrage_proc -> proc_chance() ) )
-      return;
+    /* Sep 23 2016: Via hotfix, this ability was changed in some mysterious
+    unknown manner. Proc mechanic is now totally serverside.
+    http://blue.mmo-champion.com/topic/767333-hotfixes-september-16/
+    
+    Assuming proc chance and ICD are unchanged and that ICD starts on-attempt
+    instead of on-success now.
+    
+    As a result, chance and ICD are now hardcoded (they are no longer in the
+    spell data).*/ 
 
-    p() -> proc.fel_barrage -> occur();
-    p() -> cooldown.fel_barrage -> reset( true );
+    if ( p() -> rng().roll( 0.10 ) )
+    {
+      p() -> proc.fel_barrage -> occur();
+      p() -> cooldown.fel_barrage -> reset( true );
+    }
+
     p() -> cooldown.fel_barrage_proc -> start();
   }
 
@@ -1576,7 +1588,7 @@ struct chaos_blades_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    p() -> buff.chaos_blades -> trigger();
+    p() -> buff.chaos_blades -> trigger( 1, p() -> cache.mastery_value() );
   }
 };
 
@@ -3346,7 +3358,8 @@ struct blade_dance_t : public blade_dance_base_t
 
   bool ready() override
   {
-    if ( p() -> buff.metamorphosis -> check() )
+    // Blade dance can be queued in the last 250ms, so need to ensure meta is still up after that.
+    if ( p() -> buff.metamorphosis -> remains() <= cooldown -> queue_delay() )
     {
       return false;
     }
@@ -3735,7 +3748,8 @@ struct death_sweep_t : public blade_dance_base_t
 
   bool ready() override
   {
-    if ( !p() -> buff.metamorphosis -> check() )
+    // Death sweep can be queued in the last 250ms, so need to ensure meta is still up after that.
+    if ( p() -> buff.metamorphosis -> remains() <= cooldown -> queue_delay() )
     {
       return false;
     }
@@ -4814,6 +4828,11 @@ public:
 #endif
   }
 
+  ~damage_calc_helper_t()
+  {
+    delete state;
+  }
+
   double total()
   {
     if ( !valid )
@@ -4990,6 +5009,14 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
   create_benefits();
 
   regen_type = REGEN_DISABLED;
+}
+
+demon_hunter_t::~demon_hunter_t()
+{
+  delete blade_dance_dmg;
+  delete death_sweep_dmg;
+  delete chaos_strike_dmg;
+  delete annihilation_dmg;
 }
 
 // ==========================================================================
@@ -5221,7 +5248,7 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "out_of_range", spell_data_t::nil() ).chance( 1.0 );
 
   // TODO: Buffs for each race?
-  buff.nemesis = buff_creator_t( this, "nemesis", find_spell( 208605 ) )
+  buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.prepared =
@@ -5380,6 +5407,11 @@ struct blade_dance_expr_t : public expr_t
       fury_spender   = dh.find_action( "annihilation" );
       spender_damage = dh.annihilation_dmg;
     }
+  }
+
+  ~blade_dance_expr_t()
+  {
+    delete db_state;
   }
 
   double dbs_per_spender()
@@ -5911,11 +5943,20 @@ void demon_hunter_t::init_spells()
   if ( talent.fel_barrage -> ok() )
   {
     spec.fel_barrage_proc = find_spell( 222703 );
-    cooldown.fel_barrage_proc -> duration =
-      spec.fel_barrage_proc -> internal_cooldown() +
-      timespan_t::from_millis( 1 );
-    // In-game, events that happen the same millisecond as the ICD ending cannot
-    // trigger a proc.
+
+    /* Sep 23 2016: Via hotfix, this ability was changed in some mysterious
+    unknown manner. Proc mechanic is now totally serverside.
+    http://blue.mmo-champion.com/topic/767333-hotfixes-september-16/
+    
+    Assuming proc chance and ICD are unchanged and that ICD starts on-attempt
+    instead of on-success now.
+    
+    As a result, chance and ICD are now hardcoded (they are no longer in the
+    spell data).*/ 
+
+    /* Subsequent Fury of the Illidari ticks (500ms interval) cannot proc,
+    so use 501ms instead of 500. */
+    cooldown.fel_barrage_proc -> duration = timespan_t::from_millis( 501 );
   }
 
   using namespace actions::attacks;
@@ -6096,7 +6137,7 @@ void demon_hunter_t::apl_precombat()
     std::string potion;
 
     if ( specialization() == DEMON_HUNTER_HAVOC )
-      potion = true_level > 100 ? "deadly_grace" : "draenic_agility";
+      potion = true_level > 100 ? "old_war" : "draenic_agility";
     else
       potion = true_level > 100 ? "unbending_potion" : "draenic_versatility";
 
@@ -6123,7 +6164,8 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
   // On-Use Items
   for ( size_t i = 0; i < p -> items.size(); i++ )
   {
-    if ( p -> items[ i ].has_use_special_effect() )
+    if ( p -> items[ i ].has_use_special_effect() &&
+      p -> items[ i ].special_effect().source != SPECIAL_EFFECT_SOURCE_ADDON )
     {
       std::string line =
         std::string( "use_item,slot=" ) + p -> items[ i ].slot_name();
@@ -6244,7 +6286,7 @@ void demon_hunter_t::apl_havoc()
                    "if=talent.demonic.enabled&buff.metamorphosis.down&cooldown."
                    "eye_beam.remains<2*gcd&fury.deficit>=45" );
   def -> add_action( this, "Throw Glaive",
-                   "if=buff.metamorphosis.down&spell_targets>=3" );
+                   "if=buff.metamorphosis.down&spell_targets>=2" );
   def -> add_action( this, "Chaos Strike",
                    "if=(!talent.momentum.enabled|buff.momentum.up|fury.defic"
     "it<=30+buff.prepared.up*8)&!variable.pooling_for_meta&(!talent.demonic."
@@ -6285,13 +6327,13 @@ void demon_hunter_t::apl_havoc()
   cd -> add_action(
     this, "Metamorphosis",
     "if=variable.pooling_for_meta&fury.deficit<30&(talent.chaos_blades.enabl"
-    "ed|!cooldown.fury_of_the_illidari.ready&!cooldown.throw_glaive.ready)" );
+    "ed|!cooldown.fury_of_the_illidari.ready)" );
 
   // Pre-Potion
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      cd -> add_action( "potion,name=deadly_grace,if=buff.metamorphosis.remains>25" );
+      cd -> add_action( "potion,name=old_war,if=buff.metamorphosis.remains>25" );
     else
       cd -> add_action( "potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25" );
   }
@@ -6592,7 +6634,7 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
   m *=
     1.0 + buff.nemesis -> check() * buff.nemesis -> data().effectN( 1 ).percent();
 
-  m *= 1.0 + buff.chaos_blades -> check() * cache.mastery_value();
+  m *= 1.0 + buff.chaos_blades -> check_value();
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> check() )
     m *= 1.0 + talent.razor_spikes -> effectN( 1 ).percent();
@@ -7320,7 +7362,36 @@ public:
 
   void register_hotfixes() const override
   {
-
+    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Throw Glaive damage reduced by 30%.", 309171 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.70 )
+      .verification_value( 490 );
+    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Fel Mastery (Talent) damage bonus to Fel Rush reduced to 30%.", 297759 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 50 );
+    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Bloodlet (Talent) now deals 100% of initial Throw Glaive damage.", 305358 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 100 )
+      .verification_value( 200 );
+    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Fury of the Illidari (Artifact Ability) damage reduced by 20%.", 297083 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.80 )
+      .verification_value( 140 );
+    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Fury of the Illidari (Artifact Ability) damage reduced by 20%. #2", 297378 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 0.80 )
+      .verification_value( 140 );
+    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Balanced Blades (Artifact Trait) damage bonus to Blade Dance reduced to 3% per target.", 296823 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 10 );
   }
 
   void combat_begin( sim_t* ) const override

@@ -4,7 +4,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=1130111
+talents=1110131
 talent_override=fel_barrage,if=active_enemies>1|raid_event.adds.exists
 artifact=3:137407:133684:137407:0:1001:6:1002:3:1003:3:1005:3:1006:3:1010:1:1012:1:1013:1:1016:1:1330:1
 spec=havoc
@@ -21,7 +21,7 @@ actions.precombat+=/food,type=the_hungry_magister
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=old_war
 actions.precombat+=/metamorphosis
 
 # Executed every time the actor is available.
@@ -58,7 +58,7 @@ actions+=/eye_beam,if=!talent.demonic.enabled&((spell_targets.eye_beam_tick>desi
 actions+=/demons_bite,if=buff.metamorphosis.down&cooldown.blade_dance.remains<gcd&fury<55&blade_dance_worth_using
 actions+=/demons_bite,if=talent.demonic.enabled&buff.metamorphosis.down&cooldown.eye_beam.remains<gcd&fury.deficit>=20
 actions+=/demons_bite,if=talent.demonic.enabled&buff.metamorphosis.down&cooldown.eye_beam.remains<2*gcd&fury.deficit>=45
-actions+=/throw_glaive,if=buff.metamorphosis.down&spell_targets>=3
+actions+=/throw_glaive,if=buff.metamorphosis.down&spell_targets>=2
 actions+=/chaos_strike,if=(!talent.momentum.enabled|buff.momentum.up|fury.deficit<=30+buff.prepared.up*8)&!variable.pooling_for_meta&(!talent.demonic.enabled|!cooldown.eye_beam.ready)
 # Use Fel Barrage if its nearing max charges, saving it for Momentum and adds if possible.
 actions+=/fel_barrage,if=charges=4&buff.metamorphosis.down&(buff.momentum.up|!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)
@@ -74,8 +74,8 @@ actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.e
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists&(cooldown.metamorphosis.remains>100|target.time_to_die<70)
 actions.cooldown+=/nemesis,sync=metamorphosis,if=!raid_event.adds.exists
 actions.cooldown+=/chaos_blades,if=buff.metamorphosis.up|cooldown.metamorphosis.remains>100|target.time_to_die<20
-actions.cooldown+=/metamorphosis,if=variable.pooling_for_meta&fury.deficit<30&(talent.chaos_blades.enabled|!cooldown.fury_of_the_illidari.ready&!cooldown.throw_glaive.ready)
-actions.cooldown+=/potion,name=deadly_grace,if=buff.metamorphosis.remains>25
+actions.cooldown+=/metamorphosis,if=variable.pooling_for_meta&fury.deficit<30&(talent.chaos_blades.enabled|!cooldown.fury_of_the_illidari.ready)
+actions.cooldown+=/potion,name=old_war,if=buff.metamorphosis.remains>25
 
 head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727/1492
 neck=breathless_choker,id=137461,bonus_id=1727/1492,enchant_id=5439

@@ -952,6 +952,8 @@ public:
   // Generic procs
   bool may_proc_unleash_doom;
 
+  proc_t* proc_ud;
+
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
@@ -960,7 +962,7 @@ public:
     unshift_ghost_wolf( true ),
     gain( player -> get_gain( s -> id() > 0 ? s -> name_cstr() : n ) ),
     maelstrom_gain( 0 ), maelstrom_gain_coefficient( 1.0 ),
-    may_proc_unleash_doom( false )
+    may_proc_unleash_doom( false ), proc_ud( nullptr )
   {
     ab::may_crit = true;
 
@@ -978,7 +980,13 @@ public:
     }
   }
 
-  virtual void init()
+  std::string full_name() const
+  {
+    std::string n = ab::data().name_cstr();
+    return n.empty() ? ab::name_str : n;
+  }
+
+  void init() override
   {
     ab::init();
 
@@ -1001,6 +1009,17 @@ public:
     may_proc_unleash_doom = p() -> artifact.unleash_doom.rank() && ! ab::callbacks && ! ab::background && ab::harmful &&
       ( ab::weapon_multiplier > 0 || ab::attack_power_mod.direct > 0 || ab::spell_power_mod.direct > 0 );
   }
+
+  bool init_finished() override
+  {
+    if ( may_proc_unleash_doom )
+    {
+      proc_ud = ab::player -> get_proc( std::string( "Unleash Doom: " ) + full_name() );
+    }
+
+    return ab::init_finished();
+  }
+
 
   shaman_t* p()
   { return debug_cast< shaman_t* >( ab::player ); }
@@ -1192,6 +1211,7 @@ public:
     size_t spell_idx = ab::rng().range( 0, p() -> action.unleash_doom.size() );
     p() -> action.unleash_doom[ spell_idx ] -> target = state -> target;
     p() -> action.unleash_doom[ spell_idx ] -> schedule_execute();
+    proc_ud -> occur();
   }
 };
 
@@ -1212,6 +1232,8 @@ public:
   bool may_proc_lightning_shield;
   bool may_proc_hot_hand;
 
+  proc_t* proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh;
+
   shaman_attack_t( const std::string& token, shaman_t* p, const spell_data_t* s ) :
     base_t( token, p, s ),
     may_proc_windfury( p -> spec.windfury -> ok() ),
@@ -1220,7 +1242,9 @@ public:
     may_proc_maelstrom_weapon( false ), // Change to whitelisting
     may_proc_stormbringer( p -> spec.stormbringer -> ok() ),
     may_proc_lightning_shield( false ),
-    may_proc_hot_hand( p -> talent.hot_hand -> ok() )
+    may_proc_hot_hand( p -> talent.hot_hand -> ok() ),
+    proc_wf( nullptr ), proc_ft( nullptr ), proc_fb( nullptr ), proc_mw( nullptr ),
+    proc_sb( nullptr ), proc_ls( nullptr ), proc_hh( nullptr )
   {
     special = true;
     may_glance = false;
@@ -1237,7 +1261,7 @@ public:
 
     if ( may_proc_windfury )
     {
-      may_proc_windfury = n_targets() == 0;
+      may_proc_windfury = ab::weapon != nullptr;
     }
 
     if ( may_proc_frostbrand )
@@ -1251,6 +1275,46 @@ public:
     }
 
     may_proc_lightning_shield = p() -> talent.lightning_shield -> ok() && weapon && weapon_multiplier > 0;
+  }
+
+  bool init_finished() override
+  {
+    if ( may_proc_flametongue )
+    {
+      proc_ft = player -> get_proc( std::string( "Flametongue: " ) + full_name() );
+    }
+
+    if ( may_proc_frostbrand )
+    {
+      proc_fb = player -> get_proc( std::string( "Frostbrand: " ) + full_name() );
+    }
+
+    if ( may_proc_hot_hand )
+    {
+      proc_hh = player -> get_proc( std::string( "Hot Hand: " ) + full_name() );
+    }
+
+    if ( may_proc_lightning_shield )
+    {
+      proc_ls = player -> get_proc( std::string( "Lightning Shield: " ) + full_name() );
+    }
+
+    if ( may_proc_maelstrom_weapon )
+    {
+      proc_mw = player -> get_proc( std::string( "Maelstrom Weapon: " ) + full_name() );
+    }
+
+    if ( may_proc_stormbringer )
+    {
+      proc_sb = player -> get_proc( std::string( "Stormbringer: " ) + full_name() );
+    }
+
+    if ( may_proc_windfury )
+    {
+      proc_wf = player -> get_proc( std::string( "Windfury: " ) + full_name() );
+    }
+
+    return base_t::init_finished();
   }
 
   void impact( action_state_t* state ) override
@@ -1294,6 +1358,7 @@ public:
     }
 
     p() -> resource_gain( RESOURCE_MAELSTROM, amount, gain, this );
+    proc_mw -> occur();
 
     if ( p() -> action.electrocute &&
          rng().roll( p() -> sets.set( SHAMAN_ENHANCEMENT, T18, B2 ) -> effectN( 1 ).percent() ) )
@@ -3225,7 +3290,7 @@ struct windstrike_t : public stormstrike_base_t
 
   bool ready() override
   {
-    if ( ! p() -> buff.ascendance -> check() )
+    if ( p() -> buff.ascendance -> remains() <= cooldown -> queue_delay() )
       return false;
 
     return stormstrike_base_t::ready();
@@ -3248,7 +3313,8 @@ struct sundering_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = may_proc_lightning_shield = may_proc_frostbrand = may_proc_hot_hand = true;
+    may_proc_stormbringer = may_proc_lightning_shield = may_proc_frostbrand = true;
+    may_proc_hot_hand = p() -> talent.hot_hand -> ok();
   }
 };
 
@@ -5886,6 +5952,7 @@ void shaman_t::trigger_stormbringer( const action_state_t* state )
     buff.stormbringer -> trigger( buff.stormbringer -> max_stack() );
     cooldown.strike -> reset( true );
     buff.wind_strikes -> trigger();
+    attack -> proc_sb -> occur();
   }
 }
 
@@ -5906,6 +5973,7 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
   }
 
   buff.hot_hand -> trigger();
+  attack -> proc_hh -> occur();
 }
 
 void shaman_t::trigger_elemental_focus( const action_state_t* state )
@@ -5954,6 +6022,7 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
 
   action.lightning_shield -> target = state -> target;
   action.lightning_shield -> execute();
+  attack -> proc_ls -> occur();
 }
 
 // TODO: Target swaps
@@ -6046,24 +6115,17 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   if ( ! attack -> may_proc_windfury )
     return;
 
-  if ( ! attack -> weapon )
-    return;
-
   // If doom winds is not up, block all off-hand weapon attacks
   if ( ! buff.doom_winds -> check() && attack -> weapon -> slot != SLOT_MAIN_HAND )
     return;
-  // If doom winds is up, block all off-hand special weapon attacks .. except since it bugs, let all
-  // off-attacks through
-  else if ( buff.doom_winds -> check() && attack -> weapon -> slot != SLOT_MAIN_HAND &&
-           ! bugs && attack -> special )
+  // If doom winds is up, block all off-hand special weapon attacks
+  else if ( buff.doom_winds -> check() && attack -> weapon -> slot != SLOT_MAIN_HAND && attack -> special )
     return;
 
   double proc_chance = spec.windfury -> proc_chance();
   proc_chance += cache.mastery() * mastery.enhanced_elements -> effectN( 4 ).mastery_value();
-  // Only autoattacks are guaranteed windfury procs during doom winds, except not really, since
-  // off-hand specials are guaranteed too in game.
-  if ( buff.doom_winds -> up() && ( ( attack -> weapon -> slot == SLOT_MAIN_HAND && ! attack -> special ) ||
-       ( attack -> weapon -> slot == SLOT_OFF_HAND && ( bugs || ! attack -> special ) ) ) )
+  // Only autoattacks are guaranteed windfury procs during doom winds
+  if ( buff.doom_winds -> up() && ! attack -> special )
   {
     proc_chance = 1.0;
   }
@@ -6088,6 +6150,8 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
       a -> schedule_execute();
       a -> schedule_execute();
     }
+
+    attack -> proc_wf -> occur();
   }
 }
 
@@ -6158,6 +6222,7 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 
   flametongue -> target = state -> target;
   flametongue -> schedule_execute();
+  attack -> proc_ft -> occur();
 }
 
 void shaman_t::trigger_hailstorm( const action_state_t* state )
@@ -6181,6 +6246,7 @@ void shaman_t::trigger_hailstorm( const action_state_t* state )
 
   hailstorm -> target = state -> target;
   hailstorm -> schedule_execute();
+  attack -> proc_fb -> occur();
 }
 
 // shaman_t::init_buffs =====================================================
@@ -6556,7 +6622,7 @@ void shaman_t::init_action_list_enhancement()
                           ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80  ) ? "seafood_magnifique_feast" :
                           "";
-  std::string potion_name = ( true_level > 100 ) ? "deadly_grace" :
+  std::string potion_name = ( true_level > 100 ) ? "old_war" :
                             ( true_level >= 90 ) ? "draenic_agility" :
                             ( true_level >= 85 ) ? "virmens_bite" :
                             ( true_level >= 80 ) ? "tolvir" :
@@ -7752,6 +7818,60 @@ struct shaman_module_t : public module_t
       .modifier( 0.8 )
       .verification_value( 0.7 );
     */
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Chain Lightning (Elemental) damage has been increased by 23%", 275203 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.23 )
+      .verification_value( 1.3 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Chain Lightning (Elemental) maelstrom generation increased to 6.", 325428 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 6 )
+      .verification_value( 4 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Lightning bolt damaged increased by 23%", 274643 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.23 )
+      .verification_value( 1.3 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Lava burst damage has been increased by 5%", 43841 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.05 )
+      .verification_value( 2.1 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Elemental Mastery effects have been increased by 12.5%", 238582 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.125 )
+      .verification_value( 2 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Storm Elemental's Call Lightning damage has been increased by 20%", 219409 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 0.7 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Storm Elemental's Wind Gust damage has been increased by 20%", 219326 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 0.35 );
+
+    hotfix::register_effect( "Shaman", "2016-09-23", "Chain Lightning (Restoration) damage has been increased by 20%", 155 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 1.8 );
+
+    hotfix::register_spell( "Shaman", "2016-09-23", "Windfury activation chance increased to 20%.", 33757 )
+      .field( "proc_chance" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20 )
+      .verification_value( 10 );
   }
 
   void combat_begin( sim_t* ) const override {}

@@ -170,7 +170,7 @@ class SC_ReforgeButtonGroup : public QButtonGroup
 {
   Q_OBJECT
 public:
-  SC_ReforgeButtonGroup( QObject* parent = 0 );
+  SC_ReforgeButtonGroup( QObject* parent = nullptr  );
 
 private:
   int selected;
@@ -189,7 +189,7 @@ class SC_enumeratedTab : public QTabWidget
 {
   QList< QPair< Qt::Key, QList< Qt::KeyboardModifier > > > ignoreKeys;
 public:
-  SC_enumeratedTab( QWidget* parent = 0 ) :
+  SC_enumeratedTab( QWidget* parent = nullptr  ) :
     QTabWidget( parent )
   {
 
@@ -264,7 +264,7 @@ class SC_QueueItemModel : public QStandardItemModel
 {
   Q_OBJECT
 public:
-  SC_QueueItemModel( QObject* parent = 0 ) :
+  SC_QueueItemModel( QObject* parent = nullptr  ) :
     QStandardItemModel( parent )
   {
     connect( this, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),  this, SLOT( rowsRemovedSlot( const QModelIndex&, int, int ) ) );
@@ -327,7 +327,7 @@ class SC_QueueListView : public QWidget
 public:
   SC_QueueListView( SC_QueueItemModel* model,
       int minimumItemsToShowWidget = 1,
-      QWidget* parent = 0 ) :
+      QWidget* parent = nullptr  ) :
     QWidget( parent ),
     listView( 0 ),
     model( model ),
@@ -442,7 +442,7 @@ class SC_CommandLine : public QLineEdit
 {
   Q_OBJECT
 public:
-  SC_CommandLine( QWidget* parent = 0 );
+  SC_CommandLine( QWidget* parent = nullptr  );
 signals:
   void switchToLeftSubTab();
   void switchToRightSubTab();
@@ -461,7 +461,7 @@ class SC_MainTab : public SC_enumeratedTab<main_tabs_e>
 {
   Q_OBJECT
 public:
-  SC_MainTab( QWidget* parent = 0 ) :
+  SC_MainTab( QWidget* parent = nullptr  ) :
     SC_enumeratedTab<main_tabs_e>( parent )
   {
 
@@ -508,7 +508,7 @@ class SC_SingleResultTab : public SC_enumeratedTab<result_tabs_e>
   Q_OBJECT
   SC_MainWindow* mainWindow;
 public:
-  SC_SingleResultTab( SC_MainWindow* mw, QWidget* parent = 0 ) :
+  SC_SingleResultTab( SC_MainWindow* mw, QWidget* parent = nullptr  ) :
     SC_enumeratedTab<result_tabs_e>( parent ),
     mainWindow( mw )
   {
@@ -529,7 +529,7 @@ class SC_ImportTab: public SC_enumeratedTab < import_tabs_e >
 {
   Q_OBJECT
   public:
-      SC_ImportTab( QWidget* parent = 0 );
+      SC_ImportTab( QWidget* parent = nullptr );
       SC_AutomationTab* automationTab;
 };
 
@@ -572,17 +572,17 @@ class SC_ComboBoxIntegerValidator: public QValidator
     upperBoundDigitCount = util::numDigits( upperBoundInclusive );
   }
 
-  static SC_ComboBoxIntegerValidator* CreateBoundlessValidator( QComboBox* parent = 0 )
+  static SC_ComboBoxIntegerValidator* CreateBoundlessValidator( QComboBox* parent = nullptr  )
   {
     return new SC_ComboBoxIntegerValidator( std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), parent );
   }
 
-  static SC_ComboBoxIntegerValidator* CreateUpperBoundValidator( int upperBound, QComboBox* parent = 0 )
+  static SC_ComboBoxIntegerValidator* CreateUpperBoundValidator( int upperBound, QComboBox* parent = nullptr  )
   {
     return new SC_ComboBoxIntegerValidator( std::numeric_limits<int>::min(), upperBound, parent );
   }
 
-  static SC_ComboBoxIntegerValidator* CreateLowerBoundValidator( int lowerBound, QComboBox* parent = 0 )
+  static SC_ComboBoxIntegerValidator* CreateLowerBoundValidator( int lowerBound, QComboBox* parent = nullptr  )
   {
     return new SC_ComboBoxIntegerValidator( lowerBound, std::numeric_limits<int>::max(), parent );
   }
@@ -847,7 +847,7 @@ public slots:
   void startNewImport( const QString&, const QString&, const QString&, const QString& );
 
 public:
-  SC_MainWindow( QWidget *parent = 0 );
+  SC_MainWindow( QWidget *parent = nullptr );
 };
 
 // ============================================================================
@@ -858,8 +858,8 @@ class SC_WebPage : public SC_WebEnginePage
 {
   Q_OBJECT
 public:
-explicit SC_WebPage( QObject* parent = 0 ):
-SC_WebEnginePage( parent )
+  explicit SC_WebPage( QObject* parent = nullptr ):
+    SC_WebEnginePage( parent )
   {}
 
 #if defined( SC_USE_WEBKIT )
@@ -971,7 +971,7 @@ public:
   QString url_to_show;
   QByteArray out_html;
 
-  SC_WebView( SC_MainWindow* mw, QWidget* parent = 0, const QString& h = QString() ) :
+  SC_WebView( SC_MainWindow* mw, QWidget* parent = nullptr , const QString& h = QString() ) :
     SC_WebEngineView( parent ),
     searchBox( 0 ),
     previousSearch( "" ),
@@ -998,7 +998,7 @@ public:
     connect( this,      SIGNAL( linkClicked( const QUrl& ) ),    this,      SLOT( linkClickedSlot( const QUrl& ) ) );
 #endif
 
-    SC_WebPage* page = new SC_WebPage( this );
+    SC_WebPage* page = new SC_WebPage( parent );
     setPage( page );
 #if defined( SC_USE_WEBKIT )
     page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );

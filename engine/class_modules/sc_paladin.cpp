@@ -373,7 +373,7 @@ public:
     last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
     fixed_holy_wrath_health_pct( -1.0 ),
     fake_gbom( true ),
-    fake_sov( false )
+    fake_sov( true )
   {
     last_retribution_trinket_target = nullptr;
     retribution_trinket = nullptr;
@@ -3004,6 +3004,9 @@ struct crusader_strike_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit       += p -> artifact.sharpened_edge.percent();
 
+    if ( p -> specialization() == PALADIN_RETRIBUTION ) // HOTFIX
+      base_multiplier *= 1.13;                          // HOTFIX
+
     if ( p -> talents.fires_of_justice -> ok() )
     {
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
@@ -3490,6 +3493,7 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
     trigger_gcd = timespan_t::zero();
     id = 184689;
 
+    split_aoe_damage = true;
     may_crit = true;
     aoe = -1;
   }
@@ -3601,6 +3605,7 @@ struct judgment_t : public paladin_melee_attack_t
       base_costs[ RESOURCE_MANA ] = 0;
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
       impact_action = new judgment_aoe_t( p, options_str );
+      base_multiplier *= 1.13; // HOTFIX
     }
     else if ( p -> specialization() == PALADIN_HOLY )
     {
@@ -4731,7 +4736,7 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions && true_level >= 80 )
   {
     if ( true_level > 100 )
-      precombat -> add_action( "potion,name=deadly_grace");
+      precombat -> add_action( "potion,name=old_war" );
     else if ( true_level > 90 )
       precombat -> add_action( "potion,name=draenic_strength" );
     else
@@ -4750,7 +4755,7 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      def -> add_action( "potion,name=deadly_grace,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up|target.time_to_die<=40)" );
+      def -> add_action( "potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up|target.time_to_die<=40)" );
     else if ( true_level > 90 )
       def -> add_action( "potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
     else if ( true_level > 85 )
@@ -4773,6 +4778,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   def -> add_talent( this, "Holy Wrath" );
   def -> add_action( this, "Avenging Wrath" );
+  def -> add_action( this, "Shield of Vengeance" );
   def -> add_talent( this, "Crusade", "if=holy_power>=5" );
   def -> add_action( this, "Wake of Ashes", "if=holy_power>=0&time<2" );
   def -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.67)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)" );
@@ -6174,6 +6180,37 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
+
+    hotfix::register_effect( "Paladin", "2016-09-23", "Templar’s Verdict damage increased by 10%.", 335615 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.10 )
+      .verification_value( 290 );
+
+    hotfix::register_effect( "Paladin", "2016-09-23", "Divine Storm damage increased by 20%.", 335563 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.20 )
+      .verification_value( 180 );
+
+    hotfix::register_effect( "Paladin", "2016-09-23", "Blade of Justice damage increased by 13%.", 267536 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.13 )
+      .verification_value( 352 );
+
+    hotfix::register_effect( "Paladin", "2016-09-23", "Zeal (Talent) damage increased by 13%.", 322915 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.13 )
+      .verification_value( 285 );
+
+    hotfix::register_effect( "Paladin", "2016-09-23", "Blade of Wrath (Talent) damage increased by 13%.", 298132 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.13 )
+      .verification_value( 120 );
+
   }
 
   virtual void combat_begin( sim_t* ) const override {}
