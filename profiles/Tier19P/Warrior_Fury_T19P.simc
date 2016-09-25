@@ -81,18 +81,18 @@ actions.two_targets+=/dragon_roar
 actions.two_targets+=/bloodthirst
 actions.two_targets+=/whirlwind
 
-head=crown_of_ash,id=137526,bonus_id=1727
-neck=anshes_pendant,id=139101,bonus_id=1727,enchant=mark_of_the_claw
-shoulders=pauldrons_of_ancient_command,id=134510,bonus_id=1727
+head=nightsfall_helmet,id=139058,bonus_id=1727
+neck=chain_of_scorched_bones,id=134529,bonus_id=1727,enchant=mark_of_the_hidden_satyr
+shoulders=frozen_oendulum_shoulderguards,id=134518,bonus_id=1727
 back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727
 wrists=greystone_wristplates,id=139100,bonus_id=1727
-hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727
-waist=greatbelt_of_alpha_dominance,id=136773,bonus_id=1727
+hands=nightsfall_gauntlets,id=139056,bonus_id=1727
+waist=slack_tide_girdle,id=133770,bonus_id=1727
 legs=keelhauler_legplates,id=134514,bonus_id=1727
-feet=duskwatch_guards_boots,id=137482,bonus_id=1727
-finger1=band_of_callous_dominance,id=134528,bonus_id=1727,enchant=binding_of_mastery
-finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_mastery
+feet=rook_footmans_warboots,id=139241,bonus_id=1727
+finger1=loop_of_vitriolic_intent,id=134530,bonus_id=1727,enchant=binding_of_mastery
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_mastery
 trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727
 main_hand=warswords_of_the_valarjar,id=128908,gem_id=137546/137365/137472,relic_id=3412/3412/3412
@@ -101,8 +101,9 @@ off_hand=warswords_of_the_valarjar,id=134553
 # Gear Summary
 # gear_ilvl=843.75
 # gear_strength=11746
-# gear_stamina=20309
-# gear_crit_rating=9541
-# gear_haste_rating=7948
-# gear_mastery_rating=1774
+# gear_stamina=20310
+# gear_crit_rating=5429
+# gear_haste_rating=10182
+# gear_mastery_rating=3043
+# gear_versatility_rating=606
 # gear_armor=3965
