@@ -3290,7 +3290,7 @@ struct windstrike_t : public stormstrike_base_t
 
   bool ready() override
   {
-    if ( ! p() -> buff.ascendance -> check() )
+    if ( p() -> buff.ascendance -> remains() <= cooldown -> queue_delay() )
       return false;
 
     return stormstrike_base_t::ready();

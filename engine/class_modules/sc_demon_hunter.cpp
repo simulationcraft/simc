@@ -509,6 +509,7 @@ public:
   } legendary;
 
   demon_hunter_t( sim_t* sim, const std::string& name, race_e r );
+  ~demon_hunter_t();
 
   // overridden player_t init functions
   stat_e convert_hybrid_stat( stat_e s ) const override;
@@ -3357,7 +3358,8 @@ struct blade_dance_t : public blade_dance_base_t
 
   bool ready() override
   {
-    if ( p() -> buff.metamorphosis -> check() )
+    // Blade dance can be queued in the last 250ms, so need to ensure meta is still up after that.
+    if ( p() -> buff.metamorphosis -> remains() <= cooldown -> queue_delay() )
     {
       return false;
     }
@@ -3746,7 +3748,8 @@ struct death_sweep_t : public blade_dance_base_t
 
   bool ready() override
   {
-    if ( !p() -> buff.metamorphosis -> check() )
+    // Death sweep can be queued in the last 250ms, so need to ensure meta is still up after that.
+    if ( p() -> buff.metamorphosis -> remains() <= cooldown -> queue_delay() )
     {
       return false;
     }
@@ -5003,6 +5006,14 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
   regen_type = REGEN_DISABLED;
 }
 
+demon_hunter_t::~demon_hunter_t()
+{
+  delete blade_dance_dmg;
+  delete death_sweep_dmg;
+  delete chaos_strike_dmg;
+  delete annihilation_dmg;
+}
+
 // ==========================================================================
 // overridden player_t init functions
 // ==========================================================================
@@ -5232,7 +5243,7 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "out_of_range", spell_data_t::nil() ).chance( 1.0 );
 
   // TODO: Buffs for each race?
-  buff.nemesis = buff_creator_t( this, "nemesis", find_spell( 208605 ) )
+  buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.prepared =
@@ -5391,6 +5402,11 @@ struct blade_dance_expr_t : public expr_t
       fury_spender   = dh.find_action( "annihilation" );
       spender_damage = dh.annihilation_dmg;
     }
+  }
+
+  ~blade_dance_expr_t()
+  {
+    delete db_state;
   }
 
   double dbs_per_spender()
