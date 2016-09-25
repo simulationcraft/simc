@@ -1,6 +1,6 @@
 mage="Mage_Fire_T19H"
 level=110
-race=orc
+race=troll
 role=spell
 position=back
 talents=1222122
@@ -27,7 +27,7 @@ save=Mage_Fire_T19H.simc
 
 mage="Mage_Frost_T19H"
 level=110
-race=orc
+race=troll
 role=spell
 position=back
 talents=3132111
@@ -52,25 +52,25 @@ save=Mage_Frost_T19H.simc
 
 mage="Mage_Arcane_T19H"
 level=110
-race=orc
+race=troll
 role=spell
 position=back
 talents=1021012
 artifact=4:139269:139259:139269:0:72:3:73:1:74:3:75:4:80:1:81:5:82:3:83:3:84:3:86:1:87:1:290:1:1339:1
 spec=arcane
-head=,id=139189,bonus_id=1805
-neck=,id=139332,bonus_id=1805,enchant=mark_of_the_hidden_satyr
-shoulders=,id=139192,bonus_id=1805
-back=,id=138221,bonus_id=1805,enchant=binding_of_intellect
-chest=,id=139193,bonus_id=1805
-wrists=,id=139187,bonus_id=1805
-hands=,id=138212,bonus_id=1805
-waist=,id=138217,bonus_id=1805
-legs=,id=139190,bonus_id=1805
-feet=,id=139195,bonus_id=1805
-finger1=,id=139236,bonus_id=1805,enchant=binding_of_crit
-finger2=,id=139238,bonus_id=1805,enchant=binding_of_crit
-trinket1=,id=139321,bonus_id=1805
-trinket2=,id=139323,bonus_id=1805
+head=hood_of_darkened_visions,id=139189,bonus_id=1805
+neck=pendant_of_liquid_horror,id=141696,bonus_id=1805,enchant=mark_of_the_hidden_satyr
+shoulders=ancient_dreamwoven_mantle,id=139191,bonus_id=1805
+back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=binding_of_intellect
+chest=maddening_robe_of_secrets,id=139193,bonus_id=1805
+wrists=ragged_fur_wristwraps,id=139196,bonus_id=1805
+hands=handwraps_of_delusional_power,id=138212,bonus_id=1805
+waist=pliable_spider_silk_cinch,id=138217,bonus_id=1805
+legs=oncefashionable_narthalas_leggings,id=139595,bonus_id=1805
+feet=crimson_woollined_slippers,id=139195,bonus_id=1805
+finger1=grubby_silver_ring,id=139236,bonus_id=1805,enchant=binding_of_crit
+finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=binding_of_crit
+trinket1=swarming_plaguehive,id=139321,bonus_id=1805
+trinket2=twisting_wind,id=139323,bonus_id=1805
 main_hand=aluneth,id=127857,ilevel=894
 save=Mage_Arcane_T19H.simc
