@@ -3652,6 +3652,15 @@ struct windburst_t: hunter_ranged_attack_t
     }
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
+    return am;
+  }
+
   virtual bool usable_moving() const override
   { return false; }
 };
