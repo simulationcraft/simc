@@ -101,11 +101,13 @@ struct tick_t : public buff_event_t
     if ( buff -> tick_callback )
       buff -> tick_callback( buff, total_ticks, tick_time );
 
-    if ( ! buff -> reverse )
-      buff -> bump( current_stacks, current_value );
-    else
-      buff -> decrement( current_stacks, current_value );
-
+    if ( !( buff -> freeze_stacks() ) )
+    {
+      if ( ! buff -> reverse )
+        buff -> bump( current_stacks, current_value );
+      else
+        buff -> decrement( current_stacks, current_value );
+    }
     timespan_t period = buff -> tick_time();
     if ( buff -> remains() >= period || buff -> buff_duration == timespan_t::zero() )
     {
@@ -495,7 +497,7 @@ void buff_t::datacollection_end()
   for ( int i = 0; i <= simulation_max_stack; i++ )
     stack_uptime[ i ].datacollection_end( time );
 
-  double benefit = up_count > 0 ? 100.0 * up_count / ( up_count + down_count ) : 
+  double benefit = up_count > 0 ? 100.0 * up_count / ( up_count + down_count ) :
     time != timespan_t::zero() ? 100 * iteration_uptime_sum / time : 0;
   benefit_pct.add( benefit );
 
@@ -1034,7 +1036,7 @@ void buff_t::refresh( int        stacks,
       event_t::cancel( expiration.front() );
       expiration.erase( expiration.begin() );
     }
-    // Infinite ticking buff refreshes shouldnt happen, but cancel ongoing 
+    // Infinite ticking buff refreshes shouldnt happen, but cancel ongoing
     // tick event just to be sure.
     event_t::cancel( tick_event );
   }
@@ -1468,7 +1470,7 @@ static buff_t* find_potion_buff( const std::vector<buff_t*>& buffs, player_t* so
 {
   for (auto b : buffs)
   {
-    
+
     player_t* p = b -> player;
     if ( b -> data().id() == 0 )
     {
