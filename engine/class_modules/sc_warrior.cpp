@@ -904,7 +904,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
       {
         residual_action::trigger(
           p() -> active.corrupted_blood_of_zakajz, // ignite spell
-          target, // target
+          s -> target, // target
           s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
       }
     }
