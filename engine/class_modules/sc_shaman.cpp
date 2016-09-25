@@ -6118,18 +6118,14 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   // If doom winds is not up, block all off-hand weapon attacks
   if ( ! buff.doom_winds -> check() && attack -> weapon -> slot != SLOT_MAIN_HAND )
     return;
-  // If doom winds is up, block all off-hand special weapon attacks .. except since it bugs, let all
-  // off-attacks through
-  else if ( buff.doom_winds -> check() && attack -> weapon -> slot != SLOT_MAIN_HAND &&
-           ! bugs && attack -> special )
+  // If doom winds is up, block all off-hand special weapon attacks
+  else if ( buff.doom_winds -> check() && attack -> weapon -> slot != SLOT_MAIN_HAND && attack -> special )
     return;
 
   double proc_chance = spec.windfury -> proc_chance();
   proc_chance += cache.mastery() * mastery.enhanced_elements -> effectN( 4 ).mastery_value();
-  // Only autoattacks are guaranteed windfury procs during doom winds, except not really, since
-  // off-hand specials are guaranteed too in game.
-  if ( buff.doom_winds -> up() && ( ( attack -> weapon -> slot == SLOT_MAIN_HAND && ! attack -> special ) ||
-       ( attack -> weapon -> slot == SLOT_OFF_HAND && ( bugs || ! attack -> special ) ) ) )
+  // Only autoattacks are guaranteed windfury procs during doom winds
+  if ( buff.doom_winds -> up() && ! attack -> special )
   {
     proc_chance = 1.0;
   }
@@ -7870,6 +7866,12 @@ struct shaman_module_t : public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )
       .verification_value( 1.8 );
+
+    hotfix::register_spell( "Shaman", "2016-09-23", "Windfury activation chance increased to 20%.", 33757 )
+      .field( "proc_chance" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20 )
+      .verification_value( 10 );
   }
 
   void combat_begin( sim_t* ) const override {}
