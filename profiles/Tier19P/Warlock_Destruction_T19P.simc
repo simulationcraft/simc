@@ -28,9 +28,11 @@ actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 actions.precombat+=/chaos_bolt
 
 # Executed every time the actor is available.
-actions=havoc,,target=2,if=active_enemies>1&active_enemies<6&!debuff.havoc.remains
+actions=havoc,target=2,if=active_enemies>1&active_enemies<6&!debuff.havoc.remains
+actions+=/havoc,target=2,if=active_enemies>1&!talent.wreak_havoc.enabled&talent.roaring_blaze.enabled&!debuff.roaring_blaze.remains
 actions+=/dimensional_rift,if=charges=3
 actions+=/immolate,if=remains<=tick_time
+actions+=/immolate,cycle_targets=1,if=active_enemies>1&remains<=tick_time&!debuff.roaring_blaze.remains&action.conflagrate.charges<2
 actions+=/immolate,if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)
 actions+=/berserking
 actions+=/blood_fury
@@ -53,6 +55,8 @@ actions+=/chaos_bolt,if=soul_shard>3|buff.backdraft.remains
 actions+=/chaos_bolt,if=buff.backdraft.remains&prev_gcd.incinerate
 actions+=/incinerate,if=buff.backdraft.remains
 actions+=/havoc,if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains
+actions+=/rain_of_fire,if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled
+actions+=/rain_of_fire,if=active_enemies>=6&talent.wreak_havoc.enabled
 actions+=/dimensional_rift
 actions+=/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3
 actions+=/chaos_bolt

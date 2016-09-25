@@ -41,7 +41,7 @@ actions+=/ice_lance,if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>
 actions+=/frozen_orb
 actions+=/ice_nova
 actions+=/comet_storm
-actions+=/blizzard,if=talent.arctic_gale.enabled|active_enemies>3|buff.zannesu_journey.stack>4|(buff.zannesu_journey.remains>cast_time+1&buff.zannesu_journey.react)
+actions+=/blizzard
 actions+=/ebonbolt,if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)
 actions+=/frostbolt
 

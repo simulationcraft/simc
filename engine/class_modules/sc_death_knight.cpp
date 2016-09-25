@@ -8097,7 +8097,7 @@ struct death_knight_module_t : public module_t {
     hotfix::register_effect( "Death Knight", "2016-09-23", "Breath of Sindragosa (Talent) damage increased by 17%.", 215545 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.11 )
+      .modifier( 1.17 )
       .verification_value( 1.5 );
   }
 

@@ -69,6 +69,7 @@ actions.conserve+=/frost_nova,if=equipped.132452
 actions.conserve+=/arcane_explosion,if=mana.pct>=82&equipped.132451&active_enemies>1
 actions.conserve+=/arcane_blast,if=mana.pct>=82&equipped.132451
 actions.conserve+=/arcane_barrage,if=mana.pct<100&cooldown.arcane_power.remains>5
+actions.conserve+=/arcane_explosion,if=active_enemies>1
 actions.conserve+=/arcane_blast
 
 actions.cooldowns=rune_of_power,if=mana.pct>45&buff.arcane_power.down
