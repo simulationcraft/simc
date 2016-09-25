@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d80465b)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -3055,7 +3055,7 @@ Effects          :
 #1 (id=267535)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=267536)   : Weapon Damage% (31)
-                   Base Value: 352 | Scaled Value: 4 | Points Per Level: 12 | Target: Enemy(6)
+                   Base Value: 397 | Scaled Value: 4.45 | Points Per Level: 12 | Target: Enemy(6)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 Description      : Strikes an enemy with the Blade of Justice, dealing $sw2 Physical damage.
@@ -3561,7 +3561,7 @@ Effects          :
 #1 (id=298131)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=298132)   : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 | Target: Enemy(6)
+                   Base Value: 135 | Scaled Value: 1.35 | Target: Enemy(6)
 #3 (id=298133)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 #4 (id=341688)   : Apply Aura (6) | Periodic Damage: holy every 2 seconds (3)
@@ -4527,7 +4527,7 @@ Effects          :
 #1 (id=322914)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=322915)   : Weapon Damage% (31)
-                   Base Value: 285 | Scaled Value: 2.85 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 322 | Scaled Value: 3.22 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=322916)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
 #4 (id=322917)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
@@ -4715,7 +4715,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=335563)   : Weapon Damage% (31)
-                   Base Value: 180 | Scaled Value: 1.8 | Target: Enemy(6)
+                   Base Value: 216 | Scaled Value: 2.16 | Target: Enemy(6)
 #2 (id=335564)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc53385
@@ -4734,7 +4734,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=335615)   : Weapon Damage% (31)
-                   Base Value: 290 | Scaled Value: 4 | Points Per Level: 11 | Target: Enemy(6)
+                   Base Value: 319 | Scaled Value: 4.29 | Points Per Level: 11 | Target: Enemy(6)
 #2 (id=335616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=335617)   : Dummy (3)
