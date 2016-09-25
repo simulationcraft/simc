@@ -1857,7 +1857,7 @@ Effects          :
 #1 (id=101983)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=101984)   : Weapon Damage% (31)
-                   Base Value: 118 | Scaled Value: 1.46 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 123 | Scaled Value: 1.51 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc85288
 
 Name             : Commanding Shout (id=97462) [Spell Family (4)] 
@@ -3205,7 +3205,7 @@ Effects          :
 #1 (id=267761)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267762)   : Weapon Damage% (31)
-                   Base Value: 95 | Scaled Value: 0.95 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 106 | Scaled Value: 1.06 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
@@ -3564,7 +3564,7 @@ Effects          :
 #1 (id=296642)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296643)   : Weapon Damage% (31)
-                   Base Value: 166 | Scaled Value: 1.66 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 185 | Scaled Value: 1.85 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -3585,7 +3585,7 @@ Effects          :
 #1 (id=296644)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296645)   : Weapon Damage% (31)
-                   Base Value: 285 | Scaled Value: 2.85 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 319 | Scaled Value: 3.19 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
@@ -3958,7 +3958,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=298649)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self(1)
+                   Base Value: -35 | Scaled Value: -35 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Ignore Pain (190456)
 #2 (id=344800)   : Apply Aura (6) | Unknown effect sub type (63)
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 1 | Target: Self(1)
@@ -4894,7 +4894,7 @@ Effects          :
 #1 (id=325560)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=325561)   : Weapon Damage% (31)
-                   Base Value: 47 | Scaled Value: 0.47 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 52 | Scaled Value: 0.52 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Gaze of the Val'kyr (id=218822) [Spell Family (4), Hidden] 

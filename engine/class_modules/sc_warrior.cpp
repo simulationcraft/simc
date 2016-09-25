@@ -6490,7 +6490,7 @@ struct warrior_module_t: public module_t
       .modifier( -35 )
       .verification_value( -50 );
 
-    hotfix::register_effect( "Warrior", "2016-09-23", "Vengeance (Talent) Rage cost reduction reduced to 35%.", 298649 )
+    hotfix::register_effect( "Warrior", "2016-09-23", "Vengeance (Talent) Rage cost reduction reduced to 35%", 298649 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( -35 )
@@ -6508,35 +6508,35 @@ struct warrior_module_t: public module_t
       .modifier( 100 )
       .verification_value( 150 );
 
-    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12%.", 267758 )
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12% - Fifth attack", 267758 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.12 )
-      .verification_value( 47 );
+      .verification_value( 142 );
 
-    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12%.", 267762 )
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12% - Second Atttack", 267762 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.12 )
       .verification_value( 95 );
 
-    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12%.", 296643 )
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12% - Third Attack", 296643 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.12 )
       .verification_value( 166 );
 
-    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12%.", 296645 )
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12% -  Fourth Attack", 296645 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.12 )
       .verification_value( 285 );
 
-    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12%.", 325561 )
+    hotfix::register_effect( "Warrior", "2016-09-23", "Rampage damage increased by 12% - First Attack", 325561 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.12 )
-      .verification_value( 142 );
+      .verification_value( 47 );
 
     hotfix::register_effect( "Warrior", "2016-09-23", "Bloodthirst damage increased by 12%.", 134421 )
       .field( "base_value" )
@@ -6550,7 +6550,7 @@ struct warrior_module_t: public module_t
       .modifier( 1.05 )
       .verification_value( 118 );
 
-    hotfix::register_effect( "Warrior", "2016-09-23", "Raging Blow damage increased by 5%.", 101984 )
+    hotfix::register_effect( "Warrior", "2016-09-23", "Raging Blow damage increased by 5% - Offhand", 101984 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
