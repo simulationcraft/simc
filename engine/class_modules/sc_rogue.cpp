@@ -1477,6 +1477,12 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     aoe = -1;
   }
 
+  // Doesn't take in account player crit chance, only "base crit chance"
+  double composite_crit_chance() const override
+  {
+    return 0.05; //FIXME Hardcoded to 5% until more data, seems to be the base crit.
+  }
+
   double composite_da_multiplier( const action_state_t* ) const override
   {
     double multiplier = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
