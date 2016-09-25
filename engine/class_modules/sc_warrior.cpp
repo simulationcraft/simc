@@ -541,7 +541,7 @@ public:
     buff.enrage -> trigger();
     if ( ceannar_charger )
     {
-      resource_gain( RESOURCE_RAGE, ceannar_charger -> driver() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
+      resource_gain( RESOURCE_RAGE, ceannar_charger -> driver() -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
   }
   template <typename T_CONTAINER, typename T_DATA>
@@ -5912,11 +5912,18 @@ void warrior_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( c == CACHE_MASTERY && mastery.critical_block -> ok() )
+  if ( mastery.critical_block -> ok() )
   {
-    player_t::invalidate_cache( CACHE_BLOCK );
-    player_t::invalidate_cache( CACHE_CRIT_BLOCK );
-    player_t::invalidate_cache( CACHE_ATTACK_POWER );
+    if ( c == CACHE_MASTERY )
+    {
+      player_t::invalidate_cache( CACHE_BLOCK );
+      player_t::invalidate_cache( CACHE_CRIT_BLOCK );
+      player_t::invalidate_cache( CACHE_ATTACK_POWER );
+    }
+    if ( c == CACHE_CRIT_CHANCE )
+    {
+      player_t::invalidate_cache( CACHE_PARRY );
+    }
   }
   if ( c == CACHE_MASTERY && mastery.unshackled_fury -> ok() )
   {
