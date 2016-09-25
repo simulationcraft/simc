@@ -2212,7 +2212,7 @@ struct void_bolt_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( priest.buffs.voidform->remains() <= cooldown->queue_delay() )
+    if ( !( priest.buffs.voidform->check() ) )
       return false;
 
     return priest_spell_t::ready();
@@ -2361,7 +2361,7 @@ struct void_eruption_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( priest.buffs.voidform->remains() <= cooldown->queue_delay() &&
+    if ( !priest.buffs.voidform->check() &&
          ( priest.resources.current[ RESOURCE_INSANITY ] >=
                priest.resources.max[ RESOURCE_INSANITY ] ||
            ( priest.talents.legacy_of_the_void->ok() &&
@@ -3288,7 +3288,7 @@ struct void_torrent_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( priest.buffs.voidform->remains() <= cooldown->queue_delay() )
+    if ( !priest.buffs.voidform->check() )
     {
       return false;
     }
