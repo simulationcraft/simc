@@ -4828,6 +4828,11 @@ public:
 #endif
   }
 
+  ~damage_calc_helper_t()
+  {
+    delete state;
+  }
+
   double total()
   {
     if ( !valid )
