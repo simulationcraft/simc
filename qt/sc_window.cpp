@@ -401,7 +401,7 @@ void SC_MainWindow::createImportTab()
   newBattleNetView = new BattleNetImportWindow( this, true );
   importTab -> addTab( newBattleNetView, tr( "Import" ) );
 
-  battleNetView = new SC_WebView( this );
+  battleNetView = new SC_WebView( this, importTab );
   battleNetView -> setUrl( QUrl( "http://us.battle.net/wow/en" ) );
   battleNetView -> enableMouseNavigation();
   battleNetView -> disableKeyboardNavigation();

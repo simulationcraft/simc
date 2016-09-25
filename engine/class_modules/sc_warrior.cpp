@@ -893,9 +893,20 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   {
     base_t::assess_damage( type, s );
 
-    if ( s -> result_amount > 0 && p() -> buff.bloodbath -> up() )
+    if ( s -> result_amount > 0 )
     {
-      trigger_bloodbath_dot( s -> target, s -> result_amount );
+      if ( p() -> buff.bloodbath -> up() )
+      {
+        trigger_bloodbath_dot( s -> target, s -> result_amount );
+      }
+
+      if ( p() -> buff.corrupted_blood_of_zakajz -> up() )
+      {
+        residual_action::trigger(
+          p() -> active.corrupted_blood_of_zakajz, // ignite spell
+          target, // target
+          s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
+      }
     }
   }
 
@@ -945,13 +956,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
         p() -> buff.overpower -> trigger();
       }
 
-      if ( p() -> buff.corrupted_blood_of_zakajz -> up() )
-      {
-        residual_action::trigger(
-          p() -> active.corrupted_blood_of_zakajz, // ignite spell
-          target, // target
-          s -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
-      }
       if ( p() -> talents.opportunity_strikes -> ok() )
       {
         opportunity_strikes( s );
@@ -962,14 +966,6 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void tick( dot_t* d ) override
   {
     base_t::tick( d );
-
-    if ( p() -> buff.corrupted_blood_of_zakajz -> up() )
-    {
-      residual_action::trigger(
-        p() -> active.corrupted_blood_of_zakajz, // ignite spell
-        target, // target
-        d -> state -> result_amount * p() -> buff.corrupted_blood_of_zakajz -> check_value() );
-    }
   }
 
   virtual double calculate_weapon_damage( double attack_power ) const override
@@ -1000,16 +996,13 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 
 // Bloodbath Dot ============================================================
 
-struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
+struct bloodbath_dot_t: public residual_action::residual_periodic_action_t < warrior_spell_t >
 {
   bloodbath_dot_t( warrior_t* p ):
     base_t( "bloodbath", p, p -> find_spell( 113344 ) )
   {
     dual = true;
   }
-
-  void trigger_bloodbath_dot( player_t*, double ) override // Bloodbath doesn't trigger itself.
-  {}
 };
 
 // Melee Attack =============================================================
@@ -1658,13 +1651,27 @@ struct colossus_smash_t: public warrior_attack_t
 
 // Corrupted Blood of Zakajz ========================================================
 
-struct corrupted_blood_of_zakajz_t : public residual_action::residual_periodic_action_t<warrior_attack_t>
+struct corrupted_blood_of_zakajz_t : public residual_action::residual_periodic_action_t<warrior_spell_t>
 {
+  double composite_target_mult;
   corrupted_blood_of_zakajz_t( warrior_t* p ) :
-    residual_action::residual_periodic_action_t<warrior_attack_t>( "corrupted_blood_of_zakajz", p, p -> find_spell( 209569 ) )
+    residual_action::residual_periodic_action_t<warrior_spell_t>( "corrupted_blood_of_zakajz", p, p -> find_spell( 209569 ) ),
+    composite_target_mult( 1.0 )
   {
     background = dual = proc = true;
     may_miss = may_dodge = may_parry = false;
+  }
+
+  double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
+  {
+    dmg_multiplier *= composite_target_mult;
+    return residual_periodic_action_t::calculate_tick_amount( state, dmg_multiplier );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    residual_periodic_action_t::impact( s );
+    composite_target_mult = warrior_spell_t::composite_target_multiplier( s -> target ); // Yeah, it snapshots colossus smash. 
   }
 };
 
@@ -3281,7 +3288,7 @@ struct slam_t: public warrior_attack_t
 
 // Trauma Dot ============================================================
 
-struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrior_attack_t >
+struct trauma_dot_t: public residual_action::residual_periodic_action_t < warrior_spell_t >
 {
   double crit_chance_of_last_ability;
   trauma_dot_t( warrior_t* p ):
@@ -5220,7 +5227,7 @@ void warrior_t::create_buffs()
 
   buff.corrupted_blood_of_zakajz = buff_creator_t( this, "corrupted_blood_of_zakajz",
     artifact.corrupted_blood_of_zakajz.data().effectN( 1 ).trigger() )
-    .default_value( artifact.corrupted_blood_of_zakajz.percent() )
+    .default_value( artifact.corrupted_blood_of_zakajz.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .chance( artifact.corrupted_blood_of_zakajz.rank() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", talents.defensive_stance )
