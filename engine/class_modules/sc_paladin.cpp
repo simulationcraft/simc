@@ -373,7 +373,7 @@ public:
     last_jol_proc( timespan_t::from_seconds( 0.0 ) ),
     fixed_holy_wrath_health_pct( -1.0 ),
     fake_gbom( true ),
-    fake_sov( false )
+    fake_sov( true )
   {
     last_retribution_trinket_target = nullptr;
     retribution_trinket = nullptr;
@@ -4778,6 +4778,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   def -> add_talent( this, "Holy Wrath" );
   def -> add_action( this, "Avenging Wrath" );
+  def -> add_action( this, "Shield of Vengeance" );
   def -> add_talent( this, "Crusade", "if=holy_power>=5" );
   def -> add_action( this, "Wake of Ashes", "if=holy_power>=0&time<2" );
   def -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.5|debuff.judgment.remains>gcd*4.67)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)" );
