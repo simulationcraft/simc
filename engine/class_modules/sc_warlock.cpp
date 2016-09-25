@@ -4981,9 +4981,11 @@ struct channel_demonfire_t: public warlock_spell_t
   double backdraft_cast_time;
   double backdraft_tick_time;
   channel_demonfire_tick_t* channel_demonfire;
+  int immolate_action_id;
 
   channel_demonfire_t( warlock_t* p ):
-    warlock_spell_t( "channel_demonfire", p, p -> talents.channel_demonfire )
+    warlock_spell_t( "channel_demonfire", p, p -> talents.channel_demonfire ),
+    immolate_action_id( 0 )
   {
     channeled = true;
     hasted_ticks = true;
@@ -5002,6 +5004,7 @@ struct channel_demonfire_t: public warlock_spell_t
     warlock_spell_t::init();
 
     cooldown -> hasted = true;
+    immolate_action_id = p() -> find_action_id( "immolate" );
   }
 
   std::vector< player_t* >& target_list() const override
@@ -5045,6 +5048,16 @@ struct channel_demonfire_t: public warlock_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return s -> action -> tick_time( s ) * 15.0;
+  }
+
+  virtual bool ready() override
+  {
+    double active_immolates = p() -> get_active_dots( immolate_action_id );
+
+    if ( active_immolates == 0 )
+      return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -5111,8 +5124,7 @@ warlock( p )
 
   debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
-  debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) )
-    .refresh_behavior( BUFF_REFRESH_PANDEMIC );
+  debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_eradication = buff_creator_t( *this, "eradication", source -> find_spell( 196414 ) )
