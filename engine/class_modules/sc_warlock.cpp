@@ -668,16 +668,6 @@ public:
             bool procced = p() -> o() -> grimoire_of_synergy_pet -> trigger(); //check for RPPM
             if ( procced ) p() -> o() -> buffs.demonic_synergy -> trigger(); //trigger the buff
         }
-        if( p() -> specialization() == WARLOCK_DEMONOLOGY && p() -> o() -> artifact.stolen_power.rank() )
-        {
-            p()->o()->buffs.stolen_power_stacks->bump(1);
-            //p()->o()->procs.stolen_power_stack;
-            if(p()->o()->buffs.stolen_power_stacks->stack() == 100)
-            {
-                p()->o()->buffs.stolen_power_stacks->reset();
-                p()->o()->buffs.stolen_power->trigger();
-            }
-        }
     }
   }
 
@@ -1169,6 +1159,18 @@ struct fel_firebolt_t: public warlock_pet_spell_t
   {
     return spell_t::ready();
   }
+
+
+  void execute() override
+  {
+    warlock_pet_spell_t::execute();
+
+    if ( p() -> o() -> specialization() == WARLOCK_DEMONOLOGY && p() -> o() -> artifact.stolen_power.rank() )
+    {
+      p() -> o() -> buffs.stolen_power_stacks -> trigger();
+    }
+  }
+
 
   virtual void impact( action_state_t* s ) override
   {
@@ -5704,6 +5706,27 @@ void warlock_t::init_scaling()
   player_t::init_scaling();
 }
 
+struct stolen_power_stack_t : public buff_t
+{
+  stolen_power_stack_t( warlock_t* p ) :
+    buff_t( buff_creator_t( p, "stolen_power_stack", p -> find_spell( 211529 ) ).chance( 1.0 ) )
+  {
+  }
+
+  void execute( int a, double b, timespan_t t ) override
+  {
+    warlock_t* p = debug_cast<warlock_t*>( player );
+
+    buff_t::execute( a, b, t );
+
+    if ( p -> buffs.stolen_power_stacks -> stack() == 100 )
+    {
+      p -> buffs.stolen_power_stacks -> reset();
+      p -> buffs.stolen_power -> trigger();
+    }
+  }
+};
+
 struct t18_4pc_driver_t : public buff_t        //kept to force imps to proc
 {
   timespan_t illidari_satyr_duration;
@@ -5792,7 +5815,7 @@ void warlock_t::create_buffs()
   buffs.demonic_calling = buff_creator_t( this, "demonic_calling", talents.demonic_calling -> effectN( 1 ).trigger() )
     .chance( find_spell( 205145 ) -> proc_chance() );
   buffs.t18_4pc_driver = new t18_4pc_driver_t( this );
-  buffs.stolen_power_stacks = buff_creator_t( this, "stolen_power_stacks", find_spell( 211529 ) );
+  buffs.stolen_power_stacks = new stolen_power_stack_t( this );
   buffs.stolen_power = buff_creator_t( this, "stolen_power", find_spell( 211583 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -6089,14 +6112,15 @@ void warlock_t::apl_destruction()
     }
   }
 
+  add_action( "Havoc", ",target=2,if=active_enemies>1&active_enemies<6&!debuff.havoc.remains" );
   add_action( "Dimensional Rift", "if=charges=3" );
   add_action( "Immolate", "if=remains<=tick_time" );
-  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd))" );
+  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" );
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
   action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)";
-  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd))" );
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd)|target.time_to_die<24)" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&prev_gcd.conflagrate" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=2" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack=3&buff.bloodlust.remains" );
@@ -6112,6 +6136,7 @@ void warlock_t::apl_destruction()
   add_action( "Chaos Bolt", "if=soul_shard>3|buff.backdraft.remains" );
   add_action( "Chaos Bolt", "if=buff.backdraft.remains&prev_gcd.incinerate" );
   add_action( "Incinerate", "if=buff.backdraft.remains" );
+  add_action( "Havoc", "if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains" );
   add_action( "Dimensional Rift" );
   action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3";
   add_action( "Chaos Bolt" );
