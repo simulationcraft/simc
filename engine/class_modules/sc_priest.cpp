@@ -1932,7 +1932,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
         amount_from_surrender_to_madness =
             ( amount * ( 1.0 + priest.talents.surrender_to_madness->effectN( 1 )
-                             .percent() 
+                             .percent()
                              ) ) -
             amount;
 
@@ -3444,8 +3444,8 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
 
     // Hotfixed 2016-09-24 The benefit of Mass Hysteria (Artifact Trait) is now capped at 100%.
-    // Note: We want it to be rewarding when you’re able to maintain Surrender to Madness for 
-    // an extremely long time, but the amount of damage this trait was contributing in those 
+    // Note: We want it to be rewarding when you're able to maintain Surrender to Madness for
+    // an extremely long time, but the amount of damage this trait was contributing in those
     // circumstances was excessive.
 
     if ( priest.artifact.mass_hysteria.rank() )
@@ -3632,8 +3632,8 @@ struct vampiric_touch_t final : public priest_spell_t
     }
 
     // Hotfixed 2016-09-24 The benefit of Mass Hysteria (Artifact Trait) is now capped at 100%.
-    // Note: We want it to be rewarding when you’re able to maintain Surrender to Madness for 
-    // an extremely long time, but the amount of damage this trait was contributing in those 
+    // Note: We want it to be rewarding when you’re able to maintain Surrender to Madness for
+    // an extremely long time, but the amount of damage this trait was contributing in those
     // circumstances was excessive.
 
     if ( priest.artifact.mass_hysteria.rank() )
@@ -5111,6 +5111,22 @@ struct voidform_t final : public priest_buff_t<buff_t>
   {
   }
 
+  bool freeze_stacks( ) override
+  {
+    // Hotfixed 9-24-2016: Voidform stacks no longer increase while Dispersion
+    // and Void Torrent are active.
+    // Note: These abilities prevent Insanity drain from increasing while
+    // active, which effectively reduces the Insanity drain for the entire
+    // remainder the current Voidform. This was proving to be too powerful, so
+    // we're now making sure that the damage bonus and Insanity drain from
+    // Voidform remain in sync.
+    if ( priest.buffs.dispersion->check() )
+      return true;
+    if ( priest.buffs.void_torrent->check() )
+      return true;
+    return false;
+  }
+
   bool trigger( int stacks, double value, double chance,
                 timespan_t duration ) override
   {
@@ -5161,6 +5177,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
     event_t::cancel( insanity_loss );
   }
+
 };
 
 /* Custom surrender_to_madness buff

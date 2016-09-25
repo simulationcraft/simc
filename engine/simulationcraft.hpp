@@ -989,6 +989,14 @@ public:
     return current_stack * check_value();
   }
 
+  /**
+   * Return true if tick should not call bump() or decrement()
+   */
+  virtual bool freeze_stacks()
+  {
+    return false;
+  }
+
   timespan_t remains() const;
   timespan_t elapsed( const timespan_t& t ) const { return t - last_start; }
   bool   remains_gt( timespan_t time ) const;
