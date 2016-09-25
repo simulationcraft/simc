@@ -5,8 +5,8 @@
 
 // TODO + BlizzardFeatures + Bugs
 // Subtlety
-// - Second Shuriken [artifact power]
-// - Does Weaponmaster attempt to proc per target or per cast?
+// - Does Weaponmaster attempt to proc per target or per cast? Seems to be per target
+// - Dreadlord's Deceit doesn't work on weaponmastered Shuriken Storm (Blizzard Bug ?)
 //
 // Assassination
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
@@ -1284,11 +1284,23 @@ struct weaponmaster_strike_t : public rogue_attack_t
 struct second_shuriken_t : public rogue_attack_t
 {
   second_shuriken_t( rogue_t* p ) :
-    rogue_attack_t( "second_shuriken", p, p -> find_spell( 197610 ) )
+    rogue_attack_t( "second_shuriken", p, p -> find_spell( 197611 ) )
   {
     background = true;
-    callbacks = may_miss = may_dodge = may_parry = false;
     may_crit = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // Stealth Buff
+    if ( p() -> buffs.stealth -> up() || p() -> buffs.shadow_dance -> up() || p() -> buffs.vanish -> up() )
+    {
+      m *= 1.0 + 2.0; //FIXME Hotfix 09-24: Hardcoded to 200% until they add it in Spell Data like Shuriken Storm.
+    }
+
+    return m;
   }
 };
 
@@ -8082,7 +8094,7 @@ struct rogue_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 1.08108 )
       .verification_value( 0.83160 );
-    hotfix::register_spell( "Rogue", "2016-09-24", "Bag of Tricks (Artifact Trait) duration reduced to 3 seconds (overall damage unchanged)", 192661 )
+    hotfix::register_spell( "Rogue", "2016-09-24", "Bag of Tricks (Artifact Trait) duration reduced to 3 seconds (overall damage unchanged).", 192661 )
       .field( "duration" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 3000 )
@@ -8102,6 +8114,16 @@ struct rogue_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.72072 )
       .verification_value( 0.55440 );
+    hotfix::register_spell( "Rogue", "2016-09-24", "Second Shuriken (Artifact Trait) chance to activate increased to 30% (was 10%)", 197610 )
+      .field( "proc_chance" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 30 )
+      .verification_value( 10 );
+    hotfix::register_effect( "Rogue", "2016-09-24", "Second Shuriken (Artifact Trait) damage increased by 30%", 290347 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.3432 )
+      .verification_value( 0.26400 );
     /*
     hotfix::register_effect( "Rogue", "2016-08-23", "Envenom damage has been increased to 60% Attack Power per point (was 50%).", 22420 )
       .field( "ap_coefficient" )
