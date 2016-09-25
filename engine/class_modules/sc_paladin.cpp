@@ -3493,6 +3493,7 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
     trigger_gcd = timespan_t::zero();
     id = 184689;
 
+    split_aoe_damage = true;
     may_crit = true;
     aoe = -1;
   }
