@@ -30,7 +30,7 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
   }
 }
 
-#if 1
+#if 0
 namespace
 {
 std::ofstream debugStream("debug.log");
@@ -44,7 +44,7 @@ void messageOutput(QtMsgType /* type */, const QMessageLogContext& context, cons
 
 int main( int argc, char *argv[] )
 {
-#if 1
+#if 0
   qInstallMessageHandler(messageOutput);
 #endif
 
@@ -64,8 +64,6 @@ int main( int argc, char *argv[] )
   unique_gear::sort_special_effects();
 
   hotfix::apply();
-
-  QCoreApplication::setAttribute( Qt::AA_UseOpenGLES );
 
   QApplication a( argc, argv );
 
