@@ -6617,7 +6617,7 @@ void shaman_t::init_action_list_enhancement()
                            ( true_level >= 85  ) ? "spring_blossoms" :
                            ( true_level >= 80  ) ? "winds" :
                            "";
-  std::string food_name = ( true_level >  100 ) ? "azshari_salad" :
+  std::string food_name = ( true_level >  100 ) ? "nightborne_delicacy_platter" :
                           ( true_level >  90  ) ? "buttered_sturgeon" :
                           ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80  ) ? "seafood_magnifique_feast" :
