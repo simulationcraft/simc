@@ -2529,7 +2529,7 @@ bool sim_t::iterate()
       {
         if ( ! parent )
         {
-          progress_bar.update( true );
+          progress_bar.update( true, old_active );
           progress_bar.restart();
           util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
           fflush( stdout );
@@ -3311,9 +3311,9 @@ void sim_t::setup( sim_control_t* c )
 
 // sim_t::progress ==========================================================
 
-sim_t::sim_progress_t sim_t::progress( std::string* detailed )
+sim_t::sim_progress_t sim_t::progress( std::string* detailed, ssize_t index )
 {
-  auto progress = work_queue -> progress();
+  auto progress = work_queue -> progress( index );
 
   if ( deterministic )
   {
@@ -3334,7 +3334,7 @@ sim_t::sim_progress_t sim_t::progress( std::string* detailed )
   return progress;
 }
 
-double sim_t::progress( std::string& phase, std::string* detailed )
+double sim_t::progress( std::string& phase, std::string* detailed, ssize_t index )
 {
   if ( canceled )
   {
@@ -3360,7 +3360,7 @@ double sim_t::progress( std::string& phase, std::string* detailed )
   else if ( current_iteration >= 0 )
   {
     phase = "Simulating";
-    return progress(detailed ).pct();
+    return progress( detailed, index ).pct();
   }
   else if ( current_slot >= 0 )
   {

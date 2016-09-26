@@ -1438,7 +1438,7 @@ struct progress_bar_t
 
   progress_bar_t( sim_t& s );
   void init();
-  bool update( bool finished = false );
+  bool update( bool finished = false, ssize_t index = -1 );
   void restart();
 };
 
@@ -1895,16 +1895,21 @@ struct sim_t : private sc_thread_t
 
     // Standard progress method, normal mode sims use the single (first) index, single actor batch
     // sims progress with the main thread's current index.
-    sim_progress_t progress()
+    sim_progress_t progress( ssize_t idx = -1 )
     {
       AUTO_LOCK(m);
+      size_t current_index = idx;
+      if ( idx < 0 )
+      {
+        current_index = index;
+      }
 
-      if ( index >= _total_work.size() )
+      if ( current_index >= _total_work.size() )
       {
         return sim_progress_t{ _work.back(), _projected_work.back() };
       }
 
-      return sim_progress_t{ _work[ index ], _projected_work[ index ] };
+      return sim_progress_t{ _work[ current_index ], _projected_work[ current_index ] };
     }
   };
   std::shared_ptr<work_queue_t> work_queue;
@@ -1954,8 +1959,8 @@ struct sim_t : private sc_thread_t
   void      interrupt();
   void      add_relative( sim_t* cousin );
   void      remove_relative( sim_t* cousin );
-  sim_progress_t progress(std::string* phase = nullptr );
-  double    progress( std::string& phase, std::string* detailed = nullptr );
+  sim_progress_t progress(std::string* phase = nullptr, ssize_t index = -1 );
+  double    progress( std::string& phase, std::string* detailed = nullptr, ssize_t index = -1 );
   void      detailed_progress( std::string*, int current_iterations, int total_iterations );
   void      datacollection_begin();
   void      datacollection_end();
