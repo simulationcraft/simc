@@ -8,5 +8,5 @@ cd ..
 set currdir=%cd%
 call C:\Qt\Qt5.6.0\5.6\msvc2015_64\bin\qtenv2.bat
 call "%VS140COMNTOOLS:~0,-14%VC\vcvarsall.bat" x64
-cd %currdir%
+cd /D %currdir%
 qmake -r -tp vc -spec win32-msvc2015 simulationcraft.pro
