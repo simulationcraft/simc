@@ -601,7 +601,7 @@ public:
   {
     ab::may_crit = true;
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
-    tactician_per_rage *= 1.0 + ( player -> artifact.exploit_the_weakness.percent() * 0.3 ); //FIXME
+    tactician_per_rage *= 1.0 + ( player -> artifact.exploit_the_weakness.percent() );
     arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent();
   }
 
