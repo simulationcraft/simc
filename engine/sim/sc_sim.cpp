@@ -3311,7 +3311,7 @@ void sim_t::setup( sim_control_t* c )
 
 // sim_t::progress ==========================================================
 
-sim_t::sim_progress_t sim_t::progress( std::string* detailed, ssize_t index )
+sim_t::sim_progress_t sim_t::progress( std::string* detailed, int index )
 {
   auto progress = work_queue -> progress( index );
 
@@ -3334,7 +3334,7 @@ sim_t::sim_progress_t sim_t::progress( std::string* detailed, ssize_t index )
   return progress;
 }
 
-double sim_t::progress( std::string& phase, std::string* detailed, ssize_t index )
+double sim_t::progress( std::string& phase, std::string* detailed, int index )
 {
   if ( canceled )
   {
