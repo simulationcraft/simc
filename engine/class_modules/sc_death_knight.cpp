@@ -4886,7 +4886,7 @@ struct outbreak_driver_t : public death_knight_spell_t
   outbreak_spreader_t* spread;
 
   outbreak_driver_t( death_knight_t* p ) :
-    death_knight_spell_t( "outbreak_driver", p, p -> find_spell( 196782 ) ),
+    death_knight_spell_t( "outbreak_driver", p, p -> dbc.spell( 196782 ) ),
     spread( new outbreak_spreader_t( p ) )
   {
     quiet = background = tick_zero = dual = true;
