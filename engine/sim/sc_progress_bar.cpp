@@ -27,6 +27,9 @@ void progress_bar_t::init()
   }
 }
 
+void progress_bar_t::restart()
+{ start_time = util::wall_time(); }
+
 bool progress_bar_t::update( bool finished )
 {
   if ( sim.thread_index != 0 )

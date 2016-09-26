@@ -2530,6 +2530,7 @@ bool sim_t::iterate()
         if ( ! parent )
         {
           progress_bar.update( true );
+          progress_bar.restart();
           util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
           fflush( stdout );
           sim_phase_str = "Generating " + player_no_pet_list[ current_index ] -> name_str;
