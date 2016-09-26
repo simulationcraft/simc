@@ -16,7 +16,7 @@ spec=enhancement
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=seventh_demon
 actions.precombat+=/augmentation,type=defiled
-actions.precombat+=/food,name=azshari_salad
+actions.precombat+=/food,name=nightborne_delicacy_platter
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=old_war
