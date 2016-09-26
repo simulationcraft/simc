@@ -83,7 +83,7 @@ actions.two_targets+=/whirlwind
 
 head=nightsfall_helmet,id=139058,bonus_id=1727
 neck=chain_of_scorched_bones,id=134529,bonus_id=1727,enchant=mark_of_the_hidden_satyr
-shoulders=frozen_oendulum_shoulderguards,id=134518,bonus_id=1727
+shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
 back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727
 wrists=greystone_wristplates,id=139100,bonus_id=1727
