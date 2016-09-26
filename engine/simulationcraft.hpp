@@ -1438,7 +1438,7 @@ struct progress_bar_t
 
   progress_bar_t( sim_t& s );
   void init();
-  bool update( bool finished = false, ssize_t index = -1 );
+  bool update( bool finished = false, int index = -1 );
   void restart();
 };
 
@@ -1895,7 +1895,7 @@ struct sim_t : private sc_thread_t
 
     // Standard progress method, normal mode sims use the single (first) index, single actor batch
     // sims progress with the main thread's current index.
-    sim_progress_t progress( ssize_t idx = -1 )
+    sim_progress_t progress( int idx = -1 )
     {
       AUTO_LOCK(m);
       size_t current_index = idx;

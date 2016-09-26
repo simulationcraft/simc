@@ -30,7 +30,7 @@ void progress_bar_t::init()
 void progress_bar_t::restart()
 { start_time = util::wall_time(); }
 
-bool progress_bar_t::update( bool finished, ssize_t index )
+bool progress_bar_t::update( bool finished, int index )
 {
   if ( sim.thread_index != 0 )
     return false;
