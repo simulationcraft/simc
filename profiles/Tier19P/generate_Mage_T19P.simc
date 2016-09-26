@@ -44,7 +44,7 @@ feet=paranoid_sprinters,id=137319,bonus_id=1727
 finger1=,id=134525,bonus_id=1727,enchant=binding_of_critical_strike
 finger2=,id=134528,bonus_id=1727,enchant=binding_of_critical_strike
 trinket1=Naraxas_Spiked_Tongue,id=137349,bonus_id=1727
-trinket2=Portable_Manacracker,id=137398,bonus_id=1727
+trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
 main_hand=felomelorn,id=128820,gem_id=137470/137420/133022,relic_id=3412/3412/3412
 off_hand=heart_of_the_phoenix,id=133959
 save=Mage_Fire_T19P.simc
