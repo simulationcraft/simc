@@ -8329,8 +8329,8 @@ void monk_t::apl_combat_windwalker()
   st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>=2.25" );
   st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>=2.25" );
   st -> add_action( this, "Tiger Palm", "cycle_targets=1,if=!prev_gcd.tiger_palm" );
-  st -> add_action( this, "Crackling Jade Lightnight", "interrupt=1,if=talent.rushing_jade_wind.enabled&chi.max-chi=1&prev_gcd.blackout_kick&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1&cooldown.strike_of_the_windlord.remains>1&cooldown.rushing_jade_wind.remains>1" );
-  st -> add_action( this, "Crackling Jade Lightnight", "interrupt=1,if=!talent.rushing_jade_wind.enabled&chi.max-chi=1&prev_gcd.blackout_kick&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1&cooldown.strike_of_the_windlord.remains>1" );
+  st -> add_action( this, "Crackling Jade Lightning", "interrupt=1,if=talent.rushing_jade_wind.enabled&chi.max-chi=1&prev_gcd.blackout_kick&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1&cooldown.strike_of_the_windlord.remains>1&cooldown.rushing_jade_wind.remains>1" );
+  st -> add_action( this, "Crackling Jade Lightning", "interrupt=1,if=!talent.rushing_jade_wind.enabled&chi.max-chi=1&prev_gcd.blackout_kick&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1&cooldown.strike_of_the_windlord.remains>1" );
 }
 
 // Mistweaver Combat Action Priority List ==================================

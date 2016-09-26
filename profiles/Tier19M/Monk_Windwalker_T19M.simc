@@ -68,6 +68,8 @@ actions.st+=/blackout_kick,cycle_targets=1,if=(chi.max-chi>1|buff.bok_proc.up)&!
 actions.st+=/chi_wave,if=energy.time_to_max>=2.25
 actions.st+=/chi_burst,if=energy.time_to_max>=2.25
 actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.tiger_palm
+actions.st+=/crackling_jade_lightning,interrupt=1,if=talent.rushing_jade_wind.enabled&chi.max-chi=1&prev_gcd.blackout_kick&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1&cooldown.strike_of_the_windlord.remains>1&cooldown.rushing_jade_wind.remains>1
+actions.st+=/crackling_jade_lightning,interrupt=1,if=!talent.rushing_jade_wind.enabled&chi.max-chi=1&prev_gcd.blackout_kick&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1&cooldown.strike_of_the_windlord.remains>1
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_trained_soldier
