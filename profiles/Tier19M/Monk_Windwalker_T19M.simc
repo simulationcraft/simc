@@ -64,7 +64,7 @@ actions.st+=/rising_sun_kick,cycle_targets=1
 actions.st+=/whirling_dragon_punch
 actions.st+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.spinning_crane_kick
 actions.st+=/rushing_jade_wind,if=chi.max-chi>1&!prev_gcd.rushing_jade_wind
-actions.st+=/blackout_kick,cycle_targets=1,if=(chi.max-chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick
+actions.st+=/blackout_kick,cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd.blackout_kick
 actions.st+=/chi_wave,if=energy.time_to_max>=2.25
 actions.st+=/chi_burst,if=energy.time_to_max>=2.25
 actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.tiger_palm
