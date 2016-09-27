@@ -6680,8 +6680,6 @@ void priest_t::apl_shadow()
   vf->add_action("shadow_crash,if=talent.shadow_crash.enabled");
   vf->add_action("mindbender,if=talent.mindbender.enabled&!talent.surrender_to_madness.enabled");
   vf->add_action("mindbender,if=talent.mindbender.enabled&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+30");
-  vf->add_action("dispersion,if=!buff.power_infusion.up&!buff.berserking.up&!buff.bloodlust.up&artifact.void_torrent.rank&!talent.surrender_to_madness.enabled");
-  vf->add_action("dispersion,if=!buff.power_infusion.up&!buff.berserking.up&!buff.bloodlust.up&artifact.void_torrent.rank&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+(120-10*artifact.from_the_shadows.rank)");
   vf->add_action("power_infusion,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<=30&!talent.surrender_to_madness.enabled");
   vf->add_action("power_infusion,if=buff.voidform.stack>=10&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+15");
   vf->add_action("berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<=20&!talent.surrender_to_madness.enabled");

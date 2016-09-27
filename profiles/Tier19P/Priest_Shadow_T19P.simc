@@ -3,7 +3,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=1001231
+talents=1001232
 artifact=47:142063:142057:142063:0:764:1:767:4:768:1:770:1:771:3:772:3:774:3:775:3:777:3:1347:1
 spec=shadow
 
@@ -89,8 +89,6 @@ actions.vf=surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>
 actions.vf+=/shadow_crash,if=talent.shadow_crash.enabled
 actions.vf+=/mindbender,if=talent.mindbender.enabled&!talent.surrender_to_madness.enabled
 actions.vf+=/mindbender,if=talent.mindbender.enabled&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+30
-actions.vf+=/dispersion,if=!buff.power_infusion.up&!buff.berserking.up&!buff.bloodlust.up&artifact.void_torrent.rank&!talent.surrender_to_madness.enabled
-actions.vf+=/dispersion,if=!buff.power_infusion.up&!buff.berserking.up&!buff.bloodlust.up&artifact.void_torrent.rank&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+(120-10*artifact.from_the_shadows.rank)
 actions.vf+=/power_infusion,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<=30&!talent.surrender_to_madness.enabled
 actions.vf+=/power_infusion,if=buff.voidform.stack>=10&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+15
 actions.vf+=/berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<=20&!talent.surrender_to_madness.enabled
