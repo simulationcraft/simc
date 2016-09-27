@@ -1365,7 +1365,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   _rng(), seed( 0 ), deterministic( false ),
   average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
-  fight_style( "Patchwerk" ), overrides( overrides_t() ),
+  fight_style( "Patchwerk" ), add_waves( 0 ), overrides( overrides_t() ),
   default_aura_delay( timespan_t::from_millis( 30 ) ),
   default_aura_delay_stddev( timespan_t::from_millis( 5 ) ),
   progress_bar( *this ),

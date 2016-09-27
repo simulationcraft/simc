@@ -1748,6 +1748,7 @@ struct sim_t : private sc_thread_t
   std::vector<std::unique_ptr<raid_event_t>> raid_events;
   std::string raid_events_str;
   std::string fight_style;
+  size_t add_waves;
 
   // Buffs and Debuffs Overrides
   struct overrides_t
