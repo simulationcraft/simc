@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3327,8 +3327,9 @@ Effects          :
                    Base Value: -12 | Scaled Value: -12
                    Affected Spells: Tiger Palm (100780)
 #12 (id=260833)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -20 | Scaled Value: -20
+                   Base Value: -40 | Scaled Value: -40
                    Affected Spells: Spinning Crane Kick (107270)
+                   Hotfixed: Base Value (-20 -> -40)
 #13 (id=260834)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 900 | Scaled Value: 900 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Crackling Jade Lightning (117952)
@@ -4001,6 +4002,7 @@ Description      : Effuse, Enveloping Mist, Vivify, and Life Cocoon also trigger
 After casting these spells, you continue to channel healing mists into the target, healing them for $115175s1 every $115175t1 sec, until you take any other action.
 
 Name             : Elusive Brawler (id=195630) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Level      : 80
@@ -4012,7 +4014,7 @@ Proc Flags       : ...x.x.. ........ ........ ........
 Affecting spells : Mastery: Elusive Brawler (117906)
 Triggered by     : Mastery: Elusive Brawler (117906)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 

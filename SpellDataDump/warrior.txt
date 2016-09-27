@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -453,7 +453,8 @@ Effects          :
 #1 (id=1900)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 463 | Scaled Value: 4.63 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 486 | Scaled Value: 4.86 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (441 -> 463)
 Description      : Attempt to finish off a wounded foe, causing ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
@@ -843,7 +844,8 @@ Effects          :
 #1 (id=14120)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=134421)   : Weapon Damage% (31)
-                   Base Value: 153 | Scaled Value: 2.33 | Points Per Level: 8 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 171 | Scaled Value: 2.61 | Points Per Level: 9 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (137 -> 153), Points per Level (8 -> 9)
 #3 (id=156242)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
 #4 (id=226744)   : Dummy (3)
@@ -900,6 +902,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Enemy(6)
 #3 (id=290322)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
+                   Hotfixed: Base Value (150 -> 100)
 Description      : Slams the target with your shield, causing $s1 Physical damage.
 
 |cFFFFFFFFGenerates $/10;s3 Rage.|r
@@ -1713,7 +1716,8 @@ Effects          :
 #1 (id=86555)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=86556)    : Weapon Damage% (31)
-                   Base Value: 123 | Scaled Value: 1.51 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 131 | Scaled Value: 1.59 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (118 -> 125)
 Description      : $@spelldesc85288
 
 Name             : Meat Cleaver (id=85739) [Spell Family (4)] 
@@ -1857,7 +1861,8 @@ Effects          :
 #1 (id=101983)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=101984)   : Weapon Damage% (31)
-                   Base Value: 123 | Scaled Value: 1.51 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 131 | Scaled Value: 1.59 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (118 -> 125)
 Description      : $@spelldesc85288
 
 Name             : Commanding Shout (id=97462) [Spell Family (4)] 
@@ -1918,7 +1923,8 @@ Effects          :
 #2 (id=107865)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=107866)   : Weapon Damage% (31)
-                   Base Value: 179 | Scaled Value: 2.79 | Points Per Level: 10 | Target: Enemy(6)
+                   Base Value: 193 | Scaled Value: 2.93 | Points Per Level: 10 | Target: Enemy(6)
+                   Hotfixed: Base Value (171 -> 184)
 #4 (id=313843)   : Trigger Spell: Taste for Blood (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 206333 | Target: Self(1)
 Description      : Aggressively strike with your off-hand weapon for $sw3 Physical damage. Increases your Bloodthirst critical strike chance by $206333s1% until it next deals a critical strike, stacking up to $206333u times.
@@ -3018,7 +3024,8 @@ Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 463 | Scaled Value: 4.63 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 486 | Scaled Value: 4.86 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (441 -> 463)
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
@@ -3183,7 +3190,8 @@ Effects          :
 #1 (id=267757)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267758)   : Weapon Damage% (31)
-                   Base Value: 159 | Scaled Value: 1.59 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 178 | Scaled Value: 1.78 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (142 -> 159)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=184709) [Spell Family (4)] 
@@ -3205,7 +3213,8 @@ Effects          :
 #1 (id=267761)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267762)   : Weapon Damage% (31)
-                   Base Value: 106 | Scaled Value: 1.06 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 118 | Scaled Value: 1.18 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (95 -> 106)
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
@@ -3226,7 +3235,8 @@ Effects          :
 #1 (id=267878)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=294133)   : Apply Aura (6) | Proc Trigger Spell: Tactician (42)
-                   Base Value: 65 | Scaled Value: 65 | Trigger Spell: 199854 | Target: Self(1)
+                   Base Value: 75 | Scaled Value: 75 | Trigger Spell: 199854 | Target: Self(1)
+                   Hotfixed: Base Value (65 -> 75)
 Description      : You have a ${$m2/100}.2% chance per Rage spent to reset the remaining cooldown on Colossus Smash and Mortal Strike.
 
 Name             : Reflective Plating (id=188672) [Spell Family (4), Passive] 
@@ -3367,6 +3377,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Unknown(25)
 #2 (id=291445)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
+                   Hotfixed: Base Value (200 -> 100)
 Description      : Run at high speed toward an ally or enemy.
 
 When targeting an enemy, Intercept will root for $105771d, but has a minimum range of $s1 yds.
@@ -3564,7 +3575,8 @@ Effects          :
 #1 (id=296642)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296643)   : Weapon Damage% (31)
-                   Base Value: 185 | Scaled Value: 1.85 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 208 | Scaled Value: 2.08 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (166 -> 186)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -3585,7 +3597,8 @@ Effects          :
 #1 (id=296644)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296645)   : Weapon Damage% (31)
-                   Base Value: 319 | Scaled Value: 3.19 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 357 | Scaled Value: 3.57 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (285 -> 319)
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
@@ -3939,6 +3952,7 @@ Effects          :
 #1 (id=298648)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Focused Rage (204488), Focused Rage (207982)
+                   Hotfixed: Base Value (-50 -> -35)
 Description      : $@spelldesc202572
 Tooltip          : Rage cost of Focused Rage reduced by $s1%.
 
@@ -3960,6 +3974,7 @@ Effects          :
 #1 (id=298649)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Ignore Pain (190456)
+                   Hotfixed: Base Value (-50 -> -35)
 #2 (id=344800)   : Apply Aura (6) | Unknown effect sub type (63)
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Ignore Pain (190456)
@@ -4452,7 +4467,7 @@ Effects          :
 #1 (id=307672)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
                    Affected Spells: Mortal Strike (12294)
-                   Hotfixed: Base Value (50 -> 40)
+                   Hotfixed: Base Value (50 -> 30)
 #2 (id=307673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Focus your rage on your next Mortal Strike, increasing its damage by $s1%, stacking up to $u times. Unaffected by the global cooldown
@@ -4894,7 +4909,8 @@ Effects          :
 #1 (id=325560)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=325561)   : Weapon Damage% (31)
-                   Base Value: 52 | Scaled Value: 0.52 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 59 | Scaled Value: 0.59 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (47 -> 53)
 Description      : $@spelldesc184367
 
 Name             : Gaze of the Val'kyr (id=218822) [Spell Family (4), Hidden] 

@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -450,7 +450,7 @@ Effects          :
 #1 (id=268504)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 3 | Target: Enemy(6)
 #2 (id=309171)   : Weapon Damage% (31)
-                   Base Value: 343 | Scaled Value: 3.43 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 490 | Scaled Value: 4.9 | Chain Targets: 3 | Target: Enemy(6)
 Description      : Throw a demonic glaive at the target, dealing $sw1 Physical damage. The glaive can ricochet to ${$x1-1} additional enemies within 10 yards.
 
 Name             : Mastery: Demonic Presence (id=185164) [Spell Family (107), Passive] 
@@ -753,6 +753,7 @@ Effects          :
 #2 (id=297759)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
                    Affected Spells: Fel Rush (192611)
+                   Hotfixed: Base Value (50 -> 30)
 Description      : Increases Fel Rush damage by $s2%, and grants $s1 Fury when Fel Rush damages at least one target.
 
 Name             : Demon Reborn (id=193897) [Spell Family (107), Passive] 
@@ -1199,7 +1200,8 @@ Effects          :
 #1 (id=297082)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=297083)   : Weapon Damage% (31)
-                   Base Value: 112 | Scaled Value: 1.12 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 89 | Scaled Value: 0.89 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Hotfixed: Base Value (140 -> 112)
 Description      : $@spelldesc201467
 
 Name             : Fury of the Illidari (id=201789) [Spell Family (107)] 
@@ -1219,7 +1221,8 @@ Effects          :
 #1 (id=297377)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=297378)   : Weapon Damage% (31)
-                   Base Value: 112 | Scaled Value: 1.12 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 89 | Scaled Value: 0.89 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Hotfixed: Base Value (140 -> 112)
 Description      : $@spelldesc201467
 
 Name             : Sigil of Silence (id=202137) [Spell Family (107)] 
@@ -1546,12 +1549,12 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=300566)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Self(1)
-                   Hotfixed: Sub Type (107 -> 4), SP Coefficient (-1.5 -> 1.5), Misc Value (12 -> 0), Affects Spells
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Target: Self(1)
+                   Hotfixed: Sub Type (107 -> 4), SP Coefficient (-1.5 -> 0.75), Misc Value (12 -> 0), Affects Spells
 #2 (id=300914)   : Apply Aura (6) | Unknown effect sub type (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self(1)
 #3 (id=350459)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -1.50000 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: -0.75000 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Demon Spikes (203819)
                    Hotfixed: NEW EFFECT
 Description      : Demon Spikes reduces Physical damage taken by an additional ${$S1}.2%.
@@ -1708,7 +1711,8 @@ Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 #2 (id=300915)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x1 | Target: Self(1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 0x1 | Target: Self(1)
+                   Hotfixed: Base Value (-10 -> -20)
 #3 (id=341634)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self(1)
 Description      : $@spelldesc203720
@@ -2026,7 +2030,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=305358)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self(1)
+                   Base Value: 150 | Scaled Value: 150 | Target: Self(1)
+                   Hotfixed: Base Value (200 -> 150)
 Description      : Throw Glaive causes targets to bleed for $s1% of the damage inflicted over $207690d. If this effect is reapplied, any remaining damage will be added to the new Bloodlet.
 
 Name             : Chaos Cleave (id=206475) [Spell Family (107), Passive] 
@@ -3503,10 +3508,11 @@ Effects          :
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
-Hotfixed         : School (1 -> 126), Proc Chance (10 -> 100), Internal Cooldown (500 -> 0)
+Hotfixed         : School (1 -> 126), Proc Chance (10 -> 100), Internal Cooldown (500 -> 0), RPPM
 Class            : Demon Hunter
 School           : Magic
 Proc Chance      : 100%
+Real PPM         : 6 (Haste multiplier)
 Proc Flags       : ....x... ....x... x.x..... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
