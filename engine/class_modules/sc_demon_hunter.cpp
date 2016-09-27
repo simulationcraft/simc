@@ -157,6 +157,7 @@ public:
   actions::attacks::chaos_blade_t* chaos_blade_off_hand;
 
   unsigned demon_blades_charges;  // # of banked Demon Blades procs
+  double demon_blades_est;
   unsigned shear_counter;         // # of failed Shears since last proc
   double metamorphosis_health;    // Vengeance temp health from meta;
   double expected_max_health;
@@ -2985,17 +2986,28 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
       }
     }
 
+    p() -> demon_blades_est += p() -> talent.demon_blades -> effectN( 1 ).percent();
+
     // Hits not during a GCD can expend up to 2 charges.
     if ( !p() -> in_gcd() )
     {
-      for ( unsigned i = 0; i < p() -> demon_blades_charges && i < 2; i++ )
+      unsigned consumed = std::min( ( unsigned )2, p() -> demon_blades_charges );
+
+      for ( unsigned i = 0; i < consumed; i++ )
       {
         p() -> active.demon_blades -> target = s -> target;
         p() -> active.demon_blades -> schedule_execute();
+
+        p() -> demon_blades_est--;
+        p() -> demon_blades_est = std::max( p() -> demon_blades_est, 0.0 );
       }
 
-      p() -> demon_blades_charges -=
-        std::min( ( unsigned )2, p() -> demon_blades_charges );
+      p() -> demon_blades_charges -= consumed;
+      
+      if ( consumed == 0 )
+      {
+        p() -> demon_blades_est = 0.0;
+      }
     }
   }
 };
@@ -5515,6 +5527,10 @@ expr_t* demon_hunter_t::create_expression( action_t* a,
 
     return new soul_fragments_expr_t( this, name_str, type );
   }
+  else if ( name_str == "demon_blades_charges" || name_str == "dblades_charges" )
+  {
+    return make_ref_expr( "demon_blades_charges", demon_blades_est );
+  }
   else if ( util::str_prefix_ci( name_str, "db_per_" ) ||
             util::str_prefix_ci( name_str, "demons_bite_per_" ) )
   {
@@ -6878,6 +6894,7 @@ void demon_hunter_t::reset()
   metamorphosis_health  = 0;
   spirit_bomb           = 0.0;
   demon_blades_charges  = 0;
+  demon_blades_est      = 0.0;
   sigil_of_flame_activates = timespan_t::zero();
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
@@ -7362,20 +7379,15 @@ public:
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Throw Glaive damage reduced by 30%.", 309171 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.70 )
-      .verification_value( 490 );
     hotfix::register_effect( "Demon Hunter", "2016-09-24", "Fel Mastery (Talent) damage bonus to Fel Rush reduced to 30%.", 297759 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 30 )
       .verification_value( 50 );
-    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Bloodlet (Talent) now deals 100% of initial Throw Glaive damage.", 305358 )
+    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Bloodlet (Talent) now deals 150% of initial Throw Glaive damage.", 305358 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 100 )
+      .modifier( 150 )
       .verification_value( 200 );
     hotfix::register_effect( "Demon Hunter", "2016-09-24", "Fury of the Illidari (Artifact Ability) damage reduced by 20%.", 297083 )
       .field( "base_value" )
