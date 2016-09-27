@@ -7379,6 +7379,7 @@ public:
 
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Demon Hunter", "2016-09-24", "Fel Mastery (Talent) damage bonus to Fel Rush reduced to 30%.", 297759 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
@@ -7404,6 +7405,7 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 3 )
       .verification_value( 10 );
+      */
   }
 
   void combat_begin( sim_t* ) const override

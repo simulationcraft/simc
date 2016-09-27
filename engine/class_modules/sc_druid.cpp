@@ -8445,7 +8445,7 @@ struct druid_module_t : public module_t
 
   virtual void register_hotfixes() const override 
   {
-
+    /*
     hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.", 232416 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
@@ -8475,6 +8475,7 @@ struct druid_module_t : public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 1.9 );
+      */
 
   }
 

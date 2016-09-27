@@ -7817,8 +7817,7 @@ struct shaman_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.8 )
       .verification_value( 0.7 );
-    */
-
+    
     hotfix::register_effect( "Shaman", "2016-09-23", "Chain Lightning (Elemental) damage has been increased by 23%", 275203 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
@@ -7872,6 +7871,7 @@ struct shaman_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20 )
       .verification_value( 10 );
+      */
   }
 
   void combat_begin( sim_t* ) const override {}

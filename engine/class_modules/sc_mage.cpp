@@ -9581,6 +9581,7 @@ public:
 
   virtual void register_hotfixes() const override
   {
+    /*
      hotfix::register_effect( "Mage", "2016-09-24", "Arcane Missiles damage increased by 9%.", 2716 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_SET )
@@ -9645,6 +9646,8 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 7.475 )
       .verification_value( 6.50000 );
+
+      */
   }
 
   virtual bool valid() const override { return true; }

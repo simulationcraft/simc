@@ -2065,7 +2065,7 @@ double rogue_attack_t::cost() const
 
   if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
   {
-    c += p() -> artifact.fatebringer.value() * 0.75; //FIXME Hotfix 09-24: Hardcoded the 25% nerf. (4 per rank -> 3 per rank)
+    c += p() -> artifact.fatebringer.value();
   }
 
   if ( c <= 0 )
@@ -2425,7 +2425,7 @@ struct between_the_eyes_t : public rogue_attack_t
         options_str ), greenskins_waterlogged_wristcuffs( nullptr )
   {
     crit_bonus_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> artifact.black_powder.percent() * 0.75; //FIXME Hotfix 09-24: Hardcoded the 25% nerf. (8% per rank -> 6% per rank)
+    base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
   }
 
   void execute() override
@@ -3338,7 +3338,7 @@ struct run_through_t: public rogue_attack_t
     rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str ),
     ttt_multiplier( 0 )
   {
-    base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent() * 0.75; //FIXME Hotfix 09-24: Hardcoded the 25% nerf. (8% per rank -> 6% per rank)
+    base_multiplier *= 1.0 + p -> artifact.fates_thirst.percent();
   }
 
   double action_multiplier() const override
@@ -5313,15 +5313,12 @@ void rogue_t::trigger_poison_knives( const action_state_t* state )
   double tick_base_damage = td -> dots.deadly_poison -> state -> result_raw;
   // Poison knives double dips into some multipliers
 
-  // .. first, mastery
-  //tick_base_damage *= 1.0 + cache.mastery_value(); //FIXME Hotfix 2016-09-24 Poison Knives (Artifact Trait) no longer benefits twitch from Mastery.
-
   // .. then, apparently the Master Alchemist talent
   tick_base_damage *= 1.0 + artifact.master_alchemist.percent();
 
   // Target multipliers get applied on execute, they also work
 
-  double total_damage = ( partial_tick + ticks_left ) * tick_base_damage * artifact.poison_knives.percent() * 2; //FIXME Hotfix 09-24: Hardcoded the 100% buff. (2% per rank -> 4% per rank)
+  double total_damage = ( partial_tick + ticks_left ) * tick_base_damage * artifact.poison_knives.percent();
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s poison_knives dot_remains=%.3f duration=%.3f ticks_left=%u partial=%.3f amount=%.3f total=%.3f",
@@ -8032,6 +8029,7 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Rogue", "2016-09-24", "Death From Above (Talent) area damage increased by 100%.", 217580 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
@@ -8077,7 +8075,7 @@ struct rogue_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.3432 )
       .verification_value( 0.26400 );
-    /*
+    
     hotfix::register_effect( "Rogue", "2016-08-23", "Envenom damage has been increased to 60% Attack Power per point (was 50%).", 22420 )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )

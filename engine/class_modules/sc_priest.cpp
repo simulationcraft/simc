@@ -7275,6 +7275,7 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Priest", "2016-09-26", "Mind Sear damage increased by 80% and Insanity generation increased by 50%.", 326288 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
@@ -7298,6 +7299,7 @@ struct priest_module_t final : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 4.0 )
       .verification_value( 5.0 );
+      */
   }
 
   void combat_begin( sim_t* ) const override

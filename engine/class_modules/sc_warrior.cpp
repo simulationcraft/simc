@@ -600,8 +600,8 @@ public:
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
   {
     ab::may_crit = true;
-    tactician_per_rage += ( ( player -> spec.tactician -> effectN( 2 ).percent() / 100 ) * 1.15 ); //FIXME
-    tactician_per_rage *= 1.0 + ( player -> artifact.exploit_the_weakness.percent() * 0.4 ); //FIXME
+    tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100  );
+    tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent() ;
     arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent();
   }
 
@@ -4084,7 +4084,6 @@ struct ignore_pain_t: public warrior_spell_t
   void impact( action_state_t* s ) override
   {
     double amount;
-    double castAmount; // FIXME: 2016-09-27: variable ‘castAmount’ set but not used [-Wunused-but-set-variable]
 
     amount = s -> result_amount;
     amount *= ( resource_consumed / ( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );
@@ -4096,15 +4095,11 @@ struct ignore_pain_t: public warrior_spell_t
     }
 
     amount *= 1.0 + p() -> buff.dragon_scales -> check_value();
-
-    castAmount = amount;
-
     amount += p() -> buff.ignore_pain -> current_value;
 
     if ( amount > max_ip() )
     {
       amount = max_ip();
-      castAmount = max_ip() - p() -> buff.ignore_pain -> current_value;
     }
 
 
@@ -6477,6 +6472,7 @@ struct warrior_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Warrior", "2016-09-23", "Exploit the Weakness (Artifact Trait) bonus reduced to 3% per point.", 310053 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
@@ -6578,6 +6574,7 @@ struct warrior_module_t: public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 441 );
+      */
   }
 
   virtual void init( player_t* ) const override {}
