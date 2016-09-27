@@ -14,8 +14,6 @@ POWER_HOTFIX_MAP_NEW  = 0xFFFFFFFF
 # Client does not get certain hotfix data, so we need to blacklist specific
 # fields in specific DB2 files to not hotfix themselves
 HOTFIX_FIELD_BLACKLIST = {
-    # SpellProcsPerMinute.adb is not populated on client
-    "SpellAuraOptions" : [ "id_ppm" ]
 }
 
 def escape_string(tmpstr):
