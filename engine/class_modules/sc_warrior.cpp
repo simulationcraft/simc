@@ -600,8 +600,8 @@ public:
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
   {
     ab::may_crit = true;
-    tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
-    tactician_per_rage *= 1.0 + ( player -> artifact.exploit_the_weakness.percent() * 0.3 ); //FIXME
+    tactician_per_rage += ( ( player -> spec.tactician -> effectN( 2 ).percent() / 100 ) * 1.15 ); //FIXME
+    tactician_per_rage *= 1.0 + ( player -> artifact.exploit_the_weakness.percent() * 0.4 ); //FIXME
     arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent();
   }
 
@@ -2190,6 +2190,11 @@ struct hamstring_t: public warrior_attack_t
   {
     //Hamstring no longer activates Opportunity Strikes. 08-24-2016
     return false;
+  }
+
+  double tactician_cost() const override
+  { //Hamstring no longer procs tactician. 09-26-2016
+    return 0.0;
   }
 };
 
