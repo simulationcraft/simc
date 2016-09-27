@@ -1,7 +1,7 @@
 # Warrior Fury 2h T19P
 warrior="Warrior_Fury_T19P"
 level=110
-race=tauren
+race=troll
 spec=fury
 role=attack
 position=back
@@ -23,7 +23,6 @@ trinket1=chaos_talisman,id=137459,bonus_id=1727
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727
 main_hand=warswords_of_the_valarjar,id=128908,gem_id=137546/137365/137472,relic_id=3412/3412/3412
 off_hand=warswords_of_the_valarjar,id=134553
-
 save=Warrior_Fury_T19P.simc
 
 # Warrior Arms T19P
