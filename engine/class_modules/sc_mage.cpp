@@ -7793,7 +7793,8 @@ void mage_t::create_buffs()
                                   .cd( timespan_t::zero() )
                                   .duration( timespan_t::zero() );
   buffs.quickening            = buff_creator_t( this, "quickening", find_spell( 198924 ) )
-                                  .add_invalidate( CACHE_SPELL_HASTE );
+                                  .add_invalidate( CACHE_SPELL_HASTE )
+                                  .max_stack( 50 );
 
   // 4T18 Temporal Power buff has no duration and stacks multiplicatively
   buffs.temporal_power        = buff_creator_t( this, "temporal_power", find_spell( 190623 ) )
