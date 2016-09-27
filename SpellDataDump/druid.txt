@@ -4237,10 +4237,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=232416)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.21000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.10000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1 -> 1.1)
 #2 (id=232417)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60500 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc93402
 Tooltip          : Suffering $w2 Nature damage every $t2 seconds.
 
@@ -4587,7 +4587,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280098)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.10000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1.9 -> 2)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: astral_power | Target: Self(1)
@@ -4641,7 +4641,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=280158)   : School Damage: astral (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.48400 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.44000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.4 -> 0.44)
 Description      : $@spelldesc191034
 
@@ -4768,7 +4768,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=284976)   : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.98200 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.84000 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (2.7 -> 2.84)
 #2 (id=284977)   : Energize Power (30)
                    Base Value: 120 | Scaled Value: 120 | Misc Value: astral_power | Target: Self(1)

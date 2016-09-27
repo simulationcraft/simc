@@ -453,7 +453,7 @@ Effects          :
 #1 (id=1900)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 486 | Scaled Value: 4.86 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 463 | Scaled Value: 4.63 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (441 -> 463)
 Description      : Attempt to finish off a wounded foe, causing ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
@@ -844,7 +844,7 @@ Effects          :
 #1 (id=14120)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=134421)   : Weapon Damage% (31)
-                   Base Value: 171 | Scaled Value: 2.61 | Points Per Level: 9 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 153 | Scaled Value: 2.43 | Points Per Level: 9 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (137 -> 153), Points per Level (8 -> 9)
 #3 (id=156242)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
@@ -1716,7 +1716,7 @@ Effects          :
 #1 (id=86555)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=86556)    : Weapon Damage% (31)
-                   Base Value: 131 | Scaled Value: 1.59 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 125 | Scaled Value: 1.53 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (118 -> 125)
 Description      : $@spelldesc85288
 
@@ -1861,7 +1861,7 @@ Effects          :
 #1 (id=101983)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=101984)   : Weapon Damage% (31)
-                   Base Value: 131 | Scaled Value: 1.59 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 125 | Scaled Value: 1.53 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (118 -> 125)
 Description      : $@spelldesc85288
 
@@ -1923,7 +1923,7 @@ Effects          :
 #2 (id=107865)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=107866)   : Weapon Damage% (31)
-                   Base Value: 193 | Scaled Value: 2.93 | Points Per Level: 10 | Target: Enemy(6)
+                   Base Value: 184 | Scaled Value: 2.84 | Points Per Level: 10 | Target: Enemy(6)
                    Hotfixed: Base Value (171 -> 184)
 #4 (id=313843)   : Trigger Spell: Taste for Blood (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 206333 | Target: Self(1)
@@ -3024,7 +3024,7 @@ Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 486 | Scaled Value: 4.86 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 463 | Scaled Value: 4.63 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (441 -> 463)
 Description      : $@spelldesc5308
 
@@ -3190,7 +3190,7 @@ Effects          :
 #1 (id=267757)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267758)   : Weapon Damage% (31)
-                   Base Value: 178 | Scaled Value: 1.78 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 159 | Scaled Value: 1.59 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (142 -> 159)
 Description      : $@spelldesc184367
 
@@ -3213,7 +3213,7 @@ Effects          :
 #1 (id=267761)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267762)   : Weapon Damage% (31)
-                   Base Value: 118 | Scaled Value: 1.18 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 106 | Scaled Value: 1.06 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (95 -> 106)
 Description      : $@spelldesc184367
 
@@ -3575,7 +3575,7 @@ Effects          :
 #1 (id=296642)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296643)   : Weapon Damage% (31)
-                   Base Value: 208 | Scaled Value: 2.08 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 186 | Scaled Value: 1.86 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (166 -> 186)
 Description      : $@spelldesc184367
 
@@ -3597,7 +3597,7 @@ Effects          :
 #1 (id=296644)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296645)   : Weapon Damage% (31)
-                   Base Value: 357 | Scaled Value: 3.57 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 319 | Scaled Value: 3.19 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (285 -> 319)
 Description      : $@spelldesc184367
 
@@ -4909,7 +4909,7 @@ Effects          :
 #1 (id=325560)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=325561)   : Weapon Damage% (31)
-                   Base Value: 59 | Scaled Value: 0.59 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 53 | Scaled Value: 0.53 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (47 -> 53)
 Description      : $@spelldesc184367
 

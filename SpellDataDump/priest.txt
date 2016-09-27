@@ -521,7 +521,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage: shadow every 0.75 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.72000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.5 -> 0.6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
@@ -1334,7 +1334,7 @@ Effects          :
 #1 (id=41944)    : Dummy (3)
                    Base Value: -1 | Scaled Value: 0 | Value Range: 1 | Target: Unknown(77)
 #2 (id=326288)   : School Damage: shadow (2)
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | SP Coefficient: 0.97200 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant)(16)
+                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | SP Coefficient: 0.54000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (0.3 -> 0.54)
 Description      : $@spelldesc48045
 Tooltip          : Causing shadow damage to all targets within $a2 yards.
@@ -1719,7 +1719,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=66820)    : School Damage: shadowfrost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.57600 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.35 -> 0.45)
 #2 (id=66821)    : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)

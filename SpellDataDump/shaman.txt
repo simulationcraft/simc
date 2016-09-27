@@ -74,7 +74,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=155)      : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.64000 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Chain Targets: 3 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1.8 -> 2.2)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
@@ -874,7 +874,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43841)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.31000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (2.1 -> 2.2)
 #2 (id=287537)   : Energize Power (30)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: maelstrom | Target: Self(1)
@@ -1803,7 +1803,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=87492)    : School Damage: shadowflame (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.51840 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43200 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (0.36 -> 0.432)
 Description      : $@spelldesc105174
 
@@ -3060,7 +3060,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219326)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.50400 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.42000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.35 -> 0.42)
 Description      : Conjures a gust of wind that deals $s1 Nature damage to an enemy and generates $226180s2 Maelstrom for the Shaman.
 
@@ -3081,7 +3081,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219409)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 1.00800 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.84000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.7 -> 0.84)
 #2 (id=219410)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 0x7f | Target: Self(1)
@@ -3230,7 +3230,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=238582)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.53125 | Misc Value: 18 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 18 | Target: Self(1)
                    Hotfixed: SP Coefficient (2 -> 2.25)
 #2 (id=238583)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self(1)
@@ -3572,7 +3572,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274643)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.96800 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1.3 -> 1.6)
 Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature damage.
 
@@ -3620,7 +3620,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=275203)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.96800 | Chain Targets: 5 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Targets: 5 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1.3 -> 1.6)
 #2 (id=325428)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6

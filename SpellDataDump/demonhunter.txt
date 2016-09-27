@@ -1200,7 +1200,7 @@ Effects          :
 #1 (id=297082)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=297083)   : Weapon Damage% (31)
-                   Base Value: 89 | Scaled Value: 0.89 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 112 | Scaled Value: 1.12 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
                    Hotfixed: Base Value (140 -> 112)
 Description      : $@spelldesc201467
 
@@ -1221,7 +1221,7 @@ Effects          :
 #1 (id=297377)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #2 (id=297378)   : Weapon Damage% (31)
-                   Base Value: 89 | Scaled Value: 0.89 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 112 | Scaled Value: 1.12 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
                    Hotfixed: Base Value (140 -> 112)
 Description      : $@spelldesc201467
 

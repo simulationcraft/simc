@@ -3057,7 +3057,7 @@ Effects          :
 #1 (id=267535)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=267536)   : Weapon Damage% (31)
-                   Base Value: 454 | Scaled Value: 5.02 | Points Per Level: 12 | Target: Enemy(6)
+                   Base Value: 402 | Scaled Value: 4.5 | Points Per Level: 12 | Target: Enemy(6)
                    Hotfixed: Base Value (352 -> 402)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
@@ -3564,7 +3564,7 @@ Effects          :
 #1 (id=298131)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=298132)   : Weapon Damage% (31)
-                   Base Value: 153 | Scaled Value: 1.53 | Target: Enemy(6)
+                   Base Value: 136 | Scaled Value: 1.36 | Target: Enemy(6)
                    Hotfixed: Base Value (120 -> 136)
 #3 (id=298133)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
@@ -4531,7 +4531,7 @@ Effects          :
 #1 (id=322914)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=322915)   : Weapon Damage% (31)
-                   Base Value: 361 | Scaled Value: 3.61 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 320 | Scaled Value: 3.2 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: Base Value (285 -> 320)
 #3 (id=322916)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
@@ -4720,7 +4720,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=335563)   : Weapon Damage% (31)
-                   Base Value: 259 | Scaled Value: 2.59 | Target: Enemy(6)
+                   Base Value: 216 | Scaled Value: 2.16 | Target: Enemy(6)
                    Hotfixed: Base Value (180 -> 216)
 #2 (id=335564)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
@@ -4740,7 +4740,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=335615)   : Weapon Damage% (31)
-                   Base Value: 352 | Scaled Value: 4.72 | Points Per Level: 12 | Target: Enemy(6)
+                   Base Value: 320 | Scaled Value: 4.4 | Points Per Level: 12 | Target: Enemy(6)
                    Hotfixed: Base Value (290 -> 320), Points per Level (11 -> 12)
 #2 (id=335616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)

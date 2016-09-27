@@ -2458,7 +2458,7 @@ Effects          :
 #2 (id=139842)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Cone Front(104)
 #3 (id=139945)   : Weapon Damage% (31)
-                   Base Value: 96 | Scaled Value: 0.96 | Radius: 50 yards | Target: Cone Front(104)
+                   Base Value: 80 | Scaled Value: 0.8 | Radius: 50 yards | Target: Cone Front(104)
                    Hotfixed: Base Value (100 -> 80)
 Description      : $@spelldesc120360
 
@@ -5606,7 +5606,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299019)   : Weapon Damage% (31)
-                   Base Value: 348 | Scaled Value: 4.58 | Points Per Level: 11 | Target: Enemy(6)
+                   Base Value: 215 | Scaled Value: 3.25 | Points Per Level: 11 | Target: Enemy(6)
                    Hotfixed: Base Value (130 -> 215), Points per Level (7 -> 11)
 #2 (id=299020)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)

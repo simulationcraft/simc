@@ -64,7 +64,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=145)      : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.47852 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.33200 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1.2 -> 1.332)
 Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
 
@@ -88,7 +88,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=246)      : Apply Aura (6) | Periodic Damage: shadow every 20 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 6.05000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.50000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (5 -> 5.5)
 Description      : Inflicts impending doom upon the target, causing $o1 Shadow damage after $d.
 
@@ -113,7 +113,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.96800 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.88000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.8 -> 0.88)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
@@ -161,7 +161,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=271)      : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 6 | SP Coefficient: 0.42350 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 6 | SP Coefficient: 0.38500 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.3 -> 0.385)
 Description      : Drains life from the target, causing $o1 Shadow damage over $d, and healing you for ${$e1*100}% of the damage done.
 Tooltip          : Suffering $s1 Shadow damage every $t1 seconds. Restoring ${$e1*100}% of that damage as health to the caster.
@@ -322,7 +322,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03969 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03780 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.036 -> 0.0378)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
@@ -878,7 +878,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=9553)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.51472 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.26551 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (2.041 -> 2.26551)
 #2 (id=9554)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: soul_shard | Target: Self(1)
@@ -1097,7 +1097,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=16922)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.91, dl=0.15) | SP Coefficient: 1.58700 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.91, dl=0.15) | SP Coefficient: 1.38000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (1.2 -> 1.38)
 Description      : $@spelldesc27243
 
@@ -1159,7 +1159,7 @@ Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=288276)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.58741 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.33100 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (1.9 -> 2.331)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
 
@@ -1186,7 +1186,7 @@ Effects          :
 #2 (id=302947)   : Apply Aura (6) | Unknown effect sub type (270)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Enemy(6)
 #3 (id=303066)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.05800
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.92000
                    Hotfixed: SP Coefficient (0.8 -> 0.92)
 Description      : Afflicts the target with $o3 Shadow damage over $d. Multiple casts accumulate increased damage. If dispelled, deals $196364s1% of its remaining damage to the dispeller and silences them for $196364d.
 
@@ -1407,7 +1407,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=33883)    : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.61605 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55500 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.5 -> 0.555)
 Description      : $@spelldesc5740
 
@@ -1469,7 +1469,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40331)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.25750 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 8.05000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (6 -> 8.05)
 #2 (id=40332)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
@@ -1627,7 +1627,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.60500 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.55000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.5 -> 0.55)
 Description      : Siphons the target's life essence, dealing $o1 damage over $d and healing you for ${$e1*100}% of the damage it deals.
 Tooltip          : Siphoning $w1 life to the caster every $t1 sec.
@@ -1856,7 +1856,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=87492)    : School Damage: shadowflame (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.51840 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43200 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (0.36 -> 0.432)
 Description      : $@spelldesc105174
 
@@ -2147,7 +2147,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113740)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.242, dl=0.05) | SP Coefficient: 0.16940 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.242, dl=0.05) | SP Coefficient: 0.15400 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.14 -> 0.154)
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
@@ -2839,7 +2839,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=132079)   : School Damage: chromatic (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.06593 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.66300 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (3.3 -> 3.663)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
@@ -3213,7 +3213,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36300 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33000 | Target: Unknown(25)
                    Hotfixed: SP Coefficient (0.3 -> 0.33)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
@@ -3258,7 +3258,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=210584)   : School Damage: shadowflame (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.62470 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.77000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (7 -> 7.77)
 Description      : Conjures a cataclysm at the target location, dealing $s1 Shadowflame damage to all enemies within $A1 yards and afflicting them with $?s980[Agony and Unstable Affliction][]$?s104315[Corruption][]$?s348[Immolate][]$?!s980&!s104315&!s348[Agony, Unstable Affliction, Corruption, or Immolate][].
 
@@ -3279,7 +3279,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219885)   : School Damage: chaos (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.96800 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.88000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.8 -> 0.88)
 #2 (id=245223)   : Trigger Spell: Demonbolt (64)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196300 | Target: Self(1)
@@ -3772,7 +3772,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283783)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.39675 | Radius: 0 - 100 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34500 | Radius: 0 - 100 yards | Target: At Caster(22) -> AOE enemy(15)
                    Hotfixed: SP Coefficient (0.3 -> 0.345)
 Description      : $@spelldesc193440
 
@@ -4076,7 +4076,7 @@ Effects          :
 #1 (id=288084)   : Instant Kill (1)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=288085)   : School Damage: shadowflame (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.64500 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (2 -> 2.3)
 Description      : $@spelldesc196277
 
@@ -4254,7 +4254,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=288343)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.51748 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.46620 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.42 -> 0.4662)
 Description      : $@spelldesc196447
 
@@ -4405,7 +4405,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=291909)   : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 4 | SP Coefficient: 0.62920 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 4 | SP Coefficient: 0.57200 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.44 -> 0.572)
 Description      : Drains the target's soul, causing ${6*$s1} Shadow damage over $d, and healing you for ${$e1*100}% of the damage done.
 
@@ -4570,10 +4570,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302909)   : School Damage: shadowflame (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.21000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1 -> 1.1)
 #2 (id=302911)   : Apply Aura (6) | Periodic Damage: shadowflame every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.42350 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.38500 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.35 -> 0.385)
 #3 (id=304087)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: soul_shard | Target: Self(1)
@@ -4649,7 +4649,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=302984)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.21000 | Chain Targets: 20 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Chain Targets: 20 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1 -> 1.1)
 Description      : Fires an Eye Laser that hits all Doomed targets for $s1 Shadow damage.
 
@@ -4668,7 +4668,7 @@ Effects          :
 #1 (id=303014)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=303063)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 1.90440 | Radius: 0 - 25 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 1.65600 | Radius: 0 - 25 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (1.44 -> 1.656)
 Description      : $@spelldesc205179
 

@@ -1514,7 +1514,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44107)    : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.08108 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.07900 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
                    Hotfixed: AP Coefficient (0.8316 -> 1.079)
 #2 (id=150470)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
@@ -2711,7 +2711,7 @@ Effects          :
 #1 (id=210639)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=217580)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.66600 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.66000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
                    Hotfixed: AP Coefficient (1.833 -> 3.66)
 #3 (id=217591)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
@@ -4047,7 +4047,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290720)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.72072 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.72150 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
                    Hotfixed: AP Coefficient (0.5544 -> 0.7215)
 #2 (id=290721)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)

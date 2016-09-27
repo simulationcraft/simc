@@ -391,7 +391,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : Channeled (34), Not a proc (105)
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38150 | Chain Targets: 1 | Target: Unknown(77)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Chain Targets: 1 | Target: Unknown(77)
                    Hotfixed: SP Coefficient (0.35 -> 0.38)
 Description      : $@spelldesc5143
 
@@ -3321,7 +3321,7 @@ Effects          :
 #1 (id=220383)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Unknown(25)
 #2 (id=220384)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.52000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (4 -> 4.5)
 #3 (id=220385)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(58) | Target: Unknown(63) -> AOE enemy (instant)(16)
@@ -3629,7 +3629,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=278848)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | SP Coefficient: 0.44921 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | SP Coefficient: 0.45000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
                    Hotfixed: SP Coefficient (0.3303 -> 0.45)
 Description      : $@spelldesc190356
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -4059,7 +4059,7 @@ Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.85600 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.85000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1.45 -> 1.85)
 Description      : For the next $d, you can channel a beam of icy power at an enemy, slowing movement by $m1% and dealing $s2 Frost damage every $t2 sec. Each time Ray of Frost deals damage, its damage increases by $208141s1%.
 Tooltip          : Movement slowed by $m1% and taking $s2 Frost damage every $t2 sec.
@@ -4882,7 +4882,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=343734)   : School Damage: frost (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.44900 | Target: Enemy(6)
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.45000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.9 -> 1.45)
 #2 (id=343735)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy(6)
@@ -4905,7 +4905,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344284)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.99800 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (1.7 -> 2)
 Description      : $@spelldesc116
 
@@ -4925,7 +4925,7 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344285)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 0.85880 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 0.85000 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (0.76 -> 0.85), Chain Multiplier (0.5 -> 0.8)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
@@ -4963,7 +4963,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344289)   : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.47500 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.50000 | Target: Enemy(6)
                    Hotfixed: SP Coefficient (6.5 -> 7.5)
 #2 (id=344290)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy(6)
