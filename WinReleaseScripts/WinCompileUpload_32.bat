@@ -41,7 +41,7 @@ robocopy winreleasescripts\ %install%\ qt.conf
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING LICENSE.BOOST LICENSE.BSD LICENSE.LGPL LICENSE.MIT
 robocopy Profiles\ %install%\profiles\ *.* /S
 cd %install%
-%qt_dir%\msvc2015\bin\windeployqt.exe --no-translations simulationcraft.exe
+call %qt_dir%\msvc2015\bin\windeployqt.exe --no-translations simulationcraft.exe
 del vcredist_x86.exe
 cd ..
 
