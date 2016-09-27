@@ -12,44 +12,44 @@ set simcversion=703-03
 set SIMCAPPFULLVERSION=7.0.3.03
 :: For bumping the minor version, just change the above line.  Make sure to also change setup32.iss and setup64.iss as well. 
 
-set qt_dir=C:\Qt\Qt5.6.0\5.6\
+set qt_dir=C:\Qt\Qt5.6.0.32\5.6\
 set visualstudio=%VS140COMNTOOLS:~0,-14%
 cd ..
 git clean -f -x -d
 set currdir=%cd%
 for /F "delims=" %%i IN ('git --git-dir=%currdir%\.git\ rev-parse --short HEAD') do set GITREV=-%%i
 
-call %qt_dir%msvc2015_64\bin\qtenv2.bat
-call "%visualstudio%VC\vcvarsall.bat" x64
+call %qt_dir%msvc2015\bin\qtenv2.bat
+call "%visualstudio%VC\vcvarsall.bat" x86
 cd /D %currdir%
-qmake -r -tp vc -spec win32-msvc2015 simulationcraft.pro PGO=1
+qmake -r -tp vc -spec win32-msvc2015 simulationcraft.pro
 
 cd>bla.txt
 set /p download=<bla.txt
 del bla.txt
 
 ::WebEngine compilation.
-set install=simc-%simcversion%-win64
+set install=simc-%simcversion%-win32
 
 for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\14.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
 
-"%MSBUILDDIR%msbuild.exe" %currdir%\simulationcraft.sln /p:configuration=Release /nr:true
+"%MSBUILDDIR%msbuild.exe" %currdir%\simulationcraft.sln /p:configuration=Release /nr:true /m
 
-robocopy "%visualstudio%VC\redist\x64\Microsoft.VC140.CRT" %install%\ msvcp140.dll vccorlib140.dll vcruntime140.dll
+robocopy "%visualstudio%VC\redist\x86\Microsoft.VC140.CRT" %install%\ msvcp140.dll vccorlib140.dll vcruntime140.dll
 robocopy locale\ %install%\locale sc_de.qm sc_zh.qm sc_it.qm
 robocopy winreleasescripts\ %install%\ qt.conf
 robocopy . %install%\ Welcome.html Welcome.png Simulationcraft.exe simc.exe readme.txt Error.html COPYING LICENSE.BOOST LICENSE.BSD LICENSE.LGPL LICENSE.MIT
 robocopy Profiles\ %install%\profiles\ *.* /S
 cd %install%
 %qt_dir%\msvc2015\bin\windeployqt.exe --no-translations simulationcraft.exe
-del vcredist_x64.exe
+del vcredist_x86.exe
 cd ..
 
 cd winreleasescripts 
 iscc.exe /DMyAppVersion=%simcversion% ^
-		 /DSimcAppFullVersion="%SIMCAPPFULLVERSION%" "setup64.iss"
+		 /DSimcAppFullVersion="%SIMCAPPFULLVERSION%" "setup32.iss"
 				
 cd ..
-call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win64.exe -nopreservetime -nopermissions -transfer=binary" "exit"
+call start winscp /command "open downloads" "put %download%\SimcSetup-%simcversion%-win32.exe -nopreservetime -nopermissions -transfer=binary" "exit"
 7z a -r %install%%GITREV% %install% -mx9 -md=32m
 call start winscp /command "open downloads" "put %download%\%install%%GITREV%.7z -nopreservetime -nopermissions -transfer=binary" "exit"
