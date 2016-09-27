@@ -7379,33 +7379,6 @@ public:
 
   void register_hotfixes() const override
   {
-    /*
-    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Fel Mastery (Talent) damage bonus to Fel Rush reduced to 30%.", 297759 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 30 )
-      .verification_value( 50 );
-    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Bloodlet (Talent) now deals 150% of initial Throw Glaive damage.", 305358 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 150 )
-      .verification_value( 200 );
-    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Fury of the Illidari (Artifact Ability) damage reduced by 20%.", 297083 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.80 )
-      .verification_value( 140 );
-    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Fury of the Illidari (Artifact Ability) damage reduced by 20%. #2", 297378 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 0.80 )
-      .verification_value( 140 );
-    hotfix::register_effect( "Demon Hunter", "2016-09-24", "Balanced Blades (Artifact Trait) damage bonus to Blade Dance reduced to 3% per target.", 296823 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3 )
-      .verification_value( 10 );
-      */
   }
 
   void combat_begin( sim_t* ) const override

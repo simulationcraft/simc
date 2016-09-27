@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -2691,6 +2691,7 @@ Description      : $@spelldesc145210
 Tooltip          : Mastery increased by $s1.
 
 Name             : Death from Above (id=152150) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Resource         : 25 Energy
@@ -2705,7 +2706,7 @@ Attributes       : ....x... ........ x.x..... .......x   ........ .x...... .....
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ x....... 
                  : ........ ....x... ........ ........   ........ ........ .......x ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... ........ .......x   ........ ........ ........ ........ 
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=210639)   : Dummy (3)

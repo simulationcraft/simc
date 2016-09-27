@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -518,6 +518,7 @@ School           : Fire
 Resource         : 3 Soul Shard
 Spell Level      : 38
 Range            : 35 yards
+Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Affecting spells : Reverse Entropy (205148), 
@@ -4954,13 +4955,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Lord of Flames (id=226802) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Duration         : 600 seconds
 Attributes       : ........ ........ ........ ..x..x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
