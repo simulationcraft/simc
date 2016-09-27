@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -575,6 +575,7 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
 Effects          :
 #1 (id=10779)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self(1)
+                   Hotfixed: Base Value (20 -> 25)
 #2 (id=10780)    : Trigger Spell: Bestial Wrath (64)
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 186254
 #3 (id=342782)   : Dummy (3)
@@ -2457,7 +2458,8 @@ Effects          :
 #2 (id=139842)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Cone Front(104)
 #3 (id=139945)   : Weapon Damage% (31)
-                   Base Value: 120 | Scaled Value: 1.2 | Radius: 50 yards | Target: Cone Front(104)
+                   Base Value: 80 | Scaled Value: 0.8 | Radius: 50 yards | Target: Cone Front(104)
+                   Hotfixed: Base Value (100 -> 80)
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
@@ -3805,7 +3807,8 @@ Effects          :
 #1 (id=271164)   : Apply Aura (6) | Scale% (61)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Active Pet(5)
 #2 (id=271165)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Active Pet(5)
+                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Active Pet(5)
+                   Hotfixed: Base Value (20 -> 25)
 #3 (id=271166)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Active Pet(5)
 #4 (id=271167)   : Apply Aura (6) | Absorb Damage (69)
@@ -4318,7 +4321,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Mongoose Bite (190928)
 #2 (id=343454)   : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25
+                   Base Value: 35 | Scaled Value: 35
+                   Hotfixed: Base Value (25 -> 35)
 Description      : $@spelldesc190928
 Tooltip          : Damage dealt by Mongoose Bite increased by $s1%.
 
@@ -5602,7 +5606,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299019)   : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.8 | Points Per Level: 7 | Target: Enemy(6)
+                   Base Value: 215 | Scaled Value: 3.25 | Points Per Level: 11 | Target: Enemy(6)
+                   Hotfixed: Base Value (130 -> 215), Points per Level (7 -> 11)
 #2 (id=299020)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=299021)   : Dummy (3)

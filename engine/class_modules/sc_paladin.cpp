@@ -2457,7 +2457,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
   virtual void execute() override
   {
     // heals for % of missing health.
-	  base_dd_min = base_dd_max = health_diff_pct * (target->resources.max[RESOURCE_HEALTH] - std::max(target->resources.current[RESOURCE_HEALTH], 0.0) ); 
+    base_dd_min = base_dd_max = health_diff_pct * (target->resources.max[RESOURCE_HEALTH] - std::max(target->resources.current[RESOURCE_HEALTH], 0.0) ); 
 
     paladin_heal_t::execute();
 
@@ -6180,7 +6180,7 @@ struct paladin_module_t : public module_t
 
   virtual void register_hotfixes() const override
   {
-
+    /*
     hotfix::register_effect( "Paladin", "2016-09-23", "Templar’s Verdict damage increased by 10%.", 335615 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
@@ -6210,6 +6210,7 @@ struct paladin_module_t : public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.13 )
       .verification_value( 120 );
+      */
 
   }
 

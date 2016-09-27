@@ -7115,6 +7115,7 @@ struct warlock_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
+    /*
     hotfix::register_effect( "Warlock", "2016-09-23", "Drain Life damage increased by 10%", 271 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
@@ -7270,6 +7271,7 @@ struct warlock_module_t: public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.11 )
       .verification_value( 0.42 );
+      */
   }
 
   virtual bool valid() const override { return true; }

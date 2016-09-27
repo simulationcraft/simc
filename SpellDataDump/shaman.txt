@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -74,7 +74,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=155)      : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.16000 | Chain Targets: 3 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Chain Targets: 3 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (1.8 -> 2.2)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Chain Heal (id=1064) [Spell Family (11)] 
@@ -643,11 +644,11 @@ Effects          :
 Description      : $@spelldesc8232
 
 Name             : Windfury (id=33757) [Spell Family (11), Passive] 
-Hotfixed         : Proc Chance (5 -> 10)
+Hotfixed         : Proc Chance (5 -> 20)
 Class            : Enhancement Shaman
 School           : Nature
 Spell Level      : 30
-Proc Chance      : 10%
+Proc Chance      : 20%
 Proc Flags       : ..x.x... ........ ......xx ........ 
                  : White Melee, Yellow Melee, Melee Off-Hand
 Affecting spells : Mastery: Enhanced Elements (77223), Doom Winds (204945), 
@@ -732,7 +733,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188), Master of the Elements (191647), Item - Shaman T19 Elemental 2P Bonus (211951), Surge of Power (215414)
+Affecting spells : Elemental Fury (60188), Item - Shaman T19 Elemental 2P Bonus (211951), Surge of Power (215414)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -749,7 +750,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 32 (max 37)
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188), Electric Discharge (191577), Master of the Elements (191647), Al'Akir's Acrimony (208699)
+Affecting spells : Elemental Fury (60188), Electric Discharge (191577), Al'Akir's Acrimony (208699)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -873,7 +874,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43841)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20500 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (2.1 -> 2.2)
 #2 (id=287537)   : Energize Power (30)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: maelstrom | Target: Self(1)
 Description      : Hurls molten lava at the target, dealing $s1 Fire damage. Lava Burst will always critically strike if the target is affected by Flame Shock.$?s137039[][
@@ -1635,7 +1637,7 @@ Spell Level      : 1
 Range            : 100 yards
 Cast Time        : 2 seconds
 Velocity         : 32 yards/sec
-Affecting spells : Elemental Fury (60188), Lava Imbued (191504), Molten Blast (191572), Master of the Elements (191647), Path of Flame (201909)
+Affecting spells : Elemental Fury (60188), Lava Imbued (191504), Molten Blast (191572), Path of Flame (201909)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
@@ -1802,6 +1804,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
 Effects          :
 #1 (id=87492)    : School Damage: shadowflame (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43200 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (0.36 -> 0.432)
 Description      : $@spelldesc105174
 
 Name             : Mail Specialization (Passive) (id=86099) [Passive, Hidden] 
@@ -2222,7 +2225,7 @@ School           : Fire
 Resource         : 8% Base Mana (17600 @Level 110)
 Spell Level      : 28
 Range            : 40 yards
-Affecting spells : Elemental Fury (60188), Electric Discharge (191577), Master of the Elements (191647), Al'Akir's Acrimony (208699)
+Affecting spells : Elemental Fury (60188), Electric Discharge (191577), Al'Akir's Acrimony (208699)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2535,7 +2538,7 @@ School           : Elemental
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Elemental Fury (60188), Master of the Elements (191647)
+Affecting spells : Elemental Fury (60188)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3058,6 +3061,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=219326)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.42000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.35 -> 0.42)
 Description      : Conjures a gust of wind that deals $s1 Nature damage to an enemy and generates $226180s2 Maelstrom for the Shaman.
 
 Name             : Call Lightning (id=157348) [Spell Family (11)] 
@@ -3078,6 +3082,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=219409)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.84000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.7 -> 0.84)
 #2 (id=219410)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 0x7f | Target: Self(1)
 Description      : Call down a lightning strike on an enemy, dealing $s1 Nature damage, and leaving the Storm Elemental charged with energy for $d.
@@ -3215,7 +3220,7 @@ Name             : Mastery: Elemental Overload (id=168534) [Spell Family (11), P
 Class            : Elemental Shaman
 School           : Physical
 Spell Level      : 78
-Affecting spells : Master of the Elements (191647)
+Affecting spells : Master of the Elements (191647), 
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3226,6 +3231,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=238582)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 18 | Target: Self(1)
+                   Hotfixed: SP Coefficient (2 -> 2.25)
 #2 (id=238583)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self(1)
 #3 (id=307793)   : Apply Aura (6) | Dummy (4)
@@ -3566,7 +3572,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274643)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.59900 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (1.3 -> 1.6)
 Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature damage.
 
 |cFFFFFFFFGenerates $214815s1 Maelstrom.|r 
@@ -3613,9 +3620,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=275203)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.59900 | Chain Targets: 5 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Targets: 5 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (1.3 -> 1.6)
 #2 (id=325428)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
+                   Hotfixed: Base Value (4 -> 6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets. 
 
 |cFFFFFFFFGenerates $s2 Maelstrom per target hit.|r 

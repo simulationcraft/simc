@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -521,7 +521,8 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage: shadow every 0.75 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.5 -> 0.6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power: every 0.75 seconds (24)
@@ -1333,7 +1334,8 @@ Effects          :
 #1 (id=41944)    : Dummy (3)
                    Base Value: -1 | Scaled Value: 0 | Value Range: 1 | Target: Unknown(77)
 #2 (id=326288)   : School Damage: shadow (2)
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | SP Coefficient: 0.30000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant)(16)
+                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | SP Coefficient: 0.54000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (0.3 -> 0.54)
 Description      : $@spelldesc48045
 Tooltip          : Causing shadow damage to all targets within $a2 yards.
 
@@ -1717,7 +1719,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=66820)    : School Damage: shadowfrost (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.35000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.35 -> 0.45)
 #2 (id=66821)    : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
 #3 (id=323988)   : Energize Power (30)
@@ -2531,7 +2534,8 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=170810)   : School Damage: holy (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Hotfixed: SP Coefficient (1.8 -> 1.5)
 #2 (id=342531)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Causes an explosion of holy light around you, dealing $s1 Holy damage to all enemies within $A1 yds. Has a $s2% chance to reset the cooldown of Holy Fire if any targets are hit.
@@ -4104,10 +4108,11 @@ Effects          :
 Description      : Each time your $?s73510[Mind Spike][Mind Flay] or Mind Sear deals damage, you gain $205372s1% increased $?s73510[Mind Spike][Mind Flay] and Mind Sear damage for $205372d, stacking up to $205372u times.
 
 Name             : Void Ray (id=205372) [Spell Family (6)] 
+Hotfixed         : Max stacks (5 -> 4)
 Class            : Priest
 School           : Physical
 Duration         : 6 seconds
-Stacks           : 5 maximum
+Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered by     : Void Ray (205371)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4286,7 +4291,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=308086)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: insanity | Target: Self(1)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: insanity | Target: Self(1)
+                   Hotfixed: Base Value (100 -> 150)
 Description      : $@spelldesc48045
 
 Name             : Mass Resurrection (id=212036) [Spell Family (6)] 

@@ -21,7 +21,6 @@ struct adds_event_t : public raid_event_t
   std::vector< pet_t* > adds;
   double count_range;
   size_t adds_to_remove;
-  static int wave;
   double spawn_x_coord;
   double spawn_y_coord;
   int spawn_stacked;
@@ -80,7 +79,7 @@ struct adds_event_t : public raid_event_t
       duration = min_cd - timespan_t::from_seconds( 0.001 );
     }
 
-    wave++;
+    sim -> add_waves++;
 
     if ( fabs( spawn_radius ) > 0 || fabs( spawn_radius_max ) > 0 || fabs( spawn_radius_min ) > 0 )
     {
@@ -161,10 +160,10 @@ struct adds_event_t : public raid_event_t
       {
         std::string add_name_str = "";
 
-        if ( wave > 1 && name_str == "Add" ) // Only add wave to secondary wave that aren't given manual names.
+        if ( sim -> add_waves > 1 && name_str == "Add" ) // Only add wave to secondary wave that aren't given manual names.
         {
           add_name_str += "Wave";
-          add_name_str += util::to_string( wave );
+          add_name_str += util::to_string( sim -> add_waves );
           add_name_str += "_";
         }
 
@@ -244,9 +243,6 @@ struct adds_event_t : public raid_event_t
     }
   }
 };
-
-// Initialize static add counter
-int adds_event_t::wave = 0;
 
 struct move_enemy_t : public raid_event_t
 {

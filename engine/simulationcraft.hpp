@@ -1748,6 +1748,7 @@ struct sim_t : private sc_thread_t
   std::vector<std::unique_ptr<raid_event_t>> raid_events;
   std::string raid_events_str;
   std::string fight_style;
+  size_t add_waves;
 
   // Buffs and Debuffs Overrides
   struct overrides_t
@@ -5469,7 +5470,8 @@ public:
   /// Marker for sample action priority list reporting
   char marker;
   // options
-  int moving, wait_on_ready, interrupt, chain, cycle_targets, cycle_players, max_cycle_targets, target_number, interrupt_immediate;
+  bool interrupt;
+  int moving, wait_on_ready, chain, cycle_targets, cycle_players, max_cycle_targets, target_number, interrupt_immediate;
   std::string if_expr_str;
   expr_t* if_expr;
   std::string target_if_str;

@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -65,6 +65,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
 Effects          :
 #1 (id=145)      : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.33200 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (1.2 -> 1.332)
 Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
 
 |cFFFFFFFF$193541s1% chance to generate 1 Soul Shard. Chance doubled on critical strikes.|r
@@ -78,7 +79,7 @@ Spell Level      : 26
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
-Affecting spells : Demonology Warlock (137044), The Doom of Azeroth (211106), Impish Incineration (215273)
+Affecting spells : The Doom of Azeroth (211106), Impish Incineration (215273)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -88,6 +89,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=246)      : Apply Aura (6) | Periodic Damage: shadow every 20 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 5.50000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (5 -> 5.5)
 Description      : Inflicts impending doom upon the target, causing $o1 Shadow damage after $d.
 
 |cFFFFFFFFDoom damage generates 1 Soul Shard.|r
@@ -112,6 +114,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=267)      : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.88000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.8 -> 0.88)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
@@ -159,7 +162,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
 Effects          :
 #1 (id=271)      : Apply Aura (6) | Periodic Health Leech (53)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 6 | SP Coefficient: 0.38500 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.3 -> 0.35)
+                   Hotfixed: SP Coefficient (0.3 -> 0.385)
 Description      : Drains life from the target, causing $o1 Shadow damage over $d, and healing you for ${$e1*100}% of the damage done.
 Tooltip          : Suffering $s1 Shadow damage every $t1 seconds. Restoring ${$e1*100}% of that damage as health to the caster.
 
@@ -320,6 +323,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03780 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.036 -> 0.0378)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Inflicts increasing agony on the target, causing up to ${$o1*10} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -514,7 +518,6 @@ School           : Fire
 Resource         : 3 Soul Shard
 Spell Level      : 38
 Range            : 35 yards
-Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Affecting spells : Reverse Entropy (205148), 
@@ -876,6 +879,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=9553)     : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.26551 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (2.041 -> 2.26551)
 #2 (id=9554)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: soul_shard | Target: Self(1)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
@@ -1094,6 +1098,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
 Effects          :
 #1 (id=16922)    : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.91, dl=0.15) | SP Coefficient: 1.38000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (1.2 -> 1.38)
 Description      : $@spelldesc27243
 
 Name             : Arcane Torrent (Racial) (id=28730) 
@@ -1155,7 +1160,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=288276)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.33100 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (1.9 -> 2.1)
+                   Hotfixed: SP Coefficient (1.9 -> 2.331)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
 
 Name             : Unstable Affliction (id=30108) [Spell Family (5)] 
@@ -1182,6 +1187,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Enemy(6)
 #3 (id=303066)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.92000
+                   Hotfixed: SP Coefficient (0.8 -> 0.92)
 Description      : Afflicts the target with $o3 Shadow damage over $d. Multiple casts accumulate increased damage. If dispelled, deals $196364s1% of its remaining damage to the dispeller and silences them for $196364d.
 
 |cFFFFFFFFRefunds 1 Soul Shard if the target dies before $d have elapsed.|r
@@ -1402,6 +1408,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=33883)    : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55500 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.5 -> 0.555)
 Description      : $@spelldesc5740
 
 Name             : Annihilator Holo-Gogs (id=46111) 
@@ -1463,7 +1470,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=40331)    : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 8.05000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (6 -> 7)
+                   Hotfixed: SP Coefficient (6 -> 8.05)
 #2 (id=40332)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage. If the target dies within $d, Haunt's cooldown is reset.
@@ -1621,6 +1628,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.55000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.5 -> 0.55)
 Description      : Siphons the target's life essence, dealing $o1 damage over $d and healing you for ${$e1*100}% of the damage it deals.
 Tooltip          : Siphoning $w1 life to the caster every $t1 sec.
 
@@ -1820,7 +1828,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 3 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Demonology Warlock (137044), Impish Incineration (215273)
+Affecting spells : Impish Incineration (215273)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1849,6 +1857,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
 Effects          :
 #1 (id=87492)    : School Damage: shadowflame (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43200 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (0.36 -> 0.432)
 Description      : $@spelldesc105174
 
 Name             : Nethermancy (Passive) (id=86091) [Passive, Hidden] 
@@ -2139,6 +2148,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=113740)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.242, dl=0.05) | SP Coefficient: 0.15400 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.14 -> 0.154)
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $s1 Fire damage to a target.
@@ -2830,6 +2840,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=132079)   : School Damage: chromatic (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.66300 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (3.3 -> 3.663)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3100,9 +3111,9 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179728)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -15 | Scaled Value: -15 | Target: Self(1)
-                   Affected Spells: Doom (603), Doom Bolt (85692)
+#1 (id=179728)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: Sub Type (108 -> 4), Base Value (-15 -> 0), Affects Spells
 #2 (id=191027)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191028)   : Apply Aura (6) | Dummy (4)
@@ -3203,6 +3214,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33000 | Target: Unknown(25)
+                   Hotfixed: SP Coefficient (0.3 -> 0.33)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -3247,6 +3259,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=210584)   : School Damage: shadowflame (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.77000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (7 -> 7.77)
 Description      : Conjures a cataclysm at the target location, dealing $s1 Shadowflame damage to all enemies within $A1 yards and afflicting them with $?s980[Agony and Unstable Affliction][]$?s104315[Corruption][]$?s348[Immolate][]$?!s980&!s104315&!s348[Agony, Unstable Affliction, Corruption, or Immolate][].
 
 Name             : Demonbolt (id=157695) [Spell Family (5)] 
@@ -3267,6 +3280,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=219885)   : School Damage: chaos (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.88000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.8 -> 0.88)
 #2 (id=245223)   : Trigger Spell: Demonbolt (64)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196300 | Target: Self(1)
 #3 (id=288119)   : Dummy (3)
@@ -3290,7 +3304,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219942)   : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.65000 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.72150 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.65 -> 0.7215)
 Description      : $@spelldesc348
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
@@ -3758,6 +3773,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283783)   : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34500 | Radius: 0 - 100 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Hotfixed: SP Coefficient (0.3 -> 0.345)
 Description      : $@spelldesc193440
 
 Name             : Demonwrath (id=193440) [Spell Family (5)] 
@@ -4061,6 +4077,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=288085)   : School Damage: shadowflame (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (2 -> 2.3)
 Description      : $@spelldesc196277
 
 Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 
@@ -4238,6 +4255,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288343)   : School Damage: fire (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.46620 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.42 -> 0.4662)
 Description      : $@spelldesc196447
 
 Name             : Channel Demonfire (id=196449) [Spell Family (5), Hidden] 
@@ -4388,7 +4406,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
 Effects          :
 #1 (id=291909)   : Apply Aura (6) | Periodic Health Leech (53)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 4 | SP Coefficient: 0.57200 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.44 -> 0.52)
+                   Hotfixed: SP Coefficient (0.44 -> 0.572)
 Description      : Drains the target's soul, causing ${6*$s1} Shadow damage over $d, and healing you for ${$e1*100}% of the damage done.
 
 |cFFFFFFFFGenerates 1 Soul Shard if the target dies during this effect.|r
@@ -4553,8 +4571,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302909)   : School Damage: shadowflame (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (1 -> 1.1)
 #2 (id=302911)   : Apply Aura (6) | Periodic Damage: shadowflame every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.38500 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.35 -> 0.385)
 #3 (id=304087)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: soul_shard | Target: Self(1)
 Description      : Lobs a ball of Shadowflame at the target, dealing $s1 Shadowflame damage immediately, and another $o2 Shadowflame damage over $d, stacking up to $u times.
@@ -4630,6 +4650,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302984)   : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Chain Targets: 20 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (1 -> 1.1)
 Description      : Fires an Eye Laser that hits all Doomed targets for $s1 Shadow damage.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
@@ -4648,6 +4669,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=303063)   : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 1.65600 | Radius: 0 - 25 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
+                   Hotfixed: SP Coefficient (1.44 -> 1.656)
 Description      : $@spelldesc205179
 
 Name             : Soul Effigy (id=205247) [Spell Family (5), Passive] 
@@ -4932,12 +4954,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Lord of Flames (id=226802) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Duration         : 600 seconds
 Attributes       : ........ ........ ........ ..x..x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

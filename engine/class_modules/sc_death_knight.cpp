@@ -8044,7 +8044,7 @@ struct death_knight_module_t : public module_t {
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1 - 0.39 )
       .verification_value( 3.75 );
-    */
+    
 
     hotfix::register_effect( "Death Knight", "2016-09-23", "Remorseless Winter damage increased by 50%.", 288891 )
       .field( "ap_coefficient" )
@@ -8099,6 +8099,7 @@ struct death_knight_module_t : public module_t {
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.17 )
       .verification_value( 1.5 );
+      */
   }
 
   void init( player_t* ) const override {}

@@ -6727,7 +6727,7 @@ struct hunter_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-
+    /*
     hotfix::register_effect( "Hunter", "2016-09-23", "Bestial Wrath damage bonus increased to 25%", 10779 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
@@ -6745,6 +6745,7 @@ struct hunter_module_t: public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )
       .verification_value( 100 );
+      */
 
   }
 

@@ -689,8 +689,8 @@ public:
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     starshards( 0.0 ),
-    initial_astral_power( 0 ),
     predator_rppm_rate( 0.0 ),
+    initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
     active( active_actions_t() ),
     pet_fey_moonwing(),
@@ -1804,8 +1804,11 @@ struct moonfire_t : public druid_spell_t
 
       base_multiplier *= 1.0 + p -> artifact.twilight_glow.percent();
 
-      if ( !p -> specialization() == DRUID_FERAL ) // HOTFIX
-        base_multiplier *= 1.1;                    // HOTFIX
+      if ( !( p->specialization() == DRUID_FERAL ) )
+      {
+        // HOTFIX
+        base_multiplier *= 1.1;
+      }
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -8442,7 +8445,7 @@ struct druid_module_t : public module_t
 
   virtual void register_hotfixes() const override 
   {
-
+    /*
     hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.", 232416 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
@@ -8472,6 +8475,7 @@ struct druid_module_t : public module_t
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.05 )
       .verification_value( 1.9 );
+      */
 
   }
 

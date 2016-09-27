@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -715,6 +715,7 @@ Effects          :
                    Base Value: 85 | Scaled Value: 85 | Target: Enemy(6)
 #2 (id=41296)    : School Damage: frost (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.55000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient (0.5 -> 0.55)
 Description      : Blast the target with a frigid wind, dealing $s2 $?s204088[Frost damage and applying Frost Fever to the target.][Frost damage to that foe, and ${($m1/100)*$m2} Frost damage to all other enemies within 10 yards, infecting all targets with Frost Fever.]
 
 |Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
@@ -1677,6 +1678,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=60369)    : Weapon Damage% (31)
                    Base Value: 280 | Scaled Value: 2.8 | Target: Enemy(6)
+                   Hotfixed: Base Value (250 -> 280)
 Description      : Instantly strike the enemy with your off-hand weapon, causing $sw2 Frost damage.
 
 Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Family (15)] 
@@ -1697,6 +1699,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=60373)    : Weapon Damage% (31)
                    Base Value: 380 | Scaled Value: 3.8 | Target: Enemy(6)
+                   Hotfixed: Base Value (320 -> 380)
 Description      : $@spelldesc49020
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
@@ -3100,7 +3103,8 @@ Effects          :
 #1 (id=215544)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Radius: 12 yards | Target: Cone Front(104)
 #2 (id=215545)   : School Damage: shadowfrost (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.66500 | Radius: 12 yards | Target: Cone Front(104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.75000 | Radius: 12 yards | Target: Cone Front(104)
+                   Hotfixed: AP Coefficient (1.5 -> 1.75)
 Description      : $@spelldesc152279
 
 Name             : Defile (id=156000) [Spell Family (15)] 
@@ -3727,11 +3731,13 @@ Effects          :
 Description      : Your Death and Decay deals damage $s3% more often, and while in your Death and Decay you generate $s4% more Runic Power.
 
 Name             : Rune Tap (id=194679) [Spell Family (15)] 
+Hotfixed         : Cooldown, GCD
 Class            : Death Knight
 School           : Shadow
 Resource         : 1 Rune
 Resource         : -10 Runic Power
 Duration         : 3 seconds
+Cooldown         : 1.5 seconds
 Charges          : 2 (25 seconds cooldown)
 Category         : 1645
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -4083,7 +4089,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=287339)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.79920 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.80000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Hotfixed: AP Coefficient (0.72 -> 0.8)
 Description      : Your auto attack has a chance to cause you to radiate intense cold, inflicting Frost $s1 damage on all nearby enemies.
 
 Name             : Festering Wound (id=195757) [Spell Family (15)] 
@@ -4243,6 +4250,7 @@ Attributes       : ........ ........ ........ ..xx....   ........ ........ .....
 Effects          :
 #1 (id=288891)   : School Damage: frost (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Hotfixed: AP Coefficient (0.24 -> 0.36)
 Description      : $@spelldesc196770
 
 Name             : Outbreak (id=196782) [Spell Family (15)] 
@@ -4747,11 +4755,11 @@ Effects          :
 Description      : Each charge of Bone Shield increases your maximum health by $s1%.
 
 Name             : Blood Mirror (id=206977) [Spell Family (15)] 
+Hotfixed         : GCD (1500 -> 0)
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 1
 Range            : 5 yards
-GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 101%
@@ -5094,6 +5102,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=306492)   : Weapon Damage% (31)
                    Base Value: 135 | Scaled Value: 1.35 | Radius: 8 yards | Target: Cone Front(104)
+                   Hotfixed: Base Value (120 -> 135)
 #3 (id=330163)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Radius: 8 yards | Target: Cone Front(104)
 #4 (id=345076)   : Energize Power (30)
@@ -6150,6 +6159,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=331345)   : Weapon Damage% (31)
                    Base Value: 380 | Scaled Value: 3.8 | Target: Enemy(6)
+                   Hotfixed: Base Value (320 -> 380)
 Description      : $@spelldesc49020
 
 
@@ -6171,6 +6181,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=331348)   : Weapon Damage% (31)
                    Base Value: 280 | Scaled Value: 2.8 | Target: Enemy(6)
+                   Hotfixed: Base Value (250 -> 280)
 Description      : Instantly strike the enemy with your off-hand weapon, causing $sw2 Frost damage.
 
 Name             : Consumption (id=224685) [Spell Family (15)] 

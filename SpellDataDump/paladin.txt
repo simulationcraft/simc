@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 0b5a6d1)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build d619b0c)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -688,7 +688,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 2 (4.5 seconds cooldown)
 Category         : 1627
-Affecting spells : Improved Crusader Strike (44300), Paladin (137026), Holy Paladin (137029), Sharpened Edge (184759), Blade of Light (214081), Judgment (214222)
+Affecting spells : Improved Crusader Strike (44300), Paladin (137026), Retribution Paladin (137027), Holy Paladin (137029), Sharpened Edge (184759), Blade of Light (214081), Judgment (214222)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -2257,8 +2257,10 @@ Effects          :
 #3 (id=191093)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
-#4 (id=191094)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=191094)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 13 | Scaled Value: 13 | Target: Self(1)
+                   Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (228288)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 13), Affects Spells
 #5 (id=191095)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260907)   : Apply Aura (6) | Dummy (4)
@@ -3055,7 +3057,8 @@ Effects          :
 #1 (id=267535)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=267536)   : Weapon Damage% (31)
-                   Base Value: 397 | Scaled Value: 4.45 | Points Per Level: 12 | Target: Enemy(6)
+                   Base Value: 402 | Scaled Value: 4.5 | Points Per Level: 12 | Target: Enemy(6)
+                   Hotfixed: Base Value (352 -> 402)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 Description      : Strikes an enemy with the Blade of Justice, dealing $sw2 Physical damage.
@@ -3561,7 +3564,8 @@ Effects          :
 #1 (id=298131)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=298132)   : Weapon Damage% (31)
-                   Base Value: 135 | Scaled Value: 1.35 | Target: Enemy(6)
+                   Base Value: 136 | Scaled Value: 1.36 | Target: Enemy(6)
+                   Hotfixed: Base Value (120 -> 136)
 #3 (id=298133)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 #4 (id=341688)   : Apply Aura (6) | Periodic Damage: holy every 2 seconds (3)
@@ -4527,7 +4531,8 @@ Effects          :
 #1 (id=322914)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=322915)   : Weapon Damage% (31)
-                   Base Value: 322 | Scaled Value: 3.22 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 320 | Scaled Value: 3.2 | Chain Targets: 1 | Target: Enemy(6)
+                   Hotfixed: Base Value (285 -> 320)
 #3 (id=322916)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
 #4 (id=322917)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
@@ -4716,6 +4721,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=335563)   : Weapon Damage% (31)
                    Base Value: 216 | Scaled Value: 2.16 | Target: Enemy(6)
+                   Hotfixed: Base Value (180 -> 216)
 #2 (id=335564)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc53385
@@ -4734,7 +4740,8 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=335615)   : Weapon Damage% (31)
-                   Base Value: 319 | Scaled Value: 4.29 | Points Per Level: 11 | Target: Enemy(6)
+                   Base Value: 320 | Scaled Value: 4.4 | Points Per Level: 12 | Target: Enemy(6)
+                   Hotfixed: Base Value (290 -> 320), Points per Level (11 -> 12)
 #2 (id=335616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=335617)   : Dummy (3)

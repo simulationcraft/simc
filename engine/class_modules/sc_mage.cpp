@@ -2856,7 +2856,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
       }
     }
 
-    if ( p() -> talents.quickening -> ok() )
+    if ( p() -> talents.quickening -> ok() &&
+         p() -> buffs.quickening -> check() < p() -> buffs.quickening -> max_stack() )
     {
       p() -> buffs.quickening -> trigger();
     }
@@ -2962,7 +2963,8 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
       p() -> buffs.arcane_instability -> trigger();
     }
-    if ( p() -> talents.quickening -> ok() )
+    if ( p() -> talents.quickening -> ok() &&
+         p() -> buffs.quickening -> check() < p() -> buffs.quickening -> max_stack() )
     {
       p() -> buffs.quickening -> trigger();
     }
@@ -3174,7 +3176,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     p() -> buffs.arcane_missiles -> decrement();
 
-    if ( p() -> talents.quickening -> ok() )
+    if ( p() -> talents.quickening -> ok() &&
+         p() -> buffs.quickening -> check() < p() -> buffs.quickening -> max_stack() )
     {
       p() -> buffs.quickening -> trigger();
     }
@@ -7793,7 +7796,8 @@ void mage_t::create_buffs()
                                   .cd( timespan_t::zero() )
                                   .duration( timespan_t::zero() );
   buffs.quickening            = buff_creator_t( this, "quickening", find_spell( 198924 ) )
-                                  .add_invalidate( CACHE_SPELL_HASTE );
+                                  .add_invalidate( CACHE_SPELL_HASTE )
+                                  .max_stack( 50 );
 
   // 4T18 Temporal Power buff has no duration and stacks multiplicatively
   buffs.temporal_power        = buff_creator_t( this, "temporal_power", find_spell( 190623 ) )
@@ -9577,6 +9581,7 @@ public:
 
   virtual void register_hotfixes() const override
   {
+    /*
      hotfix::register_effect( "Mage", "2016-09-24", "Arcane Missiles damage increased by 9%.", 2716 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_SET )
@@ -9641,6 +9646,8 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 7.475 )
       .verification_value( 6.50000 );
+
+      */
   }
 
   virtual bool valid() const override { return true; }

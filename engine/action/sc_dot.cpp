@@ -770,7 +770,7 @@ bool dot_t::channel_interrupt()
   assert ( ticking );
   if ( current_action->channeled )
   {
-    bool interrupt = current_action -> interrupt != 0;
+    bool interrupt = current_action -> interrupt;
     if ( !interrupt )
     {
       expr_t* expr = current_action->interrupt_if_expr;
