@@ -50,14 +50,14 @@ actions.serenity+=/strike_of_the_windlord
 actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies<3
 actions.serenity+=/fists_of_fury
 actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.spinning_crane_kick
-actions.serenity+=/rising_sun_kick,,cycle_targets=1,if=active_enemies>=3
+actions.serenity+=/rising_sun_kick,cycle_targets=1,if=active_enemies>=3
 actions.serenity+=/blackout_kick,cycle_targets=1,if=!prev_gcd.blackout_kick
 actions.serenity+=/spinning_crane_kick,if=!prev_gcd.spinning_crane_kick
 actions.serenity+=/rushing_jade_wind,if=!prev_gcd.rushing_jade_wind
 
 actions.st=call_action_list,name=cd
 actions.st+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-actions.st+=/energizing_elixir,if=energy<energy.max&chi<=1&buff.serenity.down
+actions.st+=/energizing_elixir,if=energy<energy.max&chi<=1
 actions.st+=/strike_of_the_windlord,if=talent.serenity.enabled|active_enemies<6
 actions.st+=/fists_of_fury
 actions.st+=/rising_sun_kick,cycle_targets=1

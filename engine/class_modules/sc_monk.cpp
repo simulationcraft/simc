@@ -8306,7 +8306,7 @@ void monk_t::apl_combat_windwalker()
   serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies<3" );
   serenity -> add_action( this, "Fists of Fury" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.spinning_crane_kick" );
-  serenity -> add_action( this, "Rising Sun Kick", ",cycle_targets=1,if=active_enemies>=3" );
+  serenity -> add_action( this, "Rising Sun Kick", "cycle_targets=1,if=active_enemies>=3" );
   serenity -> add_action( this, "Blackout Kick", "cycle_targets=1,if=!prev_gcd.blackout_kick" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.spinning_crane_kick" );
   serenity -> add_talent( this, "Rushing Jade Wind", "if=!prev_gcd.rushing_jade_wind" );
@@ -8318,7 +8318,7 @@ void monk_t::apl_combat_windwalker()
     if ( racial_actions[i] == "arcane_torrent" )
       st -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
   }
-  st -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1&buff.serenity.down" );
+  st -> add_talent( this, "Energizing Elixir", "if=energy<energy.max&chi<=1" );
   st -> add_action( this, "Strike of the Windlord", "if=talent.serenity.enabled|active_enemies<6" );
   st -> add_action( this, "Fists of Fury" );
   st -> add_action( this, "Rising Sun Kick", "cycle_targets=1" );
