@@ -689,8 +689,8 @@ public:
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     starshards( 0.0 ),
-    initial_astral_power( 0 ),
     predator_rppm_rate( 0.0 ),
+    initial_astral_power( 0 ),
     initial_moon_stage( NEW_MOON ),
     active( active_actions_t() ),
     pet_fey_moonwing(),
@@ -1804,8 +1804,11 @@ struct moonfire_t : public druid_spell_t
 
       base_multiplier *= 1.0 + p -> artifact.twilight_glow.percent();
 
-      if ( !p -> specialization() == DRUID_FERAL ) // HOTFIX
-        base_multiplier *= 1.1;                    // HOTFIX
+      if ( !( p->specialization() == DRUID_FERAL ) )
+      {
+        // HOTFIX
+        base_multiplier *= 1.1;
+      }
     }
 
     dot_t* get_dot( player_t* t ) override

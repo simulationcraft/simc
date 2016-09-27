@@ -472,7 +472,7 @@ action_t::action_t( action_e       ty,
   resource_consumed              = 0.0;
   moving                         = -1;
   wait_on_ready                  = -1;
-  interrupt                      = 0;
+  interrupt                      = false;
   chain                          = 0;
   cycle_targets                  = 0;
   cycle_players                  = 0;

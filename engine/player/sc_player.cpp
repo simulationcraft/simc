@@ -8296,7 +8296,7 @@ artifact_power_t player_t::find_artifact_spell( const std::string& name, bool to
   auto rank_index = total_ranks - 1;
 
   // Rank data missing for the power
-  if ( rank_index > ranks.size() - 1 )
+  if ( rank_index + 1 > as<int>(ranks.size()) )
   {
     if ( sim -> debug )
     {

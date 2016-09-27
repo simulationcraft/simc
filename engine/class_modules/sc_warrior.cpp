@@ -4084,7 +4084,7 @@ struct ignore_pain_t: public warrior_spell_t
   void impact( action_state_t* s ) override
   {
     double amount;
-    double castAmount;
+    double castAmount; // FIXME: 2016-09-27: variable ‘castAmount’ set but not used [-Wunused-but-set-variable]
 
     amount = s -> result_amount;
     amount *= ( resource_consumed / ( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );

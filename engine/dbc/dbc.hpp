@@ -1756,7 +1756,8 @@ private:
   void populate( index_t& idx, T* list )
   {
     assert( list );
-    for ( auto last_id = 0U; KeyPolicy::id( *list ); last_id = KeyPolicy::id( *list ), ++list )
+    // for ( auto last_id = 0U; KeyPolicy::id( *list ); last_id = KeyPolicy::id( *list ), ++list )
+    for ( ; KeyPolicy::id( *list ); ++list )
     {
       idx.push_back( list );
     }
