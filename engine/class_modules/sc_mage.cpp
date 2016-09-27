@@ -2856,7 +2856,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
       }
     }
 
-    if ( p() -> talents.quickening -> ok() )
+    if ( p() -> talents.quickening -> ok() &&
+         p() -> buffs.quickening -> check() < p() -> buffs.quickening -> max_stack() )
     {
       p() -> buffs.quickening -> trigger();
     }
@@ -2962,7 +2963,8 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
       p() -> buffs.arcane_instability -> trigger();
     }
-    if ( p() -> talents.quickening -> ok() )
+    if ( p() -> talents.quickening -> ok() &&
+         p() -> buffs.quickening -> check() < p() -> buffs.quickening -> max_stack() )
     {
       p() -> buffs.quickening -> trigger();
     }
@@ -3174,7 +3176,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     p() -> buffs.arcane_missiles -> decrement();
 
-    if ( p() -> talents.quickening -> ok() )
+    if ( p() -> talents.quickening -> ok() &&
+         p() -> buffs.quickening -> check() < p() -> buffs.quickening -> max_stack() )
     {
       p() -> buffs.quickening -> trigger();
     }
