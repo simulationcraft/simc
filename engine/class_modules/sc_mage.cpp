@@ -2015,7 +2015,7 @@ struct arcane_mage_spell_t : public mage_spell_t
   {
     double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent() +
                           ( p() -> composite_mastery() *
-                           ( p() -> spec.savant -> effectN( 2 ).mastery_value() );
+                           p() -> spec.savant -> effectN( 2 ).mastery_value() );
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
 
   }
