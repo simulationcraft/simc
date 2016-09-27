@@ -2931,7 +2931,8 @@ struct mind_sear_tick_t final : public priest_spell_t
   // TODO: Mind Sear is missing damage information in spell data
   mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear )
     : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
-      insanity_gain( 1 )  // TODO: Missing from spell data
+      insanity_gain( 1.5 )  // TODO: Missing from spell data - Hotfixed to 1.5 
+                            // from 1 on 2016-09-26.
   {
     background  = true;
     dual        = true;
@@ -3443,21 +3444,9 @@ struct shadow_word_pain_t final : public priest_spell_t
       m *= 1.0 + priest.cache.mastery_value();
     }
 
-    // Hotfixed 2016-09-24 The benefit of Mass Hysteria (Artifact Trait) is now capped at 100%.
-    // Note: We want it to be rewarding when you're able to maintain Surrender to Madness for
-    // an extremely long time, but the amount of damage this trait was contributing in those
-    // circumstances was excessive.
-
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      double stacks;
-
-      if ( priest.buffs.voidform -> stack() >= 50 )
-        stacks = 50;
-      else
-        stacks = priest.buffs.voidform -> stack();
-
-      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * stacks );
+      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * priest.buffs.voidform -> stack() );
     }
 
     return m;
@@ -3631,21 +3620,9 @@ struct vampiric_touch_t final : public priest_spell_t
       m *= 1.0 + priest.cache.mastery_value();
     }
 
-    // Hotfixed 2016-09-24 The benefit of Mass Hysteria (Artifact Trait) is now capped at 100%.
-    // Note: We want it to be rewarding when you’re able to maintain Surrender to Madness for
-    // an extremely long time, but the amount of damage this trait was contributing in those
-    // circumstances was excessive.
-
     if ( priest.artifact.mass_hysteria.rank() )
     {
-      double stacks;
-
-      if ( priest.buffs.voidform -> stack() >= 50 )
-        stacks = 50;
-      else
-        stacks = priest.buffs.voidform -> stack();
-
-      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * stacks );
+      m *= 1.0 + ( priest.artifact.mass_hysteria.percent() * priest.buffs.voidform -> stack() );
     }
 
     return m;
@@ -5114,15 +5091,13 @@ struct voidform_t final : public priest_buff_t<buff_t>
   bool freeze_stacks( ) override
   {
     // Hotfixed 9-24-2016: Voidform stacks no longer increase while Dispersion
-    // and Void Torrent are active.
+    // is active.
     // Note: These abilities prevent Insanity drain from increasing while
     // active, which effectively reduces the Insanity drain for the entire
     // remainder the current Voidform. This was proving to be too powerful, so
     // we're now making sure that the damage bonus and Insanity drain from
     // Voidform remain in sync.
     if ( priest.buffs.dispersion->check() )
-      return true;
-    if ( priest.buffs.void_torrent->check() )
       return true;
     return false;
   }
@@ -7302,6 +7277,29 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Priest", "2016-09-26", "Mind Sear damage increased by 80% and Insanity generation increased by 50%.", 326288 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.80 )
+      .verification_value( 0.30 );
+
+    hotfix::register_effect( "Priest", "2016-09-26", "Mind Flay damage increased by 20%.", 7301 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.20 )
+      .verification_value( 0.50 );
+
+    hotfix::register_effect( "Priest", "2016-09-26", "Mind Spike damage increased by 28%.", 66820 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.28 )
+      .verification_value( 0.35 );
+
+    hotfix::register_spell( "Priest", "2016-09-26", "Void Ray maximum stacks reduced to 4.", 205372 )
+      .field( "max_stack" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 4.0 )
+      .verification_value( 5.0 );
   }
 
   void combat_begin( sim_t* ) const override
