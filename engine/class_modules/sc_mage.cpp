@@ -2015,7 +2015,7 @@ struct arcane_mage_spell_t : public mage_spell_t
   {
     double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent() +
                           ( p() -> composite_mastery() *
-                           ( p() -> spec.savant -> effectN( 2 ).mastery_value() * 1.2 ) ); // HOTFIX:: 1.2 mastery value hotfix, super lazy.
+                           ( p() -> spec.savant -> effectN( 2 ).mastery_value() );
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
 
   }
@@ -3419,8 +3419,6 @@ struct blizzard_t : public frost_mage_spell_t
     parse_options( options_str );
     may_miss     = false;
     ignore_false_positive = true;
-    // HOTFIX mana cost
-    base_costs[ RESOURCE_MANA ] = 22500;
     snapshot_flags = STATE_HASTE;
     dot_duration = data().duration();
     base_tick_time = timespan_t::from_seconds( 1.0 );
@@ -8583,7 +8581,7 @@ double mage_t::mana_regen_per_second() const
 
   if ( spec.savant -> ok() )
   {
-    mps *= 1.0 + composite_mastery() * ( spec.savant -> effectN( 1 ).mastery_value() * 1.2 ); // HOTFIX:: super lazy.
+    mps *= 1.0 + composite_mastery() * ( spec.savant -> effectN( 1 ).mastery_value() );
   }
 
   // This, technically, is not correct. The buff itself, ticking every 1s, should
@@ -8649,7 +8647,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
   if ( spec.savant -> ok() )
   {
     resources.max[ rt ] *= 1.0 +
-      composite_mastery() * ( spec.savant -> effectN( 1 ).mastery_value() * 1.2 ); // HOTFIX: super lazy
+      composite_mastery() * ( spec.savant -> effectN( 1 ).mastery_value() );
     resources.current[ rt ] = resources.max[ rt ] * mana_percent;
     if ( sim -> debug )
     {
@@ -9580,75 +9578,7 @@ public:
   }
 
   virtual void register_hotfixes() const override
-  {
-    /*
-     hotfix::register_effect( "Mage", "2016-09-24", "Arcane Missiles damage increased by 9%.", 2716 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.3815 )
-      .verification_value( 0.35000 );
-
-    hotfix::register_effect( "Mage", "2016-09-24", "Arcane Blast damage increased by 10%.", 20028 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.65 )
-      .verification_value( 1.50000 );
-
-    hotfix::register_effect( "Mage", "2016-09-24", "Frostbolt damage increased by 8%", 344284 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.998 )
-      .verification_value( 1.85 );
-
-    hotfix::register_effect( "Mage", "2016-09-24", "Ice Lance damage increased by 13%.", 344285 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.8588 )
-      .verification_value( 0.76000 );
-
-    hotfix::register_effect( "Mage", "2016-09-24", "Flurry damage increased by 38%.", 343734 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.449 )
-      .verification_value( 1.05000 );
-
-    hotfix::register_effect( "Mage", "2016-09-24", "Blizzard damage increased by 36%, and mana cost reduced by 50%.", 278848 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.449208 )
-      .verification_value( 0.33030 );
-
-    hotfix::register_effect( "Mage", "2016-09-24", "Splitting Ice (Talent) now causes 80% of normal damage (up from 50%).", 136440 )
-      .field( "scaled_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 80 )
-      .verification_value( 50 );
-    hotfix::register_effect( "Mage", "2016-09-24", "Splitting Ice (Talent) now causes 80% of normal damage (up from 50%).", 136440 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 80 )
-      .verification_value( 50 );
-
-    hotfix::register_effect( "Mage", "2016-09-24", "Ice Nova (Talent) damage increased by 13%.", 220384 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 4.52 )
-      .verification_value( 4.00000 );
-
-    hotfix::register_effect( "Mage", "2016-09-24", "Ray of Frost (Talent) damage increased by 28%.", 303101 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.856 )
-      .verification_value( 1.45000 );
-
-    hotfix::register_effect( "Mage", "2016-09-24", "Glacial Spike (Talent) damage increased by 15%.", 344289 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 7.475 )
-      .verification_value( 6.50000 );
-
-      */
-  }
+  { }
 
   virtual bool valid() const override { return true; }
   virtual void init        ( player_t* ) const override {}
