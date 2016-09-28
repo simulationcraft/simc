@@ -3148,7 +3148,13 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     arcane_mage_spell_t::execute();
 
+    if ( rhonins_assaulting_armwraps_proc_rate > 0 && rng().roll( rhonins_assaulting_armwraps_proc_rate ) )
+    {
+      p() -> buffs.rhonins_assaulting_armwraps -> trigger();
+    }
+
     p() -> buffs.arcane_instability -> expire();
+
     if ( p() -> buffs.arcane_power -> check() &&
          p() -> talents.overpowered -> ok() )
     {
@@ -3191,12 +3197,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   void tick ( dot_t* d ) override
   {
-
-    if ( rhonins_assaulting_armwraps_proc_rate > 0 && rng().roll( rhonins_assaulting_armwraps_proc_rate ) )
-    {
-      p() -> buffs.rhonins_assaulting_armwraps -> trigger();
-    }
-
     arcane_mage_spell_t::tick( d );
   }
   void last_tick ( dot_t * d ) override
