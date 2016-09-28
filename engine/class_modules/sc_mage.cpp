@@ -5808,6 +5808,10 @@ struct nether_tempest_t : public arcane_mage_spell_t
     nether_tempest_aoe( new nether_tempest_aoe_t( p ) )
   {
     parse_options( options_str );
+
+    // Disable default AM proc logic due to early refresh proc behavior
+    triggers_arcane_missiles = false;
+
     add_child( nether_tempest_aoe );
   }
 
@@ -5817,12 +5821,28 @@ struct nether_tempest_t : public arcane_mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      double am_proc_chance =  p() -> buffs.arcane_missiles -> proc_chance();
+
+      player_t* nt_target = execute_state -> target;
       if ( p() -> last_bomb_target != nullptr &&
-           p() -> last_bomb_target != execute_state -> target )
+           p() -> last_bomb_target != nt_target )
       {
         td( p() -> last_bomb_target ) -> dots.nether_tempest -> cancel();
       }
-      p() -> last_bomb_target = execute_state -> target;
+      else
+      {
+        timespan_t nt_remains =
+          td( nt_target ) -> dots.nether_tempest -> remains();
+
+        if ( nt_remains > data().duration() * 0.3 )
+        {
+          double elapsed = std::min( 1.0, nt_remains / data().duration() );
+          am_proc_chance *= 1.0 - elapsed;
+        }
+      }
+
+      trigger_am( "Nether Tempest", am_proc_chance );
+      p() -> last_bomb_target = nt_target;
     }
   }
 
