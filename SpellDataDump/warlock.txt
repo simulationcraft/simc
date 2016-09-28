@@ -518,7 +518,6 @@ School           : Fire
 Resource         : 3 Soul Shard
 Spell Level      : 38
 Range            : 35 yards
-Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Affecting spells : Reverse Entropy (205148), 
@@ -4751,7 +4750,7 @@ Description      : |cFFFFCC99Thal'kiel|r drains $s2% of the life from your demon
 Name             : Thal'kiel's Consumption (id=211715) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
-Range            : 40 yards
+Range            : 100 yards
 Velocity         : 25 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ........ 
@@ -4955,12 +4954,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Lord of Flames (id=226802) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Duration         : 600 seconds
 Attributes       : ........ ........ ........ ..x..x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
