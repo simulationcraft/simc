@@ -1736,8 +1736,8 @@ void item::convergence_of_fates( special_effect_t& effect )
 
 // Twisting Wind ============================================================
 /* FIXME: How many times does this really hit? It has a small radius and
-  moves around so it doesn't hit every tick.
-   TOCHECK: Does this AoE stack? */
+  moves around so it doesn't hit every tick. A: Large mobs will get >80-90% of ticks. Normal mobs will get 30-50% ticks.
+   TOCHECK: Does this AoE stack? A: Sort of, yes. */
 
 struct tormenting_cyclone_t : public proc_spell_t
 {
@@ -1764,7 +1764,7 @@ struct tormenting_cyclone_t : public proc_spell_t
       .duration( data().duration() )
       .start_time( sim -> current_time() )
       .action( damage_spell )
-      .pulse_time( timespan_t::from_seconds( 1.0 ) ) );
+      .pulse_time( timespan_t::from_seconds( 2.0 ) ) ); //NOTE: We double the pulse time here from 1.0 in game to 2.0 to model the near 50% miss rate this trinket has.
   }
 };
 
