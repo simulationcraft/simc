@@ -2493,19 +2493,23 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
+  void init() override
+  {
+    monk_melee_attack_t::init();
+
+    snapshot_flags &= ~STATE_VERSATILITY; // Is not affected by versatility.
+    snapshot_flags &= ~STATE_AP;
+    snapshot_flags &= ~STATE_MUL_PERSISTENT;
+    snapshot_flags &= ~STATE_MUL_TA;
+    snapshot_flags &= ~STATE_HASTE;
+    snapshot_flags &= ~STATE_MUL_DA;
+    snapshot_flags &= ~STATE_MUL_TA;
+  }
+
   // Force 250 milliseconds for the animation, but not delay the overall GCD
   timespan_t execute_time() const override
   {
     return timespan_t::from_millis( 250 );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    am *= p() -> artifact.tornado_kicks.data().effectN( 1 ).percent();
-
-    return am;
   }
 
   virtual double cost() const override
@@ -2654,9 +2658,10 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
         if ( p() -> artifact.tornado_kicks.rank() )
         {
+          double raw = s -> result_raw * p() -> artifact.tornado_kicks.data().effectN( 1 ).percent();
           rsk_tornado_kick -> target = s -> target;
-          rsk_tornado_kick -> base_dd_max = s -> result_raw;
-          rsk_tornado_kick -> base_dd_min = s -> result_raw;
+          rsk_tornado_kick -> base_dd_max = raw;
+          rsk_tornado_kick -> base_dd_min = raw;
           rsk_tornado_kick -> execute();
         }
       }
