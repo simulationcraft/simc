@@ -178,6 +178,7 @@ public:
   // Retreat.
   double target_reach;
   event_t* exiting_melee;  // Event to disable melee abilities mid-VR.
+  double initial_fury;
 
   timespan_t sigil_delay; // The amount of time it takes for a sigil to activate.
   timespan_t sigil_of_flame_activates; // When sigil of flame will next activate.
@@ -4998,6 +4999,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     spirit_bomb( 0.0 ),
     spirit_bomb_driver( nullptr ),
     target_reach( -1.0 ),
+    initial_fury( 0 ),
     exiting_melee( nullptr ),
     sigil_of_flame_activates( timespan_t::zero() ),
     buff(),
@@ -5600,6 +5602,7 @@ void demon_hunter_t::create_options()
   player_t::create_options();
 
   add_option( opt_float( "target_reach", target_reach ) );
+  add_option( opt_float( "initial_fury", initial_fury ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -5758,7 +5761,7 @@ void demon_hunter_t::init_resources( bool force )
       resources.current[ RESOURCE_HEALTH ] = resources.max[ RESOURCE_HEALTH ];
   }
 
-  resources.current[ RESOURCE_FURY ] = 0;
+  resources.current[ RESOURCE_FURY ] = initial_fury;
   resources.current[ RESOURCE_PAIN ] = 0;
   expected_max_health = calculate_expected_max_health();
 }
@@ -6305,8 +6308,8 @@ void demon_hunter_t::apl_havoc()
                    "if=buff.metamorphosis.down&spell_targets>=2" );
   def -> add_action( this, "Chaos Strike",
                    "if=(!talent.momentum.enabled|buff.momentum.up|fury.defic"
-    "it<=30+buff.prepared.up*8)&!variable.pooling_for_meta&(!talent.demonic."
-    "enabled|!cooldown.eye_beam.ready)" );
+    "it<=30+buff.prepared.up*8|talent.demon_blades.enabled)&!variable.poolin"
+    "g_for_meta&(!talent.demonic.enabled|!cooldown.eye_beam.ready)" );
   def -> add_talent( this, "Fel Barrage",
                    "if=charges=4&buff.metamorphosis.down&(buff.momentum.up|!"
                    "talent.momentum.enabled)&(active_enemies>desired_targets|"
