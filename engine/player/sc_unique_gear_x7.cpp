@@ -1796,13 +1796,19 @@ struct bloodthirsty_instinct_cb_t : public dbc_proc_callback_t
   void trigger( action_t* a, void* call_data ) override
   {
     assert( rppm );
-
+    
     action_state_t* s = static_cast<action_state_t*>( call_data );
 
     assert( s -> target );
 
-    // Set RPPM modifier by target's health percentage. Linear chance increase from 0% to 100% health deficit.
-    double mod = ( 200.0 - s -> target -> health_percentage() ) / 100.0;
+    /* Sep 29 2016: From 33 Heroic Ursoc logs, actors averaged 40.75% uptime.
+    3 RPPM (from spell data) translates to ~45% uptime. Assuming that is the
+    peak RPPM, I adjusted the "base" proc rate down until the average uptime
+    fit the observed uptime in the logs
+    
+    End result here is: 2.25 RPPM scaling linearly with the target's health
+    deficit up to a maximum of 3.00 RPPM */
+    double mod = 0.75 + 0.25 * ( 100.0 - s -> target -> health_percentage() ) / 100.0;
 
     if ( effect.player -> sim -> debug )
       effect.player -> sim -> out_debug.printf( "Player %s adjusts %s rppm modifier: old=%.3f new=%.3f",
