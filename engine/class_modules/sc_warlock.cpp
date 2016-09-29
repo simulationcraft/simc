@@ -2595,7 +2595,8 @@ struct unstable_affliction_t: public warlock_spell_t
     unstable_affliction_t* echos;
 
     unstable_affliction_dot_t( warlock_t* p ):
-      base_t( "unstable_affliction", p, p -> spec.unstable_affliction )
+      base_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
+      echos( nullptr )
     {
       dual = true;
       tick_may_crit = hasted_ticks = true;
@@ -2667,7 +2668,7 @@ struct unstable_affliction_t: public warlock_spell_t
         return;
       }
 
-      if ( !echos )
+      if ( echos == nullptr )
       {
         return;
       }
