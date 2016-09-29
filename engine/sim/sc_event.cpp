@@ -9,25 +9,28 @@
 // Event
 // ==========================================================================
 
-event_t::event_t( sim_t& s, actor_t* a ) :
-  _sim( s ), next( nullptr ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), recycled( false )
+event_t::event_t( sim_t& s, actor_t* a )
+  : _sim( s ),
+    next( nullptr ),
+    time( timespan_t::zero() ),
+    reschedule_time( timespan_t::zero() ),
+    id( 0 ),
+    canceled( false ),
+    recycled( false )
 #if ACTOR_EVENT_BOOKKEEPING
-  ,actor( a )
+    ,
+    actor( a )
 #endif
 {
-#if ! ACTOR_EVENT_BOOKKEEPING
+#if !ACTOR_EVENT_BOOKKEEPING
   (void)a;
 #endif
-  }
+}
 
-event_t::event_t( actor_t& a ) :
-  _sim( *a.sim ), next( nullptr ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), recycled( false )
-#if ACTOR_EVENT_BOOKKEEPING
-  ,actor( &a )
-#endif
-{}
+event_t::event_t( actor_t& a )
+  : event_t( *a.sim, &a )
+{
+}
 
 // event_t::reschedule ======================================================
 
