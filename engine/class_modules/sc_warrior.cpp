@@ -473,6 +473,7 @@ public:
   double    composite_attribute( attribute_e attr ) const override;
   double    composite_rating_multiplier( rating_e rating ) const override;
   double    composite_player_multiplier( school_e school ) const override;
+  double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_melee_haste() const override;
   double    composite_armor_multiplier() const override;
@@ -676,19 +677,6 @@ public:
     }
 
     return c;
-  }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double am = ab::composite_target_multiplier( target );
-
-    if ( td( target ) -> debuffs_colossus_smash -> up() )
-    {
-      am *= 1.0 + ( td( target ) -> debuffs_colossus_smash -> value() + p() -> cache.mastery_value() )
-                * ( 1.0 + p() -> talents.titanic_might -> effectN( 2 ).percent() );
-    }
-
-    return am;
   }
 
   virtual void execute() override
@@ -1671,7 +1659,7 @@ struct corrupted_blood_of_zakajz_t : public residual_action::residual_periodic_a
   void impact( action_state_t* s ) override
   {
     residual_periodic_action_t::impact( s );
-    composite_target_mult = warrior_spell_t::composite_target_multiplier( s -> target ); // Yeah, it snapshots colossus smash. 
+    composite_target_mult = p() -> composite_player_target_multiplier( s -> target, s -> action -> get_school() ); // Yeah, it snapshots colossus smash. 
   }
 };
 
@@ -5598,6 +5586,23 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.fujiedas_fury -> check_stack_value();
   m *= 1.0 + artifact.titanic_power.percent();
   m *= 1.0 + artifact.unbreakable_steel.percent();
+
+  return m;
+}
+
+// warrior_t::composite_player_target_multiplier ==============================
+
+double warrior_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  warrior_td_t* td = get_target_data( target );
+
+  if ( td -> debuffs_colossus_smash -> up() )
+  {
+    m *= 1.0 + ( td -> debuffs_colossus_smash -> value() + cache.mastery_value() )
+      * ( 1.0 + talents.titanic_might -> effectN( 2 ).percent() );
+  }
 
   return m;
 }
