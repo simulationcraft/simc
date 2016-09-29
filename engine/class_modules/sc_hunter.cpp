@@ -3265,7 +3265,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     focus_gain = p -> find_spell( 187675 ) -> effectN( 1 ).base_value();
   }
 
-  virtual void try_steady_focus() override
+  void try_steady_focus() override
   {
     trigger_steady_focus( true );
   }

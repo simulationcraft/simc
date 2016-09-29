@@ -1507,15 +1507,28 @@ void item::marfisis_giant_censer( special_effect_t& effect )
 }
 
 // Spontaneous Appendages ===================================================
+struct spontaneous_appendages_t: public proc_spell_t
+{
+  spontaneous_appendages_t( player_t* p, unsigned int spell_id ):
+    proc_spell_t( "spontaneous_appendages",
+                  p, p -> find_spell( spell_id ), nullptr )
+  {
+    // Spell data has no radius, so manually make it an AoE.
+    radius = 8.0;
+    aoe = -1; 
+  }
+
+  dmg_e amount_type( const action_state_t*, bool ) const override
+  {
+    return DMG_OVER_TIME; // It's a physical attack that isn't reduced by armor. 
+  }
+};
 
 void item::spontaneous_appendages( special_effect_t& effect )
 {
   // Set trigger spell so we can create an action from it.
   effect.trigger_spell_id = effect.trigger() -> effectN( 1 ).trigger() -> id();
-  action_t* slam = effect.create_action();
-  // Spell data has no radius, so manually make it an AoE.
-  slam -> radius = 8.0;
-  slam -> aoe = -1;
+  action_t* slam = new spontaneous_appendages_t( effect.player, effect.trigger_spell_id  );
 
   // Reset trigger spell, we don't want the proc to trigger an action.
   effect.trigger_spell_id = 0;
