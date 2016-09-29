@@ -479,6 +479,7 @@ public:
   virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      create_options() override;
@@ -739,19 +740,6 @@ public:
   {
     if ( p() -> talents.steady_focus -> ok() )
       p() -> buffs.pre_steady_focus -> expire();
-  }
-
-  virtual double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double d = ab::composite_target_da_multiplier( t );
-
-    if ( ab::school == SCHOOL_PHYSICAL )
-      d *= 1.0 + td( t ) -> debuffs.t18_2pc_open_wounds -> value();
-
-    if ( td( t ) -> debuffs.mark_of_helbrine -> up() )
-      d *= 1.0 + td( t ) -> debuffs.mark_of_helbrine -> value();
-
-    return d;
   }
 };
 
@@ -6352,6 +6340,22 @@ double hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + artifacts.voice_of_the_wild_gods.percent();
 
   return m;
+}
+
+// composite_player_target_multiplier ====================================
+
+double hunter_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double d = player_t::composite_player_target_multiplier( target, school );
+  hunter_td_t* td = get_target_data( target );
+
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && td -> debuffs.t18_2pc_open_wounds -> up() )
+    d *= 1.0 + td -> debuffs.t18_2pc_open_wounds -> value();
+
+  if ( td -> debuffs.mark_of_helbrine -> up() )
+    d *= 1.0 + td -> debuffs.mark_of_helbrine -> value();
+
+  return d;
 }
 
 // hunter_t::composite_mastery_value  ====================================

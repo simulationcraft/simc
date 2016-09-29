@@ -312,7 +312,7 @@ public:
     buff_t* ember_totem;
     haste_buff_t* tailwind_totem;
 
-    // Stormlaash
+    // Stormlash
     stormlash_buff_t* stormlash;
   } buff;
 
@@ -612,6 +612,7 @@ public:
   double    composite_spell_power( school_e school ) const override;
   double    composite_spell_power_multiplier() const override;
   double    composite_player_multiplier( school_e school ) const override;
+  double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   action_t* create_proc_action( const std::string& /* name */, const special_effect_t& ) override;
@@ -1028,19 +1029,6 @@ public:
 
   shaman_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
-
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = ab::composite_target_multiplier( target );
-
-    if ( td( target ) -> debuff.earthen_spike -> up() &&
-         ( dbc::is_school( ab::school, SCHOOL_PHYSICAL ) || dbc::is_school( ab::school, SCHOOL_NATURE ) ) )
-    {
-      m *= td( target ) -> debuff.earthen_spike -> check_value();
-    }
-
-    return m;
-  }
 
   virtual double composite_maelstrom_gain_coefficient( const action_state_t* ) const
   {
@@ -7054,6 +7042,23 @@ double shaman_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.eotn_fire -> stack_value();
   m *= 1.0 + buff.eotn_shock -> stack_value();
   m *= 1.0 + buff.eotn_chill -> stack_value();
+
+  return m;
+}
+
+// shaman_t::composite_player_target_multiplier ==============================
+
+double shaman_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  shaman_td_t* td = get_target_data( target );
+
+  if ( td -> debuff.earthen_spike -> up() &&
+    ( dbc::is_school( school, SCHOOL_PHYSICAL ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
+  {
+    m *= td -> debuff.earthen_spike -> check_value();
+  }
 
   return m;
 }
