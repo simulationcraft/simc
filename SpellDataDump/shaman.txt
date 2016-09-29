@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 4946667)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2180,11 +2180,13 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=127188)   : School Damage: fire (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.61000 | Chain Multiplier: 1.1 | Chain Targets: 5 | Target: Enemy(6)
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.98000 | Chain Multiplier: 1.1 | Chain Targets: 5 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (1.61 -> 1.98)
 #2 (id=188522)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #3 (id=325441)   : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4
+                   Base Value: 6 | Scaled Value: 6
+                   Hotfixed: Base Value (4 -> 6)
 Description      : Unleashes a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Damage is increased by $s2% after each jump. Affects $x1 total targets.  
 
 |cFFFFFFFFGenerates $s3 Maelstrom per target hit.|r 
@@ -2237,7 +2239,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128188)   : School Damage: fire (2)
-                   Base Value: 190 | Scaled Value: 0 (avg=0.816, dl=0.133) | Points Per Level: 1.9 | Value Range: 27 | SP Coefficient: 1.61000 | Chain Multiplier: 1.1 | Chain Targets: 5 | Target: Enemy(6)
+                   Base Value: 190 | Scaled Value: 0 (avg=0.816, dl=0.133) | Points Per Level: 1.9 | Value Range: 27 | SP Coefficient: 1.98000 | Chain Multiplier: 1.1 | Chain Targets: 5 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (1.61 -> 1.98)
 Description      : Unleash a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Affects up to $x1 total targets.
 
 Name             : Ancestral Guidance (id=114911) 

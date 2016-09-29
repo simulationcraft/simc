@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 4946667)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -2334,6 +2334,7 @@ Tooltip          : Autoattacks deal pure Shadow damage.
 Combo-point-generating attacks generate $s2 additional combo point.
 
 Name             : Shadow Blade (id=121473) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadow
 Range            : 30 yards
@@ -2344,7 +2345,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
 #1 (id=150592)   : Weapon Damage% (31)
@@ -2352,6 +2353,7 @@ Effects          :
 Description      : Strike with dark energy, dealing Shadow damage equal to $s1% weapon damage.
 
 Name             : Shadow Blade Off-hand (id=121474) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadow
 Range            : 30 yards
@@ -2361,7 +2363,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
 #1 (id=150593)   : Weapon Damage% (31)

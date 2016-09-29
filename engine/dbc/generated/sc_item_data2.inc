@@ -27287,7 +27287,7 @@ static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
   {    0,    0,  0,      0,      0,  0 },
 };
 
-#define ITEM_BONUS_MAP_SIZE (12308)
+#define ITEM_BONUS_MAP_SIZE (12309)
 
 // Item bonus map, wow build 22624
 static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE] = {
@@ -39598,6 +39598,7 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
   { 48996, 141594,  553 },
   { 48997, 142526,  466 },
   { 48999, 142526,  553 },
+  { 51738, 140587,  286 },
   {     0,      0,    0 },
 };
 
