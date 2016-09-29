@@ -131,7 +131,8 @@ public:
 
   static expr_t* parse( action_t*, const std::string& expr_str,
                         bool optimize = false );
-  static expr_t* create_constant( const std::string& name, double value );
+  template<class T>
+  static expr_t* create_constant( const std::string& name, T value );
 
   virtual expr_t* optimize( int /* spacing */ = 0 )
   { /* spacing = 0; */
@@ -255,3 +256,10 @@ inline expr_t* make_mem_fn_expr( const std::string& name, T& t, F f )
 {
   return make_fn_expr( name, std::bind( std::mem_fn( f ), &t ) );
 }
+
+template<class T>
+inline expr_t* expr_t::create_constant( const std::string& name, T value )
+{
+  return new const_expr_t( name, coerce(value) );
+}
+

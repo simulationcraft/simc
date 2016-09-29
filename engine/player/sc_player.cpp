@@ -9122,41 +9122,11 @@ expr_t* player_t::create_expression( action_t* a,
 
     if ( splits[ 2 ] == "enabled" )
     {
-      if ( sim -> optimize_expressions )
-        return expr_t::create_constant( expression_str, power.rank() > 0 ? 1.0 : 0.0 );
-      else
-      {
-        struct ap_enabled_expr_t : public player_expr_t
-        {
-          bool enabled;
-
-          ap_enabled_expr_t( const std::string& name, player_t& p, const artifact_power_t& a ) :
-            player_expr_t( name, p ), enabled( a.rank() > 0 ) {}
-          double evaluate() override
-          { return enabled ? 1.0 : 0.0; }
-        };
-
-        return new ap_enabled_expr_t( expression_str, *this, power );
-      }
+      return expr_t::create_constant( expression_str, power.rank() > 0 ? 1.0 : 0.0 );
     }
     else if ( splits[ 2 ] == "rank" )
     {
-      if ( sim -> optimize_expressions )
-        return expr_t::create_constant( expression_str, power.rank() );
-      else
-      {
-        struct ap_rank_expr_t : public player_expr_t
-        {
-          double rank;
-
-          ap_rank_expr_t( const std::string& name, player_t& p, const artifact_power_t& a ) :
-            player_expr_t( name, p ), rank( a.rank() ) {}
-          double evaluate() override
-          { return rank; }
-        };
-
-        return new ap_rank_expr_t( expression_str, *this, power );
-      }
+      return expr_t::create_constant( expression_str, power.rank() );
     }
   }
   else if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" )

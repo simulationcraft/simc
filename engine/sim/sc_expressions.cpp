@@ -8,14 +8,14 @@
 
 namespace expression {
 
-const bool EXPRESSION_DEBUG = false;
+const bool EXPRESSION_DEBUG = true;
 
 namespace
 {  // ANONYMOUS ====================================================
 
 // Unary Operators ==========================================================
 
-template <double ( *F )( double )>
+template <class F>
 class expr_unary_t : public expr_t
 {
   expr_t* input;
@@ -34,32 +34,33 @@ public:
 
   double evaluate() override  // override
   {
-    return F( input->eval() );
+    return F()( input->eval() );
   }
 };
 
 namespace unary
 {
-inline double minus( double val )
+struct abs
 {
-  return -val;
-}
-inline double lnot( double val )
+  double operator()( const double& val ) const
+  {
+    return std::fabs( val );
+  }
+};
+struct floor
 {
-  return val == 0;
-}
-inline double abs( double val )
+  double operator()( const double& val ) const
+  {
+    return std::floor( val );
+  }
+};
+struct ceil
 {
-  return std::fabs( val );
-}
-inline double floor( double val )
-{
-  return std::floor( val );
-}
-inline double ceil( double val )
-{
-  return std::ceil( val );
-}
+  double operator()( const double& val ) const
+  {
+    return std::ceil( val );
+  }
+};
 }
 
 expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
@@ -69,9 +70,9 @@ expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
     case TOK_PLUS:
       return input;  // No need to modify input
     case TOK_MINUS:
-      return new expr_unary_t<unary::minus>( name, op, input );
+      return new expr_unary_t<std::negate<double>>( name, op, input );
     case TOK_NOT:
-      return new expr_unary_t<unary::lnot>( name, op, input );
+      return new expr_unary_t<std::logical_not<double>>( name, op, input );
     case TOK_ABS:
       return new expr_unary_t<unary::abs>( name, op, input );
     case TOK_FLOOR:
@@ -206,7 +207,7 @@ expr_t* select_binary( const std::string& name, token_e op, expr_t* left,
 
 // Analyzing Unary Operators ================================================
 
-template <double ( *F )( double )>
+template <class F>
 class expr_analyze_unary_t : public expr_t
 {
   expr_t* input;
@@ -224,7 +225,7 @@ public:
 
   double evaluate() override  // override
   {
-    return F( input->eval() );
+    return F()( input->eval() );
   }
 
   expr_t* optimize( int spacing ) override  // override
@@ -235,7 +236,7 @@ public:
     double input_value;
     if ( input->is_constant( &input_value ) )
     {
-      double result = F( input_value );
+      double result = F()( input_value );
       if ( EXPRESSION_DEBUG )
         printf( "%*d %s unary expression reduced to %f\n", spacing, id(),
                 name(), result );
@@ -257,9 +258,9 @@ expr_t* select_analyze_unary( const std::string& name, token_e op,
     case TOK_PLUS:
       return input;
     case TOK_MINUS:
-      return new expr_analyze_unary_t<unary::minus>( name, op, input );
+      return new expr_analyze_unary_t<std::negate<double>>( name, op, input );
     case TOK_NOT:
-      return new expr_analyze_unary_t<unary::lnot>( name, op, input );
+      return new expr_analyze_unary_t<std::logical_not<double>>( name, op, input );
     case TOK_ABS:
       return new expr_analyze_unary_t<unary::abs>( name, op, input );
     case TOK_FLOOR:
@@ -1229,11 +1230,6 @@ static expr_t* build_expression_tree( action_t* action,
 
 
 // action_expr_t::create_constant ===========================================
-
-expr_t* expr_t::create_constant( const std::string& name, double value )
-{
-  return new const_expr_t( name, value );
-}
 
 // action_expr_t::parse =====================================================
 
