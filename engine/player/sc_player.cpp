@@ -8489,33 +8489,26 @@ expr_t* player_t::create_expression( action_t* a,
                                      const std::string& expression_str )
 {
   if ( expression_str == "level" )
-    return make_ref_expr( "level", true_level );
+    return expr_t::create_constant( "level", true_level );
   if ( expression_str == "name" )
-    return make_ref_expr( "name", actor_index );
+    return expr_t::create_constant( "name", actor_index );
   if ( expression_str == "self" )
-    return make_ref_expr( "self", actor_index );
+    return expr_t::create_constant( "self", actor_index );
   if ( expression_str == "multiplier" )
   {
-    struct multiplier_expr_t : public player_expr_t
-    {
-      action_t& action;
-      multiplier_expr_t( player_t& p, action_t* a ) :
-        player_expr_t( "multiplier", p ), action( *a ) { assert( a ); }
-      virtual double evaluate() override { return player.cache.player_multiplier( action.get_school() ); }
-    };
-    return new multiplier_expr_t( *this, a );
+    return make_fn_expr(expression_str, [this, &a]{ return cache.player_multiplier( a -> get_school() ); });
   }
   if ( expression_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
   if ( expression_str == "attack_haste" )
-    return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::attack_haste );
+    return make_fn_expr(expression_str, [this]{ return cache.attack_haste();} );
   if ( expression_str == "attack_speed" )
-    return make_mem_fn_expr( expression_str, this -> cache, &player_stat_cache_t::attack_speed );
+    return make_fn_expr(expression_str, [this]{ return cache.attack_speed();} );
   if ( expression_str == "spell_haste" )
-    return make_mem_fn_expr( expression_str, this-> cache, &player_stat_cache_t::spell_speed );
+    return make_fn_expr(expression_str, [this]{ return cache.spell_speed(); } );
 
   if ( expression_str == "desired_targets" )
-    return make_ref_expr( expression_str, sim -> desired_targets );
+    return expr_t::create_constant( expression_str, sim -> desired_targets );
 
   // time_to_pct expressions
   if ( util::str_in_str_ci( expression_str, "time_to_" ) )
@@ -8574,7 +8567,7 @@ expr_t* player_t::create_expression( action_t* a,
     return deprecate_expression( this, a, expression_str, "mana.max_nonproc" );
 
   if ( expression_str == "ptr" )
-    return make_ref_expr( "ptr", dbc.ptr );
+    return expr_t::create_constant( "ptr", dbc.ptr );
 
   if ( expression_str == "position_front" )
     return new position_expr_t( "position_front", *this,
@@ -8613,19 +8606,7 @@ expr_t* player_t::create_expression( action_t* a,
   // T18 Hellfire Citadel class trinket
   if ( expression_str == "t18_class_trinket" )
   {
-    if ( sim -> optimize_expressions )
-      return expr_t::create_constant( expression_str, ( this -> has_t18_class_trinket() ) ? 1.0 : 0.0 );
-
-    struct t18_class_trinket_expr_t : public player_expr_t
-    {
-      t18_class_trinket_expr_t( player_t& p ) :
-        player_expr_t( "t18_class_trinket", p ) {}
-      virtual double evaluate() override
-      {
-        return player.has_t18_class_trinket();
-      }
-    };
-    return new t18_class_trinket_expr_t( *this );
+    return expr_t::create_constant( expression_str, has_t18_class_trinket() );
   }
 
   // incoming_damage_X expressions
@@ -8772,14 +8753,12 @@ expr_t* player_t::create_expression( action_t* a,
   // race
   if ( splits[ 0 ] == "race" && splits.size() == 2 )
   {
-    struct race_expr_t : public expr_t
+    struct race_expr_t : public const_expr_t
     {
-      player_t& player;
-      std::string race_name;
-      race_expr_t( player_t& p, const std::string& n ) :
-        expr_t( "race" ), player( p ), race_name( n )
-      { }
-      virtual double evaluate() override { return player.race_str == race_name; }
+      race_expr_t( player_t& p, const std::string& race_name ) :
+        const_expr_t( "race", p.race_str == race_name )
+      {
+      }
     };
     return new race_expr_t( *this, splits[ 1 ] );
   }
@@ -8787,18 +8766,11 @@ expr_t* player_t::create_expression( action_t* a,
   // role
   if ( splits[ 0 ] == "role" && splits.size() == 2 )
   {
-    struct role_expr_t : public expr_t
+    struct role_expr_t : public const_expr_t
     {
-      player_t& player;
-      std::string role;
-      role_expr_t( player_t& p, const std::string& r ) :
-        expr_t( "role" ), player( p ), role( r )
+      role_expr_t( player_t& p, const std::string& role ) :
+        const_expr_t( "role", util::str_compare_ci( util::role_type_string( p.primary_role() ), role ) )
       {}
-      virtual double evaluate() override
-      {
-        std::string player_role = util::role_type_string( player.primary_role() );
-        return util::str_compare_ci( player_role, role );
-      }
     };
     return new role_expr_t( *this, splits[ 1 ] );
   }

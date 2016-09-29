@@ -7,6 +7,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "sc_timespan.hpp"
 
@@ -153,6 +154,28 @@ private:
 #endif
 };
 
+class const_expr_t : public expr_t
+{
+  double value;
+
+public:
+  const_expr_t( const std::string& name, double value_ )
+    : expr_t( name, expression::TOK_NUM ), value( value_ )
+  {
+  }
+
+  double evaluate() override  // override
+  {
+    return value;
+  }
+
+  bool is_constant( double* v ) override  // override
+  {
+    *v = value;
+    return true;
+  }
+};
+
 // Reference Expression - ref_expr_t
 // Class Template to create a expression with a reference ( ref ) of arbitrary
 // type T, and evaluate that reference
@@ -230,5 +253,5 @@ inline expr_t* make_fn_expr( const std::string& name, F&& f )
 template <typename F, typename T>
 inline expr_t* make_mem_fn_expr( const std::string& name, T& t, F f )
 {
-  return make_fn_expr( name, [&] { return ( t.*f )(); } );
+  return make_fn_expr( name, std::bind( std::mem_fn( f ), &t ) );
 }

@@ -13,28 +13,6 @@ const bool EXPRESSION_DEBUG = false;
 namespace
 {  // ANONYMOUS ====================================================
 
-class const_expr_t : public expr_t
-{
-  double value;
-
-public:
-  const_expr_t( const std::string& name, double value_ )
-    : expr_t( name, TOK_NUM ), value( value_ )
-  {
-  }
-
-  double evaluate() override  // override
-  {
-    return value;
-  }
-
-  bool is_constant( double* v ) override  // override
-  {
-    *v = value;
-    return true;
-  }
-};
-
 // Unary Operators ==========================================================
 
 template <double ( *F )( double )>
@@ -1198,7 +1176,7 @@ static expr_t* build_expression_tree( action_t* action,
 
     if ( t.type == expression::TOK_NUM )
     {
-      stack.push_back( new expression::const_expr_t( t.label, atof( t.label.c_str() ) ) );
+      stack.push_back( new const_expr_t( t.label, atof( t.label.c_str() ) ) );
     }
     else if ( t.type == expression::TOK_STR )
     {
@@ -1254,7 +1232,7 @@ static expr_t* build_expression_tree( action_t* action,
 
 expr_t* expr_t::create_constant( const std::string& name, double value )
 {
-  return new expression::const_expr_t( name, value );
+  return new const_expr_t( name, value );
 }
 
 // action_expr_t::parse =====================================================
