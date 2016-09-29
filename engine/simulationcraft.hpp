@@ -137,54 +137,6 @@ namespace highchart {
 
 #include "sc_enums.hpp"
 
-/* SimulationCraft timeline:
- * - data_type is double
- * - timespan_t add helper function
- */
-struct sc_timeline_t : public timeline_t
-{
-  typedef timeline_t base_t;
-  using timeline_t::add;
-  double bin_size;
-
-  sc_timeline_t() : timeline_t(), bin_size( 1.0 ) {}
-
-  // methods to modify/retrieve the bin size
-  void set_bin_size( double bin )
-  {
-    bin_size = bin;
-  }
-  double get_bin_size() const
-  {
-    return bin_size;
-  }
-
-  // Add 'value' at the corresponding time
-  void add( timespan_t current_time, double value )
-  { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 / bin_size ), value ); }
-
-  // Add 'value' at corresponding time, replacing existing entry if new value is larger
-  void add_max( timespan_t current_time, double new_value )
-  {
-    size_t index = static_cast<size_t>( current_time.total_millis() / 1000 / bin_size );
-    if ( data().size() == 0 || data().size() <= index )
-      add( current_time, new_value );
-    else if ( new_value > data().at( index ) )
-    {
-      add( current_time, new_value - data().at( index ) );
-    }
-  }
-
-  void adjust( sim_t& sim );
-  void adjust( const extended_sample_data_t& adjustor );
-
-  void build_derivative_timeline( sc_timeline_t& out ) const
-  { base_t::build_sliding_average_timeline( out, 20 ); }
-
-private:
-  static std::vector<double> build_divisor_timeline( const extended_sample_data_t& simulation_length, double bin_size );
-};
-
 // Cache Control ============================================================
 #include "util/cache.hpp"
 
@@ -610,10 +562,10 @@ struct buff_uptime_t : public uptime_common_t
     uptime_common_t() {}
 };
 
-typedef std::function<void(buff_t*, int, const timespan_t&)> buff_tick_callback_t;
-typedef std::function<timespan_t(const buff_t*, unsigned)> buff_tick_time_callback_t;
-typedef std::function<timespan_t(const buff_t*, const timespan_t&)> buff_refresh_duration_callback_t;
-typedef std::function<void(buff_t*, int, int)> buff_stack_change_callback_t;
+using buff_tick_callback_t = std::function<void(buff_t*, int, const timespan_t&)>;
+using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
+using buff_refresh_duration_callback_t = std::function<timespan_t(const buff_t*, const timespan_t&)>;
+using buff_stack_change_callback_t = std::function<void(buff_t*, int, int)>;
 
 // Buff Creation ====================================================================
 namespace buff_creation {
@@ -1147,175 +1099,7 @@ protected:
 
 typedef struct buff_t aura_t;
 
-// Expressions ==============================================================
-
-enum token_e
-{
-  TOK_UNKNOWN = 0,
-  TOK_PLUS,
-  TOK_MINUS,
-  TOK_MULT,
-  TOK_DIV,
-  TOK_ADD,
-  TOK_SUB,
-  TOK_AND,
-  TOK_OR,
-  TOK_XOR,
-  TOK_NOT,
-  TOK_EQ,
-  TOK_NOTEQ,
-  TOK_LT,
-  TOK_LTEQ,
-  TOK_GT,
-  TOK_GTEQ,
-  TOK_LPAR,
-  TOK_RPAR,
-  TOK_IN,
-  TOK_NOTIN,
-  TOK_NUM,
-  TOK_STR,
-  TOK_ABS,
-  TOK_SPELL_LIST,
-  TOK_FLOOR,
-  TOK_CEIL
-};
-
-struct expr_token_t
-{
-  token_e type;
-  std::string label;
-};
-
-struct expression_t
-{
-  static int precedence( token_e );
-  static bool is_unary( token_e );
-  static bool is_binary( token_e );
-  static token_e next_token( action_t* action, const std::string& expr_str, int& current_index,
-                             std::string& token_str, token_e prev_token );
-  static std::vector<expr_token_t> parse_tokens( action_t* action, const std::string& expr_str );
-  static void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim );
-  static void convert_to_unary( std::vector<expr_token_t>& tokens );
-  static bool convert_to_rpn( std::vector<expr_token_t>& tokens );
-};
-
-// Action expression types ==================================================
-
-struct expr_t
-{
-  expr_t( const std::string&, token_e op = TOK_UNKNOWN )
-    : op_( op )
-#if !defined( NDEBUG )
-      ,
-      id_( get_global_id() )
-#endif
-  {
-  }
-  virtual ~expr_t()
-  {
-  }
-
-  virtual const char* name() const
-  { return "anonymous expression"; }
-  int id() const
-  {
-#if !defined( NDEBUG )
-    return id_;
-#else
-    return -1;
-#endif
-  }
-
-  double eval() { return evaluate(); }
-  bool success() { return eval() != 0; }
-
-  static expr_t* parse( action_t*, const std::string& expr_str, bool optimize=false );
-  static expr_t* create_constant( const std::string& name, double value );
-
-  template <typename T> static double coerce( T t ) { return static_cast<double>( t ); }
-  static double coerce( timespan_t t ) { return t.total_seconds(); }
-
-  virtual expr_t* optimize( int /* spacing */ = 0 ) { /* spacing = 0; */ return this; }
-  virtual double evaluate() = 0;
-
-  virtual bool is_constant( double* /*return_value*/ ) { return false; }
-  bool always_true()  { double v; return is_constant( &v ) && v != 0.0; }
-  bool always_false() { double v; return is_constant( &v ) && v == 0.0; }
-
-  token_e op_;
-private:
-#if !defined( NDEBUG )
-  int id_;
-
-  int get_global_id()
-  {
-    return ++unique_id;
-  }
-
-  static std::atomic<int> unique_id;
-#endif
-};
-
-// Reference Expression - ref_expr_t
-// Class Template to create a expression with a reference ( ref ) of arbitrary type T, and evaluate that reference
-template <typename T>
-struct ref_expr_t : public expr_t
-{
-public:
-  ref_expr_t( const std::string& name, const T& t_ ) :
-    expr_t( name ), t( t_ )
-  {}
-private:
-  const T& t;
-  virtual double evaluate() override { return coerce( t ); }
-
-};
-
-// Template to return a reference expression
-template <typename T>
-inline expr_t* make_ref_expr( const std::string& name, T& t )
-{ return new ref_expr_t<T>( name, const_cast<const T&>( t ) ); }
-
-// Function Expression - fn_expr_t
-// Class Template to create a function ( fn ) expression with arbitrary functor f, which gets evaluated
-template <typename F>
-struct fn_expr_t : public expr_t
-{
-public:
-  fn_expr_t( const std::string& name, F&& f_ ) :
-    expr_t( name ), f( f_ ) {}
-private:
-  F f;
-
-  virtual double evaluate() override { return coerce( f() ); }
-
-};
-
-struct target_wrapper_expr_t : public expr_t
-{
-  action_t& action;
-  std::vector<expr_t*> proxy_expr;
-  std::string suffix_expr_str;
-
-  // Inlined
-  target_wrapper_expr_t( action_t& a, const std::string& name_str, const std::string& expr_str );
-  virtual player_t* target() const;
-  double evaluate() override;
-
-  ~target_wrapper_expr_t()
-  { range::dispose( proxy_expr ); }
-};
-
-// Template to return a function expression
-template <typename F>
-inline expr_t* make_fn_expr( const std::string& name, F&& f )
-{ return new fn_expr_t<F>( name, std::forward<F>(f) ); }
-
-// Make member function expression - make_mem_fn_expr
-// Template to return function expression that calls a member ( mem ) function ( fn ) f on reference t.
-template <typename F, typename T>
-inline expr_t* make_mem_fn_expr( const std::string& name, T& t, F f )
-{ return make_fn_expr( name, std::bind( std::mem_fn( f ), &t ) ); }
+#include "sim/sc_expressions.hpp"
 
 // Spell query expression types =============================================
 
@@ -1340,22 +1124,70 @@ struct spell_data_expr_t
   expr_data_e data_type;
   bool effect_query;
 
-  token_e result_tok;
+  expression::token_e result_tok;
   double result_num;
   std::vector<uint32_t> result_spell_list;
   std::string result_str;
 
-  spell_data_expr_t( sim_t* sim, const std::string& n, expr_data_e dt = DATA_SPELL, bool eq = false, token_e t = TOK_UNKNOWN )
-    : name_str( n ), sim( sim ), data_type( dt ),         effect_query( eq ),  result_tok( t ),            result_num( 0 ),            result_spell_list(),               result_str( "" ) {}
-  spell_data_expr_t( sim_t* sim, const std::string& n, double       constant_value )
-    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query( false ), result_tok( TOK_NUM ),        result_num( constant_value ), result_spell_list(),               result_str( "" ) {}
-  spell_data_expr_t( sim_t* sim, const std::string& n, const std::string& constant_value )
-    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query( false ), result_tok( TOK_STR ),        result_num( 0.0 ),            result_spell_list(),               result_str( constant_value ) {}
-  spell_data_expr_t( sim_t* sim, const std::string& n, const std::vector<uint32_t>& constant_value )
-    : name_str( n ), sim( sim ), data_type( DATA_SPELL ), effect_query( false ), result_tok( TOK_SPELL_LIST ), result_num( 0.0 ),            result_spell_list( constant_value ), result_str( "" ) {}
-  virtual ~spell_data_expr_t() {}
-  virtual int evaluate() { return result_tok; }
-  const char* name() { return name_str.c_str(); }
+  spell_data_expr_t( sim_t* sim, const std::string& n,
+                     expr_data_e dt = DATA_SPELL, bool eq = false,
+                     expression::token_e t = expression::TOK_UNKNOWN )
+    : name_str( n ),
+      sim( sim ),
+      data_type( dt ),
+      effect_query( eq ),
+      result_tok( t ),
+      result_num( 0 ),
+      result_spell_list(),
+      result_str( "" )
+  {
+  }
+  spell_data_expr_t( sim_t* sim, const std::string& n, double constant_value )
+    : name_str( n ),
+      sim( sim ),
+      data_type( DATA_SPELL ),
+      effect_query( false ),
+      result_tok( expression::TOK_NUM ),
+      result_num( constant_value ),
+      result_spell_list(),
+      result_str( "" )
+  {
+  }
+  spell_data_expr_t( sim_t* sim, const std::string& n,
+                     const std::string& constant_value )
+    : name_str( n ),
+      sim( sim ),
+      data_type( DATA_SPELL ),
+      effect_query( false ),
+      result_tok( expression::TOK_STR ),
+      result_num( 0.0 ),
+      result_spell_list(),
+      result_str( constant_value )
+  {
+  }
+  spell_data_expr_t( sim_t* sim, const std::string& n,
+                     const std::vector<uint32_t>& constant_value )
+    : name_str( n ),
+      sim( sim ),
+      data_type( DATA_SPELL ),
+      effect_query( false ),
+      result_tok( expression::TOK_SPELL_LIST ),
+      result_num( 0.0 ),
+      result_spell_list( constant_value ),
+      result_str( "" )
+  {
+  }
+  virtual ~spell_data_expr_t()
+  {
+  }
+  virtual int evaluate()
+  {
+    return result_tok;
+  }
+  const char* name()
+  {
+    return name_str.c_str();
+  }
 
   virtual std::vector<uint32_t> operator|( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }
   virtual std::vector<uint32_t> operator&( const spell_data_expr_t& /* other */ ) { return std::vector<uint32_t>(); }

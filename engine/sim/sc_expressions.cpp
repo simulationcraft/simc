@@ -3,14 +3,12 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "sc_expressions.hpp"
 #include "simulationcraft.hpp"
 
-#define EXPRESSION_DEBUG false
+namespace expression {
 
-#if !defined( NDEBUG )
-std::atomic<int> expr_t::unique_id( 0 );
-#endif
-
+const bool EXPRESSION_DEBUG = false;
 
 namespace
 {  // ANONYMOUS ====================================================
@@ -801,7 +799,7 @@ expr_t* select_analyze_binary( const std::string& name, token_e op,
 
 // precedence ===============================================================
 
-int expression_t::precedence( token_e expr_token_type )
+int precedence( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
@@ -850,7 +848,7 @@ int expression_t::precedence( token_e expr_token_type )
 
 // is_unary =================================================================
 
-bool expression_t::is_unary( token_e expr_token_type )
+bool is_unary( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
@@ -868,7 +866,7 @@ bool expression_t::is_unary( token_e expr_token_type )
 
 // is_binary ================================================================
 
-bool expression_t::is_binary( token_e expr_token_type )
+bool is_binary( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
@@ -895,7 +893,7 @@ bool expression_t::is_binary( token_e expr_token_type )
 
 // next_token ===============================================================
 
-token_e expression_t::next_token( action_t* action, const std::string& expr_str,
+token_e next_token( action_t* action, const std::string& expr_str,
                                   int& current_index, std::string& token_str,
                                   token_e prev_token )
 {
@@ -1037,7 +1035,7 @@ token_e expression_t::next_token( action_t* action, const std::string& expr_str,
 
 // parse_tokens =============================================================
 
-std::vector<expr_token_t> expression_t::parse_tokens(
+std::vector<expr_token_t> parse_tokens(
     action_t* action, const std::string& expr_str )
 {
   std::vector<expr_token_t> tokens;
@@ -1058,7 +1056,7 @@ std::vector<expr_token_t> expression_t::parse_tokens(
 
 // print_tokens =============================================================
 
-void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
+void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 {
   std::string str;
   if ( tokens.size() > 0 )
@@ -1077,7 +1075,7 @@ void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 
 // convert_to_unary =========================================================
 
-void expression_t::convert_to_unary( std::vector<expr_token_t>& tokens )
+void convert_to_unary( std::vector<expr_token_t>& tokens )
 {
   size_t num_tokens = tokens.size();
   for ( size_t i = 0; i < num_tokens; i++ )
@@ -1101,7 +1099,7 @@ void expression_t::convert_to_unary( std::vector<expr_token_t>& tokens )
 
 // convert_to_rpn ===========================================================
 
-bool expression_t::convert_to_rpn( std::vector<expr_token_t>& tokens )
+bool convert_to_rpn( std::vector<expr_token_t>& tokens )
 {
   std::vector<expr_token_t> rpn, stack;
 
@@ -1175,10 +1173,20 @@ bool expression_t::convert_to_rpn( std::vector<expr_token_t>& tokens )
   return true;
 }
 
+} // expression
+
+#if !defined( NDEBUG )
+int expr_t::get_global_id()
+{
+  static std::atomic<int> unique_id;
+  return ++unique_id;
+}
+#endif
+
 // build_expression_tree ====================================================
 
 static expr_t* build_expression_tree( action_t* action,
-                                      std::vector<expr_token_t>& tokens,
+                                      std::vector<expression::expr_token_t>& tokens,
                                       bool optimize )
 {
   auto_dispose<std::vector<expr_t*> > stack;
@@ -1186,13 +1194,13 @@ static expr_t* build_expression_tree( action_t* action,
   size_t num_tokens = tokens.size();
   for ( size_t i = 0; i < num_tokens; i++ )
   {
-    expr_token_t& t = tokens[ i ];
+    expression::expr_token_t& t = tokens[ i ];
 
-    if ( t.type == TOK_NUM )
+    if ( t.type == expression::TOK_NUM )
     {
-      stack.push_back( new const_expr_t( t.label, atof( t.label.c_str() ) ) );
+      stack.push_back( new expression::const_expr_t( t.label, atof( t.label.c_str() ) ) );
     }
-    else if ( t.type == TOK_STR )
+    else if ( t.type == expression::TOK_STR )
     {
       expr_t* e = action->create_expression( t.label );
       if ( !e )
@@ -1204,18 +1212,18 @@ static expr_t* build_expression_tree( action_t* action,
       }
       stack.push_back( e );
     }
-    else if ( expression_t::is_unary( t.type ) )
+    else if ( expression::is_unary( t.type ) )
     {
       if ( stack.size() < 1 )
         return nullptr;
       expr_t* input = stack.back();
       stack.pop_back();
       assert( input );
-      expr_t* expr = ( optimize ? select_analyze_unary( t.label, t.type, input )
-                                : select_unary( t.label, t.type, input ) );
+      expr_t* expr = ( optimize ? expression::select_analyze_unary( t.label, t.type, input )
+                                : expression::select_unary( t.label, t.type, input ) );
       stack.push_back( expr );
     }
-    else if ( expression_t::is_binary( t.type ) )
+    else if ( expression::is_binary( t.type ) )
     {
       if ( stack.size() < 2 )
         return nullptr;
@@ -1226,8 +1234,8 @@ static expr_t* build_expression_tree( action_t* action,
       stack.pop_back();
       assert( left );
       expr_t* expr =
-          ( optimize ? select_analyze_binary( t.label, t.type, left, right )
-                     : select_binary( t.label, t.type, left, right ) );
+          ( optimize ? expression::select_analyze_binary( t.label, t.type, left, right )
+                     : expression::select_binary( t.label, t.type, left, right ) );
       stack.push_back( expr );
     }
   }
@@ -1240,11 +1248,13 @@ static expr_t* build_expression_tree( action_t* action,
   return res;
 }
 
+
+
 // action_expr_t::create_constant ===========================================
 
 expr_t* expr_t::create_constant( const std::string& name, double value )
 {
-  return new const_expr_t( name, value );
+  return new expression::const_expr_t( name, value );
 }
 
 // action_expr_t::parse =====================================================
@@ -1255,18 +1265,18 @@ expr_t* expr_t::parse( action_t* action, const std::string& expr_str,
   if ( expr_str.empty() )
     return nullptr;
 
-  std::vector<expr_token_t> tokens =
-      expression_t::parse_tokens( action, expr_str );
+  std::vector<expression::expr_token_t> tokens =
+      expression::parse_tokens( action, expr_str );
 
   if ( action->sim->debug )
-    expression_t::print_tokens( tokens, action->sim );
+    expression::print_tokens( tokens, action->sim );
 
-  expression_t::convert_to_unary( tokens );
+  expression::convert_to_unary( tokens );
 
   if ( action->sim->debug )
-    expression_t::print_tokens( tokens, action->sim );
+    expression::print_tokens( tokens, action->sim );
 
-  if ( !expression_t::convert_to_rpn( tokens ) )
+  if ( !expression::convert_to_rpn( tokens ) )
   {
     action->sim->errorf( "%s-%s: Unable to convert %s into RPN\n",
                          action->player->name(), action->name(),
@@ -1276,7 +1286,7 @@ expr_t* expr_t::parse( action_t* action, const std::string& expr_str,
   }
 
   if ( action->sim->debug )
-    expression_t::print_tokens( tokens, action->sim );
+    expression::print_tokens( tokens, action->sim );
 
   if ( expr_t* e = build_expression_tree( action, tokens, optimize ) )
     return e;

@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sim/sc_expressions.hpp"
 
 namespace { // anonymous namespace ==========================================
 
@@ -258,7 +259,7 @@ unsigned school_str_to_mask( const std::string& str )
 struct spell_list_expr_t : public spell_data_expr_t
 {
   spell_list_expr_t( sim_t* sim, const std::string& name, expr_data_e type = DATA_SPELL, bool eq = false ) :
-    spell_data_expr_t( sim, name, type, eq, TOK_SPELL_LIST ) { }
+    spell_data_expr_t( sim, name, type, eq, expression::TOK_SPELL_LIST ) { }
 
   virtual int evaluate() override
   {
@@ -394,12 +395,12 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
 
       default:
-        return TOK_UNKNOWN;
+        return expression::TOK_UNKNOWN;
     }
 
     result_spell_list.resize( range::unique( range::sort( result_spell_list ) ) - result_spell_list.begin() );
 
-    return TOK_SPELL_LIST;
+    return expression::TOK_SPELL_LIST;
   }
 
   // Intersect two spell lists
@@ -408,7 +409,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     std::vector<uint32_t> res;
 
     // Only or two spell lists together
-    if ( other.result_tok != TOK_SPELL_LIST )
+    if ( other.result_tok != expression::TOK_SPELL_LIST )
     {
       sim -> errorf( "Unsupported right side operand '%s' (%d) for operator &",
                      other.name_str.c_str(),
@@ -426,7 +427,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     std::vector<uint32_t> res;
 
     // Only or two spell lists together
-    if ( other.result_tok != TOK_SPELL_LIST )
+    if ( other.result_tok != expression::TOK_SPELL_LIST )
     {
       sim -> errorf( "Unsupported right side operand '%s' (%d) for operator |",
                      other.name_str.c_str(),
@@ -444,7 +445,7 @@ struct spell_list_expr_t : public spell_data_expr_t
     std::vector<uint32_t> res;
 
     // Only or two spell lists together
-    if ( other.result_tok != TOK_SPELL_LIST )
+    if ( other.result_tok != expression::TOK_SPELL_LIST )
     {
       sim -> errorf( "Unsupported right side operand '%s' (%d) for operator -",
                      other.name_str.c_str(),
@@ -471,9 +472,9 @@ struct sd_expr_binary_t : public spell_list_expr_t
     int  left_result =  left -> evaluate();
 
     right -> evaluate();
-    result_tok      = TOK_UNKNOWN;
+    result_tok      = expression::TOK_UNKNOWN;
 
-    if ( left_result != TOK_SPELL_LIST )
+    if ( left_result != expression::TOK_SPELL_LIST )
     {
       sim -> errorf( "Inconsistent input types (%s and %s) for binary operator '%s', left must always be a spell list.\n",
                      left -> name(), right -> name(), name() );
@@ -481,27 +482,27 @@ struct sd_expr_binary_t : public spell_list_expr_t
     }
     else
     {
-      result_tok = TOK_SPELL_LIST;
+      result_tok = expression::TOK_SPELL_LIST;
       // Data type follows from left side operand
       data_type   = left -> data_type;
 
       switch ( operation )
       {
-        case TOK_EQ:    result_spell_list = *left == *right; break;
-        case TOK_NOTEQ: result_spell_list = *left != *right; break;
-        case TOK_OR:    result_spell_list = *left | *right; break;
-        case TOK_AND:   result_spell_list = *left & *right; break;
-        case TOK_SUB:   result_spell_list = *left - *right; break;
-        case TOK_LT:    result_spell_list = *left < *right; break;
-        case TOK_LTEQ:  result_spell_list = *left <= *right; break;
-        case TOK_GT:    result_spell_list = *left > *right; break;
-        case TOK_GTEQ:  result_spell_list = *left >= *right; break;
-        case TOK_IN:    result_spell_list = left -> in( *right ); break;
-        case TOK_NOTIN: result_spell_list = left -> not_in( *right ); break;
+        case expression::TOK_EQ:    result_spell_list = *left == *right; break;
+        case expression::TOK_NOTEQ: result_spell_list = *left != *right; break;
+        case expression::TOK_OR:    result_spell_list = *left | *right; break;
+        case expression::TOK_AND:   result_spell_list = *left & *right; break;
+        case expression::TOK_SUB:   result_spell_list = *left - *right; break;
+        case expression::TOK_LT:    result_spell_list = *left < *right; break;
+        case expression::TOK_LTEQ:  result_spell_list = *left <= *right; break;
+        case expression::TOK_GT:    result_spell_list = *left > *right; break;
+        case expression::TOK_GTEQ:  result_spell_list = *left >= *right; break;
+        case expression::TOK_IN:    result_spell_list = left -> in( *right ); break;
+        case expression::TOK_NOTIN: result_spell_list = left -> not_in( *right ); break;
         default:
           sim -> errorf( "Unsupported spell query operator %d", operation );
           result_spell_list = std::vector<uint32_t>();
-          result_tok = TOK_UNKNOWN;
+          result_tok = expression::TOK_UNKNOWN;
           break;
       }
     }
@@ -547,7 +548,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     }
   }
 
-  virtual bool compare( const char* data, const spell_data_expr_t& other, token_e t ) const
+  virtual bool compare( const char* data, const spell_data_expr_t& other, expression::token_e t ) const
   {
     switch ( field_type )
     {
@@ -557,12 +558,12 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         int oint_v = static_cast<int>( other.result_num );
         switch ( t )
         {
-          case TOK_LT:     return int_v <  oint_v;
-          case TOK_LTEQ:   return int_v <= oint_v;
-          case TOK_GT:     return int_v >  oint_v;
-          case TOK_GTEQ:   return int_v >= oint_v;
-          case TOK_EQ:     return int_v == oint_v;
-          case TOK_NOTEQ:  return int_v != oint_v;
+          case expression::TOK_LT:     return int_v <  oint_v;
+          case expression::TOK_LTEQ:   return int_v <= oint_v;
+          case expression::TOK_GT:     return int_v >  oint_v;
+          case expression::TOK_GTEQ:   return int_v >= oint_v;
+          case expression::TOK_EQ:     return int_v == oint_v;
+          case expression::TOK_NOTEQ:  return int_v != oint_v;
           default:         return false;
         }
         break;
@@ -573,12 +574,12 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         unsigned ounsigned_v = static_cast<unsigned>( other.result_num );
         switch ( t )
         {
-          case TOK_LT:     return unsigned_v <  ounsigned_v;
-          case TOK_LTEQ:   return unsigned_v <= ounsigned_v;
-          case TOK_GT:     return unsigned_v >  ounsigned_v;
-          case TOK_GTEQ:   return unsigned_v >= ounsigned_v;
-          case TOK_EQ:     return unsigned_v == ounsigned_v;
-          case TOK_NOTEQ:  return unsigned_v != ounsigned_v;
+          case expression::TOK_LT:     return unsigned_v <  ounsigned_v;
+          case expression::TOK_LTEQ:   return unsigned_v <= ounsigned_v;
+          case expression::TOK_GT:     return unsigned_v >  ounsigned_v;
+          case expression::TOK_GTEQ:   return unsigned_v >= ounsigned_v;
+          case expression::TOK_EQ:     return unsigned_v == ounsigned_v;
+          case expression::TOK_NOTEQ:  return unsigned_v != ounsigned_v;
           default:         return false;
         }
         break;
@@ -589,12 +590,12 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         uint64_t ounsigned_v = static_cast<uint64_t>( other.result_num );
         switch ( t )
         {
-          case TOK_LT:     return unsigned_v <  ounsigned_v;
-          case TOK_LTEQ:   return unsigned_v <= ounsigned_v;
-          case TOK_GT:     return unsigned_v >  ounsigned_v;
-          case TOK_GTEQ:   return unsigned_v >= ounsigned_v;
-          case TOK_EQ:     return unsigned_v == ounsigned_v;
-          case TOK_NOTEQ:  return unsigned_v != ounsigned_v;
+          case expression::TOK_LT:     return unsigned_v <  ounsigned_v;
+          case expression::TOK_LTEQ:   return unsigned_v <= ounsigned_v;
+          case expression::TOK_GT:     return unsigned_v >  ounsigned_v;
+          case expression::TOK_GTEQ:   return unsigned_v >= ounsigned_v;
+          case expression::TOK_EQ:     return unsigned_v == ounsigned_v;
+          case expression::TOK_NOTEQ:  return unsigned_v != ounsigned_v;
           default:         return false;
         }
         break;
@@ -604,12 +605,12 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
         double double_v = *reinterpret_cast<const double*>( data + offset );
         switch ( t )
         {
-          case TOK_LT:     return double_v <  other.result_num;
-          case TOK_LTEQ:   return double_v <= other.result_num;
-          case TOK_GT:     return double_v >  other.result_num;
-          case TOK_GTEQ:   return double_v >= other.result_num;
-          case TOK_EQ:     return double_v == other.result_num;
-          case TOK_NOTEQ:  return double_v != other.result_num;
+          case expression::TOK_LT:     return double_v <  other.result_num;
+          case expression::TOK_LTEQ:   return double_v <= other.result_num;
+          case expression::TOK_GT:     return double_v >  other.result_num;
+          case expression::TOK_GTEQ:   return double_v >= other.result_num;
+          case expression::TOK_EQ:     return double_v == other.result_num;
+          case expression::TOK_NOTEQ:  return double_v != other.result_num;
           default:         return false;
         }
         break;
@@ -623,10 +624,10 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
 
         switch ( t )
         {
-          case TOK_EQ:    return util::str_compare_ci( string_v, ostring_v );
-          case TOK_NOTEQ: return ! util::str_compare_ci( string_v, ostring_v );
-          case TOK_IN:    return util::str_in_str_ci( string_v, ostring_v );
-          case TOK_NOTIN: return ! util::str_in_str_ci( string_v, ostring_v );
+          case expression::TOK_EQ:    return util::str_compare_ci( string_v, ostring_v );
+          case expression::TOK_NOTEQ: return ! util::str_compare_ci( string_v, ostring_v );
+          case expression::TOK_IN:    return util::str_in_str_ci( string_v, ostring_v );
+          case expression::TOK_NOTIN: return ! util::str_in_str_ci( string_v, ostring_v );
           default:        return false;
         }
         break;
@@ -637,7 +638,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     return false;
   }
 
-  void build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, token_e t ) const
+  void build_list( std::vector<uint32_t>& res, const spell_data_expr_t& other, expression::token_e t ) const
   {
     for ( auto i = result_spell_list.begin(); i != result_spell_list.end(); ++i )
     {
@@ -681,7 +682,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   {
     std::vector<uint32_t> res;
 
-    if ( other.result_tok != TOK_NUM && other.result_tok != TOK_STR )
+    if ( other.result_tok != expression::TOK_NUM && other.result_tok != expression::TOK_STR )
     {
       sim -> errorf( "Unsupported expression operator == for left=%s(%d), right=%s(%d)",
                      name_str.c_str(),
@@ -690,7 +691,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      other.result_tok );
     }
     else
-      build_list( res, other, TOK_EQ );
+      build_list( res, other, expression::TOK_EQ );
 
     return res;
   }
@@ -699,7 +700,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   {
     std::vector<uint32_t> res;
 
-    if ( other.result_tok != TOK_NUM && other.result_tok != TOK_STR )
+    if ( other.result_tok != expression::TOK_NUM && other.result_tok != expression::TOK_STR )
     {
       sim -> errorf( "Unsupported expression operator != for left=%s(%d), right=%s(%d)",
                      name_str.c_str(),
@@ -708,7 +709,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      other.result_tok );
     }
     else
-      build_list( res, other, TOK_NOTEQ );
+      build_list( res, other, expression::TOK_NOTEQ );
 
     return res;
   }
@@ -717,7 +718,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   {
     std::vector<uint32_t> res;
 
-    if ( other.result_tok != TOK_NUM ||
+    if ( other.result_tok != expression::TOK_NUM ||
          ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
       sim -> errorf( "Unsupported expression operator < for left=%s(%d), right=%s(%d) or field '%s' is not a number",
@@ -728,7 +729,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      name_str.c_str() );
     }
     else
-      build_list( res, other, TOK_LT );
+      build_list( res, other, expression::TOK_LT );
 
     return res;
   }
@@ -737,7 +738,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   {
     std::vector<uint32_t> res;
 
-    if ( other.result_tok != TOK_NUM ||
+    if ( other.result_tok != expression::TOK_NUM ||
          ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
       sim -> errorf( "Unsupported expression operator <= for left=%s(%d), right=%s(%d) or field '%s' is not a number",
@@ -748,7 +749,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      name_str.c_str() );
     }
     else
-      build_list( res, other, TOK_LTEQ );
+      build_list( res, other, expression::TOK_LTEQ );
 
     return res;
   }
@@ -757,7 +758,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   {
     std::vector<uint32_t> res;
 
-    if ( other.result_tok != TOK_NUM ||
+    if ( other.result_tok != expression::TOK_NUM ||
          ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
       sim -> errorf( "Unsupported expression operator > for left=%s(%d), right=%s(%d) or field '%s' is not a number",
@@ -768,7 +769,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      name_str.c_str() );
     }
     else
-      build_list( res, other, TOK_GT );
+      build_list( res, other, expression::TOK_GT );
 
     return res;
   }
@@ -777,7 +778,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   {
     std::vector<uint32_t> res;
 
-    if ( other.result_tok != TOK_NUM ||
+    if ( other.result_tok != expression::TOK_NUM ||
          ( field_type != SD_TYPE_INT && field_type != SD_TYPE_UNSIGNED && field_type != SD_TYPE_UINT64 && field_type != SD_TYPE_DOUBLE )  )
     {
       sim -> errorf( "Unsupported expression operator >= for left=%s(%d), right=%s(%d) or field '%s' is not a number",
@@ -788,7 +789,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      name_str.c_str() );
     }
     else
-      build_list( res, other, TOK_GTEQ );
+      build_list( res, other, expression::TOK_GTEQ );
 
     return res;
   }
@@ -797,7 +798,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   {
     std::vector<uint32_t> res;
 
-    if ( other.result_tok != TOK_STR || field_type != SD_TYPE_STR )
+    if ( other.result_tok != expression::TOK_STR || field_type != SD_TYPE_STR )
     {
       sim -> errorf( "Unsupported expression operator ~ for left=%s(%d), right=%s(%d) or field '%s' is not a string",
                      name_str.c_str(),
@@ -807,7 +808,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      name_str.c_str() );
     }
     else
-      build_list( res, other, TOK_IN );
+      build_list( res, other, expression::TOK_IN );
 
     return res;
   }
@@ -816,7 +817,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   {
     std::vector<uint32_t> res;
 
-    if ( other.result_tok != TOK_STR || field_type != SD_TYPE_STR )
+    if ( other.result_tok != expression::TOK_STR || field_type != SD_TYPE_STR )
     {
       sim -> errorf( "Unsupported expression operator !~ for left=%s(%d), right=%s(%d) or field '%s' is not a string",
                      name_str.c_str(),
@@ -826,7 +827,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
                      name_str.c_str() );
     }
     else
-      build_list( res, other, TOK_NOTIN );
+      build_list( res, other, expression::TOK_NOTIN );
 
     return res;
   }
@@ -841,7 +842,7 @@ struct spell_class_expr_t : public spell_list_expr_t
     std::vector<uint32_t> res;
     uint32_t              class_mask;
 
-    if ( other.result_tok == TOK_STR )
+    if ( other.result_tok == expression::TOK_STR )
       class_mask = class_str_to_mask( other.result_str );
     // Other types will not be allowed, e.g. you cannot do class=list
     else
@@ -877,7 +878,7 @@ struct spell_class_expr_t : public spell_list_expr_t
     std::vector<uint32_t> res;
     uint32_t              class_mask;
 
-    if ( other.result_tok == TOK_STR )
+    if ( other.result_tok == expression::TOK_STR )
       class_mask = class_str_to_mask( other.result_str );
     // Other types will not be allowed, e.g. you cannot do class=list
     else
@@ -921,7 +922,7 @@ struct spell_race_expr_t : public spell_list_expr_t
     if ( data_type == DATA_TALENT )
       return res;
 
-    if ( other.result_tok == TOK_STR )
+    if ( other.result_tok == expression::TOK_STR )
       race_mask = race_str_to_mask( other.result_str );
     // Other types will not be allowed, e.g. you cannot do race=list
     else
@@ -950,7 +951,7 @@ struct spell_race_expr_t : public spell_list_expr_t
     if ( data_type == DATA_TALENT )
       return res;
 
-    if ( other.result_tok == TOK_STR )
+    if ( other.result_tok == expression::TOK_STR )
       class_mask = race_str_to_mask( other.result_str );
     // Other types will not be allowed, e.g. you cannot do class=list
     else
@@ -983,7 +984,7 @@ struct spell_attribute_expr_t : public spell_list_expr_t
       return res;
 
     // Numbered attributes only
-    if ( other.result_tok != TOK_NUM )
+    if ( other.result_tok != expression::TOK_NUM )
       return res;
 
     uint32_t attridx = ( unsigned ) other.result_num / ( sizeof( unsigned ) * 8 );
@@ -1015,7 +1016,7 @@ struct spell_school_expr_t : public spell_list_expr_t
     std::vector<uint32_t> res;
     uint32_t              school_mask;
 
-    if ( other.result_tok == TOK_STR )
+    if ( other.result_tok == expression::TOK_STR )
       school_mask = school_str_to_mask( other.result_str );
     // Other types will not be allowed, e.g. you cannot do class=list
     else
@@ -1040,7 +1041,7 @@ struct spell_school_expr_t : public spell_list_expr_t
     std::vector<uint32_t> res;
     uint32_t              school_mask;
 
-    if ( other.result_tok == TOK_STR )
+    if ( other.result_tok == expression::TOK_STR )
       school_mask = school_str_to_mask( other.result_str );
     // Other types will not be allowed, e.g. you cannot do school=list
     else
@@ -1062,18 +1063,18 @@ struct spell_school_expr_t : public spell_list_expr_t
 };
 
 spell_data_expr_t* build_expression_tree( sim_t* sim,
-                                          const std::vector<expr_token_t>& tokens )
+                                          const std::vector<expression::expr_token_t>& tokens )
 {
   auto_dispose< std::vector<spell_data_expr_t*> > stack;
 
   size_t num_tokens = tokens.size();
   for ( size_t i = 0; i < num_tokens; i++ )
   {
-    const expr_token_t& t = tokens[ i ];
+    const expression::expr_token_t& t = tokens[ i ];
 
-    if ( t.type == TOK_NUM )
+    if ( t.type == expression::TOK_NUM )
       stack.push_back( new spell_data_expr_t( sim, t.label, atof( t.label.c_str() ) ) );
-    else if ( t.type == TOK_STR )
+    else if ( t.type == expression::TOK_STR )
     {
       spell_data_expr_t* e = spell_data_expr_t::create_spell_expression( sim, t.label );
 
@@ -1084,7 +1085,7 @@ spell_data_expr_t* build_expression_tree( sim_t* sim,
       }
       stack.push_back( e );
     }
-    else if ( expression_t::is_binary( t.type ) )
+    else if ( expression::is_binary( t.type ) )
     {
       if ( stack.size() < 2 )
         return nullptr;
@@ -1181,22 +1182,22 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
 {
   if ( expr_str.empty() ) return nullptr;
 
-  std::vector<expr_token_t> tokens = expression_t::parse_tokens( nullptr, expr_str );
+  std::vector<expression::expr_token_t> tokens = expression::parse_tokens( nullptr, expr_str );
 
-  if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
+  if ( sim -> debug ) expression::print_tokens( tokens, sim );
 
-  expression_t::convert_to_unary( tokens );
+  expression::convert_to_unary( tokens );
 
-  if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
+  if ( sim -> debug ) expression::print_tokens( tokens, sim );
 
-  if ( ! expression_t::convert_to_rpn( tokens ) )
+  if ( ! expression::convert_to_rpn( tokens ) )
   {
     sim -> errorf( "Unable to convert %s into RPN\n", expr_str.c_str() );
     sim -> cancel();
     return nullptr;
   }
 
-  if ( sim -> debug ) expression_t::print_tokens( tokens, sim );
+  if ( sim -> debug ) expression::print_tokens( tokens, sim );
 
   spell_data_expr_t* e = build_expression_tree( sim, tokens );
 

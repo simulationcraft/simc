@@ -11,8 +11,10 @@
 #include <algorithm>
 #include <cassert>
 #include <numeric>
+
 #include "generic.hpp"
 #include "sample_data.hpp"
+#include "sc_timespan.hpp"
 
 template <typename Fwd, typename Out>
 void sliding_window_average( Fwd first, Fwd last, unsigned window, Out out )
@@ -346,4 +348,54 @@ public:
   size_t num_entries() const
   { return _num_entries; }
 };
+
+
+/* SimulationCraft timeline:
+ * - data_type is double
+ * - timespan_t add helper function
+ */
+struct sc_timeline_t : public timeline_t
+{
+  typedef timeline_t base_t;
+  using timeline_t::add;
+  double bin_size;
+
+  sc_timeline_t() : timeline_t(), bin_size( 1.0 ) {}
+
+  // methods to modify/retrieve the bin size
+  void set_bin_size( double bin )
+  {
+    bin_size = bin;
+  }
+  double get_bin_size() const
+  {
+    return bin_size;
+  }
+
+  // Add 'value' at the corresponding time
+  void add( timespan_t current_time, double value )
+  { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 / bin_size ), value ); }
+
+  // Add 'value' at corresponding time, replacing existing entry if new value is larger
+  void add_max( timespan_t current_time, double new_value )
+  {
+    size_t index = static_cast<size_t>( current_time.total_millis() / 1000 / bin_size );
+    if ( data().size() == 0 || data().size() <= index )
+      add( current_time, new_value );
+    else if ( new_value > data().at( index ) )
+    {
+      add( current_time, new_value - data().at( index ) );
+    }
+  }
+
+  void adjust( sim_t& sim );
+  void adjust( const extended_sample_data_t& adjustor );
+
+  void build_derivative_timeline( sc_timeline_t& out ) const
+  { base_t::build_sliding_average_timeline( out, 20 ); }
+
+private:
+  static std::vector<double> build_divisor_timeline( const extended_sample_data_t& simulation_length, double bin_size );
+};
+
 #endif // TIMELINE_HPP
