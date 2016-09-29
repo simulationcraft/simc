@@ -3264,6 +3264,18 @@ struct blunderbuss_damage_t : public rogue_attack_t
     energize_amount = 0;
     base_costs[ RESOURCE_ENERGY ] = 0;
   }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> buffs.greenskins_waterlogged_wristcuffs -> up() )
+    {
+      m *= 1.0 + p() -> buffs.greenskins_waterlogged_wristcuffs -> data().effectN( 1 ).percent();
+    }
+
+    return m;
+  }
 };
 
 struct blunderbuss_t : public shot_base_t
