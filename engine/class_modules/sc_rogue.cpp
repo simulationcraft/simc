@@ -7214,7 +7214,8 @@ void rogue_t::create_buffs()
   buffs.master_of_subtlety_passive = buff_creator_t( this, "master_of_subtlety_passive", talent.master_of_subtlety )
                                      .duration( sim -> max_time / 2 )
                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", find_spell( 31666 ) )
+  buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", talent.master_of_subtlety )
+                              .duration( timespan_t::from_seconds( 6 ) )
                               .default_value( talent.master_of_subtlety -> effectN( 1 ).percent() )
                               .chance( talent.master_of_subtlety -> ok() )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
