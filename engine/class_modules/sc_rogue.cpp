@@ -6566,7 +6566,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
-    def -> add_action( "call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(variable.ed_threshold|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1))" );
+    def -> add_action( "call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(variable.ed_threshold|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)|target.time_to_die<12)" );
     def -> add_action( "call_action_list,name=build,if=variable.ed_threshold" );
 
     // Cooldowns
@@ -6597,7 +6597,7 @@ void rogue_t::init_action_list()
     finish -> add_talent( this, "Enveloping Shadows", "if=buff.enveloping_shadows.remains<target.time_to_die&buff.enveloping_shadows.remains<=combo_points*1.8" );
     finish -> add_talent( this, "Death from Above", "if=spell_targets.death_from_above>=6" );
       // It is not worth to override a normal nightblade for a finality one outside of pandemic threshold, it is worth to wait the end of the finality to refresh it unless you already got the finality buff.
-    finish -> add_action( this, "Nightblade", "target_if=max:target.time_to_die,if=target.time_to_die>10&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time)" );
+    finish -> add_action( this, "Nightblade", "target_if=max:target.time_to_die,if=target.time_to_die>8&((refreshable&(!finality|buff.finality_nightblade.up))|remains<tick_time)" );
     finish -> add_talent( this, "Death from Above" );
     finish -> add_action( this, "Eviscerate" );
 
@@ -6611,11 +6611,11 @@ void rogue_t::init_action_list()
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=charges>=3" );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=2.7" );
     stealth_cds -> add_action( this, "Vanish" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges>=2&combo_points<=1" );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40-variable.ssw_er" );
-    stealth_cds -> add_action( "shadowmeld,if=energy>=40-variable.ssw_er" );
+    stealth_cds -> add_action( "shadowmeld,if=energy>=40-variable.ssw_er&energy.deficit>10" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points<=1" );
   }
 
