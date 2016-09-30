@@ -6,13 +6,13 @@
 #include "sc_expressions.hpp"
 #include "simulationcraft.hpp"
 
-namespace expression {
-
-const bool EXPRESSION_DEBUG = true;
+namespace expression
+{
 
 namespace
 {  // ANONYMOUS ====================================================
 
+const bool EXPRESSION_DEBUG = false;
 // Unary Operators ==========================================================
 
 template <class F>
@@ -238,11 +238,13 @@ public:
     {
       double result = F()( input_value );
       if ( EXPRESSION_DEBUG )
-        printf( "%*d %s unary expression reduced to %f\n", spacing, id(),
-                name(), result );
+        printf( "Reduced %*d %s (%s) unary expression to %f\n", spacing, id(),
+                name(), input->name(), result );
+      std::string new_name =
+          std::string( "const_unary('" ) + input->name() + "')";
       delete input;
       delete this;
-      return new const_expr_t( "const_unary", result );
+      return new const_expr_t( new_name, result );
     }
     expr_t* expr = select_unary( name(), op_, input );
     delete this;
@@ -260,7 +262,8 @@ expr_t* select_analyze_unary( const std::string& name, token_e op,
     case TOK_MINUS:
       return new expr_analyze_unary_t<std::negate<double>>( name, op, input );
     case TOK_NOT:
-      return new expr_analyze_unary_t<std::logical_not<double>>( name, op, input );
+      return new expr_analyze_unary_t<std::logical_not<double>>( name, op,
+                                                                 input );
     case TOK_ABS:
       return new expr_analyze_unary_t<unary::abs>( name, op, input );
     case TOK_FLOOR:
@@ -289,9 +292,13 @@ protected:
 
 public:
   analyze_binary_base_t( const std::string& n, token_e o, expr_t* l, expr_t* r )
-    : expr_t( n, o ), op(),
+    : expr_t( n, o ),
+      op(),
       left( l ),
-      right( r ), result(0), left_result(0), right_result(0),
+      right( r ),
+      result( 0 ),
+      left_result( 0 ),
+      right_result( 0 ),
       left_true( 0 ),
       right_true( 0 ),
       left_false( 0 ),
@@ -374,31 +381,35 @@ public:
     {
       if ( EXPRESSION_DEBUG )
       {
-        printf( "%*d %s and expression reduced to false\n", spacing, id(),
-                name() );
+        printf( "Reduced %*d %s (%s, %s) and expression to false\n", spacing,
+                id(), name(), left->name(), right->name() );
       }
       delete left;
       delete right;
       delete this;
-      return new const_expr_t( "const_and", 0.0 );
+      return new const_expr_t( std::string( "const_and_afalse('" ) +
+                                   left->name() + "','" + right->name() + "')",
+                               0.0 );
     }
     if ( left_always_true && right_always_true )
     {
       if ( EXPRESSION_DEBUG )
       {
-        printf( "%*d %s and expression reduced to true\n", spacing, id(),
-                name() );
+        printf( "Reduced %*d %s (%s, %s) and expression to true\n", spacing,
+                id(), name(), left->name(), right->name() );
       }
       delete left;
       delete right;
       delete this;
-      return new const_expr_t( "const_and", 1.0 );
+      return new const_expr_t( std::string( "const_and_atrue('" ) +
+                                   left->name() + "','" + right->name() + "')",
+                               1.0 );
     }
     if ( left_always_true )
     {
       if ( EXPRESSION_DEBUG )
-        printf( "%*d %s and expression reduced to right\n", spacing, id(),
-                name() );
+        printf( "Reduced %*d %s (%s) and expression to right\n", spacing, id(),
+                name(), left->name() );
       delete left;
       expr_t* prev_right = right;
       delete this;
@@ -407,8 +418,8 @@ public:
     if ( right_always_true )
     {
       if ( EXPRESSION_DEBUG )
-        printf( "%*d %s and expression reduced to left\n", spacing, id(),
-                name() );
+        printf( "Reduced %*d %s (%s) and expression to left\n", spacing, id(),
+                name(), right->name() );
       expr_t* prev_left = left;
       delete right;
       delete this;
@@ -670,19 +681,22 @@ public:
     {
       result = F<double>()( left_value, right_value );
       if ( EXPRESSION_DEBUG )
-        printf( "%*d %s binary expression reduced to %f\n", spacing, id(),
-                name(), result );
+        printf( "Reduced %*d %s (%s, %s) binary expression to %f\n", spacing,
+                id(), name(), left->name(), right->name(), result );
       delete left;
       delete right;
-      expr_t* reduced = new const_expr_t( "const_binary", result );
+      expr_t* reduced =
+          new const_expr_t( std::string( "const_binary('" ) + left->name() +
+                                "'&&'" + right->name() + "')",
+                            result );
       delete this;
       return reduced;
     }
     if ( left_constant )
     {
       if ( EXPRESSION_DEBUG )
-        printf( "%*d %s binary expression reduced left\n", spacing, id(),
-                name() );
+        printf( "Reduced %*d %s (%s) binary expression left\n", spacing, id(),
+                name(), left->name() );
       struct left_reduced_t : public expr_t
       {
         double left;
@@ -696,7 +710,9 @@ public:
           return F<double>()( left, right->eval() );
         }
       };
-      expr_t* reduced = new left_reduced_t( name(), op_, left_value, right );
+      expr_t* reduced = new left_reduced_t(
+          std::string( name() ) + "_left_reduced('" + left->name() + "')", op_,
+          left_value, right );
       delete left;
       delete this;
       return reduced;
@@ -704,8 +720,8 @@ public:
     if ( right_constant )
     {
       if ( EXPRESSION_DEBUG )
-        printf( "%*d %s binary expression reduced right\n", spacing, id(),
-                name() );
+        printf( "Reduced %*d %s (%s) binary expression right\n", spacing, id(),
+                name(), right->name() );
       struct right_reduced_t : public expr_t
       {
         expr_t* left;
@@ -719,7 +735,9 @@ public:
           return F<double>()( left->eval(), right );
         }
       };
-      expr_t* reduced = new right_reduced_t( name(), op_, left, right_value );
+      expr_t* reduced = new right_reduced_t(
+          std::string( name() ) + "_right_reduced('" + right->name() + "')",
+          op_, left, right_value );
       delete right;
       delete this;
       return reduced;
@@ -873,8 +891,8 @@ bool is_binary( token_e expr_token_type )
 // next_token ===============================================================
 
 token_e next_token( action_t* action, const std::string& expr_str,
-                                  int& current_index, std::string& token_str,
-                                  token_e prev_token )
+                    int& current_index, std::string& token_str,
+                    token_e prev_token )
 {
   unsigned char c = expr_str[ current_index++ ];
 
@@ -1014,8 +1032,8 @@ token_e next_token( action_t* action, const std::string& expr_str,
 
 // parse_tokens =============================================================
 
-std::vector<expr_token_t> parse_tokens(
-    action_t* action, const std::string& expr_str )
+std::vector<expr_token_t> parse_tokens( action_t* action,
+                                        const std::string& expr_str )
 {
   std::vector<expr_token_t> tokens;
 
@@ -1152,7 +1170,7 @@ bool convert_to_rpn( std::vector<expr_token_t>& tokens )
   return true;
 }
 
-} // expression
+}  // expression
 
 #if !defined( NDEBUG )
 int expr_t::get_global_id()
@@ -1164,11 +1182,11 @@ int expr_t::get_global_id()
 
 // build_expression_tree ====================================================
 
-static expr_t* build_expression_tree( action_t* action,
-                                      std::vector<expression::expr_token_t>& tokens,
-                                      bool optimize )
+static expr_t* build_expression_tree(
+    action_t* action, std::vector<expression::expr_token_t>& tokens,
+    bool optimize )
 {
-  auto_dispose<std::vector<expr_t*> > stack;
+  auto_dispose<std::vector<expr_t*>> stack;
 
   size_t num_tokens = tokens.size();
   for ( size_t i = 0; i < num_tokens; i++ )
@@ -1198,8 +1216,10 @@ static expr_t* build_expression_tree( action_t* action,
       expr_t* input = stack.back();
       stack.pop_back();
       assert( input );
-      expr_t* expr = ( optimize ? expression::select_analyze_unary( t.label, t.type, input )
-                                : expression::select_unary( t.label, t.type, input ) );
+      expr_t* expr =
+          ( optimize
+                ? expression::select_analyze_unary( t.label, t.type, input )
+                : expression::select_unary( t.label, t.type, input ) );
       stack.push_back( expr );
     }
     else if ( expression::is_binary( t.type ) )
@@ -1212,9 +1232,10 @@ static expr_t* build_expression_tree( action_t* action,
       expr_t* left = stack.back();
       stack.pop_back();
       assert( left );
-      expr_t* expr =
-          ( optimize ? expression::select_analyze_binary( t.label, t.type, left, right )
-                     : expression::select_binary( t.label, t.type, left, right ) );
+      expr_t* expr = ( optimize ? expression::select_analyze_binary(
+                                      t.label, t.type, left, right )
+                                : expression::select_binary( t.label, t.type,
+                                                             left, right ) );
       stack.push_back( expr );
     }
   }
@@ -1226,8 +1247,6 @@ static expr_t* build_expression_tree( action_t* action,
   stack.pop_back();
   return res;
 }
-
-
 
 // action_expr_t::create_constant ===========================================
 

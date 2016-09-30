@@ -73,13 +73,15 @@ bool convert_to_rpn( std::vector<expr_token_t>& tokens );
 struct expr_t
 {
 protected:
-  expr_t( const std::string&, expression::token_e op = expression::TOK_UNKNOWN )
+  expr_t( const std::string& name, expression::token_e op = expression::TOK_UNKNOWN )
     : op_( op )
 #if !defined( NDEBUG )
       ,
-      id_( get_global_id() )
+      id_( get_global_id() ),
+      name_(name)
 #endif
   {
+    (void)name;
   }
 
 public:
@@ -89,7 +91,11 @@ public:
 
   virtual const char* name() const
   {
+#if !defined( NDEBUG )
+    return name_.c_str();
+#else
     return "anonymous expression";
+#endif
   }
   int id() const
   {
@@ -150,6 +156,7 @@ public:
 private:
 #if !defined( NDEBUG )
   int id_;
+  std::string name_;
 
   int get_global_id();
 #endif
