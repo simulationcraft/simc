@@ -67,14 +67,10 @@ public:
     dot_t* vampiric_touch;
     dot_t* holy_fire;
     dot_t* power_word_solace;
-    dot_t* renew;
   } dots;
 
   struct buffs_t
   {
-    absorb_buff_t* divine_aegis;
-    absorb_buff_t* spirit_shell;
-    buff_t* holy_word_serenity;
     buff_t* mental_fatigue;
     buff_t* mind_spike;
     buff_t* schism;
@@ -102,20 +98,14 @@ public:
     // Talents
     buff_t* power_infusion;
     buff_t* twist_of_fate;
-    buff_t* surge_of_light;
 
     // Discipline
     buff_t* archangel;
     buff_t* borrowed_time;
     buff_t* holy_evangelism;
     buff_t* inner_focus;
-    buff_t* spirit_shell;
 
     // Holy
-    buff_t* divine_insight;
-    buff_t* serendipity;
-
-    buff_t* focused_will;
 
     // Shadow
     buff_t* dispersion;
@@ -133,7 +123,6 @@ public:
 
     // Set Bonus
     buff_t* mental_instinct;          // T17 Shadow 4pc
-    buff_t* clear_thoughts;           // T17 Disc 4pc
     buff_t* reperation;               // T18 Disc 2p
     buff_t* premonition;              // T18 Shadow 4pc
     stat_buff_t* power_overwhelming;  // T19OH
@@ -340,8 +329,6 @@ public:
   // Procs
   struct
   {
-    proc_t* divine_insight;
-    proc_t* divine_insight_overflow;
     proc_t* legendary_anunds_last_breath;
     proc_t* legendary_anunds_last_breath_overflow;
     proc_t* shadowy_insight;
@@ -372,7 +359,6 @@ public:
   // Special
   struct
   {
-    action_t* echo_of_light;
     actions::spells::mind_spike_detonation_t* mind_spike_detonation;
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
     actions::spells::sphere_of_insanity_spell_t* sphere_of_insanity;
@@ -406,13 +392,11 @@ public:
                        // 10 should be
                        // more than
                        // enough.
-    pet_t* lightwell;
   } pets;
 
   // Options
   struct
   {
-    std::string atonement_target_str;
     bool autoUnshift       = true;  // Shift automatically out of stance/form
     bool priest_fixed_time = true;
   } options;
@@ -487,7 +471,6 @@ public:
   priest_td_t* get_target_data( player_t* target ) const override;
   expr_t* create_expression( action_t* a,
                              const std::string& name_str ) override;
-  void assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
   bool has_t18_class_trinket() const override;
 
 private:
@@ -1240,34 +1223,6 @@ public:
     return false;
   }
 
-  bool trigger_divine_insight()
-  {
-    int stack = priest.buffs.divine_insight->check();
-    if ( priest.buffs.divine_insight->trigger() )
-    {
-      if ( priest.buffs.divine_insight->check() == stack )
-        priest.procs.divine_insight_overflow->occur();
-      else
-        priest.procs.divine_insight->occur();
-      return true;
-    }
-    return false;
-  }
-
-  bool trigger_surge_of_light()
-  {
-    int stack = priest.buffs.surge_of_light->check();
-    if ( priest.buffs.surge_of_light->trigger() )
-    {
-      if ( priest.buffs.surge_of_light->check() == stack )
-        priest.procs.surge_of_light_overflow->occur();
-      else
-        priest.procs.surge_of_light->occur();
-      return true;
-    }
-    return false;
-  }
-
   void trigger_anunds()
   {
     int stack = priest.buffs.anunds_last_breath->check();
@@ -1342,166 +1297,10 @@ public:
 
 struct priest_heal_t : public priest_action_t<heal_t>
 {
-  struct divine_aegis_t : public priest_absorb_t
-  {
-    divine_aegis_t( const std::string& n, priest_t& p )
-      : priest_absorb_t( n + "_divine_aegis", p, p.find_spell( 47753 ) )
-    {
-      check_spell( p.specs.divine_aegis );
-      proc                   = true;
-      background             = true;
-      may_crit               = false;
-      spell_power_mod.direct = 0.0;
-    }
-
-    void init() override
-    {
-      action_t::init();
-      snapshot_flags |= STATE_MUL_DA;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      absorb_buff_t& buff = *get_td( s->target ).buffs.divine_aegis;
-      // Divine Aegis caps absorbs at 40% of target's health
-      double old_amount = buff.value();
-
-      // when healing a tank that's below 0 life in the sim, Divine Aegis causes
-      // an exception because it tries to
-      // clamp s -. result_amount between 0 and a negative number. This is a
-      // workaround that treats a tank with
-      // negative life as being at maximum health for the purposes of Divine
-      // Aegis.
-      double limiting_factor = 0.6;  // WoD 14/12/05
-      double upper_limit =
-          s->target->resources.current[ RESOURCE_HEALTH ] * limiting_factor -
-          old_amount;
-      if ( upper_limit <= 0 )
-        upper_limit =
-            s->target->resources.max[ RESOURCE_HEALTH ] * limiting_factor -
-            old_amount;
-
-      double new_amount = clamp( s->result_amount, 0.0, upper_limit );
-      buff.trigger( 1, old_amount + new_amount );
-      stats->add_result( 0.0, new_amount, ABSORB, s->result, s->block_result,
-                         s->target );
-      buff.absorb_source->add_result( 0.0, new_amount, ABSORB, s->result,
-                                      s->block_result, s->target );
-    }
-
-    void trigger( const action_state_t* s, double crit_amount )
-    {
-      base_dd_min = base_dd_max =
-          crit_amount * priest.specs.divine_aegis->effectN( 1 ).percent();
-      target = s->target;
-      if ( sim->debug )
-      {
-        sim->out_debug.printf(
-            "%s %s triggers Divine Aegis with base_amount=%.2f.",
-            player->name(), name(), base_dd_min );
-      }
-      execute();
-    }
-  };
-
-  // FIXME:
-  // * Supposedly does not scale with Archangel.
-  // * There should be no min/max range on shell sizes.
-  // * Verify that PoH scales the same as single-target.
-  // * Verify the 30% "DA factor" did not change with the 50% DA change.
-  struct spirit_shell_absorb_t : public priest_absorb_t
-  {
-    double trigger_crit_multiplier;
-
-    spirit_shell_absorb_t( priest_heal_t& trigger )
-      : priest_absorb_t( trigger.name_str + "_shell", trigger.priest,
-                         trigger.priest.specs.spirit_shell ),
-        trigger_crit_multiplier( 0.0 )
-    {
-      background = true;
-      proc       = true;
-      may_crit   = false;
-      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
-    }
-
-    double action_multiplier() const override  // override
-    {
-      double am;
-
-      am = absorb_t::action_multiplier();
-
-      return am *                               // ( am ) *
-             ( 1 + trigger_crit_multiplier ) *  // ( 1 + crit ) *
-             ( 1 +
-               trigger_crit_multiplier *
-                   0.3 );  // ( 1 + crit * 30% "DA factor" )
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      // Spirit Shell caps absorbs at 60% of target's health
-      buff_t& spirit_shell = *get_td( s->target ).buffs.spirit_shell;
-      double old_amount    = spirit_shell.value();
-      double new_amount    = clamp(
-          s->result_amount, 0.0,
-          s->target->resources.current[ RESOURCE_HEALTH ] * 0.6 - old_amount );
-
-      spirit_shell.trigger( 1, old_amount + new_amount );
-      stats->add_result( 0.0, new_amount, ABSORB, s->result, s->block_result,
-                         s->target );
-    }
-
-    void trigger( action_state_t* s )
-    {
-      assert( s->result != RESULT_CRIT );
-      base_dd_min = base_dd_max = s->result_amount;
-      target                  = s->target;
-      trigger_crit_multiplier = s->composite_crit_chance();
-      execute();
-    }
-  };
-
-  divine_aegis_t* da;
-  spirit_shell_absorb_t* ss;
-  unsigned divine_aegis_trigger_mask;
-  bool can_trigger_EoL, can_trigger_spirit_shell;
-
-  void init() override
-  {
-    base_t::init();
-
-    if ( divine_aegis_trigger_mask && priest.specs.divine_aegis->ok() )
-    {
-      da = new divine_aegis_t( name_str, priest );
-      // add_child( da );
-    }
-
-    if ( can_trigger_spirit_shell )
-      ss = new spirit_shell_absorb_t( *this );
-  }
-
   priest_heal_t( const std::string& n, priest_t& player,
                  const spell_data_t* s = spell_data_t::nil() )
-    : base_t( n, player, s ),
-      da( nullptr ),
-      ss( nullptr ),
-      divine_aegis_trigger_mask( RESULT_CRIT_MASK ),
-      can_trigger_EoL( true ),
-      can_trigger_spirit_shell( false )
+    : base_t( n, player, s )
   {
-  }
-
-  double composite_target_crit_chance( player_t* t ) const override
-  {
-    double ctc = base_t::composite_target_crit_chance( t );
-
-    if ( get_td( t ).buffs.holy_word_serenity->check() )
-    {
-      ctc +=
-          get_td( t ).buffs.holy_word_serenity->data().effectN( 2 ).percent();
-    }
-
-    return ctc;
   }
 
   double action_multiplier() const override
@@ -1515,11 +1314,6 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
   void execute() override
   {
-    if ( can_trigger_spirit_shell )
-    {
-      may_crit = priest.buffs.spirit_shell->check() == 0;
-    }
-
     priest.buffs.archangel->up();  // uptime tracking
 
     base_t::execute();
@@ -1529,148 +1323,19 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
   void impact( action_state_t* s ) override
   {
-    if ( ss && priest.buffs.spirit_shell->up() )
-    {
-      ss->trigger( s );
-    }
-    else
-    {
-      double save_health_percentage = s->target->health_percentage();
+    double save_health_percentage = s->target->health_percentage();
 
-      base_t::impact( s );
+    base_t::impact( s );
 
-      if ( s->result_amount > 0 )
+    if ( s->result_amount > 0 )
+    {
+      if ( priest.specialization() != PRIEST_SHADOW &&
+           priest.talents.twist_of_fate->ok() &&
+           ( save_health_percentage <
+             priest.talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
-        trigger_echo_of_light( this, s );
-
-        if ( priest.specialization() != PRIEST_SHADOW &&
-             priest.talents.twist_of_fate->ok() &&
-             ( save_health_percentage <
-               priest.talents.twist_of_fate->effectN( 1 ).base_value() ) )
-        {
-          priest.buffs.twist_of_fate->trigger();
-        }
+        priest.buffs.twist_of_fate->trigger();
       }
-    }
-  }
-
-  void assess_damage( dmg_e type, action_state_t* s ) override
-  {
-    remove_crit_amount_divine_aegis( s );
-    base_t::assess_damage( type, s );
-    trigger_divine_aegis( s );
-  }
-
-  /* Helper function to check if divine aegis trigger can be applied.
-   */
-  bool can_trigger_divine_aegis( const action_state_t* s ) const
-  {
-    if ( s->result_total > 0 )
-    {
-      if ( da && ( ( 1 << s->result ) & divine_aegis_trigger_mask ) != 0 )
-      {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  void remove_crit_amount_divine_aegis( action_state_t* s )
-  {
-    if ( can_trigger_divine_aegis( s ) )
-    {
-      double crit_bonus       = total_crit_bonus( s );
-      double non_crit_portion = s->result_total / ( 1.0 + crit_bonus );
-      s->result_total =
-          non_crit_portion;  // remove crit portion from source spell
-    }
-  }
-
-  void trigger_divine_aegis( action_state_t* s )
-  {
-    if ( can_trigger_divine_aegis( s ) )
-    {
-      double crit_bonus  = total_crit_bonus( s );
-      double crit_amount = s->result_total * crit_bonus;
-      da->trigger( s, crit_amount );
-    }
-  }
-
-  // Priest Echo of Light, Ignite-Mechanic specialization
-  void trigger_echo_of_light( priest_heal_t* h, action_state_t* s )
-  {
-    priest_t& p = h->priest;
-    if ( !p.mastery_spells.echo_of_light->ok() || !can_trigger_EoL )
-      return;
-
-    residual_action::trigger(
-        p.active_spells.echo_of_light,                 // ignite spell
-        s->target,                                     // target
-        s->result_amount * p.cache.mastery_value() );  // ignite damage
-  }
-
-  void trigger_serendipity( bool tier17_4pc = false )
-  {
-    int stack      = priest.buffs.serendipity->check();
-    bool triggered = false;
-
-    if ( tier17_4pc && priest.sets.has_set_bonus( PRIEST_HOLY, T17, B4 ) &&
-         rng().roll(
-             priest.sets.set( PRIEST_HOLY, T17, B4 )->effectN( 1 ).percent() ) )
-    {
-      triggered = priest.buffs.serendipity->trigger();
-    }
-    else if ( !tier17_4pc )
-    {
-      triggered = priest.buffs.serendipity->trigger();
-    }
-
-    if ( triggered )
-    {
-      if ( tier17_4pc )
-      {
-        if ( priest.buffs.serendipity->check() == stack )
-          priest.procs.t17_4pc_holy_overflow->occur();
-        else
-          priest.procs.t17_4pc_holy->occur();
-      }
-      else
-      {
-        if ( priest.buffs.serendipity->check() == stack )
-          priest.procs.serendipity_overflow->occur();
-        else
-          priest.procs.serendipity->occur();
-      }
-    }
-  }
-
-  void consume_serendipity()
-  {
-    priest.buffs.serendipity->up();
-    priest.buffs.serendipity->expire();
-  }
-
-  void consume_surge_of_light()
-  {
-    priest.buffs.surge_of_light->up();
-    priest.buffs.surge_of_light->expire();
-  }
-
-  /**
-   * 124519-boss-13-priest-trinket Discipline
-   */
-  void trigger_naarus_discipline( const action_state_t* s )
-  {
-    if ( priest.active_items.naarus_discipline )
-    {
-      const item_t* item = priest.active_items.naarus_discipline->item;
-      double stacks      = 1;
-      double value       = priest.active_items.naarus_discipline->trigger()
-                         ->effectN( 1 )
-                         .average( item ) /
-                     100.0;
-      s->target->buffs.naarus_discipline->trigger( static_cast<int>( stacks ),
-                                                   value );
     }
   }
 };
@@ -1681,98 +1346,12 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
-  // Atonement heal =========================================================
-  struct atonement_heal_t : public priest_heal_t
-  {
-    atonement_heal_t( const std::string& n, priest_t& p )
-      : priest_heal_t(
-            n, p,
-            p.find_spell(
-                81749 ) /* accessed through id so both disc and holy can use it */ )
-    {
-      background     = true;
-      round_base_dmg = false;
-      hasted_ticks   = false;
-
-      // We set the base crit chance to 100%, so that simply setting
-      // may_crit = true (in trigger()) will force a crit. When the trigger
-      // spell crits, the atonement crits as well and procs Divine Aegis.
-      base_crit = 1.0;
-
-      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
-
-      if ( !p.options.atonement_target_str.empty() )
-        target = sim->find_player( p.options.atonement_target_str );
-      else
-        target = nullptr;
-    }
-
-    void trigger( double damage, dmg_e dmg_type, result_e result )
-    {
-      // Atonement caps at 30% of the Priest's health
-      double cap = priest.resources.current[ RESOURCE_HEALTH ] * 0.3;
-
-      if ( result == RESULT_CRIT )
-      {
-        // Assume crits cap at 200% of the non-crit cap; needs testing.
-        cap *= 2.0;
-      }
-
-      base_dd_min = base_dd_max =
-          std::min( cap, damage * data().effectN( 1 ).percent() );
-
-      direct_tick = dual = ( dmg_type == DMG_OVER_TIME );
-      may_crit = ( result == RESULT_CRIT );
-
-      execute();
-    }
-
-    double composite_target_multiplier( player_t* target ) const override
-    {
-      double m = priest_heal_t::composite_target_multiplier( target );
-      if ( target == player )
-        m *= 0.5;  // Hardcoded in the tooltip
-      return m;
-    }
-
-    double total_crit_bonus( action_state_t* /* s */ ) const override
-    {
-      return 0;
-    }
-
-    void execute() override
-    {
-      player_t* saved_target = target;
-      if ( !target )
-        target = find_lowest_player();
-
-      priest_heal_t::execute();
-
-      target = saved_target;
-    }
-
-    void tick( dot_t* d ) override
-    {
-      player_t* saved_target = target;
-      if ( !target )
-        target = find_lowest_player();
-
-      priest_heal_t::tick( d );
-
-      target = saved_target;
-    }
-  };
-
-  atonement_heal_t* atonement;
-  bool can_trigger_atonement;
   bool is_mind_spell;
   bool is_sphere_of_insanity_spell;
 
   priest_spell_t( const std::string& n, priest_t& player,
                   const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, player, s ),
-      atonement( nullptr ),
-      can_trigger_atonement( false ),
       is_mind_spell( false ),
       is_sphere_of_insanity_spell( false )
   {
@@ -1798,14 +1377,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
 
     return action_t::ready();
-  }
-
-  void init() override
-  {
-    base_t::init();
-
-    if ( can_trigger_atonement )
-      atonement = new atonement_heal_t( "atonement_" + name_str, priest );
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1866,9 +1437,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( aoe == 0 && result_is_hit( s->result ) &&
          priest.buffs.vampiric_embrace->up() )
       trigger_vampiric_embrace( s );
-
-    if ( atonement )
-      trigger_atonement( type, s );
   }
 
   /* Based on previous implementation ( pets don't count but get full heal )
@@ -1899,12 +1467,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
                             pet->gains.vampiric_embrace );
       }
     }
-  }
-
-  void trigger_atonement( dmg_e type, action_state_t* s )
-  {
-    atonement->trigger( s->result_amount, direct_tick ? DMG_OVER_TIME : type,
-                        s->result );
   }
 
   void generate_insanity( double num_amount, gain_t* g = nullptr )
@@ -2023,10 +1585,8 @@ struct archangel_t final : public priest_spell_t
   void execute() override
   {
     priest_spell_t::execute();
-    priest.buffs.archangel->trigger();
 
-    if ( priest.sets.has_set_bonus( PRIEST_DISCIPLINE, T17, B4 ) )
-      priest.buffs.clear_thoughts->trigger();
+    priest.buffs.archangel->trigger();
   }
 
   bool ready() override
@@ -2391,25 +1951,6 @@ struct surrender_to_madness_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest.buffs.surrender_to_madness->trigger();
-  }
-};
-
-// Spirit Shell Spell =======================================================
-
-struct spirit_shell_t final : public priest_spell_t
-{
-  spirit_shell_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "spirit_shell", p, p.specs.spirit_shell )
-  {
-    parse_options( options_str );
-    harmful = may_hit = may_crit = false;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.buffs.spirit_shell->trigger();
   }
 };
 
@@ -3697,8 +3238,6 @@ struct holy_fire_base_t : public priest_spell_t
       backlash( new glyph_of_the_inquisitor_backlash_t( p ) )
   {
     procs_courageous_primal_diamond = false;
-
-    can_trigger_atonement = priest.specs.atonement->ok();
   }
 
   void execute() override
@@ -3730,8 +3269,6 @@ struct power_word_solace_t final : public holy_fire_base_t
     parse_options( options_str );
 
     travel_speed = 0.0;  // DBC has default travel taking 54seconds.....
-
-    can_trigger_atonement = true;  // works for both disc and holy
   }
 
   void impact( action_state_t* s ) override
@@ -3772,13 +3309,6 @@ struct penance_t final : public priest_spell_t
       //      can_trigger_atonement = priest.specs.atonement->ok();
 
       this->stats = stats;
-    }
-
-    void init() override
-    {
-      priest_spell_t::init();
-      if ( atonement )
-        atonement->stats = player->get_stats( "atonement_penance" );
     }
 
     void impact( action_state_t* state ) override
@@ -3832,13 +3362,6 @@ struct penance_t final : public priest_spell_t
     return base_tick_time;
   }
 
-  void init() override
-  {
-    priest_spell_t::init();
-    if ( atonement )
-      atonement->channeled = true;
-  }
-
   void execute() override
   {
     priest_spell_t::execute();
@@ -3874,9 +3397,6 @@ struct smite_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest.buffs.holy_evangelism->trigger();
-    priest.buffs.surge_of_light->trigger();
-
-    trigger_surge_of_light();
 
     priest.buffs.power_overwhelming->trigger();
   }
@@ -4145,438 +3665,6 @@ struct purge_the_wicked_t final : public priest_spell_t
 
 namespace heals
 {
-// Binding Heal Spell =======================================================
-
-struct binding_heal_t final : public priest_heal_t
-{
-  binding_heal_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "binding_heal", p, p.find_class_spell( "Binding Heal" ) )
-  {
-    parse_options( options_str );
-
-    aoe = 2;
-  }
-
-  void init() override
-  {
-    priest_heal_t::init();
-
-    target_cache.list.clear();
-    target_cache.list.push_back( target );
-    target_cache.list.push_back( player );
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    assert( tl.size() == 2 );
-
-    if ( tl[ 0 ] != target )
-      tl[ 0 ] = target;
-
-    return tl.size();
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    trigger_serendipity();
-    trigger_surge_of_light();
-  }
-};
-
-// Circle of Healing ========================================================
-
-struct circle_of_healing_t final : public priest_heal_t
-{
-  circle_of_healing_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "circle_of_healing", p,
-                     p.find_class_spell( "Circle of Healing" ) )
-  {
-    parse_options( options_str );
-
-    aoe = 5;
-  }
-
-  void execute() override
-  {
-    // Choose Heal Target
-    target = find_lowest_player();
-
-    priest_heal_t::execute();
-
-    trigger_surge_of_light();
-  }
-};
-
-// Desperate Prayer =========================================================
-
-// TODO: Check and see if Desperate Prayer can trigger Surge of Light for Holy
-struct desperate_prayer_t final : public priest_heal_t
-{
-  desperate_prayer_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "desperate_prayer", p, p.talents.desperate_prayer )
-  {
-    parse_options( options_str );
-
-    target = &p;  // always targets the priest himself
-  }
-};
-
-// Divine Hymn Spell ========================================================
-
-struct divine_hymn_tick_t final : public priest_heal_t
-{
-  divine_hymn_tick_t( priest_t& player, int nr_targets )
-    : priest_heal_t( "divine_hymn_tick", player, player.find_spell( 64844 ) )
-  {
-    background = true;
-
-    aoe = nr_targets;
-  }
-};
-
-struct divine_hymn_t final : public priest_heal_t
-{
-  divine_hymn_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "divine_hymn", p, p.find_class_spell( "Divine Hymn" ) )
-  {
-    parse_options( options_str );
-
-    harmful             = false;
-    channeled           = true;
-    dynamic_tick_action = true;
-
-    tick_action = new divine_hymn_tick_t( p, data().effectN( 2 ).base_value() );
-    add_child( tick_action );
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    trigger_surge_of_light();
-  }
-};
-
-// Echo of Light
-
-struct echo_of_light_t final
-    : public residual_action::residual_periodic_action_t<priest_heal_t>
-{
-  echo_of_light_t( priest_t& p )
-    : base_t( "echo_of_light", p, p.find_spell( 77489 ) )
-  {
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-    dot_duration   = data().duration();
-  }
-};
-
-// Flash Heal Spell =========================================================
-
-struct flash_heal_t final : public priest_heal_t
-{
-  flash_heal_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
-  {
-    parse_options( options_str );
-    can_trigger_spirit_shell = true;
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    trigger_serendipity();
-    consume_surge_of_light();
-    trigger_surge_of_light();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_heal_t::impact( s );
-
-    trigger_naarus_discipline( s );
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( priest.buffs.surge_of_light->check() )
-      return timespan_t::zero();
-
-    return priest_heal_t::execute_time();
-  }
-
-  double cost() const override
-  {
-    if ( priest.buffs.surge_of_light->check() )
-      return 0.0;
-
-    double c = priest_heal_t::cost();
-
-    return c;
-  }
-};
-
-// Guardian Spirit ==========================================================
-
-struct guardian_spirit_t final : public priest_heal_t
-{
-  guardian_spirit_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "guardian_spirit", p,
-                     p.find_class_spell( "Guardian Spirit" ) )
-  {
-    parse_options( options_str );
-
-    base_dd_min = base_dd_max = 0.0;  // The absorb listed isn't a real absorb
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-    target->buffs.guardian_spirit->trigger();
-  }
-};
-
-// Heal Spell =======================================================
-
-// starts with underscore because of name conflict with heal_t
-
-struct _heal_t final : public priest_heal_t
-{
-  _heal_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "heal", p, p.find_class_spell( "Heal" ) )
-  {
-    parse_options( options_str );
-    can_trigger_spirit_shell = true;
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    consume_serendipity();
-    trigger_surge_of_light();
-    trigger_divine_insight();
-
-    priest.buffs.power_overwhelming->trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_heal_t::impact( s );
-
-    trigger_naarus_discipline( s );
-  }
-
-  double cost() const override
-  {
-    double c = priest_heal_t::cost();
-
-    if ( priest.buffs.serendipity->check() )
-      c *= 1.0 +
-           priest.buffs.serendipity->check() *
-               priest.buffs.serendipity->data().effectN( 2 ).percent();
-
-    return c;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t et = priest_heal_t::execute_time();
-
-    if ( priest.buffs.serendipity->check() )
-      et *= 1.0 +
-            priest.buffs.serendipity->check() *
-                priest.buffs.serendipity->data().effectN( 1 ).percent();
-
-    return et;
-  }
-};
-
-// Holy Word Sanctuary ======================================================
-
-struct holy_word_sanctuary_t final : public priest_heal_t
-{
-  struct holy_word_sanctuary_tick_t final : public priest_heal_t
-  {
-    holy_word_sanctuary_tick_t( priest_t& player )
-      : priest_heal_t( "holy_word_sanctuary_tick", player,
-                       player.find_spell( 88686 ) )
-    {
-      dual        = true;
-      background  = true;
-      direct_tick = true;
-      can_trigger_EoL =
-          false;  // http://us.battle.net/wow/en/forum/topic/5889309137?page=107#2137
-    }
-  };
-
-  holy_word_sanctuary_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "holy_word_sanctuary", p, p.find_spell( 88685 ) )
-  {
-    parse_options( options_str );
-
-    may_crit = false;
-
-    base_tick_time = timespan_t::from_seconds( 2.0 );
-    dot_duration   = timespan_t::from_seconds( 18.0 );
-
-    tick_action = new holy_word_sanctuary_tick_t( p );
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    trigger_surge_of_light();
-  }
-  // HW: Sanctuary is treated as a instant cast spell, both affected by Inner
-  // Will and Mental Agility
-};
-
-// Holy Word Chastise =======================================================
-
-struct holy_word_chastise_t final : public priest_spell_t
-{
-  holy_word_chastise_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "holy_word_chastise", p,
-                      p.find_class_spell( "Holy Word: Chastise" ) )
-  {
-    parse_options( options_str );
-
-    base_costs[ current_resource() ] =
-        floor( base_costs[ current_resource() ] );
-  }
-};
-
-// Holy Word Serenity =======================================================
-
-struct holy_word_serenity_t final : public priest_heal_t
-{
-  holy_word_serenity_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "holy_word_serenity", p, p.find_spell( 88684 ) )
-  {
-    parse_options( options_str );
-
-    base_costs[ current_resource() ] =
-        floor( base_costs[ current_resource() ] );
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    trigger_surge_of_light();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_heal_t::impact( s );
-
-    get_td( s->target ).buffs.holy_word_serenity->trigger();
-  }
-};
-
-/* Lightwell Spell
- * Create only if ( p.pets.lightwell )
- */
-struct lightwell_t final : public priest_spell_t
-{
-  timespan_t consume_interval;
-  cooldown_t* lightwell_renew_cd;
-
-  lightwell_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "lightwell", p, p.find_class_spell( "Lightwell" ) ),
-      consume_interval( timespan_t::from_seconds( 10 ) ),
-      lightwell_renew_cd( nullptr )
-  {
-    add_option( opt_timespan( "consume_interval", consume_interval ) );
-    parse_options( options_str );
-
-    harmful = false;
-
-    assert( consume_interval > timespan_t::zero() &&
-            consume_interval < cooldown->duration );
-  }
-
-  bool init_finished() override
-  {
-    lightwell_renew_cd =
-        priest.pets.lightwell->get_cooldown( "lightwell_renew" );
-
-    return priest_spell_t::init_finished();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    lightwell_renew_cd->duration = consume_interval;
-    priest.pets.lightwell->summon( data().duration() );
-  }
-};
-
-// Penance Heal Spell =======================================================
-
-struct penance_heal_t final : public priest_heal_t
-{
-  struct penance_heal_tick_t final : public priest_heal_t
-  {
-    penance_heal_tick_t( priest_t& player )
-      : priest_heal_t( "penance_heal_tick", player, player.find_spell( 47750 ) )
-    {
-      background  = true;
-      may_crit    = true;
-      dual        = true;
-      direct_tick = true;
-
-      school = SCHOOL_HOLY;
-      stats  = player.get_stats( "penance_heal", this );
-    }
-
-    void init() override
-    {
-      priest_heal_t::init();
-
-      snapshot_flags |= STATE_MUL_TA;
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      priest_heal_t::impact( state );
-
-      if ( result_is_hit( state->result ) )
-      {
-        // TODO: Check if this is the correct place & check for triggering.
-        // 2015-04-14: Your Penance [...] each time it deals damage or heals.
-        priest.buffs.reperation->trigger();
-      }
-
-      trigger_naarus_discipline( state );
-    }
-  };
-
-  penance_heal_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "penance_heal", p, p.find_class_spell( "Penance" ) )
-  {
-    parse_options( options_str );
-
-    may_crit            = false;
-    channeled           = true;
-    tick_zero           = true;
-    dot_duration        = timespan_t::from_seconds( 2.0 );
-    base_tick_time      = timespan_t::from_seconds( 1.0 );
-    hasted_ticks        = false;
-    dynamic_tick_action = true;
-
-    cooldown = p.cooldowns.penance;
-
-    tick_action = new penance_heal_tick_t( p );
-  }
-};
-
 // Power Word: Shield Spell =================================================
 
 struct power_word_shield_t final : public priest_absorb_t
@@ -4654,208 +3742,6 @@ struct mental_fortitude_t final : public priest_absorb_t
 
     stats->add_result( 0.0, s->result_total, ABSORB, s->result, s->block_result,
                        s->target );
-  }
-};
-
-// Prayer of Healing Spell ==================================================
-
-struct prayer_of_healing_t final : public priest_heal_t
-{
-  prayer_of_healing_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "prayer_of_healing", p,
-                     p.find_class_spell( "Prayer of Healing" ) )
-  {
-    parse_options( options_str );
-    aoe                      = 5;
-    group_only               = true;
-    can_trigger_spirit_shell = true;
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    consume_serendipity();
-    trigger_surge_of_light();
-    trigger_divine_insight();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_heal_t::impact( s );
-
-    trigger_naarus_discipline( s );
-  }
-
-  double cost() const override
-  {
-    double c = priest_heal_t::cost();
-
-    if ( priest.buffs.clear_thoughts->check() )
-      c *= 1.0 +
-           priest.buffs.clear_thoughts->check() *
-               priest.buffs.clear_thoughts->data().effectN( 1 ).percent();
-
-    if ( priest.buffs.serendipity->check() )
-      c *= 1.0 +
-           priest.buffs.serendipity->check() *
-               priest.buffs.serendipity->data().effectN( 2 ).percent();
-
-    return c;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t et = priest_heal_t::execute_time();
-
-    if ( priest.buffs.serendipity->check() )
-      et *= 1.0 +
-            priest.buffs.serendipity->check() *
-                priest.buffs.serendipity->data().effectN( 1 ).percent();
-
-    return et;
-  }
-
-  bool ready() override
-  {
-    return heal_t::ready();
-  }
-};
-
-// Prayer of Mending Spell ==================================================
-
-struct prayer_of_mending_t final : public priest_heal_t
-{
-  bool single;
-
-  prayer_of_mending_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "prayer_of_mending", p,
-                     p.find_class_spell( "Prayer of Mending" ) ),
-      single( false )
-  {
-    add_option( opt_bool( "single", single ) );
-    parse_options( options_str );
-
-    spell_power_mod.direct = 0.666;  // last checked 2015/02/21
-    base_dd_min = base_dd_max = data().effectN( 1 ).min( &p );
-
-    aoe = 5;
-
-    if ( priest.sets.has_set_bonus( PRIEST_HOLY, T17, B2 ) )
-      aoe +=
-          (int)priest.sets.set( PRIEST_HOLY, T17, B2 )->effectN( 1 ).percent() *
-          100;
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    trigger_surge_of_light();
-    trigger_serendipity( true );
-  }
-
-  void update_ready( timespan_t cd_duration ) override
-  {
-    // If divine insight holy is up, don't trigger a cooldown
-    if ( !priest.buffs.divine_insight->up() )
-    {
-      priest_heal_t::update_ready( cd_duration );
-    }
-  }
-};
-
-// Renew Spell ==============================================================
-
-struct renew_t final : public priest_heal_t
-{
-  struct rapid_renewal_t final : public priest_heal_t
-  {
-    rapid_renewal_t( priest_t& p )
-      : priest_heal_t( "rapid_renewal", p, p.specs.rapid_renewal )
-    {
-      background = true;
-      proc       = true;
-    }
-
-    void trigger( action_state_t* s, double /* amount */ )
-    {
-      target = s->target;
-      execute();
-      trigger_surge_of_light();
-    }
-
-    double composite_da_multiplier(
-        const action_state_t* /* state */ ) const override
-    {
-      return 1.0;
-    }
-  };
-  rapid_renewal_t* rr;
-
-  renew_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "renew", p, p.find_class_spell( "Renew" ) ), rr( nullptr )
-  {
-    parse_options( options_str );
-
-    may_crit = false;
-
-    if ( p.specs.rapid_renewal->ok() )
-    {
-      rr = new rapid_renewal_t( p );
-      add_child( rr );
-      base_multiplier *= 1.0 + p.specs.rapid_renewal->effectN( 2 ).percent();
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_heal_t::impact( s );
-
-    if ( rr )
-    {
-      dot_t* d         = get_dot( s->target );
-      result_e r       = d->state->result;
-      d->state->result = RESULT_HIT;
-      double tick_dmg = calculate_tick_amount( d->state, d->current_stack() );
-      d->state->result = r;
-      tick_dmg *=
-          d->ticks_left();  // Gets multiplied by the hasted amount of ticks
-      rr->trigger( s, tick_dmg );
-    }
-  }
-};
-
-struct clarity_of_will_t final : public priest_absorb_t
-{
-  clarity_of_will_t( priest_t& p, const std::string& options_str )
-    : priest_absorb_t( "clarity_of_will", p, p.talents.clarity_of_will )
-  {
-    parse_options( options_str );
-
-    spell_power_mod.direct = 6.6;  // Last checked 2015/02/21
-
-    // TODO: implement buff value overflow of 75% of casting priest health.
-    // 15/02/14
-  }
-};
-
-struct clarity_of_purpose_t final : public priest_heal_t
-{
-  clarity_of_purpose_t( priest_t& p, const std::string& options_str )
-    : priest_heal_t( "clarity_of_purpose", p,
-                     p.find_spell( 0 /*p.talents.divine_clarity */ ) )
-  {
-    parse_options( options_str );
-    // can_trigger_spirit_shell = true; ?
-    // TODO: implement mechanic
-  }
-
-  void execute() override
-  {
-    priest_heal_t::execute();
-
-    trigger_surge_of_light();
   }
 };
 
@@ -5204,16 +4090,6 @@ struct archangel_t final : public priest_buff_t<buff_t>
   }
 };
 
-struct spirit_shell_t final : public priest_buff_t<buff_t>
-{
-  spirit_shell_t( priest_t& p )
-    : base_t( p, buff_creator_t( &p, "spirit_shell" )
-                     .spell( p.find_class_spell( "Spirit Shell" ) )
-                     .cd( timespan_t::zero() ) )
-  {
-  }
-};
-
 }  // end namespace buffs
 
 namespace items
@@ -5333,20 +4209,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p )
   dots.power_word_solace = target->get_dot( "power_word_solace", &p );
   dots.shadow_word_pain  = target->get_dot( "shadow_word_pain", &p );
   dots.vampiric_touch    = target->get_dot( "vampiric_touch", &p );
-  dots.renew             = target->get_dot( "renew", &p );
-
-  buffs.divine_aegis =
-      absorb_buff_creator_t( *this, "divine_aegis", p.find_spell( 47753 ) )
-          .source( p.get_stats( "divine_aegis" ) );
-
-  buffs.spirit_shell = absorb_buff_creator_t( *this, "spirit_shell_absorb" )
-                           .spell( p.find_spell( 114908 ) )
-                           .source( p.get_stats( "spirit_shell" ) );
-
-  buffs.holy_word_serenity = buff_creator_t( *this, "holy_word_serenity" )
-                                 .spell( p.find_spell( 88684 ) )
-                                 .cd( timespan_t::zero() )
-                                 .activated( false );
 
   if ( priest.active_items.mental_fatigue )
   {
@@ -5499,9 +4361,6 @@ void priest_t::create_procs()
   procs.shadowy_apparition = get_proc( "Shadowy Apparition Procced" );
   procs.shadowy_apparition =
       get_proc( "Shadowy Apparition Insanity lost to overflow" );
-  procs.divine_insight = get_proc( "Divine Insight Instant Prayer of Mending" );
-  procs.divine_insight_overflow =
-      get_proc( "Divine Insight Instant Prayer of Mending lost to overflow" );
   procs.shadowy_insight =
       get_proc( "Shadowy Insight Mind Blast CD Reset from Shadow Word: Pain" );
   procs.shadowy_insight_overflow =
@@ -5867,8 +4726,6 @@ action_t* priest_t::create_action( const std::string& name,
     return new silence_t( *this, options_str );
   if ( name == "vampiric_embrace" )
     return new vampiric_embrace_t( *this, options_str );
-  if ( name == "spirit_shell" )
-    return new spirit_shell_t( *this, options_str );
 
   // Shadow
   if ( name == "mind_blast" )
@@ -5936,36 +4793,8 @@ action_t* priest_t::create_action( const std::string& name,
     return new schism_t( *this, options_str );
 
   // Heals
-  if ( name == "binding_heal" )
-    return new binding_heal_t( *this, options_str );
-  if ( name == "circle_of_healing" )
-    return new circle_of_healing_t( *this, options_str );
-  if ( name == "divine_hymn" )
-    return new divine_hymn_t( *this, options_str );
-  if ( name == "flash_heal" )
-    return new flash_heal_t( *this, options_str );
-  if ( name == "heal" )
-    return new _heal_t( *this, options_str );
-  if ( name == "guardian_spirit" )
-    return new guardian_spirit_t( *this, options_str );
-  if ( name == "penance_heal" )
-    return new penance_heal_t( *this, options_str );
   if ( name == "power_word_shield" )
     return new power_word_shield_t( *this, options_str );
-  if ( name == "prayer_of_healing" )
-    return new prayer_of_healing_t( *this, options_str );
-  if ( name == "prayer_of_mending" )
-    return new prayer_of_mending_t( *this, options_str );
-  if ( name == "renew" )
-    return new renew_t( *this, options_str );
-  if ( name == "clarity_of_will" )
-    return new clarity_of_will_t( *this, options_str );
-  // if ( name == "clarity_of_purpose"     ) return new clarity_of_purpose_t
-  // ( *this, options_str );
-
-  if ( find_class_spell( "Lightwell" )->ok() )
-    if ( name == "lightwell" )
-      return new lightwell_t( *this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -6022,9 +4851,6 @@ void priest_t::create_pets()
       }
     }
   }
-
-  if ( find_class_spell( "Lightwell" )->ok() )
-    pets.lightwell = create_pet( "lightwell" );
 }
 
 // priest_t::init_base ======================================================
@@ -6210,9 +5036,6 @@ void priest_t::init_spells()
   mastery_spells.echo_of_light = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.madness       = find_mastery_spell( PRIEST_SHADOW );
 
-  if ( mastery_spells.echo_of_light->ok() )
-    active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
-
   // Range Based on Talents
   if ( talents.divine_star->ok() )
     base.distance = 24.0;
@@ -6220,14 +5043,6 @@ void priest_t::init_spells()
     base.distance = 27.0;
   else
     base.distance = 27.0;
-}
-
-void priest_t::assess_damage_imminent( school_e, dmg_e, action_state_t* s )
-{
-  if ( s->result_amount > 0.0 )
-  {
-    buffs.focused_will->trigger();
-  }
 }
 
 // priest_t::init_buffs =====================================================
@@ -6252,11 +5067,6 @@ void priest_t::create_buffs()
                               .percent() )
           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-
-  buffs.surge_of_light =
-      buff_creator_t( this, "surge_of_light" )
-          .spell( find_spell( 109186 ) )
-          .chance( talents.surge_of_light->effectN( 1 ).percent() );
 
   buffs.shadowy_insight =
       buff_creator_t( this, "shadowy_insight" )
@@ -6300,19 +5110,6 @@ void priest_t::create_buffs()
                               .chance( specs.evangelism->ok() )
                               .activated( false );
 
-  buffs.spirit_shell = new buffs::spirit_shell_t( *this );
-
-  // Holy
-  buffs.serendipity = buff_creator_t( this, "serendipity" )
-                          .spell( find_spell( specs.serendipity->effectN( 1 )
-                                                  .trigger_spell_id() ) );
-
-  buffs.focused_will =
-      buff_creator_t( this, "focused_will" )
-          .spell( specs.focused_will->ok()
-                      ? specs.focused_will->effectN( 1 ).trigger()
-                      : spell_data_t::not_found() );
-
   // Shadow
 
   buffs.voidform = new buffs::voidform_t( *this );
@@ -6344,12 +5141,6 @@ void priest_t::create_buffs()
           .chance( sets.has_set_bonus( PRIEST_SHADOW, T17, B4 ) )
           .add_invalidate( CACHE_SPELL_HASTE )
           .add_invalidate( CACHE_HASTE );
-
-  buffs.clear_thoughts =
-      buff_creator_t( this, "clear_thoughts" )
-          .spell(
-              sets.set( PRIEST_DISCIPLINE, T17, B4 )->effectN( 1 ).trigger() )
-          .chance( sets.set( PRIEST_DISCIPLINE, T17, B4 )->proc_chance() );
 
   buffs.reperation =
       buff_creator_t( this, "reperation" )
@@ -7264,13 +6055,6 @@ void priest_t::target_mitigation( school_e school, dmg_e dt, action_state_t* s )
     s->result_amount *=
         1.0 + ( buffs.dispersion->data().effectN( 1 ).percent() );
   }
-
-  if ( buffs.focused_will->check() )
-  {
-    s->result_amount *= 1.0 +
-                        buffs.focused_will->data().effectN( 1 ).percent() *
-                            buffs.focused_will->check();
-  }
 }
 
 // priest_t::create_options =================================================
@@ -7279,7 +6063,6 @@ void priest_t::create_options()
 {
   base_t::create_options();
 
-  add_option( opt_string( "atonement_target", options.atonement_target_str ) );
   add_option( opt_deprecated( "double_dot", "action_list=double_dot" ) );
   add_option( opt_bool( "autounshift", options.autoUnshift ) );
   add_option( opt_bool( "priest_fixed_time", options.priest_fixed_time ) );
@@ -7296,9 +6079,6 @@ std::string priest_t::create_profile( save_e type )
     if ( !options.autoUnshift )
       profile_str +=
           "autounshift=" + util::to_string( options.autoUnshift ) + "\n";
-
-    if ( !options.atonement_target_str.empty() )
-      profile_str += "atonement_target=" + options.atonement_target_str + "\n";
 
     if ( !options.priest_fixed_time )
       profile_str += "priest_fixed_time=" +
