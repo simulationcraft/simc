@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 4946667)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -4151,7 +4151,8 @@ Attributes       : ........ ........ x....... ......x.   x....... ........ .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=293940)   : Apply Aura (6) | Charm (6)
-                   Base Value: 55 | Scaled Value: 111 | Points Per Level: 1 | Target: Enemy(6)
+                   Base Value: 55 | Scaled Value: 111 | Points Per Level: 1 | Misc Value: 1 | Target: Enemy(6)
+                   Hotfixed: Misc Value (0 -> 1)
 #2 (id=327745)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy(6)
 Description      : Bribes a non-player humanoid target up to level $s1 with fool's gold, convincing it to fight for you for $d.
