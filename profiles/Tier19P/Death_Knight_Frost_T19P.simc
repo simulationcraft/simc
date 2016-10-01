@@ -3,7 +3,7 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=2330021
+talents=2230021
 artifact=12:137308:133684:137308:0:108:3:109:3:110:6:113:3:119:1:120:1:122:1:123:1:1090:3:1332:1
 spec=frost
 
@@ -23,17 +23,23 @@ actions.precombat+=/potion,name=old_war
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/pillar_of_frost
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
+# if=buff.pillar_of_frost.up
 actions+=/berserking
 actions+=/use_item,slot=finger2
 actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war
-actions+=/pillar_of_frost
-actions+=/sindragosas_fury
+actions+=/sindragosas_fury,if=buff.pillar_of_frost.up
 actions+=/obliteration
 actions+=/breath_of_sindragosa,if=runic_power>=50
 actions+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
+# if=talent.shattering_strikes.enabled
+actions+=/call_action_list,name=shatter
+# if=talent.icy_talons.enabled
+actions+=/call_action_list,name=icytalons
+# if=(!talent.shattering_strikes.enabled&!talent.icy_talons.enabled)
 actions+=/call_action_list,name=generic
 
 actions.bos=howling_blast,target_if=!dot.frost_fever.ticking
@@ -49,6 +55,7 @@ actions.core+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
 actions.core+=/frostscythe,if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)
 actions.core+=/obliterate,if=buff.killing_machine.react
 actions.core+=/obliterate
+actions.core+=/remorseless_winter
 actions.core+=/frostscythe,if=talent.frozen_pulse.enabled
 actions.core+=/howling_blast,if=talent.frozen_pulse.enabled
 
@@ -64,6 +71,34 @@ actions.generic+=/empower_rune_weapon,if=talent.breath_of_sindragosa.enabled&coo
 actions.generic+=/hungering_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
 actions.generic+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 actions.generic+=/hungering_rune_weapon,if=!talent.breath_of_sindragosa.enabled
+
+actions.icytalons=frost_strike,if=buff.icy_talons.remains<1.5
+actions.icytalons+=/howling_blast,target_if=!dot.frost_fever.ticking
+actions.icytalons+=/howling_blast,if=buff.rime.react
+actions.icytalons+=/frost_strike,if=runic_power>=80|buff.icy_talons.stack<3
+actions.icytalons+=/call_action_list,name=core
+actions.icytalons+=/horn_of_winter,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
+actions.icytalons+=/horn_of_winter,if=!talent.breath_of_sindragosa.enabled
+actions.icytalons+=/frost_strike,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
+actions.icytalons+=/frost_strike,if=!talent.breath_of_sindragosa.enabled
+actions.icytalons+=/empower_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
+actions.icytalons+=/hungering_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
+actions.icytalons+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
+actions.icytalons+=/hungering_rune_weapon,if=!talent.breath_of_sindragosa.enabled
+
+actions.shatter=frost_strike,if=debuff.razorice.stack=5
+actions.shatter+=/howling_blast,target_if=!dot.frost_fever.ticking
+actions.shatter+=/howling_blast,if=buff.rime.react
+actions.shatter+=/frost_strike,if=runic_power>=80
+actions.shatter+=/call_action_list,name=core
+actions.shatter+=/horn_of_winter,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
+actions.shatter+=/horn_of_winter,if=!talent.breath_of_sindragosa.enabled
+actions.shatter+=/frost_strike,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
+actions.shatter+=/frost_strike,if=!talent.breath_of_sindragosa.enabled
+actions.shatter+=/empower_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
+actions.shatter+=/hungering_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
+actions.shatter+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
+actions.shatter+=/hungering_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 
 head=crown_of_ash,id=137526,bonus_id=1727
 neck=raven_filigree_pendant,id=134499,bonus_id=1727,enchant=mark_of_the_claw

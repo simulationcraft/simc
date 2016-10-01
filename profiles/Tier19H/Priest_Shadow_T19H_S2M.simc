@@ -82,7 +82,7 @@ actions.s2m+=/vampiric_touch,if=!ticking&target.time_to_die>10&(active_enemies<4
 actions.s2m+=/shadow_word_pain,if=!ticking&target.time_to_die>10&(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1
 actions.s2m+=/wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable|action.void_bolt.usable_in<gcd.max*0.8
 actions.s2m+=/mind_sear,if=active_enemies>=3,interrupt=1
-actions.s2m+=/mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate=1,interrupt_if=action.void_bolt.usable_in<gcd.max*0.8
+actions.s2m+=/mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate=1,interrupt_if=action.void_bolt.usable
 actions.s2m+=/mind_spike,if=talent.mind_spike.enabled
 
 actions.vf=surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-(buff.insanity_drain_stacks.stack)
@@ -115,7 +115,7 @@ actions.vf+=/vampiric_touch,if=!ticking&target.time_to_die>10&(active_enemies<4|
 actions.vf+=/shadow_word_pain,if=!ticking&target.time_to_die>10&(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1
 actions.vf+=/wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable|action.void_bolt.usable_in<gcd.max*0.8
 actions.vf+=/mind_sear,if=active_enemies>=3,interrupt=1
-actions.vf+=/mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate=1,interrupt_if=action.void_bolt.usable_in<gcd.max*0.8
+actions.vf+=/mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate=1,interrupt_if=action.void_bolt.usable
 actions.vf+=/mind_spike,if=talent.mind_spike.enabled
 actions.vf+=/shadow_word_pain
 
