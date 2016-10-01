@@ -2634,6 +2634,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 201352, consumable::lavish_suramar_feast );
   register_special_effect( 225606, consumable::pepper_breath );
   register_special_effect( 225601, consumable::pepper_breath );
+  register_special_effect( 201336, consumable::pepper_breath );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
