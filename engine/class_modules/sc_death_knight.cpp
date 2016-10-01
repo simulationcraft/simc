@@ -6685,7 +6685,7 @@ void death_knight_t::default_apl_frost()
   // Icy Talons single target rotation
 
   // Don't let Icy Talons buff wear off if possible
-  icytalons->add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5" );
+  icytalons -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5" );
 
   // Howling blast disease upkeep and rimeing
   icytalons -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
@@ -6716,7 +6716,7 @@ void death_knight_t::default_apl_frost()
   // Shattering Strikes single target rotation
 
   // Frost Strike on 5 Razorice
-  shatter->add_action(this, "Frost Strike", "if=debuf.razorice.stack=5");
+  shatter -> add_action( this, "Frost Strike", "if=debuff.razorice.stack=5" );
 
   // Howling blast disease upkeep and rimeing
   shatter -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
