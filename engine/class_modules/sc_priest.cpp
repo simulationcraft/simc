@@ -5572,7 +5572,7 @@ void priest_t::apl_shadow()
   vf->add_action( "mind_sear,if=active_enemies>=3,interrupt=1" );
   vf->add_action(
       "mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate=1,"
-      "interrupt_if=action.void_bolt.usable_in<gcd.max*0.8" );
+      "interrupt_if=action.void_bolt.usable" );
   vf->add_action( "mind_spike,if=talent.mind_spike.enabled" );
   vf->add_action( "shadow_word_pain" );
 
@@ -5646,7 +5646,7 @@ void priest_t::apl_shadow()
   s2m->add_action( "mind_sear,if=active_enemies>=3,interrupt=1" );
   s2m->add_action(
       "mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate=1,"
-      "interrupt_if=action.void_bolt.usable_in<gcd.max*0.8" );
+      "interrupt_if=action.void_bolt.usable" );
   s2m->add_action( "mind_spike,if=talent.mind_spike.enabled" );
 }
 
