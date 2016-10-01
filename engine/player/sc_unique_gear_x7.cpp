@@ -2211,6 +2211,8 @@ void consumable::pepper_breath( special_effect_t& effect )
     case 225606:
       trigger_id = 225624;
       break;
+    case 201336:
+      trigger_id = 201573;
     default:
       break;
   }

@@ -720,7 +720,7 @@ struct food_t : public dbc_consumable_base_t
     if ( player -> consumables.food && player -> consumables.food -> check() )
       return false;
 
-    return action_t::ready();
+    return dbc_consumable_base_t::ready();
   }
 };
 
