@@ -3181,11 +3181,12 @@ struct kingsbane_t : public rogue_attack_t
   }
 };
 
-// Pistol Shot =========================================================
+// Shot Base ================================================================
+// Shared base for pistol_shot_t and blunderbuss_t.
 
 struct shot_base_t : public rogue_attack_t
 {
-  shot_base_t( rogue_t* p, const std::string& name, const spell_data_t* spell, const std::string& options_str ) :
+  shot_base_t( rogue_t* p, const std::string& name, const spell_data_t* spell, const std::string& options_str = "" ) :
     rogue_attack_t( name, p, spell, options_str )
   {
     base_crit += p -> artifact.gunslinger.percent();
@@ -3210,16 +3211,28 @@ struct shot_base_t : public rogue_attack_t
       m *= 1.0 + p() -> talent.quick_draw -> effectN( 1 ).percent();
     }
 
+    if ( p() -> buffs.greenskins_waterlogged_wristcuffs -> up() )
+    {
+      m *= 1.0 + p() -> buffs.greenskins_waterlogged_wristcuffs -> data().effectN( 1 ).percent();
+    }
+
     return m;
   }
 
   double generate_cp() const override
   {
     double g = rogue_attack_t::generate_cp();
+
+    if ( g == 0.0 )
+    {
+      return g;
+    }
+
     if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> check() )
     {
       g += p() -> talent.quick_draw -> effectN( 2 ).base_value();
     }
+
     return g;
   }
 
@@ -3227,54 +3240,53 @@ struct shot_base_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> buffs.broadsides -> up() )
+    // Extra CP only if the initial attack grants CP (Blunderbuss damage events do not).
+    if ( generate_cp() > 0 )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 3 ).base_value(),
-          p() -> gains.broadsides, this );
-    }
-
-    if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> check() )
-    {
-      p() -> trigger_combo_point_gain( static_cast<int>( p() -> talent.quick_draw -> effectN( 2 ).base_value() ),
-          p() -> gains.quick_draw, this );
-    }
-
-    p() -> buffs.opportunity -> expire();
-
-    if ( p() -> buffs.curse_of_the_dreadblades -> up() )
-    {
-      double n_cp = p() -> resources.max[ RESOURCE_COMBO_POINT ] - p() -> resources.current[ RESOURCE_COMBO_POINT ];
-      if ( n_cp > 0 )
+      if ( result_is_hit( execute_state -> result ) && p() -> buffs.broadsides -> up() )
       {
-        p() -> resource_gain( RESOURCE_COMBO_POINT, n_cp, p() -> gains.curse_of_the_dreadblades, this );
+        p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 3 ).base_value(),
+            p() -> gains.broadsides, this );
+      }
+
+      if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> check() )
+      {
+        p() -> trigger_combo_point_gain( static_cast<int>( p() -> talent.quick_draw -> effectN( 2 ).base_value() ),
+            p() -> gains.quick_draw, this );
+      }
+
+      if ( p() -> buffs.curse_of_the_dreadblades -> up() )
+      {
+        double n_cp = p() -> resources.max[ RESOURCE_COMBO_POINT ] - p() -> resources.current[ RESOURCE_COMBO_POINT ];
+        if ( n_cp > 0 )
+        {
+          p() -> resource_gain( RESOURCE_COMBO_POINT, n_cp, p() -> gains.curse_of_the_dreadblades, this );
+        }
       }
     }
+
+    // Expire buffs.
+    p() -> buffs.opportunity -> expire();
+    p() -> buffs.greenskins_waterlogged_wristcuffs -> expire();
   }
 };
 
-struct blunderbuss_damage_t : public rogue_attack_t
+// Blunderbuss ==============================================================
+// Blunderbuss hits 4 times for 55%, 110%, 110%, and 110% AP respectively.
+
+struct blunderbuss_damage_t : public shot_base_t
 {
   blunderbuss_damage_t( rogue_t* p ) :
-    rogue_attack_t( "blunderbuss", p, p -> find_spell( 202895 ) )
+    shot_base_t( p, "blunderbuss", p -> find_spell( 202895 ) )
   {
-    callbacks = false,
+    callbacks = false;
     background = dual = true;
     attack_power_mod.direct = data().effectN( 4 ).ap_coeff();
-    energize_type = ENERGIZE_NONE; // Main spell does the energizing
+
+    // Main spell does the energizing
+    energize_type = ENERGIZE_NONE;
     energize_amount = 0;
     base_costs[ RESOURCE_ENERGY ] = 0;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> buffs.greenskins_waterlogged_wristcuffs -> up() )
-    {
-      m *= 1.0 + p() -> buffs.greenskins_waterlogged_wristcuffs -> data().effectN( 1 ).percent();
-    }
-
-    return m;
   }
 };
 
@@ -3283,7 +3295,7 @@ struct blunderbuss_t : public shot_base_t
   blunderbuss_damage_t* damage;
 
   blunderbuss_t( rogue_t* p ) :
-    shot_base_t( p, "blunderbuss", p -> find_spell( 202895 ), "" ),
+    shot_base_t( p, "blunderbuss", p -> find_spell( 202895 ) ),
     damage( new blunderbuss_damage_t( p ) )
   {
     background = true;
@@ -3292,16 +3304,24 @@ struct blunderbuss_t : public shot_base_t
 
   void execute() override
   {
-    shot_base_t::execute();
+    /* Snapshot and schedule the additional attacks *before* we call base_t.
+    Some buffs are expired in base_t::execute and we need to calculate the
+    damage with the presence of those buffs included. */
+    for ( unsigned i = 0; i < 3; i++ )
+    {
+      action_state_t* s = damage -> get_state();
+      s -> target = target;
+      damage -> snapshot_state( s, DMG_DIRECT );
+      damage -> schedule_execute( s );
+    }
 
-    damage -> target = execute_state -> target;
-    damage -> execute();
-    damage -> execute();
-    damage -> execute();
+    shot_base_t::execute();
 
     p() -> buffs.blunderbuss -> decrement();
   }
 };
+
+// Pistol Shot ==============================================================
 
 struct pistol_shot_t : public shot_base_t
 {
@@ -3312,18 +3332,6 @@ struct pistol_shot_t : public shot_base_t
     blunderbuss( new blunderbuss_t( p ) )
   {
     add_child( blunderbuss );
-  }
-
-  double action_multiplier() const override
-  {
-    double m = shot_base_t::action_multiplier();
-
-    if ( p() -> buffs.greenskins_waterlogged_wristcuffs -> up() )
-    {
-      m *= 1.0 + p() -> buffs.greenskins_waterlogged_wristcuffs -> data().effectN( 1 ).percent();
-    }
-
-    return m;
   }
 
   void execute() override
@@ -3340,7 +3348,7 @@ struct pistol_shot_t : public shot_base_t
   }
 };
 
-// Run Through
+// Run Through ==============================================================
 
 struct run_through_t: public rogue_attack_t
 {
