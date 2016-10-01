@@ -384,11 +384,12 @@ public:
         printf( "Reduced %*d %s (%s, %s) and expression to false\n", spacing,
                 id(), name(), left->name(), right->name() );
       }
+      std::string new_name = std::string( "const_and_afalse('" ) +
+          left->name() + "','" + right->name() + "')";
       delete left;
       delete right;
       delete this;
-      return new const_expr_t( std::string( "const_and_afalse('" ) +
-                                   left->name() + "','" + right->name() + "')",
+      return new const_expr_t( new_name,
                                0.0 );
     }
     if ( left_always_true && right_always_true )
@@ -398,11 +399,12 @@ public:
         printf( "Reduced %*d %s (%s, %s) and expression to true\n", spacing,
                 id(), name(), left->name(), right->name() );
       }
+      std::string new_name = std::string( "const_and_atrue('" ) +
+          left->name() + "','" + right->name() + "')";
       delete left;
       delete right;
       delete this;
-      return new const_expr_t( std::string( "const_and_atrue('" ) +
-                                   left->name() + "','" + right->name() + "')",
+      return new const_expr_t( new_name,
                                1.0 );
     }
     if ( left_always_true )
