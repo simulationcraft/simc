@@ -187,7 +187,7 @@ dmg_e spell_t::report_amount_type( const action_state_t* state ) const
     // someone. If so, then the damage should be recorded as periodic.
     else
     {
-      if ( stats -> action_list.front() -> tick_action == this )
+      if ( !stats -> action_list.empty() && stats -> action_list.front() -> tick_action == this )
       {
         result_type = DMG_OVER_TIME;
       }
