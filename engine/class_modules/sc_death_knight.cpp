@@ -6630,6 +6630,7 @@ void death_knight_t::default_apl_frost()
   }
 
   // Cooldowns
+  def -> add_action( this, "Sindragosa's Fury", "if=buff.pillar_of_frost.up" );
   def -> add_talent( this, "Obliteration" );
   def -> add_talent( this, "Breath of Sindragosa", "if=runic_power>=50" );
 
@@ -6640,7 +6641,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "call_action_list,name=generic", "if=(!talent.shattering_strikes.enabled&!talent.icy_talons.enabled)" );
 
   // Core rotation
-  core -> add_talent( this, "Remorseless Winter,if=artifact.frozen_soul.enabled" );
+  core -> add_action( this, "Remorseless Winter,if=artifact.frozen_soul.enabled" );
   core -> add_talent( this, "Glacial Advance" );
   core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
   core -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
@@ -6683,7 +6684,8 @@ void death_knight_t::default_apl_frost()
 
   // Icy Talons single target rotation
 
-  icytalons->add_action(this, "Frost Strike", "if=buff.icy_talons.remains<1.5");
+  // Don't let Icy Talons buff wear off if possible
+  icytalons->add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5" );
 
   // Howling blast disease upkeep and rimeing
   icytalons -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
