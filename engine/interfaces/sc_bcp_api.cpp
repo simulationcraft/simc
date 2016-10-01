@@ -551,6 +551,7 @@ bool parse_player_html_profession( sim_t*,
 
 void parse_item_data_str( item_t& item, const std::string& data_str )
 {
+  bool artifact = false;
   std::vector<std::string> data_split = util::string_split( data_str, "&" );
   for ( size_t i = 0; i < data_split.size(); i++ )
   {
@@ -592,6 +593,24 @@ void parse_item_data_str( item_t& item, const std::string& data_str )
         item.parsed.bonus_id.push_back( util::to_int( bonus_split[ j ] ) );
       }
     }
+    else if ( util::str_compare_ci( opt, "aai" ) )
+    {
+      artifact = true;
+    }
+  }
+
+  // For the HTML-based armory parsing, there is no artifact data available. Furthermore, there also
+  // is no relic data available other than the "adjust ilevel" bonus ids in the artifact weapon
+  // itself, and the gem item ids. So, as a horribly kludgy hack, just erase the gems for now,
+  // destroying any +ranks they give, but keeping the artifact ilevel correct.
+  //
+  // Note that fundamentally, the html parsing is broken because of lack of information on
+  // Blizzard's end. There's no way to get the actual artifact trait information from the html-based
+  // armory profile, so the data it will simulate with is completely incorrect for any artifact
+  // wielding character of reasonable progression.
+  if ( artifact )
+  {
+    range::fill( item.parsed.gem_id, 0 );
   }
 }
 
@@ -655,7 +674,8 @@ player_t* parse_player_html( sim_t*             sim,
   sc_xml_t profile = sc_xml_t::get( sim, player.url, player.cleanurl, caching );
   if ( ! profile.valid() )
   {
-    sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.cleanurl.c_str() );
+    sim -> errorf( "BCP API (html): Unable to download player from '%s', invalid profile\n",
+        player.cleanurl.c_str() );
     return nullptr;
   }
 
@@ -667,7 +687,7 @@ player_t* parse_player_html( sim_t*             sim,
   sc_xml_t name_obj = profile.get_node( "div", "class", "name" );
   if ( ! name_obj.valid() || ! name_obj.get_value( player.name, "a/." ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player name from '%s'.\n", player.cleanurl.c_str() );
+    sim -> errorf( "BCP API (html): Unable to extract player name from '%s'.\n", player.cleanurl.c_str() );
     return nullptr;
   }
 
@@ -676,7 +696,7 @@ player_t* parse_player_html( sim_t*             sim,
   player_e class_type = PLAYER_NONE;
   if ( ! class_obj.valid() || ! class_obj.get_value( class_name_data, "href" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.cleanurl.c_str() );
+    sim -> errorf( "BCP API (html): Unable to extract player class from '%s'.\n", player.cleanurl.c_str() );
     return nullptr;
   }
   else
@@ -697,7 +717,7 @@ player_t* parse_player_html( sim_t*             sim,
   int level = 0;
   if ( ! level_obj.valid() || ! level_obj.get_value( level, "strong/." ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.cleanurl.c_str() );
+    sim -> errorf( "BCP API (html): Unable to extract player level from '%s'.\n", player.cleanurl.c_str() );
     return nullptr;
   }
 
@@ -706,7 +726,7 @@ player_t* parse_player_html( sim_t*             sim,
   race_e race_type = RACE_NONE;
   if ( ! race_obj.valid() || ! race_obj.get_value( race_name_data, "href" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
+    sim -> errorf( "BCP API (html): Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
     return nullptr;
   }
   else
@@ -718,7 +738,7 @@ player_t* parse_player_html( sim_t*             sim,
 
   if ( race_type == RACE_NONE )
   {
-    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
+    sim -> errorf( "BCP API (html): Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
     return nullptr;
   }
 
@@ -737,7 +757,7 @@ player_t* parse_player_html( sim_t*             sim,
 
   if ( ! p )
   {
-    sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",
+    sim -> errorf( "BCP API (html): Unable to build player with class '%s' and name '%s' from '%s'.\n",
                    class_name.c_str(), name.c_str(), player.cleanurl.c_str() );
     return nullptr;
   }
@@ -762,17 +782,21 @@ player_t* parse_player_html( sim_t*             sim,
   parse_player_html_profession( sim, p, profile );
   if ( ! parse_player_html_talent( sim, player.talent_spec, p, profile ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player talent specialization from '%s'.\n",
+    sim -> errorf( "BCP API (html): Unable to extract player talent specialization from '%s'.\n",
         player.cleanurl.c_str() );
     return nullptr;
   }
 
   if ( ! parse_player_html_items( sim, p, profile ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player items from '%s'.\n",
+    sim -> errorf( "BCP API (html): Unable to extract player items from '%s'.\n",
         player.cleanurl.c_str() );
     return nullptr;
   }
+
+  sim -> errorf( "BCP API (html): Note, Blizzard does not provide Artifact trait information on "
+                 "their HTML armory page. The actor will be simulated without any artifact traits."
+                 " The simulator output for the actor will not be correct." );
 
   return p;
 }
@@ -787,7 +811,12 @@ player_t* parse_player( sim_t*             sim,
 
   std::string result;
 
-  if ( player.local_json.empty() )
+  // China does not have mashery endpoints, so no point in even trying to get anything here
+  if ( util::str_compare_ci( player.region, "cn" ) )
+  {
+    return nullptr;
+  }
+  else if ( player.local_json.empty() )
   {
     if ( ! http::get( result, player.url, player.cleanurl, caching ) )
       return nullptr;
@@ -805,7 +834,7 @@ player_t* parse_player( sim_t*             sim,
 
   if ( profile.HasParseError() )
   {
-    sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.cleanurl.c_str() );
+    sim -> errorf( "BCP API: Unable to download player from '%s', JSON parse error\n", player.cleanurl.c_str() );
     if ( sim -> apikey.empty() ) { sim -> errorf( "If you built this from source, remember to add your own api key." ); }
     else if ( sim -> apikey.size() != 32 ) { sim -> errorf( "Check api key, must be 32 characters long." ); }
     return nullptr;
