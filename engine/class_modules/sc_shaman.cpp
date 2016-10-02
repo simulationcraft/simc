@@ -2647,13 +2647,33 @@ struct shaman_flurry_of_xuen_t : public shaman_attack_t
     may_proc_flametongue = false;
     aoe = 5;
   }
+};
 
-  // We need to override shaman_action_state_t returning here, as tick_action
-  // and custom state objects do not mesh at all really. They technically
-  // work, but in reality we are doing naughty things in the code that are
-  // not safe.
-  action_state_t* new_state() override
-  { return new action_state_t( this, target ); }
+struct shaman_spontaneous_appendages_t : public shaman_attack_t
+{
+  shaman_spontaneous_appendages_t( shaman_t* p, const special_effect_t& effect ) :
+    shaman_attack_t( "horrific_slam", p,
+                     p -> find_spell( effect.trigger() -> effectN( 1 ).trigger() -> id() ) )
+  {
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = background = true;
+
+    // Spell data has no radius, so manually make it an AoE.
+    radius = 8.0;
+    aoe = -1;
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_hot_hand = false;
+    may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
+
+    may_proc_stormbringer = true;
+  }
+
+  dmg_e amount_type( const action_state_t*, bool ) const override
+  { return DMG_OVER_TIME; } // It's a physical attack that isn't reduced by armor.
 };
 
 struct electrocute_t : public shaman_spell_t
@@ -5526,9 +5546,10 @@ action_t* shaman_t::create_action( const std::string& name,
   return player_t::create_action( name, options_str );
 }
 
-action_t* shaman_t::create_proc_action( const std::string& name, const special_effect_t& )
+action_t* shaman_t::create_proc_action( const std::string& name, const special_effect_t& effect )
 {
   if ( util::str_compare_ci( name, "flurry_of_xuen" ) ) return new shaman_flurry_of_xuen_t( this );
+  if ( bugs && util::str_compare_ci( name, "horrific_slam" ) ) return new shaman_spontaneous_appendages_t( this, effect );
 
   return nullptr;
 }
