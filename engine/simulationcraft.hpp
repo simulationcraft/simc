@@ -4062,6 +4062,8 @@ struct player_t : public actor_t
 
   virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
 
+  virtual double composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const;
+
   virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
   virtual double composite_player_critical_healing_multiplier() const;
 
@@ -4882,6 +4884,7 @@ struct action_state_t : private noncopyable
   double          da_multiplier;
   double          ta_multiplier;
   double          persistent_multiplier;
+  double          pet_multiplier; // Owner -> pet multiplier
   double          target_da_multiplier;
   double          target_ta_multiplier;
   // Target mitigation multipliers
@@ -4914,10 +4917,10 @@ struct action_state_t : private noncopyable
   { return versatility; }
 
   virtual double composite_da_multiplier() const
-  { return da_multiplier * persistent_multiplier * target_da_multiplier * versatility; }
+  { return da_multiplier * persistent_multiplier * target_da_multiplier * versatility * pet_multiplier; }
 
   virtual double composite_ta_multiplier() const
-  { return ta_multiplier * persistent_multiplier * target_ta_multiplier * versatility; }
+  { return ta_multiplier * persistent_multiplier * target_ta_multiplier * versatility * pet_multiplier; }
 
   virtual double composite_target_mitigation_da_multiplier() const
   { return target_mitigation_da_multiplier; }

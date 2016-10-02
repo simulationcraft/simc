@@ -1150,12 +1150,11 @@ namespace pets {
 struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack;
-  const spell_data_t* command;
   buff_t* taktheritrix;
 
   death_knight_pet_t( death_knight_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true ) :
     pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack ),
-    command( nullptr ), taktheritrix( nullptr )
+    taktheritrix( nullptr )
   {
     if ( auto_attack )
     {
@@ -1165,13 +1164,6 @@ struct death_knight_pet_t : public pet_t
 
   death_knight_t* o() const
   { return debug_cast<death_knight_t*>( owner ); }
-
-  void init_spells() override
-  {
-    pet_t::init_spells();
-
-    command = owner -> find_racial_spell( "Command" );
-  }
 
   void init_action_list() override
   {
@@ -1189,8 +1181,6 @@ struct death_knight_pet_t : public pet_t
   double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
-
-    m *= 1.0 + command -> effectN( 1 ).percent();
 
     if ( dbc::is_school( school, SCHOOL_SHADOW ) && o() -> mastery.dreadblade -> ok() )
     {

@@ -1127,13 +1127,14 @@ enum snapshot_state_e
   STATE_TGT_MITG_TA = 0x020000,
   STATE_TGT_ARMOR   = 0x040000,
 
+  STATE_MUL_PET     = 0x080000, // Multiplier from the owner to pet damage
   // No multiplier helper, use in action_t::init() (after parent init) by
   // issuing snapshot_flags &= STATE_NO_MULTIPLIER (and/or update_flags &=
   // STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including
   // versatility, and any/all persistent multipliers the action would
   // use.
   STATE_NO_MULTIPLIER = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY |
-                           STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
+                           STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA | STATE_MUL_PET |
                            STATE_TGT_MUL_TA | STATE_TGT_ARMOR )
 };
 

@@ -253,8 +253,7 @@ public:
   double distance_from_rune,
          global_cinder_count,
          incanters_flow_stack_mult,
-         iv_haste,
-         pet_multiplier;
+         iv_haste;
 
   // Benefits
   struct benefits_t
@@ -855,8 +854,6 @@ struct water_elemental_pet_t : public mage_pet_t
                o()->incanters_flow_stack_mult;
     }
 
-    m *= o()->pet_multiplier;
-
     return m;
   }
 };
@@ -1075,15 +1072,6 @@ struct mirror_image_pet_t : public mage_pet_t
 
     arcane_charge =
         buff_creator_t( this, "arcane_charge", o()->spec.arcane_charge );
-  }
-
-  virtual double composite_player_multiplier( school_e school ) const override
-  {
-    double m = mage_pet_t::composite_player_multiplier( school );
-
-    m *= o()->pet_multiplier;
-
-    return m;
   }
 };
 
@@ -7416,7 +7404,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   global_cinder_count( 0 ),
   incanters_flow_stack_mult( find_spell( 116267 ) -> effectN( 1 ).percent() ),
   iv_haste( 1.0 ),
-  pet_multiplier( 1.0 ),
   benefits( benefits_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -7790,9 +7777,6 @@ void mage_t::init_base_stats()
   base.attack_power_per_agility = 0.0;
 
   base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.015;
-
-  if ( race == RACE_ORC )
-    pet_multiplier *= 1.0 + find_racial_spell( "Command" ) -> effectN( 1 ).percent();
 }
 
 // mage_t::create_buffs =======================================================

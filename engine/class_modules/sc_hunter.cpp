@@ -399,8 +399,6 @@ public:
   stats_t* stats_tier17_4pc_bm;
   stats_t* stats_tier18_4pc_bm;
 
-  double pet_multiplier;
-
   player_t* last_true_aim_target;
 
   bool clear_next_hunters_mark;
@@ -429,7 +427,6 @@ public:
     mastery( mastery_spells_t() ),
     stats_tier17_4pc_bm( nullptr ),
     stats_tier18_4pc_bm( nullptr ),
-    pet_multiplier( 1.0 ),
     last_true_aim_target( nullptr ),
     clear_next_hunters_mark( true )
   {
@@ -480,6 +477,7 @@ public:
   virtual double    composite_rating_multiplier( rating_e rating ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double            composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      create_options() override;
@@ -516,9 +514,9 @@ public:
     return td;
   }
 
-  double beast_multiplier()
+  double beast_multiplier() const
   {
-    double pm = pet_multiplier;
+    double pm = 1.0;
     if ( mastery.master_of_beasts -> ok() )
       pm *= 1.0 + cache.mastery_value();
 
@@ -789,15 +787,6 @@ public:
   hunter_t* o() const
   {
     return static_cast<hunter_t*>( owner );
-  }
-
-  virtual double composite_player_multiplier( school_e school ) const override
-  {
-    double m = base_t::composite_player_multiplier( school );
-
-    m *= o() -> beast_multiplier();
-
-    return m;
   }
 };
 
@@ -5547,10 +5536,6 @@ void hunter_t::init_base_stats()
 
   resources.base[RESOURCE_FOCUS] = 120 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
-  // Orc racial
-  if ( race == RACE_ORC )
-    pet_multiplier *= 1.0 + find_racial_spell( "Command" ) -> effectN( 1 ).percent();
-
   stats_tier17_4pc_bm = get_stats( "tier17_4pc_bm" );
   stats_tier18_4pc_bm = get_stats( "tier18_4pc_bm" );
 }
@@ -6356,6 +6341,17 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
     d *= 1.0 + td -> debuffs.mark_of_helbrine -> value();
 
   return d;
+}
+
+// hunter_t::composite_player_pet_damage_multiplier ======================
+
+double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier( s );
+
+  m *= beast_multiplier();
+
+  return m;
 }
 
 // hunter_t::composite_mastery_value  ====================================

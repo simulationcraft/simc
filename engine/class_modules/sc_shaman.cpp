@@ -613,6 +613,7 @@ public:
   double    composite_spell_power_multiplier() const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t* state ) const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   action_t* create_proc_action( const std::string& /* name */, const special_effect_t& ) override;
@@ -1622,10 +1623,9 @@ namespace pet
 struct shaman_pet_t : public pet_t
 {
   bool use_auto_attack;
-  const spell_data_t* command;
 
   shaman_pet_t( shaman_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true ) :
-    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack ), command(nullptr)
+    pet_t( owner -> sim, owner, name, guardian ), use_auto_attack( auto_attack )
   {
     regen_type            = REGEN_DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
@@ -1633,13 +1633,6 @@ struct shaman_pet_t : public pet_t
 
   shaman_t* o() const
   { return debug_cast<shaman_t*>( owner ); }
-
-  void init_spells() override
-  {
-    pet_t::init_spells();
-
-    command = owner -> find_racial_spell( "Command" );
-  }
 
   virtual void create_default_apl()
   {
@@ -1661,23 +1654,6 @@ struct shaman_pet_t : public pet_t
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override;
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    m *= 1.0 + command -> effectN( 1 ).percent();
-
-    if ( ( dbc::is_school( school, SCHOOL_FIRE ) ||
-           dbc::is_school( school, SCHOOL_FROST ) ||
-           dbc::is_school( school, SCHOOL_NATURE ) ) &&
-         o() -> mastery.enhanced_elements -> ok() )
-    {
-      m *= 1.0 + o() -> cache.mastery_value();
-    }
-
-    return m;
-  }
 
   virtual attack_t* create_auto_attack()
   { return nullptr; }
@@ -7058,6 +7034,23 @@ double shaman_t::composite_player_target_multiplier( player_t* target, school_e 
     ( dbc::is_school( school, SCHOOL_PHYSICAL ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
   {
     m *= td -> debuff.earthen_spike -> check_value();
+  }
+
+  return m;
+}
+
+// shaman_t::composite_player_pet_damage_multiplier =========================
+
+double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier( s );
+
+  auto school = s -> action -> get_school();
+  if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
+         dbc::is_school( school, SCHOOL_NATURE ) ) &&
+        mastery.enhanced_elements -> ok() )
+  {
+    m *= 1.0 + cache.mastery_value();
   }
 
   return m;

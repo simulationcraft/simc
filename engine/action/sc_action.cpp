@@ -2071,6 +2071,13 @@ void action_t::init()
   if ( base_dd_min > 0 || ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
+  if ( player -> is_pet() &&
+       ( snapshot_flags & ( STATE_MUL_DA | STATE_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA |
+                            STATE_MUL_PERSISTENT | STATE_VERSATILITY ) ) )
+  {
+    snapshot_flags |= STATE_MUL_PET;
+  }
+
   if ( school == SCHOOL_PHYSICAL )
     snapshot_flags |= STATE_TGT_ARMOR;
 
@@ -3137,6 +3144,9 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, dmg_e r
 
   if ( flags & STATE_MUL_PERSISTENT )
     state -> persistent_multiplier = composite_persistent_multiplier( state );
+
+  if ( flags & STATE_MUL_PET )
+    state -> pet_multiplier = player -> cast_pet() -> owner -> composite_player_pet_damage_multiplier( state );
 
   if ( flags & STATE_TGT_MUL_DA )
     state -> target_da_multiplier = composite_target_da_multiplier( state -> target );

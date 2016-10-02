@@ -3279,6 +3279,17 @@ double player_t::composite_avoidance() const
   return composite_avoidance_rating() / current.rating.avoidance;
 }
 
+// player_t::composite_player_pet_damage_multiplier =========================
+
+double player_t::composite_player_pet_damage_multiplier( const action_state_t* ) const
+{
+  double m = 1.0;
+
+  m *= 1.0 + racials.command -> effectN( 1 ).percent();
+
+  return m;
+}
+
 // player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( school_e  school  ) const
