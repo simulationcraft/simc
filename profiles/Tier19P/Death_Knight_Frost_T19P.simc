@@ -26,8 +26,7 @@ actions=auto_attack
 actions+=/pillar_of_frost
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
-# if=buff.pillar_of_frost.up
-actions+=/berserking
+actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_item,slot=finger2
 actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war
@@ -35,12 +34,9 @@ actions+=/sindragosas_fury,if=buff.pillar_of_frost.up
 actions+=/obliteration
 actions+=/breath_of_sindragosa,if=runic_power>=50
 actions+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
-# if=talent.shattering_strikes.enabled
-actions+=/call_action_list,name=shatter
-# if=talent.icy_talons.enabled
-actions+=/call_action_list,name=icytalons
-# if=(!talent.shattering_strikes.enabled&!talent.icy_talons.enabled)
-actions+=/call_action_list,name=generic
+actions+=/call_action_list,name=shatter,if=talent.shattering_strikes.enabled
+actions+=/call_action_list,name=icytalons,if=talent.icy_talons.enabled
+actions+=/call_action_list,name=generic,if=(!talent.shattering_strikes.enabled&!talent.icy_talons.enabled)
 
 actions.bos=howling_blast,target_if=!dot.frost_fever.ticking
 actions.bos+=/call_action_list,name=core
@@ -49,7 +45,8 @@ actions.bos+=/empower_rune_weapon,if=runic_power<=70
 actions.bos+=/hungering_rune_weapon
 actions.bos+=/howling_blast,if=buff.rime.react
 
-actions.core=glacial_advance
+actions.core=remorseless_winter,if=artifact.frozen_soul.enabled
+actions.core+=/glacial_advance
 actions.core+=/frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
 actions.core+=/remorseless_winter,if=spell_targets.remorseless_winter>=2
 actions.core+=/frostscythe,if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)
