@@ -6612,7 +6612,7 @@ void death_knight_t::default_apl_frost()
   // Racials
   def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
   def -> add_action( "blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking" );
-  def -> add_action( "berserking", "if=buff.pillar_of_frost.up" );
+  def -> add_action( "berserking,if=buff.pillar_of_frost.up" );
 
   // On-use items
   for ( const auto& item : items )
@@ -6636,12 +6636,12 @@ void death_knight_t::default_apl_frost()
 
   // Choose APL
   def -> add_action( "run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking" );
-  def -> add_action( "call_action_list,name=shatter", "if=talent.shattering_strikes.enabled" );
-  def -> add_action( "call_action_list,name=icytalons", "if=talent.icy_talons.enabled" );
-  def -> add_action( "call_action_list,name=generic", "if=(!talent.shattering_strikes.enabled&!talent.icy_talons.enabled)" );
+  def -> add_action( "call_action_list,name=shatter,if=talent.shattering_strikes.enabled" );
+  def -> add_action( "call_action_list,name=icytalons,if=talent.icy_talons.enabled" );
+  def -> add_action( "call_action_list,name=generic,if=(!talent.shattering_strikes.enabled&!talent.icy_talons.enabled)" );
 
   // Core rotation
-  core -> add_action( this, "Remorseless Winter,if=artifact.frozen_soul.enabled" );
+  core -> add_action( this, "Remorseless Winter", "if=artifact.frozen_soul.enabled");
   core -> add_talent( this, "Glacial Advance" );
   core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
   core -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
