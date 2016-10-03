@@ -2656,6 +2656,9 @@ struct shaman_spontaneous_appendages_t : public shaman_attack_t
                      p -> find_spell( effect.trigger() -> effectN( 1 ).trigger() -> id() ) )
   {
     special = may_miss = may_parry = may_block = may_dodge = may_crit = background = true;
+    base_dd_min = data().effectN( 1 ).min( effect.item );
+    base_dd_max = data().effectN( 1 ).max( effect.item );
+    item = effect.item;
 
     // Spell data has no radius, so manually make it an AoE.
     radius = 8.0;
@@ -2672,8 +2675,8 @@ struct shaman_spontaneous_appendages_t : public shaman_attack_t
     may_proc_stormbringer = true;
   }
 
-  dmg_e amount_type( const action_state_t*, bool ) const override
-  { return DMG_OVER_TIME; } // It's a physical attack that isn't reduced by armor.
+  double target_armor( player_t* ) const override
+  { return 0; }
 };
 
 struct electrocute_t : public shaman_spell_t

@@ -1509,12 +1509,14 @@ void item::marfisis_giant_censer( special_effect_t& effect )
 // Spontaneous Appendages ===================================================
 struct spontaneous_appendages_t: public proc_spell_t
 {
-  spontaneous_appendages_t( player_t* p, unsigned int spell_id ):
-    proc_spell_t( "horrific_slam", p, p -> find_spell( spell_id ), nullptr )
+  spontaneous_appendages_t( const special_effect_t& effect ):
+    proc_spell_t( "horrific_slam", effect.player,
+      effect.player -> find_spell( effect.trigger() -> effectN( 1 ).trigger() -> id() ),
+      effect.item )
   {
     // Spell data has no radius, so manually make it an AoE.
     radius = 8.0;
-    aoe = -1; 
+    aoe = -1;
   }
 
   double target_armor( player_t* ) const override
@@ -1532,10 +1534,7 @@ void item::spontaneous_appendages( special_effect_t& effect )
 
   if ( ! slam )
   {
-    effect.trigger_spell_id = effect.trigger() -> effectN( 1 ).trigger() -> id();
-    slam = new spontaneous_appendages_t( effect.player, effect.trigger_spell_id  );
-    // Reset trigger spell, we don't want the proc to trigger an action.
-    effect.trigger_spell_id = 0;
+    slam = new spontaneous_appendages_t( effect );
   }
 
 
