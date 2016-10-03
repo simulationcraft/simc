@@ -204,6 +204,7 @@ public:
 
   // Options
   unsigned stormlash_targets;
+  bool     raptor_glyph;
 
   // Data collection for cooldown waste
   auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
@@ -519,6 +520,7 @@ public:
     lava_surge_during_lvb( false ),
     t18_4pc_elemental_counter( 0 ),
     stormlash_targets( 17 ), // Default to 2 tanks + 15 dps
+    raptor_glyph( false ),
     action(),
     pet(),
     constant(),
@@ -1668,7 +1670,7 @@ struct pet_action_t : public T_ACTION
 {
   typedef pet_action_t<T_PET, T_ACTION> super;
 
-  pet_action_t( shaman_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+  pet_action_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     T_ACTION( name, pet, spell )
   {
     this -> parse_options( options );
@@ -1708,7 +1710,7 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
 {
   typedef pet_melee_attack_t<T_PET> super;
 
-  pet_melee_attack_t( shaman_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+  pet_melee_attack_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     pet_action_t<T_PET, melee_attack_t>( pet, name, spell, options )
   {
     if ( this -> school == SCHOOL_NONE )
@@ -1772,7 +1774,7 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 {
   typedef pet_spell_t<T_PET> super;
 
-  pet_spell_t( shaman_pet_t* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
+  pet_spell_t( T_PET* pet, const std::string& name, const spell_data_t* spell = spell_data_t::nil(), const std::string& options = std::string() ) :
     pet_action_t<T_PET, spell_t>( pet, name, spell, options )
   {
     this -> parse_options( options );
@@ -1874,29 +1876,35 @@ struct spirit_wolf_t : public base_wolf_t
     }
   };
 
-  struct spirit_bomb_t : public pet_melee_attack_t<spirit_wolf_t>
-  {
-    spirit_bomb_t( spirit_wolf_t* player ) :
-      super( player, "spirit_bomb", player -> find_spell( 198455 ) )
-    { background = true; aoe = -1; }
-  };
-
   spirit_wolf_t( shaman_t* owner ) : base_wolf_t( owner, "spirit_wolf" )
   { }
 
-  bool create_actions() override
-  {
-    if ( o() -> artifact.alpha_wolf.rank() )
-    {
-      alpha_wolf = new spirit_bomb_t( this );
-    }
-
-    return shaman_pet_t::create_actions();
-  }
+  bool create_actions() override;
 
   attack_t* create_auto_attack() override
   { return new fs_melee_t( this ); }
 };
+
+template <typename T>
+struct spirit_bomb_t : public pet_melee_attack_t<T>
+{
+  spirit_bomb_t( T* player ) :
+    pet_melee_attack_t<T>( player, "spirit_bomb", player -> find_spell( 198455 ) )
+  {
+    this -> background = true;
+    this -> aoe = -1;
+  }
+};
+
+bool spirit_wolf_t::create_actions()
+{
+  if ( o() -> artifact.alpha_wolf.rank() )
+  {
+    alpha_wolf = new spirit_bomb_t<spirit_wolf_t>( this );
+  }
+
+  return shaman_pet_t::create_actions();
+}
 
 // ==========================================================================
 // DOOM WOLVES OF DOOM
@@ -1965,14 +1973,22 @@ struct frost_wolf_t : public doom_wolf_base_t
     { background = true; aoe = -1; }
   };
 
-  frost_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "frost_wolf" )
+  frost_wolf_t( shaman_t* owner ) :
+    doom_wolf_base_t( owner, owner -> raptor_glyph ? "frost_raptor" : "frost_wolf" )
   { }
 
   bool create_actions() override
   {
     if ( o() -> artifact.alpha_wolf.rank() )
     {
-      alpha_wolf = new snowstorm_t( this );
+      if ( ! o() -> raptor_glyph )
+      {
+        alpha_wolf = new snowstorm_t( this );
+      }
+      else
+      {
+        alpha_wolf = new spirit_bomb_t<frost_wolf_t>( this );
+      }
     }
 
     return doom_wolf_base_t::create_actions();
@@ -2012,14 +2028,22 @@ struct fire_wolf_t : public doom_wolf_base_t
     { background = true; aoe = -1; }
   };
 
-  fire_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "fiery_wolf" )
+  fire_wolf_t( shaman_t* owner ) :
+    doom_wolf_base_t( owner, owner -> raptor_glyph ? "fiery_raptor" : "fiery_wolf" )
   { }
 
   bool create_actions() override
   {
     if ( o() -> artifact.alpha_wolf.rank() )
     {
-      alpha_wolf = new fire_nova_t( this );
+      if ( ! o() -> raptor_glyph )
+      {
+        alpha_wolf = new fire_nova_t( this );
+      }
+      else
+      {
+        alpha_wolf = new spirit_bomb_t<fire_wolf_t>( this );
+      }
     }
 
     return doom_wolf_base_t::create_actions();
@@ -2067,7 +2091,9 @@ struct lightning_wolf_t : public doom_wolf_base_t
 
   buff_t* crackling_surge;
 
-  lightning_wolf_t( shaman_t* owner ) : doom_wolf_base_t( owner, "lightning_wolf" ), crackling_surge(nullptr)
+  lightning_wolf_t( shaman_t* owner ) :
+    doom_wolf_base_t( owner, owner -> raptor_glyph ? "lightning_raptor" : "lightning_wolf" ),
+    crackling_surge(nullptr)
   { }
 
   double composite_player_multiplier( school_e s ) const override
@@ -2091,7 +2117,14 @@ struct lightning_wolf_t : public doom_wolf_base_t
   {
     if ( o() -> artifact.alpha_wolf.rank() )
     {
-      alpha_wolf = new thunder_bite_t( this );
+      if ( ! o() -> raptor_glyph )
+      {
+        alpha_wolf = new thunder_bite_t( this );
+      }
+      else
+      {
+        alpha_wolf = new spirit_bomb_t<lightning_wolf_t>( this );
+      }
     }
 
     return doom_wolf_base_t::create_actions();
@@ -5655,19 +5688,59 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
 {
   std::vector<std::string> splits = util::string_split( name, "." );
 
-  // totem.<kind>.<op>
-  if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "totem" ) )
+  if ( util::str_compare_ci( splits[ 0 ], "feral_spirit" ) )
   {
-    shaman_totem_pet_t* totem = nullptr;
+    if ( util::str_compare_ci( splits[ 1 ], "active" ) )
+    {
+      return make_fn_expr( name, [ this ]() {
+        if ( artifact.doom_wolves.rank() )
+        {
+          return range::find_if( pet.doom_wolves, []( const pet_t* p ) {
+            return p -> is_sleeping();
+          } ) != pet.doom_wolves.end();
+        }
+        else
+        {
+          return range::find_if( pet.spirit_wolves, []( const pet_t* p ) {
+            return p -> is_sleeping();
+          } ) != pet.spirit_wolves.end();
+        }
+      } );
+    }
+    else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
+    {
+      auto max_remains_fn = []( const pet_t* l, const pet_t* r ) {
+        if ( ! l -> expiration && r -> expiration )
+        {
+          return true;
+        }
+        else if ( l -> expiration && ! r -> expiration )
+        {
+          return false;
+        }
+        else if ( ! l -> expiration && ! r -> expiration )
+        {
+          return false;
+        }
+        else
+        {
+          return l -> expiration -> remains() < r -> expiration -> remains();
+        }
+      };
 
-    totem = static_cast< shaman_totem_pet_t* >( find_pet( splits[ 1 ] ) );
-
-    // Nothing found
-    if ( totem == nullptr )
-      return player_t::create_expression( a, name );
-    // A specific totem name given, and found
-    else
-      return totem -> create_expression( a, splits[ 2 ] );
+      return make_fn_expr( name, [ this, &max_remains_fn ]() {
+        if ( artifact.doom_wolves.rank() )
+        {
+          auto it = std::max_element( pet.doom_wolves.begin(), pet.doom_wolves.end(), max_remains_fn );
+          return ( *it ) -> expiration ? ( *it ) -> expiration -> remains().total_seconds() : 0;
+        }
+        else
+        {
+          auto it = std::max_element( pet.spirit_wolves.begin(), pet.spirit_wolves.end(), max_remains_fn );
+          return ( *it ) -> expiration ? ( *it ) -> expiration -> remains().total_seconds() : 0;
+        }
+      } );
+    }
   }
 
   return player_t::create_expression( a, name );
@@ -5729,6 +5802,7 @@ void shaman_t::create_options()
   player_t::create_options();
 
   add_option( opt_uint( "stormlash_targets", stormlash_targets ) );
+  add_option( opt_bool( "raptor_glyph", raptor_glyph ) );
 }
 
 // shaman_t::init_spells ====================================================
@@ -6660,6 +6734,8 @@ void shaman_t::init_action_list_enhancement()
 
   // Use Feral Spirits before off-GCD CDs.
   def -> add_action( this, "Feral Spirit" );
+  // Ensure Feral Spirits start using alpha wolf abilities immediately
+  def -> add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.feral_spirit" );
 
   // On-use items
   for ( const auto& item : items )
@@ -6701,8 +6777,7 @@ void shaman_t::init_action_list_enhancement()
   def -> add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&maelstrom>=60" );
   def -> add_action( this, "Lava Lash", "if=buff.hot_hand.react" );
   def -> add_talent( this, "Earthen Spike" );
-  def -> add_action( this, "Crash Lightning", "if=active_enemies>1|talent.crashing_storm.enabled|"
-                                              "(pet.feral_spirit.remains>5|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5)" );
+  def -> add_action( this, "Crash Lightning", "if=active_enemies>1|talent.crashing_storm.enabled|feral_spirit.remains>5" );
   def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8" );
   def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8");
   def -> add_talent( this, "Sundering" );
