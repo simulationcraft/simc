@@ -41,6 +41,7 @@ actions+=/call_action_list,name=single_target
 
 actions.aoe=bloodthirst,if=buff.enrage.down|rage<50
 actions.aoe+=/call_action_list,name=bladestorm
+actions.aoe+=/odyns_fury,if=buff.battle_cry.up&buff.enrage.up
 actions.aoe+=/whirlwind,if=buff.enrage.up
 actions.aoe+=/dragon_roar
 actions.aoe+=/rampage,if=buff.meat_cleaver.up
@@ -75,6 +76,7 @@ actions.two_targets=whirlwind,if=buff.meat_cleaver.down
 actions.two_targets+=/call_action_list,name=bladestorm
 actions.two_targets+=/rampage,if=buff.enrage.down|(rage=100&buff.juggernaut.down)|buff.massacre.up
 actions.two_targets+=/bloodthirst,if=buff.enrage.down
+actions.two_targets+=/odyns_fury,if=buff.battle_cry.up&buff.enrage.up
 actions.two_targets+=/raging_blow,if=talent.inner_rage.enabled&spell_targets.whirlwind=2
 actions.two_targets+=/whirlwind,if=spell_targets.whirlwind>2
 actions.two_targets+=/dragon_roar

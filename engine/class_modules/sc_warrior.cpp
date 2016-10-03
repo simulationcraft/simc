@@ -4797,6 +4797,7 @@ void warrior_t::apl_fury()
   two_targets -> add_action( "call_action_list,name=bladestorm" );
   two_targets -> add_action( this, "Rampage", "if=buff.enrage.down|(rage=100&buff.juggernaut.down)|buff.massacre.up" );
   two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
+  two_targets -> add_action( this, "Odyn's Fury", "if=buff.battle_cry.up&buff.enrage.up" );
   two_targets -> add_action( this, "Raging Blow", "if=talent.inner_rage.enabled&spell_targets.whirlwind=2" );
   two_targets -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>2" );
   two_targets -> add_talent( this, "Dragon Roar" );
@@ -4805,6 +4806,7 @@ void warrior_t::apl_fury()
 
   aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50" );
   aoe -> add_action( "call_action_list,name=bladestorm" );
+  aoe -> add_action( this, "Odyn's Fury", "if=buff.battle_cry.up&buff.enrage.up" );
   aoe -> add_action( this, "Whirlwind", "if=buff.enrage.up" );
   aoe -> add_talent( this, "Dragon Roar" );
   aoe -> add_action( this, "Rampage", "if=buff.meat_cleaver.up" );
