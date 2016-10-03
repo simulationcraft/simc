@@ -4777,7 +4777,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Execute", "if=(artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2))|buff.stone_heart.react" );
   single_target -> add_action( this, "Rampage", "if=rage=100&(target.health.pct>20|target.health.pct<20&!talent.massacre.enabled)|buff.massacre.react&buff.enrage.remains<1" );
   single_target -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&cooldown.odyns_fury.remains=0&buff.enrage.down" );
-  single_target -> add_talent( this, "Dragon Roar", "if=!cooldown.odyns_fury.remains<=10|cooldown.odyns_fury.remains<3" );
+  single_target -> add_talent( this, "Dragon Roar", "if=cooldown.odyns_fury.remains>=10|cooldown.odyns_fury.remains<=3" );
   single_target -> add_action( this, "Odyn's Fury", "if=buff.battle_cry.up&buff.enrage.up" );
   single_target -> add_action( this, "Rampage", "if=buff.enrage.down&buff.juggernaut.down" );
   single_target -> add_action( this, "Furious Slash", "if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=3)" );
