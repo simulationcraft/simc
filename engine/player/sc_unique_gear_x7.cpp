@@ -1513,11 +1513,7 @@ struct spontaneous_appendages_t: public proc_spell_t
     proc_spell_t( "horrific_slam", effect.player,
       effect.player -> find_spell( effect.trigger() -> effectN( 1 ).trigger() -> id() ),
       effect.item )
-  {
-    // Spell data has no radius, so manually make it an AoE.
-    radius = 8.0;
-    aoe = -1;
-  }
+  {}
 
   double target_armor( player_t* ) const override
   { return 0.0; }
