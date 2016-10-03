@@ -1937,110 +1937,6 @@ struct fel_devastation_t : public demon_hunter_spell_t
   }
 };
 
-// Fel Rush =================================================================
-
-struct fel_rush_t : public demon_hunter_spell_t
-{
-  struct fel_rush_damage_t : public demon_hunter_spell_t
-  {
-    fel_rush_damage_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "fel_rush_dmg", p, p -> spec.fel_rush_damage )
-    {
-      aoe  = -1;
-      dual = background = true;
-      may_proc_fel_barrage = true;  // Jul 12 2016
-
-      base_multiplier *= 1.0 + p -> talent.fel_mastery -> effectN( 2 ).percent();
-
-      if ( p -> talent.fel_mastery -> ok() )
-      {
-        energize_type     = ENERGIZE_ON_HIT;
-        energize_resource = RESOURCE_FURY;
-        energize_amount =
-          p -> talent.fel_mastery -> effectN( 1 ).resource( RESOURCE_FURY );
-      }
-    }
-  };
-
-  fel_rush_damage_t* damage;
-  bool a_cancel;
-
-  fel_rush_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "fel_rush", p, p -> find_class_spell( "Fel Rush" ) ),
-      a_cancel( false )
-  {
-    add_option( opt_bool( "animation_cancel", a_cancel ) );
-    parse_options( options_str );
-
-    may_miss = may_block = may_crit = false;
-    min_gcd = trigger_gcd;
-
-    damage        = new fel_rush_damage_t( p );
-    damage -> stats = stats;
-
-    if ( !a_cancel )
-    {
-      base_teleport_distance  = damage -> radius;
-      movement_directionality = MOVEMENT_OMNI;
-      ignore_false_positive   = true;
-
-      p -> buff.fel_rush_move -> distance_moved = base_teleport_distance;
-    }
-
-    // Add damage modifiers in fel_rush_damage_t, not here.
-  }
-
-  // Don't record data for this action.
-  void record_data( action_state_t* s ) override
-  {
-    ( void )s;
-    assert( s -> result_amount == 0.0 );
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = demon_hunter_spell_t::gcd();
-
-    // Fel Rush's loss of control causes a GCD lag after the loss ends.
-    // TOCHECK: Does this delay happen when jump cancelling?
-    g += rng().gauss( sim -> gcd_lag, sim -> gcd_lag_stddev );
-
-    return g;
-  }
-
-  void execute() override
-  {
-    demon_hunter_spell_t::execute();
-    
-    // Does not benefit from momentum, so snapshot damage now.
-    action_state_t* s = damage -> get_state();
-    s -> target = target;
-    damage -> snapshot_state( s, DMG_DIRECT );
-    damage -> schedule_execute( s );
-
-    // Aug 04 2016: Using Fel Rush puts VR on cooldown for 1 second.
-    p() -> cooldown.vengeful_retreat_secondary -> start( timespan_t::from_seconds( 1.0 ) );
-
-    if ( !a_cancel )
-    {
-      p() -> buff.fel_rush_move -> trigger();
-    }
-
-    p() -> buff.momentum -> trigger();
-  }
-
-  bool ready() override
-  {
-    // Aug 04 2016: Using VR puts Fel Rush on cooldown for 1 second.
-    if ( p() -> cooldown.fel_rush_secondary -> down() )
-    {
-      return false;
-    }
-
-    return demon_hunter_spell_t::ready();
-  }
-};
-
 // Fel Eruption =============================================================
 
 struct fel_eruption_t : public demon_hunter_spell_t
@@ -3933,6 +3829,110 @@ struct felblade_t : public demon_hunter_attack_t
   }
 };
 
+// Fel Rush =================================================================
+
+struct fel_rush_t : public demon_hunter_attack_t
+{
+  struct fel_rush_damage_t : public demon_hunter_attack_t
+  {
+    fel_rush_damage_t( demon_hunter_t* p )
+      : demon_hunter_attack_t( "fel_rush_dmg", p, p -> spec.fel_rush_damage )
+    {
+      aoe  = -1;
+      dual = background = true;
+      may_proc_fel_barrage = true;  // Jul 12 2016
+
+      base_multiplier *= 1.0 + p -> talent.fel_mastery -> effectN( 2 ).percent();
+
+      if ( p -> talent.fel_mastery -> ok() )
+      {
+        energize_type     = ENERGIZE_ON_HIT;
+        energize_resource = RESOURCE_FURY;
+        energize_amount =
+          p -> talent.fel_mastery -> effectN( 1 ).resource( RESOURCE_FURY );
+      }
+    }
+  };
+
+  fel_rush_damage_t* damage;
+  bool a_cancel;
+
+  fel_rush_t( demon_hunter_t* p, const std::string& options_str )
+    : demon_hunter_attack_t( "fel_rush", p, p -> find_class_spell( "Fel Rush" ) ),
+      a_cancel( false )
+  {
+    add_option( opt_bool( "animation_cancel", a_cancel ) );
+    parse_options( options_str );
+
+    may_miss = may_dodge = may_parry = may_block = may_crit = false;
+    min_gcd = trigger_gcd;
+
+    damage = new fel_rush_damage_t( p );
+    damage -> stats = stats;
+
+    if ( !a_cancel )
+    {
+      base_teleport_distance  = damage -> radius;
+      movement_directionality = MOVEMENT_OMNI;
+      ignore_false_positive   = true;
+
+      p -> buff.fel_rush_move -> distance_moved = base_teleport_distance;
+    }
+
+    // Add damage modifiers in fel_rush_damage_t, not here.
+  }
+
+  // Don't record data for this action.
+  void record_data( action_state_t* s ) override
+  {
+    ( void )s;
+    assert( s -> result_amount == 0.0 );
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = demon_hunter_attack_t::gcd();
+
+    // Fel Rush's loss of control causes a GCD lag after the loss ends.
+    // TOCHECK: Does this delay happen when jump cancelling?
+    g += rng().gauss( sim -> gcd_lag, sim -> gcd_lag_stddev );
+
+    return g;
+  }
+
+  void execute() override
+  {
+    demon_hunter_attack_t::execute();
+    
+    // Does not benefit from momentum, so snapshot damage now.
+    action_state_t* s = damage -> get_state();
+    s -> target = target;
+    damage -> snapshot_state( s, DMG_DIRECT );
+    damage -> schedule_execute( s );
+
+    // Aug 04 2016: Using Fel Rush puts VR on cooldown for 1 second.
+    p() -> cooldown.vengeful_retreat_secondary -> start( timespan_t::from_seconds( 1.0 ) );
+
+    if ( !a_cancel )
+    {
+      p() -> buff.fel_rush_move -> trigger();
+    }
+
+    p() -> buff.momentum -> trigger();
+  }
+
+  bool ready() override
+  {
+    // Aug 04 2016: Using VR puts Fel Rush on cooldown for 1 second.
+    if ( p() -> cooldown.fel_rush_secondary -> down() )
+    {
+      return false;
+    }
+
+    return demon_hunter_attack_t::ready();
+  }
+}; 
+
 // Fracture =================================================================
 
 struct fracture_t : public demon_hunter_attack_t
@@ -5110,8 +5110,6 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new fel_eruption_t( this, options_str );
   if ( name == "fel_devastation" )
     return new fel_devastation_t( this, options_str );
-  if ( name == "fel_rush" )
-    return new fel_rush_t( this, options_str );
   if ( name == "fiery_brand" )
     return new fiery_brand_t( this, options_str );
   if ( name == "infernal_strike" )
@@ -5148,6 +5146,8 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new demons_bite_t( this, options_str );
   if ( name == "felblade" )
     return new felblade_t( this, options_str );
+  if ( name == "fel_rush" )
+    return new fel_rush_t( this, options_str );
   if ( name == "fracture" )
     return new fracture_t( this, options_str );
   if ( name == "fury_of_the_illidari" )
