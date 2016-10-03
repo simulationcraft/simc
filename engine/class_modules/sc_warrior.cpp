@@ -5277,9 +5277,9 @@ void warrior_t::create_buffs()
     .chance( artifact.scales_of_earth.data().proc_chance() )
     .default_value( artifact.scales_of_earth.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
-  buff.precise_strikes = buff_creator_t( this, "precise_strikes", artifact.precise_strikes.data().effectN( 1 ).trigger() )
+  buff.precise_strikes = buff_creator_t( this, "precise_strikes", find_spell( 209493 ) )
     .default_value( artifact.precise_strikes.percent() )
-    .chance( artifact.precise_strikes.rank() > 0 );
+    .chance( artifact.precise_strikes.rank() > 0 ? 1 : 0 );
 
   buff.ravager = buff_creator_t( this, "ravager", talents.ravager );
 
