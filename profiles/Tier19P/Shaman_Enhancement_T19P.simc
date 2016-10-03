@@ -33,6 +33,8 @@ actions+=/potion,name=old_war,if=pet.feral_spirit.remains>10|pet.frost_wolf.rema
 actions+=/berserking,if=buff.ascendance.up|!talent.ascendance.enabled|level<100
 actions+=/blood_fury
 actions+=/crash_lightning,if=talent.crashing_storm.enabled&active_enemies>=3
+actions+=/boulderfist,if=buff.boulderfist.remains<gcd&maelstrom>=50&active_enemies>=3
+actions+=/boulderfist,if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)
 actions+=/crash_lightning,if=buff.crash_lightning.remains<gcd&active_enemies>=2
 actions+=/windstrike,if=active_enemies>=3&!talent.hailstorm.enabled
 actions+=/stormstrike,if=active_enemies>=3&!talent.hailstorm.enabled

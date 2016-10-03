@@ -5690,6 +5690,15 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
 
   if ( util::str_compare_ci( splits[ 0 ], "feral_spirit" ) )
   {
+    if ( artifact.doom_wolves.rank() && pet.doom_wolves[ 0 ] == nullptr )
+    {
+      return expr_t::create_constant( name, 0 );
+    }
+    else if ( ! artifact.doom_wolves.rank() && pet.spirit_wolves[ 0 ] == nullptr )
+    {
+      return expr_t::create_constant( name, 0 );
+    }
+
     if ( util::str_compare_ci( splits[ 1 ], "active" ) )
     {
       return make_fn_expr( name, [ this ]() {
@@ -6758,8 +6767,8 @@ void shaman_t::init_action_list_enhancement()
 
   // Core rotation
   def -> add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&active_enemies>=3" );
-  def -> add_action( this, "Boulderfist", "if=buff.boulderfist.remains<gcd&maelstrom>=50&active_enemies>=3" );
-  def -> add_action( this, "Boulderfist", "if=(buff.boulderfist.remains<gcd|charges_fractional>1.75)&maelstrom<=100&active_enemies<=2" );
+  def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd&maelstrom>=50&active_enemies>=3" );
+  def -> add_talent( this, "Boulderfist", "if=buff.boulderfist.remains<gcd|(charges_fractional>1.75&maelstrom<=100&active_enemies<=2)" );
   def -> add_action( this, "Crash Lightning", "if=buff.crash_lightning.remains<gcd&active_enemies>=2" );
   def -> add_action( this, "Windstrike", "if=active_enemies>=3&!talent.hailstorm.enabled" );
   def -> add_action( this, "Stormstrike", "if=active_enemies>=3&!talent.hailstorm.enabled" );
