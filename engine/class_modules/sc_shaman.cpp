@@ -5696,13 +5696,13 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
         if ( artifact.doom_wolves.rank() )
         {
           return range::find_if( pet.doom_wolves, []( const pet_t* p ) {
-            return p -> is_sleeping();
+            return ! p -> is_sleeping();
           } ) != pet.doom_wolves.end();
         }
         else
         {
           return range::find_if( pet.spirit_wolves, []( const pet_t* p ) {
-            return p -> is_sleeping();
+            return ! p -> is_sleeping();
           } ) != pet.spirit_wolves.end();
         }
       } );
