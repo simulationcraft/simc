@@ -685,12 +685,12 @@ public:
       if ( EXPRESSION_DEBUG )
         printf( "Reduced %*d %s (%s, %s) binary expression to %f\n", spacing,
                 id(), name(), left->name(), right->name(), result );
-      delete left;
-      delete right;
       expr_t* reduced =
           new const_expr_t( std::string( "const_binary('" ) + left->name() +
                                 "'&&'" + right->name() + "')",
                             result );
+      delete left;
+      delete right;
       delete this;
       return reduced;
     }
