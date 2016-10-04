@@ -135,7 +135,6 @@ public:
     buffs::liadrins_fury_unleashed_t* liadrins_fury_unleashed;
 
     // Set Bonuses
-    buff_t* blazing_resolve;
     buff_t* vindicators_fury;     // WoD Ret PVP 4-piece
     buff_t* wings_of_liberty;     // Most roleplay name. T18 4P Ret bonus
     buffs::wings_of_liberty_driver_t* wings_of_liberty_driver;
@@ -3265,13 +3264,6 @@ struct divine_storm_t: public holy_power_consumer_t
 
       p() -> buffs.whisper_of_the_nathrezim -> trigger();
     }
-
-    if ( p() -> buffs.blazing_resolve -> up() )
-    {
-      p() -> buffs.blazing_resolve -> expire();
-      // TODO: clean this up
-      p() -> resource_gain( RESOURCE_HOLY_POWER, 1.0, p() -> gains.hp_templars_verdict_refund );
-    }
   }
 
   void record_data( action_state_t* ) override {}
@@ -3808,13 +3800,6 @@ struct templars_verdict_t : public holy_power_consumer_t
       if ( p() -> buffs.whisper_of_the_nathrezim -> up() )
         p() -> buffs.whisper_of_the_nathrezim -> expire();
       p() -> buffs.whisper_of_the_nathrezim -> trigger();
-    }
-
-    if ( p() -> buffs.blazing_resolve -> up() )
-    {
-      p() -> buffs.blazing_resolve -> expire();
-      // TODO: clean this up
-      p() -> resource_gain( RESOURCE_HOLY_POWER, 1.0, p() -> gains.hp_templars_verdict_refund );
     }
   }
 };
