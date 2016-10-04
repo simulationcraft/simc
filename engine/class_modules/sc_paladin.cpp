@@ -3423,7 +3423,7 @@ struct blessing_of_might_proc_t : public paladin_spell_t
   blessing_of_might_proc_t( paladin_t* p )
     : paladin_spell_t( "blessing_of_might_proc", p, p -> find_spell( 205729 ) )
   {
-    may_dodge = may_parry = may_block = may_crit = false;
+    may_dodge = may_parry = may_block = may_crit = callbacks = false;
     background  = true;
 
     // No weapon multiplier
