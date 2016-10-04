@@ -918,9 +918,8 @@ struct soul_fragment_t
       }
     }
 
-    // Feast on the Souls only procs from major soul fragments.
-    if ( dh -> artifact.feast_on_the_souls.rank() &&
-         type == SOUL_FRAGMENT_GREATER )
+    // Oct 3 2016: Feast on the Souls procs from both major and lesser fragments.
+    if ( dh -> artifact.feast_on_the_souls.rank() )
     {
       timespan_t t = -dh -> artifact.feast_on_the_souls.time_value();
 
@@ -6330,9 +6329,9 @@ void demon_hunter_t::apl_havoc()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      cd -> add_action( "potion,name=old_war,if=buff.metamorphosis.remains>25" );
+      cd -> add_action( "potion,name=old_war,if=buff.metamorphosis.remains>25|target.time_to_die<30" );
     else
-      cd -> add_action( "potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25" );
+      cd -> add_action( "potion,name=draenic_agility_potion,if=buff.metamorphosis.remains>25|target.time_to_die<30" );
   }
 }
 

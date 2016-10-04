@@ -12,6 +12,9 @@
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
+# Demon Hunter
+generate_Demon_Hunter_T19H.simc
+
 # Hunter
 generate_Hunter_T19H.simc
 
