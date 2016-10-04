@@ -1918,6 +1918,7 @@ struct sweeping_execute_t: public event_t
       if ( execute_sweep -> target_cache.list[i] == original_target )
         continue;
       new_target = execute_sweep -> target_cache.list[i];
+      break;
     }
     if ( new_target )
     {

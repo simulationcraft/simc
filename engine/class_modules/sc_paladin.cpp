@@ -135,8 +135,6 @@ public:
     buffs::liadrins_fury_unleashed_t* liadrins_fury_unleashed;
 
     // Set Bonuses
-    buff_t* faith_barricade;      // t17_2pc_tank
-    buff_t* defender_of_the_light; // t17_4pc_tank
     buff_t* blazing_resolve;
     buff_t* vindicators_fury;     // WoD Ret PVP 4-piece
     buff_t* wings_of_liberty;     // Most roleplay name. T18 4P Ret bonus
@@ -1076,16 +1074,7 @@ struct avengers_shield_t : public paladin_spell_t
     cooldown -> duration = data().cooldown();
   }
 
-  virtual void execute() override
-  {
-    paladin_spell_t::execute();
-
-    // Protection T17 2-piece grants block buff
-    if ( p() -> sets.has_set_bonus( PALADIN_PROTECTION, T17, B2 ) )
-      p() -> buffs.faith_barricade -> trigger();
-  }
-
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
 
@@ -2906,17 +2895,6 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
       p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
     }
-
-    if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T17, B2 ) )
-    {
-      bool success = rng().roll( p() -> sets.set( PALADIN_RETRIBUTION, T17, B2 ) -> effectN( 1 ).percent() );
-      if ( success )
-      {
-        p() -> cooldowns.blade_of_justice -> reset( true );
-        p() -> cooldowns.blade_of_wrath -> reset( true );
-        p() -> cooldowns.divine_hammer -> reset( true );
-      }
-    }
   }
 };
 
@@ -3003,9 +2981,6 @@ struct crusader_strike_t : public holy_power_generator_t
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit       += p -> artifact.sharpened_edge.percent();
-
-    if ( p -> specialization() == PALADIN_RETRIBUTION ) // HOTFIX
-      base_multiplier *= 1.13;                          // HOTFIX
 
     if ( p -> talents.fires_of_justice -> ok() )
     {
@@ -3445,19 +3420,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 // Blessing of Might proc
 struct blessing_of_might_proc_t : public paladin_spell_t
 {
-  // TODO: there is an actual spell here: 205729
   blessing_of_might_proc_t( paladin_t* p )
-    : paladin_spell_t( "blessing_of_might_proc", p, spell_data_t::nil() )
+    : paladin_spell_t( "blessing_of_might_proc", p, p -> find_spell( 205729 ) )
   {
-    school = SCHOOL_HOLY;
-    may_miss    = false;
-    may_dodge   = false;
-    may_parry   = false;
-    may_glance  = false;
-    may_crit    = false;
+    may_dodge = may_parry = may_block = may_crit = false;
     background  = true;
-    trigger_gcd = timespan_t::zero();
-    id          = 205729;
 
     // No weapon multiplier
     weapon_multiplier = 0.0;
@@ -3505,89 +3472,10 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
 };
 
 // Judgment =================================================================
-struct judgment_aoe_t : public paladin_melee_attack_t
-{
-  judgment_aoe_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment_aoe", p, p -> find_spell( 228288 ), true )
-  {
-    parse_options( options_str );
-
-    may_glance = may_block = may_parry = may_dodge = false;
-
-    weapon_multiplier = 0;
-
-    background = true;
-
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      aoe = 1 + p -> passives.retribution_paladin -> effectN( 3 ).base_value();
-
-      base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
-
-      if ( p -> talents.greater_judgment -> ok() )
-      {
-        aoe += p -> talents.greater_judgment -> effectN( 2 ).base_value();
-      }
-    } else {
-      assert( false );
-    }
-  }
-
-  virtual bool impact_targeting( action_state_t* s ) const
-  {
-    // this feels like some kind of horrifying hack
-    if ( s -> chain_target == 0 )
-      return false;
-    return paladin_melee_attack_t::impact_targeting( s );
-  }
-
-  virtual double composite_target_crit_chance( player_t* t ) const override
-  {
-    double cc = paladin_melee_attack_t::composite_target_crit_chance( t );
-
-    if ( p() -> talents.greater_judgment -> ok() )
-    {
-      double threshold = p() -> talents.greater_judgment -> effectN( 1 ).base_value();
-      if ( ( t -> health_percentage() > threshold ) )
-      {
-        // TODO: is this correct? where does this come from?
-        return 1.0;
-      }
-    }
-
-    return cc;
-  }
-
-  // Special things that happen when Judgment damages target
-  virtual void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    if ( !impact_targeting( s ) )
-      return;
-
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> buffs.debuffs_judgment -> trigger();
-
-      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T17, B4 ) )
-        p() -> buffs.blazing_resolve -> trigger();
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-    // todo: refer to actual spelldata instead of magic constant
-    am *= 1.0 + 2 * p() -> get_divine_judgment();
-    return am;
-  }
-};
 
 struct judgment_t : public paladin_melee_attack_t
 {
   timespan_t sotr_cdr; // needed for sotr interaction for protection
-
   judgment_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ), true )
   {
@@ -3595,17 +3483,15 @@ struct judgment_t : public paladin_melee_attack_t
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
-
-    // Special melee attack that can only miss
-    may_glance = may_block = may_parry = may_dodge = false;
+    may_block = may_parry = may_dodge = false;
 
     // TODO: this is a hack; figure out what's really going on here.
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
       base_costs[ RESOURCE_MANA ] = 0;
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
-      impact_action = new judgment_aoe_t( p, options_str );
-      base_multiplier *= 1.13; // HOTFIX
+      aoe = p -> passives.retribution_paladin -> effectN( 3 ).base_value();
+      aoe += p -> talents.greater_judgment -> effectN( 2 ).base_value();
     }
     else if ( p -> specialization() == PALADIN_HOLY )
     {
@@ -3619,7 +3505,7 @@ struct judgment_t : public paladin_melee_attack_t
     }
   }
 
-  virtual double composite_target_crit_chance( player_t* t ) const override
+  double composite_target_crit_chance( player_t* t ) const override
   {
     double cc = paladin_melee_attack_t::composite_target_crit_chance( t );
 
@@ -3636,7 +3522,7 @@ struct judgment_t : public paladin_melee_attack_t
     return cc;
   }
 
-  virtual double composite_crit_chance() const override
+  double composite_crit_chance() const override
   {
     double cc = paladin_melee_attack_t::composite_crit_chance();
 
@@ -3647,7 +3533,7 @@ struct judgment_t : public paladin_melee_attack_t
   }
 
   // Special things that happen when Judgment damages target
-  virtual void impact( action_state_t* s ) override
+  void impact( action_state_t* s ) override
   {
     if ( result_is_hit( s -> result ) )
     {
@@ -3660,11 +3546,6 @@ struct judgment_t : public paladin_melee_attack_t
       if ( p() -> specialization() == PALADIN_PROTECTION )
       {
         p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
-      }
-      else if ( p() -> specialization() == PALADIN_RETRIBUTION )
-      {
-        if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T17, B4 ) )
-          p() -> buffs.blazing_resolve -> trigger();
       }
     }
 
@@ -4476,14 +4357,7 @@ void paladin_t::create_buffs()
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
 
   // Tier Bonuses
-  // T17
-  buffs.faith_barricade        = buff_creator_t( this, "faith_barricade", sets.set( PALADIN_PROTECTION, T17, B2 ) -> effectN( 1 ).trigger() )
-                                 .default_value( sets.set( PALADIN_PROTECTION, T17, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-                                 .add_invalidate( CACHE_BLOCK );
-  buffs.defender_of_the_light  = buff_creator_t( this, "defender_of_the_light", sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() )
-                                 .trigger_spell( sets.set( PALADIN_PROTECTION, T17, B4 ) )
-                                 .default_value( sets.set( PALADIN_PROTECTION, T17, B4 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-  buffs.blazing_resolve        = buff_creator_t( this, "blazing_resolve", sets.set( PALADIN_RETRIBUTION, T17, B4 ) -> effectN( 1 ).trigger() );
+
   buffs.vindicators_fury       = buff_creator_t( this, "vindicators_fury", find_spell( 165903 ) )
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                  .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
@@ -5602,10 +5476,6 @@ double paladin_t::composite_block() const
   // Holy Shield (assuming for now that it's not affected by DR)
   b += talents.holy_shield -> effectN( 1 ).percent();
 
-  // Protection T17 2-piece bonus not affected by DR (confirmed 9/19)
-  if ( buffs.faith_barricade -> check() )
-    b += buffs.faith_barricade -> value();
-
   // Bastion of Truth (assuming not affected by DR)
   b += artifact.bastion_of_truth.percent( 1 );
 
@@ -5619,9 +5489,6 @@ double paladin_t::composite_block_reduction() const
   double br = player_t::composite_block_reduction();
 
   br += passives.improved_block -> effectN( 1 ).percent();
-
-  if ( buffs.defender_of_the_light -> up() )
-    br += buffs.defender_of_the_light -> value();
 
   return br;
 }
@@ -5905,12 +5772,10 @@ void paladin_t::assess_damage( school_e school,
     return;
   }
 
-  // On a block event, trigger Holy Shield & Defender of the Light
+  // On a block event, trigger Holy Shield
   if ( s -> block_result == BLOCK_RESULT_BLOCKED )
   {
     trigger_holy_shield( s );
-
-    buffs.defender_of_the_light -> trigger();
   }
 
   // Also trigger Grand Crusader on an avoidance event (TODO: test if it triggers on misses)

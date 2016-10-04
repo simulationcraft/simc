@@ -1294,6 +1294,7 @@ class SpellDataGenerator(DataGenerator):
             ( 180290, 0 ),          # ashen strike (speculative)
             ( 221883, 0 ),          # Divine Steed
             ( 228288, 0, True ),
+			( 205729, 0 ),
         ),
 
         # Hunter:
