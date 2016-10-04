@@ -2847,15 +2847,31 @@ struct storm_tempests_zap_t : public melee_attack_t
     callbacks = false;
   }
 
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    melee_attack_t::available_targets( tl );
+
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
+
   // TODO: Does this actually zap the enemy itself, if it's the only one available?
   // TODO: Distance targeting, no clue on range.
   void execute() override
   {
-    // Pick a random "nearby" target
-    size_t target_idx = static_cast<size_t>( rng().range( 0, sim -> target_non_sleeping_list.size() ) );
-    target = sim -> target_non_sleeping_list[ target_idx ];
+    if ( target_list().size() > 0 )
+    {
+      // Pick a random "nearby" target
+      size_t target_idx = static_cast<size_t>( rng().range( 0, target_list().size() ) );
+      target = target_list()[ target_idx ];
 
-    melee_attack_t::execute();
+      melee_attack_t::execute();
+    }
   }
 };
 
@@ -3210,6 +3226,10 @@ struct stormstrike_base_t : public shaman_attack_t
 
       if ( p() -> action.storm_tempests )
       {
+        if ( execute_state -> target != p() -> action.storm_tempests -> target )
+        {
+          p() -> action.storm_tempests -> target_cache.is_valid = false;
+        }
         td( execute_state -> target ) -> debuff.storm_tempests -> trigger();
       }
 
@@ -6758,7 +6778,7 @@ void shaman_t::init_action_list_enhancement()
   // In-combat potion
   if ( sim -> allow_potions && true_level >= 80  )
   {
-    def -> add_action( "potion,name=" + potion_name + ",if=pet.feral_spirit.remains>10|pet.frost_wolf.remains>5|pet.fiery_wolf.remains>5|pet.lightning_wolf.remains>5|target.time_to_die<=30" );
+    def -> add_action( "potion,name=" + potion_name + ",if=feral_spirit.remains>5|target.time_to_die<=30" );
   }
 
   // Racials
@@ -7740,7 +7760,7 @@ struct storm_tempests_t : public scoped_action_callback_t<stormstrike_base_t>
 
   void manipulate( stormstrike_base_t* action, const special_effect_t& ) override
   {
-    if ( ! action -> p() -> action.storm_tempests )
+    if ( action -> sim -> target_list.size() > 1 && ! action -> p() -> action.storm_tempests )
     {
       action -> p() -> action.storm_tempests = new storm_tempests_zap_t( action -> p() );
     }
