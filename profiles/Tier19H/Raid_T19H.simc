@@ -27,6 +27,8 @@ Mage_Fire_T19H.simc
 Mage_Frost_T19H.simc
 Mage_Arcane_T19H.simc
 
+Monk_Windwalker_T19H.simc
+
 # Paladin
 Paladin_Retribution_T19H.simc
 
@@ -36,3 +38,10 @@ Priest_Shadow_T19H_S2M.simc
 
 # Rogue
 Rogue_T19H.simc
+
+Warlock_Afflction_T19H.simc
+Warlock_Demonology_T19H.simc
+Warlock_Destruction_T19H.simc
+
+Warrior_Fury_T19H.simc
+Warrior_Arms_T19H.simc
