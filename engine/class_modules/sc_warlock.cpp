@@ -4516,8 +4516,7 @@ struct shadowflame_t : public warlock_spell_t
   shadowflame_t( warlock_t* p ) :
     warlock_spell_t( "shadowflame", p, p -> talents.shadowflame )
   {
-    hasted_ticks = true;
-    tick_may_crit = false; // Bugged as of 10-03-2016
+    hasted_ticks = tick_may_crit = true;
 
     dot_duration = timespan_t::from_seconds( 8.0 );
     spell_power_mod.tick = data().effectN( 2 ).sp_coeff();
@@ -5718,9 +5717,6 @@ void warlock_t::init_base_stats()
 void warlock_t::init_scaling()
 {
   player_t::init_scaling();
-
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-    scales_with[STAT_STAMINA] = true;
 }
 
 struct stolen_power_stack_t : public buff_t
