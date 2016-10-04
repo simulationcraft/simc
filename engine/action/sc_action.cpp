@@ -2658,19 +2658,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
     return new persistent_multiplier_expr_t( this );
   }
-  else if ( name_str == "charges" )
-  {
-    return cooldown -> create_expression( this, name_str );
-  }
-  else if ( name_str == "charges_fractional" )
-  {
-    return cooldown -> create_expression( this, name_str );
-  }
-  else if ( name_str == "max_charges" )
-  {
-    return cooldown -> create_expression( this, name_str );
-  }
-  else if ( name_str == "recharge_time" )
+  else if ( name_str == "charges"
+    || name_str == "charges_fractional"
+    || name_str == "max_charges"
+    || name_str == "recharge_time"
+    || name_str == "full_recharge_time" )
   {
     return cooldown -> create_expression( this, name_str );
   }

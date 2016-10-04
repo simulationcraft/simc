@@ -431,6 +431,28 @@ expr_t* cooldown_t::create_expression( action_t*, const std::string& name_str )
     };
     return new recharge_time_expr_t( this );
   }
+  else if ( name_str == "full_recharge_time" )
+  {
+    struct full_recharge_time_expr_t : public expr_t
+    {
+      const cooldown_t* cd;
+      full_recharge_time_expr_t( const cooldown_t* c ) :
+        expr_t( "full_recharge_time" ), cd( c )
+      { }
+
+      virtual double evaluate() override
+      {
+        if ( cd -> recharge_event )
+        {
+          return cd -> current_charge_remains().total_seconds() +
+            ( cd -> charges - cd -> current_charge - 1 ) * cd -> duration.total_seconds();
+        }
+        else
+          return 0;
+      }
+    };
+    return new full_recharge_time_expr_t( this );
+  }
   else if ( name_str == "max_charges" )
     return make_ref_expr( name_str, charges );
 
