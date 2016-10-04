@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 8556408)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -442,7 +442,7 @@ Resource         : 25 Rage
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Shattered Defenses (209706), Stone Heart (225947), 
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -631,7 +631,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
 Category         : 971
 Proc Chance      : 101%
-Affecting spells : Battle Cry (1719), Warrior (137047), Item - Warrior T17 Arms 4P Bonus (165336), Vicious Strike (165638), Sweeping Strikes (202161), Dauntless (202297), Archavon's Heavy Hand (205144), Focused Rage (207982), Thoradin's Might (209480), Shattered Defenses (209706), 
+Affecting spells : Battle Cry (1719), Warrior (137047), Item - Warrior T17 Arms 4P Bonus (165336), Vicious Strike (165638), Sweeping Strikes (202161), Dauntless (202297), Archavon's Heavy Hand (205144), Focused Rage (207982), Thoradin's Might (209480), Precise Strikes (209493), Shattered Defenses (209706), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -901,8 +901,8 @@ Effects          :
 #2 (id=155551)   : Dispel (38)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Enemy(6)
 #3 (id=290322)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
-                   Hotfixed: Base Value (150 -> 100)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self(1)
+                   Hotfixed: Base Value (150 -> 200)
 Description      : Slams the target with your shield, causing $s1 Physical damage.
 
 |cFFFFFFFFGenerates $/10;s3 Rage.|r
@@ -2991,7 +2991,7 @@ Resource         : 10 Rage
 Spell Level      : 8 (max 20)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Shattered Defenses (209706), Stone Heart (225947), 
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3013,7 +3013,7 @@ School           : Physical
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Shattered Defenses (209706), Stone Heart (225947), 
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3322,7 +3322,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=279107)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 280 | Scaled Value: 280 | AP Coefficient: 28.00000 | Misc Value: 127 | Target: Self(1)
+                   Base Value: 186 | Scaled Value: 186 | AP Coefficient: 18.60000 | Misc Value: 127 | Target: Self(1)
+                   Hotfixed: AP Coefficient (28 -> 18.6), Base Value (280 -> 186)
 #2 (id=299580)   : Dummy (3)
                    Base Value: 90 | Scaled Value: 90 | Target: Self(1)
 #3 (id=342429)   : Apply Aura (6) | Modify Base Resistance (142)
@@ -3976,8 +3977,9 @@ Effects          :
                    Affected Spells: Ignore Pain (190456)
                    Hotfixed: Base Value (-50 -> -35)
 #2 (id=344800)   : Apply Aura (6) | Unknown effect sub type (63)
-                   Base Value: -200 | Scaled Value: -200 | Misc Value: 1 | Target: Self(1)
+                   Base Value: -140 | Scaled Value: -140 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Ignore Pain (190456)
+                   Hotfixed: Base Value (-200 -> -140)
 Description      : $@spelldesc202572
 Tooltip          : Rage cost of Ignore Pain reduced by $s1%.
 
@@ -4265,12 +4267,13 @@ Description      : Focus your rage on your next Shield Slam, increasing its dama
 Tooltip          : Shield Slam deals $s1% increased damage.
 
 Name             : Inspiring Presence (id=205484) [Spell Family (4), Passive] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
-Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ......x. x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ...x.... 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -4513,6 +4516,50 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Berserker Rage (18499), Enrage (184362)
 Description      : You now take only ${30+$208154m1}% increased damage from Enrage.
+
+Name             : Precise Strikes (id=209492) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Range            : 100 yards
+Proc Chance      : 101%
+Artifact Power   : Id: 1149, Max Rank: 6, Values: [ -15, -30, -45, -60, -75, -90 ]
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7), Cannot cancel aura (31)
+Effects          :
+#1 (id=310051)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -15 | Scaled Value: -15 | Target: Self(1)
+Description      : Colossus Smash reduces the Rage cost of your next Mortal Strike or Execute by $s1%.
+
+Name             : Precise Strikes (id=209493) [Spell Family (4), Hidden] 
+Class            : Warrior
+School           : Physical
+Range            : 100 yards
+Duration         : 15 seconds
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Cannot cancel aura (31)
+Effects          :
+#1 (id=310052)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 14 | Target: Self(1)
+                   Affected Spells: Execute (5308), Mortal Strike (12294), Execute (163201), Execute Off-Hand (163558)
+#2 (id=344395)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 23 | Target: Self(1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558)
+Description      : $@spelldesc209492
 
 Name             : Void Cleave (id=209573) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior

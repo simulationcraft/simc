@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 8556408)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -860,7 +860,8 @@ Effects          :
 #8 (id=157383)   : Apply Aura (6) | Unknown effect sub type (197)
                    Base Value: -6 | Scaled Value: -6 | Target: Self(1)
 #9 (id=157505)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 40 | Scaled Value: 40
+                   Hotfixed: Base Value (35 -> 40)
 #10 (id=214843)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
 #11 (id=218370)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)

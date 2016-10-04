@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522)
+SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 8556408)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -4202,6 +4202,22 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(95) | Target: Enemy(6)
 Description      : $@spelldesc205273
 Tooltip          : Stunned.
+
+Name             : Greater Blessing of Might (id=205729) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Range            : 50000 yards
+Attributes       : ........ ........ ..x..x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ..x..... ......x. 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot dodge/parry/block (21), Cannot crit (93), Disable weapon procs (151)
+Effects          :
+#1 (id=303983)   : School Damage: holy (2)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
+Description      : $@spelldesc203528
 
 Name             : Eye of Tyr (Artifact) (id=209202) [Spell Family (10)] 
 Class            : Paladin
