@@ -6262,7 +6262,7 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( this, "Fel Rush", "animation_cancel=1,if=(talent.momentum.enabled|"
     "talent.fel_mastery.enabled)&(!talent.momentum.enabled|(charges=2|"
     "cooldown.vengeful_retreat.remains>4)&buff.momentum.down)&(!talent.fel_mastery.enabled|"
-    "fury.deficit>=25)&raid_event.movement.in>charges*10",
+    "fury.deficit>=25)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))",
     "Fel Rush for Momentum and for fury from Fel Mastery." );
   def -> add_talent( this, "Fel Barrage", "if=charges>=5&(buff.momentum.up|"
     "!talent.momentum.enabled)&(active_enemies>desired_targets|raid_event.adds.in>30)",
@@ -6278,14 +6278,14 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( this, "Blade Dance", "if=variable.blade_dance" );
   def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&"
     "spell_targets>=2+talent.chaos_cleave.enabled&(!talent.master_of_the_glaive.enabled|"
-    "!talent.momentum.enabled|buff.momentum.up)" );
+    "!talent.momentum.enabled|buff.momentum.up)&(spell_targets>=3|raid_event.adds.in>recharge_time+cooldown)" );
   def -> add_talent( this, "Fel Eruption" );
   def -> add_talent( this, "Felblade", "if=fury.deficit>=30+buff.prepared.up*8" );
   def -> add_action( this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|"
     "!talent.momentum.enabled|buff.momentum.up|fury.deficit<30+buff.prepared.up*8|"
     "buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
   def -> add_action( this, "Throw Glaive", "if=talent.bloodlet.enabled&"
-    "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)" );
+    "(!talent.master_of_the_glaive.enabled|!talent.momentum.enabled|buff.momentum.up)&raid_event.adds.in>recharge_time+cooldown" );
   def -> add_action( this, "Eye Beam", "if=!talent.demonic.enabled&"
     "((spell_targets.eye_beam_tick>desired_targets&active_enemies>1)|(raid_event.adds.in>45&"
     "!variable.pooling_for_meta&buff.metamorphosis.down&(artifact.anguish_of_the_deceiver.enabled|"
@@ -6306,7 +6306,7 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( this, "Fel Rush", "animation_cancel=1,if=!talent.momentum.enabled&"
     "raid_event.movement.in>charges*10" );
   def -> add_action( this, "Demon's Bite" );
-  def -> add_action( this, "Throw Glaive" );
+  def -> add_action( this, "Throw Glaive", "if=buff.out_of_range.up|buff.raid_movement.up" );
   def -> add_talent( this, "Felblade", "if=movement.distance|buff.out_of_range.up" );
   def -> add_action( this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&"
     "!talent.momentum.enabled)" );
