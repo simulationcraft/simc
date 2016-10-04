@@ -8508,7 +8508,7 @@ void mage_t::apl_fire()
   active_talents   -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up" );
   active_talents   -> add_talent( this, "Cinderstorm", "if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up" );
   active_talents   -> add_action( this, "Dragon's Breath", "if=equipped.132863" );
-  active_talents   -> add_talent( this, "Living Bomb", "if=active_enemies>3&buff.combustion.down" );
+  active_talents   -> add_talent( this, "Living Bomb", "if=active_enemies>1&buff.combustion.down" );
 
   single_target    -> add_action( this, "Pyroblast", "if=buff.hot_streak.up&buff.hot_streak.remains<action.fireball.execute_time" );
   single_target    -> add_action( this, "Phoenix's Flames", "if=charges_fractional>2.7&active_enemies>2" );
