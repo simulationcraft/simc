@@ -27,6 +27,7 @@ actions+=/charge
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
+actions+=/use_item,name=draught_of_souls,if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)
 actions+=/potion,name=old_war,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<30
 actions+=/battle_cry,if=(cooldown.odyns_fury.remains=0&(cooldown.bloodthirst.remains=0|(buff.enrage.remains>cooldown.bloodthirst.remains)))
 actions+=/avatar,if=buff.battle_cry.up|(target.time_to_die<(cooldown.battle_cry.remains+10))
@@ -40,6 +41,7 @@ actions+=/call_action_list,name=single_target
 
 actions.aoe=bloodthirst,if=buff.enrage.down|rage<50
 actions.aoe+=/call_action_list,name=bladestorm
+actions.aoe+=/odyns_fury,if=buff.battle_cry.up&buff.enrage.up
 actions.aoe+=/whirlwind,if=buff.enrage.up
 actions.aoe+=/dragon_roar
 actions.aoe+=/rampage,if=buff.meat_cleaver.up
@@ -54,7 +56,7 @@ actions.single_target=bloodthirst,if=buff.fujiedas_fury.up&buff.fujiedas_fury.re
 actions.single_target+=/execute,if=(artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2))|buff.stone_heart.react
 actions.single_target+=/rampage,if=rage=100&(target.health.pct>20|target.health.pct<20&!talent.massacre.enabled)|buff.massacre.react&buff.enrage.remains<1
 actions.single_target+=/berserker_rage,if=talent.outburst.enabled&cooldown.odyns_fury.remains=0&buff.enrage.down
-actions.single_target+=/dragon_roar,if=!cooldown.odyns_fury.remains<=10|cooldown.odyns_fury.remains<3
+actions.single_target+=/dragon_roar,if=cooldown.odyns_fury.remains>=10|cooldown.odyns_fury.remains<=3
 actions.single_target+=/odyns_fury,if=buff.battle_cry.up&buff.enrage.up
 actions.single_target+=/rampage,if=buff.enrage.down&buff.juggernaut.down
 actions.single_target+=/furious_slash,if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=3)
@@ -74,6 +76,7 @@ actions.two_targets=whirlwind,if=buff.meat_cleaver.down
 actions.two_targets+=/call_action_list,name=bladestorm
 actions.two_targets+=/rampage,if=buff.enrage.down|(rage=100&buff.juggernaut.down)|buff.massacre.up
 actions.two_targets+=/bloodthirst,if=buff.enrage.down
+actions.two_targets+=/odyns_fury,if=buff.battle_cry.up&buff.enrage.up
 actions.two_targets+=/raging_blow,if=talent.inner_rage.enabled&spell_targets.whirlwind=2
 actions.two_targets+=/whirlwind,if=spell_targets.whirlwind>2
 actions.two_targets+=/dragon_roar
@@ -91,19 +94,19 @@ waist=waistplate_of_nameless_horror,id=139227,bonus_id=1806
 legs=legplates_of_the_obsidian_aspect,id=138360,bonus_id=3443
 feet=immaculately_polished_boots,id=140904,bonus_id=3443
 finger1=ring_of_braided_stems,id=140896,bonus_id=3443,enchant=binding_of_mastery
-finger2=ayalas_stone_heart,id=137052,bonus_id=1477,enchant=binding_of_mastery
+finger2=ayalas_stone_heart,id=137052,bonus_id=1811,enchant=binding_of_mastery
 trinket1=ursocs_rending_paw,id=139328,bonus_id=1806
 trinket2=draught_of_souls,id=140808,bonus_id=3443
 main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=139256/139262/139255,relic_id=1806/1806/1806
 off_hand=warswords_of_the_valarjar,id=134553
 
 # Gear Summary
-# gear_ilvl=881.69
+# gear_ilvl=881.38
 # gear_strength=18015
-# gear_stamina=28783
-# gear_crit_rating=6890
+# gear_stamina=28704
+# gear_crit_rating=6864
 # gear_haste_rating=9231
-# gear_mastery_rating=4449
+# gear_mastery_rating=4435
 # gear_versatility_rating=564
 # gear_armor=4300
 # set_bonus=tier19_2pc=1
