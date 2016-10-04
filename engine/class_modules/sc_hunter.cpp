@@ -4277,6 +4277,9 @@ struct peck_t: public hunter_ranged_attack_t
 
     return am;
   }
+
+  virtual void try_steady_focus() override
+  {}
 };
 
 // TODO this should reset CD if the target dies
