@@ -71,7 +71,7 @@ namespace item
   void twisting_wind( special_effect_t& );
   void unstable_horrorslime( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
-  //void bough_of_corruption( special_effect_t& );
+  void bough_of_corruption( special_effect_t& );
 
   /* NYI ================================================================
   Nighthold ---------------------------------
@@ -627,7 +627,7 @@ void item::tirathons_betrayal( special_effect_t& effect )
         callback -> deactivate();
     } );
 }
-/*
+
 // Bough of Corruption ===============================================================
 
 // Damage event for the poisoned dreams impact, comes from the Posioned Dreams debuff being
@@ -676,7 +676,7 @@ struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
   player_t* target;
 
   poisoned_dreams_damage_driver_t( const special_effect_t& effect, action_t* d, player_t* t ) :
-    dbc_proc_callback_t( effect.player, effect), damage( d ), target( t )
+    dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
   { }
 
   void trigger( action_t* a, void* call_data ) override
@@ -690,7 +690,7 @@ struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
     dbc_proc_callback_t::trigger( a, call_data );
   }
 
-  void execute( action_t*  a , action_state_t* trigger_state ) override
+  void execute( action_t* /* a */ , action_state_t* trigger_state ) override
   {
     damage -> target = trigger_state -> target;
     damage -> execute();
@@ -698,7 +698,6 @@ struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
 
 };
 // Poisoned Dreams debuff to control poisoned_dreams_driver_t
-
 struct poisoned_dreams_t : public debuff_t
 {
   poisoned_dreams_damage_driver_t* driver_cb;
@@ -768,7 +767,7 @@ struct bough_of_corruption_driver_t : public dbc_proc_callback_t
     }
   }
 
-  void execute( action_t*  a , action_state_t* trigger_state ) override
+  void execute( action_t*  /*a*/ , action_state_t* trigger_state ) override
   {
     actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
     assert( td );
@@ -806,7 +805,7 @@ void item::bough_of_corruption( special_effect_t& effect )
 
   new bough_of_corruption_driver_t( effect );
 }
-*/
+
 // Horn of Valor ============================================================
 
 void item::horn_of_valor( special_effect_t& effect )
@@ -2770,7 +2769,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 221803, item::ravaged_seed_pod       );
   register_special_effect( 221845, item::twisting_wind          );
   register_special_effect( 222187, item::unstable_horrorslime   );
-  //register_special_effect( 222705, item::bough_of_corruption    );
+  register_special_effect( 222705, item::bough_of_corruption    );
   register_special_effect( 222046, item::wriggling_sinew        );
   register_special_effect( 221767, "ProcOn/crit" );
 
@@ -2826,5 +2825,6 @@ void unique_gear::register_target_data_initializers_x7( sim_t* sim )
   sim -> register_target_data_initializer( figurehead_of_the_naglfar_constructor_t( 137329, trinkets ) );
   sim -> register_target_data_initializer( portable_manacracker_constructor_t( 137398, trinkets ) );
   sim -> register_target_data_initializer( wriggling_sinew_constructor_t( 139326, trinkets ) );
+  sim -> register_target_data_initializer( bough_of_corruption_constructor_t( 139336, trinkets ) );
 }
 
