@@ -1,9 +1,9 @@
-mage="No_LB"
+mage="Mage_Fire_T19H"
 level=110
 race=troll
 role=spell
 position=back
-talents=1222112
+talents=1222122
 artifact=54:141522:139269:141522:0:748:1:749:3:750:3:751:3:752:3:754:5:755:4:756:3:758:1:759:1:762:1:763:1:1340:1
 spec=fire
 
