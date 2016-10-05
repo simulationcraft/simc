@@ -493,6 +493,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
   struct atd_debuff_t
   {
     debuff_t* mark_of_doom;
+    debuff_t* poisoned_dreams;
     debuff_t* fel_burn;
     debuff_t* brutal_haymaker;
     debuff_t* taint_of_the_sea;

@@ -71,13 +71,9 @@ namespace item
   void twisting_wind( special_effect_t& );
   void unstable_horrorslime( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
-
-  /* NYI ================================================================
-
-  Emerald Nightmare -------------------------
-
   void bough_of_corruption( special_effect_t& );
 
+  /* NYI ================================================================
   Nighthold ---------------------------------
 
   Everything
@@ -630,6 +626,185 @@ void item::tirathons_betrayal( special_effect_t& effect )
       } else if ( new_ == 0 )
         callback -> deactivate();
     } );
+}
+
+// Bough of Corruption ===============================================================
+
+// Damage event for the poisoned dreams impact, comes from the Posioned Dreams debuff being
+// impacted by a spell.
+struct poisoned_dreams_impact_t : public spell_t
+{
+  // Poisoned Dreams has some ICD that prevents the damage event from
+  // being triggered multiple times in quick succession.
+
+  cooldown_t* icd;
+  double stack_multiplier;
+  poisoned_dreams_impact_t( const special_effect_t& effect ) :
+    spell_t( "poisoned_dreams_damage", effect.player, effect.player -> find_spell( 222705 ) ),
+    stack_multiplier( 1.0 )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    cooldown -> duration = timespan_t::zero(); //Override the spellID cooldown data
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    item = effect.item;
+    icd = effect.player -> get_cooldown( "poisoned_dreams_icd" );
+  }
+  virtual bool ready() override
+  {
+    if ( icd -> down() )
+    {
+      return false;
+    }
+
+    return spell_t::ready();
+  }
+
+  virtual void execute() override
+  {
+    spell_t::execute();
+
+    // TODO: Verify exact ICD from in game data
+    icd -> start( timespan_t::from_seconds( 0.25 ) );
+  }
+};
+// Callback driver that executes the Poisoned Dreams_impact on the enemy when the Poisoned Dreams
+// debuff is up.
+struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
+{
+  action_t* damage;
+  player_t* target;
+
+  poisoned_dreams_damage_driver_t( const special_effect_t& effect, action_t* d, player_t* t ) :
+    dbc_proc_callback_t( effect.player, effect), damage( d ), target( t )
+  { }
+
+  void trigger( action_t* a, void* call_data ) override
+  {
+    const action_state_t* s = static_cast<const action_state_t*>( call_data );
+    if ( s -> target != target )
+    {
+      return;
+    }
+
+    dbc_proc_callback_t::trigger( a, call_data );
+  }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  {
+    damage -> target = trigger_state -> target;
+    damage -> execute();
+  }
+
+};
+// Poisoned Dreams debuff to control poisoned_dreams_driver_t
+
+struct poisoned_dreams_t : public debuff_t
+{
+  poisoned_dreams_damage_driver_t* driver_cb;
+  action_t* damage_spell;
+  special_effect_t* effect;
+
+  poisoned_dreams_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
+    debuff_t( buff_creator_t( p, "poisoned_dreams", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
+                              .activated( false )
+                              .period( timespan_t::from_seconds( 2.0 ) ) ),
+                              damage_spell( p.source -> find_action( "poisoned_dreams_damage" ) )
+  {
+    effect = new special_effect_t( p.source );
+    effect -> name_str = "poisoned_dreams_damage_driver";
+    effect -> proc_chance_ = 1.0;
+    effect -> proc_flags_ = PF_SPELL | PF_AOE_SPELL;
+    effect -> proc_flags2_ = PF2_ALL_HIT;
+    p.source -> special_effects.push_back( effect );
+
+    driver_cb = new poisoned_dreams_damage_driver_t( *effect, damage_spell, p.target );
+    driver_cb -> initialize();
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    debuff_t::expire_override( expiration_stacks, remaining_duration );
+
+    driver_cb -> deactivate();
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    debuff_t::execute( stacks, value, duration );
+
+    driver_cb -> activate();
+  }
+
+  void reset() override
+  {
+    debuff_t::reset();
+
+    driver_cb -> deactivate();
+  }
+};
+
+// Prophecy of Fear base driver, handles the proccing (triggering) of Mark of Doom on targets
+struct bough_of_corruption_driver_t : public dbc_proc_callback_t
+{
+  bough_of_corruption_driver_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect )
+  { }
+
+  void initialize() override
+  {
+    dbc_proc_callback_t::initialize();
+
+    action_t* damage_spell = listener -> find_action( "poisoned_dreams_damage" );
+
+    if( ! damage_spell )
+    {
+      damage_spell = listener -> create_proc_action( "poisoned_dreams_damage", effect );
+    }
+
+    if ( ! damage_spell )
+    {
+      damage_spell = new poisoned_dreams_impact_t( effect );
+    }
+  }
+
+  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  {
+    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
+    assert( td );
+    td -> debuff.poisoned_dreams -> trigger();
+  }
+};
+
+struct bough_of_corruption_constructor_t : public item_targetdata_initializer_t
+{
+  bough_of_corruption_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  { }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if( effect == 0 )
+    {
+      td -> debuff.poisoned_dreams = buff_creator_t( *td, "poisoned_dreams" );
+    }
+    else
+    {
+      assert( ! td -> debuff.poisoned_dreams );
+
+      td -> debuff.poisoned_dreams = new poisoned_dreams_t( *td, *effect );
+      td -> debuff.poisoned_dreams -> reset();
+    }
+  }
+
+};
+void item::bough_of_corruption( special_effect_t& effect )
+{
+  effect.proc_flags_ = effect.driver() -> proc_flags()  | PF_AOE_SPELL;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new bough_of_corruption_driver_t( effect );
 }
 
 // Horn of Valor ============================================================
@@ -1810,7 +1985,7 @@ struct bloodthirsty_instinct_cb_t : public dbc_proc_callback_t
   void trigger( action_t* a, void* call_data ) override
   {
     assert( rppm );
-    
+
     action_state_t* s = static_cast<action_state_t*>( call_data );
 
     assert( s -> target );
@@ -1819,7 +1994,7 @@ struct bloodthirsty_instinct_cb_t : public dbc_proc_callback_t
     3 RPPM (from spell data) translates to ~45% uptime. Assuming that is the
     peak RPPM, I adjusted the "base" proc rate down until the average uptime
     fit the observed uptime in the logs
-    
+
     End result here is: 2.25 RPPM scaling linearly with the target's health
     deficit up to a maximum of 3.00 RPPM */
     double mod = 0.75 + 0.25 * ( 100.0 - s -> target -> health_percentage() ) / 100.0;
@@ -2595,6 +2770,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 221803, item::ravaged_seed_pod       );
   register_special_effect( 221845, item::twisting_wind          );
   register_special_effect( 222187, item::unstable_horrorslime   );
+  register_special_effect( 222705, item::bough_of_corruption    );
   register_special_effect( 222046, item::wriggling_sinew        );
   register_special_effect( 221767, "ProcOn/crit" );
 
