@@ -4148,7 +4148,8 @@ void player_t::merge( player_t& other )
   size_t n_entries = std::min( action_list.size(), other.action_list.size() );
   if ( action_list.size() != other.action_list.size() )
   {
-    sim -> errorf( "%s player_t::merge action lists for actor differ!", name() );
+    sim -> errorf( "%s player_t::merge action lists for actor differ (other=%s, size=%u, other.size=%u)!",
+      name(), other.name(), action_list.size(), other.action_list.size() );
   }
 
   for ( size_t i = 0; i < n_entries; ++i )
@@ -4159,8 +4160,11 @@ void player_t::merge( player_t& other )
     }
     else
     {
-      sim -> errorf( "%s player_t::merge can't merge action %s with %s",
-          name(), action_list[ i ] -> name(), other.action_list[ i ] -> name() );
+      sim -> errorf( "%s player_t::merge can't merge action %s::%s with %s::%s",
+          name(), action_list[ i ] -> action_list -> name_str.c_str(),
+          action_list[ i ] -> signature_str.c_str(),
+          other.action_list[ i ] -> action_list -> name_str.c_str(),
+          other.action_list[ i ] -> signature_str.c_str() );
     }
   }
 }
