@@ -627,7 +627,7 @@ void item::tirathons_betrayal( special_effect_t& effect )
         callback -> deactivate();
     } );
 }
-
+/*
 // Bough of Corruption ===============================================================
 
 // Damage event for the poisoned dreams impact, comes from the Posioned Dreams debuff being
@@ -806,7 +806,7 @@ void item::bough_of_corruption( special_effect_t& effect )
 
   new bough_of_corruption_driver_t( effect );
 }
-
+*/
 // Horn of Valor ============================================================
 
 void item::horn_of_valor( special_effect_t& effect )
