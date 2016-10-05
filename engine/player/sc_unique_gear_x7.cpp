@@ -690,7 +690,7 @@ struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
     dbc_proc_callback_t::trigger( a, call_data );
   }
 
-  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  void execute( action_t*  a , action_state_t* trigger_state ) override
   {
     damage -> target = trigger_state -> target;
     damage -> execute();
@@ -768,7 +768,7 @@ struct bough_of_corruption_driver_t : public dbc_proc_callback_t
     }
   }
 
-  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  void execute( action_t*  a , action_state_t* trigger_state ) override
   {
     actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
     assert( td );
