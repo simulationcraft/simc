@@ -4161,9 +4161,9 @@ void player_t::merge( player_t& other )
     else
     {
       sim -> errorf( "%s player_t::merge can't merge action %s::%s with %s::%s",
-          name(), action_list[ i ] -> action_list -> name_str.c_str(),
+          name(), action_list[ i ] -> action_list ? action_list[ i ] -> action_list -> name_str.c_str() : "(none)",
           action_list[ i ] -> signature_str.c_str(),
-          other.action_list[ i ] -> action_list -> name_str.c_str(),
+          other.action_list[ i ] -> action_list ? other.action_list[ i ] -> action_list -> name_str.c_str() : "(none)",
           other.action_list[ i ] -> signature_str.c_str() );
     }
   }
