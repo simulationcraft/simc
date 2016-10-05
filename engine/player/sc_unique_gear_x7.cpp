@@ -71,7 +71,7 @@ namespace item
   void twisting_wind( special_effect_t& );
   void unstable_horrorslime( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
-  void bough_of_corruption( special_effect_t& );
+  //void bough_of_corruption( special_effect_t& );
 
   /* NYI ================================================================
   Nighthold ---------------------------------
@@ -2770,7 +2770,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 221803, item::ravaged_seed_pod       );
   register_special_effect( 221845, item::twisting_wind          );
   register_special_effect( 222187, item::unstable_horrorslime   );
-  register_special_effect( 222705, item::bough_of_corruption    );
+  //register_special_effect( 222705, item::bough_of_corruption    );
   register_special_effect( 222046, item::wriggling_sinew        );
   register_special_effect( 221767, "ProcOn/crit" );
 
