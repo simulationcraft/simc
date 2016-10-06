@@ -645,10 +645,11 @@ struct poisoned_dreams_impact_t : public spell_t
   {
     background = may_crit = true;
     callbacks = false;
-    cooldown -> duration = timespan_t::zero(); //Override the spellID cooldown data
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    cooldown -> duration = timespan_t::zero();
     item = effect.item;
     icd = effect.player -> get_cooldown( "poisoned_dreams_icd" );
+    icd -> duration = timespan_t::from_seconds( 1.0 );
   }
   virtual bool ready() override
   {
@@ -661,10 +662,14 @@ struct poisoned_dreams_impact_t : public spell_t
   }
 
   virtual void execute() override
-  {
-    spell_t::execute();
-    // TODO: Verify exact ICD from in game data
-    icd -> start( timespan_t::from_seconds( 0.25 ) );
+  {    // TODO: Verify exact ICD from in game data. Currently based off spelldata ICD on the damage event.
+       // Also fix hardcoding
+    if ( icd -> up() )
+    {
+     spell_t::execute();
+     icd -> start();
+    }
+
   }
 };
 // Callback driver that executes the Poisoned Dreams_impact on the enemy when the Poisoned Dreams
@@ -719,6 +724,8 @@ struct poisoned_dreams_t : public debuff_t
     effect -> proc_flags2_ = PF2_ALL_HIT;
     p.source -> special_effects.push_back( effect );
 
+    //TODO: Fix hardcoded ICD on the debuff proc application from spelldata.
+    cooldown -> duration = timespan_t::from_seconds( 20.0 );
     driver_cb = new poisoned_dreams_damage_driver_t( *effect, damage_spell, p.target );
     driver_cb -> initialize();
   }
@@ -745,12 +752,13 @@ struct poisoned_dreams_t : public debuff_t
   }
 };
 
-// Prophecy of Fear base driver, handles the proccing (triggering) of Mark of Doom on targets
+// Prophecy of Fear base driver, handles the proccing ( triggering ) of Mark of Doom on targets
 struct bough_of_corruption_driver_t : public dbc_proc_callback_t
 {
   bough_of_corruption_driver_t( const special_effect_t& effect ) :
     dbc_proc_callback_t( effect.player, effect )
-  { }
+  {
+  }
 
   void initialize() override
   {
