@@ -196,7 +196,7 @@ struct buff_source_benefit_t
 
   void update( int source_id, int stacks = 1 )
   {
-    assert( source_id > 0 && source_id < sources.size() );
+    assert( source_id >= 0 && source_id < sources.size() );
 
     for ( size_t i = 0; i < sources.size(); i++ )
     {
