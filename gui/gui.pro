@@ -75,6 +75,12 @@ win32 {
 
 # Deplopyment for Linux, note, the cli project also copies profiles
 unix:!macx {
+  QT -= webengine webenginewidgets
+  QT += webkit webkitwidgets
+  DEFINES -= SC_USE_WEBENGINE
+  DEFINES += SC_USE_WEBKIT
+  message("Linux WebKit default")
+  
   DISTFILES  += CHANGES COPYING
   INSTALLS   += target profiles data icon locale
   # Disable strip
