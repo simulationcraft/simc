@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 8556408)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5a2d5bc)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Fire Frost Mage
@@ -392,7 +392,6 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Chain Targets: 1 | Target: Unknown(77)
-                   Hotfixed: SP Coefficient (0.35 -> 0.38)
 Description      : $@spelldesc5143
 
 Name             : Frost Armor (id=7302) [Spell Family (3), Passive] 
@@ -761,7 +760,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 Name             : Arcane Blast (id=30451) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
-Resource         : 3% Base Mana (33000 @Level 110) [Hotfixed: Percent Cost (3.2 -> 3)]
+Resource         : 3% Base Mana (33000 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
@@ -776,7 +775,6 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=20028)    : School Damage: arcane (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.5 -> 1.65)
 #2 (id=20029)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
@@ -860,7 +858,6 @@ Description      : Reduces the target's movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
 Name             : Dragon's Breath (id=31661) [Scaling Spell (5), Spell Family (3)] 
-Hotfixed         : Proc Flags (139944 -> 664232), Attributes
 Class            : Fire Mage
 School           : Fire
 Resource         : 4% Base Mana (44000 @Level 110)
@@ -1216,7 +1213,6 @@ Description      : $@spelldesc112965
 Tooltip          : Your next Ice Lance deals damage as if the target were frozen.
 
 Name             : Flurry (id=44614) [Scaling Spell (5), Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Frost Mage
 School           : Frost
 Resource         : 1% Base Mana (11000 @Level 110)
@@ -1362,7 +1358,6 @@ Effects          :
                    Affected Spells: Ice Lance (30455), Icicle (148022), Glacial Spike (199786), Crystalline Swords (205165)
 #2 (id=136440)   : Dummy (3)
                    Base Value: 80 | Scaled Value: 80
-                   Hotfixed: Base Value (50 -> 80)
 #3 (id=341171)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
                    Affected Spells: Ice Lance (30455), Ice Lance (228598)
@@ -1624,10 +1619,8 @@ Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...
 Effects          :
 #1 (id=59543)    : Apply Aura (6) | Unknown effect sub type (310)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self(1)
-                   Hotfixed: Base Value (-90 -> -80)
 #2 (id=192584)   : Apply Aura (6) | Unknown effect sub type (229)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self(1)
-                   Hotfixed: Base Value (-50 -> -75)
 Description      : Reduces the damage your pet takes from creature area of effect attacks by an additional $s1%.
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
@@ -2405,7 +2398,6 @@ Effects          :
 #1 (id=132772)   : Apply Aura (6) | Add Percent Modifier: Spell Critical Chance (108)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self(1)
                    Affected Spells: Fireball (133), Scorch (2948), Pyroblast (11366)
-                   Hotfixed: Base Value (30 -> 10), Affects Spells
 #2 (id=132773)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Multiplies the critical strike chance of your Fireball, Pyroblast, and Scorch by ${1+$m1/100}.1.
@@ -2620,7 +2612,6 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Target: Self(1)
 #4 (id=191127)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Hotfixed: Sub Type (4 -> 290), Base Value (0 -> 5)
 #5 (id=191128)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260857)   : Apply Aura (6) | Dummy (4)
@@ -2645,7 +2636,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=350048)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Hotfixed: NEW EFFECT
 
 Name             : Frost Mage (id=137020) [Spell Family (3), Passive, Hidden] 
 Class            : Frost Mage
@@ -2887,7 +2877,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=201127)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy(6)
-                   Hotfixed: Chain Multiplier (0.5 -> 0.8)
 Description      : $@spelldesc76613
 
 Name             : Prismatic Crystal (id=152087) 
@@ -3322,7 +3311,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Unknown(25)
 #2 (id=220384)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (4 -> 4.5)
 #3 (id=220385)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(58) | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : Causes a whirl of icy wind around the target enemy or ally, dealing $s2 Frost damage to all enemies within $A2 yards, and freezing them in place for $d. A primary enemy target will take $s1% increased damage.
@@ -3592,7 +3580,7 @@ Description      : Conjures mana food for you and your allies. Conjured items di
 Name             : Blizzard (id=190356) [Spell Family (3)] 
 Class            : Frost Mage
 School           : Frost
-Resource         : 2.5% Base Mana (27500 @Level 110) [Hotfixed: Percent Cost (5 -> 2.5)]
+Resource         : 2.5% Base Mana (27500 @Level 110)
 Spell Level      : 44
 Range            : 35 yards
 Cast Time        : 2 seconds
@@ -3630,7 +3618,6 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=278848)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.323) | SP Coefficient: 0.45000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (0.3303 -> 0.45)
 Description      : $@spelldesc190356
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
 $arctic2=$?s31675[${1.02}][${$<arctic1>}]
@@ -3697,14 +3684,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=279639)   : Apply Aura (6) | Unknown effect sub type (178)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Self(1)
-                   Hotfixed: SP Coefficient (1 -> 1.2)
 #2 (id=279640)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Arcane Charge (36032)
-                   Hotfixed: SP Coefficient (0.5 -> 0.6)
 #3 (id=313335)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Self(1)
-                   Hotfixed: SP Coefficient (1 -> 1.2)
 Description      : Increases your Mana regeneration rate and maximum Mana by ${$m1}.1%.
 
 Arcane Charges increase the damage of affected spells by an additional ${$m2}.2%.
@@ -3908,7 +3892,6 @@ Description      : Arcane Blast, Arcane Missiles, and Arcane Explosion also gran
 This effect is cleared when you cast Arcane Barrage.
 
 Name             : Quickening (id=198924) [Spell Family (3)] 
-Hotfixed         : Max stacks (100 -> 50)
 Class            : Mage
 School           : Arcane
 Duration         : 6 seconds
@@ -3995,7 +3978,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=294013)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy(6)
-                   Hotfixed: Chain Multiplier (0.5 -> 0.8)
 Description      : Conjures a massive spike of ice, and merges your current Icicles into it. It impales your target, dealing $228600s1 damage plus the damage stored in your Icicles, and freezes the target in place for $228600d. Damage may interrupt the freeze effect.
 
 Requires 5 Icicles to cast.
@@ -4060,7 +4042,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.85000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.45 -> 1.85)
 Description      : For the next $d, you can channel a beam of icy power at an enemy, slowing movement by $m1% and dealing $s2 Frost damage every $t2 sec. Each time Ray of Frost deals damage, its damage increases by $208141s1%.
 Tooltip          : Movement slowed by $m1% and taking $s2 Frost damage every $t2 sec.
 
@@ -4435,7 +4416,6 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=303945)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
-                   Hotfixed: Base Value (-30 -> -50)
 Description      : Chilled, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -4883,7 +4863,6 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=343734)   : School Damage: frost (2)
                    Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.45000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.9 -> 1.45)
 #2 (id=343735)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc44614
@@ -4906,7 +4885,6 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344284)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.7 -> 2)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)] 
@@ -4926,7 +4904,6 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344285)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 0.85000 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.76 -> 0.85), Chain Multiplier (0.5 -> 0.8)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : $@spelldesc30455
@@ -4949,7 +4926,6 @@ Effects          :
 Description      : $@spelldesc214634
 
 Name             : Glacial Spike (id=228600) [Spell Family (3)] 
-Hotfixed         : Max stacks, Proc Chance, Proc Stacks, Proc Flags, Internal Cooldown
 Class            : Mage
 School           : Frost
 Range            : 100 yards
@@ -4968,7 +4944,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344289)   : School Damage: frost (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.50000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (6.5 -> 7.5)
 #2 (id=344290)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy(6)
 Description      : $@spelldesc199786

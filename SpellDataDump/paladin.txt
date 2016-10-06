@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 8556408)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5a2d5bc)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -590,7 +590,6 @@ Tooltip          : Damage taken reduced by $w1%.
 The next attack that would otherwise kill you will instead bring you to $w2% of your maximum health.
 
 Name             : Avenging Wrath (id=31884) [Spell Family (10)] 
-Hotfixed         : Cooldown (20000 -> 21000)
 Class            : Protection Retribution Paladin
 School           : Holy
 Spell Level      : 72
@@ -634,7 +633,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=21607)    : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 1 - 3 | Value Range: 3 | AP Coefficient: 3.91500 | Chain Targets: 3 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (4.35 -> 3.915)
 #2 (id=135932)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.63500 | Mechanic: Unknown(227) | Chain Targets: 65535 | Target: Enemy(6)
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
@@ -953,7 +951,6 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=46252)    : Weapon Damage% (31)
                    Base Value: 112 | Scaled Value: 1.12 | Target: Enemy(6)
-                   Hotfixed: Base Value (125 -> 112)
 #2 (id=171314)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Hammers the current target for $53595sw1 Physical damage.$?s26573[
@@ -978,7 +975,6 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=46256)    : School Damage: holy (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.60000 | Chain Targets: 1 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (4 -> 3.6)
 Description      : Slams the target with your shield, causing $s1 Holy damage, and reducing damage you take by ${-1*$clamp($132403m1,-80,-25)}% for $132403d.$?s26573[
 
 While you are standing in your Consecration, Shield of the Righteous' effects are increased by $188370s2%.][]
@@ -1641,7 +1637,6 @@ Effects          :
 Description      : Unleash the fury of ancient kings, causing $s1 Holy damage per application of Ancient Power, divided evenly among all targets within $a1 yards.
 
 Name             : Hammer of the Righteous (id=88263) [Scaling Spell (7), Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Level      : 1
@@ -1657,7 +1652,6 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=90535)    : Weapon Damage% (31)
                    Base Value: 67 | Scaled Value: 0.67 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: Base Value (75 -> 67)
 #2 (id=171313)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc35395
@@ -1762,7 +1756,6 @@ Attributes       : ........ ........ ..x.x... ......x.   ...x...x ........ ..x..
 Effects          :
 #1 (id=115255)   : School Damage: holy (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.70000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: SP Coefficient (3 -> 2.7)
 Description      : Emits a dazzling light in all directions, blinding enemies within $A1 yards, causing them to wander disoriented for $d.
 Tooltip          : Disoriented.
 
@@ -2260,7 +2253,6 @@ Effects          :
 #4 (id=191094)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 13 | Scaled Value: 13 | Target: Self(1)
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (228288)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 13), Affects Spells
 #5 (id=191095)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260907)   : Apply Aura (6) | Dummy (4)
@@ -2308,11 +2300,9 @@ Effects          :
 #3 (id=191089)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 35 | Scaled Value: 35 | Target: Self(1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
-                   Hotfixed: Base Value (50 -> 35)
 #4 (id=191090)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -10 | Scaled Value: -10 | Target: Self(1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -10), Affects Spells
 #5 (id=191091)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260917)   : Apply Aura (6) | Dummy (4)
@@ -2872,7 +2862,6 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75
 #4 (id=311462)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15
-                   Hotfixed: Base Value (10 -> 15)
 Description      : While you are above $s3% health, $s1% of all damage taken by allies within $s2 yds is redirected to you. 
 
 While Aura Mastery is active, $s4% of all effective healing you deal is replicated to all allies in the aura.
@@ -3029,10 +3018,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=266740)   : Direct Heal (10)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-                   Hotfixed: Base Value (35 -> 30)
 #2 (id=303002)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-                   Hotfixed: Base Value (35 -> 30)
 Description      : Calls down the Light to heal you for $s1% of your missing health.$?s26573[
 
 While you are standing in your Consecration, Light of the Protector's healing is increased by $188370s2%.][]
@@ -3058,7 +3045,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=267536)   : Weapon Damage% (31)
                    Base Value: 402 | Scaled Value: 4.5 | Points Per Level: 12 | Target: Enemy(6)
-                   Hotfixed: Base Value (352 -> 402)
 #3 (id=267537)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 Description      : Strikes an enemy with the Blade of Justice, dealing $sw2 Physical damage.
@@ -3565,7 +3551,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=298132)   : Weapon Damage% (31)
                    Base Value: 136 | Scaled Value: 1.36 | Target: Enemy(6)
-                   Hotfixed: Base Value (120 -> 136)
 #3 (id=298133)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: holy_power | Target: Self(1)
 #4 (id=341688)   : Apply Aura (6) | Periodic Damage: holy every 2 seconds (3)
@@ -3849,7 +3834,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=301046)   : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04500 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (0.05 -> 0.045)
 Description      : $@spelldesc203797
 
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
@@ -4008,10 +3992,6 @@ Name             : Knight Templar (id=204139) [Spell Family (10), Passive]
 Class            : Paladin
 School           : Physical
 Spell Level      : 1
-Internal Cooldown: 1 seconds
-Proc Chance      : 15%
-Proc Flags       : ....x... x...x... x....... ........ 
-                 : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4080,7 +4060,6 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=301536)   : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.57400 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (0.638 -> 0.574)
 #2 (id=303007)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy(6)
 Description      : $@spelldesc204019
@@ -4237,7 +4216,6 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 127 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=309633)   : School Damage: holy (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.70000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: AP Coefficient (3 -> 2.7)
 #3 (id=321125)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 25 yards | Target: At Caster(22) -> AOE enemy (instant)(7)
 Description      : Releases a blinding flash from |cFFFFCC99Truthguard|r, causing $s2 Holy damage to all nearby enemies and reducing all damage they deal to you by $s1% for $d.
@@ -4424,10 +4402,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=316999)   : Direct Heal (10)
                    Base Value: 30 | Scaled Value: 30 | Target: Friend(21)
-                   Hotfixed: Base Value (35 -> 30)
 #2 (id=317000)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-                   Hotfixed: Base Value (35 -> 30)
 Description      : Calls down the Light to heal a friendly target for $s1% of the target's missing health.
 
 Name             : Execution Sentence (id=213757) [Spell Family (10)] 
@@ -4452,7 +4428,6 @@ Description      : A hammer slowly falls from the sky, dealing $s2 Holy damage a
 Tooltip          : Taking $s2 Holy damage when this expires.
 
 Name             : Rule of Law (id=214202) [Spell Family (10)] 
-Hotfixed         : Cooldown, GCD
 Class            : Paladin
 School           : Holy
 Spell Level      : 1
@@ -4470,7 +4445,6 @@ Effects          :
 #1 (id=318059)   : Apply Aura (6) | Add Percent Modifier: Spell Range (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 5 | Target: Self(1)
                    Affected Spells: Lay on Hands (633), Cleanse (4987), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644), Bestow Faith (223306)
-                   Hotfixed: Affects Spells
 #2 (id=318060)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Light of Dawn (85222), Light of Dawn (225311)
@@ -4548,7 +4522,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.6 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=322915)   : Weapon Damage% (31)
                    Base Value: 320 | Scaled Value: 3.2 | Chain Targets: 1 | Target: Enemy(6)
-                   Hotfixed: Base Value (285 -> 320)
 #3 (id=322916)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self(1)
 #4 (id=322917)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
@@ -4718,7 +4691,6 @@ Effects          :
 #1 (id=334770)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Seraphim (152262), Seal of Light (202273), Word of Glory (210191), Execution Sentence (213757), Justicar's Vengeance (215661)
-                   Hotfixed: Affects Spells
 Description      : $@spelldesc223817
 Tooltip          : Your next Holy Power consuming ability will cost no Holy Power.
 
@@ -4737,7 +4709,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=335563)   : Weapon Damage% (31)
                    Base Value: 216 | Scaled Value: 2.16 | Target: Enemy(6)
-                   Hotfixed: Base Value (180 -> 216)
 #2 (id=335564)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc53385
@@ -4757,7 +4728,6 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=335615)   : Weapon Damage% (31)
                    Base Value: 320 | Scaled Value: 4.4 | Points Per Level: 12 | Target: Enemy(6)
-                   Hotfixed: Base Value (290 -> 320), Points per Level (11 -> 12)
 #2 (id=335616)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=335617)   : Dummy (3)
@@ -4765,7 +4735,6 @@ Effects          :
 Description      : A powerful weapon strike that deals $sw1 Holy damage.
 
 Name             : Crusade (id=224668) [Spell Family (10)] 
-Hotfixed         : Cooldown (20000 -> 21000)
 Class            : Paladin
 School           : Holy
 Spell Level      : 72
@@ -4845,7 +4814,6 @@ Attributes       : ........ ........ x.x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=343604)   : School Damage: holy (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.50000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0 -> 2.5), AP Coefficient (2 -> 0)
 Description      : $@spelldesc20271
 
 Name             : Cavalier (id=230332) [Passive] 

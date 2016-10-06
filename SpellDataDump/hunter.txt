@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 8556408)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5a2d5bc)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -575,7 +575,6 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
 Effects          :
 #1 (id=10779)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self(1)
-                   Hotfixed: Base Value (20 -> 25)
 #2 (id=10780)    : Trigger Spell: Bestial Wrath (64)
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 186254
 #3 (id=342782)   : Dummy (3)
@@ -2459,7 +2458,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Cone Front(104)
 #3 (id=139945)   : Weapon Damage% (31)
                    Base Value: 80 | Scaled Value: 0.8 | Radius: 50 yards | Target: Cone Front(104)
-                   Hotfixed: Base Value (100 -> 80)
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
@@ -2677,7 +2675,6 @@ Attributes       : ........ ........ x....x.x ........   ........ ........ .....
 Effects          :
 #1 (id=170318)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.62000 | Target: Unknown(25)
-                   Hotfixed: AP Coefficient (1.35 -> 1.62)
 Description      : Deals $s1 physical damage.
 
 Name             : Flare (id=132950) [Spell Family (9)] 
@@ -2743,7 +2740,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=351564)   : Apply Aura (6) | Unknown effect sub type (309)
                    Base Value: 2500 | Scaled Value: 2500 | Target: Self(1)
-                   Hotfixed: NEW EFFECT
 Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
@@ -2809,8 +2805,7 @@ Effects          :
                    Affected Spells: Kill Command (34026), Chimaera Shot (53209), Kill Command (83381), Dire Beast (120679), Chimaera Shot (171454), Chimaera Shot (171457), Volley (194386), Volley (194392), Black Arrow (194599), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Butchery (212436), Dire Longevity (215911), Dire Frenzy (217200), Dire Frenzy (217207)
 #3 (id=191143)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Affected Spells: Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Steel Trap (162488), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Sticky Bomb (191241), Explosive Trap (191433), Hatchet Toss (193265), Cobra Shot (193455), Aspect of the Wild (193530), Caltrops (194277), Caltrops (194279), Exhilaration (194291), Volley (194386), Volley (194392), Spitting Cobra (194407), Black Arrow (194599), Dragonsfire Grenade (194855), Wing Clip (195645), Piercing Shot (198670), Camouflage (199483), Ranger's Net (200108), Throwing Axes (200163), Stampede (201594), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), Flanking Strike (204740), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Butchery (212436), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911), Dire Frenzy (217200), Dire Frenzy (217207)
-                   Hotfixed: Affects Spells
+                   Affected Spells: Disengage (781), Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Feign Death (5384), Ice Trap (13809), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Misdirection (34477), Chimaera Shot (53209), Gift of the Naaru (59543), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Kill Command (83381), Binding Shot (109248), Exhilaration (109304), Serpent Sting (118253), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Iron Horde Trip Mine (155918), Steel Trap (162488), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Lacerate (185855), Marked Shot (185901), Aspect of the Cheetah (186257), Aspect of the Cheetah (186258), Aspect of the Turtle (186265), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Muzzle (187707), Carve (187708), Harpoon (190925), Mongoose Bite (190928), Aimed Shot (191043), Sticky Bomb (191241), Explosive Trap (191433), Hatchet Toss (193265), Cobra Shot (193455), Aspect of the Wild (193530), Caltrops (194277), Caltrops (194279), Volley (194386), Volley (194392), Spitting Cobra (194407), Black Arrow (194599), Dragonsfire Grenade (194855), Wing Clip (195645), Piercing Shot (198670), Camouflage (199483), Ranger's Net (200108), Throwing Axes (200163), Stampede (201594), Flanking Strike (202800), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), Flanking Strike (204740), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Butchery (212436), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911), Dire Frenzy (217200), Dire Frenzy (217207)
 #4 (id=191144)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1628 | Target: Self(1)
 #5 (id=191145)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -2865,7 +2860,6 @@ Effects          :
 #2 (id=191138)   : Apply Aura (6) | Add Flat Modifier: Generic Modifier (107)
                    Base Value: -45 | Scaled Value: -45 | Target: Self(1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), A Murder of Crows (206505)
-                   Hotfixed: Base Value (-35 -> -45)
 #3 (id=191139)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191140)   : Apply Aura (6) | Dummy (4)
@@ -3808,7 +3802,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Active Pet(5)
 #2 (id=271165)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Active Pet(5)
-                   Hotfixed: Base Value (20 -> 25)
 #3 (id=271166)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Active Pet(5)
 #4 (id=271167)   : Apply Aura (6) | Absorb Damage (69)
@@ -4322,7 +4315,6 @@ Effects          :
                    Affected Spells: Mongoose Bite (190928)
 #2 (id=343454)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
-                   Hotfixed: Base Value (25 -> 35)
 Description      : $@spelldesc190928
 Tooltip          : Damage dealt by Mongoose Bite increased by $s1%.
 
@@ -4579,7 +4571,6 @@ Effects          :
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Self(1)
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Piercing Shot (213678)
-                   Hotfixed: Affects Spells
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Barrage (120361), Marked Shot (185901), Sidewinders (214579), Sidewinders (214581)
@@ -4745,25 +4736,6 @@ Description      : $@spelldesc194277
 Tooltip          : Movement speed reduced by $s1%.
 Suffering $w2 Bleed damage every $t2 sec.
 
-Name             : Exhilaration (id=194291) [Spell Family (9)] 
-Class            : Marksmanship Hunter
-School           : Physical
-Spell Level      : 26
-Range            : 45 yards
-Cooldown         : 120 seconds
-Affecting spells : Hunter (137014)
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot crit (93)
-Effects          :
-#1 (id=285201)   : Direct Heal% (136)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-Description      : Heals you for $s1% of maximum health.
-
 Name             : Bestial Fury (id=194306) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
@@ -4820,7 +4792,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=285355)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: AP Coefficient (0.75 -> 1)
 Description      : $@spelldesc194386
 
 Name             : Way of the Cobra (id=194397) [Spell Family (9), Passive] 
@@ -5607,7 +5578,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=299019)   : Weapon Damage% (31)
                    Base Value: 215 | Scaled Value: 3.25 | Points Per Level: 11 | Target: Enemy(6)
-                   Hotfixed: Base Value (130 -> 215), Points per Level (7 -> 11)
 #2 (id=299020)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=299021)   : Dummy (3)
@@ -5641,7 +5611,6 @@ Effects          :
 Description      : Deals $s1 Physical damage in a frontal cone to enemies within a $A1 yards.
 
 Name             : Fury of the Eagle (Artifact) (id=203415) [Spell Family (9)] 
-Hotfixed         : GCD (0 -> 1500), Category, Affecting Spells
 Class            : Hunter
 School           : Physical
 Range            : 8 yards
@@ -6032,7 +6001,6 @@ Effects          :
 Description      : $@spelldesc207068
 
 Name             : Play Dead (id=209997) [Spell Family (9)] 
-Hotfixed         : Affecting Spells
 Class            : Hunter
 School           : Physical
 Spell Level      : 40
@@ -6058,7 +6026,6 @@ Description      : Playing Dead, tricking enemies into ignoring them. Lasts up t
 Tooltip          : Playing Dead.
 
 Name             : Wake Up (id=210000) [Spell Family (9)] 
-Hotfixed         : Affecting Spells
 Class            : Hunter
 School           : Physical
 Spell Level      : 32

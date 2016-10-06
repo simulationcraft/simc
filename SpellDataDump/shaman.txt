@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 8556408)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5a2d5bc)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -75,7 +75,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=155)      : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Chain Targets: 3 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.8 -> 2.2)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Chain Heal (id=1064) [Spell Family (11)] 
@@ -644,7 +643,6 @@ Effects          :
 Description      : $@spelldesc8232
 
 Name             : Windfury (id=33757) [Spell Family (11), Passive] 
-Hotfixed         : Proc Chance (5 -> 20)
 Class            : Enhancement Shaman
 School           : Nature
 Spell Level      : 30
@@ -743,7 +741,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=37246)    : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.3 -> 1.6)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Chain Lightning Overload (id=45297) [Spell Family (11)] 
@@ -761,7 +758,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=37247)    : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Targets: 5 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.3 -> 1.6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies.  Affects $x1 total targets.
 
 Name             : Primal-Attuned Goggles (id=46110) 
@@ -877,7 +873,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=43841)    : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (2.1 -> 2.2)
 #2 (id=287537)   : Energize Power (30)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: maelstrom | Target: Self(1)
 Description      : Hurls molten lava at the target, dealing $s1 Fire damage. Lava Burst will always critically strike if the target is affected by Flame Shock.$?s137039[][
@@ -1424,10 +1419,8 @@ Attributes       : ....x.x. ........ x.x..... ...x....   .....x.. ........ .x...
 Effects          :
 #1 (id=59543)    : Apply Aura (6) | Unknown effect sub type (310)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 127 | Target: Self(1)
-                   Hotfixed: Base Value (-90 -> -80)
 #2 (id=192584)   : Apply Aura (6) | Unknown effect sub type (229)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self(1)
-                   Hotfixed: Base Value (-50 -> -75)
 Description      : Reduces the damage your pet takes from creature area of effect attacks by an additional $s1%.
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
@@ -1513,7 +1506,6 @@ Effects          :
 #2 (id=66867)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 45 | Scaled Value: 45 | Target: Self(1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Healing Surge (188070)
-                   Hotfixed: Base Value (30 -> 45)
 #3 (id=90747)    : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Riptide (61295)
@@ -1649,7 +1641,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68090)    : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (2.1 -> 2.2)
 #2 (id=287602)   : Energize Power (30)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: maelstrom | Target: Self(1)
 Description      : You hurl molten lava at the target, dealing $s1 Fire damage. If your Flame Shock is on the target, Lava Burst will deal a critical strike.
@@ -1807,7 +1798,6 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
 Effects          :
 #1 (id=87492)    : School Damage: shadowflame (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43200 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (0.36 -> 0.432)
 Description      : $@spelldesc105174
 
 Name             : Mail Specialization (Passive) (id=86099) [Passive, Hidden] 
@@ -2181,12 +2171,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=127188)   : School Damage: fire (2)
                    Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.98000 | Chain Multiplier: 1.1 | Chain Targets: 5 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.61 -> 1.98)
 #2 (id=188522)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 #3 (id=325441)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
-                   Hotfixed: Base Value (4 -> 6)
 Description      : Unleashes a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Damage is increased by $s2% after each jump. Affects $x1 total targets.  
 
 |cFFFFFFFFGenerates $s3 Maelstrom per target hit.|r 
@@ -2240,7 +2228,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=128188)   : School Damage: fire (2)
                    Base Value: 190 | Scaled Value: 0 (avg=0.816, dl=0.133) | Points Per Level: 1.9 | Value Range: 27 | SP Coefficient: 1.98000 | Chain Multiplier: 1.1 | Chain Targets: 5 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.61 -> 1.98)
 Description      : Unleash a blast of superheated flame at the enemy, dealing $s1 Fire damage and then jumping to additional nearby enemies. Affects up to $x1 total targets.
 
 Name             : Ancestral Guidance (id=114911) 
@@ -3067,7 +3054,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=219326)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.42000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.35 -> 0.42)
 Description      : Conjures a gust of wind that deals $s1 Nature damage to an enemy and generates $226180s2 Maelstrom for the Shaman.
 
 Name             : Call Lightning (id=157348) [Spell Family (11)] 
@@ -3088,7 +3074,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=219409)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.84000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.7 -> 0.84)
 #2 (id=219410)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 0x7f | Target: Self(1)
 Description      : Call down a lightning strike on an enemy, dealing $s1 Nature damage, and leaving the Storm Elemental charged with energy for $d.
@@ -3226,7 +3211,7 @@ Name             : Mastery: Elemental Overload (id=168534) [Spell Family (11), P
 Class            : Elemental Shaman
 School           : Physical
 Spell Level      : 78
-Affecting spells : Master of the Elements (191647), 
+Affecting spells : Master of the Elements (191647)
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3237,7 +3222,6 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=238582)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 18 | Target: Self(1)
-                   Hotfixed: SP Coefficient (2 -> 2.25)
 #2 (id=238583)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self(1)
 #3 (id=307793)   : Apply Aura (6) | Dummy (4)
@@ -3434,7 +3418,6 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=273980)   : School Damage: nature (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.25 -> 0.3)
 Description      : Fires a bolt of lightning at the target, dealing $?s210727[up to ${(1+$210727m2/100)*$s1}][$s1] Nature damage.
 
 Name             : Crash Lightning (id=187874) [Spell Family (11)] 
@@ -3558,7 +3541,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.00000 | Target: Enemy(6)
 #2 (id=274448)   : Apply Aura (6) | Unknown effect sub type (270)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 9 | Target: Enemy(6)
-                   Hotfixed: Base Value (10 -> 15)
 Description      : Summons an Earthen Spike under an enemy, dealing $s1 Physical damage and increasing Physical and Nature damage you deal to the target by $s2% for $d.
 Tooltip          : Suffering $s2% increased Nature and Physical damage from the Shaman.
 
@@ -3579,7 +3561,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=274643)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.3 -> 1.6)
 Description      : Hurls a bolt of lightning at the target, dealing $s1 Nature damage.
 
 |cFFFFFFFFGenerates $214815s1 Maelstrom.|r 
@@ -3627,10 +3608,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=275203)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Chain Targets: 5 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.3 -> 1.6)
 #2 (id=325428)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
-                   Hotfixed: Base Value (4 -> 6)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets. 
 
 |cFFFFFFFFGenerates $s2 Maelstrom per target hit.|r 
@@ -4146,7 +4125,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=282015)   : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (0.7 -> 0.8)
 Description      : $@spelldesc192222
 
 Name             : Tempest (id=192234) [Spell Family (11), Passive, Hidden] 
@@ -4248,7 +4226,6 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...
 Effects          :
 #1 (id=284355)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.55000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (1.35 -> 1.55)
 #2 (id=284413)   : Energize Power (30)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: maelstrom | Target: Self(1)
 Description      : Assaults your target with earthen power, dealing $s1 Nature damage.
@@ -4485,7 +4462,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=288995)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.56000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.52 -> 0.56)
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #3 (id=313061)   : Dummy (3)
@@ -4512,7 +4488,6 @@ Effects          :
 Description      : $@spelldesc196884
 
 Name             : Feral Lunge (id=196884) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Level      : 1
@@ -4768,7 +4743,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=290989)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.75000 | Target: Friend(21)
-                   Hotfixed: SP Coefficient (3 -> 3.75)
 Description      : $@spelldesc197995
 
 Name             : Fire Elemental (id=198067) [Spell Family (11)] 
@@ -6291,7 +6265,6 @@ Description      : $@spelldesc201900
 Tooltip          : Lava Lash damage increased by $s1% and cost reduced by $s2%.
 
 Name             : Feral Lunge (id=215802) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Level      : 1
@@ -6531,7 +6504,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=339432)   : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: maelstrom | Target: Friend(21)
-                   Hotfixed: Base Value (8 -> 10)
 Description      : $@spelldesc157331
 
 Name             : Totem Mastery (id=226772) [Spell Family (5)] 

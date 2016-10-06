@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 8556408)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5a2d5bc)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -377,7 +377,6 @@ Effects          :
 Description      : Reduces damage from falling.
 
 Name             : Rupture (id=1943) [Spell Family (8)] 
-Hotfixed         : Variables
 Class            : Assassination Rogue
 School           : Physical
 Resource         : 25 Energy
@@ -397,7 +396,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | Mechanic: Bleed | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (0.3 -> 0.25), Base Value (1 -> 0)
 #2 (id=239409)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy(6)
 #3 (id=293833)   : Trigger Spell: Rupture (64)
@@ -492,7 +490,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=622)      : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.42000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (1.5 -> 1.42)
 Description      : Lunging finishing move that causes damage per combo point and has increased range:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -520,7 +517,6 @@ Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...
 Effects          :
 #1 (id=853)      : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
                    Base Value: 6 | Scaled Value: 0 (avg=0.6) | AP Coefficient: 0.35750 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (0.275 -> 0.3575)
 Description      : $@spelldesc2823
 Tooltip          : Suffering $w1 Nature damage every $t1 seconds.
 
@@ -689,7 +685,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 2.31000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (2.2 -> 2.31)
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Evasion (id=5277) [Spell Family (8)] 
@@ -1275,7 +1270,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=22420)    : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.60000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (0.5 -> 0.6)
 #2 (id=22421)    : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Deadly Poison (2823), Crippling Poison (3408), Wound Poison (8679), Leeching Poison (108211), Agonizing Poison (200802)
@@ -1515,7 +1509,6 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
 Effects          :
 #1 (id=44107)    : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.07900 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: AP Coefficient (0.8316 -> 1.079)
 #2 (id=150470)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate.
@@ -1819,17 +1812,14 @@ Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Target: Self(1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
-                   Hotfixed: SP Coefficient (3.5 -> 4), Affects Spells
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
-                   Hotfixed: SP Coefficient (3.5 -> 4), Affects Spells
 #3 (id=92122)    : Apply Aura (6) | Dummy (4)
                    Base Value: 350 | Scaled Value: 350 | Target: Self(1)
 #4 (id=322527)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Agonizing Poison (200803)
-                   Hotfixed: SP Coefficient (1.75 -> 2)
 Description      : Increases the damage done by your poisons by $76803s1%.
 
 Name             : Mastery: Main Gauche (id=76806) [Spell Family (8), Passive] 
@@ -2213,7 +2203,6 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
 Effects          :
 #1 (id=126788)   : School Damage: nature (2)
                    Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.22100 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (0.142 -> 0.221)
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
 Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
@@ -2334,7 +2323,6 @@ Tooltip          : Autoattacks deal pure Shadow damage.
 Combo-point-generating attacks generate $s2 additional combo point.
 
 Name             : Shadow Blade (id=121473) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadow
 Range            : 30 yards
@@ -2353,7 +2341,6 @@ Effects          :
 Description      : Strike with dark energy, dealing Shadow damage equal to $s1% weapon damage.
 
 Name             : Shadow Blade Off-hand (id=121474) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadow
 Range            : 30 yards
@@ -2551,7 +2538,6 @@ Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Insignia of Ravenholdt (209041)
-                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 15), Misc Value (0 -> 3), Affects Spells
 #2 (id=191052)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191053)   : Apply Aura (6) | Dummy (4)
@@ -2714,7 +2700,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=217580)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.66000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
-                   Hotfixed: AP Coefficient (1.833 -> 3.66)
 #3 (id=217591)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 #4 (id=217594)   : Apply Aura (6) | Unknown effect sub type (288)
@@ -3141,7 +3126,6 @@ Name             : Poison Knives (id=192376) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Artifact Power   : Id: 331, Max Rank: 6, Values: [ 4, 8, 12, 16, 20, 24 ]
-                 : Hotfixes: Rank 2: Value (4 -> 8), Rank 3: Value (6 -> 12), Rank 4: Value (8 -> 16), Rank 5: Value (10 -> 20), Rank 6: Value (12 -> 24)
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3152,18 +3136,15 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=282211)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 11 | Target: Self(1)
-                   Hotfixed: Base Value (2 -> 4)
 #2 (id=343569)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Agonizing Poison (200803)
-                   Hotfixed: Base Value (2 -> 4)
 Description      : When Fan of Knives strikes targets poisoned with your Deadly Poison, Deadly Poison instantly deals $s1% of its remaining damage.$?s200802[
 
 Increases the effect of Agonizing Poison's damage bonus by ${$m2/$<agonizingratio>}.1%][]
 Variables        : $agonizingratio = ${2}
 
 Name             : Poison Knives (id=192380) [Spell Family (8)] 
-Hotfixed         : Attributes, Affecting Spells
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
@@ -3207,7 +3188,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 50 | Trigger Spell: 192760 | Target: Enemy(6)
 #4 (id=318299)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
                    Base Value: 5 | Scaled Value: 5 | AP Coefficient: 0.36000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (0.45 -> 0.36)
 #5 (id=318312)   : Apply Aura (6) | Proc Trigger Spell: Kingsbane (42)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 192853 | Target: Self(1)
 Description      : Releases lethal poison within |cFFFFCC99The Kingslayers|r and injects it into your target, dealing ${$222062sw1+$192760sw1} Nature damage instantly and an additional $o4 Nature damage over $d. 
@@ -3230,7 +3210,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=282815)   : Weapon Damage% (31)
                    Base Value: 240 | Scaled Value: 2.4 | Target: Enemy(6)
-                   Hotfixed: Base Value (300 -> 240)
 #2 (id=318311)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc192759
@@ -3564,12 +3543,10 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=284088)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self(1)
-                   Hotfixed: Base Value (12 -> 15)
 Description      : Increases damage done by $s1% for $d.
 Tooltip          : Increases damage done by $s1%.
 
 Name             : Nightblade (id=195452) [Spell Family (8)] 
-Hotfixed         : Internal Cooldown (0 -> 1000)
 Class            : Subtlety Rogue
 School           : Shadow
 Resource         : 25 Energy
@@ -3592,7 +3569,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=286896)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.38000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (1.2 -> 1.38)
 #2 (id=286897)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy(6)
 #3 (id=331338)   : Trigger Spell: Nightblade (64)
@@ -3678,7 +3654,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=288959)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.47200 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (1.28 -> 1.472)
 Description      : Finishing move that disembowels the target, causing damage per combo point.
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -3716,11 +3691,9 @@ Effects          :
 #1 (id=289047)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
-                   Hotfixed: Base Value (40 -> 30), Affects Spells
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
-                   Hotfixed: Base Value (40 -> 30)
 #3 (id=289049)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961)
@@ -3798,7 +3771,6 @@ Effects          :
 Description      : Increases the range on all your melee attacks by $s1 yards.
 
 Name             : Ghostly Strike (id=196937) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Resource         : 30 Energy
@@ -3966,7 +3938,6 @@ Description      : Finishing move that disembowels the target, causing damage pe
 Variables        : $mult=${(1+$@versadmg)}
 
 Name             : Finality: Nightblade (id=197395) [Spell Family (8)] 
-Hotfixed         : Variables
 Class            : Rogue
 School           : Shadow
 Resource         : 25 Energy
@@ -4050,7 +4021,6 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
 Effects          :
 #1 (id=290720)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.72150 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: AP Coefficient (0.5544 -> 0.7215)
 #2 (id=290721)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=344592)   : Dummy (3)
@@ -4152,7 +4122,6 @@ Attributes       : ........ ........ x....... ......x.   x....... ........ .x...
 Effects          :
 #1 (id=293940)   : Apply Aura (6) | Charm (6)
                    Base Value: 55 | Scaled Value: 111 | Points Per Level: 1 | Misc Value: 1 | Target: Enemy(6)
-                   Hotfixed: Misc Value (0 -> 1)
 #2 (id=327745)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy(6)
 Description      : Bribes a non-player humanoid target up to level $s1 with fool's gold, convincing it to fight for you for $d.
@@ -4234,7 +4203,6 @@ Description      : Grants $s1% chance to parry for $d, and each time you parry a
 Tooltip          : Parry chance increased by $s1% and riposting attacks.
 
 Name             : Between the Eyes (id=199804) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 35 Energy
@@ -4253,7 +4221,6 @@ Attributes       : ....x... ........ x.....x. ........   ........ .x...... .....
 Effects          :
 #1 (id=294039)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.85000 | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (0.885 -> 0.85)
 #2 (id=294040)   : Apply Aura (6) | Stun (12)
                    Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(95) | Target: Enemy(6)
 #3 (id=344382)   : Apply Aura (6) | Dummy (4)
@@ -4344,7 +4311,6 @@ Effects          :
 #2 (id=334761)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Stealth (158188), Shadow Dance (185313)
-                   Hotfixed: Base Value (3 -> 0)
 Description      : You heal $s1% of your maximum life every $158188t2 sec while Stealth is active.
 
 Name             : Tangled Shadow (Passive Talent) (id=200778) [Spell Family (8), Passive] 
@@ -4389,7 +4355,6 @@ Damage bonus increased by Mastery: Potent Poisons.
 Tooltip          : Each strike has a chance of causing the target to take ${$200803s1}.1% increased damage from your abilities for $200803d.
 
 Name             : Agonizing Poison (id=200803) [Spell Family (8)] 
-Hotfixed         : Max stacks (4 -> 5)
 Class            : Rogue
 School           : Nature
 Spell Level      : 10
@@ -4874,7 +4839,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=331411)   : Weapon Damage% (31)
                    Base Value: 240 | Scaled Value: 2.4 | Target: Enemy(6)
-                   Hotfixed: Base Value (300 -> 240)
 #2 (id=331412)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc192759
