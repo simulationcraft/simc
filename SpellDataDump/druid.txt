@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 8556408)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5a2d5bc)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -340,7 +340,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1837)     : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 0 (avg=2.676, dl=0.25) | SP Coefficient: 2.31000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (2.2 -> 2.31)
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Healing Touch (id=5185) [Spell Family (7)] 
@@ -1241,7 +1240,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=216150)   : Weapon Damage% (31)
                    Base Value: 337 | Scaled Value: 3.37 | Target: Enemy(6)
-                   Hotfixed: Base Value (375 -> 337)
 #3 (id=281797)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #4 (id=290296)   : Energize Power (30)
@@ -1403,7 +1401,6 @@ Effects          :
 Description      : Rake causes an Infected Wound in the target, reducing the target's movement speed by $58180s1% for $58180d.
 
 Name             : Living Seed (id=48500) [Spell Family (7), Passive] 
-Hotfixed         : Attributes
 Class            : Restoration Druid
 School           : Physical
 Spell Level      : 28
@@ -1798,7 +1795,6 @@ Effects          :
 #1 (id=68110)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Self(1)
                    Affected Spells: Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
-                   Hotfixed: SP Coefficient (1.75 -> 2)
 #2 (id=90627)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Solar Empowerment (164545), Lunar Empowerment (164547), Stellar Empowerment (197637)
@@ -1867,7 +1863,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=68168)    : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.48100 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: AP Coefficient (0.534 -> 0.481)
 #2 (id=312099)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: rage | Target: Self(1)
 Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
@@ -1945,7 +1940,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=68522)    : Weapon Damage% (31)
                    Base Value: 567 | Scaled Value: 5.67 | Target: Enemy(6)
-                   Hotfixed: Base Value (630 -> 567)
 #2 (id=68523)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=327035)   : Dummy (3)
@@ -2999,7 +2993,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 72 | Target: Self(1)
 
 Name             : Nature's Vigil (id=124974) [Spell Family (7)] 
-Hotfixed         : Affecting Spells
 Class            : Druid
 School           : Nature
 Spell Level      : 1
@@ -3286,27 +3279,22 @@ Effects          :
 #2 (id=191158)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 60 | Scaled Value: 60 | Target: Self(1)
                    Affected Spells: Healing Touch (5185)
-                   Hotfixed: Base Value (20 -> 60)
 #3 (id=191159)   : Apply Aura (6) | Unknown effect sub type (454)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1469 | Target: Self(1)
 #4 (id=191160)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -46 | Scaled Value: -46 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-                   Hotfixed: Base Value (-50 -> -46)
 #5 (id=191161)   : Apply Aura (6) | Unknown effect sub type (198)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 256 | Misc Value 2: 0x4 | Target: Self(1)
 #6 (id=260757)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-                   Hotfixed: Base Value (20 -> 0)
 #7 (id=260758)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-                   Hotfixed: Base Value (20 -> 8)
 #8 (id=260759)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Healing Touch (5185)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> 100), Misc Value (0 -> 14), Affects Spells
 #9 (id=260760)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260761)   : Apply Aura (6) | Dummy (4)
@@ -3319,11 +3307,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260765)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#16 (id=344349)   : Apply Aura (6) | Dummy (4)
+#16 (id=260766)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #17 (id=351088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Hotfixed: NEW EFFECT
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
@@ -3347,19 +3334,15 @@ Effects          :
 #4 (id=191156)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Luffa Wrappings (208681)
-                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 50), Misc Value (0 -> 3), Affects Spells
 #5 (id=191157)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Luffa Wrappings (208681)
-                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 50), Misc Value (0 -> 12), Affects Spells
 #6 (id=260767)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Luffa Wrappings (208681)
-                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 50), Misc Value (0 -> 23), Affects Spells
 #7 (id=260768)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Luffa Wrappings (208681)
-                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 50), Misc Value (0 -> 32), Affects Spells
 #8 (id=260769)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260770)   : Apply Aura (6) | Dummy (4)
@@ -3457,15 +3440,12 @@ Effects          :
 #2 (id=191146)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 60 | Scaled Value: 60 | Target: Self(1)
                    Affected Spells: Healing Touch (5185)
-                   Hotfixed: Base Value (20 -> 60)
 #3 (id=191147)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Healing Touch (5185)
-                   Hotfixed: Sub Type (107 -> 108), Base Value (30 -> 100), Misc Value (23 -> 14), Affects Spells
 #4 (id=191148)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Sunfire (93402), Sunfire (164815), Sunfire (197630)
-                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 30), Misc Value (0 -> 23), Affects Spells
 #5 (id=191149)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260777)   : Apply Aura (6) | Dummy (4)
@@ -3488,12 +3468,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=260786)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Hotfixed: Index (14 -> 15)
-#17 (id=344348)   : Apply Aura (6) | Dummy (4)
+#17 (id=317007)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #18 (id=351123)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Hotfixed: NEW EFFECT
 
 Name             : Displacer Beast (id=137452) [Spell Family (7)] 
 Class            : Druid
@@ -3874,10 +3852,8 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=216520)   : Apply Aura (6) | Unknown effect sub type (133)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Self(1)
-                   Hotfixed: SP Coefficient (1 -> 0.5)
 #2 (id=345062)   : Apply Aura (6) | Modify Absorb% Done (422)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Self(1)
-                   Hotfixed: SP Coefficient (1 -> 0.5)
 Description      : Increases your maximum health and healing received by $s1%.
 
 Also increases your attack power by $159195s1%.
@@ -4214,7 +4190,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=232409)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.10000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1 -> 1.1)
 #2 (id=232410)   : Apply Aura (6) | Periodic Damage: arcane every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Target: Enemy(6)
 Description      : $@spelldesc8921
@@ -4238,7 +4213,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=232416)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.10000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1 -> 1.1)
 #2 (id=232417)   : Apply Aura (6) | Periodic Damage: nature every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc93402
@@ -4588,10 +4562,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=280098)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.9 -> 2)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: astral_power | Target: Self(1)
-                   Hotfixed: Base Value (60 -> 80)
 Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature damage.
 
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
@@ -4642,7 +4614,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=280158)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.44000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.4 -> 0.44)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -4665,7 +4636,6 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=281770)   : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self(1)
-                   Hotfixed: Base Value (75 -> 100)
 #2 (id=321076)   : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self(1)
 #3 (id=321077)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
@@ -4715,7 +4685,6 @@ Attributes       : ....x... ........ .....x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=281782)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.12100 | Mechanic: Bleed | Target: Enemy(6)
-                   Hotfixed: AP Coefficient (0.134 -> 0.121)
 #2 (id=301092)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
                    Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Sunfire (93402), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Ashamane's Rip (210705), Swipe (213771), Bloody Paws (214995)
@@ -4747,7 +4716,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98305 | Target: Self(1)
 #4 (id=350992)   : Unknown effect type (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 104608 | Target: Self(1)
-                   Hotfixed: NEW EFFECT
 Description      : Teleports the caster to the Emerald Dreamway.
 
 Name             : Lunar Strike (Lunar) (id=194153) [Spell Family (7)] 
@@ -4769,13 +4737,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=284976)   : School Damage: arcane (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.84000 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (2.7 -> 2.84)
 #2 (id=284977)   : Energize Power (30)
                    Base Value: 120 | Scaled Value: 120 | Misc Value: astral_power | Target: Self(1)
-                   Hotfixed: Base Value (100 -> 120)
 #3 (id=295015)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | Radius: 0 - 5 yards | Target: Enemy(6)
-                   Hotfixed: Base Value (18 -> 35)
 #4 (id=298448)   : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : Call down a strike of lunar energy, causing $s1 Arcane damage to the target, and ${$m1*$m3/100} Arcane damage to all other enemies within $A1 yards.
@@ -5002,7 +4967,6 @@ Effects          :
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Power of the Archdruid (213121), Brambles (213709), Swipe (213771)
-                   Hotfixed: Affects Spells
 #4 (id=340874)   : Apply Aura (6) | Unknown effect sub type (188)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
                    Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Brambles (213709), Swipe (213771)
@@ -5197,7 +5161,6 @@ Effects          :
                    Affected Spells: Moonfire (8921), Moonfire (164812)
 
 Name             : Flourish (id=197721) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Level      : 1
@@ -5306,7 +5269,6 @@ Effects          :
                    Base Value: 100000000 | Scaled Value: 1e+08 | Misc Value: 127 | Target: Self(1)
 #3 (id=297121)   : Apply Aura (6) | Unknown effect sub type (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2071 | Target: Self(1)
-                   Hotfixed: Target 1 (0 -> 1)
 #4 (id=297122)   : Apply Aura (6) | Unknown effect sub type (443)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #5 (id=297123)   : Apply Aura (6) | Modify Damage Done% (79)
@@ -5703,7 +5665,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 0 (avg=0.58, dl=0.15) | SP Coefficient: 0.42000 | Target: Enemy(6)
 #2 (id=298537)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: astral_power | Target: Self(1)
-                   Hotfixed: Base Value (50 -> 40)
 Description      : $@spelldesc202342
 
 Name             : Blessing of Elune (id=202737) [Spell Family (7)] 
@@ -5721,7 +5682,6 @@ Effects          :
 #1 (id=298910)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Lunar Strike (194153), Lunar Strike (197628), Solar Wrath (197629)
-                   Hotfixed: Base Value (40 -> 25)
 Description      : Increases Astral Power generated by Solar Wrath and Lunar Strike by $s1%.
 Tooltip          : Astral Power generated by Solar Wrath and Lunar Strike increased by $s1%.
 
@@ -5739,7 +5699,6 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=298913)   : Apply Aura (6) | Periodic Energize Power: every 3 seconds (24)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 8 | Target: Self(1)
-                   Hotfixed: Period (2500 -> 3000)
 Description      : Grants ${$m1/10} Astral Power every $t1 sec.
 Tooltip          : Grants ${$m1/10} Astral Power every $t1 sec.
 
@@ -6126,7 +6085,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Target: Self(1)
 #2 (id=301154)   : School Damage: nature (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-                   Hotfixed: AP Coefficient (1 -> 0.9)
 Description      : $@spelldesc204066
 
 Name             : Force of Nature (Talent) (id=205636) [Spell Family (7)] 
@@ -6226,7 +6184,6 @@ Description      : $@spelldesc207383
 Tooltip          : Cast time of Healing Touch reduced by $s1% and critical effect chance of Regrowth increased by $s2%.
 
 Name             : Essence of G'Hanir (Artifact) (id=208253) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 GCD              : 1.5 seconds
@@ -6482,7 +6439,6 @@ Effects          :
 Description      : Using Thrash, Swipe, or Moonfire has a $h% chance to reset the cooldown on Mangle, and to cause it to generate an additional ${$93622m1/10} Rage.
 
 Name             : Ashamane's Frenzy (Artifact) (id=210722) [Spell Family (7)] 
-Hotfixed         : Attributes, Affecting Spells
 Class            : Druid
 School           : Physical
 Range            : 5 yards
@@ -6694,7 +6650,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=317117)   : School Damage: nature (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21600 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
-                   Hotfixed: AP Coefficient (0.24 -> 0.216)
 Description      : $@spelldesc203953
 
 Name             : Swipe (id=213764) [Spell Family (7)] 
@@ -6739,7 +6694,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=317225)   : Weapon Damage% (31)
                    Base Value: 194 | Scaled Value: 1.94 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: Base Value (216 -> 194)
 Description      : Swipe nearby enemies, inflicting $sw3 Physical damage.
 
 Name             : Protection of Ashamane (id=214274) [Spell Family (7), Hidden] 
@@ -6815,7 +6769,6 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... .....
 Effects          :
 #1 (id=326922)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.25000 | Target: Unknown(25)
-                   Hotfixed: AP Coefficient (2.5 -> 2.25)
 Description      : Deals $s1 Nature damage.
 
 Name             : Nature's Guardian (id=227034) [Spell Family (7)] 

@@ -1,4 +1,4 @@
-SimulationCraft 703-03 for World of Warcraft 7.0.3 Live (wow build 22522, git build 8556408)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5a2d5bc)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -522,7 +522,6 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage: shadow every 0.75 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.5 -> 0.6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power: every 0.75 seconds (24)
@@ -1114,7 +1113,7 @@ Tooltip          : Your Power Word: Shield has no cooldown.
 Name             : Penance (id=47540) [Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
-Resource         : 2.8% Base Mana (30799 @Level 110) [Hotfixed: Percent Cost (3 -> 2.8)]
+Resource         : 2.8% Base Mana (30799 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1184,7 +1183,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=39897)    : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | Target: Unknown(77)
-                   Hotfixed: SP Coefficient (1.75 -> 1.9)
 Description      : $@spelldesc47540
 
 Name             : Penance (id=47750) [Spell Family (6)] 
@@ -1205,7 +1203,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=39995)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Target: Unknown(77)
-                   Hotfixed: SP Coefficient (2.75 -> 3)
 Description      : $@spelldesc47540
 
 Name             : Shield Discipline (id=47755) 
@@ -1335,7 +1332,6 @@ Effects          :
                    Base Value: -1 | Scaled Value: 0 | Value Range: 1 | Target: Unknown(77)
 #2 (id=326288)   : School Damage: shadow (2)
                    Base Value: -1 | Scaled Value: 0 | Value Range: 1 | SP Coefficient: 0.54000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant)(16)
-                   Hotfixed: SP Coefficient (0.3 -> 0.54)
 Description      : $@spelldesc48045
 Tooltip          : Causing shadow damage to all targets within $a2 yards.
 
@@ -1720,7 +1716,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=66820)    : School Damage: shadowfrost (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.35 -> 0.45)
 #2 (id=66821)    : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
 #3 (id=323988)   : Energize Power (30)
@@ -1748,7 +1743,6 @@ Effects          :
 #1 (id=68099)    : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Atonement (81749)
-                   Hotfixed: SP Coefficient (1.4 -> 1.5)
 Description      : Increases the healing transferred through Atonement by $s1.1%.
 
 Name             : Mastery: Echo of Light (id=77485) [Spell Family (6), Passive] 
@@ -2535,7 +2529,6 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=170810)   : School Damage: holy (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Hotfixed: SP Coefficient (1.8 -> 1.5)
 #2 (id=342531)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Causes an explosion of holy light around you, dealing $s1 Holy damage to all enemies within $A1 yds. Has a $s2% chance to reset the cooldown of Holy Fire if any targets are hit.
@@ -2649,11 +2642,9 @@ Effects          :
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 7 | Scaled Value: 7 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
-                   Hotfixed: Base Value (0 -> 7)
 #3 (id=191073)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
-                   Hotfixed: Base Value (0 -> 7)
 #4 (id=191074)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
@@ -3163,7 +3154,6 @@ Effects          :
 Description      : $?s73510[Mind Spike][Mind Flay] and Mind Blast deal $s3% more damage and generate $s1% more Insanity.
 
 Name             : Surrender to Madness (id=193223) [Spell Family (6)] 
-Hotfixed         : Category
 Class            : Priest
 School           : Physical
 Duration         : 180 seconds
@@ -3386,7 +3376,6 @@ Effects          :
 Description      : $@spelldesc196684
 
 Name             : Psychic Voice (id=196704) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3918,7 +3907,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=301385)   : Apply Aura (6) | Periodic Damage: fire every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.48000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.42 -> 0.48)
 Description      : $@spelldesc204197
 Tooltip          : $w1 Fire damage every $t1 seconds.
 
@@ -4022,7 +4010,6 @@ Description      : Blasts the target's mind for $s1 Shadow damage.
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
 
 Name             : Mind Control (id=205364) [Spell Family (6)] 
-Hotfixed         : Cooldown (180000 -> 120000)
 Class            : Priest
 School           : Shadow
 Resource         : 0.5% Base Mana (5500 @Level 110)
@@ -4108,7 +4095,6 @@ Effects          :
 Description      : Each time your $?s73510[Mind Spike][Mind Flay] or Mind Sear deals damage, you gain $205372s1% increased $?s73510[Mind Spike][Mind Flay] and Mind Sear damage for $205372d, stacking up to $205372u times.
 
 Name             : Void Ray (id=205372) [Spell Family (6)] 
-Hotfixed         : Max stacks (5 -> 4)
 Class            : Priest
 School           : Physical
 Duration         : 6 seconds
@@ -4292,7 +4278,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=308086)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: insanity | Target: Self(1)
-                   Hotfixed: Base Value (100 -> 150)
 Description      : $@spelldesc48045
 
 Name             : Mass Resurrection (id=212036) [Spell Family (6)] 
@@ -4424,7 +4409,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=318771)   : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.25000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (4 -> 4.25)
 #2 (id=318779)   : Apply Aura (6) | Unknown effect sub type (270)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 127 | Target: Enemy(6)
 Description      : Attack the enemy's soul with a surge of Shadow energy, dealing $s1 Shadow damage and increasing damage that you deal to the target by $s2% for $d.
