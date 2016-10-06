@@ -25,8 +25,7 @@ actions.precombat+=/arcane_blast
 
 # Executed every time the actor is available.
 actions=counterspell,if=target.debuff.casting.react
-actions+=/time_warp,if=target.health.pct<25|time=0
-actions+=/shard_of_the_exodar_warp,if=buff.bloodlust.down&burn_phase&time>3
+actions+=/time_warp,if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)
 actions+=/mirror_image,if=buff.arcane_power.down
 actions+=/stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max
 actions+=/mark_of_aluneth,if=cooldown.arcane_power.remains>20

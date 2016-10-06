@@ -6400,64 +6400,61 @@ struct time_warp_t : public mage_spell_t
     parse_options( options_str );
     harmful = false;
   }
+  virtual void init() override
+  {
+    mage_spell_t::init();  
+    // To let us model the legendary ring, it effectivly gives us a 2 charge lust system.
 
+    if ( p() -> legendary.shard_of_the_exodar ) 
+    {
+      cooldown -> charges = 2;
+      p() -> player_t::buffs.bloodlust -> cooldown -> duration = timespan_t::zero();
+    }
+  }
   virtual void execute() override
   {
     mage_spell_t::execute();
 
-    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+    // Let us use this to bloodlust ourselves if we have the legendary and have disabled the standard sim lust.
+    if ( p() -> legendary.shard_of_the_exodar )
     {
+      p() -> player_t::buffs.bloodlust -> default_chance = 1.0;
+    }
+
+    // If we have no exhaustion, we're lusting for the raid and everyone gets it.
+    if ( !player -> buffs.exhaustion -> check() )
+    {
+      for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+      {
       player_t* p = sim -> player_non_sleeping_list[ i ];
       if ( p -> buffs.exhaustion -> check() || p -> is_pet() )
         continue;
 
       p -> buffs.bloodlust -> trigger(); // Bloodlust and Timewarp are the same
       p -> buffs.exhaustion -> trigger();
+      }
+    }
+
+    // If we have the legendary and exhaustion is up, we're lusting for ourselves.
+    if ( p() -> legendary.shard_of_the_exodar && player -> buffs.exhaustion -> check() )
+    {
+      p() -> player_t::buffs.bloodlust -> trigger();
     }
   }
 
   virtual bool ready() override
   {
-    if ( sim -> overrides.bloodlust )
+    // If we have shard of the exodar, we're controlling our own destiny. Overrides don't
+    // apply to us.
+    if ( sim -> overrides.bloodlust && !p() -> legendary.shard_of_the_exodar )
       return false;
 
-    if ( player -> buffs.exhaustion -> check() )
+    if ( player -> buffs.exhaustion -> check() && !p() -> legendary.shard_of_the_exodar )
       return false;
 
     return mage_spell_t::ready();
   }
 };
-
-// Shard of the Exodar Timewarp ========================================================
-
-struct shard_of_the_exodar_warp_t : public mage_spell_t
-{
-  shard_of_the_exodar_warp_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "shard_of_the_exodar_warp", p, p -> find_class_spell( "Time Warp" ) )
-  {
-    parse_options( options_str );
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> legendary.shard_of_the_exodar && !p() -> player_t::buffs.bloodlust -> up() )
-      return mage_spell_t::ready();
-
-    return false;
-  }
-
-  virtual void execute() override
-  {
-    mage_spell_t::execute();
-    if ( p() -> player_t::buffs.bloodlust ->up() )
-    {
-      p() -> player_t::buffs.bloodlust -> expire();
-    }
-    p() -> buffs.shard_time_warp -> trigger();
-
-  }
-};
-
 
 // Touch of the Magi ==========================================================
 
@@ -7553,9 +7550,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "mirror_image"      ) return new            mirror_image_t( this, options_str );
   if ( name == "rune_of_power"     ) return new           rune_of_power_t( this, options_str );
 
-  // Legendary Actions
-  if ( name == "shard_of_the_exodar_warp" ) return new shard_of_the_exodar_warp_t( this, options_str );
-
   return player_t::create_action( name, options_str );
 }
 
@@ -7896,9 +7890,6 @@ void mage_t::create_buffs()
                                              benefits.fingers_of_frost -> update( "Legedary Gain", 1.0 ); } );
   buffs.rhonins_assaulting_armwraps = buff_creator_t( this, "rhonins_assaulting_armwraps", find_spell( 208081 ) );
   buffs.sephuzs_secret    = new buffs::sephuzs_secret_buff_t( this );
-
-  buffs.shard_time_warp   = buff_creator_t( this, "shard_time_warp", find_spell( 2825 ) )
-                                            .add_invalidate( CACHE_SPELL_HASTE );
   buffs.kaelthas_ultimate_ability = buff_creator_t( this, "kaelthas_ultimate_ability", find_spell( 209455 ) );
 }
 
@@ -8364,8 +8355,7 @@ void mage_t::apl_arcane()
 
   default_list -> add_action( this, "Counterspell",
                               "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
-  default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down&burn_phase&time>3" );
+  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.arcane_power.down" );
   default_list -> add_action( "stop_burn_phase,if=prev_gcd.evocation&burn_phase_duration>gcd.max" );
   default_list -> add_action( this, "Mark of Aluneth", "if=cooldown.arcane_power.remains>20" );
@@ -8460,9 +8450,7 @@ void mage_t::apl_fire()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target"     );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
-  default_list -> add_action( this, "Shard of the Exodar Warp", "if=buff.bloodlust.down&buff.combustion.up&time>=5" );
-  default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down" );
+  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&(cooldown.flame_on.remains<5|cooldown.flame_on.remains>30)&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
@@ -8539,8 +8527,7 @@ void mage_t::apl_frost()
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.flurry" );
-  default_list -> add_action( this, "Time Warp", "if=target.health.pct<25|time=0" );
-  default_list -> add_action( "shard_of_the_exodar_warp,if=buff.bloodlust.down&time>5" );
+  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
   default_list -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
@@ -8558,7 +8545,6 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Ebonbolt", "if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)" );
   default_list -> add_action( this, "Frostbolt" );
 
-  cooldowns    -> add_action( this, "Shard of the Exodar Warp", "if=buff.bloodlust.down&time>=5" );
   cooldowns    -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
   cooldowns    -> add_action( this, "Icy Veins", "if=buff.icy_veins.down" );
   cooldowns    -> add_talent( this, "Mirror Image" );
@@ -8806,11 +8792,6 @@ double mage_t::composite_spell_haste() const
   if ( buffs.icy_veins -> check() )
   {
     h *= iv_haste;
-  }
-
-  if ( buffs.shard_time_warp -> check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.shard_time_warp -> data().effectN( 1 ).percent() );
   }
 
   if ( buffs.sephuzs_secret -> check() )
@@ -9431,7 +9412,8 @@ struct shard_of_the_exodar_t : public scoped_actor_callback_t<mage_t>
   { }
 
   void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
-  { actor -> legendary.shard_of_the_exodar = true; }
+  { actor -> legendary.shard_of_the_exodar = true;
+    actor -> player_t::buffs.bloodlust -> default_chance = 0; }
 };
 
 // Arcane Legendary Items
