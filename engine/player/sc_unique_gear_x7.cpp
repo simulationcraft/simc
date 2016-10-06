@@ -663,7 +663,6 @@ struct poisoned_dreams_impact_t : public spell_t
   virtual void execute() override
   {
     spell_t::execute();
-
     // TODO: Verify exact ICD from in game data
     icd -> start( timespan_t::from_seconds( 0.25 ) );
   }
@@ -692,7 +691,10 @@ struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */ , action_state_t* trigger_state ) override
   {
+    actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
+    damage -> base_multiplier = 1.0; // Reset base multiplier before each trigger so we scale linearly with #stacks, not exponentially.
     damage -> target = trigger_state -> target;
+    damage -> base_multiplier *= td -> debuff.poisoned_dreams -> current_stack;
     damage -> execute();
   }
 
