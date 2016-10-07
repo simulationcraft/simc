@@ -1361,12 +1361,6 @@ struct natures_call_callback_t : public dbc_proc_callback_t
         inactive_procs.push_back( procs[ i ] );
       }
     }
-
-    // If the vector is empty, we can roll any of the buffs.
-    if ( inactive_procs.empty() )
-    {
-      inactive_procs = procs;
-    }
     
     // Roll it!
     int roll = ( int ) ( listener -> sim -> rng().real() * inactive_procs.size() );
