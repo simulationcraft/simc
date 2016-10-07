@@ -3927,11 +3927,10 @@ struct demonwrath_tick_t: public warlock_spell_t
 {
 
   demonwrath_tick_t( warlock_t* p, const spell_data_t& ):
-    warlock_spell_t( "demonwrath_tick", p, p -> find_spell(193439) )
+    warlock_spell_t( "demonwrath_tick", p, p -> find_spell( 193439 ) )
   {
     aoe = -1;
     background = true;
-    base_multiplier *= 1.0 + p -> artifact.legionwrath.percent();
   }
 
   void impact( action_state_t* s ) override
@@ -3960,6 +3959,8 @@ struct demonwrath_t: public warlock_spell_t
     may_crit = false;
 
     spell_power_mod.tick = base_td = 0;
+
+    base_multiplier *= 1.0 + p -> artifact.legionwrath.percent();
 
     dynamic_tick_action = true;
     tick_action = new demonwrath_tick_t( p, data() );
