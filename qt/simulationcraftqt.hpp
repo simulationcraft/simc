@@ -70,6 +70,7 @@ enum import_tabs_e
   TAB_HISTORY,
   TAB_RECENT,
   TAB_AUTOMATION,
+  TAB_ADDON,
   TAB_CUSTOM,
 };
 
@@ -78,6 +79,7 @@ class SC_WebView;
 class SC_CommandLine;
 class SC_SimulateThread;
 class SC_AutomationTab;
+class SC_AddonImportTab;
 #ifdef SC_PAPERDOLL
 class PaperdollThread;
 #endif
@@ -531,6 +533,7 @@ class SC_ImportTab: public SC_enumeratedTab < import_tabs_e >
   public:
       SC_ImportTab( QWidget* parent = nullptr );
       SC_AutomationTab* automationTab;
+      SC_AddonImportTab* addonTab;
 };
 
 // ==========================================================================

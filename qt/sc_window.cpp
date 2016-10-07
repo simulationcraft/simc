@@ -12,6 +12,7 @@
 #include "sc_SimulateTab.hpp"
 #include "sc_AutomationTab.hpp"
 #include "sc_WelcomeTab.hpp"
+#include "sc_AddonImportTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #ifdef SC_PAPERDOLL
 #include "sc_PaperDoll.hpp"
@@ -420,7 +421,7 @@ void SC_MainWindow::createImportTab()
   importTab -> addTab( recentlyClosedTabImport, tr( "Recently Closed" ) );
 
   importTab -> addTab( importTab -> automationTab, tr( "Automation" ) );
-
+  importTab -> addTab( importTab -> addonTab, tr("Simc Addon") );
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
   connect( importTab, SIGNAL( currentChanged( int ) ), this, SLOT( importTabChanged( int ) ) );
   connect( recentlyClosedTabImport, SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ),
@@ -1377,6 +1378,13 @@ void SC_MainWindow::importButtonClicked()
       mainTab -> setCurrentTab( TAB_SIMULATE );
   }
       break;
+  case TAB_ADDON:
+  {
+      QString profile = importTab -> addonTab -> toPlainText();
+      simulateTab -> add_Text( profile,  tr( "SimC Addon Import" ) );
+      mainTab -> setCurrentTab( TAB_SIMULATE );
+  }
+      break;
   default: break;
   }
 }
@@ -1486,6 +1494,7 @@ void SC_MainWindow::importTabChanged( int index )
        index == TAB_HISTORY ||
        index == TAB_AUTOMATION ||
        index == TAB_RECENT ||
+       index == TAB_ADDON ||
        index == TAB_IMPORT_NEW )
   {
     cmdLine -> setTab( static_cast<import_tabs_e>( index ) );

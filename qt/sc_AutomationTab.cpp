@@ -1540,10 +1540,3 @@ QString SC_AutomationTab::startImport()
                                     );
 
 }
-
-SC_ImportTab::SC_ImportTab( QWidget* parent ):
-  SC_enumeratedTab<import_tabs_e>( parent ),
-  automationTab( new SC_AutomationTab( this ) )
-{
-
-}
