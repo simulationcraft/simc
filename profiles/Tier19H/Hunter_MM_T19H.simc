@@ -1,9 +1,9 @@
 hunter="Hunter_MM_T19H"
 level=110
-race=pandaren
+race=troll
 role=attack
 position=ranged_back
-talents=1103021
+talents=1103011
 artifact=55:0:0:0:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
@@ -62,28 +62,29 @@ actions+=/arcane_shot,if=focus.deficit<10
 actions.cooldowns=potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23
 actions.cooldowns+=/trueshot,if=(buff.bloodlust.react|target.health.pct>20+(cooldown.trueshot.remains+15))|buff.bullseye.react>25
 
-head=greyed_dragonscale_coif,id=139214,bonus_id=1805
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1805,enchant=mark_of_the_claw
-shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1805
-back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=200agi
-chest=patient_ambushers_hauberk,id=139221,bonus_id=1805
-wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1805
-hands=gauntlets_of_the_demented_mind,id=138214,bonus_id=1805
-waist=creeping_string_of_larva,id=139212,bonus_id=1805
-legs=singular_chain_leggings,id=139215,bonus_id=1805
-feet=black_venom_sabatons,id=139219,bonus_id=1805
-finger1=mindrend_band,id=138220,bonus_id=1805,enchant=200mastery
-finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1805,enchant=200mastery
-trinket1=twisting_wind,id=139323,bonus_id=1805
-trinket2=stormsinger_fulmination_charge,id=137367,bonus_id=1727
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=139262/139257/138228,relic_id=1805/1805/1805
+head=greyed_dragonscale_coif,id=139214,bonus_id=1487/1805
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1787,enchant=mark_of_hidden_satyr
+shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1487/1805
+back=gossamerspun_greatcloak,id=138221,bonus_id=1487/1805,enchant=200agi
+chest=patient_ambushers_hauberk,id=139221,bonus_id=1487/1805
+wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1487/1805
+hands=gauntlets_of_the_demented_mind,id=138214,bonus_id=1487/1805
+waist=creeping_string_of_larva,id=139212,bonus_id=1487/1805
+legs=singular_chain_leggings,id=139215,bonus_id=1487/1805
+feet=black_venom_sabatons,id=139219,bonus_id=1487/1805
+finger1=mindrend_band,id=138220,bonus_id=1487/1805,enchant=200mastery
+finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=200agi,enchant=200mastery
+trinket1=unstable_arcanocrystal,id=141482
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=139262/139260/139249,relic_id=1805/1805/1805
 
 # Gear Summary
-# gear_ilvl=865.27
-# gear_agility=15322
-# gear_stamina=22645
-# gear_crit_rating=3208
-# gear_haste_rating=5272
-# gear_mastery_rating=9111
+# gear_ilvl=864.60
+# gear_agility=14399
+# gear_stamina=22317
+# gear_crit_rating=4015
+# gear_haste_rating=4347
+# gear_mastery_rating=11387
+# gear_versatility_rating=807
 # gear_armor=2630
 summon_pet=cat

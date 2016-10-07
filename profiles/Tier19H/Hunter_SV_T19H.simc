@@ -1,9 +1,9 @@
 hunter="Hunter_SV_T19H"
 level=110
-race=pandaren
+race=orc
 role=attack
 position=ranged_back
-talents=3302022
+talents=2302022
 artifact=34:0:0:0:0:1068:1:1070:2:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1079:1:1080:1:1082:1:1083:1:1084:1:1338:1
 spec=survival
 
@@ -48,29 +48,29 @@ actions+=/spitting_cobra
 actions+=/throwing_axes
 actions+=/raptor_strike,if=!talent.throwing_axes.enabled&focus>75-cooldown.flanking_strike.remains*focus.regen
 
-head=greyed_dragonscale_coif,id=139214,bonus_id=1805
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_claw
-shoulders=matted_fur_pauldrons,id=139217,bonus_id=1805
-back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=200agi
-chest=patient_ambushers_hauberk,id=139221,bonus_id=1805
-wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1805
-hands=gauntlets_of_malevolent_intent,id=139213,bonus_id=1805
-waist=laughing_sisters_pouchchain,id=139211,bonus_id=1805
-legs=disjointed_linkage_leggings,id=139216,bonus_id=1805
-feet=malignant_sabatons,id=138211,bonus_id=1805
-finger1=grubby_silver_ring,id=139236,bonus_id=1805,enchant=200vers
-finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=200vers
-trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
-trinket2=natures_call,id=139334,bonus_id=1805
-main_hand=talonclaw,id=128808,gem_id=139262/139257/139255,relic_id=1805/1805/1805
+head=cave_skulkers_helm,id=141455
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1748,gems=150versatility,enchant=mark_of_the_hidden_satyr
+shoulders=matted_fur_pauldrons,id=139217,bonus_id=1487/1805
+back=evergreen_vinewrap_drape,id=139248,bonus_id=1487/1805,enchant=200agi
+chest=hauberk_of_the_snarled_vale,id=141491
+wrists=gravenscale_armbands,id=128907,bonus_id=669/1682
+hands=gauntlets_of_malevolent_intent,id=139213,bonus_id=1487/1805
+waist=laughing_sisters_pouchchain,id=139211,bonus_id=1487/1805
+legs=disjointed_linkage_leggings,id=139216,bonus_id=1487/1805
+feet=malignant_sabatons,id=138211,bonus_id=1487/1805
+finger1=grubby_silver_ring,id=139236,bonus_id=1487/1805,enchant=200vers
+finger2=maelstrom_band,id=130230,bonus_id=669/1682,gems=200agi,enchant=200vers
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+trinket2=unstable_arcanocrystal,id=141482
+main_hand=talonclaw,id=128808,gem_id=139262/139261/139260,relic_id=1805/1805/1805
 
 # Gear Summary
-# gear_ilvl=866.93
-# gear_agility=14199
-# gear_stamina=22645
-# gear_crit_rating=9208
-# gear_haste_rating=4636
-# gear_mastery_rating=3093
-# gear_versatility_rating=1639
-# gear_armor=2630
+# gear_ilvl=862.93
+# gear_agility=14155
+# gear_stamina=21951
+# gear_crit_rating=7705
+# gear_haste_rating=4352
+# gear_mastery_rating=1987
+# gear_versatility_rating=6567
+# gear_armor=2609
 summon_pet=cat
