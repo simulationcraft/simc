@@ -14,78 +14,221 @@
 
 hunter="Hunter_BM_T19H"
 level=110
-race=pandaren
+race=orc
 role=attack
 position=ranged_back
-talents=1102012
+talents=3102012
 artifact=56:0:0:0:0:868:3:869:3:870:3:872:3:874:3:875:3:878:1:879:1:880:1:881:1:882:1:1095:3:1336:1
 spec=beast_mastery
 
-head=greyed_dragonscale_coif,id=139214,bonus_id=1805
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1805,enchant=mark_of_the_claw
-shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1805
-back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=200agi
-chest=patient_ambushers_hauberk,id=139221,bonus_id=1805
-wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1805
-hands=gauntlets_of_the_demented_mind,id=138214,bonus_id=1805
-waist=creeping_string_of_larva,id=139212,bonus_id=1805
-legs=singular_chain_leggings,id=139215,bonus_id=1805
-feet=black_venom_sabatons,id=139219,bonus_id=1805
-finger1=mindrend_band,id=138220,bonus_id=1805,enchant=200mastery
-finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1805,enchant=200mastery
-trinket1=twisting_wind,id=139323,bonus_id=1805
-trinket2=stormsinger_fulmination_charge,id=137367,bonus_id=1727
-main_hand=titanstrike,id=128861,gem_id=139262/139269/139255,relic_id=1805/1805/1805
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=flask_of_the_seventh_demon
+actions.precombat+=/food,type=fishbrul_special
+actions.precombat+=/summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/augmentation,type=defiled
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/arcane_torrent,if=focus.deficit>=30
+actions+=/blood_fury
+actions+=/berserking
+actions+=/potion,name=deadly_grace
+actions+=/a_murder_of_crows
+actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
+actions+=/dire_beast,if=cooldown.bestial_wrath.remains>2
+actions+=/dire_frenzy,if=cooldown.bestial_wrath.remains>2
+actions+=/aspect_of_the_wild,if=buff.bestial_wrath.up
+actions+=/barrage,if=spell_targets.barrage>1|(spell_targets.barrage=1&focus>90)
+actions+=/titans_thunder,if=cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active
+actions+=/bestial_wrath
+actions+=/multi_shot,if=spell_targets.multi_shot>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)
+actions+=/kill_command
+actions+=/multi_shot,if=spell_targets.multi_shot>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)
+actions+=/chimaera_shot,if=focus<90
+actions+=/cobra_shot,if=talent.killer_cobra.enabled&(cooldown.bestial_wrath.remains>=4&(buff.bestial_wrath.up&cooldown.kill_command.remains>=2)|focus>119)|!talent.killer_cobra.enabled&focus>90
+
+head=greyed_dragonscale_coif,id=139214,bonus_id=1487/1805
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1787,gems=150mastery,enchant=mark_of_hidden_satyr
+shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1487/1805
+back=gossamerspun_greatcloak,id=138221,bonus_id=1487/1805,enchant=200agi
+chest=patient_ambushers_hauberk,id=139221,bonus_id=1487/1805
+wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1487/1805
+hands=gauntlets_of_the_demented_mind,id=138214,bonus_id=1487/1805
+waist=creeping_string_of_larva,id=139212,bonus_id=1487/1805
+legs=singular_chain_leggings,id=139215,bonus_id=1487/1805
+feet=black_venom_sabatons,id=139219,bonus_id=1487/1805
+finger1=mindrend_band,id=138220,bonus_id=1487/1805,enchant=200mastery
+finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=200agi,enchant=200mastery
+trinket1=unstable_arcanocrystal,id=141482
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+main_hand=titanstrike,id=128861,gem_id=139262/139269/139261,relic_id=1805/1805/1805
+
+# Gear Summary
+# gear_ilvl=864.60
+# gear_agility=14399
+# gear_stamina=22317
+# gear_crit_rating=4015
+# gear_haste_rating=4347
+# gear_mastery_rating=11387
+# gear_versatility_rating=807
+# gear_armor=2630
+summon_pet=cat
 save=Hunter_BM_T19H.simc
 
 hunter="Hunter_MM_T19H"
 level=110
-race=pandaren
+race=troll
 role=attack
 position=ranged_back
-talents=1103021
+talents=1103011
 artifact=55:0:0:0:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
-head=greyed_dragonscale_coif,id=139214,bonus_id=1805
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1805,enchant=mark_of_the_claw
-shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1805
-back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=200agi
-chest=patient_ambushers_hauberk,id=139221,bonus_id=1805
-wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1805
-hands=gauntlets_of_the_demented_mind,id=138214,bonus_id=1805
-waist=creeping_string_of_larva,id=139212,bonus_id=1805
-legs=singular_chain_leggings,id=139215,bonus_id=1805
-feet=black_venom_sabatons,id=139219,bonus_id=1805
-finger1=mindrend_band,id=138220,bonus_id=1805,enchant=200mastery
-finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1805,enchant=200mastery
-trinket1=twisting_wind,id=139323,bonus_id=1805
-trinket2=stormsinger_fulmination_charge,id=137367,bonus_id=1727
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=139262/139257/138228,relic_id=1805/1805/1805
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=flask_of_the_seventh_demon
+actions.precombat+=/food,type=fishbrul_special
+actions.precombat+=/summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/windburst
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/arcane_torrent,if=focus.deficit>=30
+actions+=/blood_fury
+actions+=/berserking
+actions+=/auto_shot
+actions+=/call_action_list,name=cooldowns
+actions+=/a_murder_of_crows
+actions+=/barrage
+actions+=/piercing_shot,if=!talent.patient_sniper.enabled&focus>50
+actions+=/windburst,if=active_enemies<2&buff.marking_targets.down&(debuff.vulnerability.down|debuff.vulnerability.remains<cast_time)
+actions+=/windburst,if=active_enemies<2&buff.marking_targets.down&focus+cast_regen>90
+actions+=/windburst,if=active_enemies<2&cooldown.sidewinders.charges=0
+actions+=/arcane_shot,if=!talent.patient_sniper.enabled&active_enemies=1&debuff.vulnerability.react<3&buff.marking_targets.react&debuff.hunters_mark.down
+actions+=/marked_shot,if=!talent.patient_sniper.enabled&debuff.vulnerability.react<3
+actions+=/marked_shot,if=prev_off_gcd.sentinel
+actions+=/sentinel,if=debuff.hunters_mark.down&buff.marking_targets.down
+actions+=/explosive_shot
+actions+=/marked_shot,if=active_enemies>=4&cooldown.sidewinders.charges_fractional>=0.8
+actions+=/sidewinders,if=active_enemies>1&debuff.hunters_mark.down&(buff.marking_targets.react|buff.trueshot.react|charges=2)
+actions+=/arcane_shot,if=talent.steady_focus.enabled&active_enemies=1&(buff.steady_focus.down|buff.steady_focus.remains<2)
+actions+=/multishot,if=talent.steady_focus.enabled&active_enemies>1&(buff.steady_focus.down|buff.steady_focus.remains<2)
+actions+=/arcane_shot,if=talent.true_aim.enabled&active_enemies=1&(debuff.true_aim.react<1|debuff.true_aim.remains<2)
+actions+=/aimed_shot,if=buff.lock_and_load.up&debuff.vulnerability.remains>gcd.max
+actions+=/piercing_shot,if=talent.patient_sniper.enabled&focus>80
+actions+=/marked_shot,if=!talent.sidewinders.enabled&(debuff.vulnerability.remains<2|buff.marking_targets.react)
+actions+=/pool_resource,for_next=1,if=talent.sidewinders.enabled&(focus<60&cooldown.sidewinders.charges_fractional<=1.2)
+actions+=/aimed_shot,if=cast_time<debuff.vulnerability.remains&(focus+cast_regen>80|debuff.hunters_mark.down)
+actions+=/marked_shot
+actions+=/black_arrow
+actions+=/sidewinders,if=debuff.hunters_mark.down&(buff.marking_targets.remains>6|buff.trueshot.react|charges=2)
+actions+=/sidewinders,if=focus<30&charges<=1&recharge_time<=5
+actions+=/multishot,if=spell_targets.barrage>1&(debuff.hunters_mark.down&buff.marking_targets.react|focus.time_to_max>=2)
+actions+=/arcane_shot,if=spell_targets.barrage=1&(debuff.hunters_mark.down&buff.marking_targets.react|focus.time_to_max>=2)
+actions+=/arcane_shot,if=focus.deficit<10
+
+actions.cooldowns=potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23
+actions.cooldowns+=/trueshot,if=(buff.bloodlust.react|target.health.pct>20+(cooldown.trueshot.remains+15))|buff.bullseye.react>25
+
+head=greyed_dragonscale_coif,id=139214,bonus_id=1487/1805
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1787,enchant=mark_of_hidden_satyr
+shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1487/1805
+back=gossamerspun_greatcloak,id=138221,bonus_id=1487/1805,enchant=200agi
+chest=patient_ambushers_hauberk,id=139221,bonus_id=1487/1805
+wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1487/1805
+hands=gauntlets_of_the_demented_mind,id=138214,bonus_id=1487/1805
+waist=creeping_string_of_larva,id=139212,bonus_id=1487/1805
+legs=singular_chain_leggings,id=139215,bonus_id=1487/1805
+feet=black_venom_sabatons,id=139219,bonus_id=1487/1805
+finger1=mindrend_band,id=138220,bonus_id=1487/1805,enchant=200mastery
+finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=200agi,enchant=200mastery
+trinket1=unstable_arcanocrystal,id=141482
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=139262/139260/139249,relic_id=1805/1805/1805
+
+# Gear Summary
+# gear_ilvl=864.60
+# gear_agility=14399
+# gear_stamina=22317
+# gear_crit_rating=4015
+# gear_haste_rating=4347
+# gear_mastery_rating=11387
+# gear_versatility_rating=807
+# gear_armor=2630
+summon_pet=cat
 save=Hunter_MM_T19H.simc
 
 hunter="Hunter_SV_T19H"
 level=110
-race=pandaren
+race=orc
 role=attack
-position=back
-talents=3302022
+position=ranged_back
+talents=2302022
 artifact=34:0:0:0:0:1068:1:1070:2:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1079:1:1080:1:1082:1:1083:1:1084:1:1338:1
 spec=survival
 
-head=greyed_dragonscale_coif,id=139214,bonus_id=1805
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_claw
-shoulders=matted_fur_pauldrons,id=139217,bonus_id=1805
-back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=200agi
-chest=patient_ambushers_hauberk,id=139221,bonus_id=1805
-wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1805
-hands=gauntlets_of_malevolent_intent,id=139213,bonus_id=1805
-waist=laughing_sisters_pouchchain,id=139211,bonus_id=1805
-legs=disjointed_linkage_leggings,id=139216,bonus_id=1805
-feet=malignant_sabatons,id=138211,bonus_id=1805
-finger1=grubby_silver_ring,id=139236,bonus_id=1805,enchant=200vers
-finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=200vers
-trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
-trinket2=natures_call,id=139334,bonus_id=1805
-main_hand=talonclaw,id=128808,gem_id=139262/139257/139255,relic_id=1805/1805/1805
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=flask_of_the_seventh_demon
+actions.precombat+=/food,type=seedbattered_fish_plate
+actions.precombat+=/summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=potion_of_the_old_war
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/harpoon
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/arcane_torrent,if=focus.deficit>=30
+actions+=/blood_fury
+actions+=/berserking
+actions+=/potion,name=old_war
+actions+=/steel_trap
+actions+=/explosive_trap
+actions+=/dragonsfire_grenade
+actions+=/caltrops
+actions+=/carve,cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies>=3&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)
+actions+=/raptor_strike,cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies<=2&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)|talent.way_of_the_moknathal.enabled&(buff.moknathal_tactics.remains<gcd.max|buff.moknathal_tactics.down)
+actions+=/aspect_of_the_eagle
+actions+=/fury_of_the_eagle,if=buff.mongoose_fury.up&(buff.mongoose_fury.stack=6|action.mongoose_bite.charges=0&cooldown.snake_hunter.remains|buff.mongoose_fury.remains<=gcd.max*2)
+actions+=/mongoose_bite,if=buff.aspect_of_the_eagle.up&(charges>=2|charges>=1&cooldown.mongoose_bite.remains<=2)|(buff.mongoose_fury.up|cooldown.fury_of_the_eagle.remains<5|charges=3)
+actions+=/a_murder_of_crows
+actions+=/lacerate,if=dot.lacerate.ticking&dot.lacerate.remains<=3|target.time_to_die>=5
+actions+=/snake_hunter,if=action.mongoose_bite.charges<=1&buff.mongoose_fury.remains>gcd.max*4|action.mongoose_bite.charges=0&buff.aspect_of_the_eagle.up
+actions+=/flanking_strike,if=talent.way_of_the_moknathal.enabled&(buff.moknathal_tactics.remains>=3)|!talent.way_of_the_moknathal.enabled
+actions+=/butchery,if=spell_targets.butchery>=2
+actions+=/carve,if=spell_targets.carve>=4
+actions+=/spitting_cobra
+actions+=/throwing_axes
+actions+=/raptor_strike,if=!talent.throwing_axes.enabled&focus>75-cooldown.flanking_strike.remains*focus.regen
+
+head=cave_skulkers_helm,id=141455
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1748,gems=150versatility,enchant=mark_of_the_hidden_satyr
+shoulders=matted_fur_pauldrons,id=139217,bonus_id=1487/1805
+back=evergreen_vinewrap_drape,id=139248,bonus_id=1487/1805,enchant=200agi
+chest=hauberk_of_the_snarled_vale,id=141491
+wrists=gravenscale_armbands,id=128907,bonus_id=669/1682
+hands=gauntlets_of_malevolent_intent,id=139213,bonus_id=1487/1805
+waist=laughing_sisters_pouchchain,id=139211,bonus_id=1487/1805
+legs=disjointed_linkage_leggings,id=139216,bonus_id=1487/1805
+feet=malignant_sabatons,id=138211,bonus_id=1487/1805
+finger1=grubby_silver_ring,id=139236,bonus_id=1487/1805,enchant=200vers
+finger2=maelstrom_band,id=130230,bonus_id=669/1682,gems=200agi,enchant=200vers
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+trinket2=unstable_arcanocrystal,id=141482
+main_hand=talonclaw,id=128808,gem_id=139262/139261/139260,relic_id=1805/1805/1805
+
+# Gear Summary
+# gear_ilvl=862.93
+# gear_agility=14155
+# gear_stamina=21951
+# gear_crit_rating=7705
+# gear_haste_rating=4352
+# gear_mastery_rating=1987
+# gear_versatility_rating=6567
+# gear_armor=2609
+summon_pet=cat
 save=Hunter_SV_T19H.simc
