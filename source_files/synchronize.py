@@ -10,6 +10,7 @@ import sys
 import os
 import logging
 import traceback
+import logging
 
 
 def parse_qt(filename):
@@ -73,18 +74,21 @@ def VS_no_precompiled_header():
 
 def VS_use_precompiled_header(filename):
     """Determine what precompiled header setting to use"""
-    if re.search(r"sc_player.cpp", filename):
-        return "<PrecompiledHeader>Create</PrecompiledHeader>"
-    transformed_filename = re.sub(r"\\", "/", filename)
-    with open(transformed_filename) as f:
-        content = f.read()
-        if re.search(r"#include \"simulationcraft.hpp\"", content):
-            return ""  # "<PrecompiledHeader />"
-        else:
-            return VS_no_precompiled_header()
-
-    print("could not open file for precompiled header settings!")
-    return ""
+    try:
+        if re.search(r"sc_player.cpp", filename):
+            return "<PrecompiledHeader>Create</PrecompiledHeader>"
+        transformed_filename = re.sub(r"\\", "/", filename)
+        with open(transformed_filename) as f:
+            content = f.read()
+            if re.search(r"#include \"simulationcraft.hpp\"", content):
+                return ""  # "<PrecompiledHeader />"
+            else:
+                return VS_no_precompiled_header()
+    except UnicodeDecodeError:
+        logging.warning("Could not properly decode file '{}' for pre-compiled header detection.".format(filename))
+    except Exception as e:
+        logging.error("could not open file '{}' for precompiled header settings!".format(filename), exc_info=True)
+    return VS_no_precompiled_header()
 
 
 def VS_header_str(filename, gui):
