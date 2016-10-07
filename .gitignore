@@ -78,6 +78,7 @@ SimulationCraft.creator
 SimulationCraft.files
 SimulationCraft.includes
 SimulationCraft.app
+simc_report.txt
 .qmake.stash
 qrc_simcqt.cpp
 *.autosave
