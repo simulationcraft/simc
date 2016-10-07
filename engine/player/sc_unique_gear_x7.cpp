@@ -199,21 +199,6 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-struct random_buff_callback_t : public dbc_proc_callback_t
-{
-  std::vector<buff_t*> buffs;
-
-  random_buff_callback_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
-    dbc_proc_callback_t( effect.item, effect ), buffs( b )
-  {}
-
-  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
-  {
-    int roll = ( int ) ( listener -> sim -> rng().real() * buffs.size() );
-    buffs[ roll ] -> trigger();
-  }
-};
-
 // Giant Ornamental Pearl ===================================================
 
 struct gaseous_bubble_t : public absorb_buff_t
@@ -278,7 +263,41 @@ void item::impact_tremor( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
-// Momento of Angerboda =====================================================
+// Memento of Angerboda =====================================================
+
+struct memento_callback_t : public dbc_proc_callback_t
+{
+  std::vector<buff_t*> buffs;
+
+  memento_callback_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+    dbc_proc_callback_t( effect.item, effect ), buffs( b )
+  {}
+
+  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
+  {
+    // Memento prefers to proc inactive buffs over active ones.
+    // Make a vector with only the inactive buffs.
+    std::vector<buff_t*> inactive_buffs;
+    
+    for ( unsigned i = 0; i < buffs.size(); i++ )
+    {
+      if ( ! buffs[ i ] -> check() )
+      {
+        inactive_buffs.push_back( buffs[ i ] );
+      }
+    }
+
+    // If the vector is empty, we can roll any of the buffs.
+    if ( inactive_buffs.empty() )
+    {
+      inactive_buffs = buffs;
+    }
+    
+    // Roll it!
+    int roll = ( int ) ( listener -> sim -> rng().real() * inactive_buffs.size() );
+    inactive_buffs[ roll ] -> trigger();
+  }
+};
 
 void item::memento_of_angerboda( special_effect_t& effect )
 {
@@ -297,7 +316,7 @@ void item::memento_of_angerboda( special_effect_t& effect )
       .activated( false )
       .add_stat( STAT_MASTERY_RATING, rating_amount ) );
 
-  new random_buff_callback_t( effect, buffs );
+  new memento_callback_t( effect, buffs );
 }
 
 // Obelisk of the Void ======================================================
@@ -1289,28 +1308,69 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
 
 // Nature's Call ============================================================
 
-struct natures_call_callback_t : public dbc_proc_callback_t
-{
-  std::vector<stat_buff_t*> buffs;
-  action_t* breath;
+// Helper class so we can handle all of the procs as 1 object.
 
-  natures_call_callback_t( const special_effect_t& effect, std::vector<stat_buff_t*> b, action_t* a ) :
-    dbc_proc_callback_t( effect.item, effect ), buffs( b ), breath( a )
+struct natures_call_proc_t
+{
+  action_t* action;
+  buff_t* buff;
+
+  natures_call_proc_t( action_t* a ) :
+    buff( 0 ), action( a )
   {}
 
-  void execute( action_t*, action_state_t* trigger_state ) override
+  natures_call_proc_t( buff_t* b ) :
+    buff( b ), action( 0 )
+  {}
+
+  void execute( player_t* t )
   {
-    int roll = ( int ) ( listener -> sim -> rng().real() * ( buffs.size() + 1 ) );
-    switch ( roll )
+    if ( action )
     {
-      case 3:
-        breath -> target = trigger_state -> target;
-        breath -> schedule_execute();
-        break;
-      default:
-        buffs[ roll ] -> trigger();
-        break;
+      action -> target = t;
+      action -> schedule_execute();
     }
+    else
+    {
+      buff -> trigger();
+    }
+  }
+
+  bool active()
+  { return buff && buff -> check(); };
+};
+
+struct natures_call_callback_t : public dbc_proc_callback_t
+{
+  std::vector<natures_call_proc_t*> procs;
+
+  natures_call_callback_t( const special_effect_t& effect, std::vector<natures_call_proc_t*> p ) :
+    dbc_proc_callback_t( effect.item, effect ), procs( p )
+  {}
+
+  void execute( action_t* /* a */, action_state_t* call_data ) override
+  {
+    // Nature's Call prefers to proc inactive buffs over active ones.
+    // Make a vector with only the inactive buffs.
+    std::vector<natures_call_proc_t*> inactive_procs;
+    
+    for ( unsigned i = 0; i < procs.size(); i++ )
+    {
+      if ( ! procs[ i ] -> active() )
+      {
+        inactive_procs.push_back( procs[ i ] );
+      }
+    }
+
+    // If the vector is empty, we can roll any of the buffs.
+    if ( inactive_procs.empty() )
+    {
+      inactive_procs = procs;
+    }
+    
+    // Roll it!
+    int roll = ( int ) ( listener -> sim -> rng().real() * inactive_procs.size() );
+    inactive_procs[ roll ] -> execute( call_data -> target );
   }
 };
 
@@ -1319,25 +1379,29 @@ void item::natures_call( special_effect_t& effect )
   double rating_amount = effect.driver() -> effectN( 2 ).average( effect.item );
   rating_amount *= effect.item -> sim -> dbc.combat_rating_multiplier( effect.item -> item_level() );
 
-  std::vector<stat_buff_t*> buffs;
-  buffs.push_back( stat_buff_creator_t( effect.player, "cleansed_ancients_blessing", effect.player -> find_spell( 222517 ) )
-      .activated( false )
-      .add_stat( STAT_CRIT_RATING, rating_amount ) );
-  buffs.push_back( stat_buff_creator_t( effect.player, "cleansed_sisters_blessing", effect.player -> find_spell( 222519 ) )
-      .activated( false )
-      .add_stat( STAT_HASTE_RATING, rating_amount ) );
-  buffs.push_back( stat_buff_creator_t( effect.player, "cleansed_wisps_blessing", effect.player -> find_spell( 222518 ) )
-      .activated( false )
-      .add_stat( STAT_MASTERY_RATING, rating_amount ) );
+  std::vector<natures_call_proc_t*> procs;
+
+  procs.push_back( new natures_call_proc_t(
+    stat_buff_creator_t( effect.player, "cleansed_ancients_blessing", effect.player -> find_spell( 222517 ) )
+    .activated( false )
+    .add_stat( STAT_CRIT_RATING, rating_amount ) ) );
+  procs.push_back( new natures_call_proc_t(
+    stat_buff_creator_t( effect.player, "cleansed_sisters_blessing", effect.player -> find_spell( 222519 ) )
+    .activated( false )
+    .add_stat( STAT_HASTE_RATING, rating_amount ) ) );
+  procs.push_back( new natures_call_proc_t(
+    stat_buff_creator_t( effect.player, "cleansed_wisps_blessing", effect.player -> find_spell( 222518 ) )
+    .activated( false )
+    .add_stat( STAT_MASTERY_RATING, rating_amount ) ) );
 
   // Set trigger spell so we can automatically create the breath action.
   effect.trigger_spell_id = 222520;
-  action_t* breath = effect.create_action();
+  procs.push_back( new natures_call_proc_t( effect.create_action() ) );  
 
   // Disable trigger spell again
   effect.trigger_spell_id = 0;
 
-  new natures_call_callback_t( effect, buffs, breath );
+  new natures_call_callback_t( effect, procs );
 }
 
 // Moonlit Prism ============================================================
@@ -1985,7 +2049,11 @@ void item::twisting_wind( special_effect_t& effect )
 
 // Bloodthirsty Instinct ====================================================
 
-struct bloodthirsty_instinct_cb_t : public dbc_proc_callback_t
+// Oct 6 2016: Proc rate on training dummies is not appreciably higher than
+//  in raid logs, so don't need a custom implementation for now until there's
+//  some insight on how this thing actually works.
+
+/* struct bloodthirsty_instinct_cb_t : public dbc_proc_callback_t
 {
   bloodthirsty_instinct_cb_t( special_effect_t& effect ) :
     dbc_proc_callback_t( effect.item, effect )
@@ -1999,13 +2067,13 @@ struct bloodthirsty_instinct_cb_t : public dbc_proc_callback_t
 
     assert( s -> target );
 
-    /* Sep 29 2016: From 33 Heroic Ursoc logs, actors averaged 40.75% uptime.
-    3 RPPM (from spell data) translates to ~45% uptime. Assuming that is the
-    peak RPPM, I adjusted the "base" proc rate down until the average uptime
-    fit the observed uptime in the logs
+    // Sep 29 2016: From 33 Heroic Ursoc logs, actors averaged 40.75% uptime.
+    // 3 RPPM (from spell data) translates to ~45% uptime. Assuming that is the
+    // peak RPPM, I adjusted the "base" proc rate down until the average uptime
+    // fit the observed uptime in the logs
 
-    End result here is: 2.25 RPPM scaling linearly with the target's health
-    deficit up to a maximum of 3.00 RPPM */
+    // End result here is: 2.25 RPPM scaling linearly with the target's health
+    // deficit up to a maximum of 3.00 RPPM
     double mod = 0.75 + 0.25 * ( 100.0 - s -> target -> health_percentage() ) / 100.0;
 
     if ( effect.player -> sim -> debug )
@@ -2021,7 +2089,7 @@ struct bloodthirsty_instinct_cb_t : public dbc_proc_callback_t
 void item::bloodthirsty_instinct( special_effect_t& effect )
 {
   new bloodthirsty_instinct_cb_t( effect );
-}
+} */
 
 // Ravaged Seed Pod =========================================================
 
@@ -2772,7 +2840,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 228461, item::gnawed_thumb_ring              );
 
   /* Legion 7.0 Raid */
-  register_special_effect( 221786, item::bloodthirsty_instinct  );
+  // register_special_effect( 221786, item::bloodthirsty_instinct  );
   register_special_effect( 225139, item::convergence_of_fates   );
   register_special_effect( 222512, item::natures_call           );
   register_special_effect( 222167, item::spontaneous_appendages );
