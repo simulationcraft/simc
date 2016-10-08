@@ -3533,9 +3533,6 @@ struct judgment_aoe_t : public paladin_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
-
-      if ( p() -> sets.has_set_bonus( PALADIN_RETRIBUTION, T17, B4 ) )
-        p() -> buffs.blazing_resolve -> trigger();
     }
   }
 
