@@ -59,7 +59,7 @@ artifact=55:0:0:0:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:3:
 spec=marksmanship
 
 head=greyed_dragonscale_coif,id=139214,bonus_id=1487/1805
-neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1787,enchant=mark_of_hidden_satyr
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1787,gems=150mastery,enchant=mark_of_hidden_satyr
 shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1487/1805
 back=gossamerspun_greatcloak,id=138221,bonus_id=1487/1805,enchant=200agi
 chest=patient_ambushers_hauberk,id=139221,bonus_id=1487/1805
