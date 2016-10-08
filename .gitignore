@@ -23,6 +23,7 @@ moc_*.cpp
 *.db2
 *.pgc
 *.7z
+*.lastcodeanalysissucceeded
 Win32OpenSSL_Light-*
 Win64OpenSSL_Light-*
 
