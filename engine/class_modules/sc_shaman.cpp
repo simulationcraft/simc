@@ -800,7 +800,7 @@ struct stormlash_callback_t : public dbc_proc_callback_t
     // Apply Empowered Stormlash damage bonus
     pool *= 1.0 + shaman() -> talent.empowered_stormlash -> effectN( 2 ).percent();
 
-    int replace_buffs = ( damage_pool.size() + n_buffs ) - shaman() -> stormlash_targets;
+    int replace_buffs = static_cast<int>( ( damage_pool.size() + n_buffs ) - shaman() -> stormlash_targets );
     if ( replace_buffs < 0 )
     {
       replace_buffs = 0;

@@ -158,7 +158,7 @@ std::ostringstream& hotfix_map_str( const DATA_TYPE* data, std::ostringstream& s
     else
     {
       s << map[ i ];
-      auto hotfix_entry = hotfix::hotfix_entry( data, i );
+      auto hotfix_entry = hotfix::hotfix_entry( data, static_cast<unsigned int>( i ) );
       if ( hotfix_entry != nullptr )
       {
         switch ( hotfix_entry -> field_type )
@@ -1306,7 +1306,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       {
         s << "x";
         size_t attr_idx = i * 32 + flag;
-        auto it = _attribute_strings.find( attr_idx );
+        auto it = _attribute_strings.find( static_cast<unsigned int>( attr_idx ) );
         if ( it != _attribute_strings.end() )
         {
           if ( ! attr_str.empty() )

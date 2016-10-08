@@ -541,7 +541,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     {
       if ( util::str_compare_ci( f_name, fields[ i ].name ) )
       {
-        offset = fields[ i ].offset;
+        offset = static_cast<int>( fields[ i ].offset );
         field_type = fields[ i ].type;
         break;
       }

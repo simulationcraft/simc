@@ -1339,7 +1339,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   queue_lag( timespan_t::from_seconds( 0.005 ) ), queue_lag_stddev( timespan_t::zero() ),
   gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero() ),
   channel_lag( timespan_t::from_seconds( 0.250 ) ), channel_lag_stddev( timespan_t::zero() ),
-  queue_gcd_reduction( timespan_t::from_seconds( 0.032 ) ),
+  queue_gcd_reduction( timespan_t::from_seconds( 0.1 ) ),
   default_cooldown_tolerance( timespan_t::from_millis( 250 ) ),
   strict_gcd_queue( 0 ),
   confidence( 0.95 ), confidence_estimator( 0.0 ),
@@ -2529,7 +2529,7 @@ bool sim_t::iterate()
       {
         if ( ! parent )
         {
-          progress_bar.update( true, old_active );
+          progress_bar.update( true, static_cast<int>( old_active ) );
           progress_bar.restart();
           util::fprintf( stdout, "%s %s\n", sim_phase_str.c_str(), progress_bar.status.c_str() );
           fflush( stdout );

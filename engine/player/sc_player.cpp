@@ -7936,7 +7936,7 @@ bool player_t::parse_artifact_wowhead( const std::string& artifact_string )
   }
   else
   {
-    artifact.n_purchased_points = artifact.n_points - ( n_relics == 0 ? n_excess_points : n_relics );
+    artifact.n_purchased_points = artifact.n_points - static_cast<unsigned int>(( n_relics == 0 ? n_excess_points : n_relics ));
   }
 
   // The initial power does not count towards the purchased points
