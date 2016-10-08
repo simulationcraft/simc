@@ -1612,6 +1612,7 @@ struct volatile_ichor_t : public spell_t
     //TODO: Is this true?
     callbacks = false;
     item = effect.item;
+    school = SCHOOL_NATURE; // spell 222197 has this information, but doesn't have the damage.
 
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
 
