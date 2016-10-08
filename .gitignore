@@ -22,11 +22,14 @@ moc_*.cpp
 *.ld_*
 *.db2
 *.pgc
+*.7z
 Win32OpenSSL_Light-*
 Win64OpenSSL_Light-*
 
 /CMakeFiles/
 casc_extract/cache/
+casc_extract/wow/
+casc_extract/__pycache__/
 vs/int_gui/
 x64/
 x86/
