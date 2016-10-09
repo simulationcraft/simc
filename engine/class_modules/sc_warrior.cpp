@@ -5254,6 +5254,7 @@ void warrior_t::create_buffs()
 
   buff.focused_rage = buff_creator_t( this, "focused_rage", talents.focused_rage -> ok() ? talents.focused_rage : spec.focused_rage )
     .default_value( talents.focused_rage -> ok() ? talents.focused_rage -> effectN( 1 ).percent() : spec.focused_rage -> effectN( 1 ).percent() )
+    .activated( false )
     .cd( timespan_t::zero() );
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
