@@ -14,8 +14,16 @@
 
 optimal_raid=1
 
+# Death Knight
+Death_Knight_Frost_T19H.simc
+Death_Knight_Unholy_T19H.simc
+
 # Demon Hunter
 Demon_Hunter_Havoc_T19H.simc
+
+# Druid
+Druid_Balance_T19H.simc
+Druid_Feral_T19H.simc
 
 # Hunter
 Hunter_BM_T19H.simc
@@ -23,10 +31,11 @@ Hunter_MM_T19H.simc
 Hunter_SV_T19H.simc
 
 # Mage
+Mage_Arcane_T19H.simc
 Mage_Fire_T19H.simc
 Mage_Frost_T19H.simc
-Mage_Arcane_T19H.simc
 
+# Monk
 Monk_Windwalker_T19H.simc
 
 # Paladin
@@ -39,9 +48,15 @@ Priest_Shadow_T19H_S2M.simc
 # Rogue
 Rogue_T19H.simc
 
-Warlock_Affliction_T19H.simc
+# Shaman
+Shaman_Enhancement_T19H.simc
+Shaman_Elemental_T19H.simc
+
+# Warlock
 Warlock_Demonology_T19H.simc
 Warlock_Destruction_T19H.simc
+Warlock_Affliction_T19H.simc
 
+# Warrior
 Warrior_Fury_T19H.simc
 Warrior_Arms_T19H.simc
