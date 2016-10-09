@@ -35,13 +35,13 @@ position=back
 talents=2232133
 artifact=35:137546:137365:137472:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:1:990:6:991:3:993:3:995:3:996:3:1357:1
 
-head=nightsfall_helmet,id=139058,bonus_id=1727/1517
+head=nightsfall_helmet,id=139058,bonus_id=1727/1527
 neck=chain_of_scorched_bones,id=134529,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727/1517
 back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727/1517,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727/1517
-wrists=greystone_wristplates,id=139100,bonus_id=1727/1517
-hands=nightsfall_gauntlets,id=139056,bonus_id=1727/1517
+wrists=greystone_wristplates,id=139100,bonus_id=1727/1527
+hands=nightsfall_gauntlets,id=139056,bonus_id=1727/1527
 waist=slack_tide_girdle,id=133770,bonus_id=1727/1517
 legs=keelhauler_legplates,id=134514,bonus_id=1727/1517
 feet=rook_footmans_warboots,id=139241,bonus_id=1727/1517

@@ -101,7 +101,7 @@ head=hood_of_the_blind_executioner,id=137511,bonus_id=1727/1517
 neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727/1517,enchant=mark_of_the_distant_army
 shoulders=mantle_of_the_dark_sea,id=137332,bonus_id=1727/1517
 back=mainsail_cloak,id=134406,bonus_id=1727/1517,enchant=binding_of_agility
-chest=biornskin_vest,id=134197,bonus_id=1727/1517
+chest=biornskin_vest,id=134197,bonus_id=1727/1527
 wrists=shorn_batbrood_cuffs,id=136979,bonus_id=1727/1517
 hands=guileful_intruder_handguards,id=137480,bonus_id=1727/1517
 waist=sinister_ashfall_cord,id=134455,bonus_id=1727/1517
@@ -115,12 +115,12 @@ main_hand=fangs_of_ashamane,id=128860,gem_id=137370/137350/137327,relic_id=1517:
 off_hand=fangs_of_ashamane,id=128859
 
 # Gear Summary
-# gear_ilvl=868.00
-# gear_agility=13789
-# gear_stamina=22029
-# gear_crit_rating=6797
+# gear_ilvl=868.63
+# gear_agility=13921
+# gear_stamina=22227
+# gear_crit_rating=6829
 # gear_haste_rating=2652
-# gear_mastery_rating=6382
+# gear_mastery_rating=6400
 # gear_versatility_rating=2473
-# gear_armor=2115
+# gear_armor=2126
 # set_bonus=tier19p_leather_2pc=1
