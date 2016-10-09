@@ -24,6 +24,7 @@ actions.precombat+=/potion,name=old_war
 # Executed every time the actor is available.
 actions=charge
 actions+=/auto_attack
+actions+=/pummel
 actions+=/potion,name=old_war,if=buff.avatar.up&buff.battle_cry.up&debuff.colossus_smash.up|target.time_to_die<=26
 actions+=/blood_fury,if=buff.battle_cry.up|target.time_to_die<=16
 actions+=/berserking,if=buff.battle_cry.up|target.time_to_die<=11
