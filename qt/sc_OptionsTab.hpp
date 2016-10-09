@@ -35,6 +35,7 @@ public:
   QString get_active_spec();
   QString get_player_role();
   QString get_api_key();
+  QString auto_save_location;
 
   void createToolTips();
   QListWidget* itemDbOrder;
@@ -89,6 +90,7 @@ public:
   QLineEdit* apikey;
 public slots:
   void _resetallSettings();
+  void _savefilelocation();
 protected:
   SC_MainWindow* mainWindow;
   void createGlobalsTab();

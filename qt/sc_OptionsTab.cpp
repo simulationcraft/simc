@@ -343,6 +343,14 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_right -> addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right -> addRow( tr( "Auto-Save Reports" ), choice.auto_save = createChoice( 3, "No", "Use current date/time", "Ask for filename on each simulation" ) );
 
+  QPushButton* savelocation = new QPushButton( tr( "Default location for auto saved reports." ), this );
+  QFont override_font2 = QFont();
+  override_font2.setPixelSize( 14 );
+  resetb -> setFont( override_font2 );
+
+  connect( savelocation, SIGNAL( clicked() ), this, SLOT( _savefilelocation() ) );
+  globalsLayout_right -> addWidget( savelocation );
+
   createItemDataSourceSelector( globalsLayout_right );
 
   globalsLayout_right -> addRow( tr( "Armory API Key" ), apikey = new QLineEdit() );
@@ -649,6 +657,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "threads", choice.threads, QString::number( QThread::idealThreadCount() ) );
   load_setting( settings, "process_priority", choice.process_priority, "Low" );
   load_setting( settings, "auto_save", choice.auto_save, "No" );
+  auto_save_location = settings.value( "auto_save_location" ).isNull() ? mainWindow -> AppDataDir : settings.value( "auto_save_location" ).toString();
   load_setting( settings, "armory_region", choice.armory_region );
   load_setting( settings, "armory_spec", choice.armory_spec );
   load_setting( settings, "gui_localization", choice.gui_localization );
@@ -738,6 +747,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "threads", choice.threads -> currentText() );
   settings.setValue( "process_priority", choice.process_priority -> currentText() );
   settings.setValue( "auto_save", choice.auto_save -> currentText() );
+  settings.setValue( "auto_save_location", auto_save_location );
   settings.setValue( "armory_region", choice.armory_region -> currentText() );
   settings.setValue( "gui_localization", choice.gui_localization -> currentText() );
   settings.setValue( "armory_spec", choice.armory_spec -> currentText() );
@@ -1059,7 +1069,7 @@ QString SC_OptionsTab::getReportlDestination() const
       html_filename = text;
     }
   }
-  return mainWindow -> AppDataDir + QDir::separator() + html_filename;
+  return auto_save_location + QDir::separator() + html_filename;
 }
 
 QString SC_OptionsTab::mergeOptions()
@@ -1377,4 +1387,16 @@ void SC_OptionsTab::_resetallSettings()
     settings.clear();
     decodeOptions();
   }
+}
+
+void SC_OptionsTab::_savefilelocation()
+{
+  QFileDialog f( this );
+  f.setDirectory( auto_save_location );
+  f.setFileMode( QFileDialog::DirectoryOnly );
+  f.setWindowTitle( tr( "Default Save Location" ) );
+
+  f.exec();
+
+  auto_save_location = f.selectedFiles().at( 0 );
 }
