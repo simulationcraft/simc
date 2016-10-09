@@ -119,28 +119,29 @@ actions.vf+=/mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate
 actions.vf+=/mind_spike,if=talent.mind_spike.enabled
 actions.vf+=/shadow_word_pain
 
-head=hood_of_darkened_visions,id=139189,bonus_id=1805
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_claw
-shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1805
-back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=200int
-chest=dreamscale_inlaid_vestments,id=138215,bonus_id=1805
-wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1805
-hands=handwraps_of_delusional_power,id=138212,bonus_id=1805
-waist=pliable_spider_silk_cinch,id=138217,bonus_id=1805
-legs=nazaks_dusty_pantaloons,id=141415
-feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1805
-finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=200haste
-finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1805,enchant=200haste
-trinket1=swarming_plaguehive,id=139321,bonus_id=1805
-trinket2=twisting_wind,id=139323,bonus_id=1805
-main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=139251/139257/139251,relic_id=1805/1805/1805
+head=collar_of_enclosure,id=134424,bonus_id=1727/1517
+neck=tightweb_choker,id=134541,bonus_id=1727/1517,enchant_id=5439
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1517
+back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant_id=5436
+chest=fluxflow_robes,id=134413,bonus_id=1727/1517
+wrists=armbands_of_slaughter,id=134436,bonus_id=1727/1517
+hands=silken_bloodscent_gloves,id=133609,bonus_id=1727/1517
+waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727/1517
+legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1727/1517
+feet=mistbound_helarjar_footwraps,id=133608,bonus_id=1727/1517
+finger1=band_of_fused_coral,id=134532,bonus_id=1727/1517,enchant_id=5428
+finger2=seal_of_malicious_deceit,id=134489,bonus_id=1727/1517,enchant_id=5428
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727/1517
+trinket2=swarming_plaguehive,id=139321,bonus_id=1805
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=137347/137350/137347,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=secrets_of_the_void,id=133958
 
 # Gear Summary
-# gear_ilvl=868.31
-# gear_stamina=22518
-# gear_intellect=24778
-# gear_crit_rating=6491
-# gear_haste_rating=8895
-# gear_mastery_rating=3151
-# gear_armor=1711
+# gear_ilvl=868.63
+# gear_stamina=22619
+# gear_intellect=23427
+# gear_crit_rating=7238
+# gear_haste_rating=11006
+# gear_mastery_rating=1307
+# gear_armor=1715
+# set_bonus=tier19p_cloth_2pc=1
