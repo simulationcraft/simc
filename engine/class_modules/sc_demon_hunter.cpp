@@ -3187,6 +3187,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     cooldown = p -> get_cooldown( "blade_dance" );  // shared cooldown
     // Disallow use outside of melee range.
     range = 5.0;
+    ignore_false_positive = true;
 
     base_costs[ RESOURCE_FURY ] +=
       p -> talent.first_blood -> effectN( 2 ).resource( RESOURCE_FURY );
