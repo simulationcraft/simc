@@ -26,6 +26,8 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 
 # Executed every time the actor is available.
 actions=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up
+actions+=/use_item,slot=trinket1,if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up
+actions+=/use_item,slot=trinket2,if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up
 actions+=/blood_fury,if=debuff.vendetta.up
 actions+=/berserking,if=debuff.vendetta.up
 actions+=/arcane_torrent,if=debuff.vendetta.up&energy.deficit>50
@@ -102,29 +104,30 @@ actions.garrote+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&!ticking&
 actions.garrote+=/pool_resource,for_next=1
 actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated
 
-head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=soultrappers_pendant,id=141506,enchant=mark_of_the_hidden_satyr
-shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1805
-back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=binding_of_agility
-chest=tunic_of_the_grove_keeper,id=139207,bonus_id=1805
-wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1805
-hands=dreamsculptors_gloves,id=139202,bonus_id=1805
-waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
-legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
-feet=stained_maggot_squishers,id=139200,bonus_id=1805
-finger1=dingy_suramar_mercantile_signet,id=141492,enchant=binding_of_versatility
-finger2=grubby_silver_ring,id=139236,bonus_id=1805,enchant=binding_of_versatility
-trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
-trinket2=unstable_arcanocrystal,id=141482
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,relic_id=1727/1727/1727
+head=biornskin_hood,id=134196,bonus_id=1727/1527
+neck=stabilized_energy_pendant,id=134488,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
+shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727/1517
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1727/1517,enchant=binding_of_agility
+chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727/1517
+wrists=shorn_batbrood_cuffs,id=136979,bonus_id=1727/1517
+hands=guileful_intruder_handguards,id=137480,bonus_id=1727/1517
+waist=sinister_ashfall_cord,id=134455,bonus_id=1727/1517
+legs=felbat_leather_leggings,id=134370,bonus_id=1727/1527
+feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1517
+finger1=utgarde_royal_signet,id=133637,bonus_id=1727/1517,enchant=binding_of_versatility
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_versatility
+trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1517
+trinket2=tirathons_betrayal,id=137537,bonus_id=1727/1517
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=864.69
-# gear_agility=13585
-# gear_stamina=21609
-# gear_crit_rating=9601
-# gear_haste_rating=2311
-# gear_mastery_rating=5096
-# gear_versatility_rating=3407
+# gear_ilvl=868.63
+# gear_agility=13921
+# gear_stamina=22227
+# gear_crit_rating=11133
+# gear_haste_rating=1666
+# gear_mastery_rating=2469
+# gear_versatility_rating=3085
 # gear_armor=2126
+# set_bonus=tier19p_leather_2pc=1

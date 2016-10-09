@@ -42,6 +42,7 @@ actions.build+=/backstab
 
 # Cooldowns
 actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up
+actions.cds+=/use_item,slot=trinket2,if=stealthed|target.time_to_die<20
 actions.cds+=/blood_fury,if=stealthed
 actions.cds+=/berserking,if=stealthed
 actions.cds+=/arcane_torrent,if=stealthed&energy.deficit>70
@@ -70,29 +71,29 @@ actions.stealthed+=/call_action_list,name=finish,if=combo_points>=5
 actions.stealthed+=/shuriken_storm,if=buff.shadowmeld.down&((combo_points.deficit>=3&spell_targets.shuriken_storm>=2+talent.premeditation.enabled+equipped.shadow_satyrs_walk)|buff.the_dreadlords_deceit.stack>=29)
 actions.stealthed+=/shadowstrike
 
-head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=krakentooth_necklace,id=141473,enchant=mark_of_the_hidden_satyr
-shoulders=mantle_of_the_aspiring_spellgiant,id=141445
-back=gossamerspun_greatcloak,id=138221,bonus_id=1805,enchant=binding_of_agility
-chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1805
-wrists=dragonspur_wristguards,id=138219,bonus_id=1805
-hands=saltstained_tuskarr_gloves,id=141475
+head=cowl_of_fright,id=139205,bonus_id=1805
+neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
+shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727/1517
+back=stole_of_malefic_repose,id=134404,bonus_id=1727/1517,enchant=binding_of_agility
+chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727/1517
+wrists=cryptwalker_bracers,id=137425,bonus_id=1727/1517
+hands=manalanced_gloves,id=134444,bonus_id=1727/1517
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
-legs=splotched_bloodfur_leggings,id=139201,bonus_id=1805
-feet=stained_maggot_squishers,id=139200,bonus_id=1805
-finger1=ring_of_deep_sea_pearls,id=141545,enchant=binding_of_versatility
-finger2=mindrend_band,id=138220,bonus_id=1805,enchant=binding_of_versatility
-trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
-trinket2=unstable_arcanocrystal,id=141482
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=139267/138226/139267,relic_id=1805/1805/1805
+legs=wardens_martial_greaves,id=137515,bonus_id=1727/1517
+feet=grove_darkeners_treads,id=134429,bonus_id=1727/1517
+finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1727/1517,enchant=binding_of_mastery
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_mastery
+trinket1=chaos_talisman,id=137459,bonus_id=1727/1517
+trinket2=tirathons_betrayal,id=137537,bonus_id=1727/1517
+main_hand=fangs_of_the_devourer,id=128476,gem_id=136721/137377/136721,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=fangs_of_the_devourer,id=128479
 
 # Gear Summary
-# gear_ilvl=867.06
-# gear_agility=13819
-# gear_stamina=21959
-# gear_crit_rating=5035
-# gear_haste_rating=3918
-# gear_mastery_rating=8525
-# gear_versatility_rating=3337
-# gear_armor=2119
+# gear_ilvl=868.63
+# gear_agility=13921
+# gear_stamina=22227
+# gear_crit_rating=2729
+# gear_haste_rating=2040
+# gear_mastery_rating=9621
+# gear_versatility_rating=3964
+# gear_armor=2126
