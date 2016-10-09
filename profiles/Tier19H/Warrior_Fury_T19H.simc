@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=back
 talents=2232133
-artifact=35:139266:139262:139255:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:4:990:3:991:3:993:3:995:3:996:3:1357:1
+artifact=35:137546:137365:137472:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:1:990:6:991:3:993:3:995:3:996:3:1357:1
 spec=fury
 
 # This default action priority list is automatically created based on your character.
@@ -27,7 +27,7 @@ actions+=/charge
 # This is mostly to prevent cooldowns from being accidentally used during movement.
 actions+=/run_action_list,name=movement,if=movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
-actions+=/use_item,name=ravaged_seed_pod,if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)
+actions+=/use_item,name=faulty_countermeasure,if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)
 actions+=/potion,name=old_war,if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<30
 actions+=/battle_cry,if=(cooldown.odyns_fury.remains=0&(cooldown.bloodthirst.remains=0|(buff.enrage.remains>cooldown.bloodthirst.remains)))
 actions+=/avatar,if=buff.battle_cry.up|(target.time_to_die<(cooldown.battle_cry.remains+10))
@@ -83,28 +83,30 @@ actions.two_targets+=/dragon_roar
 actions.two_targets+=/bloodthirst
 actions.two_targets+=/whirlwind
 
-head=venomfanged_barbute,id=139229,bonus_id=1805
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1805,enchant=mark_of_the_hidden_satyr
-shoulders=midnight_heralds_pauldrons,id=139232,bonus_id=1805
-back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=binding_of_strength
-chest=horror_inscribed_chestguard,id=138216,bonus_id=1805
-wrists=dragonbone_wristclamps,id=138218,bonus_id=1805
-hands=fitted_ironbark_gauntlets,id=139225,bonus_id=1805
-waist=waistplate_of_nameless_horror,id=139227,bonus_id=1805
-legs=stormbattered_legplates,id=139230,bonus_id=1805
-feet=trampling_warboots,id=139234,bonus_id=1805
-finger1=mindrend_band,id=138220,bonus_id=1805,enchant=binding_of_mastery
-finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1805,enchant=binding_of_mastery
-trinket1=ravaged_seed_pod,id=139320,bonus_id=1805
-trinket2=natures_call,id=139334,bonus_id=1805
-main_hand=warswords_of_the_valarjar,id=128908,gem_id=139266/139262/139255,relic_id=1805/1805/1805
+head=nightsfall_helmet,id=139058,bonus_id=1727/1517
+neck=chain_of_scorched_bones,id=134529,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
+shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727/1517
+back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727/1517,enchant=binding_of_strength
+chest=inferno_breastplate,id=134503,bonus_id=1727/1517
+wrists=greystone_wristplates,id=139100,bonus_id=1727/1517
+hands=nightsfall_gauntlets,id=139056,bonus_id=1727/1517
+waist=slack_tide_girdle,id=133770,bonus_id=1727/1517
+legs=keelhauler_legplates,id=134514,bonus_id=1727/1517
+feet=rook_footmans_warboots,id=139241,bonus_id=1727/1517
+finger1=loop_of_vitriolic_intent,id=134530,bonus_id=1727/1517,enchant=binding_of_mastery
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_mastery
+trinket1=chaos_talisman,id=137459,bonus_id=1727/1517
+trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1517
+main_hand=warswords_of_the_valarjar,id=128908,gem_id=137546/137365/137472,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=warswords_of_the_valarjar,id=134553
 
 # Gear Summary
-# gear_ilvl=868.63
-# gear_strength=14735
-# gear_stamina=25577
-# gear_crit_rating=3881
-# gear_haste_rating=9182
-# gear_mastery_rating=8032
-# gear_armor=4194
+# gear_ilvl=866.75
+# gear_strength=14429
+# gear_stamina=25119
+# gear_crit_rating=5944
+# gear_haste_rating=11101
+# gear_mastery_rating=3267
+# gear_versatility_rating=665
+# gear_armor=4165
+# set_bonus=tier19p_plate_2pc=1

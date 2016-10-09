@@ -77,7 +77,7 @@ actions.single+=/lightning_bolt
 actions.single+=/flame_shock,moving=1,target_if=refreshable
 actions.single+=/earth_shock,moving=1
 
-head=shadow_archers_helm,id=139244,bonus_id=1727
+head=shadow_archers_helm,id=139244,bonus_id=1727/1517
 neck=breathless_choker,id=137461,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
 shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
 back=cloak_of_fading_echoes,id=134405,bonus_id=1727/1517,enchant=binding_of_intellect
@@ -95,12 +95,12 @@ main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=137365/137272/137365,r
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=867.06
-# gear_stamina=22155
-# gear_intellect=23118
-# gear_crit_rating=11125
-# gear_haste_rating=4662
+# gear_ilvl=868.63
+# gear_stamina=22619
+# gear_intellect=23427
+# gear_crit_rating=11198
+# gear_haste_rating=4712
 # gear_mastery_rating=2651
 # gear_versatility_rating=986
-# gear_armor=2604
+# gear_armor=2630
 # set_bonus=tier19p_mail_2pc=1
