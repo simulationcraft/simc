@@ -5935,9 +5935,9 @@ void hunter_t::init_action_list()
           food_action += "salty_squid_roll";
       }
       else if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_MARKSMANSHIP )
-        food_action += "nightborne_delicacy_platter";
+        food_action += "fishbrul_special";
       else
-        food_action += "seedbattered_fish_plate";
+        food_action += "nightborne_delicacy_platter";
       precombat -> add_action( food_action );
     }
 
