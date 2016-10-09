@@ -2982,7 +2982,7 @@ struct crusader_strike_t : public holy_power_generator_t
     base_crit       += p -> artifact.sharpened_edge.percent();
 
     if ( p -> specialization() == PALADIN_RETRIBUTION ) // HOTFIX
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
 
     if ( p -> talents.fires_of_justice -> ok() )
     {
