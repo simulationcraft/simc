@@ -2888,6 +2888,16 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 201336, consumable::pepper_breath );
 }
 
+void unique_gear::register_hotfixes_x7()
+{
+
+  hotfix::register_spell( "Horrific Appendages", "2016-10-09", "In-game testing shows that the actual rppm is much closer to 1.1~ than 0.7, so we slightly underestimated down to 1.0.", 222167 )
+    .field( "rppm" )
+    .operation( hotfix::HOTFIX_SET )
+    .modifier( 1.0 )
+    .verification_value( 0.7 );
+}
+
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
 {
   std::vector< slot_e > trinkets;

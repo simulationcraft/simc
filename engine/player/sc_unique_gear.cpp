@@ -4438,6 +4438,7 @@ void unique_gear::unregister_special_effects()
 
 void unique_gear::register_hotfixes()
 {
+  register_hotfixes_x7();
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )

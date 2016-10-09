@@ -7002,6 +7002,7 @@ namespace unique_gear
 typedef std::vector<const special_effect_db_item_t*> special_effect_set_t;
 
 void register_hotfixes();
+void register_hotfixes_x7();
 void register_special_effects();
 void register_special_effects_x7(); // Legion special effects
 void sort_special_effects();

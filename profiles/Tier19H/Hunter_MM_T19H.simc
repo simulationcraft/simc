@@ -63,7 +63,7 @@ actions.cooldowns=potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlus
 actions.cooldowns+=/trueshot,if=(buff.bloodlust.react|target.health.pct>20+(cooldown.trueshot.remains+15))|buff.bullseye.react>25
 
 head=greyed_dragonscale_coif,id=139214,bonus_id=1487/1805
-neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1787,enchant=mark_of_hidden_satyr
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1787,gems=150mastery,enchant=mark_of_hidden_satyr
 shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1487/1805
 back=gossamerspun_greatcloak,id=138221,bonus_id=1487/1805,enchant=200agi
 chest=patient_ambushers_hauberk,id=139221,bonus_id=1487/1805
@@ -84,7 +84,7 @@ main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=139262/139260/139
 # gear_stamina=22317
 # gear_crit_rating=4015
 # gear_haste_rating=4347
-# gear_mastery_rating=11387
+# gear_mastery_rating=11537
 # gear_versatility_rating=807
 # gear_armor=2630
 summon_pet=cat
