@@ -77,29 +77,30 @@ actions.single+=/lightning_bolt
 actions.single+=/flame_shock,moving=1,target_if=refreshable
 actions.single+=/earth_shock,moving=1
 
-head=greyed_dragonscale_coif,id=139214,bonus_id=1805
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_hidden_satyr
-shoulders=matted_fur_pauldrons,id=139217,bonus_id=1805
-back=evergreen_vinewrap_drape,id=139248,bonus_id=1805,enchant=binding_of_intellect
-chest=patient_ambushers_hauberk,id=139221,bonus_id=1805
-wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1805
-hands=gauntlets_of_malevolent_intent,id=139213,bonus_id=1805
-waist=laughing_sisters_pouchchain,id=139211,bonus_id=1805
-legs=disjointed_linkage_leggings,id=139216,bonus_id=1805
-feet=black_venom_sabatons,id=139219,bonus_id=1805
-finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant_id=5427
-finger2=grubby_silver_ring,id=139236,bonus_id=1805,enchant_id=5427
-trinket1=swarming_plaguehive,id=139321,bonus_id=1805
-trinket2=twisting_wind,id=139323,bonus_id=1805
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=139262/139259/139262,relic_id=1805/1805/1805
+head=shadow_archers_helm,id=139244,bonus_id=1727
+neck=breathless_choker,id=137461,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
+back=cloak_of_fading_echoes,id=134405,bonus_id=1727/1517,enchant=binding_of_intellect
+chest=tunic_of_screaming_earth,id=137354,bonus_id=1727/1517
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
+hands=gloves_of_fleshshaping,id=134468,bonus_id=1727/1517
+waist=permafrost_waistband,id=137520,bonus_id=1727/1517
+legs=leggings_of_acidic_venom,id=137450,bonus_id=1727/1517
+feet=striders_of_furious_flight,id=137517,bonus_id=1727/1517
+finger1=band_of_callous_dominance,id=134528,bonus_id=1727/1517,enchant_id=5427
+finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1727/1517,enchant_id=5427
+trinket1=oakhearts_gnarled_root,id=137306,bonus_id=1727/1517
+trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727/1517
+main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=137365/137272/137365,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=868.63
-# gear_stamina=22619
-# gear_intellect=24845
-# gear_crit_rating=8532
-# gear_haste_rating=5716
-# gear_mastery_rating=3073
-# gear_versatility_rating=1239
-# gear_armor=2630
+# gear_ilvl=867.06
+# gear_stamina=22155
+# gear_intellect=23118
+# gear_crit_rating=11125
+# gear_haste_rating=4662
+# gear_mastery_rating=2651
+# gear_versatility_rating=986
+# gear_armor=2604
+# set_bonus=tier19p_mail_2pc=1
