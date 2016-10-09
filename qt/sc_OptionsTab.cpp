@@ -1007,7 +1007,7 @@ QString SC_OptionsTab::get_globalSettings()
   // end target spawning
 
   options += "default_skill=";
-  const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
+  const char *skill[] = { "1.0", "0.95", "0.85", "0.75" };
   options += skill[ choice.player_skill->currentIndex() ];
   options += "\n";
 
