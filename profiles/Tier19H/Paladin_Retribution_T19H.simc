@@ -137,15 +137,15 @@ feet=duskwatch_guards_boots,id=137482,bonus_id=1727/1517
 finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_haste
 finger2=band_of_decaying_rubies,id=137438,bonus_id=1727/1517,enchant=binding_of_haste
 trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1517
-trinket2=chaos_talisman,id=137459,bonus_id=1727/1517
+trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517
 main_hand=ashbringer,id=120978,bonus_id=737,gem_id=136717/139266/136717,relic_id=1517/1805/1517
 
 # Gear Summary
 # gear_ilvl=866.27
-# gear_strength=12707
+# gear_strength=14125
 # gear_stamina=22534
-# gear_crit_rating=8059
-# gear_haste_rating=10339
+# gear_crit_rating=9045
+# gear_haste_rating=9353
 # gear_mastery_rating=751
 # gear_versatility_rating=384
 # gear_armor=4187

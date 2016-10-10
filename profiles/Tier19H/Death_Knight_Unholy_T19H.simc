@@ -28,7 +28,6 @@ actions=auto_attack
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
-actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war,if=buff.unholy_strength.react
 actions+=/outbreak,target_if=!dot.virulent_plague.ticking
 actions+=/dark_transformation,if=equipped.137075&cooldown.dark_arbiter.remains>165
@@ -127,16 +126,16 @@ legs=keelhauler_legplates,id=134514,bonus_id=1727/1517
 feet=rook_footmans_warboots,id=139241,bonus_id=1727/1517
 finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_haste
 finger2=band_of_fused_coral,id=134532,bonus_id=1727/1517,enchant=binding_of_haste
-trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1517
-trinket2=chaos_talisman,id=137459,bonus_id=1727/1517
+trinket1=chrono_shard,id=137419,bonus_id=1727/1517
+trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517
 main_hand=apocalypse,id=128403,gem_id=137492/137549/136718,relic_id=1517:1727/1517:1727/1517:1727,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=866.93
-# gear_strength=12781
+# gear_strength=15617
 # gear_stamina=22645
 # gear_crit_rating=6943
-# gear_haste_rating=11647
+# gear_haste_rating=10661
 # gear_mastery_rating=972
 # gear_armor=4194
 # set_bonus=tier19p_plate_2pc=1

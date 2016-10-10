@@ -20,7 +20,7 @@ feet=saltladen_stompers,id=137334,bonus_id=1727/1517
 finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_critical_strike
 finger2=gnawed_thumb_ring,id=134526,bonus_id=1727/1517,enchant=binding_of_critical_strike
 trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1517
-trinket2=chaos_talisman,id=137459,bonus_id=1727/1517
+trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517
 main_hand=blades_of_the_fallen_prince,id=128292,gem_id=137308/133684/137308,relic_id=1517:1727/1517:1727/1517:1727,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 save=Death_Knight_Frost_T19H.simc
@@ -46,7 +46,7 @@ legs=keelhauler_legplates,id=134514,bonus_id=1727/1517
 feet=rook_footmans_warboots,id=139241,bonus_id=1727/1517
 finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_haste
 finger2=band_of_fused_coral,id=134532,bonus_id=1727/1517,enchant=binding_of_haste
-trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1517
-trinket2=chaos_talisman,id=137459,bonus_id=1727/1517
+trinket1=chrono_shard,id=137419,bonus_id=1727/1517
+trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517
 main_hand=apocalypse,id=128403,gem_id=137492/137549/136718,relic_id=1517:1727/1517:1727/1517:1727,enchant=rune_of_the_fallen_crusader
 save=Death_Knight_Unholy_T19H.simc
