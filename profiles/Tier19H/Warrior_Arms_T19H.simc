@@ -30,7 +30,6 @@ actions+=/berserking,if=buff.battle_cry.up|target.time_to_die<=11
 actions+=/arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40
 actions+=/battle_cry,if=(buff.bloodlust.up|time>=1)&!gcd.remains&(buff.shattered_defenses.up|(cooldown.colossus_smash.remains&cooldown.warbreaker.remains))|target.time_to_die<=10
 actions+=/avatar,if=(buff.bloodlust.up|time>=1)
-actions+=/use_item,name=gift_of_radiance
 actions+=/hamstring,if=buff.battle_cry_deadly_calm.remains>cooldown.hamstring.remains
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/rend,if=remains<gcd
@@ -94,28 +93,28 @@ actions.single+=/focused_rage,if=equipped.archavons_heavy_hand
 #Remove the # above to run out of melee and charge back in for rage.
 actions.single+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
 
-head=vision_of_the_spider_queen,id=137451,bonus_id=1805
-neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1805,enchant=mark_of_the_distant_army
-shoulders=mortar_guard_shoulderplates,id=137524,bonus_id=1805
-back=stole_of_malefic_repose,id=134404,bonus_id=1805,enchant=binding_of_strength
-chest=etheldrins_breastplate,id=136976,bonus_id=1805
-wrists=exomesh_carpalform_armplates_mk._vii,id=134502,bonus_id=1805
-hands=reinforced_mook_handguards,id=140596,bonus_id=1805
-waist=roaring_breeze_waistguard,id=137499,bonus_id=1805
-legs=legplates_of_the_swarm,id=134506,bonus_id=1805
-feet=leadfoot_earthshakers,id=134507,bonus_id=1805
-finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1805,enchant=binding_of_mastery
-finger2=archdruids_tainted_seal,id=134487,bonus_id=1805,enchant=binding_of_mastery
-trinket1=gift_of_radiance,id=133647,bonus_id=1805
-trinket2=terrorbound_nexus,id=137406,bonus_id=1805
-main_hand=stromkar_the_warbreaker,id=128910,gem_id=137469/137363/137377,relic_id=1805/1805/1805
+head=vision_of_the_spider_queen,id=137451,bonus_id=1727/1517
+neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727/1517,enchant=mark_of_the_distant_army
+shoulders=mortar_guard_shoulderplates,id=137524,bonus_id=1727/1517
+back=stole_of_malefic_repose,id=134404,bonus_id=1727/1517,enchant=binding_of_strength
+chest=etheldrins_breastplate,id=136976,bonus_id=1727/1517
+wrists=exomesh_carpalform_armplates_mk._vii,id=134502,bonus_id=1727/1517
+hands=reinforced_mook_handguards,id=140596,bonus_id=1727/1517
+waist=roaring_breeze_waistguard,id=137499,bonus_id=1727/1517
+legs=legplates_of_the_swarm,id=134506,bonus_id=1727/1517
+feet=leadfoot_earthshakers,id=134507,bonus_id=1727/1517
+finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1727/1517,enchant=binding_of_mastery
+finger2=archdruids_tainted_seal,id=134487,bonus_id=1727/1517,enchant=binding_of_mastery
+trinket1=spontaneous_appendages,id=139325,bonus_id=1805
+trinket2=terrorbound_nexus,id=137406,bonus_id=1727/1517
+main_hand=stromkar_the_warbreaker,id=128910,gem_id=137469/137363/137377,relic_id=1517:1727/1517:1727/1517:1727
 
 # Gear Summary
 # gear_ilvl=866.93
-# gear_strength=13986
+# gear_strength=12781
 # gear_stamina=22645
 # gear_crit_rating=1077
 # gear_haste_rating=2447
-# gear_mastery_rating=13680
+# gear_mastery_rating=13828
 # gear_versatility_rating=2211
 # gear_armor=4194
