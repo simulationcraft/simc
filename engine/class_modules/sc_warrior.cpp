@@ -4788,11 +4788,17 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_action( this, "Bloodthirst" );
   single_target -> add_action( this, "Furious Slash" );
-  single_target -> add_action( "call_action_list,name=bladestorm" );
+  if ( true_level >= 100 )
+  {
+    single_target -> add_action( "call_action_list,name=bladestorm" );
+  }
   single_target -> add_talent( this, "Bloodbath", "if=buff.frothing_berserker.up|(rage>80&!talent.frothing_berserker.enabled)" );
 
   two_targets -> add_action( this, "Whirlwind", "if=buff.meat_cleaver.down" );
-  two_targets -> add_action( "call_action_list,name=bladestorm" );
+  if ( true_level >= 100 )
+  {
+    two_targets -> add_action( "call_action_list,name=bladestorm" );
+  }
   two_targets -> add_action( this, "Rampage", "if=buff.enrage.down|(rage=100&buff.juggernaut.down)|buff.massacre.up" );
   two_targets -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
   two_targets -> add_action( this, "Odyn's Fury", "if=buff.battle_cry.up&buff.enrage.up" );
@@ -4803,7 +4809,10 @@ void warrior_t::apl_fury()
   two_targets -> add_action( this, "Whirlwind" );
 
   aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<50" );
-  aoe -> add_action( "call_action_list,name=bladestorm" );
+  if ( true_level >= 100 )
+  {
+    aoe -> add_action( "call_action_list,name=bladestorm" );
+  }
   aoe -> add_action( this, "Odyn's Fury", "if=buff.battle_cry.up&buff.enrage.up" );
   aoe -> add_action( this, "Whirlwind", "if=buff.enrage.up" );
   aoe -> add_talent( this, "Dragon Roar" );
