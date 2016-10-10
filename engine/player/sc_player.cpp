@@ -15,12 +15,10 @@ struct player_ready_event_t : public player_event_t
 {
   player_ready_event_t( player_t& p,
                         timespan_t delta_time ) :
-                          player_event_t( p )
+                          player_event_t( p, delta_time )
   {
     if ( sim().debug )
       sim().out_debug.printf( "New Player-Ready Event: %s", p.name() );
-
-    add_event( delta_time );
   }
   virtual const char* name() const override
   { return "Player-Ready"; }
@@ -67,9 +65,8 @@ struct resource_threshold_event_t : public event_t
   player_t* player;
 
   resource_threshold_event_t( player_t* p, const timespan_t& delay ) :
-    event_t( *p ), player( p )
+    event_t( *p, delay ), player( p )
   {
-    add_event( delay );
   }
 
   const char* name() const override
@@ -464,18 +461,23 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
     player_t* target;
     action_t* action;
 
-    delay_event_t( player_t* t, action_t* a, double amount ) :
-      event_t( *a -> player ),
-      additional_residual_amount( amount ), target( t ), action( a )
+    static timespan_t delay_duration( player_t* p )
     {
       // Use same delay as in buff application
-      timespan_t delay_duration = sim().rng().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
+      return p->sim->rng().gauss( p->sim->default_aura_delay,
+                                  p->sim->default_aura_delay_stddev );
+    }
 
+    delay_event_t( player_t* t, action_t* a, double amount )
+      : event_t( *a->player, delay_duration( a->player ) ),
+        additional_residual_amount( amount ),
+        target( t ),
+        action( a )
+    {
       if ( sim().debug )
-        sim().out_debug.printf( "%s %s residual_action delay_event_start amount=%f",
-                                a -> player -> name(), action -> name(), amount );
-
-      add_event( delay_duration );
+        sim().out_debug.printf(
+            "%s %s residual_action delay_event_start amount=%f",
+            a->player->name(), action->name(), amount );
     }
     virtual const char* name() const override
     { return "residual_action_delay_event"; }
@@ -518,7 +520,7 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
 
   assert( residual_action );
 
-  new ( *residual_action -> sim ) delay_event_t( t, residual_action, amount );
+  make_event<delay_event_t>( *residual_action -> sim, t, residual_action, amount );
 }
 
 // ==========================================================================
@@ -2656,7 +2658,7 @@ void player_t::min_threshold_trigger()
     else if ( occurs < resource_threshold_trigger -> occurs() )
     {
       event_t::cancel( resource_threshold_trigger );
-      resource_threshold_trigger = new ( *sim ) resource_threshold_event_t( this, time_to_threshold );
+      resource_threshold_trigger = make_event<resource_threshold_event_t>( *sim, this, time_to_threshold );
       if ( sim -> debug )
       {
         sim -> out_debug.printf( "Player %s recreating Resource-Threshold event: threshold=%.1f delay=%.3f",
@@ -2670,7 +2672,7 @@ void player_t::min_threshold_trigger()
     // Player-ready event.
     assert( ! readying );
 
-    resource_threshold_trigger = new ( *sim )  resource_threshold_event_t( this, time_to_threshold );
+    resource_threshold_trigger = make_event<resource_threshold_event_t>( *sim, this, time_to_threshold );
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "Player %s scheduling new Resource-Threshold event: threshold=%.1f delay=%.3f",
@@ -4399,7 +4401,7 @@ void player_t::schedule_ready( timespan_t delta_time,
     last_foreground_action -> stats -> iteration_total_execute_time += delta_time;
   }
 
-  readying = new ( *sim ) player_ready_event_t( *this, delta_time );
+  readying = make_event<player_ready_event_t>( *sim, *this, delta_time );
 
   if ( was_executing && was_executing -> gcd() > timespan_t::zero() && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
@@ -5676,7 +5678,7 @@ void player_t::do_damage( action_state_t* incoming_state )
         collected_data.deaths.add( sim -> current_time().total_seconds() );
       }
       if ( sim -> log ) sim -> out_log.printf( "%s has died.", name() );
-      new ( *sim ) player_demise_event_t( *this );
+      make_event<player_demise_event_t>( *sim, *this );
     }
   }
 }
@@ -11414,7 +11416,7 @@ void player_t::adjust_global_cooldown( haste_type_e haste_type )
     if ( delta < 1 )
     {
       event_t::cancel( readying );
-      readying = new ( *sim ) player_ready_event_t( *this, new_remains );
+      readying = make_event<player_ready_event_t>( *sim, *this, new_remains );
     }
     // GCD slowing down, just reschedule into future
     else

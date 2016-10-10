@@ -436,24 +436,34 @@ struct movement_ticker_t : public event_t
   const std::vector<player_t*>& players;
   timespan_t duration;
 
-  movement_ticker_t( sim_t& s, const std::vector<player_t*>& p, timespan_t d = timespan_t::zero() ) :
-    event_t( s ), players( p )
+  movement_ticker_t( sim_t& s, const std::vector<player_t*>& p,
+                     timespan_t d = timespan_t::zero() )
+    : event_t( s, d > timespan_t::zero() ? d : next_execute( p ) ), players( p )
   {
-    if ( d > timespan_t::zero() ) duration = d;
-    else duration = next_execute();
+    if ( d > timespan_t::zero() )
+    {
+      duration = d;
+    }
+    else
+    {
+      duration = next_execute( players );
+    }
 
-    add_event( duration );
-    if ( sim().debug ) sim().out_debug.printf( "New movement event" );
+    if ( sim().debug )
+      sim().out_debug.printf( "New movement event" );
   }
   virtual const char* name() const override
-  { return "Player Movement Event"; }
-  timespan_t next_execute() const
+  {
+    return "Player Movement Event";
+  }
+
+  static timespan_t next_execute( const std::vector<player_t*>& players )
   {
     timespan_t min_time = timespan_t::max();
-    bool any_movement = false;
-    for (auto player : players)
+    bool any_movement   = false;
+    for ( auto player : players )
     {
-      timespan_t time_to_finish = player -> time_to_move();
+      timespan_t time_to_finish = player->time_to_move();
       if ( time_to_finish == timespan_t::zero() )
         continue;
 
@@ -466,7 +476,7 @@ struct movement_ticker_t : public event_t
     if ( min_time > timespan_t::from_seconds( 0.1 ) )
       min_time = timespan_t::from_seconds( 0.1 );
 
-    if ( ! any_movement )
+    if ( !any_movement )
       return timespan_t::zero();
     else
       return min_time;
@@ -474,21 +484,20 @@ struct movement_ticker_t : public event_t
 
   void execute() override
   {
-    for (auto p : players)
+    for ( auto p : players )
     {
-      
-      if ( p -> is_sleeping() )
+      if ( p->is_sleeping() )
         continue;
 
-      if ( p -> time_to_move() == timespan_t::zero() )
+      if ( p->time_to_move() == timespan_t::zero() )
         continue;
 
-      p -> update_movement( duration );
+      p->update_movement( duration );
     }
 
-    timespan_t next = next_execute();
+    timespan_t next = next_execute( players );
     if ( next > timespan_t::zero() )
-      new ( sim() ) movement_ticker_t( sim(), players, next );
+      make_event<movement_ticker_t>( sim(), sim(), players, next );
   }
 };
 
@@ -565,7 +574,10 @@ struct movement_event_t : public raid_event_t
       p -> moving();
     }
 
-    if ( affected_players.size() > 0 ) new ( *sim ) movement_ticker_t( *sim, affected_players );
+    if ( affected_players.size() > 0 )
+    {
+      make_event<movement_ticker_t>( *sim, *sim, affected_players );
+    }
   }
 
   virtual void _finish() override
@@ -978,10 +990,9 @@ void raid_event_t::schedule()
     raid_event_t* raid_event;
 
     duration_event_t( sim_t& s, raid_event_t* re, timespan_t time ) :
-      event_t( s ),
+      event_t( s, time ),
       raid_event( re )
     {
-      add_event( time );
       re -> set_next( s.current_time() + time );
     }
     virtual const char* name() const override
@@ -997,10 +1008,9 @@ void raid_event_t::schedule()
     raid_event_t* raid_event;
 
     cooldown_event_t( sim_t& s, raid_event_t* re, timespan_t time ) :
-      event_t( s ),
+      event_t( s, time ),
       raid_event( re )
     {
-      add_event( time );
       re -> set_next( s.current_time() + time );
     }
     virtual const char* name() const override
@@ -1016,19 +1026,19 @@ void raid_event_t::schedule()
 
       if ( raid_event -> saved_duration > timespan_t::zero() )
       {
-        new ( sim() ) duration_event_t( sim(), raid_event, raid_event -> saved_duration );
+        make_event<duration_event_t>( sim(), sim(), raid_event, raid_event -> saved_duration );
       }
       else raid_event -> finish();
 
       if ( raid_event -> last <= timespan_t::zero() ||
            raid_event -> last > ( sim().current_time() + ct ) )
       {
-        new ( sim() ) cooldown_event_t( sim(), raid_event, ct );
+        make_event<cooldown_event_t>( sim(), sim(), raid_event, ct );
       }
     }
   };
 
-  new ( *sim ) cooldown_event_t( *sim, this, cooldown_time() );
+  make_event<cooldown_event_t>( *sim, *sim, this, cooldown_time() );
 }
 
 // raid_event_t::reset ======================================================

@@ -12,19 +12,21 @@ struct recharge_event_t : event_t
   cooldown_t* cooldown_;
   timespan_t duration_, event_duration_;
 
-  recharge_event_t( cooldown_t* cd, timespan_t base_duration ) :
-    event_t( cd -> sim ), cooldown_( cd ),
-    duration_( base_duration ),
-    event_duration_( cooldown_t::cooldown_duration( cd, base_duration ) )
+  recharge_event_t( cooldown_t* cd, timespan_t base_duration )
+    : event_t( cd->sim, cooldown_t::cooldown_duration( cd, base_duration ) ),
+      cooldown_( cd ),
+      duration_( base_duration ),
+      event_duration_( cooldown_t::cooldown_duration( cd, base_duration ) )
   {
-    add_event( event_duration_ );
   }
 
-  recharge_event_t( cooldown_t* cd, timespan_t event_duration, timespan_t base_duration ) :
-    event_t( *cd -> player ), cooldown_( cd ),
-    duration_( base_duration ), event_duration_( event_duration )
+  recharge_event_t( cooldown_t* cd, timespan_t event_duration,
+                    timespan_t base_duration )
+    : event_t( *cd->player, event_duration ),
+      cooldown_( cd ),
+      duration_( base_duration ),
+      event_duration_( event_duration )
   {
-    add_event( event_duration_ );
   }
 
   virtual const char* name() const override
@@ -38,7 +40,7 @@ struct recharge_event_t : event_t
 
     if ( cooldown_ -> current_charge < cooldown_ -> charges )
     {
-      cooldown_ -> recharge_event = new ( sim() ) recharge_event_t( cooldown_, duration_ );
+      cooldown_ -> recharge_event = make_event<recharge_event_t>( sim(), cooldown_, duration_ );
     }
     else
     {
@@ -68,10 +70,9 @@ struct ready_trigger_event_t : public player_event_t
   cooldown_t* cooldown;
 
   ready_trigger_event_t( player_t& p, cooldown_t* cd ) :
-    player_event_t( p ),
+    player_event_t( p, cd -> ready - p.sim -> current_time() ),
     cooldown( cd )
   {
-    add_event( cd -> ready - sim().current_time() );
   }
   virtual const char* name() const override
   { return "ready_trigger_event"; }
@@ -172,7 +173,7 @@ void cooldown_t::adjust_recharge_multiplier()
     {
       timespan_t duration_ = recharge_event_t::cast( recharge_event ) -> duration_;
       event_t::cancel( recharge_event );
-      recharge_event = new ( sim ) recharge_event_t( this, new_remains, duration_ );
+      recharge_event = make_event<recharge_event_t>( sim, this, new_remains, duration_ );
     }
     else
     {
@@ -222,7 +223,7 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
     {
       timespan_t duration_ = recharge_event_t::cast( recharge_event ) -> duration_;
       event_t::cancel( recharge_event );
-      recharge_event = new ( sim ) recharge_event_t( this, remains, duration_ );
+      recharge_event = make_event<recharge_event_t>( sim, this, remains, duration_ );
 
       // If we have no charges, adjust ready time to the new occurrence time
       // of the recharge event, plus a millisecond
@@ -251,7 +252,7 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
         timespan_t new_duration = cooldown_duration( this, duration_ );
         new_duration += remains;
 
-        recharge_event = new ( sim ) recharge_event_t( this, new_duration, duration_ );
+        recharge_event = make_event<recharge_event_t>( sim, this, new_duration, duration_ );
       }
 
       if ( sim.debug )
@@ -351,7 +352,7 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
     // Begin a recharge event
     if ( ! recharge_event )
     {
-      recharge_event = new ( sim ) recharge_event_t( this, event_duration, _override );
+      recharge_event = make_event<recharge_event_t>( sim, this, event_duration, _override );
     }
 
     // No charges left, the cooldown won't be ready until a recharge event
@@ -372,7 +373,7 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
 
   assert( player );
   if ( player -> ready_type == READY_TRIGGER )
-    ready_trigger_event = new ( sim ) ready_trigger_event_t( *player, this );
+    ready_trigger_event = make_event<ready_trigger_event_t>( sim, *player, this );
 }
 
 void cooldown_t::start( timespan_t _override, timespan_t delay )

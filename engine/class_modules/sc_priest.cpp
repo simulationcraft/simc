@@ -1006,7 +1006,9 @@ struct lightwell_renew_t final : public heal_t
     // directly inside the
     // last_tick().
     if ( p().charges <= 0 )
-      new ( *sim ) player_demise_event_t( p() );
+    {
+      make_event<player_demise_event_t>( *sim, p() );
+    }
   }
 
   bool ready() override
@@ -3581,7 +3583,7 @@ struct silence_t final : public priest_spell_t
     : priest_spell_t( "silence", player, player.find_class_spell( "Silence" ) )
   {
     parse_options( options_str );
-    may_miss = may_crit = false;
+    may_miss = may_crit   = false;
     ignore_false_positive = true;
 
     cooldown           = priest.cooldowns.silence;
@@ -3806,9 +3808,8 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
     insanity_drain_stacks_t* ids;
 
     stack_increase_event_t( insanity_drain_stacks_t* s )
-      : player_event_t( *s->player ), ids( s )
+      : player_event_t( *s->player, timespan_t::from_seconds( 1.0 ) ), ids( s )
     {
-      add_event( timespan_t::from_seconds( 1.0 ) );
     }
 
     const char* name() const override
@@ -3827,7 +3828,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
       {
         priest->buffs.insanity_drain_stacks->increment();
       }
-      ids->stack_increase = new ( sim() ) stack_increase_event_t( ids );
+      ids->stack_increase = make_event<stack_increase_event_t>( sim(), ids );
     }
   };
 
@@ -3848,7 +3849,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
     bool r = base_t::trigger( stacks, value, chance, duration );
 
     assert( stack_increase == nullptr );
-    stack_increase = new ( *sim ) stack_increase_event_t( this );
+    stack_increase = make_event<stack_increase_event_t>( *sim, this );
 
     return r;
   }
@@ -3878,9 +3879,8 @@ struct voidform_t final : public priest_buff_t<buff_t>
     voidform_t* vf;
 
     insanity_loss_event_t( voidform_t* s )
-      : player_event_t( *s->player ), vf( s )
+      : player_event_t( *s->player, timespan_t::from_seconds( 0.05 ) ), vf( s )
     {
-      add_event( timespan_t::from_seconds( 0.05 ) );  // See note below.
     }
 
     const char* name() const override
@@ -3962,7 +3962,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
         return;
       }
 
-      vf->insanity_loss = new ( sim() ) insanity_loss_event_t( vf );
+      vf->insanity_loss = make_event<insanity_loss_event_t>( sim(), vf );
     }
   };
 
@@ -3999,7 +3999,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
     bool r = base_t::trigger( stacks, value, chance, duration );
 
     assert( insanity_loss == nullptr );
-    insanity_loss = new ( *sim ) insanity_loss_event_t( this );
+    insanity_loss = make_event<insanity_loss_event_t>( *sim, this );
 
     priest.buffs.insanity_drain_stacks->trigger();
     priest.buffs.the_twins_painful_touch->trigger();

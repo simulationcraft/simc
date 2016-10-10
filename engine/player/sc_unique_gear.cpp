@@ -1099,10 +1099,9 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
     unsigned pulse_id;
 
     electric_orb_event_t( sim_t& sim, electric_orb_aoe_t* a, player_t* t, unsigned pulse ) :
-      event_t( sim ),
+      event_t( sim, timespan_t::from_seconds( 2.0 ) ),
       aoe( a ), target( t ), pulse_id( pulse )
     {
-      add_event( timespan_t::from_seconds( 2.0 ) );
     }
     virtual const char* name() const override
     { return "electric_orb_event"; }
@@ -1113,7 +1112,7 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
 
       if ( ++pulse_id < 5 )
       {
-        new ( sim() ) electric_orb_event_t( sim(), aoe, target, pulse_id );
+        make_event<electric_orb_event_t>( sim(), sim(), aoe, target, pulse_id );
       }
     }
   };
@@ -1129,7 +1128,7 @@ void set_bonus::t17_lfr_4pc_mailcaster( special_effect_t& effect )
 
     void execute( action_t* /* a */, action_state_t* state ) override
     {
-      new ( *listener -> sim ) electric_orb_event_t(*listener -> sim, aoe, state -> target, 0 );
+      make_event<electric_orb_event_t>(*listener -> sim, *listener -> sim, aoe, state -> target, 0 );
     }
   };
 
@@ -1998,8 +1997,8 @@ void item::legendary_ring( special_effect_t& effect )
         double value;
 
         legendary_ring_delay_event_t( player_t* p, action_t* b, double v ) :
-          event_t( *p ), player( p ), boom( b ), value( v )
-        { add_event( timespan_t::from_seconds( 1.0 ) ); }
+          event_t( *p, timespan_t::from_seconds( 1.0 ) ), player( p ), boom( b ), value( v )
+        { }
 
         const char* name() const override
         { return "legendary_ring_boom_delay"; }
@@ -2046,7 +2045,7 @@ void item::legendary_ring( special_effect_t& effect )
         buff_t::expire_override( expiration_stacks, remaining_duration );
 
         if ( cv > 0 )
-          new ( *sim ) legendary_ring_delay_event_t( p, boom, cv );
+          make_event<legendary_ring_delay_event_t>( *sim, p, boom, cv );
       }
   };
 
@@ -2923,9 +2922,10 @@ struct hammering_blows_buff_t : public stat_buff_t
   {
     dbc_proc_callback_t* driver;
 
-    enable_event_t( dbc_proc_callback_t* cb ) :
-      event_t( *cb -> listener ), driver( cb )
-    { add_event( timespan_t::zero() ); }
+    enable_event_t( dbc_proc_callback_t* cb )
+      : event_t( *cb->listener, timespan_t::zero() ), driver( cb )
+    {
+    }
 
     const char* name() const override
     { return "hammering_blows_enable_event"; }
@@ -2952,7 +2952,7 @@ struct hammering_blows_buff_t : public stat_buff_t
 
     if ( state_change )
     {
-      new ( *sim ) enable_event_t( stack_driver );
+      make_event<enable_event_t>( *sim, stack_driver );
     }
   }
 

@@ -389,9 +389,8 @@ struct haymaker_driver_t : public dbc_proc_callback_t
     double damage;
 
     haymaker_event_t( haymaker_driver_t* cb, haymaker_damage_t* a, debuff_t* d ) :
-      event_t( *a -> player ), action( a ), callback( cb ), debuff( d ), damage( 0 )
+      event_t( *a -> player, a -> data().effectN( 1 ).period() ), action( a ), callback( cb ), debuff( d ), damage( 0 )
     {
-      add_event( a -> data().effectN( 1 ).period() );
     }
 
     const char* name() const override
@@ -409,7 +408,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
       }
 
       if ( debuff -> current_value > 0 && debuff -> check() )
-        callback -> accumulator = new ( *action -> player -> sim ) haymaker_event_t( callback, action, debuff );
+        callback -> accumulator = make_event<haymaker_event_t>( *action -> player -> sim, callback, action, debuff );
       else
       {
         callback -> accumulator = nullptr;
@@ -427,7 +426,7 @@ struct haymaker_driver_t : public dbc_proc_callback_t
   {
     dbc_proc_callback_t::activate();
 
-    accumulator = new ( *effect.player -> sim ) haymaker_event_t( this, action, debuff );
+    accumulator = make_event<haymaker_event_t>( *effect.player -> sim, this, action, debuff );
   }
 
   void execute( action_t* /* a */, action_state_t* trigger_state ) override
@@ -1136,7 +1135,7 @@ struct nightfall_t : public proc_spell_t
   {
     proc_spell_t::execute();
 
-    new ( *sim ) ground_aoe_event_t( player, ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( execute_state -> target )
       .x( execute_state -> target -> x_position )
       .y( execute_state -> target -> y_position )
@@ -1204,21 +1203,24 @@ struct shuffle_event_t : public event_t
 {
   darkmoon_deck_t* deck;
 
-  shuffle_event_t( darkmoon_deck_t* d, bool initial = false ) :
-    event_t( *d -> player ), deck( d )
+  static timespan_t delta_time( sim_t& sim, bool initial, darkmoon_deck_t* deck )
   {
-    /* Shuffle when we schedule an event instead of when it executes.
-    This will assure the deck starts shuffled */
-    deck -> shuffle();
-
     if ( initial )
     {
-      add_event( deck -> shuffle_period * rng().real() );
+      return deck->shuffle_period * sim.rng().real();
     }
     else
     {
-      add_event( deck -> shuffle_period );
+      return deck->shuffle_period;
     }
+  }
+
+  shuffle_event_t( darkmoon_deck_t* d, bool initial = false )
+    : event_t( *d->player, delta_time( *d -> player -> sim, initial, d ) ), deck( d )
+  {
+    /* Shuffle when we schedule an event instead of when it executes.
+    This will assure the deck starts shuffled */
+    deck->shuffle();
   }
 
   const char* name() const override
@@ -1226,7 +1228,7 @@ struct shuffle_event_t : public event_t
 
   void execute() override
   {
-    new ( sim() ) shuffle_event_t( deck );
+    make_event<shuffle_event_t>( sim(), deck );
   }
 };
 
@@ -1263,7 +1265,7 @@ void item::darkmoon_deck( special_effect_t& effect )
       return;
     }
 
-    new ( *effect.player -> sim ) shuffle_event_t( d, true );
+    make_event<shuffle_event_t>( *effect.player -> sim, d, true );
   });
 }
 
@@ -1315,13 +1317,13 @@ struct natures_call_proc_t
   action_t* action;
   buff_t* buff;
 
-  natures_call_proc_t( action_t* a ) :
-    buff( 0 ), action( a )
-  {}
+  natures_call_proc_t( action_t* a ) : action( a ), buff( nullptr )
+  {
+  }
 
-  natures_call_proc_t( buff_t* b ) :
-    buff( b ), action( 0 )
-  {}
+  natures_call_proc_t( buff_t* b ) : action( nullptr ), buff( b )
+  {
+  }
 
   void execute( player_t* t )
   {
@@ -1579,7 +1581,7 @@ struct shadow_wave_callback_t : public dbc_proc_callback_t
   void execute( action_t* /* a */, action_state_t* s ) override
   {
     // 2 second return time, from in-game combat logs.
-    new ( *effect.player -> sim  ) ground_aoe_event_t( effect.player, ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *effect.player -> sim, effect.player, ground_aoe_params_t()
       .target( s -> target )
       .x( effect.player -> x_position )
       .y( effect.player -> y_position )
@@ -2014,7 +2016,7 @@ struct tormenting_cyclone_t : public proc_spell_t
   {
     proc_spell_t::execute();
 
-    new ( *sim ) ground_aoe_event_t( player, ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( execute_state -> target )
       .x( execute_state -> target -> x_position )
       .y( execute_state -> target -> y_position )
@@ -2106,7 +2108,7 @@ struct infested_ground_t : public proc_spell_t
   {
     proc_spell_t::execute();
 
-    new ( *sim ) ground_aoe_event_t( player, ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( execute_state -> target )
       .x( player -> x_position )
       .y( player -> y_position )

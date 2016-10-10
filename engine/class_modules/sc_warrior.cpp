@@ -1286,7 +1286,7 @@ struct bloodthirst_heal_t: public warrior_heal_t
     background = true;
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = warrior_heal_t::action_multiplier();
 
@@ -1894,14 +1894,13 @@ struct sweeping_execute_t: public event_t
   player_t* original_target;
   warrior_t* warrior;
   sweeping_execute_t( warrior_t*p, double cost, bool free, player_t* target ):
-    event_t( *p -> sim ), execute_sweep( nullptr ), original_target( target ), warrior( p )
+    event_t( *p -> sim, next_execute() ), execute_sweep( nullptr ), original_target( target ), warrior( p )
   {
     duration = next_execute();
-    add_event( duration );
     execute_sweep = new execute_sweep_t( p, cost, free );
   }
 
-  timespan_t next_execute() const
+  static timespan_t next_execute()
   {
     return timespan_t::from_millis( 500 );
   }
@@ -2113,7 +2112,7 @@ struct execute_t: public warrior_attack_t
 
     if ( p() -> talents.sweeping_strikes -> ok() && target_cache.list.size() > 1 )
     {
-      p() -> execute_sweeping_strike = new ( *sim ) sweeping_execute_t( p(),
+      p() -> execute_sweeping_strike = make_event<sweeping_execute_t>( *sim, p(),
                                                                         resource_consumed,
                                                                         p() -> buff.ayalas_stone_heart -> up(),
                                                                         execute_state -> target );
@@ -2411,8 +2410,9 @@ struct heroic_charge_movement_ticker_t: public event_t
 {
   timespan_t duration;
   warrior_t* warrior;
+
   heroic_charge_movement_ticker_t( sim_t& s, warrior_t*p, timespan_t d = timespan_t::zero() ):
-    event_t( s, p ), warrior( p )
+    event_t( *p ), warrior( p )
   {
     if ( d > timespan_t::zero() )
     {
@@ -2423,8 +2423,9 @@ struct heroic_charge_movement_ticker_t: public event_t
       duration = next_execute();
     }
 
-    add_event( duration );
     if ( sim().debug ) sim().out_debug.printf( "New movement event" );
+
+    schedule( duration );
   }
 
   timespan_t next_execute() const
@@ -2467,7 +2468,7 @@ struct heroic_charge_movement_ticker_t: public event_t
     timespan_t next = next_execute();
     if ( next > timespan_t::zero() )
     {
-      warrior -> heroic_charge = new ( sim() ) heroic_charge_movement_ticker_t( sim(), warrior, next );
+      warrior -> heroic_charge = make_event<heroic_charge_movement_ticker_t>( sim(), sim(), warrior, next );
     }
     else
     {
@@ -2503,12 +2504,12 @@ struct heroic_charge_t: public warrior_attack_t
       p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, timespan_t::from_millis( 500 ) );
       leap -> execute();
       p() -> trigger_movement( 10.0, MOVEMENT_BOOMERANG ); // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
-      p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
+      p() -> heroic_charge = make_event<heroic_charge_movement_ticker_t>( *sim, *sim, p() );
     }
     else
     {
       p() -> trigger_movement( 9.0, MOVEMENT_BOOMERANG );
-      p() -> heroic_charge = new ( *sim ) heroic_charge_movement_ticker_t( *sim, p() );
+      p() -> heroic_charge = make_event<heroic_charge_movement_ticker_t>( *sim, *sim, p() );
     }
   }
 
@@ -2866,7 +2867,7 @@ struct rampage_event_t: public event_t
     event_t( *p -> sim ), warrior( p ), attacks( current_attack )
   {
     duration = next_execute();
-    add_event( duration );
+    schedule( duration );
     if ( sim().debug ) sim().out_debug.printf( "New rampage event" );
   }
 
@@ -2903,7 +2904,7 @@ struct rampage_event_t: public event_t
     attacks++;
     if ( attacks < warrior -> rampage_attacks.size() )
     {
-      warrior -> rampage_driver = new ( sim() ) rampage_event_t( warrior, attacks );
+      warrior -> rampage_driver = make_event<rampage_event_t>( sim(), warrior, attacks );
     }
     else
     {
@@ -2958,7 +2959,7 @@ struct rampage_parent_t: public warrior_attack_t
       p() -> cooldown.rage_of_the_valarjar_icd -> start();
     }
 
-    p() -> rampage_driver = new ( *sim ) rampage_event_t( p(), 0 );
+    p() -> rampage_driver = make_event<rampage_event_t>( *sim, p(), 0 );
   }
 
   bool ready() override

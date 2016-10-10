@@ -1138,15 +1138,13 @@ struct secondary_ability_trigger_t : public event_t
   int cp;
 
   secondary_ability_trigger_t( action_state_t* s, const timespan_t& delay = timespan_t::zero() ) :
-    event_t( *s -> action -> sim ), action( s -> action ), state( s ), target( nullptr ), cp( 0 )
+    event_t( *s -> action -> sim, delay ), action( s -> action ), state( s ), target( nullptr ), cp( 0 )
   {
-    add_event( delay );
   }
 
   secondary_ability_trigger_t( player_t* target, action_t* action, int cp, const timespan_t& delay = timespan_t::zero() ) :
-    event_t( *action -> sim ), action( action ), state( nullptr ), target( target ), cp( cp )
+    event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp )
   {
-    add_event( delay );
   }
 
   const char* name() const override
@@ -2633,7 +2631,7 @@ struct envenom_t : public rogue_attack_t
 
     if ( p() -> artifact.bag_of_tricks.rank() && p() -> prng.bag_of_tricks -> trigger() )
     {
-      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
           .target( execute_state -> target )
           .x( player -> x_position )
           .y( player -> y_position )
@@ -3794,15 +3792,15 @@ struct rupture_t : public rogue_attack_t
 
 struct saber_slash_t : public rogue_attack_t
 {
-  struct saberslash_proc_event_t : public player_event_t
+  struct saberslash_proc_event_t : public event_t
   {
+    rogue_t* rogue;
     saber_slash_t* spell;
     player_t* target;
 
     saberslash_proc_event_t( rogue_t* p, saber_slash_t* s, player_t* t ) :
-      player_event_t( *p ), spell( s ), target( t )
+      event_t( *p, s -> delay ), rogue( p ), spell( s ), target( t )
     {
-      add_event( spell -> delay );
     }
 
     const char* name() const override
@@ -3814,8 +3812,7 @@ struct saber_slash_t : public rogue_attack_t
       spell -> execute();
       spell -> saberslash_proc_event = nullptr;
 
-      rogue_t* r = debug_cast<rogue_t*>( player() );
-      r -> buffs.blunderbuss -> trigger();
+      rogue -> buffs.blunderbuss -> trigger();
     }
   };
 
@@ -3873,7 +3870,7 @@ struct saber_slash_t : public rogue_attack_t
          ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), saber_slash_proc_chance() ) ||
          p() -> buffs.hidden_blade -> up() ) )
     {
-      saberslash_proc_event = new ( *sim ) saberslash_proc_event_t( p(), this, execute_state -> target );
+      saberslash_proc_event = make_event<saberslash_proc_event_t>( *sim, p(), this, execute_state -> target );
     }
 
     p() -> buffs.hidden_blade -> decrement();
@@ -4020,10 +4017,14 @@ struct shadowstrike_t : public rogue_attack_t
   {
     rogue_t* rogue;
     player_t* target;
-    akaaris_soul_event_t( rogue_t* r, player_t* target ) :
-      event_t( *r ), rogue( r ), target( target )
+    akaaris_soul_event_t( rogue_t* r, player_t* target )
+      : event_t(
+            *r,
+            timespan_t::from_seconds(
+                r->artifact.akaaris_soul.data().effectN( 1 ).base_value() ) ),
+        rogue( r ),
+        target( target )
     {
-      add_event( timespan_t::from_seconds( r -> artifact.akaaris_soul.data().effectN( 1 ).base_value() ) );
     }
 
     const char* name() const override
@@ -4059,7 +4060,7 @@ struct shadowstrike_t : public rogue_attack_t
 
     if ( p() -> artifact.akaaris_soul.rank() )
     {
-      new ( *sim ) akaaris_soul_event_t( p(), execute_state -> target );
+      make_event<akaaris_soul_event_t>( *sim, p(), execute_state -> target );
     }
 
     p() -> buffs.death -> decrement();
@@ -4334,7 +4335,7 @@ struct death_from_above_driver_t : public rogue_attack_t
     ability -> snapshot_state( ability_state, DMG_DIRECT );
     ability_state -> target = d -> target;
     cast_state( ability_state ) -> cp = cast_state( d -> state ) -> cp;
-    new ( *sim ) secondary_ability_trigger_t( ability_state );
+    make_event<secondary_ability_trigger_t>( *sim, ability_state );
 
     p() -> buffs.death_from_above -> expire();
   }
@@ -5240,7 +5241,7 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
   // Direct damage re-computes on execute
   if ( s -> result_type == DMG_DIRECT )
   {
-    new ( *sim ) actions::secondary_ability_trigger_t( s -> target, s -> action,
+    make_event<actions::secondary_ability_trigger_t>( *sim, s -> target, s -> action,
         actions::rogue_attack_t::cast_state( s ) -> cp );
   }
   // Dot damage is always a "snapshot"

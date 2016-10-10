@@ -2989,7 +2989,7 @@ struct shadow_bolt_t: public warlock_spell_t
     {
       if ( rng().roll( p() -> artifact.thalkiels_discord.data().proc_chance() ) )
       {
-        new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
           .target( execute_state -> target )
           .x( execute_state -> target -> x_position )
           .y( execute_state -> target -> y_position )
@@ -3134,11 +3134,10 @@ struct hand_of_guldan_t: public warlock_spell_t
     bool initiator;
     int count;
     trigger_imp_event_t( warlock_t* p, int c, bool init = false ) :
-      player_event_t( *p ), initiator( init ), count( c )//Use original corruption until DBC acts more friendly.
+      player_event_t( *p, timespan_t::from_millis(1) ), initiator( init ), count( c )//Use original corruption until DBC acts more friendly.
     {
       //add_event( rng().range( timespan_t::from_millis( 500 ),
       //  timespan_t::from_millis( 1500 ) ) );
-      add_event(timespan_t::from_millis(1));
     }
 
     virtual const char* name() const override
@@ -3258,7 +3257,7 @@ struct hand_of_guldan_t: public warlock_spell_t
         }
       }
       if ( s -> chain_target == 0 )
-        imp_event =  new ( *sim ) trigger_imp_event_t( p(), floor( shards_used ), true);
+        imp_event =  make_event<trigger_imp_event_t>( *sim, p(), floor( shards_used ), true);
     }
   }
 };
@@ -3907,7 +3906,7 @@ struct rain_of_fire_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( execute_state -> target )
       .x( execute_state -> target -> x_position )
       .y( execute_state -> target -> y_position )
@@ -4435,7 +4434,7 @@ struct demonbolt_t : public warlock_spell_t
     {
       if ( rng().roll( p() -> artifact.thalkiels_discord.data().proc_chance() ) )
       {
-        new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
           .target( execute_state -> target )
           .x( execute_state -> target -> x_position )
           .y( execute_state -> target -> y_position )
@@ -4625,9 +4624,8 @@ struct shadowburn_t: public warlock_spell_t
     player_t* target;
 
     resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
-      player_event_t( *p ), spell( s ), shard_gain( p -> gains.shadowburn_shard ), target(t)
+      player_event_t( *p, spell -> delay ), spell( s ), shard_gain( p -> gains.shadowburn_shard ), target(t)
     {
-      add_event( spell -> delay );
     }
     virtual const char* name() const override
     { return "shadowburn_execute_gain"; }
@@ -4652,7 +4650,7 @@ struct shadowburn_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    resource_event = new ( *sim ) resource_event_t( p(), this, s -> target );
+    resource_event = make_event<resource_event_t>( *sim, p(), this, s -> target );
   }
 
   virtual bool ready() override
@@ -7172,7 +7170,7 @@ struct warlock_module_t: public module_t
       .modifier( 1.15 )
       .verification_value( 1.44 );
 
-    hotfix::register_effect( "Warlock", "2015-09-23", "Hand of Gul’dan impact damage increased by 20%", 87492 )
+    hotfix::register_effect( "Warlock", "2015-09-23", "Hand of Gulï¿½dan impact damage increased by 20%", 87492 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.2 )

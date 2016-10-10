@@ -733,9 +733,8 @@ struct stormlash_expiration_t : public player_event_t
 
   stormlash_expiration_t( player_t* pl, damage_pool_t* pool, std::vector<damage_pool_t*>& pools,
                           const timespan_t duration ) :
-    player_event_t( *pl ), damage_pool( pools ), pool( pool )
+    player_event_t( *pl, duration ), damage_pool( pools ), pool( pool )
   {
-    add_event( duration );
   }
 
   void execute() override
@@ -759,7 +758,7 @@ damage_pool_t::damage_pool_t( player_t* pl, double d, std::vector<damage_pool_t*
                               const timespan_t& duration ) :
   damage( d ), last_proc( pl -> sim -> current_time() )
 {
-  expiration = new ( *pl -> sim ) stormlash_expiration_t( pl, this, p, duration );
+  expiration = make_event<stormlash_expiration_t>( *pl -> sim, pl, this, p, duration );
   p.push_back( this );
 }
 
@@ -1489,9 +1488,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       action_state_t* state;
 
       elemental_overload_event_t( action_state_t* s ) :
-        event_t( *s -> action -> player ), state( s )
+        event_t( *s -> action -> player, timespan_t::from_millis( 400 ) ), state( s )
       {
-        add_event( timespan_t::from_millis( 400 ) );
       }
 
       ~elemental_overload_event_t()
@@ -1525,7 +1523,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       overload -> snapshot_state( s, DMG_DIRECT );
       s -> target = source_state -> target;
 
-      new ( *sim ) elemental_overload_event_t( s );
+      make_event<elemental_overload_event_t>( *sim, s );
     }
   }
 };
@@ -3455,7 +3453,7 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( p() -> talent.crashing_storm -> ok() )
     {
-      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
           .target( execute_state -> target )
           .duration( p() -> find_spell( 205532 ) -> duration() )
           .action( p() -> action.crashing_storm ), true );
@@ -4150,7 +4148,7 @@ struct lava_burst_t : public shaman_spell_t
 
       if ( rng().roll( p() -> artifact.volcanic_inferno.data().proc_chance() ) )
       {
-        new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
             .target( state -> target )
             .duration( p() -> find_spell( 199121 ) -> duration() )
             .action( p() -> action.volcanic_inferno ) );
@@ -4713,7 +4711,7 @@ struct earthquake_totem_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .target( execute_state -> target )
         .duration( data().duration() )
         .action( rumble )
@@ -5290,7 +5288,7 @@ struct totem_pulse_event_t : public event_t
     if ( totem -> pulse_action -> hasted_pulse )
       real_amplitude *= totem -> cache.spell_speed();
 
-    add_event( real_amplitude );
+    schedule( real_amplitude );
   }
   virtual const char* name() const override
   { return  "totem_pulse"; }
@@ -5299,7 +5297,7 @@ struct totem_pulse_event_t : public event_t
     if ( totem -> pulse_action )
       totem -> pulse_action -> execute();
 
-    totem -> pulse_event = new ( sim() ) totem_pulse_event_t( *totem, totem -> pulse_amplitude );
+    totem -> pulse_event = make_event<totem_pulse_event_t>( sim(), *totem, totem -> pulse_amplitude );
   }
 };
 
@@ -5310,7 +5308,7 @@ void shaman_totem_pet_t::summon( timespan_t duration )
   if ( pulse_action )
   {
     pulse_action -> pulse_multiplier = 1.0;
-    pulse_event = new ( *sim ) totem_pulse_event_t( *this, pulse_amplitude );
+    pulse_event = make_event<totem_pulse_event_t>( *sim, *this, pulse_amplitude );
   }
 
   if ( summon_pet )
@@ -6162,7 +6160,7 @@ void shaman_t::trigger_doom_vortex( const action_state_t* state )
     return;
   }
 
-  new ( *sim ) ground_aoe_event_t( this, ground_aoe_params_t()
+  make_event<ground_aoe_event_t>( *sim, this, ground_aoe_params_t()
       .target( state -> target )
       .duration( find_spell( 199121 ) -> duration() )
       .action( state -> action -> id == 187837 ? action.doom_vortex_lb : action.doom_vortex_ll ) );

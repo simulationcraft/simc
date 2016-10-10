@@ -664,7 +664,7 @@ public:
     return p() -> get_target_data( t );
   }
 
-  virtual double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = ab::action_multiplier();
 
@@ -713,7 +713,7 @@ public:
 
 // action list expressions
 
-  virtual expr_t* create_expression( const std::string& name )
+  expr_t* create_expression( const std::string& name ) override
   {
     if ( util::str_compare_ci( name, "cast_regen" ) )
     {

@@ -606,10 +606,9 @@ struct exit_melee_event_t : public event_t
   demon_hunter_t& dh;
 
   exit_melee_event_t( demon_hunter_t* p, timespan_t d )
-    : event_t( *p ), dh( *p )
+    : event_t( *p, d ), dh( *p )
   {
     assert( d > timespan_t::zero() );
-    add_event( d );
   }
 
   const char* name() const override
@@ -670,7 +669,7 @@ bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
     assert( time > timespan_t::zero() );
 
     // Schedule event to set us out of melee.
-    dh -> exiting_melee = new ( *sim ) exit_melee_event_t( dh, time );
+    dh -> exiting_melee = make_event<exit_melee_event_t>( *sim, dh, time );
   }
 
   return buff_t::trigger( s, v, c, d );
@@ -713,10 +712,8 @@ struct delayed_execute_event_t : public event_t
 
   delayed_execute_event_t( demon_hunter_t* p, action_t* a, player_t* t,
                            timespan_t delay )
-    : event_t( *p -> sim ), action( a ), target( t )
+    : event_t( *p -> sim, delay ), action( a ), target( t )
   {
-    add_event( delay );
-
     assert( action -> background );
   }
 
@@ -743,9 +740,9 @@ struct soul_fragment_t
   {
     soul_fragment_t* frag;
 
-    fragment_expiration_t( soul_fragment_t* s ) : event_t( *s -> dh ), frag( s )
+    fragment_expiration_t( soul_fragment_t* s )
+      : event_t( *s->dh, s->dh->spec.soul_fragment->duration() ), frag( s )
     {
-      add_event( s -> dh -> spec.soul_fragment -> duration() );
     }
 
     const char* name() const override
@@ -775,7 +772,7 @@ struct soul_fragment_t
 
     fragment_activate_t( soul_fragment_t* s ) : event_t( *s -> dh ), frag( s )
     {
-      add_event( travel_time() );
+      schedule( travel_time() );
     }
 
     const char* name() const override
@@ -783,7 +780,7 @@ struct soul_fragment_t
       return "Soul Fragment activate";
     }
 
-    timespan_t travel_time()
+    timespan_t travel_time() const
     {
       double distance = frag -> get_distance( frag -> dh );
       double velocity = frag -> dh -> spec.consume_soul -> missile_speed();
@@ -793,7 +790,7 @@ struct soul_fragment_t
     void execute() override
     {
       frag -> activate   = nullptr;
-      frag -> expiration = new ( sim() ) fragment_expiration_t( frag );
+      frag -> expiration = make_event<fragment_expiration_t>( sim(), frag );
 
       if ( sim().debug )
       {
@@ -889,7 +886,7 @@ struct soul_fragment_t
   {
     set_position();
 
-    activate = new ( *dh -> sim ) fragment_activate_t( this );
+    activate = make_event<fragment_activate_t>( *dh -> sim, this );
   }
 
   void consume( bool heal = true, bool instant = false )
@@ -914,7 +911,7 @@ struct soul_fragment_t
         timespan_t delay =
           timespan_t::from_seconds( get_distance( dh ) / velocity );
 
-        new ( *dh -> sim ) delayed_execute_event_t( dh, a, dh, delay );
+        make_event<delayed_execute_event_t>( *dh -> sim, dh, a, dh, delay );
       }
     }
 
@@ -2215,7 +2212,7 @@ struct infernal_strike_t : public demon_hunter_spell_t
       {
         p() -> sigil_of_flame_activates = sim -> current_time() + p() -> sigil_delay;
 
-        new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+        make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
             .target( execute_state -> target )
             .x( p() -> x_position )
             .y( p() -> y_position )
@@ -2492,9 +2489,8 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     expr_t* expr;
 
     pick_up_event_t( soul_fragment_t* f, timespan_t time, expr_t* e )
-      : event_t( *f -> dh ), dh( f -> dh ), frag( f ), expr( e )
+      : event_t( *f -> dh, time ), dh( f -> dh ), frag( f ), expr( e )
     {
-      add_event( time );
     }
 
     const char* name() const override
@@ -2665,8 +2661,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     timespan_t time = calculate_movement_time( frag );
 
     assert( p() -> soul_fragment_pick_up == nullptr );
-    p() -> soul_fragment_pick_up =
-      new ( *sim ) pick_up_event_t( frag, time, if_expr );
+    p() -> soul_fragment_pick_up = make_event<pick_up_event_t>( *sim, frag, time, if_expr );
   }
 
   bool ready() override
@@ -2747,7 +2742,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
 
     p() -> sigil_of_flame_activates = sim -> current_time() + p() -> sigil_delay;
 
-    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .target( execute_state -> target )
         .x( p() -> talent.concentrated_sigils -> ok() ?
           p() -> x_position : execute_state -> target -> x_position )
@@ -3135,7 +3130,7 @@ struct blade_dance_event_t : public event_t
     attacks =
       in_metamorphosis ? &p -> death_sweep_attacks : &p -> blade_dance_attacks;
 
-    add_event( next_execute() );
+    schedule( next_execute() );
   }
 
   const char* name() const override
@@ -3165,7 +3160,7 @@ struct blade_dance_event_t : public event_t
     if ( current < attacks -> size() )
     {
       dh -> blade_dance_driver =
-        new ( sim() ) blade_dance_event_t( dh, current, in_metamorphosis );
+          make_event<blade_dance_event_t>( sim(), dh, current, in_metamorphosis );
     }
     else
     {
@@ -3241,8 +3236,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     demon_hunter_attack_t::execute();
 
     assert( !p() -> blade_dance_driver );
-    p() -> blade_dance_driver = new ( *sim )
-    blade_dance_event_t( p(), 0, p() -> buff.metamorphosis -> up() );
+    p() -> blade_dance_driver = make_event<blade_dance_event_t>( *sim, p(), 0, p() -> buff.metamorphosis -> up() );
 
     assert( dodge_buff );
     dodge_buff -> trigger();
@@ -3406,11 +3400,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     chaos_strike_state_t* state;
 
     chaos_strike_event_t( action_t* a, player_t* t, chaos_strike_state_t* s )
-      : event_t( *a -> player -> sim ), action( a ), target( t ), state( s )
+      : event_t( *a->player->sim,
+                 debug_cast<chaos_strike_damage_t*>( a )->delay ),
+        action( a ),
+        target( t ),
+        state( s )
     {
-      add_event( debug_cast<chaos_strike_damage_t*>( a ) -> delay );
-
-      assert( action -> background );
+      assert( action->background );
     }
 
     const char* name() const override
@@ -3525,7 +3521,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     and for Chaos Strike it's just the OH (this action is the MH action). */
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
-      new ( *sim ) chaos_strike_event_t(
+      make_event<chaos_strike_event_t>( *sim,
         attacks[ i ], target,
         debug_cast<chaos_strike_state_t*>( execute_state ) );
     }
@@ -4741,16 +4737,14 @@ struct spirit_bomb_event_t : public event_t
   demon_hunter_t* dh;
 
   spirit_bomb_event_t( demon_hunter_t* p, bool initial = false )
-    : event_t( *p ), dh( p )
+    : event_t( *p), dh( p )
   {
+    timespan_t delta_time = timespan_t::from_seconds( 1.0 );
     if ( initial )
     {
-      add_event( timespan_t::from_seconds( 1.0 ) * rng().real() );
+      delta_time *= rng().real();
     }
-    else
-    {
-      add_event( timespan_t::from_seconds( 1.0 ) );
-    }
+    schedule( delta_time );
   }
 
   const char* name() const override
@@ -4771,7 +4765,7 @@ struct spirit_bomb_event_t : public event_t
       dh -> spirit_bomb = 0.0;
     }
 
-    dh -> spirit_bomb_driver = new ( sim() ) spirit_bomb_event_t( dh );
+    dh -> spirit_bomb_driver = make_event<spirit_bomb_event_t>( sim(), dh );
   }
 };
 
@@ -5006,8 +5000,8 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, const std::string& name, race_e r )
     spirit_bomb( 0.0 ),
     spirit_bomb_driver( nullptr ),
     target_reach( -1.0 ),
-    initial_fury( 0 ),
     exiting_melee( nullptr ),
+    initial_fury( 0 ),
     sigil_of_flame_activates( timespan_t::zero() ),
     buff(),
     talent(),
@@ -6801,7 +6795,7 @@ void demon_hunter_t::combat_begin()
 
   // Start event drivers
   if ( talent.spirit_bomb -> ok() )
-    spirit_bomb_driver = new ( *sim ) spirit_bomb_event_t( this, true );
+    spirit_bomb_driver = make_event<spirit_bomb_event_t>( *sim, this, true );
 }
 
 // demon_hunter_t::interrupt ================================================

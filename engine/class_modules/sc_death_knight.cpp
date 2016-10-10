@@ -71,7 +71,7 @@ struct dynamic_event_t : public event_t
   { return "Dynamic-Event-Base"; }
 
   static T* create( sim_t* s )
-  { return new ( *s ) T( s ); }
+  { return new (*s) T( s ); }
 
   virtual T* clone() = 0;
 
@@ -181,7 +181,10 @@ struct dynamic_event_t : public event_t
   // Actually schedules the event into the core event system, by default, applies the coefficient
   // associated with the event to the duration given
   T* schedule( const timespan_t& duration, bool use_coeff = true )
-  { add_event( duration * ( use_coeff ? coefficient() : 1.0 ) ); return cast(); }
+  {
+    event_t::schedule( duration * ( use_coeff ? coefficient() : 1.0 ) );
+    return cast();
+  }
 
   void execute() override
   {
@@ -2386,9 +2389,8 @@ struct death_knight_action_t : public Base
       death_knight_t* dk;
 
       fs_burst_t( death_knight_t* dk, player_t* target, unsigned n ) :
-        event_t( *dk ), n( n ), target( target ), dk( dk )
+        event_t( *dk, timespan_t::zero() ), n( n ), target( target ), dk( dk )
       {
-        add_event( timespan_t::zero() );
       }
 
       const char* name() const override
@@ -2448,7 +2450,7 @@ struct death_knight_action_t : public Base
       return;
     }
 
-    new ( *this -> sim ) fs_burst_t( p(), state -> target, n );
+    make_event<fs_burst_t>( *this -> sim, p(), state -> target, n );
   }
 };
 

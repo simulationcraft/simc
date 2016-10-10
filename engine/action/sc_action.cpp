@@ -14,12 +14,10 @@ namespace { // anonymous namespace
 struct player_gcd_event_t : public player_event_t
 {
   player_gcd_event_t( player_t& p, timespan_t delta_time ) :
-      player_event_t( p )
+      player_event_t( p, delta_time )
   {
     if ( sim().debug )
       sim().out_debug << "New Player-Ready-GCD Event: " << p.name();
-
-    add_event( delta_time );
   }
 
   const char* name() const override
@@ -90,7 +88,7 @@ struct player_gcd_event_t : public player_event_t
     // execution found an off gcd action to execute, in this case, do not create a new event.
     if ( ! p() -> off_gcd && ! p() -> queueing && ! p() -> restore_action_list )
     {
-      p() -> off_gcd = new ( sim() ) player_gcd_event_t( *p(), timespan_t::from_seconds( 0.1 ) );
+      p() -> off_gcd = make_event<player_gcd_event_t>( sim(), *p(), timespan_t::from_seconds( 0.1 ) );
     }
 
     if ( p() -> restore_action_list != 0 )
@@ -122,7 +120,7 @@ void do_off_gcd_execute( action_t* action )
   if ( ! action -> player -> off_gcd &&
        action -> sim -> current_time() + interval < action -> player -> gcd_ready )
   {
-    action -> player -> off_gcd = new ( *action -> sim ) player_gcd_event_t( *action -> player, interval );
+    action -> player -> off_gcd = make_event<player_gcd_event_t>( *action -> sim, *action -> player, interval );
   }
 
   if ( action -> player -> queueing == action )
@@ -137,9 +135,8 @@ struct queued_action_execute_event_t : public event_t
   bool off_gcd;
 
   queued_action_execute_event_t( action_t* a, const timespan_t& t, bool off_gcd ) :
-    event_t( *a -> sim ), action( a ), off_gcd( off_gcd )
+    event_t( *a -> sim, t ), action( a ), off_gcd( off_gcd )
   {
-    add_event( t );
   }
 
   const char* name() const override
@@ -164,7 +161,7 @@ struct queued_action_execute_event_t : public event_t
          action -> cooldown -> recharge_event &&
          action -> cooldown -> recharge_event -> remains() == timespan_t::zero() )
     {
-      action -> queue_event = new ( sim() ) queued_action_execute_event_t( action, timespan_t::zero(), off_gcd );
+      action -> queue_event = make_event<queued_action_execute_event_t>( sim(), action, timespan_t::zero(), off_gcd );
       // Note, processing ends here
       return;
     }
@@ -189,7 +186,7 @@ struct action_execute_event_t : public player_event_t
 
   action_execute_event_t( action_t* a, timespan_t time_to_execute,
                           action_state_t* state = 0 ) :
-      player_event_t( *a->player ), action( a ),
+      player_event_t( *a->player, time_to_execute ), action( a ),
         execute_state( state )
   {
     if ( sim().debug )
@@ -197,8 +194,6 @@ struct action_execute_event_t : public player_event_t
                   p() -> name(), a -> name(), time_to_execute.total_seconds(),
                   ( state ) ? state -> target -> name() : a -> target -> name(),
                   ( a -> marker ) ? a -> marker : '0' );
-
-    add_event( time_to_execute );
   }
 
   virtual const char* name() const override
@@ -266,7 +261,7 @@ struct action_execute_event_t : public player_event_t
 
     if ( ! p() -> channeling && p() -> gcd_ready > sim().current_time() )
     {
-      p() -> off_gcd = new ( sim() ) player_gcd_event_t( *p(), timespan_t::zero() );
+      p() -> off_gcd = make_event<player_gcd_event_t>( sim(), *p(), timespan_t::zero() );
     }
   }
 };
@@ -1671,7 +1666,7 @@ void action_t::queue_execute( bool off_gcd )
   auto queue_delay = cooldown -> queue_delay();
   if ( queue_delay > timespan_t::zero() )
   {
-    queue_event = new ( *sim ) queued_action_execute_event_t( this, queue_delay, off_gcd );
+    queue_event = make_event<queued_action_execute_event_t>( *sim, this, queue_delay, off_gcd );
     player -> queueing = this;
   }
   else
@@ -3181,7 +3176,7 @@ timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 
 event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )
 {
-  return new ( *sim ) action_execute_event_t( this, t, execute_event );
+  return make_event<action_execute_event_t>( *sim, this, t, execute_event );
 }
 
 void action_t::do_schedule_travel( action_state_t* state, const timespan_t& time_ )
@@ -3197,7 +3192,7 @@ void action_t::do_schedule_travel( action_state_t* state, const timespan_t& time
       sim -> out_log.printf( "%s schedules travel (%.3f) for %s",
           player -> name(), time_.total_seconds(), name() );
 
-    add_travel_event( new ( *sim ) travel_event_t( this, state, time_ ) );
+    add_travel_event( make_event<travel_event_t>( *sim, this, state, time_ ) );
   }
 }
 
@@ -3521,6 +3516,6 @@ void action_t::reschedule_queue_event()
     bool off_gcd = debug_cast<queued_action_execute_event_t*>( queue_event ) -> off_gcd;
 
     event_t::cancel( queue_event );
-    queue_event = new ( *sim ) queued_action_execute_event_t( this, new_queue_delay, off_gcd );
+    queue_event = make_event<queued_action_execute_event_t>( *sim, this, new_queue_delay, off_gcd );
   }
 }

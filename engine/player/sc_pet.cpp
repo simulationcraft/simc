@@ -179,10 +179,9 @@ void pet_t::summon( timespan_t summon_duration )
     {
       pet_t& pet;
       expiration_t( pet_t& p, timespan_t duration ) :
-        event_t( p ),
+        event_t( p, duration ),
         pet( p )
       {
-        add_event( duration );
       }
       virtual const char* name() const override
       { return "pet_summon_duration"; }
@@ -193,7 +192,7 @@ void pet_t::summon( timespan_t summon_duration )
           pet.dismiss( true );
       }
     };
-    expiration = new ( *sim ) expiration_t( *this, summon_duration );
+    expiration = make_event<expiration_t>( *sim, *this, summon_duration );
   }
 
   arise();

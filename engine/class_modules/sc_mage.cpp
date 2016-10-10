@@ -1478,9 +1478,8 @@ struct cinder_impact_event_t : public event_t
 
   cinder_impact_event_t( actor_t& m, action_t* c, player_t* t,
                          timespan_t impact_time ) :
-    event_t( m ), cinder( c ), target( t )
+    event_t( m, impact_time ), cinder( c ), target( t )
   {
-    add_event( impact_time );
   }
 
   virtual const char* name() const override
@@ -1577,20 +1576,24 @@ struct erosion_t : public buff_t
     erosion_t* debuff;
     const spell_data_t* data;
 
-    erosion_event_t( actor_t& m, erosion_t* _debuff, const spell_data_t* _data,
-                     bool player_triggered = false ) :
-      event_t( m ), debuff( _debuff ), data( _data )
+    static timespan_t delta_time( const spell_data_t* data,
+                                  bool player_triggered )
     {
       // Erosion debuff decays 3 seconds after direct application by a player,
       // followed by a 1 stack every second
       if ( player_triggered )
       {
-        add_event( data -> duration() );
+        return data->duration();
       }
-      else
-      {
-        add_event( data -> effectN( 1 ).period() );
-      }
+      return data->effectN( 1 ).period();
+    }
+
+    erosion_event_t( actor_t& m, erosion_t* _debuff, const spell_data_t* _data,
+                     bool player_triggered = false )
+      : event_t( m, delta_time( _data, player_triggered ) ),
+        debuff( _debuff ),
+        data( _data )
+    {
     }
 
     const char* name() const override
@@ -1603,15 +1606,14 @@ struct erosion_t : public buff_t
 
       // Always update the parent debuff's reference to the decay event, so that it
       // can be cancelled upon a new application of the debuff
-      if ( debuff -> check() > 0 )
+      if ( debuff->check() > 0 )
       {
-        debuff -> decay_event =
-          new ( sim() ) erosion_event_t( *(debuff -> source),
-                                                 debuff, data );
+        debuff->decay_event = make_event<erosion_event_t>(
+            sim(), *( debuff->source ), debuff, data );
       }
       else
       {
-        debuff -> decay_event = nullptr;
+        debuff->decay_event = nullptr;
       }
     }
   };
@@ -1638,8 +1640,7 @@ struct erosion_t : public buff_t
         event_t::cancel( decay_event );
       }
 
-      decay_event = new (*sim)
-        erosion_event_t( *source, this, erosion_event_data, true );
+      decay_event = make_event<erosion_event_t>( *sim, *source, this, erosion_event_data, true );
     }
 
     return triggered;
@@ -3666,7 +3667,7 @@ struct cinderstorm_t : public fire_mage_spell_t
         travel_time = timespan_t::from_seconds( arc_dist / cinder_velocity );
       }
 
-      new ( *sim ) events::cinder_impact_event_t( *p(), cinder, target,
+      make_event<events::cinder_impact_event_t>( *sim, *p(), cinder, target,
                                                   travel_time);
     }
   }
@@ -4274,7 +4275,7 @@ struct flamestrike_t : public fire_mage_spell_t
     if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
       // DurationID: 205470. 8s
-      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 1.0 ) )
         .target( execute_state -> target )
         .duration( timespan_t::from_seconds( 8.0 ) )
@@ -4348,7 +4349,7 @@ struct pyrosurge_flamestrike_t : public fire_mage_spell_t
     if ( state -> chain_target == 0 && p() -> talents.flame_patch -> ok() )
     {
       // DurationID: 205470. 8s
-      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .pulse_time( timespan_t::from_seconds( 1.0 ) )
         .target( execute_state -> target )
         .duration( timespan_t::from_seconds( 8.0 ) )
@@ -7311,7 +7312,7 @@ struct icicle_event_t : public event_t
     double cast_time = first ? 0.25 : 0.75;
     cast_time *= mage -> cache.spell_speed();
 
-    add_event( timespan_t::from_seconds( cast_time ) );
+    schedule( timespan_t::from_seconds( cast_time ) );
   }
   virtual const char* name() const override
   { return "icicle_event"; }
@@ -7341,7 +7342,7 @@ struct icicle_event_t : public event_t
     icicle_data_t new_state = mage -> get_icicle_object();
     if ( new_state.damage > 0 )
     {
-      mage -> icicle_event = new ( sim() ) icicle_event_t( *mage, new_state, target );
+      mage -> icicle_event = make_event<icicle_event_t>( sim(), *mage, new_state, target );
       if ( mage -> sim -> debug )
         mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), damage=%f, total=%u",
                                mage -> name(), target -> name(), new_state.damage, as<unsigned>( mage -> icicles.size() ) );
@@ -7372,8 +7373,8 @@ struct ignite_spread_event_t : public event_t
     return ignite_bank( a ) > ignite_bank( b );
   }
 
-  ignite_spread_event_t( mage_t& m ) :
-    event_t( m ), mage( &m )
+  ignite_spread_event_t( mage_t& m, timespan_t delta_time ) :
+    event_t( m, delta_time ), mage( &m )
   {
   }
 
@@ -7489,8 +7490,8 @@ struct ignite_spread_event_t : public event_t
     }
 
     // Schedule next spread for 2 seconds later
-    mage -> ignite_spread_event = new ( sim() ) events::ignite_spread_event_t( *mage );
-    mage -> ignite_spread_event -> add_event( timespan_t::from_seconds( 2.0 ) );
+    mage->ignite_spread_event = make_event<events::ignite_spread_event_t>(
+        sim(), *mage, timespan_t::from_seconds( 2.0 ) );
   }
 };
 } // namespace events
@@ -9128,9 +9129,9 @@ void mage_t::arise()
 
   if ( spec.ignite -> ok()  )
   {
-    ignite_spread_event = new ( *sim )events::ignite_spread_event_t( *this );
     timespan_t first_spread = timespan_t::from_seconds( rng().real() * 2.0 );
-    ignite_spread_event -> add_event( first_spread );
+    ignite_spread_event =
+        make_event<events::ignite_spread_event_t>( *sim, *this, first_spread );
   }
 }
 
@@ -9484,7 +9485,7 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
       return;
 
     assert( icicle_target );
-    icicle_event = new ( *sim ) events::icicle_event_t( *this, d, icicle_target, true );
+    icicle_event = make_event<events::icicle_event_t>( *sim, *this, d, icicle_target, true );
 
     if ( sim -> debug )
     {

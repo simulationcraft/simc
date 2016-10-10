@@ -888,12 +888,11 @@ struct paladin_ground_aoe_t : public ground_aoe_event_t
   double radius;
   paladin_t* paladin;
 
-protected:
+public:
   paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t* param, action_state_t* ps, bool first_tick = false ):
     ground_aoe_event_t( p, param, ps, first_tick ), radius( param -> action() -> radius ), paladin( p )
   {}
 
-public:
   paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t& param, bool first_tick = false ) :
     ground_aoe_event_t( p, param, first_tick ), radius( param.action() -> radius ), paladin( p )
   {}
@@ -901,7 +900,7 @@ public:
 
   void schedule_event() override
   {
-    paladin_ground_aoe_t* foo = new ( sim() ) paladin_ground_aoe_t( paladin, params, pulse_state );
+    paladin_ground_aoe_t* foo = make_event<paladin_ground_aoe_t>( sim(), paladin, params, pulse_state );
     paladin -> active_consecrations.push_back( foo );
   }
 
@@ -1436,7 +1435,7 @@ struct blessed_hammer_t : public paladin_spell_t
 
     timespan_t initial_delay = num_strikes < 3 ? base_tick_time * 0.25 : timespan_t::zero();
 
-    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .target( execute_state -> target )
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
@@ -1513,7 +1512,7 @@ struct consecration_t : public paladin_spell_t
 
     // create a new ground aoe event
     paladin_ground_aoe_t* alt_aoe =
-      new ( *sim ) paladin_ground_aoe_t( p(), ground_aoe_params_t()
+        make_event<paladin_ground_aoe_t>( *sim, p(), ground_aoe_params_t()
         .target( execute_state -> target )
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
@@ -1531,7 +1530,7 @@ struct consecration_t : public paladin_spell_t
     // this can be a normal ground_aoe_event_t, since we don't need the extra stuff
     if ( p() -> talents.consecrated_ground -> ok() )
     {
-      new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
           .target( execute_state -> action -> player )
           // spawn at feet of player
           .x( execute_state -> action -> player -> x_position )
@@ -3497,7 +3496,7 @@ struct judgment_aoe_t : public paladin_melee_attack_t
     }
   }
 
-  virtual bool impact_targeting( action_state_t* s ) const
+  bool impact_targeting( action_state_t* s ) const override
   {
     // this feels like some kind of horrifying hack
     if ( s -> chain_target == 0 )
@@ -6111,7 +6110,7 @@ struct paladin_module_t : public module_t
   virtual void register_hotfixes() const override
   {
     /*
-    hotfix::register_effect( "Paladin", "2016-09-23", "Templar’s Verdict damage increased by 10%.", 335615 )
+    hotfix::register_effect( "Paladin", "2016-09-23", "Templarï¿½s Verdict damage increased by 10%.", 335615 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.10 )

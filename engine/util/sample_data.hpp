@@ -6,10 +6,10 @@
 #ifndef SAMPLE_DATA_HPP
 #define SAMPLE_DATA_HPP
 
-#include <vector>
-#include <numeric>
 #include <limits>
+#include <numeric>
 #include <sstream>
+#include <vector>
 #include "util/generic.hpp"
 
 /* Collection of statistical formulas for sequences
@@ -32,7 +32,7 @@ template <typename Range>
 typename Range::value_type calculate_mean( Range r )
 {
   auto length = std::distance( std::begin( r ), std::end( r ) );
-  auto tmp = calculate_sum( r );
+  auto tmp    = calculate_sum( r );
   tmp /= length;
   return tmp;
 }
@@ -142,7 +142,7 @@ std::vector<size_t> create_histogram( Range r, size_t num_buckets )
   if ( std::begin( r ) == std::end( r ) )
     return std::vector<size_t>();
 
-  auto mm = std::minmax_element( std::begin( r ), std::end( r ) );
+  auto mm  = std::minmax_element( std::begin( r ), std::end( r ) );
   auto min = *mm.first;
   auto max = *mm.second;
 
@@ -349,8 +349,8 @@ public:
 private:
   std::vector<value_t> _data;
   std::vector<value_t> _sorted_data;  // extra sequence so we can keep the
-                                       // original, unsorted order ( for example
-                                       // to do regression on it )
+                                      // original, unsorted order ( for example
+                                      // to do regression on it )
   bool is_sorted;
 
 public:
@@ -448,7 +448,7 @@ public:
     }
 
     base_t::_sum = statistics::calculate_sum( data() );
-    _mean = base_t::_sum / data().size();
+    _mean        = base_t::_sum / data().size();
   }
 
   value_t mean() const
@@ -476,7 +476,7 @@ public:
       return;
 
     variance = statistics::calculate_variance( data(), mean() );
-    std_dev = std::sqrt( variance );
+    std_dev  = std::sqrt( variance );
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
     if ( data().size() > 1 )

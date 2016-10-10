@@ -1267,7 +1267,7 @@ public:
     return tm;
   }
 
-  virtual void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     ab::impact( s );
 
@@ -1277,7 +1277,7 @@ public:
     trigger_galactic_guardian( s );
   }
 
-  virtual void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     ab::tick( d );
 
@@ -1414,7 +1414,7 @@ public:
     }
   }
 
-  virtual void init()
+  void init() override
   {
     ab::init();
 
@@ -1443,7 +1443,7 @@ public:
       return g;
   }
 
-  virtual void execute()
+  void execute() override
   {
     ab::execute();
 
@@ -4708,7 +4708,7 @@ struct lunar_beam_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .target( execute_state -> target )
         .x( execute_state -> target -> x_position )
         .y( execute_state -> target -> y_position )
@@ -5327,7 +5327,7 @@ struct starfall_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    new ( *sim ) ground_aoe_event_t( p(), ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
         .target( execute_state -> target )
         .x( execute_state -> target -> x_position )
         .y( execute_state -> target -> y_position )
@@ -5640,7 +5640,7 @@ struct persistent_buff_delay_event_t : public event_t
 
        Buffs that use the event to activate should implement tick_zero-like
        behavior. */
-    add_event( rng().real() * b -> buff_period );
+    schedule( rng().real() * b -> buff_period );
   }
 
   const char* name() const override
@@ -5656,17 +5656,13 @@ struct ailuro_pouncers_event_t : public event_t
 {
   druid_t* druid;
 
-  ailuro_pouncers_event_t( druid_t* p, timespan_t set_delay = timespan_t::zero() ) :
-    event_t( *p ), druid( p )
+  ailuro_pouncers_event_t( druid_t* p,
+                           timespan_t set_delay = timespan_t::zero() )
+    : event_t( *p, set_delay > timespan_t::zero()
+                       ? set_delay
+                       : p->legendary.ailuro_pouncers ),
+      druid( p )
   {
-    if ( set_delay > timespan_t::zero() )
-    {
-      add_event( set_delay );
-    }
-    else
-    {
-      add_event( p -> legendary.ailuro_pouncers );
-    }
   }
 
   const char* name() const override
@@ -5676,7 +5672,7 @@ struct ailuro_pouncers_event_t : public event_t
   {
     druid -> buff.predatory_swiftness -> trigger();
 
-    new ( sim() ) ailuro_pouncers_event_t( druid );
+    make_event<ailuro_pouncers_event_t>( sim(), druid );
   }
 };
 
@@ -7098,10 +7094,10 @@ void druid_t::arise()
 
   // Trigger persistent buffs
   if ( buff.yseras_gift )
-    persistent_buff_delay.push_back( new ( *sim ) persistent_buff_delay_event_t( this, buff.yseras_gift ) );
+    persistent_buff_delay.push_back( make_event<persistent_buff_delay_event_t>( *sim, this, buff.yseras_gift ) );
 
   if ( talent.earthwarden -> ok() )
-    persistent_buff_delay.push_back( new ( *sim ) persistent_buff_delay_event_t( this, buff.earthwarden_driver ) );
+    persistent_buff_delay.push_back( make_event<persistent_buff_delay_event_t>( *sim, this, buff.earthwarden_driver ) );
 
   if ( legendary.ailuro_pouncers > timespan_t::zero() )
   {
@@ -7112,7 +7108,7 @@ void druid_t::arise()
         buff.predatory_swiftness -> buff_duration - preproc );
     }
 
-    new ( *sim ) ailuro_pouncers_event_t( this, timespan_t::from_seconds( 15 ) - preproc );
+    make_event<ailuro_pouncers_event_t>( *sim, this, timespan_t::from_seconds( 15 ) - preproc );
   }
 }
 

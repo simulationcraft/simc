@@ -12,9 +12,8 @@ struct buff_event_t : public event_t
   buff_t* buff;
 
   buff_event_t( buff_t* b, timespan_t d ) :
-    event_t( *b -> sim, b -> player  ), buff( b )
+    event_t( *b -> sim, d  ), buff( b )
   {
-    add_event( d );
   }
 };
 
@@ -114,7 +113,7 @@ struct tick_t : public buff_event_t
       // Reorder the last tick to happen 1ms before expiration
       if ( buff -> remains() == period )
         period -= timespan_t::from_millis( 1 );
-      buff -> tick_event = new ( *buff -> sim ) tick_t( buff, period, current_value, current_stacks );
+      buff -> tick_event = make_event<tick_t>( *buff->sim, buff, period, current_value, current_stacks );
     }
   }
 };
@@ -755,7 +754,7 @@ bool buff_t::trigger( int        stacks,
       d.value = value;
     }
     else
-      delay = new ( *sim ) buff_delay_t( this, stacks, value, duration );
+      delay = make_event<buff_delay_t>( *sim, this, stacks, value, duration );
   }
   else
     execute( stacks, value, duration );
@@ -905,7 +904,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
     event_t::cancel( expiration.front() );
     expiration.erase( expiration.begin() );
 
-    expiration.push_back( new ( *sim ) expiration_t( this, reschedule_time ) );
+    expiration.push_back( make_event<expiration_t>( *sim, this, reschedule_time ) );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
@@ -977,7 +976,7 @@ void buff_t::start( int        stacks,
 
   if ( d > timespan_t::zero() )
   {
-    expiration.push_back( new ( *sim ) expiration_t( this, stacks, d ) );
+    expiration.push_back( make_event<expiration_t>( *sim, this, stacks, d ) );
     if ( stack() == before_stacks && stack_behavior == BUFF_STACK_ASYNCHRONOUS )
     {
       event_t::cancel( expiration.front() );
@@ -995,7 +994,7 @@ void buff_t::start( int        stacks,
     if ( period == d )
       period -= timespan_t::from_millis( 1 );
     assert( ! tick_event );
-    tick_event = new ( *sim ) tick_t( this, period, current_value, reverse ? 1 : stacks );
+    tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? 1 : stacks );
 
     if ( tick_zero && tick_callback )
     {
@@ -1044,7 +1043,7 @@ void buff_t::refresh( int        stacks,
   {
     // Infinite duration -> duration of d
     if ( expiration.empty() )
-      expiration.push_back( new ( *sim ) expiration_t( this, d ) );
+      expiration.push_back( make_event<expiration_t>( *sim, this, d ) );
     else
     {
       timespan_t duration_remains = expiration.front() -> remains();
@@ -1054,7 +1053,7 @@ void buff_t::refresh( int        stacks,
       {
         event_t::cancel( expiration.front() );
         expiration.erase( expiration.begin() );
-        expiration.push_back( new ( *sim ) expiration_t( this, d ) );
+        expiration.push_back( make_event<expiration_t>( *sim, this, d ) );
       }
     }
 
@@ -1066,7 +1065,7 @@ void buff_t::refresh( int        stacks,
       // Reorder the last tick to happen 1ms before expiration
       if ( period == d )
         period -= timespan_t::from_millis( 1 );
-      tick_event = new ( *sim ) tick_t( this, period, current_value, reverse ? 1 : stacks );
+      tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? 1 : stacks );
     }
 
     if ( tick_zero && tick_callback )
@@ -1152,7 +1151,7 @@ void buff_t::bump( int stacks, double value )
         {
           if ( ! stack_react_ready_triggers[ i ] )
           {
-            stack_react_ready_triggers[ i ] = new ( *sim ) react_ready_trigger_t( this, i, total_reaction_time );
+            stack_react_ready_triggers[ i ] = make_event<react_ready_trigger_t>( *sim, this, i, total_reaction_time );
           }
           else
           {
@@ -1164,7 +1163,7 @@ void buff_t::bump( int stacks, double value )
             else if ( next_react < stack_react_ready_triggers[ i ] -> occurs() )
             {
               event_t::cancel( stack_react_ready_triggers[ i ] );
-              stack_react_ready_triggers[ i ] = new ( *sim ) react_ready_trigger_t( this, i, total_reaction_time );
+              stack_react_ready_triggers[ i ] = make_event<react_ready_trigger_t>( *sim, this, i, total_reaction_time );
             }
           }
         }
@@ -1220,7 +1219,7 @@ void buff_t::expire( timespan_t delay )
   {
     if ( ! expiration_delay ) // Don't reschedule already existing expiration delay
     {
-      expiration_delay = new ( *sim ) expiration_delay_t( this, delay );
+      expiration_delay = make_event<expiration_delay_t>( *sim, this, delay );
     }
     return;
   }

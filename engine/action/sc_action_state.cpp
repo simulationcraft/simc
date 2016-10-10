@@ -11,17 +11,23 @@ action_state_t* action_t::get_state( const action_state_t* other )
 
   if ( state_cache )
   {
-    s = state_cache;
-    state_cache = s -> next;
+    s           = state_cache;
+    state_cache = s->next;
   }
   else
+  {
     s = new_state();
+  }
 
-  s -> action = this;
-  if ( ! other )
-    s -> initialize();
+  s->action = this;
+  if ( !other )
+  {
+    s->initialize();
+  }
   else
-    s -> copy_state( other );
+  {
+    s->copy_state( other );
+  }
 
   return s;
 }
@@ -33,8 +39,8 @@ action_state_t* action_t::new_state()
 
 void action_t::release_state( action_state_t* s )
 {
-  assert( s -> action == this );
-  s -> next = state_cache;
+  assert( s->action == this );
+  s->next     = state_cache;
   state_cache = s;
 }
 
@@ -42,9 +48,11 @@ void action_t::release_state( action_state_t* s )
 // state object is retrieved using get_state()
 void action_state_t::initialize()
 {
-  result = RESULT_NONE; result_type = RESULT_TYPE_NONE;
+  result       = RESULT_NONE;
+  result_type  = RESULT_TYPE_NONE;
   block_result = BLOCK_RESULT_UNBLOCKED;
-  result_raw = result_total = result_mitigated = result_absorbed = result_amount = blocked_amount = self_absorb_amount =  0;
+  result_raw = result_total = result_mitigated = result_absorbed =
+      result_amount = blocked_amount = self_absorb_amount = 0;
 }
 /*
 void action_state_t::copy_state( const action_state_t* o )
@@ -60,57 +68,82 @@ void action_state_t::copy_state( const action_state_t* o )
 
   if ( typeid( this ) != typeid( const_cast<action_state_t*>( o ) ) )
   {
-    std::cout << "action_state_t::operator=: state runtime types not equal! this= " << typeid( this ).name() << " o= " << typeid( const_cast<action_state_t*>( o ) ).name() << "\n";
+    std::cout
+        << "action_state_t::operator=: state runtime types not equal! this= "
+        << typeid( this ).name()
+        << " o= " << typeid( const_cast<action_state_t*>( o ) ).name() << "\n";
     assert( 0 );
   }
 #endif
 
-  target = o -> target; assert( target );
-  n_targets = o -> n_targets;
-  chain_target = o -> chain_target;
-  original_x = o -> original_x;
-  original_y = o -> original_y;
-  result_type = o -> result_type;
-  result = o -> result;
-  result_raw = o -> result_raw;
-  result_total = o -> result_total;
-  result_mitigated = o -> result_mitigated;
-  result_absorbed = o -> result_absorbed;
-  result_amount = o -> result_amount;
-  blocked_amount = o -> blocked_amount;
-  self_absorb_amount = o -> self_absorb_amount;
-  haste = o -> haste;
-  crit_chance = o -> crit_chance;
-  target_crit_chance = o -> target_crit_chance;
-  attack_power = o -> attack_power;
-  spell_power = o -> spell_power;
+  target = o->target;
+  assert( target );
+  n_targets          = o->n_targets;
+  chain_target       = o->chain_target;
+  original_x         = o->original_x;
+  original_y         = o->original_y;
+  result_type        = o->result_type;
+  result             = o->result;
+  result_raw         = o->result_raw;
+  result_total       = o->result_total;
+  result_mitigated   = o->result_mitigated;
+  result_absorbed    = o->result_absorbed;
+  result_amount      = o->result_amount;
+  blocked_amount     = o->blocked_amount;
+  self_absorb_amount = o->self_absorb_amount;
+  haste              = o->haste;
+  crit_chance        = o->crit_chance;
+  target_crit_chance = o->target_crit_chance;
+  attack_power       = o->attack_power;
+  spell_power        = o->spell_power;
 
-  versatility = o -> versatility;
-  da_multiplier = o -> da_multiplier;
-  ta_multiplier = o -> ta_multiplier;
-  persistent_multiplier = o -> persistent_multiplier;
-  pet_multiplier = o -> pet_multiplier;
+  versatility           = o->versatility;
+  da_multiplier         = o->da_multiplier;
+  ta_multiplier         = o->ta_multiplier;
+  persistent_multiplier = o->persistent_multiplier;
+  pet_multiplier        = o->pet_multiplier;
 
-  target_da_multiplier = o -> target_da_multiplier;
-  target_ta_multiplier = o -> target_ta_multiplier;
+  target_da_multiplier = o->target_da_multiplier;
+  target_ta_multiplier = o->target_ta_multiplier;
 
-  target_mitigation_da_multiplier = o -> target_mitigation_da_multiplier;
-  target_mitigation_ta_multiplier = o -> target_mitigation_ta_multiplier;
-  target_armor = o -> target_armor;
+  target_mitigation_da_multiplier = o->target_mitigation_da_multiplier;
+  target_mitigation_ta_multiplier = o->target_mitigation_ta_multiplier;
+  target_armor                    = o->target_armor;
 }
 
-action_state_t::action_state_t( action_t* a, player_t* t ) :
-  next( nullptr ), action( a ), target( t ),
-  n_targets( 0 ), chain_target( 0 ), original_x( 0 ), original_y( 0 ),
-  result_type( RESULT_TYPE_NONE ), result( RESULT_NONE ), block_result( BLOCK_RESULT_UNKNOWN ),
-  result_raw( 0 ), result_total( 0 ), result_mitigated( 0 ),
-  result_absorbed( 0 ), result_amount( 0 ), blocked_amount( 0 ), self_absorb_amount( 0 ),
-  haste( 0 ), crit_chance( 0 ), target_crit_chance( 0 ),
-  attack_power( 0 ), spell_power( 0 ),
-  versatility( 1.0 ), da_multiplier( 1.0 ), ta_multiplier( 1.0 ), persistent_multiplier( 1.0 ),
-  pet_multiplier( 1.0 ),
-  target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 ),
-  target_mitigation_da_multiplier( 1.0 ), target_mitigation_ta_multiplier( 1.0 ), target_armor( 0 )
+action_state_t::action_state_t( action_t* a, player_t* t )
+  : next( nullptr ),
+    action( a ),
+    target( t ),
+    n_targets( 0 ),
+    chain_target( 0 ),
+    original_x( 0 ),
+    original_y( 0 ),
+    result_type( RESULT_TYPE_NONE ),
+    result( RESULT_NONE ),
+    block_result( BLOCK_RESULT_UNKNOWN ),
+    result_raw( 0 ),
+    result_total( 0 ),
+    result_mitigated( 0 ),
+    result_absorbed( 0 ),
+    result_amount( 0 ),
+    blocked_amount( 0 ),
+    self_absorb_amount( 0 ),
+    haste( 0 ),
+    crit_chance( 0 ),
+    target_crit_chance( 0 ),
+    attack_power( 0 ),
+    spell_power( 0 ),
+    versatility( 1.0 ),
+    da_multiplier( 1.0 ),
+    ta_multiplier( 1.0 ),
+    persistent_multiplier( 1.0 ),
+    pet_multiplier( 1.0 ),
+    target_da_multiplier( 1.0 ),
+    target_ta_multiplier( 1.0 ),
+    target_mitigation_da_multiplier( 1.0 ),
+    target_mitigation_ta_multiplier( 1.0 ),
+    target_armor( 0 )
 {
   assert( target );
 }
@@ -120,27 +153,28 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << std::showbase;
   std::streamsize ss = s.precision();
 
-  s << action -> player -> name() << " " << action -> name() << " " << target -> name() << ":";
+  s << action->player->name() << " " << action->name() << " " << target->name()
+    << ":";
 
   s << std::hex;
 
   s << " snapshot_flags=";
-  if ( action -> snapshot_flags > 0 )
+  if ( action->snapshot_flags > 0 )
   {
-    s << "{ " << flags_to_str( action -> snapshot_flags ) << " }";
+    s << "{ " << flags_to_str( action->snapshot_flags ) << " }";
   }
   else
   {
-    s << action -> snapshot_flags;
+    s << action->snapshot_flags;
   }
   s << " update_flags=";
-  if ( action -> update_flags > 0 )
+  if ( action->update_flags > 0 )
   {
-    s << "{ " << flags_to_str( action -> update_flags ) << " }";
+    s << "{ " << flags_to_str( action->update_flags ) << " }";
   }
   else
   {
-    s << action -> update_flags;
+    s << action->update_flags;
   }
 
   s << " result=" << util::result_type_string( result );
@@ -176,7 +210,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " da_mul=" << da_multiplier;
   s << " ta_mul=" << ta_multiplier;
   s << " per_mul=" << persistent_multiplier;
-  if ( action -> player -> is_pet() )
+  if ( action->player->is_pet() )
   {
     s << " pet_mul=" << pet_multiplier;
   }
@@ -195,76 +229,72 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 void action_state_t::debug()
 {
   std::ostringstream s;
-  action -> sim -> out_debug.printf( "%s", debug_str( s ).str().c_str() );
+  action->sim->out_debug.printf( "%s", debug_str( s ).str().c_str() );
 }
 
-travel_event_t::travel_event_t( action_t* a,
-                                action_state_t* state,
-                                timespan_t time_to_travel ) :
-    event_t( *a -> player ), action( a ), state( state )
+travel_event_t::travel_event_t( action_t* a, action_state_t* state,
+                                timespan_t time_to_travel )
+  : event_t( *a->player, time_to_travel ), action( a ), state( state )
 {
   if ( sim().debug )
     sim().out_debug.printf( "New Stateless Action Travel Event: %s %s %.2f",
-                a -> player -> name(), a -> name(), time_to_travel.total_seconds() );
-
-  add_event( time_to_travel );
+                            a->player->name(), a->name(),
+                            time_to_travel.total_seconds() );
 }
 
 void travel_event_t::execute()
 {
-  if ( ! state -> target -> is_sleeping() )
-    action -> impact( state );
+  if ( !state->target->is_sleeping() )
+    action->impact( state );
   action_state_t::release( state );
-  action -> remove_travel_event( this );
+  action->remove_travel_event( this );
 }
 
 void action_state_t::release( action_state_t*& s )
-{ s -> action -> release_state( s ); s = nullptr; }
-
-static std::string& concat_flag_str( std::string& str,
-                                     const std::string& flag_str,
-                                     snapshot_state_e state,
-                                     unsigned flags )
 {
-  if ( flags & state )
-  {
-    if ( ! str.empty() )
-    {
-      str += "|";
-    }
-
-    str += flag_str;
-  }
-
-  return str;
+  s->action->release_state( s );
+  s = nullptr;
 }
 
 std::string action_state_t::flags_to_str( unsigned flags )
 {
   std::string str;
 
-  concat_flag_str( str, "AP",         STATE_AP,             flags );
-  concat_flag_str( str, "SP",         STATE_SP,             flags );
-  concat_flag_str( str, "HST",        STATE_HASTE,          flags );
-  concat_flag_str( str, "CRIT",       STATE_CRIT,           flags );
-  concat_flag_str( str, "VERS",       STATE_VERSATILITY,    flags );
-  concat_flag_str( str, "MUL_DA",     STATE_MUL_DA,         flags );
-  concat_flag_str( str, "MUL_TA",     STATE_MUL_TA,         flags );
-  concat_flag_str( str, "MUL_PER",    STATE_MUL_PERSISTENT, flags );
-  concat_flag_str( str, "MUL_PET",    STATE_MUL_PET,        flags );
+  auto concat_flag_str = [flags]( std::string& str, const char* flag_str,
+                                  snapshot_state_e state ) {
+    if ( flags & state )
+    {
+      if ( !str.empty() )
+      {
+        str += "|";
+      }
 
-  concat_flag_str( str, "TGT_CRIT",   STATE_TGT_CRIT,       flags );
-  concat_flag_str( str, "TGT_MUL_DA", STATE_TGT_MUL_DA,     flags );
-  concat_flag_str( str, "TGT_MUL_TA", STATE_TGT_MUL_TA,     flags );
+      str += flag_str;
+    }
+  };
 
-  concat_flag_str( str, "USR1",       STATE_USER_1,         flags );
-  concat_flag_str( str, "USR2",       STATE_USER_2,         flags );
-  concat_flag_str( str, "USR3",       STATE_USER_3,         flags );
-  concat_flag_str( str, "USR4",       STATE_USER_4,         flags );
+  concat_flag_str( str, "AP", STATE_AP );
+  concat_flag_str( str, "SP", STATE_SP );
+  concat_flag_str( str, "HST", STATE_HASTE );
+  concat_flag_str( str, "CRIT", STATE_CRIT );
+  concat_flag_str( str, "VERS", STATE_VERSATILITY );
+  concat_flag_str( str, "MUL_DA", STATE_MUL_DA );
+  concat_flag_str( str, "MUL_TA", STATE_MUL_TA );
+  concat_flag_str( str, "MUL_PER", STATE_MUL_PERSISTENT );
+  concat_flag_str( str, "MUL_PET", STATE_MUL_PET );
 
-  concat_flag_str( str, "TGT_MIT_DA", STATE_TGT_MITG_DA,    flags );
-  concat_flag_str( str, "TGT_MIT_TA", STATE_TGT_MITG_TA,    flags );
-  concat_flag_str( str, "TGT_ARMOR",  STATE_TGT_ARMOR,      flags );
+  concat_flag_str( str, "TGT_CRIT", STATE_TGT_CRIT );
+  concat_flag_str( str, "TGT_MUL_DA", STATE_TGT_MUL_DA );
+  concat_flag_str( str, "TGT_MUL_TA", STATE_TGT_MUL_TA );
+
+  concat_flag_str( str, "USR1", STATE_USER_1 );
+  concat_flag_str( str, "USR2", STATE_USER_2 );
+  concat_flag_str( str, "USR3", STATE_USER_3 );
+  concat_flag_str( str, "USR4", STATE_USER_4 );
+
+  concat_flag_str( str, "TGT_MIT_DA", STATE_TGT_MITG_DA );
+  concat_flag_str( str, "TGT_MIT_TA", STATE_TGT_MITG_TA );
+  concat_flag_str( str, "TGT_ARMOR", STATE_TGT_ARMOR );
 
   return str;
 }

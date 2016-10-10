@@ -2048,20 +2048,33 @@ struct event_t : private noncopyable
   event_t*    next;
   timespan_t  time;
   timespan_t  reschedule_time;
-  uint32_t    id;
+  unsigned    id;
   bool        canceled;
   bool        recycled;
+  bool scheduled;
 #if ACTOR_EVENT_BOOKKEEPING
   actor_t*    actor;
 #endif
-  event_t( sim_t& s, actor_t* p = nullptr);
+  event_t( sim_t& s, actor_t* a = nullptr );
   event_t( actor_t& p );
+
+  // If possible, use one of the two following constructors, which directly
+  // schedule the created event
+  event_t( sim_t& s, timespan_t delta_time ) : event_t( s )
+  {
+    schedule( delta_time );
+  }
+  event_t( actor_t& a, timespan_t delta_time ) : event_t( a )
+  {
+    schedule( delta_time );
+  }
 
   timespan_t occurs()  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
   timespan_t remains() { return occurs() - _sim.event_mgr.current_time; }
 
+  void schedule( timespan_t delta_time );
+
   void reschedule( timespan_t new_time );
-  void add_event( timespan_t delta_time );
   sim_t& sim()
   { return _sim; }
   const sim_t& sim() const
@@ -2084,13 +2097,36 @@ struct event_t : private noncopyable
   }
   static void cancel( event_t*& e );
 
-  static void* operator new( std::size_t size, sim_t& sim ) { return sim.event_mgr.allocate_event( size ); }
-
-  // DO NOT USE ANY OF THE FOLLOWING!
+protected:
+  template <typename Event, typename... Args>
+  friend Event* make_event( sim_t& sim, Args&&... args );
+  /// Placement-new operator for creating events. Do not use in user-code.
+  static void* operator new( std::size_t size, sim_t& sim )
+  {
+    return sim.event_mgr.allocate_event( size );
+  }
   static void  operator delete( void*, sim_t& ) { std::terminate(); }
-  static void  operator delete( void* ) { std::terminate(); }  // DO NOT USE!
+  static void  operator delete( void* ) { std::terminate(); }
   static void* operator new( std::size_t ) = delete;
 };
+
+/**
+ * @brief Creates a event
+ *
+ * This function should be used as the one and only way to create new events. It
+ * is used to hide internal placement-new mechanism for efficient event
+ * allocation, and also makes sure that any event created is properly added to
+ * the event manager (scheduled).
+ */
+template <typename Event, typename... Args>
+inline Event* make_event( sim_t& sim, Args&&... args )
+{
+  static_assert( std::is_base_of<event_t, Event>::value,
+                 "Event must be derived from event_t" );
+  auto r = new ( sim ) Event( args... );
+  assert( r -> id != 0 && "Event not added to event manager!" );
+  return r;
+}
 
 // Gear Rating Conversions ==================================================
 
@@ -4582,12 +4618,16 @@ private:
 struct player_event_t : public event_t
 {
   player_t* _player;
-  player_event_t( player_t& p ) :
-    event_t( p ),
+  player_event_t( player_t& p, timespan_t delta_time ) :
+    event_t( p, delta_time ),
     _player( &p ){}
   player_t* p()
   { return player(); }
+  const player_t* p() const
+  { return player(); }
   player_t* player()
+  { return _player; }
+  const player_t* player() const
   { return _player; }
   virtual const char* name() const override
   { return "event_t"; }
@@ -4600,12 +4640,10 @@ struct player_event_t : public event_t
 struct player_demise_event_t : public player_event_t
 {
   player_demise_event_t( player_t& p, timespan_t delta_time = timespan_t::zero() /* Instantly kill the player */ ) :
-     player_event_t( p )
+     player_event_t( p, delta_time )
   {
     if ( sim().debug )
       sim().out_debug.printf( "New Player-Demise Event: %s", p.name() );
-
-    add_event( delta_time );
   }
   virtual const char* name() const override
   { return "Player-Demise"; }
@@ -6300,14 +6338,12 @@ inline double action_t::last_tick_factor( const dot_t* /* d */, const timespan_t
 { return std::min( 1.0, duration / time_to_tick ); }
 
 inline dot_tick_event_t::dot_tick_event_t( dot_t* d, timespan_t time_to_tick ) :
-    event_t( *d -> source ),
+    event_t( *d -> source, time_to_tick ),
   dot( d )
 {
   if ( sim().debug )
     sim().out_debug.printf( "New DoT Tick Event: %s %s %d-of-%d %.4f",
                 d -> source -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
-
-  add_event( time_to_tick );
 }
 
 
@@ -6351,14 +6387,12 @@ inline void dot_tick_event_t::execute()
 }
 
 inline dot_end_event_t::dot_end_event_t( dot_t* d, timespan_t time_to_end ) :
-    event_t( *d -> source ),
+    event_t( *d -> source, time_to_end ),
     dot( d )
 {
   if ( sim().debug )
     sim().out_debug.printf( "New DoT End Event: %s %s %.3f",
                 d -> source -> name(), dot -> name(), time_to_end.total_seconds() );
-
-  add_event( time_to_end );
 }
 
 inline void dot_end_event_t::execute()
@@ -7778,10 +7812,16 @@ struct ground_aoe_event_t : public player_event_t
   action_state_t* pulse_state;
 
 protected:
+  template <typename Event, typename... Args>
+  friend Event* make_event( sim_t& sim, Args&&... args );
   // Internal constructor to schedule next pulses, not to be used outside of the struct (or derived
   // structs)
-  ground_aoe_event_t( player_t* p, const ground_aoe_params_t* param, action_state_t* ps, bool immediate_pulse = false ) :
-    player_event_t( *p ), params( param ), pulse_state( ps )
+  ground_aoe_event_t( player_t* p, const ground_aoe_params_t* param,
+                      action_state_t* ps, bool immediate_pulse = false )
+    : player_event_t(
+          *p, immediate_pulse ? timespan_t::zero() : _pulse_time( param, p ) ),
+      params( param ),
+      pulse_state( ps )
   {
     // Ensure we have enough information to start pulsing.
     assert( params -> target() != nullptr && "No target defined for ground_aoe_event_t" );
@@ -7800,8 +7840,6 @@ protected:
       action_t* spell_ = params -> action();
       spell_ -> snapshot_state( pulse_state, spell_ -> amount_type( pulse_state ) );
     }
-
-    add_event( immediate_pulse ? timespan_t::zero() : pulse_time() );
   }
 public:
   // Make a copy of the parameters, and use that object until this event expires
@@ -7820,22 +7858,22 @@ public:
     }
   }
 
-  timespan_t pulse_time() const
+  static timespan_t _pulse_time( const ground_aoe_params_t* params, const player_t* p)
   {
     timespan_t tick = params -> pulse_time();
     switch ( params -> hasted() )
     {
       case ground_aoe_params_t::SPELL_SPEED:
-        tick *= _player -> cache.spell_speed();
+        tick *= p -> cache.spell_speed();
         break;
       case ground_aoe_params_t::SPELL_HASTE:
-        tick *= _player -> cache.spell_haste();
+        tick *= p -> cache.spell_haste();
         break;
       case ground_aoe_params_t::ATTACK_SPEED:
-        tick *= _player -> cache.attack_speed();
+        tick *= p -> cache.attack_speed();
         break;
       case ground_aoe_params_t::ATTACK_HASTE:
-        tick *= _player -> cache.attack_haste();
+        tick *= p -> cache.attack_haste();
         break;
       default:
         break;
@@ -7843,6 +7881,9 @@ public:
 
     return tick;
   }
+
+  timespan_t pulse_time() const
+  { return ground_aoe_event_t::_pulse_time(params, player() ); }
 
   bool may_pulse() const
   {
@@ -7853,7 +7894,7 @@ public:
   { return "ground_aoe_event"; }
 
   virtual void schedule_event()
-  { new ( sim() ) ground_aoe_event_t( _player, params, pulse_state ); }
+  { make_event<ground_aoe_event_t>( sim(), _player, params, pulse_state ); }
 
   void execute() override
   {

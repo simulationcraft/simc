@@ -905,10 +905,9 @@ struct proxy_cast_check_t : public event_t
   timespan_t duration;
 
   proxy_cast_check_t( sim_t& s, int u, timespan_t st, timespan_t i, timespan_t cd, timespan_t d, const int& o ) :
-    event_t( s ),
+    event_t( s, i ),
     uses( u ), _override( o ), start_time( st ), cooldown( cd ), duration( d )
   {
-    add_event( i );
   }
   virtual const char* name() const override
   { return "proxy_cast_check"; }
@@ -957,9 +956,8 @@ struct proxy_cast_check_t : public event_t
 struct sim_end_event_t : event_t
 {
   sim_end_event_t( sim_t& s, timespan_t end_time ) :
-    event_t( s )
+    event_t( s, end_time )
   {
-    add_event( end_time );
   }
   virtual const char* name() const override
   { return "sim_end_expected_time"; }
@@ -990,9 +988,8 @@ struct sim_safeguard_end_event_t : public sim_end_event_t
 struct resource_timeline_collect_event_t : public event_t
 {
   resource_timeline_collect_event_t( sim_t& s ) :
-    event_t( s )
+    event_t( s, timespan_t::from_seconds( 1 ) )
   {
-    add_event( timespan_t::from_seconds( 1 ) );
   }
   virtual const char* name() const override
   { return "resource_timeline_collect_event_t"; }
@@ -1035,21 +1032,24 @@ struct resource_timeline_collect_event_t : public event_t
       }
     }
 
-    new ( sim() ) resource_timeline_collect_event_t( sim() );
+    make_event<resource_timeline_collect_event_t>( sim(), sim() );
   }
 };
 
 struct regen_event_t : public event_t
 {
   regen_event_t( sim_t& s ) :
-    event_t( s )
+    event_t( s, s.regen_periodicity )
   {
-    if ( sim().debug ) sim().out_debug.printf( "New Regen Event" );
-
-    add_event( sim().regen_periodicity );
+    if ( sim().debug )
+    {
+      sim().out_debug.printf( "New Regen Event" );
+    }
   }
+
   virtual const char* name() const override
   { return "Regen Event"; }
+
   virtual void execute() override
   {
     if ( ! sim().single_actor_batch )
@@ -1081,7 +1081,7 @@ struct regen_event_t : public event_t
       }
     }
 
-    new ( sim() ) regen_event_t( sim() );
+    make_event<regen_event_t>( sim(), sim() );
   }
 };
 
@@ -1165,9 +1165,8 @@ std::string get_api_key()
 struct bloodlust_check_t : public event_t
  {
    bloodlust_check_t( sim_t& sim ) :
-     event_t( sim )
+     event_t( sim, timespan_t::from_seconds( 1.0 ) )
    {
-     add_event( timespan_t::from_seconds( 1.0 ) );
    }
 
    virtual const char* name() const override
@@ -1202,7 +1201,7 @@ struct bloodlust_check_t : public event_t
      }
      else
      {
-       new ( sim ) bloodlust_check_t( sim );
+      make_event<bloodlust_check_t>( sim, sim );
      }
    }
  };
@@ -1699,23 +1698,23 @@ void sim_t::combat_begin()
   }
 
   if ( requires_regen_event )
-    new ( *this ) regen_event_t( *this );
+    make_event<regen_event_t>( *this, *this );
 
   if ( overrides.bloodlust )
   {
-     new ( *this ) bloodlust_check_t( *this );
+     make_event<bloodlust_check_t>( *this, *this );
   }
 
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
   {
-    new ( *this ) sim_end_event_t( *this, expected_iteration_time );
+    make_event<sim_end_event_t>( *this, *this, expected_iteration_time );
     target -> death_pct = enemy_death_pct;
   }
   else
   {
     target -> death_pct = enemy_death_pct;
   }
-  new ( *this ) sim_safeguard_end_event_t( *this, expected_iteration_time + expected_iteration_time );
+  make_event<sim_safeguard_end_event_t>( *this, *this, expected_iteration_time + expected_iteration_time );
 }
 
 // sim_t::combat_end ========================================================
@@ -1809,7 +1808,7 @@ void sim_t::datacollection_begin()
       p -> datacollection_begin();
     }
   }
-  new ( *this ) resource_timeline_collect_event_t( *this );
+  make_event<resource_timeline_collect_event_t>( *this, *this );
 }
 
 // sim_t::datacollection_end ================================================

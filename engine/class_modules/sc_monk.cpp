@@ -1837,7 +1837,7 @@ public:
     return p() -> get_target_data( t );
   }
 
-  virtual bool ready()
+  bool ready() override
   {
     if ( !ab::ready() )
       return false;
@@ -1845,7 +1845,7 @@ public:
     return true;
   }
 
-  virtual void init()
+  void init() override
   {
     ab::init();
 
@@ -1887,7 +1887,7 @@ public:
     }
   }
 
-  virtual resource_e current_resource() const
+  resource_e current_resource() const override
   {
     resource_e resource_by_stance = _resource_by_stance[specdata::spec_idx( p() -> specialization() )];
 
@@ -1933,7 +1933,7 @@ public:
     p() -> previous_combo_strike = new_ability;
   }
 
-  virtual double cost() const
+  double cost() const override
   {
     double c = ab::cost();
 
@@ -1978,7 +1978,7 @@ public:
     ab::update_ready( cd );
   }
   
-  virtual void consume_resource()
+  void consume_resource() override
   {
     ab::consume_resource();
 
@@ -2017,7 +2017,7 @@ public:
       p() -> gain.serenity -> add( RESOURCE_CHI, ab::base_costs[RESOURCE_CHI] - cost() );
   }
 
-  virtual void execute()
+  void execute() override
   {
     ab::execute();
 
@@ -2055,7 +2055,7 @@ public:
     ab::impact( s );
   }
 
-  virtual timespan_t gcd() const
+  timespan_t gcd() const override
   {
     timespan_t t = ab::action_t::gcd();
 
@@ -6144,11 +6144,11 @@ using namespace absorbs;
 
 struct chi_orbit_event_t : public player_event_t
 {
-  chi_orbit_event_t( monk_t& player, timespan_t tick_time ):
-    player_event_t( player )
+  chi_orbit_event_t( monk_t& player, timespan_t tick_time )
+    : player_event_t( player,
+                      clamp( tick_time, timespan_t::zero(),
+                             player.talent.chi_orbit->effectN( 1 ).period() ) )
   {
-    tick_time = clamp( tick_time, timespan_t::zero(), player.talent.chi_orbit -> effectN( 1 ).period() );
-    add_event( tick_time );
   }
 
   virtual const char* name() const override
@@ -6160,17 +6160,16 @@ struct chi_orbit_event_t : public player_event_t
 
     p -> buff.chi_orbit -> trigger();
 
-    new ( sim() ) chi_orbit_event_t( *p, p -> talent.chi_orbit -> effectN( 1 ).period() );
+    make_event<chi_orbit_event_t>( sim(), *p, p -> talent.chi_orbit -> effectN( 1 ).period() );
   }
 };
 
 struct chi_orbit_trigger_event_t : public player_event_t
 {
-  chi_orbit_trigger_event_t( monk_t& player, timespan_t tick_time ):
-    player_event_t( player )
+  chi_orbit_trigger_event_t( monk_t& player, timespan_t tick_time )
+    : player_event_t( player, clamp( tick_time, timespan_t::zero(),
+                                     timespan_t::from_seconds( 1 ) ) )
   {
-    tick_time = clamp( tick_time, timespan_t::zero(), timespan_t::from_seconds( 1 ) );
-    add_event( tick_time );
   }
 
   virtual const char* name() const override
@@ -6183,18 +6182,17 @@ struct chi_orbit_trigger_event_t : public player_event_t
     if ( p -> buff.chi_orbit -> up() )
       p -> active_actions.chi_orbit -> execute();
 
-    new ( sim() ) chi_orbit_trigger_event_t( *p, timespan_t::from_seconds( 1 ) );
+    make_event<chi_orbit_trigger_event_t>( sim(), *p, timespan_t::from_seconds( 1 ) );
   }
 };
 
 struct power_strikes_event_t: public player_event_t
 {
-  power_strikes_event_t( monk_t& player, timespan_t tick_time ):
-    player_event_t( player )
+  power_strikes_event_t( monk_t& player, timespan_t tick_time )
+    : player_event_t(
+          player, clamp( tick_time, timespan_t::zero(),
+                         player.talent.power_strikes->effectN( 1 ).period() ) )
   {
-    // Safety clamp
-    tick_time = clamp( tick_time, timespan_t::zero(), player.talent.power_strikes -> effectN( 1 ).period() );
-    add_event( tick_time );
   }
 
   virtual const char* name() const override
@@ -6206,7 +6204,7 @@ struct power_strikes_event_t: public player_event_t
 
     p -> buff.power_strikes -> trigger();
 
-    new ( sim() ) power_strikes_event_t( *p, p -> talent.power_strikes -> effectN( 1 ).period() );
+    make_event<power_strikes_event_t>( sim(), *p, p -> talent.power_strikes -> effectN( 1 ).period() );
   }
 };
 
@@ -7773,12 +7771,12 @@ void monk_t::combat_begin()
     {
       // If Chi Orbit, start out with max stacks
       buff.chi_orbit -> trigger( buff.chi_orbit -> max_stack() );
-      new ( *sim ) chi_orbit_event_t( *this, timespan_t::zero() );
-      new ( *sim ) chi_orbit_trigger_event_t( *this, timespan_t::zero() );
+      make_event<chi_orbit_event_t>( *sim, *this, timespan_t::zero() );
+      make_event<chi_orbit_trigger_event_t>( *sim, *this, timespan_t::zero() );
     }
 
     if ( talent.power_strikes -> ok() )
-      new ( *sim ) power_strikes_event_t( *this, timespan_t::zero() );
+      make_event<power_strikes_event_t>( *sim, *this, timespan_t::zero() );
   }
 
   if ( spec.bladed_armor -> ok() )
