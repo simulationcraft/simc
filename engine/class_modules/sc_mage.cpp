@@ -2155,7 +2155,7 @@ struct fire_mage_spell_t : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    if ( triggers_ignite && result_is_hit( s -> result ) )
+    if ( triggers_ignite && result_is_hit( s -> result ) && p() -> ignite )
     {
       trigger_ignite( s );
     }
