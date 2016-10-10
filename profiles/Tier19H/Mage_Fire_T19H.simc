@@ -4,7 +4,7 @@ race=troll
 role=spell
 position=back
 talents=1222122
-artifact=54:141522:139269:141522:0:748:1:749:3:750:3:751:3:752:3:754:5:755:4:756:3:758:1:759:1:762:1:763:1:1340:1
+artifact=54:137470:137420:137470:0:748:1:749:6:750:3:751:3:752:3:754:3:755:3:756:3:758:1:759:1:762:1:763:1:1340:1
 spec=fire
 
 # This default action priority list is automatically created based on your character.
@@ -45,7 +45,6 @@ actions.combustion_phase+=/potion,name=deadly_grace
 actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/arcane_torrent
-actions.combustion_phase+=/use_item,slot=trinket1
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.up
 actions.combustion_phase+=/fire_blast,if=buff.heating_up.up
 actions.combustion_phase+=/phoenixs_flames
@@ -75,29 +74,30 @@ actions.single_target+=/phoenixs_flames,if=(buff.combustion.up|buff.rune_of_powe
 actions.single_target+=/scorch,if=target.health.pct<=25&equipped.132454
 actions.single_target+=/fireball
 
-head=hood_of_darkened_visions,id=139189,bonus_id=1805
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_hidden_satyr
-shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1805
-back=giants_handkerchief,id=141538,enchant=binding_of_intellect
-chest=sheer_felthreaded_robe,id=141427
-wrists=snowdrift_bracers,id=141428
-hands=handwraps_of_delusional_power,id=138212,bonus_id=1805
-waist=pliable_spider_silk_cinch,id=138217,bonus_id=1805
-legs=nazaks_dusty_pantaloons,id=141415
-feet=crimson_woollined_slippers,id=139195,bonus_id=1805
-finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1805,enchant=binding_of_crit
-finger2=vastly_oversized_ring,id=141580,bonus_id=1497,enchant=binding_of_crit
-trinket1=wriggling_sinew,id=139326,bonus_id=1805
-trinket2=twisting_wind,id=139323,bonus_id=1805
-main_hand=felomelorn,id=128820,ilevel=894
-off_hand=heart_of_the_phoenix,id=133959,ilevel=894
+head=collar_of_enclosure,id=134424,bonus_id=1727/1517
+neck=chain_of_the_underking,id=134495,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
+shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1517
+back=iceblood_shroud,id=134411,bonus_id=1727/1517,enchant=binding_of_intellect
+chest=tunic_of_smoldering_ire,id=137352,bonus_id=1727/1517
+wrists=harrowing_soulspun_bracers,id=134437,bonus_id=1727/1517
+hands=gloves_of_unseen_evil,id=137506,bonus_id=1727/1517
+waist=timebreached_waistband,id=137413,bonus_id=1727/1517
+legs=burrowdweller_leggings,id=137424,bonus_id=1727/1517
+feet=paranoid_sprinters,id=137319,bonus_id=1727/1517
+finger1=seal_of_the_nazjatar_empire,id=134525,bonus_id=1727/1517,enchant=binding_of_critical_strike
+finger2=band_of_callous_dominance,id=134528,bonus_id=1727/1517,enchant=binding_of_critical_strike
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727/1517
+trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727/1517
+main_hand=felomelorn,id=128820,gem_id=137470/137420/137470,relic_id=1517:1727/1517:1727/1517:1727
+off_hand=heart_of_the_phoenix,id=133959
 
 # Gear Summary
-# gear_ilvl=865.50
-# gear_stamina=21997
-# gear_intellect=24635
-# gear_crit_rating=10868
-# gear_haste_rating=4163
-# gear_mastery_rating=2585
-# gear_versatility_rating=266
-# gear_armor=1703
+# gear_ilvl=868.63
+# gear_stamina=22619
+# gear_intellect=23427
+# gear_crit_rating=11208
+# gear_haste_rating=2943
+# gear_mastery_rating=4417
+# gear_versatility_rating=986
+# gear_armor=1715
+# set_bonus=tier19p_cloth_2pc=1
