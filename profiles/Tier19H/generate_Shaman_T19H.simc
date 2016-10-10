@@ -30,7 +30,7 @@ back=cape_of_rigid_order,id=134402,bonus_id=1727/1517,enchant=binding_of_agility
 chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727/1517
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
 hands=lavabreaker_gauntlets,id=137519,bonus_id=1727/1517
-waist=belt_of_mighty_links,id=137456,bonus_id=1727/1517
+waist=creeping_string_of_larva,id=139212,bonus_id=1805
 legs=mute_erasure_legguards,id=134475,bonus_id=1727/1517
 feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727/1517
 finger1=grasping_tentacle_loop,id=133634,bonus_id=1727/1517,enchant=binding_of_mastery
@@ -51,14 +51,14 @@ artifact=40:139262:139259:139262:0:291:1:294:1:295:1:296:1:297:1:298:3:299:3:300
 spec=elemental
 
 head=shadow_archers_helm,id=139244,bonus_id=1727/1517
-neck=breathless_choker,id=137461,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_hidden_satyr
 shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
 back=cloak_of_fading_echoes,id=134405,bonus_id=1727/1517,enchant=binding_of_intellect
 chest=tunic_of_screaming_earth,id=137354,bonus_id=1727/1517
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
-hands=gloves_of_fleshshaping,id=134468,bonus_id=1727/1517
+hands=nether_mindsnappers,id=134467,bonus_id=1727/1517
 waist=permafrost_waistband,id=137520,bonus_id=1727/1517
-legs=leggings_of_acidic_venom,id=137450,bonus_id=1727/1517
+legs=disjointed_linkage_leggings,id=139216,bonus_id=1805
 feet=striders_of_furious_flight,id=137517,bonus_id=1727/1517
 finger1=band_of_callous_dominance,id=134528,bonus_id=1727/1517,enchant_id=5427
 finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1727/1517,enchant_id=5427

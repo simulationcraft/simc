@@ -77,9 +77,9 @@ neck=strand_of_the_stars,id=137487,bonus_id=1727/1517,enchant=mark_of_the_traine
 shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727/1517
 back=cape_of_valarjar_courage,id=133765,bonus_id=1727/1517,enchant=binding_of_agility
 chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727/1517
-wrists=cryptwalker_bracers,id=137425,bonus_id=1727/1517
+wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1805
 hands=guileful_intruder_handguards,id=137480,bonus_id=1727/1517
-waist=sash_of_the_twilight_princess,id=134457,bonus_id=1727/1517
+waist=lifeless_buckled_girdle,id=139197,bonus_id=1805
 legs=wardens_martial_greaves,id=137515,bonus_id=1727/1517
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1517
 finger1=braided_silver_ring,id=134539,bonus_id=1727/1517,enchant=binding_of_mastery
@@ -93,9 +93,9 @@ off_hand=fists_of_the_heavens,id=133948
 # gear_ilvl=868.63
 # gear_agility=15339
 # gear_stamina=22227
-# gear_crit_rating=2817
-# gear_haste_rating=1285
-# gear_mastery_rating=8880
-# gear_versatility_rating=4686
+# gear_crit_rating=3122
+# gear_haste_rating=612
+# gear_mastery_rating=9107
+# gear_versatility_rating=4827
 # gear_armor=2126
 # set_bonus=tier19p_leather_2pc=1

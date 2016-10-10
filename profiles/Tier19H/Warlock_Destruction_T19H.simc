@@ -68,11 +68,11 @@ actions+=/incinerate
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1517
-neck=tightweb_choker,id=134541,bonus_id=1727/1517,enchant_id=5439
+neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1517,enchant_id=5439
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1517
 back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant_id=5436
 chest=fluxflow_robes,id=134413,bonus_id=1727/1517
-wrists=armbands_of_slaughter,id=134436,bonus_id=1727/1517
+wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1805
 hands=silken_bloodscent_gloves,id=133609,bonus_id=1727/1517
 waist=waistband_of_spiritual_doom,id=137507,bonus_id=1727/1517
 legs=legwraps_of_reverberating_shadows,id=137404,bonus_id=1727/1517
@@ -87,9 +87,9 @@ main_hand=scepter_of_sargeras,id=128941,gem_id=133764/137316/133764,relic_id=151
 # gear_ilvl=866.93
 # gear_stamina=22645
 # gear_intellect=23442
-# gear_crit_rating=6715
-# gear_haste_rating=10113
-# gear_mastery_rating=1757
+# gear_crit_rating=6310
+# gear_haste_rating=10280
+# gear_mastery_rating=1995
 # gear_versatility_rating=986
 # gear_armor=1715
 # set_bonus=tier19p_cloth_2pc=1

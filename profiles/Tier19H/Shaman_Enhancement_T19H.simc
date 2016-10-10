@@ -68,7 +68,7 @@ back=cape_of_rigid_order,id=134402,bonus_id=1727/1517,enchant=binding_of_agility
 chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727/1517
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
 hands=lavabreaker_gauntlets,id=137519,bonus_id=1727/1517
-waist=belt_of_mighty_links,id=137456,bonus_id=1727/1517
+waist=creeping_string_of_larva,id=139212,bonus_id=1805
 legs=mute_erasure_legguards,id=134475,bonus_id=1727/1517
 feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727/1517
 finger1=grasping_tentacle_loop,id=133634,bonus_id=1727/1517,enchant=binding_of_mastery
@@ -83,6 +83,6 @@ off_hand=fury_of_the_stonemother,id=128873
 # gear_agility=13921
 # gear_stamina=22227
 # gear_crit_rating=670
-# gear_haste_rating=5456
-# gear_mastery_rating=12229
+# gear_haste_rating=5767
+# gear_mastery_rating=11918
 # gear_armor=2630

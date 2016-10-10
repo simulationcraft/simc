@@ -78,7 +78,7 @@ actions.cooldown+=/metamorphosis,if=variable.pooling_for_meta&fury.deficit<30&(t
 actions.cooldown+=/potion,name=old_war,if=buff.metamorphosis.remains>25|target.time_to_die<30
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=breathless_choker,id=137461,bonus_id=3418/1517/1813,enchant=mark_of_the_hidden_satyr
+neck=understone_gorget,id=134491,bonus_id=3418/1517/1813,enchant=mark_of_the_hidden_satyr
 shoulders=felbat_leather_pauldrons,id=134374,bonus_id=3418/1527/1813
 back=cloak_of_manaspun_silk,id=134410,bonus_id=3418/1517/1813,enchant=binding_of_agility
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=3418/1517/1813
@@ -98,9 +98,9 @@ off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 # gear_ilvl=868.63
 # gear_agility=13921
 # gear_stamina=22227
-# gear_crit_rating=12799
-# gear_haste_rating=1722
+# gear_crit_rating=12688
+# gear_haste_rating=1167
 # gear_mastery_rating=642
-# gear_versatility_rating=3192
+# gear_versatility_rating=3857
 # gear_armor=2126
 # set_bonus=tier19p_leather_2pc=1

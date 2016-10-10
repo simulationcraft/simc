@@ -22,7 +22,7 @@ talents=3200233
 artifact=59:137303:137381:137303:0:1035:3:1036:3:1037:3:1039:3:1040:3:1041:4:1042:5:1043:1:1044:1:1046:1:1047:1:1049:1:1294:1
 spec=balance
 
-head=corpse_feast_headwrap,id=137427,bonus_id=1727/1517
+head=soulstarve_hood,id=134440,bonus_id=1727/1517
 neck=strand_of_the_stars,id=137487,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
 shoulders=epaulets_of_dessicated_foliage,id=134452,bonus_id=1727/1517
 back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant=binding_of_intellect
@@ -59,7 +59,7 @@ hands=guileful_intruder_handguards,id=137480,bonus_id=1727/1517
 waist=sinister_ashfall_cord,id=134455,bonus_id=1727/1517
 legs=wardens_martial_greaves,id=137515,bonus_id=1727/1517
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1517
-finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1727/1517,enchant=binding_of_mastery
+finger1=gnawed_thumb_ring,id=134526,bonus_id=1727/1517,enchant=binding_of_mastery
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_mastery
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
 trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517

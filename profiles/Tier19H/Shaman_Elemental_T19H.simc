@@ -78,14 +78,14 @@ actions.single+=/flame_shock,moving=1,target_if=refreshable
 actions.single+=/earth_shock,moving=1
 
 head=shadow_archers_helm,id=139244,bonus_id=1727/1517
-neck=breathless_choker,id=137461,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1805,enchant=mark_of_the_hidden_satyr
 shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
 back=cloak_of_fading_echoes,id=134405,bonus_id=1727/1517,enchant=binding_of_intellect
 chest=tunic_of_screaming_earth,id=137354,bonus_id=1727/1517
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
-hands=gloves_of_fleshshaping,id=134468,bonus_id=1727/1517
+hands=nether_mindsnappers,id=134467,bonus_id=1727/1517
 waist=permafrost_waistband,id=137520,bonus_id=1727/1517
-legs=leggings_of_acidic_venom,id=137450,bonus_id=1727/1517
+legs=disjointed_linkage_leggings,id=139216,bonus_id=1805
 feet=striders_of_furious_flight,id=137517,bonus_id=1727/1517
 finger1=band_of_callous_dominance,id=134528,bonus_id=1727/1517,enchant_id=5427
 finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1727/1517,enchant_id=5427
@@ -98,8 +98,8 @@ off_hand=the_highkeepers_ward,id=128936
 # gear_ilvl=868.63
 # gear_stamina=22619
 # gear_intellect=23427
-# gear_crit_rating=11198
-# gear_haste_rating=4712
+# gear_crit_rating=10376
+# gear_haste_rating=5533
 # gear_mastery_rating=2651
 # gear_versatility_rating=986
 # gear_armor=2630

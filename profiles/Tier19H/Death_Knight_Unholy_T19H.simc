@@ -120,7 +120,7 @@ shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727/1517
 back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727/1517
 wrists=voidtouched_wristplates,id=133632,bonus_id=1727/1517
-hands=serrated_mandible_grips,id=137429,bonus_id=1727/1517
+hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727/1517
 waist=slack_tide_girdle,id=133770,bonus_id=1727/1517
 legs=keelhauler_legplates,id=134514,bonus_id=1727/1517
 feet=rook_footmans_warboots,id=139241,bonus_id=1727/1517
@@ -134,8 +134,8 @@ main_hand=apocalypse,id=128403,gem_id=137492/137549/136718,relic_id=1517:1727/15
 # gear_ilvl=866.93
 # gear_strength=15617
 # gear_stamina=22645
-# gear_crit_rating=6943
-# gear_haste_rating=10661
+# gear_crit_rating=7254
+# gear_haste_rating=10350
 # gear_mastery_rating=972
 # gear_armor=4194
 # set_bonus=tier19p_plate_2pc=1

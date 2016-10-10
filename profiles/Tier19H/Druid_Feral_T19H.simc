@@ -36,6 +36,7 @@ actions+=/auto_attack
 actions+=/skull_bash
 actions+=/berserk,if=buff.tigers_fury.up
 actions+=/incarnation,if=cooldown.tigers_fury.remains<gcd
+actions+=/use_item,slot=finger1,if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20
 actions+=/potion,name=old_war,if=((buff.berserk.remains>10|buff.incarnation.remains>20)&(target.time_to_die<180|(trinket.proc.all.react&target.health.pct<25)))|target.time_to_die<=40
 actions+=/tigers_fury,if=(!buff.clearcasting.react&energy.deficit>=60)|energy.deficit>=80|(t18_class_trinket&buff.berserk.up&buff.tigers_fury.down)
 actions+=/incarnation,if=energy.time_to_max>1&energy>=35
@@ -106,7 +107,7 @@ hands=guileful_intruder_handguards,id=137480,bonus_id=1727/1517
 waist=sinister_ashfall_cord,id=134455,bonus_id=1727/1517
 legs=wardens_martial_greaves,id=137515,bonus_id=1727/1517
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1517
-finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1727/1517,enchant=binding_of_mastery
+finger1=gnawed_thumb_ring,id=134526,bonus_id=1727/1517,enchant=binding_of_mastery
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_mastery
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
 trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517
@@ -117,9 +118,9 @@ off_hand=fangs_of_ashamane,id=128859
 # gear_ilvl=868.63
 # gear_agility=15339
 # gear_stamina=22227
-# gear_crit_rating=7815
+# gear_crit_rating=8924
 # gear_haste_rating=1666
-# gear_mastery_rating=6400
-# gear_versatility_rating=2473
+# gear_mastery_rating=5901
+# gear_versatility_rating=1863
 # gear_armor=2126
 # set_bonus=tier19p_leather_2pc=1

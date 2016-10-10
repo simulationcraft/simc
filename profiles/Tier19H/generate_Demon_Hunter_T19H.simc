@@ -24,7 +24,7 @@ talents=1230111
 artifact=3:0:0:0:0:1001:3:1002:3:1003:3:1004:2:1005:3:1006:3:1007:3:1010:1:1011:1:1012:1:1014:1:1015:1:1016:1:1330:1
 spec=havoc
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1805
-neck=breathless_choker,id=137461,bonus_id=3418/1517/1813,enchant=mark_of_the_hidden_satyr
+neck=understone_gorget,id=134491,bonus_id=3418/1517/1813,enchant=mark_of_the_hidden_satyr
 shoulders=felbat_leather_pauldrons,id=134374,bonus_id=3418/1527/1813
 back=cloak_of_manaspun_silk,id=134410,bonus_id=3418/1517/1813,enchant=binding_of_agility
 chest=vest_of_rupturing_diamonds,id=137336,bonus_id=3418/1517/1813

@@ -108,7 +108,7 @@ actions.single_target+=/solar_wrath,if=talent.natures_balance.enabled&dot.sunfir
 actions.single_target+=/lunar_strike,if=(talent.natures_balance.enabled&dot.moonfire_dmg.remains<5&cast_time<dot.moonfire_dmg.remains)|active_enemies>=2
 actions.single_target+=/solar_wrath
 
-head=corpse_feast_headwrap,id=137427,bonus_id=1727/1517
+head=soulstarve_hood,id=134440,bonus_id=1727/1517
 neck=strand_of_the_stars,id=137487,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
 shoulders=epaulets_of_dessicated_foliage,id=134452,bonus_id=1727/1517
 back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant=binding_of_intellect
@@ -128,9 +128,9 @@ main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=137303/137381/137303,rel
 # gear_ilvl=866.93
 # gear_stamina=22645
 # gear_intellect=24860
-# gear_crit_rating=4514
-# gear_haste_rating=9064
-# gear_mastery_rating=3018
+# gear_crit_rating=5056
+# gear_haste_rating=8916
+# gear_mastery_rating=2624
 # gear_versatility_rating=1981
 # gear_armor=2126
 # set_bonus=journey_through_time_2pc=1
