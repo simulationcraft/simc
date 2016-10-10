@@ -33,7 +33,7 @@ legs=felbat_leather_leggings,id=134370,bonus_id=3418/1527/1813
 feet=tunnel_trudger_footguards,id=137397,bonus_id=3418/1517/1813
 finger1=band_of_callous_dominance,id=134528,bonus_id=3418/1517/1813,enchant=binding_of_critical_strike
 finger2=utgarde_royal_signet,id=133637,bonus_id=3418/1517/1813,enchant=binding_of_critical_strike
-trinket1=tirathons_betrayal,id=137537,bonus_id=3418/1517/1813
+trinket1=faulty_countermeasure,id=137539,bonus_id=3418/1517/1813
 trinket2=bloodthirsty_instinct,id=139329,bonus_id=1805/1487
 main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=139251/138226/139251,relic_id=1805/1805/1805
 off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0

@@ -31,8 +31,8 @@ legs=wardens_martial_greaves,id=137515,bonus_id=1727/1517
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1517
 finger1=braided_silver_ring,id=134539,bonus_id=1727/1517,enchant=binding_of_mastery
 finger2=ring_of_minute_mirrors,id=137533,bonus_id=1727/1517,enchant=binding_of_mastery
-trinket1=chaos_talisman,id=137459,bonus_id=1727/1517
-trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
+trinket2=tirathons_betrayal,id=137537,bonus_id=1727/1517
 main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=fists_of_the_heavens,id=133948
 save=Monk_Windwalker_T19H.simc

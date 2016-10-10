@@ -90,17 +90,17 @@ legs=brinewashed_leather_pants,id=134238,bonus_id=1727/1527
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1517
 finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727/1517,enchant=binding_of_versatility
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_versatility
-trinket1=chaos_talisman,id=137459,bonus_id=1727/1517
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727/1517
 main_hand=the_dreadblades,id=128872,gem_id=137412/137472/137365,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
 # gear_ilvl=868.63
-# gear_agility=13921
+# gear_agility=15339
 # gear_stamina=22227
 # gear_crit_rating=6925
-# gear_haste_rating=3578
+# gear_haste_rating=2592
 # gear_mastery_rating=4065
 # gear_versatility_rating=3786
 # gear_armor=2126

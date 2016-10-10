@@ -33,7 +33,7 @@ legs=felbat_leather_leggings,id=134370,bonus_id=1727/1527
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1517
 finger1=utgarde_royal_signet,id=133637,bonus_id=1727/1517,enchant=binding_of_versatility
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_versatility
-trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1517
+trinket1=hunger_of_the_pack,id=136975,bonus_id=1727/1517
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727/1517
 main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=the_kingslayers,id=128869
@@ -88,7 +88,7 @@ legs=brinewashed_leather_pants,id=134238,bonus_id=1727/1527
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1517
 finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727/1517,enchant=binding_of_versatility
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_versatility
-trinket1=chaos_talisman,id=137459,bonus_id=1727/1517
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
 trinket2=tirathons_betrayal,id=137537,bonus_id=1727/1517
 main_hand=the_dreadblades,id=128872,gem_id=137412/137472/137365,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=the_dreadblades,id=134552
@@ -116,8 +116,8 @@ legs=wardens_martial_greaves,id=137515,bonus_id=1727/1517
 feet=grove_darkeners_treads,id=134429,bonus_id=1727/1517
 finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1727/1517,enchant=binding_of_mastery
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_mastery
-trinket1=chaos_talisman,id=137459,bonus_id=1727/1517
-trinket2=tirathons_betrayal,id=137537,bonus_id=1727/1517
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
+trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517
 main_hand=fangs_of_the_devourer,id=128476,gem_id=136721/137377/136721,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=fangs_of_the_devourer,id=128479
 save=Rogue_Subtlety_T19H.simc

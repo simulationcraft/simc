@@ -84,28 +84,28 @@ actions.two_targets+=/bloodthirst
 actions.two_targets+=/whirlwind
 
 head=nightsfall_helmet,id=139058,bonus_id=1727/1527
-neck=chain_of_a_hundred_maws,id=134498,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
+neck=hatecoil_commanders_amulet,id=134492,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727/1517
 back=seacursed_wrap,id=133771,bonus_id=1727/1517,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727/1517
 wrists=voidtouched_wristplates,id=133632,bonus_id=1727/1517
 hands=nightsfall_gauntlets,id=139056,bonus_id=1727/1527
-waist=pustulous_girdle,id=137436,bonus_id=1727/1517
+waist=arcane_defenders_belt,id=134269,bonus_id=1727/1517
 legs=rock_solid_legplates,id=137342,bonus_id=1727/1517
 feet=rook_footmans_warboots,id=139241,bonus_id=1727/1517
-finger1=loop_of_vitriolic_intent,id=134530,bonus_id=1727/1517,enchant=binding_of_mastery
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_mastery
-trinket1=chaos_talisman,id=137459,bonus_id=1727/1517
+finger1=loop_of_vitriolic_intent,id=134530,bonus_id=1727/1517,enchant=binding_of_haste
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_haste
+trinket1=terrorbound_nexus,id=137406,bonus_id=1727/1517
 trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1517
 main_hand=warswords_of_the_valarjar,id=128908,gem_id=137546/137365/137472,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=warswords_of_the_valarjar,id=134553
 
 # Gear Summary
-# gear_ilvl=868.63
-# gear_strength=14735
-# gear_stamina=25577
+# gear_ilvl=868.00
+# gear_strength=14635
+# gear_stamina=25428
 # gear_crit_rating=4636
-# gear_haste_rating=11257
-# gear_mastery_rating=5201
-# gear_armor=4194
+# gear_haste_rating=10256
+# gear_mastery_rating=6164
+# gear_armor=4185
 # set_bonus=tier19p_plate_2pc=1

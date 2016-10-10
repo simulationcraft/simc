@@ -45,8 +45,8 @@ legs=wardens_martial_greaves,id=137515,bonus_id=1727/1517
 feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1517
 finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1727/1517,enchant=binding_of_mastery
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_mastery
-trinket1=chaos_talisman,id=137459,bonus_id=1727/1517
-trinket2=tirathons_betrayal,id=137537,bonus_id=1727/1517
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
+trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517
 main_hand=fangs_of_ashamane,id=128860,gem_id=137370/137350/137327,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=fangs_of_ashamane,id=128859
 save=Druid_Feral_T19H.simc
