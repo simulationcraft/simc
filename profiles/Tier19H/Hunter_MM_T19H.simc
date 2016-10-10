@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=ranged_back
 talents=1103011
-artifact=55:137313:136718:137381:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:6:320:3:321:1:322:1:1337:1
+artifact=55:0:0:0:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
 # This default action priority list is automatically created based on your character.
@@ -62,29 +62,29 @@ actions+=/arcane_shot,if=focus.deficit<10
 actions.cooldowns=potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23
 actions.cooldowns+=/trueshot,if=(buff.bloodlust.react|target.health.pct>20+(cooldown.trueshot.remains+15))|buff.bullseye.react>25
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1727/1517
-neck=wolfstride_pendant,id=133633,bonus_id=1727/1517,enchant=mark_of_the_distant_army
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
-back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=binding_of_agility
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727/1517
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
-hands=lavabreaker_gauntlets,id=137519,bonus_id=1727/1517
-waist=belt_of_mighty_links,id=137456,bonus_id=1727/1517
-legs=mute_erasure_legguards,id=134475,bonus_id=1727/1517
-feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727/1517
-finger1=archdruids_tainted_seal,id=134487,bonus_id=1727/1517,enchant=binding_of_mastery
-finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727/1517,enchant=binding_of_mastery
-trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727/1517
-trinket2=bloodthirsty_instinct,id=139329,bonus_id=1805
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=137313/136718/137381,relic_id=1517:1727/1517:1727/1517:1727
+head=collar_of_honorable_exultation,id=136777,bonus_id=1517/3418
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1769,gems=200agility,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1517/3418
+back=drape_of_the_raven_lord,id=136770,bonus_id=1517/3418,enchant=binding_of_agility
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1517/3418
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1517/3418
+hands=lavabreaker_gauntlets,id=137519,bonus_id=1517/3418
+waist=creeping_string_of_larva,id=139212,bonus_id=1487/1805
+legs=singular_chain_leggings,id=139215,bonus_id=1487/1805
+feet=whelp_handlers_lined_boots,id=134464,bonus_id=1517/3418
+finger1=archdruids_tainted_seal,id=134487,bonus_id=1517/3418,enchant=binding_of_mastery
+finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=150mastery,enchant=binding_of_mastery
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1517/3418
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,ilevel=894,gem_id=137313/136718/137381
 
 # Gear Summary
-# gear_ilvl=865.27
-# gear_agility=14025
-# gear_stamina=22384
+# gear_ilvl=864.93
+# gear_agility=14399
+# gear_stamina=22317
 # gear_crit_rating=1433
-# gear_haste_rating=4911
-# gear_mastery_rating=12164
-# gear_armor=2619
+# gear_haste_rating=4532
+# gear_mastery_rating=12497
+# gear_armor=2630
 # set_bonus=tier19p_mail_2pc=1
 summon_pet=cat

@@ -20,34 +20,35 @@ race=orc
 role=attack
 position=ranged_back
 talents=3102012
-artifact=56:137365:133768:137472:0:868:3:869:3:870:5:872:3:874:3:875:4:878:1:879:1:880:1:881:1:882:1:1095:3:1336:1
+artifact=56:0:0:0:0:868:3:869:3:870:3:872:3:874:3:875:3:878:1:879:1:880:1:881:1:882:1:1095:3:1336:1
 spec=beast_mastery
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1727/1517
-neck=strand_of_the_stars,id=137487,bonus_id=1727/1517,enchant=mark_of_the_distant_army
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
-back=cape_of_rigid_order,id=134402,bonus_id=1727/1517,enchant=binding_of_agility
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727/1517
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
-hands=lavabreaker_gauntlets,id=137519,bonus_id=1727/1517
-waist=belt_of_mighty_links,id=137456,bonus_id=1727/1517
-legs=mute_erasure_legguards,id=134475,bonus_id=1727/1517
-feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727/1517
-finger1=archdruids_tainted_seal,id=134487,bonus_id=1727/1517,enchant=binding_of_haste
-finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727/1517,enchant=binding_of_haste
-trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
-trinket2=chrono_shard,id=137419,bonus_id=1727/1517
-main_hand=titanstrike,id=128861,gem_id=137365/133768/137472,relic_id=1517:1727/1517:1727/1517:1727
+head=collar_of_honorable_exultation,id=136777,bonus_id=1517/3418
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1769,gems=200agility,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1517/3418
+back=drape_of_the_raven_lord,id=136770,bonus_id=1517/3418,enchant=binding_of_agility
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1517/3418
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1517/3418
+hands=lavabreaker_gauntlets,id=137519,bonus_id=1517/3418
+waist=creeping_string_of_larva,id=139212,bonus_id=1487/1805
+legs=singular_chain_leggings,id=139215,bonus_id=1487/1805
+feet=whelp_handlers_lined_boots,id=134464,bonus_id=1517/3418
+finger1=archdruids_tainted_seal,id=134487,bonus_id=1517/3418,enchant=binding_of_mastery
+finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=150mastery,enchant=binding_of_mastery
+trinket1=chrono_shard,id=137419,bonus_id=1517/3418
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+main_hand=titanstrike,id=128861,ilevel=894,gem_id=137365/133768/137543
 
 # Gear Summary
 # gear_ilvl=864.60
 # gear_agility=14399
 # gear_stamina=22317
-# gear_crit_rating=4015
-# gear_haste_rating=4347
-# gear_mastery_rating=11387
+# gear_crit_rating=2240
+# gear_haste_rating=5339
+# gear_mastery_rating=12318
 # gear_versatility_rating=807
 # gear_armor=2630
+# set_bonus=tier19p_mail_2pc=1
 summon_pet=cat
 save=Hunter_BM_T19H.simc
 
@@ -57,34 +58,35 @@ race=troll
 role=attack
 position=ranged_back
 talents=1103011
-artifact=55:137313:136718:137381:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:6:320:3:321:1:322:1:1337:1
+artifact=55:0:0:0:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1727/1517
-neck=wolfstride_pendant,id=133633,bonus_id=1727/1517,enchant=mark_of_the_distant_army
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
-back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=binding_of_agility
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727/1517
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
-hands=lavabreaker_gauntlets,id=137519,bonus_id=1727/1517
-waist=belt_of_mighty_links,id=137456,bonus_id=1727/1517
-legs=mute_erasure_legguards,id=134475,bonus_id=1727/1517
-feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727/1517
-finger1=archdruids_tainted_seal,id=134487,bonus_id=1727/1517,enchant=binding_of_mastery
-finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727/1517,enchant=binding_of_mastery
-trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727/1517
-trinket2=bloodthirsty_instinct,id=139329,bonus_id=1805
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=137313/136718/137381,relic_id=1517:1727/1517:1727/1517:1727
+head=collar_of_honorable_exultation,id=136777,bonus_id=1517/3418
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1769,gems=200agility,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1517/3418
+back=drape_of_the_raven_lord,id=136770,bonus_id=1517/3418,enchant=binding_of_agility
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1517/3418
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1517/3418
+hands=lavabreaker_gauntlets,id=137519,bonus_id=1517/3418
+waist=creeping_string_of_larva,id=139212,bonus_id=1487/1805
+legs=singular_chain_leggings,id=139215,bonus_id=1487/1805
+feet=whelp_handlers_lined_boots,id=134464,bonus_id=1517/3418
+finger1=archdruids_tainted_seal,id=134487,bonus_id=1517/3418,enchant=binding_of_mastery
+finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=150mastery,enchant=binding_of_mastery
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1517/3418
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,ilevel=894,gem_id=137313/136718/137381
 
 # Gear Summary
 # gear_ilvl=864.60
 # gear_agility=14399
 # gear_stamina=22317
-# gear_crit_rating=4015
-# gear_haste_rating=4347
-# gear_mastery_rating=11387
+# gear_crit_rating=2240
+# gear_haste_rating=5339
+# gear_mastery_rating=12318
 # gear_versatility_rating=807
 # gear_armor=2630
+# set_bonus=tier19p_mail_2pc=1
 summon_pet=cat
 save=Hunter_MM_T19H.simc
 
@@ -94,33 +96,34 @@ race=orc
 role=attack
 position=ranged_back
 talents=2302022
-artifact=34:137550:137408:137350:0:1068:1:1070:5:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1079:1:1080:1:1082:1:1083:1:1084:1:1338:1
+artifact=34:0:0:0:0:1068:1:1070:2:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1079:1:1080:1:1082:1:1083:1:1084:1:1338:1
 spec=survival
 
-head=helm_of_endless_dunes,id=134471,bonus_id=1727/1517
-neck=understone_gorget,id=134491,bonus_id=1727/1517,enchant=mark_of_the_claw
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
-back=cape_of_rigid_order,id=134402,bonus_id=1727/1517,enchant=binding_of_agility
-chest=decontaminated_chain_tunic,id=134463,bonus_id=1727/1517
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
-hands=gloves_of_fleshshaping,id=134468,bonus_id=1727/1517
-waist=cinch_of_frozen_fear,id=134482,bonus_id=1727/1517
-legs=leggings_of_acidic_venom,id=137450,bonus_id=1727/1517
-feet=plasmadrilled_steel_toes,id=137444,bonus_id=1727/1517
-finger1=ring_of_contempt,id=134490,bonus_id=1727/1517,enchant=binding_of_versatility
-finger2=ring_of_looming_menace,id=134533,bonus_id=1727/1517,enchant=binding_of_versatility
-trinket1=chaos_talisman,id=137459,bonus_id=1727/1517
-trinket2=tirathons_betrayal,id=137537,bonus_id=1727/1517
-main_hand=talonclaw,id=128808,gem_id=137550/137408/137350,relic_id=1517:1727/1517:1727/1517:1727
+head=helm_of_endless_dunes,id=134471,bonus_id=1517/3418
+neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1748,gems=200agility,enchant=mark_of_the_hidden_satyr
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1517/3418
+back=cloak_of_manaspun_silk,id=134410,bonus_id=1517/3418,enchant=binding_of_agility
+chest=decontaminated_chain_tunic,id=134463,bonus_id=1517/3418
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1517/3418
+hands=gauntlets_of_malevolent_intent,id=139213,bonus_id=1487/1805
+waist=laughing_sisters_pouchchain,id=139211,bonus_id=1487/1805
+legs=disjointed_linkage_leggings,id=139216,bonus_id=1487/1805
+feet=malignant_sabatons,id=138211,bonus_id=1487/1805
+finger1=maelstrom_band,id=130230,bonus_id=669/1682,gems=150vers,enchant=binding_of_versatility
+finger2=grubby_silver_ring,id=139236,bonus_id=1487/1805,enchant=binding_of_versatility
+trinket1=tirathons_betrayal,id=137537,bonus_id=1517/3418
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
+main_hand=talonclaw,id=128808,ilevel=894,gem_id=137550/137408/137350
 
 # Gear Summary
-# gear_ilvl=862.93
-# gear_agility=14155
-# gear_stamina=21951
-# gear_crit_rating=7705
-# gear_haste_rating=4352
-# gear_mastery_rating=1987
-# gear_versatility_rating=6567
-# gear_armor=2609
+# gear_ilvl=864.93
+# gear_agility=15817
+# gear_stamina=22317
+# gear_crit_rating=7206
+# gear_haste_rating=2294
+# gear_mastery_rating=1673
+# gear_versatility_rating=6302
+# gear_armor=2630
+# set_bonus=tier19p_mail_2pc=1
 summon_pet=cat
 save=Hunter_SV_T19H.simc
