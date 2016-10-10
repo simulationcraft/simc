@@ -18,24 +18,24 @@ race=orc
 role=attack
 position=ranged_back
 talents=3102012
-artifact=56:0:0:0:0:868:3:869:3:870:3:872:3:874:3:875:3:878:1:879:1:880:1:881:1:882:1:1095:3:1336:1
+artifact=56:137365:133768:137472:0:868:3:869:3:870:5:872:3:874:3:875:4:878:1:879:1:880:1:881:1:882:1:1095:3:1336:1
 spec=beast_mastery
 
-head=greyed_dragonscale_coif,id=139214,bonus_id=1487/1805
-neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1787,gems=150mastery,enchant=mark_of_hidden_satyr
-shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1487/1805
-back=gossamerspun_greatcloak,id=138221,bonus_id=1487/1805,enchant=200agi
-chest=patient_ambushers_hauberk,id=139221,bonus_id=1487/1805
-wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1487/1805
-hands=gauntlets_of_the_demented_mind,id=138214,bonus_id=1487/1805
-waist=creeping_string_of_larva,id=139212,bonus_id=1487/1805
-legs=singular_chain_leggings,id=139215,bonus_id=1487/1805
-feet=black_venom_sabatons,id=139219,bonus_id=1487/1805
-finger1=mindrend_band,id=138220,bonus_id=1487/1805,enchant=200mastery
-finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=200agi,enchant=200mastery
-trinket1=unstable_arcanocrystal,id=141482
-trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
-main_hand=titanstrike,id=128861,gem_id=139262/139269/139261,relic_id=1805/1805/1805
+head=collar_of_honorable_exultation,id=136777,bonus_id=1727/1517
+neck=strand_of_the_stars,id=137487,bonus_id=1727/1517,enchant=mark_of_the_distant_army
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
+back=cape_of_rigid_order,id=134402,bonus_id=1727/1517,enchant=binding_of_agility
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727/1517
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
+hands=lavabreaker_gauntlets,id=137519,bonus_id=1727/1517
+waist=belt_of_mighty_links,id=137456,bonus_id=1727/1517
+legs=mute_erasure_legguards,id=134475,bonus_id=1727/1517
+feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727/1517
+finger1=archdruids_tainted_seal,id=134487,bonus_id=1727/1517,enchant=binding_of_haste
+finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727/1517,enchant=binding_of_haste
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1805
+trinket2=chrono_shard,id=137419,bonus_id=1727/1517
+main_hand=titanstrike,id=128861,gem_id=137365/133768/137472,relic_id=1517:1727/1517:1727/1517:1727
 
 # Gear Summary
 # gear_ilvl=864.60
@@ -55,24 +55,24 @@ race=troll
 role=attack
 position=ranged_back
 talents=1103011
-artifact=55:0:0:0:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:3:320:3:321:1:322:1:1337:1
+artifact=55:137313:136718:137381:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:6:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
-head=greyed_dragonscale_coif,id=139214,bonus_id=1487/1805
-neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1787,gems=150mastery,enchant=mark_of_hidden_satyr
-shoulders=thorny_bramblemail_pauldrons,id=139218,bonus_id=1487/1805
-back=gossamerspun_greatcloak,id=138221,bonus_id=1487/1805,enchant=200agi
-chest=patient_ambushers_hauberk,id=139221,bonus_id=1487/1805
-wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1487/1805
-hands=gauntlets_of_the_demented_mind,id=138214,bonus_id=1487/1805
-waist=creeping_string_of_larva,id=139212,bonus_id=1487/1805
-legs=singular_chain_leggings,id=139215,bonus_id=1487/1805
-feet=black_venom_sabatons,id=139219,bonus_id=1487/1805
-finger1=mindrend_band,id=138220,bonus_id=1487/1805,enchant=200mastery
-finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=200agi,enchant=200mastery
-trinket1=unstable_arcanocrystal,id=141482
-trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=139262/139260/139249,relic_id=1805/1805/1805
+head=collar_of_honorable_exultation,id=136777,bonus_id=1727/1517
+neck=wolfstride_pendant,id=133633,bonus_id=1727/1517,enchant=mark_of_the_distant_army
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
+back=cape_of_rigid_order,id=134402,bonus_id=1727,enchant=binding_of_agility
+chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1727/1517
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
+hands=lavabreaker_gauntlets,id=137519,bonus_id=1727/1517
+waist=belt_of_mighty_links,id=137456,bonus_id=1727/1517
+legs=mute_erasure_legguards,id=134475,bonus_id=1727/1517
+feet=whelp_handlers_lined_boots,id=134464,bonus_id=1727/1517
+finger1=archdruids_tainted_seal,id=134487,bonus_id=1727/1517,enchant=binding_of_mastery
+finger2=ring_of_twisted_webbing,id=134540,bonus_id=1727/1517,enchant=binding_of_mastery
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727/1517
+trinket2=bloodthirsty_instinct,id=139329,bonus_id=1805
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=137313/136718/137381,relic_id=1517:1727/1517:1727/1517:1727
 
 # Gear Summary
 # gear_ilvl=864.60
@@ -92,24 +92,24 @@ race=orc
 role=attack
 position=ranged_back
 talents=2302022
-artifact=34:0:0:0:0:1068:1:1070:2:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1079:1:1080:1:1082:1:1083:1:1084:1:1338:1
+artifact=34:137550:137408:137350:0:1068:1:1070:5:1072:3:1073:3:1074:3:1075:3:1076:3:1077:3:1079:1:1080:1:1082:1:1083:1:1084:1:1338:1
 spec=survival
 
-head=cave_skulkers_helm,id=141455
-neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1748,gems=150versatility,enchant=mark_of_the_hidden_satyr
-shoulders=matted_fur_pauldrons,id=139217,bonus_id=1487/1805
-back=evergreen_vinewrap_drape,id=139248,bonus_id=1487/1805,enchant=200agi
-chest=hauberk_of_the_snarled_vale,id=141491
-wrists=gravenscale_armbands,id=128907,bonus_id=669/1682
-hands=gauntlets_of_malevolent_intent,id=139213,bonus_id=1487/1805
-waist=laughing_sisters_pouchchain,id=139211,bonus_id=1487/1805
-legs=disjointed_linkage_leggings,id=139216,bonus_id=1487/1805
-feet=malignant_sabatons,id=138211,bonus_id=1487/1805
-finger1=grubby_silver_ring,id=139236,bonus_id=1487/1805,enchant=200vers
-finger2=maelstrom_band,id=130230,bonus_id=669/1682,gems=200agi,enchant=200vers
-trinket1=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
-trinket2=unstable_arcanocrystal,id=141482
-main_hand=talonclaw,id=128808,gem_id=139262/139261/139260,relic_id=1805/1805/1805
+head=helm_of_endless_dunes,id=134471,bonus_id=1727/1517
+neck=understone_gorget,id=134491,bonus_id=1727/1517,enchant=mark_of_the_claw
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1517
+back=cape_of_rigid_order,id=134402,bonus_id=1727/1517,enchant=binding_of_agility
+chest=decontaminated_chain_tunic,id=134463,bonus_id=1727/1517
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1517
+hands=gloves_of_fleshshaping,id=134468,bonus_id=1727/1517
+waist=cinch_of_frozen_fear,id=134482,bonus_id=1727/1517
+legs=leggings_of_acidic_venom,id=137450,bonus_id=1727/1517
+feet=plasmadrilled_steel_toes,id=137444,bonus_id=1727/1517
+finger1=ring_of_contempt,id=134490,bonus_id=1727/1517,enchant=binding_of_versatility
+finger2=ring_of_looming_menace,id=134533,bonus_id=1727/1517,enchant=binding_of_versatility
+trinket1=chaos_talisman,id=137459,bonus_id=1727/1517
+trinket2=tirathons_betrayal,id=137537,bonus_id=1727/1517
+main_hand=talonclaw,id=128808,gem_id=137550/137408/137350,relic_id=1517:1727/1517:1727/1517:1727
 
 # Gear Summary
 # gear_ilvl=862.93
