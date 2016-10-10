@@ -3498,7 +3498,7 @@ struct scaling_metric_data_t {
 
 struct player_t : public actor_t
 {
-  static const int default_level = 100;
+  static const int default_level = 110;
 
   // static values
   player_e type;

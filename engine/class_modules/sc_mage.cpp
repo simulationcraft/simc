@@ -809,7 +809,19 @@ struct water_elemental_pet_t : public mage_pet_t
     : mage_pet_t( sim, owner, "water_elemental" )
   {
     owner_coeff.sp_from_sp = 0.75;
-    action_list_str        = "water_jet/waterbolt";
+  }
+
+  void init_action_list() override
+  {
+    auto default_list = get_action_priority_list( "default" );
+
+    default_list->add_action( this, "Water Jet" );
+    default_list->add_action( this, "Waterbolt" );
+
+    // Default
+    use_default_action_list = true;
+
+    mage_pet_t::init_action_list();
   }
 
   water_elemental_pet_td_t* td( player_t* t ) const
@@ -4659,9 +4671,13 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     spell_power_mod.direct = p -> find_spell( 228597 ) -> effectN( 1 ).sp_coeff();
-    stats -> add_child( icicle );
-    icicle -> school = school;
-    icicle -> action_list.push_back( p -> icicle );
+    if ( p -> spec.icicles -> ok() )
+    {
+      stats -> add_child( icicle );
+      icicle -> school = school;
+      assert( p -> icicle );
+      icicle -> action_list.push_back( p -> icicle );
+    }
     if ( p -> talents.lonely_winter -> ok() )
     {
       base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() +
@@ -7178,6 +7194,11 @@ struct water_jet_t : public action_t
     {
       mage_t* m = debug_cast<mage_t*>( player );
       action = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
+      if ( !action)
+      {
+        background = true;
+        return;
+      }
       assert( action );
       action -> autocast = false;
     }
