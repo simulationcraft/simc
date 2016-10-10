@@ -3,9 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_report.hpp"
 #include "sc_highchart.hpp"
+#include "simulationcraft.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
@@ -126,8 +126,9 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
 
   if ( s.player->sim->report_details )
   {
-    class_attr = " id=\"actor" + util::to_string( s.player -> index ) + "_" + s.name_str +
-                 "_" + stats_type + "_toggle\" class=\"toggle-details\"";
+    class_attr = " id=\"actor" + util::to_string( s.player->index ) + "_" +
+                 s.name_str + "_" + stats_type +
+                 "_toggle\" class=\"toggle-details\"";
   }
 
   for ( const auto& action : s.action_list )
@@ -717,7 +718,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
 
     if ( s.has_direct_amount_results() || s.has_tick_amount_results() )
     {
-      highchart::time_series_t ts( highchart::build_id( s ), *s.player -> sim );
+      highchart::time_series_t ts( highchart::build_id( s ), *s.player->sim );
       chart::generate_stats_timeline( ts, s );
       os << ts.to_target_div();
       s.player->sim->add_chart_data( ts );
@@ -789,7 +790,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
             "</div>\n",
             a->data().id(), a->data().name_cstr(),
             util::school_type_string( a->data().get_school_type() ),
-            report::pretty_spell_text( a->data(), a->data().tooltip(), p ).c_str(),
+            report::pretty_spell_text( a->data(), a->data().tooltip(), p )
+                .c_str(),
             util::encode_html(
                 report::pretty_spell_text( a->data(), a->data().desc(), p ) )
                 .c_str() );
@@ -984,19 +986,20 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += ", enchant: " + item.parsed.encoded_enchant;
     }
 
-    auto has_relics = range::find_if( item.parsed.relic_bonus_ilevel, []( unsigned v ) { return v != 0; } );
+    auto has_relics = range::find_if( item.parsed.relic_bonus_ilevel,
+                                      []( unsigned v ) { return v != 0; } );
     if ( has_relics != item.parsed.relic_bonus_ilevel.end() )
     {
       item_sim_desc += ", relics: { ";
       auto first = true;
-      for ( auto bonus: item.parsed.relic_bonus_ilevel )
+      for ( auto bonus : item.parsed.relic_bonus_ilevel )
       {
         if ( bonus == 0 )
         {
           continue;
         }
 
-        if ( ! first )
+        if ( !first )
         {
           item_sim_desc += ", ";
         }
@@ -1048,16 +1051,18 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
   const auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
   std::array<double, ATTRIBUTE_MAX> hybrid_attributes;
   range::fill( hybrid_attributes, 0 );
-  const std::array<stat_e, 4> hybrid_stats = { { STAT_STR_AGI_INT, STAT_STR_AGI, STAT_STR_INT, STAT_AGI_INT } };
+  const std::array<stat_e, 4> hybrid_stats = {
+      {STAT_STR_AGI_INT, STAT_STR_AGI, STAT_STR_INT, STAT_AGI_INT}};
 
-  for ( const auto& item: p.items )
+  for ( const auto& item : p.items )
   {
     for ( auto hybrid_stat : hybrid_stats )
     {
-      auto real_stat = p.convert_hybrid_stat( hybrid_stat );
+      auto real_stat   = p.convert_hybrid_stat( hybrid_stat );
       attribute_e attr = static_cast<attribute_e>( real_stat );
 
-      if ( p.gear.attribute[ attr ] >= 0 || item.stats.get_stat( hybrid_stat ) <= 0 )
+      if ( p.gear.attribute[ attr ] >= 0 ||
+           item.stats.get_stat( hybrid_stat ) <= 0 )
       {
         continue;
       }
@@ -1145,7 +1150,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
           ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-          100 * buffed_stats.attack_crit_chance, 100 * p.composite_melee_crit_chance(),
+          100 * buffed_stats.attack_crit_chance,
+          100 * p.composite_melee_crit_chance(),
           p.composite_melee_crit_rating() );
       j++;
     }
@@ -1159,7 +1165,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
           ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-          100 * buffed_stats.attack_crit_chance, 100 * p.composite_melee_crit_chance(),
+          100 * buffed_stats.attack_crit_chance,
+          100 * p.composite_melee_crit_chance(),
           p.composite_melee_crit_rating() );
       j++;
       os.format(
@@ -1169,8 +1176,10 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
           "</tr>\n",
-          ( j % 2 == 1 ) ? " class=\"odd\"" : "", 100 * buffed_stats.spell_crit_chance,
-          100 * p.composite_spell_crit_chance(), p.composite_spell_crit_rating() );
+          ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+          100 * buffed_stats.spell_crit_chance,
+          100 * p.composite_spell_crit_chance(),
+          p.composite_spell_crit_rating() );
       j++;
     }
     if ( p.composite_melee_haste() == p.composite_spell_haste() )
@@ -1469,7 +1478,6 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
        << "</div>\n";
   }
 }
-
 
 // print_html_talents_player ================================================
 
@@ -2242,9 +2250,8 @@ void get_total_player_gains( const player_t& p,
 }
 // print_html_player_resources ==============================================
 
-void print_html_player_resources(
-    report::sc_html_stream& os, const player_t& p,
-    const player_processed_report_information_t& )
+void print_html_player_resources( report::sc_html_stream& os, const player_t& p,
+                                  const player_processed_report_information_t& )
 {
   // Resources Section
 
@@ -2643,7 +2650,8 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
       p.scaling_for_metric( p.sim->scaling->scaling_metric );
   std::string scale_factor_id = "scale_factor_";
   scale_factor_id += util::scale_metric_type_abbrev( scaling_data.metric );
-  highchart::bar_chart_t bc( highchart::build_id( p, scale_factor_id ), *p.sim );
+  highchart::bar_chart_t bc( highchart::build_id( p, scale_factor_id ),
+                             *p.sim );
   if ( chart::generate_scale_factors( bc, p, scaling_data.metric ) )
   {
     os << bc.to_target_div();
@@ -2839,14 +2847,14 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
           "</td>\n",
           b.data().id(), b.data().name_cstr(),
           b.player
-              ? util::encode_html( report::pretty_spell_text( b.data(),
-                                                      b.data().tooltip(),
-                                                      *b.player ) )
+              ? util::encode_html(
+                    report::pretty_spell_text( b.data(), b.data().tooltip(),
+                                               *b.player ) )
                     .c_str()
               : b.data().tooltip(),
           b.player
-              ? util::encode_html(
-                  report::pretty_spell_text( b.data(), b.data().desc(), *b.player ) )
+              ? util::encode_html( report::pretty_spell_text(
+                                       b.data(), b.data().desc(), *b.player ) )
                     .c_str()
               : b.data().desc(),
           b.data().max_stacks(), b.data().duration().total_seconds(),
@@ -2864,13 +2872,14 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
       buff_uptime.add_simple_series( "area", "#FF0000", "Uptime",
                                      b.uptime_array.data() );
       buff_uptime.set_mean( b.uptime_array.mean() );
-      if ( ! b.sim -> single_actor_batch )
+      if ( !b.sim->single_actor_batch )
       {
-        buff_uptime.set_xaxis_max( b.sim -> simulation_length.max() );
+        buff_uptime.set_xaxis_max( b.sim->simulation_length.max() );
       }
       else
       {
-        buff_uptime.set_xaxis_max( b.player -> collected_data.fight_length.max() );
+        buff_uptime.set_xaxis_max(
+            b.player->collected_data.fight_length.max() );
       }
 
       os << "<tr><td colspan=\"2\" class=\"filler\">\n";
@@ -3458,35 +3467,45 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
 
     if ( p.artifact.n_points > 0 )
     {
-      os.format( "<tr class=\"left\">\n<th>Artifact</th>\n<td><ul class=\"float\">\n" );
-      os << "<li><a href=\"" << util::create_wowhead_artifact_url( p ) << "\" target=\"_blank\">Calculator (Wowhead.com)</a></li>";
-      os << "<li>Purchased points: " << +p.artifact.n_purchased_points << ", total " << +p.artifact.n_points << "</li>";
+      os.format(
+          "<tr class=\"left\">\n<th>Artifact</th>\n<td><ul "
+          "class=\"float\">\n" );
+      os << "<li><a href=\"" << util::create_wowhead_artifact_url( p )
+         << "\" target=\"_blank\">Calculator (Wowhead.com)</a></li>";
+      os << "<li>Purchased points: " << +p.artifact.n_purchased_points
+         << ", total " << +p.artifact.n_points << "</li>";
       os << "</ul></td></tr>";
       os.format( "<tr class=\"left\">\n<th></th><td><ul class=\"float\">\n" );
-      auto artifact_id = p.dbc.artifact_by_spec( p.specialization() );
+      auto artifact_id     = p.dbc.artifact_by_spec( p.specialization() );
       auto artifact_powers = p.dbc.artifact_powers( artifact_id );
       for ( size_t idx = 0; idx < artifact_powers.size(); ++idx )
       {
-        unsigned total_rank = p.artifact.points[ idx ].first + p.artifact.points[ idx ].second;
+        unsigned total_rank =
+            p.artifact.points[ idx ].first + p.artifact.points[ idx ].second;
         if ( total_rank == 0 )
         {
           continue;
         }
 
-        unsigned spell_id = p.dbc.artifact_power_spell_id( p.specialization(), ( unsigned ) idx, total_rank );
+        unsigned spell_id = p.dbc.artifact_power_spell_id(
+            p.specialization(), (unsigned)idx, total_rank );
         const spell_data_t* spell = p.dbc.spell( spell_id );
 
         std::string rank_str;
         if ( p.artifact.points[ idx ].second > 0 )
         {
-          rank_str = util::to_string( +p.artifact.points[ idx ].first ) + " + " + util::to_string( +p.artifact.points[ idx ].second );
+          rank_str = util::to_string( +p.artifact.points[ idx ].first ) +
+                     " + " +
+                     util::to_string( +p.artifact.points[ idx ].second );
         }
         else
         {
           rank_str = util::to_string( +p.artifact.points[ idx ].first );
         }
-        os << "<li>" << ( spell ? report::decorated_spell_name( sim, *spell, "artifactRank=" + rank_str ) : artifact_powers[ idx ] -> name );
-        if ( artifact_powers[ idx ] -> max_rank > 1 )
+        os << "<li>" << ( spell ? report::decorated_spell_name(
+                                      sim, *spell, "artifactRank=" + rank_str )
+                                : artifact_powers[ idx ]->name );
+        if ( artifact_powers[ idx ]->max_rank > 1 )
         {
           os << " (Rank " << rank_str << ")";
         }
@@ -3707,7 +3726,8 @@ void output_player_damage_summary( report::sc_html_stream& os,
 void output_player_heal_summary( report::sc_html_stream& os,
                                  const player_t& actor )
 {
-  if ( actor.collected_data.heal.max() == 0 && !actor.sim->debug && actor.collected_data.absorb.max() == 0 )
+  if ( actor.collected_data.heal.max() == 0 && !actor.sim->debug &&
+       actor.collected_data.absorb.max() == 0 )
     return;
 
   // Number of static columns in table

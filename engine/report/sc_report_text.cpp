@@ -3,8 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_report.hpp"
+#include "simulationcraft.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
@@ -325,8 +325,7 @@ void print_text_generic_stats( FILE* file, player_t* p )
       "versatility=%.2f%%|%.2f%%(%.0f)  "
       "leech=%.2f%%|%.2f%%(%.0f)\n",
       100.0 * buffed_stats.mastery_value, 100.0 * p->cache.mastery_value(),
-      p->composite_mastery_rating(),
-      100 * buffed_stats.damage_versatility,
+      p->composite_mastery_rating(), 100 * buffed_stats.damage_versatility,
       100 * p->composite_damage_versatility(),
       p->composite_damage_versatility_rating(), 100 * buffed_stats.leech,
       100 * p->composite_leech(), p->composite_leech_rating() );
@@ -348,8 +347,8 @@ void print_text_spell_stats( FILE* file, player_t* p )
                                     p->composite_spell_power_multiplier(),
       p->initial.stats.spell_power, 100 * buffed_stats.spell_hit,
       100 * p->composite_spell_hit(), p->composite_spell_hit_rating(),
-      100 * buffed_stats.spell_crit_chance, 100 * p->composite_spell_crit_chance(),
-      p->composite_spell_crit_rating(),
+      100 * buffed_stats.spell_crit_chance,
+      100 * p->composite_spell_crit_chance(), p->composite_spell_crit_rating(),
       100 * ( 1 / buffed_stats.spell_haste - 1 ),
       100 * ( 1 / p->composite_spell_haste() - 1 ),
       p->composite_spell_haste_rating(),
@@ -375,7 +374,8 @@ void print_text_attack_stats( FILE* file, player_t* p )
                                        p->composite_attack_power_multiplier(),
         p->initial.stats.attack_power, 100 * buffed_stats.attack_hit,
         100 * p->composite_melee_hit(), p->composite_melee_hit_rating(),
-        100 * buffed_stats.attack_crit_chance, 100 * p->composite_melee_crit_chance(),
+        100 * buffed_stats.attack_crit_chance,
+        100 * p->composite_melee_crit_chance(),
         p->composite_melee_crit_rating(),
         100 * buffed_stats.mh_attack_expertise,
         100 * p->composite_melee_expertise( &( p->main_hand_weapon ) ),
@@ -397,7 +397,8 @@ void print_text_attack_stats( FILE* file, player_t* p )
                                        p->composite_attack_power_multiplier(),
         p->initial.stats.attack_power, 100 * buffed_stats.attack_hit,
         100 * p->composite_melee_hit(), p->composite_melee_hit_rating(),
-        100 * buffed_stats.attack_crit_chance, 100 * p->composite_melee_crit_chance(),
+        100 * buffed_stats.attack_crit_chance,
+        100 * p->composite_melee_crit_chance(),
         p->composite_melee_crit_rating(),
         100 * buffed_stats.mh_attack_expertise,
         100 * p->composite_melee_expertise( &( p->main_hand_weapon ) ),
@@ -629,26 +630,31 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
   util::fprintf( file, "\nIteration data:\n" );
   if ( sim->low_iteration_data.size() && sim->high_iteration_data.size() )
   {
+    util::fprintf(
+        file,
+        ".--------------------------------------------------------%s. "
+        ".--------------------------------------------------------%s.\n",
+        spacer_str_1.c_str(), spacer_str_1.c_str() );
+    util::fprintf(
+        file,
+        "| Low Iteration Data                                     %s| | High "
+        "Iteration Data                                    %s|\n",
+        spacer_str_2.c_str(), spacer_str_2.c_str() );
+    util::fprintf(
+        file,
+        "+--------+-----------+----------------------+------------%s+ "
+        "+--------+-----------+----------------------+------------%s+\n",
+        spacer_str_1.c_str(), spacer_str_1.c_str() );
     util::fprintf( file,
-                   ".--------------------------------------------------------%s. "
-                   ".--------------------------------------------------------%s.\n",
-                   spacer_str_1.c_str(), spacer_str_1.c_str() );
-    util::fprintf( file,
-                   "| Low Iteration Data                                     %s| | High "
-                   "Iteration Data                                    %s|\n",
-                   spacer_str_2.c_str(), spacer_str_2.c_str() );
-    util::fprintf( file,
-                   "+--------+-----------+----------------------+------------%s+ "
-                   "+--------+-----------+----------------------+------------%s+\n",
-                   spacer_str_1.c_str(), spacer_str_1.c_str() );
-    util::fprintf( file,
-                   "|  Iter# |    Metric |                 Seed |  %sHealth(s) | |  Iter# |    "
+                   "|  Iter# |    Metric |                 Seed |  %sHealth(s) "
+                   "| |  Iter# |    "
                    "Metric |                 Seed |  %sHealth(s) |\n",
                    spacer_str_2.c_str(), spacer_str_2.c_str() );
-    util::fprintf( file,
-                   "+--------+-----------+----------------------+------------%s+ "
-                   "+--------+-----------+----------------------+------------%s+\n",
-                   spacer_str_1.c_str(), spacer_str_1.c_str() );
+    util::fprintf(
+        file,
+        "+--------+-----------+----------------------+------------%s+ "
+        "+--------+-----------+----------------------+------------%s+\n",
+        spacer_str_1.c_str(), spacer_str_1.c_str() );
 
     for ( size_t i = 0; i < sim->low_iteration_data.size(); i++ )
     {
@@ -671,7 +677,8 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
       }
 
       util::fprintf(
-          file, "| %6llu | %9.1f | %20llu | %s | | %6llu | %9.1f | %20llu | %s |\n",
+          file,
+          "| %6llu | %9.1f | %20llu | %s | | %6llu | %9.1f | %20llu | %s |\n",
           sim->low_iteration_data[ i ].iteration,
           sim->low_iteration_data[ i ].metric,
           sim->low_iteration_data[ i ].seed, low_health_s.str().c_str(),
@@ -679,10 +686,11 @@ void print_text_iteration_data( FILE* file, sim_t* sim )
           sim->high_iteration_data[ i ].metric,
           sim->high_iteration_data[ i ].seed, high_health_s.str().c_str() );
     }
-    util::fprintf( file,
-                   "'--------+-----------+----------------------+------------%s' "
-                   "'--------+-----------+----------------------+------------%s'\n",
-                   spacer_str_1.c_str(), spacer_str_1.c_str() );
+    util::fprintf(
+        file,
+        "'--------+-----------+----------------------+------------%s' "
+        "'--------+-----------+----------------------+------------%s'\n",
+        spacer_str_1.c_str(), spacer_str_1.c_str() );
   }
   else
   {
@@ -837,7 +845,7 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
   for ( int i = 0; i < num_players; i++ )
   {
     player_t* p = sim->players_by_name[ i ];
-    int length = (int)strlen( p->name() );
+    int length  = (int)strlen( p->name() );
     if ( length > max_length )
       max_length = length;
   }
@@ -991,7 +999,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
   for ( int i = 0; i < num_players; i++ )
   {
     player_t* p = sim->players_by_dps[ i ];
-    int length = (int)strlen( p->name() );
+    int length  = (int)strlen( p->name() );
     if ( length > max_length )
       max_length = length;
   }

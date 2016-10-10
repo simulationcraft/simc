@@ -3,9 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_report.hpp"
 #include <stack>
+#include "simulationcraft.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
@@ -333,9 +333,9 @@ void print_xml_player_stats( xml_writer_t& writer, player_t* p )
   print_xml_player_attribute( writer, "spellhit", 100 * p->cache.spell_hit(),
                               p->initial.stats.hit_rating,
                               100 * buffed_stats.spell_hit );
-  print_xml_player_attribute( writer, "spellcrit", 100 * p->cache.spell_crit_chance(),
-                              p->initial.stats.crit_rating,
-                              100 * buffed_stats.spell_crit_chance );
+  print_xml_player_attribute(
+      writer, "spellcrit", 100 * p->cache.spell_crit_chance(),
+      p->initial.stats.crit_rating, 100 * buffed_stats.spell_crit_chance );
   print_xml_player_attribute( writer, "spellhaste",
                               100 * ( 1 / p->cache.spell_haste() - 1 ),
                               p->initial.stats.haste_rating,

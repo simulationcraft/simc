@@ -6,13 +6,13 @@
 #ifndef SC_REPORT_HPP
 #define SC_REPORT_HPP
 
+#include <array>
 #include <fstream>
 #include <iostream>
-#include <array>
 
 #include "config.hpp"
-#include "sc_highchart.hpp"
 #include "sc_enums.hpp"
+#include "sc_highchart.hpp"
 #include "util/io.hpp"
 
 struct player_t;
@@ -47,8 +47,8 @@ public:
   }
   ~Timer()
   {
-    auto end  = std::chrono::high_resolution_clock::now();
-    auto diff = end - start;
+    auto end            = std::chrono::high_resolution_clock::now();
+    auto diff           = end - start;
     using float_seconds = std::chrono::duration<double>;
     out << title << " took "
         << std::chrono::duration_cast<float_seconds>( diff ).count()
@@ -207,8 +207,11 @@ bool output_scale_factors( const player_t* p );
 
 std::string decoration_domain( const sim_t& sim );
 std::string decorated_buff_name( const buff_t* buff );
-std::string decorated_action_name( const action_t* action, const std::string& stats_name_str );
-std::string decorated_spell_name( const sim_t& sim, const spell_data_t& spell, const std::string& parms_str = std::string() );
+std::string decorated_action_name( const action_t* action,
+                                   const std::string& stats_name_str );
+std::string decorated_spell_name(
+    const sim_t& sim, const spell_data_t& spell,
+    const std::string& parms_str = std::string() );
 std::string decorated_item_name( const item_t* item );
 std::string decorate_html_string( const std::string& value,
                                   const color::rgb& color );

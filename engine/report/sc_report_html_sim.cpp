@@ -3,10 +3,10 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_report.hpp"
 #include "data/report_data.inc"
 #include "interfaces/sc_js.hpp"
+#include "simulationcraft.hpp"
 
 // Experimental Raw Ability Output for Blizzard to do comparisons
 namespace raw_ability_summary
@@ -1060,10 +1060,11 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
   os.format(
       "<span id=\"logo\"></span>\n"
       "<h1><a href=\"%s\">SimulationCraft %s</a></h1>\n"
-#if ! defined( SC_GIT_REV )
+#if !defined( SC_GIT_REV )
       "<h2>for World of Warcraft %s %s (wow build level %d)</h2>\n\n",
 #else
-      "<h2>for World of Warcraft %s %s (wow build level %d, git build <a href=\"%s\">%s</a>)</h2>\n\n",
+      "<h2>for World of Warcraft %s %s (wow build level %d, git build <a "
+      "href=\"%s\">%s</a>)</h2>\n\n",
 #endif
       "http://www.simulationcraft.org/", SC_VERSION, sim.dbc.wow_version(),
       ( sim.dbc.ptr ?
@@ -1073,7 +1074,7 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
                     "PTR"
 #endif
                     : "Live" ),
-#if ! defined( SC_GIT_REV )
+#if !defined( SC_GIT_REV )
       sim.dbc.build_level() );
 #else
       sim.dbc.build_level(),
@@ -1160,12 +1161,14 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
       continue;
     }
 
-    if ( sim.dbc.ptr && !( entry && ( entry->flags_ & hotfix::HOTFIX_FLAG_PTR  ) ) )
+    if ( sim.dbc.ptr &&
+         !( entry && ( entry->flags_ & hotfix::HOTFIX_FLAG_PTR ) ) )
     {
       continue;
     }
 
-    if ( entry && !sim.dbc.ptr && !( entry->flags_ & hotfix::HOTFIX_FLAG_LIVE ) )
+    if ( entry && !sim.dbc.ptr &&
+         !( entry->flags_ & hotfix::HOTFIX_FLAG_LIVE ) )
     {
       continue;
     }

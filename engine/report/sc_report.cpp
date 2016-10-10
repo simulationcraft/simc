@@ -3,8 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_report.hpp"
+#include "simulationcraft.hpp"
 
 // ==========================================================================
 // Report
@@ -120,8 +120,8 @@ class tooltip_parser_t
 
     const spelleffect_data_t& effect = spell.effectN( effect_number );
     bool show_scale_factor           = effect.type() != E_APPLY_AURA;
-    double s_min = dbc.effect_min( effect.id(), level );
-    double s_max = dbc.effect_max( effect.id(), level );
+    double s_min                     = dbc.effect_min( effect.id(), level );
+    double s_max                     = dbc.effect_max( effect.id(), level );
     if ( s_min < 0 && s_max == s_min )
       s_max = s_min = -s_min;
     else if ( ( player && effect.type() == E_SCHOOL_DAMAGE &&
@@ -371,7 +371,7 @@ const color::rgb& item_quality_color( const item_t& item )
 }
 
 bool find_affix( const std::string& name, const std::string& data_name,
-                        std::string& prefix, std::string& suffix )
+                 std::string& prefix, std::string& suffix )
 {
   std::string tokenized_name = data_name;
   util::tokenize( tokenized_name );
@@ -399,7 +399,8 @@ bool find_affix( const std::string& name, const std::string& data_name,
 }  // UNNAMED NAMESPACE ======================================================
 
 std::string report::pretty_spell_text( const spell_data_t& default_spell,
-                               const std::string& text, const player_t& p )
+                                       const std::string& text,
+                                       const player_t& p )
 {
   return tooltip_parser_t( p, default_spell, text ).parse();
 }
@@ -408,103 +409,120 @@ std::string report::pretty_spell_text( const spell_data_t& default_spell,
 
 bool report::check_gear_ilevel( player_t& p, sim_t& sim )
 {
-  int max_ilevel_allowed = 0;
-  int max_weapon_ilevel_allowed = 0;
-  bool return_value = true;
+  int max_ilevel_allowed           = 0;
+  int max_weapon_ilevel_allowed    = 0;
+  bool return_value                = true;
   int max_legendary_ilevel_allowed = 0;
-  int equipped_legendary_items = 0;
-  int legendary_items_allowed = 0;
-  std::string tier_name = "";
+  int equipped_legendary_items     = 0;
+  int legendary_items_allowed      = 0;
+  std::string tier_name            = "";
 
   if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
   {
-    max_ilevel_allowed = 840;
+    max_ilevel_allowed        = 840;
     max_weapon_ilevel_allowed = 870;
-    tier_name = "T19P";
+    tier_name                 = "T19P";
   }
   else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
   {
-    max_ilevel_allowed = 865;
+    max_ilevel_allowed        = 865;
     max_weapon_ilevel_allowed = 900;
-    tier_name = "T19H";
+    tier_name                 = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
-    max_ilevel_allowed = 880;
-    max_weapon_ilevel_allowed = 910;
-    tier_name = "T19M";
+    max_ilevel_allowed           = 880;
+    max_weapon_ilevel_allowed    = 910;
+    tier_name                    = "T19M";
     max_legendary_ilevel_allowed = max_ilevel_allowed += 15;
-    legendary_items_allowed = 1;
+    legendary_items_allowed      = 1;
   }
   else
   {
     return return_value;
   }
 
-  const slot_e SLOT_OUT_ORDER[] =
-  {
-    SLOT_HEAD, SLOT_NECK, SLOT_SHOULDERS, SLOT_BACK, SLOT_CHEST, SLOT_SHIRT, SLOT_TABARD, SLOT_WRISTS,
-    SLOT_HANDS, SLOT_WAIST, SLOT_LEGS, SLOT_FEET, SLOT_FINGER_1, SLOT_FINGER_2, SLOT_TRINKET_1, SLOT_TRINKET_2,
-    SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED,
+  const slot_e SLOT_OUT_ORDER[] = {
+      SLOT_HEAD,      SLOT_NECK,     SLOT_SHOULDERS, SLOT_BACK,
+      SLOT_CHEST,     SLOT_SHIRT,    SLOT_TABARD,    SLOT_WRISTS,
+      SLOT_HANDS,     SLOT_WAIST,    SLOT_LEGS,      SLOT_FEET,
+      SLOT_FINGER_1,  SLOT_FINGER_2, SLOT_TRINKET_1, SLOT_TRINKET_2,
+      SLOT_MAIN_HAND, SLOT_OFF_HAND, SLOT_RANGED,
   };
 
-  const slot_e SLOT_DUPLICATES[] =
-  {
-    SLOT_FINGER_1, SLOT_FINGER_2, SLOT_TRINKET_1, SLOT_TRINKET_2,
+  const slot_e SLOT_DUPLICATES[] = {
+      SLOT_FINGER_1, SLOT_FINGER_2, SLOT_TRINKET_1, SLOT_TRINKET_2,
   };
 
-
-  for ( auto & slot : SLOT_OUT_ORDER )
+  for ( auto& slot : SLOT_OUT_ORDER )
   {
-    item_t& item = p.items[slot];
+    item_t& item = p.items[ slot ];
 
     if ( item.parsed.data.quality == 5 )
       equipped_legendary_items++;
 
-    if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND || slot == SLOT_RANGED )
+    if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND ||
+         slot == SLOT_RANGED )
     {
       if ( item.parsed.data.level > max_weapon_ilevel_allowed )
       {
-        sim.errorf( "Player %s has weapon of ilevel %s, maximum allowed ilevel for %s weapons is %s.\n",
-                    p.name(), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_weapon_ilevel_allowed ).c_str() );
+        sim.errorf(
+            "Player %s has weapon of ilevel %s, maximum allowed ilevel for %s "
+            "weapons is %s.\n",
+            p.name(), util::to_string( item.parsed.data.level ).c_str(),
+            tier_name.c_str(),
+            util::to_string( max_weapon_ilevel_allowed ).c_str() );
         return_value = false;
       }
     }
-    else if ( item.parsed.data.quality == 5 && ( item.parsed.data.level > max_legendary_ilevel_allowed ) )
+    else if ( item.parsed.data.quality == 5 &&
+              ( item.parsed.data.level > max_legendary_ilevel_allowed ) )
     {
-      sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s legendarys is %s.\n",
-                  p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_legendary_ilevel_allowed ).c_str() );
+      sim.errorf(
+          "Player %s has %s of ilevel %s, maximum allowed ilevel for %s "
+          "legendarys is %s.\n",
+          p.name(), util::slot_type_string( slot ),
+          util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
+          util::to_string( max_legendary_ilevel_allowed ).c_str() );
       return_value = false;
     }
-    else if ( item.parsed.data.quality != 5 && ( item.parsed.data.level > max_ilevel_allowed ) )
+    else if ( item.parsed.data.quality != 5 &&
+              ( item.parsed.data.level > max_ilevel_allowed ) )
     {
-      sim.errorf( "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is %s.\n",
-                  p.name(), util::slot_type_string( slot ), util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(), util::to_string( max_ilevel_allowed ).c_str() );
+      sim.errorf(
+          "Player %s has %s of ilevel %s, maximum allowed ilevel for %s is "
+          "%s.\n",
+          p.name(), util::slot_type_string( slot ),
+          util::to_string( item.parsed.data.level ).c_str(), tier_name.c_str(),
+          util::to_string( max_ilevel_allowed ).c_str() );
       return_value = false;
     }
 
-    if ( !( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND || slot == SLOT_RANGED ) )
+    if ( !( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND ||
+            slot == SLOT_RANGED ) )
     {
       for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
       {
-        if ( item.parsed.gem_id[jj] > 0 )
+        if ( item.parsed.gem_id[ jj ] > 0 )
         {
-          sim.errorf( "Player %s has gems equipped in slot %s, there are no gems allowed in default profiles even if they have a slot by default, this is to ensure that all default profiles within %s are as equal as possible.\n",
-                      p.name(), util::slot_type_string( slot ), tier_name.c_str() );
+          sim.errorf(
+              "Player %s has gems equipped in slot %s, there are no gems "
+              "allowed in default profiles even if they have a slot by "
+              "default, this is to ensure that all default profiles within %s "
+              "are as equal as possible.\n",
+              p.name(), util::slot_type_string( slot ), tier_name.c_str() );
           return_value = false;
           break;
         }
       }
     }
-    
-    if ( slot == SLOT_FINGER_1 || 
-         slot == SLOT_FINGER_2 || 
-         slot == SLOT_TRINKET_1 || 
-         slot == SLOT_TRINKET_2 )
+
+    if ( slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 ||
+         slot == SLOT_TRINKET_1 || slot == SLOT_TRINKET_2 )
     {
-      for ( auto & slot2 : SLOT_DUPLICATES )
+      for ( auto& slot2 : SLOT_DUPLICATES )
       {
-        item_t& unique = p.items[slot2];
+        item_t& unique = p.items[ slot2 ];
         if ( slot2 == slot )
           continue;
         if ( p.dbc.item( unique.parsed.data.id ) == nullptr )
@@ -514,9 +532,13 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
 
         if ( unique.parsed.data.id == item.parsed.data.id )
         {
-          if ( p.dbc.item( unique.parsed.data.id ) -> flags_1 == 524288 && p.dbc.item( item.parsed.data.id ) -> flags_1 == 524288 )
-            sim.errorf( "Player %s has equipped more than 1 of a unique item in slots %s and %s, please remove one of the unique items.\n",
-                        p.name(), util::slot_type_string( slot ), util::slot_type_string( slot2 ) );
+          if ( p.dbc.item( unique.parsed.data.id )->flags_1 == 524288 &&
+               p.dbc.item( item.parsed.data.id )->flags_1 == 524288 )
+            sim.errorf(
+                "Player %s has equipped more than 1 of a unique item in slots "
+                "%s and %s, please remove one of the unique items.\n",
+                p.name(), util::slot_type_string( slot ),
+                util::slot_type_string( slot2 ) );
           return_value = false;
         }
       }
@@ -524,38 +546,40 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   }
   if ( equipped_legendary_items > legendary_items_allowed )
   {
-    sim.errorf( "Player %s has %s legendary items. %s allows %s legendary item(s).\n",
-                p.name(), util::to_string( equipped_legendary_items ).c_str(), tier_name.c_str(), util::to_string( legendary_items_allowed ).c_str() );
+    sim.errorf(
+        "Player %s has %s legendary items. %s allows %s legendary item(s).\n",
+        p.name(), util::to_string( equipped_legendary_items ).c_str(),
+        tier_name.c_str(), util::to_string( legendary_items_allowed ).c_str() );
     return_value = false;
   }
 
   return return_value;
 }
 
-
 // report::check_artifact_points ============================================
-// This is to make sure our default profiles are using the same number of artifact points.
+// This is to make sure our default profiles are using the same number of
+// artifact points.
 
-bool report::check_artifact_points( const player_t& p, sim_t& sim  )
+bool report::check_artifact_points( const player_t& p, sim_t& sim )
 {
-  auto splits = util::string_split( p.artifact_str, ":" );
-  unsigned max_allowed = 0;
+  auto splits           = util::string_split( p.artifact_str, ":" );
+  unsigned max_allowed  = 0;
   std::string tier_name = "";
 
   if ( p.report_information.save_str.find( "T19P" ) != std::string::npos )
   {
     max_allowed = 22;
-    tier_name = "T19P";
+    tier_name   = "T19P";
   }
   else if ( p.report_information.save_str.find( "T19H" ) != std::string::npos )
   {
     max_allowed = 29;
-    tier_name = "T19H";
+    tier_name   = "T19H";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
     max_allowed = 37;
-    tier_name = "T19M";
+    tier_name   = "T19M";
   }
   else
   {
@@ -564,14 +588,20 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim  )
 
   if ( p.artifact.n_points - 1 > max_allowed )
   {
-    sim.errorf( "Player %s has %s artifact points, maximum allowed (including relics) for %s is %s.\n",
-                 p.name(), util::to_string( p.artifact.n_points - 1 ).c_str(), tier_name.c_str(), util::to_string( max_allowed ).c_str() );
+    sim.errorf(
+        "Player %s has %s artifact points, maximum allowed (including relics) "
+        "for %s is %s.\n",
+        p.name(), util::to_string( p.artifact.n_points - 1 ).c_str(),
+        tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return false;
   }
   else if ( ( p.artifact.n_points - 1 ) < max_allowed && p.level() == 110 )
   {
-    sim.errorf( "Player %s has %s artifact points, maximum allowed (including relics) for %s is %s. Add more!\n",
-                p.name(), util::to_string( p.artifact.n_points - 1 ).c_str(), tier_name.c_str(), util::to_string( max_allowed ).c_str() );
+    sim.errorf(
+        "Player %s has %s artifact points, maximum allowed (including relics) "
+        "for %s is %s. Add more!\n",
+        p.name(), util::to_string( p.artifact.n_points - 1 ).c_str(),
+        tier_name.c_str(), util::to_string( max_allowed ).c_str() );
     return true;
   }
 
@@ -1257,11 +1287,11 @@ std::string report::decorated_buff_name( const buff_t* buff )
   std::stringstream s;
 
   std::string buff_name;
-  if ( buff -> player -> is_pet() )
+  if ( buff->player->is_pet() )
   {
-    buff_name += buff -> player -> name_str + ": ";
+    buff_name += buff->player->name_str + ": ";
   }
-  buff_name += buff -> name_str;
+  buff_name += buff->name_str;
 
   if ( buff->sim->decorated_tooltips == false || buff->data().id() == 0 )
   {
@@ -1270,7 +1300,7 @@ std::string report::decorated_buff_name( const buff_t* buff )
   else
   {
     std::string prefix, suffix;
-    find_affix( buff -> name_str, buff->data().name_cstr(), prefix, suffix );
+    find_affix( buff->name_str, buff->data().name_cstr(), prefix, suffix );
 
     s << prefix << "<a href=\"http://" << decoration_domain( *buff->sim )
       << ".wowdb.com/spells/" << buff->data().id();
@@ -1280,9 +1310,9 @@ std::string report::decorated_buff_name( const buff_t* buff )
       s << "?itemLevel=" << buff->item->item_level();
     }
     s << "\">";
-    if ( buff -> player -> is_pet() )
+    if ( buff->player->is_pet() )
     {
-      s << buff -> player -> name_str << ": ";
+      s << buff->player->name_str << ": ";
     }
     s << buff->data().name_cstr() << "</a>" << suffix;
   }
@@ -1303,7 +1333,8 @@ std::string report::decorated_spell_name( const sim_t& sim,
   else
   {
     s << "<a href=\"http://" << decoration_domain( sim ) << ".wowdb.com/spells/"
-      << spell.id() << ( ! parms_str.empty() ? "?" + parms_str : "" ) << "\">" << spell.name_cstr() << "</a>";
+      << spell.id() << ( !parms_str.empty() ? "?" + parms_str : "" ) << "\">"
+      << spell.name_cstr() << "</a>";
   }
 
   return s.str();
@@ -1393,7 +1424,8 @@ std::string report::decorated_item_name( const item_t* item )
   return s.str();
 }
 
-std::string report::decorated_action_name( const action_t* action, const std::string& stats_name_str )
+std::string report::decorated_action_name( const action_t* action,
+                                           const std::string& stats_name_str )
 {
   std::stringstream s;
 
