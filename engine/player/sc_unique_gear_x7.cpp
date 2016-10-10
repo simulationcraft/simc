@@ -2391,13 +2391,14 @@ struct pepper_breath_damage_t : public spell_t
   {
     background = true;
     callbacks = false;
+    travel_speed = 17.5; // Spelldata says 1.75, but from in-game testing it's definitely closer to 17.5
   }
 
   void init() override
   {
-    spell_t::init();
-
-    snapshot_flags = update_flags = 0;
+    spell_t::init(); 
+    snapshot_flags = 0;
+    snapshot_flags |= STATE_TGT_MUL_TA | STATE_TGT_MUL_DA;
   }
 };
 
@@ -2434,11 +2435,8 @@ struct pepper_breath_driver_t : public spell_t
   virtual void init() override
   {
     spell_t::init();
-    // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    update_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_TGT_MUL_DA;
-    update_flags |= STATE_TGT_MUL_DA;
+    snapshot_flags = 0;
+    snapshot_flags |= STATE_TGT_MUL_TA | STATE_TGT_MUL_DA;
   }
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
@@ -2446,8 +2444,6 @@ struct pepper_breath_driver_t : public spell_t
     assert( n_ticks >= 4 && n_ticks <= 6 );
     return base_tick_time * n_ticks;
   }
-
-
 };
 
 void consumable::pepper_breath( special_effect_t& effect )
