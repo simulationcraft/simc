@@ -1583,7 +1583,9 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     trigger_gcd = timespan_t::zero();
 
     may_crit = true;
-    attack_power_mod.direct = 10;
+    // TODO: figure out where this is from
+    // While the tooltip says 10x, in practice the spell has been doing 20x.
+    attack_power_mod.direct = 20;
     if ( p -> artifact.deflection.rank() )
     {
       cooldown -> duration += timespan_t::from_millis( p -> artifact.deflection.value() );
