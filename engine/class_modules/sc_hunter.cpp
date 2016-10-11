@@ -2019,7 +2019,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
 
     if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
     {
-      double proc_chance = p() -> o() -> cache.mastery_value() * 0.50;
+      double proc_chance = p() -> o() -> cache.mastery_value() * 0.25;
 
       if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
         proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
@@ -2093,7 +2093,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
 
     if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
     {
-      double proc_chance = p() -> o() -> cache.mastery_value();
+      double proc_chance = p() -> o() -> cache.mastery_value() * 0.5;
       
       if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
         proc_chance *= p() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
