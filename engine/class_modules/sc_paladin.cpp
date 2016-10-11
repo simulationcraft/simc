@@ -1583,8 +1583,7 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     trigger_gcd = timespan_t::zero();
 
     may_crit = true;
-    // TODO: figure out where this is from
-    attack_power_mod.direct = 20;
+    attack_power_mod.direct = 10;
     if ( p -> artifact.deflection.rank() )
     {
       cooldown -> duration += timespan_t::from_millis( p -> artifact.deflection.value() );
@@ -3459,9 +3458,9 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
     aoe = -1;
   }
 
-  virtual void execute() override
+  proc_types proc_type() const
   {
-    paladin_spell_t::execute();
+    return PROC1_MELEE_ABILITY;
   }
 };
 
@@ -3475,9 +3474,7 @@ struct judgment_aoe_t : public paladin_melee_attack_t
     parse_options( options_str );
 
     may_glance = may_block = may_parry = may_dodge = false;
-
     weapon_multiplier = 0;
-
     background = true;
 
     if ( p -> specialization() == PALADIN_RETRIBUTION )
@@ -3526,9 +3523,6 @@ struct judgment_aoe_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( !impact_targeting( s ) )
-      return;
-
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> buffs.debuffs_judgment -> trigger();
@@ -3541,6 +3535,11 @@ struct judgment_aoe_t : public paladin_melee_attack_t
     // todo: refer to actual spelldata instead of magic constant
     am *= 1.0 + 2 * p() -> get_divine_judgment();
     return am;
+  }
+
+  proc_types proc_type() const
+  {
+    return PROC1_MELEE_ABILITY;
   }
 };
 
@@ -3574,6 +3573,11 @@ struct judgment_t : public paladin_melee_attack_t
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
       sotr_cdr = -1.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
     }
+  }
+
+  proc_types proc_type() const
+  {
+    return PROC1_MELEE_ABILITY;
   }
 
   double composite_target_crit_chance( player_t* t ) const override
