@@ -812,7 +812,7 @@ public:
 
   void arms_t19_4p( action_state_t& s ) const
   {
-    if ( s.result == RESULT_CRIT && ab::rng().roll( arms_t19_4p_chance ) )
+    if ( ab::rng().roll( arms_t19_4p_chance ) )
     {
       p() -> proc.t19_4pc_arms -> occur();
       p() -> cooldown.colossus_smash -> reset( true );

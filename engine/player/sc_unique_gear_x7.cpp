@@ -404,6 +404,8 @@ struct haymaker_driver_t : public dbc_proc_callback_t
         damage = std::min( damage, debuff -> current_value );
         action -> base_dd_min = action -> base_dd_max = damage;
         action -> schedule_execute();
+        // 2016-10-11 - Damage increases from target multiplier debuffs do not count towards the damage cap.
+        damage /= action -> player -> composite_player_target_multiplier( action -> target, SCHOOL_PHYSICAL );
         debuff -> current_value -= damage;
       }
 
