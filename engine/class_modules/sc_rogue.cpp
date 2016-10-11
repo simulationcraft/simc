@@ -3900,6 +3900,7 @@ struct shadow_blade_t : public rogue_attack_t
   shadow_blade_t( const std::string& name_str, rogue_t* p, const spell_data_t* s, weapon_t* w ) :
     rogue_attack_t( name_str, p, s )
   {
+    weapon = w;
     school  = SCHOOL_SHADOW;
     special = false;
     repeating = true;
