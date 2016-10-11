@@ -6005,7 +6005,10 @@ void hunter_t::add_item_actions( action_priority_list_t* list )
 
 void hunter_t::add_racial_actions( action_priority_list_t* list )
 {
-    list -> add_action( "arcane_torrent,if=focus.deficit>=30");
+    if ( specialization() == HUNTER_MARKSMANSHIP )
+      list -> add_action( "arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)");
+    else
+      list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
     list -> add_action( "blood_fury" );
     list -> add_action( "berserking" );
 }
@@ -6084,7 +6087,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( "barrage,if=variable.vulnerable_time>execute_time&debuff.hunters_mark.remains>execute_time&focus+(focus.regen*variable.vulnerable_time)>90&focus+(focus.regen*debuff.hunters_mark.remains)>=90" );
   default_list -> add_action( "black_arrow,if=variable.vulnerable_time>execute_time&debuff.hunters_mark.remains>execute_time&focus+(focus.regen*variable.vulnerable_time)>70&focus+(focus.regen*debuff.hunters_mark.remains)>=70" );
   default_list -> add_action( "piercing_shot,if=!talent.patient_sniper.enabled&focus>50" );
-  default_list -> add_action( "windburst,if=talent.patient_sniper.enabled&!talent.sidewinders.enabled&((debuff.vulnerability.down|debuff.vulnerability.remains<2)|(debuff.hunters_mark.up&buff.marking_targets.up&debuff.vulnerability.down))" );
+  default_list -> add_action( "windburst,if=(!talent.patient_sniper.enabled|talent.sidewinders.enabled)&(debuff.hunters_mark.down|debuff.hunters_mark.remains>execute_time&focus+(focus.regen*debuff.hunters_mark.remains)>50)" );
   default_list -> add_action( "windburst,if=talent.patient_sniper.enabled&!talent.sidewinders.enabled&((debuff.vulnerability.down|debuff.vulnerability.remains<2)|(debuff.hunters_mark.up&buff.marking_targets.up&debuff.vulnerability.down))" );
   default_list -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<6&active_enemies=1" );
   default_list -> add_action( "sidewinders,if=(debuff.hunters_mark.down|(buff.marking_targets.down&buff.trueshot.down))&((buff.trueshot.react&focus<80)|charges_fractional>=1.9)" );
@@ -6108,7 +6111,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( "multishot,if=spell_targets.barrage>2" );
   
   cooldowns -> add_action( "potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<31" );
-  cooldowns -> add_action( "trueshot,if=(buff.bloodlust.react|target.health.pct>20+(cooldown.trueshot.remains+15))|buff.bullseye.react>25" );
+  cooldowns -> add_action( "/trueshot,if=buff.bloodlust.react|target.time_to_die>=(cooldown+30)|buff.bullseye.react>25|target.time_to_die<16" );
 
   open -> add_action( "a_murder_of_crows" );
   open -> add_action( "trueshot" );

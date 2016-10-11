@@ -7,17 +7,10 @@ talents=1103011
 artifact=55:0:0:0:0:307:1:308:1:310:1:311:1:312:3:313:3:314:2:315:3:318:3:319:3:320:3:321:1:322:1:1337:1
 spec=marksmanship
 
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
-
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=fishbrul_special
 actions.precombat+=/summon_pet
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/augmentation,type=defiled
@@ -25,7 +18,7 @@ actions.precombat+=/windburst
 
 # Executed every time the actor is available.
 actions=auto_shot
-actions+=/arcane_torrent,if=focus.deficit>=30
+actions+=/arcane_torrent,if=focus.deficit>=30&(!talent.sidewinders.enabled|cooldown.sidewinders.charges<2)
 actions+=/blood_fury
 actions+=/berserking
 actions+=/auto_shot
@@ -40,7 +33,7 @@ actions+=/a_murder_of_crows,if=(target.health.pct>30|target.health.pct<=20)&vari
 actions+=/barrage,if=variable.vulnerable_time>execute_time&debuff.hunters_mark.remains>execute_time&focus+(focus.regen*variable.vulnerable_time)>90&focus+(focus.regen*debuff.hunters_mark.remains)>=90
 actions+=/black_arrow,if=variable.vulnerable_time>execute_time&debuff.hunters_mark.remains>execute_time&focus+(focus.regen*variable.vulnerable_time)>70&focus+(focus.regen*debuff.hunters_mark.remains)>=70
 actions+=/piercing_shot,if=!talent.patient_sniper.enabled&focus>50
-actions+=/windburst,if=talent.patient_sniper.enabled&!talent.sidewinders.enabled&((debuff.vulnerability.down|debuff.vulnerability.remains<2)|(debuff.hunters_mark.up&buff.marking_targets.up&debuff.vulnerability.down))
+actions+=/windburst,if=(!talent.patient_sniper.enabled|talent.sidewinders.enabled)&(debuff.hunters_mark.down|debuff.hunters_mark.remains>execute_time&focus+(focus.regen*debuff.hunters_mark.remains)>50)
 actions+=/windburst,if=talent.patient_sniper.enabled&!talent.sidewinders.enabled&((debuff.vulnerability.down|debuff.vulnerability.remains<2)|(debuff.hunters_mark.up&buff.marking_targets.up&debuff.vulnerability.down))
 actions+=/call_action_list,name=targetdie,if=target.time_to_die<6&active_enemies=1
 actions+=/sidewinders,if=(debuff.hunters_mark.down|(buff.marking_targets.down&buff.trueshot.down))&((buff.trueshot.react&focus<80)|charges_fractional>=1.9)
@@ -63,8 +56,8 @@ actions+=/multishot,if=spell_targets.barrage>1&(debuff.hunters_mark.down&buff.ma
 actions+=/aimed_shot,if=debuff.vulnerability.down&focus>80&cooldown.windburst.remains>3
 actions+=/multishot,if=spell_targets.barrage>2
 
-actions.cooldowns=potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<31
-actions.cooldowns+=/trueshot,if=(buff.bloodlust.react|target.health.pct>20+(cooldown.trueshot.remains+15))|buff.bullseye.react>25
+actions.cooldowns=potion,name=deadly_grace,if=(buff.trueshot.react&buff.bloodlust.react)|buff.bullseye.react>=23|target.time_to_die<26
+actions.cooldowns+=/trueshot,if=buff.bloodlust.react|target.time_to_die>=(cooldown+30)|buff.bullseye.react>25|target.time_to_die<16
 
 actions.open=a_murder_of_crows
 actions.open+=/trueshot
