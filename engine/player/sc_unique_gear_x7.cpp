@@ -2894,6 +2894,12 @@ void unique_gear::register_hotfixes_x7()
     .operation( hotfix::HOTFIX_SET )
     .modifier( 1.0 )
     .verification_value( 0.7 );
+
+  hotfix::register_effect( "Mark of the Hidden Satyr", "2016-10-10", "In-game testing shows that the damage from this ability is roughly 10% higher than what spelldata shows.", 280531 )
+    .field( "average" )
+    .operation( hotfix::HOTFIX_MUL )
+    .modifier( 1.1 )
+    .verification_value( 26.48617 );
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
