@@ -6786,6 +6786,12 @@ struct hunter_module_t: public module_t
       .verification_value( 100 );
       */
 
+    hotfix::register_effect( "Hunter", "2016-10-10", "Instincts of the mongoose effect increased from 10% to 20%", 301586 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 2 )
+      .verification_value( 10 );
+
   }
 
   virtual void combat_begin( sim_t* ) const override {}
