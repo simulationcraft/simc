@@ -6073,7 +6073,7 @@ void hunter_t::apl_mm()
   add_racial_actions( default_list );
 
   default_list -> add_action( "auto_shot" );
-  default_list -> add_action( "variable,name=vulnerable_time,target=2,value=debuff.vulnerability.remains" );
+  default_list -> add_action( "variable,name=vulnerable_time,value=debuff.vulnerability.remains" );
   default_list -> add_action( "call_action_list,name=open,if=time<=15&talent.sidewinders.enabled&active_enemies=1" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "a_murder_of_crows,if=debuff.hunters_mark.down" );
