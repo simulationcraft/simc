@@ -4371,7 +4371,7 @@ struct dragonfire_brew : public monk_spell_t
     hasted_ticks = false;
     // Placeholder stuff to get things working
     dot_duration = timespan_t::from_seconds( 3 ); // Hard code the duration to 3 seconds
-    base_tick_time = dot_duration / data().effectN( 1 ).base_value();
+    base_tick_time = dot_duration / p.find_spell( 213183 ) -> effectN( 1 ).base_value();
     tick_zero = hasted_ticks = false;
 
     tick_action = new dragonfire_brew_tick( p );
