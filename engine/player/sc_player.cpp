@@ -1132,6 +1132,9 @@ bool player_t::init_items()
     }
   }
 
+  // Once item data is initialized, initialize the parent - child relationships of each item
+  range::for_each( items, [ this ]( item_t& i ) { i.parent_slot = parent_item_slot( i ); } );
+
   // Slot initialization order vector. Needed to ensure parents of children get initialized first
   std::vector<slot_e> init_slots;
   range::for_each( items, [ &init_slots ]( const item_t& i ) { init_slots.push_back( i.slot ); } );

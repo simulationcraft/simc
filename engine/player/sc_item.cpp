@@ -777,9 +777,6 @@ bool item_t::initialize_data()
   else
     name_str = option_name_str;
 
-  // Determine Parent - Child relationship. Requires that an item has an id
-  parent_slot = player -> parent_item_slot( *this );
-
   return true;
 }
 
