@@ -810,7 +810,7 @@ public:
     }
   }
 
-  void arms_t19_4p( action_state_t& s ) const
+  void arms_t19_4p() const
   {
     if ( ab::rng().roll( arms_t19_4p_chance ) )
     {
@@ -1882,7 +1882,7 @@ struct execute_sweep_t: public warrior_attack_t
 
     if ( s -> result == RESULT_CRIT )
     {
-      arms_t19_4p( *s );
+      arms_t19_4p();
     }
   }
 };
@@ -2127,7 +2127,7 @@ struct execute_t: public warrior_attack_t
     if ( s -> result == RESULT_CRIT )
     {
       p() -> buff.massacre -> trigger();
-      arms_t19_4p( *s );
+      arms_t19_4p();
       if ( p() -> execute_enrage && p() -> specialization() == WARRIOR_FURY )
       {
         p() -> enrage();
@@ -2411,7 +2411,7 @@ struct heroic_charge_movement_ticker_t: public event_t
   timespan_t duration;
   warrior_t* warrior;
 
-  heroic_charge_movement_ticker_t( sim_t& s, warrior_t*p, timespan_t d = timespan_t::zero() ):
+  heroic_charge_movement_ticker_t( sim_t&, warrior_t*p, timespan_t d = timespan_t::zero() ):
     event_t( *p ), warrior( p )
   {
     if ( d > timespan_t::zero() )
@@ -3264,7 +3264,10 @@ struct slam_t: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    arms_t19_4p( *s );
+    if ( s -> result == RESULT_CRIT )
+    {
+      arms_t19_4p();
+    }
   }
 
   bool ready() override
@@ -3612,7 +3615,10 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    arms_t19_4p( *s );
+    if ( s -> result == RESULT_CRIT )
+    {
+      arms_t19_4p();
+    }
   }
 };
 
@@ -3628,7 +3634,10 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    arms_t19_4p( *s );
+    if ( s -> result == RESULT_CRIT )
+    {
+      arms_t19_4p();
+    }
     if ( p() -> artifact.will_of_the_first_king.rank() )
     {
       p() -> resource_gain( RESOURCE_RAGE, p() -> artifact.will_of_the_first_king.data().effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.will_of_the_first_king );
@@ -4900,12 +4909,11 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Mortal Strike", "if=buff.battle_cry.up&buff.focused_rage.stack>=1&buff.battle_cry.remains<gcd" );
   single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
   single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down&cooldown.mortal_strike.remains<gcd" );
-  single_target -> add_talent( this, "Focused Rage", "if=((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)&buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains)" );
+  single_target -> add_talent( this, "Focused Rage", "if=(((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)&buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains))&rage>60" );
   single_target -> add_action( this, "Mortal Strike" );
   single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
-  single_target -> add_action( this, "Slam", "if=buff.battle_cry_deadly_calm.up|buff.focused_rage.stack=3|rage.deficit<=30" );
+  single_target -> add_action( this, "Slam" );
   single_target -> add_action( this, "Execute", "if=equipped.archavons_heavy_hand" );
-  single_target -> add_action( this, "Slam", "if=equipped.archavons_heavy_hand" );
   single_target -> add_talent( this, "Focused Rage", "if=equipped.archavons_heavy_hand" );
   single_target -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
 

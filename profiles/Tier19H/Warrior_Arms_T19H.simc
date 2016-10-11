@@ -82,12 +82,11 @@ actions.execute+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.ad
 actions.single=mortal_strike,if=buff.battle_cry.up&buff.focused_rage.stack>=1&buff.battle_cry.remains<gcd
 actions.single+=/colossus_smash,if=buff.shattered_defenses.down
 actions.single+=/warbreaker,if=buff.shattered_defenses.down&cooldown.mortal_strike.remains<gcd
-actions.single+=/focused_rage,if=((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)&buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains)
+actions.single+=/focused_rage,if=(((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)&buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains))&rage>60
 actions.single+=/mortal_strike
 actions.single+=/execute,if=buff.stone_heart.react
-actions.single+=/slam,if=buff.battle_cry_deadly_calm.up|buff.focused_rage.stack=3|rage.deficit<=30
+actions.single+=/slam
 actions.single+=/execute,if=equipped.archavons_heavy_hand
-actions.single+=/slam,if=equipped.archavons_heavy_hand
 actions.single+=/focused_rage,if=equipped.archavons_heavy_hand
 # actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)
 #Remove the # above to run out of melee and charge back in for rage.
