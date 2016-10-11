@@ -3379,7 +3379,7 @@ struct conflagrate_t: public warlock_spell_t
   conflagrate_t( warlock_t* p ):
     warlock_spell_t( p, "Conflagrate" )
   {
-    energize_type = ENERGIZE_PER_HIT;
+    energize_type = ENERGIZE_ON_CAST;
     base_duration = p -> find_spell( 117828 ) -> duration();
 
     cooldown -> charges += p -> sets.set( WARLOCK_DESTRUCTION, T19, B2 ) -> effectN( 1 ).base_value();
