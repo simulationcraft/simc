@@ -6073,7 +6073,7 @@ void hunter_t::apl_mm()
   add_racial_actions( default_list );
 
   default_list -> add_action( "auto_shot" );
-  default_list -> add_action( "variable,name=vulnerable_time,target=enemy2,value=debuff.vulnerability.remains" );
+  default_list -> add_action( "variable,name=vulnerable_time,target=2,value=debuff.vulnerability.remains" );
   default_list -> add_action( "call_action_list,name=open,if=time<=15&talent.sidewinders.enabled&active_enemies=1" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
   default_list -> add_action( "a_murder_of_crows,if=debuff.hunters_mark.down" );
@@ -6089,7 +6089,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<6&active_enemies=1" );
   default_list -> add_action( "sidewinders,if=(debuff.hunters_mark.down|(buff.marking_targets.down&buff.trueshot.down))&((buff.trueshot.react&focus<80)|charges_fractional>=1.9)" );
   default_list -> add_action( "sentinel,if=debuff.hunters_mark.down&(buff.marking_targets.down|buff.trueshot.up)" );
-  default_list -> add_action( "marked_shot,target=enemy2,if=!talent.patient_sniper.enabled&debuff.vulnerability.stack<3" );
+  default_list -> add_action( "marked_shot,target=2,if=!talent.patient_sniper.enabled&debuff.vulnerability.stack<3" );
   default_list -> add_action( "arcane_shot,if=!talent.patient_sniper.enabled&spell_targets.barrage=1&debuff.vulnerability.stack<3&((buff.marking_targets.up&debuff.hunters_mark.down)|buff.trueshot.up)" );
   default_list -> add_action( "multishot,if=!talent.patient_sniper.enabled&spell_targets.barrage>1&debuff.vulnerability.stack<3&((buff.marking_targets.up&debuff.hunters_mark.down)|buff.trueshot.up)" );
   default_list -> add_action( "arcane_shot,if=talent.steady_focus.enabled&spell_targets.barrage=1&(buff.steady_focus.down|buff.steady_focus.remains<2)" );
