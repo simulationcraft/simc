@@ -2025,7 +2025,7 @@ struct tormenting_cyclone_t : public proc_spell_t
       .duration( data().duration() )
       .start_time( sim -> current_time() )
       .action( damage_spell )
-      .pulse_time( timespan_t::from_seconds( 2.0 ) ) ); //NOTE: We double the pulse time here from 1.0 in game to 2.0 to model the near 50% miss rate this trinket has.
+      .pulse_time( timespan_t::from_seconds( 1.42 ) ) ); //NOTE: We change the pulse time here to better model #ticks
   }
 };
 
