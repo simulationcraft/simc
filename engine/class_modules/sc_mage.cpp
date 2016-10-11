@@ -813,10 +813,11 @@ struct water_elemental_pet_t : public mage_pet_t
 
   void init_action_list() override
   {
+    clear_action_priority_lists();
     auto default_list = get_action_priority_list( "default" );
 
-    default_list->add_action( this, "Water Jet" );
-    default_list->add_action( this, "Waterbolt" );
+    default_list->add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
+    default_list->add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
 
     // Default
     use_default_action_list = true;
@@ -7194,18 +7195,16 @@ struct water_jet_t : public action_t
     {
       mage_t* m = debug_cast<mage_t*>( player );
       action = debug_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
-      if ( !action)
+      if ( action )
       {
-        background = true;
-        return;
+        action->autocast = false;
       }
-      assert( action );
-      action -> autocast = false;
     }
   }
 
   void execute() override
   {
+    assert( action );
     mage_t* m = debug_cast<mage_t*>( player );
     action -> queued = true;
     // Interrupt existing cast
@@ -7226,6 +7225,9 @@ struct water_jet_t : public action_t
 
   bool ready() override
   {
+    if ( !action )
+      return false;
+
     // Ensure that the Water Elemental's water_jet is ready. Note that this
     // skips the water_jet_t::ready() call, and simply checks the "base" ready
     // properties of the spell (most importantly, the cooldown). If normal
