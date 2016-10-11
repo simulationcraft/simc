@@ -125,28 +125,28 @@ actions.VB+=/divine_storm,if=debuff.judgment.up&holy_power>=3&spell_targets.divi
 actions.VB+=/templars_verdict,if=debuff.judgment.up&holy_power>=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)
 
 head=crown_of_ash,id=137526,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_hidden_satyr
+neck=understone_gorget,id=134491,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
 back=cloak_of_enthralling_darkness,id=137531,bonus_id=1727,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727
 wrists=greystone_wristplates,id=139100,bonus_id=1727
 hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727
-waist=coralplate_girdle,id=134225,bonus_id=1727
+waist=portalguard_waistplate,id=134357,bonus_id=1727
 legs=keelhauler_legplates,id=134514,bonus_id=1727
 feet=duskwatch_guards_boots,id=137482,bonus_id=1727
 finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_haste
-finger2=band_of_decaying_rubies,id=137438,bonus_id=1727,enchant=binding_of_haste
+finger2=ring_of_looming_menace,id=134533,bonus_id=1727,enchant=binding_of_haste
 trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1492
-trinket2=chaos_talisman,id=137459,bonus_id=1727/1492
+trinket2=memento_of_angerboda,id=133644,bonus_id=1727/1492
 main_hand=ashbringer,id=120978,bonus_id=737,gem_id=136717/137316/136717,relic_id=3412/3412/3412
 
 # Gear Summary
 # gear_ilvl=842.00
-# gear_strength=10183
+# gear_strength=11306
 # gear_stamina=17964
-# gear_crit_rating=6747
-# gear_haste_rating=7714
-# gear_mastery_rating=2169
-# gear_versatility_rating=1229
+# gear_crit_rating=7401
+# gear_haste_rating=7170
+# gear_mastery_rating=687
+# gear_versatility_rating=1704
 # gear_armor=3965
 # set_bonus=tier19p_plate_2pc=1
