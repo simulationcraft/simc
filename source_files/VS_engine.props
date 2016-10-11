@@ -180,7 +180,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\sc_warlock.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+			
 		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\sc_shaman.cpp">
 			
@@ -192,7 +192,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\sc_paladin.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+			
 		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\sc_monk.cpp">
 			

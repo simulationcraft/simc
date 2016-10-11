@@ -3,10 +3,10 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "simulationcraft.hpp"
 #include "sc_report.hpp"
 #include "data/report_data.inc"
 #include "interfaces/sc_js.hpp"
-#include "simulationcraft.hpp"
 
 // Experimental Raw Ability Output for Blizzard to do comparisons
 namespace raw_ability_summary
