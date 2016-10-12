@@ -7,6 +7,7 @@ role=attack
 position=back
 talents=2232133
 artifact=35:0:0:0:0:982:1:984:1:985:1:986:1:988:3:990:3:991:3:995:3:996:3:1357:1
+
 head=nightsfall_helmet,id=139058,bonus_id=1727
 neck=chain_of_scorched_bones,id=134529,bonus_id=1727,enchant=mark_of_the_hidden_satyr
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727
@@ -34,6 +35,7 @@ role=attack
 position=back
 talents=1332311
 artifact=36:0:0:0:0:1136:1:1137:1:1139:1:1142:1:1145:3:1147:3:1148:3:1149:3:1150:3:1356:1
+
 head=vision_of_the_spider_queen,id=137451,bonus_id=1727
 neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727,enchant=mark_of_the_distant_army
 shoulders=mortar_guard_shoulderplates,id=137524,bonus_id=1727
@@ -60,6 +62,7 @@ role=tank
 position=front
 talents=1222312
 artifact=11:0:0:0:0:91:1:92:1:93:1:95:2:99:3:100:3:101:3:102:3:103:1:104:1:1358:1
+
 head=vision_of_the_spider_queen,id=137451,bonus_id=1727
 neck=raven_filigree_pendant,id=134499,bonus_id=1727,enchant=mark_of_the_heavy_hide
 shoulders=rockbound_pauldrons,id=134140,bonus_id=1727
