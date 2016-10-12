@@ -932,105 +932,6 @@ action_t* base_fiend_pet_t::create_action( const std::string& name,
 }
 }  // pets/fiend
 
-namespace lightwell
-{
-// ==========================================================================
-// Pet Lightwell
-// ==========================================================================
-
-struct lightwell_pet_t final : public priest_pet_t
-{
-public:
-  int charges;
-
-  lightwell_pet_t( sim_t* sim, priest_t& p )
-    : priest_pet_t( sim, p, "lightwell", PET_LIGHTWELL, true ), charges( 0 )
-  {
-    role = ROLE_HEAL;
-
-    action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-    // Snapshot stats
-    precombat->add_action(
-        "snapshot_stats",
-        "Snapshot raid buffed stats before combat begins and "
-        "pre-potting is done." );
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "lightwell_renew" );
-    // def -> add_action( "wait,sec=cooldown.lightwell_renew.remains" );
-
-    owner_coeff.sp_from_sp = 1.0;
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str ) override;
-
-  void summon( timespan_t duration ) override
-  {
-    priest_pet_t::summon( duration );
-  }
-};
-
-struct lightwell_renew_t final : public heal_t
-{
-  lightwell_renew_t( lightwell_pet_t& p )
-    : heal_t( "lightwell_renew", &p, p.find_spell( 126154 ) )
-  {
-    may_crit      = false;
-    tick_may_crit = true;
-  }
-
-  lightwell_pet_t& p()
-  {
-    return static_cast<lightwell_pet_t&>( *player );
-  }
-  const lightwell_pet_t& p() const
-  {
-    return static_cast<lightwell_pet_t&>( *player );
-  }
-
-  void execute() override
-  {
-    p().charges--;
-
-    target = find_lowest_player();
-
-    heal_t::execute();
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    heal_t::last_tick( d );
-
-    // Need to kill the actor with an event instead of performing the demise
-    // directly inside the
-    // last_tick().
-    if ( p().charges <= 0 )
-    {
-      make_event<player_demise_event_t>( *sim, p() );
-    }
-  }
-
-  bool ready() override
-  {
-    if ( p().charges <= 0 )
-      return false;
-
-    return heal_t::ready();
-  }
-};
-
-action_t* lightwell_pet_t::create_action( const std::string& name,
-                                          const std::string& options_str )
-{
-  if ( name == "lightwell_renew" )
-    return new lightwell_renew_t( *this );
-
-  return priest_pet_t::create_action( name, options_str );
-}
-
-}  // pets/lightwell
-
 namespace void_tendril
 {
 // ==========================================================================
@@ -3303,7 +3204,7 @@ struct penance_t final : public priest_spell_t
   struct penance_tick_t final : public priest_spell_t
   {
     penance_tick_t( priest_t& p, stats_t* stats )
-      : priest_spell_t( "penance_tick", p, p.find_spell( 47666 ) )
+      : priest_spell_t( "penance_tick", p, p.dbc.spell( 47666 ) )
     {
       background  = true;
       dual        = true;
@@ -3311,6 +3212,13 @@ struct penance_t final : public priest_spell_t
       //      can_trigger_atonement = priest.specs.atonement->ok();
 
       this->stats = stats;
+    }
+
+    bool verify_actor_level() const override
+    {
+      // Tick spell data is restricted to level 60+, even though main spell is
+      // level10+
+      return true;
     }
 
     void impact( action_state_t* state ) override
@@ -4813,8 +4721,6 @@ pet_t* priest_t::create_pet( const std::string& pet_name,
     return new pets::fiend::shadowfiend_pet_t( sim, *this );
   if ( pet_name == "mindbender" )
     return new pets::fiend::mindbender_pet_t( sim, *this );
-  if ( pet_name == "lightwell" )
-    return new pets::lightwell::lightwell_pet_t( sim, *this );
 
   sim->errorf( "Tried to create priest pet %s.", pet_name.c_str() );
 

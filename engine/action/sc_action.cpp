@@ -553,11 +553,6 @@ action_t::action_t( action_e       ty,
     parse_spell_data( data() );
   }
 
-  if ( ! verify_actor_level() || ! verify_actor_spec() )
-  {
-    background = true;
-  }
-
   if ( s_data == spell_data_t::not_found() )
   {
     // this is super-spammy, may just want to disable this after we're sure this section is working as intended.
@@ -2018,6 +2013,12 @@ bool action_t::ready()
 void action_t::init()
 {
   if ( initialized ) return;
+
+  if ( ! verify_actor_level() || ! verify_actor_spec() )
+  {
+    background = true;
+  }
+
 
   assert( !( impact_action && tick_action ) && "Both tick_action and impact_action should not be used in a single action." );
 
