@@ -1656,7 +1656,7 @@ struct corrupted_blood_of_zakajz_t : public residual_action::residual_periodic_a
   void impact( action_state_t* s ) override
   {
     residual_periodic_action_t::impact( s );
-    composite_target_mult = p() -> composite_player_target_multiplier( s -> target, s -> action -> get_school() ); // Yeah, it snapshots colossus smash. 
+    composite_target_mult = p() -> composite_player_target_multiplier( s -> target, s -> action -> get_school() ); // Yeah, it snapshots colossus smash.
   }
 };
 
@@ -4074,6 +4074,7 @@ struct ignore_pain_t: public warrior_spell_t
   {
     double ip_cap = 0;
     ip_cap = ip_cap_ratio * ( data().effectN( 1 ).ap_coeff() * p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier() ) * p() -> cache.damage_versatility();
+    ip_cap *= 1.0 + p() -> buff.dragon_scales -> check_value();
     return ip_cap;
   }
 
