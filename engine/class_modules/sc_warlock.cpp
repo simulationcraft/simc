@@ -4624,7 +4624,7 @@ struct shadowburn_t: public warlock_spell_t
     player_t* target;
 
     resource_event_t( warlock_t* p, shadowburn_t* s, player_t* t ):
-      player_event_t( *p, spell -> delay ), spell( s ), shard_gain( p -> gains.shadowburn_shard ), target(t)
+      player_event_t( *p, s -> delay ), spell( s ), shard_gain( p -> gains.shadowburn_shard ), target(t)
     {
     }
     virtual const char* name() const override

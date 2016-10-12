@@ -3539,7 +3539,7 @@ struct judgment_aoe_t : public paladin_melee_attack_t
     return am;
   }
 
-  proc_types proc_type() const
+  proc_types proc_type() const override
   {
     return PROC1_MELEE_ABILITY;
   }
@@ -3577,7 +3577,7 @@ struct judgment_t : public paladin_melee_attack_t
     }
   }
 
-  proc_types proc_type() const
+  proc_types proc_type() const override
   {
     return PROC1_MELEE_ABILITY;
   }
