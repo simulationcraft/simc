@@ -56,29 +56,29 @@ actions.prot_aoe+=/revenge
 actions.prot_aoe+=/thunder_clap,if=spell_targets.thunder_clap>=3
 actions.prot_aoe+=/devastate
 
-head=vision_of_the_spider_queen,id=137451,bonus_id=1727
-neck=raven_filigree_pendant,id=134499,bonus_id=1727,enchant=mark_of_the_heavy_hide
-shoulders=rockbound_pauldrons,id=134140,bonus_id=1727
-back=mainsail_cloak,id=134406,bonus_id=1727,enchant=binding_of_strength
-chest=etheldrins_breastplate,id=136976,bonus_id=1727
-wrists=wristbands_of_magnificent_splendor,id=139283,bonus_id=1727
-hands=bloodspattered_gauntlets,id=137525,bonus_id=1727
-waist=greatbelt_of_disruption,id=137310,bonus_id=1727
-legs=greaves_of_ruinous_dominion,id=134515,bonus_id=1727
-feet=leadfoot_earthshakers,id=134507,bonus_id=1727
-finger1=band_of_crystalline_bone,id=134493,bonus_id=1727,enchant=binding_of_versatility
-finger2=braided_silver_ring,id=134539,bonus_id=1727,enchant=binding_of_versatility
-trinket1=memento_of_angerboda,id=133644,bonus_id=1727
-trinket2=impenetrable_nerubian_husk,id=137430,bonus_id=1727
-main_hand=scaleshard,id=128288,ilevel=870
-off_hand=scale_of_the_earthwarder,id=128289,gem_id=133763/137412/133686,relic_id=3412/3412/3412
+head=vision_of_the_spider_queen,id=137451,bonus_id=1492
+neck=raven_filigree_pendant,id=134499,bonus_id=1492,enchant=mark_of_the_heavy_hide
+shoulders=pauldrons_of_the_allfather,id=133631,bonus_id=1492
+back=mainsail_cloak,id=134406,bonus_id=1492,enchant=binding_of_strength
+chest=etheldrins_breastplate,id=136976,bonus_id=1492
+wrists=wristbands_of_magnificent_splendor,id=139283,bonus_id=1492
+hands=bloodspattered_gauntlets,id=137525,bonus_id=1492
+waist=greatbelt_of_disruption,id=137310,bonus_id=1492
+legs=greaves_of_ruinous_dominion,id=134515,bonus_id=1492
+feet=leadfoot_earthshakers,id=134507,bonus_id=1492
+finger1=band_of_crystalline_bone,id=134493,bonus_id=1492,enchant=binding_of_versatility
+finger2=braided_silver_ring,id=134539,bonus_id=1492,enchant=binding_of_versatility
+trinket1=memento_of_angerboda,id=133644,bonus_id=1492
+trinket2=impenetrable_nerubian_husk,id=137430,bonus_id=1492
+main_hand=scaleshard,id=128288
+off_hand=scale_of_the_earthwarder,id=128289,gem_id=133763/137412/133686,relic_id=1492:1727/1492:1727/1492:1727
 
 # Gear Summary
 # gear_ilvl=843.75
 # gear_strength=11292
 # gear_stamina=17944
 # gear_crit_rating=971
-# gear_haste_rating=1910
-# gear_mastery_rating=7106
-# gear_versatility_rating=6958
+# gear_haste_rating=1809
+# gear_mastery_rating=7497
+# gear_versatility_rating=6669
 # gear_armor=3965
