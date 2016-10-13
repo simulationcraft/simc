@@ -3705,24 +3705,21 @@ void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts
 
 void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t& ts )
 {
-  if ( a -> action_list )
+  // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
+  if ( ( a -> sim -> iterations <= 1 && a -> sim -> current_iteration == 0 ) ||
+       ( a -> sim -> iterations > 1 && a -> sim -> current_iteration == 1 ) )
   {
-    // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
-    if ( ( a -> sim -> iterations <= 1 && a -> sim -> current_iteration == 0 ) ||
-         ( a -> sim -> iterations > 1 && a -> sim -> current_iteration == 1 ) )
+    if ( collected_data.action_sequence.size() <= sim -> expected_max_time() * 2.0 + 3.0 )
     {
-      if ( collected_data.action_sequence.size() <= sim -> expected_max_time() * 2.0 + 3.0 )
-      {
-        if ( in_combat )
-          collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
-        else
-          collected_data.action_sequence_precombat.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
-      }
+      if ( in_combat )
+        collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
       else
-      {
-        assert( false && "Collected too much action sequence data."
-        "This means there is a serious overflow of executed actions in the first iteration, which should be fixed." );
-      }
+        collected_data.action_sequence_precombat.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
+    }
+    else
+    {
+      assert( false && "Collected too much action sequence data."
+      "This means there is a serious overflow of executed actions in the first iteration, which should be fixed." );
     }
   }
 }
