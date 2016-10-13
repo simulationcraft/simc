@@ -93,20 +93,20 @@ actions.single+=/focused_rage,if=equipped.archavons_heavy_hand
 #Remove the # above to run out of melee and charge back in for rage.
 actions.single+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
 
-head=vision_of_the_spider_queen,id=137451,bonus_id=1492
-neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1492,enchant=mark_of_the_distant_army
-shoulders=mortar_guard_shoulderplates,id=137524,bonus_id=1492
-back=stole_of_malefic_repose,id=134404,bonus_id=1492,enchant=binding_of_strength
-chest=etheldrins_breastplate,id=136976,bonus_id=1492
-wrists=exomesh_carpalform_armplates_mk._vii,id=134502,bonus_id=1492
-hands=fists_of_the_legion,id=134509,bonus_id=1492
-waist=roaring_breeze_waistguard,id=137499,bonus_id=1492
-legs=legplates_of_the_swarm,id=134506,bonus_id=1492
-feet=leadfoot_earthshakers,id=134507,bonus_id=1492
-finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1492,enchant=binding_of_mastery
-finger2=archdruids_tainted_seal,id=134487,bonus_id=1492,enchant=binding_of_mastery
-trinket1=gift_of_radiance,id=133647,bonus_id=1492
-trinket2=terrorbound_nexus,id=137406,bonus_id=1492
+head=vision_of_the_spider_queen,id=137451,bonus_id=1492/1727
+neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1492/1727,enchant=mark_of_the_distant_army
+shoulders=mortar_guard_shoulderplates,id=137524,bonus_id=1492/1727
+back=stole_of_malefic_repose,id=134404,bonus_id=1492/1727,enchant=binding_of_strength
+chest=etheldrins_breastplate,id=136976,bonus_id=1492/1727
+wrists=exomesh_carpalform_armplates_mk._vii,id=134502,bonus_id=1492/1727
+hands=fists_of_the_legion,id=134509,bonus_id=1492/1727
+waist=roaring_breeze_waistguard,id=137499,bonus_id=1492/1727
+legs=legplates_of_the_swarm,id=134506,bonus_id=1492/1727
+feet=leadfoot_earthshakers,id=134507,bonus_id=1492/1727
+finger1=loop_of_eightfold_eyes,id=134527,bonus_id=1492/1727,enchant=binding_of_mastery
+finger2=archdruids_tainted_seal,id=134487,bonus_id=1492/1727,enchant=binding_of_mastery
+trinket1=gift_of_radiance,id=133647,bonus_id=1492/1727
+trinket2=terrorbound_nexus,id=137406,bonus_id=1492/1727
 main_hand=stromkar_the_warbreaker,id=128910,gem_id=137469/137363/137377,relic_id=1492:1727/1492:1727/1492:1727
 
 # Gear Summary
