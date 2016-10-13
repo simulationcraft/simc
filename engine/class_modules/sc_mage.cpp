@@ -4201,13 +4201,13 @@ struct fireball_t : public fire_mage_spell_t
 
 struct flame_patch_t : public fire_mage_spell_t
 {
-  flame_patch_t( mage_t* p, const std::string& options_str ) :
+  flame_patch_t( mage_t* p ) :
     fire_mage_spell_t( "flame_patch", p, p -> talents.flame_patch )
   {
-    parse_options( options_str );
     hasted_ticks=true;
     spell_power_mod.direct = p -> find_spell( 205472 ) -> effectN( 1 ).sp_coeff();
     aoe = -1;
+    background = true;
     ground_aoe = background = true;
     school = SCHOOL_FIRE;
   }
@@ -4240,7 +4240,7 @@ struct flamestrike_t : public fire_mage_spell_t
   flamestrike_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "flamestrike", p,
                        p -> find_specialization_spell( "Flamestrike" ) ),
-                       flame_patch( new flame_patch_t( p, options_str ) )
+                       flame_patch( new flame_patch_t( p ) )
   {
     parse_options( options_str );
 
@@ -4328,7 +4328,7 @@ struct pyrosurge_flamestrike_t : public fire_mage_spell_t
   pyrosurge_flamestrike_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "pyrosurge_flamestrike", p,
                        p -> find_specialization_spell( "Flamestrike" ) ),
-                       flame_patch( new flame_patch_t( p, options_str ) )
+                       flame_patch( new flame_patch_t( p ) )
   {
     parse_options( options_str );
     base_costs[ RESOURCE_MANA ] = 0;
