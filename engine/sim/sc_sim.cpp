@@ -1151,7 +1151,7 @@ std::string get_api_key()
     }
     else
     {
-      std::cerr << "Blizzard API Key '" << line << "' from file '" << filename << "was not properly entered." << std::endl;
+      std::cerr << "Blizzard API Key '" << line << "' from file '" << filename << "' was not properly entered." << std::endl;
     }
   }
 
@@ -2844,7 +2844,8 @@ expr_t* sim_t::create_expression( action_t* a,
           }
         }
 
-        nonexecute_actors_pct = nonexecute / ( nonexecute + execute );
+        auto divisor = ( nonexecute + execute );
+        nonexecute_actors_pct = divisor != 0 ? nonexecute / divisor : 0.0;
       }
 
       double evaluate() override
