@@ -11427,12 +11427,8 @@ void player_t::adjust_global_cooldown( haste_type_e haste_type )
       readying -> reschedule( new_remains );
     }
   }
-  // We need to adjust gcd_ready (the actor is probably casting something)
-  else
-  {
-    gcd_ready = sim -> current_time() + new_remains;
-  }
 
+  gcd_ready = sim -> current_time() + new_remains;
   gcd_current_haste_value = new_haste;
 }
 
