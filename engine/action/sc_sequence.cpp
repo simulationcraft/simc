@@ -129,13 +129,14 @@ bool sequence_t::ready()
 
 strict_sequence_t::strict_sequence_t( player_t* p, const std::string& sub_action_str ) :
   action_t( ACTION_SEQUENCE, "strict_sequence", p ),
-  current_action( 0 )
+  current_action( 0 ), allow_skip( false )
 {
   trigger_gcd = timespan_t::zero();
 
   std::vector<std::string> splits = util::string_split( sub_action_str, ":" );
   if ( ! splits.empty() )
   {
+    add_option( opt_bool( "allow_skip", allow_skip ) );
     add_option( opt_string( "name", seq_name_str ) );
     parse_options( splits[ 0 ] );
   }
@@ -199,13 +200,23 @@ bool strict_sequence_t::ready()
   if ( ! action_t::ready() ) return false;
 
   // Strict sequences need all actions to be usable before it commits
-  for (auto & elem : sub_actions)
+  if ( ! allow_skip )
   {
-    if ( ! elem -> ready() )
-      return false;
-  }
+    for (auto & elem : sub_actions)
+    {
+      if ( ! elem -> ready() )
+        return false;
+    }
 
-  return true;
+    return true;
+  }
+  else
+  {
+    auto it = range::find_if( sub_actions, []( action_t* a ) {
+        return ! a -> background && a -> ready() == true;
+    } );
+    return it != sub_actions.end(); // Ready if at least one action is usable
+  }
 }
 
 void strict_sequence_t::schedule_execute( action_state_t* state )
@@ -213,33 +224,76 @@ void strict_sequence_t::schedule_execute( action_state_t* state )
   assert( ( current_action == 0 && ! player -> strict_sequence ) ||
           ( current_action < sub_actions.size() && player -> strict_sequence ) );
 
-  if ( sim -> log )
-    sim -> out_log.printf( "Player %s executes strict_sequence '%s' action #%d \"%s\"",
-                   player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
-
   if ( current_action == 0 )
     player -> strict_sequence = this;
 
-  // Sanity check the strict sequence, so that it does not get stuck
-  // mid-sequence. People are expected to write strict_sequences that cannot
-  // have this happen, but it's bound to be a problem if some buff for example
-  // fades between the first, and last cast (and it's needed by the last cast).
-  if ( ! sub_actions[ current_action ] -> ready() )
+  bool scheduled = false;
+  if ( ! allow_skip )
   {
-    if ( sim -> debug )
-      sim -> out_debug.printf( "Player %s strict_sequence '%s' action #%d \"%s\" is no longer ready, aborting sequence",
-        player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
-    cancel();
-    return;
-  }
+    if ( sim -> log )
+      sim -> out_log.printf( "Player %s executes strict_sequence '%s' action #%d \"%s\"",
+                     player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
 
-  sub_actions[ current_action++ ] -> schedule_execute( state );
+    // Sanity check the strict sequence, so that it does not get stuck
+    // mid-sequence. People are expected to write strict_sequences that cannot
+    // have this happen, but it's bound to be a problem if some buff for example
+    // fades between the first, and last cast (and it's needed by the last cast).
+    if ( ! sub_actions[ current_action ] -> ready() )
+    {
+      if ( sim -> debug )
+        sim -> out_debug.printf( "Player %s strict_sequence '%s' action #%d \"%s\" is no longer ready, aborting sequence",
+          player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
+      cancel();
+      return;
+    }
+
+    sub_actions[ current_action++ ] -> schedule_execute( state );
+    scheduled = true;
+  }
+  else
+  {
+    // Allow skipping of unusable actions
+    while ( current_action < sub_actions.size() &&
+            ! sub_actions[ current_action ] -> background &&
+            ! sub_actions[ current_action ] -> ready() )
+    {
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "Player %s strict_sequence '%s' action #%d \"%s\" is not ready, skipping... ",
+          player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
+      }
+      current_action++;
+    }
+
+    if ( current_action < sub_actions.size() )
+    {
+      if ( sim -> log )
+        sim -> out_log.printf( "Player %s executes strict_sequence '%s' action #%d \"%s\"",
+                       player -> name(), seq_name_str.c_str(), current_action, sub_actions[ current_action ] -> name() );
+
+      player -> sequence_add( sub_actions[ current_action ], sub_actions[ current_action ] -> target, sim -> current_time() );
+      sub_actions[ current_action++ ] -> schedule_execute( state );
+      scheduled = true;
+    }
+  }
 
   // Strict sequence is over, normal APL commences on the next ready event
   if ( current_action == sub_actions.size() )
   {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "Player %s strict_sequence '%s' end reached, strict sequence over",
+        player -> name(), seq_name_str.c_str() );
+    }
     player -> strict_sequence = nullptr;
     current_action = 0;
+
+    // If nothing to scheduled, the skippable strict sequence finished and went to the end. Player
+    // ready event must be re-kicked so that the actor will not freeze.
+    if ( ! scheduled )
+    {
+      player -> schedule_ready();
+    }
   }
 }
 

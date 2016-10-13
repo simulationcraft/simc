@@ -6163,6 +6163,9 @@ struct strict_sequence_t : public action_t
   std::vector<action_t*> sub_actions;
   std::string seq_name_str;
 
+  // Allow strict sequence sub-actions to be skipped if they are not ready. Default = false.
+  bool allow_skip;
+
   strict_sequence_t( player_t*, const std::string& opts );
 
   bool ready() override;
