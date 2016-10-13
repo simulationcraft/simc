@@ -6257,12 +6257,12 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
     // itself uses power levels of 5, 10, 15, 20, ...
     if ( artifact.master_alchemist.rank() )
     {
-      stack_value *= 1.0 + artifact.master_alchemist.percent() / artifact.master_alchemist.data().effectN( 3 ).base_value();
+      stack_value *= 1.0 + artifact.master_alchemist.percent() / 5;
     }
     // Another weird one, this time divided by 2
     if ( artifact.poison_knives.rank() )
     {
-      stack_value *= 1.0 + artifact.poison_knives.percent() / artifact.poison_knives.data().effectN( 2 ).base_value();
+      stack_value *= 1.0 + artifact.poison_knives.percent() / 2;
     }
     // To be confirmed: behavior of Zoldyck Family Training Shackles with
     // Agonizing Poison
