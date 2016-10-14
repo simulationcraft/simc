@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5a2d5bc)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 72ba20b)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -5771,7 +5771,7 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=301586)   : Apply Aura (6) | Unknown effect sub type (318)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
 Description      : Increases Mastery by $s1%.
 Tooltip          : Mastery increased by $s1%.
 

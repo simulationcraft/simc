@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5a2d5bc)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 72ba20b)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -4634,8 +4634,9 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=281770)   : Apply Aura (6) | Modify Armor% (101)
+#1 (id=281770)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self(1)
+                   Hotfixed: Sub Type (101 -> 142)
 #2 (id=321076)   : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self(1)
 #3 (id=321077)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
@@ -5703,8 +5704,9 @@ Description      : Grants ${$m1/10} Astral Power every $t1 sec.
 Tooltip          : Grants ${$m1/10} Astral Power every $t1 sec.
 
 Name             : New Moon (Artifact) (id=202767) [Spell Family (7)] 
+Hotfixed         : School (72 -> 64)
 Class            : Druid
-School           : Astral
+School           : Arcane
 Range            : 40 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
@@ -5721,7 +5723,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298964)   : School Damage: astral (2)
+#1 (id=298964)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Target: Enemy(6)
 #2 (id=299003)   : Trigger Spell: New Moon Override (64)
                    Base Value: 202787 | Scaled Value: 202787 | Trigger Spell: 202787 | Target: Self(1)
@@ -5732,8 +5734,9 @@ Description      : Deals $m1 Astral damage to the target and empowers New Moon t
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Half Moon (Artifact) (id=202768) [Spell Family (7)] 
+Hotfixed         : School (72 -> 64)
 Class            : Druid
-School           : Astral
+School           : Arcane
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -5748,7 +5751,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298965)   : School Damage: astral (2)
+#1 (id=298965)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.00000 | Target: Enemy(6)
 #2 (id=299004)   : Trigger Spell: Half Moon Override (64)
                    Base Value: 202788 | Scaled Value: 202788 | Trigger Spell: 202788 | Target: Self(1)
@@ -5788,8 +5791,9 @@ While Fury of Elune is active, you may recast it for no cost to direct the beam 
 Tooltip          : Directing the Fury of Elune.
 
 Name             : Full Moon (Artifact) (id=202771) [Spell Family (7)] 
+Hotfixed         : School (72 -> 64)
 Class            : Druid
-School           : Astral
+School           : Arcane
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
@@ -5804,7 +5808,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298969)   : School Damage: astral (2)
+#1 (id=298969)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 18.00000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #2 (id=298970)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: astral_power | Target: Self(1)

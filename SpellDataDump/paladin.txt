@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 5a2d5bc)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 72ba20b)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -246,6 +246,7 @@ Effects          :
 Description      : A quick but expensive spell, healing a friendly target for $s1.
 
 Name             : Repentance (id=20066) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Resource         : 10% Base Mana (22000 @Level 110)
@@ -262,12 +263,12 @@ Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137288)
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .xx..... .x...... 
-                 : ........ ........ ........ ........   x....... ........ ........ ..x..... 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ x....... ..x..... 
+                 : ........ ........ .......x ........   .....x.. ........ ........ ........ 
                  : ........ ........ .....x.x ........   ........ ........ ........ ......x. 
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Stop attacks (20)
+                 : Stop attacks (20), Disable player procs (112), Disable weapon procs (151)
 Effects          :
 #1 (id=11180)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
