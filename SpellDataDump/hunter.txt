@@ -1,9 +1,9 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 72ba20b)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
-Spell Level      : 1
+Spell Level      : 14
 Range            : 45 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -40,10 +40,10 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Disengage (id=781) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
-Spell Level      : 14
+Spell Level      : 8
 Range            : 50000 yards
 Cooldown         : 1 seconds
-Charges          : 1 (20 seconds cooldown)
+Charges          : 1 (30 seconds cooldown)
 Category         : 1449
 Affecting spells : Hunter (137014), Guide: Disengage (162116)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -100,7 +100,7 @@ Description      : Revives your pet, returning it to life with $s1% of its base 
 Name             : Beast Lore (id=1462) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
-Spell Level      : 12
+Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
@@ -139,7 +139,7 @@ Tooltip          : Tracking Beasts.
 Name             : Tame Beast (id=1515) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
-Spell Level      : 10
+Spell Level      : 13
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
@@ -223,7 +223,7 @@ Name             : Multi-Shot (id=2643) [Spell Family (9)]
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
 Resource         : 40 Focus
-Spell Level      : 28
+Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
@@ -273,7 +273,7 @@ Tooltip          : Incapacitated.
 Name             : Concussive Shot (id=5116) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
-Spell Level      : 8
+Spell Level      : 4
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -297,7 +297,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Feign Death (id=5384) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Spell Level      : 32
+Spell Level      : 28
 Duration         : 360 seconds
 Cooldown         : 30 seconds
 Affecting spells : Improved Feign Death (24432), Hunter (137014)
@@ -317,7 +317,7 @@ Tooltip          : Feigning death.
 Name             : Eagle Eye (id=6197) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
-Spell Level      : 16
+Spell Level      : 18
 Range            : 50000 yards
 GCD              : 1.5 seconds
 Duration         : 60 seconds
@@ -339,7 +339,7 @@ Tooltip          : Vision is enhanced.
 Name             : Feed Pet (id=6991) 
 Class            : Hunter
 School           : Physical
-Spell Level      : 11
+Spell Level      : 13
 Range            : 10 yards
 Cooldown         : 10 seconds
 Attributes       : ....x... ........ x....... ...xx...   ........ ........ .x...... ........ 
@@ -534,15 +534,16 @@ Description      : A stinging shot that puts the target to sleep, incapacitating
 Tooltip          : Incapacitated.
 
 Name             : Aimed Shot (id=19434) [Scaling Spell (4), Spell Family (9)] 
+Replaces         : Cobra Shot (id=193455)
 Class            : Marksmanship Hunter
 School           : Physical
 Resource         : 50 Focus
-Spell Level      : 10 (max 20)
+Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Marked for Death (190533), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272)
 Triggered by     : Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -555,8 +556,11 @@ Effects          :
 #1 (id=10651)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 (avg=2.2, dl=0.1) | Target: Enemy(6)
 #2 (id=101526)   : Weapon Damage% (31)
-                   Base Value: 135 | Scaled Value: 2.15 | Points Per Level: 8 | Target: Enemy(6)
-Description      : A powerful aimed shot that deals $sw2 Physical damage.
+                   Base Value: 215 | Scaled Value: 2.15 | Target: Enemy(6)
+Description      : A powerful aimed shot that deals ${$sw1*$<mult>} Physical damage.$?s19434[][
+
+Replaces Cobra Shot.]
+Variables        : $mult=${($max(0,$min($pl-10,10))*8+130)/210}
 
 Name             : Bestial Wrath (id=19574) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
@@ -565,7 +569,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unleash the Beast (206910), 
+Affecting spells : Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unleash the Beast (206910), Item - Hunter T19 Beast Mastery 2P Bonus (211172)
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -576,12 +580,14 @@ Effects          :
 #1 (id=10779)    : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=10780)    : Trigger Spell: Bestial Wrath (64)
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 186254
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 186254
 #3 (id=342782)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Self(1)
-Description      : Sends you and your pet into a rage, increasing all damage you both deal by $s1% for $d.
+Description      : Sends you and your pet into a rage, increasing all damage you both deal by $s1% for $d. $?s231548&s217200[
 
-Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use $?s217200[Dire Frenzy][Dire Beast].
+Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Dire Frenzy.]$?s231548&!s217200[
+
+Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Dire Beast.]
 Tooltip          : Damage dealt increased by $s1%.
 
 Name             : Intimidation (id=19577) [Spell Family (9)] 
@@ -913,7 +919,7 @@ Name             : Kill Command (id=34026) [Scaling Spell (4), Spell Family (9)]
 Class            : Beast Mastery Hunter
 School           : Physical
 Resource         : 30 Focus
-Spell Level      : 3
+Spell Level      : 10
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 7.5 seconds
@@ -932,7 +938,7 @@ Effects          :
                    Base Value: 83381 | Scaled Value: 83381 | Target: Active Pet(5)
 Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to its target. 25 yard range.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$lowNerf=${$min($pl,20)*0.05}
+$lowNerf=${0.5+$min($pl,20)*0.025}
 $damage=${1.5*($83381m1+($RAP*3))*$<bmMastery>*$<lowNerf>*(1+$@versadmg)}
 
 
@@ -961,7 +967,7 @@ Tooltip          : Threat redirected from Hunter.
 Name             : Bombardment (id=35110) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Physical
-Spell Level      : 62
+Spell Level      : 50
 Proc Chance      : 100%
 Proc Flags       : ......x. x...x... ........ ........ 
                  : White Ranged, Yellow Ranged, AOE Hostile Spell
@@ -1357,17 +1363,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : When used, your pet will miraculously return to life with full health.
 
-Name             : Kindred Spirits (id=56315) [Spell Family (9), Passive, Hidden] 
+Name             : Kindred Spirits (id=56315) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Physical
-Spell Level      : 58
-Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
+Spell Level      : 36
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
+                 : Passive (6)
 Effects          :
 #1 (id=49357)    : Apply Aura (6) | Increase Energy (35)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 1.00000 | Misc Value: 2 | Target: Self(1)
@@ -1579,7 +1585,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=55590)    : Apply Aura (6) | Unknown effect sub type (133)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 1 | Misc Value 2: 0x4 | Target: Self(1)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value 2: 0x64 | Target: Self(1)
 Description      : Increases your pet's total health by $s1%.
 
 Name             : Basic Attack Focus Cost Modifier (id=62762) [Spell Family (17), Passive, Hidden] 
@@ -1796,12 +1802,12 @@ Effects          :
                    Affected Spells: Multi-Shot (2643)
 Description      : $@spelldesc35110
 Tooltip          : Multi-Shot causes $w2% more damage.$?$W3<0[
-Reduces the global cooldown of Multi-Shot by ${$m3/1000}.1 sec.][]
+Reduces the global cooldown of Multi-Shot by ${$m3/-1000}.1 sec.][]
 
 Name             : Call Pet 2 (id=83242) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Spell Level      : 10
+Spell Level      : 13
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Affecting spells : Hunter (137014)
@@ -1837,7 +1843,7 @@ Description      : Summons your third pet to you.
 Name             : Call Pet 4 (id=83244) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Spell Level      : 62
+Spell Level      : 57
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Affecting spells : Hunter (137014)
@@ -1855,7 +1861,7 @@ Description      : Summons your fourth pet to you.
 Name             : Call Pet 5 (id=83245) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Spell Level      : 82
+Spell Level      : 80
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Affecting spells : Hunter (137014)
@@ -2258,7 +2264,7 @@ Description      : Disengage also activates a web trap which immobilizes all tar
 Name             : Exhilaration (id=109304) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Physical
-Spell Level      : 36
+Spell Level      : 24
 Range            : 45 yards
 Cooldown         : 120 seconds
 Affecting spells : Hunter (137014)
@@ -2272,9 +2278,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=120764)   : Direct Heal% (136)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-#2 (id=163393)   : Trigger Spell: Exhilaration (64)
-                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 128594 | Target: Self(1)
-Description      : Heals you for $s1% and your pet for $128594s1% of maximum health.
+Description      : Heals you for $s1%$?a231546&!a155228[ and your pet for $128594s1%][] of maximum health.
 
 Name             : Mortal Wounds (id=115804) 
 Class            : Warrior, Hunter, Monk
@@ -2315,7 +2319,7 @@ Tooltip          : Webbed.
 Name             : Beast Cleave (id=115939) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Physical
-Spell Level      : 29
+Spell Level      : 50
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2395,7 +2399,7 @@ Name             : Posthaste (id=118922) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Range            : 100 yards
-Duration         : 8 seconds
+Duration         : 5 seconds
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -2463,7 +2467,7 @@ Description      : $@spelldesc120360
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Nature
-Spell Level      : 10
+Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -2598,7 +2602,6 @@ Class            : Hunter
 School           : Physical
 Range            : 50000 yards
 Cooldown         : 120 seconds
-Triggered by     : Exhilaration (109304)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ .....xx. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2609,7 +2612,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=164149)   : Direct Heal% (136)
                    Base Value: 100 | Scaled Value: 100 | Target: Active Pet(5)
-Description      : Instantly heals you for $109304s1% and your pet for $s1% of total health.
+Description      : $@spelldesc109304
 
 Name             : Blink Strikes (id=130392) [Spell Family (9), Passive] 
 Class            : Hunter, Death Knight
@@ -2891,8 +2894,8 @@ Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Multi-Shot (2643)
-#2 (id=191134)   : Apply Aura (6) | Increase Energy (35)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 2 | Target: Self(1)
+#2 (id=191134)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191135)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191136)   : Apply Aura (6) | Dummy (4)
@@ -2918,8 +2921,6 @@ Effects          :
 #14 (id=260895)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260896)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#16 (id=345303)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
@@ -3005,7 +3006,7 @@ Description      : Learn the ancient Zandalari secrets of taming Direhorns.
 Name             : Counter Shot (id=147362) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
-Spell Level      : 24
+Spell Level      : 32
 Range            : 40 yards
 Duration         : 3 seconds
 Cooldown         : 24 seconds
@@ -3485,7 +3486,7 @@ Effects          :
 Name             : Survivalist (id=164856) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Physical
-Spell Level      : 12
+Spell Level      : 18
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
@@ -3618,7 +3619,7 @@ Effects          :
 Name             : Arcane Shot (id=185358) [Scaling Spell (4), Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Arcane
-Spell Level      : 10 (max 20)
+Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -3634,15 +3635,16 @@ Effects          :
 #1 (id=269119)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=1.85) | Target: Enemy(6)
 #2 (id=269120)   : Weapon Damage% (31)
-                   Base Value: 80 | Scaled Value: 1.3 | Points Per Level: 5 | Target: Enemy(6)
-Description      : A quick shot that causes $sw2 Arcane damage.
+                   Base Value: 130 | Scaled Value: 1.3 | Target: Enemy(6)
+Description      : A quick shot that causes ${$sw2*$<mult>} Arcane damage.
 
 |cFFFFFFFFGenerates $187675s1 Focus.|r
+Variables        : $mult=${($max(0,$min($pl-10,10))*5+80)/130}
 
 Name             : Hunter's Mark (id=185365) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Spell Level      : 18
+Spell Level      : 20
 Range            : 60 yards
 Duration         : 12 seconds
 Attributes       : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -3660,7 +3662,7 @@ Tooltip          : Vulnerabilities are exposed.
 Name             : Wild Call (id=185789) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Physical
-Spell Level      : 22
+Spell Level      : 20
 Proc Chance      : 20%
 Proc Flags       : ......x. ........ ........ ........ 
                  : White Ranged
@@ -3677,20 +3679,20 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 185791 | Target: Self(1)
 Description      : Your auto shot critical strikes have a $H% chance to reset the cooldown on Dire $?s217200[Frenzy][Beast].
 
-Name             : Wild Call (id=185791) [Spell Family (9)] 
+Name             : Wild Call (id=185791) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
-Spell Level      : 22
+Spell Level      : 20
 Duration         : 6 seconds
 Affecting spells : One with the Pack (199528)
 Triggered by     : Wild Call (185789)
-Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+Attributes       : .......x ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot cancel aura (31)
+                 : Hidden (7), Cannot cancel aura (31)
 Effects          :
 #1 (id=270016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -3716,15 +3718,17 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=270149)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.80000 | Mechanic: Bleed | Target: Enemy(6)
-Description      : Tears a bleeding wound in the target, dealing $o1 Physical damage over $d.
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.67000 | Mechanic: Bleed | Target: Enemy(6)
+#2 (id=349322)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.56000 | Target: Enemy(6)
+Description      : Tears a bleeding wound in the target, dealing ${$o1+$s2} Physical damage over $d.
 Tooltip          : Bleeding for $s1 damage every $t1 sec.
 
 Name             : Marked Shot (id=185901) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
 Resource         : 30 Focus
-Spell Level      : 18
+Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -3746,7 +3750,7 @@ $@spelldesc187131
 Name             : Hunter's Mark (id=185987) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Physical
-Spell Level      : 18
+Spell Level      : 20
 Proc Chance      : 100%
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : ......x. ........ ........ ........ 
@@ -3789,7 +3793,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unleash the Beast (206910), 
+Affecting spells : Beast Mastery Hunter (137015), Beastlord (184900), Bestial Fury (194306), Unleash the Beast (206910), Item - Hunter T19 Beast Mastery 2P Bonus (211172)
 Triggered by     : Bestial Wrath (19574)
 Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -3814,10 +3818,10 @@ Tooltip          : Damage dealt increased by $s2%.
 Name             : Aspect of the Cheetah (id=186257) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Spell Level      : 5
+Spell Level      : 22
 Duration         : 3 seconds
 Cooldown         : 180 seconds
-Affecting spells : Hunter (137014), Pathfinder (197343), Dash (199921), Call of the Wild (206332), Embrace of the Aspects (225092)
+Affecting spells : Hunter (137014), Pathfinder (197343), Call of the Wild (206332), Embrace of the Aspects (225092)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3836,7 +3840,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 5
 Duration         : 9 seconds
-Affecting spells : Hunter (137014), Pathfinder (197343), Dash (199921), Call of the Wild (206332), Embrace of the Aspects (225092)
+Affecting spells : Hunter (137014), Pathfinder (197343), Call of the Wild (206332), Embrace of the Aspects (225092)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3853,7 +3857,7 @@ Tooltip          : Movement speed increased by $w1%.
 Name             : Aspect of the Turtle (id=186265) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Spell Level      : 50
+Spell Level      : 70
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Affecting spells : Freezing Trap (3355), Hunter (137014), Call of the Wild (206332), Embrace of the Aspects (225092)
@@ -3900,7 +3904,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=271205)   : Weapon Damage% (31)
-                   Base Value: 100 | Scaled Value: 1.5 | Points Per Level: 5 | Target: Enemy(6)
+                   Base Value: 300 | Scaled Value: 3 | Target: Enemy(6)
 #2 (id=286017)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : A vicious slash dealing $sw1 Physical damage.
@@ -3908,11 +3912,11 @@ Description      : A vicious slash dealing $sw1 Physical damage.
 Name             : Aspect of the Eagle (id=186289) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Spell Level      : 44
+Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Hunter (137014), Wilderness Expert (197038), Call of the Wild (206332), Embrace of the Aspects (225092)
+Affecting spells : Hunter (137014), Wilderness Expert (197038), Call of the Wild (206332), Embrace of the Aspects (225092), Aspect of the Eagle (231555)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3922,17 +3926,17 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=271240)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=283888)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
-Description      : Grants you and your pet $s1% increased Critical Strike chance on all abilities, and increases your chance to gain charges of Mongoose Bite by $s2%. Lasts $d.
+Description      : $?a231555[Grants you and your pet $s1% increased Critical Strike chance on all abilities, and your][Your] pet's attacks have a$?s191334[n additional][] $s2% chance to grant you a charge of Mongoose Bite. Lasts $d.
 Tooltip          : Critical Strike chance on abilities increased by $s1%.
 
 Name             : Bursting Shot (id=186387) [Spell Family (9)] 
 Class            : Marksmanship Hunter
 School           : Physical
 Resource         : 10 Focus
-Spell Level      : 22
+Spell Level      : 26
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Affecting spells : Freezing Trap (3355), Hunter (137014), Gust of Wind (190567), Mastery: Sniper Training (193468), Trueshot (211327), Magnetized Blasting Cap Launcher (226841), 
@@ -3956,12 +3960,12 @@ Tooltip          : Disoriented.
 Name             : Vulnerable (id=187131) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Spell Level      : 90
+Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
-Stacks           : 3 maximum
+Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Patient Sniper (213423), 
+Affecting spells : Patient Sniper (213423), Marked Shot (231551)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3972,12 +3976,12 @@ Effects          :
 #1 (id=272823)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy(6)
 #2 (id=296786)   : Apply Aura (6) | Unknown effect sub type (271)
-                   Base Value: 25 | Scaled Value: 25 | Target: Enemy(6)
+                   Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
                    Affected Spells: Aimed Shot (19434), Aimed Shot (191043), Marked Shot (212621)
 #3 (id=336244)   : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
                    Affected Spells: Aimed Shot (19434), Aimed Shot (191043)
-Description      : Damage taken from Marked Shot and Aimed Shot increased by $s2%.$?a190529[ Aimed Shot critical strike chance increased by $s3%.][] Lasts $6d. Stacks up to $u times.
+Description      : Damage taken from Marked Shot and Aimed Shot increased by $s2% for $d.$?a231551[ Stacks up to $u times.][]
 Tooltip          : Damage taken from Marked Shot and Aimed Shot increased by $w2%.
 $?a190529[
 Aimed Shot critical strike chance increased by $w3%.][]
@@ -3985,7 +3989,7 @@ Aimed Shot critical strike chance increased by $w3%.][]
 Name             : Freezing Trap (id=187650) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Spell Level      : 28
+Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
@@ -4043,7 +4047,7 @@ Description      : Focus gained through use of Arcane Shot.
 Name             : Tar Trap (id=187698) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Spell Level      : 42
+Spell Level      : 36
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
@@ -4086,7 +4090,7 @@ Description      : $@spelldesc187698
 Name             : Muzzle (id=187707) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Spell Level      : 24
+Spell Level      : 32
 Range            : 5 yards
 Duration         : 3 seconds
 Cooldown         : 15 seconds
@@ -4107,7 +4111,7 @@ Name             : Carve (id=187708) [Spell Family (9)]
 Class            : Survival Hunter
 School           : Physical
 Resource         : 40 Focus
-Spell Level      : 54
+Spell Level      : 42
 Range            : 8 yards
 GCD              : 1.5 seconds
 Affecting spells : Hunter (137014)
@@ -4119,7 +4123,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273765)   : Weapon Damage% (31)
-                   Base Value: 108 | Scaled Value: 1.08 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 270 | Scaled Value: 2.7 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=273766)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 Description      : A sweeping attack that strikes all enemies in front of you for $sw1 Physical damage.
@@ -4205,37 +4209,16 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=279248)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Target: Self(1)
-Description      : Marked Shot increases your Aimed Shot critical strike chance against the target by $s1% for $190533d.
-
-Name             : Marked for Death (id=190533) [Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Range            : 100 yards
-Duration         : 10 seconds
-Stacks           : 3 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot cancel aura (31)
-Effects          :
-#1 (id=279254)   : Apply Aura (6) | Unknown effect sub type (308)
-                   Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
-                   Affected Spells: Aimed Shot (19434), Aimed Shot (191043)
-Description      : $@spelldesc190529
-Tooltip          : Aimed Shot critical strike chance increased by $w1%.
+Description      : Vulnerable increases your Aimed Shot critical strike chance against the target by $s1%.
 
 Name             : Harpoon (id=190925) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Spell Level      : 22
+Spell Level      : 10
 Range            : 5 - 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Charges          : 1 (20 seconds cooldown)
+Charges          : 1 (30 seconds cooldown)
 Category         : 1635
 Affecting spells : Hunter (137014)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
@@ -4276,7 +4259,7 @@ Tooltip          : Rooted.
 Name             : Mongoose Bite (id=190928) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Spell Level      : 18
+Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 3 (12 seconds cooldown)
@@ -4324,7 +4307,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 20 yards/sec
-Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Marked for Death (190533), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272)
+Affecting spells : Freezing Trap (3355), Refocus (24531), Mortal Shots (36413), Shot Power (37508), Hunter (137014), Guide: Sharpshooting (178549), Vulnerable (187131), Item - Hunter T18 Marksmanship 4P Bonus (188191), Deadly Aim (190449), Mastery: Sniper Training (193468), Lock and Load (194594), True Aim (199803), Sentinel's Sight (208913), Trueshot (211327), Wind Arrows (214826), Trick Shot (227272)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4408,8 +4391,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=280652)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 18 | Target: Self(1)
-Description      : Your pet's attacks have a ${$m1/4}.1% chance to grant you an additional charge of Mongoose Bite.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Misc Value: 18 | Target: Self(1)
+Description      : Your pet's attacks have a $m1% chance to grant you an additional charge of Mongoose Bite.
 
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -4493,7 +4476,7 @@ Tooltip          : Damage taken reduced by $s2%.
 Name             : Explosive Trap (id=191433) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Fire
-Spell Level      : 48
+Spell Level      : 50
 Range            : 5 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
@@ -4513,7 +4496,7 @@ Description      : Tosses a fire trap on the ground in front of you that explode
 Name             : Hatchet Toss (id=193265) [Spell Family (9)] 
 Class            : Survival Hunter
 School           : Physical
-Spell Level      : 19
+Spell Level      : 14
 Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
@@ -4531,10 +4514,10 @@ Effects          :
 Description      : Tosses a hatchet at an enemy, dealing $s1 Physical damage.
 
 Name             : Cobra Shot (id=193455) [Spell Family (9)] 
-Class            : Beast Mastery Hunter
+Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
 Resource         : 40 Focus
-Spell Level      : 1 (max 20)
+Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -4550,8 +4533,9 @@ Effects          :
 #1 (id=283801)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=283802)   : Weapon Damage% (31)
-                   Base Value: 112 | Scaled Value: 3.4 | Points Per Level: 12 | Target: Enemy(6)
-Description      : A quick shot causing $sw2 Physical damage.
+                   Base Value: 340 | Scaled Value: 3.4 | Target: Enemy(6)
+Description      : A quick shot causing ${$sw2*$<mult>} Physical damage.
+Variables        : $mult=${($min($pl-1,19)*12+112)/340}
 
 Name             : Mastery: Sniper Training (Mastery) (id=193468) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
@@ -4605,11 +4589,11 @@ Tooltip          : Haste increased by $s1% and Arcane Shot and Multi-Shot apply 
 Name             : Aspect of the Wild (id=193530) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
 School           : Physical
-Spell Level      : 18
+Spell Level      : 26
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Hunter (137014), Wilderness Expert (197038), Call of the Wild (206332), Embrace of the Aspects (225092)
+Affecting spells : Hunter (137014), Wilderness Expert (197038), Call of the Wild (206332), Embrace of the Aspects (225092), Aspect of the Eagle (231555)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4705,7 +4689,7 @@ Range            : 40 yards
 Duration         : 15 seconds
 Triggered by     : Caltrops (194277)
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4721,12 +4705,13 @@ School           : Physical
 Range            : 40 yards
 Duration         : 6 seconds
 Affecting spells : Hunter (137014), Expert Trapper (199543), Hunter's Guile (203752)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ..x..... ........ 
-                 : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ....x... ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ ........ ........ 
+                 : ..x..... ......x. ...x.... ........   ......xx .x...... ..x..... ........ 
+                 : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. .x..x... ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : Cannot dodge/parry/block (21), Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=285183)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy(6)
@@ -4747,8 +4732,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=285224)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 8 | Target: Self(1)
+#1 (id=285224)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
 Description      : Increase the damage bonus of Bestial Wrath by $s1%.
 
@@ -4924,7 +4909,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .x...
 Effects          :
 #1 (id=286027)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 194858 | Target: Enemy(6)
-Description      : Hurls a dragonsfire grenade at the target that explodes into flames, inflicting $194858o1 Fire damage over $194858d and reducing movement speed by $194858s2%. The volatile flames on the target also scorch nearby enemies for $194859s2 damage every $194858t1 sec.
+Description      : Hurls a dragonsfire grenade at the target that explodes into flames, inflicting ${$194858o1+$194858s3} Fire damage over $194858d and reducing movement speed by $194858s2%. The volatile flames on the target also scorch nearby enemies.
 
 Name             : Dragonsfire Grenade (id=194858) 
 Class            : Hunter
@@ -4934,37 +4919,22 @@ Range            : 50000 yards
 Duration         : 8 seconds
 Triggered by     : Dragonsfire Grenade (194855)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : Requires line of sight (186)
 Effects          :
 #1 (id=286030)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.42200 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.22500 | Target: Enemy(6)
 #2 (id=286031)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(88) | Target: Enemy(6)
+#3 (id=347729)   : School Damage: fire (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc194855
 Tooltip          : You're burning! You take Fire damage and deal Fire damage to nearby enemies every $t1 sec.
 Slowed by $s2%.
-
-Name             : Dragonsfire Conflagration (id=194859) 
-Class            : Hunter
-School           : Fire
-Spell Level      : 1
-Range            : 50000 yards
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=286033)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-#2 (id=322543)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.42200 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-Description      : $@spelldesc194855
 
 Name             : Wing Clip (id=195645) [Spell Family (9)] 
 Class            : Survival Hunter
@@ -4993,7 +4963,6 @@ School           : Physical
 Resource         : 20 - 100 Focus
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 100 yards/sec
 Cooldown         : 30 seconds
 Affecting spells : Hunter (137014), Mastery: Sniper Training (193468), Trueshot (211327)
 Attributes       : .x..x... ........ x.x...x. ........   ........ ......x. ........ ........ 
@@ -5150,7 +5119,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=293625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Self(1)
-Description      : When your Dire Beasts charge in, they will stomp the ground, dealing ${($76657m1/100+1)*($201754s1*1.15)} Physical damage to all nearby enemies.
+Description      : When your Dire Beasts charge in, they will stomp the ground, dealing ${($76657m1/100+1)*($201754s1)*1.35} Physical damage to all nearby enemies.
 
 Name             : Killer Cobra (id=199532) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -5260,21 +5229,23 @@ Effects          :
 Description      : $@spelldesc199527
 Tooltip          : Taking $s1% more damage from the Hunter's Arcane Shot, Marked Shot, and Aimed Shot.
 
-Name             : Dash (id=199921) [Spell Family (9), Passive] 
+Name             : Trailblazer (id=199921) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+Proc Chance      : 100%
+Proc Flags       : ....x.x. x...x... x....... ........ 
+                 : Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
 Effects          :
-#1 (id=294283)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+#1 (id=294283)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self(1)
-                   Affected Spells: Aspect of the Cheetah (186257), Aspect of the Cheetah (186258)
-Description      : Increases the duration of Aspect of the Cheetah by ${$s1/1000} seconds.
+Description      : Your movement speed is increased by $231390s1% anytime you have not attacked for ${$s1/1000} seconds.
 
 Name             : Ranger's Net (id=200108) [Spell Family (9)] 
 Class            : Hunter
@@ -5292,7 +5263,7 @@ Proc Flags       : ...x.x.x .x.x.x.. .x.x.... ........
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Hunter (137014)
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
-                 : ........ ........ ........ ........   .x.x.... ........ ........ ..x..... 
+                 : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ....x...   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5300,7 +5271,9 @@ Attributes       : ........ ........ x.x..... ........   ...x...x .x...... .....
 Effects          :
 #1 (id=294569)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-Description      : Hurls a net at the enemy, rooting the target for $d and then reducing movement speed by $206755s1% for $206755d. Damage may break the effect.
+#2 (id=352793)   : Trigger Spell: Ranger's Net (64)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 206755 | Target: Enemy(6)
+Description      : Hurls a net at the enemy, rooting the target for $d and reducing movement speed by $206755s1% for $206755d. Damage may break the effect.
 Tooltip          : Rooted.
 
 Name             : Throwing Axes (id=200163) [Spell Family (9)] 
@@ -5332,14 +5305,14 @@ Spell Level      : 1
 Range            : 30 yards
 Velocity         : 20 yards/sec
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294656)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.12500 | Target: Enemy(6)
 Description      : $@spelldesc200163
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -5464,7 +5437,7 @@ Attributes       : ........ ........ ........ x.xx....   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=296184)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 5 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : When Freezing Trap's incapacitate effect ends, the victim and all neaby enemies' movement speed is reduced by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -5564,7 +5537,7 @@ Name             : Flanking Strike (id=202800) [Spell Family (9)]
 Class            : Survival Hunter
 School           : Physical
 Resource         : 50 Focus
-Spell Level      : 10 (max 20)
+Spell Level      : 12
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
@@ -5577,20 +5550,21 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299019)   : Weapon Damage% (31)
-                   Base Value: 215 | Scaled Value: 3.25 | Points Per Level: 11 | Target: Enemy(6)
+                   Base Value: 325 | Scaled Value: 3.25 | Target: Enemy(6)
 #2 (id=299020)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=299021)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
 #4 (id=306007)   : Dummy (3)
                    Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
-Description      : A coordinated attack on the target, where you deal $sw1 Physical damage and your pet deals $<damage> Physical damage.
+Description      : A coordinated attack on the target, where you deal ${$sw1*$<mult>} Physical damage and your pet deals $<damage> Physical damage.
 
 If the target is attacking you, your pet's attack will deal $s3% increased damage and $s4% increased threat. Otherwise, your attack will deal $s3% increased damage.$?s191334[
 
 Flanking strike has double the normal chance to trigger Hunting Companion.][]
 Variables        : $lowNerf=${$min($pl,20)*0.05}
 $damage=${1.5*(($AP*2.152))*(1+$@versadmg)*$<lowNerf>}
+$mult=${($max(0,$min($pl-10,10))*7+130)/200}
 
 
 Name             : Fury of the Eagle (id=203413) [Spell Family (9)] 
@@ -5600,7 +5574,7 @@ Range            : 8 yards
 Triggered by     : Fury of the Eagle (203415)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
-                 : ........ .......x ........ ........   ........ ..x..... ........ ........ 
+                 : x....... .......x ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -5608,7 +5582,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=299987)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.25000 | Radius: 0 - 8 yards | Target: At Caster(22) -> Unknown(24)
-Description      : Deals $s1 Physical damage in a frontal cone to enemies within a $A1 yards.
+Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (Artifact) (id=203415) [Spell Family (9)] 
 Class            : Hunter
@@ -5632,7 +5606,7 @@ Attributes       : ........ ........ ........ ........   ..x...x. .xx..... .....
 Effects          :
 #1 (id=299989)   : Apply Aura (6) | Periodic Trigger Spell: Fury of the Eagle every 0.5 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 203413 | Target: Self(1)
-Description      : Furiously strikes all enemies in front of you, dealing ${$203413s1*5} Physical damage. Damage increased by Mongoose Fury.
+Description      : Furiously strikes all enemies in front of you, dealing ${$203413s1*9} Physical damage. Damage increased by Mongoose Fury.
 
 Name             : Windburst (Artifact) (id=204147) [Spell Family (9)] 
 Class            : Hunter
@@ -5699,6 +5673,9 @@ Name             : Animal Instincts (id=204315) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5707,73 +5684,14 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=301558)   : Dummy (3)
+#1 (id=301558)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Flanking Strike also grants you the instincts of your pet for $204321d, providing one of the following combat enhancements.
+Description      : Flanking Strike also reduces the remaining cooldown by $232646d of a random one of the following abilities:
 
-$@spellicon204321 $@spellname204321
-$@spelldesc204321
-
-$@spellicon204324 $@spellname204324
-$@spelldesc204324
-
-$@spellicon204333 $@spellname204333
-$@spelldesc204333
-Tooltip          : Gained a random combat enhancement.
-
-Name             : Instincts of the Raptor (id=204321) [Spell Family (8)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 1
-Duration         : 7 seconds
-Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
-                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=301566)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Increases Haste by $s1%.
-Tooltip          : Haste increased by $s1%.
-
-Name             : Instincts of the Cheetah (id=204324) [Spell Family (8)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 1
-Duration         : 7 seconds
-Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
-                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=301570)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-Description      : Increases Movement Speed by $s1%.
-Tooltip          : Movement Speed increased by $s1%.
-
-Name             : Instincts of the Mongoose (id=204333) [Spell Family (8)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 1
-Duration         : 7 seconds
-Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
-                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Does not break stealth (37)
-Effects          :
-#1 (id=301586)   : Apply Aura (6) | Unknown effect sub type (318)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-Description      : Increases Mastery by $s1%.
-Tooltip          : Mastery increased by $s1%.
+$@spellicon202800 $@spellname202800
+$@spellicon190928 $@spellname190928
+$@spellicon186289 $@spellname186289
+$@spellicon190925 $@spellname190925
 
 Name             : Windburst (id=204475) [Spell Family (9)] 
 Class            : Hunter
@@ -5892,8 +5810,9 @@ Velocity         : 40 yards/sec
 Duration         : 15 seconds
 Cooldown         : 1 seconds
 Mechanic         : Unknown(88)
+Triggered by     : Ranger's Net (200108)
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5944,7 +5863,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Discharge a massive jolt of electricity from |cFFFFCC99Titanstrike|r into all your pets$?s217200[][ and Dire Beasts], causing them to deal up to ${$RAP*1.15*0.5*$<bmMastery>} Nature damage to their target every $207094t sec. for $207094d.$?s217200[ Also causes your next Dire Frenzy to deal $218635s1 additional Nature damage on each of the 5 Dire Frenzy attacks.][]
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$lowNerf=${$min($pl,20)*0.05}
+$lowNerf=${0.5+$min($pl,20)*0.025}
 $damage=${1.5*($83381m1+($RAP*3))*$<bmMastery>*$<lowNerf>*(1+$@versadmg)}
 
 
@@ -6088,7 +6007,7 @@ Effects          :
 #1 (id=314957)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=314958)   : Weapon Damage% (31)
-                   Base Value: 384 | Scaled Value: 3.84 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 518 | Scaled Value: 5.18 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Strike all nearby enemies in a flurry of strikes, inflicting $sw1 Physical damage to each.
 
 Name             : Marked Shot (id=212621) [Spell Family (9)] 
@@ -6115,7 +6034,7 @@ Description      : $@spelldesc185901
 Name             : Hunting Party (id=212658) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Physical
-Spell Level      : 34
+Spell Level      : 58
 Proc Chance      : 100%
 Proc Flags       : .x...... ........ ........ ........ 
                  : Killing Blow
@@ -6177,15 +6096,15 @@ Effects          :
 #1 (id=316584)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2 | Target: Self(1)
 #2 (id=341735)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 125 | Scaled Value: 125 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Vulnerable (187131)
 #3 (id=341737)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: -24000 | Scaled Value: -24000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Vulnerable (187131)
 #4 (id=341738)   : Apply Aura (6) | Add Flat Modifier (107)
-                   Base Value: -2 | Scaled Value: -2 | Misc Value: 37 | Target: Self(1)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 37 | Target: Self(1)
                    Affected Spells: Vulnerable (187131)
-Description      : Gain the patience of a veteran sniper, increasing your maximum focus by $s1 and causing Vulnerable to increase your Marked Shot and Aimed Shot damage by ${25+$m2}%, but only last ${30+$m3/1000} sec and no longer stack.
+Description      : Gain the patience of a veteran sniper, increasing your maximum focus by $s1 and causing Vulnerable to increase your Marked Shot and Aimed Shot damage by ${50+$m2}%, but only last ${30+$m3/1000} sec and no longer stack.
 
 Name             : Piercing Shot (id=213678) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -6381,5 +6300,152 @@ Effects          :
                    Affected Spells: Aimed Shot (19434), Aimed Shot (191043)
 Description      : $@spelldesc199522
 Tooltip          : Damage of your next Aimed Shot increased by $s1%.
+
+Name             : Trailblazer (id=231390) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot cancel aura (31)
+Effects          :
+#1 (id=348988)   : Apply Aura (6) | Unknown effect sub type (129)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+Description      : $@spelldesc199921
+Tooltip          : Your movement speed is increased by $s1%.
+
+Name             : Exhilaration (Rank 2) (id=231546) [Spell Family (9), Passive] 
+Class            : Beast Mastery Marksmanship Survival Hunter
+School           : Nature
+Spell Level      : 48
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349258)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
+Description      : Exhilaration also heals your pet for $128594s1% of maximum health.
+
+Name             : Bestial Wrath (Rank 2) (id=231548) [Spell Family (9), Passive] 
+Class            : Beast Mastery Hunter
+School           : Nature
+Spell Level      : 54
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349261)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
+Description      : Bestial Wrath's remaining cooldown is reduced by $19574s3 sec each time you use $?s217200[Dire Frenzy][Dire Beast].
+
+Name             : Disengage (Rank 2) (id=231549) [Spell Family (9), Passive] 
+Class            : Beast Mastery Marksmanship Hunter
+School           : Nature
+Spell Level      : 65
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349262)   : Apply Aura (6) | Unknown effect sub type (453)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1449 | Target: Self(1)
+Description      : Disengage's cooldown is reduced by ${$m1/-1000} sec.
+
+Name             : Harpoon (Rank 2) (id=231550) [Spell Family (9), Passive] 
+Class            : Survival Hunter
+School           : Nature
+Spell Level      : 65
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349263)   : Apply Aura (6) | Unknown effect sub type (453)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1635 | Target: Self(1)
+Description      : Harpoon's cooldown is reduced by ${$m1/-1000} sec.
+
+Name             : Marked Shot (Rank 2) (id=231551) [Spell Family (9), Passive] 
+Class            : Marksmanship Hunter
+School           : Nature
+Spell Level      : 54
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349264)   : Apply Aura (6) | Add Flat Modifier (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self(1)
+                   Affected Spells: Vulnerable (187131)
+Description      : Vulnerability can stack $m1 additional $Ltime:times;.
+
+Name             : Marksman's Focus (id=231554) [Spell Family (9), Passive] 
+Class            : Marksmanship Hunter
+School           : Nature
+Spell Level      : 36
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349268)   : Apply Aura (6) | Increase Energy (35)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 2 | Target: Self(1)
+Description      : Increases your maximum Focus by $s1.
+
+Name             : Aspect of the Eagle (Rank 2) (id=231555) [Spell Family (9), Passive] 
+Class            : Survival Hunter
+School           : Nature
+Spell Level      : 54
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349269)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Aspect of the Eagle (186289), Aspect of the Wild (193530)
+Description      : Aspect of the Eagle grants you and your pet $s1% increased Critical Strike chance on all abilities.
+
+Name             : Animal Instincts (id=232646) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Level      : 1
+Duration         : 3 seconds
+Attributes       : ....x... x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x....x. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=351117)   : Apply Aura (6) | Periodic Dummy: every 3 seconds (226)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
+Description      : $@spelldesc204315
 
 

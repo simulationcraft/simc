@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 72ba20b)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -28,7 +28,7 @@ Name             : Entangling Roots (id=339) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Resource         : 10% Base Mana (22000 @Level 110)
-Spell Level      : 22
+Spell Level      : 24
 Range            : 35 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
@@ -56,15 +56,14 @@ Name             : Tranquility (id=740) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Resource         : 18.4% Base Mana (40480 @Level 110)
-Spell Level      : 72
+Spell Level      : 80
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Category         : 46
-Stance Mask      : 0x00000002
 Affecting spells : Lucidity (137247), Tranquil Mind (189857), Inner Peace (197073), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....xx.. 
-                 : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
+                 : ........ ........ ........ ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -83,7 +82,7 @@ Tooltip          : Healing all allies within $a1 yards for $157982s1 every $t1 s
 Name             : Cat Form (Shapeshift) (id=768) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
-Spell Level      : 1
+Spell Level      : 8
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
@@ -115,8 +114,8 @@ Resource         : 10% Base Mana (22000 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 15 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Ironbark (102342), Lucidity (137247), Germination (155675), Grovewalker (186320), Persistence (186396), Restoration Affinity (197492), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), Nature's Vigor (222644)
+Duration         : 12 seconds
+Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Ironbark (102342), Lucidity (137247), Germination (155675), Grovewalker (186320), Persistence (186396), Restoration Affinity (197492), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), Nature's Vigor (222644), Rejuvenation (231040)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .x...x.. ........ ........ 
@@ -144,7 +143,7 @@ $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 Name             : Travel Form (Shapeshift) (id=783) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
-Spell Level      : 16
+Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
@@ -160,7 +159,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Misc Value 2: 0x2 | Target: Self(1)
 Description      : Shapeshift into a travel form appropriate to your current location, increasing movement speed on land, in water, or in the air, and granting protection from Polymorph effects.
 
-The act of shapeshifting frees you from movement impairing effects.
+The act of shapeshifting frees you from movement impairing effects.$?a159456[
+
+Land speed increased when used out of combat.  This effect is disabled in battlegrounds and arenas.][]
+
 Tooltip          : Immune to Polymorph effects.  Movement speed increased.
 
 Name             : Rip (id=1079) [Spell Family (7)] 
@@ -196,8 +198,7 @@ Description      : Finishing move that causes Bleed damage over $d.  Damage incr
    4 points: ${$floor(4*$<rip>*12)} damage
    5 points: ${$floor(5*$<rip>*12)} damage
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
-Variables        : $mastery=$?s77493[${((100+$77493m1)/100)}][${1.00}]
-$rip=${0.21*$AP*$<mastery>*(1+$@versadmg)}
+Variables        : $rip=${$s1}
 
 Name             : Bear Form Passive (id=1178) [Spell Family (7), Passive] 
 Class            : Druid
@@ -227,7 +228,7 @@ Name             : Rake (id=1822) [Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 35 Energy
-Spell Level      : 6
+Spell Level      : 12
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
@@ -248,16 +249,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 155722 | Target: Enemy(6)
 #4 (id=310505)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
-Description      : Rake the target for $s1 Bleed damage and an additional $155722o1 Bleed damage over $155722d.$?s48484[ Reduces the target's movement speed by $58180s1% for $58180d.][] 
+Description      : Rake the target for $s1 Bleed damage and an additional $155722o1 Bleed damage over $155722d.$?s48484[ Reduces the target's movement speed by $58180s1% for $58180d.][]$?a231052[ 
 
-While stealthed, Rake will also stun the target for $163505d, and deal $s4% increased damage.
+While stealthed, Rake will also stun the target for $163505d, and deal $s4% increased damage.][]
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Dash (id=1850) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
-Spell Level      : 24
+Spell Level      : 8
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 44
@@ -278,7 +279,7 @@ Name             : Remove Corruption (id=2782) [Spell Family (7)]
 Class            : Balance Feral Guardian Druid
 School           : Arcane
 Resource         : 13% Base Mana (28600 @Level 110)
-Spell Level      : 18
+Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
@@ -324,13 +325,13 @@ Class            : Restoration Rogue, Druid
 Race             : Night Elf
 School           : Nature
 Resource         : 3.5% Base Mana (0 @Level 110)
-Spell Level      : 10
+Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -343,14 +344,14 @@ Effects          :
 Description      : Causes $s1 Nature damage to the target.
 
 Name             : Healing Touch (id=5185) [Spell Family (7)] 
-Class            : Balance Feral Guardian Restoration Druid
+Class            : Restoration Druid
 School           : Nature
 Resource         : 9% Base Mana (19800 @Level 110)
-Spell Level      : 26
+Spell Level      : 24
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Predatory Swiftness (69369), Soul of the Forest (114108), Guardian Druid (137010), Feral Druid (137011), Balance Druid (137013), Lucidity (137247), Blessing of the World Tree (189744), Astral Influence (197524), Abundance (207640), Power of Elune, the Moon Goddess (208284), Attuned to Nature (210590), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Soul of the Forest (114108), Lucidity (137247), Blessing of the World Tree (189744), Restoration Affinity (197492), Astral Influence (197524), Abundance (207640), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -359,8 +360,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=1839)     : Direct Heal (10)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 4.00000 | Target: Friend(21)
-Description      : Heals a friendly target for $s1$?s54825[ and reduces your remaining cooldown on Nature's Swiftness by $54825m1 sec][].$?s24858|s197625[ Usable while in Moonkin Form.][]
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Target: Friend(21)
+Description      : Heals a friendly target for $s1$?s54825[ and reduces your remaining cooldown on Nature's Swiftness by $54825m1 sec][].
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
 Class            : Druid
@@ -389,7 +390,7 @@ Tooltip          : Stunned.
 Name             : Prowl (id=5215) [Spell Family (7)] 
 Class            : Balance Feral Guardian Restoration Druid
 School           : Physical
-Spell Level      : 5
+Spell Level      : 16
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
 Stacks           : 1 initial, 1 maximum
@@ -406,23 +407,21 @@ Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... .....
                  : Stop attacks (20), Cannot be used in combat (28)
 Effects          :
 #1 (id=1852)     : Apply Aura (6) | Stealth (16)
-                   Base Value: 25 | Scaled Value: 550 | Points Per Level: 5 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 495 | Points Per Level: 5 | Target: Self(1)
 #2 (id=1853)     : Apply Aura (6) | Dummy (4)
                    Base Value: -30 | Scaled Value: -30 | Target: Self(1)
 #3 (id=167327)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=230015)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 Description      : Activates Cat Form and places you into stealth until cancelled.
 Tooltip          : Stealthed.
 
 Name             : Tiger's Fury (id=5217) [Spell Family (7)] 
 Class            : Feral Druid
 School           : Physical
-Spell Level      : 12
+Spell Level      : 13
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Affecting spells : Wildcat Celerity (184877)
+Affecting spells : Wildcat Celerity (184877), Tiger's Fury (231055)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -434,7 +433,7 @@ Effects          :
 #1 (id=1854)     : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=117350)   : Energize Power (30)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: energy | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: energy | Target: Self(1)
 Description      : Instantly restores $s2 Energy, and increases the damage of all your attacks by $s1% for their full duration. Lasts $d.
 Tooltip          : Attacks deal $s1% additional damage for their full duration.
 
@@ -442,7 +441,7 @@ Name             : Shred (id=5221) [Scaling Spell (3), Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 40 Energy
-Spell Level      : 1 (max 20)
+Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
@@ -459,12 +458,17 @@ Effects          :
 #2 (id=1860)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #3 (id=1861)     : Weapon Damage% (31)
-                   Base Value: 353 | Scaled Value: 6.95 | Points Per Level: 18 | Target: Enemy(6)
-Description      : Shred the target, causing $sw1 Physical damage to the target. Deals $106785s2% increased damage against bleeding targets.
+                   Base Value: 695 | Scaled Value: 6.95 | Target: Enemy(6)
+#4 (id=348398)   : Dummy (3)
+                   Base Value: 50 | Scaled Value: 50
+#5 (id=348788)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+Description      : Shred the target, causing ${$sw1*$<mult>} Physical damage to the target.$?a231063[ Deals $s5% increased damage against bleeding targets.][]$?a231057[
 
-While stealthed, Shred deals $5215m4% increased damage, and has double the chance to critically strike.
+While stealthed, Shred deals $m4% increased damage, and has double the chance to critically strike.][]
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
+Variables        : $mult=${($min($pl-1,19)*18+353)/695}
 
 Name             : Travel Form (Passive) (Passive) (id=5419) [Spell Family (7), Passive] 
 Class            : Druid
@@ -536,7 +540,7 @@ Description      : Increases swimming speed by $s1% and allow's the druid to bre
 Name             : Bear Form (Shapeshift) (id=5487) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
-Spell Level      : 8
+Spell Level      : 10
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
@@ -566,7 +570,7 @@ Effects          :
                    Affected Spells: Thrash (77758), Swipe (213771)
 #8 (id=299393)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3
-                   Affected Spells: Ysera's Gift (145108)
+                   Affected Spells: Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110)
 #9 (id=299394)   : Apply Aura (6) | Add Percent Modifier: Spell Generated Threat (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2 | Target: Self(1)
                    Affected Spells: Rejuvenation (774), Healing Touch (5185), Cenarion Ward (102351), Cenarion Ward (102352), Renewal (108238)
@@ -634,11 +638,11 @@ Name             : Moonfire (Lunar) (id=8921) [Spell Family (7)]
 Class            : Druid
 School           : Arcane
 Resource         : 6% Base Mana (13200 @Level 110) w/ Restoration Druid (id=137012)
-Spell Level      : 10
+Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000012
-Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), Galactic Guardian (213708)
+Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Restoration Druid (137012), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Astral Power (197911), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), Galactic Guardian (213708), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -652,21 +656,20 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 #3 (id=324055)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: astral_power | Target: Self(1)
-Description      : A quick beam of lunar light burns the enemy for $164812s1 Arcane damage and then an additional $164812o2 Arcane damage over $164812d. Usable while in Bear Form.$?s137013[
+Description      : A quick beam of lunar light burns the enemy for $164812s1 Arcane damage and then an additional $164812o2 Arcane damage over $164812d.$?s5487[ Usable while in Bear Form.][]$?s197911[
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r][]
 
 Name             : Regrowth (id=8936) [Spell Family (7)] 
-Class            : Restoration Druid
+Class            : Druid
 School           : Nature
 Resource         : 18.63% Base Mana (40986 @Level 110)
-Spell Level      : 10
+Spell Level      : 5
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Blessing of Lower City (37878), Incarnation: Tree of Life (81097), Ironbark (102342), Lucidity (137247), Grovewalker (186320), Blessing of the World Tree (189744), Restoration Affinity (197492), Astral Influence (197524), Abundance (207640), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Blessing of Lower City (37878), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Ironbark (102342), Guardian Druid (137010), Feral Druid (137011), Balance Druid (137013), Lucidity (137247), Grovewalker (186320), Blessing of the World Tree (189744), Astral Influence (197524), Abundance (207640), Essence of G'Hanir (208253), Power of Elune, the Moon Goddess (208284), Attuned to Nature (210590), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -675,10 +678,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3728)     : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.14812 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Target: Friend(21)
 #2 (id=3729)     : Apply Aura (6) | Periodic Heal: every 2 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.09104 | Target: Friend(21)
-Description      : Heals a friendly target for $s1$?s116218[][ and another ${$o2*$<mult>} over $d]. Regrowth's initial heal has a $?s116218[100][60]% increased chance for a critical effect.$?s33891[
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Target: Friend(21)
+Description      : Heals a friendly target for $s1 and another ${$o2*$<mult>} over $d.$?s231032[ Regrowth's initial heal has a $231032s1% increased chance for a critical effect.][]$?s24858|s197625[ Usable while in Moonkin Form.][]$?s33891[
 
 |C0033AA11Tree of Life: Instant cast.|R][]
 Tooltip          : Heals $w2 every $t2 seconds.
@@ -694,7 +697,7 @@ $bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}
 Name             : Omen of Clarity (id=16864) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
-Spell Level      : 38
+Spell Level      : 48
 Proc Chance      : 100%
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
@@ -738,7 +741,7 @@ Tooltip          : Your next Regrowth is free.
 Name             : Thick Hide (id=16931) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Physical
-Spell Level      : 10
+Spell Level      : 34
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -792,7 +795,7 @@ Description      : Every time you critically strike with a combo generating abil
 Name             : Predatory Swiftness (id=16974) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
-Spell Level      : 28
+Spell Level      : 80
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
@@ -811,7 +814,7 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | Target: Self(1)
 #3 (id=8660)     : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-Description      : Your finishing moves have a $s3% chance per combo point to make your next Healing Touch, Entangling Roots, or Rebirth instant, free, and castable in all forms.
+Description      : Your finishing moves have a $s3% chance per combo point to make your next Regrowth, Entangling Roots, or Rebirth instant, free, and castable in all forms.
 
 Name             : Bear Form (id=17057) 
 Class            : Druid
@@ -849,14 +852,14 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10065)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.00000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.70000 | Target: Friend(21)
 Description      : Instantly heals a friendly target for $s1.
 
 Name             : Rebirth (id=20484) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Resource         : 10 Rage w/ Bear Form (id=5487)
-Spell Level      : 56
+Spell Level      : 42
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
@@ -945,7 +948,7 @@ Class            : Feral Druid
 School           : Physical
 Resource         : 25 Energy
 Resource         : 1 - 5 Combo Points
-Spell Level      : 3
+Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
@@ -963,7 +966,7 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value: energy | Target: Self(1)
 Description      : Finishing move that causes Physical damage per combo point and consumes up to 25 additional Energy to increase damage by up to 100%.
 
-$?s202031[]?s1079[When used on targets below 25% health, ][]$?s1079[Ferocious Bite will also refresh the duration of your Rip on your target.
+$?s202031[]?s231056[When used on targets below 25% health, ][]$?s231056[Ferocious Bite will also refresh the duration of your Rip on your target.
 
 ][]   1 point  : ${$m1*1/5} damage
    2 points: ${$m1*2/5} damage
@@ -976,7 +979,7 @@ Class            : Feral Druid
 School           : Physical
 Resource         : 35 Energy
 Resource         : 1 - 5 Combo Points
-Spell Level      : 72
+Spell Level      : 63
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
@@ -1010,7 +1013,7 @@ Variables        : $mult=$?p61252[${4}][${2}]
 Name             : Barkskin (id=22812) [Spell Family (7)] 
 Class            : Balance Guardian Restoration Druid
 School           : Nature
-Spell Level      : 36
+Spell Level      : 26
 Duration         : 12 seconds
 Cooldown         : 60 seconds
 Affecting spells : Guardian Druid (137010), Ursoc's Endurance (200399), Perpetual Spring (200402), Survival of the Fittest (203965), 
@@ -1040,7 +1043,7 @@ Name             : Frenzied Regeneration (id=22842) [Spell Family (7)]
 Class            : Guardian Druid
 School           : Physical
 Resource         : 10 Rage
-Spell Level      : 50
+Spell Level      : 40
 Duration         : 3 seconds
 Cooldown         : 1 seconds
 Charges          : 2 (24 seconds cooldown)
@@ -1068,13 +1071,12 @@ Tooltip          : Healing every $t1 sec.
 Name             : Moonkin Form (id=24858) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Physical
-Spell Level      : 18
+Spell Level      : 20
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Proc Chance      : 15%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Druid (137009), Feral Druid (137011), Bladed Feathers (202302)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Druid (137009), Feral Druid (137011), Bladed Feathers (202302), Moonkin Form (231042)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -1099,9 +1101,11 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
 #8 (id=290490)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x48 | Target: Self(1)
-Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your Arcane and Nature damage by $s8% and your armor by $m3%, and granting protection from Polymorph effects.
+#9 (id=353641)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your Arcane and Nature damage by $s8% and your armor by $m3%, and granting protection from Polymorph effects.$?a231042[
 
-While in this form, single-target attacks against you have a $h% chance make your next damaging spell instant.
+While in this form, single-target attacks against you have a $h% chance make your next Lunar Strike, Solar Wrath or Stellar Flare instant.][]
 
 The act of shapeshifting frees you from movement impairing effects.
 Tooltip          : Arcane and Nature damage done increased by $s8%.
@@ -1133,7 +1137,7 @@ Name             : Lifebloom (id=33763) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Resource         : 12% Base Mana (26400 @Level 110)
-Spell Level      : 32
+Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -1192,7 +1196,6 @@ Name             : Incarnation: Tree of Life (Talent, Shapeshift) (id=33891) [Sp
 Class            : Druid
 School           : Physical
 Spell Level      : 1
-GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 180 seconds
 Category         : 1333
@@ -1244,7 +1247,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #4 (id=290296)   : Energize Power (30)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: rage | Target: Self(1)
-Description      : Mangle the target for $sw2 Physical damage. Deals $s3% additional damage against bleeding targets.
+Description      : Mangle the target for $sw2 Physical damage.$?a231064[ Deals $s3% additional damage against bleeding targets.][]
 
 |cFFFFFFFFGenerates ${$m4/10} Rage.|r
 
@@ -1355,7 +1358,7 @@ Name             : Wild Growth (id=48438) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Resource         : 34% Base Mana (74800 @Level 110)
-Spell Level      : 64
+Spell Level      : 40
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
@@ -1384,7 +1387,7 @@ Tooltip          : Heals $w1 damage every $t1 second.
 Name             : Infected Wounds (id=48484) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
-Spell Level      : 42
+Spell Level      : 54
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -1403,7 +1406,7 @@ Description      : Rake causes an Infected Wound in the target, reducing the tar
 Name             : Living Seed (id=48500) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Physical
-Spell Level      : 28
+Spell Level      : 56
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
@@ -1417,7 +1420,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=40677)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : When you critically heal a target with the direct healing portion of Swiftmend, Regrowth, or Healing Touch, you plant a Living Seed on the target.
 
 When the target is next attacked, the Living Seed will bloom and heal the target for $s1% of the initial heal. Lasts $48504d.
@@ -1620,7 +1623,7 @@ Description      : Increases the damage done by Maim by $s1%.
 Name             : Survival Instincts (id=61336) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 School           : Physical
-Spell Level      : 40
+Spell Level      : 36
 Duration         : 6 seconds
 Cooldown         : 6 seconds
 Charges          : 2 (180 seconds cooldown)
@@ -1770,15 +1773,15 @@ Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...
 Effects          :
 #1 (id=63124)    : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
+                   Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484)
 #2 (id=100285)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
+                   Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484)
 #3 (id=167620)   : Apply Aura (6) | Unknown effect sub type (275)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484)
+                   Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484)
 Description      : $@spelldesc16974
-Tooltip          : Your next Entangling Roots, Healing Touch, or Rebirth will be instant, free, and castable in all forms.
+Tooltip          : Your next Entangling Roots, Regrowth, or Rebirth will be instant, free, and castable in all forms.
 
 Name             : Mastery: Starlight (id=77492) [Spell Family (7), Passive] 
 Class            : Balance Druid
@@ -1847,7 +1850,7 @@ Class            : Druid
 School           : Physical
 Resource         : 0 Rage
 Resource         : 15 Rage w/ Sharpened Claws (id=202110)
-Spell Level      : 18
+Spell Level      : 12
 Range            : 8 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
@@ -1894,13 +1897,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164545 | Target: Self(1)
 Description      : Launch a surge of stellar energies at the target, dealing $78674s1 Astral damage.
 
-Also grants you Lunar and Solar Empowerments, which increase the damage of your next Lunar Strike and Solar Wrath by $164547s1%, respectively. You can accumulate up to $164547u of each Empowerment.
+Also grants you Lunar and Solar Empowerments, which increase the damage of your next Lunar Strike and Solar Wrath by $164547s1%, respectively.$?a231021[ You can accumulate up to $164547u of each Empowerment.][]
 
 Name             : Solar Beam (id=78675) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Nature
 Resource         : 16.8% Base Mana (36960 @Level 110)
-Spell Level      : 28
+Spell Level      : 80
 Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 60 seconds
@@ -2146,7 +2149,7 @@ Name             : Nature's Cure (id=88423) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Resource         : 13% Base Mana (28600 @Level 110)
-Spell Level      : 18
+Spell Level      : 22
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
@@ -2171,11 +2174,11 @@ Name             : Sunfire (Solar) (id=93402) [Scaling Spell (3), Spell Family (
 Class            : Balance Restoration Druid
 School           : Nature
 Resource         : 12% Base Mana (26400 @Level 110) w/ Restoration Druid (id=137012)
-Spell Level      : 24
+Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
+Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Astral Power (197911), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2189,7 +2192,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=324054)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: astral_power | Target: Self(1)
-Description      : A quick beam of solar light burns the enemy for $164815s1 Nature damage and then an additional $164815o2 Nature damage over $164815d to the primary target and all enemies within $164815A2 yards.$?s137013[
+Description      : A quick beam of solar light burns the enemy for $164815s1 Nature damage and then an additional $164815o2 Nature damage over $164815d$?s231050[ to the primary target and all enemies within $164815A2 yards][].$?s137013[
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r][]
 Tooltip          : Suffering $w2 Nature damage every $t2 sec.
@@ -2294,7 +2297,7 @@ Tooltip          : Displaced.
 Name             : Ironbark (id=102342) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
-Spell Level      : 52
+Spell Level      : 54
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 90 seconds
@@ -2313,8 +2316,8 @@ Effects          :
 #3 (id=219284)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Tranquility (157982), Gjallar's Horn (228136)
-Description      : The target's skin becomes as tough as Ironwood, reducing all damage taken by $s1% for $d$?a197061[ and increases healing from your heal over time effects by $197061s2%][].
-Tooltip          : All damage taken is reduced by $s1%$?a197061[ and healing over time from the caster increased by $w3%][].
+Description      : The target's skin becomes as tough as Ironwood, reducing all damage taken by $m1% for $d$?a197061[ and increases healing from your heal over time effects by $197061s2%][].
+Tooltip          : All damage taken is reduced by $w1%$?a197061[ and healing over time from the caster increased by $w3%][].
 
 Name             : Cenarion Ward (id=102351) [Spell Family (7)] 
 Class            : Druid
@@ -2329,7 +2332,7 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Bear Form (5487), Ironbark (102342), Druid (137009), Lucidity (137247), Grovewalker (186320), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
-Attributes       : ....x... ...x.... ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x... ...x.... x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2414,7 +2417,6 @@ Name             : Incarnation: King of the Jungle (Talent, Shapeshift) (id=1025
 Class            : Druid
 School           : Physical
 Spell Level      : 1
-GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
@@ -2433,10 +2435,10 @@ Effects          :
                    Affected Spells: Prowl (5215), Prowl (102547)
 #2 (id=310506)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Ashamane's Rip (210705)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Ashamane's Rip (210705)
 #3 (id=310507)   : Apply Aura (6) | Unknown effect sub type (418)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770)
+                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770)
 Description      : An improved Cat Form that allows the use of Prowl while in combat, causes Shred and Rake to deal damage as if stealth were active, reduces the cost of all Cat Form abilities by $s2%, and increases maximum Energy by $s3.
 
 Lasts $d. You may shapeshift in and out of this improved Cat Form for its duration.
@@ -2479,7 +2481,6 @@ Name             : Incarnation: Guardian of Ursoc (Talent, Shapeshift) (id=10255
 Class            : Druid
 School           : Physical
 Spell Level      : 1
-GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
@@ -2513,12 +2514,11 @@ Name             : Incarnation: Chosen of Elune (Talent, Shapeshift) (id=102560)
 Class            : Druid
 School           : Physical
 Spell Level      : 1
-GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679), Druid (137009), Feral Druid (137011), Wildcat Celerity (184877), Bladed Feathers (202302)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679), Druid (137009), Feral Druid (137011), Wildcat Celerity (184877), Bladed Feathers (202302), Moonkin Form (231042)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -2543,7 +2543,7 @@ Tooltip          : Incarnation: Chosen of Elune activated.
 Name             : Ursol's Vortex (id=102793) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
-Spell Level      : 48
+Spell Level      : 63
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -2678,7 +2678,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=222212)   : Weapon Damage% (31)
                    Base Value: 500 | Scaled Value: 5 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
-Description      : Swipe nearby enemies, inflicting $sw3 Physical damage. Deals $s2% increased damage against bleeding targets.
+Description      : Swipe nearby enemies, inflicting $sw3 Physical damage.$?a231283[  Deals $s2% increased damage against bleeding targets.][]
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
 
@@ -2686,7 +2686,7 @@ Name             : Thrash (Feral, Guardian) (id=106830) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Resource         : 50 Energy
-Spell Level      : 18
+Spell Level      : 12
 Range            : 8 yards
 GCD              : 1 seconds
 Duration         : 15 seconds
@@ -2704,13 +2704,13 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | AP Coefficient: 0.41000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.29200 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster(22) -> AOE enemy(15)
-Description      : Strikes all nearby enemies, dealing $m1 bleed damage and an additional $o2 damage over $d.
+Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
 Name             : Thrash (id=106832) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 School           : Physical
-Spell Level      : 14
+Spell Level      : 12
 Range            : 5 yards
 Stance Mask      : 0x00000011
 Affecting spells : Luffa Wrappings (208681), 
@@ -2728,7 +2728,7 @@ Description      : Thrash all nearby enemies, dealing immediate physical damage 
 Name             : Skull Bash (id=106839) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 School           : Physical
-Spell Level      : 64
+Spell Level      : 70
 Range            : 13 yards
 Cooldown         : 15 seconds
 Category         : 1260
@@ -2748,7 +2748,7 @@ Description      : You charge and bash the target's skull, interrupting spellcas
 Name             : Stampeding Roar (id=106898) [Spell Family (7)] 
 Class            : Feral Guardian Druid
 School           : Physical
-Spell Level      : 83
+Spell Level      : 50
 Range            : 10 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -2774,7 +2774,7 @@ Tooltip          : Movement speed increased by $s1%.
 Name             : Berserk (id=106951) [Spell Family (7)] 
 Class            : Feral Druid
 School           : Physical
-Spell Level      : 48
+Spell Level      : 40
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1208
@@ -2789,13 +2789,13 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...
 Effects          :
 #1 (id=117476)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 1.00000 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Ashamane's Rip (210705)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Ashamane's Rip (210705)
 #2 (id=219222)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770)
+                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770)
 #3 (id=219223)   : Apply Aura (6) | Unknown effect sub type (418)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770)
+                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770)
 Description      : Reduces the cost of all Cat Form abilities by $s1% and increases maximum Energy by $s3 for $d. Requires Cat Form.
 Tooltip          : Reduces the cost of all Cat Form abilities by $s1% and increases maximum Energy by $s3.
 
@@ -2851,7 +2851,7 @@ Description      : Grants $s1% of your Intellect as Agility when you shapeshift 
 Name             : Omen of Clarity (id=113043) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Physical
-Spell Level      : 38
+Spell Level      : 48
 Proc Chance      : 4%
 Proc Flags       : ........ ......x. ..x..x.. ........ 
                  : Heal, Periodic, Trap Triggered
@@ -2927,6 +2927,26 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | Target: Self(1)
 Description      : $@spelldesc158478
 Tooltip          : Increases the healing done by your next Regrowth or Rejuvenation spell by $s2%, or increases the healing done by your next Wild Growth by $s3%.
+
+Name             : Treant Form (Shapeshift) (id=114282) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Resource         : 5.6% Base Mana (12319 @Level 110)
+Spell Level      : 40
+GCD              : 1.5 seconds
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=127491)   : Apply Aura (6) | Shapeshift (36)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 36 | Misc Value 2: 0x2 | Target: Self(1)
+Description      : Shapeshift into Treant Form.
+Tooltip          : Shapeshifted into Treant Form.  All spells may be cast while in this form.
 
 Name             : Glyph of Stars (Balance) (id=114301) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -3156,7 +3176,7 @@ Description      : $@spelldesc131113
 Name             : Feline Swiftness (id=131768) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
-Spell Level      : 10
+Spell Level      : 34
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3277,24 +3297,25 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Barkskin (22812)
 #2 (id=191158)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self(1)
-                   Affected Spells: Healing Touch (5185)
-#3 (id=191159)   : Apply Aura (6) | Unknown effect sub type (454)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Affected Spells: Regrowth (8936)
+#3 (id=191159)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Regrowth (8936)
+#4 (id=191160)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Target: Self(1)
+                   Affected Spells: Regrowth (8936)
+#5 (id=191161)   : Apply Aura (6) | Unknown effect sub type (454)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1469 | Target: Self(1)
-#4 (id=191160)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#6 (id=260757)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -46 | Scaled Value: -46 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-#5 (id=191161)   : Apply Aura (6) | Unknown effect sub type (198)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 256 | Misc Value 2: 0x4 | Target: Self(1)
-#6 (id=260757)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#7 (id=260758)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-#7 (id=260758)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+#8 (id=260759)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-#8 (id=260759)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Healing Touch (5185)
 #9 (id=260760)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260761)   : Apply Aura (6) | Dummy (4)
@@ -3307,7 +3328,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260765)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#16 (id=260766)   : Apply Aura (6) | Dummy (4)
+#15 (id=260766)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#16 (id=351087)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #17 (id=351088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -3328,21 +3351,19 @@ Effects          :
                    Affected Spells: Moonkin Form (24858), Incarnation: Chosen of Elune (102560), Moonkin Form (197625)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-                   Affected Spells: Healing Touch (5185)
-#3 (id=191155)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
+                   Affected Spells: Regrowth (8936)
+#3 (id=191155)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Regrowth (8936)
+#4 (id=191156)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Target: Self(1)
+                   Affected Spells: Regrowth (8936)
+#5 (id=191157)   : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 917504 | Target: Self(1)
-#4 (id=191156)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Luffa Wrappings (208681)
-#5 (id=191157)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self(1)
-                   Affected Spells: Luffa Wrappings (208681)
-#6 (id=260767)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Luffa Wrappings (208681)
-#7 (id=260768)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 32 | Target: Self(1)
-                   Affected Spells: Luffa Wrappings (208681)
+#6 (id=260767)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#7 (id=260768)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260769)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260770)   : Apply Aura (6) | Dummy (4)
@@ -3356,10 +3377,6 @@ Effects          :
 #13 (id=260774)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260775)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#15 (id=260776)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#16 (id=344350)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
@@ -3435,17 +3452,17 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179696)   : Apply Aura (6) | Unknown effect sub type (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Self(1)
-#2 (id=191146)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self(1)
-                   Affected Spells: Healing Touch (5185)
+#1 (id=179696)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Affected Spells: Regrowth (8936)
+#2 (id=191146)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Regrowth (8936)
 #3 (id=191147)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Healing Touch (5185)
-#4 (id=191148)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Moonfire (8921), Sunfire (93402), Sunfire (164815), Sunfire (197630)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Target: Self(1)
+                   Affected Spells: Regrowth (8936)
+#4 (id=191148)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191149)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260777)   : Apply Aura (6) | Dummy (4)
@@ -3466,11 +3483,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #14 (id=260785)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#16 (id=260786)   : Apply Aura (6) | Dummy (4)
+#15 (id=260786)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#17 (id=317007)   : Apply Aura (6) | Dummy (4)
+#16 (id=351083)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#18 (id=351123)   : Apply Aura (6) | Dummy (4)
+#17 (id=351084)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Displacer Beast (id=137452) [Spell Family (7)] 
@@ -3564,7 +3581,7 @@ Description      : After using Tiger's Fury, your next finishing move will resto
 Name             : Ysera's Gift (id=145108) [Spell Family (7), Passive] 
 Class            : Restoration Druid
 School           : Nature
-Spell Level      : 18
+Spell Level      : 34
 Range            : 100 yards
 Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Berserk (106951), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -3577,12 +3594,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=195304)   : Apply Aura (6) | Periodic Dummy: every 5 seconds (226)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
-Description      : Heals you for $s1% of your maximum health every $t sec. If you are at full health, a random nearby injured ally will be healed instead.
+Description      : Heals you for $?a137010[${$s1/2}.1%][$s1%] of your maximum health every $t sec. If you are at full health, a injured party or raid member will be healed instead.
 
 Name             : Ysera's Gift (id=145109) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
 Spell Level      : 1
+Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Berserk (106951), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3600,6 +3618,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 1
 Range            : 30 yards
+Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Berserk (106951), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ...x.... ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3609,7 +3628,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... ...x.
                  : Does not break stealth (37), Cannot crit (93), Disable player procs (112)
 Effects          :
 #1 (id=195307)   : Direct Heal (10)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 0 - 30 yards | Target: Custom(18) -> AOE friendly(31)
+                   Base Value: 15 | Scaled Value: 15 | Radius: 30 yards | Target: Raid Members(56)
 Description      : $@spelldesc145108
 
 Name             : Bloodtalons (id=145152) [Spell Family (7)] 
@@ -3631,21 +3650,21 @@ Effects          :
 #1 (id=195368)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Enraged Mangle (202085), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Swipe (213771)
-Description      : Casting Healing Touch causes your next two melee abilities to deal $s1% increased damage for their full duration.
+Description      : $@spelldesc155672
 Tooltip          : Your next two melee abilities deal $s1% increased damage for their full duration.
 
 Name             : Efflorescence (id=145205) [Spell Family (7)] 
 Class            : Restoration Druid
 School           : Nature
 Resource         : 21.6% Base Mana (47520 @Level 110)
-Spell Level      : 83
+Spell Level      : 70
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Proc Chance      : 101%
 Affecting spells : Incarnation: Tree of Life (5420), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -3793,8 +3812,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=216360)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
-Description      : Casting Healing Touch causes your next two melee abilities to deal $s1% increased damage for their full duration.
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Casting Regrowth causes your next two melee abilities to deal $145152s1% increased damage for their full duration.
 
 Name             : Germination (id=155675) [Spell Family (7), Passive] 
 Class            : Druid
@@ -4003,7 +4022,7 @@ Description      : $@spelldesc155783
 Name             : Primal Fury (id=159286) [Spell Family (7), Passive] 
 Class            : Feral Druid
 School           : Physical
-Spell Level      : 35
+Spell Level      : 28
 Internal Cooldown: 0.9 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x00000001
@@ -4022,6 +4041,23 @@ Effects          :
 Description      : When you critically strike with an attack that generates a combo point, you gain an additional combo point.
 
 Damage over time cannot trigger this effect.
+
+Name             : Travel Form (Rank 2) (id=159456) [Spell Family (7), Passive] 
+Class            : Balance Feral Guardian Restoration Druid
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ....x...   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=223349)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self(1)
+Description      : You gain an additional $s1% movement speed while in the land version of Travel Form.  This movement speed bonus will not be granted if Travel Form is activated while in combat.
+
+This effect is disabled in battlegrounds and arenas.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
 Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Hunter, Rogue, Shaman, Monk, Druid
@@ -4118,11 +4154,11 @@ Name             : Solar Empowerment (id=164545) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Duration         : 40 seconds
-Stacks           : 1 initial, 3 maximum
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Item - Druid WoD PvP Balance 2P Bonus (165701), Empowerment (202464)
+Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Item - Druid WoD PvP Balance 2P Bonus (165701), Empowerment (202464), Starsurge (231021)
 Triggered by     : Starsurge (78674), Starsurge (197626)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4147,11 +4183,11 @@ Name             : Lunar Empowerment (id=164547) [Spell Family (7)]
 Class            : Druid
 School           : Arcane
 Duration         : 40 seconds
-Stacks           : 1 initial, 3 maximum
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Item - Druid WoD PvP Balance 2P Bonus (165701), Empowerment (202464)
+Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Item - Druid WoD PvP Balance 2P Bonus (165701), Empowerment (202464), Starsurge (231021)
 Triggered by     : Starsurge (78674), Starsurge (197626)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4198,11 +4234,11 @@ Tooltip          : Suffering $w2 Arcane damage every $t2 seconds.
 Name             : Sunfire (Solar) (id=164815) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
-Spell Level      : 18
+Spell Level      : 16
 Range            : 100 yards
 Duration         : 12 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
+Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Astral Power (197911), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4235,6 +4271,8 @@ Attributes       : ........ ........ ........ ........   ..x...x. ........ .....
 Effects          :
 #2 (id=232535)   : Apply Aura (6) | Unknown effect sub type (106)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=347365)   : Apply Aura (6) | Unknown effect sub type (483)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0x8 | Target: Self(1)
 Description      : You flap your wings, slowing your falling speed.
 Tooltip          : Hovering.
 
@@ -4545,13 +4583,13 @@ Description      : $@spelldesc187875
 Name             : Solar Wrath (Solar) (id=190984) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Nature
-Spell Level      : 10
+Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Triggered by     : Solar Empowerment (164545)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4563,10 +4601,10 @@ Effects          :
 #1 (id=280098)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
 #2 (id=280099)   : Energize Power (30)
-                   Base Value: 80 | Scaled Value: 80 | Misc Value: astral_power | Target: Self(1)
-Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature damage.
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: astral_power | Target: Self(1)
+Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature damage.$?a197911[
 
-|cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
+|cFFFFFFFFGenerates ${$m2/10} Astral Power.|r][]
 
 Name             : Starfall (id=191034) [Spell Family (7)] 
 Class            : Balance Druid
@@ -4592,9 +4630,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4756 | Radius: 0 - 15 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 #3 (id=290413)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Calls down waves of falling stars at the targeted area, dealing ${9*$191037m1} Astral damage over $191034d.
+Description      : Calls down waves of falling stars at the targeted area, dealing ${9*$191037m1} Astral damage over $191034d.$?a231049[
 
-Also applies Stellar Empowerment to each target, which increases damage taken from your Moonfire and Sunfire by $197637s1%.
+Also applies Stellar Empowerment to each target, which increases damage taken from your Moonfire and Sunfire by $197637s1%.][]
 Tooltip          : Calling down falling stars at the targeted area.
 
 Name             : Starfall (id=191037) [Scaling Spell (3), Spell Family (7)] 
@@ -4620,13 +4658,13 @@ Name             : Ironfur (id=192081) [Spell Family (7)]
 Class            : Guardian Druid
 School           : Nature
 Resource         : 45 Rage
-Spell Level      : 44
+Spell Level      : 20
 Duration         : 6 seconds
 Cooldown         : 0.5 seconds
-Stacks           : 6 maximum
+Stacks           : 1 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000010
-Affecting spells : Reinforced Fur (200395), Ursoc's Endurance (200399), Gory Fur (201671), Natural Defenses (211160), Guardian of Elune (213680)
+Affecting spells : Reinforced Fur (200395), Ursoc's Endurance (200399), Gory Fur (201671), Natural Defenses (211160), Guardian of Elune (213680), Ironfur (231070)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4634,25 +4672,24 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=281770)   : Apply Aura (6) | Modify Base Resistance (142)
+#1 (id=281770)   : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self(1)
-                   Hotfixed: Sub Type (101 -> 142)
 #2 (id=321076)   : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self(1)
 #3 (id=321077)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Frenzied Regeneration (22842)
-Description      : Increases armor by $s1% for $d. Multiple uses of this ability may overlap.
+Description      : Increases armor by $s1% for $d.$?a231070[ Multiple uses of this ability may overlap.][]
 Tooltip          : Armor increased by $s1%.
 
 Name             : Mark of Ursol (id=192083) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Nature
 Resource         : 45 Rage
-Spell Level      : 72
+Spell Level      : 80
 Duration         : 6 seconds
 Cooldown         : 0.5 seconds
-Affecting spells : Ursoc's Endurance (200399), Gory Fur (201671), Guardian of Elune (213680)
+Affecting spells : Ursoc's Endurance (200399), Gory Fur (201671), Natural Defenses (211160), Guardian of Elune (213680)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4751,7 +4788,7 @@ Description      : Call down a strike of lunar energy, causing $s1 Arcane damage
 Name             : Celestial Alignment (id=194223) [Spell Family (7)] 
 Class            : Balance Druid
 School           : Astral
-Spell Level      : 64
+Spell Level      : 48
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4925,17 +4962,14 @@ Effects          :
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Swiftmend (18562)
 #3 (id=327253)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Regrowth (8936)
-#4 (id=328242)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Rejuvenation (774)
-#5 (id=344347)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#4 (id=328242)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 20 | Scaled Value: 20 | Target: Self(1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562)
-#6 (id=346532)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Affected Spells: Rejuvenation (774), Healing Touch (5185), Swiftmend (18562)
+#5 (id=344347)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Rejuvenation (774), Regrowth (8936)
+                   Affected Spells: Rejuvenation (774)
 Description      : You gain:
 
 $@spellicon145108 $@spellname145108
@@ -4944,13 +4978,13 @@ $@spelldesc145108
 You also learn:
 
 $@spellicon774 $@spellname774
-$@spellicon8936 $@spellname8936
+$@spellicon5185 $@spellname5185
 $@spellicon18562 $@spellname18562
 
 Name             : Astral Influence (id=197524) [Spell Family (7), Passive] 
 Class            : Balance Druid
 School           : Astral
-Spell Level      : 10
+Spell Level      : 34
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4961,13 +4995,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
 #2 (id=314659)   : Apply Aura (6) | Unknown effect sub type (153)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self(1)
-                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Power of the Archdruid (213121), Brambles (213709), Swipe (213771)
+                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Power of the Archdruid (213121), Brambles (213709), Swipe (213771)
 #4 (id=340874)   : Apply Aura (6) | Unknown effect sub type (188)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
                    Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Typhoon (132469), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Brambles (213709), Swipe (213771)
@@ -4980,7 +5014,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Druid (137009), Feral Druid (137011), Bladed Feathers (202302)
+Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Druid (137009), Feral Druid (137011), Bladed Feathers (202302), Moonkin Form (231042)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -5034,7 +5068,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164545 | Target: Self(1)
 Description      : Instantly causes $s1 Astral damage to the target.
 
-Also increase the damage of your next Lunar Strike, and your next Wrath, by $164547s1%.
+Also increase the damage of your next Lunar Strike, and your next Solar Wrath, by $164547s1%.
 
 Name             : Lunar Strike (id=197628) [Spell Family (7)] 
 Class            : Druid
@@ -5053,8 +5087,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290380)   : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.50000 | Target: Enemy(6)
-Description      : Causes $s1 Arcane damage to the target.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+#2 (id=353245)   : Dummy (3)
+                   Base Value: 35 | Scaled Value: 35 | Target: Enemy(6)
+Description      : Call down a strike of lunar energy, causing $s1 Arcane damage to the target, and ${$m1*$m2/100} Arcane damage to all other enemies within $A1 yards.
 
 Name             : Solar Wrath (id=197629) [Spell Family (7)] 
 Class            : Druid
@@ -5065,7 +5101,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5084,7 +5120,7 @@ Resource         : 12% Base Mana (26400 @Level 110)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
+Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Astral Power (197911), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5125,7 +5161,7 @@ $@spellicon197628 $@spellname197628
 Name             : Stellar Empowerment (id=197637) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
-Spell Level      : 76
+Spell Level      : 10
 Range            : 50000 yards
 Duration         : 8 seconds
 Affecting spells : Mastery: Starlight (77492), Falling Star (202445)
@@ -5133,7 +5169,7 @@ Attributes       : ........ ........ ........ .....x..   .......x ..x..... .....
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290410)   : Apply Aura (6) | Unknown effect sub type (271)
@@ -5178,6 +5214,27 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Radius: 0 - 60 yards | Target: Custom(18) -> AOE friendly(31)
 Description      : Extends the duration of all of your heal over time effects on friendly targets within $A1 yards by $s1 sec.
 
+Name             : Astral Power (Passive) (id=197911) [Spell Family (7), Passive, Hidden] 
+Class            : Balance Druid
+School           : Nature
+Spell Level      : 10
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=290831)   : Apply Aura (6) | Unknown effect sub type (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Target: Self(1)
+#2 (id=349879)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: 12 | Target: Self(1)
+                   Affected Spells: Solar Wrath (5176), Solar Wrath (190984), Solar Wrath (197629)
+#3 (id=350584)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Target: Self(1)
+                   Affected Spells: Moonfire (8921), Sunfire (93402), Sunfire (164815), Sunfire (197630)
+
 Name             : Prosperity (Passive Talent) (id=200383) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
@@ -5190,7 +5247,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=294998)   : Apply Aura (6) | Unknown effect sub type (453)
-                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1576 | Target: Self(1)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1576 | Target: Self(1)
 #2 (id=294999)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1576 | Target: Self(1)
 Description      : Swiftmend now has ${$m2+1} charges, and its cooldown is reduced by ${$m1/-1000} sec.
@@ -5209,7 +5266,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=295007)   : Apply Aura (6) | Periodic Heal: every 3 seconds (8)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.72000 | Target: Friend(21)
 Description      : $@spelldesc200390
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
@@ -5646,7 +5703,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #2 (id=298423)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
-Description      : Aligns the power of the Moon and Stars, causing Lunar Strike to extend the duration of your Moonfire by ${$164812t2*$s1}.1 sec, and Solar Wrath to extend the duration of your Sunfire by ${$164815t2*$s2}.1 sec.
+Description      : Aligns the power of the Moon and Stars, causing Lunar Strike to extend the duration of your Moonfire by ${$164812t2*$s1}.1 sec, and Solar Wrath to extend the duration of all of your Sunfires by ${$164815t2*$s2}.1 sec.
 
 Name             : Shooting Stars (id=202497) [Scaling Spell (3), Spell Family (7)] 
 Class            : Druid
@@ -5654,7 +5711,7 @@ School           : Astral
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   .......x ..x..... ........ ........ 
                  : ..x..... ........ ........ ......x.   x....... .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5704,9 +5761,8 @@ Description      : Grants ${$m1/10} Astral Power every $t1 sec.
 Tooltip          : Grants ${$m1/10} Astral Power every $t1 sec.
 
 Name             : New Moon (Artifact) (id=202767) [Spell Family (7)] 
-Hotfixed         : School (72 -> 64)
 Class            : Druid
-School           : Arcane
+School           : Astral
 Range            : 40 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
@@ -5723,7 +5779,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298964)   : School Damage: arcane (2)
+#1 (id=298964)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Target: Enemy(6)
 #2 (id=299003)   : Trigger Spell: New Moon Override (64)
                    Base Value: 202787 | Scaled Value: 202787 | Trigger Spell: 202787 | Target: Self(1)
@@ -5734,9 +5790,8 @@ Description      : Deals $m1 Astral damage to the target and empowers New Moon t
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Half Moon (Artifact) (id=202768) [Spell Family (7)] 
-Hotfixed         : School (72 -> 64)
 Class            : Druid
-School           : Arcane
+School           : Astral
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -5751,7 +5806,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298965)   : School Damage: arcane (2)
+#1 (id=298965)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.00000 | Target: Enemy(6)
 #2 (id=299004)   : Trigger Spell: Half Moon Override (64)
                    Base Value: 202788 | Scaled Value: 202788 | Trigger Spell: 202788 | Target: Self(1)
@@ -5791,9 +5846,8 @@ While Fury of Elune is active, you may recast it for no cost to direct the beam 
 Tooltip          : Directing the Fury of Elune.
 
 Name             : Full Moon (Artifact) (id=202771) [Spell Family (7)] 
-Hotfixed         : School (72 -> 64)
 Class            : Druid
-School           : Arcane
+School           : Astral
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
@@ -5808,7 +5862,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298969)   : School Damage: arcane (2)
+#1 (id=298969)   : School Damage: astral (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 18.00000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #2 (id=298970)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: astral_power | Target: Self(1)
@@ -5818,7 +5872,7 @@ Effects          :
                    Base Value: 202787 | Scaled Value: 202787 | Trigger Spell: 202787
 #5 (id=302252)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: At Enemy(53)
-Description      : Deals $m1 Astral damage to the target and all enemies near the target, and resets Full Moon to become New Moon.
+Description      : Deals $m1 Astral damage to the target and reduced damage to all other nearby enemies, and resets Full Moon to become New Moon.
 
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
@@ -5953,7 +6007,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300976)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Your damage has a $h% chance to trigger a free automatic Moonfire on that target. When this occurs, the next Moonfire you cast generates ${$213708m1/10} Rage.
+Description      : Your damage has a $h% chance to trigger a free automatic Moonfire on that target. 
+
+When this occurs, the next Moonfire you cast generates ${$213708m1/10} Rage, and deals $213708s3% increased direct damage.
 
 Name             : Survival of the Fittest (id=203965) [Spell Family (7), Passive] 
 Class            : Druid
@@ -6153,7 +6209,7 @@ Range            : 100 yards
 Duration         : 6 seconds
 Affecting spells : Grovewalker (186320), 
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
@@ -6419,13 +6475,12 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Target: Enemy(6)
 Description      : $@spelldesc210702
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
-Variables        : $mastery=$?s77493[${((100+$77493m1)/100)}][${1.00}]
-$rip=${0.21*$AP*$<mastery>*(1+$@versadmg)}
+Variables        : $rip=${$s1}
 
 Name             : Gore (id=210706) [Spell Family (7), Passive] 
 Class            : Guardian Druid
 School           : Physical
-Spell Level      : 34
+Spell Level      : 48
 Proc Chance      : 15%
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
@@ -6557,7 +6612,7 @@ Name             : Revitalize (id=212040) [Spell Family (7)]
 Class            : Restoration Druid
 School           : Nature
 Resource         : 4% Base Mana (8800 @Level 110)
-Spell Level      : 44
+Spell Level      : 66
 Range            : 100 yards
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
@@ -6633,12 +6688,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=317115)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Moonfire (8921)
 #2 (id=317116)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#3 (id=351231)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 300 | Scaled Value: 300 | Misc Value: 12 | Target: Self(1)
+                   Affected Spells: Moonfire (8921)
 Description      : $@spelldesc203964
-Tooltip          : Your next Moonfire generates ${$m1/10} Rage.
+Tooltip          : Your next Moonfire generates ${$m1/10} Rage, and deals $s3% increased direct damage.
 
 Name             : Brambles (id=213709) [Spell Family (7)] 
 Class            : Druid
@@ -6811,5 +6869,253 @@ Description      : Shapeshift into Cat Form, increasing movement speed by $11363
 The act of shapeshifting frees you from movement impairing effects.
 Tooltip          : Immune to Polymorph effects.
 Movement speed increased by $113636s1% and falling damage reduced.
+
+Name             : Starsurge (Rank 2) (id=231021) [Spell Family (7), Passive] 
+Class            : Balance Druid
+School           : Nature
+Spell Level      : 70
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348349)   : Apply Aura (6) | Add Flat Modifier (107)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Target: Self(1)
+                   Affected Spells: Solar Empowerment (164545), Lunar Empowerment (164547)
+Description      : The Lunar and Solar Empowerments granted by Starsurge now stack up to ${$s1+1} times.
+
+Name             : Regrowth (Rank 2) (id=231032) [Spell Family (7), Passive] 
+Class            : Restoration Druid
+School           : Nature
+Spell Level      : 44
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348362)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 7 | Target: Self(1)
+Description      : Regrowth's initial heal has a $s1% increased chance for a critical effect.
+
+Name             : Rejuvenation (Rank 2) (id=231040) [Spell Family (7), Passive] 
+Class            : Restoration Druid
+School           : Nature
+Spell Level      : 52
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348372)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self(1)
+                   Affected Spells: Rejuvenation (774)
+Description      : Rejuvenation's duration is increased by ${$m1/1000} sec.
+
+Name             : Moonkin Form (Rank 2) (id=231042) [Spell Family (7), Passive] 
+Class            : Balance Druid
+School           : Nature
+Spell Level      : 54
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348377)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 18 | Target: Self(1)
+                   Affected Spells: Moonkin Form (24858), Incarnation: Chosen of Elune (102560), Moonkin Form (197625)
+Description      : While in Moonkin Form, single-target attacks against you have a $s1% chance make your next Lunar Strike, Solar Wrath or Stellar Flare instant.
+
+
+Name             : Starfall (Rank 2) (id=231049) [Spell Family (7), Passive] 
+Class            : Balance Druid
+School           : Nature
+Spell Level      : 65
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348390)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
+Description      : Starfall applies Stellar Empowerment to each target, which increases damage taken from your Moonfire and Sunfire by $197637s1%.
+
+
+Name             : Sunfire (Rank 2) (id=231050) [Spell Family (7), Passive] 
+Class            : Balance Restoration Druid
+School           : Nature
+Spell Level      : 32
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348391)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
+Description      : Sunfire now applies its damage over time effect to all enemies within $164815A2 yards.
+
+Name             : Rake (Rank 2) (id=231052) [Spell Family (7), Passive] 
+Class            : Feral Druid
+School           : Nature
+Spell Level      : 25
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348393)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
+Description      : While stealthed, Rake will also stun the target for $163505d, and deal $1822s4% increased damage.
+
+Name             : Tiger's Fury (Rank 2) (id=231055) [Spell Family (7), Passive] 
+Class            : Feral Druid
+School           : Nature
+Spell Level      : 52
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348396)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 12 | Target: Self(1)
+                   Affected Spells: Tiger's Fury (5217)
+Description      : Tiger's Fury generates an additional $s1 energy.
+
+Name             : Ferocious Bite (Rank 2) (id=231056) [Spell Family (7), Passive] 
+Class            : Feral Druid
+School           : Nature
+Spell Level      : 66
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348397)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
+Description      : When used on a target below 25% health, Ferocious Bite will refresh the duration of your Rip on your target.
+
+Name             : Shred (Rank 3) (id=231057) [Spell Family (7), Passive] 
+Class            : Feral Druid
+School           : Nature
+Spell Level      : 56
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348399)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
+Description      : While stealthed, Shred deals $5221m4% increased damage, and has double the chance to critically strike.
+
+Name             : Shred (Rank 2) (id=231063) [Spell Family (7), Passive] 
+Class            : Feral Druid
+School           : Nature
+Spell Level      : 44
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348405)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
+Description      : Shred deals $5221s5% increased damage against bleeding targets.
+
+Name             : Mangle (Rank 2) (id=231064) [Spell Family (7), Passive] 
+Class            : Guardian Druid
+School           : Nature
+Spell Level      : 44
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348406)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
+Description      : Mangle deals $33917s3% additional damage against bleeding targets.
+
+Name             : Lightning Reflexes (id=231065) [Spell Family (7), Passive] 
+Class            : Guardian Druid
+School           : Physical
+Spell Level      : 65
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348407)   : Apply Aura (6) | Unknown effect sub type (198)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 256 | Misc Value 2: 0x4 | Target: Self(1)
+Description      : You gain Dodge equal to $s1% of your Critical Strike from gear.
+
+Name             : Ironfur (Rank 2) (id=231070) [Spell Family (7), Passive] 
+Class            : Guardian Druid
+School           : Nature
+Spell Level      : 54
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348412)   : Apply Aura (6) | Add Flat Modifier (107)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 37 | Target: Self(1)
+                   Affected Spells: Ironfur (192081)
+Description      : Multiple uses of Ironfur may overlap.
+
+
+Name             : Swipe (Rank 2) (id=231283) [Spell Family (7), Passive] 
+Class            : Feral Druid
+School           : Nature
+Spell Level      : 44
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=348787)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
+Description      : Swipe deals $106785s2% increased damage against bleeding targets.
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 72ba20b)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -73,7 +73,7 @@ Description      : Gives a chance to block enemy melee and ranged attacks.
 Name             : Taunt (id=355) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 14
+Spell Level      : 13
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
@@ -138,7 +138,7 @@ Name             : Cleave (id=845) [Spell Family (4)]
 Class            : Arms Warrior
 School           : Physical
 Resource         : 10 Rage
-Spell Level      : 32
+Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
@@ -154,12 +154,12 @@ Effects          :
                    Base Value: 90 | Scaled Value: 0.9 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=129888)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
-Description      : Strikes all enemies in front of you with a sweeping attack for $sw1 Physical damage. For each target up to $188923u hit, your next Whirlwind deals $188923s1% more damage.
+Description      : Strikes all enemies in front of you with a sweeping attack for $sw1 Physical damage.$?a231833[ For each target up to $188923u hit, your next Whirlwind deals $188923s1% more damage.][]
 
 Name             : Shield Wall (id=871) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Spell Level      : 48
+Spell Level      : 55
 Duration         : 8 seconds
 Cooldown         : 240 seconds
 Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
@@ -178,7 +178,7 @@ Tooltip          : All damage taken reduced by $w1%.
 Name             : Demoralizing Shout (id=1160) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Spell Level      : 50
+Spell Level      : 48
 Duration         : 8 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
@@ -234,7 +234,7 @@ Name             : Whirlwind (id=1680) [Spell Family (4)]
 Class            : Arms Warrior
 School           : Physical
 Resource         : 25 Rage
-Spell Level      : 28 (max 80)
+Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
 Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
@@ -257,10 +257,10 @@ Name             : Hamstring (id=1715) [Spell Family (4)]
 Class            : Arms Warrior
 School           : Physical
 Resource         : 10 Rage
-Spell Level      : 35
+Spell Level      : 32
 Range            : 5 yards
+GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 1 seconds
 Affecting spells : Battle Cry (1719), Hamstring Rage Reduction (22778), Improved Hamstring (24428), Warrior (137047), Dauntless (202297)
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ......x. 
@@ -281,7 +281,7 @@ Tooltip          : Movement slowed by $s1%.
 Name             : Battle Cry (id=1719) [Spell Family (4)] 
 Class            : Arms Fury Protection Warrior
 School           : Physical
-Spell Level      : 60
+Spell Level      : 50
 Duration         : 5 seconds
 Cooldown         : 60 seconds
 Affecting spells : Helya's Wrath (200870), Reckless Abandon (202751), Item - Warrior T19 Arms 2P Bonus (212149), Deadly Calm (227266)
@@ -310,9 +310,9 @@ Name             : Shield Block (id=2565) [Spell Family (4)]
 Class            : Protection Warrior, Monk
 School           : Physical
 Resource         : 10 Rage
-Spell Level      : 18
+Spell Level      : 20
 Cooldown         : 1 seconds
-Charges          : 2 (13 seconds cooldown)
+Charges          : 1 (13 seconds cooldown)
 Category         : 1385
 Affecting spells : Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -442,7 +442,7 @@ Resource         : 25 Rage
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), 
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -453,13 +453,13 @@ Effects          :
 #1 (id=1900)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229536)   : Weapon Damage% (31)
-                   Base Value: 463 | Scaled Value: 4.63 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 333 | Scaled Value: 3.33 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Attempt to finish off a wounded foe, causing ${$sw2+$163558sw2} Physical damage. Only usable on enemies that have less than 20% health.
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Spell Level      : 16
+Spell Level      : 14
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
@@ -467,16 +467,16 @@ Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160), Warrior (137047), Thunder Crash (188644), Crackling Thunder (203201)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=2203)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.65400 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.65400 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
 Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage$?s199045[, rooting them for $199042d and reducing their movement speed by $s2% for $d.][ and reduces their movement speed by $s2% for $d.]
 Tooltip          : Movement speed reduced by $s2%.
 
@@ -525,7 +525,7 @@ Description      : Pummels the target, interrupting spellcasting and preventing 
 Name             : Revenge (id=6572) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Spell Level      : 28
+Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
@@ -621,7 +621,7 @@ Name             : Mortal Strike (id=12294) [Spell Family (4)]
 Class            : Arms Warrior
 School           : Physical
 Resource         : 20 Rage
-Spell Level      : 5 (max 20)
+Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (6 seconds cooldown)
@@ -640,16 +640,17 @@ Effects          :
 #2 (id=5275)     : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=99581)    : Weapon Damage% (31)
-                   Base Value: 207 | Scaled Value: 3.27 | Points Per Level: 8 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 327 | Scaled Value: 3.27 | Chain Targets: 1 | Target: Enemy(6)
 #4 (id=156241)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
-Description      : A vicious strike that deals $sw3 Physical damage and reduces the effectiveness of healing on the target for $115804d.
+Description      : A vicious strike that deals ${$sw3*$<mult>} Physical damage and reduces the effectiveness of healing on the target for $115804d.
+Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
 Resource         : 10 Rage
-Spell Level      : 26
+Spell Level      : 32
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Mechanic         : Unknown(88)
@@ -666,49 +667,30 @@ Effects          :
 Description      : Snares all enemies within $A1 yards, reducing their movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
-Name             : Seasoned Soldier (id=12712) [Spell Family (4), Passive] 
-Class            : Arms Warrior
-School           : Physical
-Spell Level      : 10
-Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=5570)     : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x1 | Target: Self(1)
-#2 (id=257018)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634), Bladestorm (227847)
-Description      : While wielding a two-handed melee weapon, you deal $s1% increased damage.
-
-Name             : Meat Cleaver (id=12950) [Spell Family (4), Passive] 
+Name             : Whirlwind (Rank 2) (id=12950) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 28
+Spell Level      : 55
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
 #1 (id=5764)     : Apply Aura (6) | Proc Trigger Spell: Meat Cleaver (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 85739 | Target: Self(1)
-Description      : Dealing damage with Whirlwind increases the number of targets that your Bloodthirst or Rampage hits by $85739s1.
+Description      : Whirlwind causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targets for $85739s3% damage.
 
 Name             : Last Stand (id=12975) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Spell Level      : 36
+Spell Level      : 32
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
@@ -728,7 +710,7 @@ Tooltip          : Maximum health increased by $s1%.
 Name             : Berserker Rage (id=18499) [Spell Family (4)] 
 Class            : Arms Fury Protection Warrior
 School           : Physical
-Spell Level      : 40
+Spell Level      : 42
 Duration         : 6 seconds
 Cooldown         : 60 seconds
 Affecting spells : Bladestorm (46924), Warpaint (208154), Item - Warrior T19 Fury 4P Bonus (212158), Warlord's Challenge (223662), Bladestorm (227847)
@@ -761,7 +743,7 @@ Tooltip          : Immune to Fear, Sap, and Incapacitate effects.
 Name             : Devastate (id=20243) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Spell Level      : 12 (max 20)
+Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 3 maximum
@@ -775,12 +757,13 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=102316)   : Weapon Damage% (31)
-                   Base Value: 216 | Scaled Value: 2.772 | Points Per Level: 7.65 | Target: Enemy(6)
+                   Base Value: 278 | Scaled Value: 2.78 | Target: Enemy(6)
 #2 (id=11313)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
-#3 (id=290309)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
-Description      : A direct strike, dealing $sw1 Physical damage. $s3% chance to reset the remaining cooldown on Shield Slam.
+#3 (id=349776)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+Description      : A direct strike, dealing ${$sw1*$<mult>} Physical damage.$?a231834[ $s3% chance to reset the remaining cooldown on Shield Slam.][]
+Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
@@ -823,7 +806,7 @@ Description      : Damage dealt by pets increased by $s1%.
 Name             : Bloodthirst (id=23881) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 10 (max 20)
+Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
@@ -839,19 +822,20 @@ Effects          :
 #1 (id=14120)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=134421)   : Weapon Damage% (31)
-                   Base Value: 153 | Scaled Value: 2.43 | Points Per Level: 9 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 262 | Scaled Value: 2.62 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=156242)   : Energize Power (30)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
 #4 (id=226744)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy(6)
-Description      : Assault the target in a bloodthirsty craze, dealing $sw2 Physical damage and restoring $117313s1% of your health.
+Description      : Assault the target in a bloodthirsty craze, dealing ${$sw2*$<mult>} Physical damage and restoring $117313s1% of your health.
 
 |cFFFFFFFFGenerates ${$m3/10} Rage.|r
+Variables        : $mult=${($max(0,$min($pl-10,10))*8+137)/217}
 
 Name             : Spell Reflection (id=23920) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Spell Level      : 65
+Spell Level      : 80
 Duration         : 5 seconds
 Cooldown         : 25 seconds
 Stacks           : 1 initial, 1 maximum
@@ -1033,7 +1017,7 @@ Tooltip          : Interrupted.
 Name             : Victory Rush (id=34428) [Scaling Spell (12), Spell Family (4)] 
 Class            : Arms Protection Warrior
 School           : Physical
-Spell Level      : 10
+Spell Level      : 5
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Warrior (137047), Protection Warrior (137048)
@@ -1087,7 +1071,7 @@ Effects          :
 Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 36 (max 80)
+Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
 Triggered by     : Whirlwind (190411)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -1160,7 +1144,7 @@ GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Demoralizing Shout (1160), Seasoned Soldier (12712), Protection (131086), Warrior (137047)
+Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049)
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1232,7 +1216,7 @@ Name             : Bladestorm (id=50622) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160), Seasoned Soldier (12712), Protection (131086), Warrior (137047)
+Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049)
 Triggered by     : Bladestorm (46924), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1245,7 +1229,7 @@ Effects          :
 #1 (id=42845)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=42846)    : Weapon Damage% (31)
-                   Base Value: 145 | Scaled Value: 1.45 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 157 | Scaled Value: 1.57 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=42847)    : Trigger Spell: Bladestorm Off-Hand (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 95738 | Target: At Caster(22)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $sw2 Physical damage.
@@ -1253,7 +1237,7 @@ Description      : You become a whirling storm of destructive force, striking al
 Name             : Heroic Leap (id=52174) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 56
+Spell Level      : 26
 Range            : 50000 yards
 Affecting spells : Demoralizing Shout (1160), Weight of the Earth (208177)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
@@ -1301,7 +1285,7 @@ Effects          :
 Name             : Heroic Throw (id=57755) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 22
+Spell Level      : 17
 Range            : 8 - 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
@@ -1667,7 +1651,7 @@ Description      : Increases your block chance by $s1% and your dodge chance by 
 Name             : Raging Blow (id=85288) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 13
+Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Warrior (137047), Wrath and Fury (200849), Inner Rage (215573), 
@@ -1686,14 +1670,15 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | Trigger Spell: 96103 | Target: Enemy(6)
 #4 (id=317575)   : Trigger Spell: Raging Blow (64)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 100 | Trigger Spell: 85384 | Target: Enemy(6)
-Description      : A mighty blow with both weapons that deals a total of ${$96103sw2+$85384sw2} Physical damage.$?a215573[][ Only usable while Enraged.]
+Description      : A mighty blow with both weapons that deals a total of ${($96103sw2+$85384sw2)*$<mult>} Physical damage.$?a215573[][ Only usable while Enraged.]
 
 |cFFFFFFFFGenerates ${$m2/10} Rage.|r
+Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
 Name             : Raging Blow (id=85384) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 13 (max 20)
+Spell Level      : 20
 Range            : 100 yards
 Affecting spells : Warrior (137047), Wrath and Fury (200849), Inner Rage (215573), 
 Triggered by     : Raging Blow (85288)
@@ -1708,8 +1693,9 @@ Effects          :
 #1 (id=86555)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=86556)    : Weapon Damage% (31)
-                   Base Value: 125 | Scaled Value: 1.53 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 165 | Scaled Value: 1.65 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc85288
+Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
 Name             : Meat Cleaver (id=85739) [Spell Family (4)] 
 Class            : Warrior
@@ -1719,7 +1705,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
-Triggered by     : Meat Cleaver (12950)
+Triggered by     : Whirlwind (12950)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1733,8 +1719,11 @@ Effects          :
 #2 (id=333347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self(1)
                    Affected Spells: Bloodthirst (23881)
-Description      : Causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targets for 50% damage.
-Tooltip          : Your next Bloodthirst or Rampage strikes up to $w1 additional targets for 50% damage.
+#3 (id=349763)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 17 | Target: Self(1)
+                   Affected Spells: Bloodthirst (23881)
+Description      : Causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targets for $s2% damage.
+Tooltip          : Your next Bloodthirst or Rampage strikes up to $w1 additional targets for $w3% damage.
 
 Name             : Plate Specialization (id=86101) [Passive, Hidden] 
 Class            : Arms Warrior
@@ -1819,7 +1808,7 @@ Name             : Bladestorm Off-Hand (id=95738) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160), Seasoned Soldier (12712), Protection (131086), Warrior (137047)
+Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049)
 Triggered by     : Bladestorm (50622), Bladestorm (168969)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -1831,13 +1820,13 @@ Effects          :
 #1 (id=101423)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=101424)   : Weapon Damage% (31)
-                   Base Value: 145 | Scaled Value: 1.45 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 157 | Scaled Value: 1.57 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $sw2 Physical damage.
 
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 13 (max 20)
+Spell Level      : 20
 Range            : 100 yards
 Affecting spells : Warrior (137047), Wrath and Fury (200849), Inner Rage (215573), 
 Triggered by     : Raging Blow (85288)
@@ -1852,13 +1841,14 @@ Effects          :
 #1 (id=101983)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=101984)   : Weapon Damage% (31)
-                   Base Value: 125 | Scaled Value: 1.53 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 165 | Scaled Value: 1.65 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc85288
+Variables        : $mult=${($max(0,$min($pl-13,7))*4+118)/146}
 
 Name             : Commanding Shout (id=97462) [Spell Family (4)] 
 Class            : Arms Fury Warrior
 School           : Physical
-Spell Level      : 83
+Spell Level      : 80
 Cooldown         : 180 seconds
 Category         : 1251
 Affecting spells : Bladestorm (46924), Bladestorm (227847)
@@ -1896,7 +1886,7 @@ Tooltip          : Health increased by $97462s1% of maximum.
 Name             : Furious Slash (id=100130) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 10 (max 20)
+Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
@@ -1913,10 +1903,9 @@ Effects          :
 #2 (id=107865)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=107866)   : Weapon Damage% (31)
-                   Base Value: 184 | Scaled Value: 2.84 | Points Per Level: 10 | Target: Enemy(6)
-#4 (id=313843)   : Trigger Spell: Taste for Blood (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 206333 | Target: Self(1)
-Description      : Aggressively strike with your off-hand weapon for $sw3 Physical damage. Increases your Bloodthirst critical strike chance by $206333s1% until it next deals a critical strike, stacking up to $206333u times.
+                   Base Value: 307 | Scaled Value: 3.07 | Target: Enemy(6)
+Description      : Aggressively strike with your off-hand weapon for ${$sw3*$<mult>} Physical damage.$?a231824[ Increases your Bloodthirst critical strike chance by $206333s1% until it next deals a critical strike, stacking up to $206333u times.][]
+Variables        : $mult=${($max(0,$min($pl-10,10))*10+171)/271}
 
 Name             : Double Time (id=103827) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -2072,7 +2061,7 @@ Tooltip          : Bleeding for $w1 every $t1 sec.
 Name             : Deep Wounds (id=115767) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 32
+Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
 Mechanic         : Bleed
@@ -2094,7 +2083,7 @@ Tooltip          : Bleeding for $w1 every $t1 sec.
 Name             : Deep Wounds (id=115768) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
-Spell Level      : 32
+Spell Level      : 36
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -2249,7 +2238,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=134153)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.62000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=297932)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
 Description      : Roar explosively, dealing $m1 damage to all enemies within $A1 yards and increasing all damage you deal by $s2% for $d. Dragon Roar ignores all armor and always critically strikes.
@@ -2258,7 +2247,7 @@ Tooltip          : Damage done increased by $s2%.
 Name             : Die by the Sword (id=118038) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Spell Level      : 50
+Spell Level      : 36
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Affecting spells : Bladestorm (46924), Defensive Measures (209559), Bladestorm (227847)
@@ -2411,7 +2400,7 @@ Description      : Gives a chance to block enemy melee attacks.
 Name             : Demoralizing Shout (id=125565) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 56
+Spell Level      : 1
 Duration         : 9 seconds
 Affecting spells : Bladestorm (46924), Rumbling Voice (188651), Morale Killer (199023), Booming Voice (202743), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
 Triggered by     : Demoralizing Shout (1160)
@@ -2507,7 +2496,7 @@ Tooltip          : Stunned.
 Name             : Shield Block (id=132404) [Spell Family (4)] 
 Class            : Warrior, Monk
 School           : Physical
-Spell Level      : 18
+Spell Level      : 20
 Duration         : 6 seconds
 Affecting spells : Shield Mastery (184927), Shatter the Bones (188639), Heavy Repercussions (203177)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -2645,10 +2634,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179733)   : Apply Aura (6) | Unknown effect sub type (213)
                    Base Value: 297 | Scaled Value: 297 | Target: Self(1)
-#2 (id=186754)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#3 (id=191014)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=186754)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x1 | Target: Self(1)
+#3 (id=191014)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634), Bladestorm (227847)
 #4 (id=191015)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191016)   : Apply Aura (6) | Dummy (4)
@@ -2674,6 +2664,10 @@ Effects          :
 #15 (id=261056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #16 (id=348275)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#17 (id=349870)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#18 (id=349871)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Fury Warrior (id=137050) [Spell Family (4), Passive, Hidden] 
@@ -2917,13 +2911,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=217505)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.50000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.70000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc152277
 
 Name             : Riposte (id=161798) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
-Spell Level      : 76
+Spell Level      : 65
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2975,10 +2969,10 @@ Name             : Execute (id=163201) [Spell Family (4)]
 Class            : Arms Warrior
 School           : Physical
 Resource         : 10 Rage
-Spell Level      : 8 (max 20)
+Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), 
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -2989,10 +2983,12 @@ Effects          :
 #1 (id=229520)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=229537)   : Weapon Damage% (31)
-                   Base Value: 114 | Scaled Value: 1.62 | Points Per Level: 4 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 162 | Scaled Value: 1.62 | Chain Targets: 1 | Target: Enemy(6)
 #3 (id=344393)   : Energize Power (30)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: rage | Target: Self(1)
-Description      : Attempts to finish off a foe, causing $sw2 Physical damage, and consuming up to $m3 additional Rage to deal up to ${$sw2*3} additional damage. Only usable on enemies that have less than 20% health.
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
+#4 (id=349774)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+Description      : Attempts to finish off a foe, causing $sw2 Physical damage, and consuming up to $m4 additional Rage to deal up to ${$sw2*$m4/10} additional damage. Only usable on enemies that have less than 20% health.
 
 Name             : Execute Off-Hand (id=163558) [Spell Family (4)] 
 Class            : Warrior
@@ -3000,7 +2996,7 @@ School           : Physical
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), 
+Affecting spells : Battle Cry (1719), Single-Minded Fury (81099), Protection (131086), Warrior (137047), Death Sentence (144442), Deathdealer (200846), Sense Death (200979), Juggernaut (201009), Dauntless (202297), Deathblow (209481), Precise Strikes (209493), Shattered Defenses (209706), Stone Heart (225947), Execute (231827), Execute (231830)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3011,13 +3007,13 @@ Effects          :
 #1 (id=230085)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=230086)   : Weapon Damage% (31)
-                   Base Value: 463 | Scaled Value: 4.63 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 333 | Scaled Value: 3.33 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Spell Level      : 18
+Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
@@ -3040,7 +3036,7 @@ Name             : Bladestorm (id=168969) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160), Seasoned Soldier (12712), Protection (131086), Warrior (137047)
+Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : .......x .......x ........ ........   ........ .......x ........ ........ 
@@ -3052,7 +3048,7 @@ Effects          :
 #1 (id=239417)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=239418)   : Weapon Damage% (31)
-                   Base Value: 145 | Scaled Value: 1.45 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 157 | Scaled Value: 1.57 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=239419)   : Trigger Spell: Bladestorm Off-Hand (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 95738 | Target: At Caster(22)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your main hand weapon for $sw2 Physical damage.
@@ -3060,7 +3056,7 @@ Description      : You become a whirling storm of destructive force, striking al
 Name             : Enrage (id=184361) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 10
+Spell Level      : 14
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -3072,9 +3068,7 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=267204)   : Dual Wield (40)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#2 (id=267205)   : Apply Aura (6) | Proc Trigger Spell: Enrage (42)
+#1 (id=267204)   : Apply Aura (6) | Proc Trigger Spell: Enrage (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 184362 | Target: Self(1)
 Description      : Bloodthirst critical strikes $?a206320[or activating Berserker Rage ][]will Enrage you, increasing your attack speed by $184362s1% and damage you take by $184362s2% for $184362d.
 
@@ -3104,7 +3098,7 @@ Tooltip          : Attack speed increased by $s1% and damage taken increased by 
 Name             : Enraged Regeneration (id=184364) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 12
+Spell Level      : 36
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Affecting spells : Unwavering Sentinel (29144), Bladestorm (46924), Neltharion's Fury (203524), Bladestorm (222634), Bladestorm (227847)
@@ -3128,7 +3122,7 @@ Name             : Rampage (id=184367) [Spell Family (4)]
 Class            : Fury Warrior
 School           : Physical
 Resource         : 85 Rage
-Spell Level      : 18
+Spell Level      : 12
 Range            : 5 yards
 GCD              : 2 seconds
 Cooldown         : 1.5 seconds
@@ -3174,7 +3168,7 @@ Effects          :
 #1 (id=267757)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267758)   : Weapon Damage% (31)
-                   Base Value: 159 | Scaled Value: 1.59 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 172 | Scaled Value: 1.72 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=184709) [Spell Family (4)] 
@@ -3196,13 +3190,13 @@ Effects          :
 #1 (id=267761)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=267762)   : Weapon Damage% (31)
-                   Base Value: 106 | Scaled Value: 1.06 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 114 | Scaled Value: 1.14 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
 Class            : Arms Warrior
 School           : Physical
-Spell Level      : 18
+Spell Level      : 34
 Proc Chance      : 100%
 Proc Flags       : ....x... x.x.x.x. x....... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
@@ -3259,7 +3253,7 @@ Tooltip          : Increases the damage done by your next Whirlwind by $w1%.
 Name             : Whirlwind (id=190411) [Spell Family (4)] 
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 28 (max 80)
+Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
 Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
@@ -3282,15 +3276,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Trigger Spell: 199667 | Target: Self(1)
 #6 (id=293825)   : Trigger Spell: Whirlwind Off-Hand (64)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Trigger Spell: 44949 | Target: Self(1)
-Description      : Unleashes a whirlwind of steel, striking all enemies within $199658A1 yards for ${3*($199667sw2+$44949sw2)} Physical damage.
+Description      : Unleashes a whirlwind of steel, striking all enemies within $199658A1 yards for ${3*($199667sw2+$44949sw2)} Physical damage.$?a12950[
 
-Causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targets for 50% damage.
+Causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targets for $85739s3% damage.][]
 
 Name             : Ignore Pain (id=190456) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
 Resource         : 20 - 60 Rage
-Spell Level      : 34
+Spell Level      : 40
 Range            : 5 yards
 Duration         : 15 seconds
 Cooldown         : 1 seconds
@@ -3439,7 +3433,7 @@ Effects          :
 Name             : Whirlwind (id=199658) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 28 (max 80)
+Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
 Triggered by     : Whirlwind (1680)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -3459,7 +3453,7 @@ Description      : $@spelldesc1680
 Name             : Whirlwind (id=199667) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 28 (max 80)
+Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
 Triggered by     : Whirlwind (190411)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -3479,7 +3473,7 @@ Description      : $@spelldesc190411
 Name             : Whirlwind (id=199850) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 28 (max 80)
+Spell Level      : 1 (max 80)
 Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Cleave (188923), Dauntless (202297), Wrecking Ball (215570), Many Will Fall (216274)
 Triggered by     : Whirlwind (1680)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
@@ -3498,7 +3492,7 @@ Description      : $@spelldesc1680
 Name             : Tactician (id=199854) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Level      : 18
+Spell Level      : 1
 Duration         : 3 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -3554,7 +3548,7 @@ Effects          :
 #1 (id=296642)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296643)   : Weapon Damage% (31)
-                   Base Value: 186 | Scaled Value: 1.86 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 201 | Scaled Value: 2.01 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -3575,7 +3569,7 @@ Effects          :
 #1 (id=296644)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296645)   : Weapon Damage% (31)
-                   Base Value: 319 | Scaled Value: 3.19 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 345 | Scaled Value: 3.45 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
@@ -4214,7 +4208,7 @@ Name             : Focused Rage (id=204488) [Spell Family (4)]
 Class            : Protection Warrior
 School           : Physical
 Resource         : 30 Rage
-Spell Level      : 44
+Spell Level      : 12
 Range            : 5 yards
 Duration         : 30 seconds
 Cooldown         : 1.5 seconds
@@ -4244,19 +4238,19 @@ School           : Physical
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
-Attributes       : ......x. x....... ........ ........   ........ ........ ........ ....x... 
+Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ...x.... 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=303446)   : Apply Friendly Area Aura (128) | Dummy (4)
+#1 (id=303446)   : Apply Raid Aura (65) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Radius: 60 yards | Target: Self(1)
 #2 (id=332963)   : Apply Aura (6) | Periodic Trigger Spell: Inspiring Presence every 1 seconds (23)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222944 | Target: Self(1)
-Description      : You inspire your allies within $a1 yards, causing them to be healed for $s1% of all damage they deal.
+Description      : You inspire your party or raid members within $a1 yards, causing them to be healed for $s1% of all damage they deal.
 Tooltip          : Will be healed for $s1% of all damage dealt.
 
 Name             : Odyn's Fury (Artifact) (id=205545) [Spell Family (4)] 
@@ -4298,7 +4292,7 @@ Effects          :
 #1 (id=303703)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 14 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=303704)   : Weapon Damage% (31)
-                   Base Value: 250 | Scaled Value: 2.5 | Radius: 0 - 14 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 270 | Scaled Value: 2.7 | Radius: 0 - 14 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #3 (id=303709)   : Apply Aura (6) | Periodic Damage: fire every 1 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Radius: 0 - 14 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : $@spelldesc205545
@@ -4320,7 +4314,7 @@ Effects          :
 #1 (id=303705)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 14 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #2 (id=303706)   : Weapon Damage% (31)
-                   Base Value: 250 | Scaled Value: 2.5 | Radius: 0 - 14 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 270 | Scaled Value: 2.7 | Radius: 0 - 14 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : $@spelldesc205545
 
 Name             : Frenzy (id=206313) [Spell Family (4), Passive, Hidden] 
@@ -4404,7 +4398,6 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Affecting spells : Item - Warrior T19 Fury 2P Bonus (212157)
-Triggered by     : Furious Slash (100130)
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ...x.... ........   ...x.... ........ .xx..... ........ 
@@ -4576,7 +4569,7 @@ Description      : Stomp the ground, causing a ring of corrupted spikes to erupt
 Name             : Rampage! (id=209694) [Spell Family (4), Passive, Hidden] 
 Class            : Fury Warrior
 School           : Physical
-Spell Level      : 18
+Spell Level      : 1
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -4719,7 +4712,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=320493)   : Apply Aura (6) | Proc Trigger Spell: In For The Kill (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215551 | Target: Self(1)
-Description      : Mortal Strike generates ${$215551s1/10} Rage when used against targets that are below 20% health.
+Description      : Mortal Strike refunds ${$215551s1/10} Rage when used against targets that are below 20% health.
 
 Name             : In For The Kill (id=215551) [Spell Family (4)] 
 Class            : Warrior
@@ -4925,7 +4918,7 @@ Effects          :
 #1 (id=325560)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=325561)   : Weapon Damage% (31)
-                   Base Value: 53 | Scaled Value: 0.53 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 57 | Scaled Value: 0.57 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc184367
 
 Name             : Gaze of the Val'kyr (id=218822) [Spell Family (4), Hidden] 
@@ -5064,7 +5057,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot crit (93)
 Effects          :
 #1 (id=332954)   : Direct Heal (10)
@@ -5161,12 +5154,12 @@ Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is curre
 Name             : Bladestorm (id=227847) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Spell Level      : 75
+Spell Level      : 65
 GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Demoralizing Shout (1160), Seasoned Soldier (12712), Protection (131086), Warrior (137047)
+Affecting spells : Demoralizing Shout (1160), Protection (131086), Warrior (137047), Arms Warrior (137049)
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -5216,5 +5209,121 @@ Description      : Throws a whirling weapon at the target location that inflicts
 
 Also increases your Parry chance by $227744s1% for $227744d.][]
 Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is currently active.]
+
+Name             : Furious Slash (Rank 2) (id=231824) [Spell Family (4), Passive] 
+Class            : Fury Warrior
+School           : Fire
+Spell Level      : 22
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349742)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Furious Slash increases your Bloodthirst critical strike chance by $206333s1% until it next deals a critical strike, stacking up to $206333u times.
+
+Name             : Execute (Rank 2) (id=231827) [Spell Family (4), Passive] 
+Class            : Fury Warrior
+School           : Fire
+Spell Level      : 28
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349746)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558)
+Description      : Execute's damage is increased by $s1%.
+
+Name             : Execute (Rank 2) (id=231830) [Spell Family (4), Passive] 
+Class            : Arms Warrior
+School           : Fire
+Spell Level      : 28
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349749)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 32 | Target: Self(1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558)
+Description      : Execute can comsume up to $s1 additional rage to deal further increased damage.
+
+Name             : Cleave (Rank 2) (id=231833) [Spell Family (4), Passive] 
+Class            : Arms Warrior
+School           : Physical
+Spell Level      : 55
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349757)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : For each target Cleave hits, up to $188923u, your next Whirlwind deals $188923s1% more damage.
+
+
+Name             : Devastate (Rank 2) (id=231834) [Spell Family (4), Passive] 
+Class            : Protection Warrior
+School           : Physical
+Spell Level      : 34
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349758)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Devastate has a $20243s3% chance to reset the remaining cooldown on Shield Slam.
+
+
+Name             : Dual Wield (id=231842) [Spell Family (4), Passive] 
+Class            : Fury Warrior
+School           : Physical
+Spell Level      : 1
+Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349770)   : Dual Wield (40)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : You may equip one-handed weapons in your off-hand.
+
+Name             : Shield Block (Rank 2) (id=231847) [Spell Family (4), Passive] 
+Class            : Protection Warrior
+School           : Physical
+Spell Level      : 38
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=349779)   : Apply Aura (6) | Modify Cooldown Charge (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1385 | Target: Self(1)
+Description      : Shield Block has ${$s1+1} charges.
 
 

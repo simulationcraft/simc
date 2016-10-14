@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 Live (wow build 22522, git build 72ba20b)
+SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1025,7 +1025,7 @@ Range            : 50000 yards
 Duration         : 20 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : ........ ........ ..x..... ........   ...x...x ........ ........ ........ 
+Attributes       : ........ .....x.. ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ xxx..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1119,7 +1119,7 @@ Name             : Rune of Razorice (id=53343) [Hidden]
 Class            : Death Knight
 School           : Physical
 Cast Time        : 5 seconds
-Attributes       : .....x.x x....... x....... ........   ........ ..x..... ........ ........ 
+Attributes       : .....x.x x....x.. x....... ........   ........ ..x..... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1563,7 +1563,7 @@ Description      : Reduces the damage your summoned ghoul takes from creature ar
 Name             : Stoneskin Gargoyle (id=62157) [Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
-Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+Attributes       : ....x.xx x....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1905,10 +1905,10 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=68645)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Death and Decay (43265), Death and Decay (143375), Defile (152280)
+                   Affected Spells: Death and Decay (43265), Tightening Grasp (143375), Defile (152280)
 #2 (id=312580)   : Apply Aura (6) | Add Percent Modifier (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 34 | Target: Self(1)
-                   Affected Spells: Death and Decay (43265), Death and Decay (143375), Defile (152280)
+                   Affected Spells: Death and Decay (43265), Tightening Grasp (143375), Defile (152280)
 Description      : $@spelldesc81136
 Tooltip          : Your next Death and Decay costs no Runes and generates no Runic Power.
 
@@ -2741,7 +2741,7 @@ Effects          :
                    Affected Spells: Unholy Strength (53365), Death Siphon (116783)
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Death and Decay (43265), Death and Decay (143375), Defile (152280)
+                   Affected Spells: Death and Decay (43265), Tightening Grasp (143375), Defile (152280)
 #4 (id=191168)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
                    Affected Spells: Death and Decay (52212), Defile (156000)
@@ -2787,7 +2787,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self(1)
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
-Name             : Death and Decay (id=143375) [Spell Family (15)] 
+Name             : Tightening Grasp (id=143375) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 60
@@ -2795,9 +2795,9 @@ Range            : 100 yards
 Duration         : 10 seconds
 Mechanic         : Unknown(88)
 Affecting spells : Crimson Scourge (81141), Blood Death Knight (137008), Rapid Decomposition (194662)
-Attributes       : ........ ........ ........ ..x.....   ...x...x ........ ........ ....x... 
+Attributes       : ........ ........ ........ ..x.....   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ .x...... ........ ...x..x. 
+                 : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   .x...... ........ ........ ........ 
@@ -2805,8 +2805,7 @@ Effects          :
 #1 (id=191967)   : Persistent Area Aura (27) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 10 yards | Mechanic: Unknown(88) | Target: Unknown(87) -> AOE enemy(28)
 Description      : Corrupts the ground targeted by the Death Knight, causing $52212m1 Shadow damage every sec to targets that remain in the area $?s58629[and reducing their movement speed by $58629s1% ][]for $d.
-Tooltip          : Suffering $w2 Shadow damage every sec.$?$w4!=0[
-Movement speed reduced by $w4%.][]
+Tooltip          : Movement speed reduced by $m1% from Death and Decay.
 
 Name             : Item - Death Knight T16 DPS 4P Bonus (id=144907) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -3511,7 +3510,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 4714 | Target: Custom(18)
 Description      : Summons Sindragosa, who breathes frost on all enemies within $s1 yd in front of you, dealing $190780s1 Frost damage and slowing movement speed by $190780s2% for $190780d.
 
-Name             : Frost Breath (id=190780) 
+Name             : Frost Breath (id=190780) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Range            : 100 yards
@@ -3520,7 +3519,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ x....... ......x. 
-                 : ........ ........ ........ ........   ...x.... ........ .xx..... .....x.. 
+                 : ........ ........ ........ ........   ...x.... .......x .xx..... .....x.. 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
@@ -3711,7 +3710,7 @@ Effects          :
                    Affected Spells: Death and Decay (188290)
 #2 (id=287223)   : Apply Aura (6) | Add Percent Modifier: Unknown 2 (108)
                    Base Value: -33 | Scaled Value: -33 | Misc Value: 19 | Target: Self(1)
-                   Affected Spells: Death and Decay (43265), Death and Decay (143375), Defile (152280)
+                   Affected Spells: Death and Decay (43265), Tightening Grasp (143375), Defile (152280)
 #3 (id=312639)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #4 (id=331476)   : Dummy (3)
@@ -3813,7 +3812,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=286100)   : Apply Aura (6) | Proc Trigger Spell: Frozen Pulse (42)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195750 | Target: Self(1)
-Description      : While you have no full Runes, your auto attacks radiate intense cold, inflicting $195750s1 Frost damage on all nearby enemies.
+#2 (id=351112)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
+Description      : While you have fewer than $m2 full $LRune:Runes;, your auto attacks radiate intense cold, inflicting $195750s1 Frost damage on all nearby enemies.
 
 Name             : Gathering Storm (id=194912) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -3976,7 +3977,7 @@ Resource         : -10 Runic Power
 Spell Level      : 58
 Range            : 30 yards
 GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
+Velocity         : 60 yards/sec
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4074,8 +4075,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=287339)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.80000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
-Description      : Your auto attack has a chance to cause you to radiate intense cold, inflicting Frost $s1 damage on all nearby enemies.
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.66000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+Description      : $@spelldesc194909
 
 Name             : Festering Wound (id=195757) [Spell Family (15)] 
 Class            : Death Knight
@@ -4554,12 +4555,12 @@ Effects          :
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2
+                   Base Value: 3 | Scaled Value: 3
 #5 (id=321496)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Chain Targets: 2 | Target: Enemy(6)
 Description      : Instantly strike the target and 1 other nearby enemy, causing $sw2 Physical damage, and reducing enemies' movement speed by $s5% for $d.
 
-|cFFFFFFFFGenerates $s3 bonus Runic Power$?s221536[, plus $s4 Runic Power per additional enemy struck][].|r
+|cFFFFFFFFGenerates $?s221536[${$s3+$221536s1}][$s3] bonus Runic Power$?s221536[, plus $221536s1 Runic Power per additional enemy struck][].|r
 Tooltip          : Movement speed reduced by $s5%.
 
 Name             : Blooddrinker (id=206931) [Spell Family (15)] 
@@ -4884,7 +4885,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 5 | Target: Self(1)
 #2 (id=306339)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 6 | Target: Self(1)
-Description      : Empower your rune weapon, gaining $s1 $Lrune:runes; and ${$m2/10} Runic Power instantly and every $t1 sec for $d.
+Description      : Empower your rune weapon, gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power instantly and every $t1 sec for $d.
+Tooltip          : Gaining $s1 $LRune:Runes; and ${$m2/10} Runic Power and every $t1 sec.
 
 Name             : Avalanche (id=207142) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -5675,7 +5677,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
 Affecting spells : Death Knight (137005), Lingering Apparition (212763), White Walker (212765), March of the Damned (219779)
-Attributes       : ....x... ........ x....... ........   ..x...x. ..x..... ........ ........ 
+Attributes       : ....x... ........ x......x ........   ..x...x. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6097,7 +6099,7 @@ Description      : Consume shadowy essence.
 
 |cFFFFFFFFGenerates $s1 Rune.|r
 
-Recharge time reduced by $s2 sec whenever a Bone Shield charge is consumed.
+Maximum 2 charges. Recharge time reduced by $s2 sec whenever a Bone Shield charge is consumed.
 
 Name             : Blood Mirror (id=221847) [Spell Family (7)] 
 Class            : Death Knight
