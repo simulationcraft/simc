@@ -4885,6 +4885,12 @@ struct demonic_power_damage_t : public warlock_spell_t
     proc = true;
     base_multiplier *= 1.0 + p -> artifact.impish_incineration.data().effectN( 3 ).percent();
     destro_mastery = false;
+
+    // Hotfix on the aff hotfix spell, check regularly.
+    if ( p -> specialization() == WARLOCK_AFFLICTION )
+    {
+      base_multiplier *= 1.0 + p -> find_spell( 137043 ) -> effectN( 1 ).percent();
+    }
   }
 };
 
