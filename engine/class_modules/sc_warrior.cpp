@@ -4348,7 +4348,7 @@ void warrior_t::init_spells()
   spec.spell_reflection         = find_specialization_spell( "Spell Reflection" );
   spec.tactician                = find_specialization_spell( "Tactician" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
-  spec.titans_grip              = find_specialization_spell( "Titan'sGrip" );
+  spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.victory_rush             = find_specialization_spell( "Victory Rush" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
