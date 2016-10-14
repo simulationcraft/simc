@@ -794,7 +794,7 @@ double dbc_t::combat_rating_multiplier( unsigned item_level ) const
 {
   assert( item_level > 0 && item_level <= MAX_ILEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_combat_ratings_mult_by_ilvl[ item_level - 1 ]
+  return ptr ? _ptr__combat_ratings_mult_by_ilvl[ item_level - 1 ]
     : __combat_ratings_mult_by_ilvl[ item_level - 1 ];
 #else
   return __combat_ratings_mult_by_ilvl[ item_level - 1 ];
@@ -924,7 +924,7 @@ double dbc_t::spell_scaling( player_e t, unsigned level ) const
 
   assert( class_id < dbc_t::class_max_size() + 6 && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_spell_scaling[ class_id ][ level - 1 ]
+  return ptr ? _ptr__spell_scaling[ class_id ][ level - 1 ]
              : __spell_scaling[ class_id ][ level - 1 ];
 #else
   return __spell_scaling[ class_id ][ level - 1 ];
@@ -1049,7 +1049,7 @@ double dbc_t::resource_base( player_e t, unsigned level ) const
 
   assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_base_mp[ class_id ][ level - 1 ]
+  return ptr ? _ptr__base_mp[ class_id ][ level - 1 ]
              : __base_mp[ class_id ][ level - 1 ];
 #else
   return __base_mp[ class_id ][ level - 1 ];
@@ -1072,7 +1072,7 @@ double dbc_t::health_per_stamina( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_hp_per_sta[ level - 1 ]
+  return ptr ? _ptr__hp_per_sta[ level - 1 ]
              : __hp_per_sta[ level - 1 ];
 #else
   return __hp_per_sta[ level - 1 ];
@@ -1103,7 +1103,7 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
   assert( combat_rating_id < RATING_MAX );
   assert( level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
-  return ptr ? __ptr_combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0
+  return ptr ? _ptr__combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0
              : __combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0;
 #else
   return __combat_ratings[ combat_rating_id ][ level - 1 ] * 100.0 ;
@@ -1457,7 +1457,7 @@ double dbc_t::item_socket_cost( unsigned ilevel ) const
 {
   assert( ilevel > 0 && ( ilevel <= random_property_max_level() ) );
 #if SC_USE_PTR
-  return ptr ? __ptr_item_socket_cost_per_level[ ilevel - 1 ]
+  return ptr ? _ptr__item_socket_cost_per_level[ ilevel - 1 ]
              : __item_socket_cost_per_level[ ilevel - 1 ];
 #else
   return __item_socket_cost_per_level[ ilevel - 1 ];
@@ -1468,7 +1468,7 @@ double dbc_t::armor_mitigation_constant( unsigned level ) const
 {
   assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
 #if SC_USE_PTR
-  return ptr ? __ptr_armor_mitigation_by_lvl[ level - 1 ] : __armor_mitigation_by_lvl[ level - 1 ];
+  return ptr ? _ptr__armor_mitigation_by_lvl[ level - 1 ] : __armor_mitigation_by_lvl[ level - 1 ];
 #else
   return __armor_mitigation_by_lvl[ level - 1 ];
 #endif
@@ -2791,7 +2791,7 @@ size_t hotfix::n_power_hotfix_entry( bool ptr )
 size_t hotfix::n_artifact_hotfix_entry( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE
+  return ptr ? PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE
              : ARTIFACT_POWER_RANK_HOTFIX_SIZE;
 #else
   ( void ) ptr;
@@ -2832,7 +2832,7 @@ const hotfix::client_hotfix_entry_t* hotfix::power_hotfix_entry( bool ptr )
 const hotfix::client_hotfix_entry_t* hotfix::artifact_hotfix_entry( bool ptr )
 {
 #if SC_USE_PTR
-  return ptr ? __ptr_artifact_power_rank_hotfix_data
+  return ptr ? __ptr_ptr_artifact_power_rank_hotfix_data
              : __artifact_power_rank_hotfix_data;
 #else
   (void ) ptr;

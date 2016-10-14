@@ -26,7 +26,7 @@ goto usage
 :okay
 
 
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% -t spec_list                  > %OUTPATH%\sc_spec_list.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR% -t spec_list                  > %OUTPATH%\sc_spec_list%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t talent                  > %OUTPATH%\sc_talent_data%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t spell > %OUTPATH%\sc_spell_data%PTREXT%.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t rppm_coeff              >> %OUTPATH%\sc_spell_lists%PTREXT%.inc
@@ -51,7 +51,7 @@ py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_scalin
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_name_desc         >> %OUTPATH%/sc_item_data%PTREXT%2.inc
 py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR%  -t item_child             >> %OUTPATH%/sc_item_data%PTREXT%2.inc
 
-py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% -t spec_enum > %OUTPATH%\sc_specialization_data.inc
+py -3  %RUNFILE% -p %INPATH% -b %BUILD% --cache %CACHEDIR% %PTR% -t spec_enum > %OUTPATH%\sc_specialization_data%PTREXT%.inc
 
 echo Done!
 

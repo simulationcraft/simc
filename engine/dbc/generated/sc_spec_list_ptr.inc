@@ -1,5 +1,5 @@
 #define MAX_SPECS_PER_CLASS (4)
-#define MAX_SPEC_CLASS  (12)
+#define MAX_SPEC_CLASS  (13)
 
 static specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] = 
 {
@@ -29,7 +29,7 @@ static specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =
   },
   {
     ROGUE_ASSASSINATION,
-    ROGUE_COMBAT,
+    ROGUE_OUTLAW,
     ROGUE_SUBTLETY,
     SPEC_NONE,
   },
@@ -75,6 +75,11 @@ static specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =
     DRUID_GUARDIAN,
     DRUID_RESTORATION,
   },
+  {
+    DEMON_HUNTER_HAVOC,
+    DEMON_HUNTER_VENGEANCE,
+    SPEC_NONE,
+    SPEC_NONE,
+  },
 };
-
 
