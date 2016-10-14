@@ -656,6 +656,9 @@ struct rogue_t : public player_t
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_insignia_of_ravenholdt( const action_state_t* );
 
+  // Computes the composite Agonizing Poison stack multiplier for Assassination Rogue
+  double agonizing_poison_stack_multiplier( const rogue_td_t* ) const;
+
   // On-death trigger for Venomous Wounds energy replenish
   void trigger_venomous_wounds_death( player_t* );
 
@@ -5294,6 +5297,7 @@ void rogue_t::trigger_second_shuriken( const action_state_t* state )
 
 void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
 {
+  using namespace actions;
   if ( ! artifact.surge_of_toxins.rank() )
   {
     return;
@@ -5304,7 +5308,15 @@ void rogue_t::trigger_surge_of_toxins( const action_state_t* s )
     return;
   }
 
-  get_target_data( s -> target ) -> debuffs.surge_of_toxins -> trigger();
+  int max_cp = rogue_attack_t::cast_state( s ) -> cp;
+  // In game apparently DS extra spent CP does not work on surge bonus
+  if ( bugs )
+  {
+    max_cp = std::min( max_cp, static_cast<int>( COMBO_POINT_MAX ) );
+  }
+
+  // 2% per combo point, nowhere to be found in spell data. Agonizing Poison halves it to 1%.
+  get_target_data( s -> target ) -> debuffs.surge_of_toxins -> trigger( 1, max_cp * 0.02 );
 }
 
 void rogue_t::trigger_poison_knives( const action_state_t* state )
@@ -6061,7 +6073,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     .default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
   debuffs.garrote = new buffs::proxy_garrote_t( *this );
   debuffs.surge_of_toxins = buff_creator_t( *this, "surge_of_toxins", source -> find_spell( 192425 ) )
-    .default_value( source -> find_spell( 192425 ) -> effectN( 1 ).percent() )
+    .default_value( source -> find_spell( 192425 ) -> effectN( 1 ).base_value() * 0.002 )
     .trigger_spell( source -> artifact.surge_of_toxins );
   debuffs.kingsbane = buff_creator_t( *this, "kingsbane", source -> artifact.kingsbane.data().effectN( 5 ).trigger() )
     .default_value( source -> artifact.kingsbane.data().effectN( 5 ).trigger() -> effectN( 1 ).percent() )
@@ -6235,6 +6247,61 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+// rogue_t::agonizing_poison_stack_multiplier ===============================
+
+double rogue_t::agonizing_poison_stack_multiplier( const rogue_td_t* td ) const
+{
+  if ( ! td -> debuffs.agonizing_poison -> check() )
+  {
+    return 0;
+  }
+
+  // 0.04 to 0.20 base
+  double multiplier = td -> debuffs.agonizing_poison -> stack_value();
+
+  // Mastery, Master Alchemist, and Poison Knives apply additively
+  double additive_multiplier = 1.0;
+
+  additive_multiplier += cache.mastery() * mastery.potent_poisons -> effectN( 4 ).mastery_value();
+  if ( artifact.master_alchemist.rank() )
+  {
+    // Hardcoded divisor for now, not available in the spell data
+    additive_multiplier += artifact.master_alchemist.percent() / 5;
+  }
+
+  if ( artifact.poison_knives.rank() )
+  {
+    // Hardcoded divisor for now, not available in the spell data
+    additive_multiplier += artifact.poison_knives.percent() / 2;
+  }
+
+  multiplier *= additive_multiplier;
+
+  // Master Poisoner and Surge of Toxins apply as normal multipliers
+
+  if ( talent.master_poisoner -> ok() )
+  {
+    multiplier *= 1.0 + talent.master_poisoner -> effectN( 3 ).percent();
+  }
+
+  // Technically in game "features" and this should only apply after triggering a poison after the
+  // Surge of Toxing buff goes up.
+  if ( td -> debuffs.surge_of_toxins -> up() )
+  {
+    // Note, half effectiveness on Agonizing Poison
+    multiplier *= 1.0 + td -> debuffs.surge_of_toxins -> stack_value() / 2;
+  }
+
+  // To be confirmed: behavior of Zoldyck Family Training Shackles with Agonizing Poison
+  if ( legendary.zoldyck_family_training_shackles &&
+       td -> target -> health_percentage() < legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
+  {
+    multiplier *= 1.0 + legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
+  }
+
+  return multiplier;
+}
+
 // rogue_t::composite_player_target_multiplier ==============================
 
 double rogue_t::composite_player_target_multiplier( player_t* target, school_e school ) const
@@ -6243,38 +6310,7 @@ double rogue_t::composite_player_target_multiplier( player_t* target, school_e s
 
   rogue_td_t* tdata = get_target_data( target );
 
-  if ( tdata -> debuffs.agonizing_poison -> check() )
-  {
-    double stack_value = tdata -> debuffs.agonizing_poison -> stack_value();
-    if ( tdata -> debuffs.surge_of_toxins -> up() )
-    {
-      stack_value += tdata -> debuffs.surge_of_toxins -> data().effectN( 1 ).percent() * .1 *
-                     tdata -> debuffs.agonizing_poison -> check();
-    }
-    stack_value *= 1.0 + talent.master_poisoner -> effectN( 3 ).percent();
-    stack_value *= 1.0 + cache.mastery() * mastery.potent_poisons -> effectN( 4 ).mastery_value();
-    // Note the division (by 5), apparently it is hardcoded into the tooltip, the artifact power
-    // itself uses power levels of 5, 10, 15, 20, ...
-    if ( artifact.master_alchemist.rank() )
-    {
-      stack_value *= 1.0 + artifact.master_alchemist.percent() / 5;
-    }
-    // Another weird one, this time divided by 2
-    if ( artifact.poison_knives.rank() )
-    {
-      stack_value *= 1.0 + artifact.poison_knives.percent() / 2;
-    }
-    // To be confirmed: behavior of Zoldyck Family Training Shackles with
-    // Agonizing Poison
-    if ( legendary.zoldyck_family_training_shackles )
-    {
-      if ( target -> health_percentage() < legendary.zoldyck_family_training_shackles -> effectN( 2 ).base_value() )
-      {
-        stack_value *= 1.0 + legendary.zoldyck_family_training_shackles -> effectN( 1 ).percent();
-      }
-    }
-    m *= 1.0 + stack_value;
-  }
+  m *= 1.0 + agonizing_poison_stack_multiplier( tdata );
 
   m *= 1.0 + tdata -> debuffs.ghostly_strike -> stack_value();
 
