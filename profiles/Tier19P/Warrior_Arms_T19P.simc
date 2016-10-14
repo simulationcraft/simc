@@ -31,7 +31,7 @@ actions+=/arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40
 actions+=/battle_cry,if=(buff.bloodlust.up|time>=1)&!gcd.remains&(buff.shattered_defenses.up|(cooldown.colossus_smash.remains&cooldown.warbreaker.remains))|target.time_to_die<=10
 actions+=/avatar,if=(buff.bloodlust.up|time>=1)
 actions+=/use_item,name=gift_of_radiance
-actions+=/hamstring,if=buff.battle_cry_deadly_calm.remains>cooldown.hamstring.remains
+actions+=/hamstring,if=!ptr&buff.battle_cry_deadly_calm.remains>cooldown.hamstring.remains
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/rend,if=remains<gcd
 # The tl;dr of this line is to spam focused rage inside battle cry, the added nonsense is to help modeling the difficulty of timing focused rage immediately after mortal strike. 

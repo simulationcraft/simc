@@ -232,6 +232,9 @@ public:
     const spell_data_t* indomitable;
     const spell_data_t* intervene;
     const spell_data_t* overpower_driver;
+    const spell_data_t* arms_warrior;
+    const spell_data_t* fury_warrior;
+    const spell_data_t* prot_warrior;
   } spell;
 
   // Mastery
@@ -1211,7 +1214,17 @@ struct bladestorm_tick_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    weapon_multiplier *= 1.0 + p -> spec.seasoned_soldier -> effectN( 2 ).percent();
+    if ( p -> specialization() == WARRIOR_ARMS )
+    {
+      if ( !maybe_ptr( p -> dbc.ptr ) ) //FIXME
+      {
+        weapon_multiplier *= 1.0 + p -> spec.seasoned_soldier -> effectN( 2 ).percent();
+      }
+      else
+      {
+        weapon_multiplier *= 1.0 + p -> spell.arms_warrior -> effectN( 3 ).percent();
+      }
+    }
   }
 
   double action_multiplier() const override
@@ -4335,7 +4348,7 @@ void warrior_t::init_spells()
   spec.spell_reflection         = find_specialization_spell( "Spell Reflection" );
   spec.tactician                = find_specialization_spell( "Tactician" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
-  spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
+  spec.titans_grip              = find_specialization_spell( "Titan'sGrip" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.victory_rush             = find_specialization_spell( "Victory Rush" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
@@ -4454,6 +4467,10 @@ void warrior_t::init_spells()
   spell.headlong_rush           = find_spell( 137047 ); // Also may be used for other crap in the future.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
   spell.overpower_driver        = find_spell( 119938 );
+
+  spell.arms_warrior            = find_spell( 137049 );
+  spell.fury_warrior            = find_spell( 137050 );
+  spell.prot_warrior            = find_spell( 137048 );
 
   // Active spells
   active.bloodbath_dot             = nullptr;
@@ -4893,7 +4910,7 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list -> add_action( this, "Hamstring", "if=buff.battle_cry_deadly_calm.remains>cooldown.hamstring.remains" );
+  default_list -> add_action( this, "Hamstring", "if=!ptr&buff.battle_cry_deadly_calm.remains>cooldown.hamstring.remains" );
   default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   default_list -> add_talent( this, "Rend", "if=remains<gcd" );
   default_list -> add_talent( this, "Focused Rage", "if=buff.battle_cry_deadly_calm.remains>cooldown.focused_rage.remains&(buff.focused_rage.stack<3|!cooldown.mortal_strike.up)&((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)",
@@ -5576,10 +5593,16 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   }
 
   // Physical damage only.
-  if ( main_hand_weapon.group() == WEAPON_2H && spec.seasoned_soldier -> ok() &&
-    dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( specialization() == WARRIOR_ARMS && dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
-    m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
+    if ( !maybe_ptr( dbc.ptr ) ) //FIXME
+    {
+      m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
+    }
+    else
+    {
+      m *= 1.0 + spell.arms_warrior -> effectN( 2 ).percent();
+    }
   }
   // Arms no longer has enrage, so no need to check for it.
   else if ( buff.enrage -> check() )
