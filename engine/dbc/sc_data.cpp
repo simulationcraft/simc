@@ -472,7 +472,7 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
   assert( s && "Could not clone spell to apply hotfix" );
 
   spelleffect_data_t* e = hotfix_db_.get_mutable_effect( id_, ptr );
-  assert( e );
+  if ( !e ) { return; }
 
   dbc_value_ = e -> get_field( field_name_ );
   if ( orig_value_ != -std::numeric_limits<double>::max() &&
