@@ -9576,7 +9576,71 @@ using namespace unique_gear;
 using namespace actions;
 // Legion Mage JC Neck
 
+struct sorcerous_fireball_t : public spell_t
+{
+  sorcerous_fireball_t( mage_t* p ) :
+    spell_t( "sorcerous_fireball", p )
+  { 
+    background = true;
+    // Need to hard-code crit% to something that isnt the players for some reason
+    may_crit = hasted_ticks = false;
+    base_dd_min = base_dd_max = 246600;
+    dot_duration = timespan_t::from_seconds( 5.0 );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    base_td = 36990;
+  }
+};
 
+struct sorcerous_frostbolt_t : public spell_t
+{
+  sorcerous_frostbolt_t( mage_t* p ) :
+    spell_t( "sorcerous_frostbolt", p )
+  {
+  background = true;
+  // Need to hard-code crit% to something that isnt the players for some reason
+  may_crit = false;
+  base_dd_min = base_dd_max = 406890;
+  }
+};
+
+struct sorcerous_arcane_blast_t : public spell_t
+{
+  sorcerous_arcane_blast_t( mage_t* p ) :
+    spell_t( "sorcerous_arcane_blast", p )
+  {
+    background = true;
+    // Need to hard-code crit% to something that isnt the players for some reason
+    may_crit = false;
+    base_dd_min = base_dd_max = 431550;
+  }
+};
+
+struct sorcerous_shadowruby_pendant_driver_t : public spell_t
+{
+  unsigned current_roll;
+  std::array<spell_t*, 3> sorcerous_spells;
+  sorcerous_shadowruby_pendant_driver_t( const special_effect_t& effect ) :
+    spell_t( "wanton_sorcery", effect.player, effect.player -> find_spell( 222276 ) )
+  {
+    callbacks = harmful = false;
+    background = quiet = true;
+    mage_t* p = debug_cast<mage_t*>( effect.player );
+    sorcerous_spells[ 0 ] = new sorcerous_fireball_t( p );
+    sorcerous_spells[ 1 ] = new sorcerous_frostbolt_t( p );
+    sorcerous_spells[ 2 ] = new sorcerous_arcane_blast_t( p );
+  }
+  virtual void impact( action_state_t* s ) override
+  {
+    spell_t::impact( s );
+    current_roll = static_cast<unsigned>( rng().range( 0, sorcerous_spells.size() ) );
+    sorcerous_spells[ current_roll ] -> execute();
+  }
+};
+
+static void sorcerous_shadowruby_pendant( special_effect_t& effect )
+{
+  effect.execute_action = new sorcerous_shadowruby_pendant_driver_t( effect );
+}
 // Mage Legendary Items
 struct sephuzs_secret_t : public scoped_actor_callback_t<mage_t>
 {
@@ -9749,6 +9813,7 @@ public:
     unique_gear::register_special_effect( 207970, shard_of_the_exodar_t()                );
     unique_gear::register_special_effect( 209450, marquee_bindings_of_the_sun_king_t()   );
     unique_gear::register_special_effect( 209280, mystic_kilt_of_the_rune_master_t()     );
+    unique_gear::register_special_effect( 222276, sorcerous_shadowruby_pendant           );
   }
 
   virtual void register_hotfixes() const override
