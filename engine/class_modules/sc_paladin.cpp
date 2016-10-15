@@ -3037,8 +3037,14 @@ struct crusader_strike_t : public holy_power_generator_t
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
     base_crit       += p -> artifact.sharpened_edge.percent();
 
-    if ( p -> specialization() == PALADIN_RETRIBUTION ) // HOTFIX
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    {
+      if ( maybe_ptr( p -> dbc.ptr ) )
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
+      else
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
+    }
+
 
     if ( p -> talents.fires_of_justice -> ok() )
     {
@@ -3641,7 +3647,10 @@ struct judgment_t : public paladin_melee_attack_t
     {
       base_costs[ RESOURCE_MANA ] = 0;
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
+      if ( maybe_ptr( p -> dbc.ptr ) )
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
+      else
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
       impact_action = new judgment_aoe_t( p, options_str );
     }
     else if ( p -> specialization() == PALADIN_HOLY )
