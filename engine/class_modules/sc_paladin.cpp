@@ -127,6 +127,7 @@ public:
     buff_t* seal_of_light;
     buff_t* blessing_of_might;
     buff_t* the_fires_of_justice;
+    buff_t* blade_of_wrath;
     buff_t* divine_purpose;
     buff_t* divine_steed;
     buff_t* aegis_of_light;
@@ -158,6 +159,7 @@ public:
     // Holy Power
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_liadrins_fury_unleashed;
+    gain_t* judgment;
   } gains;
 
   // Cooldowns
@@ -202,7 +204,8 @@ public:
     const spell_data_t* improved_block; //hidden
   } passives;
 
-  // Procs
+  // Procs and RNG
+  real_ppm_t* blade_of_wrath_rppm;
   struct procs_t
   {
     proc_t* eternal_glory;
@@ -212,6 +215,7 @@ public:
     proc_t* divine_purpose;
     proc_t* the_fires_of_justice;
     proc_t* tfoj_set_bonus;
+    proc_t* blade_of_wrath;
   } procs;
 
   // Spells
@@ -408,6 +412,7 @@ public:
   virtual void      init_procs() override;
   virtual void      init_scaling() override;
   virtual void      create_buffs() override;
+  virtual void      init_rng() override;
   virtual void      init_spells() override;
   virtual void      init_action_list() override;
   virtual void      reset() override;
@@ -625,12 +630,23 @@ namespace buffs {
       buff_t( buff_creator_t( p, "crusade", p -> find_spell( 224668 ) )
         .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
       damage_modifier( 0.0 ),
+      healing_modifier( 0.0 ),
       haste_bonus( 0.0 )
     {
-      // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
-      //  values
-      damage_modifier = data().effectN( 1 ).percent() / 10.0;
-      haste_bonus = data().effectN( 2 ).percent() / 10.0;
+      if ( maybe_ptr( p -> dbc.ptr ) )
+      {
+        damage_modifier = data().effectN( 1 ).percent();
+        haste_bonus = 0;
+        healing_modifier = data().effectN( 2 ).percent();
+      }
+      else
+      {
+        // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
+        //  values
+        damage_modifier = data().effectN( 1 ).percent() / 10.0;
+        haste_bonus = data().effectN( 2 ).percent() / 10.0;
+        healing_modifier = 0;
+      }
 
       paladin_t* paladin = static_cast<paladin_t*>( player );
       if ( paladin -> artifact.wrath_of_the_ashbringer.rank() )
@@ -659,12 +675,18 @@ namespace buffs {
       return damage_modifier * ( this -> stack() );
     }
 
+    double get_healing_mod()
+    {
+      return healing_modifier * ( this -> stack() );
+    }
+
     double get_haste_bonus()
     {
       return haste_bonus * ( this -> stack() );
     }
     private:
     double damage_modifier;
+    double healing_modifier;
     double haste_bonus;
   };
 
@@ -1777,10 +1799,13 @@ struct execution_sentence_t : public paladin_spell_t
       p() -> buffs.the_fires_of_justice -> expire();
     }
 
-    if ( p() -> buffs.crusade -> check() )
+    if ( !maybe_ptr( p() -> dbc.ptr ) )
     {
-      int num_stacks = (int)base_cost();
-      p() -> buffs.crusade -> trigger( num_stacks );
+      if ( p() -> buffs.crusade -> check() )
+      {
+        int num_stacks = (int)base_cost();
+        p() -> buffs.crusade -> trigger( num_stacks );
+      }
     }
 
     if ( p() -> talents.fist_of_justice -> ok() )
@@ -2883,10 +2908,13 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
         p() -> procs.divine_purpose -> occur();
     }
 
-    if ( p() -> buffs.crusade -> check() )
+    if ( !maybe_ptr( p() -> dbc.ptr ) )
     {
-      int num_stacks = (int)base_cost();
-      p() -> buffs.crusade -> trigger( num_stacks );
+      if ( p() -> buffs.crusade -> check() )
+      {
+        int num_stacks = (int)base_cost();
+        p() -> buffs.crusade -> trigger( num_stacks );
+      }
     }
 
     if ( p() -> talents.fist_of_justice -> ok() )
@@ -2929,6 +2957,25 @@ struct melee_t : public paladin_melee_attack_t
       first = false;
 
     paladin_melee_attack_t::execute();
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      if ( result_is_hit( execute_state -> result ) )
+      {
+        // Check for BoW procs
+        if ( p() -> talents.blade_of_wrath -> ok() )
+        {
+          bool procced = p() -> blade_of_wrath_rppm -> trigger();
+
+          if ( procced )
+          {
+            p() -> procs.blade_of_wrath -> occur();
+            p() -> buffs.blade_of_wrath -> trigger();
+            p() -> cooldowns.blade_of_justice -> reset( true );
+          }
+        }
+      }
+    }
   }
 };
 
@@ -3073,7 +3120,14 @@ struct blade_of_justice_t : public holy_power_generator_t
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
 
-    background = ( p -> talents.blade_of_wrath -> ok() ) || ( p -> talents.divine_hammer -> ok() );
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      background = ( p -> talents.divine_hammer -> ok() );
+    }
+    else
+    {
+      background = ( p -> talents.blade_of_wrath -> ok() ) || ( p -> talents.divine_hammer -> ok() );
+    }
 
     if ( p -> talents.virtues_blade -> ok() )
       crit_bonus_multiplier += p -> talents.virtues_blade -> effectN( 1 ).percent();
@@ -3100,6 +3154,12 @@ struct blade_of_wrath_t : public holy_power_generator_t
 
     // TODO: this shouldn't be necessary next build
     tick_may_crit = true;
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      // this spell doesn't exist on non-ptr
+      assert( false );
+    }
   }
 };
 
@@ -3557,6 +3617,8 @@ struct judgment_t : public paladin_melee_attack_t
     weapon_multiplier = 0.0;
     may_block = may_parry = may_dodge = false;
 
+    hasted_cd = true;
+
     // TODO: this is a hack; figure out what's really going on here.
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
@@ -3607,6 +3669,41 @@ struct judgment_t : public paladin_melee_attack_t
     cc += p() -> artifact.stern_judgment.percent( 1 );
 
     return cc;
+  }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.crusade -> check() )
+      {
+        int num_stacks = 1;
+        p() -> buffs.crusade -> trigger( num_stacks );
+        if ( result_is_hit( execute_state -> result ) )
+        {
+          p() -> resource_gain( RESOURCE_HOLY_POWER,
+                                p() -> talents.crusade -> effectN( 3 ).base_value(),
+                                p() -> gains.judgment );
+        }
+      }
+    }
+  }
+
+  double recharge_multiplier() const
+  {
+    double rm = paladin_melee_attack_t::recharge_multiplier();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.crusade -> check() )
+      {
+        rm *= 1.0 + p() -> talents.crusade -> effectN( 4 ).percent();
+      }
+    }
+
+    return rm;
   }
 
   // Special things that happen when Judgment damages target
@@ -4334,6 +4431,7 @@ void paladin_t::init_gains()
   // Holy Power
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );
   gains.hp_liadrins_fury_unleashed  = get_gain( "liadrins_fury_unleashed" );
+  gains.judgment                    = get_gain( "judgment" );
 
   if ( ! retribution_trinket )
   {
@@ -4353,6 +4451,7 @@ void paladin_t::init_procs()
   procs.divine_purpose            = get_proc( "divine_purpose"                 );
   procs.the_fires_of_justice      = get_proc( "the_fires_of_justice"           );
   procs.tfoj_set_bonus            = get_proc( "t19_4p"                         );
+  procs.blade_of_wrath            = get_proc( "blade_of_wrath"                 );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -4419,6 +4518,14 @@ void paladin_t::create_buffs()
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) );
   buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
   buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath" ).spell( find_spell( 231843 ) );
+  }
+  else
+  {
+    buffs.blade_of_wrath               = nullptr;
+  }
   buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose" ).spell( find_spell( 223819 ) );
   buffs.divine_steed                   = buff_creator_t( this, "divine_steed", find_spell( "Divine Steed" ) )
                                           .duration( timespan_t::from_seconds( 3.0 ) ).chance( 1.0 ).default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
@@ -5037,6 +5144,20 @@ void paladin_t::init_action_list()
   player_t::init_action_list();
 }
 
+void paladin_t::init_rng()
+{
+  player_t::init_rng();
+
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    blade_of_wrath_rppm = get_rppm( "blade_of_wrath", find_spell( 231832 ) );
+  }
+  else
+  {
+    blade_of_wrath_rppm = nullptr;
+  }
+}
+
 void paladin_t::init_spells()
 {
   player_t::init_spells();
@@ -5469,6 +5590,9 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
 
   if ( buffs.avenging_wrath -> check() )
     m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
+
+  if ( buffs.crusade -> check() )
+    m *= 1.0 + buffs.crusade -> get_healing_mod();
 
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
