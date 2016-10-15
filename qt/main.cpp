@@ -64,10 +64,11 @@ int main( int argc, char *argv[] )
   unique_gear::sort_special_effects();
 
   hotfix::apply();
+  QApplication a( argc, argv );
+
 #ifdef SC_WINDOWS
   QCoreApplication::setAttribute( Qt::AA_UseOpenGLES );
 #endif
-  QApplication a( argc, argv );
 
   QCoreApplication::setApplicationName( "SimulationCraft" );
   QCoreApplication::setApplicationVersion( SC_VERSION );
