@@ -202,6 +202,8 @@ public:
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
     const spell_data_t* improved_block; //hidden
+
+    const spell_data_t* judgment; // mystery, hidden
   } passives;
 
   // Procs and RNG
@@ -1824,6 +1826,7 @@ struct execution_sentence_t : public paladin_spell_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+      if ( maybe_ptr( p() -> dbc.ptr ) ) judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
@@ -2881,6 +2884,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+      if ( maybe_ptr( p() -> dbc.ptr ) ) judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
@@ -3242,6 +3246,23 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
   {
     return 0;
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this -> td( t );
+
+    if ( td -> buffs.debuffs_judgment -> up() )
+    {
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+      if ( maybe_ptr( p() -> dbc.ptr ) ) judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
+      m *= judgment_multiplier;
+    }
+
+    return m;
+  }
+
 
   virtual double action_multiplier() const override
   {
@@ -3890,6 +3911,7 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
+      if ( maybe_ptr( p() -> dbc.ptr ) ) judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
@@ -5278,7 +5300,6 @@ void paladin_t::init_spells()
   passives.protection_paladin     = find_spell( 137028 );
   passives.holy_paladin           = find_spell( 137029 );
 
-
   // Holy Passives
   passives.holy_insight           = find_specialization_spell( "Holy Insight" );
   passives.infusion_of_light      = find_specialization_spell( "Infusion of Light" );
@@ -5294,6 +5315,14 @@ void paladin_t::init_spells()
   // Ret Passives
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    passives.judgment             = find_spell( 231663 );
+  }
+  else
+  {
+    passives.judgment             = nullptr;
+  }
 
   if ( specialization() == PALADIN_PROTECTION )
   {
