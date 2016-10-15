@@ -1842,9 +1842,6 @@ struct flash_of_light_t : public paladin_heal_t
     paladin_heal_t( "flash_of_light", p, p -> find_class_spell( "Flash of Light" ) )
   {
     parse_options( options_str );
-
-    // Sword of light
-    //base_multiplier *= 1.0 + p -> passives.sword_of_light -> effectN( 6 ).percent();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2791,9 +2788,19 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     weapon = &( p -> main_hand_weapon );
 
     // Sword of Light boosts action_multiplier
-    if ( use2hspec && ( p -> passives.sword_of_light -> ok() ) && ( p -> main_hand_weapon.group() == WEAPON_2H ) )
+    if ( maybe_ptr( p -> dbc.ptr ) )
     {
-      base_multiplier *= 1.0 + p -> passives.sword_of_light_value -> effectN( 1 ).percent();
+      if ( use2hspec && ( p -> specialization() == PALADIN_RETRIBUTION ) && ( p -> main_hand_weapon.group() == WEAPON_2H ) )
+      {
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
+      }
+    }
+    else
+    {
+      if ( use2hspec && ( p -> passives.sword_of_light -> ok() ) && ( p -> main_hand_weapon.group() == WEAPON_2H ) )
+      {
+        base_multiplier *= 1.0 + p -> passives.sword_of_light_value -> effectN( 1 ).percent();
+      }
     }
   }
 
@@ -3022,10 +3029,8 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
 
 struct crusader_strike_t : public holy_power_generator_t
 {
-  const spell_data_t* sword_of_light;
   crusader_strike_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+    : holy_power_generator_t( "crusader_strike", p, p -> find_class_spell( "Crusader Strike" ), true )
   {
     parse_options( options_str );
 
@@ -3073,10 +3078,8 @@ struct crusader_strike_t : public holy_power_generator_t
 
 struct zeal_t : public holy_power_generator_t
 {
-  const spell_data_t* sword_of_light;
   zeal_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "zeal", p, p -> find_talent_spell( "Zeal" ), true ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+    : holy_power_generator_t( "zeal", p, p -> find_talent_spell( "Zeal" ), true )
   {
     parse_options( options_str );
 
@@ -3111,10 +3114,8 @@ struct zeal_t : public holy_power_generator_t
 
 struct blade_of_justice_t : public holy_power_generator_t
 {
-  const spell_data_t* sword_of_light;
   blade_of_justice_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ), true )
   {
     parse_options( options_str );
 
@@ -3142,11 +3143,8 @@ struct blade_of_justice_t : public holy_power_generator_t
 
 struct blade_of_wrath_t : public holy_power_generator_t
 {
-  const spell_data_t* sword_of_light;
-
   blade_of_wrath_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "blade_of_wrath", p, p -> find_talent_spell( "Blade of Wrath" ), true ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+    : holy_power_generator_t( "blade_of_wrath", p, p -> find_talent_spell( "Blade of Wrath" ), true )
   {
     parse_options( options_str );
 
@@ -3171,11 +3169,9 @@ struct blade_of_wrath_t : public holy_power_generator_t
 
 struct divine_hammer_tick_t : public paladin_melee_attack_t
 {
-  const spell_data_t* sword_of_light;
 
   divine_hammer_tick_t( paladin_t* p )
-    : paladin_melee_attack_t( "divine_hammer_tick", p, p -> find_spell( 198137 ) ),
-      sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
+    : paladin_melee_attack_t( "divine_hammer_tick", p, p -> find_spell( 198137 ) )
   {
     aoe         = -1;
     dual        = true;
@@ -5643,7 +5639,14 @@ double paladin_t::composite_spell_power( school_e school ) const
       sp = passives.guarded_by_the_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
-      sp = passives.sword_of_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      if ( maybe_ptr( dbc.ptr ) )
+      {
+        sp = passives.retribution_paladin -> effectN( 3 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      }
+      else
+      {
+        sp = passives.sword_of_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      }
       break;
     default:
       break;
@@ -5678,7 +5681,7 @@ double paladin_t::composite_attack_power_multiplier() const
 
 double paladin_t::composite_spell_power_multiplier() const
 {
-  if ( passives.sword_of_light -> ok() || passives.guarded_by_the_light -> ok() )
+  if ( passives.sword_of_light -> ok() || specialization() == PALADIN_RETRIBUTION || passives.guarded_by_the_light -> ok() )
     return 1.0;
 
   return player_t::composite_spell_power_multiplier();
@@ -5911,7 +5914,7 @@ void paladin_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( ( passives.sword_of_light -> ok() || passives.guarded_by_the_light -> ok() || passives.divine_bulwark -> ok() )
+  if ( ( passives.sword_of_light -> ok() || specialization() == PALADIN_RETRIBUTION || passives.guarded_by_the_light -> ok() || passives.divine_bulwark -> ok() )
        && ( c == CACHE_STRENGTH || c == CACHE_ATTACK_POWER )
      )
   {
