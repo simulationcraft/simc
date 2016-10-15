@@ -9576,19 +9576,23 @@ using namespace unique_gear;
 using namespace actions;
 // Legion Mage JC Neck
 
+//TODO: Whitelist these spell effects so we don't have to hardcode their damage values.
 struct sorcerous_fireball_t : public spell_t
 {
   sorcerous_fireball_t( mage_t* p ) :
     spell_t( "sorcerous_fireball", p )
   { 
     background = true;
-    // Need to hard-code crit% to something that isnt the players for some reason
-    may_crit = hasted_ticks = false;
+    may_crit = true;
     base_dd_min = base_dd_max = 246600;
     dot_duration = timespan_t::from_seconds( 5.0 );
     base_tick_time = timespan_t::from_seconds( 1.0 );
     base_td = 36990;
   }
+  virtual double composite_crit_chance() const override
+  { return 0.1; }
+  virtual double composite_crit_chance_multiplier() const override
+  { return 1.0; }
 };
 
 struct sorcerous_frostbolt_t : public spell_t
@@ -9597,10 +9601,14 @@ struct sorcerous_frostbolt_t : public spell_t
     spell_t( "sorcerous_frostbolt", p )
   {
   background = true;
-  // Need to hard-code crit% to something that isnt the players for some reason
-  may_crit = false;
+  may_crit = true;
+
   base_dd_min = base_dd_max = 406890;
   }
+  virtual double composite_crit_chance() const override
+  { return 0.1; }
+  virtual double composite_crit_chance_multiplier() const override
+  { return 1.0; }
 };
 
 struct sorcerous_arcane_blast_t : public spell_t
@@ -9609,10 +9617,13 @@ struct sorcerous_arcane_blast_t : public spell_t
     spell_t( "sorcerous_arcane_blast", p )
   {
     background = true;
-    // Need to hard-code crit% to something that isnt the players for some reason
-    may_crit = false;
+    may_crit = true;
     base_dd_min = base_dd_max = 431550;
   }
+  virtual double composite_crit_chance() const override
+  { return 0.1; }
+  virtual double composite_crit_chance_multiplier() const override
+  { return 1.0; }
 };
 
 struct sorcerous_shadowruby_pendant_driver_t : public spell_t
