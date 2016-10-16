@@ -14,62 +14,80 @@
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 optimal_raid=1
-
+ 
 # Death Knight
 Death_Knight_Frost_T19H.simc
+wrists=toravons_whiteout_bindings,id=132458
 Death_Knight_Unholy_T19H.simc
-
+wrists=the_instructors_fourth_lesson,id=132448
+ 
 # Demon Hunter
 Demon_Hunter_Havoc_T19H.simc
-
+finger2=anger_of_the_halfgiants,id=137038,enchant=binding_of_critical_strike
+ 
 # Druid
 Druid_Balance_T19H.simc
+head=the_emerald_dreamcatcher,id=137062
 Druid_Feral_T19H.simc
-
+hands=the_wildshapers_clutch,id=137094
+ 
 # Hunter
 Hunter_BM_T19H.simc
+waist=roar_of_the_seven_lions,id=137080
 Hunter_MM_T19H.simc
+feet=ullrs_feather_snowshoes,id=137033,bonus_id=1517/3418
 Hunter_SV_T19H.simc
-
+wrists=call_of_the_wild,id=137101
+ 
 # Mage
 Mage_Arcane_T19H.simc
+legs=mystic_kilt_of_the_rune_master,id=132451
 Mage_Fire_T19H.simc
+wrists=marquee_bindings_of_the_sun_king,id=132406
 Mage_Frost_T19H.simc
-
+hands=lady_vashjs_grasp,id=132411
+ 
 # Monk
 Monk_Windwalker_T19H.simc
-
+feet=katsuos_eclipse,id=137029
+ 
 # Paladin
 Paladin_Retribution_T19H.simc
 back=whisper_of_the_nathrezim,id=137020,enchant=binding_of_strength
-
+ 
 # Priest
 Priest_Shadow_T19H.simc
-waist=mangazas_madness,id=132864
+shoulders=mother_shahrazs_seduction,id=132437
 Priest_Shadow_T19H_S2M.simc
-waist=mangazas_madness,id=132864
-
+shoulders=mother_shahrazs_seduction,id=132437
+ 
 # Rogue
 Rogue_Assassination_T19H.simc
-finger1=insignia_of_ravenholdt,id=137049,enchant=binding_of_versatility
+wrists=zoldyck_family_training_shackles,id=137098
 Rogue_Assassination_T19H_Exsg.simc
-feet=duskwalkers_footpads,id=137030
+wrists=zoldyck_family_training_shackles,id=137098
 Rogue_Outlaw_T19H.simc
-finger1=insignia_of_ravenholdt,id=137049,gems=150vers,enchant=binding_of_versatility
+finger1=insignia_of_ravenholdt,id=137049
 Rogue_Subtlety_T19H.simc
 feet=shadow_satyrs_walk,id=137032
-
+ 
 # Shaman
-Shaman_Enhancement_T19H.simc
 Shaman_Elemental_T19H.simc
-
+feet=the_deceivers_blood_pact,id=137035
+Shaman_Enhancement_T19H.simc
+finger1=eye_of_the_twisting_nether,id=137050,enchant=binding_of_mastery
+ 
+ 
 # Warlock
-Warlock_Demonology_T19H.simc
-Warlock_Destruction_T19H.simc
 Warlock_Affliction_T19H.simc
-
+head=hood_of_eternal_disdain,id=132394
+Warlock_Demonology_T19H.simc
+wrists=sindorei_spite,id=132379
+Warlock_Destruction_T19H.simc
+waist=feretory_of_souls,id=132456
+ 
 # Warrior
-Warrior_Fury_T19H.simc
-finger2=ayalas_stone_heart,id=137052,bonus_id=1811,enchant=binding_of_mastery
 Warrior_Arms_T19H.simc
-hands=archavons_heavy_hand,id=137060,bonus_id=1811
+hands=archavons_heavy_hand,id=137060
+Warrior_Fury_T19H.simc
+finger1=ayalas_stone_heart,id=137052,enchant=binding_of_haste
