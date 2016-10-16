@@ -8,6 +8,7 @@
 // - Does Weaponmaster attempt to proc per target or per cast? Seems to be per target
 // - Dreadlord's Deceit doesn't work on weaponmastered Shuriken Storm (Blizzard Bug ?)
 // - Insignia of Ravenholdt doesn't proc from Shuriken Storm nor Shuriken Toss (Blizzard Bug ?)
+// - Find the exact formula for the Weaponmastered Goremaw's Bite Bug.
 //
 // Assassination
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
@@ -2939,6 +2940,19 @@ struct goremaws_bite_strike_t : public rogue_attack_t
     background = true;
     weapon = w;
   }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // Weaponmaster Bug
+    if ( secondary_trigger ) // Rough estimate of the result in average, it's a server side bug, hard to guess.
+    {
+      m *= 1.0 + 14.2;
+    }
+
+    return m;
+  }
 };
 
 struct goremaws_bite_t:  public rogue_attack_t
@@ -2971,7 +2985,10 @@ struct goremaws_bite_t:  public rogue_attack_t
     oh -> target = target;
     oh -> schedule_execute();
 
-    p() -> buffs.goremaws_bite -> trigger();
+    if ( ! secondary_trigger ) // As of 7.0.3.22810 it doesn't trigger the buff on the weaponmaster proc.
+    {
+      p() -> buffs.goremaws_bite -> trigger();
+    }
   }
 };
 
