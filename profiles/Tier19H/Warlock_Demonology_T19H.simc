@@ -33,12 +33,9 @@ actions+=/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=3&bu
 actions+=/implosion,if=wild_imp_count<=4&wild_imp_remaining_duration<=action.shadow_bolt.execute_time&spell_targets.implosion>1
 actions+=/implosion,if=prev_gcd.hand_of_guldan&wild_imp_remaining_duration<=4&spell_targets.implosion>2
 actions+=/shadowflame,if=debuff.shadowflame.stack>0&remains<action.shadow_bolt.cast_time+travel_time
-actions+=/service_pet,if=cooldown.summon_doomguard.remains<=gcd&soul_shard>=2
-actions+=/service_pet,if=cooldown.summon_doomguard.remains>25
-actions+=/summon_doomguard,if=talent.grimoire_of_service.enabled&prev.service_felguard&spell_targets.infernal_awakening<3
-actions+=/summon_doomguard,if=talent.grimoire_of_synergy.enabled&spell_targets.infernal_awakening<3
-actions+=/summon_infernal,if=talent.grimoire_of_service.enabled&prev.service_felguard&spell_targets.infernal_awakening>=3
-actions+=/summon_infernal,if=talent.grimoire_of_synergy.enabled&spell_targets.infernal_awakening>=3
+actions+=/service_pet
+actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
+actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
 actions+=/call_dreadstalkers,if=!talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)
 actions+=/hand_of_guldan,if=soul_shard>=4&!talent.summon_darkglare.enabled
 actions+=/summon_darkglare,if=prev_gcd.hand_of_guldan
