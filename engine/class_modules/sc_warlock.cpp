@@ -3097,6 +3097,7 @@ struct demonic_empowerment_t: public warlock_spell_t
   {
     may_crit = false;
     harmful = false;
+    dot_duration = timespan_t::zero();
 
     power_trip_rng = p -> talents.power_trip -> effectN( 1 ).percent();
   }
