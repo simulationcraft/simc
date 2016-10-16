@@ -1,4 +1,4 @@
-# T19H
+# T19H w/ 1x Legendary
 # Tier 19 Heroic
 # * Ilvl Cap: 865
 # * Artifact Rank Cap: 26
@@ -7,8 +7,7 @@
 # * No items from Violet Hold (unless 840 ilevel)
 # * No items from World Bosses / World Quests / BoEs
 # * No items from Nighthold (including set bonuses)
-# * No Legendaries
-# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Random Gems (ie. Bonus RNG Gem Slots)4
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Warforged/Titanforged)
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
@@ -42,16 +41,23 @@ Monk_Windwalker_T19H.simc
 
 # Paladin
 Paladin_Retribution_T19H.simc
+back=whisper_of_the_nathrezim,id=137020,enchant=binding_of_strength
 
 # Priest
 Priest_Shadow_T19H.simc
+waist=mangazas_madness,id=132864
 Priest_Shadow_T19H_S2M.simc
+waist=mangazas_madness,id=132864
 
 # Rogue
 Rogue_Assassination_T19H.simc
+finger1=insignia_of_ravenholdt,id=137049,enchant=binding_of_versatility
 Rogue_Assassination_T19H_Exsg.simc
+feet=duskwalkers_footpads,id=137030
 Rogue_Outlaw_T19H.simc
+finger1=insignia_of_ravenholdt,id=137049,gems=150vers,enchant=binding_of_versatility
 Rogue_Subtlety_T19H.simc
+feet=shadow_satyrs_walk,id=137032
 
 # Shaman
 Shaman_Enhancement_T19H.simc
@@ -64,4 +70,6 @@ Warlock_Affliction_T19H.simc
 
 # Warrior
 Warrior_Fury_T19H.simc
+finger2=ayalas_stone_heart,id=137052,bonus_id=1811,enchant=binding_of_mastery
 Warrior_Arms_T19H.simc
+hands=archavons_heavy_hand,id=137060,bonus_id=1811
