@@ -42,7 +42,6 @@ actions.build+=/backstab
 
 # Cooldowns
 actions.cds=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|buff.shadow_blades.up
-actions.cds+=/use_item,slot=trinket2,if=(buff.shadow_blades.up&stealthed)|target.time_to_die<20
 actions.cds+=/blood_fury,if=stealthed
 actions.cds+=/berserking,if=stealthed
 actions.cds+=/arcane_torrent,if=stealthed&energy.deficit>70
@@ -84,7 +83,7 @@ feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
 finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_versatility
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_versatility
 trinket1=chaos_talisman,id=137459,bonus_id=1727
-trinket2=tirathons_betrayal,id=137537,bonus_id=1727
+trinket2=memento_of_angerboda,id=133644,bonus_id=1727
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=136721/137377/136721,relic_id=1727/1727/1727
 off_hand=fangs_of_the_devourer,id=128479
 
