@@ -4302,6 +4302,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
     parse_options( options_str );
 
     weapon = &( player -> main_hand_weapon );
+    aoe = -1;
 
     // TODO: Check how this is exactly in game
     crit_bonus_multiplier *= 1.0 + p -> spec.death_knight -> effectN( 5 ).percent();
