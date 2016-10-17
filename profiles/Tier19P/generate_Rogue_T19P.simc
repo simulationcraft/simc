@@ -103,7 +103,7 @@ feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
 finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_versatility
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1727,enchant=binding_of_versatility
 trinket1=chaos_talisman,id=137459,bonus_id=1727
-trinket2=tirathons_betrayal,id=137537,bonus_id=1727
+trinket2=memento_of_angerboda,id=133644,bonus_id=1727
 main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=136721/137377/136721,relic_id=1727/1727/1727
 off_hand=fangs_of_the_devourer,id=128479
 save=Rogue_Subtlety_T19P.simc
