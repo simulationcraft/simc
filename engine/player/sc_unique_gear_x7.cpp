@@ -2398,9 +2398,10 @@ struct pepper_breath_damage_t : public spell_t
 
   void init() override
   {
-    spell_t::init(); 
-    snapshot_flags = 0;
+    spell_t::init();
+    snapshot_flags = update_flags = 0;
     snapshot_flags |= STATE_TGT_MUL_TA | STATE_TGT_MUL_DA;
+    update_flags |= STATE_TGT_MUL_TA | STATE_TGT_MUL_DA;
   }
 };
 
@@ -2437,8 +2438,9 @@ struct pepper_breath_driver_t : public spell_t
   virtual void init() override
   {
     spell_t::init();
-    snapshot_flags = 0;
+    snapshot_flags = update_flags = 0;
     snapshot_flags |= STATE_TGT_MUL_TA | STATE_TGT_MUL_DA;
+    update_flags |= STATE_TGT_MUL_TA | STATE_TGT_MUL_DA;
   }
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
