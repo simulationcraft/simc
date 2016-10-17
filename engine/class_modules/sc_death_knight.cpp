@@ -6633,16 +6633,16 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "call_action_list,name=generic,if=(!talent.shattering_strikes.enabled&!talent.icy_talons.enabled)" );
 
   // Core rotation
-  core -> add_action( this, "Remorseless Winter", "if=artifact.frozen_soul.enabled");
-  core -> add_talent( this, "Glacial Advance" );
   core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
-  core -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled" );
+  core -> add_action( this, "Remorseless Winter", "if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!talent.frozen_pulse.enabled" );
   core -> add_talent( this, "Frostscythe", "if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)" );
+  core -> add_talent( this, "Glacial Advance" );
   core -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
   core -> add_action( this, "Obliterate" );
-  core -> add_action( this, "Remorseless Winter" );
+  
 
   // Empty out runes if Frozen Pulse is used
+  core -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
   core -> add_talent( this, "Frostscythe", "if=talent.frozen_pulse.enabled" );
   core -> add_action( this, "Howling Blast", "if=talent.frozen_pulse.enabled" );
 
@@ -6694,8 +6694,10 @@ void death_knight_t::default_apl_frost()
   icytalons -> add_talent( this, "Horn of Winter", "if=!talent.breath_of_sindragosa.enabled" );
 
   // If nothing else to do, do Frost Strike
-  icytalons -> add_action( this, "Frost Strike", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  icytalons -> add_action( this, "Frost Strike", "if=!talent.breath_of_sindragosa.enabled" );
+  icytalons -> add_action( this, "Frost Strike", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15&!talent.frozen_pulse.enabled" );
+  icytalons -> add_action( this, "Frost Strike", "if=!talent.breath_of_sindragosa.enabled&!talent.frozen_pulse.enabled" );
+  icytalons -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5|buff.icy_talons.stack<3&talent.frostscythe.enabled" );
+  icytalons -> add_action( this, "Frost Strike", "if=!talent.frostscythe.enabled" );
 
   // Misc actions, Breath of Sindragosa version
   icytalons -> add_action( this, "Empower Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
