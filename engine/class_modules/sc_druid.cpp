@@ -6785,29 +6785,27 @@ void druid_t::apl_guardian()
   std::vector<std::string> racial_actions     = get_racial_actions();
 
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Skull Bash" );
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    default_list -> add_action( racial_actions[i] );
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    default_list -> add_action( item_actions[i] );
+  for (size_t i = 0; i < racial_actions.size(); i++)
+	  default_list->add_action(racial_actions[i]);
+  for (size_t i = 0; i < item_actions.size(); i++)
+	  default_list->add_action(item_actions[i]);
 
-  default_list -> add_action( this, "Barkskin" );
-  default_list -> add_action( "bristling_fur,if=buff.ironfur.remains<2&rage<40" );
-  default_list -> add_action( this, "Ironfur", "if=buff.ironfur.down|rage.deficit<25" );
-  default_list -> add_action( this, "Frenzied Regeneration", "if=!ticking&incoming_damage_6s%health.max>0.25+(2-charges_fractional)*0.15" );
-  default_list -> add_action( "pulverize,cycle_targets=1,if=buff.pulverize.down" );
-  default_list -> add_action( this, "Mangle" );
-  default_list -> add_action( "pulverize,cycle_targets=1,if=buff.pulverize.remains<gcd" );
-  default_list -> add_action( "lunar_beam" );
-  default_list -> add_action( "incarnation" );
-  default_list -> add_action( "thrash_bear,if=active_enemies>=2" );
-  default_list -> add_action( "pulverize,cycle_targets=1,if=buff.pulverize.remains<3.6" );
-  default_list -> add_action( "thrash_bear,if=talent.pulverize.enabled&buff.pulverize.remains<3.6" );
-  default_list -> add_action( this, "Moonfire", "cycle_targets=1,if=!ticking" );
-  default_list -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<3.6" );
-  default_list -> add_action( this, "Moonfire", "cycle_targets=1,if=remains<7.2" );
-  default_list -> add_action( this, "Moonfire" );
+  default_list->add_action("incarnation");
+  default_list->add_action("rage_of_the_sleeper");
+  default_list->add_action("lunar_beam");
+  default_list->add_action(this, "Frenzied Regeneration", "if=incoming_damage_5s%health.max>=0.5|health<=health.max*0.4");
+  default_list->add_action( "bristling_fur,if=buff.ironfur.stack=1|buff.ironfur.down" );
+  default_list->add_action(this, "Ironfur", "if=(buff.ironfur.up=0)|(buff.gory_fur.up=1)|(rage>=80)");
+  default_list->add_action(this, "Moonfire", "if=buff.incarnation.up=1&dot.moonfire.remains<=4.8");
+  default_list->add_action("thrash_bear,if=buff.incarnation.up=1&dot.thrash.remains<=4.5");
+  default_list->add_action(this, "Mangle");
+  default_list->add_action("thrash_bear");
+  default_list->add_action("pulverize,if=buff.pulverize.up=0|buff.pulverize.remains<=6");
+  default_list->add_action(this, "Moonfire", "if=buff.galactic_guardian.up=1&(!ticking|dot.moonfire.remains<=4.8)");
+  default_list->add_action(this, "Moonfire", "if=buff.galactic_guardian.up=1");
+  default_list->add_action(this, "Moonfire", "if=dot.moonfire.remains<=4.8");
+  default_list->add_action("swipe_bear");
 }
 
 // Restoration Combat Action Priority List ==================================
