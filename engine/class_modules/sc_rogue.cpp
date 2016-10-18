@@ -8,6 +8,7 @@
 // - Does Weaponmaster attempt to proc per target or per cast? Seems to be per target
 // - Dreadlord's Deceit doesn't work on weaponmastered Shuriken Storm (Blizzard Bug ?)
 // - Insignia of Ravenholdt doesn't proc from Shuriken Storm nor Shuriken Toss (Blizzard Bug ?)
+// - Akaari's Soul Rip action doesn't benefits from SoD and MoS (Blizzard Bug) despite showing the increases in the tooltip.
 // - Find the exact formula for the Weaponmastered Goremaw's Bite Bug.
 //
 // Assassination
@@ -1326,6 +1327,23 @@ struct soul_rip_t : public rogue_attack_t
     background = true;
     callbacks = false;
     weapon_multiplier = weapon_power_mod = 0;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    //FIXME: Probably not the best way to do it, but since it's done by the pet it does ignore those two player multiplier.
+    if ( p() -> buffs.master_of_subtlety -> check() || p() -> buffs.master_of_subtlety_passive -> check() )
+    {
+      m /= 1.0 + p() -> talent.master_of_subtlety -> effectN( 1 ).percent();
+    }
+    if ( p() -> buffs.symbols_of_death -> up() )
+    {
+      m /= p() -> buffs.symbols_of_death -> check_value();
+    }
+
+    return m; 
   }
 
   void init() override
@@ -7784,6 +7802,7 @@ void rogue_t::combat_begin()
   player_t::combat_begin();
 
   if ( legendary.the_dreadlords_deceit )
+    buffs.the_dreadlords_deceit -> trigger(30);
     buffs.the_dreadlords_deceit_driver -> trigger();
 }
 
