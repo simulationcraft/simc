@@ -7802,8 +7802,10 @@ void rogue_t::combat_begin()
   player_t::combat_begin();
 
   if ( legendary.the_dreadlords_deceit )
+  {
     buffs.the_dreadlords_deceit -> trigger(30);
     buffs.the_dreadlords_deceit_driver -> trigger();
+  }
 }
 
 // rogue_t::energy_regen_per_second =========================================
