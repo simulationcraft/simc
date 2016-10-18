@@ -292,8 +292,8 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 1, "Live" ) );
 #endif
 #endif
-  globalsLayout_left -> addRow( tr(  "Target Error" ),    choice.target_error = createChoice( 8, "N/A", "Auto", "1%", "0.5%", "0.1%", "0.05%", "0.03%", "0.01%" ) );
-  globalsLayout_left -> addRow( tr(    "Iterations" ),      choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 8, "1", "100", "1000", "10000", "25000", "50000", "100000", "250000" ) ) );
+  globalsLayout_left -> addRow( tr(  "Target Error" ),    choice.target_error = createChoice( 9, "N/A", "Auto", "1%", "0.5%", "0.3%", "0.1%", "0.05%", "0.03%", "0.01%" ) );
+  globalsLayout_left -> addRow( tr(    "Iterations" ),      choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 9, "1", "100", "1000", "10000", "25000", "50000", "100000", "250000", "500000" ) ) );
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),    choice.fight_length = addValidatorToComboBox( 1, 10000, createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) ) );
   globalsLayout_left -> addRow( tr(   "Vary Length %" ),  choice.fight_variance = addValidatorToComboBox( 0, 100, createChoice( 6, "0", "10", "20", "30", "40", "50" ) ) );
   globalsLayout_left -> addRow( tr(   "Fight Style" ),     choice.fight_style = createChoice( 7, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "Beastlord" ) );
@@ -540,16 +540,16 @@ void SC_OptionsTab::createPlotsTab()
   plotOptionsGroupBoxLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  choice.plots_points = addValidatorToComboBox( 1, INT_MAX, createChoice( 4, "10", "20", "30", "40" ) );
+  choice.plots_points = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "10", "20", "30", "40", "50", "100" ) );
   plotOptionsGroupBoxLayout -> addRow( tr( "Number of Plot Points" ), choice.plots_points );
 
-  choice.plots_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "25", "50", "100", "150", "200", "250" ) );
+  choice.plots_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 8, "25", "50", "100", "150", "200", "250", "500", "1000" ) );
   plotOptionsGroupBoxLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
 
-  choice.plots_target_error = createChoice( 5, "N/A", "Auto", "1%", "0.5%", "0.1%" );
+  choice.plots_target_error = createChoice( 9, "N/A", "Auto", "1%", "0.5%", "0.3%", "0.1%", "0.05%", "0.03%", "0.01%" ); 
   plotOptionsGroupBoxLayout -> addRow( tr( "Plot Target Error" ), choice.plots_target_error );
 
-  choice.plots_iterations = createChoice( 4, "100", "1000", "Iter/10", "Iter/100" );
+  choice.plots_iterations = createChoice( 7, "100", "1000", "10000", "25000", "50000", "Iter/10", "Iter/100" );
   plotOptionsGroupBoxLayout -> addRow( tr( "Plot Iterations" ), choice.plots_iterations );
 
   plotOptionsGroupBox -> setLayout( plotOptionsGroupBoxLayout );
@@ -680,10 +680,10 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "center_scale_delta", choice.center_scale_delta, "No" );
   load_setting( settings, "scale_over", choice.scale_over );
 
-  load_setting( settings, "plot_points", choice.plots_points, "40" );
-  load_setting( settings, "plot_step", choice.plots_step, "50" );
-  load_setting( settings, "plot_target_error", choice.plots_target_error, "1" );
-  load_setting( settings, "plot_iterations", choice.plots_iterations, "100" );
+  load_setting( settings, "plot_points", choice.plots_points, "20" );
+  load_setting( settings, "plot_step", choice.plots_step, "150" );
+  load_setting( settings, "plot_target_error", choice.plots_target_error, "0.5%" );
+  load_setting( settings, "plot_iterations", choice.plots_iterations, "10000" );
 
   load_setting( settings, "reforgeplot_amount", choice.reforgeplot_amount, "500" );
   load_setting( settings, "reforgeplot_step", choice.reforgeplot_step, "50" );
