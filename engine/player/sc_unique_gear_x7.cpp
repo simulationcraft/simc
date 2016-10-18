@@ -2893,10 +2893,10 @@ void unique_gear::register_special_effects_x7()
 void unique_gear::register_hotfixes_x7()
 {
 
-  hotfix::register_spell( "Horrific Appendages", "2016-10-09", "In-game testing shows that the actual rppm is much closer to 1.1~ than 0.7, so we slightly underestimated down to 1.0.", 222167 )
+  hotfix::register_spell( "Horrific Appendages", "2016-10-09", "In-game testing shows that the actual rppm is much closer to 1.3~ than 0.7, so we slightly underestimated down to 1.25.", 222167 )
     .field( "rppm" )
     .operation( hotfix::HOTFIX_SET )
-    .modifier( 1.0 )
+    .modifier( 1.25 )
     .verification_value( 0.7 );
 
   hotfix::register_effect( "Mark of the Hidden Satyr", "2016-10-10", "In-game testing shows that the damage from this ability is roughly 10% higher than what spelldata shows.", 280531 )
