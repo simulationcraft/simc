@@ -2966,7 +2966,7 @@ struct goremaws_bite_strike_t : public rogue_attack_t
     // Weaponmaster Bug
     if ( secondary_trigger ) // Rough estimate of the result in average, it's a server side bug, hard to guess.
     {
-      m *= 1.0 + 14.2;
+      m *= 1.0 + 15;
     }
 
     return m;
