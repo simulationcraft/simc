@@ -901,7 +901,7 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
 struct firebolt_t: public warlock_pet_spell_t
 {
   firebolt_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( p, "Firebolt" )
+    warlock_pet_spell_t( "Firebolt", p, p -> find_spell( 3110 ) )
   {
     base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.percent();
   }
@@ -913,7 +913,7 @@ struct firebolt_t: public warlock_pet_spell_t
     warlock_td_t* td = this -> td( target );
 
     double immolate = 0;
-    double multiplier = data().effectN( 2 ).percent();
+    double multiplier = !maybe_ptr( p() -> o() -> dbc.ptr ) ? data().effectN( 2 ).percent() : p() -> o() -> find_spell( 231795 ) -> effectN( 1 ).percent();
 
     if( td -> dots_immolate -> is_ticking() )
       immolate += multiplier;
@@ -3378,10 +3378,13 @@ struct conflagrate_t: public warlock_spell_t
   timespan_t total_duration;
   timespan_t base_duration;
   conflagrate_t( warlock_t* p ):
-    warlock_spell_t( p, "Conflagrate" )
+    warlock_spell_t( "Conflagrate", p, p -> find_spell( 17962 ) )
   {
     energize_type = ENERGIZE_ON_CAST;
     base_duration = p -> find_spell( 117828 ) -> duration();
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+      cooldown -> charges += p -> find_spell( 231793 ) -> effectN( 1 ).base_value();
 
     cooldown -> charges += p -> sets.set( WARLOCK_DESTRUCTION, T19, B2 ) -> effectN( 1 ).base_value();
     cooldown -> duration += p -> sets.set( WARLOCK_DESTRUCTION, T19, B2 ) -> effectN( 2 ).time_value();
