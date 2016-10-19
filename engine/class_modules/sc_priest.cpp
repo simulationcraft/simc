@@ -2213,6 +2213,16 @@ public:
     return et;
   }
 
+  timespan_t cooldown_base_duration() const override
+  {
+    timespan_t cd = priest_spell_t::cooldown_base_duration();
+    if ( priest.buffs.voidform->check() )
+    {
+      cd += -timespan_t::from_seconds( 3.0 );
+    }
+    return cd;
+  }
+
   void update_ready( timespan_t cd_duration ) override
   {
     if ( cd_duration < timespan_t::zero() )
