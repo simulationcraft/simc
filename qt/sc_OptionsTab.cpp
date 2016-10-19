@@ -343,7 +343,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_right -> addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
   globalsLayout_right -> addRow( tr( "Auto-Save Reports" ), choice.auto_save = createChoice( 3, "No", "Use current date/time", "Ask for filename on each simulation" ) );
 
-  QPushButton* savelocation = new QPushButton( tr( "Default location for auto saved reports." ), this );
+  QPushButton* savelocation = new QPushButton( tr( "Change default location for reports." ), this );
   QFont override_font2 = QFont();
   override_font2.setPixelSize( 14 );
   resetb -> setFont( override_font2 );
@@ -1068,6 +1068,10 @@ QString SC_OptionsTab::getReportlDestination() const
     {
       html_filename = text;
     }
+  }
+  if ( auto_save_location.isEmpty() || !QDir( auto_save_location ).exists() )
+  {
+   return mainWindow -> AppDataDir + QDir::separator() + html_filename;
   }
   return auto_save_location + QDir::separator() + html_filename;
 }
