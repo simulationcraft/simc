@@ -3481,15 +3481,6 @@ struct blizzard_shard_t : public frost_mage_spell_t
     }
   }
 
-  virtual double composite_crit_chance() const override
-  {
-    double c = frost_mage_spell_t::composite_crit_chance();
-    if ( p() -> artifact.the_storm_rages.rank() )
-    {
-      c+= p() -> artifact.the_storm_rages.percent();
-    }
-    return c;
-  }
   virtual double calculate_direct_amount( action_state_t* s ) const override
   {
     frost_mage_spell_t::calculate_direct_amount( s );
@@ -3518,6 +3509,15 @@ struct blizzard_t : public frost_mage_spell_t
     cooldown -> hasted = true;
 
     tick_action = new blizzard_shard_t( p );
+  }
+  virtual double composite_crit_chance() const override
+  {
+    double c = frost_mage_spell_t::composite_crit_chance();
+    if ( p() -> artifact.the_storm_rages.rank() )
+    {
+      c+= p() -> artifact.the_storm_rages.percent();
+    }
+    return c;
   }
   virtual void execute() override
   {
