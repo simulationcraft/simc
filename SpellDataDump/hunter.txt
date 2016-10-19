@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -556,7 +556,7 @@ Effects          :
 #1 (id=10651)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 (avg=2.2, dl=0.1) | Target: Enemy(6)
 #2 (id=101526)   : Weapon Damage% (31)
-                   Base Value: 215 | Scaled Value: 2.15 | Target: Enemy(6)
+                   Base Value: 204 | Scaled Value: 2.04 | Target: Enemy(6)
 Description      : A powerful aimed shot that deals ${$sw1*$<mult>} Physical damage.$?s19434[][
 
 Replaces Cobra Shot.]
@@ -2459,9 +2459,9 @@ Effects          :
 #1 (id=139841)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(77)
 #2 (id=139842)   : Normalized Weapon Damage (121)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Cone Front(104)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Unknown(24)
 #3 (id=139945)   : Weapon Damage% (31)
-                   Base Value: 80 | Scaled Value: 0.8 | Radius: 50 yards | Target: Cone Front(104)
+                   Base Value: 80 | Scaled Value: 0.8 | Radius: 50 yards | Target: Unknown(24)
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
@@ -4919,7 +4919,7 @@ Range            : 50000 yards
 Duration         : 8 seconds
 Triggered by     : Dragonsfire Grenade (194855)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   .......x ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 

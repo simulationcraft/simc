@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2663,7 +2663,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.65000 | Target: Friend(21)
 #2 (id=290817)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
-                   Affected Spells: Renewing Mist (115151), Soothing Mist (115175), Revival (115310), Vivify (116670), Effuse (116694), Renewing Mist (119611), Chi Burst (130654), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Mistwalk (197945), Zen Pulse (198487), Sheilun's Gift (205406), Soothing Mist (209525), Sheilun's Gift (214483)
+                   Affected Spells: Renewing Mist (115151), Soothing Mist (115175), Revival (115310), Vivify (116670), Effuse (116694), Renewing Mist (119611), Chi Burst (130654), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Mistwalk (197945), Zen Pulse (198487), Crane Heal (198756), Sheilun's Gift (205406), Soothing Mist (209525), Sheilun's Gift (214483)
 Description      : Wraps the target in healing mists, healing for $o1 over $d$?a231605[, and increasing healing received from your other spells by $m2%][].
 Tooltip          : Heals $w1 every $t1 sec.
 Healing received from the Monk increased by $m2%.
@@ -2867,7 +2867,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #2 (id=161284)   : Trigger Spell: Zen Pilgrimage: Return (64)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 126896 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1000 | Trigger Spell: 126896 | Target: Self(1)
 Description      : $?a200617[Your spirit travels to the Temple of Five Dawns, leaving your body behind.
 
 Use Zen Pilgrimage again to return back to near your departure point.]
@@ -4025,44 +4025,9 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
-#1 (id=287188)   : Apply Aura (6) | Proc Trigger Spell: Crosswinds (42)
-                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 195651 | Target: Self(1)
+#1 (id=287188)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : During Fists of Fury, Wind Spirit images of you attack your Fists of Fury targets for a total of ${8*$196061s1} additional Physical damage.
-
-Name             : Crosswinds (id=195651) [Spell Family (53), Hidden] 
-Class            : Monk
-School           : Nature
-Range            : 100 yards
-Duration         : 4 seconds
-Triggered by     : Crosswinds (195650)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x....x. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=287189)   : Apply Aura (6) | Periodic Trigger Spell: Crosswinds every 0.5 seconds (23)
-                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 195653 | Target: Self(1)
-Description      : $@spelldesc195650
-
-Name             : Crosswinds (id=195653) [Spell Family (53)] 
-Class            : Monk
-School           : Nature
-Range            : 100 yards
-Duration         : 3 seconds
-Triggered by     : Crosswinds (195651)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x....x. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=287191)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 99625 | Misc Value 2: 0xe67 | Radius: 15 yards | Target: Unknown(73)
-Description      : $@spelldesc195650
 
 Name             : Crosswinds (id=196061) 
 Class            : Monk
@@ -4633,10 +4598,11 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 100 yards
+Affecting spells : Enveloping Mist (124682)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -4855,7 +4821,7 @@ Resource         : 0% Base Mana and 0.3% Base Mana (3300 @Level 110) per second 
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 0.5 seconds
-Duration         : 10 seconds
+Duration         : 20 seconds
 Cooldown         : 1 seconds
 Affecting spells : Enveloping Mist (124682), Lucidity (137331), Extend Life (185158), Mist Wrap (197900), Mana Tea (197908), Soothing Remedies (199377), The Mists of Sheilun (199888)
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
@@ -4867,7 +4833,7 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : Channeled (34), Channeled (38)
 Effects          :
 #1 (id=310090)   : Apply Aura (6) | Periodic Heal: every 0.5 seconds (8)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.60000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend(21)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.90000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend(21)
 #2 (id=352117)   : Apply Aura (6) | Unknown effect sub type (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Effuse (116694), Enveloping Mist (124682)

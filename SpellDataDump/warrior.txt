@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -3091,7 +3091,7 @@ Effects          :
 #1 (id=267206)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #2 (id=267207)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
 Description      : $@spelldesc184361
 Tooltip          : Attack speed increased by $s1% and damage taken increased by $s2%.
 
@@ -4475,8 +4475,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=307953)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 12 | Target: Self(1)
+#1 (id=307953)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 12 | Target: Self(1)
+#2 (id=353841)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Berserker Rage (18499), Enrage (184362)
 Description      : You now take only ${30+$208154m1}% increased damage from Enrage.
 

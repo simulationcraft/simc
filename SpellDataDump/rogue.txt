@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -386,6 +386,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 18461 | Target: Self(1)
 #3 (id=271221)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: combo_points | Target: Self(1)
+#4 (id=354085)   : Unknown effect type (93)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Allows you to vanish from sight, entering stealth while in combat. For the first $11327d after vanishing, damage and harmful effects received will not break stealth. Also breaks movement impairing effects.
 Tooltip          : Improved stealth.
 
@@ -4746,7 +4748,7 @@ Duration         : 6 seconds
 Cooldown         : 60 seconds
 Category         : 30
 Affecting spells : Iron Stomach (193546)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 

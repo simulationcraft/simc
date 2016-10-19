@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -154,7 +154,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242)      : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41000 | Target: Enemy(6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Target: Enemy(6)
 #3 (id=323674)   : Energize Power (30)
@@ -367,7 +367,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3283)     : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.75000 | Target: Enemy(6)
 #2 (id=139174)   : Energize Power (30)
                    Base Value: 1200 | Scaled Value: 1200 | Misc Value: insanity | Target: Self(1)
 Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
@@ -519,7 +519,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage: shadow every 0.75 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Target: Enemy(6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power: every 0.75 seconds (24)
@@ -719,7 +719,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=22171)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.60000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.25000 | Target: Enemy(6)
 #2 (id=165318)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=340366)   : Dummy (3)
@@ -931,7 +931,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.87000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.79000 | Target: Enemy(6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self(1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals the Priest for ${$e2*100}% of damage dealt.
@@ -2352,7 +2352,7 @@ Effects          :
 #1 (id=155428)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self(1)
 #2 (id=155429)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x22 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
 Description      : Increases damage done by $s2% and healing done by $s1% for $d.
 Tooltip          : Increases damage and healing by $s1%.
 
@@ -2675,12 +2675,13 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self(1)
 #3 (id=191069)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 65 | Scaled Value: 65 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Power Word: Shield (17), Mass Dispel (32375), Mass Dispel (32592), Shadow Mend (186263), Shadow Mend (187464)
-#4 (id=191070)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Affected Spells: Mass Dispel (32375), Mass Dispel (32592), Shadow Mend (186263), Shadow Mend (187464)
+#4 (id=191070)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 14 | Target: Self(1)
+                   Affected Spells: Power Word: Shield (17)
+#5 (id=191071)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -25 | Scaled Value: -25 | Target: Self(1)
                    Affected Spells: Shadow Mend (186263), Shadow Mend (187464)
-#5 (id=191071)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=260937)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260938)   : Apply Aura (6) | Dummy (4)
@@ -2704,6 +2705,8 @@ Effects          :
 #16 (id=327197)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #17 (id=327314)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#18 (id=353983)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Glyph of Inspired Hymns (Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
@@ -2784,7 +2787,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=203471)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.375) | SP Coefficient: 0.30000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.375) | SP Coefficient: 0.27500 | Target: Enemy(6)
 #2 (id=315217)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: insanity | Target: Self(1)
 Description      : $@spelldesc78203
@@ -3744,7 +3747,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=294728)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self(1)
+                   Base Value: 90 | Scaled Value: 90 | Target: Self(1)
 Description      : When Guardian Spirit expires without saving the target from death, reduce its remaining cooldown to $s1 seconds.
 
 Name             : Grace (Passive) (id=200309) [Spell Family (6), Passive] 
@@ -3956,7 +3959,7 @@ Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. .....
                  : Channeled (34)
 Effects          :
 #1 (id=302733)   : Apply Aura (6) | Periodic Damage: shadow every 1 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.40000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
 #2 (id=302734)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : Raise your dagger into the sky, channeling a torrent of void energy into the target for $o Shadow damage over $d. Insanity does not drain during this channel.
@@ -4016,7 +4019,7 @@ Effects          :
 #2 (id=327739)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Enemy(6)
 #3 (id=344258)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 2 | Scaled Value: 2
 Description      : Controls a mind up to 1 level above yours for $d while still controlling your own mind. Does not work versus Demonic, Mechanical, or Undead beings$?a205477[][ or players]. This spell shares diminishing returns with other disorienting effects.
 Tooltip          : Under the control of the Priest.
 
@@ -4159,7 +4162,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303382)   : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
 #2 (id=303383)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Enemy(6)
 #3 (id=308158)   : Energize Power (30)

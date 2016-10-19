@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -264,12 +264,12 @@ Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137288)
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .xx..... .x...... 
-                 : ........ ........ ........ ........   x....... ........ ........ ..x..... 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ x....... ..x..... 
+                 : ........ ........ .......x ........   .....x.. ........ ........ ........ 
                  : ........ ........ .....x.x ........   ........ ........ ........ ......x. 
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Stop attacks (20)
+                 : Stop attacks (20), Disable player procs (112), Disable weapon procs (151)
 Effects          :
 #1 (id=11180)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
@@ -4669,42 +4669,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : A powerful weapon strike that deals $sw1 Holy damage.
 
-Name             : Crusade (id=224668) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Spell Level      : 72
-Duration         : 20 seconds
-Cooldown         : 21 seconds
-Charges          : 1 (120 seconds cooldown)
-Category         : 1550
-Stacks           : 99 maximum
-Proc Chance      : 100%
-Proc Flags       : ....x... ....x... ........ ........ 
-                 : Yellow Melee, AOE Hostile Spell
-Affecting spells : Wrath of the Ashbringer (186945), 
-Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=336351)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 0x7f | Target: Self(1)
-#2 (id=336352)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 127 | Target: Self(1)
-#3 (id=349867)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 8 | Target: Self(1)
-#4 (id=349868)   : Apply Aura (6) | Unknown effect sub type (454)
-                   Base Value: -75 | Scaled Value: -75 | Misc Value: 1663 | Target: Self(1)
-                   Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
-Description      : Profoundly empowers your Judgment for $d.
-
-While empowered, Judgment generates $s3 Holy Power, has a $s4% reduced cooldown, and increases your damage and healing by $s1%.
-Tooltip          : Judgment empowered to generate $w3 Holy Power, and have $w4% reduced cooldown.
-
-Damage and healing increased by $w1%.
-
 Name             : Light of Dawn (id=225311) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
@@ -4942,5 +4906,36 @@ Effects          :
 #1 (id=349771)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc231832
+
+Name             : Crusade (id=231895) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Level      : 72
+Duration         : 20 seconds
+Cooldown         : 20 seconds
+Charges          : 1 (120 seconds cooldown)
+Category         : 1550
+Stacks           : 15 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x... x.x..... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell, Periodic
+Affecting spells : Wrath of the Ashbringer (186945), 
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=349842)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7f | Target: Self(1)
+#2 (id=349843)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
+Description      : Increases your damage and haste by ${$s1/10}.1% for $d.
+
+Each Holy Power spent during Crusade increases damage and haste by an additional ${$s1/10}.1%.
+
+Maximum $u stacks.
+Tooltip          : Damage and haste increased by ${$s1/10}.1%.
 
 

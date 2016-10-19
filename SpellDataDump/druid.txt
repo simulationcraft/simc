@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -1856,7 +1856,7 @@ GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
-Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Druid (137009), Bloodtalons (145152), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Druid (137009), Bloodtalons (145152), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Luffa Wrappings (234188), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -2692,7 +2692,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Astral Influence (197524), Jagged Claws (200409), Jagged Wounds (202032), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Astral Influence (197524), Jagged Claws (200409), Jagged Wounds (202032), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Luffa Wrappings (234188), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -2713,7 +2713,7 @@ School           : Physical
 Spell Level      : 12
 Range            : 5 yards
 Stance Mask      : 0x00000011
-Affecting spells : Luffa Wrappings (208681), 
+Affecting spells : Luffa Wrappings (208681), Luffa Wrappings (234188), 
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3649,7 +3649,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=195368)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Enraged Mangle (202085), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Swipe (213771)
+                   Affected Spells: Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Swipe (106785), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Enraged Mangle (202085), Swipe (213771)
 Description      : $@spelldesc155672
 Tooltip          : Your next two melee abilities deal $s1% increased damage for their full duration.
 
@@ -4658,10 +4658,10 @@ Name             : Ironfur (id=192081) [Spell Family (7)]
 Class            : Guardian Druid
 School           : Nature
 Resource         : 45 Rage
-Spell Level      : 20
+Spell Level      : 44
 Duration         : 6 seconds
 Cooldown         : 0.5 seconds
-Stacks           : 1 maximum
+Stacks           : 6 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x00000010
 Affecting spells : Reinforced Fur (200395), Ursoc's Endurance (200399), Gory Fur (201671), Natural Defenses (211160), Guardian of Elune (213680), Ironfur (231070)
@@ -4672,14 +4672,14 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=281770)   : Apply Aura (6) | Modify Armor% (101)
+#1 (id=281770)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self(1)
 #2 (id=321076)   : Apply Aura (6) | Unknown effect sub type (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self(1)
 #3 (id=321077)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Frenzied Regeneration (22842)
-Description      : Increases armor by $s1% for $d.$?a231070[ Multiple uses of this ability may overlap.][]
+Description      : Increases armor by $s1% for $d. Multiple uses of this ability may overlap.
 Tooltip          : Armor increased by $s1%.
 
 Name             : Mark of Ursol (id=192083) [Spell Family (7)] 
@@ -4712,7 +4712,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Astral Influence (197524), Jagged Claws (200409), Rend and Tear (204053), Elize's Everlasting Encasement (208342), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Astral Influence (197524), Jagged Claws (200409), Rend and Tear (204053), Elize's Everlasting Encasement (208342), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Luffa Wrappings (234188), 
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5163,13 +5163,13 @@ Class            : Druid
 School           : Astral
 Spell Level      : 10
 Range            : 50000 yards
-Duration         : 8 seconds
+Duration         : 1.5 seconds
 Affecting spells : Mastery: Starlight (77492), Falling Star (202445)
 Attributes       : ........ ........ ........ .....x..   .......x ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290410)   : Apply Aura (6) | Unknown effect sub type (271)
@@ -5762,7 +5762,7 @@ Tooltip          : Grants ${$m1/10} Astral Power every $t1 sec.
 
 Name             : New Moon (Artifact) (id=202767) [Spell Family (7)] 
 Class            : Druid
-School           : Astral
+School           : Arcane
 Range            : 40 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
@@ -5779,7 +5779,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298964)   : School Damage: astral (2)
+#1 (id=298964)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Target: Enemy(6)
 #2 (id=299003)   : Trigger Spell: New Moon Override (64)
                    Base Value: 202787 | Scaled Value: 202787 | Trigger Spell: 202787 | Target: Self(1)
@@ -5791,7 +5791,7 @@ Description      : Deals $m1 Astral damage to the target and empowers New Moon t
 
 Name             : Half Moon (Artifact) (id=202768) [Spell Family (7)] 
 Class            : Druid
-School           : Astral
+School           : Arcane
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
@@ -5806,7 +5806,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298965)   : School Damage: astral (2)
+#1 (id=298965)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.00000 | Target: Enemy(6)
 #2 (id=299004)   : Trigger Spell: Half Moon Override (64)
                    Base Value: 202788 | Scaled Value: 202788 | Trigger Spell: 202788 | Target: Self(1)
@@ -6506,7 +6506,7 @@ Duration         : 3 seconds
 Cooldown         : 75 seconds
 Stance Mask      : 0x00000001
 Artifact Power   : Id: 1153, Max Rank: 1
-Affecting spells : Mastery: Razor Claws (77493), Lucidity (137247), Bloodtalons (145152), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
+Affecting spells : Mastery: Razor Claws (77493), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6529,7 +6529,7 @@ Class            : Druid
 School           : Physical
 Range            : 5 yards
 Duration         : 6 seconds
-Affecting spells : Mastery: Razor Claws (77493), Lucidity (137247), Bloodtalons (145152), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
+Affecting spells : Mastery: Razor Claws (77493), Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

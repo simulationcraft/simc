@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -250,7 +250,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
 #1 (id=126904)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.07000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Unknown(88) | Target: AOE enemy (instant)(16)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.
@@ -391,7 +391,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : Channeled (34), Not a proc (105)
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Chain Targets: 1 | Target: Unknown(77)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41800 | Chain Targets: 1 | Target: Unknown(77)
 Description      : $@spelldesc5143
 
 Name             : Frost Armor (id=7302) [Spell Family (3), Passive] 
@@ -435,7 +435,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=4785)     : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.76000 | Target: Enemy(6)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage.
 
 Name             : Ice Barrier (id=11426) [Scaling Spell (5), Spell Family (3)] 
@@ -774,7 +774,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=20028)    : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.81500 | Target: Enemy(6)
 #2 (id=20029)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
@@ -884,7 +884,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Mechanic: Unknown(10) | Target: Cone Front(104)
 #2 (id=21277)    : School Damage: fire (2)
                    Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 2.50000 | Radius: 12 yards | Target: Cone Front(104)
-Description      : Enemies in a cone in front of you take $s1 Fire damage and are disoriented for $d. Damage will cancel the effect.
+Description      : Enemies in a cone in front of you take $s2 Fire damage and are disoriented for $d. Damage will cancel the effect.
 Tooltip          : Disoriented.
 
 Name             : Summon Water Elemental (id=31687) [Spell Family (3)] 
@@ -1043,7 +1043,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self(1)
                    Affected Spells: Arcane Explosion (1449), Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425)
 #2 (id=26314)    : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 14 | Target: Self(1)
+                   Base Value: 125 | Scaled Value: 125 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Arcane Explosion (1449), Arcane Blast (30451)
 #3 (id=127870)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self(1)
@@ -1885,7 +1885,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=85629)    : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Radius: 10 yards | Target: AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.26300 | Radius: 10 yards | Target: AOE enemy (instant)(16)
 Description      : $@spelldesc84714
 Tooltip          : Movement slowed by $s1%.
 
@@ -2216,9 +2216,9 @@ Attributes       : ........ ........ x.x....x x..x....   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=125807)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=4.4198) | SP Coefficient: 1.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=4.4198) | SP Coefficient: 1.57500 | Target: Enemy(6)
 #2 (id=125808)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.2106) | SP Coefficient: 0.93750 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=2.2106) | SP Coefficient: 0.98400 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc112948
 Tooltip          : Slowed by $113092s3%.
 
@@ -2988,7 +2988,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=212872)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Radius: 0 - 4 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.05000 | Radius: 0 - 4 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) 
@@ -3028,7 +3028,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=212926)   : School Damage: arcane (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.74300 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.81700 | Target: Enemy(6)
 #2 (id=212927)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : $@spelldesc153626
@@ -3581,7 +3581,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
 Affecting spells : Icy Veins (12472), Ice Floes (108839), Ice Form (198144)
-Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
+Attributes       : ........ .....x.. x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3632,7 +3632,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=278848)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | SP Coefficient: 0.45000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.323) | SP Coefficient: 0.49500 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc190356
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
 $arctic2=$?s31675[${1.02}][${$<arctic1>}]
@@ -3687,7 +3687,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
                    Affected Spells: Flurry (44614)
 #2 (id=348810)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Flurry (44614)
 Description      : $@spelldesc190447
 Tooltip          : Your next Flurry is instant cast$?a231584[,][ and] deals $s2% increased damage$?a231584[, and will cause Winter's Chill on the target][].
@@ -3809,7 +3809,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
 Effects          :
 #1 (id=285417)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.456, dl=0.202) | SP Coefficient: 0.30000 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.456, dl=0.202) | SP Coefficient: 0.34500 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 Description      : $@spelldesc194431
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -4082,7 +4082,7 @@ Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.85000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.94300 | Target: Enemy(6)
 Description      : For the next $d, you can channel a beam of icy power at an enemy, slowing movement by $m1% and dealing $s2 Frost damage every $t2 sec. Each time Ray of Frost deals damage, its damage increases by $208141s1%.
 Tooltip          : Movement slowed by $m1% and taking $s2 Frost damage every $t2 sec.
 
@@ -4928,7 +4928,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=343734)   : School Damage: frost (2)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.45000 | Target: Enemy(6)
+                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | SP Coefficient: 1.52300 | Target: Enemy(6)
 #2 (id=343735)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc44614
@@ -4950,7 +4950,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344284)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.10000 | Target: Enemy(6)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)] 
@@ -4969,7 +4969,7 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344285)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 0.85000 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.1) | SP Coefficient: 0.89300 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : $@spelldesc30455

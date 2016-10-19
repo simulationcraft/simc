@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -524,7 +524,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=39872)    : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.27500 | Target: Enemy(6)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Veteran of the Third War (id=48263) [Spell Family (15), Passive] 
@@ -714,7 +714,7 @@ Effects          :
 #1 (id=41295)    : Dummy (3)
                    Base Value: 85 | Scaled Value: 85 | Target: Enemy(6)
 #2 (id=41296)    : School Damage: frost (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.55000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.82500 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : Blast the target with a frigid wind, dealing $s2 $?s204088[Frost damage and applying Frost Fever to the target.][Frost damage to that foe, and ${($m1/100)*$m2} Frost damage to all other enemies within 10 yards, infecting all targets with Frost Fever.]
 
 |Tinterface\icons\spell_deathknight_frostfever.blp:24|t |cFFFFFFFFFrost Fever|r
@@ -1034,7 +1034,7 @@ Attributes       : ........ .....x.. ..x..... ........   ...x...x ........ .....
                  : Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
 Effects          :
 #1 (id=44095)    : Apply Aura (6) | Unknown effect sub type (270)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 16 | Target: Enemy(6)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 16 | Target: Enemy(6)
 #2 (id=205722)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 16 | Target: Enemy(6)
 Description      : $@spelldesc53343
@@ -1692,7 +1692,7 @@ Effects          :
 #1 (id=60372)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=60373)    : Weapon Damage% (31)
-                   Base Value: 380 | Scaled Value: 3.8 | Target: Enemy(6)
+                   Base Value: 456 | Scaled Value: 4.56 | Target: Enemy(6)
 Description      : $@spelldesc49020
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
@@ -3977,7 +3977,7 @@ Resource         : -10 Runic Power
 Spell Level      : 58
 Range            : 30 yards
 GCD              : 1.5 seconds
-Velocity         : 60 yards/sec
+Velocity         : 100 yards/sec
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3987,7 +3987,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=286689)   : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.3, dl=0.083) | AP Coefficient: 0.90000 | Target: Enemy(6)
-#2 (id=293371)   : Trigger Spell: Blood Plague (64)
+#2 (id=293371)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 55078 | Target: Enemy(6)
 Description      : Reach out with necrotic tendrils, dealing $s1 Shadow damage and applying Blood Plague to your target.
 
@@ -6133,7 +6133,7 @@ Effects          :
 #1 (id=331344)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #2 (id=331345)   : Weapon Damage% (31)
-                   Base Value: 380 | Scaled Value: 3.8 | Target: Enemy(6)
+                   Base Value: 456 | Scaled Value: 4.56 | Target: Enemy(6)
 Description      : $@spelldesc49020
 
 

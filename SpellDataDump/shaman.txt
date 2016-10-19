@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.0.3 PTR (wow build 22522, git build d71a057)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1219,7 +1219,7 @@ Spell Level      : 1
 Range            : 25 yards
 Duration         : 0.1 seconds
 Triggered by     : Spirit Walk (58875)
-Attributes       : .......x x....... ........ ........   ........ ..x..... ........ ........ 
+Attributes       : .......x x....... ........ ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4810,7 +4810,7 @@ Description      : $@spelldesc197995
 
 Name             : Fire Elemental (id=198067) [Spell Family (11)] 
 Class            : Elemental Shaman
-School           : Nature
+School           : Fire
 Spell Level      : 56
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -5516,9 +5516,6 @@ Effects          :
 #3 (id=353619)   : Apply Aura (6) | Add Percent Modifier: Spell Cast Time (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Beam (114074), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-#4 (id=353620)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
-                   Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Beam (114074), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
 Description      : Raises |cFFFFCC99The Fist of Ra-den|r to the sky and absorbs all nearby electric energy, causing your next $n casts of Lightning Bolt or Chain Lightning to be instant and deal $s1% increased damage.
 Tooltip          : Your next Lightning Bolt or Chain Lightning will be instant and deal $s1% additional damage.
 
@@ -5560,7 +5557,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=306723)   : Apply Aura (6) | Unknown effect sub type (133)
-                   Base Value: 8 | Scaled Value: 8 | Target: Friend(21)
+                   Base Value: 10 | Scaled Value: 10 | Target: Friend(21)
 Description      : $@spelldesc207401
 Tooltip          : Maximum health increased by $s1%.
 
