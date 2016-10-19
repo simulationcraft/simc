@@ -2166,6 +2166,7 @@ public:
               ->effectN( 1 )
               .base_value();
     }
+    priest.cooldowns.mind_blast->hasted = true;
 
     priest_spell_t::init();
   }
@@ -2221,10 +2222,8 @@ public:
 
     // Hardcode Mind Blast CD reduction since the spelldata for Voidform is
     // missing effect #6. -- Twintop 2016/09/17
-    cd_duration =
-        ( cooldown->duration -
-          timespan_t::from_seconds( 3.0 ) * priest.buffs.voidform->up() ) *
-        composite_haste();
+    cd_duration = cooldown->duration -
+                  timespan_t::from_seconds( 3.0 ) * priest.buffs.voidform->up();
 
     // cd_duration = (cooldown->duration *
     // priest.specs.voidform->effectN(6).time_value() *
