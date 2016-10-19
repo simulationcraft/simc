@@ -1810,8 +1810,15 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
     cooldown -> start( this, cd_duration, delay );
 
-    if ( sim -> debug )
-      sim -> out_debug.printf( "%s starts cooldown for %s (%s, %d/%d). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> current_charge, cooldown -> charges, cooldown -> ready.total_seconds() );
+    if ( sim->debug )
+    {
+      sim->out_debug.printf(
+          "%s starts cooldown for %s (%s, %d/%d). Duration=%fs Delay=%fs. Will "
+          "be ready at %.4f",
+          player->name(), name(), cooldown->name(), cooldown->current_charge,
+          cooldown->charges, cd_duration.total_seconds(), delay.total_seconds(),
+          cooldown->ready.total_seconds() );
+    }
 
     if ( internal_cooldown -> duration > timespan_t::zero() )
     {
