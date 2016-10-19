@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (610)
 
-// 610 talents, wow build 22819
+// 610 talents, wow build 22864
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -349,7 +349,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Sanctified Wrath"                  , 22190, 0x00, 0x0002,  65,   1,   5,   53376,       0,  0 },
   { "Mistwalk"                          , 22213, 0x00, 0x0200, 270,   2,   0,  197945,       0,  0 },
   { "Summon Jade Serpent Statue"        , 22214, 0x00, 0x0200, 270,   2,   5,  115313,       0,  0 },
-  { "Crusade"                           , 22215, 0x00, 0x0002,  70,   1,   6,  224668,   31884,  0 },
+  { "Crusade"                           , 22215, 0x00, 0x0002,  70,   1,   6,  231895,   31884,  0 },
   { "Invoke Chi-Ji, the Red Crane"      , 22217, 0x00, 0x0200, 270,   1,   5,  198664,       0,  0 },
   { "Mana Tea"                          , 22218, 0x00, 0x0200, 270,   0,   6,  197908,       0,  0 },
   { "Song of Chi-Ji"                    , 22219, 0x00, 0x0200, 270,   1,   3,  198898,  175697,  0 },
