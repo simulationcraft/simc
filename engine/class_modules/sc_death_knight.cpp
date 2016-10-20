@@ -471,6 +471,7 @@ public:
     cooldown_t* avalanche;
     cooldown_t* bone_shield_icd;
     cooldown_t* dark_transformation;
+    cooldown_t* festering_wound;
     cooldown_t* frost_fever;
     cooldown_t* icecap;
     cooldown_t* pillar_of_frost;
@@ -763,6 +764,7 @@ public:
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
+    cooldown.festering_wound = get_cooldown( "festering_wound" );
     cooldown.icecap          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
     cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
@@ -826,6 +828,7 @@ public:
   double    rune_regen_coefficient() const;
   void      trigger_runic_empowerment( double rpcost );
   void      trigger_runic_corruption( double rpcost );
+  void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, bool bypass_icd = false ) const;
   void      apply_diseases( action_state_t* state, unsigned diseases );
   double    ready_runes_count( bool fractional ) const;
   double    runes_cooldown_min( ) const;
@@ -886,7 +889,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
                            .period( timespan_t::zero() );
   debuff.festering_wound = buff_creator_t( *this, "festering_wound" )
                            .spell( death_knight -> find_spell( 194310 ) )
-                           .trigger_spell( death_knight -> spec.festering_wound );
+                           .trigger_spell( death_knight -> spec.festering_wound )
+                           .cd( timespan_t::zero() ); // Handled by trigger_festering_wound
   debuff.mark_of_blood   = buff_creator_t( *this, "mark_of_blood", death_knight -> talent.mark_of_blood )
                            .cd( timespan_t::zero() ); // Handled by the action
   debuff.soul_reaper     = buff_creator_t( *this, "soul_reaper", death_knight -> talent.soul_reaper )
@@ -1364,7 +1368,7 @@ struct dt_melee_ability_t : public pet_melee_attack_t<T>
       return;
     }
 
-    this -> p() -> o() -> get_target_data( state -> target ) -> debuff.festering_wound -> trigger();
+    this -> p() -> o() -> trigger_festering_wound( state, 1, true ); // Bypass ICD
   }
 
   void execute() override
@@ -2988,7 +2992,7 @@ struct melee_t : public death_knight_melee_attack_t
 
       if ( p() -> buffs.blighted_rune_weapon -> up() )
       {
-        td( s -> target ) -> debuff.festering_wound -> trigger( 2 );
+        p() -> trigger_festering_wound( s, 2 );
         p() -> buffs.blighted_rune_weapon -> decrement();
       }
 
@@ -4266,7 +4270,8 @@ struct festering_strike_t : public death_knight_melee_attack_t
       {
         n_stacks += p() -> talent.castigator -> effectN( 1 ).base_value();
       }
-      td( s -> target ) -> debuff.festering_wound -> trigger( n_stacks );
+
+      p() -> trigger_festering_wound( s, n_stacks );
 
       trigger_draugr_girdle_everlasting_king();
     }
@@ -6025,6 +6030,20 @@ void death_knight_t::trigger_runic_corruption( double rpcost )
     buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   else
     buffs.runic_corruption -> extend_duration( this, duration );
+}
+
+void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, bool bypass_icd ) const
+{
+  if ( ! bypass_icd && cooldown.festering_wound -> down() )
+  {
+    return;
+  }
+
+  auto td = get_target_data( state -> target );
+
+  td -> debuff.festering_wound -> trigger( n );
+
+  cooldown.festering_wound -> start( spec.festering_wound -> internal_cooldown() );
 }
 
 // ==========================================================================
