@@ -1822,7 +1822,7 @@ public:
         // Technically minimum GCD is 750ms but nothing brings the GCD below 1 sec
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Hasted Cooldown
-        ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_monk -> effectN( 1 ) );
+        ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) );
         // Cooldown reduction
         if ( maybe_ptr( player -> dbc.ptr ) ) // FIX ME
         {
