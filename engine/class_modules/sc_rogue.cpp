@@ -6563,7 +6563,7 @@ void rogue_t::init_action_list()
     garrote -> add_action( "pool_resource,for_next=1" );
     garrote -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&!ticking&combo_points.deficit>=1&spell_targets.fan_of_knives>=2" );
     garrote -> add_action( "pool_resource,for_next=1" );
-    garrote -> add_action( this, "Garrote", "if=combo_points.deficit>=1&!exsanguinated" );
+    garrote -> add_action( this, "Garrote", "if=combo_points.deficit>=1&!exsanguinated&refreshable" );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
