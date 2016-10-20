@@ -100,7 +100,7 @@ actions.finish_noex+=/envenom,if=variable.envenom_condition&(combo_points>=cp_ma
 actions.garrote=pool_resource,for_next=1
 actions.garrote+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&!ticking&combo_points.deficit>=1&spell_targets.fan_of_knives>=2
 actions.garrote+=/pool_resource,for_next=1
-actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated
+actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated&refreshable
 
 head=biornskin_hood,id=134196,bonus_id=1727
 neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_hidden_satyr

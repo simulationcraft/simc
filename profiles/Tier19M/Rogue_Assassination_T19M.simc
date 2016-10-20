@@ -98,7 +98,7 @@ actions.finish_noex+=/envenom,if=variable.envenom_condition&(combo_points>=cp_ma
 actions.garrote=pool_resource,for_next=1
 actions.garrote+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&!ticking&combo_points.deficit>=1&spell_targets.fan_of_knives>=2
 actions.garrote+=/pool_resource,for_next=1
-actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated
+actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated&refreshable
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
 neck=soultrappers_pendant,id=141506,enchant=mark_of_the_hidden_satyr
