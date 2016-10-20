@@ -362,13 +362,14 @@ public:
     const spell_data_t* blackout_kick;
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
+    const spell_data_t* effuse;
+    const spell_data_t* effuse_rank_two;
     const spell_data_t* leather_specialization;
     const spell_data_t* rising_sun_kick;
     const spell_data_t* roll;
     const spell_data_t* spinning_crane_kick;
     const spell_data_t* spear_hand_strike;
     const spell_data_t* tiger_palm;
-    const spell_data_t* vivify;
     const spell_data_t* zen_meditation;
 
     // Brewmaster
@@ -390,16 +391,21 @@ public:
 
     // Mistweaver
     const spell_data_t* detox;
-    const spell_data_t* effuse;
     const spell_data_t* enveloping_mist;
+    const spell_data_t* envoloping_mist_rank_two;
     const spell_data_t* essence_font;
+    const spell_data_t* essence_font_rank_two;
     const spell_data_t* life_cocoon;
+    const spell_data_t* reawaken;
     const spell_data_t* renewing_mist;
+    const spell_data_t* renewing_mist_rank_two;
     const spell_data_t* resuscitate;
     const spell_data_t* revival;
     const spell_data_t* soothing_mist;
     const spell_data_t* teachings_of_the_monastery;
     const spell_data_t* thunder_focus_tea;
+    const spell_data_t* thunger_focus_tea_rank_two;
+    const spell_data_t* vivify;
 
     // Windwalker
     const spell_data_t* afterlife;
@@ -411,6 +417,7 @@ public:
     const spell_data_t* flying_serpent_kick;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* storm_earth_and_fire;
+    const spell_data_t* storm_earth_and_fire_rank_two;
     const spell_data_t* touch_of_death;
     const spell_data_t* touch_of_karma;
     const spell_data_t* windwalker_monk;
@@ -647,8 +654,8 @@ public:
       pet( pets_t() ),
       user_options( options_t() ),
       light_stagger_threshold( 0 ),
-      moderate_stagger_threshold( 0.0167 ), // Moderate transfers at 33.3% Stagger; 1.67% every 1/2 sec
-      heavy_stagger_threshold( 0.0334 ) // Heavy transfers at 66.6% Stagger; 3.34% every 1/2 sec
+      moderate_stagger_threshold( 0.01666 ), // Moderate transfers at 33.3% Stagger; 1.67% every 1/2 sec
+      heavy_stagger_threshold( 0.03333 ) // Heavy transfers at 66.6% Stagger; 3.34% every 1/2 sec
   {
     // actives
     active_celestial_fortune_proc = nullptr;
@@ -1795,13 +1802,16 @@ public:
         if ( ab::data().affected_by( player -> spec.stagger -> effectN( 15 ) ) )
           ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
         // Hasted Cooldown
-        ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 2 ) );
+        if ( maybe_ptr( player -> dbc.ptr ) ) // FIX ME
+          ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 1 ) );
+        else
+          ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 2 ) );
         break;
       }
       case MONK_MISTWEAVER:
       {
         // Hasted Cooldown
-        ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_mistweaver_monk -> effectN( 5 ) );
+        ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_mistweaver_monk -> effectN( 5 ) );
         break;
       }
       case MONK_WINDWALKER:
@@ -1814,8 +1824,16 @@ public:
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( p() -> passives.aura_monk -> effectN( 1 ) );
         // Cooldown reduction
-        if ( ab::data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 2 ) ) )
-          ab::cooldown -> duration *= 1 + p() -> passives.aura_windwalker_monk -> effectN( 2 ).percent(); // saved as -100
+        if ( maybe_ptr( player -> dbc.ptr ) ) // FIX ME
+        {
+          if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
+            ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 1 ).percent(); // saved as -100
+        }
+        else
+        {
+          if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 2 ) ) )
+            ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 2 ).percent(); // saved as -100
+        }
         break;
       }
       default: break;
@@ -2225,6 +2243,21 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     hasted_ticks = false;
     target = player;
   }
+
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p() -> specialization() == MONK_BREWMASTER )
+    {
+      if ( maybe_ptr( p() -> dbc.ptr ) ) // FIX ME
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+    }
+
+    return am;
+  }
 };
 
 struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
@@ -2236,6 +2269,21 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
     hasted_ticks = false;
     attack_power_mod.direct = 0;
     attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p() -> specialization() == MONK_BREWMASTER )
+    {
+      if ( maybe_ptr( p() -> dbc.ptr ) ) // FIX ME
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+    }
+
+    return am;
   }
 };
 
@@ -2262,8 +2310,13 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     if ( p -> specialization() == MONK_WINDWALKER )
     {
-      energize_amount = p -> spec.tiger_palm -> effectN( 2 ).base_value();
-      energize_amount += p -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
+      if ( maybe_ptr( p -> dbc.ptr ) ) // FIX ME
+        energize_amount = p -> passives.aura_windwalker_monk -> effectN( 2 ).base_value();
+      else
+      {
+        energize_amount = p -> spec.tiger_palm -> effectN( 2 ).base_value();
+        energize_amount += p -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
+      }
     }
     else
       energize_type = ENERGIZE_NONE;
@@ -2290,6 +2343,14 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
       am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 11 ).percent();
+
+    if ( p() -> specialization() == MONK_BREWMASTER )
+    {
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+    }
 
     if ( p() -> buff.blackout_combo -> up() )
       am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
@@ -2373,7 +2434,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // Apply Mortal Wonds
-    if ( p() -> specialization() == MONK_WINDWALKER && result_is_hit( s -> result ) )
+    if ( p() -> specialization() == MONK_WINDWALKER && result_is_hit( s -> result ) && p() -> spec.spinning_crane_kick )
       p() -> trigger_mark_of_the_crane( s );
   }
 };
@@ -2473,8 +2534,10 @@ struct rising_sun_kick_proc_t : public monk_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       // Apply Mortal Wonds
-      s -> target -> debuffs.mortal_wounds -> trigger();
-      p() -> trigger_mark_of_the_crane( s );
+      if ( p() -> spec.combat_conditioning )
+        s -> target -> debuffs.mortal_wounds -> trigger();
+      if ( p() -> spec.spinning_crane_kick )
+        p() -> trigger_mark_of_the_crane( s );
     }
   }
 };
@@ -2879,7 +2942,7 @@ struct blackout_kick_t: public monk_melee_attack_t
       if ( p() -> talent.dizzying_kicks -> ok() )
         td( s -> target ) -> debuff.dizzing_kicks -> trigger();
 
-      if ( p() -> specialization() == MONK_WINDWALKER )
+      if ( p() -> specialization() == MONK_WINDWALKER && p() -> spec.spinning_crane_kick )
         p() -> trigger_mark_of_the_crane( s );
 
       if ( p() -> buff.teachings_of_the_monastery -> up() )
@@ -3011,8 +3074,13 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    if (p()->specialization() == MONK_BREWMASTER)
-      pm *= 1 + p()->passives.aura_brewmaster_monk->effectN(4).percent();
+    if ( p() -> specialization() == MONK_BREWMASTER )
+    {
+      if ( maybe_ptr( p() -> dbc.ptr ) ) // FIX ME
+        pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 3 ).percent();
+      else
+        pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+    }
 
     return pm;
   }
@@ -4122,6 +4190,8 @@ struct storm_earth_and_fire_t: public monk_spell_t
 
     trigger_gcd = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
+    if ( maybe_ptr( p -> dbc.ptr ) ) // FIX ME
+      cooldown -> charges += p -> spec.storm_earth_and_fire_rank_two -> effectN( 1 ).base_value();
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -5055,29 +5125,45 @@ struct effuse_t: public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
-    switch( p() -> specialization() )
+    if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME
     {
-      case MONK_MISTWEAVER:
+      if ( p() -> specialization() == MONK_BREWMASTER || p() -> specialization() == MONK_WINDWALKER )
+        am *= 1 + p() -> spec.effuse_rank_two -> effectN( 1 ).percent();
+      else 
       {
         if ( p() -> buff.thunder_focus_tea -> up() )
-          am *= 1 + p() -> spec.thunder_focus_tea -> effectN( 2 ).percent(); // saved as -100
+          am *= 1 + p() -> spec.thunder_focus_tea -> effectN( 2 ).percent(); // saved as 200
 
         if ( p() -> artifact.coalescing_mists.rank() )
           am *= 1 + p() -> artifact.coalescing_mists.percent();
-        break;
       }
-      // Apply healing adjustments for Brewmasters and Windwalkers
-      case MONK_BREWMASTER:
+    }
+    else
+    {
+      switch( p() -> specialization() )
       {
-        am *= p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
-        break;
+        case MONK_MISTWEAVER:
+        {
+          if ( p() -> buff.thunder_focus_tea -> up() )
+            am *= 1 + p() -> spec.thunder_focus_tea -> effectN( 2 ).percent(); // saved as 200
+
+          if ( p() -> artifact.coalescing_mists.rank() )
+            am *= 1 + p() -> artifact.coalescing_mists.percent();
+          break;
+        }
+        // Apply healing adjustments for Brewmasters and Windwalkers
+        case MONK_BREWMASTER:
+        {
+          am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
+          break;
+        }
+        case MONK_WINDWALKER:
+        {
+          am *= 1 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
+          break;
+        }
+        default: break;
       }
-      case MONK_WINDWALKER:
-      {
-        am *= p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
-        break;
-      }
-      default: break;
     }
 
     return am;
@@ -5755,6 +5841,14 @@ struct chi_wave_heal_tick_t: public monk_heal_t
       am *= 1.0 + sef_mult;
     }
 
+    if ( p() -> specialization() == MONK_BREWMASTER )
+    { 
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+    }
+
     return am;
   }
 };
@@ -5776,6 +5870,21 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
       pm *= 1 + p() -> cache.mastery_value();
 
     return pm;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p() -> specialization() == MONK_BREWMASTER )
+    { 
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+    }
+
+    return am;
   }
 };
 
@@ -5858,6 +5967,14 @@ struct chi_burst_heal_t: public monk_heal_t
       am *= 1.0 + sef_mult;
     }
 
+    if ( p() -> specialization() == MONK_BREWMASTER )
+    { 
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+    }
+
     return am;
   }
 };
@@ -5880,6 +5997,21 @@ struct chi_burst_damage_t: public monk_spell_t
       pm *= 1 + p() -> cache.mastery_value();
 
     return pm;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p() -> specialization() == MONK_BREWMASTER )
+    { 
+      if ( maybe_ptr( p() -> dbc.ptr ) )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+    }
+
+    return am;
   }
 };
 
@@ -6633,13 +6765,15 @@ void monk_t::init_spells()
   spec.blackout_kick                 = find_class_spell( "Blackout Kick" );
   spec.crackling_jade_lightning      = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
+  spec.effuse                        = find_spell( 116694 );
+  spec.effuse_rank_two               = find_spell( 231602 );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
+  spec.resuscitate                   = find_class_spell( "Resuscitate" );
   spec.rising_sun_kick               = find_specialization_spell( "Rising Sun Kick" );
   spec.roll                          = find_class_spell( "Roll" );
   spec.spear_hand_strike             = find_specialization_spell( "Spear Hand Strike" );
-  spec.spinning_crane_kick           = find_class_spell( "Spinning Crane Kick" );
+  spec.spinning_crane_kick           = find_specialization_spell( "Spinning Crane Kick" );
   spec.tiger_palm                    = find_class_spell( "Tiger Palm" );
-  spec.vivify                        = find_class_spell( "Vivify" );
   spec.zen_meditation                = find_specialization_spell( "Zen Meditation" );
 
   // Brewmaster Specialization
@@ -6661,16 +6795,19 @@ void monk_t::init_spells()
 
   // Mistweaver Specialization
   spec.detox                         = find_specialization_spell( "Detox" );
-  spec.effuse                        = find_specialization_spell( "Effuse" );
-  spec.enveloping_mist               = find_specialization_spell( "Enveloping Mist" );
+  spec.enveloping_mist               = find_spell( 124682 );
+  spec.envoloping_mist_rank_two      = find_spell( 231605 );
   spec.essence_font                  = find_specialization_spell( "Essence Font" );
   spec.life_cocoon                   = find_specialization_spell( "Life Cocoon" );
-  spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
-  spec.resuscitate                   = find_specialization_spell( "Resuscitate" );
+  spec.reawaken                      = find_specialization_spell( "Reawaken" );
+  spec.renewing_mist                 = find_spell( 115151 );
+  spec.renewing_mist_rank_two        = find_spell( 231606 );
   spec.revival                       = find_specialization_spell( "Revival" );
   spec.soothing_mist                 = find_specialization_spell( "Soothing Mist" );
   spec.teachings_of_the_monastery    = find_specialization_spell( "Teachings of the Monastery" );
-  spec.thunder_focus_tea             = find_specialization_spell( "Thunder Focus Tea" );
+  spec.thunder_focus_tea             = find_spell( 116680 );
+  spec.thunger_focus_tea_rank_two    = find_spell( 231876 );
+  spec.vivify                        = find_specialization_spell( "Vivify" );
 
   // Windwalker Specialization
   spec.afterlife                     = find_specialization_spell( "Afterlife" );
@@ -6681,7 +6818,8 @@ void monk_t::init_spells()
   spec.fists_of_fury                 = find_specialization_spell( "Fists of Fury" );
   spec.flying_serpent_kick           = find_specialization_spell( "Flying Serpent Kick" );
   spec.stance_of_the_fierce_tiger    = find_specialization_spell( "Stance of the Fierce Tiger" );
-  spec.storm_earth_and_fire          = find_specialization_spell( "Storm, Earth, and Fire" );
+  spec.storm_earth_and_fire          = find_spell( 137639 );
+  spec.storm_earth_and_fire_rank_two = find_spell( 231627 );
   spec.touch_of_karma                = find_specialization_spell( "Touch of Karma" );
   spec.touch_of_death                = find_specialization_spell( "Touch of Death" );
   spec.windwalker_monk               = find_specialization_spell( "Windwalker Monk" );
