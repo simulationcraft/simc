@@ -6713,6 +6713,8 @@ struct token_t
   std::string value_str;
 };
 size_t parse_tokens( std::vector<token_t>& tokens, const std::string& encoded_str );
+
+bool has_item_bonus_type( const item_t& item, item_bonus_type bonus_type );
 }
 
 // Procs ====================================================================

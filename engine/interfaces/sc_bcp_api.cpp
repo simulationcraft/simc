@@ -390,6 +390,16 @@ bool parse_items( player_t*  p,
     {
       parse_artifact( item, data );
     }
+
+    // Since Armory API does not give us the drop level of items (such as quest items), we will need
+    // to implement a hack here to actually grab the armory-reported item level for those items. We
+    // do this by checking if Blizzard includes a ITEM_BONUS_SCALING_2 type bonus in their
+    // bonusLists array.
+    if ( item_database::has_item_bonus_type( item, ITEM_BONUS_SCALING_2 ) &&
+         data.HasMember( "itemLevel" ) )
+    {
+      item.parsed.item_level = data[ "itemLevel" ].GetUint();
+    }
   }
 
   return true;

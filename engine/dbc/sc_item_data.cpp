@@ -1716,3 +1716,18 @@ unsigned dbc_t::parent_item( unsigned id ) const
   return 0;
 }
 
+bool item_database::has_item_bonus_type( const item_t& item, item_bonus_type bonus )
+{
+  // For all parsed bonus ids ..
+  //
+  auto it = range::find_if( item.parsed.bonus_id, [ &item, bonus ]( int bonus_id ) {
+    auto bonuses = item.player -> dbc.item_bonus( bonus_id );
+    // If there's a bonus id of type bonus, return true
+    return range::find_if( bonuses, [ bonus ]( const item_bonus_entry_t* entry ) {
+      return entry -> type == bonus;
+    } ) != bonuses.end();
+  } );
+
+  return it != item.parsed.bonus_id.end();
+}
+
