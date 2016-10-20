@@ -2213,9 +2213,9 @@ public:
     return et;
   }
 
-  timespan_t cooldown_base_duration() const override
+  timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
   {
-    timespan_t cd = priest_spell_t::cooldown_base_duration();
+    timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
     if ( priest.buffs.voidform->check() )
     {
       cd += -timespan_t::from_seconds( 3.0 );
@@ -2225,19 +2225,8 @@ public:
 
   void update_ready( timespan_t cd_duration ) override
   {
-    if ( cd_duration < timespan_t::zero() )
-    {
-      cd_duration = cooldown->duration;
-    }
-
-    // Hardcode Mind Blast CD reduction since the spelldata for Voidform is
-    // missing effect #6. -- Twintop 2016/09/17
-    cd_duration = cooldown->duration -
-                  timespan_t::from_seconds( 3.0 ) * priest.buffs.voidform->up();
-
-    // cd_duration = (cooldown->duration *
-    // priest.specs.voidform->effectN(6).time_value() *
-    // priest.buffs.voidform->up() ) * composite_haste();
+    // Uptime tracking
+    priest.buffs.voidform -> up();
 
     // Shadowy Insight has proc'd during the cast of Mind Blast, the cooldown
     // reset is deferred to the finished cast, instead of "eating" it.
@@ -3789,7 +3778,7 @@ struct insanity_drain_stacks_t final : public priest_buff_t<buff_t>
 
 /* Custom voidform buff
  */
-struct voidform_t final : public priest_buff_t<buff_t>
+struct voidform_t final : public priest_buff_t<haste_buff_t>
 {
   struct insanity_loss_event_t final : public player_event_t
   {
@@ -3886,7 +3875,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
   insanity_loss_event_t* insanity_loss;
 
   voidform_t( priest_t& p )
-    : base_t( p, buff_creator_t( &p, "voidform" )
+    : base_t( p, haste_buff_creator_t( &p, "voidform" )
                      .spell( p.find_spell( 194249 ) )
                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                      .add_invalidate( CACHE_HASTE )

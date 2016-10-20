@@ -50,11 +50,14 @@ struct recharge_event_t : event_t
 
     if ( sim().debug )
     {
-      sim().out_debug.printf( "%s recharge cooldown %s regenerated charge, current=%d, total=%d, next=%.3f, ready=%.3f, base_duration=%.3f, mul=%f",
+      auto dur = cooldown_t::cooldown_duration( cooldown_, duration_ ).total_seconds();
+      auto true_base_duration = dur / cooldown_ -> recharge_multiplier;
+      sim().out_debug.printf( "%s recharge cooldown %s regenerated charge, current=%d, total=%d, next=%.3f, ready=%.3f, dur=%.3f, base_dur=%.3f, mul=%f",
         cooldown_ -> player -> name(), cooldown_ -> name_str.c_str(), cooldown_ -> current_charge, cooldown_ -> charges,
         cooldown_ -> recharge_event ? cooldown_ -> recharge_event -> occurs().total_seconds() : 0,
         cooldown_ -> ready.total_seconds(),
-        cooldown_t::cooldown_duration( cooldown_, duration_ ).total_seconds(),
+        dur,
+        true_base_duration,
         cooldown_ -> recharge_multiplier );
     }
 
@@ -94,12 +97,16 @@ timespan_t cooldown_t::cooldown_duration( const cooldown_t* cd,
   {
     ret = override_duration;
   }
+  else if ( cd->action )
+  {
+    ret = cd->action->cooldown_base_duration( *cd );
+  }
   else
   {
-    ret = cd -> duration;
+    ret = cd->duration;
   }
 
-  ret *= cd -> recharge_multiplier;
+  ret *= cd->recharge_multiplier;
 
   return ret;
 }

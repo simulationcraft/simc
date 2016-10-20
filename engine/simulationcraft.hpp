@@ -5481,8 +5481,8 @@ public:
   { return base_recharge_multiplier; }
 
   /// Cooldown base duration for action based cooldowns.
-  virtual timespan_t cooldown_base_duration() const
-  { return cooldown -> duration; }
+  virtual timespan_t cooldown_base_duration( const cooldown_t& cd ) const
+  { return cd.duration; }
 
   virtual resource_e current_resource() const
   { return resource_current; }
