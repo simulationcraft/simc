@@ -2007,19 +2007,14 @@ haste_buff_t::haste_buff_t( const haste_buff_creator_t& params ) :
 
 // haste_buff_t::execute ====================================================
 
-void haste_buff_t::increment( int stacks, double value, timespan_t duration )
+
+void haste_buff_t::bump( int stacks, double value )
 {
   bool is_changed = check() < max_stack() || value != current_value;
 
-  buff_t::increment( stacks, value, duration );
+  buff_t::bump( stacks, value );
 
-  if ( is_changed )
-  {
-    player -> adjust_dynamic_cooldowns();
-    player -> adjust_global_cooldown( haste_type );
-    player -> adjust_auto_attack( haste_type );
-    player -> adjust_action_queue_time();
-  }
+  haste_adjusted( is_changed );
 }
 
 // haste_buff_t::decrement =====================================================
@@ -2030,13 +2025,18 @@ void haste_buff_t::decrement( int stacks, double value )
 
   buff_t::decrement( stacks, value );
 
-  if ( is_changed )
-  {
-    player -> adjust_dynamic_cooldowns();
-    player -> adjust_global_cooldown( haste_type );
-    player -> adjust_auto_attack( haste_type );
-    player -> adjust_action_queue_time();
-  }
+  haste_adjusted( is_changed );
+}
+
+void haste_buff_t::haste_adjusted( bool is_changed )
+{
+  if ( !is_changed )
+    return;
+
+  player->adjust_dynamic_cooldowns();
+  player->adjust_global_cooldown( haste_type );
+  player->adjust_auto_attack( haste_type );
+  player->adjust_action_queue_time();
 }
 
 // haste_buff_t::expire_override ==============================================

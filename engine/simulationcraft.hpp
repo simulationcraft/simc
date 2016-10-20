@@ -1086,9 +1086,11 @@ protected:
   haste_buff_t( const haste_buff_creator_t& params );
   friend struct buff_creation::haste_buff_creator_t;
 public:
-  void increment( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() ) override;
   void decrement( int stacks = 1, double value = -1.0 ) override;
+  void bump     ( int stacks = 1, double value = -1.0 ) override;
   void expire( timespan_t delay = timespan_t::zero() ) override;
+private:
+  void haste_adjusted( bool is_changed );
 };
 
 struct debuff_t : public buff_t
