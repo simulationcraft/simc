@@ -9746,7 +9746,14 @@ void player_t::copy_from( player_t* source )
   professions_str = source -> professions_str;
   source -> recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   parse_talent_url( sim, "talents", source -> talents_str );
-  parse_artifact( sim, "artifact", source -> artifact_str );
+  if ( ! source -> artifact_str.empty() )
+  {
+    parse_artifact( sim, "artifact", source -> artifact_str );
+  }
+  else
+  {
+    artifact = source -> artifact;
+  }
   talent_overrides_str = source -> talent_overrides_str;
   artifact_overrides_str = source -> artifact_overrides_str;
   glyphs_str = source -> glyphs_str;
