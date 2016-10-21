@@ -8252,9 +8252,11 @@ const spell_data_t* player_t::find_specialization_spell( unsigned spell_id, spec
 {
   if ( s == SPEC_NONE || s == _spec )
   {
-    if ( dbc.is_specialization_ability( s, spell_id ) )
+    auto spell = dbc.spell( spell_id );
+    if ( dbc.is_specialization_ability( _spec, spell_id ) &&
+         ( as<int>( spell -> level() ) <= true_level ) )
     {
-      return dbc::find_spell( this, spell_id );
+      return dbc::find_spell( this, spell );
     }
   }
 

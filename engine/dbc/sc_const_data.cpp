@@ -2416,15 +2416,17 @@ bool dbc_t::is_specialization_ability( specialization_e spec, unsigned spell_id 
   unsigned spec_idx_ = -1;
 
   if ( spec == SPEC_NONE )
-    return 0;
+    return false;
 
   if ( ! spec_idx( spec, class_idx, spec_idx_ ) )
-    return 0;
+    return false;
 
   for ( unsigned n = 0; n < specialization_ability_size(); n++ )
   {
     if ( specialization_ability( class_idx, spec_idx_, n ) == spell_id )
+    {
       return true;
+    }
   }
 
   return false;
