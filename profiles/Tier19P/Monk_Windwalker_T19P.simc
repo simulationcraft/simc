@@ -24,6 +24,7 @@ actions.precombat+=/potion,name=deadly_grace
 # Executed every time the actor is available.
 
 actions=auto_attack
+actions+=/spear_hand_strike
 actions+=/invoke_xuen
 actions+=/potion,name=deadly_grace,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
 actions+=/touch_of_death,if=!artifact.gale_burst.enabled
