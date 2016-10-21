@@ -2,7 +2,7 @@
 
 // ItemScaling.dbc, not included in client export, given in 
 // http://us.battle.net/wow/en/forum/topic/13087818929?page=1#2
-static int __gt_item_scaling[110] =
+static int __ptr_gt_item_scaling[110] =
 {
     3,   3,   4,   4,   5,   6,   6,   7,   7,   8,
     8,   9,   9,  10,  10,  11,  11,  12,  12,  13,
@@ -18,7 +18,7 @@ static int __gt_item_scaling[110] =
 };
 
 // TO-DO Fill in missing values.
-static double __gt_base_mp5[][110] = { // TO-DO: Level 101->110 values are dummies for now as are Demon Hunter values. Fix
+static double __ptr_gt_base_mp5[][110] = { // TO-DO: Level 101->110 values are dummies for now as are Demon Hunter values. Fix
   {
        0.0,    0.0,    0.0,    0.0,    0.0, // 1-5
        0.0,    0.0,    0.0,    0.0,    0.0, // 6-10
@@ -346,7 +346,7 @@ static double __gt_base_mp5[][110] = { // TO-DO: Level 101->110 values are dummi
 };
 
 //  Base Stats (Str Agi Sta Int Spi)   // TO-DO: Add values for 101->110 and fix all Demon Hunter values
-static stat_data_t __gt_class_stats_by_level[][110] = 
+static stat_data_t __ptr_gt_class_stats_by_level[][110] = 
 { 
   { // No Class
     //    Str     Agi     Sta     Int     Spi
@@ -1821,7 +1821,7 @@ static stat_data_t __gt_class_stats_by_level[][110] =
 };
 
 //  Racial Base Stat Modifiers (Str Agi Sta Int Spi)
-static stat_data_t __gt_race_stats[] = 
+static stat_data_t __ptr_gt_race_stats[] = 
 {
   // Str Agi Sta Int Spi
   {   0,  0,  0,  0,  0 }, // No Race
@@ -1858,29 +1858,29 @@ static stat_data_t __gt_race_stats[] =
 // re-arranged to fit Blizzard standard dbc ordering
 // Legion values updated
 // http://us.battle.net/wow/en/forum/topic/20743504316?page=18#351
-static double __gt_DodgeFactor[] = 
+static double __ptr_gt_DodgeFactor[] = 
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
-static double __gt_ParryFactor[] = 
+static double __ptr_gt_ParryFactor[] = 
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
-static double __gt_MissFactor[] = 
+static double __ptr_gt_MissFactor[] = 
 { 0.0, 8.500000, 8.500000, 1.000000, 1.000000, 1.000000, 8.500000, 1.000000, 1.000000, 1.000000, 6.555555, 6.555555, 1.0 };
 
-static double __gt_BlockFactor[] = 
+static double __ptr_gt_BlockFactor[] = 
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
-static double __gt_VerticalStretch[] = 
+static double __ptr_gt_VerticalStretch[] = 
 { 0.0, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.0315 };
 
-static double __gt_HorizontalShift[] = 
+static double __ptr_gt_HorizontalShift[] = 
 { 0.0, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.97, 1/0.94 };
 
 // Resolve "basic equal-level creature damage" expectation values
 // from http://us.battle.net/wow/en/forum/topic/14058407204?page=2#39
 // using 1 as placeholder for unknown to avoid divide-by-zero errors
 
-static double _gt_resolve_dps_by_level[110] = // TO-DO: Dummy values for 101->110
+static double _ptr_gt_resolve_dps_by_level[110] = // TO-DO: Dummy values for 101->110
 { 
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //01-10
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1,       //11-20
@@ -1895,7 +1895,7 @@ static double _gt_resolve_dps_by_level[110] = // TO-DO: Dummy values for 101->11
   3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3 // 101-110
 };
 
-static double _gt_avoid_per_str_agi_by_level[110] =
+static double _ptr_gt_avoid_per_str_agi_by_level[110] =
 {
   0, 0, 0, 0, 0,                 // 1-5
   0, 0, 0, 0, 0,                 // 6-10
