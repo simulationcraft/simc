@@ -381,6 +381,7 @@ public:
     const spell_data_t* critical_strikes;
     const spell_data_t* dual_wield;
     const spell_data_t* enhancement_shaman;
+    const spell_data_t* feral_spirit_2; // 7.1 Feral Spirit Maelstrom gain passive
     const spell_data_t* flametongue;
     const spell_data_t* frostbrand;
     const spell_data_t* maelstrom_weapon;
@@ -1858,10 +1859,13 @@ struct spirit_wolf_t : public base_wolf_t
       melee_attack_t::impact( state );
 
       shaman_t* o = p() -> o();
-      o -> resource_gain( RESOURCE_MAELSTROM,
-                          maelstrom -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                          o -> gain.feral_spirit,
-                          state -> action );
+      if ( ! maybe_ptr( o -> dbc.ptr ) || o -> spec.feral_spirit_2 -> ok() )
+      {
+        o -> resource_gain( RESOURCE_MAELSTROM,
+                            maelstrom -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
+                            o -> gain.feral_spirit,
+                            state -> action );
+      }
 
       if ( result_is_hit( state -> result ) && o -> buff.feral_spirit -> up() &&
            rng().roll( wf_driver -> proc_chance() ) )
@@ -5853,6 +5857,7 @@ void shaman_t::init_spells()
   spec.critical_strikes      = find_specialization_spell( "Critical Strikes" );
   spec.dual_wield            = find_specialization_spell( "Dual Wield" );
   spec.enhancement_shaman    = find_specialization_spell( "Enhancement Shaman" );
+  spec.feral_spirit_2        = find_specialization_spell( 231723 );
   spec.flametongue           = find_specialization_spell( "Flametongue" );
   spec.frostbrand            = find_specialization_spell( "Frostbrand" );
   spec.maelstrom_weapon      = find_specialization_spell( "Maelstrom Weapon" );
