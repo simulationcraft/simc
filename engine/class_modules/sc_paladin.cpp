@@ -3163,7 +3163,7 @@ struct blade_of_wrath_t : public holy_power_generator_t
     // TODO: this shouldn't be necessary next build
     tick_may_crit = true;
 
-    if ( maybe_ptr( p -> dbc.ptr ) )
+    if ( !maybe_ptr( p -> dbc.ptr ) )
     {
       // this spell doesn't exist on non-ptr
       assert( false );
