@@ -365,12 +365,12 @@ public:
     const spell_data_t* effuse;
     const spell_data_t* effuse_rank_two;
     const spell_data_t* leather_specialization;
+    const spell_data_t* provoke;
     const spell_data_t* rising_sun_kick;
     const spell_data_t* roll;
     const spell_data_t* spinning_crane_kick;
     const spell_data_t* spear_hand_strike;
     const spell_data_t* tiger_palm;
-    const spell_data_t* zen_meditation;
 
     // Brewmaster
     const spell_data_t* blackout_strike;
@@ -382,9 +382,9 @@ public:
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash;
-    const spell_data_t* provoke;
     const spell_data_t* purifying_brew;
     const spell_data_t* stagger;
+    const spell_data_t* zen_meditation;
     const spell_data_t* light_stagger;
     const spell_data_t* moderate_stagger;
     const spell_data_t* heavy_stagger;
@@ -6773,16 +6773,16 @@ void monk_t::init_spells()
   spec.blackout_kick                 = find_class_spell( "Blackout Kick" );
   spec.crackling_jade_lightning      = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
-  spec.effuse                        = find_spell( 116694 );
-  spec.effuse_rank_two               = find_spell( 231602 );
+  spec.effuse                        = find_specialization_spell( "Effuse" );
+  spec.effuse_rank_two               = find_specialization_spell( 231602 );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
+  spec.provoke                       = find_class_spell( "Provoke" );
   spec.resuscitate                   = find_class_spell( "Resuscitate" );
   spec.rising_sun_kick               = find_specialization_spell( "Rising Sun Kick" );
   spec.roll                          = find_class_spell( "Roll" );
   spec.spear_hand_strike             = find_specialization_spell( "Spear Hand Strike" );
   spec.spinning_crane_kick           = find_specialization_spell( "Spinning Crane Kick" );
   spec.tiger_palm                    = find_class_spell( "Tiger Palm" );
-  spec.zen_meditation                = find_specialization_spell( "Zen Meditation" );
 
   // Brewmaster Specialization
   spec.blackout_strike               = find_specialization_spell( "Blackout Strike" );
@@ -6792,29 +6792,29 @@ void monk_t::init_spells()
   spec.expel_harm                    = find_specialization_spell( "Expel Harm" );
   spec.fortifying_brew               = find_specialization_spell( "Fortifying Brew" );
   spec.gift_of_the_ox                = find_specialization_spell( "Gift of the Ox" );
-  spec.keg_smash                     = find_specialization_spell( "Keg Smash" );
   spec.ironskin_brew                 = find_specialization_spell( "Ironskin Brew" );
-  spec.provoke                       = find_specialization_spell( "Provoke" );
+  spec.keg_smash                     = find_specialization_spell( "Keg Smash" );
   spec.purifying_brew                = find_specialization_spell( "Purifying Brew" );
   spec.stagger                       = find_specialization_spell( "Stagger" );
+  spec.zen_meditation                = find_specialization_spell( "Zen Meditation" );
   spec.light_stagger                 = find_spell( 124275 );
   spec.moderate_stagger              = find_spell( 124274 );
   spec.heavy_stagger                 = find_spell( 124273 );
 
   // Mistweaver Specialization
   spec.detox                         = find_specialization_spell( "Detox" );
-  spec.enveloping_mist               = find_spell( 124682 );
-  spec.envoloping_mist_rank_two      = find_spell( 231605 );
+  spec.enveloping_mist               = find_specialization_spell( "Enveloping Mist" );
+  spec.envoloping_mist_rank_two      = find_specialization_spell( 231605 );
   spec.essence_font                  = find_specialization_spell( "Essence Font" );
   spec.life_cocoon                   = find_specialization_spell( "Life Cocoon" );
   spec.reawaken                      = find_specialization_spell( "Reawaken" );
-  spec.renewing_mist                 = find_spell( 115151 );
-  spec.renewing_mist_rank_two        = find_spell( 231606 );
+  spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
+  spec.renewing_mist_rank_two        = find_specialization_spell( 231606 );
   spec.revival                       = find_specialization_spell( "Revival" );
   spec.soothing_mist                 = find_specialization_spell( "Soothing Mist" );
   spec.teachings_of_the_monastery    = find_specialization_spell( "Teachings of the Monastery" );
-  spec.thunder_focus_tea             = find_spell( 116680 );
-  spec.thunger_focus_tea_rank_two    = find_spell( 231876 );
+  spec.thunder_focus_tea             = find_specialization_spell( "Thunder Focus Tea" );
+  spec.thunger_focus_tea_rank_two    = find_specialization_spell( 231876 );
   spec.vivify                        = find_specialization_spell( "Vivify" );
 
   // Windwalker Specialization
@@ -6826,8 +6826,8 @@ void monk_t::init_spells()
   spec.fists_of_fury                 = find_specialization_spell( "Fists of Fury" );
   spec.flying_serpent_kick           = find_specialization_spell( "Flying Serpent Kick" );
   spec.stance_of_the_fierce_tiger    = find_specialization_spell( "Stance of the Fierce Tiger" );
-  spec.storm_earth_and_fire          = find_spell( 137639 );
-  spec.storm_earth_and_fire_rank_two = find_spell( 231627 );
+  spec.storm_earth_and_fire          = find_specialization_spell( "Storm, Earth, and Fire" );
+  spec.storm_earth_and_fire_rank_two = find_specialization_spell( 231627 );
   spec.touch_of_karma                = find_specialization_spell( "Touch of Karma" );
   spec.touch_of_death                = find_specialization_spell( "Touch of Death" );
   spec.windwalker_monk               = find_specialization_spell( "Windwalker Monk" );
