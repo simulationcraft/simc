@@ -2983,6 +2983,7 @@ class SpecializationSpellGenerator(DataGenerator):
             [ [], [], [], [] ],
             [ [], [], [], [] ],
         ]
+        spells = []
 
         for ssid, data in self._specializationspells_db.items():
             chrspec = self._chrspecialization_db[data.spec_id]
@@ -2993,7 +2994,12 @@ class SpecializationSpellGenerator(DataGenerator):
             if spell.id == 0:
                 continue
 
-            keys[chrspec.class_id][chrspec.index].append( ( self._spell_db[data.spell_id].name, data.spell_id, chrspec.name ) )
+            spec_tuple = (chrspec.class_id, chrspec.index, spell.id)
+            if spec_tuple in spells:
+                continue
+
+            keys[chrspec.class_id][chrspec.index].append( ( spell, chrspec.name, data.unk_2 ) )
+            spells.append(spec_tuple)
 
         # Figure out tree with most abilities
         for cls in range(0, len(keys)):
@@ -3020,10 +3026,10 @@ class SpecializationSpellGenerator(DataGenerator):
 
             for tree in range(0, len(keys[cls])):
                 if len(keys[cls][tree]) > 0:
-                    self._out.write('    // Specialization abilities for %s\n' % keys[cls][tree][0][2])
+                    self._out.write('    // Specialization abilities for %s\n' % keys[cls][tree][0][1])
                 self._out.write('    {\n')
-                for ability in sorted(keys[cls][tree], key = lambda i: i[0]):
-                    self._out.write('      %6u, // %s\n' % ( ability[1], ability[0] ))
+                for ability in sorted(keys[cls][tree], key = lambda i: i[2]):
+                    self._out.write('      %6u, // %s%s\n'% ( ability[0].id, ability[0].name, ability[0].rank and (' (%s)' % ability[0].rank) or ''))
 
                 if len(keys[cls][tree]) < max_ids:
                     self._out.write('      %6u,\n' % 0)

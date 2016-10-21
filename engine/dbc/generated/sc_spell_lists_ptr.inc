@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 22864
+// Class based active abilities, wow build 22882
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1149,61 +1149,45 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 22864
+// Talent tree specialization abilities, wow build 22882
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
     // Specialization abilities for Ferocity
     {
+       61684, // Dash (Ferocity, Cunning Ability)
+       55709, // Heart of the Phoenix (Ferocity Ability)
+       20782, // Combat Experience
+       53184, // Spiked Collar
        53482, // Blood of the Rhino
        19596, // Boar's Speed
-       20782, // Combat Experience
-       20782, // Combat Experience
        53497, // Cornered
-       61684, // Dash
-       61684, // Dash
        61688, // Great Stamina
-       55709, // Heart of the Phoenix
-       55709, // Heart of the Phoenix
-       53184, // Spiked Collar
-       53184, // Spiked Collar
            0,
     },
     // Specialization abilities for Tenacity
     {
+       61685, // Charge (Tenacity Ability)
+       53478, // Last Stand (Tenacity Ability)
+       63900, // Thunderstomp (Tenacity Ability)
        53482, // Blood of the Rhino
-       53482, // Blood of the Rhino
+       20782, // Combat Experience
+       61688, // Great Stamina
        19596, // Boar's Speed
-       61685, // Charge
-       61685, // Charge
-       20782, // Combat Experience
-       20782, // Combat Experience
        53497, // Cornered
-       61688, // Great Stamina
-       61688, // Great Stamina
-       53478, // Last Stand
-       53478, // Last Stand
        53184, // Spiked Collar
-       63900, // Thunderstomp
-       63900, // Thunderstomp
            0,
     },
     // Specialization abilities for Cunning
     {
+       53490, // Bullheaded (Cunning Ability)
+       61684, // Dash (Ferocity, Cunning Ability)
+       53480, // Roar of Sacrifice (Cunning Ability)
+       19596, // Boar's Speed
+       20782, // Combat Experience
+       53497, // Cornered
        53482, // Blood of the Rhino
-       19596, // Boar's Speed
-       19596, // Boar's Speed
-       53490, // Bullheaded
-       53490, // Bullheaded
-       20782, // Combat Experience
-       20782, // Combat Experience
-       53497, // Cornered
-       53497, // Cornered
-       61684, // Dash
-       61684, // Dash
        61688, // Great Stamina
-       53480, // Roar of Sacrifice
-       53480, // Roar of Sacrifice
        53184, // Spiked Collar
            0,
     },
@@ -1215,88 +1199,88 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Arms
     {
-      137049, // Arms Warrior
-        1719, // Battle Cry
-       18499, // Berserker Rage
-      227847, // Bladestorm
-         845, // Cleave
-      231833, // Cleave
-      167105, // Colossus Smash
-       97462, // Commanding Shout
-      118038, // Die by the Sword
-      231830, // Execute
-      163201, // Execute
-        1715, // Hamstring
-        5246, // Intimidating Shout
-       76838, // Mastery: Colossal Might
        12294, // Mortal Strike
        86101, // Plate Specialization
-        1464, // Slam
+       76838, // Mastery: Colossal Might
+      137049, // Arms Warrior
+       97462, // Commanding Shout
+        1719, // Battle Cry
+      163201, // Execute
+      167105, // Colossus Smash
+        1680, // Whirlwind
       162698, // Stat Negation Aura - Strength DPS
       184783, // Tactician
+        1464, // Slam
        34428, // Victory Rush
-        1680, // Whirlwind
+         845, // Cleave
+       18499, // Berserker Rage
+        1715, // Hamstring
+        5246, // Intimidating Shout
+      118038, // Die by the Sword
+      227847, // Bladestorm
+      231833, // Cleave (Rank 2)
+      231830, // Execute (Rank 2)
            0,
     },
     // Specialization abilities for Fury
     {
-        1719, // Battle Cry
-       18499, // Berserker Rage
        23881, // Bloodthirst
+       85288, // Raging Blow
+       46917, // Titan's Grip
+       81099, // Single-Minded Fury
+       86110, // Plate Specialization
+       12950, // Whirlwind (Rank 2)
+       76856, // Mastery: Unshackled Fury
+      137050, // Fury Warrior
        97462, // Commanding Shout
-      231842, // Dual Wield
+        1719, // Battle Cry
+        5308, // Execute
+       12323, // Piercing Howl
+      162698, // Stat Negation Aura - Strength DPS
       184361, // Enrage
       184364, // Enraged Regeneration
-        5308, // Execute
-      231827, // Execute
-      231824, // Furious Slash
-      100130, // Furious Slash
-      137050, // Fury Warrior
-        5246, // Intimidating Shout
-       76856, // Mastery: Unshackled Fury
-       12323, // Piercing Howl
-       86110, // Plate Specialization
-       85288, // Raging Blow
       184367, // Rampage
-      209694, // Rampage!
-       81099, // Single-Minded Fury
-      162698, // Stat Negation Aura - Strength DPS
-       46917, // Titan's Grip
+       18499, // Berserker Rage
       190411, // Whirlwind
-       12950, // Whirlwind
+      100130, // Furious Slash
+      209694, // Rampage!
+        5246, // Intimidating Shout
+      231842, // Dual Wield
+      231824, // Furious Slash (Rank 2)
+      231827, // Execute (Rank 2)
            0,
     },
     // Specialization abilities for Protection
     {
-       84608, // Bastion of Defense
-        1719, // Battle Cry
-       18499, // Berserker Rage
-      115768, // Deep Wounds
-          71, // Defensive Stance
-        1160, // Demoralizing Shout
-       20243, // Devastate
-      231834, // Devastate
-      204488, // Focused Rage
-      190456, // Ignore Pain
-      198304, // Intercept
+       23922, // Shield Slam
+       29144, // Unwavering Sentinel
+        6572, // Revenge
        12975, // Last Stand
-       76857, // Mastery: Critical Block
+       46953, // Sword and Board
        86535, // Plate Specialization
+       84608, // Bastion of Defense
+       76857, // Mastery: Critical Block
+        1160, // Demoralizing Shout
       131086, // Protection
       137048, // Protection Warrior
-        6572, // Revenge
-        5301, // Revenge Trigger
-      161798, // Riposte
-      231847, // Shield Block
-        2565, // Shield Block
-       23922, // Shield Slam
-         871, // Shield Wall
-       23920, // Spell Reflection
-      162702, // Stat Negation Aura - Strength Tank
-       46953, // Sword and Board
         6343, // Thunder Clap
-       29144, // Unwavering Sentinel
+         871, // Shield Wall
+      161798, // Riposte
+      162702, // Stat Negation Aura - Strength Tank
+      115768, // Deep Wounds
+       20243, // Devastate
+          71, // Defensive Stance
+       23920, // Spell Reflection
+        2565, // Shield Block
+      190456, // Ignore Pain
+      198304, // Intercept
+      204488, // Focused Rage
        34428, // Victory Rush
+        1719, // Battle Cry
+       18499, // Berserker Rage
+        5301, // Revenge Trigger
+      231834, // Devastate (Rank 2)
+      231847, // Shield Block (Rank 2)
            0,
     },
     {
@@ -1307,92 +1291,92 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Holy
     {
-      212056, // Absolution
+       20473, // Holy Shock
+       53563, // Beacon of Light
+       53651, // Light's Beacon
+       53576, // Infusion of Light
+       86103, // Plate Specialization (Holy, Passive)
+       82326, // Holy Light
+       85222, // Light of Dawn
        31821, // Aura Mastery
        31842, // Avenging Wrath
-       53563, // Beacon of Light
-      231642, // Beacon of Light
-        1022, // Blessing of Protection
-        6940, // Blessing of Sacrifice
-        4987, // Cleanse
-       26573, // Consecration
-      231667, // Crusader Strike
-         498, // Divine Protection
-       19750, // Flash of Light
-         853, // Hammer of Justice
-       82326, // Holy Light
       137029, // Holy Paladin
-       20473, // Holy Shock
-       53576, // Infusion of Light
-      231644, // Judgment
-       85222, // Light of Dawn
-      183998, // Light of the Martyr
-      219562, // Light of the Martyr
-       53651, // Light's Beacon
-      183997, // Mastery: Lightbringer
-       86103, // Plate Specialization
-      227068, // Righteousness
       148040, // Sacred Shield Overridde (Holy)
       162701, // Stat Negation Aura - Intellect Healer
+       19750, // Flash of Light
+        4987, // Cleanse
+         498, // Divine Protection
+        1022, // Blessing of Protection
+        6940, // Blessing of Sacrifice
+      183998, // Light of the Martyr
+      183997, // Mastery: Lightbringer
+       26573, // Consecration
+         853, // Hammer of Justice
+      212056, // Absolution
+      219562, // Light of the Martyr
+      227068, // Righteousness
+      231644, // Judgment (Rank 2)
+      231642, // Beacon of Light (Rank 2)
+      231667, // Crusader Strike (Rank 2)
            0,
     },
     // Specialization abilities for Protection
     {
-       31850, // Ardent Defender
        31935, // Avenger's Shield
-      231665, // Avenger's Shield
-       31884, // Avenging Wrath
-      229976, // Blessed Hammer
+       53592, // Guarded by the Light
+      105424, // Judgments of the Wise
+       26573, // Consecration
+       53600, // Shield of the Righteous
+       85043, // Grand Crusader
+       86102, // Plate Specialization (Protection, Passive)
+      105805, // Sanctuary
+       31850, // Ardent Defender
+       86659, // Guardian of Ancient Kings
+       76671, // Mastery: Divine Bulwark
+      137028, // Protection Paladin
+      161800, // Riposte
+       53595, // Hammer of the Righteous
+      162702, // Stat Negation Aura - Strength Tank
+       25780, // Righteous Fury
+         498, // Divine Protection
         1022, // Blessing of Protection
         6940, // Blessing of Sacrifice
-      213644, // Cleanse Toxins
-       26573, // Consecration
-         498, // Divine Protection
-       19750, // Flash of Light
-       85043, // Grand Crusader
-       53592, // Guarded by the Light
-       86659, // Guardian of Ancient Kings
-         853, // Hammer of Justice
-       53595, // Hammer of the Righteous
-      157488, // Improved Block
-      231657, // Judgment
-      105424, // Judgments of the Wise
-      184092, // Light of the Protector
-       76671, // Mastery: Divine Bulwark
-       86102, // Plate Specialization
-      137028, // Protection Paladin
        96231, // Rebuke
-       25780, // Righteous Fury
-      161800, // Riposte
-      105805, // Sanctuary
-       53600, // Shield of the Righteous
-      162702, // Stat Negation Aura - Strength Tank
+      184092, // Light of the Protector
+      157488, // Improved Block
+         853, // Hammer of Justice
+      213644, // Cleanse Toxins
+       19750, // Flash of Light
+       31884, // Avenging Wrath
+      231657, // Judgment (Rank 2)
+      231665, // Avenger's Shield (Rank 2)
+      229976, // Blessed Hammer
            0,
     },
     // Specialization abilities for Retribution
     {
-       31884, // Avenging Wrath
-      184575, // Blade of Justice
-        1022, // Blessing of Protection
-      213644, // Cleanse Toxins
-      231667, // Crusader Strike
-       53385, // Divine Storm
-       19750, // Flash of Light
-      203538, // Greater Blessing of Kings
-      203528, // Greater Blessing of Might
-      203539, // Greater Blessing of Wisdom
-         853, // Hammer of Justice
-      183218, // Hand of Hindrance
-      231663, // Judgment
-      231661, // Judgment
-       76672, // Mastery: Divine Judgment
-       86539, // Plate Specialization
-       96231, // Rebuke
-      183435, // Retribution
-      137027, // Retribution Paladin
-      184662, // Shield of Vengeance
-      162698, // Stat Negation Aura - Strength DPS
        85256, // Templar's Verdict
+       53385, // Divine Storm
+       86539, // Plate Specialization (Retribution, Passive)
+       31884, // Avenging Wrath
+       76672, // Mastery: Divine Judgment
+      137027, // Retribution Paladin
+      162698, // Stat Negation Aura - Strength DPS
+       19750, // Flash of Light
+      183218, // Hand of Hindrance
+      183435, // Retribution
+       96231, // Rebuke
+        1022, // Blessing of Protection
+      184575, // Blade of Justice
+         853, // Hammer of Justice
+      184662, // Shield of Vengeance
+      203528, // Greater Blessing of Might
+      203538, // Greater Blessing of Kings
+      203539, // Greater Blessing of Wisdom
+      213644, // Cleanse Toxins
+      231667, // Crusader Strike (Rank 2)
+      231663, // Judgment (Rank 3)
+      231661, // Judgment (Rank 2)
            0,
     },
     {
@@ -1403,78 +1387,78 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Beast Mastery
     {
-      193530, // Aspect of the Wild
+       34026, // Kill Command
       115939, // Beast Cleave
-      137015, // Beast Mastery Hunter
        19574, // Bestial Wrath
-      231548, // Bestial Wrath
-      193455, // Cobra Shot
+       56315, // Kindred Spirits
+       53270, // Exotic Beasts
+       76657, // Mastery: Master of Beasts
+      137015, // Beast Mastery Hunter
+      120679, // Dire Beast
         5116, // Concussive Shot
       147362, // Counter Shot
-      120679, // Dire Beast
-         781, // Disengage
-      231549, // Disengage
-      109304, // Exhilaration
-      231546, // Exhilaration
-       53270, // Exotic Beasts
-       34026, // Kill Command
-       56315, // Kindred Spirits
-       76657, // Mastery: Master of Beasts
-       34477, // Misdirection
         2643, // Multi-Shot
+       34477, // Misdirection
       162697, // Stat Negation Aura - Agility DPS
+      193455, // Cobra Shot
       185789, // Wild Call
+      193530, // Aspect of the Wild
+      109304, // Exhilaration
+         781, // Disengage
+      231548, // Bestial Wrath (Rank 2)
+      231546, // Exhilaration (Rank 2)
+      231549, // Disengage (Rank 2)
            0,
     },
     // Specialization abilities for Marksmanship
     {
        19434, // Aimed Shot
-      185358, // Arcane Shot
        35110, // Bombardment
-      186387, // Bursting Shot
-      193455, // Cobra Shot
+      137016, // Marksmanship Hunter
         5116, // Concussive Shot
       147362, // Counter Shot
-         781, // Disengage
-      231549, // Disengage
-      231546, // Exhilaration
-      109304, // Exhilaration
-      185987, // Hunter's Mark
-      212658, // Hunting Party
-      185901, // Marked Shot
-      231551, // Marked Shot
-      231554, // Marksman's Focus
-      137016, // Marksmanship Hunter
-      193468, // Mastery: Sniper Training
-       34477, // Misdirection
         2643, // Multi-Shot
+       34477, // Misdirection
+      185358, // Arcane Shot
+      185987, // Hunter's Mark
+      185901, // Marked Shot
+      186387, // Bursting Shot
       162697, // Stat Negation Aura - Agility DPS
+      193468, // Mastery: Sniper Training (Mastery)
       193526, // Trueshot
+         781, // Disengage
+      212658, // Hunting Party
+      193455, // Cobra Shot
+      231549, // Disengage (Rank 2)
+      231554, // Marksman's Focus
+      231551, // Marked Shot (Rank 2)
+      109304, // Exhilaration
+      231546, // Exhilaration (Rank 2)
            0,
     },
     // Specialization abilities for Survival
     {
-      186289, // Aspect of the Eagle
-      231555, // Aspect of the Eagle
-      187708, // Carve
-      109304, // Exhilaration
-      231546, // Exhilaration
-      191433, // Explosive Trap
-      202800, // Flanking Strike
-      187650, // Freezing Trap
-      231550, // Harpoon
-      190925, // Harpoon
-      193265, // Hatchet Toss
-      185855, // Lacerate
-      191334, // Mastery: Hunting Companion
-      190928, // Mongoose Bite
-      187707, // Muzzle
-      186270, // Raptor Strike
-      162697, // Stat Negation Aura - Agility DPS
       137017, // Survival Hunter
       164856, // Survivalist
+      185855, // Lacerate
+      186270, // Raptor Strike
+      187650, // Freezing Trap
       187698, // Tar Trap
+      187707, // Muzzle
+      187708, // Carve
+      190925, // Harpoon
+      190928, // Mongoose Bite
+      191334, // Mastery: Hunting Companion
+      191433, // Explosive Trap
+      162697, // Stat Negation Aura - Agility DPS
+      193265, // Hatchet Toss
+      186289, // Aspect of the Eagle
       195645, // Wing Clip
+      109304, // Exhilaration
+      202800, // Flanking Strike
+      231555, // Aspect of the Eagle (Rank 2)
+      231550, // Harpoon (Rank 2)
+      231546, // Exhilaration (Rank 2)
            0,
     },
     {
@@ -1486,99 +1470,99 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
     // Specialization abilities for Assassination
     {
        84601, // Assassin's Resolve
-      137037, // Assassination Rogue
-        1833, // Cheap Shot
-        3408, // Crippling Poison
-       51667, // Cut to the Chase
-        2823, // Deadly Poison
-        1725, // Distract
-       32645, // Envenom
-        5277, // Evasion
-      196819, // Eviscerate
-       51723, // Fan of Knives
-      231719, // Garrote
-         703, // Garrote
        14117, // Improved Poisons
-         408, // Kidney Shot
-       76803, // Mastery: Potent Poisons
         1329, // Mutilate
-         921, // Pick Pocket
-      185565, // Poisoned Knife
-        1943, // Rupture
-        6770, // Sap
+       32645, // Envenom
        14190, // Seal Fate
-       36554, // Shadowstep
-        1752, // Sinister Strike
-      231691, // Sprint
+       79134, // Venomous Wounds
+       51667, // Cut to the Chase
+       79140, // Vendetta
+       76803, // Mastery: Potent Poisons
+      137037, // Assassination Rogue
+        1943, // Rupture
+       51723, // Fan of Knives
+         703, // Garrote
+      185565, // Poisoned Knife
       162697, // Stat Negation Aura - Agility DPS
+        3408, // Crippling Poison
+        2823, // Deadly Poison
+        8679, // Wound Poison
+       36554, // Shadowstep
+        1725, // Distract
+        1833, // Cheap Shot
+         921, // Pick Pocket
+        6770, // Sap
         1784, // Stealth
         1856, // Vanish
-       79140, // Vendetta
-       79134, // Venomous Wounds
-        8679, // Wound Poison
+        5277, // Evasion
+         408, // Kidney Shot
+      231691, // Sprint (Rank 2)
+        1752, // Sinister Strike
+      196819, // Eviscerate
+      231719, // Garrote (Rank 2)
            0,
     },
     // Specialization abilities for Outlaw
     {
-       13750, // Adrenaline Rush
-        8676, // Ambush
-      199804, // Between the Eyes
+       61329, // Vitality
        13877, // Blade Flurry
-        2094, // Blind
-      199740, // Bribe
-        1833, // Cheap Shot
        35551, // Combat Potency
-        1725, // Distract
-      199736, // Find Treasure
-        1776, // Gouge
+       13750, // Adrenaline Rush
        76806, // Mastery: Main Gauche
       137036, // Outlaw Rogue
-         921, // Pick Pocket
-      185763, // Pistol Shot
-      199754, // Riposte
-      193316, // Roll the Bones
-        2098, // Run Through
        14161, // Ruthlessness
-      193315, // Saber Slash
-        6770, // Sap
-      231691, // Sprint
+        8676, // Ambush
+      185763, // Pistol Shot
       162697, // Stat Negation Aura - Agility DPS
+      193315, // Saber Slash
+        1776, // Gouge
+        2098, // Run Through
         1784, // Stealth
+         921, // Pick Pocket
+        1725, // Distract
         1856, // Vanish
-       61329, // Vitality
+      199736, // Find Treasure (Racial)
+      199740, // Bribe
+      199754, // Riposte
+      199804, // Between the Eyes
+        2094, // Blind
+        1833, // Cheap Shot
+      193316, // Roll the Bones
+        6770, // Sap
+      231691, // Sprint (Rank 2)
            0,
     },
     // Specialization abilities for Subtlety
     {
           53, // Backstab
-        2094, // Blind
-        1833, // Cheap Shot
-      185314, // Deepening Shadows
-        1725, // Distract
        79152, // Energetic Recovery
-        5277, // Evasion
-      231716, // Eviscerate
-      196819, // Eviscerate
-         408, // Kidney Shot
        76808, // Mastery: Executioner
-      195452, // Nightblade
-         921, // Pick Pocket
-       58423, // Relentless Strikes
-        6770, // Sap
-      121471, // Shadow Blades
-      185313, // Shadow Dance
-      196912, // Shadow Techniques
-       36554, // Shadowstep
-      231718, // Shadowstrike
-      185438, // Shadowstrike
-      197835, // Shuriken Storm
-      114014, // Shuriken Toss
-      231691, // Sprint
-      162697, // Stat Negation Aura - Agility DPS
-        1784, // Stealth
       137035, // Subtlety Rogue
-      212283, // Symbols of Death
+      114014, // Shuriken Toss
+      185314, // Deepening Shadows
+      185438, // Shadowstrike
+      162697, // Stat Negation Aura - Agility DPS
+      195452, // Nightblade
+        1725, // Distract
+        1833, // Cheap Shot
+         921, // Pick Pocket
+        6770, // Sap
+        1784, // Stealth
         1856, // Vanish
+      196819, // Eviscerate
+      196912, // Shadow Techniques
+      121471, // Shadow Blades
+      197835, // Shuriken Storm
+       36554, // Shadowstep
+      185313, // Shadow Dance
+        2094, // Blind
+      212283, // Symbols of Death
+        5277, // Evasion
+         408, // Kidney Shot
+       58423, // Relentless Strikes (Passive)
+      231691, // Sprint (Rank 2)
+      231716, // Eviscerate (Rank 2)
+      231718, // Shadowstrike (Rank 2)
            0,
     },
     {
@@ -1589,90 +1573,90 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Discipline
     {
+       47540, // Penance
+       33206, // Pain Suppression
+       62618, // Power Word: Barrier
+         527, // Purify
+       77484, // Mastery: Absolution
        81749, // Atonement
       137032, // Discipline Priest
-        2061, // Flash Heal
-       45243, // Focused Will
+       47536, // Rapture
+      162701, // Stat Negation Aura - Intellect Healer
+          17, // Power Word: Shield
        73325, // Leap of Faith
         1706, // Levitate
-      212036, // Mass Resurrection
-       77484, // Mastery: Absolution
         2096, // Mind Vision
-       33206, // Pain Suppression
-       47540, // Penance
-      200829, // Plea
-       62618, // Power Word: Barrier
-      194509, // Power Word: Radiance
-          17, // Power Word: Shield
-        8122, // Psychic Scream
-         527, // Purify
-       47536, // Rapture
-      186440, // Shadow Mend
       186263, // Shadow Mend
          589, // Shadow Word: Pain
        34433, // Shadowfiend
-      231682, // Smite
-      162701, // Stat Negation Aura - Intellect Healer
+      186440, // Shadow Mend
+      194509, // Power Word: Radiance
+        8122, // Psychic Scream
+      200829, // Plea
+       45243, // Focused Will
+      212036, // Mass Resurrection
+      231682, // Smite (Rank 2)
+        2061, // Flash Heal
            0,
     },
     // Specialization abilities for Holy
     {
-       64843, // Divine Hymn
-        2061, // Flash Heal
-       45243, // Focused Will
-       47788, // Guardian Spirit
-        2060, // Heal
-       14914, // Holy Fire
-      231687, // Holy Fire
-      132157, // Holy Nova
-      137031, // Holy Priest
        88625, // Holy Word: Chastise
-       34861, // Holy Word: Sanctify
-        2050, // Holy Word: Serenity
-       73325, // Leap of Faith
-        1706, // Levitate
-      212036, // Mass Resurrection
-       77485, // Mastery: Echo of Light
-         596, // Prayer of Healing
-       33076, // Prayer of Mending
-         527, // Purify
-         139, // Renew
-       63733, // Serendipity
        20711, // Spirit of Redemption
+        2060, // Heal
+         596, // Prayer of Healing
+       34861, // Holy Word: Sanctify
+       47788, // Guardian Spirit
+       64843, // Divine Hymn
+         527, // Purify
+       63733, // Serendipity
+       77485, // Mastery: Echo of Light
+       14914, // Holy Fire
+      137031, // Holy Priest
+       45243, // Focused Will
       162701, // Stat Negation Aura - Intellect Healer
+         139, // Renew
+       73325, // Leap of Faith
+       33076, // Prayer of Mending
+        1706, // Levitate
+        2050, // Holy Word: Serenity
+      132157, // Holy Nova
+        2061, // Flash Heal
+      212036, // Mass Resurrection
+      231687, // Holy Fire (Rank 2)
            0,
     },
     // Specialization abilities for Shadow
     {
-       47585, // Dispersion
-        2061, // Flash Heal
-        1706, // Levitate
-       77486, // Mastery: Madness
-        8092, // Mind Blast
        15407, // Mind Flay
-       48045, // Mind Sear
-        2096, // Mind Vision
-          17, // Power Word: Shield
-        8122, // Psychic Scream
-      213634, // Purify Disease
+        8092, // Mind Blast
+       15487, // Silence
+       34914, // Vampiric Touch
+       78203, // Shadowy Apparitions
+       47585, // Dispersion
+       15286, // Vampiric Embrace
+       77486, // Mastery: Madness
+      137033, // Shadow Priest
+       32379, // Shadow Word: Death
+      185916, // Voidform
       186263, // Shadow Mend
       186440, // Shadow Mend
-      137033, // Shadow Priest
-      190719, // Shadow Word: Death
-      231689, // Shadow Word: Death
-       32379, // Shadow Word: Death
+        2096, // Mind Vision
          589, // Shadow Word: Pain
        34433, // Shadowfiend
-      232698, // Shadowform
-       78203, // Shadowy Apparitions
-       15487, // Silence
-       15286, // Vampiric Embrace
-       34914, // Vampiric Touch
-      228266, // Void Bolt
-      231688, // Void Bolt
+      190719, // Shadow Word: Death
+       48045, // Mind Sear
+        8122, // Psychic Scream
+          17, // Power Word: Shield
+        1706, // Levitate
+      213634, // Purify Disease
       228260, // Void Eruption
-      185916, // Voidform
+      228266, // Void Bolt
       228264, // Voidform
+      231688, // Void Bolt (Rank 2)
+      231689, // Shadow Word: Death (Rank 2)
+        2061, // Flash Heal
+      232698, // Shadowform
            0,
     },
     {
@@ -1683,69 +1667,69 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Blood
     {
-      221562, // Asphyxiate
-       50842, // Blood Boil
-      137008, // Blood Death Knight
-       81136, // Crimson Scourge
+       86537, // Plate Specialization (Passive)
        49028, // Dancing Rune Weapon
-       43265, // Death and Decay
-      195292, // Death's Caress
-      108199, // Gorefiend's Grasp
-      206930, // Heart Strike
-      195182, // Marrowrend
+       55233, // Vampiric Blood
        77513, // Mastery: Blood Shield
-       86537, // Plate Specialization
+       81136, // Crimson Scourge
+      137008, // Blood Death Knight
       161797, // Riposte
       162702, // Stat Negation Aura - Strength Tank
-       55233, // Vampiric Blood
        48263, // Veteran of the Third War
+       43265, // Death and Decay
+       50842, // Blood Boil
+      195182, // Marrowrend
+      195292, // Death's Caress
+      108199, // Gorefiend's Grasp
       212552, // Wraith Walk
+      206930, // Heart Strike
+      221562, // Asphyxiate
            0,
     },
     // Specialization abilities for Frost
     {
-       45524, // Chains of Ice
-      178819, // Dark Succor
-         674, // Dual Wield
-       47568, // Empower Rune Weapon
-      137006, // Frost Death Knight
-      195621, // Frost Fever
        49143, // Frost Strike
        49184, // Howling Blast
-       48792, // Icebound Fortitude
-       51128, // Killing Machine
-       77514, // Mastery: Frozen Heart
+       86113, // Plate Specialization (Passive)
        49020, // Obliterate
+       51128, // Killing Machine
        51271, // Pillar of Frost
-       86113, // Plate Specialization
-      196770, // Remorseless Winter
        59057, // Rime
-       81229, // Runic Empowerment
+       77514, // Mastery: Frozen Heart
+      137006, // Frost Death Knight
+         674, // Dual Wield (Passive)
       162698, // Stat Negation Aura - Strength DPS
+       47568, // Empower Rune Weapon
+       48792, // Icebound Fortitude
+       45524, // Chains of Ice
+      178819, // Dark Succor
+      195621, // Frost Fever
+      196770, // Remorseless Winter
+       81229, // Runic Empowerment
       212552, // Wraith Walk
            0,
     },
     // Specialization abilities for Unholy
     {
+       86536, // Plate Specialization (Passive)
+       55090, // Scourge Strike
+       85948, // Festering Strike
+       49530, // Sudden Doom
+       63560, // Dark Transformation
+       49206, // Summon Gargoyle
+       77515, // Mastery: Dreadblade
+      137007, // Unholy Death Knight
+       46584, // Raise Dead
+      162698, // Stat Negation Aura - Strength DPS
        42650, // Army of the Dead
+       77575, // Outbreak
+       43265, // Death and Decay
        45524, // Chains of Ice
       178819, // Dark Succor
-       63560, // Dark Transformation
-       47541, // Death Coil
-       43265, // Death and Decay
-       85948, // Festering Strike
-      197147, // Festering Wound
        48792, // Icebound Fortitude
-       77515, // Mastery: Dreadblade
-       77575, // Outbreak
-       86536, // Plate Specialization
-       46584, // Raise Dead
+       47541, // Death Coil
+      197147, // Festering Wound
        51462, // Runic Corruption
-       55090, // Scourge Strike
-      162698, // Stat Negation Aura - Strength DPS
-       49530, // Sudden Doom
-       49206, // Summon Gargoyle
-      137007, // Unholy Death Knight
       212552, // Wraith Walk
            0,
     },
@@ -1757,91 +1741,91 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Elemental
     {
-      231722, // Chain Lightning
-      188443, // Chain Lightning
-       51886, // Cleanse Spirit
-      198103, // Earth Elemental
-        8042, // Earth Shock
-       61882, // Earthquake
-       16164, // Elemental Focus
        60188, // Elemental Fury
-      137040, // Elemental Shaman
-      198067, // Fire Elemental
-      188389, // Flame Shock
-      232643, // Flame Shock
-      196840, // Frost Shock
-      190493, // Fulmination
-        8004, // Healing Surge
-      231721, // Lava Burst
+       51490, // Thunderstorm
        51505, // Lava Burst
        77756, // Lava Surge
-      188196, // Lightning Bolt
+       86108, // Mail Specialization (Passive)
+      123099, // Spiritual Insight
+      137040, // Elemental Shaman
+      162699, // Stat Negation Aura - Intellect DPS
+        8042, // Earth Shock
+       61882, // Earthquake
       187828, // Maelstrom
       190488, // Maelstrom Controller
-       86108, // Mail Specialization
-      168534, // Mastery: Elemental Overload
-      123099, // Spiritual Insight
-      162699, // Stat Negation Aura - Intellect DPS
-       51490, // Thunderstorm
+      188196, // Lightning Bolt
+      190493, // Fulmination
+      188443, // Chain Lightning
+      188389, // Flame Shock
        57994, // Wind Shear
+      168534, // Mastery: Elemental Overload
+      196840, // Frost Shock
+      198067, // Fire Elemental
+      198103, // Earth Elemental
+       16164, // Elemental Focus
+       51886, // Cleanse Spirit
+        8004, // Healing Surge
+      231721, // Lava Burst (Rank 2)
+      231722, // Chain Lightning (Rank 2)
+      232643, // Flame Shock (Rank 2)
            0,
     },
     // Specialization abilities for Enhancement
     {
-       51886, // Cleanse Spirit
-      187874, // Crash Lightning
-      157444, // Critical Strikes
        86629, // Dual Wield
-      137041, // Enhancement Shaman
+       86099, // Mail Specialization (Passive)
        51533, // Feral Spirit
-      231723, // Feral Spirit
-      193796, // Flametongue
-      196834, // Frostbrand
-      188070, // Healing Surge
-      190899, // Healing Surge
-       60103, // Lava Lash
-      187837, // Lightning Bolt
-      187880, // Maelstrom Weapon
-       86099, // Mail Specialization
-       77223, // Mastery: Enhanced Elements
-      193786, // Rockbiter
        58875, // Spirit Walk
+       77223, // Mastery: Enhanced Elements
+      137041, // Enhancement Shaman
+      157444, // Critical Strikes (Passive)
       162697, // Stat Negation Aura - Agility DPS
-      201845, // Stormbringer
-      195255, // Stormlash
-       17364, // Stormstrike
+      187837, // Lightning Bolt
+      188070, // Healing Surge
        57994, // Wind Shear
+      187880, // Maelstrom Weapon
+       17364, // Stormstrike
+      193786, // Rockbiter
+      193796, // Flametongue
+       60103, // Lava Lash
+      195255, // Stormlash
+      187874, // Crash Lightning
+      190899, // Healing Surge (Rank 2)
+      196834, // Frostbrand
+      201845, // Stormbringer
        33757, // Windfury
+       51886, // Cleanse Spirit
+      231723, // Feral Spirit (Rank 2)
            0,
     },
     // Specialization abilities for Restoration
     {
-      212048, // Ancestral Vision
-        1064, // Chain Heal
-      231780, // Chain Heal
-         421, // Chain Lightning
-      188838, // Flame Shock
-       73920, // Healing Rain
-        5394, // Healing Stream Totem
-        8004, // Healing Surge
-      108280, // Healing Tide Totem
-       77472, // Healing Wave
-       51505, // Lava Burst
-       77756, // Lava Surge
-         403, // Lightning Bolt
-       86100, // Mail Specialization
-       77226, // Mastery: Deep Healing
-       77130, // Purify Spirit
-      137039, // Restoration Shaman
-       16196, // Resurgence
        61295, // Riptide
-      231725, // Riptide
+       77130, // Purify Spirit
+       16196, // Resurgence
+       86100, // Mail Specialization (Passive)
+       51564, // Tidal Waves
+       77472, // Healing Wave
        98008, // Spirit Link Totem
+       77226, // Mastery: Deep Healing
+      137039, // Restoration Shaman
+      108280, // Healing Tide Totem
        79206, // Spiritwalker's Grace
       162701, // Stat Negation Aura - Intellect Healer
-       51564, // Tidal Waves
-      231785, // Tidal Waves
+        1064, // Chain Heal
+       73920, // Healing Rain
+      188838, // Flame Shock
+        5394, // Healing Stream Totem
+         421, // Chain Lightning
+        8004, // Healing Surge
        57994, // Wind Shear
+         403, // Lightning Bolt
+       51505, // Lava Burst
+       77756, // Lava Surge
+      212048, // Ancestral Vision
+      231780, // Chain Heal (Rank 2)
+      231785, // Tidal Waves (Rank 2)
+      231725, // Riptide (Rank 2)
            0,
     },
     {
@@ -1852,72 +1836,72 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Arcane
     {
-       44425, // Arcane Barrage
-      231564, // Arcane Barrage
        30451, // Arcane Blast
-      190427, // Arcane Charge
-        1449, // Arcane Explosion
-      137021, // Arcane Mage
         5143, // Arcane Missiles
        79684, // Arcane Missiles
-       12042, // Arcane Power
-      195676, // Displacement
-      231565, // Evocation
-       12051, // Evocation
-      110959, // Greater Invisibility
-          66, // Invisibility
-        6117, // Mage Armor
-      190740, // Mastery: Savant
+       44425, // Arcane Barrage
        31589, // Slow
+       12042, // Arcane Power
+      137021, // Arcane Mage
+        1449, // Arcane Explosion
+       12051, // Evocation
+        6117, // Mage Armor
+      190427, // Arcane Charge
+      190740, // Mastery: Savant
       162699, // Stat Negation Aura - Intellect DPS
+      195676, // Displacement
+      110959, // Greater Invisibility
+      231564, // Arcane Barrage (Rank 2)
+      231565, // Evocation (Rank 2)
+          66, // Invisibility
            0,
     },
     // Specialization abilities for Fire
     {
-      190319, // Combustion
-      117216, // Critical Mass
-       31661, // Dragon's Breath
-      157642, // Enhanced Pyrotechnics
-      108853, // Fire Blast
-      231567, // Fire Blast
-      231568, // Fire Blast
-      137019, // Fire Mage
-         133, // Fireball
-        2120, // Flamestrike
-      195283, // Hot Streak
-          66, // Invisibility
-       12846, // Mastery: Ignite
-      231630, // Molten Armor
-       30482, // Molten Armor
        11366, // Pyroblast
+         133, // Fireball
        44448, // Pyroblast Clearcasting Driver
+      108853, // Fire Blast
+      117216, // Critical Mass
+       12846, // Mastery: Ignite
+      137019, // Fire Mage
         2948, // Scorch
+        2120, // Flamestrike
+       30482, // Molten Armor
+      157642, // Enhanced Pyrotechnics
       162699, // Stat Negation Aura - Intellect DPS
+      190319, // Combustion
+      195283, // Hot Streak
+       31661, // Dragon's Breath
+          66, // Invisibility
+      231567, // Fire Blast (Rank 3)
+      231568, // Fire Blast (Rank 2)
+      231630, // Molten Armor (Rank 2)
            0,
     },
     // Specialization abilities for Frost
     {
+       31687, // Summon Water Elemental
+         116, // Frostbolt
+      112965, // Fingers of Frost
+       12472, // Icy Veins
+       84714, // Frozen Orb
+       76613, // Mastery: Icicles
+      137020, // Frost Mage
+       12982, // Shatter
+        7302, // Frost Armor
+       30455, // Ice Lance
       190356, // Blizzard
       190447, // Brain Freeze
-      231584, // Brain Freeze
-         120, // Cone of Cold
-      112965, // Fingers of Frost
-      108853, // Fire Blast
-       44614, // Flurry
-      231596, // Freeze
-        7302, // Frost Armor
-      137020, // Frost Mage
-         116, // Frostbolt
-       84714, // Frozen Orb
-       30455, // Ice Lance
-       12472, // Icy Veins
-          66, // Invisibility
-       76613, // Mastery: Icicles
-      231582, // Shatter
-       12982, // Shatter
       162699, // Stat Negation Aura - Intellect DPS
-       31687, // Summon Water Elemental
-      231598, // Water Jet
+         120, // Cone of Cold
+          66, // Invisibility
+       44614, // Flurry
+      231584, // Brain Freeze (Rank 2)
+      231582, // Shatter (Rank 2)
+      231596, // Freeze (Pet)
+      231598, // Water Jet (Pet)
+      108853, // Fire Blast
            0,
     },
     {
@@ -1928,60 +1912,60 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Affliction
     {
-      137043, // Affliction Warlock
+       30108, // Unstable Affliction
          980, // Agony
-      231792, // Agony
-         172, // Corruption
+       27243, // Seed of Corruption
+       77215, // Mastery: Potent Afflictions
+      137043, // Affliction Warlock
          689, // Drain Life
         1454, // Life Tap
-       77215, // Mastery: Potent Afflictions
-      205183, // Secrets of the Necrolyte
-       27243, // Seed of Corruption
-      231799, // Shadow Bite
-      232670, // Shadow Bolt
-      231811, // Soulstone
       162699, // Stat Negation Aura - Intellect DPS
-       30108, // Unstable Affliction
-      231791, // Unstable Affliction
+      205183, // Secrets of the Necrolyte
+         172, // Corruption
+      231791, // Unstable Affliction (Rank 2)
+      231799, // Shadow Bite (Rank 2)
+      231792, // Agony (Rank 2)
+      231811, // Soulstone (Rank 2)
+      232670, // Shadow Bolt
            0,
     },
     // Specialization abilities for Demonology
     {
+      105174, // Hand of Gul'dan
+       77219, // Mastery: Master Demonologist
+       30146, // Summon Felguard (Summon)
+      137044, // Demonology Warlock
+        1454, // Life Tap
+      162699, // Stat Negation Aura - Intellect DPS
+         603, // Doom
       104316, // Call Dreadstalkers
       193396, // Demonic Empowerment
-      137044, // Demonology Warlock
       193440, // Demonwrath
-         603, // Doom
-      234153, // Drain Life
-      105174, // Hand of Gul'dan
-        1454, // Life Tap
-       77219, // Mastery: Master Demonologist
-         686, // Shadow Bolt
       108415, // Soul Link
-      231811, // Soulstone
-      162699, // Stat Negation Aura - Intellect DPS
-       30146, // Summon Felguard
+         686, // Shadow Bolt
+      231811, // Soulstone (Rank 2)
+      234153, // Drain Life
            0,
     },
     // Specialization abilities for Destruction
     {
-      116858, // Chaos Bolt
-      231793, // Conflagrate
        17962, // Conflagrate
-      137046, // Destruction Warlock
-      234153, // Drain Life
-      231795, // Firebolt
-       80240, // Havoc
          348, // Immolate
-      193541, // Immolate
+       80240, // Havoc
        29722, // Incinerate
-        1454, // Life Tap
        77220, // Mastery: Chaotic Energies
+      116858, // Chaos Bolt
         5740, // Rain of Fire
-         686, // Shadow Bolt
-      231811, // Soulstone
+      137046, // Destruction Warlock
       162699, // Stat Negation Aura - Intellect DPS
-      231794, // Unending Resolve
+        1454, // Life Tap
+      193541, // Immolate
+         686, // Shadow Bolt
+      231795, // Firebolt (Rank 2)
+      231793, // Conflagrate (Rank 2)
+      231794, // Unending Resolve (Rank 2)
+      231811, // Soulstone (Rank 2)
+      234153, // Drain Life
            0,
     },
     {
@@ -1992,81 +1976,81 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Brewmaster
     {
-      205523, // Blackout Strike
       115181, // Breath of Fire
-      137023, // Brewmaster Monk
-      216519, // Celestial Fortune
-      157445, // Critical Strikes
-      218164, // Detox
-      116694, // Effuse
-      231602, // Effuse
-      115072, // Expel Harm
-      115203, // Fortifying Brew
-      124502, // Gift of the Ox
       115308, // Ironskin Brew
-      121253, // Keg Smash
-      120225, // Leather Specialization
       117906, // Mastery: Elusive Brawler
-      119582, // Purifying Brew
-      116705, // Spear Hand Strike
       115069, // Stagger
-      162700, // Stat Negation Aura - Agility Tank
+      119582, // Purifying Brew
+      120225, // Leather Specialization (Passive)
+      121253, // Keg Smash
+      124502, // Gift of the Ox
+      137023, // Brewmaster Monk
+      157445, // Critical Strikes (Passive)
       115176, // Zen Meditation
+      162700, // Stat Negation Aura - Agility Tank
+      115203, // Fortifying Brew
+      116705, // Spear Hand Strike
+      205523, // Blackout Strike
+      116694, // Effuse
+      216519, // Celestial Fortune
+      218164, // Detox
+      115072, // Expel Harm
+      231602, // Effuse (Rank 2)
            0,
     },
     // Specialization abilities for Mistweaver
     {
-      115450, // Detox
-      116694, // Effuse
-      124682, // Enveloping Mist
-      231605, // Enveloping Mist
-      191837, // Essence Font
-      231633, // Essence Font
-      120224, // Leather Specialization
-      116849, // Life Cocoon
-      117907, // Mastery: Gust of Mists
-      137024, // Mistweaver Monk
-      212051, // Reawaken
       115151, // Renewing Mist
-      231606, // Renewing Mist
       115310, // Revival
-      107428, // Rising Sun Kick
-      193884, // Soothing Mist
-      101546, // Spinning Crane Kick
-      162701, // Stat Negation Aura - Intellect Healer
       116645, // Teachings of the Monastery
       116680, // Thunder Focus Tea
-      231876, // Thunder Focus Tea
+      117907, // Mastery: Gust of Mists
+      120224, // Leather Specialization (Passive)
+      116849, // Life Cocoon
+      124682, // Enveloping Mist
+      137024, // Mistweaver Monk
+      162701, // Stat Negation Aura - Intellect Healer
+      191837, // Essence Font
+      115450, // Detox
+      193884, // Soothing Mist
+      107428, // Rising Sun Kick
+      101546, // Spinning Crane Kick
+      116694, // Effuse
       116670, // Vivify
+      212051, // Reawaken
+      231605, // Enveloping Mist (Rank 2)
+      231606, // Renewing Mist (Rank 2)
+      231633, // Essence Font (Rank 2)
+      231876, // Thunder Focus Tea (Rank 2)
            0,
     },
     // Specialization abilities for Windwalker
     {
-      116092, // Afterlife
-      128595, // Combat Conditioning
-      137384, // Combo Breaker
-      157445, // Critical Strikes
-      220357, // Cyclone Strikes
-      218164, // Detox
-      116095, // Disable
-      124146, // Dual Wield
-      116694, // Effuse
-      231602, // Effuse
       113656, // Fists of Fury
       101545, // Flying Serpent Kick
-      120227, // Leather Specialization
-      115636, // Mastery: Combo Strikes
       107428, // Rising Sun Kick
-      116705, // Spear Hand Strike
-      101546, // Spinning Crane Kick
-      103985, // Stance of the Fierce Tiger
-      162697, // Stat Negation Aura - Agility DPS
-      231627, // Storm, Earth, and Fire
-      137639, // Storm, Earth, and Fire
-      115080, // Touch of Death
+      116092, // Afterlife
+      120227, // Leather Specialization (Passive)
+      115636, // Mastery: Combo Strikes
+      124146, // Dual Wield
       122470, // Touch of Karma
+      128595, // Combat Conditioning
       137025, // Windwalker Monk
+      137384, // Combo Breaker
+      137639, // Storm, Earth, and Fire
+      116095, // Disable
+      157445, // Critical Strikes (Passive)
+      162697, // Stat Negation Aura - Agility DPS
+      103985, // Stance of the Fierce Tiger (Stance)
+      115080, // Touch of Death
+      101546, // Spinning Crane Kick
+      116705, // Spear Hand Strike
       157411, // Windwalking
+      116694, // Effuse
+      218164, // Detox
+      220357, // Cyclone Strikes
+      231602, // Effuse (Rank 2)
+      231627, // Storm, Earth, and Fire (Rank 2)
            0,
     },
     {
@@ -2077,134 +2061,134 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Balance
     {
-      197524, // Astral Influence
-      197911, // Astral Power
-      137013, // Balance Druid
-      106732, // Balance Overrides Passive
-       22812, // Barkskin
-      194223, // Celestial Alignment
-       29166, // Innervate
+      106732, // Balance Overrides Passive (Passive)
+       24858, // Moonkin Form
+       78675, // Solar Beam
       108299, // Killer Instinct
        86104, // Leather Specialization
-      194153, // Lunar Strike
        77492, // Mastery: Starlight
-       24858, // Moonkin Form
-      231042, // Moonkin Form
-        5215, // Prowl
-        2782, // Remove Corruption
-       78675, // Solar Beam
-      190984, // Solar Wrath
-      191034, // Starfall
-      231049, // Starfall
-       78674, // Starsurge
-      231021, // Starsurge
+      137013, // Balance Druid
       162699, // Stat Negation Aura - Intellect DPS
-       93402, // Sunfire
-      231050, // Sunfire
-      159456, // Travel Form
+       22812, // Barkskin
+      190984, // Solar Wrath (Solar)
+      191034, // Starfall
+      194153, // Lunar Strike (Lunar)
+      194223, // Celestial Alignment
+       29166, // Innervate
+       78674, // Starsurge
+       93402, // Sunfire (Solar)
+        5215, // Prowl
+      197524, // Astral Influence
+      197911, // Astral Power (Passive)
+        2782, // Remove Corruption
+      231021, // Starsurge (Rank 2)
+      231042, // Moonkin Form (Rank 2)
+      231049, // Starfall (Rank 2)
+      231050, // Sunfire (Rank 2)
+      159456, // Travel Form (Rank 2)
            0,
     },
     // Specialization abilities for Feral
     {
-      106951, // Berserk
-      228545, // Cat Form
-      157447, // Critical Strikes
-      131768, // Feline Swiftness
-      137011, // Feral Druid
+      106733, // Feral Overrides Passive (Passive)
+        5217, // Tiger's Fury
        16949, // Feral Instinct
-      106733, // Feral Overrides Passive
-      197692, // Feral Overrides Passive
-       22568, // Ferocious Bite
-      231056, // Ferocious Bite
-       48484, // Infected Wounds
-       86097, // Leather Specialization
-       22570, // Maim
-       77493, // Mastery: Razor Claws
+        1079, // Rip
+       16974, // Predatory Swiftness
        33873, // Nurturing Instinct
        16864, // Omen of Clarity
-       16974, // Predatory Swiftness
-      159286, // Primal Fury
-        5215, // Prowl
-        1822, // Rake
-      231052, // Rake
-        2782, // Remove Corruption
-        1079, // Rip
-      231063, // Shred
-        5221, // Shred
-      231057, // Shred
+       86097, // Leather Specialization
       106839, // Skull Bash
-      106898, // Stampeding Roar
+       77493, // Mastery: Razor Claws
+       48484, // Infected Wounds
+      137011, // Feral Druid
+      157447, // Critical Strikes (Passive)
       162697, // Stat Negation Aura - Agility DPS
+       22570, // Maim
+        1822, // Rake
        61336, // Survival Instincts
-      213764, // Swipe
-      231283, // Swipe
+       22568, // Ferocious Bite
+        5215, // Prowl
+        5221, // Shred
+      106898, // Stampeding Roar
       106832, // Thrash
-        5217, // Tiger's Fury
-      231055, // Tiger's Fury
-      159456, // Travel Form
+      159286, // Primal Fury
+      131768, // Feline Swiftness
+      197692, // Feral Overrides Passive (Passive)
+      106951, // Berserk
+        2782, // Remove Corruption
+      213764, // Swipe
+      228545, // Cat Form (Shapeshift)
+      231052, // Rake (Rank 2)
+      231055, // Tiger's Fury (Rank 2)
+      231056, // Ferocious Bite (Rank 2)
+      231057, // Shred (Rank 3)
+      231063, // Shred (Rank 2)
+      159456, // Travel Form (Rank 2)
+      231283, // Swipe (Rank 2)
     },
     // Specialization abilities for Guardian
     {
-       22812, // Barkskin
-      157447, // Critical Strikes
-       22842, // Frenzied Regeneration
-      210706, // Gore
-      137010, // Guardian Druid
-      106734, // Guardian Overrides Passive
-          99, // Incapacitating Roar
-      192081, // Ironfur
-      231070, // Ironfur
+      106734, // Guardian Overrides Passive (Passive)
+       33873, // Nurturing Instinct
+       16931, // Thick Hide
        86096, // Leather Specialization
-      231065, // Lightning Reflexes
-       33917, // Mangle
-      231064, // Mangle
-      192083, // Mark of Ursol
+      106839, // Skull Bash
       155783, // Mastery: Nature's Guardian
       159195, // Mastery: Nature's Guardian
-        6807, // Maul
-       33873, // Nurturing Instinct
-        5215, // Prowl
-        2782, // Remove Corruption
-      106839, // Skull Bash
-      106898, // Stampeding Roar
+      137010, // Guardian Druid
+      157447, // Critical Strikes (Passive)
       162700, // Stat Negation Aura - Agility Tank
+       22812, // Barkskin
+        6807, // Maul
        61336, // Survival Instincts
+       22842, // Frenzied Regeneration
+       33917, // Mangle
+      106898, // Stampeding Roar
+      192081, // Ironfur
+      192083, // Mark of Ursol
+        5215, // Prowl
+          99, // Incapacitating Roar
+      210706, // Gore
+        2782, // Remove Corruption
       213764, // Swipe
-       16931, // Thick Hide
       106832, // Thrash
-      159456, // Travel Form
+      231064, // Mangle (Rank 2)
+      231065, // Lightning Reflexes
+      231070, // Ironfur (Rank 2)
+      159456, // Travel Form (Rank 2)
            0,
     },
     // Specialization abilities for Restoration
     {
-       22812, // Barkskin
-      145205, // Efflorescence
-        5185, // Healing Touch
-       29166, // Innervate
-      102342, // Ironbark
-      108299, // Killer Instinct
-       86093, // Leather Specialization
-       33763, // Lifebloom
-       48500, // Living Seed
-       77495, // Mastery: Harmony
-       88423, // Nature's Cure
-      113043, // Omen of Clarity
-        5215, // Prowl
-      231032, // Regrowth
-         774, // Rejuvenation
-      231040, // Rejuvenation
-      137012, // Restoration Druid
-      212040, // Revitalize
-        5176, // Solar Wrath
-      162701, // Stat Negation Aura - Intellect Healer
-       93402, // Sunfire
-      231050, // Sunfire
        18562, // Swiftmend
-         740, // Tranquility
-      159456, // Travel Form
-      102793, // Ursol's Vortex
+       88423, // Nature's Cure
+       48500, // Living Seed
+      108299, // Killer Instinct
+      102342, // Ironbark
+      113043, // Omen of Clarity
+       86093, // Leather Specialization
        48438, // Wild Growth
+       33763, // Lifebloom
+       77495, // Mastery: Harmony
+      137012, // Restoration Druid
+      145205, // Efflorescence
+         740, // Tranquility
+      162701, // Stat Negation Aura - Intellect Healer
+         774, // Rejuvenation
+       22812, // Barkskin
       145108, // Ysera's Gift
+        5215, // Prowl
+        5176, // Solar Wrath (Solar)
+      102793, // Ursol's Vortex
+       93402, // Sunfire (Solar)
+       29166, // Innervate
+      212040, // Revitalize
+      231032, // Regrowth (Rank 2)
+      231040, // Rejuvenation (Rank 2)
+      231050, // Sunfire (Rank 2)
+        5185, // Healing Touch
+      159456, // Travel Form (Rank 2)
            0,
     },
   },
@@ -2212,37 +2196,37 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
   {
     // Specialization abilities for Havoc
     {
-      196718, // Darkness
-      212612, // Havoc Demon Hunter
-      178976, // Leather Specialization
-      185164, // Mastery: Demonic Presence
       178940, // Shattered Souls
+      212612, // Havoc Demon Hunter
+      185164, // Mastery: Demonic Presence
+      178976, // Leather Specialization (Passive)
+      196718, // Darkness
            0,
     },
     // Specialization abilities for Vengeance
     {
-      203720, // Demon Spikes
-      203513, // Demonic Wards
-      218256, // Empower Wards
+      189926, // Increased Threat
+      185245, // Torment
+      187827, // Metamorphosis
       204021, // Fiery Brand
       178740, // Immolation Aura
-      189926, // Increased Threat
       189110, // Infernal Strike
-      226359, // Leather Specialization
-      203747, // Mastery: Fel Blood
-      187827, // Metamorphosis
+      203513, // Demonic Wards
+      203782, // Shear
+      203720, // Demon Spikes
+      202137, // Sigil of Silence
+      204157, // Throw Glaive
+      204596, // Sigil of Flame
       185244, // Pain
       207197, // Riposte
       204254, // Shattered Souls
-      203782, // Shear
       203783, // Shear
-      204596, // Sigil of Flame
-      207684, // Sigil of Misery
-      202137, // Sigil of Silence
-      228477, // Soul Cleave
-      204157, // Throw Glaive
-      185245, // Torment
       212613, // Vengeance Demon Hunter
+      218256, // Empower Wards
+      203747, // Mastery: Fel Blood
+      226359, // Leather Specialization (Passive)
+      228477, // Soul Cleave
+      207684, // Sigil of Misery
            0,
     },
     {
@@ -2255,7 +2239,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 22864
+// Class mastery abilities, wow build 22882
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2494,7 +2478,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 22864
+// Racial abilities, wow build 22882
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3232,7 +3216,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (544)
 
-// Set bonus data, wow build 22864
+// Set bonus data, wow build 22882
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3803,7 +3787,7 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
 };
 #define PTR_RPPMMOD_SIZE (245)
 
-// 245 RPPM Modifiers, wow build level 22864
+// 245 RPPM Modifiers, wow build level 22882
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   {  49530,    1,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
@@ -4054,7 +4038,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 22864
+// Artifact base data, wow build 22882
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4100,7 +4084,7 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
 };
 #define PTR_ARTIFACT_POWER_SIZE (715)
 
-// Artifact power data, wow build 22864
+// Artifact power data, wow build 22882
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,   0,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -4820,7 +4804,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
 };
 #define PTR_ARTIFACT_POWER_RANK_SIZE (3063)
 
-// Artifact power rank data, wow build 22864
+// Artifact power rank data, wow build 22882
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -7888,7 +7872,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 22864
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 22882
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };
