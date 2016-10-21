@@ -8248,6 +8248,19 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
   return spell_data_t::not_found();
 }
 
+const spell_data_t* player_t::find_specialization_spell( unsigned spell_id, specialization_e s ) const
+{
+  if ( s == SPEC_NONE || s == _spec )
+  {
+    if ( dbc.is_specialization_ability( s, spell_id ) )
+    {
+      return dbc::find_spell( this, spell_id );
+    }
+  }
+
+  return spell_data_t::not_found();
+}
+
 // player_t::find_artifact_spell ==========================================
 
 artifact_power_t player_t::find_artifact_spell( const std::string& name, bool tokenized ) const

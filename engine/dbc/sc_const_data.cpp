@@ -2410,6 +2410,26 @@ int dbc_t::mastery_ability_tree( player_e c, uint32_t spell_id ) const
   return -1;
 }
 
+bool dbc_t::is_specialization_ability( specialization_e spec, unsigned spell_id ) const
+{
+  unsigned class_idx = -1;
+  unsigned spec_idx_ = -1;
+
+  if ( spec == SPEC_NONE )
+    return 0;
+
+  if ( ! spec_idx( spec, class_idx, spec_idx_ ) )
+    return 0;
+
+  for ( unsigned n = 0; n < specialization_ability_size(); n++ )
+  {
+    if ( specialization_ability( class_idx, spec_idx_, n ) == spell_id )
+      return true;
+  }
+
+  return false;
+}
+
 bool dbc_t::is_specialization_ability( uint32_t spell_id ) const
 {
   for ( unsigned cls = 0; cls < dbc_t::class_max_size(); cls++ )
