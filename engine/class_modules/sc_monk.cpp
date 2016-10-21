@@ -1817,8 +1817,16 @@ public:
       case MONK_WINDWALKER:
       {
         // Reduce GCD from 1.5 sec to 1 sec
-        if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ) ) )
-          ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ).time_value(); // Saved as -500 milliseconds
+        if ( maybe_ptr( player -> dbc.ptr ) )
+        {
+          if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ) ) )
+            ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
+        }
+        else
+        {
+          if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ) ) )
+            ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ).time_value(); // Saved as -500 milliseconds
+        }
         // Technically minimum GCD is 750ms but nothing brings the GCD below 1 sec
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Hasted Cooldown
