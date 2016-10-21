@@ -372,8 +372,10 @@ public:
     const spell_data_t* shaman;
 
     // Elemental
+    const spell_data_t* chain_lightning_2; // 7.1 Chain Lightning additional 2 targets passive
     const spell_data_t* elemental_focus;
     const spell_data_t* elemental_fury;
+    const spell_data_t* lava_burst_2; // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
     const spell_data_t* spiritual_insight;
 
@@ -3774,6 +3776,11 @@ struct chained_base_t : public shaman_spell_t
 
     maelstrom_gain = mg;
     energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
+
+    if ( data().affected_by( player -> spec.chain_lightning_2 -> effectN( 1 ) ) )
+    {
+      aoe += player -> spec.chain_lightning_2 -> effectN( 1 ).base_value();
+    }
   }
 
   // Make Chain Lightning a single target spell for procs
@@ -3904,7 +3911,8 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( td( target ) -> dot.flame_shock -> is_ticking() )
+    if ( ( ! maybe_ptr( p() -> dbc.ptr ) || p() -> spec.lava_burst_2 -> ok() ) &&
+         td( target ) -> dot.flame_shock -> is_ticking() )
     {
       m = 1.0;
     }
@@ -4089,7 +4097,8 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( td( target ) -> dot.flame_shock -> is_ticking() )
+    if ( ( ! maybe_ptr( p() -> dbc.ptr ) || p() -> spec.lava_burst_2 -> ok() ) &&
+         td( target ) -> dot.flame_shock -> is_ticking() )
     {
       m = 1.0;
     }
@@ -5849,8 +5858,10 @@ void shaman_t::init_spells()
   spec.spiritual_insight     = find_specialization_spell( "Spiritual Insight" );
 
   // Elemental
+  spec.chain_lightning_2     = find_specialization_spell( 231722 );
   spec.elemental_focus       = find_specialization_spell( "Elemental Focus" );
   spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
+  spec.lava_burst_2          = find_specialization_spell( 231721 );
   spec.lava_surge            = find_specialization_spell( "Lava Surge" );
 
   // Enhancement
