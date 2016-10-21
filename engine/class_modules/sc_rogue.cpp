@@ -2406,7 +2406,7 @@ struct backstab_t : public rogue_attack_t
   backstab_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "backstab", p, p -> find_specialization_spell( "Backstab" ), options_str )
   {
-    requires_weapon   = WEAPON_DAGGER;
+    requires_weapon = WEAPON_DAGGER;
 
     base_multiplier *= 1.0 + p -> artifact.the_quiet_knife.percent();
   }
@@ -2674,6 +2674,10 @@ struct eviscerate_t : public rogue_attack_t
   {
     weapon = &( player -> main_hand_weapon );
     base_crit += p -> artifact.gutripper.percent();
+    if ( maybe_ptr( p -> dbc.ptr ) ) //FIXME
+    {
+      base_multiplier *= 1.0 + p -> find_spell( 231716 ) -> effectN( 1 ).base_value(); //FIXME Use find_specialization_spell when it'll be patched.
+    }
   }
 
   double action_multiplier() const override
@@ -3129,6 +3133,13 @@ struct kingsbane_strike_t : public rogue_attack_t
     background = true;
     weapon = w;
     base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 3 ).percent();
+    /* Should be auto detected, to confim FIXME
+    if ( maybe_ptr( p -> dbc.ptr ) ) // FIXME
+    {
+      energize_type     = ENERGIZE_ON_HIT;
+      energize_resource = RESOURCE_COMBO_POINT;
+      energize_amount   = data().effectN( 6 ).base_value();
+    } */
   }
 
   double action_multiplier() const override
@@ -4084,6 +4095,10 @@ struct shadowstrike_t : public rogue_attack_t
     requires_stealth = true;
     energize_amount += p -> talent.premeditation -> effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p -> artifact.precision_strike.percent();
+    if ( maybe_ptr( p -> dbc.ptr ) ) //FIXME
+    {
+      range += p -> find_spell( 231718 ) -> effectN( 1 ).base_value(); //FIXME Use find_specialization_spell when it'll be patched.
+    }
 
     if ( p -> soul_rip )
     {
@@ -4793,8 +4808,9 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
     return make_mem_fn_expr( "cp_gain", *this, &rogue_attack_t::generate_cp );
   }
   // Rupture and Garrote APL lines using "exsanguinated"
-  else if ( util::str_compare_ci( name_str, "exsanguinated" ) &&
-            ( data().id() == 1943 || data().id() == 703 ) )
+  else if ( util::str_compare_ci( name_str, "exsanguinated" ) && (
+            ( data().id() == 1943 || data().id() == 703 ) || 
+            ( maybe_ptr( p() -> dbc.ptr ) && ( data().id() == 231719 || data().id() == 199672 ) ) ) ) // FIXME Added 231719 (Garrote Rank 2) and 199672 (Rupture Hidden) to prevent error
   {
     return new exsanguinated_expr_t( this );
   }
