@@ -6953,7 +6953,14 @@ void monk_t::init_base_stats()
       resources.base[RESOURCE_ENERGY] += sets.set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
       resources.base[RESOURCE_MANA] = 0;
       resources.base[RESOURCE_CHI] = 4;
-      resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 7 ).base_value();
+      if ( maybe_ptr( dbc.ptr ) )
+      {
+        resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value();
+      }
+      else
+      {
+        resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 7 ).base_value();
+      }
       resources.base[RESOURCE_CHI] += talent.ascension -> effectN( 1 ).base_value();
       base_energy_regen_per_second = 10.0;
 
