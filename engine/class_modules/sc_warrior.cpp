@@ -275,6 +275,7 @@ public:
     const spell_data_t* enrage;
     const spell_data_t* enraged_regeneration;
     const spell_data_t* execute;
+    const spell_data_t* execute_2;
     const spell_data_t* focused_rage;
     const spell_data_t* furious_slash;
     const spell_data_t* hamstring;
@@ -300,6 +301,7 @@ public:
     const spell_data_t* titans_grip;
     const spell_data_t* unwavering_sentinel;
     const spell_data_t* whirlwind;
+    const spell_data_t* whirlwind_2;
     const spell_data_t* revenge_trigger;
     const spell_data_t* berserker_rage;
     const spell_data_t* victory_rush;
@@ -1948,6 +1950,7 @@ struct execute_off_hand_t: public warrior_attack_t
     {
       weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
+    weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
     base_crit += p -> artifact.deathdealer.percent();
   }
 
@@ -1995,6 +1998,7 @@ struct execute_t: public warrior_attack_t
       {
         weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
       }
+      weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
     }
 
     base_crit += p -> artifact.deathblow.percent();
@@ -3489,9 +3493,9 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
   fury_whirlwind_mh_t* mh_attack;
   timespan_t spin_time;
   fury_whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
+    warrior_attack_t( "whirlwind", p, p -> spec.whirlwind_2 ),
     oh_attack( nullptr ), mh_attack( nullptr ),
-    spin_time( timespan_t::from_millis( p -> spec.whirlwind -> effectN( 3 ).misc_value1() ) )
+    spin_time( timespan_t::from_millis( p -> spec.whirlwind_2 -> effectN( 3 ).misc_value1() ) )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
@@ -4316,6 +4320,14 @@ void warrior_t::init_spells()
   spec.enrage                   = find_specialization_spell( "Enrage" );
   spec.enraged_regeneration     = find_specialization_spell( "Enraged Regeneration" );
   spec.execute                  = find_specialization_spell( "Execute" );
+  if ( specialization() == WARRIOR_FURY )
+  {
+    spec.execute_2 = find_specialization_spell( 231827 );
+  }
+  else
+  {
+    spec.execute_2 = find_specialization_spell( 231830 );
+  }
   spec.focused_rage             = find_specialization_spell( "Focused Rage" );
   spec.focused_rage             = find_specialization_spell( "Focused Rage" );
   spec.furious_slash            = find_specialization_spell( "Furious Slash" );
@@ -4345,6 +4357,7 @@ void warrior_t::init_spells()
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.victory_rush             = find_specialization_spell( "Victory Rush" );
   spec.whirlwind                = find_specialization_spell( "Whirlwind" );
+  spec.whirlwind_2              = find_specialization_spell( 190411 );
 
   // Talents
   talents.anger_management      = find_talent_spell( "Anger Management" );
@@ -4903,7 +4916,6 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list -> add_action( this, "Hamstring", "if=!ptr&buff.battle_cry_deadly_calm.remains>cooldown.hamstring.remains" );
   default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   default_list -> add_talent( this, "Rend", "if=remains<gcd" );
   default_list -> add_talent( this, "Focused Rage", "if=buff.battle_cry_deadly_calm.remains>cooldown.focused_rage.remains&(buff.focused_rage.stack<3|!cooldown.mortal_strike.up)&((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)",

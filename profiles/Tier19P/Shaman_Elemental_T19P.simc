@@ -42,7 +42,6 @@ actions.aoe=stormkeeper
 actions.aoe+=/ascendance
 actions.aoe+=/liquid_magma_totem
 actions.aoe+=/flame_shock,if=spell_targets.chain_lightning=3&maelstrom>=20,target_if=refreshable
-actions.aoe+=/earthquake_totem
 actions.aoe+=/lava_burst,if=buff.lava_surge.up&spell_targets.chain_lightning=3
 actions.aoe+=/lava_beam
 actions.aoe+=/chain_lightning,target_if=!debuff.lightning_rod.up
@@ -58,7 +57,6 @@ actions.single+=/earth_shock,if=maelstrom>=92
 actions.single+=/icefury,if=raid_event.movement.in<5
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
 actions.single+=/elemental_blast
-actions.single+=/earthquake_totem,if=buff.echoes_of_the_great_sundering.up
 actions.single+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
 actions.single+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))
 actions.single+=/frost_shock,moving=1,if=buff.icefury.up

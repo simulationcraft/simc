@@ -30,7 +30,6 @@ actions+=/berserking,if=buff.battle_cry.up|target.time_to_die<=11
 actions+=/arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40
 actions+=/battle_cry,if=(buff.bloodlust.up|time>=1)&!gcd.remains&(buff.shattered_defenses.up|(cooldown.colossus_smash.remains&cooldown.warbreaker.remains))|target.time_to_die<=10
 actions+=/avatar,if=(buff.bloodlust.up|time>=1)
-actions+=/hamstring,if=!ptr&buff.battle_cry_deadly_calm.remains>cooldown.hamstring.remains
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/rend,if=remains<gcd
 # The tl;dr of this line is to spam focused rage inside battle cry, the added nonsense is to help modeling the difficulty of timing focused rage immediately after mortal strike. 
@@ -110,11 +109,11 @@ main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/141523/14
 
 # Gear Summary
 # gear_ilvl=882.73
-# gear_strength=14801
+# gear_strength=16432
 # gear_stamina=26247
 # gear_crit_rating=5413
 # gear_haste_rating=4470
-# gear_mastery_rating=9712
+# gear_mastery_rating=8669
 # gear_versatility_rating=1124
 # gear_armor=4353
 # set_bonus=tier19_2pc=1

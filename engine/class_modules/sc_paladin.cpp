@@ -162,6 +162,14 @@ public:
     gain_t* judgment;
   } gains;
 
+  // Spec Passives
+  struct spec_t
+  {
+    const spell_data_t* judgment_2;
+    const spell_data_t* judgment_3;
+  } spec;
+
+
   // Cooldowns
   struct cooldowns_t
   {
@@ -3594,7 +3602,7 @@ struct judgment_t : public paladin_melee_attack_t
     {
       cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
-      sotr_cdr = -1.0 * timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+      sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
     }
   }
 
@@ -5147,6 +5155,18 @@ void paladin_t::init_spells()
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
   passives.hand_of_light          = find_mastery_spell( PALADIN_RETRIBUTION );
   passives.lightbringer           = find_mastery_spell( PALADIN_HOLY );
+
+  // Specializations    
+  switch ( specialization() )
+  {
+    case PALADIN_HOLY: 
+    spec.judgment_2 = find_specialization_spell( 231644 );
+    case PALADIN_PROTECTION: 
+    spec.judgment_2 = find_specialization_spell( 231657 );
+    case PALADIN_RETRIBUTION:
+    spec.judgment_2 = find_specialization_spell( 231661 );
+    spec.judgment_3 = find_specialization_spell( 231663 );
+  }
 
   // Passives
 
