@@ -3005,7 +3005,7 @@ struct shred_t : public cat_attack_t
     double m = cat_attack_t::action_multiplier();
 
     if ( stealthed() )
-      m *= 1.0 + p() -> buff.prowl -> data().effectN( 4 ).percent();
+      m *= 1.0 + data().effectN( 4 ).percent();
 
     return m;
   }
