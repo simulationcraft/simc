@@ -7947,9 +7947,6 @@ void monk_t::target_mitigation( school_e school,
       if ( buff.exploding_keg -> up() ) 
         s -> result_amount *= 1.0 + buff.exploding_keg -> value();
 
-      if ( buff.dragonfire_brew -> up() )
-        s -> result_amount *= 1.0 + buff.dragonfire_brew -> stack_value();
-
       // Passive sources (Sturdy Ox)
       if ( school != SCHOOL_PHYSICAL )
         // TODO: Magical Damage reduction (currently set to zero, but effect is still in place)
@@ -8070,13 +8067,14 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
 void monk_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
 {
   // Celestial Fortune procs a heal every now and again
-  if ( s -> action -> id != passives.healing_elixirs -> id() 
+/*  if ( s -> action -> id != passives.healing_elixirs -> id() 
     || s -> action -> id != passives.gift_of_the_ox_heal -> id()
     || s -> action -> id != passives.greater_gift_of_the_ox_heal -> id() )
   {
-    if ( spec.celestial_fortune -> ok() )
-      trigger_celestial_fortune( s );
-  }
+  */
+//    if ( spec.celestial_fortune -> ok() )
+//      trigger_celestial_fortune( s );
+//  }
 
   player_t::assess_heal( school, dmg_type, s );
 }
@@ -8093,7 +8091,7 @@ void monk_t::apl_pre_brewmaster()
     
     if ( true_level > 100)
       pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
-    if ( true_level > 90 )
+    else if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
     else if ( true_level >= 85 )
       pre -> add_action( "flask,type=spring_blossoms" );
@@ -8108,8 +8106,8 @@ void monk_t::apl_pre_brewmaster()
   if ( sim -> allow_food && level() >= 80 )
   {
     if ( level() > 100 )
-      pre -> add_action( "food,type=nightborne_delicacy_platter" ); //fixmewithproperfood
-    if ( level() > 90)
+      pre -> add_action( "food,type=the_hungry_magister" ); //fixmewithproperfood
+    else if ( level() > 90)
       pre -> add_action( "food,type=sleeper_sushi" );
     else if ( level() >= 80 )
       pre -> add_action( "food,type=skewered_eel" );
@@ -8119,20 +8117,28 @@ void monk_t::apl_pre_brewmaster()
       pre -> add_action( "food,type=warp_burger" );
   }
 
-  if ( true_level > 100 )
-    pre -> add_action( "augmentation,type=defiled" );
+//  if ( true_level > 100 )
+//    pre -> add_action( "augmentation,type=defiled" );
 
-  pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  pre -> add_action( "snapshot_stats" );
 
-  if ( sim -> allow_potions && true_level >= 80 )
+  if ( sim -> allow_potions )
   {
-    if ( true_level >= 85 )
+    if ( true_level > 100 )
+      pre -> add_action( "potion,name=old_war" );
+    else if ( true_level > 90 )
+      pre -> add_action( "potion,name=draenic_agility" );
+    else if ( true_level >= 85 )
       pre -> add_action( "potion,name=virmens_bite" );
     else
       pre -> add_action( "potion,name=tolvir" );
   }
 
-  pre -> add_action( "dampen_harm" );
+  pre -> add_talent( this, "Diffuse Magic" );
+  pre -> add_talent( this, "Dampen Harm" );
+  pre -> add_talent( this, "Chi Burst" );
+  pre -> add_talent( this, "Chi Wave" );
+
 }
 
 // Windwalker Pre-Combat Action Priority List ==========================
@@ -8253,54 +8259,57 @@ void monk_t::apl_combat_brewmaster()
   std::vector<std::string> racial_actions = get_racial_actions();
   action_priority_list_t* def = get_action_priority_list( "default" );
   action_priority_list_t* st = get_action_priority_list( "st" );
-  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
+//  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 
   def -> add_action( "auto_attack" );
 
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
+/*  for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
-    if ( racial_actions[i] == "arcane_torrent" )
-      def -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy<=40" );
-    else
       def -> add_action( racial_actions[i] + ",if=energy<=40" );
   }
+*/
 
-  def -> add_talent( this, "Chi Brew", "if=(chi<1&stagger.heavy)|(chi<2)" );
-  def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
-  def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
-  def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
-  def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
+//  def -> add_talent( this, "Chi Brew", "if=(chi<1&stagger.heavy)|(chi<2)" );
+//  def -> add_action( this, "Gift of the Ox", "if=buff.gift_of_the_ox.react&incoming_damage_1500ms" );
+//  def -> add_talent( this, "Diffuse Magic", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
+//  def -> add_talent( this, "Dampen Harm", "if=incoming_damage_1500ms&buff.fortifying_brew.down" );
+//  def -> add_action( this, "Fortifying Brew", "if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)" );
 
-  int num_items = (int)items.size();
+/*  int num_items = (int)items.size();
   for ( int i = 0; i < num_items; i++ )
   {
     if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
       def -> add_action( "use_item,name=" + items[i].name_str + ",if=incoming_damage_1500ms&(buff.dampen_harm.down|buff.diffuse_magic.down)&buff.fortifying_brew.down" );
   }
+  */
 
 //  def -> add_action( "invoke_niuzao,if=talent.invoke_niuzao.enabled&target.time_to_die>15&buff.serenity.down" );
-  def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&cooldown.keg_smash.remains>6" );
+//  def -> add_talent( this, "Serenity", "if=talent.serenity.enabled&cooldown.keg_smash.remains>6" );
   
-  if ( sim -> allow_potions )
+/*  if ( sim -> allow_potions )
   {
     if ( true_level >= 85 )
       def -> add_action( "potion,name=virmens_bite,if=(buff.fortifying_brew.down&(buff.dampen_harm.down|buff.diffuse_magic.down))" );
   }
+*/
 
   def -> add_action( "call_action_list,name=st,if=active_enemies<3" );
-  def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
+//  def -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
-  st -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
-  st -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
-  st -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
+//  st -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
+//  st -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
+//  st -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
   st -> add_talent( this, "Black Ox Brew" );
   st -> add_action( this, "Keg Smash" );
-  st -> add_action( this, "Blackout Kick" );  
-  st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
-  st -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
-  st -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80");
+  st -> add_action( this, "Blackout Strike" );
+  st -> add_action( this, "Exploding Keg" );
+  st -> add_talent( this, "Chi Burst" );
+  st -> add_talent( this, "Chi Wave" );
+  st -> add_talent( this, "Rushing Jade Wind" );
+  st -> add_action( this, "Breath of Fire");
+  st -> add_action( this, "Tiger Palm", "if=(energy+(energy.regen*cooldown.keg_smash.remains))>=40");
 
-  aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
+/*  aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
   aoe -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
   aoe -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
   aoe -> add_talent( this, "Black Ox Brew" );
@@ -8310,6 +8319,7 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_talent( this, "Chi Burst", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe -> add_talent( this, "Chi Wave", "if=energy.time_to_max>2&buff.serenity.down" );
   aoe -> add_action( this, "Tiger Palm", "if=cooldown.keg_smash.remains>=gcd&(energy+(energy.regen*(cooldown.keg_smash.remains)))>=80" );
+*/
 }
 
 // Windwalker Combat Action Priority List ===============================
