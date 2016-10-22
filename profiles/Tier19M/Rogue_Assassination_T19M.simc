@@ -114,15 +114,15 @@ finger1=dingy_suramar_mercantile_signet,id=141492,enchant=binding_of_versatility
 finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=spontaneous_appendages,id=139325,bonus_id=1806
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=139268/139261/139260,relic_id=1806/1806/1806
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,relic_id=1517:1727/1517:1727/1517:1727
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=881.69
-# gear_agility=16073
-# gear_stamina=25212
-# gear_crit_rating=8889
+# gear_ilvl=880.19
+# gear_agility=15875
+# gear_stamina=24916
+# gear_crit_rating=8859
 # gear_haste_rating=1839
-# gear_mastery_rating=5709
+# gear_mastery_rating=5677
 # gear_versatility_rating=2696
 # gear_armor=2244
