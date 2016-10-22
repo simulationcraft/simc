@@ -412,29 +412,36 @@ public:
   struct specializations_t
   {
     // Arcane
-    const spell_data_t* arcane_charge,
+    const spell_data_t* arcane_barrage_2,
+                      * arcane_charge,
     // NOTE: arcane_charge_passive is the Arcane passive added in patch 5.2,
     //       called "Arcane Charge" (Spell ID: 114664).
     //       It contains Spellsteal's mana cost reduction, Evocation's mana
     //       gain reduction, and a deprecated Scorch damage reduction.
                       * arcane_charge_passive,
                       * arcane_familiar,
+                      * evocation_2,
                       * mage_armor,
                       * savant;
 
     // Fire
     const spell_data_t* critical_mass,
                       * base_crit_bonus,    //as of 8/25/2016 Fire has a +5% base crit increase.
+                      * fire_blast_2,
+                      * fire_blast_3,
                       * ignite,
-                      * molten_armor;
+                      * molten_armor,
+                      * molten_armor_2;
 
     // Frost
     const spell_data_t* brain_freeze,
+                      * brain_freeze_2,
                       * fingers_of_frost,
                       * frost_armor,
                       * icicles,
                       * icicles_driver,
-                      * shatter;
+                      * shatter,
+                      * shatter_2;
   } spec;
 
   // Talents
@@ -1969,7 +1976,7 @@ public:
     // Shatter's +50% crit bonus needs to be added after multipliers etc
     if ( ( flags & STATE_CRIT ) && frozen && p() -> spec.shatter -> ok() )
     {
-      s -> crit_chance += p() -> spec.shatter -> effectN( 2 ).percent();
+      s -> crit_chance += ( p() -> spec.shatter -> effectN( 2 ).percent() + p() -> spec.shatter_2 -> effectN( 1 ).percent() );
     }
   }
 
@@ -4035,6 +4042,9 @@ struct evocation_t : public arcane_mage_spell_t
     ignore_false_positive = true;
     triggers_arcane_missiles = false;
 
+    cooldown = p -> cooldowns.evocation;
+    cooldown -> duration += p -> spec.evocation_2 -> effectN( 1 ).time_value();
+
     if ( p -> artifact.aegwynns_ascendance.rank() )
     {
       aegwynns_ascendance = new aegwynns_ascendance_t( p );
@@ -5508,19 +5518,21 @@ struct fire_blast_t : public fire_mage_spell_t
   pyrosurge_flamestrike_t* pyrosurge_flamestrike;
   cooldown_t* icd;
   blast_furance_t* blast_furnace;
+  double fire_blast_crit_chance;
 
   fire_blast_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "fire_blast", p,
                        p -> find_class_spell( "Fire Blast" ) ),
     pyrosurge_chance( 0.0 ),
     pyrosurge_flamestrike( new pyrosurge_flamestrike_t( p, options_str ) ),
-    blast_furnace( nullptr )
+    blast_furnace( nullptr ), fire_blast_crit_chance( 0 )
   {
     parse_options( options_str );
 
     base_multiplier *= 1.0 + p -> artifact.reignition_overdrive.percent();
     trigger_gcd = timespan_t::zero();
     cooldown -> charges = data().charges();
+    cooldown -> charges += p -> spec.fire_blast_3 -> effectN( 1 ).base_value();
     cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
     cooldown -> hasted = true;
@@ -5542,6 +5554,8 @@ struct fire_blast_t : public fire_mage_spell_t
     {
       blast_furnace = new blast_furance_t( p, options_str );
     }
+
+    fire_blast_crit_chance = p -> spec.fire_blast_2 -> effectN( 1 ).percent();
   }
 
   virtual bool ready() override
@@ -5592,7 +5606,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
   // Fire Blast always crits
   virtual double composite_crit_chance() const override
-  { return 1.0; }
+  { return fire_blast_crit_chance; }
 };
 
 
@@ -7900,18 +7914,26 @@ void mage_t::init_spells()
 
 
   // Spec Spells
+  spec.arcane_barrage_2      = find_specialization_spell( 231564 );
   spec.arcane_charge         = find_spell( 36032 );
   spec.arcane_charge_passive = find_spell( 114664 );
   if ( talents.arcane_familiar -> ok() )
   {
     spec.arcane_familiar    = find_spell( 210126 );
   }
+  spec.evocation_2           = find_specialization_spell( 231565 );
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
   spec.base_crit_bonus       = find_spell( 137019 );
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
+  spec.brain_freeze_2        = find_specialization_spell( 231584 );
+  spec.molten_armor_2        = find_specialization_spell( 231630 );
   spec.fingers_of_frost      = find_spell( 112965 );
   spec.shatter               = find_specialization_spell( "Shatter"          );
+  spec.shatter_2             = find_specialization_spell( 231582 );
+
+  spec.fire_blast_2          = find_specialization_spell( 231565 );
+  spec.fire_blast_3          = find_specialization_spell( 231567 );
 
   // Mastery
   spec.savant                = find_mastery_spell( MAGE_ARCANE );
@@ -7990,7 +8012,7 @@ void mage_t::create_buffs()
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
   buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak            = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
-  buffs.molten_armor          = buff_creator_t( this, "molten_armor", find_spell( 30482 ) )
+  buffs.molten_armor          = buff_creator_t( this, "molten_armor", spec.molten_armor )
                                   .add_invalidate( CACHE_SPELL_CRIT_CHANCE );
   buffs.icarus_uprising       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -8936,7 +8958,7 @@ double mage_t::composite_spell_crit_chance() const
 
   if ( buffs.molten_armor -> check() )
   {
-    c += buffs.molten_armor -> data().effectN( 1 ).percent();
+    c += ( buffs.molten_armor -> data().effectN( 1 ).percent() + spec.molten_armor_2 -> effectN( 1 ).percent() );
   }
 
   if ( specialization() == MAGE_FIRE )
