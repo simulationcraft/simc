@@ -635,20 +635,11 @@ namespace buffs {
       healing_modifier( 0.0 ),
       haste_bonus( 0.0 )
     {
-      if ( maybe_ptr( p -> dbc.ptr ) )
-      {
-        damage_modifier = data().effectN( 1 ).percent();
-        haste_bonus = 0;
-        healing_modifier = data().effectN( 2 ).percent();
-      }
-      else
-      {
-        // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
-        //  values
-        damage_modifier = data().effectN( 1 ).percent() / 10.0;
-        haste_bonus = data().effectN( 2 ).percent() / 10.0;
-        healing_modifier = 0;
-      }
+      // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
+      //  values
+      damage_modifier = data().effectN( 1 ).percent() / 10.0;
+      haste_bonus = data().effectN( 2 ).percent() / 10.0;
+      healing_modifier = 0;
 
       paladin_t* paladin = static_cast<paladin_t*>( player );
       if ( paladin -> artifact.wrath_of_the_ashbringer.rank() )
@@ -1801,13 +1792,10 @@ struct execution_sentence_t : public paladin_spell_t
       p() -> buffs.the_fires_of_justice -> expire();
     }
 
-    if ( !maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> buffs.crusade -> check() )
     {
-      if ( p() -> buffs.crusade -> check() )
-      {
-        int num_stacks = (int)base_cost();
-        p() -> buffs.crusade -> trigger( num_stacks );
-      }
+      int num_stacks = (int)base_cost();
+      p() -> buffs.crusade -> trigger( num_stacks );
     }
 
     if ( p() -> talents.fist_of_justice -> ok() )
@@ -2919,13 +2907,10 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
         p() -> procs.divine_purpose -> occur();
     }
 
-    if ( !maybe_ptr( p() -> dbc.ptr ) )
+    if ( p() -> buffs.crusade -> check() )
     {
-      if ( p() -> buffs.crusade -> check() )
-      {
-        int num_stacks = (int)base_cost();
-        p() -> buffs.crusade -> trigger( num_stacks );
-      }
+      int num_stacks = (int)base_cost();
+      p() -> buffs.crusade -> trigger( num_stacks );
     }
 
     if ( p() -> talents.fist_of_justice -> ok() )
@@ -3691,41 +3676,6 @@ struct judgment_t : public paladin_melee_attack_t
     return cc;
   }
 
-  virtual void execute() override
-  {
-    paladin_melee_attack_t::execute();
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      if ( p() -> buffs.crusade -> check() )
-      {
-        int num_stacks = 1;
-        p() -> buffs.crusade -> trigger( num_stacks );
-        if ( result_is_hit( execute_state -> result ) )
-        {
-          p() -> resource_gain( RESOURCE_HOLY_POWER,
-                                p() -> talents.crusade -> effectN( 3 ).base_value(),
-                                p() -> gains.judgment );
-        }
-      }
-    }
-  }
-
-  double recharge_multiplier() const
-  {
-    double rm = paladin_melee_attack_t::recharge_multiplier();
-
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-    {
-      if ( p() -> buffs.crusade -> check() )
-      {
-        rm *= 1.0 + p() -> talents.crusade -> effectN( 4 ).percent();
-      }
-    }
-
-    return rm;
-  }
-
   // Special things that happen when Judgment damages target
   void impact( action_state_t* s ) override
   {
@@ -4225,7 +4175,12 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
   if ( name == "zeal"                      ) return new zeal_t                     ( this, options_str );
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
-  if ( name == "blade_of_wrath"            ) return new blade_of_wrath_t           ( this, options_str );
+  if ( name == "blade_of_wrath"            )
+  {
+    if ( maybe_ptr( dbc.ptr ) )
+      return player_t::create_action( name, options_str );
+    return new blade_of_wrath_t( this, options_str );
+  }
   if ( name == "divine_hammer"             ) return new divine_hammer_t            ( this, options_str );
   if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
@@ -4869,11 +4824,11 @@ void paladin_t::generate_action_prio_list_ret()
   }
 
   def -> add_action( "call_action_list,name=VB,if=talent.virtues_blade.enabled" );
-  def -> add_action( "call_action_list,name=BoW,if=talent.blade_of_wrath.enabled" );
+  if ( ! maybe_ptr( dbc.ptr ) )
+    def -> add_action( "call_action_list,name=BoW,if=talent.blade_of_wrath.enabled" );
   def -> add_action( "call_action_list,name=DH,if=talent.divine_hammer.enabled" );
 
   action_priority_list_t* VB = get_action_priority_list( "VB" );
-  action_priority_list_t* BoW = get_action_priority_list( "BoW" );
   action_priority_list_t* DH = get_action_priority_list( "DH" );
 
   VB -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
@@ -4905,33 +4860,38 @@ void paladin_t::generate_action_prio_list_ret()
   VB -> add_action( this, "Divine Storm", "if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)" );
   VB -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)" );
 
-  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
-  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&buff.divine_purpose.react" );
-  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-  BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2&!equipped.whisper_of_the_nathrezim" );
-  BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim" );
-  BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
-  BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react" );
-  BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
-  BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&holy_power>=3&buff.divine_purpose.up&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&!equipped.whisper_of_the_nathrezim" );
-  BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
-  BoW -> add_action( this, "Wake of Ashes", "if=holy_power=0|holy_power=1&cooldown.blade_of_wrath.remains>gcd|holy_power=2&(cooldown.zeal.charges_fractional<=0.67|cooldown.crusader_strike.charges_fractional<=0.67)" );
-  BoW -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
-  BoW -> add_action( this, "Crusader Strike", "if=charges=2&holy_power<=4&!talent.the_fires_of_justice.enabled" );
-  BoW -> add_talent( this, "Blade of Wrath", "if=holy_power<=2|(holy_power<=3&(cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34))" );
-  BoW -> add_action( this, "Crusader Strike", "if=charges=2&holy_power<=4&talent.the_fires_of_justice.enabled" );
-  BoW -> add_action( this, "Judgment" );
-  BoW -> add_talent( this, "Consecration" );
-  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react" );
-  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-  BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
-  BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim" );
-  BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
-  BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-  BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
-  BoW -> add_talent( this, "Zeal", "if=holy_power<=4" );
-  BoW -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
+  if ( ! maybe_ptr( dbc.ptr ) )
+  {
+    action_priority_list_t* BoW = get_action_priority_list( "BoW" );
+    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
+    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&buff.divine_purpose.react" );
+    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
+    BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2&!equipped.whisper_of_the_nathrezim" );
+    BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim" );
+    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
+    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react" );
+    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
+    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+    BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&holy_power>=3&buff.divine_purpose.up&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&!equipped.whisper_of_the_nathrezim" );
+    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+    BoW -> add_action( this, "Wake of Ashes", "if=holy_power=0|holy_power=1&cooldown.blade_of_wrath.remains>gcd|holy_power=2&(cooldown.zeal.charges_fractional<=0.67|cooldown.crusader_strike.charges_fractional<=0.67)" );
+    BoW -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
+    BoW -> add_action( this, "Crusader Strike", "if=charges=2&holy_power<=4&!talent.the_fires_of_justice.enabled" );
+    BoW -> add_talent( this, "Blade of Wrath", "if=holy_power<=2|(holy_power<=3&(cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34))" );
+    BoW -> add_action( this, "Crusader Strike", "if=charges=2&holy_power<=4&talent.the_fires_of_justice.enabled" );
+    BoW -> add_action( this, "Judgment" );
+    BoW -> add_talent( this, "Consecration" );
+    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react" );
+    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
+    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+    BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim" );
+    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
+    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
+    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+    BoW -> add_talent( this, "Zeal", "if=holy_power<=4" );
+    BoW -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
+  }
+
 
   DH -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
   DH -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&buff.divine_purpose.react" );
