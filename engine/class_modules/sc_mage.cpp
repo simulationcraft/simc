@@ -8012,7 +8012,7 @@ void mage_t::create_buffs()
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
   buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak            = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
-  buffs.molten_armor          = buff_creator_t( this, "molten_armor", spec.molten_armor )
+  buffs.molten_armor = buff_creator_t( this, "molten_armor", find_spell( 30482 ) )
                                   .add_invalidate( CACHE_SPELL_CRIT_CHANCE );
   buffs.icarus_uprising       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
