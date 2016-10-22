@@ -2606,6 +2606,11 @@ struct unstable_affliction_t: public warlock_spell_t
       affected_by_contagion = false;
     }
 
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      return s -> action -> tick_time( s ) * 4.0;
+    }
+
     double composite_crit_chance() const override
     {
       double cc = warlock_spell_t::composite_crit_chance();
