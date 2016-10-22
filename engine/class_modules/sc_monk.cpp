@@ -363,7 +363,7 @@ public:
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
     const spell_data_t* effuse;
-    const spell_data_t* effuse_rank_two;
+    const spell_data_t* effuse_2;
     const spell_data_t* leather_specialization;
     const spell_data_t* provoke;
     const spell_data_t* rising_sun_kick;
@@ -392,19 +392,19 @@ public:
     // Mistweaver
     const spell_data_t* detox;
     const spell_data_t* enveloping_mist;
-    const spell_data_t* envoloping_mist_rank_two;
+    const spell_data_t* envoloping_mist_2;
     const spell_data_t* essence_font;
-    const spell_data_t* essence_font_rank_two;
+    const spell_data_t* essence_font_2;
     const spell_data_t* life_cocoon;
     const spell_data_t* reawaken;
     const spell_data_t* renewing_mist;
-    const spell_data_t* renewing_mist_rank_two;
+    const spell_data_t* renewing_mist_2;
     const spell_data_t* resuscitate;
     const spell_data_t* revival;
     const spell_data_t* soothing_mist;
     const spell_data_t* teachings_of_the_monastery;
     const spell_data_t* thunder_focus_tea;
-    const spell_data_t* thunger_focus_tea_rank_two;
+    const spell_data_t* thunger_focus_tea_2;
     const spell_data_t* vivify;
 
     // Windwalker
@@ -417,7 +417,7 @@ public:
     const spell_data_t* flying_serpent_kick;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* storm_earth_and_fire;
-    const spell_data_t* storm_earth_and_fire_rank_two;
+    const spell_data_t* storm_earth_and_fire_2;
     const spell_data_t* touch_of_death;
     const spell_data_t* touch_of_karma;
     const spell_data_t* windwalker_monk;
@@ -2001,7 +2001,15 @@ public:
         // Effect is saved as 6; duration is saved as 600 milliseconds
         double duration = p() -> legendary.drinking_horn_cover -> effectN( 1 ).base_value() * 100;
         double extension = duration * ab::cost();
+
+        // Extend the duration of the buff
         p() -> buff.storm_earth_and_fire -> extend_duration( p(), timespan_t::from_millis( extension ) );
+
+        // Extend the duration of pets
+        if ( !p() -> pet.sef[SEF_EARTH] -> is_sleeping() )
+          p() -> pet.sef[SEF_EARTH] -> expiration -> reschedule( p() -> pet.sef[SEF_EARTH] -> expiration -> remains() + timespan_t::from_millis( extension ) );
+        if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
+          p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
       }
       // Chi Savings on Dodge & Parry & Miss
       if ( ab::resource_consumed > 0 )
@@ -4172,7 +4180,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
 
     trigger_gcd = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
-    cooldown -> charges += p -> spec.storm_earth_and_fire_rank_two -> effectN( 1 ).base_value();
+    cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -5107,7 +5115,7 @@ struct effuse_t: public monk_heal_t
     double am = monk_heal_t::action_multiplier();
 
       if ( p() -> specialization() == MONK_BREWMASTER || p() -> specialization() == MONK_WINDWALKER )
-        am *= 1 + p() -> spec.effuse_rank_two -> effectN( 1 ).percent();
+        am *= 1 + p() -> spec.effuse_2 -> effectN( 1 ).percent();
       else
       {
         if ( p() -> buff.thunder_focus_tea -> up() )
@@ -6700,7 +6708,7 @@ void monk_t::init_spells()
   spec.crackling_jade_lightning      = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes              = find_specialization_spell( "Critical Strikes" );
   spec.effuse                        = find_specialization_spell( "Effuse" );
-  spec.effuse_rank_two               = find_specialization_spell( 231602 );
+  spec.effuse_2                      = find_specialization_spell( 231602 );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
   spec.provoke                       = find_class_spell( "Provoke" );
   spec.resuscitate                   = find_class_spell( "Resuscitate" );
@@ -6730,17 +6738,17 @@ void monk_t::init_spells()
   // Mistweaver Specialization
   spec.detox                         = find_specialization_spell( "Detox" );
   spec.enveloping_mist               = find_specialization_spell( "Enveloping Mist" );
-  spec.envoloping_mist_rank_two      = find_specialization_spell( 231605 );
+  spec.envoloping_mist_2             = find_specialization_spell( 231605 );
   spec.essence_font                  = find_specialization_spell( "Essence Font" );
   spec.life_cocoon                   = find_specialization_spell( "Life Cocoon" );
   spec.reawaken                      = find_specialization_spell( "Reawaken" );
   spec.renewing_mist                 = find_specialization_spell( "Renewing Mist" );
-  spec.renewing_mist_rank_two        = find_specialization_spell( 231606 );
+  spec.renewing_mist_2               = find_specialization_spell( 231606 );
   spec.revival                       = find_specialization_spell( "Revival" );
   spec.soothing_mist                 = find_specialization_spell( "Soothing Mist" );
   spec.teachings_of_the_monastery    = find_specialization_spell( "Teachings of the Monastery" );
   spec.thunder_focus_tea             = find_specialization_spell( "Thunder Focus Tea" );
-  spec.thunger_focus_tea_rank_two    = find_specialization_spell( 231876 );
+  spec.thunger_focus_tea_2           = find_specialization_spell( 231876 );
   spec.vivify                        = find_specialization_spell( "Vivify" );
 
   // Windwalker Specialization
@@ -6753,7 +6761,7 @@ void monk_t::init_spells()
   spec.flying_serpent_kick           = find_specialization_spell( "Flying Serpent Kick" );
   spec.stance_of_the_fierce_tiger    = find_specialization_spell( "Stance of the Fierce Tiger" );
   spec.storm_earth_and_fire          = find_specialization_spell( "Storm, Earth, and Fire" );
-  spec.storm_earth_and_fire_rank_two = find_specialization_spell( 231627 );
+  spec.storm_earth_and_fire_2        = find_specialization_spell( 231627 );
   spec.touch_of_karma                = find_specialization_spell( "Touch of Karma" );
   spec.touch_of_death                = find_specialization_spell( "Touch of Death" );
   spec.windwalker_monk               = find_specialization_spell( "Windwalker Monk" );
