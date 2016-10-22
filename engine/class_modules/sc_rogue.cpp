@@ -1426,13 +1426,15 @@ struct poison_bomb_t : public rogue_attack_t
   {
     background = true;
     aoe = -1;
+    base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 1 ).percent();
   }
 
-  // Scale on Mastery since 09-24 Hotfix
+  
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
 
+    // Scale on Mastery since 09-24 Hotfix
     if ( p() -> mastery.potent_poisons -> ok() )
     {
       m *= 1.0 + p() -> cache.mastery_value();
@@ -2680,7 +2682,7 @@ struct eviscerate_t : public rogue_attack_t
   {
     weapon = &( player -> main_hand_weapon );
     base_crit += p -> artifact.gutripper.percent();
-    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).base_value() / 100.0; //FIXME As of 10/24 (7.1 22882), it is put as a Generic Modifier, so we must divide it by 100.
+    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent(); //FIXME As of 10/24 (7.1 22882), it is put as a Generic Modifier.
   }
 
   double action_multiplier() const override
