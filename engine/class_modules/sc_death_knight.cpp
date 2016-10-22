@@ -8055,12 +8055,17 @@ struct the_instructors_fourth_lesson_t : public scoped_actor_callback_t < death_
 
 struct draugr_girdle_everlasting_king_t : public scoped_actor_callback_t < death_knight_t >
 {
-  draugr_girdle_everlasting_king_t() : super(DEATH_KNIGHT_UNHOLY)
+  // Note, we need to unconditionally initialize this item for all Death Knights because the proc is
+  // otherwise auto-initialized (for everyone), causing havoc.
+  draugr_girdle_everlasting_king_t() : super( DEATH_KNIGHT )
   {}
 
   void manipulate(death_knight_t* p, const special_effect_t& e) override
   {
-    p->legendary.draugr_girdle_everlasting_king = e.driver()->proc_chance();
+    if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
+    {
+      p -> legendary.draugr_girdle_everlasting_king = e.driver() -> proc_chance();
+    }
   }
 };
 
