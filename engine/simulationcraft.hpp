@@ -3583,12 +3583,13 @@ struct player_t : public actor_t
     std::array<std::pair<uint8_t, uint8_t>, MAX_ARTIFACT_POWER> points;
     std::array<unsigned, MAX_ARTIFACT_RELIC> relics;
     unsigned n_points, n_purchased_points;
-    int artifact_;
+    int artifact_; // Hardcoded option to forcibly enable/disable artifact
+    slot_e slot; // Artifact slot, SLOT_NONE if not available
     const spell_data_t* artificial_stamina;
     const spell_data_t* artificial_damage;
 
     artifact_data_t() :
-      n_points( 0 ), n_purchased_points( 0 ), artifact_( -1 ),
+      n_points( 0 ), n_purchased_points( 0 ), artifact_( -1 ), slot( SLOT_INVALID ),
       artificial_stamina( spell_data_t::not_found() ),
       artificial_damage( spell_data_t::not_found() )
     {

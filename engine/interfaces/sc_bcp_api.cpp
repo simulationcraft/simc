@@ -220,17 +220,24 @@ void parse_artifact( item_t& item, const rapidjson::Value& artifact )
     // Internal trait index (we order by id), might differ from blizzard's ordering
     auto trait_index = std::distance( powers.begin(), it );
     item.player -> artifact.points[ trait_index ].first = rank;
-    item.player -> artifact.n_points += rank;
-    item.player -> artifact.n_purchased_points += rank;
+    // The initial trait may also be included, if it is the only trait available. In that case, we
+    // should not increase the number of points purchased, so that we wont inflate the artificial
+    // damage/stamina passives.
+    if ( ( *it ) -> power_type != ARTIFACT_TRAIT_INITIAL )
+    {
+      item.player -> artifact.n_points += rank;
+      item.player -> artifact.n_purchased_points += rank;
+    }
   }
 
-  // Blizzard API does not list the first talent you get so implictly add it if you have any other
-  // traits.
   auto initial_trait_it = range::find_if( powers, []( const artifact_power_data_t* p ) {
     return p -> power_type == ARTIFACT_TRAIT_INITIAL;
   } );
 
-  // Note, the first point is never "purchased"
+  // Blizzard will conditionally either include (if its the only one) or not include (if you have
+  // purchased other traits) the initial trait for the artifact, for some unknown reason.  Thus, we
+  // need to forcibly enable the initial trait in cases where the player has purchased any (other)
+  // artifact traits.
   if ( initial_trait_it != powers.end() && item.player -> artifact.n_purchased_points > 0 )
   {
     auto trait_index = std::distance( powers.begin(), initial_trait_it );

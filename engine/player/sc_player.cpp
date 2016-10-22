@@ -1132,8 +1132,15 @@ bool player_t::init_items()
     }
   }
 
-  // Once item data is initialized, initialize the parent - child relationships of each item
-  range::for_each( items, [ this ]( item_t& i ) { i.parent_slot = parent_item_slot( i ); } );
+  // Once item data is initialized, initialize the parent - child relationships of each item, and
+  // figure out primary artifact slot if we find one equipped.
+  range::for_each( items, [ this ]( item_t& i ) {
+    i.parent_slot = parent_item_slot( i );
+    if ( i.parsed.data.id_artifact > 0 && i.parent_slot == SLOT_INVALID )
+    {
+      artifact.slot = i.slot;
+    }
+  } );
 
   // Slot initialization order vector. Needed to ensure parents of children get initialized first
   std::vector<slot_e> init_slots;
@@ -11308,17 +11315,7 @@ bool player_t::artifact_enabled() const
   }
   else
   {
-    if ( ! artifact_str.empty() )
-    {
-      return true;
-    }
-    // TODO: Additional sanity check against the spec's artifact id
-    else if ( items.size() > SLOT_MAIN_HAND && items[ SLOT_MAIN_HAND ].parsed.data.id_artifact > 0 )
-    {
-      return true;
-    }
-
-    return false;
+    return artifact.slot != SLOT_INVALID;
   }
 }
 
