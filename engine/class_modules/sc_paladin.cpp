@@ -3027,6 +3027,11 @@ struct crusader_strike_t : public holy_power_generator_t
     {
       cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
     }
+    const spell_data_t* crusader_strike_2 = p -> find_specialization_spell( 231667 );
+    if ( crusader_strike_2 )
+    {
+      cooldown -> charges += crusader_strike_2 -> effectN( 1 ).base_value();
+    }
 
     background = ( p -> talents.zeal -> ok() );
   }
@@ -3508,7 +3513,7 @@ struct judgment_aoe_t : public paladin_melee_attack_t
 
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
-      aoe = 1 + p -> passives.retribution_paladin -> effectN( 3 ).base_value();
+      aoe = 1 + p -> spec.judgment_2 -> effectN( 1 ).base_value();
 
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
       base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
