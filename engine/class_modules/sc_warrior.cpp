@@ -282,7 +282,6 @@ public:
     const spell_data_t* ignore_pain;
     const spell_data_t* intercept;
     const spell_data_t* last_stand;
-    const spell_data_t* meat_cleaver;
     const spell_data_t* mortal_strike;
     const spell_data_t* piercing_howl;
     const spell_data_t* protection; // Weird spec passive that increases damage of bladestorm/execute.
@@ -290,7 +289,6 @@ public:
     const spell_data_t* rampage;
     const spell_data_t* revenge;
     const spell_data_t* riposte;
-    const spell_data_t* seasoned_soldier;
     const spell_data_t* shield_block;
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
@@ -1318,7 +1316,7 @@ struct bloodthirst_t: public warrior_attack_t
     bloodthirst_heal( nullptr ),
     fresh_meat_crit_chance( p -> talents.fresh_meat -> effectN( 1 ).percent() ),
     rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
-    aoe_targets( p -> spec.meat_cleaver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
+    aoe_targets( p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
   {
     parse_options( options_str );
 
@@ -1329,7 +1327,7 @@ struct bloodthirst_t: public warrior_attack_t
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
-    base_aoe_multiplier = 0.5; // Not in spelldata.
+    base_aoe_multiplier = p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 3 ).percent();
   }
 
   int n_targets() const override
@@ -2848,11 +2846,11 @@ struct rampage_attack_t: public warrior_attack_t
   int aoe_targets;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name ):
     warrior_attack_t( name, p, rampage ),
-    aoe_targets( p -> spec.meat_cleaver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
+    aoe_targets( p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
   {
     dual = true;
     weapon_multiplier *= 1.0 + p -> artifact.unstoppable.percent();
-    base_aoe_multiplier = 0.5; // Not in spelldata.
+    base_aoe_multiplier = p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 3 ).percent();
   }
 
   int n_targets() const override
@@ -4335,7 +4333,6 @@ void warrior_t::init_spells()
   spec.ignore_pain              = find_specialization_spell( "Ignore Pain" );
   spec.intercept                = find_specialization_spell( "Intercept" );
   spec.last_stand               = find_specialization_spell( "Last Stand" );
-  spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver" );
   spec.mortal_strike            = find_specialization_spell( "Mortal Strike" );
   spec.piercing_howl            = find_specialization_spell( "Piercing Howl" );
   spec.protection               = find_specialization_spell( "Protection" );
@@ -4344,7 +4341,6 @@ void warrior_t::init_spells()
   spec.revenge                  = find_specialization_spell( "Revenge" );
   spec.revenge_trigger          = find_specialization_spell( "Revenge Trigger" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
-  spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
   spec.shield_block             = find_specialization_spell( "Shield Block" );
   spec.shield_slam              = find_specialization_spell( "Shield Slam" );
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
@@ -5299,7 +5295,7 @@ void warrior_t::create_buffs()
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
-  buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() );
+  buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.whirlwind -> effectN( 1 ).trigger() );
 
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", find_spell( 206333) )
     .default_value( find_spell( 206333) -> effectN( 1 ).percent() + sets.set( WARRIOR_FURY, T19, B2 ) -> effectN( 1 ).percent() )
