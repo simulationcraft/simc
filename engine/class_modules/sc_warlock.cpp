@@ -2736,11 +2736,11 @@ struct unstable_affliction_t: public warlock_spell_t
     affected_by_contagion = false;
 
     // we're going to cap echos initialization to 3
-    int i = echosLevel + 1;
+    int next_echo = echosLevel + 1;
     if ( echosLevel < 3 )
     {
       for ( int i = 0; i < MAX_UAS; i++ )
-        this->ua_dots[i]->echos = new unstable_affliction_t( p, i );
+        this->ua_dots[i]->echos = new unstable_affliction_t( p, next_echo );
     }
 
     if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
@@ -2788,7 +2788,7 @@ struct unstable_affliction_t: public warlock_spell_t
     if ( result_is_hit( s -> result ) )
     {
       // fun times! Now we get to figure out which one to replace.
-      unstable_affliction_dot_t* ua_dot;
+      unstable_affliction_dot_t* ua_dot = nullptr;
       timespan_t min_duration = timespan_t::from_seconds( 100 );
       for ( int i = 0; i < MAX_UAS; i++ )
       {
@@ -2808,7 +2808,8 @@ struct unstable_affliction_t: public warlock_spell_t
       }
 
       // "replace" it.
-      residual_action::trigger( ua_dot, s -> target, s -> result_amount );
+      if ( ua_dot )
+        residual_action::trigger( ua_dot, s -> target, s -> result_amount );
     }
   }
 
