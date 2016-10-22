@@ -5167,6 +5167,7 @@ void paladin_t::init_spells()
     spec.judgment_2 = find_specialization_spell( 231661 );
     spec.judgment_3 = find_specialization_spell( 231663 );
     default:
+    break;
   }
 
   // Passives
