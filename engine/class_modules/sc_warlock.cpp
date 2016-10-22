@@ -2696,8 +2696,17 @@ struct unstable_affliction_t: public warlock_spell_t
     warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
     ua_dot( new unstable_affliction_dot_t( p ) ), echosLevel( echos )
   {
-    spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
-    base_multiplier *= dot_duration / base_tick_time;
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      const spell_data_t* ptr_spell = p -> find_spell( 233490 );
+      spell_power_mod.direct = ptr_spell -> effectN( 1 ).sp_coeff();
+      base_multiplier *= ptr_spell -> duration() / ptr_spell -> effectN( 1 ).period();
+    }
+    else
+    {
+      spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
+      base_multiplier *= dot_duration / base_tick_time;
+    }
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
     affected_by_contagion = false;
 

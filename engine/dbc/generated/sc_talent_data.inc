@@ -1,6 +1,6 @@
 #define TALENT_SIZE (610)
 
-// 610 talents, wow build 22810
+// 610 talents, wow build 22882
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -74,7 +74,7 @@ static struct talent_data_t __talent_data[] = {
   { "Echo of the Elements"              , 19273, 0x00, 0x0040,   0,   2,   3,  108283,       0,  0 },
   { "Lightning Surge Totem"             , 19275, 0x00, 0x0040,   0,   0,   2,  192058,  216965,  0 },
   { "Siphon Life"                       , 19279, 0x00, 0x0100,   0,   0,   3,   63106,       0,  0 },
-  { "Demon Skin"                        , 19280, 0x00, 0x0100,   0,   0,   2,  219272,       0,  0 },
+  { "Demonic Circle"                    , 19280, 0x00, 0x0100,   0,   0,   2,   48018,       0,  0 },
   { "Phantom Singularity"               , 19281, 0x00, 0x0100,   0,   1,   6,  205179,       0,  0 },
   { "Renewal"                           , 19283, 0x00, 0x0400,   0,   0,   1,  108238,       0,  0 },
   { "Soul Effigy"                       , 19284, 0x00, 0x0100,   0,   0,   6,  205178,       0,  0 },
@@ -259,7 +259,7 @@ static struct talent_data_t __talent_data[] = {
   { "Contagion"                         , 22044, 0x00, 0x0100, 265,   0,   1,  196105,       0,  0 },
   { "Impending Doom"                    , 22045, 0x00, 0x0100, 266,   0,   1,  196270,       0,  0 },
   { "Soul Harvest"                      , 22046, 0x00, 0x0100,   0,   2,   3,  196098,       0,  0 },
-  { "Demonic Circle"                    , 22047, 0x00, 0x0100,   0,   0,   4,   48018,       0,  0 },
+  { "Demon Skin"                        , 22047, 0x00, 0x0100,   0,   0,   4,  219272,       0,  0 },
   { "Roaring Blaze"                     , 22048, 0x00, 0x0100, 267,   1,   0,  205184,       0,  0 },
   { "Shadowburn"                        , 22052, 0x00, 0x0100, 267,   2,   0,   17877,       0,  0 },
   { "Mana Tap"                          , 22088, 0x00, 0x0100,   0,   2,   1,  196104,       0,  0 },
@@ -341,7 +341,7 @@ static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Repentance"                        , 22180, 0x00, 0x0002,   0,   1,   2,   20066,       0,  0 },
   { "Devotion Aura"                     , 22181, 0x00, 0x0002,  65,   0,   3,  183425,       0,  0 },
-  { "Blade of Wrath"                    , 22182, 0x00, 0x0002,  70,   1,   3,  202270,  184575,  0 },
+  { "Blade of Wrath"                    , 22182, 0x00, 0x0002,  70,   1,   3,  231832,       0,  0 },
   { "Divine Hammer"                     , 22183, 0x00, 0x0002,  70,   2,   3,  198034,  184575,  0 },
   { "Eye for an Eye"                    , 22185, 0x00, 0x0002,  70,   1,   4,  205191,       0,  0 },
   { "Word of Glory"                     , 22186, 0x00, 0x0002,  70,   2,   4,  210191,       0,  0 },
@@ -349,7 +349,7 @@ static struct talent_data_t __talent_data[] = {
   { "Sanctified Wrath"                  , 22190, 0x00, 0x0002,  65,   1,   5,   53376,       0,  0 },
   { "Mistwalk"                          , 22213, 0x00, 0x0200, 270,   2,   0,  197945,       0,  0 },
   { "Summon Jade Serpent Statue"        , 22214, 0x00, 0x0200, 270,   2,   5,  115313,       0,  0 },
-  { "Crusade"                           , 22215, 0x00, 0x0002,  70,   1,   6,  224668,   31884,  0 },
+  { "Crusade"                           , 22215, 0x00, 0x0002,  70,   1,   6,  231895,   31884,  0 },
   { "Invoke Chi-Ji, the Red Crane"      , 22217, 0x00, 0x0200, 270,   1,   5,  198664,       0,  0 },
   { "Mana Tea"                          , 22218, 0x00, 0x0200, 270,   0,   6,  197908,       0,  0 },
   { "Song of Chi-Ji"                    , 22219, 0x00, 0x0200, 270,   1,   3,  198898,  175697,  0 },
@@ -397,12 +397,12 @@ static struct talent_data_t __talent_data[] = {
   { "Angelic Feather"                   , 22315, 0x00, 0x0010,   0,   0,   1,  121536,       0,  0 },
   { "Body and Soul"                     , 22316, 0x00, 0x0010,   0,   1,   1,   64129,       0,  0 },
   { "Reaper of Souls"                   , 22317, 0x00, 0x0010, 258,   1,   3,  199853,       0,  0 },
-  { "Dash"                              , 22318, 0x00, 0x0004,   0,   2,   2,  199921,       0,  0 },
+  { "Trailblazer"                       , 22318, 0x00, 0x0004,   0,   2,   2,  199921,       0,  0 },
   { "The Fires of Justice"              , 22319, 0x00, 0x0002,  70,   0,   1,  203316,       0,  0 },
   { "Ancestral Guidance"                , 22322, 0x00, 0x0040, 264,   1,   3,  108281,       0,  0 },
   { "Deluge"                            , 22323, 0x00, 0x0040, 264,   2,   3,  200076,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
-  { "Felblade"                          , 22324, 0x00, 0x0800,   0,   0,   2,  213241,       0,  0 },
+  { "Felblade"                          , 22324, 0x00, 0x0800,   0,   0,   2,  232893,       0,  0 },
   { "Mania"                             , 22325, 0x00, 0x0010, 258,   0,   1,  193173,       0,  0 },
   { "Body and Mind"                     , 22326, 0x00, 0x0010, 257,   1,   1,  214121,       0,  0 },
   { "Binding Heal"                      , 22327, 0x00, 0x0010, 257,   1,   4,   32546,       0,  0 },

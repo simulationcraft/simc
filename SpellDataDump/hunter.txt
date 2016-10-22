@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.1.0 PTR (wow build 22819, git build 0b33369)
+SimulationCraft 703-04 for World of Warcraft 7.1.0 Live (wow build 22882, git build 64f50fb)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -617,7 +617,7 @@ Description      : Commands your pet to intimidate the target, stunning it for $
 Tooltip          : Stuns the target for $24394d.
 
 Name             : Boar's Speed (id=19596) [Spell Family (9), Passive] 
-Class            : Ferocity Tenacity Cunning Cunning Hunter Pet
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -768,7 +768,7 @@ Description      : Increases attack power by $s1. Lasts $d.
 Tooltip          : Attack power increased by $s1.
 
 Name             : Combat Experience (id=20782) [Spell Family (9), Passive] 
-Class            : Ferocity Ferocity Tenacity Tenacity Cunning Cunning Hunter Pet
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Spell Level      : 1
 Affecting spells : The Apex Predator's Claw (212329)
@@ -1116,7 +1116,7 @@ Description      : Your pet charges an enemy, immobilizing the target and adds m
 Tooltip          : Immobilized.
 
 Name             : Spiked Collar (id=53184) [Spell Family (9), Passive] 
-Class            : Ferocity Ferocity Tenacity Cunning Hunter, Death Knight Pet
+Class            : Ferocity Tenacity Cunning Hunter, Death Knight Pet
 School           : Physical
 Range            : 5 yards
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1195,7 +1195,7 @@ Effects          :
 Description      : You master the art of beast training, teaching you the ability to tame Exotic pets.
 
 Name             : Last Stand (Tenacity Ability) (id=53478) [Spell Family (9)] 
-Class            : Tenacity Tenacity Hunter Pet
+Class            : Tenacity Hunter Pet
 School           : Physical
 Duration         : 20 seconds
 Cooldown         : 360 seconds
@@ -1211,7 +1211,7 @@ Effects          :
 Description      : Your pet temporarily gains $s1% of its maximum health for $d.  After the effect expires, the health is lost.
 
 Name             : Roar of Sacrifice (Cunning Ability) (id=53480) [Spell Family (9)] 
-Class            : Cunning Cunning Hunter Pet
+Class            : Cunning Hunter Pet
 School           : Nature
 Range            : 40 yards
 Duration         : 12 seconds
@@ -1234,7 +1234,7 @@ Description      : Protects a friendly target from critical strikes, making atta
 Tooltip          : Immune to critical strikes, but damage transferred to the Hunter's pet.
 
 Name             : Blood of the Rhino (id=53482) [Passive] 
-Class            : Ferocity Tenacity Tenacity Cunning Hunter Pet
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1253,7 +1253,7 @@ Effects          :
 Description      : Increases all healing effects on your pet by $s1%, reduces your pet's physical damage taken by $s2%, and reduces your pet's chance to be critically hit by melee attacks by $s3%.
 
 Name             : Bullheaded (Cunning Ability) (id=53490) [Spell Family (9)] 
-Class            : Cunning Cunning Hunter Pet
+Class            : Cunning Hunter Pet
 School           : Physical
 GCD              : 1.5 seconds
 Duration         : 0.1 seconds
@@ -1272,7 +1272,7 @@ Effects          :
 Description      : Removes all movement impairing effects and all effects which cause loss of control of your pet, and reduces damage done to your pet by $63896s1% for $63896d.
 
 Name             : Cornered (id=53497) [Spell Family (9), Passive] 
-Class            : Ferocity Tenacity Cunning Cunning Hunter Pet
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Proc Chance      : 101%
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1348,7 +1348,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 2 | Target: Enemy(6)
 
 Name             : Heart of the Phoenix (Ferocity Ability) (id=55709) [Spell Family (9)] 
-Class            : Ferocity Ferocity Hunter Pet
+Class            : Ferocity Hunter Pet
 School           : Nature
 Cooldown         : 480 seconds
 Category         : 1156
@@ -1528,7 +1528,7 @@ Description      : The Hunter takes on the aspect of a chameleon, becoming untra
 Tooltip          : Untrackable.
 
 Name             : Dash (Ferocity, Cunning Ability) (id=61684) [Spell Family (9)] 
-Class            : Ferocity Ferocity Cunning Cunning Hunter Pet
+Class            : Ferocity Cunning Hunter Pet
 School           : Physical
 Spell Level      : 10
 Duration         : 16 seconds
@@ -1547,7 +1547,7 @@ Description      : Increases your pet's movement speed by $s1% for $d.
 Tooltip          : Increases movement speed by $s1%.
 
 Name             : Charge (Tenacity Ability) (id=61685) [Spell Family (9)] 
-Class            : Tenacity Tenacity Hunter Pet
+Class            : Tenacity Hunter Pet
 School           : Physical
 Range            : 8 - 25 yards
 GCD              : 1.5 seconds
@@ -1574,7 +1574,7 @@ Description      : Your pet charges an enemy, immobilizing the target for $53148
 Tooltip          : Attack power increased by $61685s2%.
 
 Name             : Great Stamina (id=61688) [Passive] 
-Class            : Ferocity Tenacity Tenacity Cunning Hunter Pet
+Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1645,7 +1645,7 @@ Description      : Reduces all damage taken by $s1% for $d.
 Tooltip          : All damage taken reduced by $s1%.
 
 Name             : Thunderstomp (Tenacity Ability) (id=63900) [Spell Family (9)] 
-Class            : Tenacity Tenacity Hunter Pet
+Class            : Tenacity Hunter Pet
 School           : Nature
 Resource         : 20 Focus
 Spell Level      : 20
