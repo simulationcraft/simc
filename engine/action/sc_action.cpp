@@ -2878,12 +2878,21 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         action_t* spell;
         action_t& original_spell;
-        spell_targets_t( action_t& a, const std::string& spell_name ): expr_t( "spell_targets" ), original_spell( a )
+        const std::string name_of_spell;
+        bool second_attempt;
+        spell_targets_t( action_t& a, const std::string spell_name ): expr_t( "spell_targets" ), original_spell( a ),
+          name_of_spell( spell_name ), second_attempt( false )
         {
           spell = a.player -> find_action( spell_name );
-          if ( ! spell )
-            a.sim -> errorf( "Warning: %s used invalid spell_targets action \"%s\"", a.player -> name(), spell_name.c_str() );
+          if ( !spell )
+          {
+            for ( size_t i = 0, size = a.player -> pet_list.size(); i < size; i++ )
+            {
+              spell = a.player -> pet_list[i] -> find_action( spell_name );
+            }
+          }
         }
+        
         double evaluate() override
         {
           if ( spell )
@@ -2892,6 +2901,30 @@ expr_t* action_t::create_expression( const std::string& name_str )
             spell -> target_cache.is_valid = false;
             spell -> target_list();
             return static_cast<double>( spell -> target_list().size() );
+          }
+          else if ( !second_attempt )
+          { // There are cases where spell_targets may be looking for a spell that hasn't had an action created yet.
+            // This allows it to check one more time during the sims runtime, just in case the action has been created. 
+            spell = original_spell.player -> find_action( name_of_spell );
+            if ( !spell )
+            {
+              for ( size_t i = 0, size = original_spell.player -> pet_list.size(); i < size; i++ )
+              {
+                spell = original_spell.player -> pet_list[i] -> find_action( name_of_spell );
+              }
+            }
+            if ( !spell )
+            {
+              original_spell.sim -> errorf( "Warning: %s used invalid spell_targets action \"%s\"", original_spell.player -> name(), name_of_spell.c_str() );
+            }
+            else
+            {
+              spell -> target = original_spell.target;
+              spell -> target_cache.is_valid = false;
+              spell -> target_list();
+              return static_cast<double>( spell -> target_list().size() );
+            }
+            second_attempt = true;
           }
           return 0;
         }

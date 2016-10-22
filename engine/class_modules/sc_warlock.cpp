@@ -4183,6 +4183,7 @@ struct summon_infernal_t : public warlock_spell_t
       infernal_duration = p -> find_spell( 111685 ) -> duration() + timespan_t::from_millis( 1 );
       infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
       infernal_awakening -> stats = stats;
+      radius = infernal_awakening -> radius;
     }
   }
 
@@ -6010,8 +6011,8 @@ void warlock_t::apl_affliction()
   add_action( "Agony", "if=remains<=tick_time+gcd" );
   add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
   action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
-  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
-  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+  add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_doomguard<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
+  add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_doomguard>=3" );
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
