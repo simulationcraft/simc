@@ -322,6 +322,11 @@ public:
     // Affliction only
     const spell_data_t* nightfall;
     const spell_data_t* unstable_affliction;
+    const spell_data_t* unstable_affliction_2;
+    const spell_data_t* agony;
+    const spell_data_t* agony_2;
+    const spell_data_t* shadow_bite;
+    const spell_data_t* shadow_bite_2;
 
     // Demonology only
     const spell_data_t* doom;
@@ -330,6 +335,12 @@ public:
 
     // Destruction only
     const spell_data_t* immolate;
+    const spell_data_t* conflagrate;
+    const spell_data_t* conflagrate_2;
+    const spell_data_t* unending_resolve;
+    const spell_data_t* unending_resolve_2;
+    const spell_data_t* firebolt;
+    const spell_data_t* firebolt_2;
   } spec;
 
   // Buffs
@@ -913,7 +924,7 @@ struct firebolt_t: public warlock_pet_spell_t
     warlock_td_t* td = this -> td( target );
 
     double immolate = 0;
-    double multiplier = p() -> o() -> find_spell( 231795 ) -> effectN( 1 ).percent();
+    double multiplier = p() -> o() -> spec.firebolt_2 -> effectN( 1 ).percent();
 
     if( td -> dots_immolate -> is_ticking() )
       immolate += multiplier;
@@ -1009,7 +1020,7 @@ struct shadow_bite_t: public warlock_pet_spell_t
     warlock_pet_spell_t( p, "Shadow Bite" ),
     shadow_bite_mult( 0.0 )
   { 
-    shadow_bite_mult = p -> o() -> find_specialization_spell( 231799 ) -> effectN( 1 ).percent();
+    shadow_bite_mult = p -> o() -> spec.shadow_bite_2 -> effectN( 1 ).percent();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -3139,7 +3150,7 @@ struct demonic_empowerment_t: public warlock_spell_t
     {
       pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> ( pet );
 
-      if( lock_pet != NULL )
+      if( lock_pet != nullptr )
       {
         if( !lock_pet -> is_sleeping() )
         {
@@ -3413,7 +3424,7 @@ struct conflagrate_t: public warlock_spell_t
     energize_type = ENERGIZE_ON_CAST;
     base_duration = p -> find_spell( 117828 ) -> duration();
 
-    cooldown -> charges += p -> find_spell( 231793 ) -> effectN( 1 ).base_value();
+    cooldown -> charges += p -> spec.conflagrate_2 -> effectN( 1 ).base_value();
 
     cooldown -> charges += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 1 ).base_value();
     cooldown -> duration += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 2 ).time_value();
@@ -5580,12 +5591,23 @@ void warlock_t::init_spells()
   spec.fel_armor   = find_spell( 104938 );
   spec.nethermancy = find_spell( 86091 );
 
-  // Spezialization Spells
+  // Specialization Spells
   spec.immolate               = find_specialization_spell( "Immolate" );
   spec.nightfall              = find_specialization_spell( "Nightfall" );
   spec.demonic_empowerment    = find_specialization_spell( "Demonic Empowerment" );
   spec.wild_imps              = find_specialization_spell( "Wild Imps" );
   spec.unstable_affliction    = find_specialization_spell( "Unstable Affliction" );
+  spec.unstable_affliction_2  = find_specialization_spell( 231791 );
+  spec.agony                  = find_specialization_spell( "Agony" );
+  spec.agony_2                = find_specialization_spell( 231792 );
+  spec.shadow_bite            = find_specialization_spell( "Shadow Bite" );
+  spec.shadow_bite_2          = find_specialization_spell( 231799 );
+  spec.conflagrate            = find_specialization_spell( "Conflagrate" );
+  spec.conflagrate_2          = find_specialization_spell( 231793 );
+  spec.unending_resolve       = find_specialization_spell( "Unending Resolve" );
+  spec.unending_resolve_2     = find_specialization_spell( 231794 );
+  spec.firebolt               = find_specialization_spell( "Firebolt" );
+  spec.firebolt_2             = find_specialization_spell( 231795 );
 
   // Removed terniary for compat.
   spec.doom                   = find_spell( 603 );
