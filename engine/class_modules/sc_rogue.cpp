@@ -329,6 +329,8 @@ struct rogue_t : public player_t
     const spell_data_t* seal_fate;
     const spell_data_t* venomous_wounds;
     const spell_data_t* vendetta;
+    const spell_data_t* garrote;
+    const spell_data_t* garrote_2;
 
     // Outlaw
     const spell_data_t* blade_flurry;
@@ -346,6 +348,10 @@ struct rogue_t : public player_t
     const spell_data_t* shadow_dance;
     const spell_data_t* shadow_techniques;
     const spell_data_t* symbols_of_death;
+    const spell_data_t* eviscerate;
+    const spell_data_t* eviscerate_2;
+    const spell_data_t* shadowstrike;
+    const spell_data_t* shadowstrike_2;
   } spec;
 
   // Spell Data
@@ -2670,11 +2676,11 @@ struct envenom_t : public rogue_attack_t
 struct eviscerate_t : public rogue_attack_t
 {
   eviscerate_t( rogue_t* p, const std::string& options_str ):
-    rogue_attack_t( "eviscerate", p, p -> find_specialization_spell( "Eviscerate" ), options_str )
+    rogue_attack_t( "eviscerate", p, p -> spec.eviscerate, options_str )
   {
     weapon = &( player -> main_hand_weapon );
     base_crit += p -> artifact.gutripper.percent();
-    base_multiplier *= 1.0 + p -> find_spell( 231716 ) -> effectN( 1 ).base_value(); //FIXME Use find_specialization_spell when it'll be patched.
+    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -2800,7 +2806,7 @@ struct feint_t : public rogue_attack_t
 struct garrote_t : public rogue_attack_t
 {
   garrote_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "garrote", p, p -> find_specialization_spell( "Garrote" ), options_str )
+    rogue_attack_t( "garrote", p, p -> spec.garrote, options_str )
   {
     may_crit          = false;
   }
@@ -4085,14 +4091,14 @@ struct shadowstrike_t : public rogue_attack_t
   };
 
   shadowstrike_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadowstrike", p, p -> find_specialization_spell( "Shadowstrike" ), options_str ),
+    rogue_attack_t( "shadowstrike", p, p -> spec.shadowstrike, options_str ),
     shadow_satyrs_walk( nullptr )
   {
     requires_weapon = WEAPON_DAGGER;
     requires_stealth = true;
     energize_amount += p -> talent.premeditation -> effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p -> artifact.precision_strike.percent();
-    range += p -> find_spell( 231718 ) -> effectN( 1 ).base_value(); //FIXME Use find_specialization_spell when it'll be patched.
+    range += p -> spec.shadowstrike_2 -> effectN( 1 ).base_value();
 
     if ( p -> soul_rip )
     {
@@ -6945,6 +6951,8 @@ void rogue_t::init_spells()
   spec.seal_fate            = find_specialization_spell( "Seal Fate" );
   spec.venomous_wounds      = find_specialization_spell( "Venomous Wounds" );
   spec.vendetta             = find_specialization_spell( "Vendetta" );
+  spec.garrote              = find_specialization_spell( "Garrote" );
+  spec.garrote_2            = find_specialization_spell( 231719 );
 
   // Outlaw
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
@@ -6962,6 +6970,10 @@ void rogue_t::init_spells()
   spec.shadow_dance         = find_specialization_spell( "Shadow Dance" );
   spec.shadow_techniques    = find_specialization_spell( "Shadow Techniques" );
   spec.symbols_of_death     = find_specialization_spell( "Symbols of Death" );
+  spec.eviscerate           = find_specialization_spell( "Eviscerate" );
+  spec.eviscerate_2         = find_specialization_spell( 231716 );
+  spec.shadowstrike         = find_specialization_spell( "Shadowstrike" );
+  spec.shadowstrike_2       = find_specialization_spell( 231718 );
 
   // Masteries
   mastery.potent_poisons    = find_mastery_spell( ROGUE_ASSASSINATION );
