@@ -1861,7 +1861,7 @@ struct spirit_wolf_t : public base_wolf_t
       melee_attack_t::impact( state );
 
       shaman_t* o = p() -> o();
-      if ( ! maybe_ptr( o -> dbc.ptr ) || o -> spec.feral_spirit_2 -> ok() )
+      if ( o -> spec.feral_spirit_2 -> ok() )
       {
         o -> resource_gain( RESOURCE_MAELSTROM,
                             maelstrom -> effectN( 1 ).resource( RESOURCE_MAELSTROM ),
@@ -3911,7 +3911,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( ( ! maybe_ptr( p() -> dbc.ptr ) || p() -> spec.lava_burst_2 -> ok() ) &&
+    if ( p() -> spec.lava_burst_2 -> ok() &&
          td( target ) -> dot.flame_shock -> is_ticking() )
     {
       m = 1.0;
@@ -4097,7 +4097,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( ( ! maybe_ptr( p() -> dbc.ptr ) || p() -> spec.lava_burst_2 -> ok() ) &&
+    if ( p() -> spec.lava_burst_2 -> ok() &&
          td( target ) -> dot.flame_shock -> is_ticking() )
     {
       m = 1.0;

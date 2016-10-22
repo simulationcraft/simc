@@ -2669,15 +2669,12 @@ struct envenom_t : public rogue_attack_t
 
 struct eviscerate_t : public rogue_attack_t
 {
-  eviscerate_t( rogue_t* p, const std::string& options_str ) :
+  eviscerate_t( rogue_t* p, const std::string& options_str ):
     rogue_attack_t( "eviscerate", p, p -> find_specialization_spell( "Eviscerate" ), options_str )
   {
     weapon = &( player -> main_hand_weapon );
     base_crit += p -> artifact.gutripper.percent();
-    if ( maybe_ptr( p -> dbc.ptr ) ) //FIXME
-    {
-      base_multiplier *= 1.0 + p -> find_spell( 231716 ) -> effectN( 1 ).base_value(); //FIXME Use find_specialization_spell when it'll be patched.
-    }
+    base_multiplier *= 1.0 + p -> find_spell( 231716 ) -> effectN( 1 ).base_value(); //FIXME Use find_specialization_spell when it'll be patched.
   }
 
   double action_multiplier() const override
@@ -4095,10 +4092,7 @@ struct shadowstrike_t : public rogue_attack_t
     requires_stealth = true;
     energize_amount += p -> talent.premeditation -> effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p -> artifact.precision_strike.percent();
-    if ( maybe_ptr( p -> dbc.ptr ) ) //FIXME
-    {
-      range += p -> find_spell( 231718 ) -> effectN( 1 ).base_value(); //FIXME Use find_specialization_spell when it'll be patched.
-    }
+    range += p -> find_spell( 231718 ) -> effectN( 1 ).base_value(); //FIXME Use find_specialization_spell when it'll be patched.
 
     if ( p -> soul_rip )
     {
@@ -4810,7 +4804,7 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   // Rupture and Garrote APL lines using "exsanguinated"
   else if ( util::str_compare_ci( name_str, "exsanguinated" ) && (
             ( data().id() == 1943 || data().id() == 703 ) || 
-            ( maybe_ptr( p() -> dbc.ptr ) && ( data().id() == 231719 || data().id() == 199672 ) ) ) ) // FIXME Added 231719 (Garrote Rank 2) and 199672 (Rupture Hidden) to prevent error
+            ( data().id() == 231719 || data().id() == 199672 ) ) ) // FIXME Added 231719 (Garrote Rank 2) and 199672 (Rupture Hidden) to prevent error
   {
     return new exsanguinated_expr_t( this );
   }

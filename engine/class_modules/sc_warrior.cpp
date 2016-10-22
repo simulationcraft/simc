@@ -1216,14 +1216,7 @@ struct bladestorm_tick_t: public warrior_attack_t
     aoe = -1;
     if ( p -> specialization() == WARRIOR_ARMS )
     {
-      if ( !maybe_ptr( p -> dbc.ptr ) ) //FIXME
-      {
-        weapon_multiplier *= 1.0 + p -> spec.seasoned_soldier -> effectN( 2 ).percent();
-      }
-      else
-      {
-        weapon_multiplier *= 1.0 + p -> spell.arms_warrior -> effectN( 3 ).percent();
-      }
+      weapon_multiplier *= 1.0 + p -> spell.arms_warrior -> effectN( 3 ).percent();
     }
   }
 
@@ -5139,7 +5132,7 @@ struct enrage_t: public warrior_buff_t < buff_t >
   int health_gain;
   enrage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
-            .duration( ( maybe_ptr( p.dbc.ptr ) ? p.spec.enrage -> effectN( 1 ).trigger() -> duration() : p.spec.enrage -> effectN( 2 ).trigger() -> duration() ) + p.sets.set(WARRIOR_FURY, T19, B4 ) -> effectN( 1 ).time_value() )
+            .duration( p.spec.enrage -> effectN( 1 ).trigger() -> duration()+ p.sets.set(WARRIOR_FURY, T19, B4 ) -> effectN( 1 ).time_value() )
             .can_cancel( false )
             .add_invalidate( CACHE_ATTACK_SPEED )
             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) ), health_gain( 0 )
@@ -5277,14 +5270,7 @@ void warrior_t::create_buffs()
     .chance( artifact.dragon_scales.data().proc_chance() )
     .default_value( artifact.dragon_scales.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    buff.enrage = new buffs::enrage_t( *this, "enrage", spec.enrage -> effectN( 1 ).trigger() );
-  }
-  else
-  {
-    buff.enrage = new buffs::enrage_t( *this, "enrage", spec.enrage -> effectN( 2 ).trigger() );
-  }
+  buff.enrage = new buffs::enrage_t( *this, "enrage", spec.enrage -> effectN( 1 ).trigger() );
 
   buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy -> effectN( 1 ).trigger() )
     .add_invalidate( CACHE_HASTE )
@@ -5602,14 +5588,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   // Physical damage only.
   if ( specialization() == WARRIOR_ARMS && dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
-    if ( !maybe_ptr( dbc.ptr ) ) //FIXME
-    {
-      m *= 1.0 + spec.seasoned_soldier -> effectN( 1 ).percent();
-    }
-    else
-    {
-      m *= 1.0 + spell.arms_warrior -> effectN( 2 ).percent();
-    }
+    m *= 1.0 + spell.arms_warrior -> effectN( 2 ).percent();
   }
   // Arms no longer has enrage, so no need to check for it.
   else if ( buff.enrage -> check() )

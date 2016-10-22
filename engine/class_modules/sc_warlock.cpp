@@ -913,7 +913,7 @@ struct firebolt_t: public warlock_pet_spell_t
     warlock_td_t* td = this -> td( target );
 
     double immolate = 0;
-    double multiplier = !maybe_ptr( p() -> o() -> dbc.ptr ) ? data().effectN( 2 ).percent() : p() -> o() -> find_spell( 231795 ) -> effectN( 1 ).percent();
+    double multiplier = p() -> o() -> find_spell( 231795 ) -> effectN( 1 ).percent();
 
     if( td -> dots_immolate -> is_ticking() )
       immolate += multiplier;
@@ -2696,17 +2696,9 @@ struct unstable_affliction_t: public warlock_spell_t
     warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
     ua_dot( new unstable_affliction_dot_t( p ) ), echosLevel( echos )
   {
-    if ( maybe_ptr( p -> dbc.ptr ) )
-    {
-      const spell_data_t* ptr_spell = p -> find_spell( 233490 );
-      spell_power_mod.direct = ptr_spell -> effectN( 1 ).sp_coeff();
-      base_multiplier *= ptr_spell -> duration() / ptr_spell -> effectN( 1 ).period();
-    }
-    else
-    {
-      spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
-      base_multiplier *= dot_duration / base_tick_time;
-    }
+    const spell_data_t* ptr_spell = p -> find_spell( 233490 );
+    spell_power_mod.direct = ptr_spell -> effectN( 1 ).sp_coeff();
+    base_multiplier *= ptr_spell -> duration() / ptr_spell -> effectN( 1 ).period();
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
     affected_by_contagion = false;
 
@@ -3392,8 +3384,7 @@ struct conflagrate_t: public warlock_spell_t
     energize_type = ENERGIZE_ON_CAST;
     base_duration = p -> find_spell( 117828 ) -> duration();
 
-    if ( maybe_ptr( p -> dbc.ptr ) )
-      cooldown -> charges += p -> find_spell( 231793 ) -> effectN( 1 ).base_value();
+    cooldown -> charges += p -> find_spell( 231793 ) -> effectN( 1 ).base_value();
 
     cooldown -> charges += p -> sets.set( WARLOCK_DESTRUCTION, T19, B2 ) -> effectN( 1 ).base_value();
     cooldown -> duration += p -> sets.set( WARLOCK_DESTRUCTION, T19, B2 ) -> effectN( 2 ).time_value();

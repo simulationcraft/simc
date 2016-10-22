@@ -1789,7 +1789,7 @@ public:
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
     ab::trigger_gcd = timespan_t::from_seconds( 1.5 );
-    switch( player -> specialization() )
+    switch ( player -> specialization() )
     {
       case MONK_BREWMASTER:
       {
@@ -1802,10 +1802,7 @@ public:
         if ( ab::data().affected_by( player -> spec.stagger -> effectN( 15 ) ) )
           ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
         // Hasted Cooldown
-        if ( maybe_ptr( player -> dbc.ptr ) ) // FIX ME
-          ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 1 ) );
-        else
-          ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 2 ) );
+        ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 1 ) );
         break;
       }
       case MONK_MISTWEAVER:
@@ -1816,32 +1813,16 @@ public:
       }
       case MONK_WINDWALKER:
       {
-        // Reduce GCD from 1.5 sec to 1 sec
-        if ( maybe_ptr( player -> dbc.ptr ) )
-        {
-          if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ) ) )
-            ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
-        }
-        else
-        {
-          if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ) ) )
-            ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 6 ).time_value(); // Saved as -500 milliseconds
-        }
-        // Technically minimum GCD is 750ms but nothing brings the GCD below 1 sec
+
+        if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ) ) )
+          ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 5 ).time_value(); // Saved as -500 milliseconds
+      // Technically minimum GCD is 750ms but nothing brings the GCD below 1 sec
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) );
         // Cooldown reduction
-        if ( maybe_ptr( player -> dbc.ptr ) ) // FIX ME
-        {
-          if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
-            ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 1 ).percent(); // saved as -100
-        }
-        else
-        {
-          if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 2 ) ) )
-            ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 2 ).percent(); // saved as -100
-        }
+        if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
+          ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 1 ).percent(); // saved as -100
         break;
       }
       default: break;
@@ -2258,10 +2239,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( maybe_ptr( p() -> dbc.ptr ) ) // FIX ME
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
     }
 
     return am;
@@ -2285,12 +2263,8 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( maybe_ptr( p() -> dbc.ptr ) ) // FIX ME
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
     }
-
     return am;
   }
 };
@@ -2318,13 +2292,7 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     if ( p -> specialization() == MONK_WINDWALKER )
     {
-      if ( maybe_ptr( p -> dbc.ptr ) ) // FIX ME
-        energize_amount = p -> passives.aura_windwalker_monk -> effectN( 2 ).base_value();
-      else
-      {
-        energize_amount = p -> spec.tiger_palm -> effectN( 2 ).base_value();
-        energize_amount += p -> spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
-      }
+      energize_amount = p -> passives.aura_windwalker_monk -> effectN( 2 ).base_value();
     }
     else
       energize_type = ENERGIZE_NONE;
@@ -2354,12 +2322,8 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
     }
-
     if ( p() -> buff.blackout_combo -> up() )
       am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
 
@@ -3084,10 +3048,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      if ( maybe_ptr( p() -> dbc.ptr ) ) // FIX ME
-        pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 3 ).percent();
-      else
-        pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 3 ).percent();
     }
 
     return pm;
@@ -4198,8 +4159,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
 
     trigger_gcd = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
-    if ( maybe_ptr( p -> dbc.ptr ) ) // FIX ME
-      cooldown -> charges += p -> spec.storm_earth_and_fire_rank_two -> effectN( 1 ).base_value();
+    cooldown -> charges += p -> spec.storm_earth_and_fire_rank_two -> effectN( 1 ).base_value();
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -5133,11 +5093,9 @@ struct effuse_t: public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
-    if ( maybe_ptr( p() -> dbc.ptr ) ) //FIXME
-    {
       if ( p() -> specialization() == MONK_BREWMASTER || p() -> specialization() == MONK_WINDWALKER )
         am *= 1 + p() -> spec.effuse_rank_two -> effectN( 1 ).percent();
-      else 
+      else
       {
         if ( p() -> buff.thunder_focus_tea -> up() )
           am *= 1 + p() -> spec.thunder_focus_tea -> effectN( 2 ).percent(); // saved as 200
@@ -5145,34 +5103,6 @@ struct effuse_t: public monk_heal_t
         if ( p() -> artifact.coalescing_mists.rank() )
           am *= 1 + p() -> artifact.coalescing_mists.percent();
       }
-    }
-    else
-    {
-      switch( p() -> specialization() )
-      {
-        case MONK_MISTWEAVER:
-        {
-          if ( p() -> buff.thunder_focus_tea -> up() )
-            am *= 1 + p() -> spec.thunder_focus_tea -> effectN( 2 ).percent(); // saved as 200
-
-          if ( p() -> artifact.coalescing_mists.rank() )
-            am *= 1 + p() -> artifact.coalescing_mists.percent();
-          break;
-        }
-        // Apply healing adjustments for Brewmasters and Windwalkers
-        case MONK_BREWMASTER:
-        {
-          am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
-          break;
-        }
-        case MONK_WINDWALKER:
-        {
-          am *= 1 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
-          break;
-        }
-        default: break;
-      }
-    }
 
     return am;
   }
@@ -5848,14 +5778,7 @@ struct chi_wave_heal_tick_t: public monk_heal_t
         sef_mult += p() -> artifact.spiritual_focus.data().effectN( 3 ).percent();
       am *= 1.0 + sef_mult;
     }
-
-    if ( p() -> specialization() == MONK_BREWMASTER )
-    { 
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
-    }
+    am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
 
     return am;
   }
@@ -5885,13 +5808,9 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     double am = monk_spell_t::action_multiplier();
 
     if ( p() -> specialization() == MONK_BREWMASTER )
-    { 
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+    {
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
     }
-
     return am;
   }
 };
@@ -5976,11 +5895,8 @@ struct chi_burst_heal_t: public monk_heal_t
     }
 
     if ( p() -> specialization() == MONK_BREWMASTER )
-    { 
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+    {
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
     }
 
     return am;
@@ -6012,13 +5928,9 @@ struct chi_burst_damage_t: public monk_spell_t
     double am = monk_spell_t::action_multiplier();
 
     if ( p() -> specialization() == MONK_BREWMASTER )
-    { 
-      if ( maybe_ptr( p() -> dbc.ptr ) )
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
-      else
-        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+    {
+      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
     }
-
     return am;
   }
 };
@@ -6961,14 +6873,7 @@ void monk_t::init_base_stats()
       resources.base[RESOURCE_ENERGY] += sets.set(MONK_WINDWALKER, T18, B4) -> effectN( 2 ).base_value();
       resources.base[RESOURCE_MANA] = 0;
       resources.base[RESOURCE_CHI] = 4;
-      if ( maybe_ptr( dbc.ptr ) )
-      {
-        resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value();
-      }
-      else
-      {
-        resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 7 ).base_value();
-      }
+      resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 6 ).base_value();
       resources.base[RESOURCE_CHI] += talent.ascension -> effectN( 1 ).base_value();
       base_energy_regen_per_second = 10.0;
 

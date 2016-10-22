@@ -1814,7 +1814,7 @@ struct execution_sentence_t : public paladin_spell_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      if ( maybe_ptr( p() -> dbc.ptr ) ) judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
+      judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
@@ -2768,27 +2768,17 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil(),
                           bool u2h = true ):
-                          base_t( n, p, s ),
-                          use2hspec( u2h )
+    base_t( n, p, s ),
+    use2hspec( u2h )
   {
     may_crit = true;
     special = true;
     weapon = &( p -> main_hand_weapon );
 
     // Sword of Light boosts action_multiplier
-    if ( maybe_ptr( p -> dbc.ptr ) )
+    if ( use2hspec && ( p -> specialization() == PALADIN_RETRIBUTION ) && ( p -> main_hand_weapon.group() == WEAPON_2H ) )
     {
-      if ( use2hspec && ( p -> specialization() == PALADIN_RETRIBUTION ) && ( p -> main_hand_weapon.group() == WEAPON_2H ) )
-      {
-        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
-      }
-    }
-    else
-    {
-      if ( use2hspec && ( p -> passives.sword_of_light -> ok() ) && ( p -> main_hand_weapon.group() == WEAPON_2H ) )
-      {
-        base_multiplier *= 1.0 + p -> passives.sword_of_light_value -> effectN( 1 ).percent();
-      }
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
     }
   }
 
@@ -2879,7 +2869,7 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      if ( maybe_ptr( p() -> dbc.ptr ) ) judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
+      judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
@@ -2954,21 +2944,18 @@ struct melee_t : public paladin_melee_attack_t
 
     paladin_melee_attack_t::execute();
 
-    if ( maybe_ptr( player -> dbc.ptr ) )
+    if ( result_is_hit( execute_state -> result ) )
     {
-      if ( result_is_hit( execute_state -> result ) )
+      // Check for BoW procs
+      if ( p() -> talents.blade_of_wrath -> ok() )
       {
-        // Check for BoW procs
-        if ( p() -> talents.blade_of_wrath -> ok() )
-        {
-          bool procced = p() -> blade_of_wrath_rppm -> trigger();
+        bool procced = p() -> blade_of_wrath_rppm -> trigger();
 
-          if ( procced )
-          {
-            p() -> procs.blade_of_wrath -> occur();
-            p() -> buffs.blade_of_wrath -> trigger();
-            p() -> cooldowns.blade_of_justice -> reset( true );
-          }
+        if ( procced )
+        {
+          p() -> procs.blade_of_wrath -> occur();
+          p() -> buffs.blade_of_wrath -> trigger();
+          p() -> cooldowns.blade_of_justice -> reset( true );
         }
       }
     }
@@ -3024,10 +3011,7 @@ struct crusader_strike_t : public holy_power_generator_t
 
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
-      if ( maybe_ptr( p -> dbc.ptr ) )
-        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
-      else
-        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
     }
 
 
@@ -3116,37 +3100,10 @@ struct blade_of_justice_t : public holy_power_generator_t
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
 
-    if ( maybe_ptr( p -> dbc.ptr ) )
-    {
-      background = ( p -> talents.divine_hammer -> ok() );
-    }
-    else
-    {
-      background = ( p -> talents.blade_of_wrath -> ok() ) || ( p -> talents.divine_hammer -> ok() );
-    }
+    background = ( p -> talents.divine_hammer -> ok() );
 
     if ( p -> talents.virtues_blade -> ok() )
       crit_bonus_multiplier += p -> talents.virtues_blade -> effectN( 1 ).percent();
-  }
-};
-
-// Blade of Wrath =========================================================
-
-struct blade_of_wrath_t : public holy_power_generator_t
-{
-  blade_of_wrath_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "blade_of_wrath", p, p -> find_talent_spell( "Blade of Wrath" ), true )
-  {
-    parse_options( options_str );
-
-    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
-    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
-
-    base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
-
-    // TODO: this shouldn't be necessary next build
-    tick_may_crit = true;
   }
 };
 
@@ -3237,7 +3194,7 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      if ( maybe_ptr( p() -> dbc.ptr ) ) judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
+      judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
@@ -3626,10 +3583,7 @@ struct judgment_t : public paladin_melee_attack_t
     {
       base_costs[ RESOURCE_MANA ] = 0;
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
-      if ( maybe_ptr( p -> dbc.ptr ) )
-        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
-      else
-        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
       impact_action = new judgment_aoe_t( p, options_str );
     }
     else if ( p -> specialization() == PALADIN_HOLY )
@@ -3860,7 +3814,7 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     if ( td -> buffs.debuffs_judgment -> up() )
     {
       double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
-      if ( maybe_ptr( p() -> dbc.ptr ) ) judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
+      judgment_multiplier *= 1.0 + p() -> passives.judgment -> effectN( 1 ).percent();
       m *= judgment_multiplier;
     }
 
@@ -4175,12 +4129,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
   if ( name == "zeal"                      ) return new zeal_t                     ( this, options_str );
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
-  if ( name == "blade_of_wrath"            )
-  {
-    if ( maybe_ptr( dbc.ptr ) )
-      return player_t::create_action( name, options_str );
-    return new blade_of_wrath_t( this, options_str );
-  }
   if ( name == "divine_hammer"             ) return new divine_hammer_t            ( this, options_str );
   if ( name == "denounce"                  ) return new denounce_t                 ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
@@ -4494,14 +4442,7 @@ void paladin_t::create_buffs()
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) );
   buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
   buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath" ).spell( find_spell( 231843 ) );
-  }
-  else
-  {
-    buffs.blade_of_wrath               = nullptr;
-  }
+  buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath" ).spell( find_spell( 231843 ) );
   buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose" ).spell( find_spell( 223819 ) );
   buffs.divine_steed                   = buff_creator_t( this, "divine_steed", find_spell( "Divine Steed" ) )
                                           .duration( timespan_t::from_seconds( 3.0 ) ).chance( 1.0 ).default_value( 1.0 ); // TODO: change this to spellid 221883 & see if that automatically captures details
@@ -4824,8 +4765,6 @@ void paladin_t::generate_action_prio_list_ret()
   }
 
   def -> add_action( "call_action_list,name=VB,if=talent.virtues_blade.enabled" );
-  if ( ! maybe_ptr( dbc.ptr ) )
-    def -> add_action( "call_action_list,name=BoW,if=talent.blade_of_wrath.enabled" );
   def -> add_action( "call_action_list,name=DH,if=talent.divine_hammer.enabled" );
 
   action_priority_list_t* VB = get_action_priority_list( "VB" );
@@ -4859,40 +4798,7 @@ void paladin_t::generate_action_prio_list_ret()
   VB -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
   VB -> add_action( this, "Divine Storm", "if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)" );
   VB -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)" );
-
-  if ( ! maybe_ptr( dbc.ptr ) )
-  {
-    action_priority_list_t* BoW = get_action_priority_list( "BoW" );
-    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
-    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&buff.divine_purpose.react" );
-    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-    BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2&!equipped.whisper_of_the_nathrezim" );
-    BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim" );
-    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
-    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&buff.divine_purpose.react" );
-    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
-    BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&holy_power>=3&buff.divine_purpose.up&cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled&!equipped.whisper_of_the_nathrezim" );
-    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3&(cooldown.wake_of_ashes.remains<gcd*2&artifact.wake_of_ashes.enabled|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd)&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
-    BoW -> add_action( this, "Wake of Ashes", "if=holy_power=0|holy_power=1&cooldown.blade_of_wrath.remains>gcd|holy_power=2&(cooldown.zeal.charges_fractional<=0.67|cooldown.crusader_strike.charges_fractional<=0.67)" );
-    BoW -> add_talent( this, "Zeal", "if=charges=2&holy_power<=4" );
-    BoW -> add_action( this, "Crusader Strike", "if=charges=2&holy_power<=4&!talent.the_fires_of_justice.enabled" );
-    BoW -> add_talent( this, "Blade of Wrath", "if=holy_power<=2|(holy_power<=3&(cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34))" );
-    BoW -> add_action( this, "Crusader Strike", "if=charges=2&holy_power<=4&talent.the_fires_of_justice.enabled" );
-    BoW -> add_action( this, "Judgment" );
-    BoW -> add_talent( this, "Consecration" );
-    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react" );
-    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-    BoW -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
-    BoW -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim" );
-    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
-    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-    BoW -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
-    BoW -> add_talent( this, "Zeal", "if=holy_power<=4" );
-    BoW -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
-  }
-
-
+  
   DH -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
   DH -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&buff.divine_purpose.react" );
   DH -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
@@ -5129,14 +5035,7 @@ void paladin_t::init_rng()
 {
   player_t::init_rng();
 
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    blade_of_wrath_rppm = get_rppm( "blade_of_wrath", find_spell( 231832 ) );
-  }
-  else
-  {
-    blade_of_wrath_rppm = nullptr;
-  }
+  blade_of_wrath_rppm = get_rppm( "blade_of_wrath", find_spell( 231832 ) );
 }
 
 void paladin_t::init_spells()
@@ -5274,14 +5173,7 @@ void paladin_t::init_spells()
   // Ret Passives
   passives.sword_of_light         = find_specialization_spell( "Sword of Light" );
   passives.sword_of_light_value   = find_spell( passives.sword_of_light -> ok() ? 20113 : 0 );
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    passives.judgment             = find_spell( 231663 );
-  }
-  else
-  {
-    passives.judgment             = nullptr;
-  }
+  passives.judgment             = find_spell( 231663 );
 
   if ( specialization() == PALADIN_PROTECTION )
   {
@@ -5602,14 +5494,7 @@ double paladin_t::composite_spell_power( school_e school ) const
       sp = passives.guarded_by_the_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
-      if ( maybe_ptr( dbc.ptr ) )
-      {
-        sp = passives.retribution_paladin -> effectN( 3 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
-      }
-      else
-      {
-        sp = passives.sword_of_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
-      }
+      sp = passives.retribution_paladin -> effectN( 3 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
       break;
     default:
       break;
