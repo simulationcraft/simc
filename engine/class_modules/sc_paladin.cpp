@@ -4429,7 +4429,7 @@ void paladin_t::create_buffs()
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() )
-                                          .chance( passives.grand_crusader -> proc_chance() * ( 1.0 + talents.first_avenger -> effectN( 3 ).percent() ) );
+                                          .chance( passives.grand_crusader -> proc_chance() * ( 1.0 + talents.first_avenger -> effectN( 2 ).percent() ) );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.painful_truths                 = buff_creator_t( this, "painful_truths", find_spell( 209332 ) );
