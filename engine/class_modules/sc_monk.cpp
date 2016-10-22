@@ -3971,6 +3971,19 @@ struct provoke_t: public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
   }
 };
+
+// Spear Hand Strike ========================================================
+
+struct spear_hand_strike_t: public monk_melee_attack_t
+{
+  spear_hand_strike_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "spear_hand_strike", p, p -> spec.spear_hand_strike )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+};
 } // END melee_attacks NAMESPACE
 
 namespace spells {
@@ -6386,6 +6399,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "blackout_kick" ) return new             blackout_kick_t( this, options_str );
   if ( name == "spinning_crane_kick" ) return new       spinning_crane_kick_t( this, options_str );
   if ( name == "rising_sun_kick" ) return new           rising_sun_kick_t( this, options_str );
+  if ( name == "spear_hand_strike" ) return new         spear_hand_strike_t( this, options_str );
   if ( name == "vivify" ) return new                    vivify_t( *this, options_str );
   // Brewmaster
   if ( name == "blackout_strike" ) return new           blackout_strike_t( this, options_str );
@@ -8302,6 +8316,7 @@ void monk_t::apl_combat_windwalker()
   action_priority_list_t* st = get_action_priority_list("st");
 
   def -> add_action( "auto_attack" );
+  def -> add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
 
   if ( sim -> allow_potions )
   {
