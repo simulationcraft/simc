@@ -2624,7 +2624,7 @@ struct unstable_affliction_t: public warlock_spell_t
     unstable_affliction_t* echos;
 
     unstable_affliction_dot_t( warlock_t* p, int num ):
-      base_t( "unstable_affliction_" + itoa( num ), p, p -> find_spell( UA_DOT_IDS[num] ) ),
+      base_t( "unstable_affliction_" + std::to_string( num ), p, p -> find_spell( UA_DOT_IDS[num] ) ),
       echos( nullptr )
     {
       dual = true;
@@ -5189,7 +5189,7 @@ warlock( p )
   dots_corruption = target -> get_dot( "corruption", &p );
   for ( int i = 0; i < MAX_UAS; i++ )
   {
-    dots_unstable_affliction[i] = target -> get_dot( "unstable_affliction_" + itoa( i ) , &p );
+    dots_unstable_affliction[i] = target -> get_dot( "unstable_affliction_" + std::to_string( i ) , &p );
   }
   dots_agony = target -> get_dot( "agony", &p );
   dots_doom = target -> get_dot( "doom", &p );
