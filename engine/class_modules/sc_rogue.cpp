@@ -1308,7 +1308,7 @@ struct second_shuriken_t : public rogue_attack_t
     // Stealth Buff
     if ( p() -> buffs.stealth -> up() || p() -> buffs.shadow_dance -> up() || p() -> buffs.vanish -> up() )
     {
-      m *= 1.0 + 2.0; //FIXME Hotfix 09-24: Hardcoded to 200% until they add it in Spell Data like Shuriken Storm.
+      m *= 1.0 + 2.0; //FIXME Hotfix 09-24: Hardcoded to 200% until they add it in Spell Data like Shuriken Storm. Still the case as of 10/22 (7.1 22882).
     }
 
     return m;
@@ -1506,7 +1506,7 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
   // Doesn't take in account player crit chance, only "base crit chance"
   double composite_crit_chance() const override
   {
-    return 0.05; //FIXME Hardcoded to 5% until more data, seems to be the base crit.
+    return 0.05; // Hardcoded to 5% since it is base crit.
   }
 
   double composite_da_multiplier( const action_state_t* ) const override
@@ -2663,7 +2663,7 @@ struct envenom_t : public rogue_attack_t
           .target( execute_state -> target )
           .x( player -> x_position )
           .y( player -> y_position )
-          .pulse_time( timespan_t::from_seconds( 0.5 ) ) //FIXME Hotfix 09-24: Hardcoded to 500ms instead of 1s since duration halved but damage conserved, check spell data when it'll be live.
+          .pulse_time( timespan_t::from_seconds( 0.5 ) ) //FIXME Hotfix 09-24: Hardcoded to 500ms instead of 1s since duration halved but damage conserved, still the case as of 10/22 (7.1 22882).
           .duration( p() -> spell.bag_of_tricks_driver -> duration() )
           .start_time( sim -> current_time() )
           .action( p() -> poison_bomb ), true );
@@ -2680,7 +2680,7 @@ struct eviscerate_t : public rogue_attack_t
   {
     weapon = &( player -> main_hand_weapon );
     base_crit += p -> artifact.gutripper.percent();
-    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).base_value();
+    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).base_value() / 100.0; //FIXME As of 10/24 (7.1 22882), it is put as a Generic Modifier, so we must divide it by 100.
   }
 
   double action_multiplier() const override
@@ -3136,13 +3136,6 @@ struct kingsbane_strike_t : public rogue_attack_t
     background = true;
     weapon = w;
     base_multiplier *= 1.0 + p -> talent.master_poisoner -> effectN( 3 ).percent();
-    /* Should be auto detected, to confim FIXME
-    if ( maybe_ptr( p -> dbc.ptr ) ) // FIXME
-    {
-      energize_type     = ENERGIZE_ON_HIT;
-      energize_resource = RESOURCE_COMBO_POINT;
-      energize_amount   = data().effectN( 6 ).base_value();
-    } */
   }
 
   double action_multiplier() const override
@@ -4749,7 +4742,7 @@ struct weapon_swap_t : public action_t
     {
       return false;
     }
-    else if ( swap_type == SWAP_BOTH && 
+    else if ( swap_type == SWAP_BOTH &&
               rogue -> weapon_data[ WEAPON_MAIN_HAND ].current_weapon == swap_to_type &&
               rogue -> weapon_data[ WEAPON_OFF_HAND ].current_weapon == swap_to_type )
     {
@@ -4808,9 +4801,8 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
     return make_mem_fn_expr( "cp_gain", *this, &rogue_attack_t::generate_cp );
   }
   // Rupture and Garrote APL lines using "exsanguinated"
-  else if ( util::str_compare_ci( name_str, "exsanguinated" ) && (
-            ( data().id() == 1943 || data().id() == 703 ) || 
-            ( data().id() == 231719 || data().id() == 199672 ) ) ) // FIXME Added 231719 (Garrote Rank 2) and 199672 (Rupture Hidden) to prevent error
+  else if ( util::str_compare_ci( name_str, "exsanguinated" ) &&
+            ( data().id() == 1943 || data().id() == 703 ) )
   {
     return new exsanguinated_expr_t( this );
   }
