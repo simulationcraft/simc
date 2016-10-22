@@ -2762,7 +2762,7 @@ struct unstable_affliction_t: public warlock_spell_t
     p() -> procs.t18_2pc_affliction -> occur();
     p() -> buffs.compounding_horror -> expire();
 
-    if ( flag && rng().roll( p() -> legendary.power_cord_of_lethtendris_chance ) )
+    if ( !flag && rng().roll( p() -> legendary.power_cord_of_lethtendris_chance ) )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.power_cord_of_lethtendris );
     }
