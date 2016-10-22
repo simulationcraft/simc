@@ -1004,11 +1004,12 @@ struct felstorm_t: public warlock_pet_melee_attack_t
 
 struct shadow_bite_t: public warlock_pet_spell_t
 {
-  const spell_data_t* shadow_bite_2;
+  double shadow_bite_mult;
   shadow_bite_t( warlock_pet_t* p ):
-    warlock_pet_spell_t( p, "Shadow Bite" )
+    warlock_pet_spell_t( p, "Shadow Bite" ),
+    shadow_bite_mult( 0.0 )
   { 
-    shadow_bite_2 = p -> o() -> find_specialization_spell( 231799 );
+    shadow_bite_mult = p -> o() -> find_specialization_spell( 231799 ) -> effectN( 1 ).percent();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -1018,16 +1019,15 @@ struct shadow_bite_t: public warlock_pet_spell_t
     warlock_td_t* td = this -> td( target );
 
     double dots = 0;
-    double multiplier = shadow_bite_2 -> effectN( 1 ).percent();
 
     if ( td -> dots_unstable_affliction -> is_ticking() )
-      dots += multiplier;
+      dots += shadow_bite_mult;
 
     if ( td -> dots_agony -> is_ticking() )
-      dots += multiplier;
+      dots += shadow_bite_mult;
 
     if ( td -> dots_corruption -> is_ticking() )
-      dots += multiplier;
+      dots += shadow_bite_mult;
 
     m *= 1.0 + dots;
 
