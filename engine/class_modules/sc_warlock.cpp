@@ -19,9 +19,9 @@
 // Compounding Horror
 // Fatal Echoes
 //
-// Destruction/Demonology -
+// Destruction/Demonology - 
 // 20/20 Trait
-//
+// 
 // Better reporting for add buffs.
 //
 // Wild imps have a 14 sec duration on 104317, expire after 12 UNLESS implosion.
@@ -58,8 +58,6 @@ namespace pets {
   }
 }
 
-#define MAX_UAS 5
-
 struct warlock_td_t: public actor_target_data_t
 {
   dot_t* dots_agony;
@@ -70,7 +68,7 @@ struct warlock_td_t: public actor_target_data_t
   dot_t* dots_immolate;
   dot_t* dots_seed_of_corruption;
   dot_t* dots_shadowflame;
-  dot_t* dots_unstable_affliction[MAX_UAS];
+  dot_t* dots_unstable_affliction;
   dot_t* dots_siphon_life;
   dot_t* dots_phantom_singularity;
   dot_t* dots_channel_demonfire;
@@ -795,7 +793,7 @@ struct rift_shadow_bolt_t: public warlock_pet_spell_t
       return m;
     }
   };
-
+  
   rift_shadow_bolt_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "shadow_bolt", p, p -> find_spell( 196657 ) )
   {
@@ -866,7 +864,7 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
 {
   rift_chaos_bolt_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "chaos_bolt", p, p -> find_spell( 215279 ) )
-  {
+  { 
     base_execute_time = timespan_t::from_millis( 3000 );
     cooldown->duration = timespan_t::from_seconds( 5.5 );
   }
@@ -1019,11 +1017,8 @@ struct shadow_bite_t: public warlock_pet_spell_t
     double dots = 0;
     double multiplier = data().effectN( 2 ).percent();
 
-    for ( int i = 0; i < MAX_UAS; i++ )
-    {
-      if ( td -> dots_unstable_affliction[i] -> is_ticking() )
-        dots += multiplier;
-    }
+    if ( td -> dots_unstable_affliction -> is_ticking() )
+      dots += multiplier;
 
     if ( td -> dots_agony -> is_ticking() )
       dots += multiplier;
@@ -1233,17 +1228,7 @@ struct soul_effigy_t : public warlock_pet_spell_t
 
     warlock_td_t* td = this -> td( target );
 
-    bool has_ticking_ua = false;
-    for ( int i = 0; i < MAX_UAS; i++ )
-    {
-      if ( td -> dots_unstable_affliction[i] -> is_ticking() )
-      {
-        has_ticking_ua = true;
-        break;
-      }
-    }
-
-    if ( p() -> o() -> talents.contagion -> ok() && has_ticking_ua )
+    if ( p() -> o() -> talents.contagion -> ok() && td -> dots_unstable_affliction -> is_ticking() )
       m *= 1.0 + p() -> o() -> talents.contagion -> effectN( 1 ).percent();
 
     return m;
@@ -2399,17 +2384,7 @@ public:
     if ( target == p() -> havoc_target && affected_by_odr_shawl_of_the_ymirjar && p() -> legendary.odr_shawl_of_the_ymirjar )
       m*= 1.0 + p() -> find_spell( 212173 ) -> effectN( 1 ).percent();
 
-    bool has_ticking_ua = false;
-    for ( int i = 0; i < MAX_UAS; i++ )
-    {
-      if ( td -> dots_unstable_affliction[i] -> is_ticking() )
-      {
-        has_ticking_ua = true;
-        break;
-      }
-    }
-
-    if ( p() -> talents.contagion -> ok() && has_ticking_ua && affected_by_contagion )
+    if ( p() -> talents.contagion -> ok() && td -> dots_unstable_affliction -> is_ticking() && affected_by_contagion )
       m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
 
     if ( p() -> talents.eradication -> ok() && td -> debuffs_eradication -> check() )
@@ -2613,18 +2588,14 @@ struct agony_t: public warlock_spell_t
   }
 };
 
-int UA_DOT_IDS[MAX_UAS] = {
-  233490, 233496, 233497, 233498, 233499
-};
-
 struct unstable_affliction_t: public warlock_spell_t
 {
   struct unstable_affliction_dot_t: public residual_action::residual_periodic_action_t <warlock_spell_t>
   {
     unstable_affliction_t* echos;
 
-    unstable_affliction_dot_t( warlock_t* p, int num ):
-      base_t( "unstable_affliction_" + std::to_string( num ), p, p -> find_spell( UA_DOT_IDS[num] ) ),
+    unstable_affliction_dot_t( warlock_t* p ):
+      base_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
       echos( nullptr )
     {
       dual = true;
@@ -2717,30 +2688,24 @@ struct unstable_affliction_t: public warlock_spell_t
     }
   };
 
-  unstable_affliction_dot_t* ua_dots[MAX_UAS];
+  unstable_affliction_dot_t* ua_dot;
 
   int echosLevel;
 
   unstable_affliction_t( warlock_t* p, int echos = 0 ):
     warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
-    echosLevel( echos )
+    ua_dot( new unstable_affliction_dot_t( p ) ), echosLevel( echos )
   {
-    for ( int i = 0; i < MAX_UAS; i++ )
-    {
-      ua_dots[i] = new unstable_affliction_dot_t( p, i );
-    }
-
     spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
     base_multiplier *= dot_duration / base_tick_time;
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
     affected_by_contagion = false;
 
     // we're going to cap echos initialization to 3
-    int next_echo = echosLevel + 1;
+    int i = echosLevel + 1;
     if ( echosLevel < 3 )
     {
-      for ( int i = 0; i < MAX_UAS; i++ )
-        this->ua_dots[i]->echos = new unstable_affliction_t( p, next_echo );
+      this->ua_dot->echos = new unstable_affliction_t( p, i );
     }
 
     if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
@@ -2786,51 +2751,19 @@ struct unstable_affliction_t: public warlock_spell_t
   virtual void impact( action_state_t* s ) override
   {
     if ( result_is_hit( s -> result ) )
-    {
-      // fun times! Now we get to figure out which one to replace.
-      unstable_affliction_dot_t* ua_dot = nullptr;
-      timespan_t min_duration = timespan_t::from_seconds( 100 );
-      for ( int i = 0; i < MAX_UAS; i++ )
-      {
-        dot_t* curr_ua = td( s -> target ) -> dots_unstable_affliction[i];
-        if ( ! ( curr_ua -> is_ticking() ) )
-        {
-          ua_dot = ua_dots[i];
-          break;
-        }
-
-        timespan_t rem = curr_ua -> remains();
-        if ( rem < min_duration )
-        {
-          ua_dot = ua_dots[i];
-          min_duration = rem;
-        }
-      }
-
-      // "replace" it.
-      if ( ua_dot )
-        residual_action::trigger( ua_dot, s -> target, s -> result_amount );
-    }
+      residual_action::trigger( ua_dot, s -> target, s -> result_amount );
   }
 
   virtual void execute() override
   {
     warlock_spell_t::execute();
-    bool flag = false;
-    for ( int i = 0; i < MAX_UAS; i++ )
-    {
-      if ( td( target ) -> dots_unstable_affliction[i] -> is_ticking() )
-      {
-        flag = true;
-        break;
-      }
-    }
+    bool flag = td( target ) -> dots_unstable_affliction -> is_ticking();
 
     p() -> buffs.shard_instability -> expire();
     p() -> procs.t18_2pc_affliction -> occur();
     p() -> buffs.compounding_horror -> expire();
 
-    if ( !flag && rng().roll( p() -> legendary.power_cord_of_lethtendris_chance ) )
+    if ( flag && rng().roll( p() -> legendary.power_cord_of_lethtendris_chance ) )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.power_cord_of_lethtendris );
     }
@@ -2942,7 +2875,7 @@ struct drain_life_t: public warlock_spell_t
     double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> artifact.drained_to_a_husk.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
-
+    
     if ( p() -> specialization() == WARLOCK_AFFLICTION )
       m *= 1.0 + p() -> find_spell( 205183 ) -> effectN( 1 ).percent();
 
@@ -3142,7 +3075,7 @@ struct doom_t: public warlock_spell_t
     warlock_spell_t::tick( d );
 
     if(  d -> state -> result == RESULT_HIT || result_is_hit( d -> state -> result) )
-    {
+    { 
       if( p() -> talents.impending_doom -> ok() )
       {
         trigger_wild_imp( p() );
@@ -3395,7 +3328,7 @@ struct immolate_t: public warlock_spell_t
   virtual double composite_ta_multiplier( const action_state_t* state ) const override
   {
     double m = warlock_spell_t::composite_ta_multiplier( state );
-
+    
     if ( td( state -> target ) -> dots_immolate -> is_ticking() && p() -> talents.roaring_blaze -> ok() )
       m *= std::pow( roaring_blaze, td( state -> target ) -> debuffs_roaring_blaze -> stack() );
 
@@ -3536,7 +3469,7 @@ struct incinerate_t: public warlock_spell_t
 
     base_execute_time *= 1.0 + p -> artifact.fire_and_the_flames.percent();
     base_multiplier *= 1.0 + p -> artifact.master_of_distaster.percent();
-
+    
     dimension_ripper = p -> find_spell( 219415 ) -> proc_chance();
 
     backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 1 ).percent();
@@ -3567,11 +3500,11 @@ struct incinerate_t: public warlock_spell_t
 
     return t;
   }
-
+  
   void execute() override
   {
     warlock_spell_t::execute();
-
+    
     if ( p() -> artifact.dimension_ripper.rank() && rng().roll( dimension_ripper ) && p() -> cooldowns.dimensional_rift -> current_charge < p() -> cooldowns.dimensional_rift -> charges )
     {
       p() -> cooldowns.dimensional_rift -> adjust( -p() -> cooldowns.dimensional_rift -> duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
@@ -3596,7 +3529,7 @@ struct incinerate_t: public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-    {
+    { 
       if ( p() -> destruction_trinket )
       {
         td( s -> target ) -> debuffs_flamelicked -> trigger( 1 );
@@ -3658,7 +3591,7 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     if ( result_is_hit( s -> result ) )
       td( s -> target ) -> debuffs_eradication -> trigger();
-
+      
     warlock_spell_t::impact( s );
   }
 
@@ -4567,7 +4500,7 @@ struct implosion_t : public warlock_spell_t
       }
       return false;
     }
-
+    
     virtual void execute() override
     {
       warlock_spell_t::execute();
@@ -4728,7 +4661,7 @@ struct shadowburn_t: public warlock_spell_t
   {
     bool r = warlock_spell_t::ready();
 
-    if ( target -> health_percentage() >= 20 )
+    if ( target -> health_percentage() >= 20 ) 
       r = false;
 
     return r;
@@ -4795,14 +4728,14 @@ struct mana_tap_t : public warlock_spell_t
     base_costs[RESOURCE_MANA] = 1.0;
     expenditure = data().effectN( 2 ).percent();
   }
-
+ 
   void execute() override
   {
     warlock_spell_t::execute();
-
+ 
       p() -> buffs.mana_tap -> trigger();
   }
-
+ 
   double cost() const override
   {
     return p() -> resources.current[RESOURCE_MANA] * expenditure;
@@ -5188,10 +5121,7 @@ warlock( p )
 {
   using namespace buffs;
   dots_corruption = target -> get_dot( "corruption", &p );
-  for ( int i = 0; i < MAX_UAS; i++ )
-  {
-    dots_unstable_affliction[i] = target -> get_dot( "unstable_affliction_" + std::to_string( i ) , &p );
-  }
+  dots_unstable_affliction = target -> get_dot( "unstable_affliction", &p );
   dots_agony = target -> get_dot( "agony", &p );
   dots_doom = target -> get_dot( "doom", &p );
   dots_drain_life = target -> get_dot( "drain_life", &p );
@@ -5588,7 +5518,7 @@ void warlock_t::create_pets()
     for ( size_t i = 0; i < warlock_pet_list.darkglare.size(); i++ )
     {
       warlock_pet_list.darkglare[i] = new pets::darkglare_t( sim, this );
-    }
+    }    
     if ( sets.has_set_bonus( WARLOCK_DEMONOLOGY, T18, B4 ) )
     {
       for ( size_t i = 0; i < warlock_pet_list.t18_illidari_satyr.size(); i++ )
@@ -5754,7 +5684,7 @@ void warlock_t::init_spells()
   artifact.devourer_of_life = find_artifact_spell( "Devourer of Life" );
   artifact.planeswalker = find_artifact_spell( "Planeswalker" );
   artifact.conflagration_of_chaos = find_artifact_spell( "Conflagration of Chaos" );
-
+  
   // Glyphs
 
   // Active Spells
