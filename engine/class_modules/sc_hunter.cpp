@@ -5091,8 +5091,11 @@ struct dragonsfire_grenade_t: public hunter_spell_t
   {
     player_t* original_target;
     dragonsfire_conflagration_t( hunter_t* p ):
-      hunter_spell_t( "dragonsfire_conflagration", p, p -> find_spell( 194859 ) ), original_target( nullptr )
+      hunter_spell_t( "dragonsfire_conflagration", p, p -> talents.dragonsfire_grenade -> effectN( 1 ).trigger() ), original_target( nullptr )
     {
+      dot_duration = timespan_t::zero();
+      attack_power_mod.tick = 0;
+      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
       aoe = -1;
       background = may_crit = true;
     }
@@ -5111,11 +5114,12 @@ struct dragonsfire_grenade_t: public hunter_spell_t
     parse_options( options_str );
 
     attack_power_mod.tick = data().effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = data().effectN( 1 ).trigger() -> effectN( 3 ).ap_coeff();
     base_tick_time = data().effectN( 1 ).trigger() -> effectN( 1 ).period();
     dot_duration = data().effectN( 1 ).trigger() -> duration();
     hasted_ticks = false;
     harmful = tick_may_crit = true;
-    school = SCHOOL_FIRE;
+    school = data().effectN( 1 ).trigger() -> get_school_type();
 
     conflag = new dragonsfire_conflagration_t( p );
     add_child( conflag );
