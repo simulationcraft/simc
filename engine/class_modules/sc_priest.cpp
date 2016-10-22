@@ -2557,6 +2557,11 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     parse_options( options_str );
 
+    const spell_data_t* shadow_word_death_2 = p.find_specialization_spell( 231689 );
+    if ( shadow_word_death_2 )
+    {
+      cooldown -> charges += shadow_word_death_2 -> effectN( 1 ).base_value();
+    }
     if ( p.artifact.deaths_embrace.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.deaths_embrace.percent();
