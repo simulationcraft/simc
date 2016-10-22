@@ -5289,8 +5289,9 @@ void warrior_t::create_buffs()
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.meat_cleaver -> effectN( 1 ).trigger() );
 
-  buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", spec.furious_slash -> effectN( 4 ).trigger() )
-    .default_value( spec.furious_slash -> effectN( 4 ).trigger() -> effectN( 1 ).percent() + sets.set( WARRIOR_FURY, T19, B2 ) -> effectN( 1 ).percent() );
+  buff.taste_for_blood = buff_creator_t( this, "taste_for_blood", find_spell( 206333) )
+    .default_value( find_spell( 206333) -> effectN( 1 ).percent() + sets.set( WARRIOR_FURY, T19, B2 ) -> effectN( 1 ).percent() )
+    .chance( spec.furious_slash -> ok() );
 
   buff.commanding_shout = new buffs::commanding_shout_t( *this, "commanding_shout", find_spell( 97463 ) );
 
