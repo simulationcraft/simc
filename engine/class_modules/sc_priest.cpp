@@ -1391,21 +1391,16 @@ struct priest_spell_t : public priest_action_t<spell_t>
               priest.talents.surrender_to_madness->effectN( 1 ).percent() );
 
         amount_from_surrender_to_madness =
-            ( amount * ( 1.0 +
-                         priest.talents.surrender_to_madness->effectN( 1 )
-                             .percent() ) ) -
-            amount;
+            amount *
+            priest.talents.surrender_to_madness->effectN( 1 ).percent();
 
         // Since this effect is multiplicitive, we'll give the extra to Power
         // Infusion since it does not last as long as Surrender to Madness
         amount_from_power_infusion =
-            total_amount - amount -
-            ( amount *
-              ( 1.0 +
-                priest.buffs.power_infusion->data().effectN( 3 ).percent() ) );
+            total_amount - amount - amount_from_surrender_to_madness;
 
         // Make sure the maths line up.
-        assert( total_amount !=
+        assert( total_amount ==
                 amount + amount_from_power_infusion +
                     amount_from_surrender_to_madness );
       }
