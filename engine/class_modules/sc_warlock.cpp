@@ -1070,49 +1070,21 @@ struct torment_t: public warlock_pet_spell_t
   { }
 };
 
-struct immolation_tick_t: public warlock_pet_spell_t
+struct immolation_t : public warlock_pet_spell_t
 {
-  immolation_tick_t( warlock_pet_t* p, const spell_data_t& s ):
-    warlock_pet_spell_t( "immolation_tick", p, s.effectN( 1 ).trigger() )
+  immolation_t( warlock_pet_t* p ) :
+    warlock_pet_spell_t( "immolation", p, p -> find_spell( 20153 ) )
   {
     aoe = -1;
-    background = true;
     may_crit = true;
-  }
-};
-
-struct immolation_t: public warlock_pet_spell_t
-{
-  immolation_t( warlock_pet_t* p, const std::string& options_str ):
-    warlock_pet_spell_t( "immolation", p, p -> find_spell( 19483 ) )
-  {
-    parse_options( options_str );
-
-    dynamic_tick_action = hasted_ticks = true;
-    tick_action = new immolation_tick_t( p, data() );
+    cooldown -> duration = timespan_t::from_seconds( 2.0 );
   }
 
   void init() override
   {
     warlock_pet_spell_t::init();
 
-    // Explicitly snapshot haste, as the spell actually has no duration in spell data
-    snapshot_flags |= STATE_HASTE;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return player -> sim -> expected_iteration_time * 2;
-  }
-
-  virtual void cancel() override
-  {
-    dot_t* dot = find_dot( target );
-    if ( dot && dot -> is_ticking() )
-    {
-      dot -> cancel();
-    }
-    action_t::cancel();
+    cooldown -> hasted = true;
   }
 };
 
@@ -1794,6 +1766,8 @@ struct voidwalker_pet_t: public warlock_pet_t
 
 struct infernal_t: public warlock_pet_t
 {
+  action_t* immolation;
+
   infernal_t( sim_t* sim, warlock_t* owner ):
     warlock_pet_t( sim, owner, "infernal", PET_INFERNAL )
   {
@@ -1803,24 +1777,37 @@ struct infernal_t: public warlock_pet_t
   virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
-    action_list_str = "immolation,if=!ticking";
+    action_list_str = "immolation";
     if ( o() -> talents.grimoire_of_supremacy -> ok() )
-      action_list_str += "/meteor_strike";
-    resources.base[RESOURCE_ENERGY] = 100;
+      action_list_str += "/meteor_strike,if=time>1";
     melee_attack = new actions::warlock_pet_melee_t( this );
+
+    resources.base[RESOURCE_ENERGY] = 0;
+    base_energy_regen_per_second = 0;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
+
+    if ( name == "immolation" )
+      return immolation = new actions::immolation_t( this );
+
     if ( name == "meteor_strike" ) return new actions::meteor_strike_t( this, options_str );
 
     return warlock_pet_t::create_action( name, options_str );
+  }
+
+  void arise() override
+  {
+    warlock_pet_t::arise();
+
+    immolation -> cooldown -> start();
   }
 };
 
 struct lord_of_flames_infernal_t : public warlock_pet_t
 {
+  action_t* immolation;
   timespan_t duration;
 
   lord_of_flames_infernal_t( sim_t* sim, warlock_t* owner ) :
@@ -1832,14 +1819,16 @@ struct lord_of_flames_infernal_t : public warlock_pet_t
   virtual void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
-    action_list_str = "immolation,if=!ticking";
-    resources.base[RESOURCE_ENERGY] = 100;
+    action_list_str = "immolation";
+    resources.base[RESOURCE_ENERGY] = 0;
+    base_energy_regen_per_second = 0;
     melee_attack = new actions::warlock_pet_melee_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
+    if ( name == "immolation" )
+      return immolation = new actions::immolation_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1848,6 +1837,13 @@ struct lord_of_flames_infernal_t : public warlock_pet_t
   {
     if ( ! o() -> buffs.lord_of_flames -> up() )
       summon( duration );
+  }
+
+  void arise() override
+  {
+    warlock_pet_t::arise();
+
+    immolation -> cooldown -> start();
   }
 };
 
