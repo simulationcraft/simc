@@ -2686,13 +2686,35 @@ struct unstable_affliction_t: public warlock_spell_t
     }
   };
 
+  struct compounding_horror_t : public warlock_spell_t
+  {
+    compounding_horror_t( warlock_t* p ) :
+      warlock_spell_t( "compounding_horror", p, p -> find_spell( 231489 ) )
+    {
+      background = true;
+      proc = true;
+    }
+
+    virtual double action_multiplier() const override
+    {
+      double m = warlock_spell_t::action_multiplier();
+
+      m *= p() -> buffs.compounding_horror -> stack();
+
+      return m;
+    }
+  };
+
   unstable_affliction_dot_t* ua_dot;
+  compounding_horror_t* compounding_horror;
 
   int echosLevel;
 
   unstable_affliction_t( warlock_t* p, int echos = 0 ):
     warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
-    ua_dot( new unstable_affliction_dot_t( p ) ), echosLevel( echos )
+    ua_dot( new unstable_affliction_dot_t( p ) ),
+    compounding_horror( new compounding_horror_t( p ) ),
+    echosLevel( echos )
   {
     const spell_data_t* ptr_spell = p -> find_spell( 233490 );
     spell_power_mod.direct = ptr_spell -> effectN( 1 ).sp_coeff();
@@ -2738,9 +2760,6 @@ struct unstable_affliction_t: public warlock_spell_t
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
-    if ( p() -> buffs.compounding_horror -> check() )
-      m *= 1.0 + p() -> buffs.compounding_horror -> data().effectN( 1 ).percent() * p() -> buffs.compounding_horror -> check();
-
     if ( p() -> talents.contagion -> ok() )
       m *= 1.0 + p() -> talents.contagion -> effectN( 1 ).percent();
 
@@ -2760,7 +2779,14 @@ struct unstable_affliction_t: public warlock_spell_t
 
     p() -> buffs.shard_instability -> expire();
     p() -> procs.t18_2pc_affliction -> occur();
-    p() -> buffs.compounding_horror -> expire();
+
+
+    if ( p()->buffs.compounding_horror->check() )
+    {
+      compounding_horror -> target = execute_state -> target;
+      compounding_horror -> execute();
+      p() -> buffs.compounding_horror -> expire();
+    }
 
     if ( !flag && rng().roll( p() -> legendary.power_cord_of_lethtendris_chance ) )
     {
