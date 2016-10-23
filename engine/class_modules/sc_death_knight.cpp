@@ -2984,7 +2984,7 @@ struct melee_t : public death_knight_melee_attack_t
         p() -> buffs.killing_machine -> trigger();
       }
 
-      if ( frozen_pulse && p() -> _runes.runes_full() == 0 )
+      if ( frozen_pulse && p() -> _runes.runes_full() < 2 )
       {
         frozen_pulse -> target = s -> target;
         frozen_pulse -> schedule_execute();
