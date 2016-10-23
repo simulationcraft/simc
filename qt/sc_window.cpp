@@ -62,6 +62,9 @@ QString SC_PATHS::getDataPath()
 #elif defined( Q_OS_MAC )
     return QCoreApplication::applicationDirPath() + "/../Resources";
 #else
+  #if !defined( SC_TO_INSTALL )
+    return QCoreApplication::applicationDirPath();
+  #else
     QString shared_path;
     QStringList appdatalocation =  QStandardPaths::standardLocations( QStandardPaths::DataLocation );
     for( int i = 0; i < appdatalocation.size(); ++i )
@@ -74,6 +77,7 @@ QString SC_PATHS::getDataPath()
         }
     }
     return shared_path;
+  #endif
 #endif
 }
 
