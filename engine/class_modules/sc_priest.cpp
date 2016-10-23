@@ -1442,14 +1442,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
 namespace spells
 {
 // ==========================================================================
-// Priest Abilities
+// Priest Spells
 // ==========================================================================
-
-// ==========================================================================
-// Priest Non-Harmful Spells
-// ==========================================================================
-
-// Angelic Feather===========================================================
 
 struct angelic_feather_t final : public priest_spell_t
 {
@@ -1468,8 +1462,6 @@ struct angelic_feather_t final : public priest_spell_t
     s->target->buffs.angelic_feather->trigger();
   }
 };
-
-// Archangel Spell ==========================================================
 
 struct archangel_t final : public priest_spell_t
 {
@@ -1495,8 +1487,6 @@ struct archangel_t final : public priest_spell_t
       return priest_spell_t::ready();
   }
 };
-
-// Dispersion Spell =========================================================
 
 struct dispersion_t final : public priest_spell_t
 {
@@ -1549,6 +1539,267 @@ struct dispersion_t final : public priest_spell_t
   }
 };
 
+/// Divine Star Base Spell, used for both heal and damage spell.
+template <class Base>
+struct divine_star_base_t : public Base
+{
+private:
+  typedef Base
+      ab;  // the action base ("ab") type (priest_spell_t or priest_heal_t)
+public:
+  typedef divine_star_base_t base_t;
+
+  divine_star_base_t* return_spell;
+
+  divine_star_base_t( const std::string& n, priest_t& p,
+                      const spell_data_t* spell_data,
+                      bool is_return_spell = false )
+    : ab( n, p, spell_data ),
+      return_spell( ( is_return_spell
+                          ? nullptr
+                          : new divine_star_base_t( n, p, spell_data, true ) ) )
+  {
+    ab::aoe = -1;
+
+    ab::proc = ab::background = true;
+  }
+
+  // Divine Star will damage and heal targets twice, once on the way out and
+  // again on the way back. This is determined by distance from the target.
+  // If we are too far away, it misses completely. If we are at the very
+  // edge distance wise, it will only hit once. If we are within range (and
+  // aren't moving such that it would miss the target on the way out and/or
+  // back), it will hit twice. Threshold is 24 yards, per tooltip and tests
+  // for 2 hits. 28 yards is the threshold for 1 hit.
+  void execute() override
+  {
+    double distance;
+
+    if ( ab::player->sim->distance_targeting_enabled )
+      distance = ab::player->get_player_distance( *ab::target );
+    else
+      distance = ab::player->current.distance;
+
+    if ( distance <= 28 )
+    {
+      ab::execute();
+
+      if ( return_spell && distance <= 24 )
+        return_spell->execute();
+    }
+  }
+};
+
+struct divine_star_t final : public priest_spell_t
+{
+  divine_star_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "divine_star", p, p.talents.divine_star ),
+      _heal_spell( new divine_star_base_t<priest_heal_t>(
+          "divine_star_heal", p, p.find_spell( 110745 ) ) ),
+      _dmg_spell( new divine_star_base_t<priest_spell_t>(
+          "divine_star_damage", p, p.find_spell( 122128 ) ) )
+  {
+    parse_options( options_str );
+
+    dot_duration = base_tick_time = timespan_t::zero();
+
+    add_child( _heal_spell );
+    add_child( _dmg_spell );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    _heal_spell->execute();
+    _dmg_spell->execute();
+  }
+
+private:
+  action_t* _heal_spell;
+  action_t* _dmg_spell;
+};
+
+/// Halo Base Spell, used for both damage and heal spell.
+template <class Base>
+struct halo_base_t : public Base
+{
+public:
+  halo_base_t( const std::string& n, priest_t& p, const spell_data_t* s )
+    : Base( n, p, s )
+  {
+    Base::aoe        = -1;
+    Base::background = true;
+
+    if ( Base::data().ok() )
+    {
+      // Reparse the correct effect number, because we have two competing ones
+      // (
+      // were 2 > 1 always wins out )
+      Base::parse_effect_data( Base::data().effectN( 1 ) );
+    }
+    Base::radius = 30;
+    Base::range  = 0;
+  }
+
+  timespan_t distance_targeting_travel_time( action_state_t* s ) const override
+  {
+    return timespan_t::from_seconds(
+        s->action->player->get_player_distance( *s->target ) /
+        Base::travel_speed );
+  }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  {
+    double cda = Base::calculate_direct_amount( s );
+
+    // Source: Ghostcrawler 2012-06-20
+    // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
+
+    double distance;
+    if ( s->action->player->sim->distance_targeting_enabled )
+    {
+      distance = s->action->player->get_player_distance( *s->target );
+    }
+    else
+    {
+      distance =
+          std::fabs( s->action->player->current.distance -
+                     s->target->current
+                         .distance );  // Distance from the caster to the target
+    }
+
+    // double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) +
+    // 0.1 + 0.015 * distance;
+    double mult = 0.5 * exp( -0.00995 * pow( distance / 2 - 12.5, 4 ) ) + 0.1 +
+                  0.015 * distance;
+
+    return cda * mult;
+  }
+};
+
+struct halo_t final : public priest_spell_t
+{
+  halo_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "halo", p, p.talents.halo ),
+      _heal_spell( new halo_base_t<priest_heal_t>( "halo_heal", p,
+                                                   p.find_spell( 120692 ) ) ),
+      _dmg_spell( new halo_base_t<priest_spell_t>( "halo_damage", p,
+                                                   p.find_spell( 120696 ) ) )
+  {
+    parse_options( options_str );
+
+    add_child( _heal_spell );
+    add_child( _dmg_spell );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    _heal_spell->execute();
+    _dmg_spell->execute();
+  }
+
+private:
+  action_t* _heal_spell;
+  action_t* _dmg_spell;
+};
+
+/// Holy Fire Base Spell, used for both Holy Fire and its overriding spell Puge
+/// the Wicked
+struct holy_fire_base_t : public priest_spell_t
+{
+  struct glyph_of_the_inquisitor_backlash_t : public priest_spell_t
+  {
+    double spellpower;
+    double multiplier;
+    bool critical;
+
+    glyph_of_the_inquisitor_backlash_t( priest_t& p )
+      : priest_spell_t( "glyph_of_the_inquisitor_backlash", p,
+                        p.talents.power_word_solace->ok()
+                            ? p.find_spell( 129250 )
+                            : p.find_class_spell( "Holy Fire" ) ),
+        spellpower( 0.0 ),
+        multiplier( 1.0 ),
+        critical( false )
+    {
+      background = true;
+      harmful    = false;
+      proc       = true;
+      may_crit   = false;
+      callbacks  = false;
+
+      target = &priest;
+
+      ability_lag        = sim->default_aura_delay;
+      ability_lag_stddev = sim->default_aura_delay_stddev;
+    }
+
+    void init() override
+    {
+      priest_spell_t::init();
+
+      stats->type = STATS_NEUTRAL;
+    }
+
+    double composite_spell_power() const override
+    {
+      return spellpower;
+    }
+
+    double composite_da_multiplier(
+        const action_state_t* /* state */ ) const override
+    {
+      double d = multiplier;
+      d /= 5;
+
+      if ( critical )
+        d *= 2;
+
+      return d;
+    }
+  };
+
+  glyph_of_the_inquisitor_backlash_t* backlash;
+
+  holy_fire_base_t( const std::string& name, priest_t& p,
+                    const spell_data_t* sd )
+    : priest_spell_t( name, p, sd ),
+      backlash( new glyph_of_the_inquisitor_backlash_t( p ) )
+  {
+    procs_courageous_primal_diamond = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest.buffs.holy_evangelism->trigger();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    m *= 1.0 + ( priest.buffs.holy_evangelism->check() *
+                 priest.buffs.holy_evangelism->data().effectN( 1 ).percent() );
+
+    return m;
+  }
+};
+
+struct holy_fire_t final : public holy_fire_base_t
+{
+  holy_fire_t( priest_t& player, const std::string& options_str )
+    : holy_fire_base_t( "holy_fire", player,
+                        player.find_class_spell( "Holy Fire" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
 // Levitate =================================================================
 
 struct levitate_t final : public priest_spell_t
@@ -1560,485 +1811,6 @@ struct levitate_t final : public priest_spell_t
     ignore_false_positive = true;
   }
 };
-
-// Pain Supression ==========================================================
-
-struct pain_suppression_t final : public priest_spell_t
-{
-  pain_suppression_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "pain_suppression", p,
-                      p.find_class_spell( "Pain Suppression" ) )
-  {
-    parse_options( options_str );
-
-    // If we don't specify a target, it's defaulted to the mob, so default to
-    // the player instead
-    if ( target->is_enemy() || target->is_add() )
-    {
-      target = &p;
-    }
-
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    target->buffs.pain_supression->trigger();
-  }
-};
-
-// Power Infusion Spell =====================================================
-
-struct power_infusion_t final : public priest_spell_t
-{
-  power_infusion_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "power_infusion", p, p.talents.power_infusion )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-    priest.buffs.power_infusion->trigger();
-  }
-};
-
-// Void Bolt Spell =========================================================
-
-struct void_bolt_t final : public priest_spell_t
-{
-  double insanity_gain;
-
-  void_bolt_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
-  {
-    parse_options( options_str );
-    use_off_gcd                 = true;
-    is_sphere_of_insanity_spell = true;
-    energize_type =
-        ENERGIZE_NONE;  // disable resource generation from spell data.
-
-    if ( player.artifact.sinister_thoughts.rank() )
-    {
-      base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
-    }
-
-    cooldown->hasted = true;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    generate_insanity( insanity_gain, priest.gains.insanity_void_bolt );
-
-    if ( priest.buffs.shadow_t19_4p->up() )
-    {
-      cooldown->reset( false );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    priest_td_t& td = get_td( s->target );
-    // timespan_t extend_duration =
-    //    timespan_t::from_seconds( data().effectN( 2 ).base_value() );
-    // extend_duration *= composite_haste(); FIXME Check is it is reduced by
-    // haste or not.
-    if ( td.dots.shadow_word_pain->is_ticking() )
-    {
-      td.dots.shadow_word_pain->refresh_duration();
-    }
-
-    if ( td.dots.vampiric_touch->is_ticking() )
-    {
-      td.dots.vampiric_touch->refresh_duration();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !( priest.buffs.voidform->check() ) )
-      return false;
-
-    return priest_spell_t::ready();
-  }
-
-  double action_multiplier() const override
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    if ( priest.mastery_spells.madness->ok() )
-    {
-      m *= 1.0 + priest.cache.mastery_value();
-    }
-
-    if ( priest.buffs.anunds_last_breath->check() )
-    {
-      m *= 1.0 +
-           ( priest.buffs.anunds_last_breath->data().effectN( 1 ).percent() *
-             priest.buffs.anunds_last_breath->stack() );
-      priest.buffs.anunds_last_breath->expire();
-    }
-    return m;
-  }
-};
-
-// Void Eruption Spell ========================================================
-
-struct void_eruption_t final : public priest_spell_t
-{
-  action_t* void_bolt;
-
-  void_eruption_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "void_eruption", p, p.find_spell( 228360 ) ),
-      void_bolt( nullptr )
-  {
-    parse_options( options_str );
-    base_costs[ RESOURCE_INSANITY ] = 0.0;
-
-    may_miss = false;
-    aoe      = -1;
-    range    = 0.0;
-    radius   = 100.0;
-    school   = SCHOOL_SHADOW;
-    cooldown = priest.cooldowns.void_bolt;
-  }
-
-  void init() override
-  {
-    priest_spell_t::init();
-    void_bolt = player->find_action( "void_bolt" );
-  }
-
-  std::vector<player_t*>& target_list() const override
-  {
-    std::vector<player_t*>& tl = priest_spell_t::target_list();
-
-    priest_spell_t::available_targets( tl );
-
-    auto it = tl.begin();
-
-    while ( it != tl.end() )
-    {
-      priest_td_t& td = priest_spell_t::get_td( *it );
-
-      if ( !td.dots.shadow_word_pain->is_ticking() &&
-           !td.dots.vampiric_touch->is_ticking() )  // Neither SWP nor VT
-      {
-        priest.procs.void_eruption_no_dots->occur();
-        it = tl.erase( it );
-      }
-      else if ( td.dots.shadow_word_pain->is_ticking() &&
-                td.dots.vampiric_touch->is_ticking() )  // Both SWP and VT
-      {
-        priest.procs.void_eruption_both_dots->occur();
-        it = tl.insert( it, *it );
-        it += 2;
-      }
-      else  // SWP or VT
-      {
-        if ( td.dots.shadow_word_pain->is_ticking() )
-        {
-          priest.procs.void_eruption_only_shadow_word_pain->occur();
-        }
-        else
-        {
-          priest.procs.void_eruption_only_vampiric_touch->occur();
-        }
-        it++;
-      }
-    }
-
-    return tl;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.buffs.voidform->trigger();
-    priest.cooldowns.void_bolt->reset( true );
-
-    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B4 ) )
-    {
-      priest.buffs.shadow_t19_4p->trigger();
-    }
-    else
-    {
-      priest.cooldowns.void_bolt->start( void_bolt );
-      priest.cooldowns.void_bolt->adjust(
-          -timespan_t::from_millis( 1000 *
-                                    ( 1.5 * priest.composite_spell_speed() ) ),
-          true );
-    }
-
-    if ( priest.artifact.sphere_of_insanity.rank() )
-    {
-      priest.buffs.sphere_of_insanity->trigger();
-      priest.buffs.sphere_of_insanity->current_value = 0.0;
-    }
-
-    if ( priest.active_items.mother_shahrazs_seduction &&
-         priest.buffs.lingering_insanity->up() )
-    {
-      int mss_vf_stacks =
-          floor( priest.buffs.lingering_insanity->remains().total_seconds() /
-                 priest.active_items.mother_shahrazs_seduction->driver()
-                     ->effectN( 1 )
-                     .base_value() );
-
-      priest.buffs.voidform->bump( mss_vf_stacks );
-    }
-
-    if ( priest.talents.void_lord->ok() &&
-         priest.buffs.lingering_insanity->up() )
-    {
-      timespan_t time =
-          priest.buffs.lingering_insanity->remains() -
-          ( priest.talents.void_lord->effectN( 1 ).time_value() * 1000 );
-      priest.buffs.lingering_insanity->extend_duration( player, -time );
-    }
-    else
-    {
-      priest.buffs.lingering_insanity->expire();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !priest.buffs.voidform->check() &&
-         ( priest.resources.current[ RESOURCE_INSANITY ] >=
-               priest.resources.max[ RESOURCE_INSANITY ] ||
-           ( priest.talents.legacy_of_the_void->ok() &&
-             ( priest.resources.current[ RESOURCE_INSANITY ] >=
-               priest.resources.max[ RESOURCE_INSANITY ] +
-                   priest.talents.legacy_of_the_void->effectN( 2 )
-                       .base_value() ) ) ) )
-    {
-      return priest_spell_t::ready();
-    }
-    else
-    {
-      return false;
-    }
-  }
-};
-
-// Surrender to Madness =======================================================
-
-struct surrender_to_madness_t final : public priest_spell_t
-{
-  surrender_to_madness_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "surrender_to_madness", p,
-                      p.talents.surrender_to_madness )
-  {
-    parse_options( options_str );
-    harmful = may_hit = may_crit = false;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.buffs.surrender_to_madness->trigger();
-  }
-};
-
-// Pet Summon Base Class
-
-struct summon_pet_t : public priest_spell_t
-{
-  timespan_t summoning_duration;
-  std::string pet_name;
-  pet_t* pet;
-
-public:
-  summon_pet_t( const std::string& n, priest_t& p,
-                const spell_data_t* sd = spell_data_t::nil() )
-    : priest_spell_t( n, p, sd ),
-      summoning_duration( timespan_t::zero() ),
-      pet_name( n ),
-      pet( nullptr )
-  {
-    harmful = false;
-  }
-
-  bool init_finished() override
-  {
-    pet = player->find_pet( pet_name );
-
-    return priest_spell_t::init_finished();
-  }
-
-  void execute() override
-  {
-    pet->summon( summoning_duration );
-
-    priest_spell_t::execute();
-  }
-
-  bool ready() override
-  {
-    if ( !pet )
-    {
-      return false;
-    }
-
-    return priest_spell_t::ready();
-  }
-};
-
-struct summon_shadowfiend_t final : public summon_pet_t
-{
-  summon_shadowfiend_t( priest_t& p, const std::string& options_str )
-    : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) )
-  {
-    parse_options( options_str );
-    harmful            = false;
-    summoning_duration = data().duration();
-    cooldown           = p.cooldowns.shadowfiend;
-    cooldown->duration = data().cooldown();
-    cooldown->duration +=
-        priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
-  }
-};
-
-struct summon_mindbender_t final : public summon_pet_t
-{
-  summon_mindbender_t( priest_t& p, const std::string& options_str )
-    : summon_pet_t( "mindbender", p, p.find_talent_spell( "Mindbender" ) )
-  {
-    parse_options( options_str );
-    harmful            = false;
-    summoning_duration = data().duration();
-    cooldown           = p.cooldowns.mindbender;
-    cooldown->duration = data().cooldown();
-    cooldown->duration +=
-        priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
-  }
-};
-
-// ==========================================================================
-// Priest Damage Spells
-// ==========================================================================
-
-// Shadowy Apparition Spell =================================================
-
-struct shadowy_apparition_spell_t final : public priest_spell_t
-{
-  double insanity_gain;
-
-  shadowy_apparition_spell_t( priest_t& p )
-    : priest_spell_t( "shadowy_apparitions", p, p.find_spell( 78203 ) ),
-      insanity_gain( 4 )  // Spell Data missing?
-                          // data().effectN(2).resource(RESOURCE_INSANITY) *
-  // priest.talents.auspicious_spirits->effectN(2).percent() ) )
-  {
-    background   = true;
-    proc         = false;
-    callbacks    = true;
-    may_miss     = false;
-    trigger_gcd  = timespan_t::zero();
-    travel_speed = 6.0;
-    const spell_data_t* dmg_data =
-        p.find_spell( 148859 );  // Hardcoded into tooltip 2014/06/01
-
-    parse_effect_data( dmg_data->effectN( 1 ) );
-    school = SCHOOL_SHADOW;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    if ( priest.talents.auspicious_spirits->ok() )
-    {
-      generate_insanity( insanity_gain,
-                         priest.gains.insanity_auspicious_spirits );
-    }
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    d *= 1.0 + priest.talents.auspicious_spirits->effectN( 1 ).percent();
-
-    return d;
-  }
-
-  /* Trigger a shadowy apparition
-   */
-  void trigger()
-  {
-    if ( priest.sim->debug )
-      priest.sim->out_debug << priest.name()
-                            << " triggered shadowy apparition.";
-
-    priest.procs.shadowy_apparition->occur();
-    schedule_execute();
-  }
-};
-
-// Sphere of Insanity Spell =================================================
-
-struct sphere_of_insanity_spell_t final : public priest_spell_t
-{
-  double damage_amount;
-
-  sphere_of_insanity_spell_t( priest_t& p )
-    : priest_spell_t( "sphere_of_insanity", p, p.find_spell( 194182 ) ),
-      damage_amount( 0.0 )
-  {
-    may_crit    = false;
-    background  = true;
-    proc        = false;
-    callbacks   = true;
-    may_miss    = false;
-    aoe         = -1;
-    range       = 0.0;
-    radius      = 100.0;
-    trigger_gcd = timespan_t::zero();
-    school      = SCHOOL_SHADOW;
-  }
-
-  double calculate_direct_amount( action_state_t* state ) const override
-  {
-    dot_t* d = state->target->get_dot( "shadow_word_pain", &priest );
-
-    if ( d )  // Shadow Word: Pain is ticking on the target; deal damage
-    {
-      return damage_amount *
-             0.05;  // TODO: replace with data from spell 194182, effect #3
-    }
-    else
-    {
-      return 0.0;
-    }
-  }
-
-  /// Trigger a sphere of insanity damage
-  void trigger( double amount )
-  {
-    if ( priest.sim->debug )
-    {
-      priest.sim->out_debug << priest.name()
-                            << " triggered Sphere of Insanity damage.";
-    }
-    damage_amount = amount;
-    schedule_execute();
-  }
-};
-
-// Mind Spike Detonation Spell =================================================
 
 struct mind_spike_detonation_t final : public priest_spell_t
 {
@@ -2107,8 +1879,6 @@ struct mind_spike_detonation_t final : public priest_spell_t
     schedule_execute();
   }
 };
-
-// Mind Blast Spell =========================================================
 
 struct mind_blast_t final : public priest_spell_t
 {
@@ -2221,7 +1991,7 @@ public:
   void update_ready( timespan_t cd_duration ) override
   {
     // Uptime tracking
-    priest.buffs.voidform -> up();
+    priest.buffs.voidform->up();
 
     // Shadowy Insight has proc'd during the cast of Mind Blast, the cooldown
     // reset is deferred to the finished cast, instead of "eating" it.
@@ -2243,19 +2013,23 @@ public:
   }
 };
 
-// Mind Spike Spell =========================================================
-
-struct mind_spike_t final : public priest_spell_t
+struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
 
-  mind_spike_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "mind_spike", p, p.talents.mind_spike ),
+  mind_flay_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "mind_flay", p,
+                      p.find_specialization_spell( "Mind Flay" ) ),
       insanity_gain(
           data().effectN( 3 ).resource( RESOURCE_INSANITY ) *
           ( 1.0 + p.talents.fortress_of_the_mind->effectN( 1 ).percent() ) )
   {
     parse_options( options_str );
+
+    may_crit                    = false;
+    channeled                   = true;
+    hasted_ticks                = false;
+    use_off_gcd                 = true;
     is_mind_spell               = true;
     is_sphere_of_insanity_spell = true;
     energize_type =
@@ -2265,77 +2039,9 @@ struct mind_spike_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
     }
-  }
 
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    generate_insanity( insanity_gain, priest.gains.insanity_mind_spike );
-
-    if ( result_is_hit( s->result ) )
-    {
-      priest_td_t& td = get_td( s->target );
-
-      int prev_stacks    = 0;
-      double prev_damage = 0.0;
-
-      if ( td.buffs.mind_spike->up() )
-      {
-        prev_stacks = td.buffs.mind_spike->check();
-        prev_damage = td.buffs.mind_spike->value();
-        td.buffs.mind_spike->increment();
-      }
-      else
-      {
-        td.buffs.mind_spike->trigger();
-      }
-
-      if ( td.buffs.mind_spike->check() == td.buffs.mind_spike->max_stack() &&
-           td.buffs.mind_spike->check() == prev_stacks )
-      {
-        td.buffs.mind_spike->current_value =
-            round( ( prev_damage / td.buffs.mind_spike->max_stack() ) *
-                       ( td.buffs.mind_spike->max_stack() - 1 ) +
-                   ( s->result_amount *
-                     priest.talents.mind_spike->effectN( 2 ).percent() ) );
-      }
-      else
-      {
-        td.buffs.mind_spike->current_value =
-            prev_damage +
-            s->result_amount *
-                priest.talents.mind_spike->effectN( 2 ).percent();
-        if ( priest.sim->debug )
-        {
-          priest.sim->out_debug.printf(
-              "%s adds %d to mind_spike_detonation, now %d total at %i stacks",
-              priest.name(),
-              s->result_amount *
-                  priest.talents.mind_spike->effectN( 2 ).percent(),
-              td.buffs.mind_spike->current_value,
-              td.buffs.mind_spike->stack() );
-        }
-      }
-
-      if ( priest.active_items.mental_fatigue )
-      {
-        // Assumes trigger on hit, not on damage
-        td.buffs.mental_fatigue->trigger();
-      }
-    }
-
-    trigger_void_tendril();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( priest.talents.void_ray->ok() )
-    {
-      priest.buffs.void_ray->trigger();
-    }
+    spell_power_mod.tick *=
+        1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
   }
 
   double action_multiplier() const override
@@ -2343,25 +2049,45 @@ struct mind_spike_t final : public priest_spell_t
     double am = priest_spell_t::action_multiplier();
 
     if ( priest.talents.void_ray->ok() && priest.buffs.void_ray->check() )
-    {
       am *= 1.0 +
             priest.buffs.void_ray->check() *
                 priest.buffs.void_ray->data().effectN( 1 ).percent();
-    }
 
     return am;
   }
 
+  void tick( dot_t* d ) override
+  {
+    priest_spell_t::tick( d );
+
+    if ( priest.active_items.mental_fatigue )
+    {
+      if ( d->state && result_is_hit( d->state->result ) )
+      {
+        // Assumes trigger on hit, not on damage
+        priest_td_t& td = get_td( d->state->target );
+        td.buffs.mental_fatigue->trigger();
+      }
+    }
+
+    if ( priest.talents.void_ray->ok() )
+    {
+      priest.buffs.void_ray->trigger();
+    }
+
+    trigger_void_tendril();
+
+    generate_insanity( insanity_gain, priest.gains.insanity_mind_flay );
+  }
+
   bool ready() override
   {
-    if ( !priest.talents.mind_spike->ok() )
+    if ( priest.talents.mind_spike->ok() )
       return false;
 
     return priest_spell_t::ready();
   }
 };
-
-// Mind Sear Spell ==========================================================
 
 struct mind_sear_tick_t final : public priest_spell_t
 {
@@ -2538,7 +2264,327 @@ struct mind_sear_t final : public priest_spell_t
   }
 };
 
-// Shadow Word Death Spell ==================================================
+struct mind_spike_t final : public priest_spell_t
+{
+  double insanity_gain;
+
+  mind_spike_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "mind_spike", p, p.talents.mind_spike ),
+      insanity_gain(
+          data().effectN( 3 ).resource( RESOURCE_INSANITY ) *
+          ( 1.0 + p.talents.fortress_of_the_mind->effectN( 1 ).percent() ) )
+  {
+    parse_options( options_str );
+    is_mind_spell               = true;
+    is_sphere_of_insanity_spell = true;
+    energize_type =
+        ENERGIZE_NONE;  // disable resource generation from spell data
+
+    if ( p.artifact.void_siphon.rank() )
+    {
+      base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    generate_insanity( insanity_gain, priest.gains.insanity_mind_spike );
+
+    if ( result_is_hit( s->result ) )
+    {
+      priest_td_t& td = get_td( s->target );
+
+      int prev_stacks    = 0;
+      double prev_damage = 0.0;
+
+      if ( td.buffs.mind_spike->up() )
+      {
+        prev_stacks = td.buffs.mind_spike->check();
+        prev_damage = td.buffs.mind_spike->value();
+        td.buffs.mind_spike->increment();
+      }
+      else
+      {
+        td.buffs.mind_spike->trigger();
+      }
+
+      if ( td.buffs.mind_spike->check() == td.buffs.mind_spike->max_stack() &&
+           td.buffs.mind_spike->check() == prev_stacks )
+      {
+        td.buffs.mind_spike->current_value =
+            round( ( prev_damage / td.buffs.mind_spike->max_stack() ) *
+                       ( td.buffs.mind_spike->max_stack() - 1 ) +
+                   ( s->result_amount *
+                     priest.talents.mind_spike->effectN( 2 ).percent() ) );
+      }
+      else
+      {
+        td.buffs.mind_spike->current_value =
+            prev_damage +
+            s->result_amount *
+                priest.talents.mind_spike->effectN( 2 ).percent();
+        if ( priest.sim->debug )
+        {
+          priest.sim->out_debug.printf(
+              "%s adds %d to mind_spike_detonation, now %d total at %i stacks",
+              priest.name(),
+              s->result_amount *
+                  priest.talents.mind_spike->effectN( 2 ).percent(),
+              td.buffs.mind_spike->current_value,
+              td.buffs.mind_spike->stack() );
+        }
+      }
+
+      if ( priest.active_items.mental_fatigue )
+      {
+        // Assumes trigger on hit, not on damage
+        td.buffs.mental_fatigue->trigger();
+      }
+    }
+
+    trigger_void_tendril();
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest.talents.void_ray->ok() )
+    {
+      priest.buffs.void_ray->trigger();
+    }
+  }
+
+  double action_multiplier() const override
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if ( priest.talents.void_ray->ok() && priest.buffs.void_ray->check() )
+    {
+      am *= 1.0 +
+            priest.buffs.void_ray->check() *
+                priest.buffs.void_ray->data().effectN( 1 ).percent();
+    }
+
+    return am;
+  }
+
+  bool ready() override
+  {
+    if ( !priest.talents.mind_spike->ok() )
+      return false;
+
+    return priest_spell_t::ready();
+  }
+};
+
+struct pain_suppression_t final : public priest_spell_t
+{
+  pain_suppression_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "pain_suppression", p,
+                      p.find_class_spell( "Pain Suppression" ) )
+  {
+    parse_options( options_str );
+
+    // If we don't specify a target, it's defaulted to the mob, so default to
+    // the player instead
+    if ( target->is_enemy() || target->is_add() )
+    {
+      target = &p;
+    }
+
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    target->buffs.pain_supression->trigger();
+  }
+};
+
+/// Penance damage spell
+struct penance_t final : public priest_spell_t
+{
+  struct penance_tick_t final : public priest_spell_t
+  {
+    penance_tick_t( priest_t& p, stats_t* stats )
+      : priest_spell_t( "penance_tick", p, p.dbc.spell( 47666 ) )
+    {
+      background  = true;
+      dual        = true;
+      direct_tick = true;
+      //      can_trigger_atonement = priest.specs.atonement->ok();
+
+      this->stats = stats;
+    }
+
+    bool verify_actor_level() const override
+    {
+      // Tick spell data is restricted to level 60+, even though main spell is
+      // level10+
+      return true;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      priest_spell_t::impact( state );
+
+      if ( result_is_hit( state->result ) )
+      {
+        // TODO: Check if this is the correct place & check for triggering.
+        // 2015-04-14: Your Penance [...] each time it deals damage or heals.
+        priest.buffs.reperation->trigger();
+      }
+    }
+  };
+
+  penance_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "penance", p, p.find_class_spell( "Penance" ) )
+  {
+    parse_options( options_str );
+
+    may_crit       = false;
+    may_miss       = false;
+    channeled      = true;
+    tick_zero      = true;
+    dot_duration   = timespan_t::from_seconds( 2.0 );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+
+    // HACK: Set can_trigger here even though the tick spell actually
+    // does the triggering. We want atonement_penance to be created in
+    // priest_heal_t::init() so that it appears in the report.
+    //    can_trigger_atonement = priest.specs.atonement->ok();
+
+    if ( priest.talents.castigation->ok() )
+    {
+      // Add 1 extra millisecond, so we only get 4 ticks instead of an extra
+      // tiny 5th tick.
+      base_tick_time =
+          timespan_t::from_seconds( 2.0 / 3 ) + timespan_t::from_millis( 1 );
+    }
+    dot_duration += priest.sets.set( PRIEST_DISCIPLINE, T17, B2 )
+                        ->effectN( 1 )
+                        .time_value();
+
+    dynamic_tick_action = true;
+    tick_action         = new penance_tick_t( p, stats );
+  }
+
+  timespan_t tick_time( const action_state_t* ) const override
+  {
+    // Do not haste ticks!
+    return base_tick_time;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+    priest.buffs.holy_evangelism->trigger();  // re-checked 2014/07/07:
+                                              // offensive penance grants
+                                              // evangelism stacks, even though
+                                              // not mentioned in the tooltip.
+
+    if ( priest.sets.has_set_bonus( PRIEST_DISCIPLINE, T17, B2 ) )
+      priest.buffs.holy_evangelism->trigger();  // Set bonus says "...and
+                                                // generates 2 stacks of
+                                                // Evangelism." Need to check if
+                                                // this happens up front or
+                                                // after a particular tick. -
+                                                // Twintop 2014/07/11
+  }
+};
+
+struct power_infusion_t final : public priest_spell_t
+{
+  power_infusion_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "power_infusion", p, p.talents.power_infusion )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+    priest.buffs.power_infusion->trigger();
+  }
+};
+
+struct power_word_solace_t final : public holy_fire_base_t
+{
+  power_word_solace_t( priest_t& player, const std::string& options_str )
+    : holy_fire_base_t( "power_word_solace", player,
+                        player.find_spell( 129250 ) )
+  {
+    parse_options( options_str );
+
+    travel_speed = 0.0;  // DBC has default travel taking 54seconds.....
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_fire_base_t::impact( s );
+
+    double amount = data().effectN( 3 ).percent() / 100.0 *
+                    priest.resources.max[ RESOURCE_MANA ];
+    priest.resource_gain( RESOURCE_MANA, amount,
+                          priest.gains.power_word_solace );
+  }
+};
+
+struct purge_the_wicked_t final : public priest_spell_t
+{
+  struct purge_the_wicked_dot_t final : public priest_spell_t
+  {
+    purge_the_wicked_dot_t( priest_t& p )
+      : priest_spell_t( "purge_the_wicked", p,
+                        p.talents.purge_the_wicked->effectN( 2 ).trigger() )
+    {
+      may_crit = true;
+      // tick_zero = false;
+      energize_type =
+          ENERGIZE_NONE;  // disable resource generation from spell data
+      background = true;
+    }
+  };
+
+  purge_the_wicked_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "purge_the_wicked", p, p.talents.purge_the_wicked )
+  {
+    parse_options( options_str );
+
+    may_crit = true;
+    energize_type =
+        ENERGIZE_NONE;  // disable resource generation from spell data
+    execute_action = new purge_the_wicked_dot_t( p );
+  }
+};
+
+struct schism_t final : public priest_spell_t
+{
+  schism_t( priest_t& player, const std::string& options_str )
+    : priest_spell_t( "schism", player, player.talents.schism )
+  {
+    parse_options( options_str );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    priest_td_t& td = get_td( s->target );
+
+    if ( result_is_hit( s->result ) )
+    {
+      // Assumption scamille 2016-07-28: Schism only applied on hit
+      td.buffs.schism->trigger();
+    }
+  }
+};
 
 struct shadow_word_death_t final : public priest_spell_t
 {
@@ -2552,10 +2598,11 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    const spell_data_t* shadow_word_death_2 = p.find_specialization_spell( 231689 );
+    const spell_data_t* shadow_word_death_2 =
+        p.find_specialization_spell( 231689 );
     if ( shadow_word_death_2 )
     {
-      cooldown -> charges += shadow_word_death_2 -> effectN( 1 ).base_value();
+      cooldown->charges += shadow_word_death_2->effectN( 1 ).base_value();
     }
     if ( p.artifact.deaths_embrace.rank() )
     {
@@ -2607,143 +2654,6 @@ struct shadow_word_death_t final : public priest_spell_t
   }
 };
 
-// Mind Flay Spell ==========================================================
-struct mind_flay_t final : public priest_spell_t
-{
-  double insanity_gain;
-
-  mind_flay_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "mind_flay", p,
-                      p.find_specialization_spell( "Mind Flay" ) ),
-      insanity_gain(
-          data().effectN( 3 ).resource( RESOURCE_INSANITY ) *
-          ( 1.0 + p.talents.fortress_of_the_mind->effectN( 1 ).percent() ) )
-  {
-    parse_options( options_str );
-
-    may_crit                    = false;
-    channeled                   = true;
-    hasted_ticks                = false;
-    use_off_gcd                 = true;
-    is_mind_spell               = true;
-    is_sphere_of_insanity_spell = true;
-    energize_type =
-        ENERGIZE_NONE;  // disable resource generation from spell data
-
-    if ( p.artifact.void_siphon.rank() )
-    {
-      base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
-    }
-
-    spell_power_mod.tick *=
-        1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = priest_spell_t::action_multiplier();
-
-    if ( priest.talents.void_ray->ok() && priest.buffs.void_ray->check() )
-      am *= 1.0 +
-            priest.buffs.void_ray->check() *
-                priest.buffs.void_ray->data().effectN( 1 ).percent();
-
-    return am;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    priest_spell_t::tick( d );
-
-    if ( priest.active_items.mental_fatigue )
-    {
-      if ( d->state && result_is_hit( d->state->result ) )
-      {
-        // Assumes trigger on hit, not on damage
-        priest_td_t& td = get_td( d->state->target );
-        td.buffs.mental_fatigue->trigger();
-      }
-    }
-
-    if ( priest.talents.void_ray->ok() )
-    {
-      priest.buffs.void_ray->trigger();
-    }
-
-    trigger_void_tendril();
-
-    generate_insanity( insanity_gain, priest.gains.insanity_mind_flay );
-  }
-
-  bool ready() override
-  {
-    if ( priest.talents.mind_spike->ok() )
-      return false;
-
-    return priest_spell_t::ready();
-  }
-};
-
-// Void Torrent Spell ==========================================================
-struct void_torrent_t final : public priest_spell_t
-{
-  void_torrent_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "void_torrent", p, p.artifact.void_torrent )
-  {
-    parse_options( options_str );
-
-    may_crit      = false;
-    channeled     = true;
-    use_off_gcd   = true;
-    is_mind_spell = false;
-    tick_zero     = true;
-
-    dot_duration = timespan_t::from_seconds( 4.0 );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return timespan_t::from_seconds( 4.0 );
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    timespan_t t = base_tick_time;
-
-    double h = priest.composite_spell_haste();
-
-    t *= h;
-
-    return t;
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    priest_spell_t::last_tick( d );
-
-    priest.buffs.void_torrent->expire();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.buffs.void_torrent->trigger();
-  }
-
-  bool ready() override
-  {
-    if ( !priest.buffs.voidform->check() )
-    {
-      return false;
-    }
-
-    return priest_spell_t::ready();
-  }
-};
-
-// Shadow Crash Spell ===================================================
-
 struct shadow_crash_t final : public priest_spell_t
 {
   double insanity_gain;
@@ -2772,7 +2682,109 @@ struct shadow_crash_t final : public priest_spell_t
   }
 };
 
-// Shadow Word Pain Spell ===================================================
+struct shadowy_apparition_spell_t final : public priest_spell_t
+{
+  double insanity_gain;
+
+  shadowy_apparition_spell_t( priest_t& p )
+    : priest_spell_t( "shadowy_apparitions", p, p.find_spell( 78203 ) ),
+      insanity_gain( 4 )  // Spell Data missing?
+                          // data().effectN(2).resource(RESOURCE_INSANITY) *
+  // priest.talents.auspicious_spirits->effectN(2).percent() ) )
+  {
+    background   = true;
+    proc         = false;
+    callbacks    = true;
+    may_miss     = false;
+    trigger_gcd  = timespan_t::zero();
+    travel_speed = 6.0;
+    const spell_data_t* dmg_data =
+        p.find_spell( 148859 );  // Hardcoded into tooltip 2014/06/01
+
+    parse_effect_data( dmg_data->effectN( 1 ) );
+    school = SCHOOL_SHADOW;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( priest.talents.auspicious_spirits->ok() )
+    {
+      generate_insanity( insanity_gain,
+                         priest.gains.insanity_auspicious_spirits );
+    }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    d *= 1.0 + priest.talents.auspicious_spirits->effectN( 1 ).percent();
+
+    return d;
+  }
+
+  /* Trigger a shadowy apparition
+   */
+  void trigger()
+  {
+    if ( priest.sim->debug )
+      priest.sim->out_debug << priest.name()
+                            << " triggered shadowy apparition.";
+
+    priest.procs.shadowy_apparition->occur();
+    schedule_execute();
+  }
+};
+
+struct sphere_of_insanity_spell_t final : public priest_spell_t
+{
+  double damage_amount;
+
+  sphere_of_insanity_spell_t( priest_t& p )
+    : priest_spell_t( "sphere_of_insanity", p, p.find_spell( 194182 ) ),
+      damage_amount( 0.0 )
+  {
+    may_crit    = false;
+    background  = true;
+    proc        = false;
+    callbacks   = true;
+    may_miss    = false;
+    aoe         = -1;
+    range       = 0.0;
+    radius      = 100.0;
+    trigger_gcd = timespan_t::zero();
+    school      = SCHOOL_SHADOW;
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    dot_t* d = state->target->get_dot( "shadow_word_pain", &priest );
+
+    if ( d )  // Shadow Word: Pain is ticking on the target; deal damage
+    {
+      return damage_amount *
+             0.05;  // TODO: replace with data from spell 194182, effect #3
+    }
+    else
+    {
+      return 0.0;
+    }
+  }
+
+  /// Trigger a sphere of insanity damage
+  void trigger( double amount )
+  {
+    if ( priest.sim->debug )
+    {
+      priest.sim->out_debug << priest.name()
+                            << " triggered Sphere of Insanity damage.";
+    }
+    damage_amount = amount;
+    schedule_execute();
+  }
+};
 
 struct shadow_word_pain_t final : public priest_spell_t
 {
@@ -2808,7 +2820,8 @@ struct shadow_word_pain_t final : public priest_spell_t
       }
     }
 
-    if ( priest.artifact.sphere_of_insanity.rank() )
+    if ( priest.artifact.sphere_of_insanity.rank() &&
+         !priest.active_spells.sphere_of_insanity )
     {
       priest.active_spells.sphere_of_insanity =
           new sphere_of_insanity_spell_t( p );
@@ -2898,8 +2911,6 @@ struct shadow_word_pain_t final : public priest_spell_t
   }
 };
 
-// Shadow Word Void Spell ==================================================
-
 struct shadow_word_void_t final : public priest_spell_t
 {
   double insanity_gain;
@@ -2935,7 +2946,148 @@ struct shadow_word_void_t final : public priest_spell_t
   }
 };
 
-// Vampiric Embrace Spell ===================================================
+struct silence_t final : public priest_spell_t
+{
+  silence_t( priest_t& player, const std::string& options_str )
+    : priest_spell_t( "silence", player, player.find_class_spell( "Silence" ) )
+  {
+    parse_options( options_str );
+    may_miss = may_crit   = false;
+    ignore_false_positive = true;
+
+    cooldown           = priest.cooldowns.silence;
+    cooldown->duration = data().cooldown();
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    // Only interrupts, does not keep target silenced. This works in most cases
+    // since bosses are rarely able to be completely silenced.
+    target->debuffs.casting->expire();
+  }
+
+  bool ready() override
+  {
+    if ( !target->debuffs.casting->check() ||
+         cooldown->remains() > timespan_t::zero() )
+      return false;
+
+    return priest_spell_t::ready();
+  }
+};
+
+struct smite_t final : public priest_spell_t
+{
+  smite_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) )
+  {
+    parse_options( options_str );
+
+    procs_courageous_primal_diamond = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest.buffs.holy_evangelism->trigger();
+
+    priest.buffs.power_overwhelming->trigger();
+  }
+};
+
+/// Priest Pet Summon Base Spell
+struct summon_pet_t : public priest_spell_t
+{
+  timespan_t summoning_duration;
+  std::string pet_name;
+  pet_t* pet;
+
+public:
+  summon_pet_t( const std::string& n, priest_t& p,
+                const spell_data_t* sd = spell_data_t::nil() )
+    : priest_spell_t( n, p, sd ),
+      summoning_duration( timespan_t::zero() ),
+      pet_name( n ),
+      pet( nullptr )
+  {
+    harmful = false;
+  }
+
+  bool init_finished() override
+  {
+    pet = player->find_pet( pet_name );
+
+    return priest_spell_t::init_finished();
+  }
+
+  void execute() override
+  {
+    pet->summon( summoning_duration );
+
+    priest_spell_t::execute();
+  }
+
+  bool ready() override
+  {
+    if ( !pet )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
+};
+
+struct summon_shadowfiend_t final : public summon_pet_t
+{
+  summon_shadowfiend_t( priest_t& p, const std::string& options_str )
+    : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) )
+  {
+    parse_options( options_str );
+    harmful            = false;
+    summoning_duration = data().duration();
+    cooldown           = p.cooldowns.shadowfiend;
+    cooldown->duration = data().cooldown();
+    cooldown->duration +=
+        priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
+  }
+};
+
+struct summon_mindbender_t final : public summon_pet_t
+{
+  summon_mindbender_t( priest_t& p, const std::string& options_str )
+    : summon_pet_t( "mindbender", p, p.find_talent_spell( "Mindbender" ) )
+  {
+    parse_options( options_str );
+    harmful            = false;
+    summoning_duration = data().duration();
+    cooldown           = p.cooldowns.mindbender;
+    cooldown->duration = data().cooldown();
+    cooldown->duration +=
+        priest.sets.set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
+  }
+};
+
+struct surrender_to_madness_t final : public priest_spell_t
+{
+  surrender_to_madness_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "surrender_to_madness", p,
+                      p.talents.surrender_to_madness )
+  {
+    parse_options( options_str );
+    harmful = may_hit = may_crit = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest.buffs.surrender_to_madness->trigger();
+  }
+};
 
 struct vampiric_embrace_t final : public priest_spell_t
 {
@@ -2962,8 +3114,6 @@ struct vampiric_embrace_t final : public priest_spell_t
     return priest_spell_t::ready();
   }
 };
-
-// Vampiric Touch Spell =====================================================
 
 struct vampiric_touch_t final : public priest_spell_t
 {
@@ -3075,452 +3225,38 @@ struct vampiric_touch_t final : public priest_spell_t
   }
 };
 
-// Holy Fire Base =====================================================
-
-struct holy_fire_base_t : public priest_spell_t
+struct void_bolt_t final : public priest_spell_t
 {
-  struct glyph_of_the_inquisitor_backlash_t : public priest_spell_t
+  double insanity_gain;
+
+  void_bolt_t( priest_t& player, const std::string& options_str )
+    : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
+      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
-    double spellpower;
-    double multiplier;
-    bool critical;
+    parse_options( options_str );
+    use_off_gcd                 = true;
+    is_sphere_of_insanity_spell = true;
+    energize_type =
+        ENERGIZE_NONE;  // disable resource generation from spell data.
 
-    glyph_of_the_inquisitor_backlash_t( priest_t& p )
-      : priest_spell_t( "glyph_of_the_inquisitor_backlash", p,
-                        p.talents.power_word_solace->ok()
-                            ? p.find_spell( 129250 )
-                            : p.find_class_spell( "Holy Fire" ) ),
-        spellpower( 0.0 ),
-        multiplier( 1.0 ),
-        critical( false )
+    if ( player.artifact.sinister_thoughts.rank() )
     {
-      background = true;
-      harmful    = false;
-      proc       = true;
-      may_crit   = false;
-      callbacks  = false;
-
-      target = &priest;
-
-      ability_lag        = sim->default_aura_delay;
-      ability_lag_stddev = sim->default_aura_delay_stddev;
+      base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
     }
 
-    void init() override
-    {
-      priest_spell_t::init();
-
-      stats->type = STATS_NEUTRAL;
-    }
-
-    double composite_spell_power() const override
-    {
-      return spellpower;
-    }
-
-    double composite_da_multiplier(
-        const action_state_t* /* state */ ) const override
-    {
-      double d = multiplier;
-      d /= 5;
-
-      if ( critical )
-        d *= 2;
-
-      return d;
-    }
-  };
-
-  glyph_of_the_inquisitor_backlash_t* backlash;
-
-  holy_fire_base_t( const std::string& name, priest_t& p,
-                    const spell_data_t* sd )
-    : priest_spell_t( name, p, sd ),
-      backlash( new glyph_of_the_inquisitor_backlash_t( p ) )
-  {
-    procs_courageous_primal_diamond = false;
+    cooldown->hasted = true;
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    priest.buffs.holy_evangelism->trigger();
-  }
+    generate_insanity( insanity_gain, priest.gains.insanity_void_bolt );
 
-  double action_multiplier() const override
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    m *= 1.0 + ( priest.buffs.holy_evangelism->check() *
-                 priest.buffs.holy_evangelism->data().effectN( 1 ).percent() );
-
-    return m;
-  }
-};
-
-// Power Word: Solace Spell =================================================
-
-struct power_word_solace_t final : public holy_fire_base_t
-{
-  power_word_solace_t( priest_t& player, const std::string& options_str )
-    : holy_fire_base_t( "power_word_solace", player,
-                        player.find_spell( 129250 ) )
-  {
-    parse_options( options_str );
-
-    travel_speed = 0.0;  // DBC has default travel taking 54seconds.....
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    holy_fire_base_t::impact( s );
-
-    double amount = data().effectN( 3 ).percent() / 100.0 *
-                    priest.resources.max[ RESOURCE_MANA ];
-    priest.resource_gain( RESOURCE_MANA, amount,
-                          priest.gains.power_word_solace );
-  }
-};
-
-// Holy Fire Spell ==========================================================
-
-struct holy_fire_t final : public holy_fire_base_t
-{
-  holy_fire_t( priest_t& player, const std::string& options_str )
-    : holy_fire_base_t( "holy_fire", player,
-                        player.find_class_spell( "Holy Fire" ) )
-  {
-    parse_options( options_str );
-  }
-};
-
-// Penance Spell ============================================================
-
-struct penance_t final : public priest_spell_t
-{
-  struct penance_tick_t final : public priest_spell_t
-  {
-    penance_tick_t( priest_t& p, stats_t* stats )
-      : priest_spell_t( "penance_tick", p, p.dbc.spell( 47666 ) )
+    if ( priest.buffs.shadow_t19_4p->up() )
     {
-      background  = true;
-      dual        = true;
-      direct_tick = true;
-      //      can_trigger_atonement = priest.specs.atonement->ok();
-
-      this->stats = stats;
+      cooldown->reset( false );
     }
-
-    bool verify_actor_level() const override
-    {
-      // Tick spell data is restricted to level 60+, even though main spell is
-      // level10+
-      return true;
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      priest_spell_t::impact( state );
-
-      if ( result_is_hit( state->result ) )
-      {
-        // TODO: Check if this is the correct place & check for triggering.
-        // 2015-04-14: Your Penance [...] each time it deals damage or heals.
-        priest.buffs.reperation->trigger();
-      }
-    }
-  };
-
-  penance_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "penance", p, p.find_class_spell( "Penance" ) )
-  {
-    parse_options( options_str );
-
-    may_crit       = false;
-    may_miss       = false;
-    channeled      = true;
-    tick_zero      = true;
-    dot_duration   = timespan_t::from_seconds( 2.0 );
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-
-    // HACK: Set can_trigger here even though the tick spell actually
-    // does the triggering. We want atonement_penance to be created in
-    // priest_heal_t::init() so that it appears in the report.
-    //    can_trigger_atonement = priest.specs.atonement->ok();
-
-    if ( priest.talents.castigation->ok() )
-    {
-      // Add 1 extra millisecond, so we only get 4 ticks instead of an extra
-      // tiny 5th tick.
-      base_tick_time =
-          timespan_t::from_seconds( 2.0 / 3 ) + timespan_t::from_millis( 1 );
-    }
-    dot_duration += priest.sets.set( PRIEST_DISCIPLINE, T17, B2 )
-                        ->effectN( 1 )
-                        .time_value();
-
-    dynamic_tick_action = true;
-    tick_action         = new penance_tick_t( p, stats );
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    // Do not haste ticks!
-    return base_tick_time;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-    priest.buffs.holy_evangelism->trigger();  // re-checked 2014/07/07:
-                                              // offensive penance grants
-                                              // evangelism stacks, even though
-                                              // not mentioned in the tooltip.
-
-    if ( priest.sets.has_set_bonus( PRIEST_DISCIPLINE, T17, B2 ) )
-      priest.buffs.holy_evangelism->trigger();  // Set bonus says "...and
-                                                // generates 2 stacks of
-                                                // Evangelism." Need to check if
-                                                // this happens up front or
-                                                // after a particular tick. -
-                                                // Twintop 2014/07/11
-  }
-};
-
-// Smite Spell ==============================================================
-
-struct smite_t final : public priest_spell_t
-{
-  smite_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) )
-  {
-    parse_options( options_str );
-
-    procs_courageous_primal_diamond = false;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.buffs.holy_evangelism->trigger();
-
-    priest.buffs.power_overwhelming->trigger();
-  }
-};
-
-// Halo Spell
-
-// This is the background halo spell which does the actual damage
-// Templated so we can base it on priest_spell_t or priest_heal_t
-template <class Base>
-struct halo_base_t : public Base
-{
-public:
-  halo_base_t( const std::string& n, priest_t& p, const spell_data_t* s )
-    : Base( n, p, s )
-  {
-    Base::aoe        = -1;
-    Base::background = true;
-
-    if ( Base::data().ok() )
-    {
-      // Reparse the correct effect number, because we have two competing ones
-      // (
-      // were 2 > 1 always wins out )
-      Base::parse_effect_data( Base::data().effectN( 1 ) );
-    }
-    Base::radius = 30;
-    Base::range  = 0;
-  }
-
-  timespan_t distance_targeting_travel_time( action_state_t* s ) const override
-  {
-    return timespan_t::from_seconds(
-        s->action->player->get_player_distance( *s->target ) /
-        Base::travel_speed );
-  }
-
-  double calculate_direct_amount( action_state_t* s ) const override
-  {
-    double cda = Base::calculate_direct_amount( s );
-
-    // Source: Ghostcrawler 2012-06-20
-    // http://us.battle.net/wow/en/forum/topic/5889309137?page=5#97
-
-    double distance;
-    if ( s->action->player->sim->distance_targeting_enabled )
-    {
-      distance = s->action->player->get_player_distance( *s->target );
-    }
-    else
-    {
-      distance =
-          std::fabs( s->action->player->current.distance -
-                     s->target->current
-                         .distance );  // Distance from the caster to the target
-    }
-
-    // double mult = 0.5 * pow( 1.01, -1 * pow( ( distance - 25 ) / 2, 4 ) ) +
-    // 0.1 + 0.015 * distance;
-    double mult = 0.5 * exp( -0.00995 * pow( distance / 2 - 12.5, 4 ) ) + 0.1 +
-                  0.015 * distance;
-
-    return cda * mult;
-  }
-};
-
-struct halo_t final : public priest_spell_t
-{
-  halo_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "halo", p, p.talents.halo ),
-      _heal_spell( new halo_base_t<priest_heal_t>( "halo_heal", p,
-                                                   p.find_spell( 120692 ) ) ),
-      _dmg_spell( new halo_base_t<priest_spell_t>( "halo_damage", p,
-                                                   p.find_spell( 120696 ) ) )
-  {
-    parse_options( options_str );
-
-    add_child( _heal_spell );
-    add_child( _dmg_spell );
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    _heal_spell->execute();
-    _dmg_spell->execute();
-  }
-
-private:
-  action_t* _heal_spell;
-  action_t* _dmg_spell;
-};
-
-// Divine Star spell
-
-template <class Base>
-struct divine_star_base_t : public Base
-{
-private:
-  typedef Base
-      ab;  // the action base ("ab") type (priest_spell_t or priest_heal_t)
-public:
-  typedef divine_star_base_t base_t;
-
-  divine_star_base_t* return_spell;
-
-  divine_star_base_t( const std::string& n, priest_t& p,
-                      const spell_data_t* spell_data,
-                      bool is_return_spell = false )
-    : ab( n, p, spell_data ),
-      return_spell( ( is_return_spell
-                          ? nullptr
-                          : new divine_star_base_t( n, p, spell_data, true ) ) )
-  {
-    ab::aoe = -1;
-
-    ab::proc = ab::background = true;
-  }
-
-  // Divine Star will damage and heal targets twice, once on the way out and
-  // again on the way back. This is determined by distance from the target.
-  // If we are too far away, it misses completely. If we are at the very
-  // edge distance wise, it will only hit once. If we are within range (and
-  // aren't moving such that it would miss the target on the way out and/or
-  // back), it will hit twice. Threshold is 24 yards, per tooltip and tests
-  // for 2 hits. 28 yards is the threshold for 1 hit.
-  void execute() override
-  {
-    double distance;
-
-    if ( ab::player->sim->distance_targeting_enabled )
-      distance = ab::player->get_player_distance( *ab::target );
-    else
-      distance = ab::player->current.distance;
-
-    if ( distance <= 28 )
-    {
-      ab::execute();
-
-      if ( return_spell && distance <= 24 )
-        return_spell->execute();
-    }
-  }
-};
-
-struct divine_star_t final : public priest_spell_t
-{
-  divine_star_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "divine_star", p, p.talents.divine_star ),
-      _heal_spell( new divine_star_base_t<priest_heal_t>(
-          "divine_star_heal", p, p.find_spell( 110745 ) ) ),
-      _dmg_spell( new divine_star_base_t<priest_spell_t>(
-          "divine_star_damage", p, p.find_spell( 122128 ) ) )
-  {
-    parse_options( options_str );
-
-    dot_duration = base_tick_time = timespan_t::zero();
-
-    add_child( _heal_spell );
-    add_child( _dmg_spell );
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    _heal_spell->execute();
-    _dmg_spell->execute();
-  }
-
-private:
-  action_t* _heal_spell;
-  action_t* _dmg_spell;
-};
-
-// Silence Spell =======================================================
-
-struct silence_t final : public priest_spell_t
-{
-  silence_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "silence", player, player.find_class_spell( "Silence" ) )
-  {
-    parse_options( options_str );
-    may_miss = may_crit   = false;
-    ignore_false_positive = true;
-
-    cooldown           = priest.cooldowns.silence;
-    cooldown->duration = data().cooldown();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    // Only interrupts, does not keep target silenced. This works in most cases
-    // since bosses are rarely able to be completely silenced.
-    target->debuffs.casting->expire();
-  }
-
-  bool ready() override
-  {
-    if ( !target->debuffs.casting->check() ||
-         cooldown->remains() > timespan_t::zero() )
-      return false;
-
-    return priest_spell_t::ready();
-  }
-};
-
-struct schism_t final : public priest_spell_t
-{
-  schism_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "schism", player, player.talents.schism )
-  {
-    parse_options( options_str );
   }
 
   void impact( action_state_t* s ) override
@@ -3528,40 +3264,242 @@ struct schism_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest_td_t& td = get_td( s->target );
-
-    if ( result_is_hit( s->result ) )
+    // timespan_t extend_duration =
+    //    timespan_t::from_seconds( data().effectN( 2 ).base_value() );
+    // extend_duration *= composite_haste(); FIXME Check is it is reduced by
+    // haste or not.
+    if ( td.dots.shadow_word_pain->is_ticking() )
     {
-      // Assumption scamille 2016-07-28: Schism only applied on hit
-      td.buffs.schism->trigger();
+      td.dots.shadow_word_pain->refresh_duration();
+    }
+
+    if ( td.dots.vampiric_touch->is_ticking() )
+    {
+      td.dots.vampiric_touch->refresh_duration();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !( priest.buffs.voidform->check() ) )
+      return false;
+
+    return priest_spell_t::ready();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    if ( priest.mastery_spells.madness->ok() )
+    {
+      m *= 1.0 + priest.cache.mastery_value();
+    }
+
+    if ( priest.buffs.anunds_last_breath->check() )
+    {
+      m *= 1.0 +
+           ( priest.buffs.anunds_last_breath->data().effectN( 1 ).percent() *
+             priest.buffs.anunds_last_breath->stack() );
+      priest.buffs.anunds_last_breath->expire();
+    }
+    return m;
+  }
+};
+
+struct void_eruption_t final : public priest_spell_t
+{
+  action_t* void_bolt;
+
+  void_eruption_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "void_eruption", p, p.find_spell( 228360 ) ),
+      void_bolt( nullptr )
+  {
+    parse_options( options_str );
+    base_costs[ RESOURCE_INSANITY ] = 0.0;
+
+    may_miss = false;
+    aoe      = -1;
+    range    = 0.0;
+    radius   = 100.0;
+    school   = SCHOOL_SHADOW;
+    cooldown = priest.cooldowns.void_bolt;
+  }
+
+  void init() override
+  {
+    priest_spell_t::init();
+    void_bolt = player->find_action( "void_bolt" );
+  }
+
+  std::vector<player_t*>& target_list() const override
+  {
+    std::vector<player_t*>& tl = priest_spell_t::target_list();
+
+    priest_spell_t::available_targets( tl );
+
+    auto it = tl.begin();
+
+    while ( it != tl.end() )
+    {
+      priest_td_t& td = priest_spell_t::get_td( *it );
+
+      if ( !td.dots.shadow_word_pain->is_ticking() &&
+           !td.dots.vampiric_touch->is_ticking() )  // Neither SWP nor VT
+      {
+        priest.procs.void_eruption_no_dots->occur();
+        it = tl.erase( it );
+      }
+      else if ( td.dots.shadow_word_pain->is_ticking() &&
+                td.dots.vampiric_touch->is_ticking() )  // Both SWP and VT
+      {
+        priest.procs.void_eruption_both_dots->occur();
+        it = tl.insert( it, *it );
+        it += 2;
+      }
+      else  // SWP or VT
+      {
+        if ( td.dots.shadow_word_pain->is_ticking() )
+        {
+          priest.procs.void_eruption_only_shadow_word_pain->occur();
+        }
+        else
+        {
+          priest.procs.void_eruption_only_vampiric_touch->occur();
+        }
+        it++;
+      }
+    }
+
+    return tl;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest.buffs.voidform->trigger();
+    priest.cooldowns.void_bolt->reset( true );
+
+    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B4 ) )
+    {
+      priest.buffs.shadow_t19_4p->trigger();
+    }
+    else
+    {
+      priest.cooldowns.void_bolt->start( void_bolt );
+      priest.cooldowns.void_bolt->adjust(
+          -timespan_t::from_millis( 1000 *
+                                    ( 1.5 * priest.composite_spell_speed() ) ),
+          true );
+    }
+
+    if ( priest.artifact.sphere_of_insanity.rank() )
+    {
+      priest.buffs.sphere_of_insanity->trigger();
+      priest.buffs.sphere_of_insanity->current_value = 0.0;
+    }
+
+    if ( priest.active_items.mother_shahrazs_seduction &&
+         priest.buffs.lingering_insanity->up() )
+    {
+      int mss_vf_stacks =
+          floor( priest.buffs.lingering_insanity->remains().total_seconds() /
+                 priest.active_items.mother_shahrazs_seduction->driver()
+                     ->effectN( 1 )
+                     .base_value() );
+
+      priest.buffs.voidform->bump( mss_vf_stacks );
+    }
+
+    if ( priest.talents.void_lord->ok() &&
+         priest.buffs.lingering_insanity->up() )
+    {
+      timespan_t time =
+          priest.buffs.lingering_insanity->remains() -
+          ( priest.talents.void_lord->effectN( 1 ).time_value() * 1000 );
+      priest.buffs.lingering_insanity->extend_duration( player, -time );
+    }
+    else
+    {
+      priest.buffs.lingering_insanity->expire();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !priest.buffs.voidform->check() &&
+         ( priest.resources.current[ RESOURCE_INSANITY ] >=
+               priest.resources.max[ RESOURCE_INSANITY ] ||
+           ( priest.talents.legacy_of_the_void->ok() &&
+             ( priest.resources.current[ RESOURCE_INSANITY ] >=
+               priest.resources.max[ RESOURCE_INSANITY ] +
+                   priest.talents.legacy_of_the_void->effectN( 2 )
+                       .base_value() ) ) ) )
+    {
+      return priest_spell_t::ready();
+    }
+    else
+    {
+      return false;
     }
   }
 };
 
-struct purge_the_wicked_t final : public priest_spell_t
+struct void_torrent_t final : public priest_spell_t
 {
-  struct purge_the_wicked_dot_t final : public priest_spell_t
-  {
-    purge_the_wicked_dot_t( priest_t& p )
-      : priest_spell_t( "purge_the_wicked", p,
-                        p.talents.purge_the_wicked->effectN( 2 ).trigger() )
-    {
-      may_crit = true;
-      // tick_zero = false;
-      energize_type =
-          ENERGIZE_NONE;  // disable resource generation from spell data
-      background = true;
-    }
-  };
-
-  purge_the_wicked_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "purge_the_wicked", p, p.talents.purge_the_wicked )
+  void_torrent_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "void_torrent", p, p.artifact.void_torrent )
   {
     parse_options( options_str );
 
-    may_crit = true;
-    energize_type =
-        ENERGIZE_NONE;  // disable resource generation from spell data
-    execute_action = new purge_the_wicked_dot_t( p );
+    may_crit      = false;
+    channeled     = true;
+    use_off_gcd   = true;
+    is_mind_spell = false;
+    tick_zero     = true;
+
+    dot_duration = timespan_t::from_seconds( 4.0 );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  {
+    return timespan_t::from_seconds( 4.0 );
+  }
+
+  timespan_t tick_time( const action_state_t* ) const override
+  {
+    timespan_t t = base_tick_time;
+
+    double h = priest.composite_spell_haste();
+
+    t *= h;
+
+    return t;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    priest_spell_t::last_tick( d );
+
+    priest.buffs.void_torrent->expire();
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest.buffs.void_torrent->trigger();
+  }
+
+  bool ready() override
+  {
+    if ( !priest.buffs.voidform->check() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
   }
 };
 
