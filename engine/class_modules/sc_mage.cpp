@@ -4406,8 +4406,10 @@ struct flame_on_t : public fire_mage_spell_t
 
 struct flurry_bolt_t : public frost_mage_spell_t
 {
+  bool brain_freeze_buffed = false;
   flurry_bolt_t( mage_t* p ) :
-    frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) )
+    frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) ),
+    brain_freeze_buffed( false )
   {
     chills = true;
     if ( p -> talents.lonely_winter -> ok() )
@@ -4476,9 +4478,15 @@ struct flurry_bolt_t : public frost_mage_spell_t
     s -> result_amount = calculate_direct_amount( s );
 
     frost_mage_spell_t::impact( s );
+
     td( s -> target ) -> debuffs.winters_chill -> trigger();
   }
 
+  virtual void execute() override
+  {
+    frost_mage_spell_t::execute();
+
+  }
   virtual double action_multiplier() const override
   {
     double am = frost_mage_spell_t::action_multiplier();
@@ -4487,8 +4495,22 @@ struct flurry_bolt_t : public frost_mage_spell_t
     {
       am *= 1.0 + p() -> artifact.ice_age.percent();
     }
+
     return am;
   }
+
+  double composite_persistent_multiplier( const action_state_t* state ) const override
+  {
+    double m = frost_mage_spell_t::composite_persistent_multiplier( state );
+
+    if( brain_freeze_buffed == true )
+    {   
+      m *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
 };
 struct flurry_t : public frost_mage_spell_t
 {
@@ -4532,13 +4554,20 @@ struct flurry_t : public frost_mage_spell_t
     {
       p() -> buffs.zannesu_journey -> trigger();
     }
+    if ( p() -> buffs.brain_freeze  -> check() )
+    {
+      flurry_bolt -> brain_freeze_buffed = true;
+    }
+    else
+    {
+      flurry_bolt -> brain_freeze_buffed = false;
+    }
     p() -> buffs.brain_freeze -> expire();
   }
 
   void tick( dot_t* d ) override
   {
     frost_mage_spell_t::tick( d );
-
     flurry_bolt -> target = d -> target;
     flurry_bolt -> execute();
   }
@@ -8025,7 +8054,7 @@ void mage_t::create_buffs()
 
   // Frost
   //TODO: Remove hardcoded duration once spelldata contains the value
-  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190447 ) )
+  buffs.brain_freeze          = buff_creator_t( this, "brain_freeze", find_spell( 190446 ) )
                                   .duration( timespan_t::from_seconds( 15.0 ) );
   buffs.bone_chilling         = buff_creator_t( this, "bone_chilling", find_spell( 205766 ) );
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
