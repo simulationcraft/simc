@@ -637,7 +637,7 @@ namespace buffs {
   struct crusade_buff_t : public buff_t
   {
     crusade_buff_t( player_t* p ):
-      buff_t( buff_creator_t( p, "crusade", p -> find_spell( 224668 ) )
+      buff_t( buff_creator_t( p, "crusade", p -> find_spell( 231895 ) )
         .refresh_behavior( BUFF_REFRESH_DISABLED ) ),
       damage_modifier( 0.0 ),
       healing_modifier( 0.0 ),
@@ -4811,7 +4811,7 @@ void paladin_t::generate_action_prio_list_ret()
   VB -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
   VB -> add_action( this, "Divine Storm", "if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)" );
   VB -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=3&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)" );
-  
+
   DH -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.up&buff.divine_purpose.remains<gcd*2" );
   DH -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&buff.divine_purpose.react" );
   DH -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=5&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
@@ -5112,7 +5112,7 @@ void paladin_t::init_spells()
   talents.divine_steed               = find_talent_spell( "Divine Steed" );
   talents.seal_of_light              = find_talent_spell( "Seal of Light" );
   talents.divine_purpose             = find_talent_spell( "Divine Purpose" ); // TODO: fix this
-  talents.crusade                    = find_talent_spell( "Crusade" );
+  talents.crusade                    = find_spell( 231895 ); // find_talent_spell( "Crusade" );
   talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
 
   artifact.wake_of_ashes           = find_artifact_spell( "Wake of Ashes" );
@@ -5161,12 +5161,12 @@ void paladin_t::init_spells()
   passives.hand_of_light          = find_mastery_spell( PALADIN_RETRIBUTION );
   passives.lightbringer           = find_mastery_spell( PALADIN_HOLY );
 
-  // Specializations    
+  // Specializations
   switch ( specialization() )
   {
-    case PALADIN_HOLY: 
+    case PALADIN_HOLY:
     spec.judgment_2 = find_specialization_spell( 231644 );
-    case PALADIN_PROTECTION: 
+    case PALADIN_PROTECTION:
     spec.judgment_2 = find_specialization_spell( 231657 );
     case PALADIN_RETRIBUTION:
     spec.judgment_2 = find_specialization_spell( 231661 );
