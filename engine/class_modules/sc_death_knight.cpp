@@ -8083,11 +8083,22 @@ struct uvanimor_the_unbeautiful_t : public scoped_actor_callback_t < death_knigh
 
 struct koltiras_newfound_will_t : public scoped_actor_callback_t < death_knight_t >
 {
-  koltiras_newfound_will_t() : super( DEATH_KNIGHT_FROST )
+  // Note, we need to unconditionally initialize this item for all Death Knights because the proc is
+  // otherwise auto-initialized (for everyone), causing havoc.
+  koltiras_newfound_will_t() : super( DEATH_KNIGHT )
   { }
 
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  { p -> legendary.koltiras_newfound_will = e.driver(); }
+  {
+    if ( p -> specialization() == DEATH_KNIGHT_FROST )
+    {
+      p -> legendary.koltiras_newfound_will = e.driver();
+    }
+    else
+    {
+      p -> legendary.koltiras_newfound_will = spell_data_t::not_found();
+    }
+  }
 };
 
 struct death_knight_module_t : public module_t {
