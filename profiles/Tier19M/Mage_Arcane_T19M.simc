@@ -106,7 +106,7 @@ finger1=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_crit
 finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1806,enchant=binding_of_crit
 trinket1=swarming_plaguehive,id=139321,bonus_id=1806
 trinket2=twisting_wind,id=139323,bonus_id=1806
-main_hand=aluneth,id=127857,ilevel=930
+main_hand=aluneth,id=127857,ilevel=906
 
 # Gear Summary
 # gear_ilvl=883.33
