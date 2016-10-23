@@ -89,8 +89,8 @@ finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1806,enchant=binding_of_c
 finger2=vastly_oversized_ring,id=141580,bonus_id=1497,enchant=binding_of_crit
 trinket1=wriggling_sinew,id=139326,bonus_id=1806
 trinket2=twisting_wind,id=139323,bonus_id=1806
-main_hand=felomelorn,id=128820,ilevel=930
-off_hand=heart_of_the_phoenix,id=133959,ilevel=930
+main_hand=felomelorn,id=128820,ilevel=906
+off_hand=heart_of_the_phoenix,id=133959,ilevel=906
 
 # Gear Summary
 # gear_ilvl=878.44
