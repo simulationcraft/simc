@@ -5316,7 +5316,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
   if ( legendary.stretens_insanity )
-    m *= 1.0 + buffs.stretens_insanity -> stack() * buffs.stretens_insanity -> effectN( 1 ).percent();
+    m *= 1.0 + buffs.stretens_insanity -> stack() * buffs.stretens_insanity -> data().effectN( 1 ).percent();
 
   if ( buffs.mana_tap -> check() )
     m *= 1.0 + talents.mana_tap -> effectN( 1 ).percent();
