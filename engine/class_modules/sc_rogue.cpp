@@ -26,6 +26,13 @@ enum
   COMBO_POINT_MAX = 5
 };
 
+enum secondary_trigger_e
+{
+  TRIGGER_NONE = 0U,
+  TRIGGER_DEATH_FROM_ABOVE,
+  TRIGGER_WEAPONMASTER
+};
+
 struct rogue_t;
 namespace actions
 {
@@ -750,7 +757,7 @@ struct rogue_attack_t : public melee_attack_t
 
   // Secondary triggered ability, due to Weaponmaster talent or Death from Above. Secondary
   // triggered abilities cost no resources or incur cooldowns.
-  bool secondary_trigger;
+  secondary_trigger_e secondary_trigger;
 
   // Akaari's Soul stats object. Created for every "opener" (requires_stealth = true) that does
   // damage. Swapped into the action when Akaari's Soul secondary trigger event executes.
@@ -777,7 +784,7 @@ struct rogue_attack_t : public melee_attack_t
                   const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
-    requires_weapon( WEAPON_NONE ), secondary_trigger( false ),
+    requires_weapon( WEAPON_NONE ), secondary_trigger( TRIGGER_NONE ),
     akaari( nullptr )
   {
     parse_options( options );
@@ -876,7 +883,7 @@ struct rogue_attack_t : public melee_attack_t
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    if ( secondary_trigger )
+    if ( secondary_trigger != TRIGGER_NONE )
     {
       cd_duration = timespan_t::zero();
     }
@@ -1147,16 +1154,15 @@ struct secondary_ability_trigger_t : public event_t
   action_state_t* state;
   player_t* target;
   int cp;
+  secondary_trigger_e source;
 
-  secondary_ability_trigger_t( action_state_t* s, const timespan_t& delay = timespan_t::zero() ) :
-    event_t( *s -> action -> sim, delay ), action( s -> action ), state( s ), target( nullptr ), cp( 0 )
-  {
-  }
+  secondary_ability_trigger_t( action_state_t* s, secondary_trigger_e source_, const timespan_t& delay = timespan_t::zero() ) :
+    event_t( *s -> action -> sim, delay ), action( s -> action ), state( s ), target( nullptr ), cp( 0 ), source( source_ )
+  { }
 
-  secondary_ability_trigger_t( player_t* target, action_t* action, int cp, const timespan_t& delay = timespan_t::zero() ) :
-    event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp )
-  {
-  }
+  secondary_ability_trigger_t( player_t* target, action_t* action, int cp, secondary_trigger_e source_, const timespan_t& delay = timespan_t::zero() ) :
+    event_t( *action -> sim, delay ), action( action ), state( nullptr ), target( target ), cp( cp ), source( source_ )
+  { }
 
   const char* name() const override
   { return "secondary_ability_trigger"; }
@@ -1166,8 +1172,9 @@ struct secondary_ability_trigger_t : public event_t
     actions::rogue_attack_t* attack = rogue_t::cast_attack( action );
     auto bg = attack -> background, d = attack -> dual, r = attack -> repeating;
 
-    attack -> background = attack -> dual = attack -> secondary_trigger = true;
+    attack -> background = attack -> dual = true;
     attack -> repeating = false;
+    attack -> secondary_trigger = source;
     if ( state )
     {
       attack -> pre_execute_state = state;
@@ -1184,10 +1191,10 @@ struct secondary_ability_trigger_t : public event_t
       attack -> pre_execute_state = s;
     }
     attack -> execute();
-    attack -> secondary_trigger = false;
     attack -> background = bg;
     attack -> dual = d;
     attack -> repeating = r;
+    attack -> secondary_trigger = TRIGGER_NONE;
     state = nullptr;
   }
 
@@ -2107,7 +2114,7 @@ double rogue_attack_t::cost() const
 void rogue_attack_t::consume_resource()
 {
   // Abilities triggered as part of another ability (secondary triggers) do not consume resources
-  if ( secondary_trigger )
+  if ( secondary_trigger != TRIGGER_NONE )
   {
     return;
   }
@@ -2587,7 +2594,7 @@ struct envenom_t : public rogue_attack_t
   {
     rogue_attack_t::consume_resource();
 
-    if ( ! secondary_trigger &&
+    if ( secondary_trigger == TRIGGER_NONE &&
          p() -> sets.has_set_bonus( ROGUE_ASSASSINATION, T17, B4 ) )
     {
       p() -> trigger_combo_point_gain( 1, p() -> gains.t17_4pc_assassination, this );
@@ -2973,7 +2980,7 @@ struct goremaws_bite_strike_t : public rogue_attack_t
     double m = rogue_attack_t::action_multiplier();
 
     // Weaponmaster Bug
-    if ( secondary_trigger ) // Rough estimate of the result in average, it's a server side bug, hard to guess.
+    if ( secondary_trigger == TRIGGER_WEAPONMASTER ) // Rough estimate of the result in average, it's a server side bug, hard to guess.
     {
       m *= 1.0 + 15;
     }
@@ -3012,7 +3019,7 @@ struct goremaws_bite_t:  public rogue_attack_t
     oh -> target = target;
     oh -> schedule_execute();
 
-    if ( ! secondary_trigger ) // As of 7.0.3.22810 it doesn't trigger the buff on the weaponmaster proc.
+    if ( secondary_trigger != TRIGGER_WEAPONMASTER ) // As of 7.0.3.22810 it doesn't trigger the buff on the weaponmaster proc.
     {
       p() -> buffs.goremaws_bite -> trigger();
     }
@@ -3442,7 +3449,7 @@ struct run_through_t: public rogue_attack_t
   {
     rogue_attack_t::consume_resource();
 
-    if ( ! secondary_trigger )
+    if ( secondary_trigger == TRIGGER_NONE )
     {
       p() -> buffs.deceit -> expire();
     }
@@ -4150,7 +4157,7 @@ struct shadowstrike_t : public rogue_attack_t
   // to the target
   double composite_teleport_distance( const action_state_t* ) const override
   {
-    if ( secondary_trigger )
+    if ( secondary_trigger != TRIGGER_NONE )
     {
       return 0;
     }
@@ -4384,7 +4391,7 @@ struct death_from_above_driver_t : public rogue_attack_t
     ability -> snapshot_state( ability_state, DMG_DIRECT );
     ability_state -> target = d -> target;
     cast_state( ability_state ) -> cp = cast_state( d -> state ) -> cp;
-    make_event<secondary_ability_trigger_t>( *sim, ability_state );
+    make_event<secondary_ability_trigger_t>( *sim, ability_state, TRIGGER_DEATH_FROM_ABOVE );
 
     p() -> buffs.death_from_above -> expire();
   }
@@ -5224,9 +5231,16 @@ void rogue_t::trigger_deepening_shadows( const action_state_t* state )
     return;
   }
 
+  if ( attack -> secondary_trigger == TRIGGER_WEAPONMASTER )
+  {
+    return;
+  }
+
   const actions::rogue_attack_state_t* s = actions::rogue_attack_t::cast_state( state );
   if ( s -> cp == 0 )
+  {
     return;
+  }
 
   timespan_t adjustment = timespan_t::from_seconds( -1 * spec.deepening_shadows -> effectN( 2 ).base_value() * s -> cp );
   cooldowns.shadow_dance -> adjust( adjustment, s -> cp >= 5 );
@@ -5291,7 +5305,7 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
   if ( s -> result_type == DMG_DIRECT )
   {
     make_event<actions::secondary_ability_trigger_t>( *sim, s -> target, s -> action,
-        actions::rogue_attack_t::cast_state( s ) -> cp );
+        actions::rogue_attack_t::cast_state( s ) -> cp, TRIGGER_WEAPONMASTER );
   }
   // Dot damage is always a "snapshot"
   else
