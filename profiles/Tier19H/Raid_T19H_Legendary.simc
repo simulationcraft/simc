@@ -67,7 +67,7 @@ wrists=zoldyck_family_training_shackles,id=137098
 Rogue_Assassination_Exsg_T19H.simc
 wrists=zoldyck_family_training_shackles,id=137098
 Rogue_Outlaw_T19H.simc
-finger1=insignia_of_ravenholdt,id=137049
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
 Rogue_Subtlety_T19H.simc
 feet=shadow_satyrs_walk,id=137032
  
