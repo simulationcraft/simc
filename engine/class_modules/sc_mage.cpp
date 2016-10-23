@@ -7932,7 +7932,7 @@ void mage_t::init_spells()
   spec.shatter               = find_specialization_spell( "Shatter"          );
   spec.shatter_2             = find_specialization_spell( 231582 );
 
-  spec.fire_blast_2          = find_specialization_spell( 231565 );
+  spec.fire_blast_2          = find_specialization_spell( 231568 );
   spec.fire_blast_3          = find_specialization_spell( 231567 );
 
   // Mastery
