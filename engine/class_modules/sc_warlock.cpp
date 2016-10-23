@@ -2846,7 +2846,7 @@ struct unstable_affliction_t: public warlock_spell_t
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.power_cord_of_lethtendris );
     }
-    else if ( !flag )
+    else if ( !flag && p() -> legendary.stretens_insanity )
     { // Only increment if the dot wasn't already there.
       p() -> buffs.stretens_insanity -> increment( 1 );
     }
@@ -5900,7 +5900,6 @@ void warlock_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.stretens_insanity = buff_creator_t( this, "stretens_insanity", find_spell( 208822 ) )
-    .chance( legendary.stretens_insanity )
     .default_value( find_spell( 208822 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
