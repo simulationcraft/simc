@@ -25,7 +25,7 @@ talents=1332311
 artifact=36:0:0:0:0:1136:1:1137:1:1139:1:1141:1:1142:1:1143:3:1145:3:1146:3:1147:3:1148:3:1149:3:1150:3:1356:1
 
 head=greathelm_of_barbed_chelicerae,id=137410,bonus_id=1727/1517
-neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727/1517,enchant=mark_of_the_distant_army
+neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727/1517,enchant=mark_of_the_trained_soldier
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727/1517
 back=cape_of_rigid_order,id=134402,bonus_id=1727/1517,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727/1517
