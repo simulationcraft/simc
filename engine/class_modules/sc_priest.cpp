@@ -1817,12 +1817,16 @@ struct levitate_t final : public priest_spell_t
 struct lingering_insanity_t final : public priest_spell_t
 {
   int stacks_to_trigger;
+  timespan_t duration;
 
   lingering_insanity_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "trigger_lingering_insanity", p, spell_data_t::nil() ),
-      stacks_to_trigger( 0 )
+      stacks_to_trigger( 0 ),
+      duration( timespan_t::min() )
   {
     add_option( opt_int( "stacks", stacks_to_trigger, 0, 100 ) );
+    add_option( opt_timespan( "duration", duration, timespan_t::zero(),
+                              p.buffs.lingering_insanity->buff_duration ) );
     parse_options( options_str );
     ignore_false_positive = true;
     harmful               = false;
@@ -1832,7 +1836,8 @@ struct lingering_insanity_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    priest.buffs.lingering_insanity->trigger( stacks_to_trigger );
+    priest.buffs.lingering_insanity->trigger(
+        stacks_to_trigger, buff_t::DEFAULT_VALUE(), -1, duration );
   }
 };
 
