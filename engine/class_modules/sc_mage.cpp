@@ -3487,7 +3487,11 @@ struct blizzard_shard_t : public frost_mage_spell_t
       trigger_fof( fof_source_id , fof_proc_chance );
     }
   }
-
+  virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
+  {
+    return frost_mage_spell_t::snapshot_state( s, rt );
+ 
+  }
   virtual double calculate_direct_amount( action_state_t* s ) const override
   {
     frost_mage_spell_t::calculate_direct_amount( s );
@@ -3545,6 +3549,11 @@ struct blizzard_t : public frost_mage_spell_t
     return duration * ( tick_time( s ) / base_tick_time );
   }
 
+  virtual void tick( dot_t* d ) override
+  {
+    frost_mage_spell_t::tick( d );
+    handle_frozen( d -> state );
+  }
   virtual void last_tick( dot_t* d ) override
   {
     frost_mage_spell_t::last_tick( d );
