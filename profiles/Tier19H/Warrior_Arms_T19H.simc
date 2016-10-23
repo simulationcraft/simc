@@ -92,7 +92,7 @@ actions.single+=/focused_rage,if=equipped.archavons_heavy_hand
 actions.single+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
 
 head=greathelm_of_barbed_chelicerae,id=137410,bonus_id=1727/1517
-neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727/1517,enchant=mark_of_the_distant_army
+neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727/1517,enchant=mark_of_the_trained_soldier
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727/1517
 back=cape_of_rigid_order,id=134402,bonus_id=1727/1517,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727/1517
@@ -113,7 +113,7 @@ main_hand=stromkar_the_warbreaker,id=128910,gem_id=137543/136718/137549,relic_id
 # gear_stamina=22336
 # gear_crit_rating=3480
 # gear_haste_rating=2796
-# gear_mastery_rating=12091
+# gear_mastery_rating=12391
 # gear_versatility_rating=1117
 # gear_armor=4174
 # set_bonus=tier19p_plate_2pc=1

@@ -36,7 +36,7 @@ talents=1332311
 artifact=36:140815:141523:140822:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:3:1148:3:1149:6:1150:3:1151:3:1356:1
 
 head=,id=138357,bonus_id=1806
-neck=,id=140894,bonus_id=1806,enchant=mark_of_the_claw
+neck=,id=140894,bonus_id=1806,enchant=mark_of_the_trained_soldier
 shoulders=,id=138363,bonus_id=1806
 back=,id=138374,bonus_id=1806,enchant=binding_of_strength
 chest=,id=140913,bonus_id=1806

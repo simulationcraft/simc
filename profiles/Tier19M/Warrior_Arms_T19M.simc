@@ -92,7 +92,7 @@ actions.single+=/focused_rage,if=equipped.archavons_heavy_hand
 actions.single+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
 
 head=warhelm_of_the_obsidian_aspect,id=138357,bonus_id=1806
-neck=zealous_timestone_pendant,id=140894,bonus_id=1806,enchant=mark_of_the_claw
+neck=zealous_timestone_pendant,id=140894,bonus_id=1806,enchant=mark_of_the_trained_soldier
 shoulders=shoulderplates_of_the_obsidian_aspect,id=138363,bonus_id=1806
 back=greatcloak_of_the_obsidian_aspect,id=138374,bonus_id=1806,enchant=binding_of_strength
 chest=breastplate_of_the_remembered_king,id=140913,bonus_id=1806
@@ -113,7 +113,7 @@ main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/141523/14
 # gear_stamina=26247
 # gear_crit_rating=5413
 # gear_haste_rating=4470
-# gear_mastery_rating=8669
+# gear_mastery_rating=8969
 # gear_versatility_rating=1124
 # gear_armor=4353
 # set_bonus=tier19_2pc=1
