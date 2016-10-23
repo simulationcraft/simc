@@ -5090,7 +5090,16 @@ struct glacial_spike_t : public frost_mage_spell_t
   {
     parse_options( options_str );
     spell_power_mod.direct = p -> find_spell( 228600 ) -> effectN( 1 ).sp_coeff();
+    //FIXME: Figure out a better way to do this than a fake cooldown
     cooldown -> duration = timespan_t::from_seconds( 1.5 );
+    if ( p -> talents.splitting_ice -> ok() )
+    {
+      base_multiplier *= 1.0 + p -> talents.splitting_ice
+                                 -> effectN( 3 ).percent();
+      aoe = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
+      base_aoe_multiplier *= p -> talents.splitting_ice
+                               -> effectN( 2 ).percent();
+    }
   }
 
   virtual bool ready() override
