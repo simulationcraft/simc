@@ -112,6 +112,7 @@ public:
     buff_t* insanity_drain_stacks;
     buff_t* lingering_insanity;
     buff_t* mind_sear_on_hit_reset;
+    buff_t* shadowform;
     buff_t* shadowy_insight;
     buff_t* sphere_of_insanity;
     buff_t* surrender_to_madness;
@@ -451,6 +452,8 @@ public:
   }
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
+  void assess_damage( school_e school, dmg_e dtype,
+                      action_state_t* s ) override;
   double composite_melee_haste() const override;
   double composite_melee_speed() const override;
   double composite_spell_haste() const override;
@@ -2682,6 +2685,23 @@ struct shadow_crash_t final : public priest_spell_t
   }
 };
 
+struct shadowform_t final : public priest_spell_t
+{
+  shadowform_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "shadowform", p, p.find_class_spell( "Shadowform" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest.buffs.shadowform->trigger();
+  }
+};
+
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
   double insanity_gain;
@@ -4336,6 +4356,18 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
   return player_t::create_expression( a, name_str );
 }
 
+void priest_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )
+{
+  if ( buffs.shadowform->check() )
+  {
+    s->result_amount *= 1.0 +
+                        buffs.shadowform->check() *
+                            buffs.shadowform->data().effectN( 2 ).percent();
+  }
+
+  player_t::assess_damage( school, dtype, s );
+}
+
 // priest_t::composite_spell_haste ==========================================
 
 double priest_t::composite_spell_haste() const
@@ -4428,6 +4460,12 @@ double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
+  if ( buffs.shadowform->check() )
+  {
+    m *= 1.0 +
+         buffs.shadowform->data().effectN( 1 ).percent() *
+             buffs.shadowform->check();
+  }
   if ( specs.voidform->ok() && buffs.voidform->check() &&
        ( dbc::is_school( SCHOOL_SHADOW, school ) ||
          dbc::is_school( SCHOOL_SHADOWFROST, school ) ) )
@@ -4580,6 +4618,8 @@ action_t* priest_t::create_action( const std::string& name,
     return new mind_spike_t( *this, options_str );
   if ( name == "mind_sear" )
     return new mind_sear_t( *this, options_str );
+  if ( name == "shadowform" )
+    return new shadowform_t( *this, options_str );
   if ( name == "shadow_crash" )
     return new shadow_crash_t( *this, options_str );
   if ( name == "shadow_word_death" )
@@ -4910,6 +4950,10 @@ void priest_t::create_buffs()
           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
+  buffs.shadowform = buff_creator_t( this, "shadowform" )
+                          .spell( find_class_spell( "Shadowform" ) )
+                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   buffs.shadowy_insight =
       buff_creator_t( this, "shadowy_insight" )
           .spell( talents.shadowy_insight )
@@ -5141,6 +5185,7 @@ void priest_t::apl_precombat()
       break;
     case PRIEST_SHADOW:
     default:
+      precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
       precombat->add_action( "mind_blast" );
       break;
   }
@@ -5683,7 +5728,8 @@ void priest_t::combat_begin()
             "time has been enabled in this simulation." );
         sim->errorf(
             "This allows sims with only Shadow Priests to give useful "
-            "feedback, as otherwise the sim would continue on for 300+ seconds "
+            "feedback, as otherwise the sim would continue");
+        sim -> errorf("on for 300+ seconds "
             "and reduce the target's health in the next iteration by "
             "significantly more than it should." );
         sim->errorf(
