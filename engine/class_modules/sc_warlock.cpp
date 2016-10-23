@@ -2628,7 +2628,7 @@ struct unstable_affliction_t: public warlock_spell_t
   struct real_ua_t : public warlock_spell_t
   {
     real_ua_t( warlock_t* p, int num ) :
-      warlock_spell_t( "unstable_affliction_" + std::to_string( num ), p, p -> find_spell( ua_spells[num] ) )
+      warlock_spell_t( "unstable_affliction_" + std::to_string( num + 1 ), p, p -> find_spell( ua_spells[num] ) )
     {
       background = true;
       dual = true;
@@ -5192,7 +5192,7 @@ warlock( p )
   using namespace buffs;
   dots_corruption = target -> get_dot( "corruption", &p );
   for ( int i = 0; i < MAX_UAS; i++ )
-    dots_unstable_affliction[i] = target -> get_dot( "unstable_affliction_" + std::to_string( i ), &p );
+    dots_unstable_affliction[i] = target -> get_dot( "unstable_affliction_" + std::to_string( i + 1 ), &p );
   dots_agony = target -> get_dot( "agony", &p );
   dots_doom = target -> get_dot( "doom", &p );
   dots_drain_life = target -> get_dot( "drain_life", &p );
