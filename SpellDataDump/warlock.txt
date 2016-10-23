@@ -1,4 +1,4 @@
-SimulationCraft 703-04 for World of Warcraft 7.1.0 Live (wow build 22882, git build 64f50fb)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22882, git build 26bae85)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -1764,12 +1764,12 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68063)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12500 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Siphon Life (63106), Corruption (146739), Unstable Affliction (233490)
+                   Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Siphon Life (63106), Corruption (146739), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
 #2 (id=92150)    : None (0)
                    Base Value: 313 | Scaled Value: 313
 #3 (id=170048)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12500 | Target: Self(1)
-                   Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Corruption (146739), Unstable Affliction (233490)
+                   Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Corruption (146739), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
 Description      : Increases damage done by Agony, $?s603[Doom][Corruption]$?s63106[, Siphon Life][] and Unstable Affliction by $77215s1%.
 
 Name             : Mastery: Master Demonologist (id=77219) [Spell Family (5), Passive] 
@@ -5119,6 +5119,90 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=352664)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy(6)
+Description      : $@spelldesc30108
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+
+Name             : Unstable Affliction (id=233496) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Level      : 14
+Range            : 40 yards
+Duration         : 8 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002)
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=352671)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy(6)
+Description      : $@spelldesc30108
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+
+Name             : Unstable Affliction (id=233497) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Level      : 14
+Range            : 40 yards
+Duration         : 8 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002)
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=352672)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy(6)
+Description      : $@spelldesc30108
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+
+Name             : Unstable Affliction (id=233498) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Level      : 14
+Range            : 40 yards
+Duration         : 8 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002)
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=352673)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy(6)
+Description      : $@spelldesc30108
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+
+Name             : Unstable Affliction (id=233499) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Level      : 14
+Range            : 40 yards
+Duration         : 8 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Affecting spells : Mastery: Potent Afflictions (77215), Epidemic (184922), Inherently Unstable (199152), Perdition (199158), Wrath of Consumption (199646), Item - Warlock T19 Affliction 2P Bonus (212002)
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=352674)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy(6)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
