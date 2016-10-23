@@ -375,11 +375,11 @@ public:
 
     // Legion Legendaries
     // Shadow
-    const special_effect_t* anunds_seared_shackles;
-    const special_effect_t* mother_shahrazs_seduction;
-    const special_effect_t* mangazas_madness;
-    const special_effect_t* zenkaram_iridis_anadem;  // NYI
-    const special_effect_t* the_twins_painful_touch;
+    const special_effect_t* anunds_seared_shackles;     // wrist
+    const special_effect_t* mother_shahrazs_seduction;  // shoulder
+    const special_effect_t* mangazas_madness;           // belt
+    const special_effect_t* zenkaram_iridis_anadem;     // helm
+    const special_effect_t* the_twins_painful_touch;    // ring
   } active_items;
 
   // Pets
@@ -1803,8 +1803,6 @@ struct holy_fire_t final : public holy_fire_base_t
   }
 };
 
-// Levitate =================================================================
-
 struct levitate_t final : public priest_spell_t
 {
   levitate_t( priest_t& p, const std::string& options_str )
@@ -1812,6 +1810,29 @@ struct levitate_t final : public priest_spell_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
+  }
+};
+
+/// Dummy spell for triggering Lingering Insanity Buff as a pre-combat action
+struct lingering_insanity_t final : public priest_spell_t
+{
+  int stacks_to_trigger;
+
+  lingering_insanity_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "trigger_lingering_insanity", p, spell_data_t::nil() ),
+      stacks_to_trigger( 0 )
+  {
+    add_option( opt_int( "stacks", stacks_to_trigger, 0, 100 ) );
+    parse_options( options_str );
+    ignore_false_positive = true;
+    harmful               = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest.buffs.lingering_insanity->trigger( stacks_to_trigger );
   }
 };
 
@@ -3172,6 +3193,14 @@ struct vampiric_touch_t final : public priest_spell_t
     double amount_to_heal =
         s->result_amount *
         0.5;  // TODO: 50% factor not yer available through spelldata
+
+    if ( priest.active_items.zenkaram_iridis_anadem )
+    {
+      amount_to_heal *= 1.0 +
+                        priest.active_items.zenkaram_iridis_anadem->driver()
+                            ->effectN( 1 )
+                            .percent();
+    }
     double actual_amount = priest.resource_gain(
         RESOURCE_HEALTH, amount_to_heal, priest.gains.vampiric_touch_health );
     double overheal = amount_to_heal - actual_amount;
@@ -4613,6 +4642,8 @@ action_t* priest_t::create_action( const std::string& name,
     return new vampiric_embrace_t( *this, options_str );
 
   // Shadow
+  if ( name == "lingering_insanity" )
+    return new lingering_insanity_t( *this, options_str );
   if ( name == "mind_blast" )
     return new mind_blast_t( *this, options_str );
   if ( name == "mind_flay" )
