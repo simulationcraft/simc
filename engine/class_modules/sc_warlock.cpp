@@ -2636,8 +2636,10 @@ struct unstable_affliction_t: public warlock_spell_t
 {
   struct real_ua_t : public warlock_spell_t
   {
+    int self;
     real_ua_t( warlock_t* p, int num ) :
-      warlock_spell_t( "unstable_affliction_" + std::to_string( num + 1 ), p, p -> find_spell( ua_spells[num] ) )
+      warlock_spell_t( "unstable_affliction_" + std::to_string( num + 1 ), p, p -> find_spell( ua_spells[num] ) ),
+      self( num )
     {
       background = true;
       dual = true;
@@ -2695,15 +2697,35 @@ struct unstable_affliction_t: public warlock_spell_t
 
     void last_tick( dot_t* d ) override
     {
-      trigger_fatal_echos( d -> state );
+      bool triggered = trigger_fatal_echos( d -> state );
+
+      if ( p() -> legendary.stretens_insanity )
+      {
+        bool should_decrement_stretens = !triggered;
+        // check if there's another UA if we failed to trigger
+        for ( int i = 0; i < MAX_UAS && should_decrement_stretens; i++ )
+        {
+          if ( i == self )
+            continue;
+          dot_t* other = td( target ) -> dots_unstable_affliction[i];
+          if ( other -> is_ticking() )
+          {
+            should_decrement_stretens = false;
+            break;
+          }
+        }
+        if ( should_decrement_stretens )
+          p() -> buffs.stretens_insanity -> decrement( 1 );
+      }
+
       warlock_spell_t::last_tick( d );
     }
 
-    void trigger_fatal_echos( const action_state_t* source_state )
+    bool trigger_fatal_echos( const action_state_t* source_state )
     {
       if ( !p()->artifact.fatal_echoes.rank() )
       {
-        return;
+        return false;
       }
 
       if ( rng().roll( p()->artifact.fatal_echoes.data().effectN( 1 ).percent() *
@@ -2713,7 +2735,9 @@ struct unstable_affliction_t: public warlock_spell_t
 
         this -> target = source_state -> target;
         this -> schedule_execute();
+        return true;
       }
+      return false;
     }
 
     virtual double action_multiplier() const override
@@ -2846,16 +2870,12 @@ struct unstable_affliction_t: public warlock_spell_t
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.power_cord_of_lethtendris );
     }
-    else if ( !flag && p() -> legendary.stretens_insanity )
-    { // Only increment if the dot wasn't already there.
-      p() -> buffs.stretens_insanity -> increment( 1 );
+    else if ( !flag )
+    {
+      // Only increment if the dot wasn't already there.
+      if ( p() -> legendary.stretens_insanity )
+        p() -> buffs.stretens_insanity -> increment( 1 );
     }
-  }
-
-  void last_tick( dot_t*d ) override
-  {
-    warlock_spell_t::last_tick( d );
-    p() -> buffs.stretens_insanity -> decrement( 1 );
   }
 };
 
@@ -5295,7 +5315,8 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( buffs.demonic_synergy -> check() )
     m *= 1.0 + buffs.demonic_synergy -> data().effectN( 1 ).percent();
 
-  m *= 1.0 + buffs.stretens_insanity -> check_stack_value();
+  if ( legendary.stretens_insanity )
+    m *= 1.0 + buffs.stretens_insanity -> stack() * buffs.stretens_insanity -> effectN( 1 ).percent();
 
   if ( buffs.mana_tap -> check() )
     m *= 1.0 + talents.mana_tap -> effectN( 1 ).percent();
