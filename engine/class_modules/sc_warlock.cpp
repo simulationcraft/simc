@@ -1802,7 +1802,10 @@ struct infernal_t: public warlock_pet_t
   {
 
     if ( name == "immolation" )
-      return immolation = new actions::immolation_t( this );
+    {
+      immolation = new actions::immolation_t( this );
+      return immolation;
+    }
 
     if ( name == "meteor_strike" ) return new actions::meteor_strike_t( this, options_str );
 
@@ -1840,7 +1843,10 @@ struct lord_of_flames_infernal_t : public warlock_pet_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "immolation" )
-      return immolation = new actions::immolation_t( this );
+    {
+      immolation = new actions::immolation_t( this );
+      return immolation;
+    }
 
     return warlock_pet_t::create_action( name, options_str );
   }
