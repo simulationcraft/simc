@@ -7327,7 +7327,7 @@ struct pool_resource_t : public action_t
       if ( ! next_action )
       {
         sim -> errorf( "%s: can't find next action.\n", __FUNCTION__ );
-        sim -> cancel();
+        background = true;
       }
     }
   }
