@@ -564,7 +564,8 @@ public:
     const spell_data_t* bok_proc;
     const spell_data_t* crackling_tiger_lightning;
     const spell_data_t* crackling_tiger_lightning_driver;
-    const spell_data_t* crosswinds;
+    const spell_data_t* crosswinds_dmg;
+    const spell_data_t* crosswinds_trigger;
     const spell_data_t* dizzying_kicks;
     const spell_data_t* gale_burst;
     const spell_data_t* hit_combo;
@@ -3200,7 +3201,7 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 struct crosswinds_tick_t : public monk_melee_attack_t
 {
   crosswinds_tick_t( monk_t* p ) :
-    monk_melee_attack_t( "crosswinds_tick", p, p -> passives.crosswinds )
+    monk_melee_attack_t( "crosswinds_tick", p, p -> passives.crosswinds_dmg )
   {
     background = dual = true;
     mh = &( player -> main_hand_weapon );
@@ -3225,7 +3226,7 @@ struct crosswinds_tick_t : public monk_melee_attack_t
 struct crosswinds_t : public monk_melee_attack_t
 {
   crosswinds_t( monk_t* p ) :
-    monk_melee_attack_t( "crosswinds", p, p -> artifact.crosswinds.data().effectN( 1 ).trigger() )
+    monk_melee_attack_t( "crosswinds", p, p -> passives.crosswinds_trigger )
   {
     background = dual = true; 
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = hasted_ticks = tick_zero = false;
@@ -3238,7 +3239,7 @@ struct crosswinds_t : public monk_melee_attack_t
 struct fists_of_fury_tick_t: public monk_melee_attack_t
 {
   fists_of_fury_tick_t( monk_t* p, const std::string& name ):
-    monk_melee_attack_t( name, p, p -> spec.fists_of_fury -> effectN( 3 ).trigger() )
+    monk_melee_attack_t( name, p, p -> spec.fists_of_fury )
   {
     background = true;
     aoe = -1;
@@ -6818,7 +6819,8 @@ void monk_t::init_spells()
   passives.bok_proc                         = find_spell( 116768 );
   passives.crackling_tiger_lightning        = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
-  passives.crosswinds                       = find_spell( 196061 );
+  passives.crosswinds_dmg                   = find_spell( 196061 );
+  passives.crosswinds_trigger               = find_spell( 195651 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.gale_burst                       = find_spell( 195403 );
   passives.hit_combo                        = find_spell( 196741 );
@@ -8089,9 +8091,9 @@ void monk_t::apl_pre_brewmaster()
   if ( sim -> allow_flasks && true_level >= 80 )
   {
     
-    if ( true_level > 100)
-      pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
-    else if ( true_level > 90 )
+//    if ( true_level > 100)
+//      pre -> add_action( "flask,type=flask_of_the_seventh_demon" );
+    if ( true_level > 90 )
       pre -> add_action( "flask,type=greater_draenic_agility_flask" );
     else if ( true_level >= 85 )
       pre -> add_action( "flask,type=spring_blossoms" );
@@ -8105,9 +8107,9 @@ void monk_t::apl_pre_brewmaster()
 
   if ( sim -> allow_food && level() >= 80 )
   {
-    if ( level() > 100 )
-      pre -> add_action( "food,type=the_hungry_magister" ); //fixmewithproperfood
-    else if ( level() > 90)
+    //if ( level() > 100 )
+    //  pre -> add_action( "food,type=the_hungry_magister" ); //fixmewithproperfood
+    if ( level() > 90)
       pre -> add_action( "food,type=sleeper_sushi" );
     else if ( level() >= 80 )
       pre -> add_action( "food,type=skewered_eel" );
@@ -8124,9 +8126,9 @@ void monk_t::apl_pre_brewmaster()
 
   if ( sim -> allow_potions )
   {
-    if ( true_level > 100 )
-      pre -> add_action( "potion,name=old_war" );
-    else if ( true_level > 90 )
+    //if ( true_level > 100 )
+    //  pre -> add_action( "potion,name=old_war" );
+    if ( true_level > 90 )
       pre -> add_action( "potion,name=draenic_agility" );
     else if ( true_level >= 85 )
       pre -> add_action( "potion,name=virmens_bite" );
@@ -8299,7 +8301,7 @@ void monk_t::apl_combat_brewmaster()
 //  st -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
 //  st -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
 //  st -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
-  st -> add_talent( this, "Black Ox Brew" );
+  //  st->add_talent(this, "Black Ox Brew");
   st -> add_action( this, "Keg Smash" );
   st -> add_action( this, "Blackout Strike" );
   st -> add_action( this, "Exploding Keg" );
@@ -8307,7 +8309,7 @@ void monk_t::apl_combat_brewmaster()
   st -> add_talent( this, "Chi Wave" );
   st -> add_talent( this, "Rushing Jade Wind" );
   st -> add_action( this, "Breath of Fire");
-  st -> add_action( this, "Tiger Palm", "if=(energy+(energy.regen*cooldown.keg_smash.remains))>=40");
+  st -> add_action( this, "Tiger Palm" );//, "if=(energy+(energy.regen*cooldown.keg_smash.remains))>=40");
 
 /*  aoe -> add_action( this, "Purifying Brew", "if=stagger.heavy" );
   aoe -> add_action( this, "Purifying Brew", "if=buff.serenity.up" );
