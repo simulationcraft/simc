@@ -499,7 +499,7 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     }
 
     if ( !( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND ||
-            slot == SLOT_RANGED ) )
+            slot == SLOT_RANGED ) && !(item.parsed.data.quality == 5 ) )
     {
       for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
       {
