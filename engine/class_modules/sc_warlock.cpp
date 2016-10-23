@@ -2282,7 +2282,8 @@ public:
     // If Soul Effigy is active, add it to the end of the target list
     // TODO: Should Effigy actually come directly after the "main target"?
     if ( p() -> talents.soul_effigy -> ok() &&
-         ! p() -> warlock_pet_list.soul_effigy -> is_sleeping() )
+         ! p() -> warlock_pet_list.soul_effigy -> is_sleeping() &&
+         n_targets() == 0 )
     {
       if ( range::find( tl, p() -> warlock_pet_list.soul_effigy ) == tl.end() )
       {
@@ -2922,7 +2923,7 @@ struct corruption_t: public warlock_spell_t
 
     if ( p() -> artifact.harvester_of_souls.rank() && rng().roll( p() -> artifact.harvester_of_souls.data().proc_chance() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 ) ) )
     {
-      p() -> active.harvester_of_souls -> target = execute_state -> target;
+      p() -> active.harvester_of_souls -> target = d -> target;
       p() -> active.harvester_of_souls -> execute();
     }
 
