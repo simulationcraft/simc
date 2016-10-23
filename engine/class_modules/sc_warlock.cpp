@@ -1816,7 +1816,7 @@ struct infernal_t: public warlock_pet_t
   {
     warlock_pet_t::arise();
 
-    immolation -> cooldown -> start();
+    immolation -> cooldown -> start( immolation );
   }
 };
 
