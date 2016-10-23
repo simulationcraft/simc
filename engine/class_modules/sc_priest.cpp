@@ -3248,10 +3248,12 @@ struct vampiric_touch_t final : public priest_spell_t
 struct void_bolt_t final : public priest_spell_t
 {
   double insanity_gain;
+  const spell_data_t* rank2;
 
   void_bolt_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
+      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
+      rank2( player.find_specialization_spell( 231688 ) )
   {
     parse_options( options_str );
     use_off_gcd                 = true;
@@ -3283,19 +3285,20 @@ struct void_bolt_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest_td_t& td = get_td( s->target );
-    // timespan_t extend_duration =
-    //    timespan_t::from_seconds( data().effectN( 2 ).base_value() );
-    // extend_duration *= composite_haste(); FIXME Check is it is reduced by
-    // haste or not.
-    if ( td.dots.shadow_word_pain->is_ticking() )
+    if ( rank2->ok() )
     {
-      td.dots.shadow_word_pain->refresh_duration();
-    }
+      if ( const priest_td_t* td = find_td( s->target ) )
+      {
+        if ( td->dots.shadow_word_pain->is_ticking() )
+        {
+          td->dots.shadow_word_pain->refresh_duration();
+        }
 
-    if ( td.dots.vampiric_touch->is_ticking() )
-    {
-      td.dots.vampiric_touch->refresh_duration();
+        if ( td->dots.vampiric_touch->is_ticking() )
+        {
+          td->dots.vampiric_touch->refresh_duration();
+        }
+      }
     }
   }
 
@@ -4951,8 +4954,8 @@ void priest_t::create_buffs()
           .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   buffs.shadowform = buff_creator_t( this, "shadowform" )
-                          .spell( find_class_spell( "Shadowform" ) )
-                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                         .spell( find_class_spell( "Shadowform" ) )
+                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.shadowy_insight =
       buff_creator_t( this, "shadowy_insight" )
@@ -5728,8 +5731,9 @@ void priest_t::combat_begin()
             "time has been enabled in this simulation." );
         sim->errorf(
             "This allows sims with only Shadow Priests to give useful "
-            "feedback, as otherwise the sim would continue");
-        sim -> errorf("on for 300+ seconds "
+            "feedback, as otherwise the sim would continue" );
+        sim->errorf(
+            "on for 300+ seconds "
             "and reduce the target's health in the next iteration by "
             "significantly more than it should." );
         sim->errorf(
