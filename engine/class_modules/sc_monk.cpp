@@ -4756,7 +4756,12 @@ struct purifying_brew_t: public monk_spell_t
     if ( stagger_pct > p() -> heavy_stagger_threshold )
     {
       if ( p() -> talent.elusive_dance -> ok() )
-        p() -> buff.elusive_dance-> trigger( 3 );
+      {
+        // cancel whatever level the previous Elusive Dance and start the new dance
+        if ( p() -> buff.elusive_dance -> up() )
+          p() -> buff.elusive_dance -> expire();
+        p() -> buff.elusive_dance -> trigger( 3 );
+      }
 //      p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
 
       // When clearing Moderate Stagger with Purifying Brew, you generate 1 stack of Elusive Brawler.
@@ -4766,7 +4771,12 @@ struct purifying_brew_t: public monk_spell_t
     else if ( stagger_pct > p() -> moderate_stagger_threshold )
     {
       if ( p() -> talent.elusive_dance -> ok() )
-        p() -> buff.elusive_dance-> trigger( 2 );
+      {
+        // cancel whatever level the previous Elusive Dance and start the new dance
+        if ( p() -> buff.elusive_dance -> up() )
+          p() -> buff.elusive_dance -> expire();
+        p() -> buff.elusive_dance -> trigger( 2 );
+      }
 //      p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
 
       // When clearing Moderate Stagger with Purifying Brew, you generate 1 stack of Elusive Brawler.
@@ -4776,7 +4786,12 @@ struct purifying_brew_t: public monk_spell_t
     else
     {
       if ( p() -> talent.elusive_dance -> ok() )
-        p() -> buff.elusive_dance-> trigger();
+      {
+        // cancel whatever level the previous Elusive Dance and start the new dance
+        if ( p() -> buff.elusive_dance -> up() )
+          p() -> buff.elusive_dance -> expire();
+        p() -> buff.elusive_dance -> trigger();
+      }
 //      p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
     }
 
