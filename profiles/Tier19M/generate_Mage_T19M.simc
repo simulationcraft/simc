@@ -33,7 +33,7 @@ talents=1121113
 artifact=53:139259:139269:139259:0:783:1:784:3:785:3:786:5:788:3:789:4:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1
 spec=frost
 head=,id=139189,bonus_id=1806
-#neck=,id=130233,enchant_id=5439,bonus_id=1758/689/601/669,gem_id=130219,enchant=mark_of_the_hidden_satyr
+neck=,id=130233,enchant_id=5439,bonus_id=1758/689/601/669,gem_id=130219,enchant=mark_of_the_hidden_satyr
 shoulders=,id=139192,bonus_id=1806
 back=,id=142540,bonus_id=1502:3467,enchant=binding_of_intellect
 chest=,id=142410,bonus_id=1502:3467
