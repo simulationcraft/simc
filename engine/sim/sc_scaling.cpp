@@ -184,8 +184,8 @@ void scaling_t::init_deltas()
   if ( stats.parry_rating  == 0 ) stats.parry_rating  = default_delta;
   if ( stats.block_rating  == 0 ) stats.block_rating  = default_delta;
 
-  if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = default_delta * 0.3;
-  if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = default_delta * 0.3;
+  if ( stats.weapon_dps            == 0 ) stats.weapon_dps            = default_delta;
+  if ( stats.weapon_offhand_dps    == 0 ) stats.weapon_offhand_dps    = default_delta;
 
   if ( stats.leech_rating          == 0 ) stats.leech_rating          = default_delta;
   if ( stats.avoidance_rating      == 0 ) stats.avoidance_rating      = default_delta;
