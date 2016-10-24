@@ -501,8 +501,15 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     if ( !( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND ||
             slot == SLOT_RANGED ) && !(item.parsed.data.quality == 5 ) )
     {
+      size_t num_gems = 0;
       for ( size_t jj = 0; jj < item.parsed.gem_id.size(); ++jj )
       {
+        if ( item.parsed.data.stat_alloc[0] == 7889 &&
+             item.parsed.gem_id[ jj ] > 0 && num_gems < 1 )
+        {
+          num_gems++;
+          continue; // 7889 seems to be the stat value for an item that comes with a socket by default, so we will allow 1 gem there.
+        }
         if ( item.parsed.gem_id[ jj ] > 0 )
         {
           sim.errorf(
