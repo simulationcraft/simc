@@ -457,6 +457,8 @@ public:
     buff_t* antimagic_barrier;
     absorb_buff_t* tombstone;
 
+    buff_t* frozen_pulse;
+
     stat_buff_t* t19oh_8pc;
   } buffs;
 
@@ -1027,6 +1029,17 @@ inline void runes_t::consume( unsigned runes )
 
     waste_start = timespan_t::min();
   }
+
+  if ( dk -> talent.frozen_pulse -> ok() )
+  {
+    auto full_runes = static_cast<int>( dk -> resources.current[ RESOURCE_RUNE ] );
+    if ( ! dk -> buffs.frozen_pulse -> check() &&
+         full_runes < dk -> talent.frozen_pulse -> effectN( 2 ).base_value() )
+    {
+      dk -> buffs.frozen_pulse -> trigger();
+    }
+  }
+
 }
 
 inline double rune_t::fill_level() const
@@ -1129,6 +1142,16 @@ inline rune_t* rune_t::fill_rune( gain_t* gain )
           runes -> dk -> name(), runes -> runes_full() );
     }
     runes -> waste_start = runes -> dk -> sim -> current_time();
+  }
+
+  if ( runes -> dk -> talent.frozen_pulse -> ok() )
+  {
+    auto full_runes = static_cast<int>( runes -> dk -> resources.current[ RESOURCE_RUNE ] );
+    if ( runes -> dk -> buffs.frozen_pulse -> check() &&
+         full_runes >= runes -> dk -> talent.frozen_pulse -> effectN( 2 ).base_value() )
+    {
+      runes -> dk -> buffs.frozen_pulse -> expire();
+    }
   }
 
   return new_regenerating_rune;
@@ -2984,8 +3007,7 @@ struct melee_t : public death_knight_melee_attack_t
         p() -> buffs.killing_machine -> trigger();
       }
 
-      if ( weapon && weapon -> slot == SLOT_MAIN_HAND && frozen_pulse &&
-           p() -> _runes.runes_full() < as<unsigned>( p() -> talent.frozen_pulse -> effectN( 2 ).base_value() ) )
+      if ( weapon && weapon -> slot == SLOT_MAIN_HAND && p() -> buffs.frozen_pulse -> up() )
       {
         frozen_pulse -> target = s -> target;
         frozen_pulse -> schedule_execute();
@@ -7133,6 +7155,8 @@ void death_knight_t::create_buffs()
   buffs.t19oh_8pc = stat_buff_creator_t( this, "deathlords_might" )
     .spell( sets.set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
+
+  buffs.frozen_pulse = buff_creator_t( this, "frozen_pulse", talent.frozen_pulse );
 }
 
 // death_knight_t::init_gains ===============================================
