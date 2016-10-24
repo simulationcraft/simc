@@ -8767,9 +8767,12 @@ void mage_t::apl_frost()
   action_priority_list_t* cooldowns         = get_action_priority_list( "cooldowns"         );
 
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
-  default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.flurry" );
-  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
+  default_list -> add_action( this, "Ice Lance", "if=prev_gcd.flurry" );
+  default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410&!talent.ray_of_frost.enabled)" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
+  default_list -> add_action( this, "Blizzard", "if=buff.potion_of_deadly_grace.up&!prev_off_gcd.water_jet" );
+  default_list -> add_talent( this, "Rune of Power", "if=buff.icy_veins.up|cooldown.ray_of_frost.ready|(buff.fingers_of_frost.stack>=2&(cooldown.water_jet.ready|cooldown.frozen_touch.ready|cooldown.ebonbolt.ready)&debuff.frost_bomb.remains>8&cooldown.ray_of_frost.remains>50)" );
+  default_list -> add_action( this, "Time Warp", "if=cooldown.ray_of_frost.ready&buff.bloodlust.down&equipped.132410&talent.ray_of_frost.enabled" );
   default_list -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
   default_list -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
   default_list -> add_action( "water_jet,if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
@@ -8782,7 +8785,7 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Frozen Orb" );
   default_list -> add_talent( this, "Ice Nova" );
   default_list -> add_talent( this, "Comet Storm" );
-  default_list -> add_action( this, "Blizzard" );
+  default_list -> add_action( this, "Blizzard", "if=talent.artic_gale.enabled" );
   default_list -> add_action( this, "Ebonbolt", "if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)" );
   default_list -> add_action( this, "Frostbolt" );
 
