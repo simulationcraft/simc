@@ -5684,7 +5684,7 @@ void rogue_t::trigger_insignia_of_ravenholdt( const action_state_t* state )
   insignia_of_ravenholdt_ -> base_dd_min = state -> result_amount;
   insignia_of_ravenholdt_ -> base_dd_max = state -> result_amount;
   insignia_of_ravenholdt_ -> target = state -> target;
-  insignia_of_ravenholdt_ -> schedule_execute();
+  insignia_of_ravenholdt_ -> execute();
 }
 
 namespace buffs {
