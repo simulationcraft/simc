@@ -8777,7 +8777,7 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
   default_list -> add_action( "water_jet,if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
   default_list -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
-  default_list -> add_action( this, "Flurry", "if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.frostbolt" );
+  default_list -> add_action( this, "Flurry", "if=buff.brain_freeze.react&buff.fingers_of_frost.react=0" );
   default_list -> add_talent( this, "Glacial Spike" );
   default_list -> add_talent( this, "Frozen Touch", "if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)" );
   default_list -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
