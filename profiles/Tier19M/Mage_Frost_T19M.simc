@@ -3,8 +3,8 @@ level=110
 race=orc
 role=spell
 position=back
-talents=3032011
-artifact=53:137272:133052:133056:0:783:1:784:3:785:3:786:6:787:3:788:3:789:3:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1
+talents=1121113
+artifact=53:139259:139269:139259:0:783:1:784:3:785:3:786:5:788:3:789:4:790:3:791:3:792:3:793:1:794:1:795:1:796:1:797:1:798:1:1296:1
 spec=frost
 
 # This default action priority list is automatically created based on your character.
@@ -52,27 +52,27 @@ actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/potion,name=deadly_grace
 
-head=mana_scavengers_mask,id=141449
-neck=pendant_of_cold_flame,id=141438,enchant=mark_of_the_hidden_satyr
-shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1806
-back=evergreen_vinewrap_drape,id=139248,bonus_id=1806,enchant=binding_of_intellect
-chest=dreamscale_inlaid_vestments,id=138215,bonus_id=1806
-wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
-hands=handwraps_of_delusional_power,id=138212,bonus_id=1806
-waist=pliable_spider_silk_cinch,id=138217,bonus_id=1806
-legs=nazaks_dusty_pantaloons,id=141415
-feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1806
-finger1=ring_of_frozen_magic,id=141533,enchant=binding_of_haste
-finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1806,enchant=binding_of_haste
-trinket1=swarming_plaguehive,id=139321,bonus_id=1806
-trinket2=twisting_wind,id=139323,bonus_id=1806
+head=,id=139189,bonus_id=1806
+neck=,id=130233,enchant_id=5439,bonus_id=1758/689/601/669,gem_id=130219,enchant=mark_of_the_hidden_satyr
+shoulders=,id=139192,bonus_id=1806
+back=,id=142540,bonus_id=1502:3467,enchant=binding_of_intellect
+chest=,id=142410,bonus_id=1502:3467
+wrists=,id=139187,bonus_id=1806
+hands=,id=138212,bonus_id=1806
+waist=,id=138217,bonus_id=1806
+legs=,id=142413,bonus_id=1502:3467
+feet=,id=139194,bonus_id=1806
+finger1=,id=132410,enchant=binding_of_haste,gems=150haste
+finger2=,id=139236,bonus_id=1806,enchant=binding_of_haste
+trinket1=,id=139321,bonus_id=1806
+trinket2=,id=139326,bonus_id=1806
 main_hand=ebonchill,id=128862,ilevel=906
 
 # Gear Summary
-# gear_ilvl=878.00
-# gear_stamina=25411
-# gear_intellect=31119
+# gear_ilvl=876.40
+# gear_stamina=24589
+# gear_intellect=27581
 # gear_crit_rating=6459
-# gear_haste_rating=10441
-# gear_mastery_rating=2365
+# gear_haste_rating=10365
+# gear_mastery_rating=2289
 # gear_armor=1777
