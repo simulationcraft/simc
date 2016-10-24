@@ -958,7 +958,7 @@ void buff_t::start( int        stacks,
     }
   }
 
-  int before_stacks = stack();
+  int before_stacks = check();
 
   bump( stacks, value );
 
@@ -977,7 +977,7 @@ void buff_t::start( int        stacks,
   if ( d > timespan_t::zero() )
   {
     expiration.push_back( make_event<expiration_t>( *sim, this, stacks, d ) );
-    if ( stack() == before_stacks && stack_behavior == BUFF_STACK_ASYNCHRONOUS )
+    if ( check() == before_stacks && stack_behavior == BUFF_STACK_ASYNCHRONOUS )
     {
       event_t::cancel( expiration.front() );
       expiration.erase( expiration.begin() );

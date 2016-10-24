@@ -10687,7 +10687,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const a
   {
     buff_t* b = p -> buff_list[ i ];
     if ( b -> check() && ! b -> quiet && ! b -> constant )
-      buff_list.push_back( std::make_pair( b, b -> stack() ) );
+      buff_list.push_back( std::make_pair( b, b -> check() ) );
   }
 
   range::fill( resource_snapshot, -1 );
@@ -10710,7 +10710,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
   {
     buff_t* b = p -> buff_list[ i ];
     if ( b -> check() && ! b -> quiet && ! b -> constant )
-      buff_list.push_back( std::make_pair( b, b -> stack() ) );
+      buff_list.push_back( std::make_pair( b, b -> check() ) );
   }
 
   range::fill( resource_snapshot, -1 );
