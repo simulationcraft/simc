@@ -254,7 +254,7 @@ public:
 
   struct gains_t
   {
-    gain_t* black_ox_brew;
+    gain_t* black_ox_brew_energy;
     gain_t* chi_refund;
     gain_t* power_strikes;
     gain_t* bok_proc;
@@ -4034,9 +4034,9 @@ struct black_ox_brew_t: public monk_spell_t
     parse_options( options_str );
 
     harmful = false;
-    cooldown -> duration = data().charge_cooldown();
+    use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
-    energize_type = ENERGIZE_ON_CAST;
+    energize_type = ENERGIZE_NONE; // disable resource gain from spell data
   }
 
   virtual void execute() override
@@ -4045,6 +4045,7 @@ struct black_ox_brew_t: public monk_spell_t
 
     // Refill Ironskin Brew and Purifying Brew charges.
     p() -> cooldown.brewmaster_active_mitigation -> reset( true );
+    p() -> resource_gain( RESOURCE_ENERGY, p() -> talent.black_ox_brew -> effectN( 1 ).base_value(), p() -> gain.black_ox_brew_energy );
   }
 };
 
@@ -4756,7 +4757,7 @@ struct purifying_brew_t: public monk_spell_t
     {
       if ( p() -> talent.elusive_dance -> ok() )
         p() -> buff.elusive_dance-> trigger( 3 );
-      p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
+//      p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
 
       // When clearing Moderate Stagger with Purifying Brew, you generate 1 stack of Elusive Brawler.
       if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
@@ -4766,7 +4767,7 @@ struct purifying_brew_t: public monk_spell_t
     {
       if ( p() -> talent.elusive_dance -> ok() )
         p() -> buff.elusive_dance-> trigger( 2 );
-      p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
+//      p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
 
       // When clearing Moderate Stagger with Purifying Brew, you generate 1 stack of Elusive Brawler.
       if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T17, B4 ) )
@@ -4776,10 +4777,10 @@ struct purifying_brew_t: public monk_spell_t
     {
       if ( p() -> talent.elusive_dance -> ok() )
         p() -> buff.elusive_dance-> trigger();
-      p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
+//      p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
     }
 
-    p() -> sample_datas.purified_damage -> add( stagger_dmg );
+//    p() -> sample_datas.purified_damage -> add( stagger_dmg );
 
     if ( p() -> talent.healing_elixirs -> ok() )
     {
@@ -7135,7 +7136,7 @@ void monk_t::init_gains()
 {
   base_t::init_gains();
 
-  gain.black_ox_brew            = get_gain( "black_ox_brew" );
+  gain.black_ox_brew_energy     = get_gain( "black_ox_brew_energy" );
   gain.chi_refund               = get_gain( "chi_refund" );
   gain.power_strikes            = get_gain( "power_strikes" );
   gain.bok_proc                 = get_gain( "blackout_kick_proc" );
