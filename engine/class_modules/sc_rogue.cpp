@@ -9,7 +9,7 @@
 // - Dreadlord's Deceit doesn't work on weaponmastered Shuriken Storm (Blizzard Bug ?)
 // - Insignia of Ravenholdt doesn't proc from Shuriken Storm nor Shuriken Toss (Blizzard Bug ?)
 // - Akaari's Soul Rip action doesn't benefits from SoD and MoS (Blizzard Bug) despite showing the increases in the tooltip.
-// - Find the exact formula for the Weaponmastered Goremaw's Bite Bug.
+// - Find the exact formula for the Weaponmastered Goremaw's Bite Bug. (x15 seems to be a good guess)
 //
 // Assassination
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
@@ -1520,14 +1520,55 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
 
   double composite_da_multiplier( const action_state_t* ) const override
   {
-    double multiplier = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
+    double m = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
 
+    // Rogue Assassination Hidden Passive (Additive, it's +15% on the primary effect)
     if ( p() -> specialization() == ROGUE_ASSASSINATION )
     {
-      multiplier += p() -> find_spell( 137037 ) -> effectN( 1 ).percent();
+      m += p() -> find_spell( 137037 ) -> effectN( 1 ).percent();
     }
-    return multiplier;
+
+    // We don't know yet if every player multiplier works on the ring yet, as for now
+    // the general method will be commented out and every multiplier that works will
+    // be added until it's figured. (Including items)
+    //m *= p() -> composite_player_multiplier( SCHOOL_SHADOW );
+
+    // General
+    // Versatility
+    m *= 1.0 + p() -> cache.damage_versatility();
+    // Gnawed Thumb Ring
+    if ( p() -> player_t::buffs.taste_of_mana && p() -> player_t::buffs.taste_of_mana -> up() )
+    {
+      m *= 1.0 + p() -> player_t::buffs.taste_of_mana -> default_value;
+    }
+
+    // Assassination
+    // Elaborate Planning
+    if ( p() -> buffs.elaborate_planning -> up() )
+    {
+      m *= p() -> buffs.elaborate_planning -> check_value();
+    }
+
+    // Subtlety
+    // Shadow Fangs
+    if ( p() -> artifact.shadow_fangs.rank() )
+    {
+      m *= 1.0 + p() -> artifact.shadow_fangs.data().effectN( 1 ).percent();
+    }
+    // Master of Subtlety
+    if ( p() -> buffs.master_of_subtlety -> check() || p() -> buffs.master_of_subtlety_passive -> check() )
+    {
+      m *= 1.0 + p() -> talent.master_of_subtlety -> effectN( 1 ).percent();
+    }
+    // Symbols of Death
+    if ( p() -> buffs.symbols_of_death -> up() )
+    {
+      m *= p() -> buffs.symbols_of_death -> check_value();
+    }
+
+    return m;
   }
+
 };
 
 // TODO: Check if this is an ignite or a normal dot
@@ -5640,8 +5681,8 @@ void rogue_t::trigger_insignia_of_ravenholdt( const action_state_t* state )
     return;
   }
 
-  insignia_of_ravenholdt_ -> base_dd_min = state -> result_total;
-  insignia_of_ravenholdt_ -> base_dd_max = state -> result_total;
+  insignia_of_ravenholdt_ -> base_dd_min = state -> result_amount;
+  insignia_of_ravenholdt_ -> base_dd_max = state -> result_amount;
   insignia_of_ravenholdt_ -> target = state -> target;
   insignia_of_ravenholdt_ -> schedule_execute();
 }
