@@ -3076,8 +3076,8 @@ struct zeal_t : public holy_power_generator_t
     base_crit += p -> artifact.sharpened_edge.percent();
     chain_multiplier = data().effectN( 1 ).chain_multiplier();
 
-    // TODO: remove this once it's back in the spelldata.
-    hasted_cd = true;
+    // TODO: figure out wtf happened to this spell data
+    hasted_cd = hasted_gcd = true;
   }
 
   virtual int n_targets() const override
@@ -3155,6 +3155,9 @@ struct divine_hammer_t : public paladin_spell_t
     energize_type      = ENERGIZE_ON_CAST;
     energize_resource  = RESOURCE_HOLY_POWER;
     energize_amount    = data().effectN( 2 ).base_value();
+
+    // TODO: figure out wtf happened to this spell data
+    hasted_cd = hasted_gcd = true;
 
     tick_action = new divine_hammer_tick_t( p );
   }
