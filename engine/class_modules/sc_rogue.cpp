@@ -8198,7 +8198,7 @@ struct rogue_module_t : public module_t
     hotfix::register_effect( "Rogue", "2016-10-25", "Saber Slash damage increased by 10%.", 283621 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 302.5 )
+      .modifier( 303 )
       .verification_value( 275 );
     hotfix::register_effect( "Rogue", "2016-10-25", "Pistol Shot damage increased by 10%.", 269972 )
       .field( "ap_coefficient" )
@@ -8208,7 +8208,7 @@ struct rogue_module_t : public module_t
     hotfix::register_effect( "Rogue", "2016-10-25", "Ghostly Strike damage increased by 10%.", 289166 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 193.6 )
+      .modifier( 194 )
       .verification_value( 176 );
     hotfix::register_effect( "Rogue", "2016-10-25", "Blunderbuss damage increased by 10%.", 299185 )
       .field( "ap_coefficient" )
