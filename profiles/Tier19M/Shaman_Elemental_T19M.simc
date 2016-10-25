@@ -1,0 +1,105 @@
+shaman="Shaman_Elemental_T19M"
+level=110
+race=troll
+role=spell
+position=ranged_back
+talents=3112212
+artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:295:1:296:1:297:1:298:3:299:3:300:3:301:3:302:3:303:3:304:3:305:3:306:3:1350:1
+spec=elemental
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=whispered_pact
+actions.precombat+=/food,name=fishbrul_special
+actions.precombat+=/augmentation,type=defiled
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/stormkeeper
+actions.precombat+=/totem_mastery
+
+# Executed every time the actor is available.
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions=bloodlust,if=target.health.pct<25|time>0.500
+# In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
+actions+=/potion,name=deadly_grace,if=buff.ascendance.up|target.time_to_die<=30
+actions+=/totem_mastery,if=buff.resonance_totem.remains<2
+actions+=/fire_elemental
+actions+=/storm_elemental
+actions+=/elemental_mastery
+actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
+actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
+actions+=/run_action_list,name=single
+
+# Multi target action priority list
+actions.aoe=stormkeeper
+actions.aoe+=/ascendance
+actions.aoe+=/liquid_magma_totem
+actions.aoe+=/flame_shock,if=spell_targets.chain_lightning=3&maelstrom>=20,target_if=refreshable
+actions.aoe+=/earthquake
+actions.aoe+=/lava_burst,if=buff.lava_surge.up&spell_targets.chain_lightning=3
+actions.aoe+=/lava_beam
+actions.aoe+=/chain_lightning,target_if=!debuff.lightning_rod.up
+actions.aoe+=/chain_lightning
+actions.aoe+=/lava_burst,moving=1
+actions.aoe+=/flame_shock,moving=1,target_if=refreshable
+
+# Single target action priority list
+actions.single=ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
+actions.single+=/flame_shock,if=!ticking
+actions.single+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
+actions.single+=/earth_shock,if=maelstrom>=92
+actions.single+=/icefury,if=raid_event.movement.in<5
+actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
+actions.single+=/elemental_blast
+actions.single+=/earthquake,if=buff.echoes_of_the_great_sundering.up
+actions.single+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
+actions.single+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))
+actions.single+=/frost_shock,moving=1,if=buff.icefury.up
+actions.single+=/earth_shock,if=maelstrom>=86
+actions.single+=/icefury,if=maelstrom<=70&raid_event.movement.in>30&((talent.ascendance.enabled&cooldown.ascendance.remains>buff.icefury.duration)|!talent.ascendance.enabled)
+actions.single+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
+actions.single+=/stormkeeper,if=(talent.ascendance.enabled&cooldown.ascendance.remains>10)|!talent.ascendance.enabled
+actions.single+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
+actions.single+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
+actions.single+=/lightning_bolt,if=buff.power_of_the_maelstrom.up,target_if=!debuff.lightning_rod.up
+actions.single+=/lightning_bolt,if=buff.power_of_the_maelstrom.up
+actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=!debuff.lightning_rod.up
+actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
+actions.single+=/lightning_bolt,target_if=!debuff.lightning_rod.up
+actions.single+=/lightning_bolt
+actions.single+=/flame_shock,moving=1,target_if=refreshable
+actions.single+=/earth_shock,moving=1
+
+head=greyed_dragonscale_coif,id=139214,bonus_id=1806
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_hidden_satyr
+shoulders=echoes_of_the_great_sundering,id=137074
+back=evergreen_vinewrap_drape,id=139248,bonus_id=1806,enchant=binding_of_intellect
+chest=patient_ambushers_hauberk,id=139221,bonus_id=1806
+wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1806
+hands=gauntlets_of_the_demented_mind,id=138214,bonus_id=1806
+waist=laughing_sisters_pouchchain,id=139211,bonus_id=1806
+legs=disjointed_linkage_leggings,id=139216,bonus_id=1806
+feet=scored_ironclaw_sabatons,id=139220,bonus_id=1806
+finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1806,enchant_id=5427
+finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant_id=5427
+trinket1=swarming_plaguehive,id=139321,bonus_id=1806
+trinket2=twisting_wind,id=139323,bonus_id=1806
+main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=139264/139259/139264,relic_id=1806/1806/1806
+off_hand=the_highkeepers_ward,id=128936
+
+# Gear Summary
+# gear_ilvl=884.19
+# gear_stamina=26216
+# gear_intellect=28334
+# gear_crit_rating=9685
+# gear_haste_rating=5524
+# gear_mastery_rating=3570
+# gear_versatility_rating=880
+# gear_armor=2774
