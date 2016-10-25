@@ -5549,6 +5549,9 @@ struct icy_veins_t : public frost_mage_spell_t
     if ( p() -> legendary.lady_vashjs_grasp )
     {
       p() -> buffs.lady_vashjs_grasp -> trigger();
+      // Trigger 1 stack of FoF when IV is triggered with LVG legendary,
+      // This is independant of the tick action gains.
+      p() -> buffs.fingers_of_frost -> trigger();
     }
     if ( p() -> artifact.chilled_to_the_core.rank() )
     {
