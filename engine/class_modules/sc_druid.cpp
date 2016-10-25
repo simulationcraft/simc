@@ -500,6 +500,7 @@ public:
     const spell_data_t* balance;
     const spell_data_t* balance_overrides;
     const spell_data_t* astral_influence; // Balance Affinity
+    const spell_data_t* astral_power;
     const spell_data_t* blessing_of_anshe;
     const spell_data_t* blessing_of_elune;
     const spell_data_t* celestial_alignment;
@@ -1771,10 +1772,10 @@ struct moonfire_t : public druid_spell_t
     moonfire_damage_t( druid_t* p ) : 
       druid_spell_t( "moonfire_dmg", p, p -> find_spell( 164812 ) )
     {
-      if ( p -> spec.balance -> ok() )
+      if ( p -> spec.astral_power -> ok() )
       {
         energize_resource = RESOURCE_ASTRAL_POWER;
-        energize_amount   = p -> spec.balance -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
+        energize_amount   = p -> spec.astral_power -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
       }
       else
       {
@@ -1838,10 +1839,10 @@ struct moonfire_t : public druid_spell_t
     damage = new moonfire_damage_t( player );
     damage -> stats = stats;
 
-    if ( player -> spec.balance -> ok() )
+    if ( player -> spec.astral_power -> ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount = player -> spec.balance -> effectN( 4 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_amount = player -> spec.astral_power -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
     {
@@ -4964,10 +4965,10 @@ struct sunfire_t : public druid_spell_t
     damage = new sunfire_damage_t( player );
     damage -> stats = stats;
 
-    if ( player -> spec.balance -> ok() )
+    if ( player -> spec.astral_power -> ok() )
     {
       energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount = player -> spec.balance -> effectN( 4 ).resource( RESOURCE_ASTRAL_POWER );
+      energize_amount = player -> spec.astral_power -> effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
     }
     else
     {
@@ -5809,6 +5810,7 @@ void druid_t::init_spells()
   spec.omen_of_clarity            = find_specialization_spell( "Omen of Clarity" );
 
   // Balance
+  spec.astral_power               = find_specialization_spell( "Astral Power" );
   spec.balance                    = find_specialization_spell( "Balance Druid" );
   spec.balance_overrides          = find_specialization_spell( "Balance Overrides Passive" );
   spec.blessing_of_anshe          = find_talent_spell( "Blessing of the Ancients" ) -> ok() ? find_spell( 202739 ) : spell_data_t::not_found();
