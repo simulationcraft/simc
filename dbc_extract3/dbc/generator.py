@@ -1498,6 +1498,7 @@ class SpellDataGenerator(DataGenerator):
           ( 116768, 3 ), # Combo Breaker: Blackout Kick
           ( 121283, 0 ), # Chi Sphere from Power Strikes
           ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
+          ( 195651, 0 ), # Crosswinds Artifact trait trigger spell
           ( 196061, 0 ), # Crosswinds Artifact trait damage spell
           ( 211432, 3 ), # Tier 19 4-piece DPS Buff
           # Legendary
