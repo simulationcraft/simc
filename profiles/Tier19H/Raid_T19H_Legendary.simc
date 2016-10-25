@@ -88,6 +88,30 @@ waist=feretory_of_souls,id=132456
  
 # Warrior
 Warrior_Arms_T19H.simc
+name=Arms_Archavons_Heavy
 hands=archavons_heavy_hand,id=137060
+Warrior_Arms_T19H.simc
+name=Arms_Ayalas_Stone
+finger1=ayalas_stone_heart,id=137052,enchant=binding_of_mastery
+Warrior_Arms_T19H.simc
+name=Arms_Najentus_Vertebrae
+waist=,id=137087,bonus_id=1811
+Warrior_Arms_T19H.simc
+name=Arms_Weight_Of_The_Earth
+legs=,id=137077,bonus_id=1811
 Warrior_Fury_T19H.simc
+name=Fury_Ayalas_Stone
 finger1=ayalas_stone_heart,id=137052,enchant=binding_of_haste
+Warrior_Fury_T19H.simc
+name=Fury_Najentus_Vertebrae
+waist=,id=137087,bonus_id=1811
+Warrior_Fury_T19H.simc
+name=Fury_Ceannar_Charger
+head=,id=137088,bonus_id=1811
+Warrior_Fury_T19H.simc
+name=Fury_Kazzalax
+back=,id=137053,bonus_id=1811
+Warrior_Fury_T19H.simc
+name=Fury_Baseline
+Warrior_Arms_T19H.simc
+name=Arms_Baseline
