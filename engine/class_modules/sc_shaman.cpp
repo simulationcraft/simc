@@ -4670,10 +4670,10 @@ struct storm_elemental_t : public shaman_spell_t
 
 // Earthquake totem =========================================================
 
-struct earthquake_totem_damage_t : public shaman_spell_t
+struct earthquake_damage_t : public shaman_spell_t
 {
-  earthquake_totem_damage_t( shaman_t* player ) :
-    shaman_spell_t( "earthquake", player, player -> find_spell( 77478 ) )
+  earthquake_damage_t( shaman_t* player ) :
+    shaman_spell_t( "earthquake_", player, player -> find_spell( 77478 ) )
   {
     aoe = -1;
     ground_aoe = background = true;
@@ -4698,13 +4698,13 @@ struct earthquake_totem_damage_t : public shaman_spell_t
   }
 };
 
-struct earthquake_totem_t : public shaman_spell_t
+struct earthquake_t : public shaman_spell_t
 {
-  earthquake_totem_damage_t* rumble;
+  earthquake_damage_t* rumble;
 
-  earthquake_totem_t( shaman_t* player, const std::string& options_str ):
-    shaman_spell_t( "earthquake_totem", player, player -> find_specialization_spell( "Earthquake Totem" ), options_str ),
-    rumble( new earthquake_totem_damage_t( player ) )
+  earthquake_t( shaman_t* player, const std::string& options_str ):
+    shaman_spell_t( "earthquake", player, player -> find_specialization_spell( "Earthquake" ), options_str ),
+    rumble( new earthquake_damage_t( player ) )
   {
     dot_duration = timespan_t::zero(); // The periodic effect is handled by ground_aoe_event_t
     add_child( rumble );
@@ -5565,7 +5565,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "doom_winds"              ) return new               doom_winds_t( this, options_str );
   if ( name == "earthen_spike"           ) return new            earthen_spike_t( this, options_str );
   if ( name == "earth_shock"             ) return new              earth_shock_t( this, options_str );
-  if ( name == "earthquake_totem"        ) return new         earthquake_totem_t( this, options_str );
+  if ( name == "earthquake"              ) return new               earthquake_t( this, options_str );
   if ( name == "elemental_blast"         ) return new          elemental_blast_t( this, options_str );
   if ( name == "elemental_mastery"       ) return new        elemental_mastery_t( this, options_str );
   if ( name == "ghost_wolf"              ) return new               ghost_wolf_t( this, options_str );
@@ -6662,7 +6662,7 @@ void shaman_t::init_action_list_elemental()
   single -> add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&"
                                             "(cooldown_react|buff.ascendance.up)" );
   single -> add_talent( this, "Elemental Blast" );
-  single -> add_action( this, "Earthquake Totem", "if=buff.echoes_of_the_great_sundering.up" );
+  single -> add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
   single -> add_action( this, "Flame Shock", "if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable" );
   single -> add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up&"
                                              "((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|"
@@ -6693,7 +6693,7 @@ void shaman_t::init_action_list_elemental()
   aoe -> add_talent( this, "Ascendance" );
   aoe -> add_talent( this, "Liquid Magma Totem" );
   aoe -> add_action( this, "Flame Shock", "if=spell_targets.chain_lightning=3&maelstrom>=20,target_if=refreshable" );
-  aoe -> add_action( this, "Earthquake Totem" );
+  aoe -> add_action( this, "Earthquake" );
   aoe -> add_action( this, "Lava Burst", "if=buff.lava_surge.up&spell_targets.chain_lightning=3" );
   aoe -> add_action( this, "Lava Beam" );
   aoe -> add_action( this, "Chain Lightning", "target_if=!debuff.lightning_rod.up" );
