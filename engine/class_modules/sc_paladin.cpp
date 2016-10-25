@@ -308,6 +308,7 @@ public:
     const spell_data_t* seal_of_light;
     const spell_data_t* divine_purpose;
     const spell_data_t* crusade;
+    const spell_data_t* crusade_talent;
     const spell_data_t* holy_wrath;
   } talents;
 
@@ -1262,7 +1263,7 @@ struct crusade_t : public paladin_heal_t
   {
     parse_options( options_str );
 
-    if ( ! ( p -> talents.crusade -> ok() ) )
+    if ( ! ( p -> talents.crusade_talent -> ok() ) )
       background = true;
 
     cooldown -> charges += p -> sets.set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
@@ -1319,7 +1320,7 @@ struct avenging_wrath_t : public paladin_spell_t
 
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
-      if ( p -> talents.crusade -> ok() )
+      if ( p -> talents.crusade_talent -> ok() )
         background = true;
       cooldown -> charges += p -> sets.set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
     }
@@ -5112,7 +5113,8 @@ void paladin_t::init_spells()
   talents.divine_steed               = find_talent_spell( "Divine Steed" );
   talents.seal_of_light              = find_talent_spell( "Seal of Light" );
   talents.divine_purpose             = find_talent_spell( "Divine Purpose" ); // TODO: fix this
-  talents.crusade                    = find_spell( 231895 ); // find_talent_spell( "Crusade" );
+  talents.crusade                    = find_spell( 231895 );
+  talents.crusade_talent             = find_talent_spell( "Crusade" );
   talents.holy_wrath                 = find_talent_spell( "Holy Wrath" );
 
   artifact.wake_of_ashes           = find_artifact_spell( "Wake of Ashes" );
