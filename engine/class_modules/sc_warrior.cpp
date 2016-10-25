@@ -4940,19 +4940,21 @@ void warrior_t::apl_arms()
   execute -> add_action( this, "Execute", "if=buff.battle_cry_deadly_calm.up" );
   execute -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
   execute -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down&rage<=30" );
-  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.up&rage>22|buff.shattered_defenses.down" );
+  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.up&rage>22" );
+  execute -> add_action( this, "Mortal Strike", "if=equipped.archavons_heavy_hand&rage<60" );
+  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.down" );
   execute -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
 
   cleave -> add_action( this, "Mortal Strike" );
   cleave -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   cleave -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
   cleave -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
-  cleave -> add_talent( this, "Focused Rage", "if=buff.shattered_defenses.down" );
+  cleave -> add_talent( this, "Focused Rage", "if=rage>100|buff.battle_cry_deadly_calm.up" );
   cleave -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)" );
   cleave -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
   cleave -> add_action( this, "Bladestorm" );
   cleave -> add_action( this, "Cleave" );
-  cleave -> add_action( this, "Whirlwind", "if=rage>=100|buff.focused_rage.stack=3" );
+  cleave -> add_action( this, "Whirlwind", "if=rage>40|buff.cleave.up" );
   cleave -> add_talent( this, "Shockwave" );
   cleave -> add_talent( this, "Storm Bolt" );
 

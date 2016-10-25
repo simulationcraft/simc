@@ -4,7 +4,7 @@ race=blood_elf
 role=attack
 position=back
 talents=1332311
-artifact=36:140815:141523:140822:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:3:1148:3:1149:6:1150:3:1151:3:1356:1
+artifact=36:140815:141523:140822:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:3:1148:3:1149:4:1150:5:1151:3:1356:1
 spec=arms
 
 # This default action priority list is automatically created based on your character.
@@ -60,12 +60,12 @@ actions.cleave=mortal_strike
 actions.cleave+=/execute,if=buff.stone_heart.react
 actions.cleave+=/colossus_smash,if=buff.shattered_defenses.down&buff.precise_strikes.down
 actions.cleave+=/warbreaker,if=buff.shattered_defenses.down
-actions.cleave+=/focused_rage,if=buff.shattered_defenses.down
+actions.cleave+=/focused_rage,if=rage>100|buff.battle_cry_deadly_calm.up
 actions.cleave+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)
 actions.cleave+=/rend,if=remains<=duration*0.3
 actions.cleave+=/bladestorm
 actions.cleave+=/cleave
-actions.cleave+=/whirlwind,if=rage>=100|buff.focused_rage.stack=3
+actions.cleave+=/whirlwind,if=rage>40|buff.cleave.up
 actions.cleave+=/shockwave
 actions.cleave+=/storm_bolt
 
@@ -73,7 +73,9 @@ actions.execute=mortal_strike,if=buff.battle_cry.up&buff.focused_rage.stack=3
 actions.execute+=/execute,if=buff.battle_cry_deadly_calm.up
 actions.execute+=/colossus_smash,if=buff.shattered_defenses.down
 actions.execute+=/warbreaker,if=buff.shattered_defenses.down&rage<=30
-actions.execute+=/execute,if=buff.shattered_defenses.up&rage>22|buff.shattered_defenses.down
+actions.execute+=/execute,if=buff.shattered_defenses.up&rage>22
+actions.execute+=/mortal_strike,if=equipped.archavons_heavy_hand&rage<60
+actions.execute+=/execute,if=buff.shattered_defenses.down
 # actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)
 #Remove the # above to run out of melee and charge back in for rage.
 actions.execute+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
@@ -105,7 +107,7 @@ finger1=ring_of_exclusive_servitude,id=140906,bonus_id=1806,enchant=binding_of_m
 finger2=ring_of_the_scoured_clan,id=140897,bonus_id=1806,enchant=binding_of_mastery
 trinket1=convergence_of_fates,id=140806,bonus_id=1806
 trinket2=entwined_elemental_foci,id=140796,bonus_id=1806
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/141523/140822,relic_id=1806/1806/1806
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/137377/139257,relic_id=1806/1806/1806
 
 # Gear Summary
 # gear_ilvl=882.73
