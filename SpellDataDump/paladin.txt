@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 5052888)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 1242eba)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2215,7 +2215,8 @@ Effects          :
 #3 (id=191093)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self(1)
 #4 (id=191094)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x1 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self(1)
+                   Hotfixed: Misc Value (1 -> 127)
 #5 (id=191095)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 13 | Scaled Value: 13 | Target: Self(1)
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (228288)

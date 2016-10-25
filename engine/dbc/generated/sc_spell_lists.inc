@@ -1828,6 +1828,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       231780, // Chain Heal (Rank 2)
       231785, // Tidal Waves (Rank 2)
       231725, // Riptide (Rank 2)
+      231721, // Lava Burst (Rank 2)
            0,
     },
     {

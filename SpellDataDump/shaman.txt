@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 5052888)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 1242eba)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -3059,20 +3059,24 @@ Effects          :
 Description      : Chain Heal bounces to $m2 additional $Ltarget:targets;, and its falloff with each bounce is reduced by half.
 
 Name             : Storm Elemental (id=157299) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Level      : 1
 Duration         : 60 seconds
 Affecting spells : Lucidity (137326)
-Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .......x   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219277)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 77936 | Misc Value 2: 0xda1 | Radius: 5 yards | Target: Unknown(43)
+#2 (id=355422)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+                   Hotfixed: NEW EFFECT
 Description      : $@spelldesc152256
 
 Name             : Wind Gust (id=157331) [Spell Family (11)] 
@@ -6616,7 +6620,7 @@ Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
 Name             : Lava Burst (Rank 2) (id=231721) [Spell Family (11), Passive] 
-Class            : Elemental Shaman
+Class            : Elemental Restoration Shaman
 School           : Fire
 Spell Level      : 20
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
