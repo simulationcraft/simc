@@ -8195,89 +8195,36 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    /*
-    hotfix::register_effect( "Rogue", "2016-09-24", "Death From Above (Talent) area damage increased by 100%.", 217580 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3.666 )
-      .verification_value( 1.83300 );
-    hotfix::register_effect( "Rogue", "2016-09-24", "Deadly Poison damage increased by 30%.", 853 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.3575 )
-      .verification_value( 0.27500 );
-    hotfix::register_effect( "Rogue", "2016-09-24", "Fan of Knives damage increased by 30%.", 44107 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.08108 )
-      .verification_value( 0.83160 );
-    hotfix::register_spell( "Rogue", "2016-09-24", "Bag of Tricks (Artifact Trait) duration reduced to 3 seconds (overall damage unchanged).", 192661 )
-      .field( "duration" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 3000 )
-      .verification_value( 6000 );
-    hotfix::register_effect( "Rogue", "2016-09-24", "Eviscerate damage increased by 15%.", 288959 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.472 )
-      .verification_value( 1.28 );
-    hotfix::register_effect( "Rogue", "2016-09-24", "Nightblade damage increased by 15%.", 286896 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.38 )
-      .verification_value( 1.2 );
-    hotfix::register_effect( "Rogue", "2016-09-24", "Shuriken Storm damage increased by 30%.", 290720 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.72072 )
-      .verification_value( 0.55440 );
-    hotfix::register_spell( "Rogue", "2016-09-24", "Second Shuriken (Artifact Trait) chance to activate increased to 30% (was 10%)", 197610 )
-      .field( "proc_chance" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 30 )
-      .verification_value( 10 );
-    hotfix::register_effect( "Rogue", "2016-09-24", "Second Shuriken (Artifact Trait) damage increased by 30%", 290347 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.3432 )
-      .verification_value( 0.26400 );
-    
-    hotfix::register_effect( "Rogue", "2016-08-23", "Envenom damage has been increased to 60% Attack Power per point (was 50%).", 22420 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.6 )
-      .verification_value( 0.5 );
-
-    hotfix::register_effect( "Rogue", "2016-08-23", "Deadly Poison instant damage has been increased to 17% Attack Power (was 14.2%).", 126788 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.17 )
-      .verification_value( 0.142 );
-
-    hotfix::register_effect( "Rogue", "2016-08-23", "Rupture damage has been decreased to 25% Attack Power (was 30%).", 586 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.25 )
-      .verification_value( 0.3 );
-
-    hotfix::register_spell( "Rogue", "2016-08-23", "Agonizing Poison now stacks 5 times (was 4).", 200803 )
-      .field( "max_stack" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 5 )
-      .verification_value( 4 );
-
-    hotfix::register_effect( "Rogue", "2016-08-23", "[unannounced] Master Poisoner effectiveness has been decreased to 30% (was 40%).", 289047 )
+    hotfix::register_effect( "Rogue", "2016-10-25", "Saber Slash damage increased by 10%.", 283621 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 30 )
-      .verification_value( 40 );
-
-    hotfix::register_effect( "Rogue", "2016-08-23-2", "[unannounced] Master Poisoner effectiveness has been decreased to 30% (was 40%).", 289048 )
+      .modifier( 302.5 )
+      .verification_value( 275 );
+    hotfix::register_effect( "Rogue", "2016-10-25", "Pistol Shot damage increased by 10%.", 269972 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.65 )
+      .verification_value( 1.5 );
+    hotfix::register_effect( "Rogue", "2016-10-25", "Ghostly Strike damage increased by 10%.", 289166 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 30 )
-      .verification_value( 40 );
-    */
+      .modifier( 193.6 )
+      .verification_value( 176 );
+    hotfix::register_effect( "Rogue", "2016-10-25", "Blunderbuss damage increased by 10%.", 299185 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.21 )
+      .verification_value( 1.1 );
+    hotfix::register_effect( "Rogue", "2016-10-25", "Blunderbuss damage increased by 10%.", 299186 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.21 )
+      .verification_value( 1.1 );
+    hotfix::register_effect( "Rogue", "2016-10-25", "Blunderbuss damage increased by 10%.", 299187 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.21 )
+      .verification_value( 1.1 );
   }
 
   virtual void init( player_t* ) const override {}
