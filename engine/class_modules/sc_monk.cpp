@@ -7682,6 +7682,9 @@ double monk_t::composite_armor_multiplier() const
 
   a += spec.stagger -> effectN( 14 ).percent();
 
+  if ( specialization() == MONK_BREWMASTER )
+    a += passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+
   return a;
 }
 
