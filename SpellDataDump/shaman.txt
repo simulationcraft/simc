@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22882, git build 26bae85)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 5052888)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -321,7 +321,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3248)     : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.20000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (8 -> 9.2)
 Description      : Instantly shocks the target with concussive force, causing up to $s1 Nature damage based on Maelstrom spent.
 
 Name             : Fire Nova (id=8349) [Scaling Spell (10), Spell Family (11)] 
@@ -4314,6 +4315,7 @@ Description      : Scorches your target, dealing $s2 Fire damage, and enhances y
 Variables        : $coeff=${0.125}
 
 Name             : Flametongue (id=194084) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Level      : 10
@@ -4323,7 +4325,7 @@ Proc Flags       : ..x.x... ........ ........ ........
                  : White Melee, Yellow Melee
 Affecting spells : Elemental Fury (60188)
 Triggered by     : Flametongue (193796)
-Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4524,7 +4526,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=288995)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.56000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.64400 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.56 -> 0.644)
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #3 (id=313061)   : Dummy (3)

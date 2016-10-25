@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22882, git build 26bae85)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 5052888)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -4224,7 +4224,8 @@ Effects          :
 #3 (id=318934)   : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #4 (id=335387)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | Target: At Caster(22)
+                   Base Value: 35 | Scaled Value: 35 | Target: At Caster(22)
+                   Hotfixed: Base Value (50 -> 35)
 #5 (id=351092)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | Target: At Caster(22)
 Description      : Deals $s3% of your missing health in Holy damage to $s2 nearby enemies, up to ${$s3*$s5/100}% of your maximum health.

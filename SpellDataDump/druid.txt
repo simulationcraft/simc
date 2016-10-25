@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22882, git build 26bae85)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 5052888)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -751,7 +751,8 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=138419)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 0x7f | Target: Self(1)
+                   Hotfixed: Base Value (-10 -> -6)
 Description      : Reduces all damage taken by $s1%.
 
 Name             : Feral Instinct (id=16949) [Spell Family (7), Passive] 

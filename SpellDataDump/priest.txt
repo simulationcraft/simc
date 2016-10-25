@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22882, git build 26bae85)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 5052888)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -156,7 +156,8 @@ Effects          :
 #1 (id=242)      : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41000 | Target: Enemy(6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41000 | Target: Enemy(6)
+                   Hotfixed: SP Coefficient (0.45 -> 0.41)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: insanity | Target: Self(1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
@@ -2615,11 +2616,13 @@ Effects          :
 #1 (id=179716)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
+                   Hotfixed: Base Value (7 -> 12)
 #3 (id=191073)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
+                   Hotfixed: Base Value (7 -> 12)
 #4 (id=191074)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)

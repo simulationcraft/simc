@@ -8195,26 +8195,6 @@ struct rogue_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2016-10-25", "Saber Slash damage increased by 10%.", 283621 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 303 )
-      .verification_value( 275 );
-    hotfix::register_effect( "Rogue", "2016-10-25", "Pistol Shot damage increased by 10%.", 269972 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.65 )
-      .verification_value( 1.5 );
-    hotfix::register_effect( "Rogue", "2016-10-25", "Ghostly Strike damage increased by 10%.", 289166 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 194 )
-      .verification_value( 176 );
-    hotfix::register_effect( "Rogue", "2016-10-25", "Blunderbuss damage increased by 10%.", 299185 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.21 )
-      .verification_value( 1.1 );
   }
 
   virtual void init( player_t* ) const override {}

@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22882, git build 26bae85)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 5052888)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -591,13 +591,13 @@ Tooltip          : Absorbing up to $w1 magic damage.
 Immune to harmful magic effects.
 
 Name             : Icebound Fortitude (id=48792) [Spell Family (15)] 
-Class            : Frost Unholy Death Knight
+Class            : Blood Frost Unholy Death Knight
 School           : Physical
 Spell Level      : 65
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 100%
-Affecting spells : Ice in Your Veins (189154), Deadly Durability (191565)
+Affecting spells : Blood Death Knight (137008), Ice in Your Veins (189154), Deadly Durability (191565)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2748,8 +2748,10 @@ Effects          :
 #5 (id=191169)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -37 | Scaled Value: -37 | Target: Self(1)
                    Affected Spells: Blood Boil (50842)
-#6 (id=260807)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#6 (id=260807)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self(1)
+                   Affected Spells: Icebound Fortitude (48792)
+                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> -10), Misc Value (0 -> 23), Affects Spells
 #7 (id=260808)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260809)   : Apply Aura (6) | Dummy (4)

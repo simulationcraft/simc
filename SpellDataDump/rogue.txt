@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22882, git build 26bae85)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 5052888)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -1023,6 +1023,7 @@ Effects          :
 Description      : $@spelldesc14190
 
 Name             : Seal Fate (id=14190) [Spell Family (8), Passive] 
+Hotfixed         : Attributes
 Class            : Assassination Rogue
 School           : Physical
 Spell Level      : 28
@@ -1030,7 +1031,7 @@ Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x....... ........ 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ...x.... ........ 
+                 : ........ ........ ........ ........   ........ ........ ...x.... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2616,7 +2617,8 @@ Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... .....
                  : Does not break stealth (37), Disable player procs (112)
 Effects          :
 #1 (id=180708)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+                   Base Value: 5 | Scaled Value: 5 | Target: Enemy(6)
+                   Hotfixed: Base Value (0 -> 5)
 #2 (id=180709)   : Energize Power (30)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: combo_points | Target: Self(1)
 #3 (id=185210)   : Trigger Spell: Marked for Death (64)
@@ -3049,7 +3051,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=269972)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 1.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 1.65000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (1.5 -> 1.65)
 #2 (id=269973)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points | Target: Self(1)
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -3295,7 +3298,8 @@ Effects          :
 #2 (id=283620)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #3 (id=283621)   : Weapon Damage% (31)
-                   Base Value: 275 | Scaled Value: 2.75 | Target: Enemy(6)
+                   Base Value: 302 | Scaled Value: 3.02 | Target: Enemy(6)
+                   Hotfixed: Base Value (275 -> 302)
 #4 (id=283622)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Saber Slash (193315)
@@ -3828,7 +3832,8 @@ Effects          :
 #1 (id=289165)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #2 (id=289166)   : Weapon Damage% (31)
-                   Base Value: 176 | Scaled Value: 1.76 | Target: Enemy(6)
+                   Base Value: 194 | Scaled Value: 1.94 | Target: Enemy(6)
+                   Hotfixed: Base Value (176 -> 194)
 #3 (id=289167)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #4 (id=289168)   : Apply Aura (6) | Dummy (4)
@@ -4522,17 +4527,21 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299182)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.55000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.60500 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (0.55 -> 0.605)
 #2 (id=299183)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #3 (id=299184)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #4 (id=299185)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.10000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.21000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (1.1 -> 1.21)
 #5 (id=299186)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.10000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.21000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (1.1 -> 1.21)
 #6 (id=299187)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.10000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.21000 | Target: Enemy(6)
+                   Hotfixed: AP Coefficient (1.1 -> 1.21)
 Description      : Draws a concealed blunderbuss and fires a quick shot at the target, dealing ${$m1*7} damage and reducing movement speed by $s3% for $d.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
