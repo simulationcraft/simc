@@ -495,6 +495,13 @@ public:
     const spell_data_t* rip;
     const spell_data_t* sharpened_claws;
     const spell_data_t* swipe_cat;
+    const spell_data_t* rake_2;
+    const spell_data_t* tigers_fury_2;
+    const spell_data_t* ferocious_bite_2;
+    const spell_data_t* shred;
+    const spell_data_t* shred_2;
+    const spell_data_t* shred_3;
+    const spell_data_t* swipe_2;
 
     // Balance
     const spell_data_t* balance;
@@ -508,6 +515,10 @@ public:
     const spell_data_t* starfall;
     const spell_data_t* stellar_empowerment;
     const spell_data_t* balance_tier19_2pc;
+    const spell_data_t* starsurge_2;
+    const spell_data_t* moonkin_2;
+    const spell_data_t* starfall_2;
+    const spell_data_t* sunfire_2;
 
     // Guardian
     const spell_data_t* guardian;
@@ -517,6 +528,9 @@ public:
     const spell_data_t* ironfur;
     const spell_data_t* thick_hide; // Guardian Affinity
     const spell_data_t* thrash_bear_dot; // For Rend and Tear modifier
+    const spell_data_t* mangle_2;
+    const spell_data_t* lightning_reflexes;
+    const spell_data_t* ironfur_2;
 
     // Resto
     const spell_data_t* yseras_gift; // Restoration Affinity
@@ -2980,7 +2994,7 @@ struct shred_t : public cat_attack_t
     double tm = cat_attack_t::composite_target_multiplier( t );
 
     if ( t -> debuffs.bleeding -> up() )
-      tm *= 1.0 + p() -> spec.swipe_cat -> effectN( 2 ).percent();
+      tm *= 1.0 + p() -> spec.shred -> effectN( 5 ).percent();
 
     if ( p() -> sets.has_set_bonus( DRUID_FERAL, T19, B4 ) )
     {
@@ -3087,6 +3101,7 @@ struct tigers_fury_t : public cat_attack_t
     harmful = consumes_clearcasting = may_miss = may_parry = may_dodge = may_crit = false;
     autoshift = form_mask = CAT_FORM;
     energize_type = ENERGIZE_ON_CAST;
+    energize_amount += p -> spec.tigers_fury_2 -> effectN( 1 ).resource( RESOURCE_ENERGY );
   }
 
   void execute() override
@@ -5820,6 +5835,10 @@ void druid_t::init_spells()
   spec.starfall                   = find_specialization_spell( "Starfall" );
   spec.stellar_empowerment        = spec.starfall -> ok() ? find_spell( 197637 ) : spell_data_t::not_found();
   spec.balance_tier19_2pc         = sets.has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
+  spec.starsurge_2 = find_specialization_spell( 231021 );
+  spec.moonkin_2 = find_specialization_spell( 231042 );
+  spec.starfall_2 = find_specialization_spell( 231049 );
+  spec.sunfire_2 = find_specialization_spell( 231050) ;
 
   // Feral
   spec.cat_form                   = find_class_spell( "Cat Form" ) -> ok() ? find_spell( 3025   ) : spell_data_t::not_found();
@@ -5834,6 +5853,14 @@ void druid_t::init_spells()
   spec.rip                        = find_specialization_spell( "Rip" );
   spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat                  = find_spell( 106785 );
+  spec.rake_2 = find_specialization_spell( 231052 );
+  spec.tigers_fury_2 = find_specialization_spell( 231055 );
+  spec.ferocious_bite_2 = find_specialization_spell( 231056 );
+  spec.shred = find_specialization_spell( "Shred" );
+  spec.shred_2 = find_specialization_spell( 231063 );
+  spec.shred_3 = find_specialization_spell( 231057 );
+  spec.swipe_2 = find_specialization_spell( 231283 );
+
 
   // Guardian
   spec.bear_form                  = find_class_spell( "Bear Form" ) -> ok() ? find_spell( 1178 ) : spell_data_t::not_found();
@@ -5842,6 +5869,9 @@ void druid_t::init_spells()
   spec.guardian_overrides         = find_specialization_spell( "Guardian Overrides Passive" );
   spec.ironfur                    = find_specialization_spell( "Ironfur" );
   spec.thrash_bear_dot            = find_specialization_spell( "Thrash" ) -> ok() ? find_spell( 192090 ) : spell_data_t::not_found();
+  spec.mangle_2 = find_specialization_spell( 231064 );
+  spec.lightning_reflexes = find_specialization_spell( 231064 );
+  spec.ironfur_2 = find_specialization_spell( 231070 );
   
   // Talents ================================================================
 
@@ -6183,14 +6213,16 @@ void druid_t::create_buffs()
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
                                .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
                                  + talent.soul_of_the_forest -> effectN( 1 ).percent()
-                                 + artifact.empowerment.percent() );
+                                 + artifact.empowerment.percent() )
+                               .max_stack( find_spell( 164547 ) -> max_stacks() + spec.starsurge_2 -> effectN( 1 ).base_value() );
 
   buff.moonkin_form          = new buffs::moonkin_form_t( *this );
 
   buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) )
                                .default_value( find_spell( 164545 ) -> effectN( 1 ).percent()
                                  + talent.soul_of_the_forest -> effectN( 1 ).percent()
-                                 + artifact.empowerment.percent() );
+                                 + artifact.empowerment.percent() )
+                               .max_stack( find_spell( 164545 ) -> max_stacks() + spec.starsurge_2 -> effectN( 1 ).base_value() );
 
   buff.star_power            = buff_creator_t( this, "star_power", find_spell( 202942 ) )
                                .default_value( find_spell( 202942 ) -> effectN( 1 ).percent() / ( talent.incarnation_moonkin -> ok() ? 3 : 1 ) )
