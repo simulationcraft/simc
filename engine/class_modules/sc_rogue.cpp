@@ -8215,16 +8215,6 @@ struct rogue_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 1.21 )
       .verification_value( 1.1 );
-    hotfix::register_effect( "Rogue", "2016-10-25", "Blunderbuss damage increased by 10%.", 299186 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.21 )
-      .verification_value( 1.1 );
-    hotfix::register_effect( "Rogue", "2016-10-25", "Blunderbuss damage increased by 10%.", 299187 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.21 )
-      .verification_value( 1.1 );
   }
 
   virtual void init( player_t* ) const override {}
