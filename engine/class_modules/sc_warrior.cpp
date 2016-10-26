@@ -2184,11 +2184,6 @@ struct hamstring_t: public warrior_attack_t
     //Hamstring no longer activates Opportunity Strikes. 08-24-2016
     return false;
   }
-
-  double tactician_cost() const override
-  { //Hamstring no longer procs tactician. 09-26-2016
-    return 0.0;
-  }
 };
 
 // Focused Rage ============================================================
@@ -5597,7 +5592,7 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   }
 
   // Physical damage only.
-  if ( specialization() == WARRIOR_ARMS && dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( specialization() == WARRIOR_ARMS )
   {
     m *= 1.0 + spell.arms_warrior -> effectN( 2 ).percent();
   }
