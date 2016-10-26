@@ -1,3 +1,21 @@
+# This is a global profile used to check every relevant legendaries for one class.
+# You have to set "$(Tier)=..." before calling it.
+#
+# Example :
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+#
+# It will call the Rogue T19H Profiles then test with every legendaries defined below.
+# You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+# $(Tier)=T19M
+# Rogue_Legendaries.simc
+
+
+
 # Assassination
 Rogue_Assassination_$(Tier).simc
 name=Asn_Baseline
