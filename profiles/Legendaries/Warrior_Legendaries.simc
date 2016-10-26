@@ -18,35 +18,35 @@
 
 # Arms
 Warrior_Arms_$(Tier).simc
-copy=Arms_Baseline
+copy=Arms_$(Tier)_Baseline
 
-copy=Arms_Archavons_Heavy,Arms_Baseline
+copy=Arms_$(Tier)_Archavons_Heavy,Arms_$(Tier)_Baseline
 artifact=36:0:0:0:0:1136:1:1137:1:1139:1:1141:1:1142:1:1143:3:1145:3:1146:3:1147:3:1148:3:1149:3:1150:3:1356:1
 hands=archavons_heavy_hand,id=137060
 main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/137377/139257,relic_id=1517:1727/1517:1727/1517:1727
 
-copy=Arms_Ayalas_Stone,Arms_Baseline
+copy=Arms_$(Tier)_Ayalas_Stone,Arms_$(Tier)_Baseline
 finger1=ayalas_stone_heart,id=137052,enchant=binding_of_mastery
 
-copy=Arms_Najentus_Vertebrae,Arms_Baseline
+copy=Arms_$(Tier)_Najentus_Vertebrae,Arms_$(Tier)_Baseline
 waist=,id=137087,bonus_id=1811
 
-copy=Arms_Weight_Of_The_Earth,Arms_Baseline
+copy=Arms_$(Tier)_Weight_Of_The_Earth,Arms_$(Tier)_Baseline
 legs=,id=137077,bonus_id=1811
 
 
 # Fury
 Warrior_Fury_$(Tier).simc
-name=Fury_Baseline
+name=Fury_$(Tier)_Baseline
 
-copy=Fury_Ayalas_Stone,Fury_Baseline
+copy=Fury_$(Tier)_Ayalas_Stone,Fury_$(Tier)_Baseline
 finger1=ayalas_stone_heart,id=137052,enchant=binding_of_haste
 
-copy=Fury_Najentus_Vertebrae,Fury_Baseline
+copy=Fury_$(Tier)_Najentus_Vertebrae,Fury_$(Tier)_Baseline
 waist=,id=137087,bonus_id=1811
 
-copy=Fury_Ceannar_Charger,Fury_Baseline
+copy=Fury_$(Tier)_Ceannar_Charger,Fury_$(Tier)_Baseline
 head=,id=137088,bonus_id=1811
 
-copy=Fury_Kazzalax,Fury_Baseline
+copy=Fury_$(Tier)_Kazzalax,Fury_$(Tier)_Baseline
 back=,id=137053,bonus_id=1811
