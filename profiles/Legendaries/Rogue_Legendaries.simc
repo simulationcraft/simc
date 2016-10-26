@@ -1,0 +1,97 @@
+# This is a global profile used to check every relevant legendaries for one class.
+# You have to set "$(Tier)=..." before calling it.
+#
+# Example :
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+#
+# It will call the Rogue T19H Profiles then test with every legendaries defined below.
+# You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+# $(Tier)=T19M
+# Rogue_Legendaries.simc
+
+
+
+# Assassination
+Rogue_Assassination_$(Tier).simc
+name=Asn_$(Tier)_Baseline
+
+copy=Asn_$(Tier)_Cinidaria,Asn_$(Tier)_Baseline
+waist=Cinidaria,id=133976
+
+copy=Asn_$(Tier)_Duskwalkers,Asn_$(Tier)_Baseline
+feet=duskwalkers_footpads,id=137030
+
+copy=Asn_$(Tier)_Insignia,Asn_$(Tier)_Baseline
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+
+copy=Asn_$(Tier)_Dreadlords_Deceit,Asn_$(Tier)_Baseline
+back=the_dreadlords_deceit,id=137021
+
+copy=Asn_$(Tier)_Zoldyck_Family,Asn_$(Tier)_Baseline
+wrist=zoldyck_family_training_shackles,id=137098
+
+
+# Assassination Exsanguinate
+Rogue_Assassination_Exsg_$(Tier).simc
+name=Asn_Ex_$(Tier)_Baseline
+
+copy=Asn_Ex_$(Tier)_Cinidaria,Asn_Ex_$(Tier)_Baseline
+waist=Cinidaria,id=133976
+
+copy=Asn_Ex_$(Tier)_Duskwalkers,Asn_Ex_$(Tier)_Baseline
+feet=duskwalkers_footpads,id=137030
+
+copy=Asn_Ex_$(Tier)_Insignia,Asn_Ex_$(Tier)_Baseline
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+
+copy=Asn_Ex_$(Tier)_Dreadlords_Deceit,Asn_Ex_$(Tier)_Baseline
+back=the_dreadlords_deceit,id=137021
+
+copy=Asn_Ex_$(Tier)_Zoldyck_Family,Asn_Ex_$(Tier)_Baseline
+wrist=zoldyck_family_training_shackles,id=137098
+
+
+# Outlaw
+Rogue_Outlaw_$(Tier).simc
+name=Otl_$(Tier)_Baseline
+
+copy=Otl_$(Tier)_Cinidaria,Otl_$(Tier)_Baseline
+waist=Cinidaria,id=133976
+
+copy=Otl_$(Tier)_Greenskins_Waterlogged,Otl_$(Tier)_Baseline
+talent_override=quick_draw
+wrist=greenskins_waterlogged_wristcuffs,id=137099
+
+copy=Otl_$(Tier)_Insignia,Otl_$(Tier)_Baseline
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+
+copy=Otl_$(Tier)_Shivarran_Symmetry,Otl_$(Tier)_Baseline
+hands=shivarran_symmetry,id=141321
+
+copy=Otl_$(Tier)_Thraxis_Tricksy,Otl_$(Tier)_Baseline
+feet=thraxis_tricksy_treads,id=137031
+
+
+# Subtlety
+Rogue_Subtlety_$(Tier).simc
+name=Sub_$(Tier)_Baseline
+
+copy=Sub_$(Tier)_Cinidaria,Sub_$(Tier)_Baseline
+waist=Cinidaria,id=133976
+
+copy=Sub_$(Tier)_Denial_Halfgiants,Sub_$(Tier)_Baseline
+wrist=denial_of_the_halfgiants,id=137100
+
+copy=Sub_$(Tier)_Insignia,Sub_$(Tier)_Baseline
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+
+copy=Sub_$(Tier)_Shadow_Satyrs_Walk,Sub_$(Tier)_Baseline
+feet=shadow_satyrs_walk,id=137032
+
+copy=Sub_$(Tier)_Dreadlords_Deceit,Sub_$(Tier)_Baseline
+back=the_dreadlords_deceit,id=137021

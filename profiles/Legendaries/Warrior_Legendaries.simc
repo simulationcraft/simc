@@ -1,0 +1,52 @@
+# This is a global profile used to check every relevant legendaries for one class.
+# You have to set "$(Tier)=..." before calling it.
+#
+# Example :
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+#
+# It will call the Rogue T19H Profiles then test with every legendaries defined below.
+# You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+# $(Tier)=T19M
+# Rogue_Legendaries.simc
+
+
+
+# Arms
+Warrior_Arms_$(Tier).simc
+copy=Arms_$(Tier)_Baseline
+
+copy=Arms_$(Tier)_Archavons_Heavy,Arms_$(Tier)_Baseline
+artifact=36:0:0:0:0:1136:1:1137:1:1139:1:1141:1:1142:1:1143:3:1145:3:1146:3:1147:3:1148:3:1149:3:1150:3:1356:1
+hands=archavons_heavy_hand,id=137060
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/137377/139257,relic_id=1517:1727/1517:1727/1517:1727
+
+copy=Arms_$(Tier)_Ayalas_Stone,Arms_$(Tier)_Baseline
+finger1=ayalas_stone_heart,id=137052,enchant=binding_of_mastery
+
+copy=Arms_$(Tier)_Najentus_Vertebrae,Arms_$(Tier)_Baseline
+waist=,id=137087,bonus_id=1811
+
+copy=Arms_$(Tier)_Weight_Of_The_Earth,Arms_$(Tier)_Baseline
+legs=,id=137077,bonus_id=1811
+
+
+# Fury
+Warrior_Fury_$(Tier).simc
+name=Fury_$(Tier)_Baseline
+
+copy=Fury_$(Tier)_Ayalas_Stone,Fury_$(Tier)_Baseline
+finger1=ayalas_stone_heart,id=137052,enchant=binding_of_haste
+
+copy=Fury_$(Tier)_Najentus_Vertebrae,Fury_$(Tier)_Baseline
+waist=,id=137087,bonus_id=1811
+
+copy=Fury_$(Tier)_Ceannar_Charger,Fury_$(Tier)_Baseline
+head=,id=137088,bonus_id=1811
+
+copy=Fury_$(Tier)_Kazzalax,Fury_$(Tier)_Baseline
+back=,id=137053,bonus_id=1811
