@@ -8044,13 +8044,13 @@ struct shaman_module_t : public module_t
 		.field("sp_coefficient")
 		.operation(hotfix::HOTFIX_MUL)
 		.modifier(1.15)
-		.verification_value(0.56);
+		.verification_value(8);
 
 	hotfix::register_spell("Shaman", "2016-10-25", "Frost Shock damage increased by 15%. ", 196840)
 		.field("sp_coefficient")
 		.operation(hotfix::HOTFIX_MUL)
 		.modifier(1.15)
-		.verification_value(8);
+		.verification_value(0.56);
   }
 
   void combat_begin( sim_t* ) const override {}
