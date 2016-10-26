@@ -3818,39 +3818,70 @@ struct natures_guardian_t : public druid_heal_t
 
 // Regrowth =================================================================
 
-struct regrowth_t : public druid_heal_t
+struct regrowth_t: public druid_heal_t
 {
-  regrowth_t( druid_t* p, const std::string& options_str ) :
+  regrowth_t( druid_t* p, const std::string& options_str ):
     druid_heal_t( "regrowth", p, p -> find_class_spell( "Regrowth" ), options_str )
   {
-    base_crit += 0.60;
-
     ignore_false_positive = true;
-    init_living_seed();
+
+
+    ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
+    base_multiplier *= 1.0 + p -> spec.feral -> effectN( 2 ).percent()
+      + p -> spec.balance -> effectN( 2 ).percent()
+      + p -> spec.guardian -> effectN( 2 ).percent();
+
+    // redirect to self if not specified
+    /* if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
+    target = p; */
+
+    target = sim -> target;
+    base_multiplier = 0;
+
+    base_multiplier *= 1.0 + p -> artifact.attuned_to_nature.percent();
   }
 
-  virtual double cost() const override
+  double cost() const override
   {
-    if ( p() -> buff.clearcasting -> check() )
+    if ( p() -> buff.predatory_swiftness -> check() )
       return 0;
 
     return druid_heal_t::cost();
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
-    druid_heal_t::consume_resource();
-    double c = druid_heal_t::cost();
+    // Prevent from consuming Omen of Clarity unnecessarily
+    if ( p() -> buff.predatory_swiftness -> check() )
+      return;
 
-    if ( c > 0 && p() -> buff.clearcasting -> up() )
-    {
-      // Treat the savings like a mana gain for tracking purposes.
-      p() -> gain.clearcasting -> add( RESOURCE_MANA, c );
-      p() -> buff.clearcasting -> decrement();
-    }
+    druid_heal_t::consume_resource();
   }
 
-  virtual void impact( action_state_t* state ) override
+  timespan_t execute_time() const override
+  {
+    if ( p() -> buff.predatory_swiftness -> check() )
+      return timespan_t::zero();
+
+    timespan_t et = druid_heal_t::execute_time();
+
+    et *= 1.0 + p() -> buff.power_of_elune -> current_stack
+      * p() -> buff.power_of_elune -> data().effectN( 2 ).percent();
+
+    return et;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = druid_heal_t::action_multiplier();
+
+    am *= 1.0 + p() -> buff.power_of_elune -> current_stack
+      * p() -> buff.power_of_elune -> data().effectN( 1 ).percent();
+
+    return am;
+  }
+
+  void impact( action_state_t* state ) override
   {
     druid_heal_t::impact( state );
 
@@ -3863,12 +3894,25 @@ struct regrowth_t : public druid_heal_t
     }
   }
 
-  virtual timespan_t execute_time() const override
+  bool check_form_restriction() override
   {
-    if ( p() -> buff.incarnation_tree -> check() )
-      return timespan_t::zero();
+    if ( p() -> buff.predatory_swiftness -> check() )
+      return true;
 
-    return druid_heal_t::execute_time();
+    return druid_heal_t::check_form_restriction();
+  }
+
+  void execute() override
+  {
+    druid_heal_t::execute();
+
+    if ( p() -> talent.bloodtalons -> ok() )
+      p() -> buff.bloodtalons -> trigger( 2 );
+
+    p() -> buff.predatory_swiftness -> expire();
+
+    if ( p() -> buff.power_of_elune -> up() )
+      p() -> buff.power_of_elune -> expire();
   }
 };
 
