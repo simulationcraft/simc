@@ -6455,7 +6455,7 @@ void druid_t::apl_precombat()
 
   // Feral: Bloodtalons
   if ( specialization() == DRUID_FERAL && true_level >= 100 )
-    precombat -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled" );
+    precombat -> add_action( this, "Regrowth", "if=talent.bloodtalons.enabled" );
 
   // Forms
   if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
@@ -6617,14 +6617,14 @@ void druid_t::apl_feral()
   def -> add_action( "incarnation,if=energy.time_to_max>1&energy>=35" );
   def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>3&(target.health.pct<25|talent.sabertooth.enabled)",
                      "Keep Rip from falling off during execute range." );
-  def -> add_action( this, "Healing Touch",
+  def -> add_action( this, "Regrowth",
                      "if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=5|buff.predatory_swiftness.remains<1.5"
                      "|(talent.bloodtalons.enabled&combo_points=2&buff.bloodtalons.down&cooldown.ashamanes_frenzy.remains<gcd)|"
                      "(talent.elunes_guidance.enabled&((cooldown.elunes_guidance.remains<gcd&combo_points=0)|(buff.elunes_guidance.up&combo_points>=4))))",
                      "Use Healing Touch at 5 Combo Points, if Predatory Swiftness is about to fall off, at 2 Combo Points before Ashamane's Frenzy, "
                      "before Elune's Guidance is cast or before the Elune's Guidance buff gives you a 5th Combo Point." );
   def -> add_action( "call_action_list,name=sbt_opener,if=talent.sabertooth.enabled&time<20" );
-  def -> add_action( this, "Healing Touch", "if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&buff.predatory_swiftness.stack>1&buff.bloodtalons.down",
+  def -> add_action( this, "Regrowth", "if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&buff.predatory_swiftness.stack>1&buff.bloodtalons.down",
     "Special logic for Ailuro Pouncers legendary." );
   def -> add_action( "call_action_list,name=finisher" );
   def -> add_action( "call_action_list,name=generator" );
@@ -6689,7 +6689,7 @@ void druid_t::apl_feral()
   generate -> add_action( this, "Shred", "if=combo_points<5&(spell_targets.swipe_cat<3|talent.brutal_slash.enabled)" );
 
   // Sabertooth Opener
-  sbt -> add_action( this, "Healing Touch", "if=talent.bloodtalons.enabled&combo_points=5&!buff.bloodtalons.up&!dot.rip.ticking",
+  sbt -> add_action( this, "Regrowth", "if=talent.bloodtalons.enabled&combo_points=5&!buff.bloodtalons.up&!dot.rip.ticking",
     "Hard-cast a Healing Touch for Bloodtalons buff. Use Dash to re-enter Cat Form." );
   sbt -> add_action( this, "Tiger's Fury", "if=!dot.rip.ticking&combo_points=5",
     "Force use of Tiger's Fury before applying Rip." );

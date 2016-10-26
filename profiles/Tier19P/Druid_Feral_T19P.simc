@@ -18,6 +18,7 @@ spec=feral
 actions.precombat=flask,type=flask_of_the_seventh_demon
 actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/regrowth,if=talent.bloodtalons.enabled
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -41,7 +42,11 @@ actions+=/tigers_fury,if=(!buff.clearcasting.react&energy.deficit>=60)|energy.de
 actions+=/incarnation,if=energy.time_to_max>1&energy>=35
 # Keep Rip from falling off during execute range.
 actions+=/ferocious_bite,cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<3&target.time_to_die>3&(target.health.pct<25|talent.sabertooth.enabled)
+# Use Healing Touch at 5 Combo Points, if Predatory Swiftness is about to fall off, at 2 Combo Points before Ashamane's Frenzy, before Elune's Guidance is cast or before the Elune's Guidance buff gives you a 5th Combo Point.
+actions+=/regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&(combo_points>=5|buff.predatory_swiftness.remains<1.5|(talent.bloodtalons.enabled&combo_points=2&buff.bloodtalons.down&cooldown.ashamanes_frenzy.remains<gcd)|(talent.elunes_guidance.enabled&((cooldown.elunes_guidance.remains<gcd&combo_points=0)|(buff.elunes_guidance.up&combo_points>=4))))
 actions+=/call_action_list,name=sbt_opener,if=talent.sabertooth.enabled&time<20
+# Special logic for Ailuro Pouncers legendary.
+actions+=/regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&buff.predatory_swiftness.stack>1&buff.bloodtalons.down
 actions+=/call_action_list,name=finisher
 actions+=/call_action_list,name=generator
 
@@ -87,8 +92,10 @@ actions.generator+=/brutal_slash,if=combo_points<5&((raid_event.adds.exists&raid
 actions.generator+=/swipe_cat,if=combo_points<5&spell_targets.swipe_cat>=3
 actions.generator+=/shred,if=combo_points<5&(spell_targets.swipe_cat<3|talent.brutal_slash.enabled)
 
+# Hard-cast a Healing Touch for Bloodtalons buff. Use Dash to re-enter Cat Form.
+actions.sbt_opener=regrowth,if=talent.bloodtalons.enabled&combo_points=5&!buff.bloodtalons.up&!dot.rip.ticking
 # Force use of Tiger's Fury before applying Rip.
-actions.sbt_opener=tigers_fury,if=!dot.rip.ticking&combo_points=5
+actions.sbt_opener+=/tigers_fury,if=!dot.rip.ticking&combo_points=5
 
 head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
 neck=brysngamen_torc_of_helheim,id=133636,bonus_id=1727,enchant=mark_of_the_distant_army

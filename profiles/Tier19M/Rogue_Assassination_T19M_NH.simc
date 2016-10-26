@@ -105,12 +105,12 @@ neck=soultrappers_pendant,id=141506,enchant=mark_of_the_hidden_satyr
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
 back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=binding_of_agility
 chest=grove_keepers_robe,id=139207,bonus_id=1806
-wrists=zoldyck_family_training_shackles,id=137098
+wrists=dragonspur_wristguards,id=138219,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=stained_maggot_squishers,id=139200,bonus_id=1806
-finger1=dingy_suramar_mercantile_signet,id=141492,enchant=binding_of_versatility
+finger1=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=binding_of_versatility
 finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=spontaneous_appendages,id=139325,bonus_id=1806
@@ -118,11 +118,11 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,rel
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=880.19
-# gear_agility=15875
-# gear_stamina=24916
-# gear_crit_rating=8859
-# gear_haste_rating=1839
-# gear_mastery_rating=5677
-# gear_versatility_rating=2696
-# gear_armor=2244
+# gear_ilvl=880.81
+# gear_agility=15730
+# gear_stamina=25013
+# gear_crit_rating=9023
+# gear_haste_rating=2979
+# gear_mastery_rating=5057
+# gear_versatility_rating=2151
+# gear_armor=2236
