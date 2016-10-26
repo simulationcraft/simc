@@ -8050,7 +8050,7 @@ struct shaman_module_t : public module_t
 		.field("sp_coefficient")
 		.operation(hotfix::HOTFIX_MUL)
 		.modifier(1.15)
-		.verification_value(0.56);
+		.verification_value(8);
   }
 
   void combat_begin( sim_t* ) const override {}
