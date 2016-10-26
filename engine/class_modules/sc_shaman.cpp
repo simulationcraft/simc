@@ -8040,7 +8040,7 @@ struct shaman_module_t : public module_t
       .modifier( 20 )
       .verification_value( 10 );
       */
-    hotfix::register_spell("Shaman", "2016-10-25", "Earth Shock damage increased by 15%. ", 8042)
+ /*   hotfix::register_spell("Shaman", "2016-10-25", "Earth Shock damage increased by 15%. ", 8042)
 		.field("sp_coefficient")
 		.operation(hotfix::HOTFIX_MUL)
 		.modifier(1.15)
@@ -8050,7 +8050,7 @@ struct shaman_module_t : public module_t
 		.field("sp_coefficient")
 		.operation(hotfix::HOTFIX_MUL)
 		.modifier(1.15)
-		.verification_value(0.56);
+		.verification_value(0.56);*/
   }
 
   void combat_begin( sim_t* ) const override {}
