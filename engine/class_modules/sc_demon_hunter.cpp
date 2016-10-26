@@ -35,7 +35,7 @@ namespace
    Last Resort, Nether Bond talents
    True proc chance for Fallout
    Artificial Stamina
-   
+
    Needs Documenting --------------------------------------------------------
    "activation_time" / "delay" sigil expression
    "sigil_placed" sigil expression
@@ -156,8 +156,6 @@ public:
   actions::attacks::chaos_blade_t* chaos_blade_main_hand;
   actions::attacks::chaos_blade_t* chaos_blade_off_hand;
 
-  unsigned demon_blades_charges;  // # of banked Demon Blades procs
-  double demon_blades_est;
   unsigned shear_counter;         // # of failed Shears since last proc
   double metamorphosis_health;    // Vengeance temp health from meta;
   double expected_max_health;
@@ -1319,12 +1317,12 @@ public:
     /* Sep 23 2016: Via hotfix, this ability was changed in some mysterious
     unknown manner. Proc mechanic is now totally serverside.
     http://blue.mmo-champion.com/topic/767333-hotfixes-september-16/
-    
+
     Assuming proc chance and ICD are unchanged and that ICD starts on-attempt
     instead of on-success now.
-    
+
     As a result, chance and ICD are now hardcoded (they are no longer in the
-    spell data).*/ 
+    spell data).*/
 
     if ( p() -> rng().roll( 0.10 ) )
     {
@@ -1865,7 +1863,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
   void tick( dot_t* d ) override
   {
     demon_hunter_spell_t::tick( d );
-    
+
     action_state_t* tick_state = damage -> get_state();
     damage -> target = d -> target;
     damage -> snapshot_state( tick_state, DMG_DIRECT );
@@ -2190,7 +2188,7 @@ struct infernal_strike_t : public demon_hunter_spell_t
     action_t* sigil;
 
     infernal_strike_impact_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "infernal_strike_impact", p, 
+      : demon_hunter_spell_t( "infernal_strike_impact", p,
         p -> find_spell( 189112 ) ), sigil( nullptr )
     {
       background = dual = true;
@@ -2728,7 +2726,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
 
     // Add damage modifiers in sigil_of_flame_damage_t, not here.
   }
-  
+
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
   {
@@ -2873,41 +2871,11 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
       return;
 
     // All hits have an x% chance to generate 1 charge.
-    if ( rng().roll( p() -> talent.demon_blades -> effectN( 1 ).percent() ) )
-    {
-      if ( p() -> demon_blades_charges < 10 )
-      {
-        p() -> demon_blades_charges++;
-      }
-      else
-      {
-        p() -> proc.demon_blades_wasted -> occur();
-      }
-    }
+    if ( !rng().roll( p() -> talent.demon_blades -> effectN( 1 ).percent() ) )
+        return;
 
-    p() -> demon_blades_est += p() -> talent.demon_blades -> effectN( 1 ).percent();
-
-    // Hits not during a GCD can expend up to 2 charges.
-    if ( !p() -> in_gcd() )
-    {
-      unsigned consumed = std::min( ( unsigned )2, p() -> demon_blades_charges );
-
-      for ( unsigned i = 0; i < consumed; i++ )
-      {
-        p() -> active.demon_blades -> target = s -> target;
-        p() -> active.demon_blades -> schedule_execute();
-
-        p() -> demon_blades_est--;
-        p() -> demon_blades_est = std::max( p() -> demon_blades_est, 0.0 );
-      }
-
-      p() -> demon_blades_charges -= consumed;
-      
-      if ( consumed == 0 )
-      {
-        p() -> demon_blades_est = 0.0;
-      }
-    }
+    p() -> active.demon_blades -> target = s -> target;
+    p() -> active.demon_blades -> schedule_execute();
   }
 };
 
@@ -3899,7 +3867,7 @@ struct fel_rush_t : public demon_hunter_attack_t
   void execute() override
   {
     demon_hunter_attack_t::execute();
-    
+
     // Does not benefit from momentum, so snapshot damage now.
     action_state_t* s = damage -> get_state();
     s -> target = target;
@@ -3927,7 +3895,7 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     return demon_hunter_attack_t::ready();
   }
-}; 
+};
 
 // Fracture =================================================================
 
@@ -4013,7 +3981,7 @@ struct fury_of_the_illidari_t : public demon_hunter_attack_t
                       base_multiplier * p() -> buff.rage_of_the_illidari -> check_value();
 
       demon_hunter_attack_t::execute();
-      
+
       p() -> buff.rage_of_the_illidari -> expire();
     }
   };
@@ -5532,10 +5500,6 @@ expr_t* demon_hunter_t::create_expression( action_t* a,
 
     return new soul_fragments_expr_t( this, name_str, type );
   }
-  else if ( name_str == "demon_blades_charges" || name_str == "dblades_charges" )
-  {
-    return make_ref_expr( "demon_blades_charges", demon_blades_est );
-  }
   else if ( util::str_prefix_ci( name_str, "db_per_" ) ||
             util::str_prefix_ci( name_str, "demons_bite_per_" ) )
   {
@@ -5969,12 +5933,12 @@ void demon_hunter_t::init_spells()
     /* Sep 23 2016: Via hotfix, this ability was changed in some mysterious
     unknown manner. Proc mechanic is now totally serverside.
     http://blue.mmo-champion.com/topic/767333-hotfixes-september-16/
-    
+
     Assuming proc chance and ICD are unchanged and that ICD starts on-attempt
     instead of on-success now.
-    
+
     As a result, chance and ICD are now hardcoded (they are no longer in the
-    spell data).*/ 
+    spell data).*/
 
     /* Subsequent Fury of the Illidari ticks (500ms interval) cannot proc,
     so use 501ms instead of 500. */
@@ -6868,8 +6832,6 @@ void demon_hunter_t::reset()
   shear_counter         = 0;
   metamorphosis_health  = 0;
   spirit_bomb           = 0.0;
-  demon_blades_charges  = 0;
-  demon_blades_est      = 0.0;
   sigil_of_flame_activates = timespan_t::zero();
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
