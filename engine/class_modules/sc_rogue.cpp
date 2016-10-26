@@ -1512,11 +1512,16 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     aoe = -1;
   }
 
+  /* FIXME
+  Seems to be fixed since 7.1
+  TO CONFIRM
+
   // Doesn't take in account player crit chance, only "base crit chance"
   double composite_crit_chance() const override
   {
     return 0.05; // Hardcoded to 5% since it is base crit.
   }
+  */
 
   double composite_da_multiplier( const action_state_t* ) const override
   {

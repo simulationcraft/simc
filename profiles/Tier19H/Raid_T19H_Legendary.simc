@@ -17,7 +17,8 @@ optimal_raid=1
 
 # This template variable is used to call the right profile from the Legendaries profiles (so only one profile for every Tiers)
 $(Tier)=T19H
- 
+
+
 # Death Knight
 Death_Knight_Frost_T19H.simc
 wrists=toravons_whiteout_bindings,id=132458
