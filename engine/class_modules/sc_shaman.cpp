@@ -15,7 +15,7 @@
 // Elemental
 // - Verification
 // - Path of Flame spread mechanism (would be good to generalize this "nearby" spreading)
-// - At what point does Greater Lighting Elemental start aoeing?
+// - At what point does Greater Lightning Elemental start aoeing?
 
 namespace { // UNNAMED NAMESPACE
 
@@ -3851,6 +3851,16 @@ struct chain_lightning_t: public chained_base_t
     }
   }
 
+  timespan_t execute_time() const override
+  {
+	  if (p()->buff.stormkeeper->up())
+	  {
+		  return timespan_t::zero();
+	  }
+
+	  return shaman_spell_t::execute_time();
+  }
+
   bool ready() override
   {
     if ( p() -> specialization() == SHAMAN_ELEMENTAL && p() -> buff.ascendance -> check() )
@@ -4277,6 +4287,16 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     return m;
+  }
+  
+  timespan_t execute_time() const override
+  {
+	  if ( p() -> buff.stormkeeper -> up())
+	  {
+		  return timespan_t::zero();
+	  }
+
+	  return shaman_spell_t::execute_time();
   }
 
   void execute() override
@@ -6916,7 +6936,7 @@ void shaman_t::moving()
     {
       // Shaman executes SWG mid-cast during a movement event, if
       // 1) The profile does not have Glyph of Unleashed Lightning and is
-      //    casting a Lighting Bolt (non-instant cast)
+      //    casting a Lightning Bolt (non-instant cast)
       // 2) The profile is casting Lava Burst (without Lava Surge)
       // 3) The profile is casting Chain Lightning
       // 4) The profile is casting Elemental Blast
@@ -8020,6 +8040,17 @@ struct shaman_module_t : public module_t
       .modifier( 20 )
       .verification_value( 10 );
       */
+ /*   hotfix::register_spell("Shaman", "2016-10-25", "Earth Shock damage increased by 15%. ", 8042)
+		.field("sp_coefficient")
+		.operation(hotfix::HOTFIX_MUL)
+		.modifier(1.15)
+		.verification_value(8);
+
+	hotfix::register_spell("Shaman", "2016-10-25", "Frost Shock damage increased by 15%. ", 196840)
+		.field("sp_coefficient")
+		.operation(hotfix::HOTFIX_MUL)
+		.modifier(1.15)
+		.verification_value(0.56);*/
   }
 
   void combat_begin( sim_t* ) const override {}
