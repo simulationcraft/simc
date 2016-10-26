@@ -4246,6 +4246,7 @@ struct aftershocks_t : public fire_mage_spell_t
     fire_mage_spell_t( "aftershocks", p, p -> find_spell( 194432 ) )
   {
     background = true;
+    aoe = -1;
     triggers_ignite = true;
   }
 };
