@@ -3007,7 +3007,7 @@ struct melee_t : public death_knight_melee_attack_t
         p() -> buffs.killing_machine -> trigger();
       }
 
-      if ( weapon && weapon -> slot == SLOT_MAIN_HAND && p() -> buffs.frozen_pulse -> up() )
+      if ( weapon && p() -> buffs.frozen_pulse -> up() )
       {
         frozen_pulse -> target = s -> target;
         frozen_pulse -> schedule_execute();
