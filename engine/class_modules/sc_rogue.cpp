@@ -1512,10 +1512,7 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     aoe = -1;
   }
 
-  /* FIXME
-  Seems to be fixed since 7.1
-  TO CONFIRM
-
+  /* As of 27/10, does benefit from player crit, intended ? (double dip)
   // Doesn't take in account player crit chance, only "base crit chance"
   double composite_crit_chance() const override
   {
@@ -1533,43 +1530,8 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
       m += p() -> find_spell( 137037 ) -> effectN( 1 ).percent();
     }
 
-    // We don't know yet if every player multiplier works on the ring yet, as for now
-    // the general method will be commented out and every multiplier that works will
-    // be added until it's figured. (Including items)
-    //m *= p() -> composite_player_multiplier( SCHOOL_SHADOW );
-
-    // General
-    // Versatility
-    m *= 1.0 + p() -> cache.damage_versatility();
-    // Gnawed Thumb Ring
-    if ( p() -> player_t::buffs.taste_of_mana && p() -> player_t::buffs.taste_of_mana -> up() )
-    {
-      m *= 1.0 + p() -> player_t::buffs.taste_of_mana -> default_value;
-    }
-
-    // Assassination
-    // Elaborate Planning
-    if ( p() -> buffs.elaborate_planning -> up() )
-    {
-      m *= p() -> buffs.elaborate_planning -> check_value();
-    }
-
-    // Subtlety
-    // Shadow Fangs
-    if ( p() -> artifact.shadow_fangs.rank() )
-    {
-      m *= 1.0 + p() -> artifact.shadow_fangs.data().effectN( 1 ).percent();
-    }
-    // Master of Subtlety
-    if ( p() -> buffs.master_of_subtlety -> check() || p() -> buffs.master_of_subtlety_passive -> check() )
-    {
-      m *= 1.0 + p() -> talent.master_of_subtlety -> effectN( 1 ).percent();
-    }
-    // Symbols of Death
-    if ( p() -> buffs.symbols_of_death -> up() )
-    {
-      m *= p() -> buffs.symbols_of_death -> check_value();
-    }
+    // As of 27/10, does benefits from every player multiplier, intended ? (double dip)
+    m *= p() -> composite_player_multiplier( SCHOOL_SHADOW );
 
     return m;
   }
