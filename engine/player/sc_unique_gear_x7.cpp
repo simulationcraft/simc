@@ -741,7 +741,9 @@ struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
 
   poisoned_dreams_damage_driver_t( const special_effect_t& effect, action_t* d, player_t* t ) :
     dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
-  { }
+  {
+
+  }
 
   void trigger( action_t* a, void* call_data ) override
   {
@@ -780,8 +782,8 @@ struct poisoned_dreams_t : public debuff_t
     effect = new special_effect_t( p.source );
     effect -> name_str = "poisoned_dreams_damage_driver";
     effect -> proc_chance_ = 1.0;
-    effect -> proc_flags_ = PF_SPELL | PF_AOE_SPELL;
-    effect -> proc_flags2_ = PF2_ALL_HIT;
+    effect -> proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+    effect -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
     p.source -> special_effects.push_back( effect );
 
     //TODO: Fix hardcoded ICD on the debuff proc application from spelldata.

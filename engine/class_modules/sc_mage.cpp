@@ -2610,7 +2610,6 @@ struct conflagration_dot_t : public fire_mage_spell_t
   {
     parse_options( options_str );
     //TODO: Check callbacks
-    callbacks = false;
     hasted_ticks = false;
     tick_may_crit = may_crit = false;
     background = true;
@@ -2678,6 +2677,10 @@ struct ignite_t : public residual_action_t
     dot_duration = dbc::find_spell( player, 12654 ) -> duration();
     base_tick_time = dbc::find_spell( player, 12654 ) -> effectN( 1 ).period();
     school = SCHOOL_FIRE;
+
+    //!! NOTE NOTE NOTE !! This is super dangerous and means we have to be extra careful with correctly
+    // flagging thats that proc off events, to not proc off ignite if they shouldn't!
+    callbacks = true;
 
     if ( player -> talents.conflagration -> ok() )
     {
