@@ -6429,10 +6429,11 @@ struct shadowmeld_t : public racial_spell_t
 struct arcane_torrent_t : public racial_spell_t
 {
   double gain_pct;
+  double gain_energy;
 
   arcane_torrent_t( player_t* p, const std::string& options_str ) :
     racial_spell_t( p, "arcane_torrent", p -> find_racial_spell( "Arcane Torrent" ), options_str ),
-    gain_pct( 0 )
+    gain_pct( 0 ), gain_energy( 0 )
   {
     energize_type = ENERGIZE_ON_CAST;
     // Some specs need special handling here
@@ -6450,8 +6451,11 @@ struct arcane_torrent_t : public racial_spell_t
         gain_pct = data().effectN( 3 ).percent();
         break;
       case MONK_WINDWALKER:
-        parse_effect_data( data().effectN( 4 ) );
+      {
+        parse_effect_data( data().effectN( 2 ) ); // Chi
+        gain_energy = data().effectN( 4 ).base_value(); // Energy
         break;
+      }
       case MONK_BREWMASTER:
         parse_effect_data( data().effectN( 2 ) );
         break;
@@ -6472,6 +6476,9 @@ struct arcane_torrent_t : public racial_spell_t
       double gain = player -> resources.max [ RESOURCE_MANA ] * gain_pct;
       player -> resource_gain( RESOURCE_MANA, gain, player -> gains.arcane_torrent );
     }
+
+    if ( gain_energy > 0 )
+      player -> resource_gain( RESOURCE_ENERGY, gain_energy, player -> gains.arcane_torrent );
   }
 };
 
