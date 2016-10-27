@@ -2783,12 +2783,6 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     may_crit = true;
     special = true;
     weapon = &( p -> main_hand_weapon );
-
-    // Sword of Light boosts action_multiplier
-    if ( use2hspec && ( p -> specialization() == PALADIN_RETRIBUTION ) && ( p -> main_hand_weapon.group() == WEAPON_2H ) )
-    {
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
-    }
   }
 
   virtual timespan_t gcd() const override
@@ -3193,6 +3187,9 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
 
+    // TODO: figure out where this is from
+    base_multiplier *= 0.9;
+
     aoe = -1;
     background = true;
   }
@@ -3260,6 +3257,9 @@ struct divine_storm_t: public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
+
+    // TODO: figure out where this is from
+    base_multiplier *= 0.9;
 
     aoe = -1;
 
@@ -3812,6 +3812,9 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
+
+    // TODO: this happened in 7.1, but not sure where it came from
+    base_multiplier *= 0.9;
   }
 
   virtual double action_multiplier() const override
@@ -3873,6 +3876,8 @@ struct templars_verdict_t : public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.might_of_the_templar.percent();
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
+
+    base_multiplier *= 0.9;
 
     // Okay, when did this get reset to 1?
     weapon_multiplier = 0;
@@ -5428,6 +5433,11 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   // These affect all damage done by the paladin
+
+  // "Sword of Light" buffs everything now
+  if ( specialization() == PALADIN_RETRIBUTION )
+    m *= 1.0 + passives.retribution_paladin -> effectN( 4 ).percent();
+
   // Avenging Wrath buffs everything
   if ( buffs.avenging_wrath -> check() )
     m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
