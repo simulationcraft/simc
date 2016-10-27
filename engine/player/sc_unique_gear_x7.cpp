@@ -55,6 +55,9 @@ namespace item
   void tempered_egg_of_serpentrix( special_effect_t& );
   void gnawed_thumb_ring( special_effect_t& );
 
+  // 7.1 Dungeon
+  void arans_relaxing_ruby( special_effect_t& );
+
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
   void infernal_alchemist_stone( special_effect_t& ); // WIP
@@ -72,6 +75,9 @@ namespace item
   void unstable_horrorslime( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
   void bough_of_corruption( special_effect_t& );
+
+
+
 
   /* NYI ================================================================
   Nighthold ---------------------------------
@@ -198,7 +204,41 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.item, effect );
 }
+// Aran's Relaxing Ruby ============================================================
 
+struct flame_wreath_t : public spell_t
+{
+  flame_wreath_t( const special_effect_t& effect ) :
+    spell_t( "flame_wreath", effect.player, effect.player -> find_spell( 230257 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    item = effect.item;
+    school = SCHOOL_FIRE;
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+    aoe = -1;
+  }
+
+};
+
+void item::arans_relaxing_ruby( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "flame_wreath" ) ;
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "flame_wreath", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new flame_wreath_t( effect );
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 // Giant Ornamental Pearl ===================================================
 
 struct gaseous_bubble_t : public absorb_buff_t
@@ -2835,6 +2875,9 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 228462, item::jeweled_signet_of_melandrus    );
   register_special_effect( 215745, item::tempered_egg_of_serpentrix     );
   register_special_effect( 228461, item::gnawed_thumb_ring              );
+
+  /* Legion 7.1 Dungeon */
+  register_special_effect( 230257, item::arans_relaxing_ruby            );
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );
