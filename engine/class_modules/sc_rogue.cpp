@@ -666,7 +666,7 @@ struct rogue_t : public player_t
   void trigger_second_shuriken( const action_state_t* );
   void trigger_surge_of_toxins( const action_state_t* );
   void trigger_poison_knives( const action_state_t* );
-  void trigger_true_bearing( int );
+  void trigger_true_bearing( const action_state_t* );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_insignia_of_ravenholdt( const action_state_t* );
@@ -1512,7 +1512,7 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     aoe = -1;
   }
 
-  /* As of 27/10, does benefit from player crit, intended ? (double dip)
+  /* As of 10/27 (7.1 22908), does benefit from player crit, intended ? (double dip)
   // Doesn't take in account player crit chance, only "base crit chance"
   double composite_crit_chance() const override
   {
@@ -1530,7 +1530,7 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
       m += p() -> find_spell( 137037 ) -> effectN( 1 ).percent();
     }
 
-    // As of 27/10, does benefits from every player multiplier, intended ? (double dip)
+    // As of 10/27 (7.1 22908), does benefits from every player multiplier, intended ? (double dip)
     m *= p() -> composite_player_multiplier( SCHOOL_SHADOW );
 
     return m;
@@ -2477,7 +2477,7 @@ struct between_the_eyes_t : public rogue_attack_t
 
     if ( p() -> buffs.true_bearing -> up() )
     {
-      p() -> trigger_true_bearing( cast_state( execute_state ) -> cp );
+      p() -> trigger_true_bearing( execute_state );
     }
     if ( greenskins_waterlogged_wristcuffs )
     {
@@ -2697,7 +2697,7 @@ struct eviscerate_t : public rogue_attack_t
   {
     weapon = &( player -> main_hand_weapon );
     base_crit += p -> artifact.gutripper.percent();
-    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent(); //FIXME As of 10/24 (7.1 22882), it is put as a Generic Modifier.
+    base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent(); // As of 10/24 (7.1 22882), it is put as a Generic Modifier.
   }
 
   double action_multiplier() const override
@@ -3475,7 +3475,7 @@ struct run_through_t: public rogue_attack_t
 
     if ( p() -> buffs.true_bearing -> up() )
     {
-      p() -> trigger_true_bearing( cast_state( execute_state ) -> cp );
+      p() -> trigger_true_bearing( execute_state );
     }
 
     p() -> buffs.t19_4pc_outlaw -> trigger();
@@ -3736,7 +3736,7 @@ struct roll_the_bones_t : public rogue_attack_t
 
     if ( p() -> buffs.true_bearing -> up() )
     {
-      p() -> trigger_true_bearing( cast_state( execute_state ) -> cp );
+      p() -> trigger_true_bearing( execute_state );
     }
   }
 
@@ -5484,13 +5484,18 @@ void rogue_t::trigger_alacrity( const action_state_t* s )
   }
 }
 
-void rogue_t::trigger_true_bearing( int cp )
+void rogue_t::trigger_true_bearing( const action_state_t* state )
 {
   timespan_t v = timespan_t::from_seconds( buffs.true_bearing -> default_value );
-  v *= -cp;
+  v *= - actions::rogue_attack_t::cast_state( state ) -> cp;
+
   cooldowns.adrenaline_rush -> adjust( v, false );
   cooldowns.sprint -> adjust( v, false );
-  cooldowns.between_the_eyes -> adjust( v, false );
+  // As of 10/27 (7.1 22908), Between the Eyes (199804) doesn't reduce its own CD.
+  if ( bugs && state -> action -> id != 199804)
+  {
+    cooldowns.between_the_eyes -> adjust( v, false );
+  }
   cooldowns.vanish -> adjust( v, false );
   cooldowns.blind -> adjust( v, false );
   cooldowns.cloak_of_shadows -> adjust( v, false );
