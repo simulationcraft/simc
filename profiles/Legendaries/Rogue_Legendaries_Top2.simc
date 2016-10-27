@@ -1,0 +1,61 @@
+# This is a global profile used to check the 2 best legendaries for one class. (Published on Website)
+# You have to set "$(Tier)=..." before calling it.
+#
+# Example :
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+#
+# It will call the Rogue T19H Profiles then test with every legendaries defined below.
+# You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+# $(Tier)=T19M
+# Rogue_Legendaries.simc
+
+
+
+# Assassination
+Rogue_Assassination_$(Tier).simc
+name=Asn_$(Tier)_Baseline
+
+copy=Asn_$(Tier)_Insignia,Asn_$(Tier)_Baseline
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+
+copy=Asn_$(Tier)_Zoldyck_Family,Asn_$(Tier)_Baseline
+wrist=zoldyck_family_training_shackles,id=137098
+
+
+# Assassination Exsanguinate
+Rogue_Assassination_Exsg_$(Tier).simc
+name=Asn_Ex_$(Tier)_Baseline
+
+copy=Asn_Ex_$(Tier)_Insignia,Asn_Ex_$(Tier)_Baseline
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+
+copy=Asn_Ex_$(Tier)_Zoldyck_Family,Asn_Ex_$(Tier)_Baseline
+wrist=zoldyck_family_training_shackles,id=137098
+
+
+# Outlaw
+Rogue_Outlaw_$(Tier).simc
+name=Otl_$(Tier)_Baseline
+
+copy=Otl_$(Tier)_Greenskins_Waterlogged,Otl_$(Tier)_Baseline
+talent_override=quick_draw
+wrist=greenskins_waterlogged_wristcuffs,id=137099
+
+copy=Otl_$(Tier)_Insignia,Otl_$(Tier)_Baseline
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+
+
+# Subtlety
+Rogue_Subtlety_$(Tier).simc
+name=Sub_$(Tier)_Baseline
+
+copy=Sub_$(Tier)_Insignia,Sub_$(Tier)_Baseline
+finger1=insignia_of_ravenholdt,id=137049,gem_id=130221,enchant=binding_of_versatility
+
+copy=Sub_$(Tier)_Shadow_Satyrs_Walk,Sub_$(Tier)_Baseline
+feet=shadow_satyrs_walk,id=137032
