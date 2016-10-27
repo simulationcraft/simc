@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 1242eba)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build b73cc22)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2644,6 +2644,7 @@ Effects          :
 Description      : You gain Parry equal to $s1% of your Critical Strike from gear.
 
 Name             : Jailer's Judgment (id=162056) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holy
@@ -2654,7 +2655,7 @@ Duration         : 6 seconds
 Cooldown         : 180 seconds
 Mechanic         : Unknown(95)
 Triggered by     : The Jailer's Libram (168802)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

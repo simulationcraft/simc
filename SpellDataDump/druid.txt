@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 1242eba)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build b73cc22)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -318,7 +318,8 @@ Effects          :
                    Affected Spells: Wild Charge (102401)
 #4 (id=162558)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Healing Touch (5185), Rebirth (20484), Skull Bash (93985), Skull Bash (106839)
+                   Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484), Skull Bash (93985), Skull Bash (106839)
+                   Hotfixed: Affects Spells
 
 Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (3), Spell Family (7)] 
 Class            : Restoration Rogue, Druid
@@ -351,7 +352,7 @@ Spell Level      : 24
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Soul of the Forest (114108), Lucidity (137247), Blessing of the World Tree (189744), Restoration Affinity (197492), Astral Influence (197524), Abundance (207640), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: Tree of Life (5420), Bear Form (5487), Nimble Healing Touch (24542), Blessing of Lower City (37878), Soul of the Forest (114108), Lucidity (137247), Blessing of the World Tree (189744), Restoration Affinity (197492), Astral Influence (197524), Abundance (207640), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -461,9 +462,11 @@ Effects          :
 #3 (id=1861)     : Weapon Damage% (31)
                    Base Value: 695 | Scaled Value: 6.95 | Target: Enemy(6)
 #4 (id=348398)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
+                   Hotfixed: Target 1 (0 -> 6)
 #5 (id=348788)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
+                   Hotfixed: Target 1 (22 -> 6), Target 2 (15 -> 0)
 Description      : Shred the target, causing ${$sw1*$<mult>} Physical damage to the target.$?a231063[ Deals $s5% increased damage against bleeding targets.][]$?a231057[
 
 While stealthed, Shred deals $m4% increased damage, and has double the chance to critically strike.][]
@@ -670,7 +673,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Blessing of Lower City (37878), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Ironbark (102342), Guardian Druid (137010), Feral Druid (137011), Balance Druid (137013), Lucidity (137247), Grovewalker (186320), Blessing of the World Tree (189744), Astral Influence (197524), Abundance (207640), Essence of G'Hanir (208253), Power of Elune, the Moon Goddess (208284), Attuned to Nature (210590), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Cat Form (3025), Incarnation: Tree of Life (5420), Clearcasting (16870), Nimble Healing Touch (24542), Blessing of Lower City (37878), Predatory Swiftness (69369), Incarnation: Tree of Life (81097), Ironbark (102342), Guardian Druid (137010), Feral Druid (137011), Balance Druid (137013), Lucidity (137247), Grovewalker (186320), Blessing of the World Tree (189744), Astral Influence (197524), Abundance (207640), Essence of G'Hanir (208253), Power of Elune, the Moon Goddess (208284), Attuned to Nature (210590), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -5850,8 +5853,9 @@ While Fury of Elune is active, you may recast it for no cost to direct the beam 
 Tooltip          : Directing the Fury of Elune.
 
 Name             : Full Moon (Artifact) (id=202771) [Spell Family (7)] 
+Hotfixed         : School (72 -> 64)
 Class            : Druid
-School           : Astral
+School           : Arcane
 Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
@@ -5866,7 +5870,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=298969)   : School Damage: astral (2)
+#1 (id=298969)   : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 18.00000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 #2 (id=298970)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: astral_power | Target: Self(1)

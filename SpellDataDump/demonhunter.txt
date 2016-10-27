@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 1242eba)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build b73cc22)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -2084,10 +2084,10 @@ Effects          :
 Description      : Chaos Strike has a chance to spawn a Lesser Soul Fragment, and consuming any Soul Fragment grants $210041s1 Fury.
 
 Name             : Nemesis (id=206491) [Spell Family (107)] 
+Hotfixed         : GCD (1500 -> 0)
 Class            : Demon Hunter
 School           : Physical
 Range            : 50 yards
-GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 100%

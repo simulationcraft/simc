@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 1242eba)
+SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build b73cc22)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -3886,11 +3886,12 @@ Description      : Gain a charge of Mongoose Bite.
 Tooltip          : Gain a charge of Mongoose Bite.
 
 Name             : Hunting Companion (id=191336) [Spell Family (9), Passive] 
+Hotfixed         : Proc Flags (333072 -> 333076)
 Class            : Monk
 School           : Physical
 Proc Chance      : 100%
-Proc Flags       : ....x... x.x.x... x.x..... ........ 
-                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Hostile Spell, Periodic
+Proc Flags       : ..x.x... x.x.x... x.x..... ........ 
+                 : White Melee, Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ....x.x. x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
