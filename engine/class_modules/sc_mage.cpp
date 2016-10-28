@@ -4549,8 +4549,8 @@ struct flurry_t : public frost_mage_spell_t
     hasted_ticks = false;
 
     //TODO: Remove hardcoded values once it exists in spell data for bolt impact timing.
-    dot_duration = timespan_t::from_seconds( 0.6 );
-    base_tick_time = timespan_t::from_seconds( 0.2 );
+    dot_duration = timespan_t::from_seconds( 0.03 );
+    base_tick_time = timespan_t::from_seconds( 0.01 );
 
   }
 
