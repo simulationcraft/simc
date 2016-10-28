@@ -67,6 +67,7 @@ public:
 
   // Active
   std::vector<pets::hunter_main_pet_t*> hunter_main_pets;
+  std::vector<cooldown_t*> animal_instincts_cds;
   struct actives_t
   {
     pets::hunter_main_pet_t* pet;
@@ -154,6 +155,8 @@ public:
     cooldown_t* kill_command;
     cooldown_t* mongoose_bite;
     cooldown_t* lacerate;
+    cooldown_t* flanking_strike;
+    cooldown_t* harpoon;
     cooldown_t* aspect_of_the_eagle;
     cooldown_t* aspect_of_the_wild;
   } cooldowns;
@@ -195,6 +198,11 @@ public:
     proc_t* convergence;
     proc_t* marking_targets;
     proc_t* wasted_marking_targets;
+    proc_t* animal_instincts_mongoose;
+    proc_t* animal_instincts_aspect;
+    proc_t* animal_instincts_harpoon;
+    proc_t* animal_instincts_flanking;
+    proc_t* animal_instincts;
   } procs;
 
   real_ppm_t* ppm_hunters_mark;
@@ -437,6 +445,8 @@ public:
     cooldowns.kill_command    = get_cooldown( "kill_command" );
     cooldowns.mongoose_bite   = get_cooldown( "mongoose_bite" );
     cooldowns.lacerate        = get_cooldown( "lacerate" );
+    cooldowns.flanking_strike = get_cooldown( "flanking_strike" );
+    cooldowns.harpoon         = get_cooldown( "harpoon" );
     cooldowns.aspect_of_the_eagle = get_cooldown( "aspect_of_the_eagle" );
     cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
 
@@ -1938,7 +1948,7 @@ struct pet_melee_t: public hunter_main_pet_attack_t
 
     if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
     {
-      double proc_chance = p() -> o() -> cache.mastery_value() * 0.5;
+      double proc_chance = p() -> o() -> cache.mastery_value();
 
       if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
         proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
@@ -2016,7 +2026,7 @@ struct basic_attack_t: public hunter_main_pet_attack_t
 
     if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
     {
-      double proc_chance = p() -> o() -> cache.mastery_value() * 0.25;
+      double proc_chance = p() -> o() -> cache.mastery_value();
 
       if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
         proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
@@ -2090,7 +2100,7 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
 
     if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
     {
-      double proc_chance = p() -> o() -> cache.mastery_value() * 0.5;
+      double proc_chance = p() -> o() -> cache.mastery_value() * 2.0;
       
       if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
         proc_chance *= p() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
@@ -3817,9 +3827,31 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    if ( p()->active.pet )
-      p()->active.pet->active.flanking_strike->execute();
+    timespan_t animal_instincts = -p() -> find_spell( 232646 ) -> effectN( 1 ).time_value() * 1000;
 
+    if ( p() -> active.pet )
+      p() -> active.pet -> active.flanking_strike -> execute();
+
+    if ( p() -> talents.animal_instincts -> ok() )
+    {
+      if ( !p() -> cooldowns.flanking_strike -> up() )
+        p() -> animal_instincts_cds.push_back( p() -> cooldowns.flanking_strike );
+      if ( !p() -> cooldowns.mongoose_bite -> up() )
+        p() -> animal_instincts_cds.push_back( p() -> cooldowns.mongoose_bite );
+      if ( !p() -> cooldowns.aspect_of_the_eagle -> up() )
+        p() -> animal_instincts_cds.push_back( p() -> cooldowns.aspect_of_the_eagle );
+      if ( !p() -> cooldowns.harpoon -> up() )
+        p() -> animal_instincts_cds.push_back( p() -> cooldowns.harpoon );
+
+      if ( !p() -> animal_instincts_cds.empty() )
+      {
+        unsigned roll =
+          as<unsigned>( p() -> rng().range( 0, p() -> animal_instincts_cds.size() ) );
+
+        p() -> animal_instincts_cds[roll] -> adjust( animal_instincts );
+        p() -> procs.animal_instincts -> occur();
+      }
+    }
   }
 
   virtual double composite_crit_chance() const override
@@ -5840,6 +5872,11 @@ void hunter_t::init_procs()
   procs.convergence                  = get_proc( "convergence" );
   procs.marking_targets              = get_proc( "marking_targets" );
   procs.wasted_marking_targets       = get_proc( "wasted_marking_targets" );
+  procs.animal_instincts_mongoose    = get_proc( "animal_instincts_mongoose" );
+  procs.animal_instincts_aspect      = get_proc( "animal_instincts_aspect" );
+  procs.animal_instincts_harpoon     = get_proc( "animal_instincts_harpoon" );
+  procs.animal_instincts_flanking    = get_proc( "animal_instincts_flanking" );
+  procs.animal_instincts             = get_proc("animal_instincts");
 }
 
 // hunter_t::init_rng =======================================================
