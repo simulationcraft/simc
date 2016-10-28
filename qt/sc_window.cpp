@@ -860,7 +860,7 @@ void SC_MainWindow::startSim()
   sim -> output_file_str = (reportFileBase + ".txt").toStdString();
   sim -> html_file_str = (reportFileBase + ".html").toStdString();
 
-  sim -> xml_file_str = (reportFileBase + ".xml").toStdString();
+  //sim -> xml_file_str = (reportFileBase + ".xml").toStdString();
   sim -> reforge_plot_output_file_str = (reportFileBase + "_plotdata.csv").toStdString();
 
   if ( optionsTab -> get_api_key().size() == 32 ) // api keys are 32 characters long, it's not worth parsing <32 character keys.

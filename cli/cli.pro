@@ -3,6 +3,7 @@ include(../simulationcraft.pri)
 TEMPLATE    = app
 TARGET      = simc
 CONFIG     -= qt app_bundle link_prl
+LIBS       += -L../lib -lsimcengine
 QT         -= core gui
 
 # Linux puts binaries to a different place (see simulationcraft.pri)
@@ -16,6 +17,10 @@ CONFIG(debug, debug|release): LIBS += -L../lib/debug -lsimcengine
 win32 {
   CONFIG += console
   QMAKE_PROJECT_NAME = "Simulationcraft CLI"
+}
+
+unix {
+LIBS += -lpthread
 }
 
 # Deployment for Linux
