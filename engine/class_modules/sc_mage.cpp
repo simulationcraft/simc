@@ -3797,8 +3797,9 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    snapshot_state( s, amount_type ( s ) );
     handle_frozen( s );
+    snapshot_state( s, amount_type ( s ) );
+
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
@@ -4485,8 +4486,9 @@ struct flurry_bolt_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    snapshot_state( s, amount_type ( s ) );
     handle_frozen( s );
+    snapshot_state( s, amount_type ( s ) );
+
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
@@ -4655,8 +4657,9 @@ struct frost_bomb_explosion_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    snapshot_state( s, amount_type ( s ) );
     handle_frozen( s );
+    snapshot_state( s, amount_type ( s ) );
+
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
@@ -4859,8 +4862,9 @@ struct frostbolt_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    snapshot_state( s, amount_type ( s ) );
     handle_frozen( s );
+    snapshot_state( s, amount_type ( s ) );
+
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
@@ -5212,8 +5216,9 @@ struct glacial_spike_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    snapshot_state( s, amount_type ( s ) );
     handle_frozen( s );
+    snapshot_state( s, amount_type ( s ) );
+
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
     frost_mage_spell_t::impact( s );
@@ -5369,7 +5374,7 @@ struct ice_lance_t : public frost_mage_spell_t
     // Begin casting all Icicles at the target, beginning 0.25 seconds after the
     // Ice Lance cast with remaining Icicles launching at intervals of 0.75
     // seconds, both values adjusted by haste. Casting continues until all
-    // Icicles are gone, including new ones that accumulate while they're being
+    // Icicles are gone, including new ones that accumulate Iwhile they're being
     // fired. If target dies, Icicles stop. If Ice Lance is cast again, the
     // current sequence is interrupted and a new one begins.
     if ( !p() -> talents.glacial_spike -> ok() )
@@ -5523,8 +5528,8 @@ struct ice_nova_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-    snapshot_state( s, amount_type ( s ) );
     handle_frozen( s );
+    snapshot_state( s, amount_type ( s ) );
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
