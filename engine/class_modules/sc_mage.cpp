@@ -1948,7 +1948,7 @@ public:
 
     if ( frozen && p() -> spec.shatter -> ok() )
     {
-      m *= 1.0 + p() -> spec.shatter -> effectN( 2 ).percent();
+      m *= 1.0 + ( p() -> spec.shatter -> effectN( 2 ).percent() + p() -> spec.shatter_2 -> effectN( 1 ).percent() );
     }
 
     return m;
