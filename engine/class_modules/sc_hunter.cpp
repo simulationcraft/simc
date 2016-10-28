@@ -67,7 +67,7 @@ public:
 
   // Active
   std::vector<pets::hunter_main_pet_t*> hunter_main_pets;
-  std::vector<cooldown_t*> animal_instincts_cds;
+  std::vector<std::pair<cooldown_t*, proc_t*>> animal_instincts_cds;
   struct actives_t
   {
     pets::hunter_main_pet_t* pet;
@@ -3834,22 +3834,24 @@ struct flanking_strike_t: hunter_melee_attack_t
 
     if ( p() -> talents.animal_instincts -> ok() )
     {
+      p() -> animal_instincts_cds.clear();
+
       if ( !p() -> cooldowns.flanking_strike -> up() )
-        p() -> animal_instincts_cds.push_back( p() -> cooldowns.flanking_strike );
+        p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.flanking_strike, p() -> procs.animal_instincts_flanking ) );
       if ( !p() -> cooldowns.mongoose_bite -> up() )
-        p() -> animal_instincts_cds.push_back( p() -> cooldowns.mongoose_bite );
+        p()->animal_instincts_cds.push_back( std::make_pair( p()->cooldowns.mongoose_bite, p()->procs.animal_instincts_mongoose ) );
       if ( !p() -> cooldowns.aspect_of_the_eagle -> up() )
-        p() -> animal_instincts_cds.push_back( p() -> cooldowns.aspect_of_the_eagle );
+        p()->animal_instincts_cds.push_back( std::make_pair( p()->cooldowns.aspect_of_the_eagle, p()->procs.animal_instincts_aspect ) );
       if ( !p() -> cooldowns.harpoon -> up() )
-        p() -> animal_instincts_cds.push_back( p() -> cooldowns.harpoon );
+        p()->animal_instincts_cds.push_back( std::make_pair( p()->cooldowns.harpoon, p()->procs.animal_instincts_harpoon ) );
 
       if ( !p() -> animal_instincts_cds.empty() )
       {
         unsigned roll =
           as<unsigned>( p() -> rng().range( 0, p() -> animal_instincts_cds.size() ) );
 
-        p() -> animal_instincts_cds[roll] -> adjust( animal_instincts );
-        p() -> procs.animal_instincts -> occur();
+        p()->animal_instincts_cds[roll].first->adjust( animal_instincts );
+        p()->animal_instincts_cds[roll].second->occur();
       }
     }
   }
