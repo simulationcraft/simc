@@ -5338,7 +5338,7 @@ struct ice_lance_t : public frost_mage_spell_t
   }
   virtual void execute() override
   {
-    // Ice Lance treats the target as frozen with FoF up, this is snapshot on execute.
+    // Ice Lance treats the target as frozen with FoF up, this is snapshot on execute
     frozen = ( p() -> buffs.fingers_of_frost -> up() != 0 );
 
     p() -> buffs.shatterlance -> up();
@@ -5387,14 +5387,15 @@ struct ice_lance_t : public frost_mage_spell_t
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
-
-    snapshot_state( s, amount_type ( s ) );
     handle_frozen( s );
+    snapshot_state( s, amount_type ( s ) );
+
     s -> result = calculate_result( s );
     s -> result_amount = calculate_direct_amount( s );
 
 
     frost_mage_spell_t::impact( s );
+
     if ( p() -> talents.thermal_void -> ok() &&
          p() -> buffs.icy_veins -> check() &&
          frozen &&
@@ -5446,6 +5447,7 @@ struct ice_lance_t : public frost_mage_spell_t
     {
       am *= 1.0 + ( magtheridons_banished_bracers_multiplier * p() -> buffs.magtheridons_might -> check() );
     }
+
     return am;
   }
 };
