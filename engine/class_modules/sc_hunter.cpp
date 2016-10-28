@@ -134,9 +134,6 @@ public:
     buff_t* mongoose_fury;
     buff_t* fury_of_the_eagle;
     buff_t* aspect_of_the_eagle;
-    buff_t* instincts_of_the_raptor;
-    buff_t* instincts_of_the_mongoose;
-    buff_t* instincts_of_the_cheetah;
     buff_t* moknathal_tactics;
     buff_t* spitting_cobra;
     buff_t* t18_2p_rapid_fire;
@@ -1938,20 +1935,20 @@ struct pet_melee_t: public hunter_main_pet_attack_t
   virtual void execute() override
   {
     hunter_main_pet_attack_t::execute();
-//  pet auto attacks don't trigger Hunting Companion
-//    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
-//    {
-//      double proc_chance = p() -> o() -> cache.mastery_value() * 0.50;
-//
-//      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
-//        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
-//
-//      if ( rng().roll( proc_chance ) )
-//      {
-//        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
-//        p() -> o() -> procs.hunting_companion -> occur();
-//      }
-//    }
+
+    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
+    {
+      double proc_chance = p() -> o() -> cache.mastery_value() * 0.5;
+
+      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
+        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
+
+      if ( rng().roll( proc_chance ) )
+      {
+        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
+        p() -> o() -> procs.hunting_companion -> occur();
+      }
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3820,20 +3817,9 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    if ( p() -> active.pet )
-      p() -> active.pet -> active.flanking_strike -> execute();
+    if ( p()->active.pet )
+      p()->active.pet->active.flanking_strike->execute();
 
-    if ( p() -> talents.animal_instincts -> ok() )
-    {
-      double result = rng().range(0.0, 3.0);
-
-      if ( result < 1.0 )
-        p() -> buffs.instincts_of_the_cheetah -> trigger();
-      else if ( result < 2.0 )
-        p() -> buffs.instincts_of_the_mongoose -> trigger();
-      else
-        p() -> buffs.instincts_of_the_raptor -> trigger();
-    }
   }
 
   virtual double composite_crit_chance() const override
@@ -5733,25 +5719,6 @@ void hunter_t::create_buffs()
                      .percent() )
       .refresh_behavior( BUFF_REFRESH_EXTEND );
 
-  buffs.instincts_of_the_cheetah = 
-    buff_creator_t( this, 204324, "instincts_of_the_cheetah" )
-      .default_value( find_spell( 204334 ) 
-                   -> effectN( 1 )
-                     .percent() );
-
-  buffs.instincts_of_the_mongoose = 
-    buff_creator_t( this, 204333, "instincts_of_the_mongoose" )
-      .add_invalidate( CACHE_MASTERY )
-      .default_value( find_spell( 204333 ) 
-                   -> effectN( 1 )
-                     .percent() );
-
-  buffs.instincts_of_the_raptor = 
-    buff_creator_t( this, 204321, "instincts_of_the_raptor" )
-      .default_value( find_spell( 204331 ) 
-                   -> effectN( 1 )
-                     .percent() );
-
   buffs.moknathal_tactics = 
     buff_creator_t( this, "moknathal_tactics", talents.way_of_the_moknathal
                                             -> effectN( 1 )
@@ -6284,9 +6251,6 @@ double hunter_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  if ( buffs.instincts_of_the_raptor -> check() )
-    h *= 1.0 / ( 1.0 + buffs.instincts_of_the_raptor -> default_value );
-
   if ( buffs.trueshot -> check() )
     h *= 1.0 / ( 1.0 + buffs.trueshot -> default_value );
 
@@ -6301,9 +6265,6 @@ double hunter_t::composite_melee_haste() const
 double hunter_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
-
-  if ( buffs.instincts_of_the_raptor -> check() )
-    h *= 1.0 / ( 1.0 + buffs.instincts_of_the_raptor -> default_value );
 
   if ( buffs.trueshot -> check() )
     h *= 1.0 / ( 1.0 + buffs.trueshot -> default_value );
@@ -6402,9 +6363,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
 double hunter_t::composite_mastery_value() const
 {
   double m = player_t::composite_mastery_value();
-
-  if ( buffs.instincts_of_the_mongoose -> check() )
-    m += buffs.instincts_of_the_mongoose -> default_value;
 
   return m;
 }
