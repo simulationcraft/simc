@@ -898,6 +898,16 @@ struct waterbolt_t : public mage_pet_spell_t
     return mage_pet_spell_t::init_finished();
   }
 
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t cast_time = mage_pet_spell_t::execute_time();
+
+    // For some reason welly seems to have a cap'd rate of cast of
+    // 1.5/second. Instead of modeling this as a cooldown/GCD (like it is in game)
+    // we model it as a capped cast time, with 1.5 being the lowest it can go.
+    return std::max(cast_time, timespan_t::from_seconds( 1.5 ) );
+  }
+
   virtual double action_multiplier() const override
   {
     double am = mage_pet_spell_t::action_multiplier();
@@ -2452,6 +2462,7 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     // Handle Frozen with this, but let Ice Lance take care of itself since it needs
     // to snapshot FoF/Frozen state on execute.
+
     if ( td ( state -> target ) -> debuffs.winters_chill -> up() )
     {
       frozen = true;
