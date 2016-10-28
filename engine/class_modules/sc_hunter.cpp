@@ -3827,7 +3827,7 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    timespan_t animal_instincts = -p() -> find_spell( 232646 ) -> effectN( 1 ).time_value() * 1000;
+    timespan_t animal_instincts = -p() -> find_spell( 232646 ) -> effectN( 1 ).time_value() * 1000 * p() -> cache.spell_haste();
 
     if ( p() -> active.pet )
       p() -> active.pet -> active.flanking_strike -> execute();
@@ -3837,21 +3837,25 @@ struct flanking_strike_t: hunter_melee_attack_t
       p() -> animal_instincts_cds.clear();
 
       if ( !p() -> cooldowns.flanking_strike -> up() )
-        p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.flanking_strike, p() -> procs.animal_instincts_flanking ) );
+        p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.flanking_strike,
+                                                               p() -> procs.animal_instincts_flanking ) );
       if ( !p() -> cooldowns.mongoose_bite -> up() )
-        p()->animal_instincts_cds.push_back( std::make_pair( p()->cooldowns.mongoose_bite, p()->procs.animal_instincts_mongoose ) );
+        p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.mongoose_bite,
+                                                               p() -> procs.animal_instincts_mongoose ) );
       if ( !p() -> cooldowns.aspect_of_the_eagle -> up() )
-        p()->animal_instincts_cds.push_back( std::make_pair( p()->cooldowns.aspect_of_the_eagle, p()->procs.animal_instincts_aspect ) );
+        p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.aspect_of_the_eagle,
+                                                               p() -> procs.animal_instincts_aspect ) );
       if ( !p() -> cooldowns.harpoon -> up() )
-        p()->animal_instincts_cds.push_back( std::make_pair( p()->cooldowns.harpoon, p()->procs.animal_instincts_harpoon ) );
+        p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.harpoon,
+                                                               p() -> procs.animal_instincts_harpoon ) );
 
       if ( !p() -> animal_instincts_cds.empty() )
       {
         unsigned roll =
-          as<unsigned>( p() -> rng().range( 0, p() -> animal_instincts_cds.size() ) );
+          static_cast<unsigned>( p() -> rng().range( 0, p() -> animal_instincts_cds.size() ) );
 
-        p()->animal_instincts_cds[roll].first->adjust( animal_instincts );
-        p()->animal_instincts_cds[roll].second->occur();
+        p() -> animal_instincts_cds[roll].first -> adjust( animal_instincts );
+        p() -> animal_instincts_cds[roll].second -> occur();
       }
     }
   }
@@ -5196,7 +5200,7 @@ dots( dots_t() )
         .default_value( p -> find_spell( 187131 ) 
                           -> effectN( 2 )
                             .percent() )
-        .max_stack( 3 );
+        .max_stack( 2 );
   }
   debuffs.true_aim = 
     buff_creator_t( *this, "true_aim" )
