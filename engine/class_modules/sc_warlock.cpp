@@ -4635,7 +4635,7 @@ struct shadowflame_t : public warlock_spell_t
     double m = warlock_spell_t::composite_ta_multiplier( state );
 
     if ( td( state -> target ) -> dots_shadowflame -> is_ticking() )
-      m *= 1.0 + td( target ) -> debuffs_shadowflame -> stack();
+      m *= td( target ) -> debuffs_shadowflame -> stack();
 
     return m;
   }
