@@ -349,6 +349,10 @@ struct runes_t
   { return first_rune_in_state( STATE_FULL ); }
 
   void consume( unsigned runes );
+
+  // Time it takes with the current rune regeneration speed to regenerate n_runes by the Death
+  // Knight.
+  timespan_t time_to_regen( unsigned n_runes ) const;
 };
 
 // ==========================================================================
@@ -923,45 +927,6 @@ static void log_rune_status( const death_knight_t* p, bool debug = false ) {
     p -> sim -> out_debug.printf( "%s runes: %s", p -> name(), rune_string.c_str() );
 }
 
-#if 0
-static std::pair<int, double> rune_ready_in( const death_knight_t* p )
-{
-  // Return the (slot, time) for the next rune to come up.
-  int fastest_remaining = -1;
-  double t = std::numeric_limits<double>::max();
-
-  double rps = p -> runes_per_second();
-
-  for ( size_t j = 0; j < MAX_RUNES; ++j ) {
-    double ttr = ( 1.0 - ( p -> _runes.slot[ j ] ).fill_level() ) / rps;
-    if (ttr < t)
-    {
-      t = ttr;
-      fastest_remaining = ( int ) j;
-    }
-  }
-
-  return std::pair<int, double>( fastest_remaining, t);
-}
-#endif
-
-static double ready_in( const death_knight_t* p, int n_runes )
-{
-  // How long until at least n_runes are ready, assuming no rune-using actions are taken.
-  if ( p -> sim -> debug )
-    log_rune_status( p, true );
-
-  double rps = p -> runes_per_second();
-
-  std::vector< double > ready_times;
-  for ( size_t j = 0; j < MAX_RUNES; ++j) {
-    ready_times.push_back( ( 1.0 - ( p -> _runes.slot[ j ] ).fill_level() ) / rps );
-  }
-  std::sort( ready_times.begin(), ready_times.end() );
-
-  return ready_times[ n_runes ];
-}
-
 inline runes_t::runes_t( death_knight_t* p ) : dk( p ),
   cumulative_waste( dk -> name_str + "_Iteration_Rune_Waste", false ),
   rune_waste( dk -> name_str + "_Rune_Waste", false ),
@@ -1040,6 +1005,54 @@ inline void runes_t::consume( unsigned runes )
     }
   }
 
+}
+
+timespan_t runes_t::time_to_regen( unsigned n_runes ) const
+{
+  if ( n_runes == 0 )
+  {
+    return timespan_t::zero();
+  }
+
+  if ( n_runes > MAX_RUNES )
+  {
+    return timespan_t::max();
+  }
+
+  // If we have the runes, no need to check anything.
+  if ( dk -> resources.current[ RESOURCE_RUNE ] >= as<double>( n_runes ) )
+  {
+    return timespan_t::zero();
+  }
+
+  // First, collect regenerating runes into an array
+  std::vector<const rune_t*> regenerating_runes;
+  range::for_each( slot, [ &regenerating_runes ]( const rune_t& r ) {
+    if ( r.is_regenerating() )
+    {
+      regenerating_runes.push_back( &( r ) );
+    }
+  });
+
+  // Sort by ascending remaining time
+  range::sort( regenerating_runes, []( const rune_t* l, const rune_t* r ) {
+    return l -> event -> remains() < r -> event -> remains();
+  } );
+
+  // Number of unsatisfied runes
+  unsigned n_unsatisfied = n_runes - as<unsigned>( dk -> resources.current[ RESOURCE_RUNE ] );
+
+  // If we can satisfy the remaining unsatisfied runes with regenerating runes, return the N - 1th
+  // remaining regeneration time
+  if ( n_unsatisfied <= regenerating_runes.size() )
+  {
+    return regenerating_runes[ n_unsatisfied - 1 ] -> event -> remains();
+  }
+
+  // Otherwise, it's going to be the remaining regen time of the N - 1th rune, plus the regen time
+  // of a depleted rune.
+  return regenerating_runes[ n_unsatisfied - 1 ] -> event -> remains() +
+         timespan_t::from_seconds( 1 / dk -> runes_per_second() );
 }
 
 inline double rune_t::fill_level() const
@@ -6145,90 +6158,24 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
 // death_knight_t::create_expression ========================================
 
-static expr_t* create_ready_in_expression( death_knight_t* player, const std::string& action_name )
-{
-  struct ability_ready_expr_t : public expr_t
-  {
-    death_knight_melee_attack_t* action;
-
-    ability_ready_expr_t( action_t* a ) :
-      expr_t( "ability_ready_expr" ),
-      action( debug_cast<death_knight_melee_attack_t*>( a ) )
-    { }
-
-    double evaluate() override
-    {
-      return ready_in( action -> p(), action -> base_costs[ RESOURCE_RUNE ] );
-    }
-  };
-
-  action_t* action = player -> find_action( action_name );
-  if ( ! action )
-  {
-    return nullptr;
-  }
-
-  return new ability_ready_expr_t( action );
-}
-
-#if 0
-static expr_t* create_rune_expression( death_knight_t* player, const std::string& rune_type_operation = std::string() )
-{
-  struct rune_inspection_expr_t : public expr_t
-  {
-    death_knight_t* dk;
-    int myaction;
-    // 0 == ready runes (nonfractional), 1 == min cooldown, 2 = max_cooldown, 4 == ready runes (fractional)
-
-    rune_inspection_expr_t( death_knight_t* p, int myaction_ ) :
-      expr_t( "rune_evaluation" ), dk( p ), myaction( myaction_ )
-    { }
-
-    virtual double evaluate() override
-    {
-      switch ( myaction )
-      {
-        case 0: return dk -> ready_runes_count( false );
-        case 1: return dk -> runes_cooldown_min( );
-        case 2: return dk -> runes_cooldown_max( );
-        case 4: return dk -> ready_runes_count( true );
-      }
-      return 0.0;
-    }
-  };
-
-
-  int op = 0;
-  if ( util::str_compare_ci( rune_type_operation, "cooldown_min" ) )
-  {
-    op = 1;
-  }
-  else if ( util::str_compare_ci( rune_type_operation, "cooldown_max" ) )
-  {
-    op = 2;
-  }
-  else if ( util::str_compare_ci( rune_type_operation, "frac" ) || util::str_compare_ci( rune_type_operation, "fractional" ) )
-  {
-    op = 4;
-  }
-
-  return new rune_inspection_expr_t( player, op );
-}
-#endif
-
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str ) {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( splits.size() == 2 )
+  if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
   {
-    // For example, obliterate.ready_in
-    if ( util::str_compare_ci( splits[ 1 ], "ready_in" ) )
+    if ( util::str_in_str_ci( splits[ 1 ], "time_to_" ) )
     {
-      expr_t* e = create_ready_in_expression( this, splits[ 0 ] );
-      if ( e )
+      auto n_char = splits[ 1 ][ splits[ 1 ].size() - 1 ];
+      auto n = n_char - '0';
+      if ( n <= 0 || as<size_t>( n ) > MAX_RUNES )
       {
-        return e;
+        sim -> errorf( "%s invalid expression '%s' for %s", name(), name_str.c_str(), a -> signature_str.c_str() );
+        return player_t::create_expression( a, name_str );
       }
+
+      return make_fn_expr( "rune_time_to_x", [ this, n ]() {
+        return _runes.time_to_regen( static_cast<unsigned>( n ) );
+      } );
     }
   }
 
