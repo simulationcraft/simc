@@ -7244,6 +7244,11 @@ void rogue_t::init_scaling()
   scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = items[ SLOT_OFF_HAND ].active();
   scales_with[ STAT_STRENGTH              ] = false;
 
+  if ( find_item( "thraxis_tricksy_treads" ) )
+  {
+    scales_with[ STAT_SPEED_RATING ] = true;
+  }
+
   // Break out early if scaling is disabled on this player, or there's no
   // scaling stat
   if ( ! scale_player || sim -> scaling -> scale_stat == STAT_NONE )
