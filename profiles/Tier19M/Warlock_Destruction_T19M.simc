@@ -1,0 +1,93 @@
+warlock="Warlock_Destruction_T19M"
+level=110
+race=troll
+role=spell
+position=back
+talents=2301013
+artifact=38:142182:142516:142182:0:803:1:804:3:805:3:806:3:807:5:808:3:809:4:810:3:811:3:812:3:813:1:814:1:815:1:816:1:817:1:818:1:1355:1
+spec=destruction
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask,type=whispered_pact
+actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
+actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0
+actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3
+actions.precombat+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&active_enemies<3&artifact.lord_of_flames.rank=0
+actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
+actions.precombat+=/chaos_bolt
+
+# Executed every time the actor is available.
+actions=havoc,target=2,if=active_enemies>1&active_enemies<6&!debuff.havoc.remains
+actions+=/havoc,target=2,if=active_enemies>1&!talent.wreak_havoc.enabled&talent.roaring_blaze.enabled&!debuff.roaring_blaze.remains
+actions+=/dimensional_rift,if=charges=3
+actions+=/immolate,if=remains<=tick_time
+actions+=/immolate,cycle_targets=1,if=active_enemies>1&remains<=tick_time&!debuff.roaring_blaze.remains&action.conflagrate.charges<2
+actions+=/immolate,if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)
+actions+=/berserking
+actions+=/blood_fury
+actions+=/arcane_torrent
+actions+=/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)
+actions+=/conflagrate,if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd)|target.time_to_die<24)
+actions+=/conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5
+actions+=/conflagrate,if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
+actions+=/conflagrate,if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
+actions+=/service_pet
+actions+=/summon_infernal,if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains
+actions+=/summon_doomguard,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active
+actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
+actions+=/summon_infernal,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3
+actions+=/soul_harvest
+actions+=/channel_demonfire,if=dot.immolate.remains>cast_time
+actions+=/chaos_bolt,if=soul_shard>3|buff.backdraft.remains
+actions+=/chaos_bolt,if=buff.backdraft.remains&prev_gcd.incinerate
+actions+=/incinerate,if=buff.backdraft.remains
+actions+=/havoc,if=active_enemies=1&talent.wreak_havoc.enabled&equipped.132375&!debuff.havoc.remains
+actions+=/rain_of_fire,if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled
+actions+=/rain_of_fire,if=active_enemies>=6&talent.wreak_havoc.enabled
+actions+=/dimensional_rift
+actions+=/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3
+actions+=/chaos_bolt
+actions+=/cataclysm
+actions+=/conflagrate,if=!talent.roaring_blaze.enabled&!buff.backdraft.remains
+actions+=/immolate,if=!talent.roaring_blaze.enabled&remains<=duration*0.3
+actions+=/life_tap,if=talent.mana_tap.enabled&mana.pct<=10
+actions+=/incinerate
+actions+=/life_tap
+
+head=hood_of_darkened_visions,id=139189,bonus_id=1806
+neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1517,ilevel=885,enchant_id=5439
+shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1806
+back=evergreen_vinewrap_drape,id=139248,bonus_id=1806,enchant_id=5436
+chest=robes_of_celestial_adornment,id=142410,bonus_id=3469
+wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
+hands=oiled_riggers_handwraps,id=142429,bonus_id=3469
+waist=cinch_of_light,id=142411,bonus_id=3469
+legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469
+feet=treads_of_the_drowned,id=142414,bonus_id=3469
+finger1=dawnlight_band,id=130231,bonus_id=3371/670,gem_id=130220,enchant=binding_of_haste
+finger2=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=binding_of_haste
+trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1727/1517
+trinket2=swarming_plaguehive,id=139321,bonus_id=1806
+main_hand=scepter_of_sargeras,id=128941,gem_id=142182/142516/142182,relic_id=3469/3469/3469
+
+# Gear Summary
+# gear_ilvl=881.60
+# gear_stamina=26403
+# gear_intellect=27280
+# gear_crit_rating=6629
+# gear_haste_rating=9998
+# gear_mastery_rating=3766
+# gear_versatility_rating=390
+# gear_armor=1830
+default_pet=imp
