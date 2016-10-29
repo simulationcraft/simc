@@ -1530,8 +1530,6 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
       m += p() -> find_spell( 137037 ) -> effectN( 1 ).percent(); 
     }
 
-    m *= 0.883; // FIXME: As of 10/29 (7.1 22908), the bonus seems to be a bit less than intended, not sure why yet.
-
     return m;
   }
 
