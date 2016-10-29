@@ -2001,6 +2001,13 @@ struct dreadstalker_t : public warlock_pet_t
       return pw;
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = warlock_pet_t::composite_player_multiplier( school );
+    m *= 0.76; // FIXME dreadstalkers do 76% damage for no apparent reason, thanks blizzard.
+    return m;
+  }
+
   void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
