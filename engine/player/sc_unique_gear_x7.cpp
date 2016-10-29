@@ -216,6 +216,16 @@ struct flame_wreath_t : public spell_t
     item = effect.item;
     school = SCHOOL_FIRE;
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+    
+    for ( const auto& item : effect.player -> items )
+    {
+      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
+           item.name_str ==  "harness_of_smoldering_betrayal" ||
+           item.name_str ==  "hauberk_of_warped_intuition"    ||
+           item.name_str ==  "chestplate_of_impenetrable_darkness" )
+        //FIXME: Don't hardcode the 30% damage bonus
+        base_dd_min *= 1.3;
+    }
     aoe = -1;
   }
 
