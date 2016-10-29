@@ -1687,7 +1687,7 @@ public:
 
   bool special_ability;
   bool can_hunting_companion;
-  int hunting_companion_multiplier;
+  double hunting_companion_multiplier;
 
   hunter_main_pet_action_t( const std::string& n, hunter_main_pet_t* player,
                             const spell_data_t* s = spell_data_t::nil() ):
@@ -1720,7 +1720,7 @@ public:
       if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
         proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
 
-      if ( rng().roll( proc_chance ) )
+      if ( ab::rng().roll( proc_chance ) )
       {
         p() -> o() -> cooldowns.mongoose_bite -> reset( true );
         p() -> o() -> procs.hunting_companion -> occur();
