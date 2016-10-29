@@ -6161,7 +6161,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str ) {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
+  if ( util::str_compare_ci( splits[ 0 ], "rune" ) && splits.size() > 1 )
   {
     if ( util::str_in_str_ci( splits[ 1 ], "time_to_" ) )
     {
