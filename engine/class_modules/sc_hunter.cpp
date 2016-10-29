@@ -1053,7 +1053,7 @@ public:
   {
     switch ( pet_type )
     {
-    case PET_CARRION_BIRD: return "";
+    case PET_CARRION_BIRD: return "bloody_screech";
     case PET_CAT:          return "";
     case PET_CORE_HOUND:   return "";
     case PET_DEVILSAUR:    return "";
@@ -1067,13 +1067,13 @@ public:
     case PET_BEAR:         return "";
     case PET_BOAR:         return "";
     case PET_CRAB:         return "";
-    case PET_CROCOLISK:    return "";
+    case PET_CROCOLISK:    return "ankle_crack";
     case PET_GORILLA:      return "";
     case PET_RHINO:        return "";
-    case PET_SCORPID:      return "";
+    case PET_SCORPID:      return "deadly_sting";
     case PET_SHALE_SPIDER: return "";
     case PET_TURTLE:       return "";
-    case PET_WARP_STALKER: return "";
+    case PET_WARP_STALKER: return "warp_time";
     case PET_WORM:         return "";
     case PET_BAT:          return "";
     case PET_BIRD_OF_PREY: return "";
@@ -1082,11 +1082,12 @@ public:
     case PET_NETHER_RAY:   return "";
     case PET_RAVAGER:      return "";
     case PET_SERPENT:      return "";
-    case PET_SILITHID:     return "";
-    case PET_SPIDER:       return "";
+    case PET_SILITHID:     return "tendon_rip";
+    case PET_SPIDER:       return "web_spray";
     case PET_SPOREBAT:     return "";
     case PET_WIND_SERPENT: return "";
     case PET_FOX:          return "";
+    //case PET_RIVERBEAST:   return "gruesome_bite";
     default: break;
     }
     return nullptr;
@@ -1228,6 +1229,8 @@ public:
         action_list_str += "/";
         action_list_str += special;
       }
+      if ( o() -> specialization() == HUNTER_SURVIVAL )
+        action_list_str += "/growl";
       action_list_str += "/claw";
       action_list_str += "/wait_until_ready";
       use_default_action_list = true;
@@ -1683,6 +1686,8 @@ public:
   typedef hunter_main_pet_action_t base_t;
 
   bool special_ability;
+  bool can_hunting_companion;
+  int hunting_companion_multiplier;
 
   hunter_main_pet_action_t( const std::string& n, hunter_main_pet_t* player,
                             const spell_data_t* s = spell_data_t::nil() ):
@@ -1691,6 +1696,8 @@ public:
   {
     if ( ab::data().rank_str() && !strcmp( ab::data().rank_str(), "Special Ability" ) )
       special_ability = true;
+    can_hunting_companion = true;
+    hunting_companion_multiplier = 1.0;
   }
 
   hunter_main_pet_t* p() const
@@ -1701,6 +1708,25 @@ public:
 
   hunter_main_pet_td_t* td( player_t* t = nullptr ) const
   { return p() -> get_target_data( t ? t : ab::target ); }
+
+  virtual void execute()
+  {
+    ab::execute();
+
+    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL && can_hunting_companion )
+    {
+      double proc_chance = p() -> o() -> cache.mastery_value() * hunting_companion_multiplier;
+
+      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
+        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
+
+      if ( rng().roll( proc_chance ) )
+      {
+        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
+        p() -> o() -> procs.hunting_companion -> occur();
+      }
+    }
+  }
 };
 
 // ==========================================================================
@@ -1789,6 +1815,7 @@ struct bestial_ferocity_t: public hunter_main_pet_attack_t
     hunter_main_pet_attack_t( "bestial_ferocity", p, p -> find_spell( 191413 ) )
   {
     background = true;
+    can_hunting_companion = false;
   }
 };
 
@@ -1941,25 +1968,6 @@ struct pet_melee_t: public hunter_main_pet_attack_t
     school = SCHOOL_PHYSICAL;
     special = false;
   }
-  
-  virtual void execute() override
-  {
-    hunter_main_pet_attack_t::execute();
-
-    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
-    {
-      double proc_chance = p() -> o() -> cache.mastery_value();
-
-      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
-        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
-
-      if ( rng().roll( proc_chance ) )
-      {
-        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
-        p() -> o() -> procs.hunting_companion -> occur();
-      }
-    }
-  }
 
   virtual void impact( action_state_t* s ) override
   {
@@ -2020,25 +2028,6 @@ struct basic_attack_t: public hunter_main_pet_attack_t
     return p() -> resources.current[RESOURCE_FOCUS] > 50;
   }
 
-  virtual void execute() override
-  {
-    hunter_main_pet_attack_t::execute();
-
-    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
-    {
-      double proc_chance = p() -> o() -> cache.mastery_value();
-
-      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
-        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
-
-      if ( rng().roll( proc_chance ) )
-      {
-        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
-        p() -> o() -> procs.hunting_companion -> occur();
-      }
-    }
-  }
-
   virtual void impact( action_state_t* s ) override
   {
     hunter_main_pet_attack_t::impact( s );
@@ -2086,33 +2075,12 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   {
     attack_power_mod.direct = 2.152; //data is in the tooltip
     background = true;
+    hunting_companion_multiplier = 2.0;
 
     if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
     {
       impact_action = new bestial_ferocity_t( p );
       add_child( impact_action );
-    }
-  }
-
-  virtual void execute() override
-  {
-    hunter_main_pet_attack_t::execute();
-
-    if ( p() -> o() -> specialization() == HUNTER_SURVIVAL )
-    {
-      double proc_chance = p() -> o() -> cache.mastery_value() * 2.0;
-      
-      if ( p() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
-        proc_chance *= p() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
-
-      if ( p() -> o() -> buffs.aspect_of_the_eagle -> up() )
-        proc_chance *= 1.0 + p() -> o() -> specs.aspect_of_the_eagle -> effectN( 2 ).percent();
-
-      if ( rng().roll( proc_chance ) )
-      {
-        p() -> o() -> cooldowns.mongoose_bite -> reset( true );
-        p() -> o() -> procs.hunting_companion -> occur();
-      }
     }
   }
 
@@ -2203,6 +2171,17 @@ struct hunter_main_pet_spell_t: public hunter_main_pet_action_t < spell_t >
   }
 };
 
+// Growl ===================================================================
+
+struct growl_t : public hunter_main_pet_spell_t
+{
+  growl_t( hunter_main_pet_t* player, const std::string& options_str ) :
+    hunter_main_pet_spell_t( "growl", player, player -> find_pet_spell( "growl" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
 // ==========================================================================
 // Unique Pet Specials
 // ==========================================================================
@@ -2246,6 +2225,69 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
   }
 };
 
+struct deadly_sting_t : public hunter_main_pet_spell_t
+{
+  deadly_sting_t( hunter_main_pet_t* player, const std::string& options_str ) :
+    hunter_main_pet_spell_t( "deadly_sting", player, player -> find_pet_spell( "Deadly Sting" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
+struct bloody_screech_t : public hunter_main_pet_spell_t
+{
+  bloody_screech_t( hunter_main_pet_t* player, const std::string& options_str ) :
+    hunter_main_pet_spell_t( "bloody_screech", player, player -> find_pet_spell( "Bloody Screech" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
+//struct gruesome_bite_t : public hunter_main_pet_spell_t
+//{
+//  gruesome_bite_t( hunter_main_pet_t* player, const std::string& options_str ) :
+//    hunter_main_pet_spell_t( "gruesome_bite", player, player -> find_spell( 160018 ) )
+//  {
+//    parse_options( options_str );
+//  }
+//};
+
+struct ankle_crack_t : public hunter_main_pet_spell_t
+{
+  ankle_crack_t( hunter_main_pet_t* player, const std::string& options_str ) :
+    hunter_main_pet_spell_t( "ankle_crack", player, player -> find_pet_spell( "Ankle Crack" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
+struct web_spray_t : public hunter_main_pet_spell_t
+{
+  web_spray_t( hunter_main_pet_t* player, const std::string& options_str ) :
+    hunter_main_pet_spell_t( "web_spray", player, player -> find_pet_spell( "Web Spray" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
+struct warp_time_t : public hunter_main_pet_spell_t
+{
+  warp_time_t( hunter_main_pet_t* player, const std::string& options_str ) :
+    hunter_main_pet_spell_t( "warp_time", player, player -> find_pet_spell( "Warp Time" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
+struct tendon_rip_t : public hunter_main_pet_spell_t
+{
+  tendon_rip_t( hunter_main_pet_t* player, const std::string& options_str ) :
+    hunter_main_pet_spell_t( "tendon_rip", player, player -> find_pet_spell( "Tendon Rip" ) )
+  {
+    parse_options( options_str );
+  }
+};
+
 } // end namespace pets::actions
 
 
@@ -2266,6 +2308,14 @@ action_t* hunter_main_pet_t::create_action( const std::string& name,
   if ( name == "bite" ) return new                 basic_attack_t( this, "Bite", options_str );
   if ( name == "smack" ) return new                basic_attack_t( this, "Smack", options_str );
   if ( name == "froststorm_breath" ) return new    froststorm_breath_t( this, options_str );
+  if ( name == "growl" ) return new                growl_t( this, options_str );
+  if ( name == "deadly_sting" ) return new         deadly_sting_t( this, options_str );
+  if ( name == "bloody_screech" ) return new       bloody_screech_t( this, options_str );
+  //if ( name == "gruesome_bite" ) return new        gruesome_bite_t( this, options_str );
+  if ( name == "ankle_crack" ) return new          ankle_crack_t( this, options_str );
+  if ( name == "web_spray" ) return new            web_spray_t( this, options_str );
+  if ( name == "warp_time" ) return new            warp_time_t( this, options_str );
+  if ( name == "tendon_rip" ) return new           tendon_rip_t( this, options_str );
   return base_t::create_action( name, options_str );
 }
 
@@ -5994,8 +6044,11 @@ void hunter_t::init_action_list()
       break;
     }
 
-    if ( summon_pet_str.empty() )
+    if ( summon_pet_str.empty() && specialization() != HUNTER_SURVIVAL )
       summon_pet_str = "cat";
+    if ( summon_pet_str.empty() && specialization() == HUNTER_SURVIVAL )
+      summon_pet_str = "carrion_bird";
+
     // Default
     use_default_action_list = true;
     player_t::init_action_list();
