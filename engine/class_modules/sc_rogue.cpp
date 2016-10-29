@@ -1527,11 +1527,8 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     // Rogue Assassination Hidden Passive (Additive, it's +15% on the primary effect)
     if ( p() -> specialization() == ROGUE_ASSASSINATION )
     {
-      m += p() -> find_spell( 137037 ) -> effectN( 1 ).percent();
+      m += p() -> find_spell( 137037 ) -> effectN( 1 ).percent() - 4.08; // FIXME: As of 10/29 (7.1 22908), the bonus seems to be a bit less than 11% rather than 15%, not sure why yet.
     }
-
-    // As of 10/27 (7.1 22908), does benefits from every player multiplier, intended ? (double dip)
-    m *= p() -> composite_player_multiplier( SCHOOL_SHADOW );
 
     return m;
   }
@@ -5653,8 +5650,8 @@ void rogue_t::trigger_insignia_of_ravenholdt( const action_state_t* state )
     return;
   }
 
-  insignia_of_ravenholdt_ -> base_dd_min = state -> result_amount;
-  insignia_of_ravenholdt_ -> base_dd_max = state -> result_amount;
+  insignia_of_ravenholdt_ -> base_dd_min = state -> result_raw; // As of 10/29 (7.1 22908), Insignia takes in account the amount before the crit roll.
+  insignia_of_ravenholdt_ -> base_dd_max = state -> result_raw; // As of 10/29 (7.1 22908), Insignia takes in account the amount before the crit roll.
   insignia_of_ravenholdt_ -> target = state -> target;
   insignia_of_ravenholdt_ -> execute();
 }
