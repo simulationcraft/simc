@@ -3281,7 +3281,9 @@ double player_t::composite_leech() const
 double player_t::composite_run_speed() const
 {
   // speed DRs using the following formula:
-  return 1.0 / ( 1 / 0.29 + ( current.rating.speed * 100 ) / composite_speed_rating() );
+  double pct = composite_speed_rating() / current.rating.speed;
+  double coefficient = std::exp( -.0003 * composite_speed_rating() );
+  return pct * coefficient * .1;
 }
 
 // player_t::composite_avoidance ================================================
@@ -3436,7 +3438,7 @@ double player_t::composite_movement_speed() const
     speed *= debuffs.dazed -> data().effectN( 1 ).percent();
 
   return speed;
-  }
+}
 
 // player_t::composite_attribute ============================================
 
