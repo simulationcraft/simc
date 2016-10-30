@@ -6224,10 +6224,11 @@ void hunter_t::apl_surv()
   default_list -> add_action( "potion,name=old_war,if=buff.aspect_of_the_eagle.remains" );
   default_list -> add_action( "steel_trap" );
   default_list -> add_action( "explosive_trap" );
+  default_list -> add_action( "raptor_strike,if=talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.remains&buff.moknathal_tactics.remains<gcd.max" );
   default_list -> add_action( "dragonsfire_grenade" );
   default_list -> add_action( "caltrops" );
   default_list -> add_action( "carve,cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies>=3&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)" );
-  default_list -> add_action( "raptor_strike,cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies<=2&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)|talent.way_of_the_moknathal.enabled&(buff.moknathal_tactics.remains<gcd.max|buff.moknathal_tactics.down)" );
+  default_list -> add_action( "raptor_strike,cycle_targets=1,if=talent.serpent_sting.enabled&active_enemies<=2&(!dot.serpent_sting.ticking|dot.serpent_sting.remains<=gcd.max)|talent.way_of_the_moknathal.enabled&buff.moknathal_tactics.down" );
   default_list -> add_action( "aspect_of_the_eagle" );
   default_list -> add_action( "fury_of_the_eagle,if=(buff.mongoose_fury.up&buff.mongoose_fury.remains<=gcd)|target.time_to_die<=execute_time" );
   default_list -> add_action( "mongoose_bite,if=buff.aspect_of_the_eagle.up&(charges>=2|charges>=1&cooldown.mongoose_bite.remains<=2)|(buff.mongoose_fury.up|cooldown.fury_of_the_eagle.remains<5|charges=3)" );
