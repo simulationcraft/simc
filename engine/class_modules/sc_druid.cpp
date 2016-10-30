@@ -4844,7 +4844,7 @@ struct lunar_strike_t : public druid_spell_t
   void impact( action_state_t* s ) override
   {
     druid_spell_t::impact( s );
-    // Nature's Balance only extends Moonfire on the primary target.
+    // Nature's Balance only extends Moonfire on the primary target. FIXME: Actually extends the duration of ALL sunfires.
     if ( natures_balance > timespan_t::zero() && hit_any_target )
     {
       td( s -> target ) -> dots.moonfire -> extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
@@ -5147,6 +5147,7 @@ struct solar_wrath_t : public druid_spell_t
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
     base_multiplier   *= 1.0 + player -> artifact.solar_stabbing.percent();
+    energize_amount = player -> spec.astral_power -> effectN( 2 ) .resource( RESOURCE_ASTRAL_POWER );
   }
 
   double composite_crit_chance() const override
