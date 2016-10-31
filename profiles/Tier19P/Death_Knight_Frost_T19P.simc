@@ -24,6 +24,7 @@ actions.precombat+=/potion,name=old_war
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/pillar_of_frost
+actions+=/mind_freeze
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
 actions+=/berserking,if=buff.pillar_of_frost.up

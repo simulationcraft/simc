@@ -4725,7 +4725,7 @@ struct mind_freeze_t : public death_knight_spell_t
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() )
       return false;
@@ -6589,6 +6589,9 @@ void death_knight_t::default_apl_frost()
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Pillar of Frost" );
+
+  // Interrupt
+  def -> add_action( this, "Mind Freeze" );
 
   // Racials
   def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
