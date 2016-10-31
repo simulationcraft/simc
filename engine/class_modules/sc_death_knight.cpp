@@ -6571,9 +6571,8 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* bos       = get_action_priority_list( "bos"       );
   action_priority_list_t* generic   = get_action_priority_list( "generic"   );
   action_priority_list_t* core      = get_action_priority_list( "core"      );
-  action_priority_list_t* icytalons = get_action_priority_list( "icytalons" );
   action_priority_list_t* shatter   = get_action_priority_list( "shatter"   );
-  
+
   std::string food_name = ( true_level > 100 ) ? "the_hungry_magister" :
                           ( true_level >  90 ) ? "pickled_eel" :
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
@@ -6590,7 +6589,7 @@ void death_knight_t::default_apl_frost()
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Pillar of Frost" );
-  
+
   // Racials
   def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
   def -> add_action( "blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking" );
@@ -6619,8 +6618,7 @@ void death_knight_t::default_apl_frost()
   // Choose APL
   def -> add_action( "run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking" );
   def -> add_action( "call_action_list,name=shatter,if=talent.shattering_strikes.enabled" );
-  def -> add_action( "call_action_list,name=icytalons,if=talent.icy_talons.enabled" );
-  def -> add_action( "call_action_list,name=generic,if=(!talent.shattering_strikes.enabled&!talent.icy_talons.enabled)" );
+  def -> add_action( "call_action_list,name=generic,if=!talent.shattering_strikes.enabled" );
 
   // Core rotation
   core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
@@ -6629,12 +6627,6 @@ void death_knight_t::default_apl_frost()
   core -> add_talent( this, "Glacial Advance" );
   core -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
   core -> add_action( this, "Obliterate" );
-  
-
-  // Empty out runes if Frozen Pulse is used
-  core -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
-  core -> add_talent( this, "Frostscythe", "if=talent.frozen_pulse.enabled" );
-  core -> add_action( this, "Howling Blast", "if=talent.frozen_pulse.enabled" );
 
   // Generic single target rotation
 
@@ -6663,39 +6655,6 @@ void death_knight_t::default_apl_frost()
   // Misc actions, Bossless version
   generic -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
   generic -> add_talent( this, "Hungering Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
-
-  // Icy Talons single target rotation
-
-  // Don't let Icy Talons buff wear off if possible
-  icytalons -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5" );
-
-  // Howling blast disease upkeep and rimeing
-  icytalons -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  icytalons -> add_action( this, "Howling Blast", "if=buff.rime.react" );
-
-  // Prevent RP waste, or stack up Icy Talons
-  icytalons -> add_action( this, "Frost Strike", "if=runic_power>=80|buff.icy_talons.stack<3" );
-
-  // Do core rotation
-  icytalons -> add_action( "call_action_list,name=core" );
-
-  // Continue the generic one with Horn of Winter stuff
-  icytalons -> add_talent( this, "Horn of Winter", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  icytalons -> add_talent( this, "Horn of Winter", "if=!talent.breath_of_sindragosa.enabled" );
-
-  // If nothing else to do, do Frost Strike
-  icytalons -> add_action( this, "Frost Strike", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15&!talent.frozen_pulse.enabled" );
-  icytalons -> add_action( this, "Frost Strike", "if=!talent.breath_of_sindragosa.enabled&!talent.frozen_pulse.enabled" );
-  icytalons -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5|buff.icy_talons.stack<3&talent.frostscythe.enabled" );
-  icytalons -> add_action( this, "Frost Strike", "if=!talent.frostscythe.enabled" );
-
-  // Misc actions, Breath of Sindragosa version
-  icytalons -> add_action( this, "Empower Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  icytalons -> add_talent( this, "Hungering Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-
-  // Misc actions, Bossless version
-  icytalons -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
-  icytalons -> add_talent( this, "Hungering Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
 
   // Shattering Strikes single target rotation
 

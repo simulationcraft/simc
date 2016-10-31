@@ -35,8 +35,7 @@ actions+=/obliteration
 actions+=/breath_of_sindragosa,if=runic_power>=50
 actions+=/run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking
 actions+=/call_action_list,name=shatter,if=talent.shattering_strikes.enabled
-actions+=/call_action_list,name=icytalons,if=talent.icy_talons.enabled
-actions+=/call_action_list,name=generic,if=(!talent.shattering_strikes.enabled&!talent.icy_talons.enabled)
+actions+=/call_action_list,name=generic,if=!talent.shattering_strikes.enabled
 
 actions.bos=howling_blast,target_if=!dot.frost_fever.ticking
 actions.bos+=/call_action_list,name=core
@@ -51,9 +50,6 @@ actions.core+=/frostscythe,if=!talent.breath_of_sindragosa.enabled&(buff.killing
 actions.core+=/glacial_advance
 actions.core+=/obliterate,if=buff.killing_machine.react
 actions.core+=/obliterate
-actions.core+=/remorseless_winter,if=talent.frozen_pulse.enabled
-actions.core+=/frostscythe,if=talent.frozen_pulse.enabled
-actions.core+=/howling_blast,if=talent.frozen_pulse.enabled
 
 actions.generic=howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/howling_blast,if=buff.rime.react
@@ -67,22 +63,6 @@ actions.generic+=/empower_rune_weapon,if=talent.breath_of_sindragosa.enabled&coo
 actions.generic+=/hungering_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
 actions.generic+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 actions.generic+=/hungering_rune_weapon,if=!talent.breath_of_sindragosa.enabled
-
-actions.icytalons=frost_strike,if=buff.icy_talons.remains<1.5
-actions.icytalons+=/howling_blast,target_if=!dot.frost_fever.ticking
-actions.icytalons+=/howling_blast,if=buff.rime.react
-actions.icytalons+=/frost_strike,if=runic_power>=80|buff.icy_talons.stack<3
-actions.icytalons+=/call_action_list,name=core
-actions.icytalons+=/horn_of_winter,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
-actions.icytalons+=/horn_of_winter,if=!talent.breath_of_sindragosa.enabled
-actions.icytalons+=/frost_strike,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15&!talent.frozen_pulse.enabled
-actions.icytalons+=/frost_strike,if=!talent.breath_of_sindragosa.enabled&!talent.frozen_pulse.enabled
-actions.icytalons+=/frost_strike,if=buff.icy_talons.remains<1.5|buff.icy_talons.stack<3&talent.frostscythe.enabled
-actions.icytalons+=/frost_strike,if=!talent.frostscythe.enabled
-actions.icytalons+=/empower_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
-actions.icytalons+=/hungering_rune_weapon,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15
-actions.icytalons+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
-actions.icytalons+=/hungering_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 
 actions.shatter=frost_strike,if=debuff.razorice.stack=5
 actions.shatter+=/howling_blast,target_if=!dot.frost_fever.ticking
