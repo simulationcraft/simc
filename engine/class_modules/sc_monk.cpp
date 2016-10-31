@@ -1192,12 +1192,43 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
    };
 
-  struct sef_rising_sun_kick_t : public sef_melee_attack_t
+  struct sef_rsk_tornado_kick_t : sef_melee_attack_t
   {
+    sef_rsk_tornado_kick_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "rising_sun_kick_tornado_kick", player, player -> o() -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
+    {
+      may_miss = may_dodge = may_parry = may_crit = may_block = true;
 
-    sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "rising_sun_kick", player, player -> o() -> spec.rising_sun_kick )
-    { }
+      cooldown -> duration = timespan_t::zero();
+      background = dual = true;
+      trigger_gcd = timespan_t::zero();
+    }
+
+    void init() override
+    {
+      sef_melee_attack_t::init();
+
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+      snapshot_flags &= ~STATE_AP;
+      snapshot_flags |= STATE_CRIT;
+      snapshot_flags |= STATE_TGT_ARMOR;
+
+      update_flags &= STATE_NO_MULTIPLIER;
+      update_flags &= ~STATE_AP;
+      update_flags |= STATE_CRIT;
+      update_flags |= STATE_TGT_ARMOR;
+    }
+
+    // Force 250 milliseconds for the animation, but not delay the overall GCD
+    timespan_t execute_time() const override
+    {
+      return timespan_t::from_millis( 250 );
+    }
+
+    virtual double cost() const override
+    {
+      return 0;
+    }
 
     void impact( action_state_t* state ) override
     {
@@ -1207,6 +1238,44 @@ struct storm_earth_and_fire_pet_t : public pet_t
       {
         state -> target -> debuffs.mortal_wounds -> trigger();
         o() -> trigger_mark_of_the_crane( state );
+      }
+    }
+  };
+
+
+  struct sef_rising_sun_kick_t : public sef_melee_attack_t
+  {
+    sef_rsk_tornado_kick_t* rsk_tornado_kick;
+
+    sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "rising_sun_kick", player, player -> o() -> spec.rising_sun_kick ),
+      rsk_tornado_kick( new sef_rsk_tornado_kick_t( player ) )
+    {
+      if ( player -> o() -> artifact.tornado_kicks.rank() )
+        add_child( rsk_tornado_kick );
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      sef_melee_attack_t::impact( state );
+
+      if ( result_is_hit( state -> result ) )
+      {
+        if ( o() -> spec.combat_conditioning )
+          state -> target -> debuffs.mortal_wounds -> trigger();
+
+        if ( o() -> spec.spinning_crane_kick )
+          o() -> trigger_mark_of_the_crane( state );
+
+        if ( o() -> artifact.tornado_kicks.rank() )
+        {
+          double raw = state -> result_raw * o() -> artifact.tornado_kicks.data().effectN( 1 ).percent();
+          rsk_tornado_kick -> target = state -> target;
+          rsk_tornado_kick -> base_dd_max = raw;
+          rsk_tornado_kick -> base_dd_min = raw;
+          rsk_tornado_kick -> execute();
+        }
+
       }
     }
   };
@@ -8367,7 +8436,7 @@ void monk_t::apl_combat_windwalker()
       def -> add_action( "potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
 
-  def -> add_action( "call_action_list,name=serenity,if=talent.serenity.enabled&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.rising_sun_kick.remains<=4)|buff.serenity.up)" );
+  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.rising_sun_kick.remains<=4)|buff.serenity.up)" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&cooldown.rising_sun_kick.remains<=6)|buff.storm_earth_and_fire.up)" );
   def -> add_action( "call_action_list,name=serenity,if=(!artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7)|buff.serenity.up" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&((!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5)|buff.storm_earth_and_fire.up)" );
