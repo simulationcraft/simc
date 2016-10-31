@@ -57,6 +57,7 @@ namespace item
 
   // 7.1 Dungeon
   void arans_relaxing_ruby( special_effect_t& );
+  void ring_of_collapsing_futures( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -249,6 +250,68 @@ void item::arans_relaxing_ruby( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void item::ring_of_collapsing_futures( special_effect_t& effect )
+{
+  struct collapse_t: public proc_spell_t
+  {
+    collapse_t( const special_effect_t& effect ):
+      proc_spell_t( "collapse", effect.player,
+                    effect.player -> find_spell( effect.spell_id ),
+                    effect.item )
+    {}
+  };
+
+  struct apply_debuff_t: public action_t
+  {
+    special_effect_t effect_;
+    cooldown_t* base_cd;
+    action_t* collapse;
+    apply_debuff_t( special_effect_t& effect ):
+      action_t( ACTION_OTHER, "apply_temptation", effect.player, spell_data_t::nil() ),
+      effect_( effect ), base_cd( effect.player -> get_cooldown( effect.cooldown_name() ) ),
+      collapse( nullptr )
+    {
+      background = quiet = true;
+      callbacks = false;
+      collapse = effect.player -> find_action( "collapse" );
+      cooldown = base_cd;
+      if ( !collapse )
+      {
+        collapse = effect.player -> create_proc_action( "collapse", effect );
+      }
+
+      if ( !collapse )
+      {
+        collapse = new collapse_t( effect );
+      }
+    }
+
+    // Suppress assertion
+    result_e calculate_result( action_state_t* ) const override
+    { return RESULT_NONE; }
+
+    void execute() override
+    {
+      action_t::execute();
+
+      collapse -> target = target;
+      collapse -> schedule_execute();
+      if ( rng().roll( effect_.custom_buff -> stack_value() ) )
+      {
+        base_cd -> adjust( timespan_t::from_minutes( 5 ) ); // Ouch.
+      }
+
+      effect_.custom_buff -> trigger( 1 );
+    }
+  };
+
+  effect.custom_buff = effect.player -> buffs.temptation;
+  effect.execute_action = new apply_debuff_t( effect );
+  effect.buff_disabled = true; // Buff application is handled inside apply_debuff_t, and this will prevent use_item 
+                               // from putting the item on cooldown but not using the action.
+}
+
 // Giant Ornamental Pearl ===================================================
 
 struct gaseous_bubble_t : public absorb_buff_t
@@ -2890,6 +2953,7 @@ void unique_gear::register_special_effects_x7()
 
   /* Legion 7.1 Dungeon */
   register_special_effect( 230257, item::arans_relaxing_ruby            );
+  register_special_effect( 234142, item::ring_of_collapsing_futures );
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );

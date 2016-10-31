@@ -2743,6 +2743,11 @@ void player_t::create_buffs()
                               .add_invalidate( CACHE_HASTE )
                               .add_invalidate( CACHE_SPIRIT )
                               .chance( 0 );
+
+      buffs.temptation = buff_creator_t( this, "temptation", find_spell( 234143 ) )
+        .cd( timespan_t::zero() )
+        .chance( 1 )
+        .default_value( 0.1 ); //Not in spelldata
     }
   }
 

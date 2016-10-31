@@ -3892,6 +3892,9 @@ struct player_t : public actor_t
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
 
+    // 7.1
+    buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much. 
+
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
     buff_t* tyrants_immortality; // Tyrant's Decree trinket proc
