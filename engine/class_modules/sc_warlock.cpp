@@ -6127,8 +6127,7 @@ void warlock_t::apl_affliction()
   action_list_str += ")";
 
   action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
-  add_action( "Agony", "if=remains<=tick_time+gcd" );
-  add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
+  add_action( "Agony", "cycle_targets=1,if=remains<=tick_time+gcd" );
   action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3" );
@@ -6154,10 +6153,8 @@ void warlock_t::apl_affliction()
   if ( find_item( "obelisk of_the_void" ) )
     action_list_str += "|buff.collapsing_shadow.remains";
 
-  add_action( "Corruption", "if=remains<=tick_time+gcd" );
-  add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
-  add_action( "Corruption", "target=soul_effigy,if=remains<=tick_time+gcd" );
-  add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
+  add_action( "Corruption", "cycle_targets=1,if=remains<=tick_time+gcd" );
+  add_action( "Siphon Life", "cycle_targets=1,if=remains<=tick_time+gcd" );
   action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3";
   action_list_str += "/phantom_singularity";
   add_action( "Unstable Affliction", "if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
@@ -6169,13 +6166,10 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
 
-  add_action( "Agony", "if=remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Corruption", "if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Agony", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Corruption", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
   action_list_str += "/haunt";
-  add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Corruption", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Siphon Life", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Siphon Life", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
   add_action( "Life Tap", "if=mana.pct<=10" );
   action_list_str += "/drain_soul,chain=1,interrupt=1";
   add_action( "Drain Life", "chain=1,interrupt=1" );
