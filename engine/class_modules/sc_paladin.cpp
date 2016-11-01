@@ -1084,10 +1084,12 @@ struct avengers_shield_t : public paladin_spell_t
     }
     may_crit     = true;
 
-    // TODO: add artifact and legendary bonuses
-    // First Avenger increases multiplier but reduces number of targets to 1
+    // TODO: add and legendary bonuses
     base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
-    aoe = 3 + p -> talents.first_avenger -> effectN( 2 ).base_value(); // 3 + (-5) + TODO: legendary
+	base_aoe_multiplier *= 1.0;
+	if ( p ->talents.first_avenger->ok() )
+		base_aoe_multiplier *= 2.0 / 3.0;
+	aoe = 3;
     aoe = std::max( aoe, 0 );
 
 
