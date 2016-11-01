@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 2de33e6)
+SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build c4ec018)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
