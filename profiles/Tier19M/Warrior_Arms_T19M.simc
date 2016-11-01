@@ -28,7 +28,7 @@ actions+=/potion,name=old_war,if=(target.health.pct<20&buff.battle_cry.up)|targe
 actions+=/blood_fury,if=buff.battle_cry.up|target.time_to_die<=16
 actions+=/berserking,if=buff.battle_cry.up|target.time_to_die<=11
 actions+=/arcane_torrent,if=buff.battle_cry_deadly_calm.down&rage.deficit>40
-actions+=/battle_cry,if=(buff.bloodlust.up|time>=1)&!gcd.remains&(buff.shattered_defenses.up|(cooldown.colossus_smash.remains&cooldown.warbreaker.remains))|target.time_to_die<=10
+actions+=/battle_cry,if=(buff.bloodlust.up|time>=1)&gcd.remains<0.5&(buff.shattered_defenses.up|(cooldown.colossus_smash.remains&cooldown.warbreaker.remains))|target.time_to_die<=10
 actions+=/avatar,if=(buff.bloodlust.up|time>=1)
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/rend,if=remains<gcd
@@ -40,8 +40,8 @@ actions+=/warbreaker,if=debuff.colossus_smash.down
 actions+=/ravager
 actions+=/overpower,if=buff.overpower.react
 actions+=/run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled
-actions+=/run_action_list,name=aoe,if=spell_targets.whirlwind>=2&!talent.sweeping_strikes.enabled
-actions+=/run_action_list,name=execute,if=target.health.pct<=20
+actions+=/run_action_list,name=aoe,if=spell_targets.whirlwind>=5&!talent.sweeping_strikes.enabled
+actions+=/run_action_list,name=execute,target_if=target.health.pct<=20&spell_targets.whirlwind<5
 actions+=/run_action_list,name=single,if=target.health.pct>20
 
 actions.aoe=mortal_strike
@@ -52,7 +52,8 @@ actions.aoe+=/whirlwind,if=talent.fervor_of_battle.enabled&(debuff.colossus_smas
 actions.aoe+=/rend,if=remains<=duration*0.3
 actions.aoe+=/bladestorm
 actions.aoe+=/cleave
-actions.aoe+=/whirlwind,if=rage>=60
+actions.aoe+=/execute,if=rage>90
+actions.aoe+=/whirlwind,if=rage>=40
 actions.aoe+=/shockwave
 actions.aoe+=/storm_bolt
 
@@ -74,7 +75,8 @@ actions.execute+=/execute,if=buff.battle_cry_deadly_calm.up
 actions.execute+=/colossus_smash,if=buff.shattered_defenses.down
 actions.execute+=/warbreaker,if=buff.shattered_defenses.down&rage<=30
 actions.execute+=/execute,if=buff.shattered_defenses.up&rage>22
-actions.execute+=/mortal_strike,if=equipped.archavons_heavy_hand&rage<60
+actions.execute+=/execute,if=buff.shattered_defenses.down&((equipped.archavons_heavy_hand&rage>40)|!equipped.archavons_heavy_hand)
+actions.execute+=/mortal_strike,if=equipped.archavons_heavy_hand
 actions.execute+=/execute,if=buff.shattered_defenses.down
 # actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)
 #Remove the # above to run out of melee and charge back in for rage.
@@ -86,7 +88,8 @@ actions.single+=/warbreaker,if=buff.shattered_defenses.down&cooldown.mortal_stri
 actions.single+=/focused_rage,if=(((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)&buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains))&rage>60
 actions.single+=/mortal_strike
 actions.single+=/execute,if=buff.stone_heart.react
-actions.single+=/slam
+actions.single+=/whirlwind,if=spell_targets.whirlwind>1
+actions.single+=/slam,if=spell_targets.whirlwind=1
 actions.single+=/execute,if=equipped.archavons_heavy_hand
 actions.single+=/focused_rage,if=equipped.archavons_heavy_hand
 # actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)
@@ -106,15 +109,15 @@ feet=trampling_warboots,id=139234,bonus_id=1806
 finger1=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant=binding_of_haste
 finger2=shadowruby_band,id=136713,bonus_id=670/1703,gems=150mastery,enchant=binding_of_mastery
 trinket1=spontaneous_appendages,id=139325,bonus_id=1806
-trinket2=spiked_counterweight,id=136715,ilevel=1517/1727
+trinket2=spiked_counterweight,id=136715,bonus_id=1517/1727
 main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=139261/142510/142512,relic_id=1806/3469/3469
 
 # Gear Summary
-# gear_ilvl=924.00
+# gear_ilvl=880.53
 # gear_strength=14900
 # gear_stamina=26089
 # gear_crit_rating=2374
-# gear_haste_rating=5756
+# gear_haste_rating=6742
 # gear_mastery_rating=11043
 # gear_versatility_rating=448
 # gear_armor=4357

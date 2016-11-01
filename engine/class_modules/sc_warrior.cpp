@@ -4896,7 +4896,7 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list -> add_action( this, "Battle Cry", "if=(buff.bloodlust.up|time>=1)&!gcd.remains&(buff.shattered_defenses.up|(cooldown.colossus_smash.remains&cooldown.warbreaker.remains))|target.time_to_die<=10" );
+  default_list -> add_action( this, "Battle Cry", "if=(buff.bloodlust.up|time>=1)&gcd.remains<0.5&(buff.shattered_defenses.up|(cooldown.colossus_smash.remains&cooldown.warbreaker.remains))|target.time_to_die<=10" );
   default_list -> add_talent( this, "Avatar", "if=(buff.bloodlust.up|time>=1)" );
 
   for ( size_t i = 0; i < items.size(); i++ )
@@ -4916,8 +4916,8 @@ void warrior_t::apl_arms()
   default_list -> add_talent( this, "Ravager" );
   default_list -> add_talent( this, "Overpower", "if=buff.overpower.react" );
   default_list -> add_action( "run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled" );
-  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.whirlwind>=2&!talent.sweeping_strikes.enabled" );
-  default_list -> add_action( "run_action_list,name=execute,if=target.health.pct<=20" );
+  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.whirlwind>=5&!talent.sweeping_strikes.enabled" );
+  default_list -> add_action( "run_action_list,name=execute,target_if=target.health.pct<=20&spell_targets.whirlwind<5" );
   default_list -> add_action( "run_action_list,name=single,if=target.health.pct>20" );
 
   single_target -> add_action( this, "Mortal Strike", "if=buff.battle_cry.up&buff.focused_rage.stack>=1&buff.battle_cry.remains<gcd" );
@@ -4926,7 +4926,8 @@ void warrior_t::apl_arms()
   single_target -> add_talent( this, "Focused Rage", "if=(((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)&buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains))&rage>60" );
   single_target -> add_action( this, "Mortal Strike" );
   single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
-  single_target -> add_action( this, "Slam" );
+  single_target -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1" );
+  single_target -> add_action( this, "Slam", "if=spell_targets.whirlwind=1" );
   single_target -> add_action( this, "Execute", "if=equipped.archavons_heavy_hand" );
   single_target -> add_talent( this, "Focused Rage", "if=equipped.archavons_heavy_hand" );
   single_target -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
@@ -4936,7 +4937,8 @@ void warrior_t::apl_arms()
   execute -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
   execute -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down&rage<=30" );
   execute -> add_action( this, "Execute", "if=buff.shattered_defenses.up&rage>22" );
-  execute -> add_action( this, "Mortal Strike", "if=equipped.archavons_heavy_hand&rage<60" );
+  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.down&((equipped.archavons_heavy_hand&rage>40)|!equipped.archavons_heavy_hand)" );
+  execute -> add_action( this, "Mortal Strike", "if=equipped.archavons_heavy_hand" );
   execute -> add_action( this, "Execute", "if=buff.shattered_defenses.down" );
   execute -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
 
@@ -4961,7 +4963,8 @@ void warrior_t::apl_arms()
   aoe -> add_talent( this, "Rend", "if=remains<=duration*0.3" );
   aoe -> add_action( this, "Bladestorm" );
   aoe -> add_action( this, "Cleave" );
-  aoe -> add_action( this, "Whirlwind", "if=rage>=60" );
+  aoe -> add_action( this, "Execute", "if=rage>90" );
+  aoe -> add_action( this, "Whirlwind", "if=rage>=40" );
   aoe -> add_talent( this, "Shockwave" );
   aoe -> add_talent( this, "Storm Bolt" );
 }

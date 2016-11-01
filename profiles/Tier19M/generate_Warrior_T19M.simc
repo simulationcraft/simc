@@ -65,7 +65,7 @@ feet=trampling_warboots,id=139234,bonus_id=1806
 finger1=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant=binding_of_haste
 finger2=shadowruby_band,id=136713,bonus_id=670/1703,gems=150mastery,enchant=binding_of_mastery
 trinket1=spontaneous_appendages,id=139325,bonus_id=1806
-trinket2=spiked_counterweight,id=136715,ilevel=1517/1727
+trinket2=spiked_counterweight,id=136715,bonus_id=1517/1727
 main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=139261/142510/142512,relic_id=1806/3469/3469
 save=Warrior_Arms_T19M.simc
 
