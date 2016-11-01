@@ -2609,13 +2609,15 @@ struct rising_sun_kick_tornado_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::init();
 
-    snapshot_flags &= ~STATE_VERSATILITY; // Is not affected by versatility.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags &= ~STATE_AP;
-    snapshot_flags &= ~STATE_MUL_PERSISTENT;
-    snapshot_flags &= ~STATE_MUL_TA;
-    snapshot_flags &= ~STATE_HASTE;
-    snapshot_flags &= ~STATE_MUL_DA;
-    snapshot_flags &= ~STATE_MUL_TA;
+    snapshot_flags |= STATE_CRIT;
+    snapshot_flags |= STATE_TGT_ARMOR;
+
+    update_flags &= STATE_NO_MULTIPLIER;
+    update_flags &= ~STATE_AP;
+    update_flags |= STATE_CRIT;
+    update_flags |= STATE_TGT_ARMOR;
   }
 
   // Force 250 milliseconds for the animation, but not delay the overall GCD
