@@ -15,7 +15,7 @@ spec=frost
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,name=countless_armies
-actions.precombat+=/food,name=the_hungry_magister
+actions.precombat+=/food,name=fishbrul_special
 actions.precombat+=/augmentation,name=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -46,11 +46,14 @@ actions.bos+=/hungering_rune_weapon
 actions.bos+=/howling_blast,if=buff.rime.react
 
 actions.core=frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
-actions.core+=/remorseless_winter,if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!talent.frozen_pulse.enabled
-actions.core+=/frostscythe,if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)
-actions.core+=/glacial_advance
+actions.core+=/remorseless_winter,if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)
+actions.core+=/frostscythe,if=(buff.killing_machine.react&spell_targets.frostscythe>=2)
+actions.core+=/glacial_advance,if=spell_targets.glacial_advance>=2
+actions.core+=/frostscythe,if=spell_targets.frostscythe>=3
 actions.core+=/obliterate,if=buff.killing_machine.react
 actions.core+=/obliterate
+actions.core+=/glacial_advance
+actions.core+=/remorseless_winter,if=talent.frozen_pulse.enabled
 
 actions.generic=howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/howling_blast,if=buff.rime.react
