@@ -1240,20 +1240,27 @@ struct bladestorm_t: public warrior_attack_t
     warrior_attack_t( "bladestorm", p, p -> specialization() == WARRIOR_FURY ? p -> talents.bladestorm : p -> spec.bladestorm ),
     bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ), bladestorm_oh( nullptr )
   {
-    parse_options( options_str );
-    channeled = tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
-
-    travel_speed = 0;
-
-    bladestorm_mh -> weapon = &( player -> main_hand_weapon );
-    add_child( bladestorm_mh );
-
-    if ( player -> off_hand_weapon.type != WEAPON_NONE && player -> specialization() == WARRIOR_FURY )
+    if ( p -> talents.ravager -> ok() )
     {
-      bladestorm_oh = new bladestorm_tick_t( p, "bladestorm_oh" );
-      bladestorm_oh -> weapon = &( player -> off_hand_weapon );
-      add_child( bladestorm_oh );
+      background = true; // Ravager replaces bladestorm for arms. 
+    }
+    else
+    {
+      parse_options( options_str );
+      channeled = tick_zero = true;
+      callbacks = interrupt_auto_attack = false;
+
+      travel_speed = 0;
+
+      bladestorm_mh -> weapon = &( player -> main_hand_weapon );
+      add_child( bladestorm_mh );
+
+      if ( player -> off_hand_weapon.type != WEAPON_NONE && player -> specialization() == WARRIOR_FURY )
+      {
+        bladestorm_oh = new bladestorm_tick_t( p, "bladestorm_oh" );
+        bladestorm_oh -> weapon = &( player -> off_hand_weapon );
+        add_child( bladestorm_oh );
+      }
     }
   }
 
