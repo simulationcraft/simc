@@ -441,6 +441,9 @@ public:
     proc_t* t18_demo_4p;
     proc_t* souls_consumed;
     proc_t* the_expendables;
+    proc_t* wilfreds_dog;
+    proc_t* wilfreds_imp;
+    proc_t* wilfreds_darkglare;
   } procs;
 
   struct spells_t
@@ -2504,10 +2507,11 @@ public:
 
         p -> warlock_pet_list.wild_imps[i] -> trigger(doge);
         p -> procs.wild_imp -> occur();
-        if(p->legendary.wilfreds_sigil_of_superior_summoning_flag && !p->talents.grimoire_of_supremacy->ok())
+        if( p -> legendary.wilfreds_sigil_of_superior_summoning_flag && !p -> talents.grimoire_of_supremacy -> ok() )
         {
-            p->cooldowns.doomguard->adjust(p->legendary.wilfreds_sigil_of_superior_summoning);
-            p->cooldowns.infernal->adjust(p->legendary.wilfreds_sigil_of_superior_summoning);
+            p -> cooldowns.doomguard -> adjust( p -> legendary.wilfreds_sigil_of_superior_summoning );
+            p -> cooldowns.infernal -> adjust( p -> legendary.wilfreds_sigil_of_superior_summoning );
+            p -> procs.wilfreds_imp -> occur();
         }
         return;
       }
@@ -3275,9 +3279,8 @@ struct hand_of_guldan_t: public warlock_spell_t
         if ( wild_imp -> is_sleeping() )
         {
           count--;
-          //wild_imp -> trigger();
-          trigger_wild_imp(p);
-          p -> procs.wild_imp -> occur();
+
+          trigger_wild_imp( p );
         }
         if ( count == 0 )
           return;
@@ -4370,6 +4373,7 @@ struct summon_darkglare_t : public warlock_spell_t
         {
             p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
             p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+            p()->procs.wilfreds_darkglare->occur();
         }
       }
     }
@@ -4421,6 +4425,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
         {
             p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
             p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+            p()->procs.wilfreds_dog->occur();
         }
         if ( ++j == dreadstalker_count ) break;
       }
@@ -6042,6 +6047,9 @@ void warlock_t::init_procs()
   procs.t18_demo_4p = get_proc( "t18_demo_4p" );
   procs.souls_consumed = get_proc( "souls_consumed" );
   procs.the_expendables = get_proc( "the_expendables" );
+  procs.wilfreds_dog = get_proc( "wilfreds_dog" );
+  procs.wilfreds_imp = get_proc( "wilfreds_imp" );
+  procs.wilfreds_darkglare = get_proc( "wilfreds_darkglare" );
 }
 
 void warlock_t::apl_precombat()
