@@ -2313,7 +2313,7 @@ struct heroic_leap_t: public warrior_attack_t
          ( p() -> heroic_charge != nullptr || weight_of_the_earth ) )
     {
       warrior_attack_t::impact( s );
-      if ( weight_of_the_earth )
+      if ( weight_of_the_earth && p() -> specialization() == WARRIOR_ARMS )
       {
         td( s -> target ) -> debuffs_colossus_smash -> trigger();
       }
