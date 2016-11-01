@@ -1376,7 +1376,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
      m *= 1.0 +  o() -> cache.mastery_value();
   }
 
-  m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
+  if ( o() -> bugs && pet_type != PET_WILD_IMP ) //FIXME sindorei is currently not buffing imps.
+    m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
 
   return m;
 }
