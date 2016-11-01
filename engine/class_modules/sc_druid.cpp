@@ -3909,7 +3909,7 @@ struct regrowth_t: public druid_heal_t
     if ( p() -> talent.bloodtalons -> ok() )
       p() -> buff.bloodtalons -> trigger( 2 );
 
-    p() -> buff.predatory_swiftness -> expire();
+    p() -> buff.predatory_swiftness -> decrement( 1 );
 
     if ( p() -> buff.power_of_elune -> up() )
       p() -> buff.power_of_elune -> expire();
