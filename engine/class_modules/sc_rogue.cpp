@@ -1511,14 +1511,6 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     aoe = -1;
   }
 
-  /* As of 10/27 (7.1 22908), does benefit from player crit, intended ? (double dip)
-  // Doesn't take in account player crit chance, only "base crit chance"
-  double composite_crit_chance() const override
-  {
-    return 0.05; // Hardcoded to 5% since it is base crit.
-  }
-  */
-
   double composite_da_multiplier( const action_state_t* ) const override
   {
     double m = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
@@ -1530,6 +1522,12 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     }
 
     return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    // Target Modifier aren't taken in account for the proc (else double dip)
+    return 1.0;
   }
 
 };
