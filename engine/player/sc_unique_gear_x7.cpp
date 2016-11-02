@@ -58,6 +58,7 @@ namespace item
   // 7.1 Dungeon
   void arans_relaxing_ruby( special_effect_t& );
   void ring_of_collapsing_futures( special_effect_t& );
+  void mrrgrias_favor( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -217,7 +218,7 @@ struct flame_wreath_t : public spell_t
     item = effect.item;
     school = SCHOOL_FIRE;
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
-    
+
     for ( const auto& item : effect.player -> items )
     {
       if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
@@ -225,7 +226,7 @@ struct flame_wreath_t : public spell_t
            item.name_str ==  "hauberk_of_warped_intuition"    ||
            item.name_str ==  "chestplate_of_impenetrable_darkness" )
         //FIXME: Don't hardcode the 30% damage bonus
-        base_dd_min *= 1.3;
+        base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * 1.3;
     }
     aoe = -1;
   }
@@ -308,7 +309,7 @@ void item::ring_of_collapsing_futures( special_effect_t& effect )
 
   effect.custom_buff = effect.player -> buffs.temptation;
   effect.execute_action = new apply_debuff_t( effect );
-  effect.buff_disabled = true; // Buff application is handled inside apply_debuff_t, and this will prevent use_item 
+  effect.buff_disabled = true; // Buff application is handled inside apply_debuff_t, and this will prevent use_item
                                // from putting the item on cooldown but not using the action.
 }
 
@@ -376,6 +377,92 @@ void item::impact_tremor( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Mrrgria's Favor ==========================================================
+struct thunder_ritual_impact_t : public spell_t
+{
+  thunder_ritual_impact_t( const special_effect_t& effect ) :
+    spell_t( "thunder_ritual_damage", effect.player, effect.driver() -> effectN( 1 ).trigger())
+  {
+    background = may_crit = true;
+    callbacks = false;
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    for ( const auto& item : effect.player -> items )
+    {
+      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
+           item.name_str ==  "harness_of_smoldering_betrayal" ||
+           item.name_str ==  "hauberk_of_warped_intuition"    ||
+           item.name_str ==  "chestplate_of_impenetrable_darkness" )
+        //FIXME: Don't hardcode the 30% damage bonus
+        base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * 1.3;
+    }
+  }
+};
+
+struct thunder_ritual_t : public debuff_t
+{
+  action_t* damage_event;
+
+  thunder_ritual_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
+    debuff_t( buff_creator_t( p, "thunder_ritual", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
+                                  .duration( timespan_t::from_seconds( 3.0 ) ) ),
+                                  damage_event( source -> find_action( "thunder_ritual_damage" ) )
+  {}
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    debuff_t::expire_override( expiration_stacks, remaining_duration );
+    damage_event -> target = player;
+    damage_event -> execute();
+  }
+};
+
+struct thunder_ritual_driver_t : public proc_spell_t
+{
+  thunder_ritual_driver_t( special_effect_t& effect ) :
+    proc_spell_t( "thunder_ritual_driver", effect.player, effect.driver() -> effectN( 1 ).trigger(), effect.item )
+  {
+    harmful = false;
+    base_dd_min = base_dd_max = 0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    proc_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      player -> get_target_data( s -> target ) -> debuff.thunder_ritual -> trigger();
+    }
+  }
+};
+struct mrrgrias_favor_constructor_t : public item_targetdata_initializer_t
+{
+  mrrgrias_favor_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  { }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if( effect == 0 )
+    {
+      td -> debuff.thunder_ritual = buff_creator_t( *td, "thunder_ritual" );
+    }
+    else
+    {
+      assert( ! td -> debuff.thunder_ritual );
+
+      td -> debuff.thunder_ritual = new thunder_ritual_t( *td, *effect );
+      td -> debuff.thunder_ritual -> reset();
+    }
+  }
+};
+
+void item::mrrgrias_favor( special_effect_t& effect )
+{
+  effect.execute_action = new thunder_ritual_driver_t( effect );
+  effect.execute_action -> add_child( new thunder_ritual_impact_t( effect ) );
+}
 // Memento of Angerboda =====================================================
 
 struct memento_callback_t : public dbc_proc_callback_t
@@ -391,7 +478,7 @@ struct memento_callback_t : public dbc_proc_callback_t
     // Memento prefers to proc inactive buffs over active ones.
     // Make a vector with only the inactive buffs.
     std::vector<buff_t*> inactive_buffs;
-    
+
     for ( unsigned i = 0; i < buffs.size(); i++ )
     {
       if ( ! buffs[ i ] -> check() )
@@ -405,7 +492,7 @@ struct memento_callback_t : public dbc_proc_callback_t
     {
       inactive_buffs = buffs;
     }
-    
+
     // Roll it!
     int roll = ( int ) ( listener -> sim -> rng().real() * inactive_buffs.size() );
     inactive_buffs[ roll ] -> trigger();
@@ -1472,7 +1559,7 @@ struct natures_call_callback_t : public dbc_proc_callback_t
     // Nature's Call prefers to proc inactive buffs over active ones.
     // Make a vector with only the inactive buffs.
     std::vector<natures_call_proc_t*> inactive_procs;
-    
+
     for ( unsigned i = 0; i < procs.size(); i++ )
     {
       if ( ! procs[ i ] -> active() )
@@ -1480,7 +1567,7 @@ struct natures_call_callback_t : public dbc_proc_callback_t
         inactive_procs.push_back( procs[ i ] );
       }
     }
-    
+
     // Roll it!
     int roll = ( int ) ( listener -> sim -> rng().real() * inactive_procs.size() );
     inactive_procs[ roll ] -> execute( call_data -> target );
@@ -1509,7 +1596,7 @@ void item::natures_call( special_effect_t& effect )
 
   // Set trigger spell so we can automatically create the breath action.
   effect.trigger_spell_id = 222520;
-  procs.push_back( new natures_call_proc_t( effect.create_action() ) );  
+  procs.push_back( new natures_call_proc_t( effect.create_action() ) );
 
   // Disable trigger spell again
   effect.trigger_spell_id = 0;
@@ -2953,7 +3040,8 @@ void unique_gear::register_special_effects_x7()
 
   /* Legion 7.1 Dungeon */
   register_special_effect( 230257, item::arans_relaxing_ruby            );
-  register_special_effect( 234142, item::ring_of_collapsing_futures );
+  register_special_effect( 234142, item::ring_of_collapsing_futures     );
+  register_special_effect( 230222, item::mrrgrias_favor                 );
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );
@@ -3036,5 +3124,6 @@ void unique_gear::register_target_data_initializers_x7( sim_t* sim )
   sim -> register_target_data_initializer( portable_manacracker_constructor_t( 137398, trinkets ) );
   sim -> register_target_data_initializer( wriggling_sinew_constructor_t( 139326, trinkets ) );
   sim -> register_target_data_initializer( bough_of_corruption_constructor_t( 139336, trinkets ) );
+  sim -> register_target_data_initializer( mrrgrias_favor_constructor_t( 142160, trinkets ) ) ;
 }
 

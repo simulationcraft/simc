@@ -495,6 +495,8 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     debuff_t* mark_of_doom;
     debuff_t* poisoned_dreams;
     debuff_t* fel_burn;
+    debuff_t* flame_wreath;
+    debuff_t* thunder_ritual;
     debuff_t* brutal_haymaker;
     debuff_t* taint_of_the_sea;
     debuff_t* volatile_magic;
@@ -3893,7 +3895,7 @@ struct player_t : public actor_t
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
 
     // 7.1
-    buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much. 
+    buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
 
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
