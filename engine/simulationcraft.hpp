@@ -7191,6 +7191,7 @@ struct proc_resource_t : public spell_t
       else if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_ENERGIZE )
       {
         gain_ta = effect.average( item );
+        gain_resource = effect.resource_gain_type();
       }
     }
 
