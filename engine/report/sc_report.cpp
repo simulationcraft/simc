@@ -429,13 +429,19 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     max_weapon_ilevel_allowed = 900;
     tier_name                 = "T19H";
   }
+  else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
+  {
+    max_ilevel_allowed           = 900;
+    max_weapon_ilevel_allowed    = 925;
+    tier_name                    = "T19M_NH";
+  }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
-    max_ilevel_allowed           = 880;
+    max_ilevel_allowed           = 885;
     max_weapon_ilevel_allowed    = 910;
     tier_name                    = "T19M";
-    max_legendary_ilevel_allowed = max_ilevel_allowed += 15;
-    legendary_items_allowed      = 1;
+    //max_legendary_ilevel_allowed = max_ilevel_allowed += 10;
+    //legendary_items_allowed      = 0;
   }
   else
   {
