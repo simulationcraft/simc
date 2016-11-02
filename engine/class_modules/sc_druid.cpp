@@ -5147,7 +5147,7 @@ struct solar_wrath_t : public druid_spell_t
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
     base_multiplier   *= 1.0 + player -> artifact.solar_stabbing.percent();
-    energize_amount = player -> spec.astral_power -> effectN( 2 ) .resource( RESOURCE_ASTRAL_POWER );
+    energize_amount = player -> spec.astral_power -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   double composite_crit_chance() const override
