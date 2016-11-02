@@ -7175,7 +7175,7 @@ struct proc_resource_t : public spell_t
   proc_resource_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* item_ ) :
     spell_t( token, p, s ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )
   {
-    callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = false;
+    callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = hasted_ticks = false;
     background = true;
     target = player;
     item = item_;
