@@ -68,7 +68,7 @@ actions+=/templars_verdict,if=debuff.judgment.up&holy_power>=3&(!talent.crusade.
 head=crown_of_steely_brambles,id=139231,bonus_id=1806
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_claw
 shoulders=midnight_heralds_pauldrons,id=139232,bonus_id=1806
-back=whisper_of_the_nathrezim,id=137020,enchant=binding_of_strength
+back=drape_of_the_unworthy,id=142521,bonus_id=3469,enchant=binding_of_strength
 chest=horror_inscribed_chestguard,id=138216,bonus_id=1806
 wrists=dragonbone_wristclamps,id=138218,bonus_id=1806
 hands=fitted_ironbark_gauntlets,id=139225,bonus_id=1806
@@ -82,10 +82,10 @@ trinket2=spiked_counterweight,id=136715,bonus_id=1806
 main_hand=ashbringer,id=120978,bonus_id=737,gem_id=139265/139266/139265,relic_id=1806/1806/1806
 
 # Gear Summary
-# gear_ilvl=882.73
-# gear_strength=14754
-# gear_stamina=26174
-# gear_crit_rating=5916
-# gear_haste_rating=8931
-# gear_mastery_rating=5856
-# gear_armor=4346
+# gear_ilvl=882.07
+# gear_strength=14655
+# gear_stamina=26025
+# gear_crit_rating=5357
+# gear_haste_rating=9165
+# gear_mastery_rating=6149
+# gear_armor=4340

@@ -101,28 +101,28 @@ actions.garrote+=/pool_resource,for_next=1
 actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated&refreshable
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
-neck=soultrappers_pendant,id=141506,enchant=mark_of_the_hidden_satyr
+neck=sea_fan_pendant,id=142428,bonus_id=3469,enchant=mark_of_the_hidden_satyr
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=binding_of_agility
+back=windwhipped_sailcloth,id=142412,bonus_id=3469,enchant=binding_of_agility
 chest=grove_keepers_robe,id=139207,bonus_id=1806
 wrists=dragonspur_wristguards,id=138219,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
 waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
-legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
+legs=sucker_scarred_leggings,id=142418,bonus_id=3469
 feet=stained_maggot_squishers,id=139200,bonus_id=1806
 finger1=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=binding_of_versatility
 finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_versatility
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
 trinket2=spontaneous_appendages,id=139325,bonus_id=1806
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,relic_id=1517:1727/1517:1727/1517:1727
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/142510,relic_id=1517:1727/1517:1727/3469
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=880.81
-# gear_agility=15730
-# gear_stamina=25013
-# gear_crit_rating=9023
+# gear_ilvl=883.63
+# gear_agility=15938
+# gear_stamina=25638
+# gear_crit_rating=7088
 # gear_haste_rating=2979
-# gear_mastery_rating=5057
-# gear_versatility_rating=2151
-# gear_armor=2236
+# gear_mastery_rating=5123
+# gear_versatility_rating=4275
+# gear_armor=2243
