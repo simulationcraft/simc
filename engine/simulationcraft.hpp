@@ -3815,6 +3815,7 @@ struct player_t : public actor_t
   set_bonus_t sets;
   meta_gem_e meta_gem;
   bool matching_gear;
+  bool karazhan_trinkets_paired;
   cooldown_t item_cooldown;
   cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
 

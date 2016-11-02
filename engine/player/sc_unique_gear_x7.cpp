@@ -381,12 +381,17 @@ void item::impact_tremor( special_effect_t& effect )
 // Mrrgria's Favor ==========================================================
 struct thunder_ritual_impact_t : public spell_t
 {
+  //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
+  // Right now we assume they are independant multipliers.
+  double paired_multiplier;
+  double chest_multiplier;
   thunder_ritual_impact_t( const special_effect_t& effect ) :
-    spell_t( "thunder_ritual_damage", effect.player, effect.driver() -> effectN( 1 ).trigger())
+    spell_t( "thunder_ritual_damage", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
+    paired_multiplier( 1.0 ),
+    chest_multiplier( 1.0 )
   {
     background = may_crit = true;
     callbacks = false;
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
     for ( const auto& item : effect.player -> items )
     {
       if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
@@ -394,8 +399,11 @@ struct thunder_ritual_impact_t : public spell_t
            item.name_str ==  "hauberk_of_warped_intuition"    ||
            item.name_str ==  "chestplate_of_impenetrable_darkness" )
         //FIXME: Don't hardcode the 30% damage bonus
-        base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * 1.3;
+        chest_multiplier += 0.3;
     }
+    if ( player -> karazhan_trinkets_paired )
+      paired_multiplier += 0.3;
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * paired_multiplier * chest_multiplier;
   }
 };
 
@@ -470,14 +478,19 @@ void item::mrrgrias_favor( special_effect_t& effect )
 
 struct flame_gale_pulse_t : spell_t
 {
+  //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
+  // Right now we assume they are independant multipliers.
+  double chest_multiplier;
+  double paired_multiplier;
   flame_gale_pulse_t( special_effect_t& effect ) :
-    spell_t( "flame_gale_pulse", effect.player, effect.player -> find_spell( 230213 ) )
+    spell_t( "flame_gale_pulse", effect.player, effect.player -> find_spell( 230213 ) ),
+    chest_multiplier( 1.0 ),
+    paired_multiplier( 1.0 )
   {
     background = true;
     callbacks = false;
     school = SCHOOL_FIRE;
-    base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item );
-
+    aoe = -1;
     for ( const auto& item : effect.player -> items )
     {
       if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
@@ -485,8 +498,11 @@ struct flame_gale_pulse_t : spell_t
            item.name_str ==  "hauberk_of_warped_intuition"    ||
            item.name_str ==  "chestplate_of_impenetrable_darkness" )
         //FIXME: Don't hardcode the 30% damage bonus
-        base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item ) * 1.3;
+        chest_multiplier += 0.3;
     }
+    if ( player -> karazhan_trinkets_paired )
+      paired_multiplier += 0.3;
+    base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item ) * paired_multiplier * chest_multiplier;
   }
 };
 struct flame_gale_driver_t : spell_t
