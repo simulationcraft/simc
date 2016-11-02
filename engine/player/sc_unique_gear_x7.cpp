@@ -60,6 +60,7 @@ namespace item
   void ring_of_collapsing_futures( special_effect_t& );
   void mrrgrias_favor( special_effect_t& );
   void toe_knees_promise( special_effect_t& );
+  void deteriorated_construct_core( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -227,7 +228,7 @@ struct flame_wreath_t : public spell_t
            item.name_str ==  "hauberk_of_warped_intuition"    ||
            item.name_str ==  "chestplate_of_impenetrable_darkness" )
         //FIXME: Don't hardcode the 30% damage bonus
-        base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * 1.3;
+        base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item ) * 1.3;
     }
     aoe = -1;
   }
@@ -357,6 +358,49 @@ void item::gnawed_thumb_ring( special_effect_t& effect )
 
   effect.player -> buffs.taste_of_mana = effect.custom_buff;
 }
+
+// Deteriorated Construct Core ==============================================
+struct volatile_energy_t : public spell_t
+{
+  volatile_energy_t( const special_effect_t& effect ) :
+    spell_t( "volatile_energy", effect.player, effect.player -> find_spell( 230241 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    item = effect.item;
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+    for ( const auto& item : effect.player -> items )
+    {
+      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
+           item.name_str ==  "harness_of_smoldering_betrayal" ||
+           item.name_str ==  "hauberk_of_warped_intuition"    ||
+           item.name_str ==  "chestplate_of_impenetrable_darkness" )
+        //FIXME: Don't hardcode the 30% damage bonus
+        base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item ) * 1.3;
+    }
+    aoe = -1;
+  }
+};
+
+void item::deteriorated_construct_core( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "volatile_energy" );
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "volatile_energy", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new volatile_energy_t( effect );
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_= PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Impact Tremor ============================================================
 
 void item::impact_tremor( special_effect_t& effect )
@@ -528,7 +572,6 @@ struct flame_gale_driver_t : spell_t
 void item::toe_knees_promise( special_effect_t& effect )
 {
   effect.execute_action = new flame_gale_driver_t( effect );
-  //effect.execute_action  -> add_child( new haymaker_damage_t( effect ) );
 }
 // Memento of Angerboda =====================================================
 
@@ -3110,6 +3153,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 234142, item::ring_of_collapsing_futures     );
   register_special_effect( 230222, item::mrrgrias_favor                 );
   register_special_effect( 231952, item::toe_knees_promise              );
+  register_special_effect( 230236, item::deteriorated_construct_core    );
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );
