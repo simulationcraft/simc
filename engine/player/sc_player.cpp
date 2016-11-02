@@ -1331,7 +1331,7 @@ struct touch_of_the_grave_spell_t : public spell_t
   touch_of_the_grave_spell_t( player_t* p, const spell_data_t* spell ) :
     spell_t( "touch_of_the_grave", p, spell )
   {
-    background = true;
+    background = may_crit = true;
     base_dd_min = base_dd_max = 0;
     attack_power_mod.direct = 1.0;
     spell_power_mod.direct = 1.0;
