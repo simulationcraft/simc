@@ -2073,7 +2073,8 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   flanking_strike_t( hunter_main_pet_t* p ):
     hunter_main_pet_attack_t( "flanking_strike", p, p -> find_spell( 204740 ) )
   {
-    attack_power_mod.direct = 2.152; //data is in the tooltip
+    attack_power_mod.direct = 2.152; //data hardcoded in tooltip
+    base_multiplier = 1.62; // Hotfixed on 09/23/2016 - not in tooltip as of 11/01/2016
     background = true;
     hunting_companion_multiplier = 2.0;
 
