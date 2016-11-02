@@ -29,7 +29,6 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
 actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_item,slot=finger2
-actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war
 actions+=/sindragosas_fury,if=buff.pillar_of_frost.up
 actions+=/obliteration
