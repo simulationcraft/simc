@@ -1,10 +1,9 @@
 # T19M
 # Tier 19 Mythic
-# * Ilvl Cap: 885
+# * Ilvl Cap: 900
 # * Artifact Rank Cap: 34
-# * 3 Relics with max ilevel of 885
+# * 3 Relics with max ilevel of 900
 # * No Legendaries (see Raid_T19x_Legendary.simc)
-# * No items from Nighthold (including set bonuses) except in T19M_NH
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
 # * No items from Violet Hold (unless 840 ilevel)
@@ -15,12 +14,23 @@
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 optimal_raid=1
-# tmi_boss=TMI_Standard_Boss_T17L
+
+# Death Knight
+
+
+# Demon Hunter
+
+
+# Druid
+
 
 # Hunter
 
 
 # Mage
+
+
+# Monk
 
 
 # Paladin

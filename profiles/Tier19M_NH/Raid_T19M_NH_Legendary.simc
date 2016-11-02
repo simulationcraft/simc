@@ -1,10 +1,9 @@
 # T19M w/ 1x Legendary
 # Tier 19 Mythic
-# * Ilvl Cap: 885
+# * Ilvl Cap: 900
 # * Artifact Rank Cap: 34
-# * 3 Relics with max ilevel of 885
+# * 3 Relics with max ilevel of 900
 # * No Legendaries (see Raid_T19x_Legendary.simc)
-# * No items from Nighthold (including set bonuses) except in T19M_NH
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
 # * No items from Violet Hold (unless 840 ilevel)
@@ -22,36 +21,36 @@ $(Tier)=T19M_NH
 
 # Death Knight
 
- 
+
 # Demon Hunter
 
- 
+
 # Druid
 
- 
+
 # Hunter
 
- 
+
 # Mage
 
- 
+
 # Monk
 
- 
+
 # Paladin
 
- 
+
 # Priest
 
- 
+
 # Rogue
 Rogue_Legendaries.simc
  
 # Shaman
 
- 
+
 # Warlock
- 
+
 
 # Warrior
 
