@@ -103,7 +103,7 @@ actions.garrote+=/garrote,if=combo_points.deficit>=1&!exsanguinated&refreshable
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
 neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_hidden_satyr
 shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
-back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=binding_of_agility
+back=windwhipped_sailcloth,id=142412,bonus_id=3469,enchant=binding_of_agility
 chest=grove_keepers_robe,id=139207,bonus_id=1806
 wrists=dragonspur_wristguards,id=138219,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
@@ -118,11 +118,11 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=139268/139261/139260,rel
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=882.63
-# gear_agility=17346
-# gear_stamina=25556
-# gear_crit_rating=10245
+# gear_ilvl=882.94
+# gear_agility=17392
+# gear_stamina=25624
+# gear_crit_rating=10485
 # gear_haste_rating=3683
-# gear_mastery_rating=3284
-# gear_versatility_rating=2151
-# gear_armor=2236
+# gear_mastery_rating=2803
+# gear_versatility_rating=2408
+# gear_armor=2238

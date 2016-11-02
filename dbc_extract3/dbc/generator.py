@@ -797,7 +797,7 @@ class ItemDataGenerator(DataGenerator):
     ]
 
     _item_name_blacklist = [
-        "^(Lesser |)Arcanum of",
+        "^(Lesser |)Arcanum of (Rum|Con|Ten|Vor|Rap|Foc|Pro)",
         "^Scroll of Enchant",
         "^Enchant ",
         "Deprecated",

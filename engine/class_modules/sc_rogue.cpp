@@ -5,7 +5,6 @@
 
 // TODO + BlizzardFeatures + Bugs
 // Subtlety
-// - Does Weaponmaster attempt to proc per target or per cast? Seems to be per target
 // - Dreadlord's Deceit doesn't work on weaponmastered Shuriken Storm (Blizzard Bug ?)
 // - Insignia of Ravenholdt doesn't proc from Shuriken Storm nor Shuriken Toss (Blizzard Bug ?)
 // - Akaari's Soul Rip action doesn't benefits from SoD and MoS (Blizzard Bug) despite showing the increases in the tooltip.
@@ -15,7 +14,7 @@
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
 // - Poisoned Knives [artifact power] does the damage doubledip in any way?
 // - Does Kingsbane debuff get procced 2x on Mutilate? (If both hands apply lethal poison).
-// - Insignia of Ravenholdt doesn't proc from Fan of Knives nor Poisoned Knife (Blizzard Bug ?)
+// - Insignia of Ravenholdt doesn't proc from Fan of Knives nor Poisoned Knife nor Kingsbane (Blizzard Bug ?)
 
 #include "simulationcraft.hpp"
 
@@ -669,7 +668,7 @@ struct rogue_t : public player_t
   void trigger_true_bearing( const action_state_t* );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
-  void trigger_insignia_of_ravenholdt( const action_state_t* );
+  void trigger_insignia_of_ravenholdt( action_state_t* );
 
   // Computes the composite Agonizing Poison stack multiplier for Assassination Rogue
   double agonizing_poison_stack_multiplier( const rogue_td_t* ) const;
@@ -5627,7 +5626,7 @@ bool rogue_t::trigger_t17_4pc_combat( const action_state_t* state )
   return true;
 }
 
-void rogue_t::trigger_insignia_of_ravenholdt( const action_state_t* state )
+void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
 {
   if ( ! legendary.insignia_of_ravenholdt )
   {
@@ -5650,8 +5649,14 @@ void rogue_t::trigger_insignia_of_ravenholdt( const action_state_t* state )
     return;
   }
 
-  insignia_of_ravenholdt_ -> base_dd_min = state -> result_raw; // As of 10/29 (7.1 22908), Insignia takes in account the amount before the crit roll.
-  insignia_of_ravenholdt_ -> base_dd_max = state -> result_raw; // As of 10/29 (7.1 22908), Insignia takes in account the amount before the crit roll.
+  // As of 10/29 (7.1 22908), Insignia takes in account the amount before the crit roll.
+  double amount = state -> result_mitigated;
+  if ( state -> result == RESULT_CRIT )
+  {
+    amount /= 1.0 + state -> action -> total_crit_bonus( state );
+  }
+  insignia_of_ravenholdt_ -> base_dd_min = amount; 
+  insignia_of_ravenholdt_ -> base_dd_max = amount;
   insignia_of_ravenholdt_ -> target = state -> target;
   insignia_of_ravenholdt_ -> execute();
 }

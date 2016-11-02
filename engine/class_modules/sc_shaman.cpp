@@ -3853,12 +3853,12 @@ struct chain_lightning_t: public chained_base_t
 
   timespan_t execute_time() const override
   {
-	  if (p()->buff.stormkeeper->up())
-	  {
-		  return timespan_t::zero();
-	  }
+    if (p()->buff.stormkeeper->up())
+    {
+      return timespan_t::zero();
+    }
 
-	  return shaman_spell_t::execute_time();
+    return shaman_spell_t::execute_time();
   }
 
   bool ready() override
@@ -4291,12 +4291,12 @@ struct lightning_bolt_t : public shaman_spell_t
   
   timespan_t execute_time() const override
   {
-	  if ( p() -> buff.stormkeeper -> up())
-	  {
-		  return timespan_t::zero();
-	  }
+    if ( p() -> buff.stormkeeper -> up())
+    {
+      return timespan_t::zero();
+    }
 
-	  return shaman_spell_t::execute_time();
+    return shaman_spell_t::execute_time();
   }
 
   void execute() override
@@ -8041,16 +8041,16 @@ struct shaman_module_t : public module_t
       .verification_value( 10 );
       */
  /*   hotfix::register_spell("Shaman", "2016-10-25", "Earth Shock damage increased by 15%. ", 8042)
-		.field("sp_coefficient")
-		.operation(hotfix::HOTFIX_MUL)
-		.modifier(1.15)
-		.verification_value(8);
+    .field("sp_coefficient")
+    .operation(hotfix::HOTFIX_MUL)
+    .modifier(1.15)
+    .verification_value(8);
 
-	hotfix::register_spell("Shaman", "2016-10-25", "Frost Shock damage increased by 15%. ", 196840)
-		.field("sp_coefficient")
-		.operation(hotfix::HOTFIX_MUL)
-		.modifier(1.15)
-		.verification_value(0.56);*/
+  hotfix::register_spell("Shaman", "2016-10-25", "Frost Shock damage increased by 15%. ", 196840)
+    .field("sp_coefficient")
+    .operation(hotfix::HOTFIX_MUL)
+    .modifier(1.15)
+    .verification_value(0.56);*/
   }
 
   void combat_begin( sim_t* ) const override {}

@@ -441,6 +441,9 @@ public:
     proc_t* t18_demo_4p;
     proc_t* souls_consumed;
     proc_t* the_expendables;
+    proc_t* wilfreds_dog;
+    proc_t* wilfreds_imp;
+    proc_t* wilfreds_darkglare;
   } procs;
 
   struct spells_t
@@ -1376,7 +1379,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
      m *= 1.0 +  o() -> cache.mastery_value();
   }
 
-  m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
+  if ( o() -> bugs && pet_type != PET_WILD_IMP ) //FIXME sindorei is currently not buffing imps.
+    m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
 
   return m;
 }
@@ -2503,10 +2507,11 @@ public:
 
         p -> warlock_pet_list.wild_imps[i] -> trigger(doge);
         p -> procs.wild_imp -> occur();
-        if(p->legendary.wilfreds_sigil_of_superior_summoning_flag && !p->talents.grimoire_of_supremacy->ok())
+        if( p -> legendary.wilfreds_sigil_of_superior_summoning_flag && !p -> talents.grimoire_of_supremacy -> ok() )
         {
-            p->cooldowns.doomguard->adjust(p->legendary.wilfreds_sigil_of_superior_summoning);
-            p->cooldowns.infernal->adjust(p->legendary.wilfreds_sigil_of_superior_summoning);
+            p -> cooldowns.doomguard -> adjust( p -> legendary.wilfreds_sigil_of_superior_summoning );
+            p -> cooldowns.infernal -> adjust( p -> legendary.wilfreds_sigil_of_superior_summoning );
+            p -> procs.wilfreds_imp -> occur();
         }
         return;
       }
@@ -3274,9 +3279,8 @@ struct hand_of_guldan_t: public warlock_spell_t
         if ( wild_imp -> is_sleeping() )
         {
           count--;
-          //wild_imp -> trigger();
-          trigger_wild_imp(p);
-          p -> procs.wild_imp -> occur();
+
+          trigger_wild_imp( p );
         }
         if ( count == 0 )
           return;
@@ -4369,6 +4373,7 @@ struct summon_darkglare_t : public warlock_spell_t
         {
             p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
             p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+            p()->procs.wilfreds_darkglare->occur();
         }
       }
     }
@@ -4420,6 +4425,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
         {
             p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
             p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+            p()->procs.wilfreds_dog->occur();
         }
         if ( ++j == dreadstalker_count ) break;
       }
@@ -6041,6 +6047,9 @@ void warlock_t::init_procs()
   procs.t18_demo_4p = get_proc( "t18_demo_4p" );
   procs.souls_consumed = get_proc( "souls_consumed" );
   procs.the_expendables = get_proc( "the_expendables" );
+  procs.wilfreds_dog = get_proc( "wilfreds_dog" );
+  procs.wilfreds_imp = get_proc( "wilfreds_imp" );
+  procs.wilfreds_darkglare = get_proc( "wilfreds_darkglare" );
 }
 
 void warlock_t::apl_precombat()
@@ -6131,6 +6140,8 @@ void warlock_t::apl_affliction()
   action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
@@ -6186,6 +6197,8 @@ void warlock_t::apl_demonology()
   action_list_str += "/service_pet";
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   add_action( "Call Dreadstalkers", "if=!talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=4&!talent.summon_darkglare.enabled" );
   action_list_str += "/summon_darkglare,if=prev_gcd.hand_of_guldan";
@@ -6259,9 +6272,11 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
   action_list_str += "/service_pet";
   add_action( "Summon Infernal", "if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains" );
-  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active" );
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Chaos Bolt", "if=soul_shard>3|buff.backdraft.remains" );

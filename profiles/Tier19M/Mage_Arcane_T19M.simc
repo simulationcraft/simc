@@ -100,7 +100,7 @@ chest=robes_of_celestial_adornment,id=142410,bonus_id=1502/3467
 wrists=helhound_hair_bracers,id=142415,bonus_id=1502/3467
 hands=handwraps_of_delusional_power,id=138212,bonus_id=1806
 waist=cinch_of_light,id=142411,bonus_id=1502/3467
-legs=mystic_kilt_of_the_rune_master,id=132451
+legs=rising_ocean_legwraps,id=134428,bonus_id=1727/1517
 feet=treads_of_the_drowned,id=142414,bonus_id=1502/3467
 finger1=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_mastery
 finger2=twicewarped_azsharan_signet,id=139238,bonus_id=1806,enchant=binding_of_mastery
@@ -109,11 +109,11 @@ trinket2=twisting_wind,id=139323,bonus_id=1806
 main_hand=aluneth,id=127857,gem_id=137380/137272/137380,relic_id=1806/1806/1806
 
 # Gear Summary
-# gear_ilvl=882.73
-# gear_stamina=26343
-# gear_intellect=28421
-# gear_crit_rating=6085
-# gear_haste_rating=6465
-# gear_mastery_rating=4591
+# gear_ilvl=880.73
+# gear_stamina=25621
+# gear_intellect=27939
+# gear_crit_rating=6656
+# gear_haste_rating=5472
+# gear_mastery_rating=4848
 # gear_versatility_rating=2564
-# gear_armor=1824
+# gear_armor=1797
