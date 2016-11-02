@@ -1240,20 +1240,27 @@ struct bladestorm_t: public warrior_attack_t
     warrior_attack_t( "bladestorm", p, p -> specialization() == WARRIOR_FURY ? p -> talents.bladestorm : p -> spec.bladestorm ),
     bladestorm_mh( new bladestorm_tick_t( p, "bladestorm_mh" ) ), bladestorm_oh( nullptr )
   {
-    parse_options( options_str );
-    channeled = tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
-
-    travel_speed = 0;
-
-    bladestorm_mh -> weapon = &( player -> main_hand_weapon );
-    add_child( bladestorm_mh );
-
-    if ( player -> off_hand_weapon.type != WEAPON_NONE && player -> specialization() == WARRIOR_FURY )
+    if ( p -> talents.ravager -> ok() )
     {
-      bladestorm_oh = new bladestorm_tick_t( p, "bladestorm_oh" );
-      bladestorm_oh -> weapon = &( player -> off_hand_weapon );
-      add_child( bladestorm_oh );
+      background = true; // Ravager replaces bladestorm for arms. 
+    }
+    else
+    {
+      parse_options( options_str );
+      channeled = tick_zero = true;
+      callbacks = interrupt_auto_attack = false;
+
+      travel_speed = 0;
+
+      bladestorm_mh -> weapon = &( player -> main_hand_weapon );
+      add_child( bladestorm_mh );
+
+      if ( player -> off_hand_weapon.type != WEAPON_NONE && player -> specialization() == WARRIOR_FURY )
+      {
+        bladestorm_oh = new bladestorm_tick_t( p, "bladestorm_oh" );
+        bladestorm_oh -> weapon = &( player -> off_hand_weapon );
+        add_child( bladestorm_oh );
+      }
     }
   }
 
@@ -2306,7 +2313,7 @@ struct heroic_leap_t: public warrior_attack_t
          ( p() -> heroic_charge != nullptr || weight_of_the_earth ) )
     {
       warrior_attack_t::impact( s );
-      if ( weight_of_the_earth )
+      if ( weight_of_the_earth && p() -> specialization() == WARRIOR_ARMS )
       {
         td( s -> target ) -> debuffs_colossus_smash -> trigger();
       }
@@ -4797,19 +4804,20 @@ void warrior_t::apl_fury()
   movement -> add_action( this, "Heroic Leap" );
 
   single_target -> add_action( this, "Bloodthirst", "if=buff.fujiedas_fury.up&buff.fujiedas_fury.remains<2" );
-  single_target -> add_action( this, "Execute", "if=(artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2))|buff.stone_heart.react" );
-  single_target -> add_action( this, "Rampage", "if=rage=100&(target.health.pct>20|target.health.pct<20&!talent.massacre.enabled)|buff.massacre.react&buff.enrage.remains<1" );
+  single_target -> add_action( this, "Execute", "if=(artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2|(buff.sense_death.react&buff.enrage.up)))|buff.stone_heart.react" );
+  single_target -> add_action( this, "Rampage", "if=(rage=100&(target.health.pct>=20|(target.health.pct<20&!talent.massacre.enabled&!talent.frothing_berserker.enabled)))|(buff.massacre.react&buff.enrage.remains<1)" );
   single_target -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&cooldown.odyns_fury.remains=0&buff.enrage.down" );
   single_target -> add_talent( this, "Dragon Roar", "if=cooldown.odyns_fury.remains>=10|cooldown.odyns_fury.remains<=3" );
   single_target -> add_action( this, "Odyn's Fury", "if=buff.battle_cry.up&buff.enrage.up" );
-  single_target -> add_action( this, "Rampage", "if=buff.enrage.down&buff.juggernaut.down" );
+  single_target -> add_action( this, "Rampage", "if=buff.juggernaut.down&((!talent.frothing_berserker.enabled&buff.enrage.down)|(talent.frothing_berserker.enabled&rage=100)|(talent.reckless_abandon.enabled&cooldown.battle_cry.remains<=gcd.max))" );
   single_target -> add_action( this, "Furious Slash", "if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=3)" );
   single_target -> add_action( this, "Raging Blow", "if=buff.juggernaut.down&buff.enrage.up" );
   single_target -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
-  single_target -> add_action( this, "Execute", "if=talent.inner_rage.enabled|!talent.inner_rage.enabled&rage>50" );
+  single_target -> add_action( this, "Bloodthirst", "if=(talent.frothing_berserker.enabled&buff.enrage.down)|(buff.enrage.remains<2&buff.battle_cry.up&buff.battle_cry.remains<=gcd.max)" );
+  single_target -> add_action( this, "Execute", "if=((talent.inner_rage.enabled|!talent.inner_rage.enabled&rage>50)&(!talent.frothing_berserker.enabled|buff.frothing_berserker.up|(cooldown.battle_cry.remains<5&talent.reckless_abandon.enabled)))" );
   single_target -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
   single_target -> add_action( this, "Raging Blow", "if=buff.enrage.down" );
-  single_target -> add_action( this, "Execute", "if=artifact.juggernaut.enabled" );
+  single_target -> add_action( this, "Execute", "if=artifact.juggernaut.enabled&(!talent.frothing_berserker.enabled|rage=100)" );
   single_target -> add_action( this, "Raging Blow" );
   single_target -> add_action( this, "Bloodthirst" );
   single_target -> add_action( this, "Furious Slash" );

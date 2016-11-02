@@ -1084,10 +1084,12 @@ struct avengers_shield_t : public paladin_spell_t
     }
     may_crit     = true;
 
-    // TODO: add artifact and legendary bonuses
-    // First Avenger increases multiplier but reduces number of targets to 1
+    // TODO: add and legendary bonuses
     base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
-    aoe = 3 + p -> talents.first_avenger -> effectN( 2 ).base_value(); // 3 + (-5) + TODO: legendary
+	base_aoe_multiplier *= 1.0;
+	if ( p ->talents.first_avenger->ok() )
+		base_aoe_multiplier *= 2.0 / 3.0;
+	aoe = 3;
     aoe = std::max( aoe, 0 );
 
 
@@ -3454,7 +3456,7 @@ struct blessing_of_might_proc_t : public paladin_spell_t
   blessing_of_might_proc_t( paladin_t* p )
     : paladin_spell_t( "blessing_of_might_proc", p, p -> find_spell( 205729 ) )
   {
-    may_dodge = may_parry = may_block = may_crit = callbacks = false;
+    may_dodge = may_parry = may_block = may_crit = false;
     background  = true;
 
     // No weapon multiplier
@@ -3611,7 +3613,7 @@ struct judgment_t : public paladin_melee_attack_t
     {
       cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
-      sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
+      sotr_cdr = -1.0 * timespan_t::from_seconds( 2 ); // hack for p -> spec.judgment_2 -> effectN( 1 ).base_value()
     }
   }
 
@@ -4443,7 +4445,7 @@ void paladin_t::create_buffs()
   buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           .cd( timespan_t::zero() ); // let the ability handle the CD
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() )
-                                          .chance( passives.grand_crusader -> proc_chance() * ( 1.0 + talents.first_avenger -> effectN( 2 ).percent() ) );
+                                          .chance( passives.grand_crusader -> proc_chance() + ( 0.0 + talents.first_avenger -> effectN( 2 ).percent() ) );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.painful_truths                 = buff_creator_t( this, "painful_truths", find_spell( 209332 ) );
@@ -4807,11 +4809,11 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_talent( this, "Consecration" );
   def -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react" );
   def -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-  def -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=4&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+  def -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&(holy_power>=4|((cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34)&(cooldown.divine_hammer.remains>gcd|cooldown.blade_of_justice.remains>gcd)))&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
   def -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim" );
   def -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
   def -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-  def -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=4&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+  def -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&(holy_power>=4|((cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34)&(cooldown.divine_hammer.remains>gcd|cooldown.blade_of_justice.remains>gcd)))&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
   def -> add_talent( this, "Zeal", "if=holy_power<=4" );
   def -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
   def -> add_action( this, "Divine Storm", "if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)" );

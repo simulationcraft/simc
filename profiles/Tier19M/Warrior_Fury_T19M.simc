@@ -52,19 +52,20 @@ actions.bladestorm=bladestorm,if=buff.enrage.remains>2&(raid_event.adds.in>90|!r
 actions.movement=heroic_leap
 
 actions.single_target=bloodthirst,if=buff.fujiedas_fury.up&buff.fujiedas_fury.remains<2
-actions.single_target+=/execute,if=(artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2))|buff.stone_heart.react
-actions.single_target+=/rampage,if=rage=100&(target.health.pct>20|target.health.pct<20&!talent.massacre.enabled)|buff.massacre.react&buff.enrage.remains<1
+actions.single_target+=/execute,if=(artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2|(buff.sense_death.react&buff.enrage.up)))|buff.stone_heart.react
+actions.single_target+=/rampage,if=(rage=100&(target.health.pct>=20|(target.health.pct<20&!talent.massacre.enabled&!talent.frothing_berserker.enabled)))|(buff.massacre.react&buff.enrage.remains<1)
 actions.single_target+=/berserker_rage,if=talent.outburst.enabled&cooldown.odyns_fury.remains=0&buff.enrage.down
 actions.single_target+=/dragon_roar,if=cooldown.odyns_fury.remains>=10|cooldown.odyns_fury.remains<=3
 actions.single_target+=/odyns_fury,if=buff.battle_cry.up&buff.enrage.up
-actions.single_target+=/rampage,if=buff.enrage.down&buff.juggernaut.down
+actions.single_target+=/rampage,if=buff.juggernaut.down&((!talent.frothing_berserker.enabled&buff.enrage.down)|(talent.frothing_berserker.enabled&rage=100)|(talent.reckless_abandon.enabled&cooldown.battle_cry.remains<=gcd.max))
 actions.single_target+=/furious_slash,if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=3)
 actions.single_target+=/raging_blow,if=buff.juggernaut.down&buff.enrage.up
 actions.single_target+=/whirlwind,if=buff.wrecking_ball.react&buff.enrage.up
-actions.single_target+=/execute,if=talent.inner_rage.enabled|!talent.inner_rage.enabled&rage>50
+actions.single_target+=/bloodthirst,if=(talent.frothing_berserker.enabled&buff.enrage.down)|(buff.enrage.remains<2&buff.battle_cry.up&buff.battle_cry.remains<=gcd.max)
+actions.single_target+=/execute,if=((talent.inner_rage.enabled|!talent.inner_rage.enabled&rage>50)&(!talent.frothing_berserker.enabled|buff.frothing_berserker.up|(cooldown.battle_cry.remains<5&talent.reckless_abandon.enabled)))
 actions.single_target+=/bloodthirst,if=buff.enrage.down
 actions.single_target+=/raging_blow,if=buff.enrage.down
-actions.single_target+=/execute,if=artifact.juggernaut.enabled
+actions.single_target+=/execute,if=artifact.juggernaut.enabled&(!talent.frothing_berserker.enabled|rage=100)
 actions.single_target+=/raging_blow
 actions.single_target+=/bloodthirst
 actions.single_target+=/furious_slash

@@ -30,7 +30,7 @@ back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=binding_of_agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
-waist=cinidaria_the_symbiote,id=133976
+waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=stained_maggot_squishers,id=139200,bonus_id=1806
 finger1=mindrend_band,id=138220,bonus_id=1806,enchant=binding_of_versatility
