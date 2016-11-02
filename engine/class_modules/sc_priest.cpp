@@ -113,7 +113,7 @@ public:
     buff_t* lingering_insanity;
     buff_t* mind_sear_on_hit_reset;
     buff_t* shadowform;
-    buff_t* shadowform_state;  // Dummy buff to track whether used entered
+    buff_t* shadowform_state;  // Dummy buff to track whether player entered
                                // Shadowform initially
     buff_t* shadowy_insight;
     buff_t* sphere_of_insanity;
