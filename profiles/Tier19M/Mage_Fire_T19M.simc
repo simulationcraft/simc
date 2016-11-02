@@ -81,7 +81,7 @@ neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130
 shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1806
 back=windwhipped_sailcloth,id=142412,bonus_id=1502,enchant=binding_of_intellect
 chest=maddening_robe_of_secrets,id=139193,bonus_id=1806
-wrists=marquee_bindings_of_the_sun_king,id=132406
+wrists=harrowing_soulspun_bracers,id=134437,bonus_id=1727/1517
 hands=oiled_riggers_handwraps,id=142429,bonus_id=1502
 waist=pliable_spider_silk_cinch,id=138217,bonus_id=1806
 legs=leggings_of_the_lower_planes,id=142413,bonus_id=1502
@@ -94,11 +94,11 @@ main_hand=felomelorn,id=128820,ilevel=906
 off_hand=heart_of_the_phoenix,id=133959,ilevel=906
 
 # Gear Summary
-# gear_ilvl=882.31
-# gear_stamina=25791
-# gear_intellect=26656
-# gear_crit_rating=11226
-# gear_haste_rating=4488
-# gear_mastery_rating=2995
+# gear_ilvl=880.44
+# gear_stamina=25384
+# gear_intellect=26385
+# gear_crit_rating=11188
+# gear_haste_rating=4178
+# gear_mastery_rating=3250
 # gear_versatility_rating=1515
-# gear_armor=1817
+# gear_armor=1803
