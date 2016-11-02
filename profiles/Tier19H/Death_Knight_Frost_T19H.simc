@@ -82,20 +82,20 @@ actions.shatter+=/hungering_rune_weapon,if=talent.breath_of_sindragosa.enabled&c
 actions.shatter+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 actions.shatter+=/hungering_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 
-head=crown_of_ash,id=137526,bonus_id=1727/1517
-neck=raven_filigree_pendant,id=134499,bonus_id=1727/1517,enchant=mark_of_the_claw
+head=venomfanged_barbute,id=139229,bonus_id=1805
+neck=raven_filigree_pendant,id=134499,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727/1517
 back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727/1517
-wrists=deepfurrow_bracers,id=137337,bonus_id=1727/1517
+wrists=wristclamps_of_mad_dreams,id=139235,bonus_id=1805
 hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727/1517
-waist=coralplate_girdle,id=134225,bonus_id=1727/1527
+waist=waistplate_of_nameless_horror,id=139227,bonus_id=1805
 legs=wracksoul_legplates,id=121280,bonus_id=1727/1527
 feet=saltladen_stompers,id=137334,bonus_id=1727/1517
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_critical_strike
-finger2=gnawed_thumb_ring,id=134526,bonus_id=1727/1517,enchant=binding_of_critical_strike
-trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1517
-trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_haste
+finger2=gnawed_thumb_ring,id=134526,bonus_id=1727/1517,enchant=binding_of_haste
+trinket1=eye_of_command,id=142167,bonus_id=1477
+trinket2=chaos_talisman,id=137459,bonus_id=1727/1517
 main_hand=blades_of_the_fallen_prince,id=128292,gem_id=137308/133684/137308,relic_id=1517:1727/1517:1727/1517:1727,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
@@ -103,9 +103,9 @@ off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusad
 # gear_ilvl=868.63
 # gear_strength=13921
 # gear_stamina=22227
-# gear_crit_rating=9099
-# gear_haste_rating=5163
-# gear_mastery_rating=2935
-# gear_versatility_rating=2144
+# gear_crit_rating=6605
+# gear_haste_rating=7105
+# gear_mastery_rating=2796
+# gear_versatility_rating=1849
 # gear_armor=4194
 # set_bonus=tier19p_plate_2pc=1
