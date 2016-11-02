@@ -3456,7 +3456,7 @@ struct blessing_of_might_proc_t : public paladin_spell_t
   blessing_of_might_proc_t( paladin_t* p )
     : paladin_spell_t( "blessing_of_might_proc", p, p -> find_spell( 205729 ) )
   {
-    may_dodge = may_parry = may_block = may_crit = callbacks = false;
+    may_dodge = may_parry = may_block = may_crit = false;
     background  = true;
 
     // No weapon multiplier
@@ -4809,11 +4809,11 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_talent( this, "Consecration" );
   def -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.divine_purpose.react" );
   def -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-  def -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&holy_power>=4&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+  def -> add_action( this, "Divine Storm", "if=debuff.judgment.up&spell_targets.divine_storm>=2&(holy_power>=4|((cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34)&(cooldown.divine_hammer.remains>gcd|cooldown.blade_of_justice.remains>gcd)))&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
   def -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react&!equipped.whisper_of_the_nathrezim" );
   def -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
   def -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.the_fires_of_justice.react&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*3)" );
-  def -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&holy_power>=4&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
+  def -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&(holy_power>=4|((cooldown.zeal.charges_fractional<=1.34|cooldown.crusader_strike.charges_fractional<=1.34)&(cooldown.divine_hammer.remains>gcd|cooldown.blade_of_justice.remains>gcd)))&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*4)" );
   def -> add_talent( this, "Zeal", "if=holy_power<=4" );
   def -> add_action( this, "Crusader Strike", "if=holy_power<=4" );
   def -> add_action( this, "Divine Storm", "if=debuff.judgment.up&holy_power>=3&spell_targets.divine_storm>=2&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*5)" );
