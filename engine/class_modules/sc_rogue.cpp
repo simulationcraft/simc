@@ -6526,7 +6526,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&cooldown.exsanguinate.remains<5&dot.rupture.ticking" );
     cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|energy.deficit>=60)" );
     cds -> add_action( this, "Vanish", "if=talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1" );
-    cds -> add_action( this, "Vanish", "if=(!talent.exsanguinate.enabled|talent.subterfuge.enabled)&((talent.subterfuge.enabled&dot.garrote.refreshable)|(talent.nightstalker.enabled&combo_points>=cp_max_spend&dot.rupture.refreshable))" );
+    cds -> add_action( this, "Vanish", "if=(!talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=cp_max_spend&dot.rupture.refreshable)|(talent.subterfuge.enabled&dot.garrote.refreshable)" );
 
     /* Skasch APL
     for ( size_t i = 0; i < items.size(); i++ )
