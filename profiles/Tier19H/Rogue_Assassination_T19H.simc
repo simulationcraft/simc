@@ -25,20 +25,20 @@ actions.precombat+=/potion,name=old_war
 actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 
 # Executed every time the actor is available.
-actions=potion,name=old_war,if=buff.bloodlust.react|target.time_to_die<=25|debuff.vendetta.up
-actions+=/exsanguinate,if=prev_gcd.rupture&dot.rupture.remains>4+4*cp_max_spend
+actions=exsanguinate,if=prev_gcd.rupture&dot.rupture.remains>4+4*cp_max_spend
 actions+=/rupture,if=talent.nightstalker.enabled&stealthed
 actions+=/garrote,if=talent.subterfuge.enabled&stealthed
 actions+=/call_action_list,name=cds
 actions+=/rupture,if=talent.exsanguinate.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1
 actions+=/rupture,cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&target.time_to_die-remains>4
 actions+=/kingsbane,if=talent.exsanguinate.enabled&dot.rupture.exsanguinated
+actions+=/pool_resource,for_next=1
+actions+=/garrote,cycle_targets=1,if=refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4
 # active_dot.rupture>=spell_targets.fan_of_knives meant that we don't want to envenom as long as we can multi-rupture
 actions+=/envenom,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&!dot.rupture.refreshable&active_dot.rupture>=spell_targets.fan_of_knives&((!talent.elaborate_planning.enabled&combo_points>=cp_max_spend)|(talent.elaborate_planning.enabled&combo_points>=3&buff.elaborate_planning.remains<2))
-actions+=/garrote,cycle_targets=1,if=refreshable&target.time_to_die-remains>4
 actions+=/rupture,if=talent.exsanguinate.enabled&!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled*2)
-actions+=/hemorrhage,if=buff.hemorrhage.remains<=buff.hemorrhage.duration*0.3
-actions+=/hemorrhage,target_if=max:dot.rupture.duration,if=buff.hemorrhage.remains<=buff.hemorrhage.duration*0.3&dot.rupture.ticking&spell_targets.fan_of_knives<3
+actions+=/hemorrhage,if=refreshable
+actions+=/hemorrhage,target_if=max:dot.rupture.duration,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<3
 actions+=/kingsbane,if=!talent.exsanguinate.enabled&(debuff.vendetta.up|cooldown.vendetta.remains>10)
 actions+=/fan_of_knives,if=spell_targets>2|buff.the_dreadlords_deceit.stack>=29
 actions+=/mutilate
@@ -51,9 +51,9 @@ actions.cds+=/berserking,if=debuff.vendetta.up
 actions.cds+=/arcane_torrent,if=debuff.vendetta.up&energy.deficit>50
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5
 actions.cds+=/vendetta,if=talent.exsanguinate.enabled&cooldown.exsanguinate.remains<5&dot.rupture.ticking
-actions.cds+=/vendetta,if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|energy.deficit>=60)
+actions.cds+=/vendetta,if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|energy.deficit>=70)
 actions.cds+=/vanish,if=talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1
-actions.cds+=/vanish,if=(!talent.exsanguinate.enabled|talent.subterfuge.enabled)&((talent.subterfuge.enabled&dot.garrote.refreshable)|(talent.nightstalker.enabled&combo_points>=cp_max_spend&dot.rupture.refreshable))
+actions.cds+=/vanish,if=(!talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=cp_max_spend&dot.rupture.refreshable)|(talent.subterfuge.enabled&dot.garrote.refreshable)
 
 head=biornskin_hood,id=134196,bonus_id=1727/1527
 neck=stabilized_energy_pendant,id=134488,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
