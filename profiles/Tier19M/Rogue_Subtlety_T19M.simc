@@ -26,7 +26,7 @@ actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
 actions.precombat+=/symbols_of_death
 
 # Executed every time the actor is available.
-actions=variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10-floor(target.distance*0.5))
+actions=variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10+floor(target.distance*0.5))
 actions+=/variable,name=ed_threshold,value=energy.deficit<=(20+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_er)
 actions+=/call_action_list,name=cds
 # Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)
