@@ -1,6 +1,6 @@
 warlock="Warlock_Affliction_T19M"
 level=110
-race=troll
+race=human
 role=spell
 position=back
 talents=2101011
@@ -15,7 +15,7 @@ spec=affliction
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=whispered_pact
-actions.precombat+=/food,type=azshari_salad
+actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/summon_pet,if=!talent.grimoire_of_supremacy.enabled&(!talent.grimoire_of_sacrifice.enabled|buff.demonic_power.down)
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0
 actions.precombat+=/summon_infernal,if=talent.grimoire_of_supremacy.enabled&active_enemies>=3

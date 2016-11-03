@@ -6069,7 +6069,9 @@ void warlock_t::apl_precombat()
   if ( sim -> allow_food )
   {
     // Food
-    if ( true_level == 110 )
+    if ( true_level == 110 && specialization() == WARLOCK_AFFLICTION )
+      precombat_list += "/food,type=nightborne_delicacy_platter";
+    else if ( true_level == 110 )
       precombat_list += "/food,type=azshari_salad";
     else if ( true_level >= 100 && specialization() == WARLOCK_DESTRUCTION )
       precombat_list += "/food,type=frosty_stew";

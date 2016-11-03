@@ -11,7 +11,7 @@
 
 warlock="Warlock_Affliction_T19P"
 level=110
-race=troll
+race=human
 role=spell
 spec=affliction
 talents=2101011
