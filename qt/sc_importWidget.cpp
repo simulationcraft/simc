@@ -9,6 +9,8 @@
 BattleNetImportWidget::BattleNetImportWidget( QWidget* parent ) :
     QWidget( parent ),
     m_layout( new QHBoxLayout( this ) ),
+    m_regionLabel( new QLabel( tr( "Region" ), this ) ),
+    m_regionCombo( new QComboBox( this ) ),
     m_realmLabel( new QLabel( tr( "Realm" ), this ) ),
     m_realmCombo( new QComboBox( this ) ),
     m_characterLabel( new QLabel( tr( "Character" ), this ) ),
@@ -19,6 +21,8 @@ BattleNetImportWidget::BattleNetImportWidget( QWidget* parent ) :
 {
     setLayout( m_layout );
 
+    m_layout -> addWidget( m_regionLabel );
+    m_layout -> addWidget( m_regionCombo );
     m_layout -> addWidget( m_realmLabel );
     m_layout -> addWidget( m_realmCombo );
     m_layout -> addWidget( m_characterLabel );
@@ -31,12 +35,14 @@ BattleNetImportWidget::BattleNetImportWidget( QWidget* parent ) :
     m_specializationLabel -> hide();
     m_specializationCombo -> hide();
 
+    populateRegion();
     populateSpecialization();
     loadRealmData();
 
     connect( m_character, SIGNAL( editingFinished() ), this, SLOT( returnPressed() ) );
     connect( m_importButton, SIGNAL( clicked() ), this, SLOT( buttonClicked() ) );
     connect( m_realmCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( realmIndexChanged( int ) ) );
+    connect( m_regionCombo, SIGNAL( currentTextChanged( const QString& ) ), this, SLOT( armoryRegionChangedIn( const QString& ) ) );
 }
 
 // Populate realmlists
@@ -62,7 +68,7 @@ void BattleNetImportWidget::loadRealmData()
         }
     }
 
-    populateComboBox( m_settings.value( "options/armory_region", "US" ).toString() ); // Populate with default data
+    selectRegion( m_settings.value( "options/armory_region", "US" ).toString() ); // Populate with default data
 }
 
 void BattleNetImportWidget::parseRealmListFile( QFile& file )
@@ -127,13 +133,12 @@ void BattleNetImportWidget::parseRealmListFile( QFile& file )
     }
 }
 
-void BattleNetImportWidget::populateComboBox( const QString& region )
+void BattleNetImportWidget::selectRegion( const QString& region )
 {
     if ( m_realmModels.find( region ) == m_realmModels.end() )
     {
         return;
     }
-    m_currentRegion = region;
     m_realmCombo -> setModel( m_realmModels[ region ] );
 
     QString s = m_settings.value( "importWidget/lastUsedRealm" ).toString();
@@ -147,6 +152,15 @@ void BattleNetImportWidget::populateComboBox( const QString& region )
             m_character -> setFocus();
         }
     }
+
+    auto region_index = m_regionCombo -> findData( region.toUpper(), Qt::DisplayRole );
+    if ( region_index == -1 )
+    {
+        qDebug() << "Unable to find region" << region.toUpper() << "from list of supported regions";
+        return;
+    }
+
+    m_regionCombo -> setCurrentIndex( region_index );
 }
 
 bool BattleNetImportWidget::validateInput() const
@@ -179,7 +193,7 @@ void BattleNetImportWidget::returnPressed()
         return;
     }
 
-    emit importTriggered( region(), realm(), character(), specialization() );
+    emit importTriggeredOut( region(), realm(), character(), specialization() );
 }
 
 void BattleNetImportWidget::buttonClicked()
@@ -189,14 +203,24 @@ void BattleNetImportWidget::buttonClicked()
         return;
     }
 
-    emit importTriggered( region(), realm(), character(), specialization() );
+    emit importTriggeredOut( region(), realm(), character(), specialization() );
 }
 
-void BattleNetImportWidget::armoryRegionChanged( const QString& region )
+void BattleNetImportWidget::armoryRegionChangedIn( const QString& region )
 {
     // Remove last used realm if user changes regions
     m_settings.remove( "importWidget/lastUsedRealm" );
-    populateComboBox( region.toUpper() );
+    selectRegion( region.toUpper() );
+
+    emit armoryRegionChangedOut( region.toUpper() );
+}
+
+void BattleNetImportWidget::populateRegion()
+{
+    m_regionCombo -> addItem( tr( "US" ) );
+    m_regionCombo -> addItem( tr( "EU" ) );
+    m_regionCombo -> addItem( tr( "KR" ) );
+    m_regionCombo -> addItem( tr( "TW" ) );
 }
 
 void BattleNetImportWidget::populateSpecialization()

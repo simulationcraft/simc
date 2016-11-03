@@ -395,7 +395,11 @@ void SC_MainWindow::createOptionsTab()
   mainTab -> addTab( optionsTab, tr( "Options" ) );
 
   connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
-  connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), newBattleNetView -> widget(), SLOT( armoryRegionChanged( const QString& ) ) );
+  connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ),
+           newBattleNetView -> widget(), SLOT( armoryRegionChangedIn( const QString& ) ) );
+
+  connect( newBattleNetView -> widget(), SIGNAL( armoryRegionChangedOut( const QString& ) ),
+           optionsTab,                   SLOT( _armoryRegionChanged( const QString& ) ) );
 }
 
 void SC_MainWindow::createImportTab()
