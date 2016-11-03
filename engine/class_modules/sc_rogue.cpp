@@ -6491,8 +6491,9 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&target.time_to_die-remains>4" );
     def -> add_action( this, "Kingsbane", "if=talent.exsanguinate.enabled&dot.rupture.exsanguinated" );
     def -> add_action( this, "Death from Above", "if=combo_points>=cp_max_spend&!dot.rupture.refreshable&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)" );
+    def -> add_action( "pool_resource,for_next=1" );
+    def -> add_action( this, "Garrote", "cycle_targets=1,if=refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
     def -> add_action( this, "Envenom", "if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&!dot.rupture.refreshable&active_dot.rupture>=spell_targets.fan_of_knives&((!talent.elaborate_planning.enabled&combo_points>=cp_max_spend)|(talent.elaborate_planning.enabled&combo_points>=3&buff.elaborate_planning.remains<2))", "active_dot.rupture>=spell_targets.fan_of_knives meant that we don't want to envenom as long as we can multi-rupture" );
-    def -> add_action( this, "Garrote", "cycle_targets=1,if=refreshable&target.time_to_die-remains>4" );
     def -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled*2)" );
     def -> add_talent( this, "Hemorrhage", "if=refreshable" );
     def -> add_talent( this, "Hemorrhage", "target_if=max:dot.rupture.duration,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<3" );
@@ -6524,7 +6525,7 @@ void rogue_t::init_action_list()
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5" );
     cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&cooldown.exsanguinate.remains<5&dot.rupture.ticking" );
-    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|energy.deficit>=60)" );
+    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|energy.deficit>=70)" );
     cds -> add_action( this, "Vanish", "if=talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1" );
     cds -> add_action( this, "Vanish", "if=(!talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=cp_max_spend&dot.rupture.refreshable)|(talent.subterfuge.enabled&dot.garrote.refreshable)" );
 
