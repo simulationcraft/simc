@@ -6476,9 +6476,6 @@ void rogue_t::init_action_list()
       potion_action += "|buff.adrenaline_rush.up";
     else if ( specialization() == ROGUE_SUBTLETY )
       potion_action += "|buff.shadow_blades.up";
-
-    if ( specialization() == ROGUE_ASSASSINATION )
-      def -> add_action( potion_action );
   }
 
   precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
@@ -6486,7 +6483,6 @@ void rogue_t::init_action_list()
   if ( specialization() == ROGUE_ASSASSINATION )
   {
     // New Assa APL WIP
-
     def -> add_talent( this, "Exsanguinate", "if=prev_gcd.rupture&dot.rupture.remains>4+4*cp_max_spend" );
     def -> add_action( this, "Rupture", "if=talent.nightstalker.enabled&stealthed" );
     def -> add_action( this, "Garrote", "if=talent.subterfuge.enabled&stealthed" );
