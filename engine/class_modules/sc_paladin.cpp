@@ -4670,6 +4670,7 @@ void paladin_t::generate_action_prio_list_prot()
   prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&buff.seraphim.up");
   //prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.avenger_shield>3" );
   prot->add_action(this, "Judgment");
+  prot->add_action(this, "Avenger's Shield","if=talent.crusaders_judgment.enabled&buff.grand_crusader.up");
   prot->add_talent(this, "Blessed Hammer");
   prot->add_action(this, "Avenger's Shield");
   prot->add_action(this, "Consecration" );
