@@ -4083,7 +4083,7 @@ struct ignore_pain_t: public warrior_spell_t
   double max_ip() const
   {
     double ip_cap = 0;
-    ip_cap = ip_cap_ratio * ( data().effectN( 1 ).ap_coeff() * p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier() ) * p() -> cache.damage_versatility();
+    ip_cap = ip_cap_ratio * ( data().effectN( 1 ).ap_coeff() * p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier() ) * ( 1.0 + p() -> cache.damage_versatility() );
     ip_cap *= 1.0 + p() -> buff.dragon_scales -> check_value();
     return ip_cap;
   }
@@ -4110,7 +4110,10 @@ struct ignore_pain_t: public warrior_spell_t
     }
 
 
-    p() -> buff.ignore_pain -> trigger( 1, amount );
+    if(amount > 0.0)
+    {
+      p()->buff.ignore_pain->trigger(1, amount);
+    }
   }
 
   bool ready() override
