@@ -6494,8 +6494,8 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Envenom", "if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&!dot.rupture.refreshable&active_dot.rupture>=spell_targets.fan_of_knives&((!talent.elaborate_planning.enabled&combo_points>=cp_max_spend)|(talent.elaborate_planning.enabled&combo_points>=3&buff.elaborate_planning.remains<2))", "active_dot.rupture>=spell_targets.fan_of_knives meant that we don't want to envenom as long as we can multi-rupture" );
     def -> add_action( this, "Garrote", "cycle_targets=1,if=refreshable&target.time_to_die-remains>4" );
     def -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled*2)" );
-    def -> add_talent( this, "Hemorrhage", "if=buff.hemorrhage.remains<=buff.hemorrhage.duration*0.3" );
-    def -> add_talent( this, "Hemorrhage", "target_if=max:dot.rupture.duration,if=buff.hemorrhage.remains<=buff.hemorrhage.duration*0.3&dot.rupture.ticking&spell_targets.fan_of_knives<3" );
+    def -> add_talent( this, "Hemorrhage", "if=refreshable" );
+    def -> add_talent( this, "Hemorrhage", "target_if=max:dot.rupture.duration,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<3" );
     def -> add_action( this, "Kingsbane", "if=!talent.exsanguinate.enabled&(debuff.vendetta.up|cooldown.vendetta.remains>10)" );
     def -> add_action( this, "Fan of Knives", "if=spell_targets>2|buff.the_dreadlords_deceit.stack>=29" );
     def -> add_action( this, "Mutilate" );
