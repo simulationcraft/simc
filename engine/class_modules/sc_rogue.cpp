@@ -1524,7 +1524,7 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     return m;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* ) const override
   {
     // Target Modifier aren't taken in account for the proc (else double dip)
     return 1.0;

@@ -4828,7 +4828,7 @@ struct purifying_brew_t: public monk_spell_t
     if ( p() -> talent.elusive_dance -> ok() )
       purifying_brew_percent += p() -> talent.elusive_dance -> effectN( 2 ).percent();
 
-    double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
+    //double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
 
     // Optional addition: Track and report amount of damage cleared
     if ( stagger_pct > p() -> heavy_stagger_threshold )

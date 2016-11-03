@@ -62,7 +62,13 @@ int main( int argc, char *argv[] )
   QApplication a( argc, argv );
 
 #ifdef SC_WINDOWS
-  QCoreApplication::setAttribute( Qt::AA_UseOpenGLES );
+  if ( !qEnvironmentVariableIsSet( "QT_OPENGL" ) && QSysInfo::WindowsVersion == QSysInfo::WV_WINDOWS7 )
+  { // We are using ANGLE as the default for windows 7, however, there are rare cases where software opengl
+    // is the only solution to get simc running. Creating an environmental variable named
+    // QT_OPENGL and setting it to software will override this, and checking for QT_OPENGL
+    // will ensure that we don't override the override. 
+    QCoreApplication::setAttribute( Qt::AA_UseOpenGLES );
+  }
 #endif
   QApplication::setStyle( QStyleFactory::create( "Fusion" ) );
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
