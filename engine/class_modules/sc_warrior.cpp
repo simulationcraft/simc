@@ -4013,6 +4013,9 @@ struct ignore_pain_buff_t: public absorb_buff_t
   // Custom consume implementation to allow minimum absorb amount.
   double consume( double amount ) override
   {
+    // 20161103 (stangk) - Statistics should track the reduced amount
+    amount *= 0.9;
+
     // Limit the consumption to the current size of the buff.
     amount = std::min( amount, current_value );
 
@@ -4027,13 +4030,15 @@ struct ignore_pain_buff_t: public absorb_buff_t
       absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
     }
 
-    amount *= 0.9;
-
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s %s absorbs %.2f (remaining: %.2f)",
                                player -> name(), name(), amount, current_value );
     }
+
+    // 20161103 (stangk) - Since we don't call base, we need to deduct from current_value here
+    // or we get an infinite shield
+    current_value -= amount;
 
     absorb_used( amount );
 
@@ -4093,7 +4098,8 @@ struct ignore_pain_t: public warrior_spell_t
     double amount;
 
     amount = s -> result_amount;
-    amount *= ( resource_consumed / ( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );
+    // 20161103 - resource_consumed is only updated after this function is called
+    amount *= ( cost() / ( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );
 
     if ( p() -> talents.never_surrender -> ok() )
     { //TODO, add options to change the gaussian distribution.
