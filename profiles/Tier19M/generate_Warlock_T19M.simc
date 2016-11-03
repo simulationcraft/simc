@@ -25,7 +25,7 @@ spec=affliction
 
 head=celestially_aligned_hood,id=139188,bonus_id=1806
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,gems=150mastery,enchant=mark_of_the_hidden_satyr
-shoulders=ancient_dreamwoven_mantle,id=139191,bonus_id=1727/1517
+shoulders=ancient_dreamwoven_mantle,id=139191,bonus_id=1806
 back=drape_of_the_unworthy,id=142521,bonus_id=3469,enchant_id=5436
 chest=maddening_robe_of_secrets,id=139193,bonus_id=1806
 wrists=ragged_fur_wristwraps,id=139196,bonus_id=1806
@@ -36,7 +36,7 @@ feet=treads_of_the_drowned,id=142414,bonus_id=3469
 finger1=dreadful_cyclopean_signet,id=139237,bonus_id=1805,enchant_id=5429
 finger2=mindrend_band,id=138220,bonus_id=1806,enchant_id=5429
 trinket1=swarming_plaguehive,id=139321,bonus_id=1806
-trinket2=chrono_shard,id=137419,bonus_id=1727/1517
+trinket2=ethereal_urn,id=142166
 main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=142512/139257/142512,relic_id=3469/1806/3469
 default_pet=felhunter
 
