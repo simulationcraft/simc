@@ -179,6 +179,7 @@ public:
     cooldown_t* avenging_wrath;          // Righteous Protector (prot)
     cooldown_t* light_of_the_protector;  // Righteous Protector (prot)
     cooldown_t* hand_of_the_protector;   // Righteous Protector (prot)
+	cooldown_t* judgment;				 // Grand Crusader + Crusader's Judgment
 
     // whoo fist of justice
     cooldown_t* hammer_of_justice;
@@ -403,6 +404,7 @@ public:
     active_protector_of_the_innocent   = nullptr;
 
     cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
+	cooldowns.judgment                = get_cooldown("judgment");
     cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
     cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
     cooldowns.light_of_the_protector  = get_cooldown( "light_of_the_protector" );
@@ -3594,7 +3596,7 @@ struct judgment_t : public paladin_melee_attack_t
     // no weapon multiplier
     weapon_multiplier = 0.0;
     may_block = may_parry = may_dodge = false;
-
+	cooldown->charges = 1;
     hasted_cd = true;
 
     // TODO: this is a hack; figure out what's really going on here.
@@ -3611,6 +3613,7 @@ struct judgment_t : public paladin_melee_attack_t
     }
     else if ( p -> specialization() == PALADIN_PROTECTION )
     {
+	  cooldown->charges *= 1.0 + p->talents.crusaders_judgment->effectN(1).base_value();
       cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
       sotr_cdr = -1.0 * timespan_t::from_seconds( 2 ); // hack for p -> spec.judgment_2 -> effectN( 1 ).base_value()
@@ -4200,6 +4203,12 @@ void paladin_t::trigger_grand_crusader()
   {
     // reset AS cooldown
     cooldowns.avengers_shield -> reset( true );
+
+	if (talents.crusaders_judgment -> ok() && cooldowns.judgment ->current_charge < cooldowns.judgment->charges)
+	{
+		cooldowns.judgment->adjust(-cooldowns.judgment->duration); //decrease remaining time by the duration of one charge, i.e., add one charge
+	}
+
   }
 }
 
