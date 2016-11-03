@@ -17,6 +17,7 @@
 
 
 # Shadow - S2M only
+Priest_Shadow_$(Tier)_S2M.simc
 copy=Shadow_$(Tier)_Anunds,Priest_Shadow_$(Tier)_S2M
 wrist=anunds_seared_shackles,id=132409
 
