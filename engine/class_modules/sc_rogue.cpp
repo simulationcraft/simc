@@ -6488,17 +6488,18 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Garrote", "if=talent.subterfuge.enabled&stealthed" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1" );
-    def -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&target.time_to_die-remains>4" );
+    def -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend-talent.exsanguinate.enabled&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
     def -> add_action( this, "Kingsbane", "if=talent.exsanguinate.enabled&dot.rupture.exsanguinated" );
     def -> add_action( this, "Death from Above", "if=combo_points>=cp_max_spend&!dot.rupture.refreshable&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)" );
     def -> add_action( "pool_resource,for_next=1" );
     def -> add_action( this, "Garrote", "cycle_targets=1,if=refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
-    def -> add_action( this, "Envenom", "if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&!dot.rupture.refreshable&active_dot.rupture>=spell_targets.fan_of_knives&((!talent.elaborate_planning.enabled&combo_points>=cp_max_spend)|(talent.elaborate_planning.enabled&combo_points>=3&buff.elaborate_planning.remains<2))", "active_dot.rupture>=spell_targets.fan_of_knives meant that we don't want to envenom as long as we can multi-rupture" );
+    def -> add_action( this, "Envenom", "if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&!dot.rupture.refreshable&active_dot.rupture>=spell_targets.fan_of_knives&((!talent.elaborate_planning.enabled&combo_points>=cp_max_spend)|(talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<2))", "active_dot.rupture>=spell_targets.fan_of_knives meant that we don't want to envenom as long as we can multi-rupture" );
     def -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled*2)" );
     def -> add_talent( this, "Hemorrhage", "if=refreshable" );
-    def -> add_talent( this, "Hemorrhage", "target_if=max:dot.rupture.duration,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<3" );
+    def -> add_talent( this, "Hemorrhage", "target_if=max:dot.rupture.duration,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<=3" );
     def -> add_action( this, "Kingsbane", "if=!talent.exsanguinate.enabled&(debuff.vendetta.up|cooldown.vendetta.remains>10)" );
-    def -> add_action( this, "Fan of Knives", "if=spell_targets>2|buff.the_dreadlords_deceit.stack>=29" );
+    def -> add_action( this, "Fan of Knives", "if=spell_targets>=3|buff.the_dreadlords_deceit.stack>=29" );
+    def -> add_action( this, "Mutilate", "cycle_targets=1,if=(!talent.agonizing_poison.enabled&dot.deadly_poison_dot.refreshable)|(talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3)" );
     def -> add_action( this, "Mutilate" );
 
     // Cooldowns
