@@ -375,6 +375,7 @@ public:
     const spell_data_t* chain_lightning_2; // 7.1 Chain Lightning additional 2 targets passive
     const spell_data_t* elemental_focus;
     const spell_data_t* elemental_fury;
+    const spell_data_t* flame_shock_2; // 7.1 Flame Shock duration extension passive
     const spell_data_t* lava_burst_2; // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
     const spell_data_t* spiritual_insight;
@@ -4838,19 +4839,29 @@ struct earth_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
-  double duration_multiplier;
+  double duration_multiplier; // Elemental Bellows
+  timespan_t duration_per_maelstrom;
 
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string()  ) :
     shaman_spell_t( "flame_shock", player, player -> find_specialization_spell( "Flame Shock" ), options_str ),
-    duration_multiplier( 1.0 )
+    duration_multiplier( 1.0 ), duration_per_maelstrom( timespan_t::zero() )
   {
     tick_may_crit         = true;
     track_cd_waste        = false;
     base_multiplier *= 1.0 + player -> artifact.firestorm.percent();
+
+    if ( player -> spec.flame_shock_2 -> ok() )
+    {
+      resource_current = RESOURCE_MAELSTROM;
+      secondary_costs[ RESOURCE_MAELSTROM ] = player -> spec.flame_shock_2 -> effectN( 1 ).base_value();
+      cooldown -> duration = timespan_t::zero(); // TODO: A mystery 6 second cooldown appeared out of nowhere
+
+      duration_per_maelstrom = dot_duration / secondary_costs[ RESOURCE_MAELSTROM ];
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
-  { return ( dot_duration + timespan_t::from_seconds( cost() ) ) * duration_multiplier; }
+  { return ( dot_duration + duration_per_maelstrom * cost() ) * duration_multiplier; }
 
   double action_ta_multiplier() const override
   {
@@ -5881,6 +5892,7 @@ void shaman_t::init_spells()
   spec.chain_lightning_2     = find_specialization_spell( 231722 );
   spec.elemental_focus       = find_specialization_spell( "Elemental Focus" );
   spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
+  spec.flame_shock_2         = find_specialization_spell( 232643 );
   spec.lava_burst_2          = find_specialization_spell( 231721 );
   spec.lava_surge            = find_specialization_spell( "Lava Surge" );
 
