@@ -2773,7 +2773,8 @@ struct unstable_affliction_t: public warlock_spell_t
       warlock_spell_t( "compounding_horror", p, p -> find_spell( 231489 ) )
     {
       background = true;
-      proc = true;
+      //proc = true; Compounding Horror can proc trinkets and has no resource cost.
+      callbacks = true;
     }
 
     virtual double action_multiplier() const override
@@ -5016,7 +5017,8 @@ struct harvester_of_souls_t : public warlock_spell_t
     warlock_spell_t( "harvester_of_souls", p, p -> find_spell( 218615 ) )
   {
     background = true;
-    proc = true;
+    //proc = true; Harvester of Souls can proc trinkets and has no resource cost so no need.
+    callbacks = true;
   }
 };
 
