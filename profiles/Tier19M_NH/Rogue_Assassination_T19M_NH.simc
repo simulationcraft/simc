@@ -30,17 +30,18 @@ actions+=/rupture,if=talent.nightstalker.enabled&stealthed
 actions+=/garrote,if=talent.subterfuge.enabled&stealthed
 actions+=/call_action_list,name=cds
 actions+=/rupture,if=talent.exsanguinate.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1
-actions+=/rupture,cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&target.time_to_die-remains>4
+actions+=/rupture,cycle_targets=1,if=combo_points>=cp_max_spend-talent.exsanguinate.enabled&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4
 actions+=/kingsbane,if=talent.exsanguinate.enabled&dot.rupture.exsanguinated
 actions+=/pool_resource,for_next=1
 actions+=/garrote,cycle_targets=1,if=refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4
 # active_dot.rupture>=spell_targets.fan_of_knives meant that we don't want to envenom as long as we can multi-rupture
-actions+=/envenom,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&!dot.rupture.refreshable&active_dot.rupture>=spell_targets.fan_of_knives&((!talent.elaborate_planning.enabled&combo_points>=cp_max_spend)|(talent.elaborate_planning.enabled&combo_points>=3&buff.elaborate_planning.remains<2))
+actions+=/envenom,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&!dot.rupture.refreshable&active_dot.rupture>=spell_targets.fan_of_knives&((!talent.elaborate_planning.enabled&combo_points>=cp_max_spend)|(talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<2))
 actions+=/rupture,if=talent.exsanguinate.enabled&!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled*2)
 actions+=/hemorrhage,if=refreshable
-actions+=/hemorrhage,target_if=max:dot.rupture.duration,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<3
+actions+=/hemorrhage,target_if=max:dot.rupture.duration,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<=3
 actions+=/kingsbane,if=!talent.exsanguinate.enabled&(debuff.vendetta.up|cooldown.vendetta.remains>10)
-actions+=/fan_of_knives,if=spell_targets>2|buff.the_dreadlords_deceit.stack>=29
+actions+=/fan_of_knives,if=spell_targets>=3|buff.the_dreadlords_deceit.stack>=29
+actions+=/mutilate,cycle_targets=1,if=(!talent.agonizing_poison.enabled&dot.deadly_poison_dot.refreshable)|(talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3)
 actions+=/mutilate
 
 # Cooldowns
