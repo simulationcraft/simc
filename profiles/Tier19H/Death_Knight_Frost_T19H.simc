@@ -15,7 +15,7 @@ spec=frost
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,name=countless_armies
-actions.precombat+=/food,name=the_hungry_magister
+actions.precombat+=/food,name=fishbrul_special
 actions.precombat+=/augmentation,name=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -29,7 +29,6 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking
 actions+=/berserking,if=buff.pillar_of_frost.up
 actions+=/use_item,slot=finger2
-actions+=/use_item,slot=trinket1
 actions+=/potion,name=old_war
 actions+=/sindragosas_fury,if=buff.pillar_of_frost.up
 actions+=/obliteration
@@ -46,11 +45,14 @@ actions.bos+=/hungering_rune_weapon
 actions.bos+=/howling_blast,if=buff.rime.react
 
 actions.core=frost_strike,if=buff.obliteration.up&!buff.killing_machine.react
-actions.core+=/remorseless_winter,if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!talent.frozen_pulse.enabled
-actions.core+=/frostscythe,if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)
-actions.core+=/glacial_advance
+actions.core+=/remorseless_winter,if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)
+actions.core+=/frostscythe,if=(buff.killing_machine.react&spell_targets.frostscythe>=2)
+actions.core+=/glacial_advance,if=spell_targets.glacial_advance>=2
+actions.core+=/frostscythe,if=spell_targets.frostscythe>=3
 actions.core+=/obliterate,if=buff.killing_machine.react
 actions.core+=/obliterate
+actions.core+=/glacial_advance
+actions.core+=/remorseless_winter,if=talent.frozen_pulse.enabled
 
 actions.generic=howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/howling_blast,if=buff.rime.react
@@ -79,20 +81,20 @@ actions.shatter+=/hungering_rune_weapon,if=talent.breath_of_sindragosa.enabled&c
 actions.shatter+=/empower_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 actions.shatter+=/hungering_rune_weapon,if=!talent.breath_of_sindragosa.enabled
 
-head=crown_of_ash,id=137526,bonus_id=1727/1517
-neck=raven_filigree_pendant,id=134499,bonus_id=1727/1517,enchant=mark_of_the_claw
+head=venomfanged_barbute,id=139229,bonus_id=1805
+neck=raven_filigree_pendant,id=134499,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727/1517
 back=goldscar_pelt,id=133639,bonus_id=1727/1517,enchant=binding_of_strength
 chest=inferno_breastplate,id=134503,bonus_id=1727/1517
-wrists=deepfurrow_bracers,id=137337,bonus_id=1727/1517
+wrists=wristclamps_of_mad_dreams,id=139235,bonus_id=1805
 hands=battleborne_sentinel_gauntlets,id=133628,bonus_id=1727/1517
-waist=coralplate_girdle,id=134225,bonus_id=1727/1527
+waist=waistplate_of_nameless_horror,id=139227,bonus_id=1805
 legs=wracksoul_legplates,id=121280,bonus_id=1727/1527
 feet=saltladen_stompers,id=137334,bonus_id=1727/1517
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_critical_strike
-finger2=gnawed_thumb_ring,id=134526,bonus_id=1727/1517,enchant=binding_of_critical_strike
-trinket1=faulty_countermeasure,id=137539,bonus_id=1727/1517
-trinket2=hunger_of_the_pack,id=136975,bonus_id=1727/1517
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1727/1517,enchant=binding_of_haste
+finger2=gnawed_thumb_ring,id=134526,bonus_id=1727/1517,enchant=binding_of_haste
+trinket1=eye_of_command,id=142167,bonus_id=1477
+trinket2=chaos_talisman,id=137459,bonus_id=1727/1517
 main_hand=blades_of_the_fallen_prince,id=128292,gem_id=137308/133684/137308,relic_id=1517:1727/1517:1727/1517:1727,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
@@ -100,9 +102,9 @@ off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusad
 # gear_ilvl=868.63
 # gear_strength=13921
 # gear_stamina=22227
-# gear_crit_rating=9099
-# gear_haste_rating=5163
-# gear_mastery_rating=2935
-# gear_versatility_rating=2144
+# gear_crit_rating=6605
+# gear_haste_rating=7105
+# gear_mastery_rating=2796
+# gear_versatility_rating=1849
 # gear_armor=4194
 # set_bonus=tier19p_plate_2pc=1
