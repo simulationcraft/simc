@@ -968,15 +968,23 @@ struct storm_earth_and_fire_pet_t : public pet_t
     {
       super_t::snapshot_internal( state, flags, rt );
 
-      // Take out the Owner's Hit Combo Multiplier
+      // Take out the Owner's Hit Combo Multiplier, but only if the ability is going to snapshot
+      // multipliers in the first place.
       if ( o() -> talent.hit_combo -> ok() )
       {
-        state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
-        state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
+        if ( rt == DMG_DIRECT && ( flags & STATE_MUL_DA ) )
+        {
+          // Remove owner's Hit Combo
+          state -> da_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
+          // .. aand add Pet's Hit Combo
+          state -> da_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
+        }
 
-      // ADD SEF's Hit Combo Multiplier
-      state -> da_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
-      state -> ta_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
+        if ( rt == DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
+        {
+          state -> ta_multiplier /= ( 1 + o() -> buff.hit_combo -> stack_value() );
+          state -> ta_multiplier *= 1 + p() -> sef_hit_combo -> stack_value();
+        }
       }
     }
   };
@@ -4820,7 +4828,7 @@ struct purifying_brew_t: public monk_spell_t
     if ( p() -> talent.elusive_dance -> ok() )
       purifying_brew_percent += p() -> talent.elusive_dance -> effectN( 2 ).percent();
 
-    double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
+    //double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
 
     // Optional addition: Track and report amount of damage cleared
     if ( stagger_pct > p() -> heavy_stagger_threshold )

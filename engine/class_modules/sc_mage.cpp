@@ -8722,6 +8722,7 @@ void mage_t::apl_fire()
   default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&(cooldown.flame_on.remains<5|cooldown.flame_on.remains>30)&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
+  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
 
   default_list -> add_action( "call_action_list,name=combustion_phase,if=cooldown.combustion.remains<=action.rune_of_power.cast_time+(!talent.kindling.enabled*gcd)|buff.combustion.up" );
   default_list -> add_action( "call_action_list,name=rop_phase,if=buff.rune_of_power.up&buff.combustion.down" );
@@ -8796,21 +8797,20 @@ void mage_t::apl_frost()
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react=0&prev_gcd.flurry" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
-  default_list -> add_action( this, "Blizzard", "if=buff.potion_of_deadly_grace.up&!prev_off_gcd.water_jet" );
   default_list -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up" );
   default_list -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet" );
   default_list -> add_action( "water_jet,if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
   default_list -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
   default_list -> add_action( this, "Flurry", "if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.frostbolt" );
-  default_list -> add_talent( this, "Glacial Spike" );
-  default_list -> add_talent( this, "Frozen Touch", "if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)" );
+  default_list -> add_talent( this, "Frozen Touch", "if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)&((cooldown.icy_veins.remains>30&talent.thermal_void.enabled)|!talent.thermal_void.enabled)" );
   default_list -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2" );
   default_list -> add_action( this, "Frozen Orb" );
   default_list -> add_talent( this, "Ice Nova" );
   default_list -> add_talent( this, "Comet Storm" );
-  default_list -> add_action( this, "Blizzard", "if=talent.artic_gale.enabled" );
+  default_list -> add_action( this, "Blizzard", "if=talent.arctic_gale.enabled|active_enemies>1|((buff.zannesu_journey.stack>4|buff.zannesu_journey.remains<cast_time+1)&equipped.133970)" );
   default_list -> add_action( this, "Ebonbolt", "if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)" );
+  default_list -> add_talent( this, "Glacial Spike" );
   default_list -> add_action( this, "Frostbolt" );
 
   cooldowns    -> add_talent( this, "Rune of Power", "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10" );
@@ -8824,7 +8824,7 @@ void mage_t::apl_frost()
   {
     cooldowns -> add_action( racial_actions[i] );
   }
-    cooldowns -> add_action( get_potion_action() );
+    cooldowns -> add_action( "potion,name=potion_of_prolonged_power,if=cooldown.icy_veins.remains<1" );
 }
 
 // Default Action List ========================================================

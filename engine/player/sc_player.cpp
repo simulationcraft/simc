@@ -629,6 +629,7 @@ player_t::player_t( sim_t*             s,
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
   auto_attack_multiplier( 1.0 ),
+  karazhan_trinkets_paired( false ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -1331,7 +1332,7 @@ struct touch_of_the_grave_spell_t : public spell_t
   touch_of_the_grave_spell_t( player_t* p, const spell_data_t* spell ) :
     spell_t( "touch_of_the_grave", p, spell )
   {
-    background = true;
+    background = may_crit = true;
     base_dd_min = base_dd_max = 0;
     attack_power_mod.direct = 1.0;
     spell_power_mod.direct = 1.0;
@@ -8061,7 +8062,7 @@ void player_t::override_artifact( const std::vector<const artifact_power_data_t*
   }
 
   artifact.points[ power_index ].first = override_rank;
-  artifact.points[ power_index ].second = 0; // If someone is trying to override the artifact, they probably don't want to take relic gems into account. 
+  artifact.points[ power_index ].second = 0; // If someone is trying to override the artifact, they probably don't want to take relic gems into account.
 }
 
 // player_t::replace_spells =================================================
@@ -9971,6 +9972,7 @@ void player_t::create_options()
     add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
     add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
     add_option( opt_bool( "stat_cache", cache.active ) );
+    add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
 }
 
 // player_t::create =========================================================

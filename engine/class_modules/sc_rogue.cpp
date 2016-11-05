@@ -1511,14 +1511,6 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     aoe = -1;
   }
 
-  /* As of 10/27 (7.1 22908), does benefit from player crit, intended ? (double dip)
-  // Doesn't take in account player crit chance, only "base crit chance"
-  double composite_crit_chance() const override
-  {
-    return 0.05; // Hardcoded to 5% since it is base crit.
-  }
-  */
-
   double composite_da_multiplier( const action_state_t* ) const override
   {
     double m = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
@@ -1530,6 +1522,12 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     }
 
     return m;
+  }
+
+  double composite_target_multiplier( player_t* ) const override
+  {
+    // Target Modifier aren't taken in account for the proc (else double dip)
+    return 1.0;
   }
 
 };
@@ -6478,15 +6476,61 @@ void rogue_t::init_action_list()
       potion_action += "|buff.adrenaline_rush.up";
     else if ( specialization() == ROGUE_SUBTLETY )
       potion_action += "|buff.shadow_blades.up";
-
-    if ( specialization() == ROGUE_ASSASSINATION )
-      def -> add_action( potion_action );
   }
 
   precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
+    // New Assa APL WIP
+    def -> add_talent( this, "Exsanguinate", "if=prev_gcd.rupture&dot.rupture.remains>4+4*cp_max_spend" );
+    def -> add_action( this, "Rupture", "if=talent.nightstalker.enabled&stealthed" );
+    def -> add_action( this, "Garrote", "if=talent.subterfuge.enabled&stealthed" );
+    def -> add_action( "call_action_list,name=cds" );
+    def -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1" );
+    def -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend-talent.exsanguinate.enabled&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
+    def -> add_action( this, "Kingsbane", "if=talent.exsanguinate.enabled&dot.rupture.exsanguinated" );
+    def -> add_action( this, "Death from Above", "if=combo_points>=cp_max_spend&!dot.rupture.refreshable&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)" );
+    def -> add_action( "pool_resource,for_next=1" );
+    def -> add_action( this, "Garrote", "cycle_targets=1,if=refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
+    def -> add_action( this, "Envenom", "if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)&!dot.rupture.refreshable&active_dot.rupture>=spell_targets.fan_of_knives&((!talent.elaborate_planning.enabled&combo_points>=cp_max_spend)|(talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<2))", "active_dot.rupture>=spell_targets.fan_of_knives meant that we don't want to envenom as long as we can multi-rupture" );
+    def -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled*2)" );
+    def -> add_talent( this, "Hemorrhage", "if=refreshable" );
+    def -> add_talent( this, "Hemorrhage", "target_if=max:dot.rupture.duration,if=refreshable&dot.rupture.ticking&spell_targets.fan_of_knives<=3" );
+    def -> add_action( this, "Kingsbane", "if=!talent.exsanguinate.enabled&(debuff.vendetta.up|cooldown.vendetta.remains>10)" );
+    def -> add_action( this, "Fan of Knives", "if=spell_targets>=3|buff.the_dreadlords_deceit.stack>=29" );
+    def -> add_action( this, "Mutilate", "cycle_targets=1,if=(!talent.agonizing_poison.enabled&dot.deadly_poison_dot.refreshable)|(talent.agonizing_poison.enabled&debuff.agonizing_poison.remains<debuff.agonizing_poison.duration*0.3)" );
+    def -> add_action( this, "Mutilate" );
+
+    // Cooldowns
+    action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
+    cds -> add_action( potion_action );
+    for ( size_t i = 0; i < items.size(); i++ )
+    {
+      if ( items[ i ].has_use_special_effect() )
+      {
+        std::string item_action = std::string( "use_item,slot=" ) + items[ i ].slot_name();
+        cds -> add_action( item_action + ",if=buff.bloodlust.react|target.time_to_die<=20|debuff.vendetta.up" );
+      }
+    }
+    for ( size_t i = 0; i < racial_actions.size(); i++ )
+    {
+      if ( racial_actions[i] == "arcane_torrent" )
+      {
+        cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up&energy.deficit>50" );
+      }
+      else
+      {
+        cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
+      }
+    }
+    cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|combo_points.deficit>=5" );
+    cds -> add_action( this, "Vendetta", "if=talent.exsanguinate.enabled&cooldown.exsanguinate.remains<5&dot.rupture.ticking" );
+    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled&(!artifact.urge_to_kill.enabled|energy.deficit>=70)" );
+    cds -> add_action( this, "Vanish", "if=talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1" );
+    cds -> add_action( this, "Vanish", "if=(!talent.exsanguinate.enabled&talent.nightstalker.enabled&combo_points>=cp_max_spend&dot.rupture.refreshable)|(talent.subterfuge.enabled&dot.garrote.refreshable)" );
+
+    /* Skasch APL
     for ( size_t i = 0; i < items.size(); i++ )
     {
       if ( items[ i ].has_use_special_effect() )
@@ -6603,6 +6647,7 @@ void rogue_t::init_action_list()
     garrote -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&!ticking&combo_points.deficit>=1&spell_targets.fan_of_knives>=2" );
     garrote -> add_action( "pool_resource,for_next=1" );
     garrote -> add_action( this, "Garrote", "if=combo_points.deficit>=1&!exsanguinated&refreshable" );
+    */
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
@@ -6679,7 +6724,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( this, "Symbols of Death" );
 
     // Main Rotation
-    def -> add_action( "variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10-floor(target.distance*0.5))" );
+    def -> add_action( "variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10+floor(target.distance*0.5))" );
     def -> add_action( "variable,name=ed_threshold,value=energy.deficit<=(20+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_er)" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );

@@ -91,6 +91,7 @@ public:
 public slots:
   void _resetallSettings();
   void _savefilelocation();
+  void _armoryRegionChanged( const QString& );
 protected:
   SC_MainWindow* mainWindow;
   void createGlobalsTab();

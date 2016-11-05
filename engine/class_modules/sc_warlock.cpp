@@ -2773,7 +2773,8 @@ struct unstable_affliction_t: public warlock_spell_t
       warlock_spell_t( "compounding_horror", p, p -> find_spell( 231489 ) )
     {
       background = true;
-      proc = true;
+      //proc = true; Compounding Horror can proc trinkets and has no resource cost.
+      callbacks = true;
     }
 
     virtual double action_multiplier() const override
@@ -5016,7 +5017,8 @@ struct harvester_of_souls_t : public warlock_spell_t
     warlock_spell_t( "harvester_of_souls", p, p -> find_spell( 218615 ) )
   {
     background = true;
-    proc = true;
+    //proc = true; Harvester of Souls can proc trinkets and has no resource cost so no need.
+    callbacks = true;
   }
 };
 
@@ -6069,7 +6071,9 @@ void warlock_t::apl_precombat()
   if ( sim -> allow_food )
   {
     // Food
-    if ( true_level == 110 )
+    if ( true_level == 110 && specialization() == WARLOCK_AFFLICTION )
+      precombat_list += "/food,type=nightborne_delicacy_platter";
+    else if ( true_level == 110 )
       precombat_list += "/food,type=azshari_salad";
     else if ( true_level >= 100 && specialization() == WARLOCK_DESTRUCTION )
       precombat_list += "/food,type=frosty_stew";

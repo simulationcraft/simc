@@ -72,6 +72,7 @@ actions.prot+=/stoneform,if=incoming_damage_2500ms>health.max*0.4&!(debuff.eye_o
 actions.prot+=/avenging_wrath,if=!talent.seraphim.enabled
 actions.prot+=/avenging_wrath,if=talent.seraphim.enabled&buff.seraphim.up
 actions.prot+=/judgment
+actions.prot+=/avengers_shield,if=talent.crusaders_judgment.enabled&buff.grand_crusader.up
 actions.prot+=/blessed_hammer
 actions.prot+=/avengers_shield
 actions.prot+=/consecration

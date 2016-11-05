@@ -60,11 +60,8 @@ Paladin_Retribution_T19H.simc
 back=whisper_of_the_nathrezim,id=137020,enchant=binding_of_strength
  
 # Priest
-Priest_Shadow_T19H.simc
-shoulders=mother_shahrazs_seduction,id=132437
-Priest_Shadow_T19H_S2M.simc
-shoulders=mother_shahrazs_seduction,id=132437
- 
+Priest_Legendaries.simc
+
 # Rogue
 Rogue_Legendaries.simc
  

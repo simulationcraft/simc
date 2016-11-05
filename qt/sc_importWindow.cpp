@@ -18,11 +18,11 @@ BattleNetImportWindow::BattleNetImportWindow( SC_MainWindow* parent, bool embedd
         m_shortcut -> setContext( Qt::ApplicationShortcut );
         connect( m_shortcut, SIGNAL( activated() ), this, SLOT( toggle() ) );
         connect( m_mainWindow -> optionsTab, SIGNAL( armory_region_changed( const QString& ) ),
-                 m_importWidget, SLOT( armoryRegionChanged( const QString& ) ) );
+                 m_importWidget, SLOT( armoryRegionChangedIn( const QString& ) ) );
     }
 
-    connect( m_importWidget, SIGNAL( importTriggered( const QString&, const QString&, const QString&, const QString&) ),
-             m_mainWindow, SLOT( startNewImport( const QString&, const QString&, const QString&, const QString& ) ) );
+    connect( m_importWidget, SIGNAL( importTriggeredOut( const QString&, const QString&, const QString&, const QString&) ),
+             m_mainWindow,   SLOT( startNewImport( const QString&, const QString&, const QString&, const QString& ) ) );
 }
 
 void BattleNetImportWindow::toggle()

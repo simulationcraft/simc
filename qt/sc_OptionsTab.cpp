@@ -275,6 +275,15 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   createToolTips();
 }
 
+void SC_OptionsTab::_armoryRegionChanged( const QString& region )
+{
+  auto region_index = choice.armory_region -> findData( region.toUpper(), Qt::DisplayRole );
+  if ( region_index != -1 )
+  {
+    choice.armory_region -> setCurrentIndex( region_index );
+  }
+}
+
 void SC_OptionsTab::createGlobalsTab()
 {
   // Create left side global options
