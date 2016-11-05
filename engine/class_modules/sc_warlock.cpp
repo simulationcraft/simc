@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include <QDebug>
 
 // ==========================================================================
 //
@@ -4503,11 +4502,9 @@ struct effigy_damage_override_t : public warlock_spell_t
 
     void setupEffigyStuff(pets::soul_effigy_spell_t *t)
     {
-        qDebug() << "test1";
         this->target = t->target;
         this->base_dd_min = t->base_dd_min;
         this->base_dd_max = t->base_dd_min;
-        qDebug() << "test2";
     }
 
     void execute() override
