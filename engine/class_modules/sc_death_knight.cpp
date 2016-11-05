@@ -6573,7 +6573,7 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* core      = get_action_priority_list( "core"      );
   action_priority_list_t* shatter   = get_action_priority_list( "shatter"   );
 
-  std::string food_name = ( true_level > 100 ) ? "the_hungry_magister" :
+  std::string food_name = ( true_level > 100 ) ? "fishbrul_special" :
                           ( true_level >  90 ) ? "pickled_eel" :
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
@@ -6625,11 +6625,14 @@ void death_knight_t::default_apl_frost()
 
   // Core rotation
   core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
-  core -> add_action( this, "Remorseless Winter", "if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!talent.frozen_pulse.enabled" );
-  core -> add_talent( this, "Frostscythe", "if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)" );
-  core -> add_talent( this, "Glacial Advance" );
+  core -> add_action( this, "Remorseless Winter", "if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
+  core -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react&spell_targets.frostscythe>=2)" );
+  core -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
+  core -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
   core -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
   core -> add_action( this, "Obliterate" );
+  core -> add_talent( this, "Glacial Advance" );
+  core -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
 
   // Generic single target rotation
 
