@@ -1132,9 +1132,20 @@ struct bastion_of_light_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
+	
+	for (int i = 0; i < charges; i++)
+		p()->cooldowns.shield_of_the_righteous->reset(false);
 
-    for ( int i = 0; i < charges; i++ )
-      p() -> cooldowns.shield_of_the_righteous -> reset( false );
+	// sample fix1
+	// p()->cooldowns.shield_of_the_righteous->current_charge = 3;
+	// sample fix2
+	//for (int i = 0; i < 3; i++)
+	//	{
+	//		if (p()->cooldowns.shield_of_the_righteous->current_charge < p()->cooldowns.shield_of_the_righteous->charges)
+	//		{
+	//			p()->cooldowns.shield_of_the_righteous->adjust(-p()->cooldowns.shield_of_the_righteous->duration); //decrease remaining time by the duration of one charge, i.e., add one charge
+	//		}
+	//	}
   }
 
 };
@@ -3669,10 +3680,6 @@ struct judgment_t : public paladin_melee_attack_t
       }
     }
 
-    // Grand Crusader procs for prot if Crusader's Judgment talented
-    if ( p() -> talents.crusaders_judgment -> ok() )
-      p() -> trigger_grand_crusader();
-
     paladin_melee_attack_t::impact( s );
   }
 
@@ -4626,9 +4633,10 @@ void paladin_t::generate_action_prio_list_prot()
   def->add_action("call_action_list,name=prot");
 
   //defensive
-  prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=1.99");
-  prot->add_action(this, "Shield of the Righteous", "if=(!talent.seraphim.enabled|action.shield_of_the_righteous.charges>1.99)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
+  prot->add_action(this, "Shield of the Righteous", "if=(!talent.seraphim.enabled|action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
   prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&talent.seraphim.enabled&buff.seraphim.up&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&!talent.seraphim.enabled&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
   prot->add_talent(this, "Bastion of Light", "if=talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1");
   prot->add_action(this, "Light of the Protector", "if=(health.pct<40)");
   prot->add_talent(this, "Hand of the Protector",  "if=(health.pct<40)");
@@ -4680,11 +4688,11 @@ void paladin_t::generate_action_prio_list_prot()
 
 
   //dps-aoe
-  prot_aoe->add_action(this, "Avenger's Shield");
-  prot_aoe->add_talent(this, "Blessed Hammer");
-  prot_aoe->add_action(this, "Judgment");
-  prot_aoe->add_action(this, "Consecration");
-  prot_aoe->add_action(this, "Hammer of the Righteous");
+  //prot_aoe->add_action(this, "Avenger's Shield");
+  //prot_aoe->add_talent(this, "Blessed Hammer");
+  //prot_aoe->add_action(this, "Judgment");
+  //prot_aoe->add_action(this, "Consecration");
+  //prot_aoe->add_action(this, "Hammer of the Righteous");
 }
 
 
