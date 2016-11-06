@@ -6536,7 +6536,7 @@ void rogue_t::init_action_list()
 
     // Maintain
     action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
-    maintain -> add_action( this, "Rupture", "if=(talent.nightstalker.enabled&stealthed)|(talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled*2))))" );
+    maintain -> add_action( this, "Rupture", "if=(talent.nightstalker.enabled&stealthed.rogue)|(talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled*2))))" );
     maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend-talent.exsanguinate.enabled&refreshable&(!exsanguinated|remains<=1.5)&target.time_to_die-remains>4" );
     maintain -> add_action( this, "Kingsbane", "if=(talent.exsanguinate.enabled&dot.rupture.exsanguinated)|(!talent.exsanguinate.enabled&(debuff.vendetta.up|cooldown.vendetta.remains>10))" );
     maintain -> add_action( "pool_resource,for_next=1" );
@@ -6673,7 +6673,7 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<4)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))", "Condition to use Saber Slash, when you have RtB or not" );
     def -> add_action( "call_action_list,name=bf", "Normal rotation" );
     def -> add_action( "call_action_list,name=cds" );
-    def -> add_action( "call_action_list,name=stealth,if=stealthed|cooldown.vanish.up|cooldown.shadowmeld.up", "Conditions are here to avoid worthless check if nothing is available" );
+    def -> add_action( "call_action_list,name=stealth,if=stealthed.rogue|cooldown.vanish.up|cooldown.shadowmeld.up", "Conditions are here to avoid worthless check if nothing is available" );
       // Make DfA have priority over RtB
     def -> add_talent( this, "Death from Above", "if=energy.time_to_max>2&!variable.ss_useable_noreroll" );
       // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
@@ -6739,7 +6739,7 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10+floor(target.distance*0.5))" );
     def -> add_action( "variable,name=ed_threshold,value=energy.deficit<=(20+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_er)" );
     def -> add_action( "call_action_list,name=cds" );
-    def -> add_action( "run_action_list,name=stealthed,if=stealthed|buff.shadowmeld.up", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
+    def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
     def -> add_action( "call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(variable.ed_threshold|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)|target.time_to_die<12)" );
     def -> add_action( "call_action_list,name=build,if=variable.ed_threshold" );
@@ -6748,16 +6748,16 @@ void rogue_t::init_action_list()
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds -> add_action( potion_action );
     for ( size_t i = 0; i < item_actions.size(); i++ )
-      cds -> add_action( item_actions[i] + ",if=(buff.shadow_blades.up&stealthed)|target.time_to_die<20" );
+      cds -> add_action( item_actions[i] + ",if=(buff.shadow_blades.up&stealthed.rogue)|target.time_to_die<20" );
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        cds -> add_action( racial_actions[i] + ",if=stealthed&energy.deficit>70" );
+        cds -> add_action( racial_actions[i] + ",if=stealthed.rogue&energy.deficit>70" );
       else
-        cds -> add_action( racial_actions[i] + ",if=stealthed" );
+        cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
-    cds -> add_action( this, "Shadow Blades", "if=!(stealthed|buff.shadowmeld.up)" );
-    cds -> add_action( this, "Goremaw's Bite", "if=!buff.shadow_dance.up&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|target.time_to_die<8)" );
+    cds -> add_action( this, "Shadow Blades", "if=!stealthed.all" );
+    cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|target.time_to_die<8)" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
 
     // Builders
@@ -6786,7 +6786,7 @@ void rogue_t::init_action_list()
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=2.65" );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=2.45" );
     stealth_cds -> add_action( this, "Vanish" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges>=2&combo_points<=1" );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40-variable.ssw_er" );
@@ -6898,17 +6898,29 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return n_buffs;
     } );
   }
-  else if ( util::str_compare_ci( name_str, "stealthed" ) )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check();
-    } );
-  }
 
   // Split expressions
 
+  // stealthed.(rogue|all)
+  // rogue: all rogue abilities are checked (stealth, vanish, shadow_dance)
+  // all: all abilities that allow stealth are checked (rogue + shadowmeld)
+  if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "stealthed" ) )
+  {
+    if ( util::str_compare_ci( split[ 1 ], "rogue" ) )
+    {
+      return make_fn_expr( split[ 0 ], [ this ]() {
+        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check();
+      } );
+    }
+    else if ( util::str_compare_ci( split[ 1 ], "all" ) )
+    {
+      return make_fn_expr( split[ 0 ], [ this ]() {
+        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || player_t::buffs.shadowmeld -> check();
+      } );
+    }
+  }
   // dot.(rupture|garrote).exsanguinated
-  if ( split.size() == 3 && util::str_compare_ci( split[ 2 ], "exsanguinated" ) &&
+  else if ( split.size() == 3 && util::str_compare_ci( split[ 2 ], "exsanguinated" ) &&
        ( util::str_compare_ci( split[ 1 ], "rupture" ) || util::str_compare_ci( split[ 1 ], "garrote" ) ) )
   {
     action_t* action = find_action( split[ 1 ] );
