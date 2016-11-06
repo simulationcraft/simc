@@ -208,6 +208,7 @@ public:
     gain_t* avoided_attacks;
     gain_t* critical_block;
     gain_t* in_for_the_kill;
+    gain_t* mannoroths_bloodletting_manacles;
     gain_t* melee_crit;
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
@@ -792,6 +793,12 @@ public:
       p() -> frothing_may_trigger = true;
     }
 
+    if ( p() -> mannoroths_bloodletting_manacles )
+    {
+      p() -> resource_gain( RESOURCE_HEALTH, ( ( tactician_cost() / p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 2 ).base_value() )
+                            * p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 1 ).percent() ) * p() -> resources.max[ RESOURCE_HEALTH ],
+                            p() -> gain.mannoroths_bloodletting_manacles );
+    }
     if ( p() -> talents.anger_management -> ok() )
     {
       anger_management( rage );
@@ -5420,6 +5427,7 @@ void warrior_t::init_gains()
   gain.avoided_attacks = get_gain( "avoided_attacks" );
   gain.critical_block = get_gain( "critical_block" );
   gain.in_for_the_kill = get_gain( "in_for_the_kill" );
+  gain.mannoroths_bloodletting_manacles = get_gain( "mannoroths_bloodletting_manacles" );
   gain.melee_crit = get_gain( "melee_crit" );
   gain.melee_main_hand = get_gain( "melee_main_hand" );
   gain.melee_off_hand = get_gain( "melee_off_hand" );
