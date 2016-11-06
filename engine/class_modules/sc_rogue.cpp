@@ -6915,7 +6915,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     else if ( util::str_compare_ci( split[ 1 ], "all" ) )
     {
       return make_fn_expr( split[ 0 ], [ this ]() {
-        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || player_t::buffs.shadowmeld -> check();
+        return buffs.stealth -> check() || buffs.vanish -> check() || buffs.shadow_dance -> check() || this -> player_t::buffs.shadowmeld -> check();
       } );
     }
   }
