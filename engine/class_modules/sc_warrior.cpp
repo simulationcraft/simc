@@ -290,6 +290,7 @@ public:
     const spell_data_t* revenge;
     const spell_data_t* riposte;
     const spell_data_t* shield_block;
+    const spell_data_t* shield_block_2;
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
     const spell_data_t* singleminded_fury;
@@ -4132,6 +4133,7 @@ struct shield_block_t: public warrior_spell_t
     parse_options( options_str );
     use_off_gcd = true;
     cooldown -> hasted = true;
+    cooldown -> charges += p -> spec.shield_block_2 -> effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -4344,6 +4346,7 @@ void warrior_t::init_spells()
   spec.revenge_trigger          = find_specialization_spell( "Revenge Trigger" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.shield_block             = find_specialization_spell( "Shield Block" );
+  spec.shield_block_2           = find_specialization_spell( 231847 );
   spec.shield_slam              = find_specialization_spell( "Shield Slam" );
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
   spec.singleminded_fury        = find_specialization_spell( "Single-Minded Fury" );
