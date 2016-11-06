@@ -6196,30 +6196,29 @@ struct variable_t : public action_t
 {
   action_var_e operation;
   action_variable_t* var;
+  std::string value_str, var_name_str;
   expr_t* value_expression;
 
   variable_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_VARIABLE, "variable", player ),
-    operation( OPERATION_SET ), var( 0 ), value_expression( 0 )
+    operation( OPERATION_SET ), var( nullptr ), value_expression( nullptr )
   {
     quiet = true;
     harmful = proc = callbacks = may_miss = may_crit = may_block = may_parry = may_dodge = false;
     trigger_gcd = timespan_t::zero();
 
-    std::string name_;
-    std::string value_;
     std::string operation_;
     double default_ = 0;
     timespan_t delay_;
 
-    add_option( opt_string( "name", name_ ) );
-    add_option( opt_string( "value", value_ ) );
+    add_option( opt_string( "name", name_str ) );
+    add_option( opt_string( "value", value_str ) );
     add_option( opt_string( "op", operation_ ) );
     add_option( opt_float( "default", default_ ) );
     add_option( opt_timespan( "delay", delay_ ) );
     parse_options( options_str );
 
-    if ( name_.empty() )
+    if ( name_str.empty() )
     {
       sim -> errorf( "Player %s unnamed 'variable' action used", player -> name() );
       background = true;
@@ -6257,17 +6256,9 @@ struct variable_t : public action_t
     if ( operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
          operation != OPERATION_PRINT )
     {
-      if ( value_.empty() )
+      if ( value_str.empty() )
       {
-        sim -> errorf( "Player %s no value expression given for variable '%s'", player -> name(), name_.c_str() );
-        background = true;
-        return;
-      }
-
-      value_expression = expr_t::parse( this, value_ );
-      if ( ! value_expression )
-      {
-        sim -> errorf( "Player %s unable to parse 'variable' value '%s'", player -> name(), value_.c_str() );
+        sim -> errorf( "Player %s no value expression given for variable '%s'", player -> name(), name_str.c_str() );
         background = true;
         return;
       }
@@ -6279,7 +6270,7 @@ struct variable_t : public action_t
       std::string cooldown_name = "variable_actor";
       cooldown_name += util::to_string( player -> index );
       cooldown_name += "_";
-      cooldown_name += name_;
+      cooldown_name += name_str;
 
       cooldown = player -> get_cooldown( cooldown_name );
       cooldown -> duration = delay_;
@@ -6288,7 +6279,7 @@ struct variable_t : public action_t
     // Find the variable
     for ( auto& elem : player -> variables )
     {
-      if ( util::str_compare_ci( elem -> name_, name_ ) )
+      if ( util::str_compare_ci( elem -> name_, name_str ) )
       {
         var = elem;
         break;
@@ -6297,8 +6288,25 @@ struct variable_t : public action_t
 
     if ( ! var )
     {
-      player -> variables.push_back( new action_variable_t( name_, default_ ) );
+      player -> variables.push_back( new action_variable_t( name_str, default_ ) );
       var = player -> variables.back();
+    }
+  }
+
+  void init() override
+  {
+    action_t::init();
+
+    if ( ! background &&
+         operation != OPERATION_FLOOR && operation != OPERATION_CEIL &&
+         operation != OPERATION_RESET && operation != OPERATION_PRINT )
+    {
+      value_expression = expr_t::parse( this, value_str );
+      if ( ! value_expression )
+      {
+        sim -> errorf( "Player %s unable to parse 'variable' value '%s'", player -> name(), value_str.c_str() );
+        background = true;
+      }
     }
   }
 
