@@ -8096,7 +8096,7 @@ private:
 
 struct toxic_mutilator_t : public unique_gear::scoped_action_callback_t<actions::mutilate_t>
 {
-  toxic_mutilator_t() : super( ROGUE_ASSASSINATION, "mutilate" ) { }
+  toxic_mutilator_t() : super( ROGUE, "mutilate" ) { }
 
   void manipulate( actions::mutilate_t* action, const special_effect_t& effect ) override
   { action -> toxic_mutilator_crit_chance = effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0; }
@@ -8104,7 +8104,7 @@ struct toxic_mutilator_t : public unique_gear::scoped_action_callback_t<actions:
 
 struct eviscerating_blade_t : public unique_gear::scoped_action_callback_t<>
 {
-  eviscerating_blade_t() : super( ROGUE_OUTLAW, "run_through" ) { }
+  eviscerating_blade_t() : super( ROGUE, "run_through" ) { }
 
   void manipulate( action_t* action, const special_effect_t& effect ) override
   { action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0; }
@@ -8112,7 +8112,7 @@ struct eviscerating_blade_t : public unique_gear::scoped_action_callback_t<>
 
 struct from_the_shadows_t : public unique_gear::scoped_action_callback_t<>
 {
-  from_the_shadows_t() : super( ROGUE_SUBTLETY, "shadowstrike" ) { }
+  from_the_shadows_t() : super( ROGUE, "shadowstrike" ) { }
 
   void manipulate( action_t* action, const special_effect_t& effect ) override
   { action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0; }
@@ -8120,7 +8120,7 @@ struct from_the_shadows_t : public unique_gear::scoped_action_callback_t<>
 
 struct duskwalker_footpads_t : public unique_gear::scoped_actor_callback_t<rogue_t>
 {
-  duskwalker_footpads_t() : super( ROGUE_ASSASSINATION )
+  duskwalker_footpads_t() : super( ROGUE )
   { }
 
   void manipulate( rogue_t* rogue, const special_effect_t& e ) override
@@ -8129,7 +8129,7 @@ struct duskwalker_footpads_t : public unique_gear::scoped_actor_callback_t<rogue
 
 struct thraxis_tricksy_treads_t : public unique_gear::scoped_action_callback_t<actions::run_through_t>
 {
-  thraxis_tricksy_treads_t() : super( ROGUE_OUTLAW, "run_through" )
+  thraxis_tricksy_treads_t() : super( ROGUE, "run_through" )
   { }
 
   void manipulate( actions::run_through_t* action, const special_effect_t& e ) override
@@ -8138,7 +8138,7 @@ struct thraxis_tricksy_treads_t : public unique_gear::scoped_action_callback_t<a
 
 struct denial_of_the_halfgiants_t : public unique_gear::scoped_actor_callback_t<rogue_t>
 {
-  denial_of_the_halfgiants_t() : super( ROGUE_SUBTLETY )
+  denial_of_the_halfgiants_t() : super( ROGUE )
   { }
 
   void manipulate( rogue_t* rogue, const special_effect_t& e ) override
@@ -8147,7 +8147,7 @@ struct denial_of_the_halfgiants_t : public unique_gear::scoped_actor_callback_t<
 
 struct shivarran_symmetry_t : public unique_gear::scoped_action_callback_t<actions::blade_flurry_t>
 {
-  shivarran_symmetry_t() : super( ROGUE_OUTLAW, "blade_flurry" )
+  shivarran_symmetry_t() : super( ROGUE, "blade_flurry" )
   { }
 
   void manipulate( actions::blade_flurry_t* action, const special_effect_t& e ) override
@@ -8156,7 +8156,7 @@ struct shivarran_symmetry_t : public unique_gear::scoped_action_callback_t<actio
 
 struct greenskins_waterlogged_wristcuffs_t : public unique_gear::scoped_action_callback_t<actions::between_the_eyes_t>
 {
-  greenskins_waterlogged_wristcuffs_t() : super( ROGUE_OUTLAW, "between_the_eyes" )
+  greenskins_waterlogged_wristcuffs_t() : super( ROGUE, "between_the_eyes" )
   { }
 
   void manipulate( actions::between_the_eyes_t* action, const special_effect_t& e ) override
@@ -8165,7 +8165,7 @@ struct greenskins_waterlogged_wristcuffs_t : public unique_gear::scoped_action_c
 
 struct zoldyck_family_training_shackles_t : public unique_gear::scoped_actor_callback_t<rogue_t>
 {
-  zoldyck_family_training_shackles_t() : super( ROGUE_ASSASSINATION )
+  zoldyck_family_training_shackles_t() : super( ROGUE )
   { }
 
   void manipulate( rogue_t* rogue, const special_effect_t& e ) override
@@ -8174,7 +8174,7 @@ struct zoldyck_family_training_shackles_t : public unique_gear::scoped_actor_cal
 
 struct shadow_satyrs_walk_t : public unique_gear::scoped_action_callback_t<actions::shadowstrike_t>
 {
-  shadow_satyrs_walk_t() : super( ROGUE_SUBTLETY, "shadowstrike" )
+  shadow_satyrs_walk_t() : super( ROGUE, "shadowstrike" )
   { }
 
   void manipulate( actions::shadowstrike_t* action, const special_effect_t& e ) override

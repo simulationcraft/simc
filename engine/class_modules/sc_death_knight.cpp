@@ -1236,7 +1236,7 @@ struct death_knight_pet_t : public pet_t
     {
       m *= 1.0 + taktheritrix -> check_value();
     }
-    
+
     return m;
   }
 
@@ -3721,7 +3721,7 @@ struct dark_transformation_t : public death_knight_spell_t
     {
       p() -> pets.dark_arbiter -> taktheritrix -> trigger();
     }
-    
+
     if ( p() -> pets.gargoyle && p() -> pets.gargoyle -> taktheritrix )
     {
       p() -> pets.gargoyle -> taktheritrix -> trigger();
@@ -5121,8 +5121,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
   }
 
-  
-
   int n_targets() const override
   { return td( target ) -> in_aoe_radius() ? -1 : 0; }
 
@@ -5173,7 +5171,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
         double roll = rng().real();
         double sum = 0;
-        
+
         for ( size_t i = 0; i < instructors_chance.size(); i++ )
         {
           sum += instructors_chance[ i ];
@@ -7214,7 +7212,7 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
       if ( antimagic_shell_absorbed > max_hp_absorb )
       {
         absorbed = antimagic_shell_absorbed - max_hp_absorb;
-        antimagic_shell_absorbed = -1.0; // Set to -1.0 so expire_override knows that we don't need to reduce cooldown from regenerative magic. 
+        antimagic_shell_absorbed = -1.0; // Set to -1.0 so expire_override knows that we don't need to reduce cooldown from regenerative magic.
         buffs.antimagic_shell -> expire();
       }
 
@@ -7606,8 +7604,8 @@ stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
   switch ( s )
   {
   // This is a guess at how AGI/INT will work for DKs, TODO: confirm
-  case STAT_AGI_INT: 
-    return STAT_NONE; 
+  case STAT_AGI_INT:
+    return STAT_NONE;
   case STAT_STR_AGI_INT:
   case STAT_STR_AGI:
   case STAT_STR_INT:
@@ -7883,8 +7881,7 @@ private:
 
 struct reapers_harvest_frost_t : public scoped_action_callback_t<obliterate_strike_t>
 {
-  reapers_harvest_frost_t( const std::string& n ) :
-    super( DEATH_KNIGHT_FROST, n )
+  reapers_harvest_frost_t( const std::string& n ) : super( DEATH_KNIGHT, n )
   { }
 
   void manipulate( obliterate_strike_t* action, const special_effect_t& e ) override
@@ -7907,7 +7904,7 @@ struct reapers_harvest_frost_t : public scoped_action_callback_t<obliterate_stri
 
 struct reapers_harvest_unholy_t : public scoped_action_callback_t<virulent_plague_t>
 {
-  reapers_harvest_unholy_t() : super( DEATH_KNIGHT_UNHOLY, "virulent_plague" )
+  reapers_harvest_unholy_t() : super( DEATH_KNIGHT, "virulent_plague" )
   { }
 
   void manipulate( virulent_plague_t* action, const special_effect_t& e ) override
@@ -7920,36 +7917,34 @@ struct reapers_harvest_unholy_t : public scoped_action_callback_t<virulent_plagu
   }
 };
 
-struct reapers_harvest_blood_t : public scoped_action_callback_t < marrowrend_t >
+struct reapers_harvest_blood_t : public scoped_action_callback_t<marrowrend_t>
 {
-  reapers_harvest_blood_t() : super(DEATH_KNIGHT_BLOOD, "marrowrend")
+  reapers_harvest_blood_t() : super( DEATH_KNIGHT, "marrowrend" )
   { }
 
-  void manipulate(marrowrend_t* action, const special_effect_t& e) override
+  void manipulate( marrowrend_t* action, const special_effect_t& e ) override
   {
-    double coeff = e.driver()->effectN(1).average(e.item) / 100.0;
+    double coeff = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
 
-    action->base_multiplier *= 1.0 + e.driver()->effectN(2).average(e.item) / 100.0;
-    action->unholy_coil_coeff = coeff;
-    action->unholy_coil = new unholy_coil_t(action->p(), e.item);
+    action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).average( e.item ) / 100.0;
+    action -> unholy_coil_coeff = coeff;
+    action -> unholy_coil = new unholy_coil_t( action -> p(), e.item );
   }
 };
 
-struct toravons_bindings_t : public scoped_actor_callback_t < death_knight_t >
+struct toravons_bindings_t : public scoped_actor_callback_t<death_knight_t>
 {
-  toravons_bindings_t() : super(DEATH_KNIGHT_FROST)
-   {}
-  
-    void manipulate(death_knight_t* p, const special_effect_t& e) override
-    {
-    p->legendary.toravons = e.driver()->effectN(1).percent();
-    }
- };
+  toravons_bindings_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.toravons = e.driver() -> effectN( 1 ).percent(); }
+};
 
 struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knight_t>
 {
-  taktheritrixs_shoulderpads_t() : super( DEATH_KNIGHT_UNHOLY )
-  {}
+  taktheritrixs_shoulderpads_t() : super( DEATH_KNIGHT )
+  { }
 
   void manipulate( death_knight_t* p, const special_effect_t& /* e */ ) override
   {
@@ -7967,74 +7962,53 @@ struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knigh
     }
   }
 
-
   void create_buff( pets::death_knight_pet_t* pet )
   {
     if ( ! pet )
       return;
 
-    pet -> taktheritrix = buff_creator_t( pet, "taktheritrixs_command", pet -> find_spell( 215069 ) )
-      .default_value( pet -> find_spell( 215069 ) -> effectN( 1 ).percent() )
+    auto spell = pet -> find_spell( 215069 );
+
+    pet -> taktheritrix = buff_creator_t( pet, "taktheritrixs_command", spell )
+      .default_value( spell -> effectN( 1 ).percent() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
-struct the_instructors_fourth_lesson_t : public scoped_actor_callback_t < death_knight_t >
+struct the_instructors_fourth_lesson_t : public scoped_actor_callback_t<death_knight_t>
 {
-  the_instructors_fourth_lesson_t() : super(DEATH_KNIGHT_UNHOLY)
-  {}
-
-  void manipulate(death_knight_t* p, const special_effect_t& e) override
-  {
-    p->legendary.the_instructors_fourth_lesson = e.driver()->effectN(1).base_value();
-  }
-};
-
-struct draugr_girdle_everlasting_king_t : public scoped_actor_callback_t < death_knight_t >
-{
-  // Note, we need to unconditionally initialize this item for all Death Knights because the proc is
-  // otherwise auto-initialized (for everyone), causing havoc.
-  draugr_girdle_everlasting_king_t() : super( DEATH_KNIGHT )
-  {}
-
-  void manipulate(death_knight_t* p, const special_effect_t& e) override
-  {
-    if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
-    {
-      p -> legendary.draugr_girdle_everlasting_king = e.driver() -> proc_chance();
-    }
-  }
-};
-
-struct uvanimor_the_unbeautiful_t : public scoped_actor_callback_t < death_knight_t >
-{
-  uvanimor_the_unbeautiful_t() : super( DEATH_KNIGHT_UNHOLY )
+  the_instructors_fourth_lesson_t() : super( DEATH_KNIGHT_UNHOLY )
   { }
 
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  {
-    p -> legendary.uvanimor_the_unbeautiful = e.driver() -> effectN( 1 ).percent();
-  }
+  { p -> legendary.the_instructors_fourth_lesson = e.driver() -> effectN( 1 ).base_value(); }
 };
 
-struct koltiras_newfound_will_t : public scoped_actor_callback_t < death_knight_t >
+struct draugr_girdle_everlasting_king_t : public scoped_actor_callback_t<death_knight_t>
 {
-  // Note, we need to unconditionally initialize this item for all Death Knights because the proc is
-  // otherwise auto-initialized (for everyone), causing havoc.
+  draugr_girdle_everlasting_king_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.draugr_girdle_everlasting_king = e.driver() -> proc_chance(); }
+};
+
+struct uvanimor_the_unbeautiful_t : public scoped_actor_callback_t<death_knight_t>
+{
+  uvanimor_the_unbeautiful_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.uvanimor_the_unbeautiful = e.driver() -> effectN( 1 ).percent(); }
+};
+
+struct koltiras_newfound_will_t : public scoped_actor_callback_t<death_knight_t>
+{
   koltiras_newfound_will_t() : super( DEATH_KNIGHT )
   { }
 
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  {
-    if ( p -> specialization() == DEATH_KNIGHT_FROST )
-    {
-      p -> legendary.koltiras_newfound_will = e.driver();
-    }
-    else
-    {
-      p -> legendary.koltiras_newfound_will = spell_data_t::not_found();
-    }
-  }
+  { p -> legendary.koltiras_newfound_will = e.driver(); }
 };
 
 struct death_knight_module_t : public module_t {
@@ -8079,7 +8053,6 @@ struct death_knight_module_t : public module_t {
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1 - 0.39 )
       .verification_value( 3.75 );
-    
 
     hotfix::register_effect( "Death Knight", "2016-09-23", "Remorseless Winter damage increased by 50%.", 288891 )
       .field( "ap_coefficient" )
