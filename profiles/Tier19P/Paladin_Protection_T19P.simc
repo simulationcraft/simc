@@ -80,7 +80,6 @@ actions.prot+=/consecration
 actions.prot+=/blinding_light
 actions.prot+=/hammer_of_the_righteous
 
-
 head=casque_of_the_deep,id=134512,bonus_id=1727
 neck=chain_of_scorched_bones,id=134529,bonus_id=1727,enchant_id=5439
 shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727

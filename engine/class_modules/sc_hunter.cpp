@@ -2577,11 +2577,10 @@ struct ranged_t: public hunter_ranged_attack_t
 struct volley_tick_t: hunter_ranged_attack_t
 {
   volley_tick_t( hunter_t* p ):
-    hunter_ranged_attack_t( "volley", p, p -> find_spell( 194392 ) )
+    hunter_ranged_attack_t( "volley_tick", p, p -> find_spell( 194392 ) )
   {
     aoe = -1;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-    cooldown -> duration = timespan_t::zero();
     travel_speed = 0.0;
   }
 
@@ -2598,20 +2597,51 @@ struct volley_tick_t: hunter_ranged_attack_t
 
 struct volley_t: hunter_ranged_attack_t
 {
-  volley_t( hunter_t* p, const std::string& /* options_str */ ):
+  std::string onoff;
+  bool onoffbool;
+  volley_t( hunter_t* p, const std::string&  options_str  ):
     hunter_ranged_attack_t( "volley", p, p -> talents.volley )
   {
     harmful = false;
+    add_option( opt_string( "toggle", onoff ) );
+    parse_options( options_str );
+
+    if ( onoff == "on" )
+    {
+      onoffbool = true;
+    }
+    else if ( onoff == "off" )
+    {
+      onoffbool = false;
+    }
+    else
+    {
+      sim -> errorf( "Volley must use the option 'toggle=on' or 'toggle=off'" );
+      background = true;
+    }
   }
 
   virtual void execute() override
   {
     hunter_ranged_attack_t::execute();
 
-    if ( ! p() -> buffs.volley -> check() )
+    if ( onoffbool )
       p() -> buffs.volley -> trigger();
     else
       p() -> buffs.volley -> expire();
+  }
+
+  bool ready() override
+  {
+    if ( onoffbool && p() -> buffs.volley -> check() )
+    {
+      return false;
+    }
+    else if ( !onoffbool && !p() -> buffs.volley -> check() )
+    {
+      return false;
+    }
+    return hunter_ranged_attack_t::ready();
   }
 };
 
@@ -2620,7 +2650,9 @@ struct volley_t: hunter_ranged_attack_t
 struct auto_shot_t: public ranged_t
 {
   volley_tick_t* volley_tick;
-  auto_shot_t( hunter_t* p ): ranged_t( p, "auto_shot", spell_data_t::nil() ), volley_tick( nullptr )
+  double volley_tick_cost;
+  auto_shot_t( hunter_t* p ): ranged_t( p, "auto_shot", spell_data_t::nil() ), volley_tick( nullptr ),
+    volley_tick_cost( 0 )
   {
     school = SCHOOL_PHYSICAL;
     range = 40.0;
@@ -2629,6 +2661,7 @@ struct auto_shot_t: public ranged_t
     {
       volley_tick = new volley_tick_t( p );
       add_child( volley_tick );
+      volley_tick_cost = p -> talents.volley -> effectN( 1 ).resource(RESOURCE_FOCUS);
     }
   }
 
@@ -2646,7 +2679,17 @@ struct auto_shot_t: public ranged_t
     }
 
     if ( p() -> buffs.volley -> up() )
-      volley_tick -> execute();
+    {
+      if ( p() -> resources.current[RESOURCE_FOCUS] > volley_tick_cost )
+      {
+        volley_tick -> target = execute_state -> target;
+        volley_tick -> execute();
+      }
+      else
+      {
+        p() -> buffs.volley -> expire();
+      }
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6137,7 +6180,6 @@ void hunter_t::apl_mm()
   action_priority_list_t* patient_sniper = get_action_priority_list( "patient_sniper" );
   action_priority_list_t* non_patient_sniper = get_action_priority_list( "non_patient_sniper" );
 
-  precombat -> add_action( "volley,if=talent.volley.enabled" );
   if ( artifacts.windburst.rank() )
     precombat -> add_action( "windburst" );
 
@@ -6146,6 +6188,7 @@ void hunter_t::apl_mm()
   add_item_actions( default_list );
   add_racial_actions( default_list );
 
+  default_list -> add_action( "volley,toggle=on" );
   default_list -> add_action( "auto_shot" );
 
 
