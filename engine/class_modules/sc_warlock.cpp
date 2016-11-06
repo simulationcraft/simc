@@ -106,7 +106,8 @@ struct warlock_t: public player_t
 {
 public:
   player_t* havoc_target;
-  double shard_accumulator;
+  double agony_accumulator;
+  double demonwrath_accumulator;
 
   // Active Pet
   struct pets_t
@@ -2571,7 +2572,7 @@ struct agony_t: public warlock_spell_t
     td( d -> state -> target ) -> agony_stack = 1;
 
     if ( p() -> get_active_dots( internal_id ) == 1 )
-      p() -> shard_accumulator = rng().range( 0.0, 0.99 );
+      p() -> agony_accumulator = rng().range( 0.0, 0.99 );
 
 
     warlock_spell_t::last_tick( d );
@@ -2590,12 +2591,12 @@ struct agony_t: public warlock_spell_t
     double active_agonies = p() -> get_active_dots( internal_id );
     double accumulator_increment = rng().range( 0.0, p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.48 : 0.32 ) / sqrt( active_agonies );
 
-    p() -> shard_accumulator += accumulator_increment;
+    p() -> agony_accumulator += accumulator_increment;
 
-    if ( p() -> shard_accumulator > 1 )
+    if ( p() -> agony_accumulator >= 1 )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.agony );
-      p() -> shard_accumulator -= 1.0;
+      p() -> agony_accumulator -= 1.0;
 
       // If going from 0 to 1 shard was a surprise, the player would have to react to it
       if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
@@ -4065,15 +4066,24 @@ struct demonwrath_tick_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    double accumulator_increment = rng().range( 0.0, 0.3 );
+
+    p() -> demonwrath_accumulator += accumulator_increment;
+
+    if ( p() -> demonwrath_accumulator >= 1 )
     {
-      if( rng().roll( p() -> find_spell( 193440 ) -> effectN( 1 ).percent() ))
-      {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.demonwrath );
-      }
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.demonwrath );
+      p() -> demonwrath_accumulator -= 1.0;
+
+      // If going from 0 to 1 shard was a surprise, the player would have to react to it
+      if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
+        p() -> shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
+      else if ( p() -> resources.current[RESOURCE_SOUL_SHARD] >= 1 )
+        p() -> shard_react = p() -> sim -> current_time();
+      else
+        p() -> shard_react = timespan_t::max();
     }
   }
-
 };
 
 struct demonwrath_t: public warlock_spell_t
@@ -4831,6 +4841,16 @@ struct haunt_t: public warlock_spell_t
     warlock_spell_t( "haunt", p, p -> talents.haunt )
   {
   }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs_haunt -> trigger();
+    }
+  }
 };
 
 struct phantom_singularity_tick_t : public warlock_spell_t
@@ -4977,7 +4997,7 @@ struct reap_souls_t: public warlock_spell_t
       harmful = may_crit = false;
       ignore_false_positive = true;
 
-      base_duration = p -> buffs.deadwind_harvester -> buff_duration;
+      base_duration = p -> buffs.deadwind_harvester -> buff_duration + timespan_t::from_seconds(3);
     }
 
     virtual bool ready() override
@@ -5291,7 +5311,8 @@ warlock( p )
   dots_phantom_singularity = target -> get_dot( "phantom_singularity", &p );
   dots_channel_demonfire = target -> get_dot( "channel_demonfire", &p );
 
-  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
+  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_spell( 48181 ) )
+    .duration( timespan_t::from_seconds( 15 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
@@ -5327,12 +5348,20 @@ void warlock_td_t::target_demise()
     }
     warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
   }
+  if ( warlock.specialization() == WARLOCK_AFFLICTION && debuffs_haunt -> check() )
+  {
+    if ( warlock.sim -> log )
+    {
+      warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s reset haunt's cooldown.", target -> name(), warlock.name() );
+    }
+    warlock.cooldowns.haunt -> reset( true );
+  }
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
-    shard_accumulator( 0 ),
+    agony_accumulator( 0 ),
     warlock_pet_list( pets_t() ),
     active( active_t() ),
     talents( talents_t() ),
@@ -6405,7 +6434,8 @@ void warlock_t::reset()
   warlock_pet_list.active = nullptr;
   shard_react = timespan_t::zero();
   havoc_target = nullptr;
-  shard_accumulator = rng().range( 0.0, 0.99 );
+  agony_accumulator = rng().range( 0.0, 0.99 );
+  demonwrath_accumulator = 0.0;
 }
 
 void warlock_t::create_options()
