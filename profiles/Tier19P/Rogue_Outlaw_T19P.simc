@@ -36,7 +36,7 @@ actions+=/variable,name=ss_useable,value=(talent.anticipation.enabled&combo_poin
 actions+=/call_action_list,name=bf
 actions+=/call_action_list,name=cds
 # Conditions are here to avoid worthless check if nothing is available
-actions+=/call_action_list,name=stealth,if=stealthed|cooldown.vanish.up|cooldown.shadowmeld.up
+actions+=/call_action_list,name=stealth,if=stealthed.rogue|cooldown.vanish.up|cooldown.shadowmeld.up
 actions+=/death_from_above,if=energy.time_to_max>2&!variable.ss_useable_noreroll
 actions+=/slice_and_dice,if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8
 actions+=/roll_the_bones,if=!variable.ss_useable&buff.roll_the_bones.remains<target.time_to_die&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)
