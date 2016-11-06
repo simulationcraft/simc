@@ -1134,21 +1134,8 @@ struct bastion_of_light_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
   
-  for (int i = 0; i < charges; i++)
-    p()->cooldowns.shield_of_the_righteous->reset(false);
-
-  // sample fix1
-  // p()->cooldowns.shield_of_the_righteous->current_charge = 3;
-  // sample fix2
-  //for (int i = 0; i < 3; i++)
-  //	{
-  //		if (p()->cooldowns.shield_of_the_righteous->current_charge < p()->cooldowns.shield_of_the_righteous->charges)
-  //		{
-  //			p()->cooldowns.shield_of_the_righteous->adjust(-p()->cooldowns.shield_of_the_righteous->duration); //decrease remaining time by the duration of one charge, i.e., add one charge
-  //		}
-  //	}
+    p()->cooldowns.shield_of_the_righteous->reset(false, true);
   }
-
 };
 
 
