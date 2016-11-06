@@ -796,6 +796,27 @@ public:
   paladin_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
+  void init() override
+  {
+    ab::init();
+
+    if ( hasted_cd )
+    {
+      ab::cooldown -> hasted = hasted_cd;
+    }
+    if ( hasted_gcd )
+    {
+      if ( p() -> specialization() == PALADIN_HOLY )
+      {
+        ab::gcd_haste = HASTE_SPELL;
+      }
+      else
+      {
+        ab::gcd_haste = HASTE_ATTACK;
+      }
+    }
+  }
+
   virtual double cost() const
   {
     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
@@ -873,21 +894,6 @@ public:
   }
 
   virtual double cooldown_multiplier() { return 1.0; }
-
-  void update_ready( timespan_t cd = timespan_t::min() )
-  {
-    if ( hasted_cd )
-    {
-      if ( cd == timespan_t::min() && ab::cooldown && ab::cooldown -> duration > timespan_t::zero() )
-      {
-        cd = ab::cooldown -> duration;
-        cd *= ab::player -> cache.attack_haste();
-        cd *= cooldown_multiplier();
-      }
-    }
-
-    ab::update_ready( cd );
-  }
 };
 
 // paladin "Spell" Base for paladin_spell_t, paladin_heal_t and paladin_absorb_t
@@ -1117,14 +1123,10 @@ struct avengers_shield_t : public paladin_spell_t
 
 struct bastion_of_light_t : public paladin_spell_t
 {
-  int charges;
-
   bastion_of_light_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "bastion_of_light", p, p -> find_talent_spell( "Bastion of Light" ) )
   {
     parse_options( options_str );
-
-    charges = data().effectN( 1 ).base_value();
 
     harmful = false;
     use_off_gcd = true;
@@ -2786,23 +2788,6 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
     may_crit = true;
     special = true;
     weapon = &( p -> main_hand_weapon );
-  }
-
-  virtual timespan_t gcd() const override
-  {
-
-    if ( hasted_gcd )
-    {
-      timespan_t t = action_t::gcd();
-      if ( t == timespan_t::zero() ) return timespan_t::zero();
-
-      t *= p() -> cache.attack_haste();
-      if ( t < min_gcd ) t = min_gcd;
-
-      return t;
-    }
-    else
-      return base_t::gcd();
   }
 
   void retribution_trinket_trigger()
