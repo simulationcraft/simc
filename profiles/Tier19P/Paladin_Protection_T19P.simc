@@ -49,9 +49,10 @@ actions.max_survival+=/blood_fury
 actions.max_survival+=/berserking
 actions.max_survival+=/arcane_torrent
 
-actions.prot=seraphim,if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=1.99
-actions.prot+=/shield_of_the_righteous,if=(!talent.seraphim.enabled|action.shield_of_the_righteous.charges>1.99)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
+actions.prot=seraphim,if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2
+actions.prot+=/shield_of_the_righteous,if=(!talent.seraphim.enabled|action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
 actions.prot+=/shield_of_the_righteous,if=(talent.bastion_of_light.enabled&talent.seraphim.enabled&buff.seraphim.up&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
+actions.prot+=/shield_of_the_righteous,if=(talent.bastion_of_light.enabled&!talent.seraphim.enabled&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
 actions.prot+=/bastion_of_light,if=talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1
 actions.prot+=/light_of_the_protector,if=(health.pct<40)
 actions.prot+=/hand_of_the_protector,if=(health.pct<40)
@@ -79,11 +80,6 @@ actions.prot+=/consecration
 actions.prot+=/blinding_light
 actions.prot+=/hammer_of_the_righteous
 
-actions.prot_aoe=avengers_shield
-actions.prot_aoe+=/blessed_hammer
-actions.prot_aoe+=/judgment
-actions.prot_aoe+=/consecration
-actions.prot_aoe+=/hammer_of_the_righteous
 
 head=casque_of_the_deep,id=134512,bonus_id=1727
 neck=chain_of_scorched_bones,id=134529,bonus_id=1727,enchant_id=5439
