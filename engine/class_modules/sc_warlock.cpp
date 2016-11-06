@@ -4484,35 +4484,32 @@ struct summon_soul_effigy_t : public warlock_spell_t
   }
 };
 
-struct effigy_damage_override_t : public warlock_spell_t
+struct effigy_damage_override_t: public warlock_spell_t
 {
-//    effigy_damage_override_t( warlock_t * p, pets::soul_effigy_t *t ) :
-//        warlock_spell_t( "effigy_damage", p, NULL ,true )
-//    {
-//        this->initialized = true;
-//        this->target = t->damage->target;
-//        this->base_dd_min = t->damage->base_dd_min;
-//        this->base_dd_max = t->damage->base_dd_min;
-//    }
-    effigy_damage_override_t( warlock_t * p ) :
-        warlock_spell_t( "effigy_damage", p, NULL )
-    {
+  //    effigy_damage_override_t( warlock_t * p, pets::soul_effigy_t *t ) :
+  //        warlock_spell_t( "effigy_damage", p, NULL ,true )
+  //    {
+  //        this->initialized = true;
+  //        this->target = t->damage->target;
+  //        this->base_dd_min = t->damage->base_dd_min;
+  //        this->base_dd_max = t->damage->base_dd_min;
+  //    }
+  effigy_damage_override_t( warlock_t * p ):
+    warlock_spell_t( "effigy_damage", p, NULL )
+  {
+  }
 
-    }
+  void setupEffigyStuff( pets::soul_effigy_spell_t *t )
+  {
+    this->target = t->target;
+    this->base_dd_min = t->base_dd_min;
+    this->base_dd_max = t->base_dd_min;
+  }
 
-    void setupEffigyStuff(pets::soul_effigy_spell_t *t)
-    {
-        this->target = t->target;
-        this->base_dd_min = t->base_dd_min;
-        this->base_dd_max = t->base_dd_min;
-    }
-
-    void execute() override
-    {
-
-
-        warlock_spell_t::execute();
-    }
+  void execute() override
+  {
+    warlock_spell_t::execute();
+  }
 
 };
 

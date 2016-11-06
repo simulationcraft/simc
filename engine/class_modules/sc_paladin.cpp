@@ -179,7 +179,7 @@ public:
     cooldown_t* avenging_wrath;          // Righteous Protector (prot)
     cooldown_t* light_of_the_protector;  // Righteous Protector (prot)
     cooldown_t* hand_of_the_protector;   // Righteous Protector (prot)
-	cooldown_t* judgment;				 // Grand Crusader + Crusader's Judgment
+  cooldown_t* judgment;				 // Grand Crusader + Crusader's Judgment
 
     // whoo fist of justice
     cooldown_t* hammer_of_justice;
@@ -404,7 +404,7 @@ public:
     active_protector_of_the_innocent   = nullptr;
 
     cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
-	cooldowns.judgment                = get_cooldown("judgment");
+  cooldowns.judgment                = get_cooldown("judgment");
     cooldowns.shield_of_the_righteous = get_cooldown( "shield_of_the_righteous" );
     cooldowns.avenging_wrath          = get_cooldown( "avenging_wrath" );
     cooldowns.light_of_the_protector  = get_cooldown( "light_of_the_protector" );
@@ -1088,10 +1088,10 @@ struct avengers_shield_t : public paladin_spell_t
 
     // TODO: add and legendary bonuses
     base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
-	base_aoe_multiplier *= 1.0;
-	if ( p ->talents.first_avenger->ok() )
-		base_aoe_multiplier *= 2.0 / 3.0;
-	aoe = 3;
+  base_aoe_multiplier *= 1.0;
+  if ( p ->talents.first_avenger->ok() )
+    base_aoe_multiplier *= 2.0 / 3.0;
+  aoe = 3;
     aoe = std::max( aoe, 0 );
 
 
@@ -1132,20 +1132,20 @@ struct bastion_of_light_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-	
-	for (int i = 0; i < charges; i++)
-		p()->cooldowns.shield_of_the_righteous->reset(false);
+  
+  for (int i = 0; i < charges; i++)
+    p()->cooldowns.shield_of_the_righteous->reset(false);
 
-	// sample fix1
-	// p()->cooldowns.shield_of_the_righteous->current_charge = 3;
-	// sample fix2
-	//for (int i = 0; i < 3; i++)
-	//	{
-	//		if (p()->cooldowns.shield_of_the_righteous->current_charge < p()->cooldowns.shield_of_the_righteous->charges)
-	//		{
-	//			p()->cooldowns.shield_of_the_righteous->adjust(-p()->cooldowns.shield_of_the_righteous->duration); //decrease remaining time by the duration of one charge, i.e., add one charge
-	//		}
-	//	}
+  // sample fix1
+  // p()->cooldowns.shield_of_the_righteous->current_charge = 3;
+  // sample fix2
+  //for (int i = 0; i < 3; i++)
+  //	{
+  //		if (p()->cooldowns.shield_of_the_righteous->current_charge < p()->cooldowns.shield_of_the_righteous->charges)
+  //		{
+  //			p()->cooldowns.shield_of_the_righteous->adjust(-p()->cooldowns.shield_of_the_righteous->duration); //decrease remaining time by the duration of one charge, i.e., add one charge
+  //		}
+  //	}
   }
 
 };
@@ -3607,7 +3607,7 @@ struct judgment_t : public paladin_melee_attack_t
     // no weapon multiplier
     weapon_multiplier = 0.0;
     may_block = may_parry = may_dodge = false;
-	cooldown->charges = 1;
+  cooldown->charges = 1;
     hasted_cd = true;
 
     // TODO: this is a hack; figure out what's really going on here.
@@ -3624,7 +3624,7 @@ struct judgment_t : public paladin_melee_attack_t
     }
     else if ( p -> specialization() == PALADIN_PROTECTION )
     {
-	  cooldown->charges *= 1.0 + p->talents.crusaders_judgment->effectN(1).base_value();
+    cooldown->charges *= 1.0 + p->talents.crusaders_judgment->effectN(1).base_value();
       cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
       sotr_cdr = -1.0 * timespan_t::from_seconds( 2 ); // hack for p -> spec.judgment_2 -> effectN( 1 ).base_value()
@@ -4211,10 +4211,10 @@ void paladin_t::trigger_grand_crusader()
     // reset AS cooldown
     cooldowns.avengers_shield -> reset( true );
 
-	if (talents.crusaders_judgment -> ok() && cooldowns.judgment ->current_charge < cooldowns.judgment->charges)
-	{
-		cooldowns.judgment->adjust(-cooldowns.judgment->duration); //decrease remaining time by the duration of one charge, i.e., add one charge
-	}
+  if (talents.crusaders_judgment -> ok() && cooldowns.judgment ->current_charge < cooldowns.judgment->charges)
+  {
+    cooldowns.judgment->adjust(-cooldowns.judgment->duration); //decrease remaining time by the duration of one charge, i.e., add one charge
+  }
 
   }
 }
@@ -4590,7 +4590,7 @@ void paladin_t::generate_action_prio_list_prot()
 
   action_priority_list_t* def = get_action_priority_list("default");
   action_priority_list_t* prot = get_action_priority_list("prot");
-  action_priority_list_t* prot_aoe = get_action_priority_list("prot_aoe");
+  //action_priority_list_t* prot_aoe = get_action_priority_list("prot_aoe");
   action_priority_list_t* dps = get_action_priority_list("max_dps");
   action_priority_list_t* surv = get_action_priority_list("max_survival");
 
