@@ -423,6 +423,7 @@ public:
   virtual void      init_base_stats() override;
   virtual void      init_gains() override;
   virtual void      init_procs() override;
+  virtual void      init() override;
   virtual void      init_scaling() override;
   virtual void      create_buffs() override;
   virtual void      init_rng() override;
@@ -5050,6 +5051,14 @@ void paladin_t::init_rng()
   blade_of_wrath_rppm = get_rppm( "blade_of_wrath", find_spell( 231832 ) );
 }
 
+void paladin_t::init()
+{
+  player_t::init();
+
+  if ( specialization() == PALADIN_HOLY )
+    sim -> errorf( "%s is using an unsupported spec.", name() );
+}
+
 void paladin_t::init_spells()
 {
   player_t::init_spells();
@@ -5368,7 +5377,7 @@ double paladin_t::composite_melee_haste() const
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
 
   // Infusion of Light (Holy) adds 10% haste
-  h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
+  //h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
   return h;
 }
@@ -5403,7 +5412,7 @@ double paladin_t::composite_spell_haste() const
     h /= 1.0 + buffs.crusade -> get_haste_bonus();
 
   // Infusion of Light (Holy) adds 10% haste
-  h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
+  //h /= 1.0 + passives.infusion_of_light -> effectN( 2 ).percent();
 
   return h;
 }
