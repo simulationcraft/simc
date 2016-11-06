@@ -1812,9 +1812,7 @@ struct moonfire_t : public druid_spell_t
       triggers_galactic_guardian = false;
       dual = background = true;
       dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
-      base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 4 ).percent();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 6 ).percent();
-      base_td_multiplier *= 1.0 + p -> spec.guardian -> effectN( 7 ).percent();
 
       /* June 2016: This hotfix is negated if you shift into Moonkin Form (ever),
         so only apply it if the druid does not have balance affinity. */
