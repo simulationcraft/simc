@@ -1632,6 +1632,12 @@ public:
     trigger_impeccable_fel_essence();
   }
 
+  virtual bool consume_cost_per_tick( const dot_t& dot ) override
+  {
+    ab::consume_cost_per_tick( dot );
+    trigger_impeccable_fel_essence();
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = ab::composite_target_multiplier( t );
