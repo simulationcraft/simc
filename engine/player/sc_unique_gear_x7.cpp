@@ -777,7 +777,7 @@ struct spiked_counterweight_constructor_t : public item_targetdata_initializer_t
       effect2 -> source = SPECIAL_EFFECT_SOURCE_ITEM;
       effect2 -> name_str = "brutal_haymaker_accumulator";
       effect2 -> proc_chance_ = 1.0;
-      effect2 -> proc_flags_ = PF_ALL_DAMAGE;
+      effect2 -> proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
       effect2 -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
       effect -> player -> special_effects.push_back( effect2 );
 
