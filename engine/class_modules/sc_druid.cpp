@@ -1790,6 +1790,8 @@ struct moonfire_t : public druid_spell_t
 {
   struct moonfire_damage_t : public druid_spell_t
   {
+    double galactic_guardian_dd_multiplier;
+
     moonfire_damage_t( druid_t* p ) : 
       druid_spell_t( "moonfire_dmg", p, p -> find_spell( 164812 ) )
     {
@@ -1806,6 +1808,11 @@ struct moonfire_t : public druid_spell_t
       if ( p -> talent.shooting_stars -> ok() && ! p -> active.shooting_stars )
       {
         p -> active.shooting_stars = new shooting_stars_t( p );
+      }
+
+      if ( p -> talent.galactic_guardian->ok())
+      {
+        galactic_guardian_dd_multiplier = p->find_spell(213708)->effectN(3).percent();
       }
 
       may_miss = false;
@@ -1837,6 +1844,19 @@ struct moonfire_t : public druid_spell_t
       if ( ! t ) return nullptr;
 
       return td( t ) -> dots.moonfire;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = druid_spell_t::action_multiplier();
+
+      if (p()->buff.galactic_guardian->up())
+      {
+        // Galactic Guardian 7.1 Damage Buff
+        m *= 1.0 + galactic_guardian_dd_multiplier;
+      }
+
+      return m;
     }
 
     void tick( dot_t* d ) override
