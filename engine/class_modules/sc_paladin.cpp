@@ -88,6 +88,7 @@ public:
   action_t* active_painful_truths_proc;
   action_t* active_tyrs_enforcer_proc;
   action_t* active_judgment_of_light_proc;
+  action_t* active_sotr;
   heal_t*   active_protector_of_the_innocent;
 
   const special_effect_t* retribution_trinket;
@@ -401,6 +402,7 @@ public:
     active_tyrs_enforcer_proc          = nullptr;
     active_painful_truths_proc         = nullptr;
     active_judgment_of_light_proc      = nullptr;
+    active_sotr                        = nullptr;
     active_protector_of_the_innocent   = nullptr;
 
     cooldowns.avengers_shield         = get_cooldown( "avengers_shield" );
@@ -2604,7 +2606,7 @@ struct seraphim_t : public paladin_spell_t
       full_charges_used = std::min( available_charges, 2 );
       duration = full_charges_used * p() -> talents.seraphim -> duration();
       for ( int i = 0; i < full_charges_used; i++ )
-        p() -> cooldowns.shield_of_the_righteous -> start();
+        p() -> cooldowns.shield_of_the_righteous -> start( p() -> active_sotr  );
     }
     if ( full_charges_used < 2 )
     {
@@ -3734,6 +3736,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     // link needed for Judgment cooldown reduction
     cooldown = p -> cooldowns.shield_of_the_righteous;
+    p -> active_sotr = this;
   }
 
   double action_multiplier() const override
