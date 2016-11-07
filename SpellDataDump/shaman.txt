@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 1242eba)
+SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build c4ec018)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -4622,10 +4622,15 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Stop attacks (20)
 Effects          :
-#2 (id=289179)   : Apply Aura (6) | Pacify Silence (60)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: AOE enemy (instant)(16)
-#3 (id=289180)   : Apply Aura (6) | Unknown effect sub type (260)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 754 | Radius: 8 yards | Target: AOE enemy (instant)(16)
+#1 (id=289178)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Custom(18)
+                   Hotfixed: Type (6 -> 3), Sub Type (56 -> 0), Misc Value (70495 -> 0), Misc Value 2 (9 -> 0), Target 1 (16 -> 18)
+#3 (id=289180)   : Apply Aura (6) | Pacify Silence (60)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+                   Hotfixed: Sub Type (260 -> 60), Misc Value (754 -> 0), Target 1 (16 -> 6)
+#4 (id=355930)   : Apply Aura (6) | Unknown effect sub type (260)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 754 | Target: Enemy(6)
+                   Hotfixed: NEW EFFECT
 Description      : Transforms the enemy into a $?s147785[compy][frog]. While hexed, the target is incapacitated and cannot attack or cast spells. Damage caused may interrupt the effect. Lasts $d. Only works on Humanoids and Beasts.
 Tooltip          : Incapacitated.
 

@@ -39,6 +39,10 @@ bool spell_data_t::override_field( const std::string& field, double value )
     _internal_cooldown = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "gcd" ) )
     _gcd = ( unsigned ) value;
+  else if ( util::str_compare_ci(field, "charges") )
+    _charges = ( unsigned ) value;
+  else if ( util::str_compare_ci(field, "charge_cooldown") )
+    _charge_cooldown = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "duration" ) )
     _duration = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "max_stack" ) )
@@ -47,6 +51,8 @@ bool spell_data_t::override_field( const std::string& field, double value )
     _proc_chance = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "proc_charges" ) )
     _proc_charges = ( unsigned ) value;
+  else if ( util::str_compare_ci( field, "proc_flags") )
+    _proc_flags = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "cast_min" ) )
     _cast_min = ( int ) value;
   else if ( util::str_compare_ci( field, "cast_max" ) )
@@ -80,6 +86,10 @@ double spell_data_t::get_field( const std::string& field ) const
     return static_cast<double>( _internal_cooldown );
   else if ( util::str_compare_ci( field, "gcd" ) )
     return static_cast<double>( _gcd );
+  else if ( util::str_compare_ci( field, "charges" ) )
+    return static_cast<double>( _charges );
+  else if ( util::str_compare_ci( field, "charge_cooldown" ) )
+    return static_cast<double>( _charge_cooldown );
   else if ( util::str_compare_ci( field, "duration" ) )
     return static_cast<double>( _duration );
   else if ( util::str_compare_ci( field, "max_stack" ) )
@@ -136,6 +146,8 @@ bool spelleffect_data_t::override_field( const std::string& field, double value 
     _radius = value;
   else if ( util::str_compare_ci( field, "max_radius" ) )
     _radius_max = value;
+  else if ( util::str_compare_ci( field, "chain_target" ) )
+    _chain_target = ( unsigned ) value;
   else
     return false;
   return true;
@@ -173,6 +185,8 @@ double spelleffect_data_t::get_field( const std::string& field ) const
     return _radius;
   else if ( util::str_compare_ci( field, "max_radius" ) )
     return _radius_max;
+  else if ( util::str_compare_ci( field, "chain_target" ) )
+    return static_cast<double>( _chain_target );
 
   return -std::numeric_limits<double>::max();
 }

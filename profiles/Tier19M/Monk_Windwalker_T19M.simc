@@ -24,9 +24,9 @@ actions.precombat+=/potion,name=old_war
 actions=auto_attack
 actions+=/spear_hand_strike,if=target.debuff.casting.react
 actions+=/potion,name=old_war,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60
-actions+=/call_action_list,name=serenity,if=talent.serenity.enabled&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.rising_sun_kick.remains<=4)|buff.serenity.up)
+actions+=/call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.rising_sun_kick.remains<=4)|buff.serenity.up)
 actions+=/call_action_list,name=sef,if=!talent.serenity.enabled&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&cooldown.rising_sun_kick.remains<=6)|buff.storm_earth_and_fire.up)
-actions+=/call_action_list,name=serenity,if=(!artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7)|buff.serenity.up
+actions+=/call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&(!artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7)|buff.serenity.up
 actions+=/call_action_list,name=sef,if=!talent.serenity.enabled&((!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5)|buff.storm_earth_and_fire.up)
 actions+=/call_action_list,name=st
 
@@ -69,8 +69,6 @@ actions.st+=/blackout_kick,cycle_targets=1,if=(chi>1|buff.bok_proc.up)&!prev_gcd
 actions.st+=/chi_wave,if=energy.time_to_max>=2.25
 actions.st+=/chi_burst,if=energy.time_to_max>=2.25
 actions.st+=/tiger_palm,cycle_targets=1,if=!prev_gcd.tiger_palm
-actions.st+=/crackling_jade_lightning,interrupt=1,if=talent.rushing_jade_wind.enabled&chi.max-chi=1&prev_gcd.blackout_kick&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1&cooldown.strike_of_the_windlord.remains>1&cooldown.rushing_jade_wind.remains>1
-actions.st+=/crackling_jade_lightning,interrupt=1,if=!talent.rushing_jade_wind.enabled&chi.max-chi=1&prev_gcd.blackout_kick&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1&cooldown.strike_of_the_windlord.remains>1
 
 head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_trained_soldier
@@ -79,7 +77,7 @@ back=gossamerspun_greatcloak,id=138221,bonus_id=1806,enchant=binding_of_agility
 chest=scarred_ragefang_chestpiece,id=139208,bonus_id=1806
 wrists=wristwraps_of_broken_trust,id=139209,bonus_id=1806
 hands=dreamsculptors_gloves,id=139202,bonus_id=1806
-waist=cinidaria_the_symbiote,id=133976
+waist=lifeless_buckled_girdle,id=139197,bonus_id=1806
 legs=splotched_bloodfur_leggings,id=139201,bonus_id=1806
 feet=stained_maggot_squishers,id=139200,bonus_id=1806
 finger1=mindrend_band,id=138220,bonus_id=1806,enchant=binding_of_versatility
@@ -90,11 +88,11 @@ main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=139262/139255/13926
 off_hand=fists_of_the_heavens,id=133948
 
 # Gear Summary
-# gear_ilvl=884.19
-# gear_agility=16120
-# gear_stamina=25777
-# gear_crit_rating=6787
+# gear_ilvl=883.25
+# gear_agility=15928
+# gear_stamina=25488
+# gear_crit_rating=6042
 # gear_haste_rating=3735
-# gear_mastery_rating=7528
-# gear_versatility_rating=1697
-# gear_armor=2246
+# gear_mastery_rating=7756
+# gear_versatility_rating=2151
+# gear_armor=2236

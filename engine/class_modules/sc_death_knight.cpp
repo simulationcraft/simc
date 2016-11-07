@@ -349,6 +349,10 @@ struct runes_t
   { return first_rune_in_state( STATE_FULL ); }
 
   void consume( unsigned runes );
+
+  // Time it takes with the current rune regeneration speed to regenerate n_runes by the Death
+  // Knight.
+  timespan_t time_to_regen( unsigned n_runes ) const;
 };
 
 // ==========================================================================
@@ -923,45 +927,6 @@ static void log_rune_status( const death_knight_t* p, bool debug = false ) {
     p -> sim -> out_debug.printf( "%s runes: %s", p -> name(), rune_string.c_str() );
 }
 
-#if 0
-static std::pair<int, double> rune_ready_in( const death_knight_t* p )
-{
-  // Return the (slot, time) for the next rune to come up.
-  int fastest_remaining = -1;
-  double t = std::numeric_limits<double>::max();
-
-  double rps = p -> runes_per_second();
-
-  for ( size_t j = 0; j < MAX_RUNES; ++j ) {
-    double ttr = ( 1.0 - ( p -> _runes.slot[ j ] ).fill_level() ) / rps;
-    if (ttr < t)
-    {
-      t = ttr;
-      fastest_remaining = ( int ) j;
-    }
-  }
-
-  return std::pair<int, double>( fastest_remaining, t);
-}
-#endif
-
-static double ready_in( const death_knight_t* p, int n_runes )
-{
-  // How long until at least n_runes are ready, assuming no rune-using actions are taken.
-  if ( p -> sim -> debug )
-    log_rune_status( p, true );
-
-  double rps = p -> runes_per_second();
-
-  std::vector< double > ready_times;
-  for ( size_t j = 0; j < MAX_RUNES; ++j) {
-    ready_times.push_back( ( 1.0 - ( p -> _runes.slot[ j ] ).fill_level() ) / rps );
-  }
-  std::sort( ready_times.begin(), ready_times.end() );
-
-  return ready_times[ n_runes ];
-}
-
 inline runes_t::runes_t( death_knight_t* p ) : dk( p ),
   cumulative_waste( dk -> name_str + "_Iteration_Rune_Waste", false ),
   rune_waste( dk -> name_str + "_Rune_Waste", false ),
@@ -1040,6 +1005,54 @@ inline void runes_t::consume( unsigned runes )
     }
   }
 
+}
+
+timespan_t runes_t::time_to_regen( unsigned n_runes ) const
+{
+  if ( n_runes == 0 )
+  {
+    return timespan_t::zero();
+  }
+
+  if ( n_runes > MAX_RUNES )
+  {
+    return timespan_t::max();
+  }
+
+  // If we have the runes, no need to check anything.
+  if ( dk -> resources.current[ RESOURCE_RUNE ] >= as<double>( n_runes ) )
+  {
+    return timespan_t::zero();
+  }
+
+  // First, collect regenerating runes into an array
+  std::vector<const rune_t*> regenerating_runes;
+  range::for_each( slot, [ &regenerating_runes ]( const rune_t& r ) {
+    if ( r.is_regenerating() )
+    {
+      regenerating_runes.push_back( &( r ) );
+    }
+  });
+
+  // Sort by ascending remaining time
+  range::sort( regenerating_runes, []( const rune_t* l, const rune_t* r ) {
+    return l -> event -> remains() < r -> event -> remains();
+  } );
+
+  // Number of unsatisfied runes
+  unsigned n_unsatisfied = n_runes - as<unsigned>( dk -> resources.current[ RESOURCE_RUNE ] );
+
+  // If we can satisfy the remaining unsatisfied runes with regenerating runes, return the N - 1th
+  // remaining regeneration time
+  if ( n_unsatisfied <= regenerating_runes.size() )
+  {
+    return regenerating_runes[ n_unsatisfied - 1 ] -> event -> remains();
+  }
+
+  // Otherwise, it's going to be the remaining regen time of the N - 1th rune, plus the regen time
+  // of a depleted rune.
+  return regenerating_runes[ n_unsatisfied - 1 ] -> event -> remains() +
+         timespan_t::from_seconds( 1 / dk -> runes_per_second() );
 }
 
 inline double rune_t::fill_level() const
@@ -1223,7 +1236,7 @@ struct death_knight_pet_t : public pet_t
     {
       m *= 1.0 + taktheritrix -> check_value();
     }
-    
+
     return m;
   }
 
@@ -3007,7 +3020,7 @@ struct melee_t : public death_knight_melee_attack_t
         p() -> buffs.killing_machine -> trigger();
       }
 
-      if ( weapon && weapon -> slot == SLOT_MAIN_HAND && p() -> buffs.frozen_pulse -> up() )
+      if ( weapon && p() -> buffs.frozen_pulse -> up() )
       {
         frozen_pulse -> target = s -> target;
         frozen_pulse -> schedule_execute();
@@ -3708,7 +3721,7 @@ struct dark_transformation_t : public death_knight_spell_t
     {
       p() -> pets.dark_arbiter -> taktheritrix -> trigger();
     }
-    
+
     if ( p() -> pets.gargoyle && p() -> pets.gargoyle -> taktheritrix )
     {
       p() -> pets.gargoyle -> taktheritrix -> trigger();
@@ -4712,7 +4725,7 @@ struct mind_freeze_t : public death_knight_spell_t
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
-  virtual bool ready() override
+  bool ready() override
   {
     if ( ! target -> debuffs.casting -> check() )
       return false;
@@ -5108,8 +5121,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     instructors_chance = { { 0.20, 0.40, 0.20, 0.10, 0.05, 0.05 } };
   }
 
-  
-
   int n_targets() const override
   { return td( target ) -> in_aoe_radius() ? -1 : 0; }
 
@@ -5160,7 +5171,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
         double roll = rng().real();
         double sum = 0;
-        
+
         for ( size_t i = 0; i < instructors_chance.size(); i++ )
         {
           sum += instructors_chance[ i ];
@@ -6145,90 +6156,24 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
 // death_knight_t::create_expression ========================================
 
-static expr_t* create_ready_in_expression( death_knight_t* player, const std::string& action_name )
-{
-  struct ability_ready_expr_t : public expr_t
-  {
-    death_knight_melee_attack_t* action;
-
-    ability_ready_expr_t( action_t* a ) :
-      expr_t( "ability_ready_expr" ),
-      action( debug_cast<death_knight_melee_attack_t*>( a ) )
-    { }
-
-    double evaluate() override
-    {
-      return ready_in( action -> p(), action -> base_costs[ RESOURCE_RUNE ] );
-    }
-  };
-
-  action_t* action = player -> find_action( action_name );
-  if ( ! action )
-  {
-    return nullptr;
-  }
-
-  return new ability_ready_expr_t( action );
-}
-
-#if 0
-static expr_t* create_rune_expression( death_knight_t* player, const std::string& rune_type_operation = std::string() )
-{
-  struct rune_inspection_expr_t : public expr_t
-  {
-    death_knight_t* dk;
-    int myaction;
-    // 0 == ready runes (nonfractional), 1 == min cooldown, 2 = max_cooldown, 4 == ready runes (fractional)
-
-    rune_inspection_expr_t( death_knight_t* p, int myaction_ ) :
-      expr_t( "rune_evaluation" ), dk( p ), myaction( myaction_ )
-    { }
-
-    virtual double evaluate() override
-    {
-      switch ( myaction )
-      {
-        case 0: return dk -> ready_runes_count( false );
-        case 1: return dk -> runes_cooldown_min( );
-        case 2: return dk -> runes_cooldown_max( );
-        case 4: return dk -> ready_runes_count( true );
-      }
-      return 0.0;
-    }
-  };
-
-
-  int op = 0;
-  if ( util::str_compare_ci( rune_type_operation, "cooldown_min" ) )
-  {
-    op = 1;
-  }
-  else if ( util::str_compare_ci( rune_type_operation, "cooldown_max" ) )
-  {
-    op = 2;
-  }
-  else if ( util::str_compare_ci( rune_type_operation, "frac" ) || util::str_compare_ci( rune_type_operation, "fractional" ) )
-  {
-    op = 4;
-  }
-
-  return new rune_inspection_expr_t( player, op );
-}
-#endif
-
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str ) {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( splits.size() == 2 )
+  if ( util::str_compare_ci( splits[ 0 ], "rune" ) && splits.size() > 1 )
   {
-    // For example, obliterate.ready_in
-    if ( util::str_compare_ci( splits[ 1 ], "ready_in" ) )
+    if ( util::str_in_str_ci( splits[ 1 ], "time_to_" ) )
     {
-      expr_t* e = create_ready_in_expression( this, splits[ 0 ] );
-      if ( e )
+      auto n_char = splits[ 1 ][ splits[ 1 ].size() - 1 ];
+      auto n = n_char - '0';
+      if ( n <= 0 || as<size_t>( n ) > MAX_RUNES )
       {
-        return e;
+        sim -> errorf( "%s invalid expression '%s' for %s", name(), name_str.c_str(), a -> signature_str.c_str() );
+        return player_t::create_expression( a, name_str );
       }
+
+      return make_fn_expr( "rune_time_to_x", [ this, n ]() {
+        return _runes.time_to_regen( static_cast<unsigned>( n ) );
+      } );
     }
   }
 
@@ -6624,10 +6569,9 @@ void death_knight_t::default_apl_frost()
   action_priority_list_t* bos       = get_action_priority_list( "bos"       );
   action_priority_list_t* generic   = get_action_priority_list( "generic"   );
   action_priority_list_t* core      = get_action_priority_list( "core"      );
-  action_priority_list_t* icytalons = get_action_priority_list( "icytalons" );
   action_priority_list_t* shatter   = get_action_priority_list( "shatter"   );
-  
-  std::string food_name = ( true_level > 100 ) ? "the_hungry_magister" :
+
+  std::string food_name = ( true_level > 100 ) ? "fishbrul_special" :
                           ( true_level >  90 ) ? "pickled_eel" :
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
@@ -6643,7 +6587,10 @@ void death_knight_t::default_apl_frost()
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Pillar of Frost" );
-  
+
+  // Interrupt
+  def -> add_action( this, "Mind Freeze" );
+
   // Racials
   def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
   def -> add_action( "blood_fury,if=!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking" );
@@ -6672,22 +6619,18 @@ void death_knight_t::default_apl_frost()
   // Choose APL
   def -> add_action( "run_action_list,name=bos,if=dot.breath_of_sindragosa.ticking" );
   def -> add_action( "call_action_list,name=shatter,if=talent.shattering_strikes.enabled" );
-  def -> add_action( "call_action_list,name=icytalons,if=talent.icy_talons.enabled" );
-  def -> add_action( "call_action_list,name=generic,if=(!talent.shattering_strikes.enabled&!talent.icy_talons.enabled)" );
+  def -> add_action( "call_action_list,name=generic,if=!talent.shattering_strikes.enabled" );
 
   // Core rotation
   core -> add_action( this, "Frost Strike", "if=buff.obliteration.up&!buff.killing_machine.react" );
-  core -> add_action( this, "Remorseless Winter", "if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!talent.frozen_pulse.enabled" );
-  core -> add_talent( this, "Frostscythe", "if=!talent.breath_of_sindragosa.enabled&(buff.killing_machine.react|spell_targets.frostscythe>=4)" );
-  core -> add_talent( this, "Glacial Advance" );
+  core -> add_action( this, "Remorseless Winter", "if=(spell_targets.remorseless_winter>=2|talent.gathering_storm.enabled)&!(talent.frostscythe.enabled&buff.killing_machine.react&spell_targets.frostscythe>=2)" );
+  core -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.react&spell_targets.frostscythe>=2)" );
+  core -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
+  core -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
   core -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
   core -> add_action( this, "Obliterate" );
-  
-
-  // Empty out runes if Frozen Pulse is used
+  core -> add_talent( this, "Glacial Advance" );
   core -> add_action( this, "Remorseless Winter", "if=talent.frozen_pulse.enabled" );
-  core -> add_talent( this, "Frostscythe", "if=talent.frozen_pulse.enabled" );
-  core -> add_action( this, "Howling Blast", "if=talent.frozen_pulse.enabled" );
 
   // Generic single target rotation
 
@@ -6716,39 +6659,6 @@ void death_knight_t::default_apl_frost()
   // Misc actions, Bossless version
   generic -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
   generic -> add_talent( this, "Hungering Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
-
-  // Icy Talons single target rotation
-
-  // Don't let Icy Talons buff wear off if possible
-  icytalons -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5" );
-
-  // Howling blast disease upkeep and rimeing
-  icytalons -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
-  icytalons -> add_action( this, "Howling Blast", "if=buff.rime.react" );
-
-  // Prevent RP waste, or stack up Icy Talons
-  icytalons -> add_action( this, "Frost Strike", "if=runic_power>=80|buff.icy_talons.stack<3" );
-
-  // Do core rotation
-  icytalons -> add_action( "call_action_list,name=core" );
-
-  // Continue the generic one with Horn of Winter stuff
-  icytalons -> add_talent( this, "Horn of Winter", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  icytalons -> add_talent( this, "Horn of Winter", "if=!talent.breath_of_sindragosa.enabled" );
-
-  // If nothing else to do, do Frost Strike
-  icytalons -> add_action( this, "Frost Strike", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15&!talent.frozen_pulse.enabled" );
-  icytalons -> add_action( this, "Frost Strike", "if=!talent.breath_of_sindragosa.enabled&!talent.frozen_pulse.enabled" );
-  icytalons -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5|buff.icy_talons.stack<3&talent.frostscythe.enabled" );
-  icytalons -> add_action( this, "Frost Strike", "if=!talent.frostscythe.enabled" );
-
-  // Misc actions, Breath of Sindragosa version
-  icytalons -> add_action( this, "Empower Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-  icytalons -> add_talent( this, "Hungering Rune Weapon", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>15" );
-
-  // Misc actions, Bossless version
-  icytalons -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
-  icytalons -> add_talent( this, "Hungering Rune Weapon", "if=!talent.breath_of_sindragosa.enabled" );
 
   // Shattering Strikes single target rotation
 
@@ -7302,7 +7212,7 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
       if ( antimagic_shell_absorbed > max_hp_absorb )
       {
         absorbed = antimagic_shell_absorbed - max_hp_absorb;
-        antimagic_shell_absorbed = -1.0; // Set to -1.0 so expire_override knows that we don't need to reduce cooldown from regenerative magic. 
+        antimagic_shell_absorbed = -1.0; // Set to -1.0 so expire_override knows that we don't need to reduce cooldown from regenerative magic.
         buffs.antimagic_shell -> expire();
       }
 
@@ -7694,8 +7604,8 @@ stat_e death_knight_t::convert_hybrid_stat( stat_e s ) const
   switch ( s )
   {
   // This is a guess at how AGI/INT will work for DKs, TODO: confirm
-  case STAT_AGI_INT: 
-    return STAT_NONE; 
+  case STAT_AGI_INT:
+    return STAT_NONE;
   case STAT_STR_AGI_INT:
   case STAT_STR_AGI:
   case STAT_STR_INT:
@@ -7971,8 +7881,7 @@ private:
 
 struct reapers_harvest_frost_t : public scoped_action_callback_t<obliterate_strike_t>
 {
-  reapers_harvest_frost_t( const std::string& n ) :
-    super( DEATH_KNIGHT_FROST, n )
+  reapers_harvest_frost_t( const std::string& n ) : super( DEATH_KNIGHT, n )
   { }
 
   void manipulate( obliterate_strike_t* action, const special_effect_t& e ) override
@@ -7995,7 +7904,7 @@ struct reapers_harvest_frost_t : public scoped_action_callback_t<obliterate_stri
 
 struct reapers_harvest_unholy_t : public scoped_action_callback_t<virulent_plague_t>
 {
-  reapers_harvest_unholy_t() : super( DEATH_KNIGHT_UNHOLY, "virulent_plague" )
+  reapers_harvest_unholy_t() : super( DEATH_KNIGHT, "virulent_plague" )
   { }
 
   void manipulate( virulent_plague_t* action, const special_effect_t& e ) override
@@ -8008,36 +7917,34 @@ struct reapers_harvest_unholy_t : public scoped_action_callback_t<virulent_plagu
   }
 };
 
-struct reapers_harvest_blood_t : public scoped_action_callback_t < marrowrend_t >
+struct reapers_harvest_blood_t : public scoped_action_callback_t<marrowrend_t>
 {
-  reapers_harvest_blood_t() : super(DEATH_KNIGHT_BLOOD, "marrowrend")
+  reapers_harvest_blood_t() : super( DEATH_KNIGHT, "marrowrend" )
   { }
 
-  void manipulate(marrowrend_t* action, const special_effect_t& e) override
+  void manipulate( marrowrend_t* action, const special_effect_t& e ) override
   {
-    double coeff = e.driver()->effectN(1).average(e.item) / 100.0;
+    double coeff = e.driver() -> effectN( 1 ).average( e.item ) / 100.0;
 
-    action->base_multiplier *= 1.0 + e.driver()->effectN(2).average(e.item) / 100.0;
-    action->unholy_coil_coeff = coeff;
-    action->unholy_coil = new unholy_coil_t(action->p(), e.item);
+    action -> base_multiplier *= 1.0 + e.driver() -> effectN( 2 ).average( e.item ) / 100.0;
+    action -> unholy_coil_coeff = coeff;
+    action -> unholy_coil = new unholy_coil_t( action -> p(), e.item );
   }
 };
 
-struct toravons_bindings_t : public scoped_actor_callback_t < death_knight_t >
+struct toravons_bindings_t : public scoped_actor_callback_t<death_knight_t>
 {
-  toravons_bindings_t() : super(DEATH_KNIGHT_FROST)
-   {}
-  
-    void manipulate(death_knight_t* p, const special_effect_t& e) override
-    {
-    p->legendary.toravons = e.driver()->effectN(1).percent();
-    }
- };
+  toravons_bindings_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.toravons = e.driver() -> effectN( 1 ).percent(); }
+};
 
 struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knight_t>
 {
-  taktheritrixs_shoulderpads_t() : super( DEATH_KNIGHT_UNHOLY )
-  {}
+  taktheritrixs_shoulderpads_t() : super( DEATH_KNIGHT )
+  { }
 
   void manipulate( death_knight_t* p, const special_effect_t& /* e */ ) override
   {
@@ -8055,74 +7962,53 @@ struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knigh
     }
   }
 
-
   void create_buff( pets::death_knight_pet_t* pet )
   {
     if ( ! pet )
       return;
 
-    pet -> taktheritrix = buff_creator_t( pet, "taktheritrixs_command", pet -> find_spell( 215069 ) )
-      .default_value( pet -> find_spell( 215069 ) -> effectN( 1 ).percent() )
+    auto spell = pet -> find_spell( 215069 );
+
+    pet -> taktheritrix = buff_creator_t( pet, "taktheritrixs_command", spell )
+      .default_value( spell -> effectN( 1 ).percent() )
       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
-struct the_instructors_fourth_lesson_t : public scoped_actor_callback_t < death_knight_t >
+struct the_instructors_fourth_lesson_t : public scoped_actor_callback_t<death_knight_t>
 {
-  the_instructors_fourth_lesson_t() : super(DEATH_KNIGHT_UNHOLY)
-  {}
-
-  void manipulate(death_knight_t* p, const special_effect_t& e) override
-  {
-    p->legendary.the_instructors_fourth_lesson = e.driver()->effectN(1).base_value();
-  }
-};
-
-struct draugr_girdle_everlasting_king_t : public scoped_actor_callback_t < death_knight_t >
-{
-  // Note, we need to unconditionally initialize this item for all Death Knights because the proc is
-  // otherwise auto-initialized (for everyone), causing havoc.
-  draugr_girdle_everlasting_king_t() : super( DEATH_KNIGHT )
-  {}
-
-  void manipulate(death_knight_t* p, const special_effect_t& e) override
-  {
-    if ( p -> specialization() == DEATH_KNIGHT_UNHOLY )
-    {
-      p -> legendary.draugr_girdle_everlasting_king = e.driver() -> proc_chance();
-    }
-  }
-};
-
-struct uvanimor_the_unbeautiful_t : public scoped_actor_callback_t < death_knight_t >
-{
-  uvanimor_the_unbeautiful_t() : super( DEATH_KNIGHT_UNHOLY )
+  the_instructors_fourth_lesson_t() : super( DEATH_KNIGHT_UNHOLY )
   { }
 
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  {
-    p -> legendary.uvanimor_the_unbeautiful = e.driver() -> effectN( 1 ).percent();
-  }
+  { p -> legendary.the_instructors_fourth_lesson = e.driver() -> effectN( 1 ).base_value(); }
 };
 
-struct koltiras_newfound_will_t : public scoped_actor_callback_t < death_knight_t >
+struct draugr_girdle_everlasting_king_t : public scoped_actor_callback_t<death_knight_t>
 {
-  // Note, we need to unconditionally initialize this item for all Death Knights because the proc is
-  // otherwise auto-initialized (for everyone), causing havoc.
+  draugr_girdle_everlasting_king_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.draugr_girdle_everlasting_king = e.driver() -> proc_chance(); }
+};
+
+struct uvanimor_the_unbeautiful_t : public scoped_actor_callback_t<death_knight_t>
+{
+  uvanimor_the_unbeautiful_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.uvanimor_the_unbeautiful = e.driver() -> effectN( 1 ).percent(); }
+};
+
+struct koltiras_newfound_will_t : public scoped_actor_callback_t<death_knight_t>
+{
   koltiras_newfound_will_t() : super( DEATH_KNIGHT )
   { }
 
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  {
-    if ( p -> specialization() == DEATH_KNIGHT_FROST )
-    {
-      p -> legendary.koltiras_newfound_will = e.driver();
-    }
-    else
-    {
-      p -> legendary.koltiras_newfound_will = spell_data_t::not_found();
-    }
-  }
+  { p -> legendary.koltiras_newfound_will = e.driver(); }
 };
 
 struct death_knight_module_t : public module_t {
@@ -8167,7 +8053,6 @@ struct death_knight_module_t : public module_t {
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1 - 0.39 )
       .verification_value( 3.75 );
-    
 
     hotfix::register_effect( "Death Knight", "2016-09-23", "Remorseless Winter damage increased by 50%.", 288891 )
       .field( "ap_coefficient" )

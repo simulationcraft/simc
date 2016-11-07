@@ -1632,6 +1632,13 @@ public:
     trigger_impeccable_fel_essence();
   }
 
+  virtual bool consume_cost_per_tick( const dot_t& dot ) override
+  {
+    bool ab = ab::consume_cost_per_tick( dot );
+    trigger_impeccable_fel_essence();
+    return ab;
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = ab::composite_target_multiplier( t );
@@ -1805,9 +1812,7 @@ struct moonfire_t : public druid_spell_t
       triggers_galactic_guardian = false;
       dual = background = true;
       dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
-      base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 4 ).percent();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 6 ).percent();
-      base_td_multiplier *= 1.0 + p -> spec.guardian -> effectN( 7 ).percent();
 
       /* June 2016: This hotfix is negated if you shift into Moonkin Form (ever),
         so only apply it if the druid does not have balance affinity. */
@@ -3909,7 +3914,7 @@ struct regrowth_t: public druid_heal_t
     if ( p() -> talent.bloodtalons -> ok() )
       p() -> buff.bloodtalons -> trigger( 2 );
 
-    p() -> buff.predatory_swiftness -> expire();
+    p() -> buff.predatory_swiftness -> decrement( 1 );
 
     if ( p() -> buff.power_of_elune -> up() )
       p() -> buff.power_of_elune -> expire();
@@ -4844,7 +4849,7 @@ struct lunar_strike_t : public druid_spell_t
   void impact( action_state_t* s ) override
   {
     druid_spell_t::impact( s );
-    // Nature's Balance only extends Moonfire on the primary target.
+    // Nature's Balance only extends Moonfire on the primary target. FIXME: Actually extends the duration of ALL sunfires.
     if ( natures_balance > timespan_t::zero() && hit_any_target )
     {
       td( s -> target ) -> dots.moonfire -> extend_duration( natures_balance, timespan_t::from_seconds( 20.0 ) );
@@ -5147,6 +5152,7 @@ struct solar_wrath_t : public druid_spell_t
     base_execute_time *= 1.0 + player -> sets.set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     base_multiplier   *= 1.0 + player -> artifact.skywrath.percent();
     base_multiplier   *= 1.0 + player -> artifact.solar_stabbing.percent();
+    energize_amount = player -> spec.astral_power -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   double composite_crit_chance() const override

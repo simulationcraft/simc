@@ -55,6 +55,13 @@ namespace item
   void tempered_egg_of_serpentrix( special_effect_t& );
   void gnawed_thumb_ring( special_effect_t& );
 
+  // 7.1 Dungeon
+  void arans_relaxing_ruby( special_effect_t& );
+  void ring_of_collapsing_futures( special_effect_t& );
+  void mrrgrias_favor( special_effect_t& );
+  void toe_knees_promise( special_effect_t& );
+  void deteriorated_construct_core( special_effect_t& );
+
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
   void infernal_alchemist_stone( special_effect_t& ); // WIP
@@ -72,6 +79,9 @@ namespace item
   void unstable_horrorslime( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
   void bough_of_corruption( special_effect_t& );
+
+
+
 
   /* NYI ================================================================
   Nighthold ---------------------------------
@@ -198,6 +208,112 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.item, effect );
 }
+// Aran's Relaxing Ruby ============================================================
+
+struct flame_wreath_t : public spell_t
+{
+  flame_wreath_t( const special_effect_t& effect ) :
+    spell_t( "flame_wreath", effect.player, effect.player -> find_spell( 230257 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    item = effect.item;
+    school = SCHOOL_FIRE;
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+
+    for ( const auto& item : effect.player -> items )
+    {
+      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
+           item.name_str ==  "harness_of_smoldering_betrayal" ||
+           item.name_str ==  "hauberk_of_warped_intuition"    ||
+           item.name_str ==  "chestplate_of_impenetrable_darkness" )
+        //FIXME: Don't hardcode the 30% damage bonus
+        base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item ) * 1.3;
+    }
+    aoe = -1;
+  }
+
+};
+
+void item::arans_relaxing_ruby( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "flame_wreath" ) ;
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "flame_wreath", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new flame_wreath_t( effect );
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void item::ring_of_collapsing_futures( special_effect_t& effect )
+{
+  struct collapse_t: public proc_spell_t
+  {
+    collapse_t( const special_effect_t& effect ):
+      proc_spell_t( "collapse", effect.player,
+                    effect.player -> find_spell( effect.spell_id ),
+                    effect.item )
+    {}
+  };
+
+  struct apply_debuff_t: public action_t
+  {
+    special_effect_t effect_;
+    cooldown_t* base_cd;
+    action_t* collapse;
+    apply_debuff_t( special_effect_t& effect ):
+      action_t( ACTION_OTHER, "apply_temptation", effect.player, spell_data_t::nil() ),
+      effect_( effect ), base_cd( effect.player -> get_cooldown( effect.cooldown_name() ) ),
+      collapse( nullptr )
+    {
+      background = quiet = true;
+      callbacks = false;
+      collapse = effect.player -> find_action( "collapse" );
+      cooldown = base_cd;
+      if ( !collapse )
+      {
+        collapse = effect.player -> create_proc_action( "collapse", effect );
+      }
+
+      if ( !collapse )
+      {
+        collapse = new collapse_t( effect );
+      }
+    }
+
+    // Suppress assertion
+    result_e calculate_result( action_state_t* ) const override
+    { return RESULT_NONE; }
+
+    void execute() override
+    {
+      action_t::execute();
+
+      collapse -> target = target;
+      collapse -> schedule_execute();
+      if ( rng().roll( effect_.custom_buff -> stack_value() ) )
+      {
+        base_cd -> adjust( timespan_t::from_minutes( 5 ) ); // Ouch.
+      }
+
+      effect_.custom_buff -> trigger( 1 );
+    }
+  };
+
+  effect.custom_buff = effect.player -> buffs.temptation;
+  effect.execute_action = new apply_debuff_t( effect );
+  effect.buff_disabled = true; // Buff application is handled inside apply_debuff_t, and this will prevent use_item
+                               // from putting the item on cooldown but not using the action.
+}
 
 // Giant Ornamental Pearl ===================================================
 
@@ -242,6 +358,49 @@ void item::gnawed_thumb_ring( special_effect_t& effect )
 
   effect.player -> buffs.taste_of_mana = effect.custom_buff;
 }
+
+// Deteriorated Construct Core ==============================================
+struct volatile_energy_t : public spell_t
+{
+  volatile_energy_t( const special_effect_t& effect ) :
+    spell_t( "volatile_energy", effect.player, effect.player -> find_spell( 230241 ) )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    item = effect.item;
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+    for ( const auto& item : effect.player -> items )
+    {
+      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
+           item.name_str ==  "harness_of_smoldering_betrayal" ||
+           item.name_str ==  "hauberk_of_warped_intuition"    ||
+           item.name_str ==  "chestplate_of_impenetrable_darkness" )
+        //FIXME: Don't hardcode the 30% damage bonus
+        base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item ) * 1.3;
+    }
+    aoe = -1;
+  }
+};
+
+void item::deteriorated_construct_core( special_effect_t& effect )
+{
+  action_t* action = effect.player -> find_action( "volatile_energy" );
+  if ( ! action )
+  {
+    action = effect.player -> create_proc_action( "volatile_energy", effect );
+  }
+
+  if ( ! action )
+  {
+    action = new volatile_energy_t( effect );
+  }
+
+  effect.execute_action = action;
+  effect.proc_flags2_= PF2_ALL_HIT;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Impact Tremor ============================================================
 
 void item::impact_tremor( special_effect_t& effect )
@@ -263,6 +422,157 @@ void item::impact_tremor( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+// Mrrgria's Favor ==========================================================
+struct thunder_ritual_impact_t : public spell_t
+{
+  //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
+  // Right now we assume they are independant multipliers.
+  double paired_multiplier;
+  double chest_multiplier;
+  thunder_ritual_impact_t( const special_effect_t& effect ) :
+    spell_t( "thunder_ritual_damage", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
+    paired_multiplier( 1.0 ),
+    chest_multiplier( 1.0 )
+  {
+    background = may_crit = true;
+    callbacks = false;
+    for ( const auto& item : effect.player -> items )
+    {
+      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
+           item.name_str ==  "harness_of_smoldering_betrayal" ||
+           item.name_str ==  "hauberk_of_warped_intuition"    ||
+           item.name_str ==  "chestplate_of_impenetrable_darkness" )
+        //FIXME: Don't hardcode the 30% damage bonus
+        chest_multiplier += 0.3;
+    }
+    if ( player -> karazhan_trinkets_paired )
+      paired_multiplier += 0.3;
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * paired_multiplier * chest_multiplier;
+  }
+};
+
+struct thunder_ritual_t : public debuff_t
+{
+  action_t* damage_event;
+
+  thunder_ritual_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
+    debuff_t( buff_creator_t( p, "thunder_ritual", source_effect.driver() -> effectN( 1 ).trigger(), source_effect.item )
+                                  .duration( timespan_t::from_seconds( 3.0 ) ) ),
+                                  damage_event( source -> find_action( "thunder_ritual_damage" ) )
+  {}
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    debuff_t::expire_override( expiration_stacks, remaining_duration );
+    damage_event -> target = player;
+    damage_event -> execute();
+  }
+};
+
+struct thunder_ritual_driver_t : public proc_spell_t
+{
+  thunder_ritual_driver_t( special_effect_t& effect ) :
+    proc_spell_t( "thunder_ritual_driver", effect.player, effect.driver() -> effectN( 1 ).trigger(), effect.item )
+  {
+    harmful = false;
+    base_dd_min = base_dd_max = 0;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    proc_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      player -> get_target_data( s -> target ) -> debuff.thunder_ritual -> trigger();
+    }
+  }
+};
+struct mrrgrias_favor_constructor_t : public item_targetdata_initializer_t
+{
+  mrrgrias_favor_constructor_t( unsigned iid, const std::vector< slot_e >& s ) :
+    item_targetdata_initializer_t( iid, s )
+  { }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    const special_effect_t* effect = find_effect( td -> source );
+    if( effect == 0 )
+    {
+      td -> debuff.thunder_ritual = buff_creator_t( *td, "thunder_ritual" );
+    }
+    else
+    {
+      assert( ! td -> debuff.thunder_ritual );
+
+      td -> debuff.thunder_ritual = new thunder_ritual_t( *td, *effect );
+      td -> debuff.thunder_ritual -> reset();
+    }
+  }
+};
+
+void item::mrrgrias_favor( special_effect_t& effect )
+{
+  effect.execute_action = new thunder_ritual_driver_t( effect );
+  effect.execute_action -> add_child( new thunder_ritual_impact_t( effect ) );
+}
+
+
+// Toe Knee's Promise ======================================================
+
+struct flame_gale_pulse_t : spell_t
+{
+  //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
+  // Right now we assume they are independant multipliers.
+  double chest_multiplier;
+  double paired_multiplier;
+  flame_gale_pulse_t( special_effect_t& effect ) :
+    spell_t( "flame_gale_pulse", effect.player, effect.player -> find_spell( 230213 ) ),
+    chest_multiplier( 1.0 ),
+    paired_multiplier( 1.0 )
+  {
+    background = true;
+    callbacks = false;
+    school = SCHOOL_FIRE;
+    aoe = -1;
+    for ( const auto& item : effect.player -> items )
+    {
+      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
+           item.name_str ==  "harness_of_smoldering_betrayal" ||
+           item.name_str ==  "hauberk_of_warped_intuition"    ||
+           item.name_str ==  "chestplate_of_impenetrable_darkness" )
+        //FIXME: Don't hardcode the 30% damage bonus
+        chest_multiplier += 0.3;
+    }
+    if ( player -> karazhan_trinkets_paired )
+      paired_multiplier += 0.3;
+    base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item ) * paired_multiplier * chest_multiplier;
+  }
+};
+struct flame_gale_driver_t : spell_t
+{
+  flame_gale_pulse_t* flame_pulse;
+  flame_gale_driver_t( special_effect_t& effect ) :
+    spell_t( "flame_gale_driver", effect.player, effect.player -> find_spell( 230213 ) ),
+    flame_pulse( new flame_gale_pulse_t( effect ) )
+  {
+  background = true;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    spell_t::impact( s );
+      make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+        .pulse_time( timespan_t::from_seconds( 1.0 ) )
+        .target( execute_state -> target )
+        .duration( timespan_t::from_seconds( 8.0 ) )
+        .action( flame_pulse ) );
+  }
+};
+void item::toe_knees_promise( special_effect_t& effect )
+{
+  effect.execute_action = new flame_gale_driver_t( effect );
+}
 // Memento of Angerboda =====================================================
 
 struct memento_callback_t : public dbc_proc_callback_t
@@ -278,7 +588,7 @@ struct memento_callback_t : public dbc_proc_callback_t
     // Memento prefers to proc inactive buffs over active ones.
     // Make a vector with only the inactive buffs.
     std::vector<buff_t*> inactive_buffs;
-    
+
     for ( unsigned i = 0; i < buffs.size(); i++ )
     {
       if ( ! buffs[ i ] -> check() )
@@ -292,7 +602,7 @@ struct memento_callback_t : public dbc_proc_callback_t
     {
       inactive_buffs = buffs;
     }
-    
+
     // Roll it!
     int roll = ( int ) ( listener -> sim -> rng().real() * inactive_buffs.size() );
     inactive_buffs[ roll ] -> trigger();
@@ -701,7 +1011,9 @@ struct poisoned_dreams_damage_driver_t : public dbc_proc_callback_t
 
   poisoned_dreams_damage_driver_t( const special_effect_t& effect, action_t* d, player_t* t ) :
     dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
-  { }
+  {
+
+  }
 
   void trigger( action_t* a, void* call_data ) override
   {
@@ -740,8 +1052,8 @@ struct poisoned_dreams_t : public debuff_t
     effect = new special_effect_t( p.source );
     effect -> name_str = "poisoned_dreams_damage_driver";
     effect -> proc_chance_ = 1.0;
-    effect -> proc_flags_ = PF_SPELL | PF_AOE_SPELL;
-    effect -> proc_flags2_ = PF2_ALL_HIT;
+    effect -> proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+    effect -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
     p.source -> special_effects.push_back( effect );
 
     //TODO: Fix hardcoded ICD on the debuff proc application from spelldata.
@@ -1357,7 +1669,7 @@ struct natures_call_callback_t : public dbc_proc_callback_t
     // Nature's Call prefers to proc inactive buffs over active ones.
     // Make a vector with only the inactive buffs.
     std::vector<natures_call_proc_t*> inactive_procs;
-    
+
     for ( unsigned i = 0; i < procs.size(); i++ )
     {
       if ( ! procs[ i ] -> active() )
@@ -1365,7 +1677,7 @@ struct natures_call_callback_t : public dbc_proc_callback_t
         inactive_procs.push_back( procs[ i ] );
       }
     }
-    
+
     // Roll it!
     int roll = ( int ) ( listener -> sim -> rng().real() * inactive_procs.size() );
     inactive_procs[ roll ] -> execute( call_data -> target );
@@ -1394,7 +1706,7 @@ void item::natures_call( special_effect_t& effect )
 
   // Set trigger spell so we can automatically create the breath action.
   effect.trigger_spell_id = 222520;
-  procs.push_back( new natures_call_proc_t( effect.create_action() ) );  
+  procs.push_back( new natures_call_proc_t( effect.create_action() ) );
 
   // Disable trigger spell again
   effect.trigger_spell_id = 0;
@@ -2836,6 +3148,13 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 215745, item::tempered_egg_of_serpentrix     );
   register_special_effect( 228461, item::gnawed_thumb_ring              );
 
+  /* Legion 7.1 Dungeon */
+  register_special_effect( 230257, item::arans_relaxing_ruby            );
+  register_special_effect( 234142, item::ring_of_collapsing_futures     );
+  register_special_effect( 230222, item::mrrgrias_favor                 );
+  register_special_effect( 231952, item::toe_knees_promise              );
+  register_special_effect( 230236, item::deteriorated_construct_core    );
+
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );
   register_special_effect( 225139, item::convergence_of_fates   );
@@ -2917,5 +3236,6 @@ void unique_gear::register_target_data_initializers_x7( sim_t* sim )
   sim -> register_target_data_initializer( portable_manacracker_constructor_t( 137398, trinkets ) );
   sim -> register_target_data_initializer( wriggling_sinew_constructor_t( 139326, trinkets ) );
   sim -> register_target_data_initializer( bough_of_corruption_constructor_t( 139336, trinkets ) );
+  sim -> register_target_data_initializer( mrrgrias_favor_constructor_t( 142160, trinkets ) ) ;
 }
 

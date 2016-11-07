@@ -375,6 +375,7 @@ public:
     const spell_data_t* chain_lightning_2; // 7.1 Chain Lightning additional 2 targets passive
     const spell_data_t* elemental_focus;
     const spell_data_t* elemental_fury;
+    const spell_data_t* flame_shock_2; // 7.1 Flame Shock duration extension passive
     const spell_data_t* lava_burst_2; // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* lava_surge;
     const spell_data_t* spiritual_insight;
@@ -2483,11 +2484,11 @@ struct ancestral_awakening_t : public shaman_heal_t
   }
 };
 
-struct windfury_weapon_melee_attack_t : public shaman_attack_t
+struct windfury_attack_t : public shaman_attack_t
 {
   double furious_winds_chance;
 
-  windfury_weapon_melee_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
+  windfury_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
     shaman_attack_t( n, player, s ), furious_winds_chance( 0 )
   {
     weapon           = w;
@@ -3853,12 +3854,12 @@ struct chain_lightning_t: public chained_base_t
 
   timespan_t execute_time() const override
   {
-	  if (p()->buff.stormkeeper->up())
-	  {
-		  return timespan_t::zero();
-	  }
+    if (p()->buff.stormkeeper->up())
+    {
+      return timespan_t::zero();
+    }
 
-	  return shaman_spell_t::execute_time();
+    return shaman_spell_t::execute_time();
   }
 
   bool ready() override
@@ -4291,12 +4292,12 @@ struct lightning_bolt_t : public shaman_spell_t
   
   timespan_t execute_time() const override
   {
-	  if ( p() -> buff.stormkeeper -> up())
-	  {
-		  return timespan_t::zero();
-	  }
+    if ( p() -> buff.stormkeeper -> up())
+    {
+      return timespan_t::zero();
+    }
 
-	  return shaman_spell_t::execute_time();
+    return shaman_spell_t::execute_time();
   }
 
   void execute() override
@@ -4838,19 +4839,29 @@ struct earth_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
-  double duration_multiplier;
+  double duration_multiplier; // Elemental Bellows
+  timespan_t duration_per_maelstrom;
 
   flame_shock_t( shaman_t* player, const std::string& options_str = std::string()  ) :
     shaman_spell_t( "flame_shock", player, player -> find_specialization_spell( "Flame Shock" ), options_str ),
-    duration_multiplier( 1.0 )
+    duration_multiplier( 1.0 ), duration_per_maelstrom( timespan_t::zero() )
   {
     tick_may_crit         = true;
     track_cd_waste        = false;
     base_multiplier *= 1.0 + player -> artifact.firestorm.percent();
+
+    if ( player -> spec.flame_shock_2 -> ok() )
+    {
+      resource_current = RESOURCE_MAELSTROM;
+      secondary_costs[ RESOURCE_MAELSTROM ] = player -> spec.flame_shock_2 -> effectN( 1 ).base_value();
+      cooldown -> duration = timespan_t::zero(); // TODO: A mystery 6 second cooldown appeared out of nowhere
+
+      duration_per_maelstrom = dot_duration / secondary_costs[ RESOURCE_MAELSTROM ];
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
-  { return ( dot_duration + timespan_t::from_seconds( cost() ) ) * duration_multiplier; }
+  { return ( dot_duration + duration_per_maelstrom * cost() ) * duration_multiplier; }
 
   double action_ta_multiplier() const override
   {
@@ -5881,6 +5892,7 @@ void shaman_t::init_spells()
   spec.chain_lightning_2     = find_specialization_spell( 231722 );
   spec.elemental_focus       = find_specialization_spell( "Elemental Focus" );
   spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
+  spec.flame_shock_2         = find_specialization_spell( 232643 );
   spec.lava_burst_2          = find_specialization_spell( 231721 );
   spec.lava_surge            = find_specialization_spell( "Lava Surge" );
 
@@ -6879,10 +6891,10 @@ void shaman_t::init_action_list()
   // After error checks, initialize secondary actions for various things
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
-    windfury_mh = new windfury_weapon_melee_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
+    windfury_mh = new windfury_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
     if ( off_hand_weapon.type != WEAPON_NONE )
     {
-      windfury_oh = new windfury_weapon_melee_attack_t( "windfury_attack_oh", this, find_spell( 33750 ), &( off_hand_weapon ) );
+      windfury_oh = new windfury_attack_t( "windfury_attack_oh", this, find_spell( 33750 ), &( off_hand_weapon ) );
     }
     flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
   }
@@ -7714,11 +7726,11 @@ struct elemental_bellows_t : public scoped_action_callback_t<flame_shock_t>
   }
 };
 
-struct furious_winds_t : public scoped_action_callback_t<windfury_weapon_melee_attack_t>
+struct furious_winds_t : public scoped_action_callback_t<windfury_attack_t>
 {
-  furious_winds_t( const std::string& name_str ) : super( SHAMAN_ENHANCEMENT, name_str ) { }
+  furious_winds_t( const std::string& name_str ) : super( SHAMAN, name_str ) { }
 
-  void manipulate( windfury_weapon_melee_attack_t* action, const special_effect_t& effect ) override
+  void manipulate( windfury_attack_t* action, const special_effect_t& effect ) override
   {
     action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0;
     action -> furious_winds_chance = effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0;
@@ -7727,7 +7739,7 @@ struct furious_winds_t : public scoped_action_callback_t<windfury_weapon_melee_a
 
 struct echoes_of_the_great_sundering_t : public scoped_action_callback_t<earth_shock_t>
 {
-  echoes_of_the_great_sundering_t() : super( SHAMAN_ELEMENTAL, "earth_shock" )
+  echoes_of_the_great_sundering_t() : super( SHAMAN, "earth_shock" )
   { }
 
   void manipulate( earth_shock_t* action, const special_effect_t& e ) override
@@ -7736,7 +7748,7 @@ struct echoes_of_the_great_sundering_t : public scoped_action_callback_t<earth_s
 
 struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
 {
-  echoes_of_the_great_sundering_buff_t() : super( SHAMAN_ELEMENTAL, "echoes_of_the_great_sundering" )
+  echoes_of_the_great_sundering_buff_t() : super( SHAMAN, "echoes_of_the_great_sundering" )
   { }
 
   buff_t*& buff_ptr( const special_effect_t& e ) override
@@ -7746,8 +7758,6 @@ struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
   { return super::creator( e ).spell( e.player -> find_spell( 208723 ) ); }
 };
 
-// Note, Emalon's Charged Core needs to be SHAMAN scope (not SHAMAN_ENHANCEMENT) because otherwise
-// the fallback will not be created.
 struct emalons_charged_core_t : public scoped_action_callback_t<crash_lightning_t>
 {
   emalons_charged_core_t() : super( SHAMAN, "crash_lightning" )
@@ -7775,7 +7785,7 @@ struct emalons_charged_core_buff_t : public class_buff_cb_t<buff_t>
 
 struct pristine_protoscale_girdle_t : public scoped_action_callback_t<lava_burst_t>
 {
-  pristine_protoscale_girdle_t() : super( SHAMAN_ELEMENTAL, "lava_burst" )
+  pristine_protoscale_girdle_t() : super( SHAMAN, "lava_burst" )
   { }
 
   void manipulate( lava_burst_t* action, const special_effect_t& ) override
@@ -7789,7 +7799,7 @@ struct pristine_protoscale_girdle_t : public scoped_action_callback_t<lava_burst
 
 struct storm_tempests_t : public scoped_action_callback_t<stormstrike_base_t>
 {
-  storm_tempests_t( const std::string& strike_str ) : super( SHAMAN_ENHANCEMENT, strike_str )
+  storm_tempests_t( const std::string& strike_str ) : super( SHAMAN, strike_str )
   { }
 
   void manipulate( stormstrike_base_t* action, const special_effect_t& ) override
@@ -7803,7 +7813,7 @@ struct storm_tempests_t : public scoped_action_callback_t<stormstrike_base_t>
 
 struct the_deceivers_blood_pact_t: public scoped_action_callback_t<earth_shock_t>
 {
-  the_deceivers_blood_pact_t() : super( SHAMAN_ELEMENTAL, "earth_shock" )
+  the_deceivers_blood_pact_t() : super( SHAMAN, "earth_shock" )
   { }
 
   void manipulate( earth_shock_t* action, const special_effect_t& e ) override
@@ -7832,7 +7842,7 @@ struct spiritual_journey_t : public class_buff_cb_t<buff_t>
 
 struct akainus_absolute_justice_t : public scoped_action_callback_t<lava_lash_t>
 {
-  akainus_absolute_justice_t() : super( SHAMAN_ENHANCEMENT, "lava_lash" )
+  akainus_absolute_justice_t() : super( SHAMAN, "lava_lash" )
   { }
 
   void manipulate( lava_lash_t* action, const special_effect_t& e ) override
@@ -7843,7 +7853,7 @@ template <typename T>
 struct alakirs_acrimony_t : public scoped_action_callback_t<T>
 {
   alakirs_acrimony_t( const std::string& action_str ) :
-    scoped_action_callback_t<T>( SHAMAN_ELEMENTAL, action_str )
+    scoped_action_callback_t<T>( SHAMAN, action_str )
   { }
 
   void manipulate( T* action, const special_effect_t& e ) override
@@ -8041,16 +8051,16 @@ struct shaman_module_t : public module_t
       .verification_value( 10 );
       */
  /*   hotfix::register_spell("Shaman", "2016-10-25", "Earth Shock damage increased by 15%. ", 8042)
-		.field("sp_coefficient")
-		.operation(hotfix::HOTFIX_MUL)
-		.modifier(1.15)
-		.verification_value(8);
+    .field("sp_coefficient")
+    .operation(hotfix::HOTFIX_MUL)
+    .modifier(1.15)
+    .verification_value(8);
 
-	hotfix::register_spell("Shaman", "2016-10-25", "Frost Shock damage increased by 15%. ", 196840)
-		.field("sp_coefficient")
-		.operation(hotfix::HOTFIX_MUL)
-		.modifier(1.15)
-		.verification_value(0.56);*/
+  hotfix::register_spell("Shaman", "2016-10-25", "Frost Shock damage increased by 15%. ", 196840)
+    .field("sp_coefficient")
+    .operation(hotfix::HOTFIX_MUL)
+    .modifier(1.15)
+    .verification_value(0.56);*/
   }
 
   void combat_begin( sim_t* ) const override {}

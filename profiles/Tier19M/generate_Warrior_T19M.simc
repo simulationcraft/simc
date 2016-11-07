@@ -1,27 +1,44 @@
+# T19M
+# Tier 19 Mythic
+# * Ilvl Cap: 885
+# * Artifact Rank Cap: 34
+# * 3 Relics with max ilevel of 885
+# * No Legendaries (see Raid_T19x_Legendary.simc)
+# * No items from Nighthold (including set bonuses) except in T19M_NH
+# * No items from World Bosses / World Quests / BoEs
+# * Mythic+ gear is permitted up to the Mythic+ item level cap
+# * No items from Violet Hold (unless 840 ilevel)
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Warforged/Titanforged)
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
+
 # Warrior Fury T19M
 warrior="Warrior_Fury_T19M"
 level=110
 race=troll
 role=attack
-spec=fury
+position=back
 talents=2232133
-artifact=35:139256:139262:139255:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:4:989:4:990:4:991:3:992:3:993:3:994:3:995:3:996:3:1357:1
+artifact=35:142516:139262:142511:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:3:990:4:991:4:992:3:993:3:994:3:995:4:996:3:1357:1
+spec=fury
 
-head=warhelm_of_the_obsidian_aspect,id=138357,bonus_id=3443
-neck=radiant_string_of_scorpid_eyes,id=140898,bonus_id=3443,enchant=mark_of_the_hidden_satyr
-shoulders=shoulderplates_of_the_obsidian_aspect,id=138363,bonus_id=3443
-back=astromancers_greatcloak,id=140909,bonus_id=1806,enchant=binding_of_strength
-chest=chestplate_of_the_obsidian_aspect,id=138351,bonus_id=3443
-wrists=dragonbone_wristclamps,id=138218,bonus_id=1806
-hands=gauntlets_of_the_obsidian_aspect,id=138354,bonus_id=3443
-waist=waistplate_of_nameless_horror,id=139227,bonus_id=1806
-legs=legplates_of_the_obsidian_aspect,id=138360,bonus_id=3443
-feet=immaculately_polished_boots,id=140904,bonus_id=3443
-finger1=ring_of_braided_stems,id=140896,bonus_id=3443,enchant=binding_of_mastery
-finger2=ayalas_stone_heart,id=137052,bonus_id=1811,enchant=binding_of_mastery
-trinket1=ursocs_rending_paw,id=139328,bonus_id=1806
-trinket2=draught_of_souls,id=140808,bonus_id=3443
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=139256/139262/139255,relic_id=1806/1806/1806
+head=venomfanged_barbute,id=139229,bonus_id=1806
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_hidden_satyr
+shoulders=midnight_heralds_pauldrons,id=139232,bonus_id=1806
+back=drape_of_the_unworthy,id=142521,bonus_id=3469,enchant=binding_of_strength
+chest=gleaming_valkyr_cuirass,id=142431,bonus_id=3469
+wrists=calcareous_wristclamps,id=142427,bonus_id=3469
+hands=fitted_ironbark_gauntlets,id=139225,bonus_id=1806
+waist=krakenbone_waistplate,id=142424,bonus_id=3469
+legs=stormbattered_legplates,id=139230,bonus_id=1806
+feet=trampling_warboots,id=139234,bonus_id=1806
+finger1=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant=binding_of_haste
+finger2=dawnlight_band,id=130231,bonus_id=3373/670,gem_id=130220,enchant=binding_of_haste
+trinket1=spontaneous_appendages,id=139325,bonus_id=1806
+trinket2=eye_of_command,id=142167
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=142516/139262/142511,relic_id=3469/1806/3469
 off_hand=warswords_of_the_valarjar,id=134553
 save=Warrior_Fury_T19M.simc
 
@@ -29,27 +46,27 @@ save=Warrior_Fury_T19M.simc
 warrior="Warrior_Arms_T19M"
 level=110
 race=blood_elf
-spec=Arms
 role=attack
 position=back
 talents=1332311
-artifact=36:140815:141523:140822:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:3:1148:3:1149:4:1150:5:1151:3:1356:1
+artifact=36:139261:142510:142512:0:1136:1:1137:1:1138:1:1139:1:1140:1:1141:1:1142:1:1143:3:1144:3:1145:3:1146:3:1147:4:1148:3:1149:4:1150:4:1151:3:1356:1
+spec=arms
 
-head=,id=138357,bonus_id=1806
-neck=,id=140894,bonus_id=1806,enchant=mark_of_the_trained_soldier
-shoulders=,id=138363,bonus_id=1806
-back=,id=138374,bonus_id=1806,enchant=binding_of_strength
-chest=,id=140913,bonus_id=1806
-wrists=,id=140902,bonus_id=1806
-hands=,id=137060,bonus_id=1811
-waist=,id=140880,bonus_id=1806
-legs=,id=138360,bonus_id=1806
-feet=,id=140884,bonus_id=1806
-finger1=,id=140906,bonus_id=1806,enchant=binding_of_mastery
-finger2=ring_of_the_scoured_clan,id=140897,bonus_id=1806,enchant=binding_of_mastery
+head=venomfanged_barbute,id=139229,bonus_id=1806
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_hidden_satyr
+shoulders=midnight_heralds_pauldrons,id=139232,bonus_id=1806
+back=drape_of_the_unworthy,id=142521,bonus_id=3469,enchant=binding_of_strength
+chest=insectetched_chestplate,id=139224,bonus_id=1806
+wrists=dragonbone_wristclamps,id=138218,bonus_id=1806
+hands=reinforced_houndhandlers_gauntlets,id=142435,bonus_id=3469
+waist=krakenbone_waistplate,id=142424,bonus_id=3469
+legs=goldrune_legplates,id=142425,bonus_id=3469
+feet=trampling_warboots,id=139234,bonus_id=1806
+finger1=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant=binding_of_haste
+finger2=shadowruby_band,id=136713,bonus_id=670/1703,gems=150mastery,enchant=binding_of_mastery
 trinket1=spontaneous_appendages,id=139325,bonus_id=1806
-trinket2=terrorbound_nexus,id=137406,bonus_id=1806
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=140815/137377/139257,relic_id=1806/1806/1806
+trinket2=spiked_counterweight,id=136715,bonus_id=1517/1727
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=139261/142510/142512,relic_id=1806/3469/3469
 save=Warrior_Arms_T19M.simc
 
 # Warrior Protection T19M
@@ -68,7 +85,7 @@ shoulders=midnight_herald's_pauldrons,id=139232,bonus_id=1502/1806
 back=evergreen_vinewrap_drape,id=139248,bonus_id=1502/1806,enchant=binding_of_strength
 chest=insect-etched_chestplate,id=139224,bonus_id=1502/1806
 wrists=dragonbone_wristclamps,id=138218,bonus_id=1502/1806
-hands=kakushan's_stormscale_gauntlets,id=137108
+hands=blood-spattered_gauntlets,id=137525,bonus_id=1517/1727/3337
 waist=waistplate_of_nameless_horror,id=139227,bonus_id=1502/1806
 legs=storm-battered_legplates,id=139230,bonus_id=1502/1806
 feet=trampling_warboots,id=139234,bonus_id=1502/1806

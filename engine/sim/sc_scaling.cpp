@@ -525,6 +525,7 @@ void scaling_t::create_options()
   sim->add_option(opt_float("scale_mastery_rating", stats.mastery_rating));
   sim->add_option(opt_float("scale_versatility_rating", stats.versatility_rating));
   sim->add_option(opt_float("scale_weapon_dps", stats.weapon_dps));
+  sim->add_option(opt_float("scale_speed_rating", stats.speed_rating));
   sim->add_option(opt_float("scale_offhand_weapon_dps", stats.weapon_offhand_dps));
   sim->add_option(opt_string("scale_only", scale_only_str));
   sim->add_option(opt_string("scale_over", scale_over));

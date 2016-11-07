@@ -1,0 +1,34 @@
+# This is a global profile used to check every relevant legendaries for one class.
+# You have to set "$(Tier)=..." before calling it.
+#
+# Example :
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+#
+# It will call the Rogue T19H Profiles then test with every legendaries defined below.
+# You only have to set $(Tier) one time. (i.e. you can call the Warrior and Rogue profiles altogether)
+# You can even do that to test 2 Tiers at the same time :
+#
+# $(Tier)=T19H
+# Rogue_Legendaries.simc
+# $(Tier)=T19M
+# Rogue_Legendaries.simc
+
+
+
+# Shadow - S2M only
+Priest_Shadow_$(Tier)_S2M.simc
+copy=Shadow_$(Tier)_Anunds,Priest_Shadow_$(Tier)_S2M
+wrist=anunds_seared_shackles,id=132409
+
+#copy=Shadow_$(Tier)_Zenk'aram,Priest_Shadow_$(Tier)_S2M
+#head=zenkaram_iridis_anadem,id=133971
+
+#copy=Shadow_$(Tier)_Twin's,Priest_Shadow_$(Tier)_S2M
+#finger1=the_twins_painful_touch,id=133973,bonus_id=1811,enchant=binding_of_haste
+
+copy=Shadow_$(Tier)_Mangaza's,Priest_Shadow_$(Tier)_S2M
+waist=mangazas_madness,id=132864
+
+copy=Shadow_$(Tier)_Sharaz,Priest_Shadow_$(Tier)_S2M
+shoulder=mother_shahrazs_seduction,id=132437

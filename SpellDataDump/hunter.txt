@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 1242eba)
+SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build c4ec018)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -3802,12 +3802,15 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
 Effects          :
-#1 (id=271164)   : Apply Aura (6) | Scale% (61)
-                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Active Pet(5)
-#2 (id=271165)   : Apply Aura (6) | Modify Damage Done% (79)
+#1 (id=271164)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Active Pet(5)
-#3 (id=271166)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Active Pet(5)
+                   Hotfixed: Sub Type (61 -> 79), Base Value (50 -> 25), Misc Value (0 -> 127)
+#2 (id=271165)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Active Pet(5)
+                   Hotfixed: Sub Type (79 -> 4), Misc Value (127 -> 12)
+#3 (id=271166)   : Apply Aura (6) | Scale% (61)
+                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Active Pet(5)
+                   Hotfixed: Sub Type (4 -> 61), Base Value (0 -> 50), Misc Value (12 -> 0)
 #4 (id=271167)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Active Pet(5)
 #5 (id=271168)   : Apply Aura (6) | Unknown effect sub type (103)
@@ -4735,6 +4738,10 @@ Effects          :
 #1 (id=285224)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
+#2 (id=355504)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self(1)
+                   Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
+                   Hotfixed: NEW EFFECT
 Description      : Increase the damage bonus of Bestial Wrath by $s1%.
 
 Name             : Volley (id=194386) [Spell Family (9)] 

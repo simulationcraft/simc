@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "710"
-#define SC_MINOR_VERSION "01"
+#define SC_MINOR_VERSION "02"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -495,6 +495,8 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     debuff_t* mark_of_doom;
     debuff_t* poisoned_dreams;
     debuff_t* fel_burn;
+    debuff_t* flame_wreath;
+    debuff_t* thunder_ritual;
     debuff_t* brutal_haymaker;
     debuff_t* taint_of_the_sea;
     debuff_t* volatile_magic;
@@ -3813,6 +3815,7 @@ struct player_t : public actor_t
   set_bonus_t sets;
   meta_gem_e meta_gem;
   bool matching_gear;
+  bool karazhan_trinkets_paired;
   cooldown_t item_cooldown;
   cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
 
@@ -3891,6 +3894,9 @@ struct player_t : public actor_t
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
+
+    // 7.1
+    buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
 
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
@@ -7172,7 +7178,7 @@ struct proc_resource_t : public spell_t
   proc_resource_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* item_ ) :
     spell_t( token, p, s ), gain_da( 0 ), gain_ta( 0 ), gain_resource( RESOURCE_NONE )
   {
-    callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = false;
+    callbacks = may_crit = may_miss = may_dodge = may_parry = may_block = hasted_ticks = false;
     background = true;
     target = player;
     item = item_;
@@ -7188,6 +7194,7 @@ struct proc_resource_t : public spell_t
       else if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_ENERGIZE )
       {
         gain_ta = effect.average( item );
+        gain_resource = effect.resource_gain_type();
       }
     }
 

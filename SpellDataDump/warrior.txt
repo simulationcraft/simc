@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 1242eba)
+SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build c4ec018)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -274,7 +274,8 @@ Effects          :
 #2 (id=236708)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=236709)   : Weapon Damage% (31)
-                   Base Value: 5 | Scaled Value: 0.05 | Target: Enemy(6)
+                   Base Value: 105 | Scaled Value: 1.05 | Target: Enemy(6)
+                   Hotfixed: Base Value (5 -> 105)
 Description      : Maims the enemy for $sw3 Physical damage, reducing movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 

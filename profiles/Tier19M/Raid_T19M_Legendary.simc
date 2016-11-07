@@ -4,7 +4,7 @@
 # * Artifact Rank Cap: 34
 # * 3 Relics with max ilevel of 885
 # * No Legendaries (see Raid_T19x_Legendary.simc)
-# * No items from Nighthold (including set bonuses) except in T19M_NH
+# * No items from Nighthold (including set bonuses)
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
 # * No items from Violet Hold (unless 840 ilevel)
@@ -42,7 +42,7 @@ $(Tier)=T19M
 
  
 # Priest
-
+Priest_Legendaries.simc
  
 # Rogue
 Rogue_Legendaries.simc
@@ -54,4 +54,4 @@ Rogue_Legendaries.simc
  
 
 # Warrior
-
+Warrior_Legendaries.simc

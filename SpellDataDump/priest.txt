@@ -1,4 +1,4 @@
-SimulationCraft 710-01 for World of Warcraft 7.1.0 Live (wow build 22900, git build 1242eba)
+SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build c4ec018)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -2855,6 +2855,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 20 yards | Target: At Caster(22) -> AOE friendly(30)
 
 Name             : Ascension (id=161862) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holy
@@ -2864,7 +2865,7 @@ Duration         : 20 seconds
 Cooldown         : 90 seconds
 Stance Mask      : 0x08000000
 Triggered by     : Codex of Ascension (168803)
-Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
+Attributes       : ........ .....x.. x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 

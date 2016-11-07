@@ -395,7 +395,11 @@ void SC_MainWindow::createOptionsTab()
   mainTab -> addTab( optionsTab, tr( "Options" ) );
 
   connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
-  connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), newBattleNetView -> widget(), SLOT( armoryRegionChanged( const QString& ) ) );
+  connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ),
+           newBattleNetView -> widget(), SLOT( armoryRegionChangedIn( const QString& ) ) );
+
+  connect( newBattleNetView -> widget(), SIGNAL( armoryRegionChangedOut( const QString& ) ),
+           optionsTab,                   SLOT( _armoryRegionChanged( const QString& ) ) );
 }
 
 void SC_MainWindow::createImportTab()
@@ -860,7 +864,7 @@ void SC_MainWindow::startSim()
   sim -> output_file_str = (reportFileBase + ".txt").toStdString();
   sim -> html_file_str = (reportFileBase + ".html").toStdString();
 
-  sim -> xml_file_str = (reportFileBase + ".xml").toStdString();
+  //sim -> xml_file_str = (reportFileBase + ".xml").toStdString();
   sim -> reforge_plot_output_file_str = (reportFileBase + "_plotdata.csv").toStdString();
 
   if ( optionsTab -> get_api_key().size() == 32 ) // api keys are 32 characters long, it's not worth parsing <32 character keys.

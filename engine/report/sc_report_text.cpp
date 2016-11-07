@@ -323,12 +323,14 @@ void print_text_generic_stats( FILE* file, player_t* p )
       file,
       "  Generic Stats: mastery=%.2f%%|%.2f%%(%.0f)  "
       "versatility=%.2f%%|%.2f%%(%.0f)  "
-      "leech=%.2f%%|%.2f%%(%.0f)\n",
+      "leech=%.2f%%|%.2f%%(%.0f)  "
+      "runspeed=%.2f%%|%.2f%%(%.0f)\n",
       100.0 * buffed_stats.mastery_value, 100.0 * p->cache.mastery_value(),
       p->composite_mastery_rating(), 100 * buffed_stats.damage_versatility,
       100 * p->composite_damage_versatility(),
       p->composite_damage_versatility_rating(), 100 * buffed_stats.leech,
-      100 * p->composite_leech(), p->composite_leech_rating() );
+      100 * p->composite_leech(), p->composite_leech_rating(),
+      buffed_stats.run_speed, p -> composite_movement_speed(), p -> composite_speed_rating() );
 }
 
 // print_text_spell_stats ===================================================

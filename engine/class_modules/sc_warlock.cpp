@@ -58,6 +58,10 @@ namespace pets {
   }
 }
 
+namespace actions{
+  struct effigy_damage_override_t;
+}
+
 #define MAX_UAS 5
 
 struct warlock_td_t: public actor_target_data_t
@@ -102,7 +106,8 @@ struct warlock_t: public player_t
 {
 public:
   player_t* havoc_target;
-  double shard_accumulator;
+  double agony_accumulator;
+  double demonwrath_accumulator;
 
   // Active Pet
   struct pets_t
@@ -142,6 +147,7 @@ public:
     action_t* harvester_of_souls;
     spell_t* rain_of_fire;
     spell_t* corruption;
+    actions::effigy_damage_override_t* effigy_damage_override;
 
   } active;
 
@@ -441,6 +447,9 @@ public:
     proc_t* t18_demo_4p;
     proc_t* souls_consumed;
     proc_t* the_expendables;
+    proc_t* wilfreds_dog;
+    proc_t* wilfreds_imp;
+    proc_t* wilfreds_darkglare;
   } procs;
 
   struct spells_t
@@ -504,6 +513,7 @@ public:
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
 
   void trigger_lof_infernal();
+  void trigger_effigy(pets::soul_effigy_t *effigy);
 
   target_specific_t<warlock_td_t> target_data;
 
@@ -516,6 +526,8 @@ public:
     }
     return td;
   }
+
+
 
 private:
   void apl_precombat();
@@ -634,7 +646,7 @@ namespace pets {
     }
   };
 
-namespace actions {
+//namespace petactions {
 
 // Template for common warlock pet action code. See priest_action_t.
 template <class ACTION_BASE>
@@ -647,7 +659,7 @@ public:
   typedef warlock_pet_action_t base_t;
 
   warlock_pet_action_t( const std::string& n, warlock_pet_t* p,
-                        const spell_data_t* s = spell_data_t::nil() ):
+                        const spell_data_t* s = spell_data_t::nil()):
                         ab( n, p, s )
   {
     ab::may_crit = true;
@@ -1224,11 +1236,13 @@ struct eye_laser_t : public warlock_pet_spell_t
   }
 };
 
-struct soul_effigy_t : public warlock_pet_spell_t
+struct soul_effigy_spell_t : public warlock_pet_spell_t
 {
-  soul_effigy_t( warlock_pet_t* p ) :
+  soul_effigy_t *effi;
+  soul_effigy_spell_t( warlock_pet_t* p , soul_effigy_t *effi) :
     warlock_pet_spell_t( "soul_effigy", p, p -> find_spell( 205260 ) )
   {
+    this->effi = effi;
     background = true;
     may_miss = may_crit = false;
   }
@@ -1260,9 +1274,14 @@ struct soul_effigy_t : public warlock_pet_spell_t
 
     return m;
   }
+
+  void execute() override
+  {
+    this->p()->o()->trigger_effigy(effi);
+  }
 };
 
-} // pets::actions
+//} // pets::actions
 
 warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ):
 pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr )
@@ -1376,7 +1395,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
      m *= 1.0 +  o() -> cache.mastery_value();
   }
 
-  m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
+  if ( o() -> bugs && pet_type != PET_WILD_IMP ) //FIXME sindorei is currently not buffing imps.
+    m *= 1.0 + o() -> buffs.sindorei_spite -> check_stack_value();
 
   return m;
 }
@@ -1443,7 +1463,7 @@ struct imp_pet_t: public warlock_pet_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "firebolt" ) return new actions::firebolt_t( this );
+    if ( name == "firebolt" ) return new firebolt_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1462,13 +1482,13 @@ struct felguard_pet_t: public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
 
-    melee_attack = new actions::warlock_pet_melee_t( this );
-    special_action = new actions::felstorm_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
+    special_action = new felstorm_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "legion_strike" ) return new actions::legion_strike_t( this );
+    if ( name == "legion_strike" ) return new legion_strike_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1489,7 +1509,7 @@ struct t18_illidari_satyr_t: public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
-    melee_attack = new actions::warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
     if ( o() -> warlock_pet_list.t18_illidari_satyr[0] )
       melee_attack -> stats = o() -> warlock_pet_list.t18_illidari_satyr[0] -> get_stats( "melee" );
   }
@@ -1509,7 +1529,7 @@ struct t18_prince_malchezaar_t: public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
-    melee_attack = new actions::warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
     if ( o() -> warlock_pet_list.t18_prince_malchezaar[0] )
       melee_attack -> stats = o() -> warlock_pet_list.t18_prince_malchezaar[0] -> get_stats( "melee" );
   }
@@ -1538,7 +1558,7 @@ struct t18_vicious_hellhound_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
     base_energy_regen_per_second = 0;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
-    melee_attack = new actions::warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
     melee_attack -> base_execute_time = timespan_t::from_seconds( 1.0 );
     if ( o() -> warlock_pet_list.t18_vicious_hellhound[0] )
       melee_attack -> stats = o() -> warlock_pet_list.t18_vicious_hellhound[0] -> get_stats( "melee" );
@@ -1568,7 +1588,7 @@ struct chaos_tear_t : public warlock_pet_t
   {
     if ( name == "chaos_bolt" )
     {
-      action_t* a = new actions::rift_chaos_bolt_t( this );
+      action_t* a = new rift_chaos_bolt_t( this );
       chaos_bolt_stats = &( a -> stats );
       if ( this == o() -> warlock_pet_list.chaos_tear[0] || sim -> report_pets_separately )
       {
@@ -1634,7 +1654,7 @@ namespace shadowy_tear {
     {
       if ( name == "shadow_bolt" )
       {
-        action_t* a = new actions::rift_shadow_bolt_t( this );
+        action_t* a = new rift_shadow_bolt_t( this );
         shadow_bolt_stats = &( a -> stats );
         if ( this == o() -> warlock_pet_list.shadowy_tear[0] || sim -> report_pets_separately )
         {
@@ -1707,7 +1727,7 @@ namespace chaos_portal {
     {
       if ( name == "chaos_barrage" )
       {
-        action_t* a = new actions::chaos_barrage_t( this );
+        action_t* a = new chaos_barrage_t( this );
         chaos_barrage_stats = &( a -> stats );
         if ( this == o() -> warlock_pet_list.chaos_portal[0] || sim -> report_pets_separately )
         {
@@ -1744,12 +1764,12 @@ struct felhunter_pet_t: public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
 
-    melee_attack = new actions::warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "shadow_bite" ) return new actions::shadow_bite_t( this );
+    if ( name == "shadow_bite" ) return new shadow_bite_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1769,14 +1789,14 @@ struct succubus_pet_t: public warlock_pet_t
     warlock_pet_t::init_base_stats();
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
-    melee_attack = new actions::warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
     if ( ! util::str_compare_ci( name_str, "service_succubus" ) )
-      special_action = new actions::whiplash_t( this );
+      special_action = new whiplash_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "lash_of_pain" ) return new actions::lash_of_pain_t( this );
+    if ( name == "lash_of_pain" ) return new lash_of_pain_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1794,12 +1814,12 @@ struct voidwalker_pet_t: public warlock_pet_t
   {
     warlock_pet_t::init_base_stats();
 
-    melee_attack = new actions::warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "torment" ) return new actions::torment_t( this );
+    if ( name == "torment" ) return new torment_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1819,7 +1839,7 @@ struct infernal_t: public warlock_pet_t
     action_list_str = "immolation,if=!ticking";
     if ( o() -> talents.grimoire_of_supremacy -> ok() )
       action_list_str += "/meteor_strike,if=time>1";
-    melee_attack = new actions::warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
 
     resources.base[RESOURCE_ENERGY] = 0;
     base_energy_regen_per_second = 0;
@@ -1827,8 +1847,8 @@ struct infernal_t: public warlock_pet_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
-    if ( name == "meteor_strike" ) return new actions::meteor_strike_t( this, options_str );
+    if ( name == "immolation" ) return new immolation_t( this, options_str );
+    if ( name == "meteor_strike" ) return new meteor_strike_t( this, options_str );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1850,12 +1870,12 @@ struct lord_of_flames_infernal_t : public warlock_pet_t
     action_list_str = "immolation,if=!ticking";
     resources.base[RESOURCE_ENERGY] = 0;
     base_energy_regen_per_second = 0;
-    melee_attack = new actions::warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "immolation" ) return new actions::immolation_t( this, options_str );
+    if ( name == "immolation" ) return new immolation_t( this, options_str );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1886,7 +1906,7 @@ struct doomguard_t: public warlock_pet_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "doom_bolt" ) return new actions::doom_bolt_t( this );
+    if ( name == "doom_bolt" ) return new doom_bolt_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -1938,7 +1958,7 @@ struct wild_imp_pet_t: public warlock_pet_t
   {
     if ( name == "fel_firebolt" )
     {
-      firebolt = new actions::fel_firebolt_t( this );
+      firebolt = new fel_firebolt_t( this );
       fel_firebolt_stats = &( firebolt -> stats );
       if ( this == o() -> warlock_pet_list.wild_imps[ 0 ] || sim -> report_pets_separately )
       {
@@ -2001,12 +2021,19 @@ struct dreadstalker_t : public warlock_pet_t
       return pw;
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = warlock_pet_t::composite_player_multiplier( school );
+    m *= 0.76; // FIXME dreadstalkers do 76% damage for no apparent reason, thanks blizzard.
+    return m;
+  }
+
   void init_base_stats() override
   {
     warlock_pet_t::init_base_stats();
     resources.base[RESOURCE_ENERGY] = 0;
     base_energy_regen_per_second = 0;
-    melee_attack = new actions::warlock_pet_melee_t( this );
+    melee_attack = new warlock_pet_melee_t( this );
     if ( o() -> warlock_pet_list.dreadstalkers[0] )
       melee_attack -> stats = o() ->warlock_pet_list.dreadstalkers[0] -> get_stats( "melee" );
   }
@@ -2015,7 +2042,7 @@ struct dreadstalker_t : public warlock_pet_t
   {
     if ( name == "dreadbite" )
     {
-      action_t* a = new actions::dreadbite_t( this );
+      action_t* a = new dreadbite_t( this );
       dreadbite_stats = &( a -> stats );
       if ( this == o() ->warlock_pet_list.dreadstalkers[0] || sim -> report_pets_separately )
       {
@@ -2052,7 +2079,7 @@ struct darkglare_t : public warlock_pet_t
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
-    if ( name == "eye_laser" ) return new actions::eye_laser_t( this );
+    if ( name == "eye_laser" ) return new eye_laser_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -2061,7 +2088,7 @@ struct darkglare_t : public warlock_pet_t
 struct soul_effigy_t : public warlock_pet_t
 {
   const spell_data_t* soul_effigy_passive;
-  actions::soul_effigy_t* damage;
+  soul_effigy_spell_t* damage;
 
   soul_effigy_t( warlock_t* owner ) :
     warlock_pet_t( owner -> sim, owner, "soul_effigy", PET_WARLOCK ),
@@ -2072,7 +2099,7 @@ struct soul_effigy_t : public warlock_pet_t
 
   bool create_actions() override
   {
-    damage = new actions::soul_effigy_t( this );
+    damage = new soul_effigy_spell_t( this, this ); //lmfao
 
     return warlock_pet_t::create_actions();
   }
@@ -2496,10 +2523,11 @@ public:
 
         p -> warlock_pet_list.wild_imps[i] -> trigger(doge);
         p -> procs.wild_imp -> occur();
-        if(p->legendary.wilfreds_sigil_of_superior_summoning_flag && !p->talents.grimoire_of_supremacy->ok())
+        if( p -> legendary.wilfreds_sigil_of_superior_summoning_flag && !p -> talents.grimoire_of_supremacy -> ok() )
         {
-            p->cooldowns.doomguard->adjust(p->legendary.wilfreds_sigil_of_superior_summoning);
-            p->cooldowns.infernal->adjust(p->legendary.wilfreds_sigil_of_superior_summoning);
+            p -> cooldowns.doomguard -> adjust( p -> legendary.wilfreds_sigil_of_superior_summoning );
+            p -> cooldowns.infernal -> adjust( p -> legendary.wilfreds_sigil_of_superior_summoning );
+            p -> procs.wilfreds_imp -> occur();
         }
         return;
       }
@@ -2544,7 +2572,7 @@ struct agony_t: public warlock_spell_t
     td( d -> state -> target ) -> agony_stack = 1;
 
     if ( p() -> get_active_dots( internal_id ) == 1 )
-      p() -> shard_accumulator = rng().range( 0.0, 0.99 );
+      p() -> agony_accumulator = rng().range( 0.0, 0.99 );
 
 
     warlock_spell_t::last_tick( d );
@@ -2563,12 +2591,12 @@ struct agony_t: public warlock_spell_t
     double active_agonies = p() -> get_active_dots( internal_id );
     double accumulator_increment = rng().range( 0.0, p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.48 : 0.32 ) / sqrt( active_agonies );
 
-    p() -> shard_accumulator += accumulator_increment;
+    p() -> agony_accumulator += accumulator_increment;
 
-    if ( p() -> shard_accumulator > 1 )
+    if ( p() -> agony_accumulator >= 1 )
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.agony );
-      p() -> shard_accumulator -= 1.0;
+      p() -> agony_accumulator -= 1.0;
 
       // If going from 0 to 1 shard was a surprise, the player would have to react to it
       if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
@@ -2761,7 +2789,8 @@ struct unstable_affliction_t: public warlock_spell_t
       warlock_spell_t( "compounding_horror", p, p -> find_spell( 231489 ) )
     {
       background = true;
-      proc = true;
+      //proc = true; Compounding Horror can proc trinkets and has no resource cost.
+      callbacks = true;
     }
 
     virtual double action_multiplier() const override
@@ -3267,9 +3296,8 @@ struct hand_of_guldan_t: public warlock_spell_t
         if ( wild_imp -> is_sleeping() )
         {
           count--;
-          //wild_imp -> trigger();
-          trigger_wild_imp(p);
-          p -> procs.wild_imp -> occur();
+
+          trigger_wild_imp( p );
         }
         if ( count == 0 )
           return;
@@ -4038,15 +4066,24 @@ struct demonwrath_tick_t: public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    double accumulator_increment = rng().range( 0.0, 0.3 );
+
+    p() -> demonwrath_accumulator += accumulator_increment;
+
+    if ( p() -> demonwrath_accumulator >= 1 )
     {
-      if( rng().roll( p() -> find_spell( 193440 ) -> effectN( 1 ).percent() ))
-      {
-        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.demonwrath );
-      }
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.demonwrath );
+      p() -> demonwrath_accumulator -= 1.0;
+
+      // If going from 0 to 1 shard was a surprise, the player would have to react to it
+      if ( p() -> resources.current[RESOURCE_SOUL_SHARD] == 1 )
+        p() -> shard_react = p() -> sim -> current_time() + p() -> total_reaction_time();
+      else if ( p() -> resources.current[RESOURCE_SOUL_SHARD] >= 1 )
+        p() -> shard_react = p() -> sim -> current_time();
+      else
+        p() -> shard_react = timespan_t::max();
     }
   }
-
 };
 
 struct demonwrath_t: public warlock_spell_t
@@ -4362,6 +4399,7 @@ struct summon_darkglare_t : public warlock_spell_t
         {
             p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
             p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+            p()->procs.wilfreds_darkglare->occur();
         }
       }
     }
@@ -4413,6 +4451,7 @@ struct call_dreadstalkers_t : public warlock_spell_t
         {
             p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
             p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+            p()->procs.wilfreds_dog->occur();
         }
         if ( ++j == dreadstalker_count ) break;
       }
@@ -4453,6 +4492,35 @@ struct summon_soul_effigy_t : public warlock_spell_t
     p() -> warlock_pet_list.soul_effigy -> target = execute_state -> target;
     p() -> warlock_pet_list.soul_effigy -> summon( data().duration() );
   }
+};
+
+struct effigy_damage_override_t: public warlock_spell_t
+{
+  //    effigy_damage_override_t( warlock_t * p, pets::soul_effigy_t *t ) :
+  //        warlock_spell_t( "effigy_damage", p, NULL ,true )
+  //    {
+  //        this->initialized = true;
+  //        this->target = t->damage->target;
+  //        this->base_dd_min = t->damage->base_dd_min;
+  //        this->base_dd_max = t->damage->base_dd_min;
+  //    }
+  effigy_damage_override_t( warlock_t * p ):
+    warlock_spell_t( "effigy_damage", p, NULL )
+  {
+  }
+
+  void setupEffigyStuff( pets::soul_effigy_spell_t *t )
+  {
+    this->target = t->target;
+    this->base_dd_min = t->base_dd_min;
+    this->base_dd_max = t->base_dd_min;
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+  }
+
 };
 
 // TALENT SPELLS
@@ -4635,7 +4703,7 @@ struct shadowflame_t : public warlock_spell_t
     double m = warlock_spell_t::composite_ta_multiplier( state );
 
     if ( td( state -> target ) -> dots_shadowflame -> is_ticking() )
-      m *= 1.0 + td( target ) -> debuffs_shadowflame -> stack();
+      m *= td( target ) -> debuffs_shadowflame -> stack();
 
     return m;
   }
@@ -4772,6 +4840,16 @@ struct haunt_t: public warlock_spell_t
   haunt_t( warlock_t* p ):
     warlock_spell_t( "haunt", p, p -> talents.haunt )
   {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuffs_haunt -> trigger();
+    }
   }
 };
 
@@ -4919,7 +4997,7 @@ struct reap_souls_t: public warlock_spell_t
       harmful = may_crit = false;
       ignore_false_positive = true;
 
-      base_duration = p -> buffs.deadwind_harvester -> buff_duration;
+      base_duration = p -> buffs.deadwind_harvester -> buff_duration + timespan_t::from_seconds(3);
     }
 
     virtual bool ready() override
@@ -5003,7 +5081,8 @@ struct harvester_of_souls_t : public warlock_spell_t
     warlock_spell_t( "harvester_of_souls", p, p -> find_spell( 218615 ) )
   {
     background = true;
-    proc = true;
+    //proc = true; Harvester of Souls can proc trinkets and has no resource cost so no need.
+    callbacks = true;
   }
 };
 
@@ -5232,7 +5311,8 @@ warlock( p )
   dots_phantom_singularity = target -> get_dot( "phantom_singularity", &p );
   dots_channel_demonfire = target -> get_dot( "channel_demonfire", &p );
 
-  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) )
+  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_spell( 48181 ) )
+    .duration( timespan_t::from_seconds( 15 ) )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   debuffs_shadowflame = buff_creator_t( *this, "shadowflame", source -> find_spell( 205181 ) );
   debuffs_agony = buff_creator_t( *this, "agony", source -> find_spell( 980 ) )
@@ -5268,12 +5348,20 @@ void warlock_td_t::target_demise()
     }
     warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
   }
+  if ( warlock.specialization() == WARLOCK_AFFLICTION && debuffs_haunt -> check() )
+  {
+    if ( warlock.sim -> log )
+    {
+      warlock.sim -> out_debug.printf( "Player %s demised. Warlock %s reset haunt's cooldown.", target -> name(), warlock.name() );
+    }
+    warlock.cooldowns.haunt -> reset( true );
+  }
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
-    shard_accumulator( 0 ),
+    agony_accumulator( 0 ),
     warlock_pet_list( pets_t() ),
     active( active_t() ),
     talents( talents_t() ),
@@ -5803,6 +5891,7 @@ void warlock_t::init_spells()
   active.demonic_power_proc = new actions::demonic_power_damage_t( this );
   active.thalkiels_discord = new actions::thalkiels_discord_t( this );
   active.harvester_of_souls = new actions::harvester_of_souls_t( this );
+  active.effigy_damage_override = new actions::effigy_damage_override_t(this);
   if ( specialization() == WARLOCK_AFFLICTION )
   {
     active.corruption = new actions::corruption_t( this );
@@ -6034,6 +6123,9 @@ void warlock_t::init_procs()
   procs.t18_demo_4p = get_proc( "t18_demo_4p" );
   procs.souls_consumed = get_proc( "souls_consumed" );
   procs.the_expendables = get_proc( "the_expendables" );
+  procs.wilfreds_dog = get_proc( "wilfreds_dog" );
+  procs.wilfreds_imp = get_proc( "wilfreds_imp" );
+  procs.wilfreds_darkglare = get_proc( "wilfreds_darkglare" );
 }
 
 void warlock_t::apl_precombat()
@@ -6053,7 +6145,9 @@ void warlock_t::apl_precombat()
   if ( sim -> allow_food )
   {
     // Food
-    if ( true_level == 110 )
+    if ( true_level == 110 && specialization() == WARLOCK_AFFLICTION )
+      precombat_list += "/food,type=nightborne_delicacy_platter";
+    else if ( true_level == 110 )
       precombat_list += "/food,type=azshari_salad";
     else if ( true_level >= 100 && specialization() == WARLOCK_DESTRUCTION )
       precombat_list += "/food,type=frosty_stew";
@@ -6120,11 +6214,12 @@ void warlock_t::apl_affliction()
   action_list_str += ")";
 
   action_list_str += "/soul_effigy,if=!pet.soul_effigy.active";
-  add_action( "Agony", "if=remains<=tick_time+gcd" );
-  add_action( "Agony", "target=soul_effigy,if=remains<=tick_time+gcd" );
+  add_action( "Agony", "cycle_targets=1,if=remains<=tick_time+gcd" );
   action_list_str += "/service_pet,if=dot.corruption.remains&dot.agony.remains";
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
@@ -6147,10 +6242,8 @@ void warlock_t::apl_affliction()
   if ( find_item( "obelisk of_the_void" ) )
     action_list_str += "|buff.collapsing_shadow.remains";
 
-  add_action( "Corruption", "if=remains<=tick_time+gcd" );
-  add_action( "Siphon Life", "if=remains<=tick_time+gcd" );
-  add_action( "Corruption", "target=soul_effigy,if=remains<=tick_time+gcd" );
-  add_action( "Siphon Life", "target=soul_effigy,if=remains<=tick_time+gcd" );
+  add_action( "Corruption", "cycle_targets=1,if=remains<=tick_time+gcd" );
+  add_action( "Siphon Life", "cycle_targets=1,if=remains<=tick_time+gcd" );
   action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3";
   action_list_str += "/phantom_singularity";
   add_action( "Unstable Affliction", "if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
@@ -6162,13 +6255,10 @@ void warlock_t::apl_affliction()
     action_list_str += "|buff.collapsing_shadow.remains";
   action_list_str += ")";
 
-  add_action( "Agony", "if=remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Agony", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Corruption", "if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Agony", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Corruption", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
   action_list_str += "/haunt";
-  add_action( "Siphon Life", "if=remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Corruption", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
-  add_action( "Siphon Life", "target=soul_effigy,if=remains<=duration*0.3&target.time_to_die>=remains" );
+  add_action( "Siphon Life", "cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains" );
   add_action( "Life Tap", "if=mana.pct<=10" );
   action_list_str += "/drain_soul,chain=1,interrupt=1";
   add_action( "Drain Life", "chain=1,interrupt=1" );
@@ -6185,6 +6275,8 @@ void warlock_t::apl_demonology()
   action_list_str += "/service_pet";
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   add_action( "Call Dreadstalkers", "if=!talent.summon_darkglare.enabled&(spell_targets.implosion<3|!talent.implosion.enabled)" );
   add_action( "Hand of Gul'dan", "if=soul_shard>=4&!talent.summon_darkglare.enabled" );
   action_list_str += "/summon_darkglare,if=prev_gcd.hand_of_guldan";
@@ -6258,9 +6350,11 @@ void warlock_t::apl_destruction()
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
   action_list_str += "/service_pet";
   add_action( "Summon Infernal", "if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains" );
-  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active" );
   add_action( "Summon Doomguard", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)" );
   add_action( "Summon Infernal", "if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening>=3" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&artifact.lord_of_flames.rank>0&buff.lord_of_flames.remains&!pet.doomguard.active" );
+  add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
+  add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   action_list_str += "/soul_harvest";
   action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Chaos Bolt", "if=soul_shard>3|buff.backdraft.remains" );
@@ -6340,7 +6434,8 @@ void warlock_t::reset()
   warlock_pet_list.active = nullptr;
   shard_react = timespan_t::zero();
   havoc_target = nullptr;
-  shard_accumulator = rng().range( 0.0, 0.99 );
+  agony_accumulator = rng().range( 0.0, 0.99 );
+  demonwrath_accumulator = 0.0;
 }
 
 void warlock_t::create_options()
@@ -7055,6 +7150,14 @@ void warlock_t::trigger_lof_infernal()
       if ( ++j == infernal_count ) break;
     }
   }
+}
+
+void warlock_t::trigger_effigy(pets::soul_effigy_t *effigy)
+{
+    this->active.effigy_damage_override->setupEffigyStuff(effigy->damage);
+    this->active.effigy_damage_override->execute();
+//    qDebug() << "Testing that we got here";
+//    qDebug() << "Test #2";
 }
 
 

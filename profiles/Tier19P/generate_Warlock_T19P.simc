@@ -11,7 +11,7 @@
 
 warlock="Warlock_Affliction_T19P"
 level=110
-race=troll
+race=human
 role=spell
 spec=affliction
 talents=2101011
@@ -41,7 +41,7 @@ level=110
 race=troll
 role=spell
 spec=demonology
-talents=2201032
+talents=3201032
 artifact=37:137549:137492:133764:0:1170:1:1171:3:1173:2:1176:6:1177:3:1178:3:1180:1:1182:1:1183:1:1185:1:1354:1
 
 head=collar_of_enclosure,id=134424,bonus_id=1727

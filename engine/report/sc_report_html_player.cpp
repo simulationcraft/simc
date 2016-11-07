@@ -4032,7 +4032,7 @@ void print_html_player_procs( report::sc_html_stream& os,
   // Procs Section
   os << "<div class=\"player-section procs\">\n"
      << "<h3 class=\"toggle\">Procs</h3>\n"
-     << "<div class=\"toggle-content hide\">\n"
+     << "<div class=\"toggle-content open\">\n"
      << "<table class=\"sc\">\n"
      << "<tr>\n"
      << "<th></th>\n"
@@ -4155,13 +4155,13 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p,
 
   print_html_player_buffs( os, p, p.report_information );
 
+  print_html_player_procs( os, p.proc_list );
+
   print_html_player_custom_section( os, p, p.report_information );
 
   print_html_player_resources( os, p, p.report_information );
 
   print_html_player_benefits_uptimes( os, p );
-
-  print_html_player_procs( os, p.proc_list );
 
   print_html_player_deaths( os, p, p.report_information );
 

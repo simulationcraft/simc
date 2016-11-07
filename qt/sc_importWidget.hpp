@@ -7,15 +7,10 @@
 #define SC_IMPORTWIDGET_HPP
 
 #include <QtWidgets/QtWidgets>
-//#include <QtWidgets/QHBoxLayout>
-//#include <QtWidgets/QLabel>
-//#include <QtWidgets/QComboBox>
 #include <QStandardItemModel>
-//#include <QLineEdit>
 #include <QMap>
 #include <QVector>
 #include <QFile>
-//#include <QPushButton>
 #include <QRegExpValidator>
 #include <QDebug>
 #include <QSettings>
@@ -26,9 +21,12 @@ class BattleNetImportWidget : public QWidget
 
     typedef QMap<QString, QStandardItemModel*> RealmDataModel;
 
-    QHBoxLayout* m_layout;
+    // Simple horizontal layout for the widget
+    QHBoxLayout*      m_layout;
 
     // Components
+    QLabel*           m_regionLabel;
+    QComboBox*        m_regionCombo;
     QLabel*           m_realmLabel;
     QComboBox*        m_realmCombo;
     QLabel*           m_characterLabel;
@@ -41,9 +39,6 @@ class BattleNetImportWidget : public QWidget
     RealmDataModel    m_realmModels;
     QSettings         m_settings;
 
-    // State
-    QString           m_currentRegion;
-
 public:
     BattleNetImportWidget( QWidget* parent = nullptr );
 
@@ -52,7 +47,7 @@ public:
 
     // Accessors that sanitize the input to a form simc understands
     QString region() const
-    { return m_currentRegion.toLower(); }
+    { return m_regionCombo -> currentText().toLower(); }
 
     QString realm() const
     { return m_realmCombo -> currentData( Qt::UserRole ).toString(); }
@@ -65,10 +60,11 @@ public:
 
     bool validateInput() const;
 signals:
-    void importTriggered( const QString&, const QString&, const QString&, const QString& );
+    void importTriggeredOut( const QString&, const QString&, const QString&, const QString& );
+    void armoryRegionChangedOut( const QString& );
 
 public slots:
-    void armoryRegionChanged( const QString& );
+    void armoryRegionChangedIn( const QString& );
 
 private slots:
     void returnPressed();
@@ -79,8 +75,9 @@ private:
     void parseRealmListFile( QFile& file );
     void loadRealmData();
     void populateSpecialization();
+    void populateRegion();
 
-    void populateComboBox( const QString& );
+    void selectRegion( const QString& );
 };
 
 #endif /* SC_IMPORTWIDGET_HPP */

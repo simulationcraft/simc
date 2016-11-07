@@ -38,18 +38,6 @@ finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=150mastery,enchant=bind
 trinket1=chrono_shard,id=137419,bonus_id=1517/3418
 trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
 main_hand=titanstrike,id=128861,ilevel=894,gem_id=137365/133768/137543
-
-# Gear Summary
-# gear_ilvl=864.60
-# gear_agility=14399
-# gear_stamina=22317
-# gear_crit_rating=2240
-# gear_haste_rating=5339
-# gear_mastery_rating=12318
-# gear_versatility_rating=807
-# gear_armor=2630
-# set_bonus=tier19p_mail_2pc=1
-summon_pet=cat
 save=Hunter_BM_T19H.simc
 
 hunter="Hunter_MM_T19H"
@@ -76,18 +64,6 @@ finger2=shadowruby_band,id=136713,bonus_id=669/1703,gems=150mastery,enchant=bind
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1517/3418
 trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,ilevel=894,gem_id=137313/136718/137381
-
-# Gear Summary
-# gear_ilvl=864.60
-# gear_agility=14399
-# gear_stamina=22317
-# gear_crit_rating=2240
-# gear_haste_rating=5339
-# gear_mastery_rating=12318
-# gear_versatility_rating=807
-# gear_armor=2630
-# set_bonus=tier19p_mail_2pc=1
-summon_pet=cat
 save=Hunter_MM_T19H.simc
 
 hunter="Hunter_SV_T19H"
@@ -114,16 +90,4 @@ finger2=grubby_silver_ring,id=139236,bonus_id=1487/1805,enchant=binding_of_versa
 trinket1=tirathons_betrayal,id=137537,bonus_id=1517/3418
 trinket2=bloodthirsty_instinct,id=139329,bonus_id=1487/1805
 main_hand=talonclaw,id=128808,ilevel=894,gem_id=137550/137408/137350
-
-# Gear Summary
-# gear_ilvl=864.93
-# gear_agility=15817
-# gear_stamina=22317
-# gear_crit_rating=7206
-# gear_haste_rating=2294
-# gear_mastery_rating=1673
-# gear_versatility_rating=6302
-# gear_armor=2630
-# set_bonus=tier19p_mail_2pc=1
-summon_pet=cat
 save=Hunter_SV_T19H.simc

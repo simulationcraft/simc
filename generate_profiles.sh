@@ -1,4 +1,4 @@
-for tier in 19P 19H 19M
+for tier in 19P 19H 19M 19M_NH
 do
   PROFDIR='profiles/Tier'$tier'/'
   cd $PROFDIR

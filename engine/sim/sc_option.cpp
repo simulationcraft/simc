@@ -885,14 +885,15 @@ option_db_t::option_db_t()
 
     prefix += "/";
 
-    auto_path.push_back( prefix + "Legendaries" ); // Tier Profiles + Legendaries
+    auto_path.push_back( prefix + "Legendaries" ); // Legendaries
+    auto_path.push_back( prefix + "Tier19M_NH" ); // T19M for Nighthold
 
     // Add profiles for each tier, except pvp
     for ( unsigned i = 0; i < N_TIER; ++i )
     {
       auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "B" );
-      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H" );
       auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "M" );
+      auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H" );
       auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "N" );
       auto_path.push_back( prefix + "Tier" + util::to_string( MIN_TIER + i ) + "P" );
     }

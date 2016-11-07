@@ -1,39 +1,44 @@
 # T19M
 # Tier 19 Mythic
-# * Ilvl Cap: 880
+# * Ilvl Cap: 885
 # * Artifact Rank Cap: 34
-# * No items from Nighthold (including set bonuses)
-# * Only One Legendary can be used
+# * 3 Relics with max ilevel of 885
+# * No Legendaries (see Raid_T19x_Legendary.simc)
+# * No items from Nighthold (including set bonuses) except in T19M_NH
+# * No items from World Bosses / World Quests / BoEs
+# * Mythic+ gear is permitted up to the Mythic+ item level cap
+# * No items from Violet Hold (unless 840 ilevel)
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Warforged/Titanforged)
-# * If Bonus Bosses are accessible in this raid tier, use it. (ie. Sinestra/Ra'den)
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 # Shadow
 priest="Priest_Shadow_T19M"
 level=110
 race=troll
-role=dps
+role=spell
 position=back
-talents=1211311
+talents=1001312
+artifact=47:142512:139257:142512:0:764:1:765:1:766:1:767:3:768:1:769:1:770:1:771:3:772:3:773:3:774:3:775:3:776:6:777:3:778:3:779:1:1347:1
 spec=shadow
-artifact=47:139251:139257:139251:0:764:1:765:1:766:1:767:3:768:1:769:1:770:1:771:3:772:5:773:3:774:3:775:3:776:4:777:3:778:3:779:1:1347:1
 
-head=hood_of_darkened_visions,id=139189,bonus_id=1806
+head=celestially_aligned_hood,id=139188,bonus_id=1806
 neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_claw
 shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1806
-back=evergreen_vinewrap_drape,id=139248,bonus_id=1806,enchant=200int
-chest=dreamscale_inlaid_vestments,id=138215,bonus_id=1806
+back=mantle_of_the_victorious_dead,id=142540,bonus_id=3469,enchant=200int
+chest=robes_of_celestial_adornment,id=142410,bonus_id=3469
 wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
 hands=handwraps_of_delusional_power,id=138212,bonus_id=1806
-waist=mangazas_madness,id=132864
-legs=ragged_horrorweave_leggings,id=139190,bonus_id=1806
-feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1806
-finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1806,enchant=200haste
-finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant=200haste
+waist=cinch_of_light,id=142411,bonus_id=3469
+legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469
+feet=treads_of_the_drowned,id=142414,bonus_id=3469
+finger1=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=200haste
+finger2=dawnlight_band,id=130231,bonus_id=3371/670,gem_id=130220,enchant=binding_of_haste
 trinket1=swarming_plaguehive,id=139321,bonus_id=1806
-trinket2=twisting_wind,id=139323,bonus_id=1806
-main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=139251/139257/139251,relic_id=1806/1806/1806
+trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1517
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=142512/139257/142512,relic_id=3469/1806/3469
 off_hand=secrets_of_the_void,id=133958
 save=Priest_Shadow_T19M.simc
 
@@ -43,24 +48,24 @@ level=110
 race=troll
 role=dps
 position=back
-talents=1212333
+talents=1002213
 spec=shadow
-artifact=47:139251:139257:139251:0:764:1:765:1:766:1:767:3:768:1:769:1:770:1:771:3:772:5:773:3:774:3:775:3:776:4:777:3:778:3:779:1:1347:1
+artifact=47:142512:139257:142512:0:764:1:765:1:766:1:767:3:768:1:769:1:770:1:771:3:772:5:773:3:774:3:775:3:776:4:777:3:778:3:779:1:1347:1
 
-head=hood_of_darkened_visions,id=139189,bonus_id=1806
+head=celestially_aligned_hood,id=139188,bonus_id=1806
 neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_claw
 shoulders=mantle_of_perpetual_bloom,id=139192,bonus_id=1806
-back=evergreen_vinewrap_drape,id=139248,bonus_id=1806,enchant=200int
-chest=dreamscale_inlaid_vestments,id=138215,bonus_id=1806
+back=mantle_of_the_victorious_dead,id=142540,bonus_id=3469,enchant=200int
+chest=robes_of_celestial_adornment,id=142410,bonus_id=3469
 wrists=cinch_of_cosmic_insignficance,id=139187,bonus_id=1806
 hands=handwraps_of_delusional_power,id=138212,bonus_id=1806
-waist=mangazas_madness,id=132864
-legs=ragged_horrorweave_leggings,id=139190,bonus_id=1806
-feet=cozy_dryad_hoofsocks,id=139194,bonus_id=1806
-finger1=twicewarped_azsharan_signet,id=139238,bonus_id=1806,enchant=200haste
-finger2=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant=200haste
+waist=cinch_of_light,id=142411,bonus_id=3469
+legs=leggings_of_the_lower_planes,id=142413,bonus_id=3469
+feet=treads_of_the_drowned,id=142414,bonus_id=3469
+finger1=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=200haste
+finger2=dawnlight_band,id=130231,bonus_id=3371/670,gem_id=130220,enchant=binding_of_haste
 trinket1=swarming_plaguehive,id=139321,bonus_id=1806
-trinket2=twisting_wind,id=139323,bonus_id=1806
-main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=139251/139257/139251,relic_id=1806/1806/1806
+trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1517
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=142512/139257/142512,relic_id=3469/1806/3469
 off_hand=secrets_of_the_void,id=133958
 save=Priest_Shadow_T19M_S2M.simc

@@ -629,6 +629,7 @@ player_t::player_t( sim_t*             s,
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
   auto_attack_multiplier( 1.0 ),
+  karazhan_trinkets_paired( false ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -1331,7 +1332,7 @@ struct touch_of_the_grave_spell_t : public spell_t
   touch_of_the_grave_spell_t( player_t* p, const spell_data_t* spell ) :
     spell_t( "touch_of_the_grave", p, spell )
   {
-    background = true;
+    background = may_crit = true;
     base_dd_min = base_dd_max = 0;
     attack_power_mod.direct = 1.0;
     spell_power_mod.direct = 1.0;
@@ -2743,6 +2744,11 @@ void player_t::create_buffs()
                               .add_invalidate( CACHE_HASTE )
                               .add_invalidate( CACHE_SPIRIT )
                               .chance( 0 );
+
+      buffs.temptation = buff_creator_t( this, "temptation", find_spell( 234143 ) )
+        .cd( timespan_t::zero() )
+        .chance( 1 )
+        .default_value( 0.1 ); //Not in spelldata
     }
   }
 
@@ -3281,7 +3287,9 @@ double player_t::composite_leech() const
 double player_t::composite_run_speed() const
 {
   // speed DRs using the following formula:
-  return 1.0 / ( 1 / 0.29 + ( current.rating.speed * 100 ) / composite_speed_rating() );
+  double pct = composite_speed_rating() / current.rating.speed;
+  double coefficient = std::exp( -.0003 * composite_speed_rating() );
+  return pct * coefficient * .1;
 }
 
 // player_t::composite_avoidance ================================================
@@ -3436,7 +3444,7 @@ double player_t::composite_movement_speed() const
     speed *= debuffs.dazed -> data().effectN( 1 ).percent();
 
   return speed;
-  }
+}
 
 // player_t::composite_attribute ============================================
 
@@ -6188,30 +6196,29 @@ struct variable_t : public action_t
 {
   action_var_e operation;
   action_variable_t* var;
+  std::string value_str, var_name_str;
   expr_t* value_expression;
 
   variable_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_VARIABLE, "variable", player ),
-    operation( OPERATION_SET ), var( 0 ), value_expression( 0 )
+    operation( OPERATION_SET ), var( nullptr ), value_expression( nullptr )
   {
     quiet = true;
     harmful = proc = callbacks = may_miss = may_crit = may_block = may_parry = may_dodge = false;
     trigger_gcd = timespan_t::zero();
 
-    std::string name_;
-    std::string value_;
     std::string operation_;
     double default_ = 0;
     timespan_t delay_;
 
-    add_option( opt_string( "name", name_ ) );
-    add_option( opt_string( "value", value_ ) );
+    add_option( opt_string( "name", name_str ) );
+    add_option( opt_string( "value", value_str ) );
     add_option( opt_string( "op", operation_ ) );
     add_option( opt_float( "default", default_ ) );
     add_option( opt_timespan( "delay", delay_ ) );
     parse_options( options_str );
 
-    if ( name_.empty() )
+    if ( name_str.empty() )
     {
       sim -> errorf( "Player %s unnamed 'variable' action used", player -> name() );
       background = true;
@@ -6249,17 +6256,9 @@ struct variable_t : public action_t
     if ( operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
          operation != OPERATION_PRINT )
     {
-      if ( value_.empty() )
+      if ( value_str.empty() )
       {
-        sim -> errorf( "Player %s no value expression given for variable '%s'", player -> name(), name_.c_str() );
-        background = true;
-        return;
-      }
-
-      value_expression = expr_t::parse( this, value_ );
-      if ( ! value_expression )
-      {
-        sim -> errorf( "Player %s unable to parse 'variable' value '%s'", player -> name(), value_.c_str() );
+        sim -> errorf( "Player %s no value expression given for variable '%s'", player -> name(), name_str.c_str() );
         background = true;
         return;
       }
@@ -6271,7 +6270,7 @@ struct variable_t : public action_t
       std::string cooldown_name = "variable_actor";
       cooldown_name += util::to_string( player -> index );
       cooldown_name += "_";
-      cooldown_name += name_;
+      cooldown_name += name_str;
 
       cooldown = player -> get_cooldown( cooldown_name );
       cooldown -> duration = delay_;
@@ -6280,7 +6279,7 @@ struct variable_t : public action_t
     // Find the variable
     for ( auto& elem : player -> variables )
     {
-      if ( util::str_compare_ci( elem -> name_, name_ ) )
+      if ( util::str_compare_ci( elem -> name_, name_str ) )
       {
         var = elem;
         break;
@@ -6289,8 +6288,25 @@ struct variable_t : public action_t
 
     if ( ! var )
     {
-      player -> variables.push_back( new action_variable_t( name_, default_ ) );
+      player -> variables.push_back( new action_variable_t( name_str, default_ ) );
       var = player -> variables.back();
+    }
+  }
+
+  void init() override
+  {
+    action_t::init();
+
+    if ( ! background &&
+         operation != OPERATION_FLOOR && operation != OPERATION_CEIL &&
+         operation != OPERATION_RESET && operation != OPERATION_PRINT )
+    {
+      value_expression = expr_t::parse( this, value_str );
+      if ( ! value_expression )
+      {
+        sim -> errorf( "Player %s unable to parse 'variable' value '%s'", player -> name(), value_str.c_str() );
+        background = true;
+      }
     }
   }
 
@@ -6429,10 +6445,11 @@ struct shadowmeld_t : public racial_spell_t
 struct arcane_torrent_t : public racial_spell_t
 {
   double gain_pct;
+  double gain_energy;
 
   arcane_torrent_t( player_t* p, const std::string& options_str ) :
     racial_spell_t( p, "arcane_torrent", p -> find_racial_spell( "Arcane Torrent" ), options_str ),
-    gain_pct( 0 )
+    gain_pct( 0 ), gain_energy( 0 )
   {
     energize_type = ENERGIZE_ON_CAST;
     // Some specs need special handling here
@@ -6450,10 +6467,13 @@ struct arcane_torrent_t : public racial_spell_t
         gain_pct = data().effectN( 3 ).percent();
         break;
       case MONK_WINDWALKER:
-        parse_effect_data( data().effectN( 4 ) );
+      {
+        parse_effect_data( data().effectN( 2 ) ); // Chi
+        gain_energy = data().effectN( 4 ).base_value(); // Energy
         break;
+      }
       case MONK_BREWMASTER:
-        parse_effect_data( data().effectN( 2 ) );
+        gain_energy = data().effectN( 4 ).base_value();
         break;
       case PALADIN_HOLY:
         gain_pct = data().effectN( 3 ).percent();
@@ -6472,6 +6492,9 @@ struct arcane_torrent_t : public racial_spell_t
       double gain = player -> resources.max [ RESOURCE_MANA ] * gain_pct;
       player -> resource_gain( RESOURCE_MANA, gain, player -> gains.arcane_torrent );
     }
+
+    if ( gain_energy > 0 )
+      player -> resource_gain( RESOURCE_ENERGY, gain_energy, player -> gains.arcane_torrent );
   }
 };
 
@@ -8047,7 +8070,7 @@ void player_t::override_artifact( const std::vector<const artifact_power_data_t*
   }
 
   artifact.points[ power_index ].first = override_rank;
-  artifact.points[ power_index ].second = 0; // If someone is trying to override the artifact, they probably don't want to take relic gems into account. 
+  artifact.points[ power_index ].second = 0; // If someone is trying to override the artifact, they probably don't want to take relic gems into account.
 }
 
 // player_t::replace_spells =================================================
@@ -9957,6 +9980,7 @@ void player_t::create_options()
     add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );
     add_option( opt_timespan( "reaction_time_offset", reaction_offset ) );
     add_option( opt_bool( "stat_cache", cache.active ) );
+    add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
 }
 
 // player_t::create =========================================================
