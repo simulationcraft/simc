@@ -1813,13 +1813,7 @@ struct moonfire_t : public druid_spell_t
       dual = background = true;
       dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 6 ).percent();
-      
-      if (p->active.galactic_guardian)
-      {
-        // Galactic Guardian 7.1 Damage Buff
-        base_dd_multiplier *= 1.0 + p->buff.galactic_guardian->data().effectN(3).percent();
-      }
-      
+
       /* June 2016: This hotfix is negated if you shift into Moonkin Form (ever),
         so only apply it if the druid does not have balance affinity. */
       if ( ! p -> talent.balance_affinity -> ok() )
@@ -1843,6 +1837,19 @@ struct moonfire_t : public druid_spell_t
       if ( ! t ) return nullptr;
 
       return td( t ) -> dots.moonfire;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = druid_spell_t::action_multiplier();
+
+      if (p()->buff.galactic_guardian->up())
+      {
+        // Galactic Guardian 7.1 Damage Buff
+        m *= 1.0 + p()->find_spell(213708)->effectN(3).percent();
+      }
+
+      return m;
     }
 
     void tick( dot_t* d ) override
