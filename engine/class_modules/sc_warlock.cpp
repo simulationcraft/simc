@@ -4997,7 +4997,7 @@ struct reap_souls_t: public warlock_spell_t
       harmful = may_crit = false;
       ignore_false_positive = true;
 
-      base_duration = p -> buffs.deadwind_harvester -> buff_duration + timespan_t::from_seconds(3);
+      base_duration = p -> buffs.deadwind_harvester -> buff_duration;
     }
 
     virtual bool ready() override
