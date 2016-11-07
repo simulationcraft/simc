@@ -3502,10 +3502,8 @@ struct blizzard_shard_t : public frost_mage_spell_t
     }
   }
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    return frost_mage_spell_t::snapshot_state( s, rt );
- 
-  }
+  { return frost_mage_spell_t::snapshot_state( s, rt ); }
+
   virtual double calculate_direct_amount( action_state_t* s ) const override
   {
     frost_mage_spell_t::calculate_direct_amount( s );
@@ -3759,18 +3757,7 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
-
-    if ( fss -> impact_override == true )
-    {
-      return frost_mage_spell_t::snapshot_state( s, rt );
-    }
-    else
-    {
-      return;
-    }
-  }
+  { return frost_mage_spell_t::snapshot_state( s, rt ); }
 
   double calculate_direct_amount( action_state_t* s ) const override
   {
@@ -3980,18 +3967,7 @@ struct ebonbolt_t : public frost_mage_spell_t
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
-
-    if ( fss -> impact_override == true )
-    {
-      return frost_mage_spell_t::snapshot_state( s, rt );
-    }
-    else
-    {
-      return;
-    }
-  }
+  { return frost_mage_spell_t::snapshot_state( s, rt ); }
 
   double calculate_direct_amount( action_state_t* s ) const override
   {
@@ -4448,18 +4424,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
-
-    if ( fss -> impact_override == true )
-    {
-      return frost_mage_spell_t::snapshot_state( s, rt );
-    }
-    else
-    {
-      return;
-    }
-  }
+  { return frost_mage_spell_t::snapshot_state( s, rt ); }
 
   double calculate_direct_amount( action_state_t* s ) const override
   {
@@ -4619,18 +4584,7 @@ struct frost_bomb_explosion_t : public frost_mage_spell_t
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
-
-    if ( fss -> impact_override == true )
-    {
-      return frost_mage_spell_t::snapshot_state( s, rt );
-    }
-    else
-    {
-      return;
-    }
-  }
+  { return frost_mage_spell_t::snapshot_state( s, rt ); }
 
   double calculate_direct_amount( action_state_t* s ) const override
   {
@@ -4769,19 +4723,7 @@ struct frostbolt_t : public frost_mage_spell_t
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-
-    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
-
-    if ( fss -> impact_override == true )
-    {
-      return frost_mage_spell_t::snapshot_state( s, rt );
-    }
-    else
-    {
-      return;
-    }
-  }
+  { return frost_mage_spell_t::snapshot_state( s, rt ); }
 
   double calculate_direct_amount( action_state_t* s ) const override
   {
@@ -5150,18 +5092,7 @@ struct glacial_spike_t : public frost_mage_spell_t
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
-
-    if ( fss -> impact_override == true )
-    {
-      return frost_mage_spell_t::snapshot_state( s, rt );
-    }
-    else
-    {
-      return;
-    }
-  }
+  { return frost_mage_spell_t::snapshot_state( s, rt ); }
 
   double calculate_direct_amount( action_state_t* s ) const override
   {
@@ -5315,20 +5246,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    // Cast action_state_t* onto frost_spell_state_t* to let us manipulate flags
-    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
-
-    // Check that the impact_override flag is set. snapshot_state is called twice:
-    // Once in execute(), where the flag is false but then set to true. And then again
-    // in impact(), where it will then be true upon checking for the parent call.
-    if ( fss -> impact_override == true )
-    {
-       return frost_mage_spell_t::snapshot_state( s, rt );
-    }
-    else
-      return;
-  }
+  { return frost_mage_spell_t::snapshot_state( s, rt ); }
   virtual double calculate_direct_amount( action_state_t* s ) const override
   {
     frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
@@ -5490,18 +5408,7 @@ struct ice_nova_t : public frost_mage_spell_t
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
-
-    if ( fss -> impact_override == true )
-    {
-      return frost_mage_spell_t::snapshot_state( s, rt );
-    }
-    else
-    {
-      return;
-    }
-  }
+  { return frost_mage_spell_t::snapshot_state( s, rt ); }
 
   double calculate_direct_amount( action_state_t* s ) const override
   {
