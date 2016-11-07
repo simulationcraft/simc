@@ -45,12 +45,12 @@ actions+=/glacial_spike
 actions+=/frostbolt
 
 actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10
+actions.cooldowns+=/potion,name=potion_of_prolonged_power,if=cooldown.icy_veins.remains<1
 actions.cooldowns+=/icy_veins,if=buff.icy_veins.down
 actions.cooldowns+=/mirror_image
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
-actions.cooldowns+=/potion,name=potion_of_prolonged_power,if=cooldown.icy_veins.remains<1
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1517
 neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1727/1517,enchant=mark_of_the_hidden_satyr
