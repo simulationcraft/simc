@@ -4744,6 +4744,7 @@ struct ironskin_brew_t : public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
+    cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
     cooldown -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
     cooldown -> hasted   = true;
@@ -4801,6 +4802,7 @@ struct purifying_brew_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
+    cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
     cooldown -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
     cooldown -> hasted   = true;
