@@ -2413,9 +2413,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       if ( p() -> artifact.face_palm.rank() )
       {
         if ( rng().roll( p() -> artifact.face_palm.percent() ) )
-        {
-          am *= 1.0 + p() -> passives.face_palm->effectN(1).percent();
-        }
+          am *= 1 + p() -> passives.face_palm -> effectN( 1 ).percent();
       }
 
       if ( p() -> buff.blackout_combo -> up() )
