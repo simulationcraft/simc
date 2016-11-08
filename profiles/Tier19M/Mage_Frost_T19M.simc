@@ -45,6 +45,7 @@ actions+=/glacial_spike
 actions+=/frostbolt
 
 actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die.remains+5<charges_fractional*10
+actions.cooldowns+=/potion,name=potion_of_prolonged_power,if=cooldown.icy_veins.remains<1
 actions.cooldowns+=/icy_veins,if=buff.icy_veins.down
 actions.cooldowns+=/mirror_image
 actions.cooldowns+=/use_item,slot=neck
@@ -52,7 +53,6 @@ actions.cooldowns+=/use_item,slot=trinket2
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/arcane_torrent
-actions.cooldowns+=/potion,name=potion_of_prolonged_power,if=cooldown.icy_veins.remains<1
 
 head=hood_of_darkened_visions,id=139189,bonus_id=1806
 neck=sorcerous_shadowruby_pendant,id=130233,bonus_id=1758/689/601/669,gem_id=130219,enchant=mark_of_the_hidden_satyr,enchant_id=5439

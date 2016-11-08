@@ -4021,6 +4021,9 @@ struct ignore_pain_buff_t: public absorb_buff_t
   // Custom consume implementation to allow minimum absorb amount.
   double consume( double amount ) override
   {
+    // 20161103 (stangk) - Statistics should track the reduced amount
+    amount *= 0.9;
+
     // Limit the consumption to the current size of the buff.
     amount = std::min( amount, current_value );
 
@@ -4035,13 +4038,15 @@ struct ignore_pain_buff_t: public absorb_buff_t
       absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
     }
 
-    amount *= 0.9;
-
     if ( sim -> debug )
     {
       sim -> out_debug.printf( "%s %s absorbs %.2f (remaining: %.2f)",
                                player -> name(), name(), amount, current_value );
     }
+
+    // 20161103 (stangk) - Since we don't call base, we need to deduct from current_value here
+    // or we get an infinite shield
+    current_value -= amount;
 
     absorb_used( amount );
 
@@ -4091,7 +4096,7 @@ struct ignore_pain_t: public warrior_spell_t
   double max_ip() const
   {
     double ip_cap = 0;
-    ip_cap = ip_cap_ratio * ( data().effectN( 1 ).ap_coeff() * p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier() ) * p() -> cache.damage_versatility();
+    ip_cap = ip_cap_ratio * ( data().effectN( 1 ).ap_coeff() * p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier() ) * ( 1.0 + p() -> cache.damage_versatility() );
     ip_cap *= 1.0 + p() -> buff.dragon_scales -> check_value();
     return ip_cap;
   }
@@ -4101,7 +4106,8 @@ struct ignore_pain_t: public warrior_spell_t
     double amount;
 
     amount = s -> result_amount;
-    amount *= ( resource_consumed / ( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );
+    // 20161103 - resource_consumed is only updated after this function is called
+    amount *= ( cost() / ( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );
 
     if ( p() -> talents.never_surrender -> ok() )
     { //TODO, add options to change the gaussian distribution.
@@ -4118,7 +4124,10 @@ struct ignore_pain_t: public warrior_spell_t
     }
 
 
-    p() -> buff.ignore_pain -> trigger( 1, amount );
+    if(amount > 0.0)
+    {
+      p()->buff.ignore_pain->trigger(1, amount);
+    }
   }
 
   bool ready() override
@@ -4872,7 +4881,7 @@ void warrior_t::apl_arms()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  std::string food_name = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+  std::string food_name = ( true_level > 100 ) ? "fishbrul_special" :
     ( true_level >  90 ) ? "buttered_sturgeon" :
     ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
     ( true_level >= 80 ) ? "seafood_magnifique_feast" :
@@ -4895,7 +4904,7 @@ void warrior_t::apl_arms()
 
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    default_list -> add_action( "potion,name=" + potion_name + ",if=(target.health.pct<20&buff.battle_cry.up)|target.time_to_die<=26" );
+    default_list -> add_action( "potion,name=" + potion_name + ",if=buff.avatar.up&buff.battle_cry.up&debuff.colossus_smash.up|target.time_to_die<=26" );
   }
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -4914,23 +4923,26 @@ void warrior_t::apl_arms()
     }
   }
 
-  default_list -> add_action( this, "Battle Cry", "if=(buff.bloodlust.up|time>=1)&gcd.remains<0.5&(buff.shattered_defenses.up|(cooldown.colossus_smash.remains&cooldown.warbreaker.remains))|target.time_to_die<=10" );
-  default_list -> add_talent( this, "Avatar", "if=(buff.bloodlust.up|time>=1)" );
+  default_list -> add_action( this, "Battle Cry", "if=gcd.remains<0.25&(buff.shattered_defenses.up|cooldown.warbreaker.remains>7&cooldown.colossus_smash.remains>7|cooldown.colossus_smash.remains&debuff.colossus_smash.remains>gcd)|target.time_to_die<=5" );
+  default_list -> add_talent( this, "Avatar", "if=gcd.remains<0.25&(buff.battle_cry.up|cooldown.battle_cry.remains<15)|target.time_to_die<=20" );
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].name_str == "ring_of_collapsing_futures" )
+    {
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.battle_cry.up" );
+    }
+    else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       default_list -> add_action( "use_item,name=" + items[i].name_str  );
     }
   }
 
-  default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
+  default_list -> add_action( this, "Heroic Leap" );
   default_list -> add_talent( this, "Rend", "if=remains<gcd" );
-  default_list -> add_talent( this, "Focused Rage", "if=buff.battle_cry_deadly_calm.remains>cooldown.focused_rage.remains&(buff.focused_rage.stack<3|!cooldown.mortal_strike.up)&((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)",
-                              "The tl;dr of this line is to spam focused rage inside battle cry, the added nonsense is to help modeling the difficulty of timing focused rage immediately after mortal strike. \n# In game, if focused rage is used the same instant as mortal strike, rage will be deducted for focused rage, the buff is immediately consumed, but it does not buff the damage of mortal strike." );
-  default_list -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.down" );
-  default_list -> add_action( this, "Warbreaker", "if=debuff.colossus_smash.down" );
+  default_list -> add_talent( this, "Focused Rage", "if=buff.battle_cry_deadly_calm.remains>cooldown.focused_rage.remains&(buff.focused_rage.stack<3|cooldown.mortal_strike.remains)" );
+  default_list -> add_action( this, "Colossus Smash", "if=cooldown_react&debuff.colossus_smash.remains<gcd" );
+  default_list -> add_action( this, "Warbreaker", "if=debuff.colossus_smash.remains<gcd" );
   default_list -> add_talent( this, "Ravager" );
   default_list -> add_talent( this, "Overpower", "if=buff.overpower.react" );
   default_list -> add_action( "run_action_list,name=cleave,if=spell_targets.whirlwind>=2&talent.sweeping_strikes.enabled" );
@@ -4938,27 +4950,22 @@ void warrior_t::apl_arms()
   default_list -> add_action( "run_action_list,name=execute,target_if=target.health.pct<=20&spell_targets.whirlwind<5" );
   default_list -> add_action( "run_action_list,name=single,if=target.health.pct>20" );
 
-  single_target -> add_action( this, "Mortal Strike", "if=buff.battle_cry.up&buff.focused_rage.stack>=1&buff.battle_cry.remains<gcd" );
-  single_target -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
-  single_target -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down&cooldown.mortal_strike.remains<gcd" );
-  single_target -> add_talent( this, "Focused Rage", "if=(((!buff.focused_rage.react&prev_gcd.mortal_strike)|!prev_gcd.mortal_strike)&buff.focused_rage.stack<3&(buff.shattered_defenses.up|cooldown.colossus_smash.remains))&rage>60" );
-  single_target -> add_action( this, "Mortal Strike" );
+  single_target -> add_action( this, "Colossus Smash", "if=cooldown_react&buff.shattered_defenses.down&(buff.battle_cry.down|buff.battle_cry.up&buff.battle_cry.remains>=gcd)" );
+  single_target -> add_talent( this, "Focused Rage", "if=!buff.battle_cry_deadly_calm.up&buff.focused_rage.stack<3&!cooldown.colossus_smash.up&(rage>=50|debuff.colossus_smash.down|cooldown.battle_cry.remains<=8)", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
+  single_target -> add_action( this, "Mortal Strike", "if=cooldown_react&cooldown.battle_cry.remains>8" );
   single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   single_target -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1" );
   single_target -> add_action( this, "Slam", "if=spell_targets.whirlwind=1" );
-  single_target -> add_action( this, "Execute", "if=equipped.archavons_heavy_hand" );
   single_target -> add_talent( this, "Focused Rage", "if=equipped.archavons_heavy_hand" );
-  single_target -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
+  single_target -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets" );
 
-  execute -> add_action( this, "Mortal Strike", "if=buff.battle_cry.up&buff.focused_rage.stack=3" );
-  execute -> add_action( this, "Execute", "if=buff.battle_cry_deadly_calm.up" );
-  execute -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down" );
-  execute -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down&rage<=30" );
-  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.up&rage>22" );
-  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.down&((equipped.archavons_heavy_hand&rage>40)|!equipped.archavons_heavy_hand)" );
-  execute -> add_action( this, "Mortal Strike", "if=equipped.archavons_heavy_hand" );
+  execute -> add_action( this, "Mortal Strike", "if=cooldown_react&buff.battle_cry.up&buff.focused_rage.stack=3" );
+  execute -> add_action( this, "Execute", "if=buff.battle_cry_deadly_calm.up", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
+  execute -> add_action( this, "Colossus Smash", "if=cooldown_react&buff.shattered_defenses.down" );
+  execute -> add_action( this, "Execute", "if=buff.shattered_defenses.up&(rage>=17.6|buff.stone_heart.react)" );
+  execute -> add_action( this, "Mortal Strike", "if=cooldown_react&equipped.archavons_heavy_hand&rage<60" );
   execute -> add_action( this, "Execute", "if=buff.shattered_defenses.down" );
-  execute -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
+  execute -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets" );
 
   cleave -> add_action( this, "Mortal Strike" );
   cleave -> add_action( this, "Execute", "if=buff.stone_heart.react" );
@@ -4973,9 +4980,9 @@ void warrior_t::apl_arms()
   cleave -> add_talent( this, "Shockwave" );
   cleave -> add_talent( this, "Storm Bolt" );
 
-  aoe -> add_action( this, "Mortal Strike" );
+  aoe -> add_action( this, "Mortal Strike", "if=cooldown_react" );
   aoe -> add_action( this, "Execute", "if=buff.stone_heart.react" );
-  aoe -> add_action( this, "Colossus Smash", "if=buff.shattered_defenses.down&buff.precise_strikes.down" );
+  aoe -> add_action( this, "Colossus Smash", "if=cooldown_react&buff.shattered_defenses.down&buff.precise_strikes.down" );
   aoe -> add_action( this, "Warbreaker", "if=buff.shattered_defenses.down" );
   aoe -> add_action( this, "Whirlwind", "if=talent.fervor_of_battle.enabled&(debuff.colossus_smash.up|rage.deficit<50)&(!talent.focused_rage.enabled|buff.battle_cry_deadly_calm.up|buff.cleave.up)" );
   aoe -> add_talent( this, "Rend", "if=remains<=duration*0.3" );

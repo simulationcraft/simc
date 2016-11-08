@@ -537,6 +537,7 @@ public:
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
     const spell_data_t* tier17_2pc_tank;
+    const spell_data_t* face_palm;
 
     // Mistweaver
     const spell_data_t* aura_mistweaver_monk;
@@ -2408,9 +2409,18 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
       am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+
+      if ( p() -> artifact.face_palm.rank() )
+      {
+        if ( rng().roll( p() -> artifact.face_palm.percent() ) )
+        {
+          am *= 1.0 + p() -> passives.face_palm->effectN(1).percent();
+        }
+      }
+
+      if ( p() -> buff.blackout_combo -> up() )
+        am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
     }
-    if ( p() -> buff.blackout_combo -> up() )
-      am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
 
     return am;
   }
@@ -4744,6 +4754,7 @@ struct ironskin_brew_t : public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
+    cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
     cooldown -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
     cooldown -> hasted   = true;
@@ -4801,6 +4812,7 @@ struct purifying_brew_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
+    cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
     cooldown -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
     cooldown -> hasted   = true;
@@ -6728,7 +6740,7 @@ void monk_t::init_spells()
   // Tier 100 Talents
   // Brewmaster
   talent.elusive_dance               = find_talent_spell( "Elusive Dance" );
-  talent.blackout_combo              = find_talent_spell( "Fortified Mind" );
+  talent.blackout_combo              = find_talent_spell( "Blackout Combo" );
   talent.high_tolerance              = find_talent_spell( "High Tolerance" );
   // Windwalker
   talent.chi_orbit                   = find_talent_spell( "Chi Orbit" );
@@ -6883,6 +6895,7 @@ void monk_t::init_spells()
   passives.gift_of_the_ox_summon            = find_spell( 124503 );
   passives.greater_gift_of_the_ox_heal      = find_spell( 214416 );
   passives.keg_smash_buff                   = find_spell( 196720 );
+  passives.face_palm                        = find_spell( 227679 );
   passives.special_delivery                 = find_spell( 196733 );
   passives.stagger_self_damage              = find_spell( 124255 );
   passives.tier17_2pc_tank                  = find_spell( 165356 );
