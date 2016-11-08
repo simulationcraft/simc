@@ -4495,7 +4495,7 @@ struct flurry_bolt_t : public frost_mage_spell_t
     double m = frost_mage_spell_t::composite_persistent_multiplier( state );
 
     if( brain_freeze_buffed == true )
-    {   
+    {
       m *= 1.0 + p() -> buffs.brain_freeze -> data().effectN( 2 ).percent();
     }
 
@@ -6565,10 +6565,10 @@ struct time_warp_t : public mage_spell_t
   }
   virtual void init() override
   {
-    mage_spell_t::init();  
+    mage_spell_t::init();
     // To let us model the legendary ring, it effectivly gives us a 2 charge lust system.
 
-    if ( p() -> legendary.shard_of_the_exodar ) 
+    if ( p() -> legendary.shard_of_the_exodar )
     {
       cooldown -> charges = 2;
       p() -> player_t::buffs.bloodlust -> cooldown -> duration = timespan_t::zero();
@@ -8579,7 +8579,14 @@ void mage_t::apl_arcane()
   {
     cooldowns -> add_action( item_actions[i] );
   }
-  cooldowns -> add_action( "potion,name=deadly_grace,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)" );
+  if ( race == RACE_TROLL || race == RACE_ORC )
+  {
+    cooldowns -> add_action( "potion,name=deadly_grace,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up)" );
+  }
+  else
+  {
+    cooldowns -> add_action( "potion,name=deadly_grace,if=buff.arcane_power.up" );
+  }
 
   init_burn -> add_action( this, "Mark of Aluneth" );
   init_burn -> add_action( this, "Frost Nova", "if=equipped.132452" );
@@ -9584,7 +9591,7 @@ struct sorcerous_fireball_t : public spell_t
 {
   sorcerous_fireball_t( mage_t* p ) :
     spell_t( "sorcerous_fireball", p )
-  { 
+  {
     background = true;
     may_crit = true;
     base_dd_min = base_dd_max = 246600;
