@@ -1491,6 +1491,7 @@ class SpellDataGenerator(DataGenerator):
           ( 124274, 1 ), # Medium Stagger
           ( 124273, 1 ), # Heavy Stagger
           ( 216521, 1 ), # Celestial Fortune Heal
+          ( 227679, 1 ), # Face Palm
           # Mistweaver
           ( 167732, 0 ), # Tier 17 2-piece Healer Buff
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
