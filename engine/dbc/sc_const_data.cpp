@@ -2712,12 +2712,14 @@ unsigned dbc_t::artifact_power_spell_id( specialization_e spec, unsigned power_i
   }
 
   std::vector<const artifact_power_rank_t*> ranks = artifact_power_ranks( powers[ power_index ] -> id );
-  if ( ranks.size() == 0 || rank - 1 > ranks.size() )
+  if ( ranks.size() == 0 )
   {
     return 0;
   }
 
-  return ranks[ rank - 1 ] -> id_spell();
+  auto max_rank = std::min( ranks.size() - 1, as<size_t>( rank - 1 ) );
+
+  return ranks[ max_rank ] -> id_spell();
 }
 
 // Returns the ( power_id, rank_increase ) pair for a given artifact id, relic item id combination
