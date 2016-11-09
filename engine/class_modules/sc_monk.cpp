@@ -533,6 +533,7 @@ public:
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* gift_of_the_ox_summon;
     const spell_data_t* greater_gift_of_the_ox_heal;
+    const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash_buff;
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
@@ -4775,13 +4776,13 @@ struct ironskin_brew_t : public monk_spell_t
 
     if ( p() -> talent.special_delivery -> ok() )
     {
-      if ( rng().roll( p() ->talent.special_delivery -> proc_chance() ) )
+      if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
         delivery -> execute();
     }
 
     if ( p() -> buff.blackout_combo -> up() )
     {
-      p() -> buff.elusive_brawler -> trigger();
+      p() -> active_actions.stagger_self_damage -> reschedule_execute( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 4 ).base_value() ) );
       p() -> buff.blackout_combo -> expire();
     }
 
@@ -4893,7 +4894,7 @@ struct purifying_brew_t: public monk_spell_t
 
     if ( p() -> talent.special_delivery -> ok() )
     {
-      if ( rng().roll( p() ->talent.special_delivery -> proc_chance() ) )
+      if ( rng().roll( p() -> talent.special_delivery -> proc_chance() ) )
         delivery -> execute();
     }
 
@@ -4903,12 +4904,11 @@ struct purifying_brew_t: public monk_spell_t
     if ( p() -> artifact.brew_stache.rank() )
       p() -> buff.brew_stache -> trigger();
 
-/*    if ( p() -> buff.blackout_combo -> up() )
+    if ( p() -> buff.blackout_combo -> up() )
     {
-      p() -> active_actions.stagger_self_damage->tick_ -> reschedule_execute( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 4 ).base_value() ) );
+      p() -> buff.elusive_brawler -> trigger();
       p() -> buff.blackout_combo -> expire();
     }
-*/
   }
 };
 
@@ -6892,6 +6892,7 @@ void monk_t::init_spells()
   passives.gift_of_the_ox_heal              = find_spell( 124507 );
   passives.gift_of_the_ox_summon            = find_spell( 124503 );
   passives.greater_gift_of_the_ox_heal      = find_spell( 214416 );
+  passives.ironskin_brew                    = find_spell( 215479 );
   passives.keg_smash_buff                   = find_spell( 196720 );
   passives.face_palm                        = find_spell( 227679 );
   passives.special_delivery                 = find_spell( 196733 );
@@ -7108,10 +7109,10 @@ void monk_t::create_buffs()
     .default_value( artifact.fortification.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_DODGE );
 
-  buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", spec.ironskin_brew )
-    .default_value( spec.ironskin_brew -> effectN( 1 ).percent() 
+  buff.ironskin_brew = buff_creator_t(this, "ironskin_brew", passives.ironskin_brew )
+    .default_value( passives.ironskin_brew -> effectN( 1 ).percent() 
       + ( sets.has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets.set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
-    .duration( spec.ironskin_brew -> duration() + ( artifact.potent_kick.rank() ? timespan_t::from_seconds( artifact.potent_kick.value() ) : timespan_t::zero() ) )
+    .duration( passives.ironskin_brew -> duration() + ( artifact.potent_kick.rank() ? timespan_t::from_seconds( artifact.potent_kick.value() ) : timespan_t::zero() ) )
     .refresh_behavior( BUFF_REFRESH_EXTEND );
 
   buff.keg_smash_talent = buff_creator_t( this, "keg_smash", talent.gift_of_the_mists -> effectN( 1 ).trigger() )
@@ -8112,8 +8113,8 @@ void monk_t::target_mitigation( school_e school,
     double goto_proc_chance = s -> result_amount / max_health();
 
     if ( talent.gift_of_the_mists -> ok() )
-      // Due to the fact that SimC can cause HP values to go into negative, force the cap to be 2 since the original formula can go above 2 with negative HP
-      goto_proc_chance *= fmax( ( 1 + talent.gift_of_the_mists -> effectN( 1 ).percent() ) - fmax( ( health_before_hit - s -> result_amount ) / max_health(), 0 ), 1 );
+      // Due to the fact that SimC can cause HP values to go into negative, force the cap to be 160% since the original formula can go above 160% with negative HP
+      goto_proc_chance *= 1 + ( talent.gift_of_the_mists -> effectN( 1 ).percent() * ( 1 - fmax( ( health_before_hit - s -> result_amount ) / max_health(), 0 ) ) );
 
     gift_of_the_ox_proc_chance += goto_proc_chance;
 
