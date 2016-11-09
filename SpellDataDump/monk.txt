@@ -1,4 +1,4 @@
-SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build c4ec018)
+SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build e17d93b)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -5021,6 +5021,22 @@ Effects          :
 Description      : $@spelldesc213112
 Tooltip          : You may cast Touch of Death again before the cooldown is triggered.
 
+Name             : Face Palm (id=213116) [Spell Family (53), Passive] 
+Class            : Monk
+School           : Physical
+Artifact Power   : Id: 1286, Max Rank: 6, Values: [ 10, 20, 30, 40, 50, 60 ]
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=316126)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self(1)
+Description      : Tiger Palm has a $s1% chance to deal $227679s1% of normal damage and reduce the remaining cooldown of your Brews by $227679s2 additional sec.
+
 Name             : Exploding Keg (Artifact) (id=214326) [Spell Family (53)] 
 Class            : Monk
 School           : Fire
@@ -5165,6 +5181,23 @@ Effects          :
 #2 (id=331356)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: Unknown(129)
 Description      : $@spelldesc205320
+
+Name             : Face Palm (id=227679) [Spell Family (53), Passive] 
+Class            : Monk
+School           : Physical
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=342349)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 300 | Scaled Value: 300 | Misc Value: 7 | Target: Self(1)
+#2 (id=342350)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 7 | Target: Self(1)
+Description      : $@spelldesc213116
 
 Name             : Mark of the Crane (id=228287) [Spell Family (53)] 
 Class            : Monk
