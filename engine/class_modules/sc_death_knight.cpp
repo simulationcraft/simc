@@ -6736,6 +6736,7 @@ void death_knight_t::default_apl_unholy()
   precombat->add_action(this, "Army of the Dead");
 
   def->add_action("auto_attack");
+  def->add_action(this, "Mind Freeze");
 
   // Racials
   def->add_action("arcane_torrent,if=runic_power.deficit>20");

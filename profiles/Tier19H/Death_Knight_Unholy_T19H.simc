@@ -25,6 +25,7 @@ actions.precombat+=/army_of_the_dead
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/mind_freeze
 actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking
