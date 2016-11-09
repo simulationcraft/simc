@@ -2918,13 +2918,6 @@ struct shadow_word_pain_t final : public priest_spell_t
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
 
-    if ( priest.sets.has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
-    {
-      generate_insanity(
-          priest.sets.set( PRIEST_SHADOW, T19, B2 )->effectN( 1 ).base_value(),
-          priest.gains.insanity_shadow_word_pain_ondamage );
-    }
-
     if ( priest.active_items.anunds_seared_shackles )
     {
       trigger_anunds();
@@ -4246,8 +4239,6 @@ void priest_t::create_gains()
   gains.insanity_shadow_crash = get_gain( "Insanity Gained from Shadow Crash" );
   gains.insanity_shadow_word_death =
       get_gain( "Insanity Gained from Shadow Word: Death" );
-  gains.insanity_shadow_word_pain_ondamage =
-      get_gain( "Insanity Gained from Shadow Word: Pain Damage (T19 2P)" );
   gains.insanity_shadow_word_pain_onhit =
       get_gain( "Insanity Gained from Shadow Word: Pain Casts" );
   gains.insanity_shadow_word_void =
