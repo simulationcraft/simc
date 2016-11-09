@@ -475,6 +475,11 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
                                              size_t                     relic_idx,
                                              const gem_property_data_t& gem_property )
 {
+  if ( ! item.parsed.data.id_artifact )
+  {
+    return SOCKET_COLOR_NONE;
+  }
+
   const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_property.enchant_id );
   if ( data.id != gem_property.enchant_id )
   {
