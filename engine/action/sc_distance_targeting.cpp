@@ -230,14 +230,22 @@ player_t* action_t::select_target_if_target()
     }
   }
 
+  // Restore original target
+  target = original_target;
+
   // If "first available target" did not find anything useful, don't execute the
   // action
   if ( target_if_mode == TARGET_IF_FIRST && current_target_v == 0 )
   {
+    if ( sim->debug )
+    {
+      sim->out_debug.printf( "%s target_if no target found for %s", player->name(),
+          signature_str.c_str() );
+    }
     return nullptr;
   }
 
-  if ( sim->log )
+  if ( sim->debug )
   {
     sim->out_debug.printf(
         "%s target_if best target: %s - original target - %s - current target "
@@ -245,8 +253,6 @@ player_t* action_t::select_target_if_target()
         player->name(), proposed_target->name(), original_target->name(),
         target->name() );
   }
-
-  target = original_target;
 
   return proposed_target;
 }
