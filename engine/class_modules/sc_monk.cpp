@@ -497,6 +497,7 @@ public:
   {
     cooldown_t* blackout_kick;
     cooldown_t* blackout_strike;
+    cooldown_t* black_ox_brew;
     cooldown_t* brewmaster_attack;
     cooldown_t* brewmaster_active_mitigation;
     cooldown_t* breath_of_fire;
@@ -530,6 +531,7 @@ public:
     const spell_data_t* dragonfire_brew_damage;
     const spell_data_t* elusive_brawler;
     const spell_data_t* elusive_dance;
+    const spell_data_t* face_palm;
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* gift_of_the_ox_summon;
     const spell_data_t* greater_gift_of_the_ox_heal;
@@ -538,7 +540,6 @@ public:
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
     const spell_data_t* tier17_2pc_tank;
-    const spell_data_t* face_palm;
 
     // Mistweaver
     const spell_data_t* aura_mistweaver_monk;
@@ -666,6 +667,7 @@ public:
 
     cooldown.blackout_kick                = get_cooldown( "blackout_kick" );
     cooldown.blackout_strike              = get_cooldown( "blackout_stike" );
+    cooldown.black_ox_brew                = get_cooldown( "black_ox_brew" );
     cooldown.brewmaster_attack            = get_cooldown( "brewmaster_attack" );
     cooldown.brewmaster_active_mitigation = get_cooldown( "brews" );
     cooldown.breath_of_fire               = get_cooldown( "breath_of_fire" );
@@ -2471,21 +2473,27 @@ struct tiger_palm_t: public monk_melee_attack_t
       case MONK_BREWMASTER:
       {
         // Reduces the remaining cooldown on your Brews by 1 sec
-        if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
+        double time_reduction = data().effectN( 3 ).base_value()
+          + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
+
+        if ( p() -> artifact.face_palm.rank() )
         {
-          double time_reduction = data().effectN( 3 ).base_value()
-            + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
-
-
-          if ( p() -> artifact.face_palm.rank() )
-          {
-            if ( rng().roll( p() -> artifact.face_palm.percent() ) )
-              time_reduction += 1;
-          }
+          if ( rng().roll( p() -> artifact.face_palm.percent() ) )
+            time_reduction += p() -> passives.face_palm -> effectN( 2 ).base_value();
         }
+
+        if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
+          p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
+
+        if ( p() -> cooldown.fortifying_brew -> down() )
+          p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
+
+        if ( p() -> cooldown.black_ox_brew -> down() )
+          p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
 
         if ( p() -> buff.blackout_combo -> up() )
           p() -> buff.blackout_combo -> expire();
+
         break;
       }
       default: break;
@@ -3812,16 +3820,23 @@ struct keg_smash_t: public monk_melee_attack_t
       p() -> buff.keg_smash_talent -> expire();
     
     // Reduces the remaining cooldown on your Brews by 4 sec.
-    if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
-      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( p() -> spec.keg_smash -> effectN( 3 ).base_value() ) );
+    double time_reduction = p() -> spec.keg_smash -> effectN( 3 ).base_value();
 
     // Blackout Combo talent reduces Brew's cooldown by 2 sec.
     if ( p() -> buff.blackout_combo -> up() )
     {
-      p() -> cooldown.fortifying_brew -> adjust ( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 3 ).base_value() ) );
-      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( p() -> buff.blackout_combo -> data().effectN( 3 ).base_value() ) );
+      time_reduction += p() -> buff.blackout_combo -> data().effectN( 3 ).base_value();
       p() -> buff.blackout_combo -> expire();
     }
+
+    if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
+      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
+
+    if ( p() -> cooldown.fortifying_brew -> down() )
+      p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
+
+    if ( p() -> cooldown.black_ox_brew -> down() )
+      p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
   }
 };
 
