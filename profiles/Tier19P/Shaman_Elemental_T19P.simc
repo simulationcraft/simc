@@ -26,8 +26,8 @@ actions.precombat+=/totem_mastery
 # Executed every time the actor is available.
 # Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
 actions=bloodlust,if=target.health.pct<25|time>0.500
-# In-combat potion is preferentially linked to Ascendance, unless combat will end shortly
-actions+=/potion,name=deadly_grace,if=buff.ascendance.up|target.time_to_die<=30
+# In-combat potion is preferentially linked to Elemental Mastery or Bloodlust, unless combat will end shortly
+actions+=/potion,name=deadly_grace,if=buff.elemental_mastery.up|target.time_to_die<=30|buff.bloodlust.up
 actions+=/totem_mastery,if=buff.resonance_totem.remains<2
 actions+=/fire_elemental
 actions+=/storm_elemental
@@ -45,7 +45,7 @@ actions.aoe+=/flame_shock,if=spell_targets.chain_lightning=3&maelstrom>=20,targe
 actions.aoe+=/earthquake
 actions.aoe+=/lava_burst,if=buff.lava_surge.up&spell_targets.chain_lightning=3
 actions.aoe+=/lava_beam
-actions.aoe+=/chain_lightning,target_if=!debuff.lightning_rod.up
+actions.aoe+=/chain_lightning,target_if=debuff.lightning_rod.down
 actions.aoe+=/chain_lightning
 actions.aoe+=/lava_burst,moving=1
 actions.aoe+=/flame_shock,moving=1,target_if=refreshable
@@ -54,11 +54,11 @@ actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.single=ascendance,if=dot.flame_shock.remains>buff.ascendance.duration&(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!buff.stormkeeper.up
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/flame_shock,if=maelstrom>=20&remains<=buff.ascendance.duration&cooldown.ascendance.remains+buff.ascendance.duration<=duration
+actions.single+=/earthquake,if=buff.echoes_of_the_great_sundering.up
 actions.single+=/earth_shock,if=maelstrom>=92
 actions.single+=/icefury,if=raid_event.movement.in<5
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
 actions.single+=/elemental_blast
-actions.single+=/earthquake,if=buff.echoes_of_the_great_sundering.up
 actions.single+=/flame_shock,if=maelstrom>=20&buff.elemental_focus.up,target_if=refreshable
 actions.single+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&((maelstrom>=20&raid_event.movement.in>buff.icefury.remains)|buff.icefury.remains<(1.5*spell_haste*buff.icefury.stack))
 actions.single+=/frost_shock,moving=1,if=buff.icefury.up
@@ -68,11 +68,11 @@ actions.single+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.i
 actions.single+=/stormkeeper,if=(talent.ascendance.enabled&cooldown.ascendance.remains>10)|!talent.ascendance.enabled
 actions.single+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
 actions.single+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
-actions.single+=/lightning_bolt,if=buff.power_of_the_maelstrom.up,target_if=!debuff.lightning_rod.up
+actions.single+=/lightning_bolt,if=buff.power_of_the_maelstrom.up,target_if=debuff.lightning_rod.down
 actions.single+=/lightning_bolt,if=buff.power_of_the_maelstrom.up
-actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=!debuff.lightning_rod.up
+actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1,target_if=debuff.lightning_rod.down
 actions.single+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
-actions.single+=/lightning_bolt,target_if=!debuff.lightning_rod.up
+actions.single+=/lightning_bolt,target_if=debuff.lightning_rod.down
 actions.single+=/lightning_bolt
 actions.single+=/flame_shock,moving=1,target_if=refreshable
 actions.single+=/earth_shock,moving=1
