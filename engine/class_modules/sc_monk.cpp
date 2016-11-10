@@ -2473,8 +2473,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       case MONK_BREWMASTER:
       {
         // Reduces the remaining cooldown on your Brews by 1 sec
-        double time_reduction = data().effectN( 3 ).base_value()
-          + ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) ? p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value() : 0 );
+        double time_reduction = p() -> spec.tiger_palm -> effectN( 3 ).base_value();
 
         if ( p() -> artifact.face_palm.rank() )
         {
@@ -2482,14 +2481,23 @@ struct tiger_palm_t: public monk_melee_attack_t
             time_reduction += p() -> passives.face_palm -> effectN( 2 ).base_value();
         }
 
+        // 4 pieces (Brewmaster) : Tiger Palm reduces the remaining cooldown on your brews by an additional 1 sec.
+        if ( p() -> sets.has_set_bonus( MONK_BREWMASTER, T19, B4 ) )
+          time_reduction += p() -> sets.set( MONK_BREWMASTER, T19, B4 ) -> effectN( 1 ).base_value();
+
+        // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
+        time_reduction *= -1;
+
         if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
-          p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
+        {
+          p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ), true );
+        }
 
         if ( p() -> cooldown.fortifying_brew -> down() )
-          p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
+          p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
 
         if ( p() -> cooldown.black_ox_brew -> down() )
-          p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
+          p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
 
         if ( p() -> buff.blackout_combo -> up() )
           p() -> buff.blackout_combo -> expire();
@@ -3829,14 +3837,19 @@ struct keg_smash_t: public monk_melee_attack_t
       p() -> buff.blackout_combo -> expire();
     }
 
+    // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
+    time_reduction *= -1;
+
     if ( p() -> cooldown.brewmaster_active_mitigation -> down() )
-      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ) );
+    {
+      p() -> cooldown.brewmaster_active_mitigation -> adjust( timespan_t::from_seconds( time_reduction ), true );
+    }
 
     if ( p() -> cooldown.fortifying_brew -> down() )
-      p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
+      p() -> cooldown.fortifying_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
 
     if ( p() -> cooldown.black_ox_brew -> down() )
-      p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ) );
+      p() -> cooldown.black_ox_brew -> adjust( timespan_t::from_seconds( time_reduction ), true );
   }
 };
 
@@ -4146,7 +4159,13 @@ struct black_ox_brew_t: public monk_spell_t
     monk_spell_t::execute();
 
     // Refill Ironskin Brew and Purifying Brew charges.
-    p() -> cooldown.brewmaster_active_mitigation -> reset( true );
+    p() -> cooldown.brewmaster_active_mitigation -> reset( true, true );
+    if (sim->debug)
+      {
+        sim->out_debug.printf("Current cooldown of Ironskin and Purifying Brew: %.2f", p()->cooldown.brewmaster_active_mitigation->remains().total_seconds());
+        sim->out_debug.printf("Current charge of Ironskin and Purifying Brew: %.2f", p()->cooldown.brewmaster_active_mitigation->current_charge);
+      }
+
     p() -> resource_gain( RESOURCE_ENERGY, p() -> talent.black_ox_brew -> effectN( 1 ).base_value(), p() -> gain.black_ox_brew_energy );
   }
 };
@@ -4767,11 +4786,19 @@ struct ironskin_brew_t : public monk_spell_t
     harmful = false;
     trigger_gcd = timespan_t::zero();
 
+    p.cooldown.brewmaster_active_mitigation -> duration = p.spec.ironskin_brew -> charge_cooldown();
+    p.cooldown.brewmaster_active_mitigation -> charges  = p.spec.ironskin_brew -> charges();
+    p.cooldown.brewmaster_active_mitigation -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
+    p.cooldown.brewmaster_active_mitigation -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
+    p.cooldown.brewmaster_active_mitigation -> hasted   = true;
+
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-    cooldown -> duration = data().charge_cooldown();
+/*    cooldown -> duration = p.spec.ironskin_brew -> charge_cooldown();
+    cooldown -> charges  = p.spec.ironskin_brew -> charges();
     cooldown -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
     cooldown -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
     cooldown -> hasted   = true;
+    */
 
     if ( p.talent.special_delivery -> ok() )
       delivery = new special_delivery_t( p );
@@ -4782,12 +4809,6 @@ struct ironskin_brew_t : public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.ironskin_brew -> trigger();
-
-    if ( p() -> talent.healing_elixirs -> ok() )
-    {
-      if ( p() -> cooldown.healing_elixirs -> up() )
-        p() -> active_actions.healing_elixir -> execute();
-    }
 
     if ( p() -> talent.special_delivery -> ok() )
     {
@@ -4825,11 +4846,19 @@ struct purifying_brew_t: public monk_spell_t
     harmful = false;
     trigger_gcd = timespan_t::zero();
 
-    cooldown             = p.cooldown.brewmaster_active_mitigation;
-    cooldown -> duration = data().charge_cooldown();
+    p.cooldown.brewmaster_active_mitigation -> duration = p.spec.purifying_brew -> charge_cooldown();
+    p.cooldown.brewmaster_active_mitigation -> charges  = p.spec.purifying_brew -> charges();
+    p.cooldown.brewmaster_active_mitigation -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
+    p.cooldown.brewmaster_active_mitigation -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
+    p.cooldown.brewmaster_active_mitigation -> hasted   = true;
+
+    cooldown -> duration = p.spec.purifying_brew -> charge_cooldown();
+/*    cooldown -> charges  = p.spec.purifying_brew -> charges();
     cooldown -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
     cooldown -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
     cooldown -> hasted   = true;
+    cooldown             = p.cooldown.brewmaster_active_mitigation;
+    */
 
     if ( p.talent.special_delivery -> ok() )
       delivery = new special_delivery_t( p );
