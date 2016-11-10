@@ -1388,11 +1388,16 @@ public:
     }
   }
 
-  virtual bool verify_actor_spec() const override
+  bool verify_actor_spec() const override
   {
     if ( p() -> find_affinity_spell( ab::name() ) -> found() )
     {
       return true;
+    }
+    else
+    {
+      p() -> sim -> out_log.printf( "%s failed verification",
+                             ab::name() );
     }
 
     return action_t::verify_actor_spec();
@@ -5953,13 +5958,13 @@ void druid_t::init_spells()
   spec.rip                        = find_specialization_spell( "Rip" );
   spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat                  = find_spell( 106785 );
-  spec.rake_2 = find_specialization_spell( 231052 );
-  spec.tigers_fury_2 = find_specialization_spell( 231055 );
-  spec.ferocious_bite_2 = find_specialization_spell( 231056 );
-  spec.shred = find_specialization_spell( "Shred" );
-  spec.shred_2 = find_specialization_spell( 231063 );
-  spec.shred_3 = find_specialization_spell( 231057 );
-  spec.swipe_2 = find_specialization_spell( 231283 );
+  spec.rake_2 = find_spell( 231052 );
+  spec.tigers_fury_2 = find_spell( 231055 );
+  spec.ferocious_bite_2 = find_spell( 231056 );
+  spec.shred = find_spell( "Shred" );
+  spec.shred_2 = find_spell( 231063 );
+  spec.shred_3 = find_spell( 231057 );
+  spec.swipe_2 = find_spell( 231283 );
 
 
   // Guardian
