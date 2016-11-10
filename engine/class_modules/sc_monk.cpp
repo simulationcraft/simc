@@ -4160,11 +4160,6 @@ struct black_ox_brew_t: public monk_spell_t
 
     // Refill Ironskin Brew and Purifying Brew charges.
     p() -> cooldown.brewmaster_active_mitigation -> reset( true, true );
-    if (sim->debug)
-      {
-        sim->out_debug.printf("Current cooldown of Ironskin and Purifying Brew: %.2f", p()->cooldown.brewmaster_active_mitigation->remains().total_seconds());
-        sim->out_debug.printf("Current charge of Ironskin and Purifying Brew: %.2f", p()->cooldown.brewmaster_active_mitigation->current_charge);
-      }
 
     p() -> resource_gain( RESOURCE_ENERGY, p() -> talent.black_ox_brew -> effectN( 1 ).base_value(), p() -> gain.black_ox_brew_energy );
   }
@@ -4793,12 +4788,6 @@ struct ironskin_brew_t : public monk_spell_t
     p.cooldown.brewmaster_active_mitigation -> hasted   = true;
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
-/*    cooldown -> duration = p.spec.ironskin_brew -> charge_cooldown();
-    cooldown -> charges  = p.spec.ironskin_brew -> charges();
-    cooldown -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
-    cooldown -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
-    cooldown -> hasted   = true;
-    */
 
     if ( p.talent.special_delivery -> ok() )
       delivery = new special_delivery_t( p );
@@ -4853,12 +4842,6 @@ struct purifying_brew_t: public monk_spell_t
     p.cooldown.brewmaster_active_mitigation -> hasted   = true;
 
     cooldown -> duration = p.spec.purifying_brew -> charge_cooldown();
-/*    cooldown -> charges  = p.spec.purifying_brew -> charges();
-    cooldown -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
-    cooldown -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
-    cooldown -> hasted   = true;
-    cooldown             = p.cooldown.brewmaster_active_mitigation;
-    */
 
     if ( p.talent.special_delivery -> ok() )
       delivery = new special_delivery_t( p );
