@@ -1676,6 +1676,13 @@ struct erosion_t : public buff_t
     return triggered;
   }
 
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    event_t::cancel( decay_event );
+  }
+
   void reset() override
   {
     event_t::cancel( decay_event );
