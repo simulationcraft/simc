@@ -625,11 +625,11 @@ player_t::player_t( sim_t*             s,
   // Gear
   sets( this ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
+  karazhan_trinkets_paired( false ),
   item_cooldown( cooldown_t( "item_cd", *this ) ),
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
   auto_attack_multiplier( 1.0 ),
-  karazhan_trinkets_paired( false ),
   // Movement & Position
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
@@ -873,6 +873,18 @@ void player_t::init()
 
       dynamic_regen_pets = true;
     }
+  }
+
+  // If Single-actor batch mode is used, player_collected_data_t::fight_length has to be
+  // unconditionally made to record full data on actor fight lengths. This is to get proper
+  // information on timelines in reports, since the sim-wide fight lengths ar no longer usable as
+  // the "timeline adjustor" during analysis phase. This operation is done here so the
+  // single_actor_batch does not become a positional parameter, since relying on it's state in
+  // player_collected_data_t constructor would require it to be parsed before any actors are
+  // defined.
+  if ( sim -> single_actor_batch )
+  {
+    collected_data.fight_length.change_mode( false ); // Not simple
   }
 }
 
@@ -10752,7 +10764,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
 }
 
 player_collected_data_t::player_collected_data_t( const std::string& player_name, sim_t& s ) :
-  fight_length( player_name + " Fight Length", ! s.single_actor_batch && s.statistics_level < 2 ),
+  fight_length( player_name + " Fight Length", s.statistics_level < 2),
   waiting_time(player_name + " Waiting Time", s.statistics_level < 4),
   pooling_time(player_name + " Pooling Time", s.statistics_level < 4),
   executed_foreground_actions(player_name + " Executed Foreground Actions", s.statistics_level < 4),
