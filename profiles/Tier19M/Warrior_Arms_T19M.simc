@@ -92,25 +92,25 @@ actions.single+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.add
 head=venomfanged_barbute,id=139229,bonus_id=1806
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_hidden_satyr
 shoulders=midnight_heralds_pauldrons,id=139232,bonus_id=1806
-back=drape_of_the_unworthy,id=142521,bonus_id=3469,enchant=binding_of_strength
+back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=binding_of_strength
 chest=insectetched_chestplate,id=139224,bonus_id=1806
 wrists=dragonbone_wristclamps,id=138218,bonus_id=1806
 hands=reinforced_houndhandlers_gauntlets,id=142435,bonus_id=3469
-waist=krakenbone_waistplate,id=142424,bonus_id=3469
+waist=krakenbone_waistplate,id=142424,bonus_id=3469/1512
 legs=goldrune_legplates,id=142425,bonus_id=3469
 feet=trampling_warboots,id=139234,bonus_id=1806
 finger1=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant=binding_of_haste
 finger2=shadowruby_band,id=136713,bonus_id=670/1703,gems=150mastery,enchant=binding_of_mastery
 trinket1=spontaneous_appendages,id=139325,bonus_id=1806
-trinket2=spiked_counterweight,id=136715,bonus_id=1517/1727
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=139261/142510/142512,relic_id=1806/3469/3469
+trinket2=chains_of_the_valorous,id=142508,bonus_id=604/3469
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=139261/142510/142512,relic_id=1806/3469:1512/3469
 
 # Gear Summary
-# gear_ilvl=880.53
-# gear_strength=14900
-# gear_stamina=26089
-# gear_crit_rating=2374
-# gear_haste_rating=6742
-# gear_mastery_rating=11043
+# gear_ilvl=882.67
+# gear_strength=16762
+# gear_stamina=26322
+# gear_crit_rating=2380
+# gear_haste_rating=6837
+# gear_mastery_rating=11067
 # gear_versatility_rating=448
-# gear_armor=4357
+# gear_armor=4364

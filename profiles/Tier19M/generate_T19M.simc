@@ -35,5 +35,8 @@ generate_Rogue_T19M.simc
 # Shaman
 generate_Shaman_T19M.simc
 
+# Warlock
+generate_Warlock_T19M.simc
+
 # Warrior
 generate_Warrior_T19M.simc

@@ -21,24 +21,24 @@ race=troll
 role=attack
 position=back
 talents=2232133
-artifact=35:142516:139262:142511:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:3:990:4:991:4:992:3:993:3:994:3:995:4:996:3:1357:1
+artifact=35:142516:142518:142511:0:980:1:981:1:982:1:984:1:985:1:986:1:987:1:988:3:989:3:990:3:991:4:992:4:993:3:994:3:995:4:996:3:1357:1
 spec=fury
 
 head=venomfanged_barbute,id=139229,bonus_id=1806
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_hidden_satyr
-shoulders=midnight_heralds_pauldrons,id=139232,bonus_id=1806
-back=drape_of_the_unworthy,id=142521,bonus_id=3469,enchant=binding_of_strength
-chest=gleaming_valkyr_cuirass,id=142431,bonus_id=3469
-wrists=calcareous_wristclamps,id=142427,bonus_id=3469
+shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1727/1522
+back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=binding_of_strength
+chest=inferno_breastplate,id=134503,bonus_id=1727/1522
+wrists=calcareous_wristclamps,id=142427,bonus_id=3469/1512
 hands=fitted_ironbark_gauntlets,id=139225,bonus_id=1806
-waist=krakenbone_waistplate,id=142424,bonus_id=3469
+waist=krakenbone_waistplate,id=142424,bonus_id=3469/1512
 legs=stormbattered_legplates,id=139230,bonus_id=1806
 feet=trampling_warboots,id=139234,bonus_id=1806
 finger1=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant=binding_of_haste
 finger2=dawnlight_band,id=130231,bonus_id=3373/670,gem_id=130220,enchant=binding_of_haste
 trinket1=spontaneous_appendages,id=139325,bonus_id=1806
-trinket2=eye_of_command,id=142167
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=142516/139262/142511,relic_id=3469/1806/3469
+trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1522
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=142516/142518/142511,relic_id=3469/3469:1512/3469
 off_hand=warswords_of_the_valarjar,id=134553
 save=Warrior_Fury_T19M.simc
 
@@ -55,18 +55,18 @@ spec=arms
 head=venomfanged_barbute,id=139229,bonus_id=1806
 neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,enchant=mark_of_the_hidden_satyr
 shoulders=midnight_heralds_pauldrons,id=139232,bonus_id=1806
-back=drape_of_the_unworthy,id=142521,bonus_id=3469,enchant=binding_of_strength
+back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=binding_of_strength
 chest=insectetched_chestplate,id=139224,bonus_id=1806
 wrists=dragonbone_wristclamps,id=138218,bonus_id=1806
 hands=reinforced_houndhandlers_gauntlets,id=142435,bonus_id=3469
-waist=krakenbone_waistplate,id=142424,bonus_id=3469
+waist=krakenbone_waistplate,id=142424,bonus_id=3469/1512
 legs=goldrune_legplates,id=142425,bonus_id=3469
 feet=trampling_warboots,id=139234,bonus_id=1806
 finger1=dreadful_cyclopean_signet,id=139237,bonus_id=1806,enchant=binding_of_haste
 finger2=shadowruby_band,id=136713,bonus_id=670/1703,gems=150mastery,enchant=binding_of_mastery
 trinket1=spontaneous_appendages,id=139325,bonus_id=1806
-trinket2=spiked_counterweight,id=136715,bonus_id=1517/1727
-main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=139261/142510/142512,relic_id=1806/3469/3469
+trinket2=chains_of_the_valorous,id=142508,bonus_id=604/3469
+main_hand=stromkar_the_warbreaker,id=128910,bonus_id=750,gem_id=139261/142510/142512,relic_id=1806/3469:1512/3469
 save=Warrior_Arms_T19M.simc
 
 # Warrior Protection T19M

@@ -438,7 +438,7 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
     max_ilevel_allowed           = 890;
-    max_weapon_ilevel_allowed    = 913;
+    max_weapon_ilevel_allowed    = 915;
     tier_name                    = "T19M";
     //max_legendary_ilevel_allowed = max_ilevel_allowed += 10;
     //legendary_items_allowed      = 0;

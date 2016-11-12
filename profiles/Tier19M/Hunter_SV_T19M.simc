@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=ranged_back
 talents=3302022
-artifact=34:142518:142511:139260:0:1068:1:1070:3:1071:3:1072:4:1073:4:1074:4:1075:3:1076:3:1077:3:1078:3:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1
+artifact=34:142518:142511:142510:0:1068:1:1070:3:1071:3:1072:3:1073:4:1074:4:1075:4:1076:3:1077:3:1078:3:1079:1:1080:1:1081:1:1082:1:1083:1:1084:1:1338:1
 spec=survival
 
 # This default action priority list is automatically created based on your character.
@@ -51,27 +51,28 @@ actions+=/raptor_strike,if=!talent.throwing_axes.enabled&focus>75-cooldown.flank
 
 head=greyed_dragonscale_coif,id=139214,bonus_id=1806
 neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant=mark_of_the_hidden_satyr
-shoulders=matted_fur_pauldrons,id=139217,bonus_id=1806
+shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1727/1522
 back=mantle_of_the_victorious_dead,id=142540,bonus_id=3469,enchant=200agi
-chest=patient_ambushers_hauberk,id=139221,bonus_id=1806
-wrists=manacles_of_the_nightmare_colossus,id=139222,bonus_id=1806
+chest=corroded_valkyr_chainmail,id=142433,bonus_id=3469/1512
+wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1522
 hands=kvaldir_exults_grips,id=142434,bonus_id=3469
-waist=laughing_sisters_pouchchain,id=139211,bonus_id=1806
+waist=anchor_chain_waistguard,id=142420,bonus_id=3469/1512
 legs=leggings_of_the_undaunted,id=142421,bonus_id=3469
 feet=malignant_sabatons,id=138211,bonus_id=1806
 finger1=ring_of_ascended_glory,id=142520,bonus_id=3469,enchant=binding_of_haste
 finger2=dawnlight_band,id=130231,bonus_id=3370/670,gem_id=130220,enchant=binding_of_haste
 trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
-trinket2=eye_of_command,id=142167,bonus_id=3453
-main_hand=talonclaw,id=128808,gem_id=142518/142511/139260,relic_id=3469/3469/1806
+trinket2=eye_of_guarm,id=142506,bonus_id=607/3469
+main_hand=talonclaw,id=128808,gem_id=142518/142511/142510,relic_id=3469/3469/3469:1512
 
 # Gear Summary
-# gear_ilvl=880.20
-# gear_agility=17823
-# gear_stamina=26066
-# gear_crit_rating=8950
-# gear_haste_rating=6289
-# gear_mastery_rating=2921
-# gear_versatility_rating=490
-# gear_armor=2770
+# gear_ilvl=882.07
+# gear_agility=18333
+# gear_stamina=26300
+# gear_crit_rating=7989
+# gear_haste_rating=6236
+# gear_mastery_rating=3582
+# gear_versatility_rating=1951
+# gear_armor=2776
+# set_bonus=tier19p_mail_2pc=1
 summon_pet=carrion_bird
