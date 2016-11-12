@@ -6634,6 +6634,9 @@ void death_knight_t::default_apl_frost()
 
   // Generic single target rotation
 
+  // Refresh Icy talons if it's about to expire
+  generic -> add_action( this, "Frost Strike", "if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled" );
+
   // Howling blast disease upkeep and rimeing
   generic -> add_action( this, "Howling Blast", "target_if=!dot.frost_fever.ticking" );
   generic -> add_action( this, "Howling Blast", "if=buff.rime.react" );
