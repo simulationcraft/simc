@@ -991,7 +991,7 @@ struct felstorm_tick_t: public warlock_pet_melee_attack_t
 
 struct felstorm_t: public warlock_pet_melee_attack_t
 {
-  felstorm_t( warlock_pet_t* p ):
+  felstorm_t( warlock_pet_t* p ) :
     warlock_pet_melee_attack_t( "felstorm", p, p -> find_spell( 89751 ) )
   {
     tick_zero = true;
@@ -1474,7 +1474,8 @@ struct felguard_pet_t: public warlock_pet_t
   felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felguard" ):
     warlock_pet_t( sim, owner, name, PET_FELGUARD, name != "felguard" )
   {
-    action_list_str = "legion_strike";
+    action_list_str += "/felstorm";
+    action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
     owner_coeff.ap_from_sp = 1.1; // HOTFIX
   }
 
@@ -1489,6 +1490,7 @@ struct felguard_pet_t: public warlock_pet_t
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
     if ( name == "legion_strike" ) return new legion_strike_t( this );
+    if ( name == "felstorm" ) return new felstorm_t( this );
 
     return warlock_pet_t::create_action( name, options_str );
   }
@@ -6293,7 +6295,6 @@ void warlock_t::apl_demonology()
   add_action( "Hand of Gul'dan", "if=soul_shard>=4&cooldown.summon_darkglare.remains>2" );
   add_action( "Demonic Empowerment", "if=wild_imp_no_de>3|prev_gcd.hand_of_guldan" );
   add_action( "Demonic Empowerment", "if=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0" );
-  action_list_str += "/felguard:felstorm";
   add_action( "Doom", "cycle_targets=1,if=!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3)" );
   for ( int i = as< int >( items.size() ) - 1; i >= 0; i-- )
   {

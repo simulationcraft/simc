@@ -54,7 +54,6 @@ actions+=/hand_of_guldan,if=soul_shard>=5&cooldown.summon_darkglare.remains<=act
 actions+=/hand_of_guldan,if=soul_shard>=4&cooldown.summon_darkglare.remains>2
 actions+=/demonic_empowerment,if=wild_imp_no_de>3|prev_gcd.hand_of_guldan
 actions+=/demonic_empowerment,if=dreadstalker_no_de>0|darkglare_no_de>0|doomguard_no_de>0|infernal_no_de>0|service_no_de>0
-actions+=/felguard:felstorm
 actions+=/doom,cycle_targets=1,if=!talent.hand_of_doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3)
 actions+=/arcane_torrent
 actions+=/berserking
