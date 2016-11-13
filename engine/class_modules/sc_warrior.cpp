@@ -6183,9 +6183,11 @@ void warrior_t::target_mitigation( school_e school,
     buff.dragon_scales -> trigger();
     if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED && artifact.scales_of_earth.rank() )
     {
-      buff.scales_of_earth -> trigger();
-      active.scales_of_earth -> target = s -> action -> player;
-      active.scales_of_earth -> execute();
+      if ( buff.scales_of_earth -> trigger() )
+      {
+        active.scales_of_earth -> target = s -> action -> player;
+        active.scales_of_earth -> execute();
+      }
     }
   }
 }
