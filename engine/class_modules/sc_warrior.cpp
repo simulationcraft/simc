@@ -1844,7 +1844,7 @@ struct dragon_roar_t: public warrior_attack_t
   double composite_crit_chance() const override { return 1.0; }
 };
 
-// Execute ==================================================================
+// Arms Execute ==================================================================
 
 struct execute_sweep_t: public warrior_attack_t
 {
@@ -1856,8 +1856,6 @@ struct execute_sweep_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
 
     base_crit += p -> artifact.deathblow.percent();
-    base_crit += p -> artifact.deathdealer.percent();
-    energize_amount = 0;
   }
 
   double action_multiplier() const override
@@ -1923,7 +1921,7 @@ struct sweeping_execute_t: public event_t
 
   static timespan_t next_execute()
   {
-    return timespan_t::from_millis( 500 );
+    return timespan_t::from_millis( 250 );
   }
 
   void execute() override
@@ -1948,6 +1946,160 @@ struct sweeping_execute_t: public event_t
     }
   }
 };
+
+struct execute_arms_t: public warrior_attack_t
+{
+  double max_rage;
+  execute_arms_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "execute", p, p -> spec.execute ),
+    max_rage( 0 )
+  {
+    parse_options( options_str );
+    weapon = &( p -> main_hand_weapon );
+    
+    base_crit += p -> artifact.deathblow.percent();
+    max_rage = p -> talents.dauntless -> ok() ? 32 : 40;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p() -> mastery.colossal_might -> ok() )
+    {
+      if ( is_it_free() )
+      {
+        am *= 4.0;
+      }
+      else
+      {
+        double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
+        am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
+      }
+    }
+
+    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
+
+    return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    if ( p() -> buff.shattered_defenses -> check() )
+    {
+      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
+    }
+
+    return cc;
+  }
+
+  double tactician_cost() const override
+  {
+    double c = 40;
+
+    if ( !is_it_free() )
+    {
+      double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
+      c = std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] );
+      c = ( c / temp_max_rage ) * 40;
+    }
+
+    if ( sim -> log )
+    {
+      sim -> out_debug.printf( "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f",
+                               name(),
+                               c,
+                               cost() );
+    }
+
+    return c;
+  }
+
+  bool is_it_free() const
+  {
+    return ( p() -> buff.ayalas_stone_heart -> up() || p() -> buff.battle_cry_deadly_calm -> up() );
+  }
+
+
+  double cost() const override
+  {
+    double c = warrior_attack_t::cost();
+
+    if ( p() -> buff.ayalas_stone_heart -> check() )
+    {
+      return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
+    }
+
+    if ( p() -> buff.battle_cry_deadly_calm -> check() )
+    {
+      return c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
+    }
+
+    if ( p() -> mastery.colossal_might -> ok() )
+    {
+      double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
+      c *= 1.0 + p() -> buff.precise_strikes -> check_value();
+      c = std::min( temp_max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
+    }
+
+    return c;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+    
+    p() -> buff.shattered_defenses -> expire();
+    p() -> buff.precise_strikes -> expire();
+
+    if ( p() -> talents.sweeping_strikes -> ok() && target_cache.list.size() > 1 )
+    {
+      p() -> execute_sweeping_strike = make_event<sweeping_execute_t>( *sim, p(),
+                                                                       resource_consumed,
+                                                                       p() -> buff.ayalas_stone_heart -> up(),
+                                                                       execute_state -> target );
+    }
+    p() -> buff.ayalas_stone_heart -> expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( s -> result == RESULT_CRIT )
+    {
+      arms_t19_4p();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+
+    if ( p() -> buff.ayalas_stone_heart -> check() )
+    {
+      return warrior_attack_t::ready();
+    }
+
+    // Call warrior_attack_t::ready() first for proper targeting support.
+    if ( warrior_attack_t::ready() && target -> health_percentage() <= 20 )
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+};
+
+
+// Fury Execute ======================================================================
 
 struct execute_off_hand_t: public warrior_attack_t
 {
@@ -1994,97 +2146,32 @@ struct execute_off_hand_t: public warrior_attack_t
 struct execute_t: public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
-  double max_rage;
   execute_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "execute", p, p -> spec.execute ), oh_attack( nullptr ),
-    max_rage( 0 )
+    warrior_attack_t( "execute", p, p -> spec.execute ), oh_attack( nullptr )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
 
-    if ( p -> specialization() == WARRIOR_FURY )
+    oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> find_spell( 163558 ) );
+    add_child( oh_attack );
+    if ( p -> main_hand_weapon.group() == WEAPON_1H &&
+         p -> off_hand_weapon.group() == WEAPON_1H )
     {
-      oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> find_spell( 163558 ) );
-      add_child( oh_attack );
-      if ( p -> main_hand_weapon.group() == WEAPON_1H &&
-           p -> off_hand_weapon.group() == WEAPON_1H )
-      {
-        weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
-      }
-      weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
+      weapon_multiplier *= 1.0 + p -> spec.singleminded_fury -> effectN( 3 ).percent();
     }
+    weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
 
-    base_crit += p -> artifact.deathblow.percent();
     base_crit += p -> artifact.deathdealer.percent();
-    energize_amount = 0;
-    max_rage = p -> talents.dauntless -> ok() ? 32 : 40;
   }
 
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> mastery.colossal_might -> ok() )
-    {
-      if ( is_it_free() )
-      {
-        am *= 4.0;
-      }
-      else
-      {
-        double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
-        am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
-      }
-    }
-    else if ( p() -> has_shield_equipped() )
-    { am *= 1.0 + p() -> spec.protection -> effectN( 2 ).percent(); }
-
-    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
-
     am *= 1.0 + p() -> buff.juggernaut -> stack_value();
 
     return am;
   }
-
-  double composite_crit_chance() const override
-  {
-    double cc = warrior_attack_t::composite_crit_chance();
-
-    if ( p() -> buff.shattered_defenses -> check() )
-    {
-      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
-    }
-
-    return cc;
-  }
-
-  double tactician_cost() const override
-  {
-    double c = 40;
-
-    if ( !is_it_free() )
-    {
-      double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
-      c = std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] );
-      c = ( c / temp_max_rage ) * 40;
-    }
-
-    if ( sim -> log )
-    {
-      sim -> out_debug.printf( "Rage used to calculate tactician chance from ability %s: %4.4f, actual rage used: %4.4f",
-                                   name(),
-                                   c,
-                                   cost() );
-    }
-
-    return c;
-  }
-
-  bool is_it_free() const
-  {
-    return ( p() -> buff.ayalas_stone_heart -> up() || p() -> buff.battle_cry_deadly_calm -> up() );
-  }
-
 
   double cost() const override
   {
@@ -2095,18 +2182,7 @@ struct execute_t: public warrior_attack_t
       return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
     }
 
-    if ( p() -> buff.battle_cry_deadly_calm -> check() )
-    {
-      return c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
-    }
-
-    if ( p() -> mastery.colossal_might -> ok() ) // Arms
-    {
-      double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
-      c *= 1.0 + p() -> buff.precise_strikes -> check_value();
-      c = std::min( temp_max_rage, std::max( p() -> resources.current[RESOURCE_RAGE], c ) );
-    }
-    else if ( p() -> buff.sense_death -> check() ) // Fury
+    if ( p() -> buff.sense_death -> check() )
     {
       c *= 1.0 + p() -> buff.sense_death -> data().effectN( 1 ).percent();
     }
@@ -2129,17 +2205,7 @@ struct execute_t: public warrior_attack_t
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack -> execute();
 
-    p() -> buff.shattered_defenses -> expire();
-    p() -> buff.precise_strikes -> expire();
     p() -> buff.juggernaut -> trigger( 1 );
-
-    if ( p() -> talents.sweeping_strikes -> ok() && target_cache.list.size() > 1 )
-    {
-      p() -> execute_sweeping_strike = make_event<sweeping_execute_t>( *sim, p(),
-                                                                        resource_consumed,
-                                                                        p() -> buff.ayalas_stone_heart -> up(),
-                                                                        execute_state -> target );
-    }
     p() -> buff.ayalas_stone_heart -> expire();
   }
 
@@ -2150,7 +2216,6 @@ struct execute_t: public warrior_attack_t
     if ( s -> result == RESULT_CRIT )
     {
       p() -> buff.massacre -> trigger();
-      arms_t19_4p();
       if ( p() -> execute_enrage && p() -> specialization() == WARRIOR_FURY )
       {
         p() -> enrage();
@@ -4261,7 +4326,12 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "die_by_the_sword"     ) return new die_by_the_sword_t     ( this, options_str );
   if ( name == "dragon_roar"          ) return new dragon_roar_t          ( this, options_str );
   if ( name == "enraged_regeneration" ) return new enraged_regeneration_t ( this, options_str );
-  if ( name == "execute"              ) return new execute_t              ( this, options_str );
+  if ( name == "execute" )
+  {
+    if ( specialization() == WARRIOR_ARMS )
+    { return new execute_arms_t( this, options_str ); }
+    else { return new execute_t( this, options_str ); }
+  }
   if ( name == "focused_rage"         ) return new focused_rage_t         ( this, options_str );
   if ( name == "furious_slash"        ) return new furious_slash_t        ( this, options_str );
   if ( name == "hamstring"            ) return new hamstring_t            ( this, options_str );
