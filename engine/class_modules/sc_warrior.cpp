@@ -518,7 +518,7 @@ public:
   stat_e     convert_hybrid_stat( stat_e s ) const override;
   void       assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s ) override;
   void       assess_damage_imminent( school_e, dmg_e, action_state_t* s ) override;
-  void       assess_damage( school_e, dmg_e, action_state_t* s ) override;
+  void       target_mitigation( school_e, dmg_e, action_state_t* ) override;
   void       copy_from( player_t* source ) override;
   void      merge( player_t& other ) override;
 
@@ -1898,7 +1898,7 @@ struct sweeping_execute_t: public event_t
     player_t* new_target = nullptr;
     execute_sweeping_strike -> available_targets( execute_sweeping_strike -> target_cache.list );
     // Gotta find a target for this bastard to hit. Also if the target dies in the 0.5 seconds between the original execute and this, we don't want to continue.
-    for ( size_t i = 0; i <= execute_sweeping_strike -> target_cache.list.size(); ++i )
+    for ( size_t i = 0; i < execute_sweeping_strike -> target_cache.list.size(); ++i )
     {
       if ( execute_sweeping_strike -> target_cache.list[i] == original_target )
         continue;
@@ -6104,12 +6104,14 @@ void warrior_t::assess_damage_imminent( school_e school, dmg_e dmg, action_state
   }
 }
 
-// warrior_t::assess_damage =================================================
+// warrior_t::target_mitigation ============================================
 
-void warrior_t::assess_damage( school_e school,
-                               dmg_e    dtype,
-                               action_state_t* s )
+void warrior_t::target_mitigation( school_e school,
+                                   dmg_e    dtype,
+                                   action_state_t* s )
 {
+  player_t::target_mitigation( school, dtype, s );
+
   if ( s -> result == RESULT_HIT ||
        s -> result == RESULT_CRIT ||
        s -> result == RESULT_GLANCE )
@@ -6181,8 +6183,6 @@ void warrior_t::assess_damage( school_e school,
       active.scales_of_earth -> execute();
     }
   }
-
-  player_t::assess_damage( school, dtype, s );
 }
 
 // warrior_t::create_options ================================================
