@@ -1790,9 +1790,14 @@ struct moonfire_t : public druid_spell_t
 {
   struct moonfire_damage_t : public druid_spell_t
   {
-    double galactic_guardian_dd_multiplier;
+    private:
+      double galactic_guardian_dd_multiplier;
 
-    moonfire_damage_t( druid_t* p ) : 
+    protected:
+      bool benefits_from_galactic_guardian;
+
+    public:
+    moonfire_damage_t( druid_t* p ) :
       druid_spell_t( "moonfire_dmg", p, p -> find_spell( 164812 ) )
     {
       if ( p -> spec.astral_power -> ok() )
@@ -1817,6 +1822,7 @@ struct moonfire_t : public druid_spell_t
 
       may_miss = false;
       triggers_galactic_guardian = false;
+      benefits_from_galactic_guardian = true;
       dual = background = true;
       dot_duration       += p -> spec.balance_overrides -> effectN( 4 ).time_value();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 6 ).percent();
@@ -1846,17 +1852,17 @@ struct moonfire_t : public druid_spell_t
       return td( t ) -> dots.moonfire;
     }
 
-    double action_multiplier() const override
+    virtual double action_da_multiplier() const override
     {
-      double m = druid_spell_t::action_multiplier();
+      double adm = druid_spell_t::action_da_multiplier();
 
-      if (p()->buff.galactic_guardian->up())
+      if ( benefits_from_galactic_guardian && p()->buff.galactic_guardian->check() )
       {
         // Galactic Guardian 7.1 Damage Buff
-        m *= 1.0 + galactic_guardian_dd_multiplier;
+        adm *= 1.0 + galactic_guardian_dd_multiplier;
       }
 
-      return m;
+      return adm;
     }
 
     void tick( dot_t* d ) override
@@ -1866,6 +1872,27 @@ struct moonfire_t : public druid_spell_t
       trigger_shooting_stars( d -> state );
 
       trigger_balance_tier18_2pc();
+    }
+
+    void impact ( action_state_t* s ) override
+    {
+      druid_spell_t::impact( s );
+
+      // The buff needs to be handled with the damage handler since 7.1 since it impacts Moonfire DD
+      if ( benefits_from_galactic_guardian && result_is_hit( s -> result ) && p() -> buff.galactic_guardian -> check() )
+      {
+        p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
+        p() -> buff.galactic_guardian -> expire();
+      }
+    }
+  };
+
+  struct galactic_guardian_damage_t : public moonfire_damage_t
+  {
+    galactic_guardian_damage_t( druid_t* p ) :
+      moonfire_damage_t( p )
+    {
+      benefits_from_galactic_guardian = false;
     }
   };
 
@@ -1893,17 +1920,9 @@ struct moonfire_t : public druid_spell_t
 
   void impact( action_state_t* s ) override
   {
-    druid_spell_t::impact( s );
-
     if ( result_is_hit( s -> result ) )
     {
       trigger_gore();
-
-      if ( p() -> buff.galactic_guardian -> check() )
-      {
-        p() -> resource_gain( RESOURCE_RAGE, p() -> buff.galactic_guardian -> value(), p() -> gain.galactic_guardian );
-        p() -> buff.galactic_guardian -> expire();
-      }
     }
   }
 
@@ -6131,7 +6150,7 @@ void druid_t::init_spells()
   }
   if ( talent.galactic_guardian -> ok() )
   {
-    active.galactic_guardian  = new spells::moonfire_t::moonfire_damage_t( this );
+    active.galactic_guardian  = new spells::moonfire_t::galactic_guardian_damage_t( this );
     active.galactic_guardian -> stats = get_stats( "moonfire" );
   }
   if ( artifact.ashamanes_bite.rank() )
