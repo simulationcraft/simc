@@ -55,7 +55,8 @@ actions.core+=/obliterate
 actions.core+=/glacial_advance
 actions.core+=/remorseless_winter,if=talent.frozen_pulse.enabled
 
-actions.generic=howling_blast,target_if=!dot.frost_fever.ticking
+actions.generic=frost_strike,if=buff.icy_talons.remains<1.5&talent.icy_talons.enabled
+actions.generic+=/howling_blast,target_if=!dot.frost_fever.ticking
 actions.generic+=/howling_blast,if=buff.rime.react
 actions.generic+=/frost_strike,if=runic_power>=80
 actions.generic+=/call_action_list,name=core

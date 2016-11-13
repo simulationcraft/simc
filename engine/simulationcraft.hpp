@@ -4408,7 +4408,7 @@ struct player_t : public actor_t
       do_update_movement( 9999 );
     else
     {
-      if ( direction == MOVEMENT_BOOMERANG )
+      if ( direction == MOVEMENT_AWAY )
         current.moving_away = distance;
       else
         current.distance_to_move = distance;
@@ -4427,13 +4427,28 @@ struct player_t : public actor_t
     do_update_movement( yards );
 
     if ( sim -> debug )
-      sim -> out_debug.printf( "Player %s movement, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
-          name(),
-          util::movement_direction_string( movement_direction() ),
-          composite_movement_speed(),
-          yards,
-          current.distance_to_move,
-          duration.total_seconds() );
+    {
+      if ( current.movement_direction == MOVEMENT_TOWARDS )
+      {
+        sim -> out_debug.printf( "Player %s movement towards target, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
+                                 name(),
+                                 util::movement_direction_string( movement_direction() ),
+                                 composite_movement_speed(),
+                                 yards,
+                                 current.distance_to_move,
+                                 duration.total_seconds() );
+      }
+      else
+      {
+        sim -> out_debug.printf( "Player %s movement away from target, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
+                                 name(),
+                                 util::movement_direction_string( movement_direction() ),
+                                 composite_movement_speed(),
+                                 yards,
+                                 current.moving_away,
+                                 duration.total_seconds() );
+      }
+    }
   }
 
   // Instant teleport. No overshooting support for now.
@@ -4537,6 +4552,7 @@ private:
       {
         //x_position += yards;
         current.moving_away = 0;
+        current.movement_direction = MOVEMENT_TOWARDS;
         current.distance_to_move -= yards;
       }
     }

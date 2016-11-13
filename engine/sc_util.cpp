@@ -1003,7 +1003,6 @@ const char* util::movement_direction_string( movement_direction_e m )
     case MOVEMENT_OMNI: return "omni";
     case MOVEMENT_TOWARDS: return "towards";
     case MOVEMENT_AWAY: return "away";
-    case MOVEMENT_BOOMERANG: return "boomerang";
     case MOVEMENT_RANDOM: return "random";
     case MOVEMENT_NONE: return "none";
     default: return "";

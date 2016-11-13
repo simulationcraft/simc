@@ -107,6 +107,7 @@ public:
     action_t* opportunity_strikes;
     action_t* trauma;
     action_t* scales_of_earth;
+    action_t* charge;
   } active;
 
   // Buffs
@@ -603,7 +604,7 @@ public:
   {
     ab::may_crit = true;
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100  );
-    tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent() ;
+    tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
     arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent();
   }
 
@@ -1472,6 +1473,8 @@ struct charge_t: public warrior_attack_t
       cooldown -> charges += p -> talents.double_time -> effectN( 1 ).base_value();
       cooldown -> duration += p -> talents.double_time -> effectN( 2 ).time_value();
     }
+    p -> cooldown.charge = cooldown;
+    p -> active.charge = this;
   }
 
   void execute() override
@@ -2533,15 +2536,16 @@ struct heroic_charge_movement_ticker_t: public event_t
 
 struct heroic_charge_t: public warrior_attack_t
 {
-  action_t*leap;
+  heroic_leap_t* leap;
   heroic_charge_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() )
+    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() ), leap( nullptr )
   {
     parse_options( options_str );
-    leap = new heroic_leap_t( p, options_str );
+    leap = new heroic_leap_t( p, "" );
     trigger_gcd = timespan_t::zero();
     ignore_false_positive = true;
-    callbacks = may_crit = false;
+    callbacks = may_crit = may_hit = false;
+    p -> active.charge -> use_off_gcd = true;
   }
 
   void execute() override
@@ -2556,12 +2560,12 @@ struct heroic_charge_t: public warrior_attack_t
       speed = 10 / ( p() -> base_movement_speed * ( 1 + p() -> passive_movement_modifier() ) ) / 0.5;
       p() -> buff.heroic_leap_movement -> trigger( 1, speed, 1, timespan_t::from_millis( 500 ) );
       leap -> execute();
-      p() -> trigger_movement( 10.0, MOVEMENT_BOOMERANG ); // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
+      p() -> trigger_movement( 10.0, MOVEMENT_AWAY ); // Leap 10 yards out, because it's impossible to precisely land 8 yards away.
       p() -> heroic_charge = make_event<heroic_charge_movement_ticker_t>( *sim, *sim, p() );
     }
     else
     {
-      p() -> trigger_movement( 9.0, MOVEMENT_BOOMERANG );
+      p() -> trigger_movement( 9.0, MOVEMENT_AWAY );
       p() -> heroic_charge = make_event<heroic_charge_movement_ticker_t>( *sim, *sim, p() );
     }
   }
@@ -4541,6 +4545,7 @@ void warrior_t::init_spells()
   active.corrupted_blood_of_zakajz = nullptr;
   active.trauma                    = nullptr;
   active.opportunity_strikes       = nullptr;
+  active.charge                    = nullptr;
 
   if ( talents.bloodbath -> ok() ) active.bloodbath_dot = new bloodbath_dot_t( this );
   if ( spec.deep_wounds -> ok() ) active.deep_wounds = new deep_wounds_t( this );
@@ -5001,7 +5006,7 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets" );
 
   execute -> add_action( this, "Mortal Strike", "if=cooldown_react&buff.battle_cry.up&buff.focused_rage.stack=3" );
-  execute -> add_action( this, "Execute", "if=buff.battle_cry_deadly_calm.up", "actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
+  execute -> add_action( this, "Execute", "if=buff.battle_cry_deadly_calm.up", "actions.execute+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)\n#Remove the # above to run out of melee and charge back in for rage." );
   execute -> add_action( this, "Colossus Smash", "if=cooldown_react&buff.shattered_defenses.down" );
   execute -> add_action( this, "Execute", "if=buff.shattered_defenses.up&(rage>=17.6|buff.stone_heart.react)" );
   execute -> add_action( this, "Mortal Strike", "if=cooldown_react&equipped.archavons_heavy_hand&rage<60" );

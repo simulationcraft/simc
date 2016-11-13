@@ -70,7 +70,7 @@ actions.cleave+=/shockwave
 actions.cleave+=/storm_bolt
 
 actions.execute=mortal_strike,if=cooldown_react&buff.battle_cry.up&buff.focused_rage.stack=3
-# actions.single+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)
+# actions.execute+=/heroic_charge,if=rage.deficit>=40&(!cooldown.heroic_leap.remains|swing.mh.remains>1.2)
 #Remove the # above to run out of melee and charge back in for rage.
 actions.execute+=/execute,if=buff.battle_cry_deadly_calm.up
 actions.execute+=/colossus_smash,if=cooldown_react&buff.shattered_defenses.down
