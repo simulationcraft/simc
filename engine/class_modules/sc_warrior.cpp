@@ -79,7 +79,7 @@ struct counter_t
 struct warrior_t: public player_t
 {
 public:
-  event_t* heroic_charge, *rampage_driver, *execute_sweeping_strike;
+  event_t* heroic_charge, *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
   std::vector<cooldown_t*> odyns_champion_cds;
   bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger, opportunity_strikes_once,
@@ -435,7 +435,6 @@ public:
     player_t( sim, WARRIOR, name, r ),
     heroic_charge( nullptr ),
     rampage_driver( nullptr ),
-    execute_sweeping_strike( nullptr ),
     rampage_attacks( 0 ),
     active( active_t() ),
     buff( buffs_t() ),
@@ -1848,51 +1847,22 @@ struct dragon_roar_t: public warrior_attack_t
 
 struct execute_sweep_t: public warrior_attack_t
 {
-  double original;
-  bool free;
-  execute_sweep_t( warrior_t* p, double original_cost, bool was_it_free ):
-    warrior_attack_t( "execute", p, p -> spec.execute ), original( original_cost ), free( was_it_free )
+  double dmg_mult;
+  execute_sweep_t( warrior_t* p ):
+    warrior_attack_t( "execute_sweep", p, p -> spec.execute ), dmg_mult( 0 )
   {
     weapon = &( p -> main_hand_weapon );
-
     base_crit += p -> artifact.deathblow.percent();
   }
 
   double action_multiplier() const override
   {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> mastery.colossal_might -> ok() )
-    {
-      am *= 4.0 * ( std::min( 40.0, ( free ? 40.0 : original ) ) / 40 );
-    }
-
-    am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
-
-    return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = warrior_attack_t::composite_crit_chance();
-
-    if ( p() -> buff.shattered_defenses -> check() )
-    {
-      cc += p() -> buff.shattered_defenses -> data().effectN( 2 ).percent();
-    }
-
-    return cc;
+    return dmg_mult;
   }
 
   double cost() const override
   {
     return 0;
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    p() -> execute_sweeping_strike = nullptr;
   }
 
   void impact( action_state_t* s ) override
@@ -1909,14 +1879,13 @@ struct execute_sweep_t: public warrior_attack_t
 struct sweeping_execute_t: public event_t
 {
   timespan_t duration;
-  execute_sweep_t* execute_sweep;
   player_t* original_target;
   warrior_t* warrior;
-  sweeping_execute_t( warrior_t*p, double cost, bool free, player_t* target ):
-    event_t( *p -> sim, next_execute() ), execute_sweep( nullptr ), original_target( target ), warrior( p )
+  execute_sweep_t* execute_sweeping_strike;
+  sweeping_execute_t( warrior_t*p, player_t* target, execute_sweep_t* execute_ss ):
+    event_t( *p -> sim, next_execute() ), original_target( target ), warrior( p ), execute_sweeping_strike( execute_ss )
   {
     duration = next_execute();
-    execute_sweep = new execute_sweep_t( p, cost, free );
   }
 
   static timespan_t next_execute()
@@ -1927,31 +1896,29 @@ struct sweeping_execute_t: public event_t
   void execute() override
   {
     player_t* new_target = nullptr;
+    execute_sweeping_strike -> available_targets( execute_sweeping_strike -> target_cache.list );
     // Gotta find a target for this bastard to hit. Also if the target dies in the 0.5 seconds between the original execute and this, we don't want to continue.
-    for ( size_t i = 0; execute_sweep -> target_cache.list.size() <= i; ++i )
+    for ( size_t i = 0; i <= execute_sweeping_strike -> target_cache.list.size(); ++i )
     {
-      if ( execute_sweep -> target_cache.list[i] == original_target )
+      if ( execute_sweeping_strike -> target_cache.list[i] == original_target )
         continue;
-      new_target = execute_sweep -> target_cache.list[i];
+      new_target = execute_sweeping_strike -> target_cache.list[i];
       break;
     }
     if ( new_target )
     {
-      execute_sweep -> target = new_target;
-      execute_sweep -> execute();
-    }
-    else
-    {
-      warrior -> execute_sweeping_strike = nullptr;
+      execute_sweeping_strike -> target = new_target;
+      execute_sweeping_strike -> execute();
     }
   }
 };
 
 struct execute_arms_t: public warrior_attack_t
 {
+  execute_sweep_t* execute_sweeping_strike;
   double max_rage;
   execute_arms_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "execute", p, p -> spec.execute ),
+    warrior_attack_t( "execute", p, p -> spec.execute ), execute_sweeping_strike( nullptr ),
     max_rage( 0 )
   {
     parse_options( options_str );
@@ -1959,24 +1926,27 @@ struct execute_arms_t: public warrior_attack_t
     
     base_crit += p -> artifact.deathblow.percent();
     max_rage = p -> talents.dauntless -> ok() ? 32 : 40;
+    if ( p -> talents.sweeping_strikes -> ok() )
+    {
+      execute_sweeping_strike = new execute_sweep_t( p );
+      add_child( execute_sweeping_strike );
+    }
   }
 
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p() -> mastery.colossal_might -> ok() )
+    if ( is_it_free() )
     {
-      if ( is_it_free() )
-      {
-        am *= 4.0;
-      }
-      else
-      {
-        double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
-        am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
-      }
+      am *= 4.0;
     }
+    else
+    {
+      double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
+      am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
+    }
+    if ( execute_sweeping_strike ) execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses. 
 
     am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
 
@@ -2051,16 +2021,16 @@ struct execute_arms_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
     
+
+    if ( execute_sweeping_strike )
+    {
+      make_event<sweeping_execute_t>( *sim, p(),
+                                      execute_state -> target,
+                                      execute_sweeping_strike );
+    }
+
     p() -> buff.shattered_defenses -> expire();
     p() -> buff.precise_strikes -> expire();
-
-    if ( p() -> talents.sweeping_strikes -> ok() && target_cache.list.size() > 1 )
-    {
-      p() -> execute_sweeping_strike = make_event<sweeping_execute_t>( *sim, p(),
-                                                                       resource_consumed,
-                                                                       p() -> buff.ayalas_stone_heart -> up(),
-                                                                       execute_state -> target );
-    }
     p() -> buff.ayalas_stone_heart -> expire();
   }
 
@@ -4597,6 +4567,7 @@ void warrior_t::init_spells()
     this -> rampage_attacks.push_back( fifth );
   }
 
+
   // Cooldowns
   cooldown.avatar                   = get_cooldown( "avatar" );
   cooldown.battle_cry               = get_cooldown( "battle_cry" );
@@ -5637,7 +5608,6 @@ void warrior_t::reset()
 
   heroic_charge = nullptr;
   rampage_driver = nullptr;
-  execute_sweeping_strike = nullptr;
   frothing_may_trigger = opportunity_strikes_once = true;
 }
 
