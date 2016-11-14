@@ -1253,6 +1253,11 @@ public:
       may_proc_stormbringer = ab::weapon && ab::weapon -> slot == SLOT_MAIN_HAND;
     }
 
+    if ( may_proc_flametongue )
+    {
+      may_proc_flametongue = ab::weapon != nullptr;
+    }
+
     if ( may_proc_windfury )
     {
       may_proc_windfury = ab::weapon != nullptr;
@@ -6253,10 +6258,10 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     return;
 
   // If doom winds is not up, block all off-hand weapon attacks
-  if ( ! buff.doom_winds -> check() && attack -> weapon -> slot != SLOT_MAIN_HAND )
+  if ( ! buff.doom_winds -> check() && attack -> weapon && attack -> weapon -> slot != SLOT_MAIN_HAND )
     return;
   // If doom winds is up, block all off-hand special weapon attacks
-  else if ( buff.doom_winds -> check() && attack -> weapon -> slot != SLOT_MAIN_HAND && attack -> special )
+  else if ( buff.doom_winds -> check() && attack -> weapon && attack -> weapon -> slot != SLOT_MAIN_HAND && attack -> special )
     return;
 
   double proc_chance = spec.windfury -> proc_chance();
@@ -6270,7 +6275,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   if ( rng().roll( proc_chance ) )
   {
     action_t* a = nullptr;
-    if ( state -> action -> weapon -> slot == SLOT_MAIN_HAND )
+    if ( ! state -> action -> weapon || state -> action -> weapon -> slot == SLOT_MAIN_HAND )
     {
       a = windfury_mh;
     }
@@ -6349,9 +6354,6 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
   assert( debug_cast< shaman_attack_t* >( state -> action ) != nullptr && "Flametongue Weapon called on invalid action type" );
   shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
   if ( ! attack -> may_proc_flametongue )
-    return;
-
-  if ( ! attack -> weapon )
     return;
 
   if ( ! buff.flametongue -> up() )
