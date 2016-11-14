@@ -15,33 +15,33 @@ spec=beast_mastery
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=flask_of_the_seventh_demon
-actions.precombat+=/food,type=fishbrul_special
+actions.precombat+=/food,type=nightborne_delicacy_platter
 actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=prolonged_power,if=active_enemies>2
-actions.precombat+=/potion,name=deadly_grace
+actions.precombat+=/potion,name=prolonged_power
 actions.precombat+=/augmentation,type=defiled
+actions.precombat+=/volley,toggle=on
 
 # Executed every time the actor is available.
 actions=auto_shot
 actions+=/arcane_torrent,if=focus.deficit>=30
 actions+=/blood_fury
 actions+=/berserking
-actions+=/potion,name=deadly_grace
+actions+=/potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains
 actions+=/a_murder_of_crows
 actions+=/stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14
-actions+=/dire_beast,if=cooldown.bestial_wrath.remains>2
-actions+=/dire_frenzy,if=cooldown.bestial_wrath.remains>2
-actions+=/aspect_of_the_wild,if=buff.bestial_wrath.up
-actions+=/barrage,if=spell_targets.barrage>1|(spell_targets.barrage=1&focus>90)
-actions+=/titans_thunder,if=cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active
+actions+=/dire_beast,if=cooldown.bestial_wrath.remains>3
+actions+=/dire_frenzy,if=cooldown.bestial_wrath.remains>6|target.time_to_die<9
+actions+=/aspect_of_the_wild,if=buff.bestial_wrath.up|target.time_to_die<12
+actions+=/barrage,if=spell_targets.barrage>1
+actions+=/titans_thunder,if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active
 actions+=/bestial_wrath
-actions+=/multi_shot,if=spell_targets.multi_shot>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)
+actions+=/multi_shot,if=spell_targets>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)
 actions+=/kill_command
-actions+=/multi_shot,if=spell_targets.multi_shot>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)
+actions+=/multi_shot,if=spell_targets>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)
 actions+=/chimaera_shot,if=focus<90
-actions+=/cobra_shot,if=talent.killer_cobra.enabled&(cooldown.bestial_wrath.remains>=4&(buff.bestial_wrath.up&cooldown.kill_command.remains>=2)|focus>119)|!talent.killer_cobra.enabled&focus>90
+actions+=/cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1517/3418
 neck=intrepid_necklace_of_prophecy,id=130240,bonus_id=669/1769,gems=200agility,enchant=mark_of_the_hidden_satyr

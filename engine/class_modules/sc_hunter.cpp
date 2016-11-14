@@ -6040,7 +6040,7 @@ void hunter_t::init_action_list()
           food_action += "pickled_eel";
       }
       else if ( specialization() == HUNTER_BEAST_MASTERY )
-        food_action += "fishbrul_special";
+        food_action += "nightborne_delicacy_platter";
       else if ( specialization() == HUNTER_MARKSMANSHIP )
         food_action += "nightborne_delicacy_platter";
       else
@@ -6058,6 +6058,10 @@ void hunter_t::init_action_list()
       {
         if ( specialization() == HUNTER_SURVIVAL )
           precombat -> add_action( "potion,name=potion_of_the_old_war");
+        else if ( specialization() == HUNTER_BEAST_MASTERY )
+        {
+          precombat -> add_action( "potion,name=prolonged_power" );
+        }
         else
         {
           precombat -> add_action( "potion,name=prolonged_power,if=active_enemies>2" );
@@ -6072,6 +6076,11 @@ void hunter_t::init_action_list()
 
     if ( true_level > 100 )
       precombat -> add_action( "augmentation,type=defiled" );
+
+    if ( specialization() == HUNTER_BEAST_MASTERY )
+    {
+      precombat -> add_action( "volley,toggle=on" );
+    }
 
 
     switch ( specialization() )
@@ -6151,20 +6160,20 @@ void hunter_t::apl_bm()
   add_item_actions( default_list );
   add_racial_actions( default_list );
 
-  default_list -> add_action( "potion,name=deadly_grace" );
+  default_list -> add_action( "potion,name=prolonged_power,if=buff.bestial_wrath.remains|!cooldown.beastial_wrath.remains" );
   default_list -> add_action( "a_murder_of_crows" );
   default_list -> add_action( "stampede,if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
-  default_list -> add_action( "dire_beast,if=cooldown.bestial_wrath.remains>2" );
-  default_list -> add_action( "dire_frenzy,if=cooldown.bestial_wrath.remains>2" );
-  default_list -> add_action( "aspect_of_the_wild,if=buff.bestial_wrath.up" );
-  default_list -> add_action( "barrage,if=spell_targets.barrage>1|(spell_targets.barrage=1&focus>90)" );
-  default_list -> add_action( "titans_thunder,if=cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active" );
+  default_list -> add_action( "dire_beast,if=cooldown.bestial_wrath.remains>3" );
+  default_list -> add_action( "dire_frenzy,if=cooldown.bestial_wrath.remains>6|target.time_to_die<9" );
+  default_list -> add_action( "aspect_of_the_wild,if=buff.bestial_wrath.up|target.time_to_die<12" );
+  default_list -> add_action( "barrage,if=spell_targets.barrage>1" );
+  default_list -> add_action( "titans_thunder,if=talent.dire_frenzy.enabled|cooldown.dire_beast.remains>=3|buff.bestial_wrath.up&pet.dire_beast.active" );
   default_list -> add_action( "bestial_wrath" );
-  default_list -> add_action( "multi_shot,if=spell_targets.multi_shot>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)" );
+  default_list -> add_action( "multi_shot,if=spell_targets>4&(pet.buff.beast_cleave.remains<gcd.max|pet.buff.beast_cleave.down)" );
   default_list -> add_action( "kill_command" );
-  default_list -> add_action( "multi_shot,if=spell_targets.multi_shot>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)" );
+  default_list -> add_action( "multi_shot,if=spell_targets>1&(pet.buff.beast_cleave.remains<gcd.max*2|pet.buff.beast_cleave.down)" );
   default_list -> add_action( "chimaera_shot,if=focus<90" );
-  default_list -> add_action( "cobra_shot,if=talent.killer_cobra.enabled&(cooldown.bestial_wrath.remains>=4&(buff.bestial_wrath.up&cooldown.kill_command.remains>=2)|focus>119)|!talent.killer_cobra.enabled&focus>90" );
+  default_list -> add_action( "cobra_shot,if=cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max|(buff.bestial_wrath.up&focus.regen*cooldown.kill_command.remains>30)|target.time_to_die<cooldown.kill_command.remains" );
 }
 
 // Marksman Action List ======================================================================
