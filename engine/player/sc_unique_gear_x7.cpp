@@ -490,18 +490,41 @@ struct thunder_ritual_impact_t : public spell_t
 {
   //TODO: Are these multipliers multiplicative with one another or should they be added together then applied?
   // Right now we assume they are independant multipliers.
-  double paired_multiplier;
+
+  // Note: Mrrgria's Favor and Toe Knee's Promise interact to buff eachother by 30% when the other is present.
+  // However, their cooldowns are not equal, so we cannot simply treat this as a 30% permanant modifier.
+  // Instead, if we are modeling having the trinkets paired, we give mrrgria's favor an ICD event that does
+  // not effect ready() state, but instead controls the application of the 30% multiplier.
+
+  bool pair_multiplied;
   double chest_multiplier;
+  cooldown_t* pair_icd;
+
   thunder_ritual_impact_t( const special_effect_t& effect ) :
     spell_t( "thunder_ritual_damage", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
-    paired_multiplier( 1.0 ),
+    pair_multiplied( false ),
     chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) )
   {
     background = may_crit = true;
     callbacks = false;
     if ( player -> karazhan_trinkets_paired )
-      paired_multiplier += 0.3;
-    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * paired_multiplier * chest_multiplier;
+    {
+      pair_icd = effect.player -> get_cooldown( "paired_trinket_icd" );
+      pair_icd -> duration = timespan_t::from_seconds( 60.0 );
+      pair_multiplied = true;
+    }
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * chest_multiplier;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = spell_t::action_multiplier();
+    if ( pair_icd -> up() )
+    {
+      am *= 1.3;
+      pair_icd -> start();
+    }
+    return am;
   }
 };
 
