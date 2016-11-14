@@ -2354,7 +2354,6 @@ struct fire_mage_spell_t : public mage_spell_t
 struct frost_spell_state_t : action_state_t
 {
   bool impact_override;
-
   frost_spell_state_t( action_t* action, player_t* target ) :
     action_state_t( action, target ),
     impact_override( false )
@@ -5061,9 +5060,10 @@ struct frozen_touch_t : public frost_mage_spell_t
 
 struct glacial_spike_t : public frost_mage_spell_t
 {
-
+  double stored_icicle_value;
   glacial_spike_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike )
+    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike ),
+    stored_icicle_value( 0 )
   {
     parse_options( options_str );
     spell_power_mod.direct = p -> find_spell( 228600 ) -> effectN( 1 ).sp_coeff();
@@ -5137,6 +5137,7 @@ struct glacial_spike_t : public frost_mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
+    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
     double icicle_damage_sum = 0;
     int icicle_count = as<int>( p() -> icicles.size() );
     assert( icicle_count == p() -> spec.icicles -> effectN( 2 ).base_value() );
@@ -5157,11 +5158,22 @@ struct glacial_spike_t : public frost_mage_spell_t
       icicle_damage_sum *= 1.0 + p() -> talents.splitting_ice -> effectN( 3 ).percent();
     }
 
+    // If we're dealing with the first target when using splitting ice, store the total icicle value.
+    if ( s -> n_targets > 1 && s -> chain_target == 0 )
+    {
+      stored_icicle_value = icicle_damage_sum;
+    }
+
+    // If we're dealing with the non-primary target, no icicles exist.
+    // So grab the istored icicle value
+    if ( s -> chain_target != 0 )
+    {
+      icicle_damage_sum = stored_icicle_value;
+    }
     base_dd_min = icicle_damage_sum;
     base_dd_max = icicle_damage_sum;
 
     // Swap our flag to allow damage calculation again
-    frost_spell_state_t* fss = debug_cast<frost_spell_state_t*>( s );
     fss -> impact_override = true;
 
     // Re-call functions here, before the impact call to do the damage calculations as we impact.
