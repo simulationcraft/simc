@@ -770,6 +770,7 @@ public:
   void trigger_celestial_fortune( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
+  int mark_of_the_crane_counter();
   double clear_stagger();
   double partial_clear_stagger( double );
   bool has_stagger();
@@ -6667,6 +6668,22 @@ player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
   return targets.front();
 }
 
+int monk_t::mark_of_the_crane_counter()
+{
+  auto targets = sim -> target_non_sleeping_list.data();
+  int mark_of_the_crane_counter = 0;
+
+  if ( specialization() == MONK_WINDWALKER )
+  {
+    for ( player_t* target : targets )
+    {
+      if ( get_target_data( target ) -> debuff.mark_of_the_crane -> up() )
+        mark_of_the_crane_counter++;
+    }
+  }
+  return mark_of_the_crane_counter;
+}
+
 // monk_t::create_pet =======================================================
 
 pet_t* monk_t::create_pet( const std::string& name,
@@ -7398,14 +7415,7 @@ void monk_t::recalculate_resource_max( resource_e r )
   }
 }
 
-// monk_t::has_stagger ======================================================
-
-bool monk_t::has_stagger()
-{
-  return active_actions.stagger_self_damage -> stagger_ticking();
-}
-
-// monk_t::retarget_storm_earth_and_fire ====================================
+// monk_t::create_storm_earth_and_fire_target_list ====================================
 
 std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
 {
@@ -7534,6 +7544,13 @@ void monk_t::retarget_storm_earth_and_fire_pets() const
   auto n_targets = targets.size();
   retarget_storm_earth_and_fire( pet.sef[ SEF_EARTH ], targets, n_targets );
   retarget_storm_earth_and_fire( pet.sef[ SEF_FIRE  ], targets, n_targets );
+}
+
+// monk_t::has_stagger ======================================================
+
+bool monk_t::has_stagger()
+{
+  return active_actions.stagger_self_damage -> stagger_ticking();
 }
 
 // monk_t::partial_clear_stagger ====================================================
@@ -8825,6 +8842,24 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
       return new stagger_percent_expr_t( *this );
     else if ( splits[1] == "remains" )
       return new stagger_remains_expr_t( *this );
+  }
+
+  if ( splits.size() == 2 && splits[0] == "spinning_crane_kick" )
+  {
+    struct sck_stack_expr_t : public expr_t
+    {
+      monk_t& player;
+      sck_stack_expr_t( monk_t& p ) :
+        expr_t( "stack" ),
+        player( p )
+      { }
+
+      virtual double evaluate() override
+      {
+        return player.mark_of_the_crane_counter();
+      }
+    };
+
   }
 
   return base_t::create_expression( a, name_str );
