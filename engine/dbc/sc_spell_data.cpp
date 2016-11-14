@@ -81,6 +81,7 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_DOUBLE,   "max_range",         O_SD( _max_range )              },
   { SD_TYPE_UNSIGNED, "cooldown",          O_SD( _cooldown )               },
   { SD_TYPE_UNSIGNED, "gcd",               O_SD( _gcd )                    },
+  { SD_TYPE_UNSIGNED, "category_cooldown", O_SD( _category_cooldown )      },
   { SD_TYPE_UNSIGNED, "charges",           O_SD( _charges )                },
   { SD_TYPE_UNSIGNED, "charge_cooldown",   O_SD( _charge_cooldown )        },
   { SD_TYPE_UNSIGNED, "category",          O_SD( _category )               },

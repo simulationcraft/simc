@@ -2402,73 +2402,73 @@ class SpellDataGenerator(DataGenerator):
             hotfix_flags |= f
             hotfix_data += hfd
             assert len(fields) == 13
-            # 14, 15
-            fields += spell.get_link('cooldown').field('cooldown_duration', 'gcd_cooldown')
-            f, hfd = spell.get_link('cooldown').get_hotfix_info(('cooldown_duration', 13), ('gcd_cooldown', 14))
+            # 14, 15, 16
+            fields += spell.get_link('cooldown').field('cooldown_duration', 'gcd_cooldown', 'category_cooldown')
+            f, hfd = spell.get_link('cooldown').get_hotfix_info(('cooldown_duration', 13), ('gcd_cooldown', 14), ('category_cooldown', 15))
             hotfix_flags |= f
             hotfix_data += hfd
-            assert len(fields) == 15
-            # 16, 17
+            assert len(fields) == 16
+            # 17, 18
             category = spell.get_link('categories')
             category_data = self._spellcategory_db[category.charge_category]
 
             fields += category_data.field('charges', 'charge_cooldown')
-            f, hfd = category_data.get_hotfix_info(('charges', 15), ('charge_cooldown', 16))
+            f, hfd = category_data.get_hotfix_info(('charges', 16), ('charge_cooldown', 17))
             hotfix_flags |= f
             hotfix_data += hfd
-            # 18
+            # 19
             if category.charge_category > 0: # Note, some spells have both cooldown and charge categories
                 fields += category.field('charge_category')
-                f, hfd = category.get_hotfix_info(('charge_category', 17))
+                f, hfd = category.get_hotfix_info(('charge_category', 18))
                 hotfix_flags |= f
                 hotfix_data += hfd
             else:
                 fields += category.field('cooldown_category')
-                f, hfd = category.get_hotfix_info(('cooldown_category', 17))
+                f, hfd = category.get_hotfix_info(('cooldown_category', 18))
                 hotfix_flags |= f
                 hotfix_data += hfd
-            assert len(fields) == 18
+            assert len(fields) == 19
 
-            # 19
+            # 20
             duration_entry = self._spellduration_db[misc.id_duration]
             fields += duration_entry.field('duration_1')
-            f, hfd = duration_entry.get_hotfix_info(('duration_1', 18))
+            f, hfd = duration_entry.get_hotfix_info(('duration_1', 19))
             hotfix_flags |= f
             hotfix_data += hfd
-            assert len(fields) == 19
-            # 20, 21, 22, 23, 24
+            assert len(fields) == 20
+            # 21, 22, 23, 24, 25
             fields += spell.get_link('aura_option').field('stack_amount', 'proc_chance', 'proc_charges', 'proc_flags', 'internal_cooldown')
             f, hfd = spell.get_link('aura_option').get_hotfix_info(
-                    ('stack_amount', 19), ('proc_chance', 20), ('proc_charges', 21),
-                    ('proc_flags', 22), ('internal_cooldown', 23))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            assert len(fields) == 24
-            # 25
-            ppm_entry = self._spellprocsperminute_db[spell.get_link('aura_option').id_ppm]
-            fields += ppm_entry.field('ppm')
-            f, hfd = ppm_entry.get_hotfix_info(('ppm', 24))
+                    ('stack_amount', 20), ('proc_chance', 21), ('proc_charges', 22),
+                    ('proc_flags', 23), ('internal_cooldown', 24))
             hotfix_flags |= f
             hotfix_data += hfd
             assert len(fields) == 25
+            # 26
+            ppm_entry = self._spellprocsperminute_db[spell.get_link('aura_option').id_ppm]
+            fields += ppm_entry.field('ppm')
+            f, hfd = ppm_entry.get_hotfix_info(('ppm', 25))
+            hotfix_flags |= f
+            hotfix_data += hfd
+            assert len(fields) == 26
 
-            # 26, 27, 28
+            # 27, 28, 29
             fields += spell.get_link('equipped_item').field('item_class', 'mask_inv_type', 'mask_sub_class')
             f, hfd = spell.get_link('equipped_item').get_hotfix_info(
-                ('item_class', 25), ('mask_inv_type', 26), ('mask_sub_class', 27))
+                ('item_class', 26), ('mask_inv_type', 27), ('mask_sub_class', 28))
             hotfix_flags |= f
             hotfix_data += hfd
 
             cast_times = self._spellcasttimes_db[misc.id_cast_time]
-            # 29, 30
+            # 30, 31
             fields += cast_times.field('min_cast_time', 'cast_time')
-            f, hfd = cast_times.get_hotfix_info(('min_cast_time', 28), ('cast_time', 29))
+            f, hfd = cast_times.get_hotfix_info(('min_cast_time', 29), ('cast_time', 30))
             hotfix_flags |= f
             hotfix_data += hfd
-            # 31, 32, 33
+            # 32, 33, 34
             fields += [u'0', u'0', u'0'] # cast_div, c_scaling, c_scaling_threshold
 
-            # 34
+            # 35
             if id in ids and 'replace_spell_id' in ids[id]:
                 fields += [ '%6u' % ids[id]['replace_spell_id'] ]
             else:
@@ -2486,41 +2486,41 @@ class SpellDataGenerator(DataGenerator):
                         hotfix_flags |= SPELL_EFFECT_HOTFIX_PRESENT
 
             # Add spell flags
-            # 35
+            # 36
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
                 'flags_5', 'flags_6', 'flags_7', 'flags_8', 'flags_9', 'flags_10', 'flags_11',
                 'flags_12')) ]
             # Note, bunch up the flags checking into one field,
-            f, hfd = misc.get_hotfix_info(('flags_1', 34), ('flags_2', 34), ('flags_3', 34),
-                ('flags_4', 34), ('flags_5', 34), ('flags_6', 34), ('flags_7', 34), ('flags_8', 34),
-                ('flags_9', 34), ('flags_10', 34), ('flags_11', 34), ('flags_12', 34))
+            f, hfd = misc.get_hotfix_info(('flags_1', 35), ('flags_2', 35), ('flags_3', 35),
+                ('flags_4', 35), ('flags_5', 35), ('flags_6', 35), ('flags_7', 35), ('flags_8', 35),
+                ('flags_9', 35), ('flags_10', 35), ('flags_11', 35), ('flags_12', 35))
             hotfix_flags |= f
             #hotfix_data += hfd
-            # 36, 37
+            # 37, 38
             fields += [ '{ %s }' % ', '.join(spell.get_link('class_option').field('flags_1', 'flags_2', 'flags_3', 'flags_4')) ]
             fields += spell.get_link('class_option').field('family')
-            f, hfd = spell.get_link('class_option').get_hotfix_info(('flags_1', 35), ('flags_2', 35),
-                ('flags_3', 35), ('flags_4', 35))
+            f, hfd = spell.get_link('class_option').get_hotfix_info(('flags_1', 36), ('flags_2', 36),
+                ('flags_3', 36), ('flags_4', 36))
             hotfix_flags |= f
-            f, hfd = spell.get_link('class_option').get_hotfix_info(('family', 36))
-            hotfix_flags |= f
-            hotfix_data += hfd
-            # 38
-            fields += spell.get_link('shapeshift').field('flags')
-            f, hfd= spell.get_link('shapeshift').get_hotfix_info(('flags', 37))
+            f, hfd = spell.get_link('class_option').get_hotfix_info(('family', 37))
             hotfix_flags |= f
             hotfix_data += hfd
             # 39
+            fields += spell.get_link('shapeshift').field('flags')
+            f, hfd= spell.get_link('shapeshift').get_hotfix_info(('flags', 38))
+            hotfix_flags |= f
+            hotfix_data += hfd
+            # 40
             mechanic = self._spellmechanic_db[spell.get_link('categories').mechanic]
             fields += mechanic.field('mechanic')
-            f, hfd = mechanic.get_hotfix_info(('mechanic', 38))
+            f, hfd = mechanic.get_hotfix_info(('mechanic', 39))
             hotfix_flags |= f
             hotfix_data += hfd
 
             # Note, no hotfix data for this for now. Also, only apply power id
             # to the first rank, and only to spec specific artifacts. Fishing
             # be gone!
-            # 40
+            # 41
             power_rank = spell.get_link('artifact_power')
             power = self._artifactpower_db[power_rank.id_power]
             artifact = self._artifact_db[power.id_artifact]
@@ -2529,26 +2529,26 @@ class SpellDataGenerator(DataGenerator):
             else:
                 fields += self._artifactpowerrank_db[0].field('id_power')
 
-            # 41, 42
+            # 42, 43
             fields += spell.field('desc', 'tt')
-            f, hfd = spell.get_hotfix_info(('desc', 40), ('tt', 41))
+            f, hfd = spell.get_hotfix_info(('desc', 41), ('tt', 42))
             hotfix_flags |= f
             hotfix_data += hfd
-            # 42
+            # 43
             desc_var = self._spelldescriptionvariables_db.get(spell.id_desc_var)
             if desc_var:
                 fields += desc_var.field('desc')
-                f, hfd = desc_var.get_hotfix_info(('desc', 42))
+                f, hfd = desc_var.get_hotfix_info(('desc', 43))
                 hotfix_flags |= f
                 hotfix_data += hfd
             else:
-                f, hfd = spell.get_hotfix_info(('id_desc_var', 42))
+                f, hfd = spell.get_hotfix_info(('id_desc_var', 43))
                 hotfix_flags |= f
                 hotfix_data += hfd
                 fields += [ u'0' ]
-            # 43
+            # 44
             fields += spell.field('rank')
-            f, hfd = spell.get_hotfix_info(('rank', 43))
+            f, hfd = spell.get_hotfix_info(('rank', 44))
             hotfix_flags |= f
             hotfix_data += hfd
             # Pad struct with empty pointers for direct access to spell effect data

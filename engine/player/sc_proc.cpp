@@ -1257,14 +1257,7 @@ timespan_t special_effect_t::cooldown_group_duration() const
     }
   }
 
-  // If we're handling a trinket (the driver has a specific cooldown category), return the driver
-  // spell's duration as the cooldown group duration.
-  if ( driver() -> category() == ITEM_TRINKET_BURST_CATEGORY )
-  {
-    return driver() -> duration();
-  }
-
-  return timespan_t::zero();
+  return driver() -> category_cooldown();
 }
 
 const item_t dbc_proc_callback_t::default_item_ = item_t();
