@@ -1,0 +1,43 @@
+# T19H
+# Tier 19 Heroic
+# * Ilvl Cap: 865
+# * Artifact Rank Cap: 26
+# * 3 Relics with max ilevel of 865
+# * Mythic+ gear is permitted up to the item level cap.
+# * No items from Violet Hold (unless 840 ilevel)
+# * No items from World Bosses / World Quests / BoEs
+# * No items from Nighthold (including set bonuses)
+# * No Legendaries
+# * No Random Gems (ie. Bonus RNG Gem Slots)
+# * No Tertiary Stats
+# * No Ranked Gear (ie. Warforged/Titanforged)
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
+# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
+
+demonhunter="Demon_Hunter_Havoc_T19M"
+level=110
+race=blood_elf
+role=attack
+position=back
+talents=1230111
+talent_override=fel_barrage,if=active_enemies>1|raid_event.adds.exists
+artifact=3:142513:139251:142513:0:1000:3:1001:4:1002:5:1003:3:1004:3:1005:3:1006:3:1007:3:1008:3:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1
+spec=havoc
+
+head=mask_of_multitudinous_eyes,id=139204,bonus_id=1806
+neck=understone_gorget,id=134491,bonus_id=1727/1522,enchant=mark_of_the_hidden_satyr
+shoulders=otherworldy_leather_mantle,id=139206,bonus_id=1806
+back=windwhipped_sailcloth,id=142412,bonus_id=3469,enchant=binding_of_agility
+chest=helbeast_skin_tunic,id=142432,bonus_id=3469
+wrists=skyvaliants_wristguards,id=142419,bonus_id=3469
+hands=guileful_intruder_handguards,id=137480,bonus_id=1727/1522
+waist=strand_of_whelk_shells,id=142416,bonus_id=3469/1512
+legs=suckerscarred_leggings,id=142418,bonus_id=3469
+feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1522
+finger1=utgarde_royal_signet,id=133637,bonus_id=1727/1522,enchant=binding_of_critical_strike
+finger2=grubby_silver_ring,id=139236,bonus_id=1806,enchant=binding_of_critical_strike
+trinket1=bloodthirsty_instinct,id=139329,bonus_id=1806
+trinket2=eye_of_guarm,id=142506,bonus_id=603/3469
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=142513/139251/142513,relic_id=3469/1806/3469
+off_hand=twinblades_of_the_deceiver,id=127830
+save=Demon_Hunter_Havoc_T19M.simc
