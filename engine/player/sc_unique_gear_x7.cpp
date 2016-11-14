@@ -61,6 +61,7 @@ namespace item
   void mrrgrias_favor( special_effect_t& );
   void toe_knees_promise( special_effect_t& );
   void deteriorated_construct_core( special_effect_t& );
+  void eye_of_command( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -98,6 +99,28 @@ namespace item
   vial_of_nightmare_fog
   heightened_senses
   */
+}
+
+namespace util
+{
+// Return the Karazhan Chest empowerment multiplier (as 1.0 + multiplier) for trinkets, or 1.0 if
+// the chest is not found on the actor.
+double composite_karazhan_empower_multiplier( const player_t* player )
+{
+  auto it = range::find_if( player -> items, []( const item_t& item ) {
+    return item.name_str ==  "robes_of_the_ancient_chronicle" ||
+           item.name_str ==  "harness_of_smoldering_betrayal" ||
+           item.name_str ==  "hauberk_of_warped_intuition"    ||
+           item.name_str ==  "chestplate_of_impenetrable_darkness";
+  } );
+
+  if ( it != player -> items.end() )
+  {
+    return 1.0 + player -> find_spell( 231626 ) -> effectN( 1 ).percent();
+  }
+
+  return 1.0;
+}
 }
 
 namespace set_bonus
@@ -368,16 +391,8 @@ struct volatile_energy_t : public spell_t
     background = may_crit = true;
     callbacks = false;
     item = effect.item;
-    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
-    for ( const auto& item : effect.player -> items )
-    {
-      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
-           item.name_str ==  "harness_of_smoldering_betrayal" ||
-           item.name_str ==  "hauberk_of_warped_intuition"    ||
-           item.name_str ==  "chestplate_of_impenetrable_darkness" )
-        //FIXME: Don't hardcode the 30% damage bonus
-        base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item ) * 1.3;
-    }
+    base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item ) *
+                                util::composite_karazhan_empower_multiplier( effect.player );
     aoe = -1;
   }
 };
@@ -399,6 +414,54 @@ void item::deteriorated_construct_core( special_effect_t& effect )
   effect.proc_flags2_= PF2_ALL_HIT;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Eye of Command ===========================================================
+
+struct eye_of_command_cb_t : public dbc_proc_callback_t
+{
+  player_t* current_target;
+  buff_t*   buff;
+
+  eye_of_command_cb_t( const special_effect_t& effect, buff_t* b ) :
+    dbc_proc_callback_t( effect.item, effect ),
+    current_target( nullptr ), buff( b )
+  { }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
+  {
+    if ( current_target != state -> target )
+    {
+      if ( current_target != nullptr && listener -> sim -> debug )
+      {
+        listener -> sim -> out_debug.printf( "%s eye_of_command target reset, old=%s new=%s",
+          listener -> name(), current_target -> name(), state -> target -> name() );
+      }
+      buff -> expire();
+      current_target = state -> target;
+    }
+
+    buff -> trigger();
+  }
+};
+
+// TODO: Autoattacks don't really change targets currently in simc, so this code is for future
+// reference.
+void item::eye_of_command( special_effect_t& effect )
+{
+  auto amount = effect.trigger() -> effectN( 1 ).average( effect.item ) *
+                util::composite_karazhan_empower_multiplier( effect.player );
+
+  stat_buff_t* b = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "legions_gaze" ) );
+  if ( ! b )
+  {
+    b = stat_buff_creator_t( effect.player, "legions_gaze", effect.trigger(), effect.item )
+        .add_stat( STAT_CRIT_RATING, amount );
+  }
+
+  effect.custom_buff = b;
+
+  new eye_of_command_cb_t( effect, b );
 }
 
 // Impact Tremor ============================================================
@@ -432,19 +495,10 @@ struct thunder_ritual_impact_t : public spell_t
   thunder_ritual_impact_t( const special_effect_t& effect ) :
     spell_t( "thunder_ritual_damage", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
     paired_multiplier( 1.0 ),
-    chest_multiplier( 1.0 )
+    chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) )
   {
     background = may_crit = true;
     callbacks = false;
-    for ( const auto& item : effect.player -> items )
-    {
-      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
-           item.name_str ==  "harness_of_smoldering_betrayal" ||
-           item.name_str ==  "hauberk_of_warped_intuition"    ||
-           item.name_str ==  "chestplate_of_impenetrable_darkness" )
-        //FIXME: Don't hardcode the 30% damage bonus
-        chest_multiplier += 0.3;
-    }
     if ( player -> karazhan_trinkets_paired )
       paired_multiplier += 0.3;
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * paired_multiplier * chest_multiplier;
@@ -528,22 +582,13 @@ struct flame_gale_pulse_t : spell_t
   double paired_multiplier;
   flame_gale_pulse_t( special_effect_t& effect ) :
     spell_t( "flame_gale_pulse", effect.player, effect.player -> find_spell( 230213 ) ),
-    chest_multiplier( 1.0 ),
+    chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) ),
     paired_multiplier( 1.0 )
   {
     background = true;
     callbacks = false;
     school = SCHOOL_FIRE;
     aoe = -1;
-    for ( const auto& item : effect.player -> items )
-    {
-      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
-           item.name_str ==  "harness_of_smoldering_betrayal" ||
-           item.name_str ==  "hauberk_of_warped_intuition"    ||
-           item.name_str ==  "chestplate_of_impenetrable_darkness" )
-        //FIXME: Don't hardcode the 30% damage bonus
-        chest_multiplier += 0.3;
-    }
     if ( player -> karazhan_trinkets_paired )
       paired_multiplier += 0.3;
     base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item ) * paired_multiplier * chest_multiplier;
@@ -3154,6 +3199,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 230222, item::mrrgrias_favor                 );
   register_special_effect( 231952, item::toe_knees_promise              );
   register_special_effect( 230236, item::deteriorated_construct_core    );
+  register_special_effect( 230150, item::eye_of_command                 );
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );
