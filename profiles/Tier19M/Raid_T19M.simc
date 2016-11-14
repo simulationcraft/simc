@@ -17,37 +17,40 @@
 optimal_raid=1
 # tmi_boss=TMI_Standard_Boss_T17L
 
-# Hunter
+Death_Knight_Frost_T19M.simc
+Death_Knight_Unholy_T19M.simc
+
+Demon_Hunter_Havoc_T19M.simc
+
+Druid_Balance_T19M.simc
+Druid_Feral_T19M.simc
+
 Hunter_BM_T19M.simc
 Hunter_MM_T19M.simc
 Hunter_SV_T19M.simc
 
-# Mage
 Mage_Fire_T19M.simc
 Mage_Frost_T19M.simc
 Mage_Arcane_T19M.simc
 
-# Paladin
+Monk_Windwalker_T19M.simc
+
 Paladin_Retribution_T19M.simc
 
-# Priest
 Priest_Shadow_T19M.simc
 Priest_Shadow_T19M_S2M.simc
 
-# Rogue
 Rogue_Assassination_T19M.simc
 Rogue_Assassination_Exsg_T19M.simc
 Rogue_Outlaw_T19M.simc
 Rogue_Subtlety_T19M.simc
 
-# Shaman
 Shaman_Elemental_T19M.simc
+Shaman_Enhancement_T19M.simc
 
-# Warlock
 Warlock_Affliction_T19M.simc
 Warlock_Demonology_T19M.simc
 Warlock_Destruction_T19M.simc
 
-# Warrior
 Warrior_Arms_T19M.simc
 Warrior_Fury_T19M.simc
