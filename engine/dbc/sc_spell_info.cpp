@@ -80,6 +80,7 @@ std::vector<std::string> _hotfix_spell_map = {
   "Max Range",
   "Cooldown",
   "GCD",
+  "Category Cooldown",
   "Charges",
   "Charge Cooldown",
   "Category",
