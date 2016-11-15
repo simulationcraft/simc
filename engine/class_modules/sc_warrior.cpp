@@ -141,6 +141,7 @@ public:
     buff_t* ignore_pain;
     buff_t* intercept_movement;
     buff_t* intervene_movement;
+    buff_t* into_the_fray;
     buff_t* juggernaut;
     buff_t* last_stand;
     buff_t* massacre;
@@ -353,7 +354,7 @@ public:
     const spell_data_t* focused_rage;
     const spell_data_t* frenzy;
     const spell_data_t* inner_rage;
-    const spell_data_t* into_the_fray; // NYI
+    const spell_data_t* into_the_fray;
     const spell_data_t* titanic_might;
     const spell_data_t* trauma;
     const spell_data_t* vengeance;
@@ -514,6 +515,7 @@ public:
   void      init_action_list() override;
 
   action_t*  create_action( const std::string& name, const std::string& options ) override;
+  bool       create_actions();
   resource_e primary_resource() const override { return RESOURCE_RAGE; }
   role_e     primary_role() const override;
   stat_e     convert_hybrid_stat( stat_e s ) const override;
@@ -521,7 +523,7 @@ public:
   void       assess_damage_imminent( school_e, dmg_e, action_state_t* s ) override;
   void       target_mitigation( school_e, dmg_e, action_state_t* ) override;
   void       copy_from( player_t* source ) override;
-  void      merge( player_t& other ) override;
+  void       merge( player_t& other ) override;
 
   void     datacollection_begin() override;
   void     datacollection_end() override;
@@ -4446,7 +4448,7 @@ void warrior_t::init_spells()
   talents.in_for_the_kill       = find_talent_spell( "In For The Kill" );
   talents.indomitable           = find_talent_spell( "Indomitable" );
   talents.inner_rage            = find_talent_spell( "Inner Rage" );
-  talents.into_the_fray         = find_talent_spell( "Into The Fray" );
+  talents.into_the_fray         = find_talent_spell( "Into the Fray" );
   talents.massacre              = find_talent_spell( "Massacre" );
   talents.mortal_combo          = find_talent_spell( "Mortal Combo" );
   talents.never_surrender       = find_talent_spell( "Never Surrender" );
@@ -5360,6 +5362,11 @@ void warrior_t::create_buffs()
   buff.intervene_movement = buff_creator_t( this, "intervene_movement" );
   buff.intercept_movement = buff_creator_t( this, "intercept_movement" );
 
+  buff.into_the_fray = buff_creator_t( this, "into_the_fray", find_spell( 202602 ) )
+    .chance( talents.into_the_fray -> ok() )
+    .default_value( find_spell( 202602 ) -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_HASTE );
+
   buff.focused_rage = buff_creator_t( this, "focused_rage", talents.focused_rage -> ok() ? talents.focused_rage : spec.focused_rage )
     .default_value( talents.focused_rage -> ok() ? talents.focused_rage -> effectN( 1 ).percent() : spec.focused_rage -> effectN( 1 ).percent() )
     .cd( timespan_t::zero() );
@@ -5382,7 +5389,8 @@ void warrior_t::create_buffs()
 
   buff.scales_of_earth = buff_creator_t( this, "scales_of_earth", artifact.scales_of_earth.data().effectN( 1 ).trigger() )
     .chance( artifact.scales_of_earth.data().proc_chance() )
-    .default_value( artifact.scales_of_earth.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+    .default_value( artifact.scales_of_earth.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_ARMOR );
 
   buff.precise_strikes = buff_creator_t( this, "precise_strikes", find_spell( 209493 ) )
     .default_value( artifact.precise_strikes.percent() )
@@ -5598,8 +5606,50 @@ void warrior_t::combat_begin()
       }
     }
   }
-
   player_t::combat_begin();
+  buff.into_the_fray -> trigger( 1 );
+}
+
+// Into the fray
+
+struct into_the_fray_callback_t
+{
+  warrior_t* w;
+  double fray_distance;
+  into_the_fray_callback_t( warrior_t* p ): w( p ), fray_distance( 0 )
+  {
+    fray_distance = p -> talents.into_the_fray -> effectN( 1 ).base_value();
+  }
+
+  void operator()( player_t* )
+  {
+    size_t i = w -> sim -> target_non_sleeping_list.size();
+    size_t buff_stacks_ = 0;
+    while ( i > 0 && buff_stacks_ < w -> buff.into_the_fray -> data().max_stacks() )
+    {
+      i--;
+      player_t* target_ = w -> sim -> target_non_sleeping_list[i];
+      if ( target_-> get_player_distance( *w ) <= fray_distance )
+      {
+        buff_stacks_++;
+      }
+    }
+    w -> buff.into_the_fray -> expire();
+    w -> buff.into_the_fray -> trigger( static_cast<int>( buff_stacks_ ));
+  }
+};
+
+// warrior_t::create_actions ================================================
+
+bool warrior_t::create_actions()
+{
+  bool ca = player_t::create_actions();
+
+  if ( talents.into_the_fray -> ok() )
+  {
+    sim -> target_non_sleeping_list.register_callback( into_the_fray_callback_t( this ) );
+  }
+  return ca;
 }
 
 // warrior_t::reset =========================================================
@@ -5743,6 +5793,8 @@ double warrior_t::composite_melee_haste() const
   a *= 1.0 / ( 1.0 + buff.fury_trinket -> check_stack_value() );
 
   a *= 1.0 / ( 1.0 + buff.frenzy -> check_stack_value() );
+
+  a *= 1.0 / ( 1.0 + buff.into_the_fray -> check_stack_value() );
 
   return a;
 }
