@@ -1048,24 +1048,14 @@ public:
     ab::execute();
 
     trigger_maelstrom_gain( ab::execute_state );
+    trigger_eye_of_twisting_nether( ab::execute_state );
+  }
 
-    if ( ab::harmful && ab::execute_state -> result_amount > 0 )
-    {
-      if ( dbc::is_school( ab::get_school(), SCHOOL_FIRE ) )
-      {
-        p() -> buff.eotn_fire -> trigger();
-      }
+  void tick( dot_t* d ) override
+  {
+    ab::tick( d );
 
-      if ( dbc::is_school( ab::get_school(), SCHOOL_NATURE ) )
-      {
-        p() -> buff.eotn_shock -> trigger();
-      }
-
-      if ( dbc::is_school( ab::get_school(), SCHOOL_FROST ) )
-      {
-        p() -> buff.eotn_chill -> trigger();
-      }
-    }
+    trigger_eye_of_twisting_nether( d -> state );
   }
 
   virtual void impact( action_state_t* state ) override
@@ -1206,6 +1196,27 @@ public:
     p() -> action.unleash_doom[ spell_idx ] -> target = state -> target;
     p() -> action.unleash_doom[ spell_idx ] -> schedule_execute();
     proc_ud -> occur();
+  }
+
+  void trigger_eye_of_twisting_nether( const action_state_t* state )
+  {
+    if ( ab::harmful && state -> result_amount > 0 )
+    {
+      if ( dbc::is_school( ab::get_school(), SCHOOL_FIRE ) )
+      {
+        p() -> buff.eotn_fire -> trigger();
+      }
+
+      if ( dbc::is_school( ab::get_school(), SCHOOL_NATURE ) )
+      {
+        p() -> buff.eotn_shock -> trigger();
+      }
+
+      if ( dbc::is_school( ab::get_school(), SCHOOL_FROST ) )
+      {
+        p() -> buff.eotn_chill -> trigger();
+      }
+    }
   }
 };
 
