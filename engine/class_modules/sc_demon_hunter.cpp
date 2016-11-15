@@ -6270,6 +6270,7 @@ void demon_hunter_t::apl_havoc()
   def -> add_action( this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&"
     "!talent.momentum.enabled)" );
   def -> add_action( this, "Vengeful Retreat", "if=movement.distance>15" );
+  def -> add_action( this, "Throw Glaive", "if=talent.felblade.enabled" );
 
   action_priority_list_t* cd = get_action_priority_list( "cooldown" );
 
