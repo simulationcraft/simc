@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build f588a52)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -94,7 +94,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=387)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Chain Multiplier: 0.7 | Chain Targets: 3 | Target: Chain Friendly(45)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 3.80000 | Chain Multiplier: 0.7 | Chain Targets: 3 | Target: Chain Friendly(45)
 #2 (id=219186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Chain Friendly(45)
 Description      : Heals the friendly target for $s1, then jumps to heal the most injured nearby party or raid members. Healing is reduced by $?a157154[15][30]% after each jump. Heals $x1 total targets.
@@ -719,9 +719,7 @@ Attributes       : ....x... ........ ..x..... ........   ...x...x ........ .....
 Effects          :
 #1 (id=26531)    : Unknown effect type (114)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 15 yards | Target: At Caster(22) -> AOE enemy(15)
-#2 (id=26532)    : Threat (63)
-                   Base Value: 11000 | Scaled Value: 12100 | Points Per Level: 25 | Radius: 0 - 15 yards | Target: At Caster(22) -> AOE enemy(15)
-Description      : Taunts and causes additional high threat to all enemies within $A1 yards.
+Description      : Taunts all enemies within $A1 yards.
 
 Name             : Surestrike Goggles v2.0 (id=41314) 
 Class            : Hunter, Shaman
@@ -915,7 +913,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43841)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.75000 | Target: Enemy(6)
 #2 (id=287537)   : Energize Power (30)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: maelstrom | Target: Self(1)
 Description      : Hurls molten lava at the target, dealing $s1 Fire damage.$?a231721[ Lava Burst will always critically strike if the target is affected by Flame Shock.][]$?s137039[][
@@ -1029,7 +1027,7 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... ...x.
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
 Effects          :
 #1 (id=44468)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | Radius: 0 - 40 yards | Target: Custom(18) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.82000 | Radius: 0 - 40 yards | Target: Custom(18) -> AOE friendly(31)
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Tidal Waves (id=53390) [Spell Family (11)] 
@@ -1304,7 +1302,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=53784)    : Weapon Damage% (31)
-                   Base Value: 505 | Scaled Value: 5.05 | Target: Enemy(6)
+                   Base Value: 625 | Scaled Value: 6.25 | Target: Enemy(6)
 #2 (id=53785)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Charges your off-hand weapon with lava and burns your target, dealing $sw1 Fire damage.
@@ -1430,7 +1428,7 @@ Description      : $@spelldesc63279
 Name             : Earthgrab (id=64695) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
-Duration         : 5 seconds
+Duration         : 8 seconds
 Proc Chance      : 100%
 Mechanic         : Unknown(58)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -1545,7 +1543,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=66866)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.25000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.50000 | Target: Friend(21)
 #2 (id=66867)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 45 | Scaled Value: 45 | Target: Self(1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Healing Surge (188070)
@@ -1683,7 +1681,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68090)    : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.20000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.75000 | Target: Enemy(6)
 #2 (id=287602)   : Energize Power (30)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: maelstrom | Target: Self(1)
 Description      : You hurl molten lava at the target, dealing $s1 Fire damage. If your Flame Shock is on the target, Lava Burst will deal a critical strike.
@@ -2099,6 +2097,7 @@ Tooltip          : A percentage of damage or healing dealt is copied as healing 
 Name             : Echo of the Elements (id=108283) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
+Affecting spells : Elemental Shaman (137040)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2115,7 +2114,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 | Target: Self(1)
 #4 (id=263364)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 | Target: Self(1)
-Description      : $?c1[Lava Burst now has 2][Riptide, Healing Stream Totem, and Lava Burst now have 2] charges. Other effects that reset $?c1[its][their] remaining cooldown will instead grant 1 charge.$?c3[
+Description      : $?c1[Lava Burst now has ${$s2+1}][Riptide, Healing Stream Totem, and Lava Burst now have ${$s2+1}] charges. Other effects that reset $?c1[its][their] remaining cooldown will instead grant 1 charge.$?c3[
 
 In addition, when you consume a charge of Tidal Waves, you have a $s1% chance to generate a charge of Riptide.][]
 
@@ -2167,7 +2166,7 @@ Effects          :
                    Base Value: 115356 | Scaled Value: 115356 | Target: Self(1)
                    Affected Spells: Stormstrike (17364)
 #4 (id=305266)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 11 | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Rockbiter (193786), Flametongue (193796)
 Description      : Transform into an Air Ascendant for $114051d, generating $s4 Maelstrom per second, and transforming your auto attack and Stormstrike into Wind attacks, which bypass armor and have a $s1 yd range.
 Tooltip          : Transformed into a powerful Air ascendant. Auto attacks have a $114089r yard range. Stormstrike is empowered and has a $114089r yard range.
@@ -2455,7 +2454,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=132332)   : School Damage: elemental (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.25000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.80000 | Target: Enemy(6)
 Description      : Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike, Haste, or Mastery by $118522s1 for $118522d.
 
 Name             : Fire Nova (id=117588) 
@@ -2547,7 +2546,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=135038)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 1200.296 (avg=0.706472) | Misc Value: 1792 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 2400.347 (avg=1.4128) | Misc Value: 1792 | Target: Self(1)
 Description      : $@spelldesc117014
 Tooltip          : Critical Strike increased by $s1.
 
@@ -2584,7 +2583,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=140233)   : School Damage: elemental (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=3.18, dl=0.15) | SP Coefficient: 5.25000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 (avg=3.18, dl=0.15) | SP Coefficient: 6.80000 | Target: Enemy(6)
 Description      : $@spelldesc117014
 
 Name             : Spiritual Insight (id=123099) [Spell Family (11), Passive] 
@@ -2719,7 +2718,7 @@ Effects          :
 #2 (id=191046)   : Apply Aura (6) | Unknown effect sub type (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 #3 (id=191047)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 42 | Scaled Value: 42 | Target: Self(1)
+                   Base Value: 14 | Scaled Value: 14 | Target: Self(1)
                    Affected Spells: Lava Burst (51505)
 #4 (id=191048)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 18 | Target: Self(1)
@@ -2772,8 +2771,9 @@ Effects          :
 #1 (id=179724)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
-#2 (id=191042)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=191042)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
+                   Affected Spells: Echo of the Elements (108283)
 #3 (id=191043)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191044)   : Apply Aura (6) | Dummy (4)
@@ -3099,7 +3099,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219326)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.42000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.48000 | Target: Enemy(6)
 Description      : Conjures a gust of wind that deals $s1 Nature damage to an enemy and generates $226180s2 Maelstrom for the Shaman.
 
 Name             : Call Lightning (id=157348) [Spell Family (11)] 
@@ -3119,7 +3119,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219409)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.84000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.96000 | Target: Enemy(6)
 #2 (id=219410)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 0x7f | Target: Self(1)
 Description      : Call down a lightning strike on an enemy, dealing $s1 Nature damage, and leaving the Storm Elemental charged with energy for $d.
@@ -3140,7 +3140,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=219547)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
 Description      : Increases your chance to critically strike by $s1%.
 
 Name             : Cloudburst (id=157503) [Spell Family (11)] 
@@ -3325,7 +3325,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=241705)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | Target: Enemy(6)
 Description      : $@spelldesc170374
 
 Name             : Windfury Attack (id=170512) [Spell Family (11)] 
@@ -3376,7 +3376,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=246371)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 1200.296 (avg=0.706472) | Misc Value: 917504 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 2400.347 (avg=1.4128) | Misc Value: 917504 | Target: Self(1)
 Description      : $@spelldesc117014
 Tooltip          : Haste increased by $s1.
 
@@ -3393,7 +3393,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=246377)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 5 | Scaled Value: 1200.296 (avg=0.706472) | Misc Value: 33554432 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 2400.347 (avg=1.4128) | Misc Value: 33554432 | Target: Self(1)
 Description      : $@spelldesc117014
 Tooltip          : Mastery increased by $s1.
 
@@ -3468,7 +3468,7 @@ Effects          :
 Name             : Lightning Bolt (id=187837) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Nature
-Resource         : 0 - 45 Maelstrom w/ Overcharge (id=210727)
+Resource         : 0 - 40 Maelstrom w/ Overcharge (id=210727)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3602,7 +3602,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=274380)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8.00000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 11.00000 | Target: Enemy(6)
 #2 (id=274448)   : Apply Aura (6) | Unknown effect sub type (270)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 9 | Target: Enemy(6)
 Description      : Summons an Earthen Spike under an enemy, dealing $s1 Physical damage and increasing Physical and Nature damage you deal to the target by $s2% for $d.
@@ -3975,7 +3975,7 @@ Name             : Gust of Wind (id=192063)
 Class            : Shaman
 School           : Physical
 GCD              : 1.5 seconds
-Cooldown         : 15 seconds
+Cooldown         : 20 seconds
 Attributes       : ........ ........ ..x..... .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x....... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4054,7 +4054,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=281777)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self(1)
 #2 (id=281778)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Increases haste by $s1%.
@@ -4120,7 +4120,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=281806)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Target: Enemy(6)
 Description      : $@spelldesc192106
 
 Name             : Liquid Magma Totem (id=192222) [Spell Family (11)] 
@@ -4193,7 +4193,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=282015)   : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.10000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc192222
 
 Name             : Tempest (id=192234) [Spell Family (11), Passive, Hidden] 
@@ -4224,7 +4224,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=282020)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 18 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Lava Surge (77756)
 Description      : Flame Shock has a $s1% increased chance to trigger Lava Surge.
 
@@ -4491,7 +4491,7 @@ Description      : Hand of Gul'dan now also applies Doom to all enemies it hits.
 Name             : Frostbrand (id=196834) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Frost
-Resource         : 20 Maelstrom
+Resource         : 35 Maelstrom
 Spell Level      : 38
 Range            : 10 yards
 GCD              : 1.5 seconds
@@ -4610,9 +4610,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 1
 Range            : 30 yards
-GCD              : 1.5 seconds
 Duration         : 20 seconds
-Cooldown         : 30 seconds
 Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -4628,13 +4626,10 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
 Effects          :
 #1 (id=289178)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Custom(18)
-                   Hotfixed: Type (6 -> 3), Sub Type (56 -> 0), Misc Value (70495 -> 0), Misc Value 2 (9 -> 0), Target 1 (16 -> 18)
 #3 (id=289180)   : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-                   Hotfixed: Sub Type (260 -> 60), Misc Value (754 -> 0), Target 1 (16 -> 6)
 #4 (id=355930)   : Apply Aura (6) | Unknown effect sub type (260)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 754 | Target: Enemy(6)
-                   Hotfixed: NEW EFFECT
 Description      : Transforms the enemy into a $?s147785[compy][frog]. While hexed, the target is incapacitated and cannot attack or cast spells. Damage caused may interrupt the effect. Lasts $d. Only works on Humanoids and Beasts.
 Tooltip          : Incapacitated.
 
@@ -4679,7 +4674,7 @@ Tooltip          : Dealing $197385s1 Nature damage every $t1 sec to enemies caug
 Name             : Sundering (id=197214) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
-Resource         : 60 Maelstrom
+Resource         : 20 Maelstrom
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 40 seconds
@@ -4713,7 +4708,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289974)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=289975)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc197211
@@ -4821,7 +4816,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=290989)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.75000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Target: Friend(21)
 Description      : $@spelldesc197995
 
 Name             : Fire Elemental (id=198067) [Spell Family (11)] 
@@ -4852,8 +4847,8 @@ School           : Nature
 Spell Level      : 36
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 15 seconds
-Cooldown         : 120 seconds
+Duration         : 60 seconds
+Cooldown         : 300 seconds
 Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -5168,7 +5163,7 @@ Effects          :
 #1 (id=292920)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : $@spelldesc198736
-Tooltip          : Your special attacks will trugger an arc of fiery or lightning damage at your target.
+Tooltip          : Your special attacks will trigger an arc of fiery or lightning damage at your target.
 
 Name             : Undulation (id=200071) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -5293,7 +5288,7 @@ Class            : Shaman
 School           : Nature
 Range            : 10 yards
 GCD              : 1.5 seconds
-Charges          : 2 (6 seconds cooldown)
+Charges          : 2 (7.5 seconds cooldown)
 Category         : 1634
 Affecting spells : Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
@@ -5320,7 +5315,7 @@ Spell Level      : 1
 Range            : 10 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
-Cooldown         : 45 seconds
+Cooldown         : 40 seconds
 Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5366,7 +5361,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=297552)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
                    Affected Spells: Lava Burst (51505), Lava Burst Overload (77451)
 Description      : Lava Burst deals $s1% more damage and causes Flame Shock to spread from the target to a nearby enemy.
 
@@ -5935,7 +5930,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=312123)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 Description      : Your spells refund $s1% of all Maelstrom spent on them.
 
 Name             : Icefury (id=210714) [Spell Family (11)] 
@@ -5961,7 +5956,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=312134)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.00000 | Target: Enemy(6)
 #2 (id=312135)   : Energize Power (30)
                    Base Value: 24 | Scaled Value: 24 | Misc Value: maelstrom | Target: Self(1)
 #3 (id=312136)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
@@ -5984,7 +5979,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=312152)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 45 | Scaled Value: 45 | Target: Self(1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
 #2 (id=312153)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1500 | Scaled Value: 1500 | Target: Self(1)
 #3 (id=312154)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
@@ -6007,7 +6002,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256), Stormlash (213307)
 #2 (id=312160)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Stormlash (195222), Stormlash (195255), Stormlash (195256), Stormlash (213307)
 Description      : Stormlash now spreads to $s1 additional target and deals $s2% additional damage.
 
@@ -6395,7 +6390,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #4 (id=321048)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-Description      : Blankets the target area in healing rain, restoring ${($215871m1+$215871m1)*2.5} health to up to 6 allies over $d. Stormstrike and Lava Lash extend the duration of Rainfall by $s3 sec, up to a maximum of $s4 sec.
+Description      : Blankets the target area in healing rain, restoring ${$215871m1*5} health to up to 6 allies over $d. Stormstrike and Lava Lash extend the duration of Rainfall by $s3 sec, up to a maximum of $s4 sec.
 Tooltip          : Your Rainfall is currently active.
 
 Name             : Rainfall (id=215871) [Spell Family (11)] 
@@ -6498,7 +6493,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=326661)   : School Damage: frost (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.80000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 9.00000 | Target: Enemy(6)
 #2 (id=326662)   : Energize Power (30)
                    Base Value: 18 | Scaled Value: 18 | Misc Value: maelstrom | Target: Self(1)
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage.

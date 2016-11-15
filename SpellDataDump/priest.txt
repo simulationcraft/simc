@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build f588a52)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -13,7 +13,7 @@ Category         : 56
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Unknown(162)
-Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Priest (137030), Shadow Priest (137033), Lucidity (137323), Clear Thoughts (167695), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Improved Power Word: Shield (24191), Rapture (47536), Priest (137030), Shadow Priest (137033), Lucidity (137323), Clear Thoughts (167695), Voidform (194249)
 Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -48,8 +48,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.62000 | Target: Friend(21)
 #2 (id=256131)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.62000 | Target: Friend(21)
+#3 (id=355489)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Friend(21)
 Description      : Fill the target with faith in the light, healing them instantly for $s2 and then $o1 over $d.
-Tooltip          : Healing $w1 health every $t1 sec.
+Tooltip          : Healing $w1 health every $t1 sec.$?$w3<0[  Damage taken reduced by $w3%][]
 
 Name             : Purify (id=527) [Spell Family (6)] 
 Class            : Discipline Holy Priest
@@ -104,7 +106,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Lucidity (137323), Muze's Unwavering Will (210632), Invoke the Light (216122)
+Affecting spells : Lucidity (137323), Muze's Unwavering Will (210632), Invoke the Light (216122), Kam Xi'raff (233997)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -146,7 +148,7 @@ GCD              : 1.5 seconds
 Duration         : 14 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486), Discipline Priest (137032), Lucidity (137323), To the Pain (193644), Voidform (194249), The Edge of Dark and Light (197715), Lingering Insanity (197937)
+Affecting spells : Mastery: Madness (77486), Discipline Priest (137032), Lucidity (137323), To the Pain (193644), Voidform (194249), The Edge of Dark and Light (197715), Kam Xi'raff (233997)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -159,7 +161,7 @@ Effects          :
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41000 | Target: Enemy(6)
 #3 (id=323674)   : Energize Power (30)
-                   Base Value: 300 | Scaled Value: 300 | Misc Value: insanity | Target: Self(1)
+                   Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self(1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
 
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r][]
@@ -183,12 +185,12 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=243)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Radius: 0 - 20 yards | Target: Unknown(63) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Unknown(63) -> AOE friendly(31)
 #2 (id=105332)   : Trigger Spell: Prayer of Healing (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367 | Target: Unknown(25)
 #3 (id=288930)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-Description      : A powerful prayer that heals up to $s3 injured allies within $A1 yds of the target for $s1.
+Description      : A powerful prayer that heals the target and the ${$s3-1} nearest allies within $A1 yards for $s1.
 
 Name             : Mind Control (id=605) [Spell Family (6)] 
 Class            : Priest
@@ -245,9 +247,10 @@ Resource         : 4% Base Mana (44000 @Level 110)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
-Cooldown         : 60 seconds
+Charges          : 1 (60 seconds cooldown)
+Category         : 1673
 Stance Mask      : 0x80000000
-Affecting spells : Serenity Now (196416), Words of Healing (196430), Apotheosis (200183), Light of T'uure (208065)
+Affecting spells : Serenity Now (196416), Words of Healing (196430), Apotheosis (200183), Light of T'uure (208065), Rammal's Ulterior Motive (234711)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -268,7 +271,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Lucidity (137323), Complete Healing (184914), Reverence (196418), Light of T'uure (208065), Muze's Unwavering Will (210632)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Lucidity (137323), Complete Healing (184914), Reverence (196418), Light of T'uure (208065), Muze's Unwavering Will (210632), Rammal's Ulterior Motive (234711)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -289,7 +292,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546), Healing Trance (37706), Spirit Shell (109964), Surge of Light (114255), Lucidity (137323), Complete Healing (184914), Reverence (196418), Light of T'uure (208065)
+Affecting spells : Rapid Healing (24546), Healing Trance (37706), Spirit Shell (109964), Surge of Light (114255), Lucidity (137323), Complete Healing (184914), Reverence (196418), Light of T'uure (208065), Rammal's Ulterior Motive (234711)
 Triggered by     : Surge of Light (114255)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -359,7 +362,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1602
-Affecting spells : Shadowy Insight (124430), Priest (137030), Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Mind Shattering (193643), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Shadowy Insight (124430), Priest (137030), Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Mind Shattering (193643), Voidform (194249), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -370,7 +373,7 @@ Effects          :
 #1 (id=3283)     : School Damage: shadow (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.75000 | Target: Enemy(6)
 #2 (id=139174)   : Energize Power (30)
-                   Base Value: 1200 | Scaled Value: 1200 | Misc Value: insanity | Target: Self(1)
+                   Base Value: 1500 | Scaled Value: 1500 | Misc Value: insanity | Target: Self(1)
 Description      : Blasts the target's mind for $s1 Shadow damage.$?a185916[
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r][]
@@ -388,7 +391,7 @@ Stance Mask      : 0x08000000
 Mechanic         : Unknown(42)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Psychic Scream Duration Increase (23044), Improved Psychic Scream (44297), Lucidity (137323), Voidform (194249), Psychic Voice (196704), Lingering Insanity (197937)
+Affecting spells : Psychic Scream Duration Increase (23044), Improved Psychic Scream (44297), Lucidity (137323), Voidform (194249), Psychic Voice (196704)
 Attributes       : ........ ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -464,7 +467,7 @@ Duration         : 7 seconds
 Cooldown         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), Holy Fire (231687)
+Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), Holy Fire (231687), Kam Xi'raff (233997)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -509,8 +512,11 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
+Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Affecting spells : Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Lingering Insanity (197937), Void Ray (205372), Void Siphon (215322)
+Proc Flags       : ........ ........ ...x.... ........ 
+                 : Periodic Taken
+Affecting spells : Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Void Ray (205372), Void Siphon (215322)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -524,8 +530,10 @@ Effects          :
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power: every 0.75 seconds (24)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 13 | Target: Self(1)
-Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d$?s120585[. Each time Mind Flay deals damage, the Priest will be granted $120587s1% increased movement speed for $120587d, stacking up to $120587u times.][ and slowing their movement speed by $s2%.]$?a185916[
+                   Base Value: 300 | Scaled Value: 300 | Misc Value: 13 | Target: Self(1)
+Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.$?a234702[
+
+$234702s1% of all Shadow Word: Pain damage on the target is replicated to all nearby targets][]$?a185916[
 
 |cFFFFFFFFGenerates ${4*$m3/100} Insanity over the duration.|r][]
 Tooltip          : $?$w2=0[Taking][Movement speed slowed and taking] Shadow damage every $t1 sec.
@@ -554,9 +562,9 @@ Description      : Silences the target, preventing them from casting spells for 
 Tooltip          : Silenced.
 
 Name             : Desperate Prayer (id=19236) [Spell Family (6)] 
-Class            : Priest
+Class            : Holy Priest
 School           : Holy
-Spell Level      : 1
+Spell Level      : 52
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 671
@@ -686,7 +694,7 @@ Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Shadow Priest (137033), Lucidity (137323), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Voidform (194249)
 Attributes       : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -725,10 +733,10 @@ Effects          :
 #2 (id=165318)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=340366)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10
+                   Base Value: 15 | Scaled Value: 15
 Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. Only usable on enemies that have less than $s2% health.
 
-|cFFFFFFFFGenerates $s3 Insanity, or $/100;190714s1 if the target dies.|r
+|cFFFFFFFFGenerates $s3 Insanity, or $/100;190714s1 Insanity if the target dies.|r
 
 Name             : Binding Heal (id=32546) [Spell Family (6)] 
 Class            : Priest
@@ -765,7 +773,7 @@ School           : Holy
 Spell Level      : 70
 Range            : 30 yards
 Stance Mask      : 0x08000000
-Affecting spells : Shadow Priest (137033), Lucidity (137323), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Voidform (194249)
 Triggered by     : Mass Dispel (32375)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
@@ -810,7 +818,7 @@ Cooldown         : 12 seconds
 Category         : 1181
 Category Cooldown: 12 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Healing Trance (37706), Priest (137030), Lucidity (137323)
+Affecting spells : Healing Trance (37706), Priest (137030), Lucidity (137323), Piety (197034)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -876,7 +884,7 @@ Cooldown         : 180 seconds
 Category         : 1417
 Category Cooldown: 180 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Glyph of the Sha (147776), Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Glyph of the Sha (147776), Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -924,7 +932,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Madness (77486), Lucidity (137323), Touch of Darkness (194007), Voidform (194249), Lingering Insanity (197937), San'layn (199855)
+Affecting spells : Mastery: Madness (77486), Lucidity (137323), Touch of Darkness (194007), Voidform (194249), San'layn (199855)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -937,7 +945,7 @@ Effects          :
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.79000 | Target: Enemy(6)
 #3 (id=323673)   : Energize Power (30)
-                   Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self(1)
+                   Base Value: 600 | Scaled Value: 600 | Misc Value: insanity | Target: Self(1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals the Priest for ${$e2*100}% of damage dealt.
 
 If Vampiric Touch is dispelled, the dispeller flees in Horror for $87204d.
@@ -1101,7 +1109,7 @@ GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Category         : 1230
 Category Cooldown: 9 seconds
-Affecting spells : Lucidity (137323)
+Affecting spells : Lucidity (137323), Kam Xi'raff (233997)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ .x...x.. ........ ........ 
@@ -1253,7 +1261,7 @@ Range            : 40 yards
 Duration         : 10 seconds
 Cooldown         : 240 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Lucidity (137323), Item - Priest WoD PvP Holy4P Bonus (171142)
+Affecting spells : Lucidity (137323), Item - Priest WoD PvP Holy4P Bonus (171142), Phyrix's Embrace (234689), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ x....... ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -1271,51 +1279,6 @@ Description      : Calls upon a guardian spirit to watch over the friendly targe
 
 Massive damage amounts will kill the target despite this effect.
 Tooltip          : Increased healing received by $w1%$?$w1<100[ and will prevent 1 killing blow][].
-
-Name             : Mind Sear (id=48045) [Spell Family (6)] 
-Class            : Shadow Priest
-School           : Shadow
-Spell Level      : 26
-Range            : 40 yards
-GCD              : 1.5 seconds
-Duration         : 5 seconds
-Affecting spells : Mental Fatigue (185104), Void Corruption (194016), Voidform (194249), Lingering Insanity (197937), Void Ray (205372)
-Attributes       : ........ ........ x.....x. ........   ..x....x ........ ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Channeled (34)
-Effects          :
-#1 (id=40226)    : Apply Aura (6) | Periodic Trigger Spell: Mind Sear every 1 seconds (23)
-                   Base Value: -1 | Scaled Value: 0 - 2 | Value Range: 3 | Trigger Spell: 49821 | Target: Unknown(25)
-Description      : Corrosive shadow energy radiates from the target, dealing ${$49821m2*6} Shadow damage over $48045d to all enemies within $49821a2 yards of the target.
-
-|cFFFFFFFFGenerates ${$208232m1*6/100} Insanity over the duration per target hit.|r
-Tooltip          : Causing Shadow damage to all targets within $49821a2 yards.
-
-Name             : Mind Sear (id=49821) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Spell Level      : 1
-Range            : 100 yards
-Affecting spells : Mental Fatigue (185104), Void Corruption (194016), Voidform (194249), Lingering Insanity (197937), Void Ray (205372)
-Triggered by     : Mind Sear (48045)
-Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ........ 
-                 : ........ ........ ........ ......x.   x....... .x...... ........ .x....x. 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Not a proc (105)
-Effects          :
-#1 (id=41944)    : Dummy (3)
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | Target: Unknown(77)
-#2 (id=326288)   : School Damage: shadow (2)
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | SP Coefficient: 0.54000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant)(16)
-Description      : $@spelldesc48045
-Tooltip          : Causing shadow damage to all targets within $a2 yards.
 
 Name             : Mechanized Snow Goggles (id=56465) 
 Class            : Priest, Mage, Warlock
@@ -1552,7 +1515,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 10 seconds
+Duration         : 12 seconds
 Cooldown         : 360 seconds
 Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1688,7 +1651,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Lingering Insanity (197937), Void Ray (205372), Void Siphon (215322)
+Affecting spells : Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Void Ray (205372), Void Siphon (215322)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1947,11 +1910,12 @@ Spell Level      : 1
 Range            : 50000 yards
 Stance Mask      : 0x80000000
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
+                 : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
 Effects          :
 #1 (id=99434)    : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 110 | Points Per Level: 1 | Target: Friend(21)
@@ -2074,7 +2038,7 @@ Cooldown         : 15 seconds
 Category         : 1380
 Category Cooldown: 15 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
+Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558), Kam Xi'raff (233997)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2090,7 +2054,7 @@ Name             : Divine Star (id=110745) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Range            : 100 yards
-Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
+Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558), Kam Xi'raff (233997)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ........ 
                  : x......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2201,7 +2165,7 @@ Cooldown         : 40 seconds
 Category         : 1366
 Category Cooldown: 40 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
+Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558), Kam Xi'raff (233997)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2234,7 +2198,7 @@ Name             : Halo (id=120692) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Range            : 100 yards
-Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
+Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558), Kam Xi'raff (233997)
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ ........ ........ ......xx 
                  : x......x .......x ........ ........   ...x.... .......x .xxx.... ........ 
@@ -2251,7 +2215,7 @@ Name             : Halo (id=120696) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Range            : 100 yards
-Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
+Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558), Kam Xi'raff (233997)
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ .x...... ........ ......xx 
                  : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -2306,7 +2270,7 @@ Name             : Divine Star (id=122128) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Range            : 100 yards
-Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
+Affecting spells : Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558), Kam Xi'raff (233997)
 Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
                  : x......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2330,7 +2294,7 @@ Cooldown         : 60 seconds
 Category         : 1417
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2470,7 +2434,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 0.5 yards/sec
 Cooldown         : 12 seconds
-Affecting spells : Priest (137030), Lucidity (137323), The Edge of Dark and Light (197715), Holy Fire (231687)
+Affecting spells : Priest (137030), Lucidity (137323), The Edge of Dark and Light (197715), Holy Fire (231687), Kam Xi'raff (233997)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2838,11 +2802,11 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
                    Affected Spells: Shadowy Apparition (148859)
 #2 (id=315218)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 400 | Scaled Value: 400 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 300 | Scaled Value: 300 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Shadowy Apparition (148859)
 Description      : Your Shadowy Apparitions now deal $s1% increased damage and generate ${$m2/100} Insanity.
 
-Name             : Prayer of Mending (id=155793) 
+Name             : Prayer of Mending (id=155793) [Spell Family (6)] 
 Class            : Priest
 School           : Physical
 Spell Level      : 68
@@ -2952,7 +2916,7 @@ GCD              : 1.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Lingering Insanity (197937), Power Word: Shield (211558), Darkest Shadows (216212)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Power Word: Shield (211558), Darkest Shadows (216212)
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2994,7 +2958,7 @@ Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Lingering Insanity (197937), Power Word: Shield (211558), Darkest Shadows (216212)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Thoughts of Insanity (193647), Voidform (194249), Atonement (194384), Power Word: Shield (211558), Darkest Shadows (216212)
 Attributes       : ........ ........ x....... ..x....x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3056,7 +3020,26 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283236)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : When you cast Shadow Mend on yourself, its damage over time effect heals you instead.
+Description      : When you cast Shadow Mend on yourself, its damage over time effect heals you instead, and reduces all damage you take by $193065s2%.
+
+Name             : Masochism (id=193065) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Level      : 1
+Duration         : 10 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=283238)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=355484)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Self(1)
+Description      : $@spelldesc193063
+Tooltip          : $?$w1>0[Heals $w1 damage every $t1 seconds.  ][]Damage taken reduced by $w2%.
 
 Name             : Castigation (id=193134) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -3102,7 +3085,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=283376)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 8 | Target: Self(1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 8 | Target: Self(1)
 Description      : Your Prayer of Mending has a $s1% chance to leave a Renew on each target it heals.
 
 Name             : Mania (id=193173) [Spell Family (6), Passive, Hidden] 
@@ -3117,7 +3100,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=283392)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 Description      : You move 1% faster for every $s1 Insanity you have.
 
 Name             : Fortress of the Mind (id=193195) [Spell Family (6), Passive, Hidden] 
@@ -3159,7 +3142,7 @@ Attributes       : ........ ........ ........ .....x.x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=283478)   : Apply Aura (6) | Unknown effect sub type (329)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: 13 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 13 | Target: Self(1)
 #2 (id=283479)   : Trigger Spell: Surrendered Soul (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212570 | Target: Self(1)
 #3 (id=315154)   : Apply Aura (6) | Unknown effect sub type (377)
@@ -3189,7 +3172,7 @@ Effects          :
 #2 (id=325209)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Voidform (185916)
-Description      : Voidform may be activated anytime your Insanity level is ${100+$m1/100} or higher.
+Description      : Void Eruption may be cast anytime your Insanity level is ${100+$m1/100} or higher.
 
 Name             : Mind Flay (id=193473) [Spell Family (6)] 
 Class            : Priest
@@ -3231,13 +3214,12 @@ Effects          :
 #1 (id=285130)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x20 | Target: Self(1)
 #2 (id=285131)   : Apply Aura (6) | Modify Power Regeneration (85)
-                   Base Value: -4000 | Scaled Value: -4000 | Misc Value: 13 | Target: Self(1)
-                   Hotfixed: Base Value (-4500 -> -4000)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 13 | Target: Self(1)
 #3 (id=285132)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 #4 (id=285141)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Mind Spike (73510), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448)
+                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Spike (73510), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448)
 #5 (id=285142)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=286264)   : Apply Aura (6) | Unknown effect sub type (453)
@@ -3488,9 +3470,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=289321)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 8152 | Target: Self(1)
-Description      : Prayer of Mending now triggers Serendipity, reducing the remaining cooldown on Holy Word: Sanctify.
+#1 (id=289321)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 11 | Target: Self(1)
+                   Affected Spells: Prayer of Mending (33076)
+Description      : Prayer of Mending's cooldown is reduced by ${$s1/1000} sec, and it now triggers Serendipity, reducing the remaining cooldown on Holy Word: Sanctify.
 
 Name             : Shield Discipline (id=197045) [Spell Family (6), Passive] 
 Class            : Priest
@@ -3542,13 +3525,12 @@ Attributes       : ........ ........ ..x..... x..x.x..   ........ ..x..... .....
 Effects          :
 #1 (id=290888)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-#2 (id=290890)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Mind Spike (73510), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448)
-Description      : $@spelldesc194249
+#2 (id=290890)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : $@spelldesc199849
 Tooltip          : Haste increased by $w1%.
 
-Name             : Void Lord (id=199849) [Spell Family (6), Passive, Hidden] 
+Name             : Lingering Insanity (id=199849) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3560,8 +3542,8 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=294124)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self(1)
-Description      : Lingering Insanity persists for $s1 seconds after you next enter Void Form.
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
+Description      : When Voidform ends, its haste bonus fades by $s1% every second, instead of ending immediately.
 
 Name             : Reaper of Souls (id=199853) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -3603,6 +3585,9 @@ Name             : Trail of Light (id=200128) [Spell Family (6), Passive]
 Class            : Priest
 School           : Physical
 Spell Level      : 1
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3642,7 +3627,7 @@ Cooldown         : 60 seconds
 Category         : 1417
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3845,10 +3830,9 @@ School           : Shadow
 Resource         : 5% Base Mana (55000 @Level 110)
 Spell Level      : 1
 Range            : 40 yards
-Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Lucidity (137323), Burst of Light (197716), Power Word: Shield (211558)
+Affecting spells : Lucidity (137323), Power Word: Shield (211558)
 Attributes       : ........ ........ x....... ..x....x   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3858,7 +3842,7 @@ Attributes       : ........ ........ x....... ..x....x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=301146)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.50000 | Radius: 0 - 30 yards | Target: Unknown(63) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.50000 | Radius: 0 - 30 yards | Target: Unknown(63) -> AOE friendly(31)
 #2 (id=301147)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Draws on the power of shadow to heal up to $s2 injured allies within $A1 yds of the target for $s1, but leaves a shell on them that absorbs the next ${$m1*$219518m1/100} healing they receive within $219521d.
@@ -3871,7 +3855,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), Holy Fire (231687)
+Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), Holy Fire (231687), Kam Xi'raff (233997)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3892,7 +3876,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 20 seconds
 Proc Chance      : 101%
-Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), Holy Fire (231687)
+Affecting spells : Lucidity (137323), The Edge of Dark and Light (197715), Holy Fire (231687), Kam Xi'raff (233997)
 Triggered by     : Purge the Wicked (204197)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3914,7 +3898,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Cooldown         : 60 seconds
+Cooldown         : 45 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3987,9 +3971,9 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Charges          : 3 (30 seconds cooldown)
+Charges          : 3 (20 seconds cooldown)
 Category         : 1590
-Affecting spells : Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Voidform (194249)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4088,7 +4072,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303238)   : Apply Aura (6) | Proc Trigger Spell: Void Ray (42)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 2 | Trigger Spell: 205372 | Target: Self(1)
-Description      : Each time your $?s73510[Mind Spike][Mind Flay] or Mind Sear deals damage, you gain $205372s1% increased $?s73510[Mind Spike][Mind Flay] and Mind Sear damage for $205372d, stacking up to $205372u times.
+Description      : Each time your $?s73510[Mind Spike][Mind Flay] deals damage, you gain $205372s1% increased $?s73510[Mind Spike][Mind Flay] damage for $205372d, stacking up to $205372u times.
 
 Name             : Void Ray (id=205372) [Spell Family (6)] 
 Class            : Priest
@@ -4109,9 +4093,9 @@ Effects          :
                    Affected Spells: Mind Flay (15407)
 #2 (id=341195)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-                   Affected Spells: Mind Sear (48045), Mind Sear (49821), Mind Spike (73510)
+                   Affected Spells: Mind Spike (73510)
 Description      : $@spelldesc205371
-Tooltip          : Increases $?s73510[Mind Spike][Mind Flay] and Mind Sear damage by $s1%.
+Tooltip          : Increases $?s73510[Mind Spike][Mind Flay] damage by $s1%.
 
 Name             : Shadow Crash (id=205385) [Spell Family (6)] 
 Class            : Priest
@@ -4120,7 +4104,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 2.5 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Voidform (194249), Lingering Insanity (197937)
+Affecting spells : Voidform (194249)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4150,7 +4134,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303255)   : School Damage: shadow (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.40000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.60000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc205385
 
 
@@ -4164,7 +4148,7 @@ Velocity         : 20 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
-Affecting spells : Mastery: Madness (77486), Priest (137030), Sinister Thoughts (194026), Voidform (194249), Lingering Insanity (197937), Void (211657), Anund's Last Breath (215210)
+Affecting spells : Mastery: Madness (77486), Priest (137030), Sinister Thoughts (194026), Voidform (194249), Void (211657), Anund's Last Breath (215210)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4174,11 +4158,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303382)   : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.00000 | Target: Enemy(6)
-#2 (id=303383)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Target: Enemy(6)
+#2 (id=303383)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 234746 | Target: Enemy(6)
 #3 (id=308158)   : Energize Power (30)
                    Base Value: 1600 | Scaled Value: 1600 | Misc Value: insanity | Target: Self(1)
-Description      : Sends a bolt of pure void energy at the enemy, causing $s1 Shadow damage$?a231688[ and refreshing Shadow Word: Pain and Vampiric Touch to their original duration][]. Requires Voidform.
+Description      : Sends a bolt of pure void energy at the enemy, causing $s1 Shadow damage$?a231688[ and extending the duration of Shadow Word: Pain and Vampiric Touch on all nearby targets by ${$231688s1/1000} sec][]. Requires Voidform.
 
 |cFFFFFFFFGenerates $/100;s3 Insanity.|r
 
@@ -4261,21 +4245,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Target: Friend(21)
 Description      : Applies Light of the Naaru to the target, healing for $s2 and increasing all healing you do to that target by $208065s1% for $d. Maximum 2 charges.
 Tooltip          : Healing taken from the Priest increased by $s1%.
-
-Name             : Mind Sear (id=208232) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Spell Level      : 1
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=308086)   : Energize Power (30)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: insanity | Target: Self(1)
-Description      : $@spelldesc48045
 
 Name             : Mass Resurrection (id=212036) [Spell Family (6)] 
 Class            : Discipline Holy Priest
@@ -4398,6 +4367,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
+Affecting spells : Kam Xi'raff (233997)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4553,9 +4523,9 @@ Resource         : 10000 Insanity
 Spell Level      : 20
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Cooldown         : 3 seconds
+Cooldown         : 1.5 seconds
 Category         : 1660
-Category Cooldown: 3 seconds
+Category Cooldown: 1.5 seconds
 Affecting spells : Priest (137030), Legacy of the Void (193225), Voidform (194249)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -4587,7 +4557,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=343561)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Activated by casting Void Eruption. Twists your Shadowform with the powers of the Void, increasing all damage you deal by $194249s1%$?s8092[, reducing the cooldown on Mind Blast by ${$194249m6/-1000} sec,][] and granting an additional $194249m3% Haste every $194249t5 sec.
+Description      : Activated by casting Void Eruption. Twists your Shadowform with the powers of the Void, increasing shadow damage you deal by $194249s1%$?s8092[, reducing the cooldown on Mind Blast by ${$194249m6/-1000} sec,][] and granting an additional $194249m3% Haste every $194249t5 sec.
 
 Your Insanity will drain increasingly fast until it reaches 0 and Voidform ends.
 
@@ -4679,8 +4649,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=349532)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self(1)
-Description      : Void Bolt refreshes Shadow Word: Pain and Vampiric Touch to their original duration.
+                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 12 | Target: Self(1)
+Description      : Void Bolt extends the duration of your Shadow Word: Pain and Vampiric Touch on all nearby targets by ${s1/1000} sec.
 
 Name             : Shadow Word: Death (Rank 2) (id=231689) [Spell Family (6), Passive] 
 Class            : Shadow Priest
@@ -4746,5 +4716,55 @@ Effects          :
 Description      : Assume a Shadowform, increasing your Shadow damage dealt by $s1%, and reducing your Physical damage taken by $s2%.
 Tooltip          : Shadow damage dealt increased by $s1%.
 Physical damage taken reduced by $s2%.
+
+Name             : Mind Flay (Rank 2) (id=234702) [Spell Family (6), Passive] 
+Class            : Shadow Priest
+School           : Shadow
+Spell Level      : 26
+Affecting spells : Void Corruption (194016)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=354722)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self(1)
+Description      : While channeling Mind Flay, $s1% of all Shadow Word: Pain damage on the target is replicated to all nearby targets.
+
+Name             : Void Bolt (id=234746) [Spell Family (6), Hidden] 
+Class            : Priest
+School           : Shadow
+Spell Level      : 20
+Range            : 100 yards
+Triggered by     : Void Bolt (205448)
+Attributes       : .......x ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Disable player procs (112), Disable target procs (113), Disable weapon procs (151)
+Effects          :
+#1 (id=354797)   : Server Side Script (77)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+Description      : $spelldesc205448
+
+Name             : Perseverance (id=235189) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=355490)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : When you cast Renew on yourself, it reduces all damage you take by $193065s2%.
 
 

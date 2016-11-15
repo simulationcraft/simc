@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build f588a52)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -18,7 +18,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Shield Block (id=2565) [Spell Family (4)] 
 Class            : Protection Warrior, Monk
 School           : Physical
-Resource         : 10 Rage
+Resource         : 15 Rage
 Spell Level      : 20
 Cooldown         : 1 seconds
 Charges          : 1 (13 seconds cooldown)
@@ -1057,9 +1057,10 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
+Affecting spells : Fundamental Observation (208878), 
 Attributes       : ........ ........ ........ ........   ..x...x. ........ .x...... .....x.. 
                  : ........ ........ ........ ......x.   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
@@ -1072,7 +1073,7 @@ Effects          :
 #3 (id=135928)   : Apply Aura (6) | Unknown effect sub type (106)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 Description      : Reduces all damage taken by $s2% for $d. Moving, being hit by a melee attack, or taking another action will cancel this effect.
-Tooltip          : Damage dealt to the Monk reduced by $s2%.
+Tooltip          : Damage taken reduced by $s2%.
 
 Name             : Breath of Fire (id=115181) [Spell Family (53)] 
 Class            : Brewmaster Monk
@@ -1790,7 +1791,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Lucidity (137331), Mana Tea (197908)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Lucidity (137331), Mana Tea (197908), Emperor's Electric Charge (235054)
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -3632,7 +3633,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=219548)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
 Description      : Increases your chance to critically strike by $s1%.
 
 Name             : Whirling Dragon Punch (id=158221) 
@@ -5004,14 +5005,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=316119)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
-Description      : Touch of Death can be used a second time within $s1 sec before its cooldown is triggered.
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+Description      : Touch of Death can be used a second time within $213114d before its cooldown is triggered.
 
 Name             : Hidden Master's Forbidden Touch (id=213114) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Level      : 5
-Duration         : 3 seconds
+Duration         : 5 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

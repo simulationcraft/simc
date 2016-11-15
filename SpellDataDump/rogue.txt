@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build f588a52)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -347,7 +347,7 @@ Duration         : 4 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x20000000
 Mechanic         : Unknown(95)
-Affecting spells : Vendetta (79140), Dirty Tricks (108216), Shadow Blades (121471), Prey on the Weak (131511), Shadow Dance (185313), Broadsides (193356), Premeditation (196979)
+Affecting spells : Vendetta (79140), Dirty Tricks (108216), Shadow Blades (121471), Prey on the Weak (131511), Shadow Dance (185313), Broadsides (193356), Premeditation (196979), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -430,7 +430,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | Mechanic: Bleed | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Mechanic: Bleed | Target: Enemy(6)
 #2 (id=239409)   : Apply Aura (6) | Periodic Dummy: every 2 seconds (226)
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy(6)
 #3 (id=293833)   : Trigger Spell: Rupture (64)
@@ -441,12 +441,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 199672 | Target: Enemy(6)
 Description      : Finishing move that tears open the target, dealing Bleed damage over time. Lasts longer per combo point.
 
-   1 point  : ${$s1*1*8/2} over 8 sec
-   2 points: ${$s1*2*12/2} over 12 sec
-   3 points: ${$s1*3*16/2} over 16 sec
-   4 points: ${$s1*4*20/2} over 20 sec
-   5 points: ${$s1*5*24/2} over 24 sec$?s193531[
-   6 points: ${$s1*6*28/2} over 28 sec][]
+   1 point  : ${$s1*8/2} over 8 sec
+   2 points: ${$s1*12/2} over 12 sec
+   3 points: ${$s1*16/2} over 16 sec
+   4 points: ${$s1*20/2} over 20 sec
+   5 points: ${$s1*24/2} over 24 sec$?s193531[
+   6 points: ${$s1*28/2} over 28 sec][]
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
 Name             : Feint (id=1966) [Spell Family (8)] 
@@ -660,7 +660,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=1114)     : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Target: Enemy(6)
+                   Base Value: -30 | Scaled Value: -30 | Target: Enemy(6)
 Description      : Coats a weapon with poison that lasts for 1 hour.
 Each strike has a $3408h% chance of poisoning the enemy, slowing their movement speed by $3409s1% for $3409d.
 Tooltip          : Movement slowed by $s1%.
@@ -687,14 +687,17 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #2 (id=127877)   : Apply Aura (6) | Periodic Energize Power: every 2 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self(1)
-Description      : Finishing move that consumes combo points to increase attack speed by $s1%. Lasts longer per combo point.
+#3 (id=356567)   : Apply Aura (6) | Mod Power Regen (110)
+                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
+Description      : Finishing move that consumes combo points to increase attack speed by $s1% and Energy regeneration rate by $s3%. Lasts longer per combo point.
    1 point  : 12 seconds
    2 points: 18 seconds
    3 points: 24 seconds
    4 points: 30 seconds
    5 points: 36 seconds$?s193531[
    6 points: 42 seconds][]
-Tooltip          : Attack speed increased by $w1%.$?$w2!=0[
+Tooltip          : Attack speed increased by $w1%.
+Energy regeneration increased by $s3%.$?$w2!=0[
 Regaining $w2 Energy every $t2 sec.][]
 
 Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (3), Spell Family (7)] 
@@ -1242,8 +1245,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=20790)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Attacks made while stealthed and for 6 seconds after breaking stealth cause an additional $s1% damage.
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+Description      : Attacks made while stealthed and for $s1 seconds after breaking stealth cause an additional $31665s1% damage.
 
 Name             : Cloak of Shadows (id=31224) [Spell Family (8)] 
 Class            : Rogue
@@ -1284,6 +1287,22 @@ Effects          :
 #1 (id=20803)    : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 500000000 | Scaled Value: 5e+08 | Misc Value: 127 | Target: Self(1)
 Description      : Fatal attacks instead reduce you to 7% of your maximum health. For $45182d afterward, you take $45182s1% reduced damage. Cannot trigger more often than once per $45181d.
+
+Name             : Master of Subtlety (id=31665) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=21282)    : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
+Description      : $@spelldesc31223
+Tooltip          : Damage dealt increased by $w1%.
 
 Name             : Envenom (id=32645) [Spell Family (8)] 
 Replaces         : Eviscerate (id=196819)
@@ -1433,9 +1452,9 @@ Name             : Cheated Death (id=45181)
 Class            : Rogue
 School           : Holy
 Range            : 50000 yards
-Duration         : 120 seconds
+Duration         : 360 seconds
 Attributes       : ........ ........ .......x x.xx.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x.... ........   ........ ........ ....x... ....x... 
+                 : x.x..... ......x. ...x.... ........   ........ ........ ........ ....x... 
                  : .......x ........ ...x.... ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -1604,7 +1623,7 @@ Effects          :
 #2 (id=51140)    : Trigger Spell: Killing Spree Off-Hand (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 57842 | Target: Enemy(6)
 #3 (id=211058)   : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 | Target: Enemy(6)
+                   Base Value: 260 | Scaled Value: 2.6 | Target: Enemy(6)
 Description      : $@spelldesc51690
 
 Name             : Killing Spree Off-Hand (id=57842) [Spell Family (8)] 
@@ -1624,7 +1643,7 @@ Effects          :
 #1 (id=51141)    : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy(6)
 #2 (id=211071)   : Weapon Damage% (31)
-                   Base Value: 210 | Scaled Value: 2.1 | Target: Enemy(6)
+                   Base Value: 260 | Scaled Value: 2.6 | Target: Enemy(6)
 Description      : $@spelldesc51690
 
 Name             : Tricks of the Trade (id=57934) [Spell Family (8)] 
@@ -1849,10 +1868,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Agonizing Poison (200803), Kingsbane (222062)
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Shadow Blade (121473), Shadow Blade Off-hand (121474), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Agonizing Poison (200803), Kingsbane (222062)
 #3 (id=92122)    : Apply Aura (6) | Dummy (4)
                    Base Value: 350 | Scaled Value: 350 | Target: Self(1)
 #4 (id=322527)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
@@ -1958,7 +1977,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Goremaw's Bite (220901)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Prey on the Weak (131511), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Alacrity (193538), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Goremaw's Bite (220901)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -2187,7 +2206,7 @@ Attributes       : .......x ........ ........ ...x...x   .....x.. ........ .....
                  : Hidden (7), Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=125596)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 127 | Misc Value 2: 0x8 | Target: Self(1)
+                   Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Misc Value 2: 0x8 | Target: Self(1)
 Description      : $@spelldesc108209
 Tooltip          : Energy cost of abilities reduced by $w1%.
 
@@ -2286,8 +2305,29 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=127101)   : Apply Aura (6) | Unknown effect sub type (418)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 4 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 4 | Target: Self(1)
 Description      : You may have a maximum of ${5+$m1} combo points. Finishers still consume a maximum of 5 combo points.
+
+Name             : Shroud of Concealment (id=114018) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 68
+GCD              : 1 seconds
+Duration         : 15 seconds
+Cooldown         : 360 seconds
+Stance Mask      : 0x20000000
+Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=127108)   : Apply Aura (6) | Periodic Trigger Spell: Shroud of Concealment every 0.5 seconds (23)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115834 | Target: Self(1)
+Description      : Extend a cloak that wraps party and raid members within $115834A1 yards in shadows, providing stealth for $d.
+Tooltip          : Concealing allies within $115834A1 yards in shadows.
 
 Name             : Subterfuge (id=115192) [Spell Family (8)] 
 Class            : Rogue
@@ -2304,12 +2344,31 @@ Effects          :
 #1 (id=128893)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=339938)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 125 | Scaled Value: 125 | Misc Value: 22 | Target: Self(1)
 #3 (id=339939)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Garrote (703)
 Description      : $@spelldesc108208
 Tooltip          : Temporarily concealed in the shadows.
+
+Name             : Shroud of Concealment (id=115834) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Level      : 76
+Duration         : 1.5 seconds
+Triggered by     : Shroud of Concealment (114018)
+Attributes       : ...x.... ........ ........ ........   .....x.. ........ ...x.... ........ 
+                 : ..xx.... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=129946)   : Apply Aura (6) | Stealth (16)
+                   Base Value: 380 | Scaled Value: 550 | Points Per Level: 5 | Radius: 20 yards | Target: Raid Members(56)
+Description      : Extend a cloak that wraps party and raid members within $115834A1 yards in shadows, concealing them from sight.
+Tooltip          : Concealed in shadows.
 
 Name             : Disguise (id=121308) 
 Class            : Rogue
@@ -2351,7 +2410,7 @@ Effects          :
                    Affected Spells: Mutilate (1329)
 #3 (id=150620)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
-                   Affected Spells: Garrote (703), Sinister Strike (1752), Cheap Shot (1833), Fan of Knives (51723), Shuriken Toss (114014), Poisoned Knife (185565), Shuriken Storm (197835)
+                   Affected Spells: Garrote (703), Sinister Strike (1752), Cheap Shot (1833), Fan of Knives (51723), Shuriken Toss (114014), Prey on the Weak (131511), Poisoned Knife (185565), Shuriken Storm (197835)
 #4 (id=150621)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Backstab (53), Ambush (8676), Hemorrhage (16511), Backstab (173458), Shadowstrike (185438), Gloomblade (200758)
@@ -2416,6 +2475,7 @@ Effects          :
 Name             : Prey on the Weak (id=131511) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
+Affecting spells : Rogue Tier 6 Trinket (40460), Vendetta (79140), Shadow Blades (121471), Assassination Rogue (137037), 
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2494,7 +2554,7 @@ Effects          :
 #2 (id=191060)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: -38 | Scaled Value: -38 | Misc Value: 8 | Target: Self(1)
 #3 (id=191061)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 8 | Target: Self(1)
                    Affected Spells: Shadow Focus (112942)
 #4 (id=191062)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -2532,9 +2592,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179720)   : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 15 | Target: Self(1)
-                   Affected Spells: Between the Eyes (199804)
+#1 (id=179720)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Target: Self(1)
 #2 (id=191056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191057)   : Apply Aura (6) | Dummy (4)
@@ -2578,12 +2637,15 @@ Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Insignia of Ravenholdt (209041)
-#2 (id=191052)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#3 (id=191053)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=191054)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=191052)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Prey on the Weak (131511)
+#3 (id=191053)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self(1)
+                   Affected Spells: Prey on the Weak (131511)
+#4 (id=191054)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 23 | Target: Self(1)
+                   Affected Spells: Prey on the Weak (131511)
 #5 (id=191055)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=261017)   : Apply Aura (6) | Dummy (4)
@@ -2606,6 +2668,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=261026)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#16 (id=356362)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#17 (id=356363)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#18 (id=356364)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#19 (id=356365)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Marked for Death (id=137619) [Spell Family (8)] 
 Class            : Rogue
@@ -2614,6 +2684,7 @@ Spell Level      : 1
 Range            : 30 yards
 Duration         : 60 seconds
 Cooldown         : 60 seconds
+Affecting spells : Deeper Stratagem (193531), 
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   ........ ........ x...x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -2649,7 +2720,7 @@ Attributes       : .......x x....... x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=185207)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self(1)
-Description      : Designer Note: The only purpose of this aura is to mark a player who just cast Nature's Swiftness.
+Description      : Designer Note: The only purpose of this aura is to mark a player who just cast Marked for Death.
 
 Name             : Item - Rogue T16 4P Bonus (id=145210) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -2739,7 +2810,7 @@ Effects          :
 #1 (id=210639)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=217580)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.66000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 4.40000 | Radius: 0 - 8 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 #3 (id=217591)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 #4 (id=217594)   : Apply Aura (6) | Unknown effect sub type (288)
@@ -2814,7 +2885,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=215087)   : Apply Aura (6) | Periodic Damage: physical every 2 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20700 | Mechanic: Bleed | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24000 | Mechanic: Bleed | Target: Enemy(6)
 Description      : $@spelldesc154904
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -2831,7 +2902,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=219544)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
 Description      : Increases your chance to critically strike by $s1%.
 
 Name             : Stealth (id=158188) [Spell Family (8)] 
@@ -3060,7 +3131,7 @@ Effects          :
 #2 (id=269973)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.20000 | Misc Value: combo_points | Target: Self(1)
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88) | Target: Enemy(6)
 #4 (id=316548)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing $s1 Physical damage and reducing movement speed by $s3% for $d.
@@ -3074,7 +3145,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 35 yards
 GCD              : 1 seconds
-Duration         : 1.8 seconds
+Duration         : 2 seconds
 Cooldown         : 60 seconds
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -3085,7 +3156,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=269983)   : Persistent Area Aura (27) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: AOE enemy(28)
-#2 (id=269984)   : Apply Aura (6) | Periodic Dummy: every 0.3 seconds (226)
+#2 (id=269984)   : Apply Aura (6) | Periodic Dummy: every 0.33 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=269985)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Radius: 6 yards | Target: AOE enemy (instant)(16)
@@ -3126,7 +3197,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=270001)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.4) | AP Coefficient: 1.20000 | Radius: 3 - 9 yards | Target: Unknown(91) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.4) | AP Coefficient: 1.50000 | Radius: 3 - 9 yards | Target: Unknown(91) -> AOE enemy (instant)(16)
 Description      : $@spelldesc185767
 Tooltip          : $@spellaura185767
 
@@ -3429,7 +3500,7 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
 Effects          :
 #1 (id=283683)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 127 | Target: Self(1)
-Description      : For the duration of Roll the Bones, each time you use a finishing move, you reduce the remaining cooldown on Adrenaline Rush, Sprint, Between the Eyes, Vanish, Blind, Cloak of Shadows, Riposte, Grappling Hook, Cannonball Barrage, Killing Spree, Marked for Death, and Death from Above by $s1 sec per combo point spent.
+Description      : For the duration of Roll the Bones, each time you use a finishing move, you reduce the remaining cooldown on Adrenaline Rush, Sprint, Vanish, Grappling Hook, Cannonball Barrage, Killing Spree, Marked for Death, and Death from Above by $s1 sec per combo point spent.
 Tooltip          : Finishers reduce the remaining cooldown on many of your abilities by $s1 sec per combo point.
 
 Name             : Deeper Stratagem (id=193531) [Spell Family (8), Passive] 
@@ -3451,11 +3522,17 @@ Effects          :
 #3 (id=297518)   : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 4 | Target: Self(1)
 #4 (id=315625)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
                    Affected Spells: Run Through (2098), Envenom (32645), Death from Above (152150), Eviscerate (196819), Finality: Eviscerate (197393), Between the Eyes (199804)
 #5 (id=315626)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Rupture (1943), Internal Bleeding (154953), Weaponmaster (193536), Nightblade (195452), Finality: Nightblade (197395)
+#6 (id=356351)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Marked for Death (137619)
+#7 (id=356352)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
+                   Affected Spells: Marked for Death (137619)
 Description      : You may have a maximum of $s3 combo points, your finishing moves consume up to $s3 combo points, and your finishing moves deal $s4% increased damage.
 
 Name             : Weaponmaster (id=193536) [Spell Family (8)] 
@@ -3500,8 +3577,9 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Duration         : 20 seconds
-Stacks           : 20 maximum
+Stacks           : 10 maximum
 Proc Chance      : 101%
+Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140)
 Triggered by     : Alacrity (193539)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3511,7 +3589,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283934)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self(1)
 Description      : Increases haste by $s1% for $d.
 Tooltip          : Haste increased by $w1%.
 
@@ -3587,7 +3665,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=284088)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 0x7f | Target: Self(1)
 Description      : Increases damage done by $s1% for $d.
 Tooltip          : Increases damage done by $s1%.
 
@@ -3923,6 +4001,9 @@ Name             : Premeditation (Passive) (id=196979) [Spell Family (8), Passiv
 Class            : Rogue
 School           : Physical
 Spell Level      : 1
+Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ .....x.. 
+                 
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3932,11 +4013,11 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=289232)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Cheap Shot (1833)
-#2 (id=289233)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Shadowstrike (185438)
+#2 (id=356373)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 23 | Target: Self(1)
+                   Affected Spells: Cheap Shot (1833), Shadowstrike (185438)
 Description      : Cheap Shot and Shadowstrike generate $s1 additional combo point.
 
 Name             : Master of Shadows (id=196980) [Spell Family (8)] 
@@ -3951,7 +4032,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=289234)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: energy | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: energy | Target: Self(1)
 Description      : $@spelldesc196976
 
 Name             : Finality: Eviscerate (id=197393) [Spell Family (8)] 
@@ -4258,7 +4339,7 @@ Spell Level      : 20
 Range            : 20 yards
 GCD              : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Adrenaline Rush (13750), Outlaw Rogue (137036), Deeper Stratagem (193531), Fatebringer (202524), Black Powder (216230)
+Affecting spells : Adrenaline Rush (13750), Deeper Stratagem (193531), Fatebringer (202524), Black Powder (216230), Between the Eyes (235484)
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ...x.... 
@@ -4272,7 +4353,7 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(95) | Target: Enemy(6)
 #3 (id=344382)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Finishing move that deals damage with your pistol and stuns the target. Critical strikes with this ability deal four times normal damage:
+Description      : Finishing move that deals damage with your pistol and stuns the target.$?a235484[ Critical strikes with this ability deal four times normal damage.][]
    1 point  : ${$m1*1} damage, 1 sec
    2 points: ${$m1*2} damage, 2 sec
    3 points: ${$m1*3} damage, 3 sec
@@ -4382,7 +4463,7 @@ School           : Physical
 Spell Level      : 10
 Cast Time        : 1.5 seconds
 Duration         : 3600 seconds
-Proc Chance      : 20%
+Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
 Affecting spells : Envenom (32645), 
@@ -4438,7 +4519,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=295690)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
+                   Base Value: 80 | Scaled Value: 80 | Target: Enemy(6)
 Description      : Twist your blades into the target's wounds, causing your Bleed effects on them to bleed out $s1% faster.
 
 Name             : Curse of the Dreadblades (Artifact) (id=202665) [Spell Family (8)] 
@@ -4531,7 +4612,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=299182)   : School Damage: physical (2)
-                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 0.60500 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 (avg=2) | AP Coefficient: 1.21000 | Target: Enemy(6)
 #2 (id=299183)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self(1)
 #3 (id=299184)   : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -4616,7 +4697,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : Disable target procs (113)
 Effects          :
 #1 (id=305751)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
+                   Base Value: -30 | Scaled Value: -30 | Mechanic: Unknown(88) | Target: Enemy(6)
 Description      : $@spelldesc195452
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -5003,6 +5084,24 @@ Effects          :
 #1 (id=349578)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self(1)
 Description      : Garrote silences the target for $1330d when used from Stealth.
+
+
+Name             : Between the Eyes (Rank 2) (id=235484) [Spell Family (8), Passive] 
+Class            : Rogue
+School           : Holy
+Spell Level      : 42
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=355887)   : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: 15 | Target: Self(1)
+                   Affected Spells: Between the Eyes (199804)
+Description      : Critical strikes with Between the Eyes deal four times normal damage.
 
 
 

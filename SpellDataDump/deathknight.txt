@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build f588a52)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -265,7 +265,7 @@ Name             : Death Strike (id=45470) [Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1
-Affecting spells : Icebound Fortitude (48792), Dark Succor (101568)
+Affecting spells : Icebound Fortitude (48792), Dark Succor (101568), Haemostasis (235559)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....xx..   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -796,7 +796,7 @@ Resource         : 45 Runic Power
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Dark Succor (101568), Death Knight (137005), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788)
+Affecting spells : Dark Succor (101568), Death Knight (137005), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Haemostasis (235559)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1647,7 +1647,7 @@ Name             : Death Strike Off-Hand (id=66188) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
-Affecting spells : Dark Succor (101568), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788)
+Affecting spells : Dark Succor (101568), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Haemostasis (235559)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1931,8 +1931,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68676)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
-Description      : When you spend Runic Power, you have a $m1% chance per Runic Power spent to gain a Rune.
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
+Description      : When you spend Runic Power, you have a ${$m1/10}.1% chance per Runic Power spent to gain a Rune.
 
 Name             : Dancing Rune Weapon (id=81256) [Spell Family (15)] 
 Class            : Death Knight
@@ -2381,7 +2381,7 @@ Spell Level      : 64
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Cooldown         : 180 seconds
+Cooldown         : 120 seconds
 Affecting spells : Tightening Grasp (206970)
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2489,16 +2489,16 @@ Effects          :
 #2 (id=159719)   : Apply Aura (6) | Unknown effect sub type (260)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 936 | Target: Self(1)
 Description      : $@spelldesc114556
-Tooltip          : Absorbing the next $w1 healing received.
+Tooltip          : Absorbing the next ${$w1-1} healing received.
 If any amount of heal absorption remains when this effect expires, you die.
 
 Name             : Perdition (id=123981) 
 Class            : Death Knight
 School           : Physical
 Range            : 50000 yards
-Duration         : 180 seconds
+Duration         : 240 seconds
 Attributes       : ........ ........ ........ ..xx.x..   ........ ..x..... ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ....x... ....x.x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ....x.x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3011,7 +3011,7 @@ Great Stamina|r
 Name             : Breath of Sindragosa (id=152279) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
-Resource         : 0 Runic Power and 13 Runic Power per second or tick
+Resource         : 0 Runic Power and 15 Runic Power per second or tick
 Duration         : Aura (infinite)
 Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -3101,7 +3101,7 @@ Effects          :
 #1 (id=215544)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Radius: 12 yards | Target: Cone Front(104)
 #2 (id=215545)   : School Damage: shadowfrost (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.75000 | Radius: 12 yards | Target: Cone Front(104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.50000 | Radius: 12 yards | Target: Cone Front(104)
 Description      : $@spelldesc152279
 
 Name             : Defile (id=156000) [Spell Family (15)] 
@@ -3500,7 +3500,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 18 | Target: Self(1)
 Description      : Your melee attacks have a chance to create icy copies of |cFFFFCC99Icebringer|r and |cFFFFCC99Frostreaper|r, which will then stab and pierce your foes.
 
-Name             : Sindragosa's Fury (Artifact) (id=190778) 
+Name             : Sindragosa's Fury (Artifact) (id=190778) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 GCD              : 1.5 seconds
@@ -3508,6 +3508,7 @@ Duration         : 10 seconds
 Cooldown         : 300 seconds
 Category         : 1652
 Artifact Power   : Id: 124, Max Rank: 1
+Affecting spells : Consort's Cold Core (235605)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3946,7 +3947,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
 #5 (id=330729)   : Apply Aura (6) | Dummy (4)
                    Base Value: 16 | Scaled Value: 16 | Misc Value: 5 | Target: Self(1)
-Description      : Surrounds you with a barrier of whirling bones, reducing all damage you take by $s5% and increasing your Haste by $s4%. Each damaging attack consumes a charge. Lasts $d or until all charges are consumed.
+Description      : Surrounds you with a barrier of whirling bones, reducing all damage you take by $s5% and increasing your Haste by $s4%. Each melee swing against you consumes a charge. Lasts $d or until all charges are consumed.
 Tooltip          : Damage taken reduced by ${$m5/$m2}%.
 Haste increased by ${$m4/$m2}%.
 
@@ -3990,7 +3991,7 @@ Velocity         : 100 yards/sec
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
+                 : ........ ........ .......x ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -4448,7 +4449,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Artifact Power   : Id: 289, Max Rank: 1
-Affecting spells : Dark Succor (101568), Death Knight (137005), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788)
+Affecting spells : Dark Succor (101568), Death Knight (137005), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Haemostasis (235559)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4474,7 +4475,7 @@ Name             : Consumption (id=205224) [Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1
-Affecting spells : Icebound Fortitude (48792), Dark Succor (101568)
+Affecting spells : Icebound Fortitude (48792), Dark Succor (101568), Haemostasis (235559)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....xx..   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4714,7 +4715,6 @@ Description      : Damage taken below $s3% Health is reduced by $s2%.
 Name             : Tightening Grasp (id=206970) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
-Cooldown         : 60 seconds
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4855,7 +4855,6 @@ Effects          :
 Description      : Auto attacks generate $s1 Runic Power.
 
 Name             : Icecap (id=207126) [Spell Family (15), Passive] 
-Hotfixed         : Proc Flags (332116 -> 332112)
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1
@@ -5458,7 +5457,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=312655)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
-Description      : Attacks that deal more than $s1% of your maximum health will consume a second Bone Shield charge to further reduce the damage.
+Description      : Attacks that deal more than $s1% of your maximum health will consume an additional Bone Shield charge to further reduce the damage.
 
 Name             : Remorseless Winter (Talent) (id=211793) [Spell Family (15)] 
 Class            : Death Knight
@@ -5987,10 +5986,12 @@ Effects          :
 #2 (id=327553)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: runic_power | Target: Self(1)
 #3 (id=327573)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 6 | Scaled Value: 6
 #4 (id=327574)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3
-Description      : Consume all Bone Shield charges. For each charge consumed, you gain $s3 Runic Power and absorb damage equal to $s4% of your maximum health for $d.
+                   Base Value: 6 | Scaled Value: 6
+#5 (id=355061)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Consume up to $s5 Bone Shield charges. For each charge consumed, you gain $s3 Runic Power and absorb damage equal to $s4% of your maximum health for $d.
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Apocalypse (Artifact) (id=220143) [Spell Family (15)] 

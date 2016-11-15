@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 22882
+// Class based active abilities, wow build 23038
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -79,13 +79,12 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       190411, // Whirlwind
            0,
     },
-    // Protection tree, 15 abilities
+    // Protection tree, 14 abilities
     {
         1719, // Battle Cry
        18499, // Berserker Rage
         1160, // Demoralizing Shout
        20243, // Devastate
-      204488, // Focused Rage
       190456, // Ignore Pain
       198304, // Intercept
        12975, // Last Stand
@@ -221,7 +220,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       204147, // Windburst (Artifact)
            0,
     },
-    // Beast Mastery tree, 10 abilities
+    // Beast Mastery tree, 12 abilities
     {
       193530, // Aspect of the Wild
        19574, // Bestial Wrath
@@ -230,12 +229,14 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       147362, // Counter Shot
       120679, // Dire Beast
       109304, // Exhilaration
+      187650, // Freezing Trap
        34026, // Kill Command
        34477, // Misdirection
         2643, // Multi-Shot
+      187698, // Tar Trap
            0,
     },
-    // Marksmanship tree, 11 abilities
+    // Marksmanship tree, 13 abilities
     {
        19434, // Aimed Shot
       185358, // Arcane Shot
@@ -244,9 +245,11 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         5116, // Concussive Shot
       147362, // Counter Shot
       109304, // Exhilaration
+      187650, // Freezing Trap
       185901, // Marked Shot
        34477, // Misdirection
         2643, // Multi-Shot
+      187698, // Tar Trap
       193526, // Trueshot
            0,
     },
@@ -307,7 +310,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Rogue
   {
-    // General tree, 16 abilities
+    // General tree, 17 abilities
     {
        22482, // Blade Flurry
        31224, // Cloak of Shadows
@@ -322,6 +325,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       192759, // Kingsbane (Artifact)
       112974, // Leeching Poison (Talent)
         1804, // Pick Lock
+      114018, // Shroud of Concealment
         2983, // Sprint
        57934, // Tricks of the Trade
         8680, // Wound Poison
@@ -440,8 +444,9 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        34433, // Shadowfiend
            0,
     },
-    // Holy tree, 16 abilities
+    // Holy tree, 17 abilities
     {
+       19236, // Desperate Prayer
        64843, // Divine Hymn
         2061, // Flash Heal
        47788, // Guardian Spirit
@@ -460,14 +465,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
          139, // Renew
            0,
     },
-    // Shadow tree, 19 abilities
+    // Shadow tree, 18 abilities
     {
        47585, // Dispersion
         2061, // Flash Heal
         1706, // Levitate
         8092, // Mind Blast
        15407, // Mind Flay
-       48045, // Mind Sear
       217676, // Mind Spike Detonation
           17, // Power Word: Shield
         8122, // Psychic Scream
@@ -515,7 +519,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       190778, // Sindragosa's Fury (Artifact)
            0,
     },
-    // Blood tree, 10 abilities
+    // Blood tree, 11 abilities
     {
       221562, // Asphyxiate
        50842, // Blood Boil
@@ -524,6 +528,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       195292, // Death's Caress
       108199, // Gorefiend's Grasp
       206930, // Heart Strike
+       48792, // Icebound Fortitude
       195182, // Marrowrend
        55233, // Vampiric Blood
       212552, // Wraith Walk
@@ -672,7 +677,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Mage
   {
-    // General tree, 27 abilities
+    // General tree, 26 abilities
     {
       120145, // Ancient Teleport: Dalaran
         1953, // Blink
@@ -680,7 +685,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         2139, // Counterspell
       214634, // Ebonbolt (Artifact)
          122, // Frost Nova
-       11426, // Ice Barrier
        45438, // Ice Block
       131784, // Illusion
       211076, // Mark of Aluneth
@@ -703,7 +707,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        80353, // Time Warp
            0,
     },
-    // Arcane tree, 10 abilities
+    // Arcane tree, 11 abilities
     {
        44425, // Arcane Barrage
        30451, // Arcane Blast
@@ -714,11 +718,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        12051, // Evocation
       110959, // Greater Invisibility
           66, // Invisibility
+      235450, // Prismatic Barrier
        31589, // Slow
            0,
     },
-    // Fire tree, 8 abilities
+    // Fire tree, 9 abilities
     {
+      235313, // Blazing Barrier
       190319, // Combustion
        31661, // Dragon's Breath
       108853, // Fire Blast
@@ -729,14 +735,16 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         2948, // Scorch
            0,
     },
-    // Frost tree, 10 abilities
+    // Frost tree, 12 abilities
     {
       190356, // Blizzard
+      235219, // Cold Snap
          120, // Cone of Cold
       108853, // Fire Blast
        44614, // Flurry
          116, // Frostbolt
        84714, // Frozen Orb
+       11426, // Ice Barrier
        30455, // Ice Lance
        12472, // Icy Veins
           66, // Invisibility
@@ -798,7 +806,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     {
          980, // Agony
          172, // Corruption
-         689, // Drain Life
+      198590, // Drain Soul
         1454, // Life Tap
        27243, // Seed of Corruption
       232670, // Shadow Bolt
@@ -1149,7 +1157,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 };
 #define PTR_TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 22882
+// Talent tree specialization abilities, wow build 23038
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1274,12 +1282,11 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
         2565, // Shield Block
       190456, // Ignore Pain
       198304, // Intercept
-      204488, // Focused Rage
        34428, // Victory Rush
         1719, // Battle Cry
        18499, // Berserker Rage
         5301, // Revenge Trigger
-      231834, // Devastate (Rank 2)
+      231834, // Shield Slam (Rank 2)
       231847, // Shield Block (Rank 2)
            0,
     },
@@ -1408,6 +1415,8 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231548, // Bestial Wrath (Rank 2)
       231546, // Exhilaration (Rank 2)
       231549, // Disengage (Rank 2)
+      187698, // Tar Trap
+      187650, // Freezing Trap
            0,
     },
     // Specialization abilities for Marksmanship
@@ -1431,9 +1440,10 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       193455, // Cobra Shot
       231549, // Disengage (Rank 2)
       231554, // Marksman's Focus
-      231551, // Marked Shot (Rank 2)
       109304, // Exhilaration
       231546, // Exhilaration (Rank 2)
+      187650, // Freezing Trap
+      187698, // Tar Trap
            0,
     },
     // Specialization abilities for Survival
@@ -1459,6 +1469,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231555, // Aspect of the Eagle (Rank 2)
       231550, // Harpoon (Rank 2)
       231546, // Exhilaration (Rank 2)
+      234955, // Waylay
            0,
     },
     {
@@ -1624,6 +1635,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
         2061, // Flash Heal
       212036, // Mass Resurrection
       231687, // Holy Fire (Rank 2)
+       19236, // Desperate Prayer
            0,
     },
     // Specialization abilities for Shadow
@@ -1645,7 +1657,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
          589, // Shadow Word: Pain
        34433, // Shadowfiend
       190719, // Shadow Word: Death
-       48045, // Mind Sear
         8122, // Psychic Scream
           17, // Power Word: Shield
         1706, // Levitate
@@ -1657,6 +1668,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231689, // Shadow Word: Death (Rank 2)
         2061, // Flash Heal
       232698, // Shadowform
+      234702, // Mind Flay (Rank 2)
            0,
     },
     {
@@ -1684,6 +1696,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       212552, // Wraith Walk
       206930, // Heart Strike
       221562, // Asphyxiate
+       48792, // Icebound Fortitude
            0,
     },
     // Specialization abilities for Frost
@@ -1826,6 +1839,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231780, // Chain Heal (Rank 2)
       231785, // Tidal Waves (Rank 2)
       231725, // Riptide (Rank 2)
+      231721, // Lava Burst (Rank 2)
            0,
     },
     {
@@ -1845,7 +1859,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       137021, // Arcane Mage
         1449, // Arcane Explosion
        12051, // Evocation
-        6117, // Mage Armor
       190427, // Arcane Charge
       190740, // Mastery: Savant
       162699, // Stat Negation Aura - Intellect DPS
@@ -1854,6 +1867,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231564, // Arcane Barrage (Rank 2)
       231565, // Evocation (Rank 2)
           66, // Invisibility
+      235450, // Prismatic Barrier
            0,
     },
     // Specialization abilities for Fire
@@ -1867,7 +1881,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       137019, // Fire Mage
         2948, // Scorch
         2120, // Flamestrike
-       30482, // Molten Armor
       157642, // Enhanced Pyrotechnics
       162699, // Stat Negation Aura - Intellect DPS
       190319, // Combustion
@@ -1876,7 +1889,9 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
           66, // Invisibility
       231567, // Fire Blast (Rank 3)
       231568, // Fire Blast (Rank 2)
-      231630, // Molten Armor (Rank 2)
+      231630, // Critical Mass (Rank 2)
+       86949, // Cauterize
+      235313, // Blazing Barrier
            0,
     },
     // Specialization abilities for Frost
@@ -1889,7 +1904,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        76613, // Mastery: Icicles
       137020, // Frost Mage
        12982, // Shatter
-        7302, // Frost Armor
        30455, // Ice Lance
       190356, // Blizzard
       190447, // Brain Freeze
@@ -1902,6 +1916,8 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
       231596, // Freeze (Pet)
       231598, // Water Jet (Pet)
       108853, // Fire Blast
+      235219, // Cold Snap
+       11426, // Ice Barrier
            0,
     },
     {
@@ -1917,16 +1933,15 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        27243, // Seed of Corruption
        77215, // Mastery: Potent Afflictions
       137043, // Affliction Warlock
-         689, // Drain Life
         1454, // Life Tap
       162699, // Stat Negation Aura - Intellect DPS
-      205183, // Secrets of the Necrolyte
          172, // Corruption
       231791, // Unstable Affliction (Rank 2)
       231799, // Shadow Bite (Rank 2)
       231792, // Agony (Rank 2)
       231811, // Soulstone (Rank 2)
       232670, // Shadow Bolt
+      198590, // Drain Soul
            0,
     },
     // Specialization abilities for Demonology
@@ -2239,7 +2254,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 };
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 22882
+// Class mastery abilities, wow build 23038
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2478,7 +2493,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 22882
+// Racial abilities, wow build 23038
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3216,7 +3231,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 };
 #define PTR_SET_BONUS_DATA_SIZE (544)
 
-// Set bonus data, wow build 22882
+// Set bonus data, wow build 23038
 static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3785,13 +3800,16 @@ static item_set_bonus_t __ptr_set_bonus_data[PTR_SET_BONUS_DATA_SIZE] = {
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  577, 211074, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
   { "Vestment of Second Sight"                   ,     "tier19",     12,  1282,   19,   4,  12,  581, 211077, { 138375, 138376, 138377, 138378, 138379, 138380,  0 } },
 };
-#define PTR_RPPMMOD_SIZE (245)
+#define PTR_RPPMMOD_SIZE (251)
 
-// 245 RPPM Modifiers, wow build level 22882
+// 251 RPPM Modifiers, wow build level 23038
 static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
+  {  45054,    4,  1,  1.0000 },
   {  49530,    1,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
   {  51128,    4,  2,  1.0000 },
+  {  60066,    4,  2,  1.0000 },
+  {  60306,    4,  1,  1.0000 },
   { 104428,    4,  1,  1.0000 },
   { 104441,    4,  1,  1.0000 },
   { 118314,    4,  1,  1.0000 },
@@ -3968,7 +3986,7 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 216085,    4,  1,  1.0000 },
   { 216085,  263,  4, -0.2400 },
   { 216085,  253,  4, -0.2700 },
-  { 221767,    0,  2,  1.0000 },
+  { 221767,    4,  2,  1.0000 },
   { 221811,    4,  1,  1.0000 },
   { 221811,  263,  4, -0.2400 },
   { 221845,    3,  1,  1.0000 },
@@ -4031,14 +4049,17 @@ static struct rppm_modifier_t __ptr_rppmmodifier_data[] = {
   { 230236,    4,  1,  1.0000 },
   { 230236,  263,  4, -0.5000 },
   { 230241,    4,  1,  1.0000 },
-  { 230257,    0,  1,  1.0000 },
+  { 230257,    4,  1,  1.0000 },
   { 230257,  263,  4, -0.5000 },
   { 231832,    1,  1,  1.0000 },
+  { 235003,    4,  1,  1.0000 },
+  { 235011,    4,  1,  1.0000 },
+  { 236167,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define PTR_ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 22882
+// Artifact base data, wow build 23038
 static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4084,7 +4105,7 @@ static struct artifact_t __ptr_artifact_data[PTR_ARTIFACT_SIZE] = {
 };
 #define PTR_ARTIFACT_POWER_SIZE (715)
 
-// Artifact power data, wow build 22882
+// Artifact power data, wow build 23038
 static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,   0,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -4135,7 +4156,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
   {   81,   4,   0,  9,   3, 187276, "Ethereal Sensitivity"               }, // Ethereal Sensitivity (id=187276, n_ranks=6)
   {   82,   4,   0,  7,   3, 187264, "Aegwynn's Imperative"               }, // Aegwynn's Imperative (id=187264, n_ranks=6)
   {   83,   4,   0, 11,   3, 187301, "Everywhere At Once"                 }, // Everywhere At Once (id=187301, n_ranks=6)
-  {   84,   4,   0, 12,   3, 210716, "Mana Shield"                        }, // Mana Shield (id=210716, n_ranks=6)
+  {   84,   4,   0, 12,   3, 210716, "Force Barrier"                      }, // Force Barrier (id=210716, n_ranks=6)
   {   86,   4,   1,  2,   1, 210725, "Touch of the Magi"                  }, // Touch of the Magi (id=210725, n_ranks=1)
   {   87,   4,   0,  0,   1, 187680, "Aegwynn's Ascendance"               }, // Aegwynn's Ascendance (id=187680, n_ranks=1)
   {  290,   4,  18,  0,   0, 224968, "Mark of Aluneth"                    }, // Mark of Aluneth (id=224968, n_ranks=1)
@@ -4804,7 +4825,7 @@ static struct artifact_power_data_t __ptr_artifact_power_data[PTR_ARTIFACT_POWER
 };
 #define PTR_ARTIFACT_POWER_RANK_SIZE (3063)
 
-// Artifact power rank data, wow build 22882
+// Artifact power rank data, wow build 23038
 static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -4914,12 +4935,12 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 3566,    83,  3, 187301,      4.000, 0x00000000, 0 },
   { 3567,    83,  4, 187301,      5.000, 0x00000000, 0 },
   { 3568,    83,  5, 187301,      6.000, 0x00000000, 0 },
-  { 2414,    84,  0, 210716,     33.000, 0x00000000, 0 },
-  { 5142,    84,  1, 210716,     66.000, 0x00000000, 0 },
-  { 5143,    84,  2, 210716,    100.000, 0x00000000, 0 },
-  { 5144,    84,  3, 210716,    133.000, 0x00000000, 0 },
-  { 5145,    84,  4, 210716,    166.000, 0x00000000, 0 },
-  { 5146,    84,  5, 210716,    200.000, 0x00000000, 0 },
+  { 2414,    84,  0, 210716,     20.000, 0x00000000, 0 },
+  { 5142,    84,  1, 210716,     40.000, 0x00000000, 0 },
+  { 5143,    84,  2, 210716,     60.000, 0x00000000, 0 },
+  { 5144,    84,  3, 210716,     80.000, 0x00000000, 0 },
+  { 5145,    84,  4, 210716,    100.000, 0x00000000, 0 },
+  { 5146,    84,  5, 210716,    120.000, 0x00000000, 0 },
   { 2420,    86,  0, 210725,      0.000, 0x00000000, 0 },
   { 2421,    87,  0, 187680,      0.000, 0x00000000, 0 },
   { 2422,    91,  0, 203524,      0.000, 0x00000000, 0 },
@@ -5450,12 +5471,12 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 3762,   756,  3, 194318,      3.333, 0x00000000, 0 },
   { 3763,   756,  4, 194318,      4.167, 0x00000000, 0 },
   { 3764,   756,  5, 194318,      5.000, 0x00000000, 0 },
-  { 3168,   757,  0, 194315,      0.000, 0x00000000, 0 },
-  { 3755,   757,  1, 194315,     -6.000, 0x00000000, 0 },
-  { 3756,   757,  2, 194315,    -10.000, 0x00000000, 0 },
-  { 3757,   757,  3, 194315,    -13.000, 0x00000000, 0 },
-  { 3758,   757,  4, 194315,    -16.000, 0x00000000, 0 },
-  { 3759,   757,  5, 194315,    -20.000, 0x00000000, 0 },
+  { 3168,   757,  0, 194315,     -5.000, 0x00000000, 0 },
+  { 3755,   757,  1, 194315,    -10.000, 0x00000000, 0 },
+  { 3756,   757,  2, 194315,    -15.000, 0x00000000, 0 },
+  { 3757,   757,  3, 194315,    -20.000, 0x00000000, 0 },
+  { 3758,   757,  4, 194315,    -25.000, 0x00000000, 0 },
+  { 3759,   757,  5, 194315,    -30.000, 0x00000000, 0 },
   { 5500,   758,  0, 194487,      0.000, 0x00000000, 0 },
   { 3169,   759,  0, 215796,      0.000, 0x00000000, 0 },
   { 3170,   760,  0, 227481,      0.000, 0x00000000, 0 },
@@ -5566,12 +5587,12 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 3821,   790,  3, 195352,     20.000, 0x00000000, 0 },
   { 3822,   790,  4, 195352,     25.000, 0x00000000, 0 },
   { 3823,   790,  5, 195352,     30.000, 0x00000000, 0 },
-  { 3824,   791,  0, 195354,     33.000, 0x00000000, 0 },
-  { 3825,   791,  1, 195354,     66.000, 0x00000000, 0 },
-  { 3826,   791,  2, 195354,    100.000, 0x00000000, 0 },
-  { 3827,   791,  3, 195354,    133.000, 0x00000000, 0 },
-  { 3828,   791,  4, 195354,    166.000, 0x00000000, 0 },
-  { 3829,   791,  5, 195354,    200.000, 0x00000000, 0 },
+  { 3824,   791,  0, 195354,     20.000, 0x00000000, 0 },
+  { 3825,   791,  1, 195354,     40.000, 0x00000000, 0 },
+  { 3826,   791,  2, 195354,     60.000, 0x00000000, 0 },
+  { 3827,   791,  3, 195354,     80.000, 0x00000000, 0 },
+  { 3828,   791,  4, 195354,    100.000, 0x00000000, 0 },
+  { 3829,   791,  5, 195354,    120.000, 0x00000000, 0 },
   { 3830,   792,  0, 214626,     -2.000, 0x00000000, 0 },
   { 3831,   792,  1, 214626,     -4.000, 0x00000000, 0 },
   { 3832,   792,  2, 214626,     -6.000, 0x00000000, 0 },
@@ -5718,12 +5739,12 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 3977,   841,  3, 196355,     20.000, 0x00000000, 0 },
   { 3978,   841,  4, 196355,     25.000, 0x00000000, 0 },
   { 3979,   841,  5, 196355,     30.000, 0x00000000, 0 },
-  { 3980,   842,  0, 196358,      0.000, 0x00000000, 0 },
-  { 3981,   842,  1, 196358,     15.000, 0x00000000, 0 },
-  { 3982,   842,  2, 196358,     20.000, 0x00000000, 0 },
-  { 3983,   842,  3, 196358,     25.000, 0x00000000, 0 },
+  { 3980,   842,  0, 196358,      6.000, 0x00000000, 0 },
+  { 3981,   842,  1, 196358,     12.000, 0x00000000, 0 },
+  { 3982,   842,  2, 196358,     18.000, 0x00000000, 0 },
+  { 3983,   842,  3, 196358,     24.000, 0x00000000, 0 },
   { 3984,   842,  4, 196358,     30.000, 0x00000000, 0 },
-  { 3985,   842,  5, 196358,     35.000, 0x00000000, 0 },
+  { 3985,   842,  5, 196358,     36.000, 0x00000000, 0 },
   { 3986,   843,  0, 196416,      0.000, 0x00000000, 0 },
   { 3987,   843,  1, 196416,     10.000, 0x00000000, 0 },
   { 3988,   843,  2, 196416,     15.000, 0x00000000, 0 },
@@ -5924,7 +5945,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 4196,   894,  3, 197729,     20.000, 0x00000000, 0 },
   { 4197,   894,  4, 197729,     25.000, 0x00000000, 0 },
   { 4198,   894,  5, 197729,     30.000, 0x00000000, 0 },
-  { 4199,   895,  0, 197762,      0.000, 0x00000000, 0 },
+  { 4199,   895,  0, 197762,     -5.000, 0x00000000, 0 },
   { 4200,   895,  1, 197762,    -10.000, 0x00000000, 0 },
   { 4201,   895,  2, 197762,    -15.000, 0x00000000, 0 },
   { 4202,   895,  3, 197762,    -20.000, 0x00000000, 0 },
@@ -7560,26 +7581,26 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
   { 6054,  1378, 17, 214924,     27.000, 0x00000000, 0 },
   { 6055,  1378, 18, 214924,     28.000, 0x00000000, 0 },
   { 6056,  1378, 19, 214924,     29.000, 0x00000000, 0 },
-  { 6057,  1379,  0, 214925,      5.000, 0x00000000, 0 },
-  { 6058,  1379,  1, 214925,      5.500, 0x00000000, 0 },
-  { 6059,  1379,  2, 214925,      6.000, 0x00000000, 0 },
-  { 6060,  1379,  3, 214925,      6.500, 0x00000000, 0 },
-  { 6061,  1379,  4, 214925,      7.000, 0x00000000, 0 },
-  { 6062,  1379,  5, 214925,      7.500, 0x00000000, 0 },
-  { 6063,  1379,  6, 214925,      8.000, 0x00000000, 0 },
-  { 6064,  1379,  7, 214925,      8.500, 0x00000000, 0 },
-  { 6065,  1379,  8, 214925,      9.000, 0x00000000, 0 },
-  { 6066,  1379,  9, 214925,      9.500, 0x00000000, 0 },
-  { 6067,  1379, 10, 214925,     10.000, 0x00000000, 0 },
-  { 6068,  1379, 11, 214925,     10.500, 0x00000000, 0 },
-  { 6069,  1379, 12, 214925,     11.000, 0x00000000, 0 },
-  { 6070,  1379, 13, 214925,     11.500, 0x00000000, 0 },
-  { 6071,  1379, 14, 214925,     12.000, 0x00000000, 0 },
-  { 6072,  1379, 15, 214925,     12.500, 0x00000000, 0 },
-  { 6073,  1379, 16, 214925,     13.000, 0x00000000, 0 },
-  { 6074,  1379, 17, 214925,     13.500, 0x00000000, 0 },
-  { 6075,  1379, 18, 214925,     14.000, 0x00000000, 0 },
-  { 6076,  1379, 19, 214925,     14.500, 0x00000000, 0 },
+  { 6057,  1379,  0, 214925,      4.000, 0x00000000, 0 },
+  { 6058,  1379,  1, 214925,      4.400, 0x00000000, 0 },
+  { 6059,  1379,  2, 214925,      4.800, 0x00000000, 0 },
+  { 6060,  1379,  3, 214925,      5.200, 0x00000000, 0 },
+  { 6061,  1379,  4, 214925,      5.600, 0x00000000, 0 },
+  { 6062,  1379,  5, 214925,      6.000, 0x00000000, 0 },
+  { 6063,  1379,  6, 214925,      6.400, 0x00000000, 0 },
+  { 6064,  1379,  7, 214925,      6.800, 0x00000000, 0 },
+  { 6065,  1379,  8, 214925,      7.200, 0x00000000, 0 },
+  { 6066,  1379,  9, 214925,      7.600, 0x00000000, 0 },
+  { 6067,  1379, 10, 214925,      8.000, 0x00000000, 0 },
+  { 6068,  1379, 11, 214925,      8.400, 0x00000000, 0 },
+  { 6069,  1379, 12, 214925,      8.800, 0x00000000, 0 },
+  { 6070,  1379, 13, 214925,      9.200, 0x00000000, 0 },
+  { 6071,  1379, 14, 214925,      9.600, 0x00000000, 0 },
+  { 6072,  1379, 15, 214925,     10.000, 0x00000000, 0 },
+  { 6073,  1379, 16, 214925,     10.400, 0x00000000, 0 },
+  { 6074,  1379, 17, 214925,     10.800, 0x00000000, 0 },
+  { 6075,  1379, 18, 214925,     11.200, 0x00000000, 0 },
+  { 6076,  1379, 19, 214925,     11.600, 0x00000000, 0 },
   { 6077,  1380,  0, 214926,      5.000, 0x00000000, 0 },
   { 6078,  1380,  1, 214926,      5.500, 0x00000000, 0 },
   { 6079,  1380,  2, 214926,      6.000, 0x00000000, 0 },
@@ -7872,7 +7893,7 @@ static struct artifact_power_rank_t __ptr_artifact_power_rank_data[PTR_ARTIFACT_
 };
 #define PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 ptr_artifact_power_rank hotfix entries, wow build level 22882
+// 0 ptr_artifact_power_rank hotfix entries, wow build level 23038
 static hotfix::client_hotfix_entry_t __ptr_ptr_artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };

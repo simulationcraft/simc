@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build f588a52)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -198,10 +198,10 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #3 (id=292881)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (204488), Focused Rage (207982), Bladestorm (222634), Bladestorm (227847)
+                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Bladestorm (222634), Bladestorm (227847), Devastator (236282)
 #4 (id=298857)   : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
-                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (204488), Focused Rage (207982), Bladestorm (222634), Bladestorm (227847)
+                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Bladestorm Off-Hand (95738), Deep Wounds (115767), Shockwave (132168), Bladestorm (168969), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Bladestorm (222634), Bladestorm (227847), Devastator (236282)
 #5 (id=298858)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s1% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they do to you by $s1% for $d.]$?s202743[
@@ -277,7 +277,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #3 (id=236709)   : Weapon Damage% (31)
                    Base Value: 105 | Scaled Value: 1.05 | Target: Enemy(6)
-                   Hotfixed: Base Value (5 -> 105)
 Description      : Maims the enemy for $sw3 Physical damage, reducing movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -303,7 +302,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self(1)
 #4 (id=341514)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (204488), Focused Rage (207982), Colossus Smash (208086)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982), Colossus Smash (208086)
 Description      : Lets loose a battle cry, granting $s1% increased critical strike chance for $d.$?a202751[
 
 |cFFFFFFFFGenerates ${$202751s2/10} Rage.|r][]
@@ -312,7 +311,7 @@ Tooltip          : Critical strike chance increased by $w1%.
 Name             : Shield Block (id=2565) [Spell Family (4)] 
 Class            : Protection Warrior, Monk
 School           : Physical
-Resource         : 10 Rage
+Resource         : 15 Rage
 Spell Level      : 20
 Cooldown         : 1 seconds
 Charges          : 1 (13 seconds cooldown)
@@ -435,8 +434,9 @@ Attributes       : ....x..x x....... ........ .....x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Hidden (7)
 Effects          :
-#1 (id=1898)     : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self(1)
+#1 (id=1898)     : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
+                   Affected Spells: Revenge (6572)
 
 Name             : Execute (id=5308) [Spell Family (4)] 
 Class            : Fury Warrior
@@ -467,7 +467,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Warrior (137047), Thunder Crash (188644), Crackling Thunder (203201)
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Thunder Crash (188644), Might of the Vrykul (188783), Crackling Thunder (203201)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -477,10 +477,16 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=2203)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.65400 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.30800 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
-Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage$?s199045[, rooting them for $199042d and reducing their movement speed by $s2% for $d.][ and reduces their movement speed by $s2% for $d.]
+#3 (id=357188)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+#4 (id=357193)   : Energize Power (30)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self(1)
+Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage$?s199045[, rooting them for $199042d and reducing their movement speed by $s2% for $d.][ and reduces their movement speed by $s2% for $d.]
+
+|cFFFFFFFFGenerates $/10;s3 Rage.|r
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Heroic Leap (id=6544) [Spell Family (4)] 
@@ -530,11 +536,12 @@ Description      : Pummels the target, interrupting spellcasting and preventing 
 Name             : Revenge (id=6572) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
+Resource         : 30 Rage
 Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160), Warrior (137047), Might of the Vrykul (188783), Kakushan's Stormscale Gauntlets (207844), Rage of the Fallen (216272)
+Cooldown         : 3 seconds
+Affecting spells : Demoralizing Shout (1160), Revenge! (5302), Warrior (137047), Vengeance: Revenge (202573), Kakushan's Stormscale Gauntlets (207844), Rage of the Fallen (216272)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -544,13 +551,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=2316)     : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.40200 | Radius: 8 yards | Target: Cone Front(104)
-#2 (id=159566)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self(1)
 Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
 
-Your successful dodges and parries reset the remaining cooldown on Revenge up to once per $5302m1 sec.
-
-|cFFFFFFFFGenerates $/10;s2 Rage.|r
+Your successful dodges and parries cause your next Revenge to become free.
 
 Name             : Overpower (id=7384) [Spell Family (4)] 
 Class            : Warrior
@@ -768,7 +771,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 #3 (id=349776)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-Description      : A direct strike, dealing ${$sw1*$<mult>} Physical damage.$?a231834[ $s3% chance to reset the remaining cooldown on Shield Slam.][]
+Description      : A direct strike, dealing ${$sw1*$<mult>} Physical damage.
 Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
@@ -872,7 +875,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160), Shield Block (132404), Warrior (137047), Vicious Strike (165642), Might of the Vrykul (188783), Focused Rage (204488), Kakushan's Stormscale Gauntlets (207844), 
+Affecting spells : Demoralizing Shout (1160), Shield Block (132404), Warrior (137047), Vicious Strike (165642), Might of the Vrykul (188783), Kakushan's Stormscale Gauntlets (207844), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -886,7 +889,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Enemy(6)
 #3 (id=290322)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self(1)
-Description      : Slams the target with your shield, causing $s1 Physical damage.
+Description      : Slams the target with your shield, causing $s1 Physical damage.$?s231834[
+
+Devastate and Thunder Clap have a $231834% chance to reset the cooldown of Shield Slam.]
 
 |cFFFFFFFFGenerates $/10;s3 Rage.|r
 
@@ -1954,7 +1959,7 @@ Name             : Charge (id=105771) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Range            : 50000 yards
-Duration         : 1.5 seconds
+Duration         : 1 seconds
 Mechanic         : Unknown(58)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -2108,7 +2113,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=236206)   : Apply Aura (6) | Proc Trigger Spell: Deep Wounds (42)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 115767 | Target: Self(1)
-Description      : Your Devastate and Revenge also cause $115767o1 Bleed damage over $115767d.
+Description      : Your $?s236282[Devastator][Devastate] and Revenge also cause $115767o1 Bleed damage over $115767d.
 
 Name             : Mortal Wounds (id=115804) 
 Class            : Warrior, Hunter, Monk
@@ -2318,43 +2323,6 @@ Effects          :
 #1 (id=139085)   : Apply Aura (6) | Proc Trigger Spell: Overpower! (42)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 60503 | Target: Self(1)
 
-Name             : Ultimatum (id=122509) [Spell Family (4), Passive] 
-Class            : Warrior
-School           : Physical
-Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=154247)   : Apply Aura (6) | Proc Trigger Spell: Ultimatum (42)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 122510 | Target: Self(1)
-Description      : Your Shield Slam critical strikes cause your next Focused Rage to cost no Rage.
-
-Name             : Ultimatum (id=122510) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Duration         : 10 seconds
-Triggered by     : Ultimatum (122509)
-Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=154248)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Focused Rage (204488), Focused Rage (207982)
-Description      : $@spelldesc122509
-Tooltip          : Your next Focused Rage costs no Rage.
-
 Name             : Glyph of the Blazing Trail (id=123779) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
@@ -2542,10 +2510,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179731)   : Apply Aura (6) | Unknown effect sub type (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Cleave (845), Thunder Clap (6343), Revenge (6572), Overpower (7384), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Focused Rage (204488), Focused Rage (207982)
+                   Affected Spells: Cleave (845), Thunder Clap (6343), Revenge (6572), Overpower (7384), Bloodthirst (23881), Shield Slam (23922), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Focused Rage (207982)
 #2 (id=188987)   : Apply Aura (6) | Unknown effect sub type (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 1.00000 | Misc Value: 11 | Target: Self(1)
-                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Focused Rage (204488), Odyn's Fury (205545), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634), Ravager (227744), Bladestorm (227847), Ravager (228920)
+                   Affected Spells: Defensive Stance (71), Charge (100), Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Pummel (6552), Revenge (6572), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Improved Hamstring (24428), Victory Rush (34428), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Throw (57755), Raging Blow (85288), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Shockwave (132168), Storm Bolt (132169), Ravager (152277), Ravager (156287), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Bladestorm (168969), Rampage (184367), Rampage (184707), Rampage (184709), Cleave (188923), Whirlwind (190411), Defensive Stance (197690), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Odyn's Fury (205545), Focused Rage (207982), Colossus Smash (208086), Warbreaker (209577), Rampage (218617), Bladestorm (222634), Ravager (227744), Bladestorm (227847), Ravager (228920), Devastator (236282)
 #3 (id=191020)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1385 | Target: Self(1)
 #4 (id=191021)   : Apply Aura (6) | Unknown effect sub type (457)
@@ -3816,7 +3784,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298223)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (204488), Focused Rage (207982)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Deep Wounds (115767), Execute (163201), Execute Off-Hand (163558), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Focused Rage (207982)
 #2 (id=325812)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558)
@@ -3857,20 +3825,6 @@ Effects          :
 Description      : Furious Slash increases your Haste by $s2% for $d, stacking up to $u times.
 Tooltip          : Haste increased by $s2%.
 
-Name             : Best Served Cold (id=202559) 
-Class            : Warrior
-School           : Physical
-Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=298625)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: rage | Target: Self(1)
-Description      : $@spelldesc202560
-
 Name             : Best Served Cold (id=202560) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
@@ -3883,8 +3837,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298626)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
-Description      : Revenge generates ${$202559m1/10} additional Rage for each target that it hits.
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 11 | Target: Self(1)
+#2 (id=357199)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Revenge deals $s1% more damage per target hit, up to $s2.
 
 Name             : Never Surrender (id=202561) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -3917,12 +3873,16 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298647)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
-Description      : Ignore Pain reduces the Rage cost of your next Focused Rage by $202573s1%, and Focused Rage reduces the Rage cost of your next Ignore Pain by $202574s1%.
+Description      : Ignore Pain reduces the Rage cost of your next Revenge by $202573s1%, and Revenge reduces the Rage cost of your next Ignore Pain by $202574s1%.
 
-Name             : Vengeance: Focused Rage (id=202573) [Spell Family (4)] 
+Name             : Vengeance: Revenge (id=202573) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3932,9 +3892,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298648)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Focused Rage (204488), Focused Rage (207982)
+                   Affected Spells: Revenge (6572)
 Description      : $@spelldesc202572
-Tooltip          : Rage cost of Focused Rage reduced by $s1%.
+Tooltip          : Rage cost of Revenge reduced by $s1%.
 
 Name             : Vengeance: Ignore Pain (id=202574) [Spell Family (4)] 
 Class            : Warrior
@@ -4214,34 +4174,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.90000 | Radius: 12 yards | Target: Cone Front(104)
 Description      : $@spelldesc203524
 
-Name             : Focused Rage (id=204488) [Spell Family (4)] 
-Class            : Protection Warrior
-School           : Physical
-Resource         : 30 Rage
-Spell Level      : 12
-Range            : 5 yards
-Duration         : 30 seconds
-Cooldown         : 1.5 seconds
-Stacks           : 1 initial, 3 maximum
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Ultimatum (122510), Warrior (137047), Dauntless (202297), Vengeance: Focused Rage (202573)
-Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=301805)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
-                   Affected Spells: Shield Slam (23922)
-#2 (id=301810)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Focus your rage on your next Shield Slam, increasing its damage by $s1%, stacking up to $u times. Unaffected by the global cooldown
-Tooltip          : Shield Slam deals $s1% increased damage.
-
 Name             : Inspiring Presence (id=205484) [Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
@@ -4433,7 +4365,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Ultimatum (122510), Warrior (137047), Dauntless (202297), Vengeance: Focused Rage (202573)
+Affecting spells : Demoralizing Shout (1160), Battle Cry (1719), Warrior (137047), Dauntless (202297)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5289,7 +5221,7 @@ Effects          :
 Description      : For each target Cleave hits, up to $188923u, your next Whirlwind deals $188923s1% more damage.
 
 
-Name             : Devastate (Rank 2) (id=231834) [Spell Family (4), Passive] 
+Name             : Shield Slam (Rank 2) (id=231834) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
 Spell Level      : 34
@@ -5302,8 +5234,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=349758)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Devastate has a $20243s3% chance to reset the remaining cooldown on Shield Slam.
+                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+Description      : Devastate and Thunder Clap have a $s1% chance to reset the remaining cooldown on Shield Slam.
 
 
 Name             : Dual Wield (id=231842) [Spell Family (4), Passive] 
@@ -5337,5 +5269,50 @@ Effects          :
 #1 (id=349779)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1385 | Target: Self(1)
 Description      : Shield Block has ${$s1+1} charges.
+
+Name             : Devastator (id=236279) [Passive] 
+Class            : Warrior
+School           : Physical
+Proc Chance      : 100%
+Proc Flags       : ..x..... ........ ........ ........ 
+                 : White Melee
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=357205)   : Apply Aura (6) | Proc Trigger Spell: Devastator (42)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 236282 | Target: Self(1)
+#2 (id=357212)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30
+Description      : Your auto attacks deal an additional ${$236282sw1*$<mult>} Physical damage, generate ${$236282s3/10} Rage, and have a $s2% chance to reset the remaining cooldown on Shield Slam.
+Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
+
+Name             : Devastator (id=236282) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Spell Level      : 10
+Range            : 5 yards
+Stacks           : 3 maximum
+Proc Chance      : 101%
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Strength of the Earth Aspect (188647)
+Triggered by     : Devastator (236279)
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=357208)   : Weapon Damage% (31)
+                   Base Value: 278 | Scaled Value: 2.78 | Target: Enemy(6)
+#2 (id=357209)   : Normalized Weapon Damage (121)
+                   Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
+#3 (id=357211)   : Energize Power (30)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self(1)
+Description      : $@spelldesc236279
 
 

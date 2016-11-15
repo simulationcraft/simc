@@ -10,5 +10,5 @@ cd ..
 cd ..
 set curr=%cd%
 cd dbc_extract3
-call generate.bat %wowdir% %curr%\casc_extract\wow
+call generate.bat ptr %wowdir% %curr%\casc_extract\wow
 pause
