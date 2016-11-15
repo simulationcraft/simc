@@ -1,4 +1,4 @@
-SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build 735575a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -61,6 +61,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Category         : 46
+Category Cooldown: 180 seconds
 Affecting spells : Lucidity (137247), Tranquil Mind (189857), Inner Peace (197073), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....xx.. 
                  : ........ ........ ........ ......x.   ........ ........ ........ ........ 
@@ -262,6 +263,7 @@ Spell Level      : 8
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 44
+Category Cooldown: 180 seconds
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -319,7 +321,6 @@ Effects          :
 #4 (id=162558)   : Apply Aura (6) | Add Flat Modifier: Spell Global Cooldown (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self(1)
                    Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484), Skull Bash (93985), Skull Bash (106839)
-                   Hotfixed: Affects Spells
 
 Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (3), Spell Family (7)] 
 Class            : Restoration Rogue, Druid
@@ -373,6 +374,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 50 seconds
 Category         : 32
+Category Cooldown: 50 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
 Affecting spells : Druid (137009), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
@@ -409,7 +411,6 @@ Attributes       : ....x... ........ ..x.x... .x.xx...   ....x... ..x..... .....
 Effects          :
 #1 (id=1852)     : Apply Aura (6) | Stealth (16)
                    Base Value: 80 | Scaled Value: 550 | Points Per Level: 5 | Target: Self(1)
-                   Hotfixed: Base Value (25 -> 80)
 #2 (id=1853)     : Apply Aura (6) | Dummy (4)
                    Base Value: -30 | Scaled Value: -30 | Target: Self(1)
 #3 (id=167327)   : Apply Aura (6) | Unknown effect sub type (129)
@@ -423,6 +424,7 @@ School           : Physical
 Spell Level      : 13
 Duration         : 8 seconds
 Cooldown         : 30 seconds
+Category Cooldown: 30 seconds
 Affecting spells : Wildcat Celerity (184877), Tiger's Fury (231055)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -463,10 +465,8 @@ Effects          :
                    Base Value: 695 | Scaled Value: 6.95 | Target: Enemy(6)
 #4 (id=348398)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy(6)
-                   Hotfixed: Target 1 (0 -> 6)
 #5 (id=348788)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
-                   Hotfixed: Target 1 (22 -> 6), Target 2 (15 -> 0)
 Description      : Shred the target, causing ${$sw1*$<mult>} Physical damage to the target.$?a231063[ Deals $s5% increased damage against bleeding targets.][]$?a231057[
 
 While stealthed, Shred deals $m4% increased damage, and has double the chance to critically strike.][]
@@ -599,6 +599,7 @@ Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
 Category         : 82
+Category Cooldown: 8 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x00000010
 Affecting spells : Incarnation: Guardian of Ursoc (102558), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
@@ -756,7 +757,6 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=138419)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -6 | Scaled Value: -6 | Misc Value: 0x7f | Target: Self(1)
-                   Hotfixed: Base Value (-10 -> -6)
 Description      : Reduces all damage taken by $s1%.
 
 Name             : Feral Instinct (id=16949) [Spell Family (7), Passive] 
@@ -869,6 +869,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
 Category         : 26
+Category Cooldown: 600 seconds
 Affecting spells : Cat Form (3025), Bear Form (5487), Cheaper Druid Shapeshifting (38314), Predatory Swiftness (69369), Lucidity (137247), Book of Rebirth (176021), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : x....... ........ ........ ........   ....x... ........ ........ ........ 
@@ -989,6 +990,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Category         : 33
+Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
 Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
@@ -1204,6 +1206,7 @@ Spell Level      : 1
 Duration         : Aura (infinite)
 Cooldown         : 180 seconds
 Category         : 1333
+Category Cooldown: 180 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x.x.x.x .x...... ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken
@@ -1370,6 +1373,7 @@ GCD              : 1.5 seconds
 Duration         : 7 seconds
 Cooldown         : 10 seconds
 Category         : 1237
+Category Cooldown: 10 seconds
 Affecting spells : Incarnation: Tree of Life (5420), Ironbark (102342), Lucidity (137247), Nature's Wisdom (167715), Grovewalker (186320), Infusion of Nature (189757), Astral Influence (197524), Essence of G'Hanir (208253), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -1575,6 +1579,7 @@ School           : Physical
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
+Category Cooldown: 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1861,7 +1866,7 @@ GCD              : 1.5 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x00000010
 Mechanic         : Bleed
-Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Druid (137009), Bloodtalons (145152), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Luffa Wrappings (234188), 
+Affecting spells : Bear Form (5487), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Guardian Overrides Passive (106734), Berserk (106951), Druid (137009), Bloodtalons (145152), Bloodletting (165699), Thrash (192090), Astral Influence (197524), Jagged Claws (200409), Sharpened Claws (202110), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -1913,6 +1918,7 @@ Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 60 seconds
 Category         : 1420
+Category Cooldown: 60 seconds
 Stance Mask      : 0x40000000
 Affecting spells : Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
@@ -2401,6 +2407,7 @@ Range            : 5 - 25 yards
 Duration         : 0.5 seconds
 Cooldown         : 15 seconds
 Category         : 1205
+Category Cooldown: 15 seconds
 Affecting spells : Cat Form (3025), Travel Form (Passive) (5419), Aquatic Form Passive (5421), Bear Form Passive 2 (21178), Moonkin Form (24858), Astral Influence (197524), Moonkin Form (197625), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2425,6 +2432,7 @@ Spell Level      : 1
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
+Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679), Druid (137009), Lucidity (137247), Wildcat Celerity (184877)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... x....... ........ 
@@ -2489,6 +2497,7 @@ Spell Level      : 1
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
+Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679), Druid (137009), Lucidity (137247), Wildcat Celerity (184877)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
@@ -2522,6 +2531,7 @@ Spell Level      : 1
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
+Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724), Cheaper Druid Shapeshifting (38314), Incarnation (117679), Druid (137009), Feral Druid (137011), Wildcat Celerity (184877), Bladed Feathers (202302), Moonkin Form (231042)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
@@ -2697,7 +2707,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Astral Influence (197524), Jagged Claws (200409), Jagged Wounds (202032), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Luffa Wrappings (234188), 
+Affecting spells : Mastery: Razor Claws (77493), Incarnation: King of the Jungle (102543), Incarnation: Guardian of Ursoc (102558), Berserk (106951), Clearcasting (135700), Bloodletting (165699), Astral Influence (197524), Jagged Claws (200409), Jagged Wounds (202032), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ .......x ........ ........ 
@@ -2718,7 +2728,7 @@ School           : Physical
 Spell Level      : 12
 Range            : 5 yards
 Stance Mask      : 0x00000011
-Affecting spells : Luffa Wrappings (208681), Luffa Wrappings (234188), 
+Affecting spells : Luffa Wrappings (208681), 
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2737,6 +2747,7 @@ Spell Level      : 70
 Range            : 13 yards
 Cooldown         : 15 seconds
 Category         : 1260
+Category Cooldown: 15 seconds
 Stance Mask      : 0x00000011
 Affecting spells : Cat Form (3025), Incarnation: King of the Jungle (102543), Berserk (106951), Druid (137009), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -2759,6 +2770,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
 Category         : 1257
+Category Cooldown: 120 seconds
 Proc Chance      : 101%
 Affecting spells : Astral Influence (197524), Guttural Roars (204012), 
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
@@ -2783,6 +2795,7 @@ Spell Level      : 40
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1208
+Category Cooldown: 180 seconds
 Affecting spells : Wildcat Celerity (184877)
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3217,6 +3230,7 @@ Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Category         : 1217
+Category Cooldown: 30 seconds
 Affecting spells : Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3367,8 +3381,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 917504 | Target: Self(1)
 #6 (id=260767)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 8 | Target: Self(1)
-                   Affected Spells: Luffa Wrappings (208681), Luffa Wrappings (234188)
-                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> 50), Misc Value (0 -> 8), Affects Spells
+                   Affected Spells: Luffa Wrappings (208681)
 #7 (id=260768)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260769)   : Apply Aura (6) | Dummy (4)
@@ -4317,6 +4330,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Category         : 33
+Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
 Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
@@ -4345,6 +4359,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Category         : 33
+Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
 Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
@@ -4373,6 +4388,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Category         : 33
+Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
 Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
@@ -4401,6 +4417,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Category         : 33
+Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
 Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
@@ -4429,6 +4446,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Category         : 33
+Category Cooldown: 10 seconds
 Stance Mask      : 0x00000001
 Affecting spells : Maim Damage (61252), Incarnation: King of the Jungle (102543), Berserk (106951), Clearcasting (135700), Bloodtalons (145152), Thrash (192090), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ..x..... ...x.... 
@@ -4469,6 +4487,7 @@ School           : Physical
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
+Category Cooldown: 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4719,7 +4738,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Astral Influence (197524), Jagged Claws (200409), Rend and Tear (204053), Elize's Everlasting Encasement (208342), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), Luffa Wrappings (234188), 
+Affecting spells : Incarnation: Guardian of Ursoc (102558), Druid (137009), Astral Influence (197524), Jagged Claws (200409), Rend and Tear (204053), Elize's Everlasting Encasement (208342), Luffa Wrappings (208681), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5853,7 +5872,6 @@ While Fury of Elune is active, you may recast it for no cost to direct the beam 
 Tooltip          : Directing the Fury of Elune.
 
 Name             : Full Moon (Artifact) (id=202771) [Spell Family (7)] 
-Hotfixed         : School (72 -> 64)
 Class            : Druid
 School           : Arcane
 Range            : 40 yards

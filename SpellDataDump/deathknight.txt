@@ -1,4 +1,4 @@
-SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build 735575a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -240,6 +240,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
 Category         : 18
+Category Cooldown: 30 seconds
 Affecting spells : Crimson Scourge (81141), Blood Death Knight (137008), Rapid Decomposition (194662)
 Attributes       : ........ ........ ........ ..x.....   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -447,6 +448,7 @@ Range            : 15 yards
 Duration         : 3 seconds
 Cooldown         : 15 seconds
 Category         : 88
+Category Cooldown: 15 seconds
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -571,6 +573,7 @@ School           : Shadow
 Spell Level      : 57
 Duration         : 5 seconds
 Cooldown         : 60 seconds
+Category Cooldown: 60 seconds
 Proc Chance      : 101%
 Affecting spells : Deadly Durability (191565), Volatile Shielding (207188), Spell Eater (207321), Acherus Drapes (210852)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -1276,6 +1279,7 @@ Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
 Category         : 82
+Category Cooldown: 8 seconds
 Proc Chance      : 101%
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
@@ -1380,6 +1384,7 @@ School           : Physical
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
+Category Cooldown: 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1398,6 +1403,7 @@ School           : Physical
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
+Category Cooldown: 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1526,6 +1532,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
 Category         : 1555
+Category Cooldown: 600 seconds
 Affecting spells : Death Knight (137005)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ .x...... ........ 
                  : x....... ........ ........ ........   ....x... ........ ..x..... ........ 
@@ -2751,7 +2758,6 @@ Effects          :
 #6 (id=260807)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Icebound Fortitude (48792)
-                   Hotfixed: Sub Type (4 -> 107), Base Value (0 -> -10), Misc Value (0 -> 23), Affects Spells
 #7 (id=260808)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260809)   : Apply Aura (6) | Dummy (4)
@@ -2966,6 +2972,7 @@ School           : Physical
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 133
+Category Cooldown: 1.5 seconds
 Attributes       : ........ x....... ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4848,7 +4855,7 @@ Effects          :
 Description      : Auto attacks generate $s1 Runic Power.
 
 Name             : Icecap (id=207126) [Spell Family (15), Passive] 
-Hotfixed         : Proc Flags (332116 -> 332112)
+Hotfixed         : Internal Cooldown (332116 -> 332112)
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1

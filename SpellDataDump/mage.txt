@@ -1,4 +1,4 @@
-SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build 735575a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -9,6 +9,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 300 seconds
 Category         : 1162
+Category Cooldown: 300 seconds
 Affecting spells : Erosion (210134)
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -83,6 +84,7 @@ Spell Level      : 34
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
 Category         : 50
+Category Cooldown: 12 seconds
 Affecting spells : Shatter (12982)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -265,6 +267,7 @@ Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
 Category         : 88
+Category Cooldown: 24 seconds
 Mechanic         : Unknown(227)
 Affecting spells : Improved Counterspell (24429)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -392,7 +395,6 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
 Effects          :
 #1 (id=2716)     : School Damage: arcane (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.44300 | Chain Targets: 1 | Target: Unknown(77)
-                   Hotfixed: SP Coefficient (0.418 -> 0.443)
 Description      : $@spelldesc5143
 
 Name             : Frost Armor (id=7302) [Spell Family (3), Passive] 
@@ -448,6 +450,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 25 seconds
 Category         : 471
+Category Cooldown: 25 seconds
 Affecting spells : Shield of Alodi (195354), Mana Shield (210716)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -776,7 +779,6 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=20028)    : School Damage: arcane (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.92400 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (1.815 -> 1.924)
 #2 (id=20029)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : Blasts the target with energy, dealing $30451s1 Arcane damage.
@@ -869,6 +871,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 20 seconds
 Category         : 1215
+Category Cooldown: 20 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
@@ -982,6 +985,7 @@ Range            : 45 yards
 Duration         : 8 seconds
 Cooldown         : 25 seconds
 Category         : 35
+Category Cooldown: 25 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
@@ -1105,6 +1109,7 @@ GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1189
+Category Cooldown: 4.5 seconds
 Affecting spells : Shatter (12982), Arcane Charge (36032), Mage (137018), Torrential Barrage (187304), Erosion (210134)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2118,6 +2123,7 @@ Spell Level      : 65
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Category         : 1162
+Category Cooldown: 120 seconds
 Affecting spells : Erosion (210134)
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2235,6 +2241,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 45 seconds
 Category         : 1437
+Category Cooldown: 45 seconds
 Affecting spells : Ice Floes (108839), 
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -2527,6 +2534,7 @@ Cast Time        : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 25 seconds
 Category         : 35
+Category Cooldown: 25 seconds
 Affecting spells : Mastery: Icicles (76613), Item - Mage T18 Frost 4P Bonus (185971), Crushing Jets (198146), 
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3031,7 +3039,6 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=212926)   : School Damage: arcane (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.86600 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.817 -> 0.866)
 #2 (id=212927)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: none | Target: Self(1)
 Description      : $@spelldesc153626

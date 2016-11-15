@@ -1,4 +1,4 @@
-SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build 735575a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -43,6 +43,7 @@ Spell Level      : 55
 Range            : 40 yards
 Cooldown         : 600 seconds
 Category         : 56
+Category Cooldown: 600 seconds
 Affecting spells : Sanctuary (105805), Unbreakable Spirit (114154), Focused Healing (200326), Tyr's Hand of Faith (206380), Rule of Law (214202), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -94,6 +95,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
 Category         : 32
+Category Cooldown: 60 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
 Affecting spells : Improved Hammer of Justice (24188), Lucidity (137288)
@@ -180,6 +182,7 @@ GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1512
+Category Cooldown: 8 seconds
 Affecting spells : Lucidity (137288), Rule of Law (214202), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -310,6 +313,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Category         : 892
+Category Cooldown: 9 seconds
 Affecting spells : Avenging Wrath (31842), Paladin (137026), Lucidity (137288), Shock Treatment (200315), Item - Paladin T19 Holy 2P Bonus (211436), Rule of Law (214202), Judgment (214222)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xxx..... ........ 
@@ -439,6 +443,7 @@ GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 9 seconds
 Category         : 932
+Category Cooldown: 9 seconds
 Affecting spells : Paladin (137026), Protection Paladin (137028), Lucidity (137288), Consecration in Flame (209218)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -826,6 +831,7 @@ GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 3 seconds
 Category         : 1483
+Category Cooldown: 3 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
@@ -1691,6 +1697,7 @@ Range            : 5 yards
 Duration         : 4 seconds
 Cooldown         : 15 seconds
 Category         : 88
+Category Cooldown: 15 seconds
 Affecting spells : Paladin (137026), Lucidity (137288)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ...x.... ........ x....... ........ 
@@ -2216,7 +2223,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self(1)
 #4 (id=191094)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self(1)
-                   Hotfixed: Misc Value (1 -> 127)
 #5 (id=191095)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 13 | Scaled Value: 13 | Target: Self(1)
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (228288)
@@ -2573,6 +2579,7 @@ GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 3 seconds
 Category         : 1483
+Category Cooldown: 3 seconds
 Affecting spells : Lucidity (137288), Rule of Law (214202), 
 Attributes       : ........ ........ x.x..... .....x..   ........ ........ .x...... ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
@@ -2644,7 +2651,6 @@ Effects          :
 Description      : You gain Parry equal to $s1% of your Critical Strike from gear.
 
 Name             : Jailer's Judgment (id=162056) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holy
@@ -4052,6 +4058,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 12 seconds
 Category         : 932
+Category Cooldown: 12 seconds
 Affecting spells : Paladin (137026), Protection Paladin (137028), Lucidity (137288), Consecration in Flame (209218)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4119,12 +4126,13 @@ Description      : $@spelldesc205273
 Tooltip          : Stunned.
 
 Name             : Greater Blessing of Might (id=205729) [Spell Family (10)] 
+Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Range            : 50000 yards
 Attributes       : ........ ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ..x..... ......x. 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ x....... .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4227,7 +4235,6 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 #4 (id=335387)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | Target: At Caster(22)
-                   Hotfixed: Base Value (50 -> 35)
 #5 (id=351092)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | Target: At Caster(22)
 Description      : Deals $s3% of your missing health in Holy damage to $s2 nearby enemies, up to ${$s3*$s5/100}% of your maximum health.
@@ -4309,6 +4316,7 @@ GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1512
+Category Cooldown: 8 seconds
 Affecting spells : Lucidity (137288), Rule of Law (214202), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

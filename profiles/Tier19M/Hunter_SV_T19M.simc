@@ -66,13 +66,13 @@ trinket2=eye_of_guarm,id=142506,bonus_id=607/3469
 main_hand=talonclaw,id=128808,gem_id=142518/142511/142510,relic_id=3469/3469/3469:1512
 
 # Gear Summary
-# gear_ilvl=882.07
-# gear_agility=18333
-# gear_stamina=26300
-# gear_crit_rating=7989
-# gear_haste_rating=6236
-# gear_mastery_rating=3582
-# gear_versatility_rating=1951
-# gear_armor=2776
+# gear_ilvl=884.73
+# gear_agility=18879
+# gear_stamina=27072
+# gear_crit_rating=8064
+# gear_haste_rating=6294
+# gear_mastery_rating=3617
+# gear_versatility_rating=1987
+# gear_armor=2801
 # set_bonus=tier19p_mail_2pc=1
 summon_pet=carrion_bird

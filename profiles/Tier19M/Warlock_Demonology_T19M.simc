@@ -87,13 +87,13 @@ main_hand=spine_of_thalkiel,id=137246
 off_hand=skull_of_the_manari,id=128943,gem_id=142512/142516/142513,relic_id=3469/3469/3469:1512
 
 # Gear Summary
-# gear_ilvl=883.56
-# gear_stamina=25984
-# gear_intellect=16659
-# gear_spell_power=13115
-# gear_crit_rating=6205
-# gear_haste_rating=12168
-# gear_mastery_rating=2330
-# gear_armor=1820
+# gear_ilvl=886.38
+# gear_stamina=26752
+# gear_intellect=17207
+# gear_spell_power=13742
+# gear_crit_rating=6260
+# gear_haste_rating=12277
+# gear_mastery_rating=2370
+# gear_armor=1840
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=felguard

@@ -1,4 +1,4 @@
-SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build 735575a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -322,7 +322,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=3248)     : School Damage: nature (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.20000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (8 -> 9.2)
 Description      : Instantly shocks the target with concussive force, causing up to $s1 Nature damage based on Maelstrom spent.
 
 Name             : Fire Nova (id=8349) [Scaling Spell (10), Spell Family (11)] 
@@ -455,6 +454,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 16 seconds
 Category         : 1254
+Category Cooldown: 16 seconds
 Proc Chance      : 101%
 Affecting spells : Ascendance (114051), Shaman (137038), Stormbringer (201846), 
 Triggered by     : Stormbringer (201846)
@@ -495,6 +495,7 @@ School           : Nature
 Spell Level      : 26
 Cooldown         : 1800 seconds
 Category         : 1161
+Category Cooldown: 1800 seconds
 Affecting spells : Servant of the Queen (207357), 
 Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -876,6 +877,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
 Category         : 1223
+Category Cooldown: 45 seconds
 Affecting spells : Elemental Focus (16246), Elemental Fury (60188)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -930,6 +932,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
 Category         : 1655
+Category Cooldown: 30 seconds
 Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -958,6 +961,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Category         : 1653
+Category Cooldown: 120 seconds
 Affecting spells : Shaman (137038), Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -2324,6 +2328,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 16 seconds
 Category         : 1254
+Category Cooldown: 16 seconds
 Proc Chance      : 100%
 Affecting spells : Shaman (137038), Stormbringer (201846), 
 Triggered by     : Stormbringer (201846)
@@ -3025,6 +3030,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 30 seconds
 Category         : 1626
+Category Cooldown: 1 seconds
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3059,7 +3065,6 @@ Effects          :
 Description      : Chain Heal bounces to $m2 additional $Ltarget:targets;, and its falloff with each bounce is reduced by half.
 
 Name             : Storm Elemental (id=157299) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Level      : 1
@@ -3076,7 +3081,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 77936 | Misc Value 2: 0xda1 | Radius: 5 yards | Target: Unknown(43)
 #2 (id=355422)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-                   Hotfixed: NEW EFFECT
 Description      : $@spelldesc152256
 
 Name             : Wind Gust (id=157331) [Spell Family (11)] 
@@ -3707,6 +3711,7 @@ GCD              : 1.5 seconds
 Duration         : 21 seconds
 Cooldown         : 6 seconds
 Category         : 19
+Category Cooldown: 6 seconds
 Affecting spells : Shaman Shock Range Bonus (32973), Elemental Fury (60188), Lucidity (137326), Elemental Bellows (184919), Maelstrom (187828), Firestorm (191740), Ember Totem (210658)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4245,6 +4250,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Cooldown         : 300 seconds
 Category         : 1572
+Category Cooldown: 300 seconds
 Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4319,7 +4325,6 @@ Description      : Scorches your target, dealing $s2 Fire damage, and enhances y
 Variables        : $coeff=${0.125}
 
 Name             : Flametongue (id=194084) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Level      : 10
@@ -4531,7 +4536,6 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=288995)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.64400 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.56 -> 0.644)
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #3 (id=313061)   : Dummy (3)
@@ -4828,6 +4832,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 300 seconds
 Category         : 1572
+Category Cooldown: 300 seconds
 Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ .x...... ......x. 
@@ -6084,6 +6089,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
 Category         : 1655
+Category Cooldown: 30 seconds
 Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -6114,6 +6120,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
 Category         : 1655
+Category Cooldown: 30 seconds
 Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -6144,6 +6151,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
 Category         : 1655
+Category Cooldown: 30 seconds
 Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
@@ -6174,6 +6182,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
 Category         : 1655
+Category Cooldown: 30 seconds
 Proc Chance      : 100%
 Mechanic         : Unknown(141)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 

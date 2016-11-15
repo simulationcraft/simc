@@ -1,4 +1,4 @@
-SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build 735575a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -384,6 +384,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
 Category         : 411
+Category Cooldown: 30 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Hunter (137014), Improved Traps (199518), Hunter's Guile (203752)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -514,6 +515,7 @@ Velocity         : 40 yards/sec
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1111
+Category Cooldown: 45 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Unknown(81)
@@ -850,6 +852,7 @@ Spell Level      : 20
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
 Category         : 38
+Category Cooldown: 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
@@ -1297,6 +1300,7 @@ Range            : 30 yards
 Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 1247
+Category Cooldown: 10 seconds
 Mechanic         : Unknown(88)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1352,6 +1356,7 @@ Class            : Ferocity Hunter Pet
 School           : Nature
 Cooldown         : 480 seconds
 Category         : 1156
+Category Cooldown: 480 seconds
 Attributes       : ........ ........ .......x ........   ........ ........ .x...... ........ 
                  : x....... ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1931,6 +1936,7 @@ Spell Level      : 20
 Duration         : Aura (infinite)
 Cooldown         : 10 seconds
 Category         : 38
+Category Cooldown: 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
@@ -3208,6 +3214,7 @@ Spell Level      : 20
 Range            : 40 yards
 Cooldown         : 600 seconds
 Category         : 26
+Category Cooldown: 600 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3433,6 +3440,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 60 seconds
 Category         : 1578
+Category Cooldown: 60 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Hunter (137014), Hunter's Guile (203752)
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -3804,13 +3812,10 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
 Effects          :
 #1 (id=271164)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Active Pet(5)
-                   Hotfixed: Sub Type (61 -> 79), Base Value (50 -> 25), Misc Value (0 -> 127)
 #2 (id=271165)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | SP Coefficient: 1.00000 | Misc Value: 12 | Target: Active Pet(5)
-                   Hotfixed: Sub Type (79 -> 4), Misc Value (127 -> 12)
 #3 (id=271166)   : Apply Aura (6) | Scale% (61)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Active Pet(5)
-                   Hotfixed: Sub Type (4 -> 61), Base Value (0 -> 50), Misc Value (12 -> 0)
 #4 (id=271167)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Active Pet(5)
 #5 (id=271168)   : Apply Aura (6) | Unknown effect sub type (103)
@@ -4017,6 +4022,7 @@ Spell Level      : 28
 Range            : 100 yards
 Duration         : 60 seconds
 Cooldown         : 30 seconds
+Category Cooldown: 30 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Hunter's Guile (203752)
 Triggered by     : Freezing Trap (187650)
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
@@ -4074,6 +4080,7 @@ Spell Level      : 46
 Range            : 100 yards
 Duration         : 60 seconds
 Cooldown         : 30 seconds
+Category Cooldown: 30 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Hunter's Guile (203752)
 Triggered by     : Tar Trap (187698)
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
@@ -4098,6 +4105,7 @@ Range            : 5 yards
 Duration         : 3 seconds
 Cooldown         : 15 seconds
 Category         : 88
+Category Cooldown: 15 seconds
 Affecting spells : Hunter (137014)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4741,7 +4749,6 @@ Effects          :
 #2 (id=355504)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
-                   Hotfixed: NEW EFFECT
 Description      : Increase the damage bonus of Bestial Wrath by $s1%.
 
 Name             : Volley (id=194386) [Spell Family (9)] 
@@ -5978,6 +5985,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
 Category         : 1620
+Category Cooldown: 0.33 seconds
 Affecting spells : Freezing Trap (3355), Hunter (137014), Survival Hunter (137017), Guide: Sharpshooting (178549), Mastery: Sniper Training (193468), Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 

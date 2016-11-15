@@ -71,13 +71,13 @@ trinket2=brinewater_slime_in_a_bottle,id=142507,bonus_id=605/3469/1512
 main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=142512/142510/142512,relic_id=3469/3469:1512/3469
 
 # Gear Summary
-# gear_ilvl=882.73
-# gear_stamina=26395
-# gear_intellect=29182
-# gear_crit_rating=4263
-# gear_haste_rating=7158
-# gear_mastery_rating=8720
-# gear_versatility_rating=727
-# gear_armor=1818
+# gear_ilvl=885.40
+# gear_stamina=27135
+# gear_intellect=30356
+# gear_crit_rating=4296
+# gear_haste_rating=7214
+# gear_mastery_rating=8794
+# gear_versatility_rating=740
+# gear_armor=1838
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=felhunter

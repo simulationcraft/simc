@@ -1,4 +1,4 @@
-SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build 735575a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -365,6 +365,7 @@ Velocity         : 1 yards/sec
 Duration         : 0.25 seconds
 Cooldown         : 180 seconds
 Category         : 731
+Category Cooldown: 180 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -597,6 +598,7 @@ Class            : Warlock
 School           : Physical
 Cooldown         : 60 seconds
 Category         : 30
+Category Cooldown: 60 seconds
 Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -622,6 +624,7 @@ Cast Time        : 1.7 seconds
 Duration         : 30 seconds
 Cooldown         : 30 seconds
 Category         : 1468
+Category Cooldown: 30 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(81)
 Attributes       : ........ ........ x....... ......x.   ..x..... ..x...x. ........ .x...... 
@@ -677,6 +680,7 @@ Velocity         : 24 yards/sec
 Duration         : 3 seconds
 Cooldown         : 45 seconds
 Category         : 633
+Category Cooldown: 45 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(204)
 Affecting spells : Odr, Shawl of the Ymirjar (212173)
@@ -762,6 +766,7 @@ Range            : 30 yards
 Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 82
+Category Cooldown: 10 seconds
 Mechanic         : Unknown(133)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -890,6 +895,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
 Category         : 731
+Category Cooldown: 180 seconds
 Attributes       : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -928,6 +934,7 @@ Spell Level      : 35
 Range            : 30 yards
 Cooldown         : 15 seconds
 Category         : 12
+Category Cooldown: 15 seconds
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -955,6 +962,7 @@ Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
 Category         : 88
+Category Cooldown: 24 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -1029,6 +1037,7 @@ GCD              : 1.5 seconds
 Duration         : 900 seconds
 Cooldown         : 600 seconds
 Category         : 831
+Category Cooldown: 600 seconds
 Stance Mask      : 0x80200000
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
                  : x..x.... x....... ...x.... ........   ........ x....... ........ ........ 
@@ -1219,7 +1228,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=19677)    : Dummy (3)
-                   Base Value: 200 | Scaled Value: 200 | Target: Enemy(6)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
+                   Hotfixed: Base Value (200 -> 400)
 #2 (id=302947)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy(6)
 Description      : Afflicts the target with $233490o1 Shadow damage over $233490d. You may afflict a target with up to $s2 Unstable Afflictions at once.
@@ -1338,6 +1348,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
 Category         : 250
+Category Cooldown: 30 seconds
 Mechanic         : Unknown(95)
 Attributes       : ........ ........ x....... ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2316,6 +2327,7 @@ Range            : 100 yards
 Duration         : 20 seconds
 Cooldown         : 60 seconds
 Category         : 25
+Category Cooldown: 60 seconds
 Attributes       : ........ ........ ........ ...x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -2362,6 +2374,7 @@ School           : Physical
 Spell Level      : 1
 Cooldown         : 90 seconds
 Category         : 1336
+Category Cooldown: 90 seconds
 Attributes       : ......x. x....... ........ .......x   ........ ........ ........ ....x..x 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2480,6 +2493,7 @@ GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
 Category         : 1336
+Category Cooldown: 90 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2504,6 +2518,7 @@ GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
 Category         : 1336
+Category Cooldown: 90 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2528,6 +2543,7 @@ GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
 Category         : 1336
+Category Cooldown: 90 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2552,6 +2568,7 @@ GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
 Category         : 1336
+Category Cooldown: 90 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2577,6 +2594,7 @@ GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
 Category         : 1336
+Category Cooldown: 90 seconds
 Attributes       : ........ ........ ........ ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2770,6 +2788,7 @@ Spell Level      : 50
 Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
+Category Cooldown: 24 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -3405,6 +3424,7 @@ Range            : 30 yards
 Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 82
+Category Cooldown: 10 seconds
 Mechanic         : Unknown(133)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -3498,6 +3518,7 @@ Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
 Category         : 88
+Category Cooldown: 24 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

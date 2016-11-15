@@ -1,4 +1,4 @@
-SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build 735575a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -394,6 +394,7 @@ Range            : 20 yards
 Duration         : 3 seconds
 Cooldown         : 15 seconds
 Category         : 88
+Category Cooldown: 15 seconds
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -489,6 +490,7 @@ Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
 Category         : 82
+Category Cooldown: 8 seconds
 Proc Flags       : ...x.x.x .x.x.x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -544,6 +546,7 @@ Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1251
+Category Cooldown: 20 seconds
 Affecting spells : Embrace the Pain (212816)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -579,6 +582,7 @@ GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 10 seconds
 Category         : 1640
+Category Cooldown: 10 seconds
 Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -645,6 +649,7 @@ Range            : 30 yards
 Cooldown         : 1 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1553
+Category Cooldown: 1 seconds
 Affecting spells : Infernal Force (207375), Abyssal Strike (207550), 
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -695,6 +700,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 300 seconds
 Category         : 1577
+Category Cooldown: 300 seconds
 Affecting spells : Metamorphosis (162264), Unleashed Demons (201460), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -883,6 +889,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 45 seconds
 Category         : 1582
+Category Cooldown: 45 seconds
 Affecting spells : Chaos Vision (201456), Blind Fury (203550), Soul Flame of Insight (226334)
 Attributes       : ........ ........ ........ ........   ..x...x. .x...... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -923,6 +930,7 @@ Class            : Demon Hunter
 School           : Physical
 Cooldown         : 60 seconds
 Category         : 1621
+Category Cooldown: 60 seconds
 Attributes       : ....x... x....... ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -939,6 +947,7 @@ Class            : Demon Hunter
 School           : Physical
 Duration         : 1 seconds
 Cooldown         : 25 seconds
+Category Cooldown: 25 seconds
 Affecting spells : Prepared (203551)
 Attributes       : ....x... ........ ........ .......x   ........ .xx..... ........ ....x... 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -1226,6 +1235,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1608
+Category Cooldown: 60 seconds
 Affecting spells : Metamorphosis (162264), Quickened Sigils (209281), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1251,6 +1261,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1606
+Category Cooldown: 60 seconds
 Affecting spells : Metamorphosis (162264), Quickened Sigils (209281), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1712,6 +1723,7 @@ Spell Level      : 1
 Range            : 30 yards
 Cooldown         : 60 seconds
 Category         : 1541
+Category Cooldown: 1 seconds
 Affecting spells : Demonic Flames (212894)
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -1865,6 +1877,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 30 seconds
 Category         : 1605
+Category Cooldown: 30 seconds
 Affecting spells : Metamorphosis (162264), Quickened Sigils (209281), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2084,7 +2097,6 @@ Effects          :
 Description      : Chaos Strike has a chance to spawn a Lesser Soul Fragment, and consuming any Soul Fragment grants $210041s1 Fury.
 
 Name             : Nemesis (id=206491) [Spell Family (107)] 
-Hotfixed         : GCD (1500 -> 0)
 Class            : Demon Hunter
 School           : Physical
 Range            : 50 yards
@@ -2231,6 +2243,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1607
+Category Cooldown: 60 seconds
 Affecting spells : Metamorphosis (162264), Quickened Sigils (209281), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2697,6 +2710,7 @@ GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 8 seconds
 Category         : 1640
+Category Cooldown: 8 seconds
 Affecting spells : Metamorphosis (162264), First Blood (206416), Havoc Demon Hunter (212612), Vengeance Demon Hunter (212613), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3100,6 +3114,7 @@ School           : Physical
 Duration         : 10 seconds
 Cooldown         : 60 seconds
 Category         : 1621
+Category Cooldown: 60 seconds
 Triggered by     : Blur (198589)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3291,6 +3306,7 @@ GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 10 seconds
 Category         : 33
+Category Cooldown: 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Unknown(255)

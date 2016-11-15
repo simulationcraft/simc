@@ -1,4 +1,4 @@
-SimulationCraft 710-02 for World of Warcraft 7.1.0 Live (wow build 22900, git build 735575a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -61,6 +61,7 @@ GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1509
+Category Cooldown: 8 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -157,7 +158,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41000 | Target: Enemy(6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage: shadow every 2 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41000 | Target: Enemy(6)
-                   Hotfixed: SP Coefficient (0.45 -> 0.41)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: insanity | Target: Self(1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
@@ -560,6 +560,7 @@ Spell Level      : 1
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 671
+Category Cooldown: 90 seconds
 Stance Mask      : 0x08000000
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... .....x..   ........ ........ ........ .....x.. 
@@ -807,6 +808,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
 Category         : 1181
+Category Cooldown: 12 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Healing Trance (37706), Priest (137030), Lucidity (137323)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -872,6 +874,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 180 seconds
 Category         : 1417
+Category Cooldown: 180 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Glyph of the Sha (147776), Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
@@ -1097,6 +1100,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
 Category         : 1230
+Category Cooldown: 9 seconds
 Affecting spells : Lucidity (137323)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2068,6 +2072,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 15 seconds
 Category         : 1380
+Category Cooldown: 15 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
@@ -2194,6 +2199,7 @@ GCD              : 1.5 seconds
 Duration         : 3.2 seconds
 Cooldown         : 40 seconds
 Category         : 1366
+Category Cooldown: 40 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Lucidity (137323), Atonement (194384), Light of T'uure (208065), Power Word: Shield (211558)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
@@ -2322,6 +2328,7 @@ GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 60 seconds
 Category         : 1417
+Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
@@ -2618,11 +2625,9 @@ Effects          :
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 12 | Scaled Value: 12 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
-                   Hotfixed: Base Value (7 -> 12)
 #3 (id=191073)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
-                   Hotfixed: Base Value (7 -> 12)
 #4 (id=191074)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Shadow Word: Pain (589)
@@ -2855,7 +2860,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 20 yards | Target: At Caster(22) -> AOE friendly(30)
 
 Name             : Ascension (id=161862) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
 School           : Holy
@@ -3227,7 +3231,8 @@ Effects          :
 #1 (id=285130)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x20 | Target: Self(1)
 #2 (id=285131)   : Apply Aura (6) | Modify Power Regeneration (85)
-                   Base Value: -4500 | Scaled Value: -4500 | Misc Value: 13 | Target: Self(1)
+                   Base Value: -4000 | Scaled Value: -4000 | Misc Value: 13 | Target: Self(1)
+                   Hotfixed: Base Value (-4500 -> -4000)
 #3 (id=285132)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 #4 (id=285141)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
@@ -3635,6 +3640,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
 Category         : 1417
+Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
 Affecting spells : Item - Priest T18 Shadow 2P Bonus (186980), Voidform (194249), Lingering Insanity (197937)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
@@ -4157,6 +4163,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
+Category Cooldown: 4.5 seconds
 Affecting spells : Mastery: Madness (77486), Priest (137030), Sinister Thoughts (194026), Voidform (194249), Lingering Insanity (197937), Void (211657), Anund's Last Breath (215210)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4344,6 +4351,7 @@ GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1509
+Category Cooldown: 8 seconds
 Stance Mask      : 0x80000000
 Affecting spells : Lucidity (137323)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -4547,6 +4555,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Category         : 1660
+Category Cooldown: 3 seconds
 Affecting spells : Priest (137030), Legacy of the Void (193225), Voidform (194249)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 

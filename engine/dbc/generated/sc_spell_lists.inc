@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 22995
+// Class based active abilities, wow build 22996
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1150,7 +1150,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 22995
+// Talent tree specialization abilities, wow build 22996
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2242,7 +2242,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 22995
+// Class mastery abilities, wow build 22996
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2481,7 +2481,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 22995
+// Racial abilities, wow build 22996
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3219,7 +3219,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (544)
 
-// Set bonus data, wow build 22995
+// Set bonus data, wow build 22996
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3790,7 +3790,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (245)
 
-// 245 RPPM Modifiers, wow build level 22995
+// 245 RPPM Modifiers, wow build level 22996
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  49530,    1,  1,  1.0000 },
   {  51128,    4,  1,  1.0000 },
@@ -4041,7 +4041,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 22995
+// Artifact base data, wow build 22996
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -4087,7 +4087,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 };
 #define ARTIFACT_POWER_SIZE (715)
 
-// Artifact power data, wow build 22995
+// Artifact power data, wow build 22996
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   {   40,   2,  18,  0,   0, 205273, "Wake of Ashes"                      }, // Wake of Ashes (id=205273, n_ranks=1)
   {   41,   2,   0,  4,   3, 186941, "Highlord's Judgment"                }, // Highlord's Judgment (id=186941, n_ranks=6)
@@ -4807,7 +4807,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (3063)
 
-// Artifact power rank data, wow build 22995
+// Artifact power rank data, wow build 22996
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   { 2316,    40,  0, 205273,      0.000, 0x00000000, 0 },
   { 2317,    41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -7875,7 +7875,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
 };
 #define ARTIFACT_POWER_RANK_HOTFIX_SIZE (25)
 
-// 25 artifact_power_rank hotfix entries, wow build level 22995
+// 25 artifact_power_rank hotfix entries, wow build level 22996
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
   {   3980,  4, 0.000000, 6.000000 },
   {   3981,  4, 15.000000, 12.000000 },

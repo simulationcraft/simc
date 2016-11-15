@@ -60,12 +60,12 @@ trinket2=eye_of_guarm,id=142506,bonus_id=605/3469
 main_hand=titanstrike,id=128861,gem_id=139262/139269/137543,relic_id=1806/1806/1522:1727
 
 # Gear Summary
-# gear_ilvl=882.87
-# gear_agility=18382
-# gear_stamina=26306
-# gear_crit_rating=2646
-# gear_haste_rating=5535
-# gear_mastery_rating=11114
-# gear_versatility_rating=398
-# gear_armor=2793
+# gear_ilvl=884.87
+# gear_agility=18784
+# gear_stamina=26787
+# gear_crit_rating=2669
+# gear_haste_rating=5574
+# gear_mastery_rating=11168
+# gear_versatility_rating=405
+# gear_armor=2815
 summon_pet=cat

@@ -84,13 +84,13 @@ trinket2=brinewater_slime_in_a_bottle,id=142507,bonus_id=604/3469/1512
 main_hand=scepter_of_sargeras,id=128941,gem_id=142513/142516/142513,relic_id=3469/3469:1512/3469
 
 # Gear Summary
-# gear_ilvl=881.07
-# gear_stamina=26093
-# gear_intellect=29136
-# gear_crit_rating=7238
-# gear_haste_rating=9586
-# gear_mastery_rating=3485
-# gear_versatility_rating=398
-# gear_armor=1816
+# gear_ilvl=883.73
+# gear_stamina=26834
+# gear_intellect=30262
+# gear_crit_rating=7288
+# gear_haste_rating=9683
+# gear_mastery_rating=3529
+# gear_versatility_rating=405
+# gear_armor=1834
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=imp

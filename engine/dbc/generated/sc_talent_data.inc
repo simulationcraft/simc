@@ -1,6 +1,6 @@
 #define TALENT_SIZE (610)
 
-// 610 talents, wow build 22995
+// 610 talents, wow build 22996
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },

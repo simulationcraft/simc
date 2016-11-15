@@ -431,22 +431,22 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
   }
   else if ( p.report_information.save_str.find( "T19M_NH" ) != std::string::npos )
   {
-    max_ilevel_allowed           = 900;
-    max_weapon_ilevel_allowed    = 925;
+    max_ilevel_allowed           = 905;
+    max_weapon_ilevel_allowed    = 927;
     tier_name                    = "T19M_NH";
   }
   else if ( p.report_information.save_str.find( "T19M" ) != std::string::npos )
   {
-    max_ilevel_allowed           = 890;
-    max_weapon_ilevel_allowed    = 915;
+    max_ilevel_allowed           = 895;
+    max_weapon_ilevel_allowed    = 918;
     tier_name                    = "T19M";
-    //max_legendary_ilevel_allowed = max_ilevel_allowed += 10;
-    //legendary_items_allowed      = 0;
   }
   else
   {
     return return_value;
   }
+
+  max_legendary_ilevel_allowed = 905;
 
   const slot_e SLOT_OUT_ORDER[] = {
       SLOT_HEAD,      SLOT_NECK,     SLOT_SHOULDERS, SLOT_BACK,
