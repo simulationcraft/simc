@@ -35,6 +35,8 @@ bool spell_data_t::override_field( const std::string& field, double value )
     _max_range = value;
   else if ( util::str_compare_ci( field, "cooldown" ) )
     _cooldown = ( unsigned ) value;
+  else if ( util::str_compare_ci( field, "category_cooldown" ) )
+    _category_cooldown = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "internal_cooldown" ) )
     _internal_cooldown = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "gcd" ) )
@@ -82,6 +84,8 @@ double spell_data_t::get_field( const std::string& field ) const
     return _max_range;
   else if ( util::str_compare_ci( field, "cooldown" ) )
     return static_cast<double>( _cooldown );
+  else if ( util::str_compare_ci( field, "category_cooldown" ) )
+    return static_cast<double>( _category_cooldown );
   else if ( util::str_compare_ci( field, "internal_cooldown" ) )
     return static_cast<double>( _internal_cooldown );
   else if ( util::str_compare_ci( field, "gcd" ) )

@@ -62,6 +62,7 @@ namespace item
   void toe_knees_promise( special_effect_t& );
   void deteriorated_construct_core( special_effect_t& );
   void eye_of_command( special_effect_t& );
+  void bloodstained_hankerchief( special_effect_t& );
 
   // 7.0 Misc
   void darkmoon_deck( special_effect_t& );
@@ -69,6 +70,7 @@ namespace item
   void sixfeather_fan( special_effect_t& );
   void eyasus_mulligan( special_effect_t& );
   void marfisis_giant_censer( special_effect_t& );
+  void devilsaurs_bite( special_effect_t& );
 
   // 7.0 Raid
   void bloodthirsty_instinct( special_effect_t& );
@@ -462,6 +464,27 @@ void item::eye_of_command( special_effect_t& effect )
   effect.custom_buff = b;
 
   new eye_of_command_cb_t( effect, b );
+}
+
+// Bloodstained Hankerchief =================================================
+
+// Note, custom implementations are going to have to apply the empower multiplier independent of
+// this function.
+void item::bloodstained_hankerchief( special_effect_t& effect )
+{
+  action_t* a = effect.player -> find_action( "cruel_garrote" );
+  if ( ! a )
+  {
+    a = effect.player -> create_proc_action( "cruel_garrote", effect );
+  }
+
+  if ( ! a )
+  {
+    a = effect.create_action();
+    a -> base_td *= util::composite_karazhan_empower_multiplier( effect.player );
+  }
+
+  effect.execute_action = a;
 }
 
 // Impact Tremor ============================================================
@@ -2133,6 +2156,19 @@ void item::marfisis_giant_censer( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Devilsaur's Bite =========================================================
+
+void item::devilsaurs_bite( special_effect_t& effect )
+{
+  auto a = effect.create_action();
+  // Devilsaur's bite ignores armor
+  a -> snapshot_flags &= ~STATE_TGT_ARMOR;
+
+  effect.execute_action = a;
+
+  new dbc_proc_callback_t( effect.item, effect );
+}
+
 // Spontaneous Appendages ===================================================
 struct spontaneous_appendages_t: public proc_spell_t
 {
@@ -3223,6 +3259,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 231952, item::toe_knees_promise              );
   register_special_effect( 230236, item::deteriorated_construct_core    );
   register_special_effect( 230150, item::eye_of_command                 );
+  register_special_effect( 230011, item::bloodstained_hankerchief       );
 
   /* Legion 7.0 Raid */
   // register_special_effect( 221786, item::bloodthirsty_instinct  );
@@ -3244,6 +3281,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 227868, item::sixfeather_fan                 );
   register_special_effect( 227388, item::eyasus_mulligan                );
   register_special_effect( 228141, item::marfisis_giant_censer          );
+  register_special_effect( 224073, item::devilsaurs_bite                );
 
   /* Legion Enchants */
   register_special_effect( 190888, "190909trigger" );

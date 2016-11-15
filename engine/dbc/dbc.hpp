@@ -767,48 +767,49 @@ public:
   // SpellCooldown.dbc
   unsigned    _cooldown;           // 14 Cooldown in milliseconds
   unsigned    _gcd;                // 15 GCD in milliseconds
+  unsigned    _category_cooldown;  // 16 Category cooldown in milliseconds
   // SpellCategory.dbc
-  unsigned    _charges;            // 16 Number of charges
-  unsigned    _charge_cooldown;    // 17 Cooldown duration of charges
+  unsigned    _charges;            // 17 Number of charges
+  unsigned    _charge_cooldown;    // 18 Cooldown duration of charges
   // SpellCategories.dbc
-  unsigned    _category;           // 18 Spell category (for shared cooldowns, effects?)
+  unsigned    _category;           // 19 Spell category (for shared cooldowns, effects?)
   // SpellDuration.dbc
-  double      _duration;           // 19 Spell duration in milliseconds
+  double      _duration;           // 20 Spell duration in milliseconds
   // SpellAuraOptions.dbc
-  unsigned    _max_stack;          // 20 Maximum stack size for spell
-  unsigned    _proc_chance;        // 21 Spell proc chance in percent
-  int         _proc_charges;       // 22 Per proc charge amount
-  unsigned    _proc_flags;         // 23 Proc flags
-  unsigned    _internal_cooldown;  // 24 ICD
-  double      _rppm;               // 25 Base real procs per minute
+  unsigned    _max_stack;          // 21 Maximum stack size for spell
+  unsigned    _proc_chance;        // 22 Spell proc chance in percent
+  int         _proc_charges;       // 23 Per proc charge amount
+  unsigned    _proc_flags;         // 24 Proc flags
+  unsigned    _internal_cooldown;  // 25 ICD
+  double      _rppm;               // 26 Base real procs per minute
   // SpellEquippedItems.dbc
-  unsigned    _equipped_class;         // 26
-  unsigned    _equipped_invtype_mask;  // 27
-  unsigned    _equipped_subclass_mask; // 28
+  unsigned    _equipped_class;         // 27
+  unsigned    _equipped_invtype_mask;  // 28
+  unsigned    _equipped_subclass_mask; // 29
   // SpellScaling.dbc
-  int         _cast_min;           // 29 Minimum casting time in milliseconds
-  int         _cast_max;           // 30 Maximum casting time in milliseconds
-  int         _cast_div;           // 31 A divisor used in the formula for casting time scaling (20 always?)
-  double      _c_scaling;          // 32 A scaling multiplier for level based scaling
-  unsigned    _c_scaling_level;    // 33 A scaling divisor for level based scaling
+  int         _cast_min;           // 30 Minimum casting time in milliseconds
+  int         _cast_max;           // 31 Maximum casting time in milliseconds
+  int         _cast_div;           // 32 A divisor used in the formula for casting time scaling (20 always?)
+  double      _c_scaling;          // 33 A scaling multiplier for level based scaling
+  unsigned    _c_scaling_level;    // 34 A scaling divisor for level based scaling
   // SpecializationSpells.dbc
-  unsigned    _replace_spell_id;   // 34
+  unsigned    _replace_spell_id;   // 35
   // Spell.dbc flags
-  unsigned    _attributes[NUM_SPELL_FLAGS]; // 35 Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
-  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 36 SpellClassOptions.dbc flags
-  unsigned    _class_flags_family; // 37 SpellClassOptions.dbc spell family
+  unsigned    _attributes[NUM_SPELL_FLAGS]; // 36 Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
+  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 37 SpellClassOptions.dbc flags
+  unsigned    _class_flags_family; // 38 SpellClassOptions.dbc spell family
   // SpellShapeshift.db2
-  unsigned    _stance_mask;        // 38 Stance mask (used only for druid form restrictions?)
+  unsigned    _stance_mask;        // 39 Stance mask (used only for druid form restrictions?)
   // SpellMechanic.db2
-  unsigned    _mechanic;           // 39
-  unsigned    _power_id;           // 40 Artifact power id
+  unsigned    _mechanic;           // 40
+  unsigned    _power_id;           // 41 Artifact power id
   // Textual data
-  const char* _desc;               // 41 Spell.dbc description stringblock
-  const char* _tooltip;            // 42 Spell.dbc tooltip stringblock
+  const char* _desc;               // 42 Spell.dbc description stringblock
+  const char* _tooltip;            // 43 Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // 43 Spell description variable stringblock, if present
+  const char* _desc_vars;          // 44 Spell description variable stringblock, if present
   // SpellIcon.dbc
-  const char* _rank_str;           // 44
+  const char* _rank_str;           // 45
 
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
@@ -825,6 +826,9 @@ public:
 
   timespan_t cooldown() const
   { return timespan_t::from_millis( _cooldown ); }
+
+  timespan_t category_cooldown() const
+  { return timespan_t::from_millis( _category_cooldown ); }
 
   unsigned charges() const
   { return _charges; }

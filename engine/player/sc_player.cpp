@@ -414,7 +414,7 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 
 bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
 {
-  range::fill( sim -> active_player -> artifact.points, { 0, 0 } );
+  sim -> active_player -> artifact = player_t::artifact_data_t();
 
   if ( value.size() == 0 )
   {
