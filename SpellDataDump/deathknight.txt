@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build f588a52)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -4855,7 +4855,7 @@ Effects          :
 Description      : Auto attacks generate $s1 Runic Power.
 
 Name             : Icecap (id=207126) [Spell Family (15), Passive] 
-Hotfixed         : Internal Cooldown (332116 -> 332112)
+Hotfixed         : Proc Flags (332116 -> 332112)
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1

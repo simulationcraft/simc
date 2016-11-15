@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build 818a45a)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 Live (wow build 22995, git build f588a52)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -4126,7 +4126,7 @@ Description      : $@spelldesc205273
 Tooltip          : Stunned.
 
 Name             : Greater Blessing of Might (id=205729) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Range            : 50000 yards
