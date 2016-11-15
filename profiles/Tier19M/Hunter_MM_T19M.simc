@@ -119,7 +119,7 @@ back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=200agi
 chest=hauberk_of_warped_intuition,id=142301
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1522
 hands=kvaldir_exults_grips,id=142434,bonus_id=3469
-waist=roar_of_the_seven_lions,id=137080,bonus_id=1806
+waist=anchor_chain_waistguard,id=142420,bonus_id=3469/1512
 legs=singular_chain_leggings,id=139215,bonus_id=1806
 feet=black_venom_sabatons,id=139219,bonus_id=1806
 finger1=mindrend_band,id=138220,bonus_id=1806,enchant=200mastery
@@ -129,12 +129,13 @@ trinket2=arans_relaxing_ruby,id=142157
 main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=142518/142510/142517,relic_id=3469:1512/3469:1512/3469:1512
 
 # Gear Summary
-# gear_ilvl=879.53
-# gear_agility=16489
-# gear_stamina=26032
-# gear_crit_rating=2626
-# gear_haste_rating=5785
-# gear_mastery_rating=11106
-# gear_armor=2751
+# gear_ilvl=880.53
+# gear_agility=16681
+# gear_stamina=26321
+# gear_crit_rating=3379
+# gear_haste_rating=5159
+# gear_mastery_rating=10637
+# gear_versatility_rating=405
+# gear_armor=2763
 # set_bonus=tier19p_mail_2pc=1
 summon_pet=cat

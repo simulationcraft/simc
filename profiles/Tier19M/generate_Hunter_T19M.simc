@@ -56,7 +56,7 @@ back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=200agi
 chest=hauberk_of_warped_intuition,id=142301
 wrists=remorseless_chain_armbands,id=137405,bonus_id=1727/1522
 hands=kvaldir_exults_grips,id=142434,bonus_id=3469
-waist=roar_of_the_seven_lions,id=137080,bonus_id=1806
+waist=anchor_chain_waistguard,id=142420,bonus_id=3469/1512
 legs=singular_chain_leggings,id=139215,bonus_id=1806
 feet=black_venom_sabatons,id=139219,bonus_id=1806
 finger1=mindrend_band,id=138220,bonus_id=1806,enchant=200mastery
