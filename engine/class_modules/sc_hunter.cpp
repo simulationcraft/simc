@@ -2078,6 +2078,9 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
     background = true;
     hunting_companion_multiplier = 2.0;
 
+    if ( p -> o() -> sets.has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
+      hunting_companion_multiplier *= p -> o() -> sets.set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
+
     if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
     {
       impact_action = new bestial_ferocity_t( p );
