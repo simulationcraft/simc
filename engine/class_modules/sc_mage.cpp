@@ -449,17 +449,17 @@ public:
   {
     // Tier 15
     const spell_data_t* arcane_familiar,
-                      * presence_of_mind,
                       * pyromaniac,
                       * conflagration,
                       * fire_starter,
                       * ray_of_frost,
                       * lonely_winter,
-                      * bone_chilling;
+                      * bone_chilling,
+                      * temporal_flux;
 
     // Tier 30
     const spell_data_t* shimmer, // NYI
-                      * cauterize, // NYI
+                      * presence_of_mind,
                       * ice_block; // NYI
 
     // Tier 45
@@ -1917,7 +1917,13 @@ public:
 
     if ( p() -> buffs.arcane_power -> check() )
     {
-      c *= 1.0 + p() -> buffs.arcane_power -> data().effectN( 2 ).percent();
+      double arcane_power_reduction;
+      arcane_power_reduction = p() -> buffs.arcane_power -> data().effectN( 2 ).percent();
+      if ( p() -> talents.overpowered -> ok() )
+      {
+        arcane_power_reduction += p() -> talents.overpowered -> effectN( 2 ).percent();
+      }
+      c *= 1.0 + arcane_power_reduction;
     }
 
     return c;
@@ -2989,6 +2995,12 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     timespan_t t = arcane_mage_spell_t::execute_time();
 
+    if ( p() -> talents.temporal_flux -> ok() )
+    {
+      t *=  1.0 + ( p() -> buffs.arcane_charge -> stack() *
+                  p() -> talents.temporal_flux -> effectN( 1 ).percent() );
+    }
+
     if ( p() -> buffs.arcane_affinity -> check() )
     {
       t *= 1.0 + p() -> buffs.arcane_affinity -> data().effectN( 1 ).percent();
@@ -3259,17 +3271,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
 
     p() -> buffs.arcane_instability -> expire();
-
-    if ( p() -> buffs.arcane_power -> check() &&
-         p() -> talents.overpowered -> ok() )
-    {
-      timespan_t extension =
-        timespan_t::from_seconds( p() -> talents.overpowered
-                                      -> effectN( 1 ).base_value() );
-
-      p() -> buffs.arcane_power
-          -> extend_duration( p(), extension );
-    }
 
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T18, B2 ) &&
          rng().roll( p() -> sets.set( MAGE_ARCANE, T18, B2 )
@@ -7808,7 +7809,7 @@ void mage_t::init_spells()
   // Talents
   // Tier 15
   talents.arcane_familiar = find_talent_spell( "Arcane Familiar" );
-  talents.presence_of_mind= find_talent_spell( "Presence of Mind");
+  talents.temporal_flux   = find_talent_spell( "Temporal Flux"   );
   talents.resonance     = find_talent_spell( "Resonance"         );
   talents.pyromaniac      = find_talent_spell( "Pyromaniac"      );
   talents.conflagration   = find_talent_spell( "Conflagration"   );
@@ -7818,7 +7819,8 @@ void mage_t::init_spells()
   talents.bone_chilling   = find_talent_spell( "Bone Chilling"   );
   // Tier 30
   talents.shimmer         = find_talent_spell( "Shimmer"         );
-  talents.cauterize       = find_talent_spell( "Cauterize"       );
+
+  talents.presence_of_mind= find_talent_spell( "Presence of Mind");
   talents.ice_block       = find_talent_spell( "Ice Block"       );
   // Tier 45
   talents.mirror_image    = find_talent_spell( "Mirror Image"    );
@@ -8906,6 +8908,10 @@ double mage_t::composite_player_multiplier( school_e school ) const
     if ( buffs.arcane_power -> check() && dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
     {
       double v = buffs.arcane_power -> value();
+      if ( talents.overpowered -> ok() )
+      {
+        v += talents.overpowered -> effectN( 1 ).percent();
+      }
       m *= 1.0 + v;
     }
   }
