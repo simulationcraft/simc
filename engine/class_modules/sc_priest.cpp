@@ -3807,17 +3807,21 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
       // can let you start with more stacks of Voidform). Using Dispersion or
       // Void Torrent cause these "Insanity Drain Stacks" to pause while being
       // channeled.
+      // ---
+      // 2016/11/15 update by Anshlun:
+      // Updated the drain formula to match the most recent hotfix:
+      // Drain = 8 + 0.55 * drain_stacks
       auto priest = debug_cast<priest_t*>( player() );
 
       // LOGIC/SANITY CHECK:
-      // Stack 1 = 9 insanity = ( -4500 / -500 )  + ( (1 - 1) / 2 ) = 9 + (0 /
-      // 2) = 9
-      // Stack 2 = 9.5 insanity = ( -4500) / -500 ) + ( (2 - 1) / 2 ) = 9 +
-      // (1/2) = 9.5
+      // Stack 1 = 8 insanity = ( -4000 / -500 )  + ( (1 - 1) * 0.55 ) =  
+      // 8 + ( 0 * 0.55 ) = 8
+      // Stack 2 = 8.55 insanity = ( -4000) / -500 ) + ( (2 - 1) * 0.55 ) =  
+      // 8 + ( 1 * 0.55 ) = 8.55
       double insanity_loss =
           ( ( priest->buffs.voidform->data().effectN( 2 ).base_value() /
               -500 ) +
-            ( ( priest->buffs.insanity_drain_stacks->check() - 1 ) / 2 ) ) *
+            ( ( priest->buffs.insanity_drain_stacks->check() - 1 ) * 0.55 ) ) *
           0.05;
 
       if ( insanity_loss > priest->resources.current[ RESOURCE_INSANITY ] )
