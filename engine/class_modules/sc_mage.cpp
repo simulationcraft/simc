@@ -4405,27 +4405,6 @@ struct pyrosurge_flamestrike_t : public fire_mage_spell_t
     }
   }
 };
-// Flame On Spell =============================================================
-
-struct flame_on_t : public fire_mage_spell_t
-{
-  flame_on_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "flame_on", p, p -> talents.flame_on )
-  {
-    parse_options( options_str );
-  }
-
-  virtual void execute() override
-  {
-    fire_mage_spell_t::execute();
-
-    // TODO: Change reset() to accept # of charges as parameter?
-    for ( int i = data().effectN( 1 ).base_value(); i > 0; i-- )
-    {
-      p() -> cooldowns.fire_blast -> reset( false );
-    }
-  }
-};
 
 // Flurry Spell ===============================================================
 
@@ -5550,8 +5529,19 @@ struct fire_blast_t : public fire_mage_spell_t
     trigger_gcd = timespan_t::zero();
     cooldown -> charges = data().charges();
     cooldown -> charges += p -> spec.fire_blast_3 -> effectN( 1 ).base_value();
+
+    if ( p -> talents.flame_on -> ok() )
+    {
+      cooldown -> charges += p -> talents.flame_on -> effectN( 1 ).base_value();
+    }
+
     cooldown -> duration = data().charge_cooldown();
     cooldown -> duration += p -> sets.set( MAGE_FIRE, T17, B2 ) -> effectN( 1 ).time_value();
+
+    if ( p -> talents.flame_on -> ok() )
+    {
+      cooldown -> duration *=  1.0 + p -> talents.flame_on -> effectN( 2 ).percent();
+    }
     cooldown -> hasted = true;
     // Fire Blast has a small ICD to prevent it from being double casted
     icd = p -> get_cooldown( "fire_blast_icd" );
@@ -7704,8 +7694,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "dragons_breath"    ) return new          dragons_breath_t( this, options_str );
   if ( name == "fireball"          ) return new                fireball_t( this, options_str );
   if ( name == "flamestrike"       ) return new             flamestrike_t( this, options_str );
-  if ( name == "flame_on"          ) return new                flame_on_t( this, options_str );
-  if ( name == "fire_blast"     ) return new                 fire_blast_t( this, options_str );
+  if ( name == "fire_blast"        ) return new              fire_blast_t( this, options_str );
   if ( name == "living_bomb"       ) return new             living_bomb_t( this, options_str );
   if ( name == "meteor"            ) return new                  meteor_t( this, options_str );
   if ( name == "pyroblast"         ) return new               pyroblast_t( this, options_str );
