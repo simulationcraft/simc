@@ -15,7 +15,7 @@
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 optimal_raid=1
-
+default_actions=1
 # This template variable is used to call the right profile from the Legendaries profiles (so only one profile for every Tiers)
 $(Tier)=T19M
 

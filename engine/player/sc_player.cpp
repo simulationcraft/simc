@@ -2899,7 +2899,6 @@ double player_t::composite_melee_haste() const
 
     if ( timeofday == NIGHT_TIME )
        h *= 1.0 / ( 1.0 + racials.touch_of_elune -> effectN( 1 ).percent() );
-
   }
 
   return h;
@@ -3300,7 +3299,9 @@ double player_t::composite_run_speed() const
 {
   // speed DRs using the following formula:
   double pct = composite_speed_rating() / current.rating.speed;
+
   double coefficient = std::exp( -.0003 * composite_speed_rating() );
+
   return pct * coefficient * .1;
 }
 
@@ -3436,6 +3437,10 @@ double player_t::passive_movement_modifier() const
   double passive = passive_modifier;
 
   passive += racials.quickness -> effectN( 2 ).percent();
+  if ( buffs.aggramars_stride )
+  {
+    passive += ( buffs.aggramars_stride -> check_value() * composite_melee_haste() );
+  }
   passive += composite_run_speed();
 
   return passive;
@@ -3814,6 +3819,9 @@ void player_t::combat_begin()
 
   if ( buffs.amplification_2 )
     buffs.amplification_2 -> trigger();
+
+  if ( buffs.aggramars_stride )
+    buffs.aggramars_stride -> trigger();
 
   if ( buffs.tyrants_decree_driver )
   { // Assume actor has stacked the buff to max stack precombat.

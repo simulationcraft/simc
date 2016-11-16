@@ -5634,8 +5634,11 @@ struct into_the_fray_callback_t
         buff_stacks_++;
       }
     }
-    w -> buff.into_the_fray -> expire();
-    w -> buff.into_the_fray -> trigger( static_cast<int>( buff_stacks_ ));
+    if ( w -> buff.into_the_fray -> current_stack != buff_stacks_ )
+    {
+      w -> buff.into_the_fray -> expire();
+      w -> buff.into_the_fray -> trigger( static_cast<int>( buff_stacks_ ) );
+    }
   }
 };
 
@@ -5693,6 +5696,7 @@ void warrior_t::teleport( double, timespan_t )
 
 void warrior_t::trigger_movement( double distance, movement_direction_e direction )
 {
+  into_the_fray_callback_t( this );
   if ( heroic_charge )
   {
     event_t::cancel( heroic_charge ); // Cancel heroic leap if it's running to make sure nothing weird happens when movement from another source is attempted.
@@ -6451,12 +6455,6 @@ static void najentuss_vertebrae( special_effect_t& effect )
   do_trinket_init( s, SPEC_NONE, s -> najentuss_vertebrae, effect );
 }
 
-static void aggramars_stride( special_effect_t& effect )
-{
-  warrior_t* s = debug_cast<warrior_t*>( effect.player );
-  do_trinket_init( s, SPEC_NONE, s -> aggramars_stride, effect );
-}
-
 // WARRIOR MODULE INTERFACE =================================================
 
 struct fury_trinket_t : public unique_gear::class_buff_cb_t<warrior_t, haste_buff_t, haste_buff_creator_t>
@@ -6631,7 +6629,6 @@ struct warrior_module_t: public module_t
     unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles ); //NYI
     unique_gear::register_special_effect( 215096, najentuss_vertebrae );
     unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
-    unique_gear::register_special_effect( 207438, aggramars_stride ); // NYI
     unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
     unique_gear::register_special_effect( 222266, raging_fury_t() );
     unique_gear::register_special_effect( 222266, raging_fury2_t() );
