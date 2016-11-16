@@ -2155,6 +2155,7 @@ bool sim_t::init_actor( player_t* p )
     if ( default_actions == -1 )
     {
       p -> sim -> errorf( "default_actions=1 is now default, if you wish to edit action lists please set default_actions=0 at the top of your simulation." );
+      default_actions = 1;
     }
   }
 
