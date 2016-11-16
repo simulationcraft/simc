@@ -922,18 +922,6 @@ struct waterbolt_t : public mage_pet_spell_t
     }
     return am;
   }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    double fof_chance = o() -> artifact.its_cold_outside.percent();
-
-    spell_t::impact( s );
-    if ( result_is_hit( s->result ) && rng().roll( fof_chance ) )
-    {
-      o() -> buffs.fingers_of_frost -> trigger();
-      o() -> benefits.fingers_of_frost -> update( fof_source_id );
-    }
-  }
 };
 
 struct freeze_t : public mage_pet_spell_t
@@ -3517,6 +3505,10 @@ struct blizzard_shard_t : public frost_mage_spell_t
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 2 ).percent();
+      if ( p() -> talents.frozen_touch -> ok() )
+      {
+        fof_proc_chance *= 1.0 + ( p() -> talents.frozen_touch -> effectN( 1 ).percent() );
+      }
       trigger_fof( fof_source_id , fof_proc_chance );
     }
   }
@@ -3990,15 +3982,6 @@ struct ebonbolt_t : public frost_mage_spell_t
     spell_power_mod.direct = p -> find_spell( 228599 ) -> effectN( 1 ).sp_coeff();
     // Doesn't apply chill debuff but benefits from Bone Chilling somehow
   }
-
-  virtual bool init_finished() override
-  {
-    fof_source_id = p() -> benefits.fingers_of_frost
-                        -> get_source_id( data().name_cstr() );
-
-    return frost_mage_spell_t::init_finished();
-  }
-
   virtual action_state_t* new_state() override
   {
     return new frost_spell_state_t( this, target );
@@ -4039,7 +4022,7 @@ struct ebonbolt_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
-    trigger_fof( fof_source_id, 1.0, 2 );
+    p() -> buffs.brain_freeze -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4798,6 +4781,11 @@ struct frostbolt_t : public frost_mage_spell_t
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 1 ).percent();
+
+      if ( p() -> talents.frozen_touch -> ok() )
+      {
+        fof_proc_chance *= 1.0 + ( p() -> talents.frozen_touch -> effectN( 1 ).percent() );
+      }
       double bf_proc_chance = p() -> spec.brain_freeze
                                   -> effectN( 1 ).percent();
 
@@ -4966,9 +4954,14 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       double fof_proc_chance = p() -> spec.fingers_of_frost
                                    -> effectN( 1 ).percent();
 
+
       if ( p() -> sets.has_set_bonus( MAGE_FROST, T19, B4 ) )
       {
         fof_proc_chance += p() -> sets.set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
+      }
+      if ( p() -> talents.frozen_touch -> ok() )
+      {
+        fof_proc_chance *= 1.0 + ( p() -> talents.frozen_touch -> effectN( 1 ).percent() );
       }
       trigger_fof( fof_source_id, fof_proc_chance );
     }
