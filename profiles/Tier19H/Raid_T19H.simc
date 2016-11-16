@@ -15,7 +15,7 @@
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 optimal_raid=1
-
+default_actions=1
 # Death Knight
 Death_Knight_Frost_T19H.simc
 Death_Knight_Unholy_T19H.simc

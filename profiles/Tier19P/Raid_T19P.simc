@@ -12,6 +12,7 @@
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 optimal_raid=1
+default_actions=1
 # tmi_boss=TMI_Standard_Boss_T17L
 
 # Death Knight
