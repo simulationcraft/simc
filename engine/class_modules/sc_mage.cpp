@@ -425,7 +425,7 @@ public:
 
     // Fire
     const spell_data_t* critical_mass,
-                      * base_crit_bonus,    //as of 8/25/2016 Fire has a +5% base crit increase.
+                      * critical_mass_2,
                       * fire_blast_2,
                       * fire_blast_3,
                       * ignite;
@@ -4218,7 +4218,7 @@ struct fireball_t : public fire_mage_spell_t
   {
     double m = fire_mage_spell_t::composite_crit_chance_multiplier();
 
-    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> spec.critical_mass_2 -> effectN( 1 ).percent();
 
     return m;
   }
@@ -6269,7 +6269,7 @@ struct pyroblast_t : public fire_mage_spell_t
   {
     double m = fire_mage_spell_t::composite_crit_chance_multiplier();
 
-    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> spec.critical_mass_2 -> effectN( 1 ).percent();
 
     return m;
   }
@@ -6400,7 +6400,7 @@ struct scorch_t : public fire_mage_spell_t
   {
     double m = fire_mage_spell_t::composite_crit_chance_multiplier();
 
-    m *= 1.0 + p() -> spec.critical_mass -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> spec.critical_mass_2 -> effectN( 1 ).percent();
 
     return m;
   }
@@ -7941,7 +7941,7 @@ void mage_t::init_spells()
   spec.evocation_2           = find_specialization_spell( 231565 );
 
   spec.critical_mass         = find_specialization_spell( "Critical Mass"    );
-  spec.base_crit_bonus       = find_spell( 137019 );
+  spec.critical_mass_2       = find_spell( 231630 );
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
   spec.fingers_of_frost      = find_spell( 112965 );
@@ -8983,12 +8983,11 @@ double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
-  //NEW CRITICAL MASS GOES HERE
-
-  if ( specialization() == MAGE_FIRE )
+  if ( spec.critical_mass -> ok() )
   {
-    c += spec.base_crit_bonus -> effectN( 4 ).percent();
+    c += spec.critical_mass -> effectN( 1 ).percent();
   }
+
   if ( buffs.combustion -> check() )
   {
     c += buffs.combustion -> data().effectN( 1 ).percent();
