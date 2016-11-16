@@ -8037,10 +8037,6 @@ void mage_t::create_buffs()
                                               artifact.icy_hand.rank()
                                               + talents.frozen_touch -> effectN( 2 ).base_value() );
 
-
-
-
-
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
   // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
