@@ -5634,8 +5634,11 @@ struct into_the_fray_callback_t
         buff_stacks_++;
       }
     }
-    w -> buff.into_the_fray -> expire();
-    w -> buff.into_the_fray -> trigger( static_cast<int>( buff_stacks_ ));
+    if ( w -> buff.into_the_fray -> current_stack != buff_stacks_ )
+    {
+      w -> buff.into_the_fray -> expire();
+      w -> buff.into_the_fray -> trigger( static_cast<int>( buff_stacks_ ) );
+    }
   }
 };
 
