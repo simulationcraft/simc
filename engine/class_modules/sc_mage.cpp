@@ -466,6 +466,7 @@ public:
 
     // Tier 60
     const spell_data_t* supernova,
+                      * alexstraszas_fury,
                       * charged_up,
                       * words_of_power, // TODO: Move this to 15
                       * resonance,
@@ -3922,7 +3923,6 @@ struct counterspell_t : public mage_spell_t
 };
 
 // Dragon's Breath Spell ====================================================
-
 struct dragons_breath_t : public fire_mage_spell_t
 {
   double  darcklis_dragonfire_diadem_multiplier;
@@ -3955,6 +3955,26 @@ struct dragons_breath_t : public fire_mage_spell_t
     return am;
   }
 
+  virtual double composite_crit_chance() const override
+  {
+    double c = fire_mage_spell_t::composite_crit_chance();
+
+    if ( p() -> talents.alexstraszas_fury -> ok() )
+    {
+      c = 1.0;
+    }
+
+    return c;
+  }
+  virtual void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( p() -> talents.alexstraszas_fury -> ok() && s -> chain_target == 0 )
+    {
+      handle_hot_streak( s );
+    }
+  }
 };
 
 // Ebonbolt Spell ===========================================================
@@ -7849,6 +7869,7 @@ void mage_t::init_spells()
   talents.ice_nova        = find_talent_spell( "Ice Nova"        );
   talents.frozen_touch    = find_talent_spell( "Frozen Touch"    );
   talents.splitting_ice   = find_talent_spell( "Splitting Ice"   );
+  talents.alexstraszas_fury = find_talent_spell( "Alexstrasza's Fury" );
   // Tier 75
   talents.ice_floes       = find_talent_spell( "Ice Floes"       );
   talents.ring_of_frost   = find_talent_spell( "Ring of Frost"   );
