@@ -9323,7 +9323,7 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 213112, hidden_masters_forbidden_touch_t() );
     unique_gear::register_special_effect( 208045, katsuos_eclipse_t() );
     unique_gear::register_special_effect( 212132, march_of_the_legion_t() );
-    unique_gear::register_special_effect( 235053, march_of_the_legion_t() );
+    unique_gear::register_special_effect( 235053, the_emperors_capacitor_t() );
   }
 
 
