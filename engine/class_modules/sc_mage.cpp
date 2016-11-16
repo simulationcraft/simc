@@ -294,7 +294,6 @@ public:
     // Frost
     buff_t* brain_freeze,
           * fingers_of_frost,
-          * frost_armor,
           * icicles,               // Buff to track icicles - doesn't always line up with icicle count though!
           * icy_veins,
           * ice_shard,             // T17 2pc Frost
@@ -434,7 +433,6 @@ public:
     const spell_data_t* brain_freeze,
                       * brain_freeze_2,
                       * fingers_of_frost,
-                      * frost_armor,
                       * icicles,
                       * icicles_driver,
                       * shatter,
@@ -8066,8 +8064,6 @@ void mage_t::create_buffs()
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
                                               sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +
                                               artifact.icy_hand.rank() );
-  buffs.frost_armor           = buff_creator_t( this, "frost_armor", find_spell( 7302 ) )
-                                  .add_invalidate( CACHE_SPELL_HASTE );
 
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
@@ -9036,11 +9032,6 @@ double mage_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> default_value );
   }
 
-  if ( buffs.frost_armor -> check() )
-  {
-    h /= 1.0 + buffs.frost_armor -> data().effectN( 1 ).percent();
-  }
-
   if ( buffs.icarus_uprising -> check() )
   {
     h /= 1.0 + buffs.icarus_uprising -> data().effectN( 1 ).percent();
@@ -9196,7 +9187,6 @@ void mage_t::arise()
       buffs.mage_armor -> trigger();
       break;
     case MAGE_FROST:
-      buffs.frost_armor -> trigger();
       break;
     case MAGE_FIRE:
       break;
