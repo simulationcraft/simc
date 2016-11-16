@@ -5023,34 +5023,6 @@ struct frozen_orb_t : public frost_mage_spell_t
   }
 };
 
-
-// Frozen Touch Spell =========================================================
-
-struct frozen_touch_t : public frost_mage_spell_t
-{
-  frozen_touch_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t("frozen_touch", p, p -> talents.frozen_touch )
-  {
-    parse_options( options_str );
-  }
-
-  virtual bool init_finished() override
-  {
-    fof_source_id = p() -> benefits.fingers_of_frost
-                        -> get_source_id( data().name_cstr() );
-
-    return frost_mage_spell_t::init_finished();
-  }
-
-  virtual void execute() override
-  {
-    frost_mage_spell_t::execute();
-
-    trigger_fof( fof_source_id, 1.0, 2 );
-  }
-};
-
-
 // Glacial Spike Spell ==============================================================
 
 struct glacial_spike_t : public frost_mage_spell_t
@@ -7706,7 +7678,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "frostbolt"         ) return new               frostbolt_t( this, options_str );
   if ( name == "frost_nova"        ) return new              frost_nova_t( this, options_str );
   if ( name == "frozen_orb"        ) return new              frozen_orb_t( this, options_str );
-  if ( name == "frozen_touch"      ) return new            frozen_touch_t( this, options_str );
   if ( name == "glacial_spike"     ) return new           glacial_spike_t( this, options_str );
   if ( name == "ice_lance"         ) return new               ice_lance_t( this, options_str );
   if ( name == "ice_nova"          ) return new                ice_nova_t( this, options_str );
@@ -8044,7 +8015,8 @@ void mage_t::create_buffs()
   buffs.fingers_of_frost      = buff_creator_t( this, "fingers_of_frost", find_spell( 44544 ) )
                                   .max_stack( find_spell( 44544 ) -> max_stacks() +
                                               sets.set( MAGE_FROST, T18, B4 ) -> effectN( 2 ).base_value() +
-                                              artifact.icy_hand.rank() );
+                                              artifact.icy_hand.rank()
+                                              + talents.frozen_touch -> effectN( 2 ).base_value() );
 
   // Buff to track icicles. This does not, however, track the true amount of icicles present.
   // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
