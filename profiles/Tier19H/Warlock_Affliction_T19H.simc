@@ -42,7 +42,7 @@ actions+=/soul_harvest
 actions+=/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45
 actions+=/corruption,cycle_targets=1,if=remains<=tick_time+gcd
 actions+=/siphon_life,cycle_targets=1,if=remains<=tick_time+gcd
-actions+=/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3
+actions+=/mana_tap,if=ptr=0&buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3
 actions+=/phantom_singularity
 actions+=/unstable_affliction,if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)
 actions+=/agony,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains
