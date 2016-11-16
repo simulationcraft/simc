@@ -154,6 +154,9 @@ public:
   // Talents
   struct talents_t
   {
+    // PTR
+    const spell_data_t* empowered_life_tap;
+    const spell_data_t* malefic_grasp;
 
     const spell_data_t* haunt;
     const spell_data_t* writhe_in_agony;
@@ -349,6 +352,9 @@ public:
     const spell_data_t* unending_resolve_2;
     const spell_data_t* firebolt;
     const spell_data_t* firebolt_2;
+
+    // PTr
+    const spell_data_t* drain_soul;
   } spec;
 
   // Buffs
@@ -356,6 +362,7 @@ public:
   {
     buff_t* demonic_power;
     buff_t* mana_tap;
+    buff_t* empowered_life_tap;
     buff_t* soul_harvest;
 
     //affliction buffs
@@ -1139,6 +1146,9 @@ struct doom_bolt_t: public warlock_pet_spell_t
   {
     if ( p -> o() -> talents.grimoire_of_supremacy -> ok() )
       base_multiplier *= 1.0 + p -> o() -> artifact.impish_incineration.data().effectN( 2 ).percent();
+
+    if ( maybe_ptr( p -> o() -> dbc.ptr ) && p -> o() -> talents.grimoire_of_supremacy -> ok() ) //FIXME spelldata?
+      base_multiplier *= 0.8;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -2373,7 +2383,11 @@ public:
       }
     }
 
-    p() -> buffs.mana_tap -> up();
+    if ( !maybe_ptr( p() -> dbc.ptr ) )
+      p() -> buffs.mana_tap -> up();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> buffs.empowered_life_tap -> up();
+
     p() -> buffs.demonic_synergy -> up();
   }
 
@@ -2406,7 +2420,11 @@ public:
       accumulate_seed_of_corruption( td( d -> target ), d -> state -> result_amount );
     }
 
-    p() -> buffs.mana_tap -> up();
+    if ( !maybe_ptr( p() -> dbc.ptr ) )
+      p() -> buffs.mana_tap -> up();
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> buffs.empowered_life_tap -> up();
+
     p() -> buffs.demonic_synergy -> up();
 
     if ( result_is_hit( d -> state -> result ) && p() -> artifact.reap_souls.rank() )
@@ -2459,6 +2477,8 @@ public:
     if ( p() -> talents.eradication -> ok() && td -> debuffs_eradication -> check() )
       m *= 1.0 + p() -> find_spell( 196414 ) -> effectN( 1 ).percent();
 
+    if ( maybe_ptr( p() -> dbc.ptr && td -> debuffs_haunt -> check() ) )
+      m *= 1.0 + p() -> find_spell( 48181 ) -> effectN( 2 ).percent();
 
     return spell_t::composite_target_multiplier( t ) * m;
   }
@@ -2569,6 +2589,41 @@ struct agony_t: public warlock_spell_t
     }
   }
 
+  virtual double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    if ( p() -> mastery_spells.potent_afflictions -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
+
+    m *= 1.0 + p() -> artifact.inimitable_agony.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cd = warlock_spell_t::composite_crit_damage_bonus_multiplier();
+
+    cd *= 1.0 + p() -> artifact.perdition.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
+
+    return cd;
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    m *= td -> agony_stack;
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> talents.malefic_grasp -> ok() && td -> dots_drain_soul -> is_ticking() )
+      m *= 1.0 + p() -> find_spell( 235155 ) -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   virtual void last_tick( dot_t* d ) override
   {
     td( d -> state -> target ) -> agony_stack = 1;
@@ -2626,36 +2681,6 @@ struct agony_t: public warlock_spell_t
 
     warlock_spell_t::tick( d );
   }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_spell_t::composite_target_multiplier( target );
-
-    m *= td( target ) -> agony_stack;
-
-    return m;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cd = warlock_spell_t::composite_crit_damage_bonus_multiplier();
-
-    cd *= 1.0 + p() -> artifact.perdition.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
-
-    return cd;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p() -> mastery_spells.potent_afflictions -> ok() )
-      m *= 1.0 + p() -> cache.mastery_value();
-
-    m*= 1.0 + p() -> artifact.inimitable_agony.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
-
-    return m;
-  }
 };
 
 const int ua_spells[5] = {
@@ -2698,6 +2723,18 @@ struct unstable_affliction_t: public warlock_spell_t
       cd *= 1.0 + p() -> artifact.perdition.percent() * ( p() -> buffs.deadwind_harvester -> check() ? 2.0 : 1.0 );
 
       return cd;
+    }
+
+    virtual double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = warlock_spell_t::composite_target_multiplier( target );
+
+      warlock_td_t* td = this -> td( target );
+
+      if ( maybe_ptr( p() -> dbc.ptr ) && p() -> talents.malefic_grasp -> ok() && td -> dots_drain_soul -> is_ticking() )
+      m *= 1.0 + p() -> find_spell( 235155 ) -> effectN( 1 ).percent();
+
+      return m;
     }
 
     void init() override
@@ -2969,6 +3006,18 @@ struct corruption_t: public warlock_spell_t
     return cd;
   }
 
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> talents.malefic_grasp -> ok() && td -> dots_drain_soul -> is_ticking() )
+      m *= 1.0 + p() -> find_spell( 235155 ) -> effectN( 1 ).percent();
+
+    return m;
+  }
+
   virtual void tick( dot_t* d ) override
   {
 
@@ -3000,6 +3049,17 @@ struct drain_life_t: public warlock_spell_t
     may_crit = false;
   }
 
+  virtual bool ready() override
+  {
+    if ( p() -> talents.drain_soul -> ok() )
+      return false;
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> specialization() == WARLOCK_AFFLICTION )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+
   virtual double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
@@ -3010,14 +3070,6 @@ struct drain_life_t: public warlock_spell_t
       m *= 1.0 + p() -> find_spell( 205183 ) -> effectN( 1 ).percent();
 
     return m;
-  }
-
-  virtual bool ready() override
-  {
-    if ( p() -> talents.drain_soul -> ok() )
-      return false;
-
-    return warlock_spell_t::ready();
   }
 
   virtual void tick( dot_t* d ) override
@@ -3050,6 +3102,9 @@ struct life_tap_t: public warlock_spell_t
     player -> resource_loss( RESOURCE_HEALTH, health * data().effectN( 2 ).percent() );
     // FIXME run through resource usage
     player -> resource_gain( RESOURCE_MANA, mana * data().effectN( 1 ).percent(), p() -> gains.life_tap );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> talents.empowered_life_tap -> ok() )
+      p() -> buffs.empowered_life_tap -> trigger();
   }
 };
 
@@ -3160,6 +3215,9 @@ struct doom_t: public warlock_spell_t
     energize_type = ENERGIZE_PER_TICK;
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 1;
+
+    if ( maybe_ptr( p -> dbc.ptr ) && p -> talents.impending_doom -> ok() )
+     base_tick_time += p -> find_spell( 196270 ) -> effectN( 1 ).time_value();
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3518,6 +3576,14 @@ struct conflagrate_t: public warlock_spell_t
     cooldown -> duration += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 2 ).time_value();
   }
 
+  bool ready() override
+  {
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> talents.shadowburn -> ok() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+
   void init() override
   {
     warlock_spell_t::init();
@@ -3556,7 +3622,7 @@ struct conflagrate_t: public warlock_spell_t
     if ( p() -> talents.backdraft -> ok() )
     {
       total_duration = base_duration * p() -> cache.spell_haste();
-      p() -> buffs.backdraft -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
+      p() -> buffs.backdraft -> trigger( 2, buff_t::DEFAULT_VALUE(), -1.0, total_duration );
     }
 
     if ( p() -> buffs.conflagration_of_chaos -> up() )
@@ -3643,6 +3709,8 @@ struct incinerate_t: public warlock_spell_t
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
     }
+
+    p() -> buffs.backdraft -> decrement();
   }
 
   virtual double composite_crit_chance() const override
@@ -3737,6 +3805,7 @@ struct chaos_bolt_t: public warlock_spell_t
       p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.soulsnatcher );
 
     p() -> buffs.embrace_chaos -> trigger();
+    p() -> buffs.backdraft -> decrement();
   }
 
   // Force spell to always crit
@@ -4731,11 +4800,19 @@ struct shadowflame_t : public warlock_spell_t
 struct drain_soul_t: public warlock_spell_t
 {
   drain_soul_t( warlock_t* p ):
-    warlock_spell_t( "drain_soul", p, p -> talents.drain_soul )
+    warlock_spell_t( "drain_soul", p, p -> find_spell( 198590 ) )
   {
     channeled = true;
     hasted_ticks = false;
     may_crit = false;
+  }
+
+  virtual bool ready() override
+  {
+    if ( !maybe_ptr( p() -> dbc.ptr ) && !p() -> talents.drain_soul -> ok() )
+      return false;
+
+    return warlock_spell_t::ready();
   }
 
   virtual double action_multiplier() const override
@@ -4810,13 +4887,25 @@ struct shadowburn_t: public warlock_spell_t
       }
     }
   };
-
   resource_event_t* resource_event;
   timespan_t delay;
+  timespan_t total_duration;
+  timespan_t base_duration;
   shadowburn_t( warlock_t* p ):
     warlock_spell_t( "shadowburn", p, p -> talents.shadowburn ), resource_event( nullptr )
   {
     delay = data().effectN( 1 ).trigger() -> duration();
+
+    if ( maybe_ptr(p -> dbc.ptr ) )
+    {
+      energize_type = ENERGIZE_ON_CAST;
+      base_duration = p -> find_spell( 117828 ) -> duration();
+
+      cooldown -> charges += p -> spec.conflagrate_2 -> effectN( 1 ).base_value();
+
+      cooldown -> charges += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 1 ).base_value();
+      cooldown -> duration += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 2 ).time_value();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4826,14 +4915,62 @@ struct shadowburn_t: public warlock_spell_t
     resource_event = make_event<resource_event_t>( *sim, p(), this, s -> target );
   }
 
-  virtual bool ready() override
+  void init() override
   {
-    bool r = warlock_spell_t::ready();
+    warlock_spell_t::init();
 
-    if ( target -> health_percentage() >= 20 )
-      r = false;
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      cooldown -> hasted = true;
+    }
+  }
 
-    return r;
+// Force spell to always crit
+  double composite_crit_chance() const override
+  {
+    double cc = warlock_spell_t::composite_crit_chance();
+  
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.conflagration_of_chaos -> check() )
+        cc = 1.0;
+    }
+
+    return cc;
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    warlock_spell_t::calculate_direct_amount( state );
+
+    // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
+    // player spell crit instead. The state target crit chance of the state object is correct.
+    // Targeted Crit debuffs function as a separate multiplier.
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.conflagration_of_chaos -> check() )
+        state -> result_total *= 1.0 + player -> cache.spell_crit_chance() + state -> target_crit_chance;
+    }
+
+    return state -> result_total;
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> buffs.conflagration_of_chaos -> check() )
+        p()->buffs.conflagration_of_chaos -> expire();
+
+      p() -> buffs.conflagration_of_chaos -> trigger();
+
+      if ( p() -> legendary.feretory_of_souls && rng().roll( p() -> find_spell( 205702 ) -> proc_chance() ) )
+      {
+        p() -> resource_gain( RESOURCE_SOUL_SHARD, 1.0, p() -> gains.feretory_of_souls );
+      }
+    }
   }
 };
 
@@ -4908,6 +5045,14 @@ struct mana_tap_t : public warlock_spell_t
     expenditure = data().effectN( 2 ).percent();
   }
 
+  virtual bool ready() override
+  {
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+
   void execute() override
   {
     warlock_spell_t::execute();
@@ -4935,6 +5080,18 @@ struct siphon_life_t : public warlock_spell_t
 
     if ( p() -> mastery_spells.potent_afflictions -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
+
+    return m;
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warlock_spell_t::composite_target_multiplier( target );
+
+    warlock_td_t* td = this -> td( target );
+
+    if ( maybe_ptr( p() -> dbc.ptr ) && p() -> talents.malefic_grasp -> ok() && td -> dots_drain_soul -> is_ticking() )
+      m *= 1.0 + p() -> find_spell( 235155 ) -> effectN( 1 ).percent();
 
     return m;
   }
@@ -5163,6 +5320,12 @@ struct channel_demonfire_tick_t : public warlock_spell_t
     may_miss = false;
     dual = true;
     can_havoc = true;
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      aoe = -1;
+      base_aoe_multiplier = data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
+    }
   }
 };
 
@@ -5174,7 +5337,7 @@ struct channel_demonfire_t: public warlock_spell_t
   int immolate_action_id;
 
   channel_demonfire_t( warlock_t* p ):
-    warlock_spell_t( "channel_demonfire", p, p -> talents.channel_demonfire ),
+    warlock_spell_t( "channel_demonfire", p, p -> find_spell( 196447 ) ),
     immolate_action_id( 0 )
   {
     channeled = true;
@@ -5185,8 +5348,12 @@ struct channel_demonfire_t: public warlock_spell_t
     channel_demonfire = new channel_demonfire_tick_t( p );
     add_child( channel_demonfire );
 
-    backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 4 ).percent();
-    backdraft_tick_time = 1.0 + p -> buffs.backdraft -> data().effectN( 3 ).percent();
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 4 ).percent();
+      backdraft_tick_time = 1.0 + p -> buffs.backdraft -> data().effectN( 3 ).percent();
+    }
   }
 
   void init() override
@@ -5229,7 +5396,7 @@ struct channel_demonfire_t: public warlock_spell_t
   {
     timespan_t t = warlock_spell_t::tick_time( s );
 
-    if ( p() -> buffs.backdraft -> check() )
+    if ( !maybe_ptr( p() -> dbc.ptr ) && p() -> buffs.backdraft -> check() ) //FIXME this might be an oversight on their part.
       t *= backdraft_tick_time;
 
     return t;
@@ -5240,11 +5407,21 @@ struct channel_demonfire_t: public warlock_spell_t
     return s -> action -> tick_time( s ) * 15.0;
   }
 
+  //void execute() override
+  //{
+  //  warlock_spell_t::execute();
+
+  //  p() -> buffs.backdraft -> decrement();
+  //}
+
   virtual bool ready() override
   {
     double active_immolates = p() -> get_active_dots( immolate_action_id );
 
     if ( active_immolates == 0 )
+      return false;
+
+    if ( !p() -> talents.channel_demonfire -> ok() )
       return false;
 
     return warlock_spell_t::ready();
@@ -5407,6 +5584,9 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( legendary.stretens_insanity )
     m *= 1.0 + buffs.stretens_insanity -> stack() * buffs.stretens_insanity -> data().effectN( 1 ).percent();
+
+  if ( buffs.empowered_life_tap -> check() )
+    m *= 1.0 + talents.empowered_life_tap -> effectN( 1 ).percent();
 
   if ( buffs.mana_tap -> check() )
     m *= 1.0 + talents.mana_tap -> effectN( 1 ).percent();
@@ -5742,6 +5922,9 @@ void warlock_t::init_spells()
   spec.nethermancy = find_spell( 86091 );
 
   // Specialization Spells
+  // PTR
+  spec.drain_soul             = find_specialization_spell( "Drain Soul" );
+
   spec.immolate               = find_specialization_spell( "Immolate" );
   spec.nightfall              = find_specialization_spell( "Nightfall" );
   spec.demonic_empowerment    = find_specialization_spell( "Demonic Empowerment" );
@@ -5768,6 +5951,10 @@ void warlock_t::init_spells()
   mastery_spells.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
 
   // Talents
+
+  // Ptr
+  talents.empowered_life_tap     = find_talent_spell( "Empowered Life Tap" );
+  talents.malefic_grasp          = find_talent_spell( "Malefic Grasp" );
 
   talents.haunt                  = find_talent_spell( "Haunt" );
   talents.writhe_in_agony        = find_talent_spell( "Writhe in Agony" );
@@ -6008,6 +6195,10 @@ void warlock_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
     .tick_behavior( BUFF_TICK_NONE );
+  buffs.empowered_life_tap = buff_creator_t( this, "empowered_life_tap", talents.empowered_life_tap )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    .refresh_behavior( BUFF_REFRESH_PANDEMIC )
+    .tick_behavior( BUFF_TICK_NONE );
   buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -6181,7 +6372,7 @@ void warlock_t::apl_precombat()
       precombat_list += "/potion,name=draenic_intellect";
   }
 
-  if ( specialization() != WARLOCK_DEMONOLOGY )
+  if ( specialization() != WARLOCK_DEMONOLOGY && !maybe_ptr( dbc.ptr ) )
     precombat_list += "/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains";
 
   if ( specialization() == WARLOCK_DESTRUCTION )
@@ -6246,7 +6437,7 @@ void warlock_t::apl_affliction()
 
   add_action( "Corruption", "cycle_targets=1,if=remains<=tick_time+gcd" );
   add_action( "Siphon Life", "cycle_targets=1,if=remains<=tick_time+gcd" );
-  action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3";
+  action_list_str += "/mana_tap,if=ptr=0&buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3";
   action_list_str += "/phantom_singularity";
   add_action( "Unstable Affliction", "if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20" );
   if ( find_item( "horn_of_valor" ) )
@@ -6339,13 +6530,17 @@ void warlock_t::apl_destruction()
   add_action( "Havoc", "target=2,if=active_enemies>1&!talent.wreak_havoc.enabled&talent.roaring_blaze.enabled&!debuff.roaring_blaze.remains");
   add_action( "Dimensional Rift", "if=charges=3" );
   add_action( "Immolate", "if=remains<=tick_time" );
-  add_action( "Immolate", "cycle_targets=1,if=active_enemies>1&remains<=tick_time&!debuff.roaring_blaze.remains&action.conflagrate.charges<2");
-  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" );
+  add_action( "Immolate", "cycle_targets=1,if=active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2))");
+  add_action( "Immolate", "if=talent.roaring_blaze.enabled&remains<=duration&!debuff.roaring_blaze.remains&target.time_to_die>10&(action.conflagrate.charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<cast_time+gcd)|target.time_to_die<24)" ); 
   action_list_str += "/berserking";
   action_list_str += "/blood_fury";
   action_list_str += "/arcane_torrent";
   action_list_str += "/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)";
-  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(action.conflagrate.charges>=1&action.conflagrate.recharge_time<gcd)|target.time_to_die<24)" );
+  action_list_str += "/shadowburn,if=ptr=1&talent.roaring_blaze.enabled&(charges=2|(charges>=1&recharge_time<gcd)|target.time_to_die<24)";
+  action_list_str += "/shadowburn,if=ptr=1&talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5";
+  action_list_str += "/shadowburn", "if=ptr=1&!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time";
+  action_list_str += "/shadowburn,if=ptr=1&!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5";
+  add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&(charges=2|(charges>=1&recharge_time<gcd)|target.time_to_die<24)" );
   add_action( "Conflagrate", "if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time" );
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5" );
@@ -6357,7 +6552,9 @@ void warlock_t::apl_destruction()
   add_action( "Summon Doomguard", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal<3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   add_action( "Summon Infernal", "if=talent.grimoire_of_supremacy.enabled&spell_targets.summon_infernal>=3&equipped.132379&!cooldown.sindorei_spite_icd.remains" );
   action_list_str += "/soul_harvest";
-  action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
+
+  if ( !maybe_ptr( dbc.ptr ) )
+    action_list_str += "/channel_demonfire,if=dot.immolate.remains>cast_time";
   add_action( "Chaos Bolt", "if=soul_shard>3|buff.backdraft.remains" );
   add_action( "Chaos Bolt", "if=buff.backdraft.remains&prev_gcd.incinerate" );
   add_action( "Incinerate", "if=buff.backdraft.remains" );
@@ -6365,12 +6562,13 @@ void warlock_t::apl_destruction()
   add_action("Rain of Fire", "if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.wreak_havoc.enabled");
   add_action("Rain of Fire", "if=active_enemies>=6&talent.wreak_havoc.enabled");
   add_action( "Dimensional Rift" );
-  action_list_str += "/mana_tap,if=buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3";
+  action_list_str += "/mana_tap,if=ptr=0&buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3";
   add_action( "Chaos Bolt" );
   action_list_str += "/cataclysm";
+  action_list_str += "/shadowburn,if=ptr=1&!buff.backdraft.remains";
   add_action( "Conflagrate", "if=!talent.roaring_blaze.enabled&!buff.backdraft.remains" );
   add_action( "Immolate", "if=!talent.roaring_blaze.enabled&remains<=duration*0.3" );
-  add_action( "Life Tap", "if=talent.mana_tap.enabled&mana.pct<=10" );
+  add_action( "Life Tap", "if=ptr=0&talent.mana_tap.enabled&mana.pct<=10" );
   add_action( "Incinerate" );
 }
 
