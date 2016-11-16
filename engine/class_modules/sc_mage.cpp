@@ -8978,7 +8978,7 @@ double mage_t::composite_mastery_rating() const
 
   if ( buffs.combustion -> up() )
   {
-    m += mage_t::composite_spell_crit_rating();
+    m += ( mage_t::composite_spell_crit_rating() * buffs.combustion -> data().effectN( 3 ).percent() );
   }
  return m;
 }
