@@ -421,6 +421,12 @@ elif options.type == 'scale':
         sys.exit(1)
     g.generate()
 
+    combat_rating_values = [ 'Rating Multiplier' ]
+    # CombatRatingsMultByILvl.txt gets more complicated starting 7.1.5,
+    # earliest build published to the public is 23038 on PTR
+    if options.build >= 23038:
+        combat_rating_values = [ 'Armor Multiplier', 'Weapon Multiplier', 'Trinket Multiplier', 'Jewelry Multiplier' ]
+
     g = dbc.generator.CSVDataGenerator(options, [ {
         'file': 'ItemSocketCostPerLevel.txt',
         'key': '5.0 Level',
@@ -433,7 +439,7 @@ elif options.type == 'scale':
         'key': 'Item Level',
         'comment': '// Combat rating multipliers for item level 1 - %d, wow build %d\n' % (
             options.max_ilevel, options.build),
-        'values': [ 'Rating Multiplier' ],
+        'values': combat_rating_values,
         'max_rows': options.max_ilevel
     }])
     if not g.initialize():
