@@ -8015,6 +8015,17 @@ struct koltiras_newfound_will_t : public scoped_actor_callback_t<death_knight_t>
   { p -> legendary.koltiras_newfound_will = e.driver(); }
 };
 
+struct consorts_cold_core_t : public scoped_action_callback_t<sindragosas_fury_t>
+{
+  consorts_cold_core_t() : super( DEATH_KNIGHT, "sindragosas_fury" )
+  { }
+
+  void manipulate( sindragosas_fury_t* action, const special_effect_t& e ) override
+  {
+    auto m = 1.0 + e.driver() -> effectN( 1 ).percent();
+    action -> cooldown -> duration = action -> data().cooldown() * m;
+  }
+};
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -8041,6 +8052,8 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 208161, draugr_girdle_everlasting_king_t() );
     unique_gear::register_special_effect( 208786, uvanimor_the_unbeautiful_t() );
     unique_gear::register_special_effect( 208782, koltiras_newfound_will_t() );
+    // 7.1.5
+    unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
   }
 
   void register_hotfixes() const override
