@@ -286,7 +286,6 @@ public:
           * enhanced_pyrotechnics,
           * heating_up,
           * hot_streak,
-          * molten_armor,
           * pyretic_incantation,
           * pyromaniac,            // T17 4pc Fire
           * icarus_uprising,       // T18 4pc Fire
@@ -429,9 +428,7 @@ public:
                       * base_crit_bonus,    //as of 8/25/2016 Fire has a +5% base crit increase.
                       * fire_blast_2,
                       * fire_blast_3,
-                      * ignite,
-                      * molten_armor,
-                      * molten_armor_2;
+                      * ignite;
 
     // Frost
     const spell_data_t* brain_freeze,
@@ -7947,7 +7944,6 @@ void mage_t::init_spells()
   spec.base_crit_bonus       = find_spell( 137019 );
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
-  spec.molten_armor_2        = find_specialization_spell( 231630 );
   spec.fingers_of_frost      = find_spell( 112965 );
   spec.shatter               = find_specialization_spell( "Shatter"          );
   spec.shatter_2             = find_specialization_spell( 231582 );
@@ -8032,8 +8028,6 @@ void mage_t::create_buffs()
   buffs.enhanced_pyrotechnics = buff_creator_t( this, "enhanced_pyrotechnics", find_spell( 157644 ) );
   buffs.heating_up            = buff_creator_t( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak            = buff_creator_t( this, "hot_streak",  find_spell( 48108 ) );
-  buffs.molten_armor = buff_creator_t( this, "molten_armor", find_spell( 30482 ) )
-                                  .add_invalidate( CACHE_SPELL_CRIT_CHANCE );
   buffs.icarus_uprising       = buff_creator_t( this, "icarus_uprising", find_spell( 186170 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                   .add_invalidate( CACHE_SPELL_HASTE );
@@ -8989,10 +8983,7 @@ double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
-  if ( buffs.molten_armor -> check() )
-  {
-    c += ( buffs.molten_armor -> data().effectN( 1 ).percent() + spec.molten_armor_2 -> effectN( 1 ).percent() );
-  }
+  //NEW CRITICAL MASS GOES HERE
 
   if ( specialization() == MAGE_FIRE )
   {
@@ -9189,8 +9180,7 @@ void mage_t::arise()
       buffs.frost_armor -> trigger();
       break;
     case MAGE_FIRE:
-      buffs.molten_armor -> trigger();
-      break;
+m      break;
     default:
       apl_default(); // DEFAULT
       break;
