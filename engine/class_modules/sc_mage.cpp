@@ -594,6 +594,7 @@ public:
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double    composite_spell_crit_chance() const override;
+  virtual double    composite_spell_crit_rating() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_mastery_rating() const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
@@ -4197,18 +4198,6 @@ struct fireball_t : public fire_mage_spell_t
       }
     return c;
   }
-
-
-  virtual double composite_crit_chance_multiplier() const override
-  {
-    double m = fire_mage_spell_t::composite_crit_chance_multiplier();
-
-    m *= 1.0 + p() -> spec.critical_mass_2 -> effectN( 1 ).percent();
-
-    return m;
-  }
-
-
 };
 
 // Flame Patch Spell ==========================================================
@@ -6220,15 +6209,6 @@ struct pyroblast_t : public fire_mage_spell_t
     }
   }
 
-  virtual double composite_crit_chance_multiplier() const override
-  {
-    double m = fire_mage_spell_t::composite_crit_chance_multiplier();
-
-    m *= 1.0 + p() -> spec.critical_mass_2 -> effectN( 1 ).percent();
-
-    return m;
-  }
-
   virtual double composite_crit_chance() const override
   {
     double c = fire_mage_spell_t::composite_crit_chance();
@@ -6363,14 +6343,6 @@ struct scorch_t : public fire_mage_spell_t
     consumes_ice_floes = false;
   }
 
-  double composite_crit_chance_multiplier() const override
-  {
-    double m = fire_mage_spell_t::composite_crit_chance_multiplier();
-
-    m *= 1.0 + p() -> spec.critical_mass_2 -> effectN( 1 ).percent();
-
-    return m;
-  }
   double composite_target_multiplier( player_t* target ) const override
   {
     double ctm = fire_mage_spell_t::composite_target_multiplier( target );
@@ -8938,6 +8910,19 @@ double mage_t::composite_mastery_rating() const
  return m;
 }
 
+// mage_t::composite_spell_crit_rating ===============================================
+
+double mage_t::composite_spell_crit_rating() const
+{
+  double cr = player_t::composite_spell_crit_rating();
+
+  if ( spec.critical_mass -> ok() )
+  {
+    cr *= 1.0 + ( spec.critical_mass_2 -> effectN( 1 ).percent() );
+  }
+  return cr;
+
+}
 // mage_t::composite_spell_crit_chance ===============================================
 
 double mage_t::composite_spell_crit_chance() const
