@@ -248,6 +248,7 @@ public:
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
+    buff_t* emperors_electric_charge;
   } buff;
 
 public:
@@ -581,16 +582,21 @@ public:
 
     // Legendaries
     const spell_data_t* hidden_masters_forbidden_touch;
+    const spell_data_t* the_emperor_capacitor;
   } passives;
 
   struct legendary_t
   {
     // General
+    const spell_data_t* archimondes_infinite_command;
     const spell_data_t* cinidaria_the_symbiote;
+    const spell_data_t* kiljaedens_burning_wish;
     const spell_data_t* prydaz_xavarics_magnum_opus;
     const spell_data_t* sephuzs_secret;
+    const spell_data_t* velens_future_sight;
 
     // Brewmaster
+    const spell_data_t* anvil_hardened_wristwraps;
     const spell_data_t* firestone_walkers;
     const spell_data_t* fundamental_observation;
     const spell_data_t* gai_plins_soothing_sash;
@@ -603,6 +609,7 @@ public:
     const spell_data_t* leggings_of_the_black_flame;
     const spell_data_t* ovyds_winter_wrap;
     const spell_data_t* petrichor_lagniappe;
+    const spell_data_t* shelter_of_rin;
     const spell_data_t* unison_spaulders;
 
     // Windwalker
@@ -611,6 +618,7 @@ public:
     const spell_data_t* hidden_masters_forbidden_touch; // Touch of Death can be used a second time within 3 sec before its cooldown is triggered.
     const spell_data_t* katsuos_eclipse; // Reduce the cost of Fists of Fury by x Chi.
     const spell_data_t* march_of_the_legion; // Increase the movement speed bonus of Windwalking by x%.
+    const spell_data_t* the_emperors_capacitor; // Chi spenders increase the damage of your next Crackling Jade Lightning by X%. Stacks up to Y times.
   } legendary;
 
   struct pets_t
@@ -2077,21 +2085,26 @@ public:
     
     if ( current_resource() == RESOURCE_CHI )
     {
-      // Drinking Horn Cover Legendary
-      if ( ab::cost() > 0 && p() -> legendary.drinking_horn_cover && p() -> buff.storm_earth_and_fire -> up() )
+      if ( ab::cost() > 0 )
       {
-        // Effect is saved as 6; duration is saved as 600 milliseconds
-        double duration = p() -> legendary.drinking_horn_cover -> effectN( 1 ).base_value() * 100;
-        double extension = duration * ab::cost();
+        // Drinking Horn Cover Legendary
+        if ( p() -> legendary.drinking_horn_cover && p() -> buff.storm_earth_and_fire -> up() )
+        {
+          // Effect is saved as 6; duration is saved as 600 milliseconds
+          double duration = p() -> legendary.drinking_horn_cover -> effectN( 1 ).base_value() * 100;
+          double extension = duration * ab::cost();
 
-        // Extend the duration of the buff
-        p() -> buff.storm_earth_and_fire -> extend_duration( p(), timespan_t::from_millis( extension ) );
+          // Extend the duration of the buff
+          p() -> buff.storm_earth_and_fire -> extend_duration( p(), timespan_t::from_millis( extension ) );
 
-        // Extend the duration of pets
-        if ( !p() -> pet.sef[SEF_EARTH] -> is_sleeping() )
-          p() -> pet.sef[SEF_EARTH] -> expiration -> reschedule( p() -> pet.sef[SEF_EARTH] -> expiration -> remains() + timespan_t::from_millis( extension ) );
-        if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
-          p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
+          // Extend the duration of pets
+          if ( !p() -> pet.sef[SEF_EARTH] -> is_sleeping() )
+            p() -> pet.sef[SEF_EARTH] -> expiration -> reschedule( p() -> pet.sef[SEF_EARTH] -> expiration -> remains() + timespan_t::from_millis( extension ) );
+          if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
+            p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
+        }
+        if ( p() -> legendary.the_emperors_capacitor )
+          p() -> buff.emperors_electric_charge -> trigger( ab::cost() );
       }
       // Chi Savings on Dodge & Parry & Miss
       if ( ab::resource_consumed > 0 )
@@ -4464,6 +4477,12 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
       am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 13 ).percent();
+
+    if ( p() -> buff.emperors_electric_charge -> up() )
+    {
+      am *= 1 + p() -> buff.emperors_electric_charge -> stack_value();
+      p() -> buff.emperors_electric_charge -> expire();
+    }
 
     return am;
   }
@@ -6983,6 +7002,7 @@ void monk_t::init_spells()
 
   // Legendaries
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
+  passives.the_emperor_capacitor            = find_spell( 235054 );
 
   // Mastery spells =========================================
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
@@ -7276,7 +7296,11 @@ void monk_t::create_buffs()
     .default_value( artifact.transfer_the_power.rank() ? artifact.transfer_the_power.percent() : 0 ); 
 
   // Legendaries
-  buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
+  buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( 
+    *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
+
+  buff.emperors_electric_charge = buff_creator_t( this, "emperors_electric_charge", passives.the_emperor_capacitor )
+    .default_value( passives.the_emperor_capacitor -> effectN( 1 ).percent() );
 }
 
 // monk_t::init_gains =======================================================
@@ -9239,6 +9263,15 @@ struct march_of_the_legion_t : public unique_gear::scoped_actor_callback_t<monk_
   { monk -> legendary.march_of_the_legion = e.driver(); }
 };
 
+struct the_emperors_capacitor_t : public unique_gear::scoped_actor_callback_t<monk_t>
+{
+  the_emperors_capacitor_t() : super( MONK_WINDWALKER )
+  { }
+
+  void manipulate( monk_t* monk, const special_effect_t& e ) override
+  { monk -> legendary.the_emperors_capacitor = e.driver(); }
+};
+
 struct monk_module_t: public module_t
 {
   monk_module_t(): module_t( MONK ) {}
@@ -9290,6 +9323,7 @@ struct monk_module_t: public module_t
     unique_gear::register_special_effect( 213112, hidden_masters_forbidden_touch_t() );
     unique_gear::register_special_effect( 208045, katsuos_eclipse_t() );
     unique_gear::register_special_effect( 212132, march_of_the_legion_t() );
+    unique_gear::register_special_effect( 235053, march_of_the_legion_t() );
   }
 
 
