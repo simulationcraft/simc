@@ -477,6 +477,8 @@ public:
     cooldown_t* avalanche;
     cooldown_t* bone_shield_icd;
     cooldown_t* dark_transformation;
+    cooldown_t* death_and_decay;
+    cooldown_t* defile;
     cooldown_t* festering_wound;
     cooldown_t* frost_fever;
     cooldown_t* icecap;
@@ -734,7 +736,7 @@ public:
     unsigned the_instructors_fourth_lesson;
     double draugr_girdle_everlasting_king;
     double uvanimor_the_unbeautiful;
-
+    timespan_t death_march;
   } legendary;
 
   // Runes
@@ -770,6 +772,8 @@ public:
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
+    cooldown.death_and_decay = get_cooldown( "death_and_decay" );
+    cooldown.defile          = get_cooldown( "defile" );
     cooldown.festering_wound = get_cooldown( "festering_wound" );
     cooldown.icecap          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
@@ -834,7 +838,8 @@ public:
   double    rune_regen_coefficient() const;
   void      trigger_runic_empowerment( double rpcost );
   void      trigger_runic_corruption( double rpcost );
-  void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, bool bypass_icd = false ) const;
+  void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, bool bypass_icd = false );
+  void      trigger_death_march( const action_state_t* state );
   void      apply_diseases( action_state_t* state, unsigned diseases );
   double    ready_runes_count( bool fractional ) const;
   double    runes_cooldown_min( ) const;
@@ -3951,6 +3956,8 @@ struct death_coil_t : public death_knight_spell_t
     p() -> buffs.necrosis -> trigger();
     p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY,
       unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ), nullptr, this );
+
+    p() -> trigger_death_march( execute_state );
   }
 };
 
@@ -4141,6 +4148,8 @@ struct death_strike_t : public death_knight_melee_attack_t
     {
       heal -> schedule_execute();
     }
+
+    p() -> trigger_death_march( execute_state );
   }
 
   bool ready() override
@@ -6066,7 +6075,7 @@ void death_knight_t::trigger_runic_corruption( double rpcost )
     buffs.runic_corruption -> extend_duration( this, duration );
 }
 
-void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, bool bypass_icd ) const
+void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, bool bypass_icd )
 {
   if ( ! bypass_icd && cooldown.festering_wound -> down() )
   {
@@ -6078,6 +6087,17 @@ void death_knight_t::trigger_festering_wound( const action_state_t* state, unsig
   td -> debuff.festering_wound -> trigger( n );
 
   cooldown.festering_wound -> start( spec.festering_wound -> internal_cooldown() );
+}
+
+void death_knight_t::trigger_death_march( const action_state_t* /* state */ )
+{
+  if ( legendary.death_march == timespan_t::zero() )
+  {
+    return;
+  }
+
+  cooldown.defile -> adjust( legendary.death_march );
+  cooldown.death_and_decay -> adjust( legendary.death_march );
 }
 
 // ==========================================================================
@@ -8026,6 +8046,17 @@ struct consorts_cold_core_t : public scoped_action_callback_t<sindragosas_fury_t
     action -> cooldown -> duration = action -> data().cooldown() * m;
   }
 };
+
+struct death_march_t : public scoped_actor_callback_t<death_knight_t>
+{
+  death_march_t() : super( DEATH_KNIGHT )
+  { }
+
+  // Make adjustment time negative here, spell data value is positive
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.death_march = timespan_t::from_seconds( -e.driver() -> effectN( 1 ).base_value() / 10 ); }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -8054,6 +8085,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 208782, koltiras_newfound_will_t() );
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
+    unique_gear::register_special_effect( 235556, death_march_t() );
   }
 
   void register_hotfixes() const override
