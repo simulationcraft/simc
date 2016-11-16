@@ -9159,7 +9159,7 @@ void mage_t::arise()
       buffs.frost_armor -> trigger();
       break;
     case MAGE_FIRE:
-m      break;
+      break;
     default:
       apl_default(); // DEFAULT
       break;
