@@ -6238,8 +6238,6 @@ struct pyroblast_t : public fire_mage_spell_t
     {
       p() -> buffs.hot_streak -> expire();
     }
-
-
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
@@ -6315,6 +6313,18 @@ struct pyroblast_t : public fire_mage_spell_t
     }
 
     return 1.0;
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double c = fire_mage_spell_t::composite_target_crit_chance( target );
+
+    if( p() -> talents.fire_starter -> ok() && ( target -> health_percentage() >
+        p() -> talents.fire_starter -> effectN( 1 ).base_value() ) )
+    {
+      c = 1.0;
+    }
+    return c;
   }
 };
 
