@@ -83,6 +83,10 @@ namespace item
   void wriggling_sinew( special_effect_t& );
   void bough_of_corruption( special_effect_t& );
 
+  // Legendary
+
+  void aggramars_stride( special_effect_t& );
+
 
 
 
@@ -3108,6 +3112,16 @@ void item::sixfeather_fan( special_effect_t& effect )
   new wind_bolt_callback_t( effect.item, effect, bolt );
 }
 
+// Aggramars Speed Boots ====================================================
+
+void item::aggramars_stride( special_effect_t& effect )
+{
+  effect.custom_buff = buff_creator_t( effect.player, "aggramars_stride", effect.driver(), effect.item )
+    .default_value( effect.driver() -> effectN( 1 ).percent() );
+
+  effect.player -> buffs.aggramars_stride = effect.custom_buff;
+}
+
 // Eyasu's Mulligan =========================================================
 
 struct eyasus_driver_t : public spell_t
@@ -3305,6 +3319,7 @@ void unique_gear::register_special_effects_x7()
 
   /* Legendaries */
   register_special_effect( 207692, cinidaria_the_symbiote_t() );
+  register_special_effect( 207438, item::aggramars_stride );
 
   /* Consumables */
   register_special_effect( 188028, consumable::potion_of_the_old_war );

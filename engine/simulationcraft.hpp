@@ -3894,6 +3894,9 @@ struct player_t : public actor_t
     // 7.0 trinket proxy buffs
     buff_t* incensed;
     buff_t* taste_of_mana; // Gnawed Thumb Ring buff
+    
+    // 7.0 Legendaries
+    buff_t* aggramars_stride;
 
     // 7.1
     buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
