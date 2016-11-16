@@ -6737,6 +6737,7 @@ bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
 
 double curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value );
 bool apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level );
+double apply_combat_rating_multiplier( const item_t& item, double amount );
 
 struct token_t
 {

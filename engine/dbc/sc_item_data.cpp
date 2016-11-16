@@ -915,7 +915,7 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
     double v_raw = util::round( item.parsed.data.stat_alloc[ idx ] * item_budget / 10000.0 );
     if ( util::is_combat_rating( static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] ) ) )
     {
-      v_raw *= dbc.combat_rating_multiplier( new_ilevel );
+      v_raw = apply_combat_rating_multiplier( item, v_raw );
     }
 
     // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in the latest alpha.
@@ -1731,3 +1731,13 @@ bool item_database::has_item_bonus_type( const item_t& item, item_bonus_type bon
   return it != item.parsed.bonus_id.end();
 }
 
+double item_database::apply_combat_rating_multiplier( const item_t& item, double amount )
+{
+  auto combat_rating_multiplier = item.player -> dbc.combat_rating_multiplier( item.item_level() );
+  if ( combat_rating_multiplier != 0 )
+  {
+    return amount * combat_rating_multiplier;
+  }
+
+  return amount;
+}

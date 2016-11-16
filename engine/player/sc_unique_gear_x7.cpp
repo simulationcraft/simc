@@ -706,8 +706,8 @@ struct memento_callback_t : public dbc_proc_callback_t
 
 void item::memento_of_angerboda( special_effect_t& effect )
 {
-  double rating_amount = effect.driver() -> effectN( 2 ).average( effect.item );
-  rating_amount *= effect.item -> sim -> dbc.combat_rating_multiplier( effect.item -> item_level() );
+  double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
+      effect.driver() -> effectN( 2 ).average( effect.item ) );
 
   std::vector<buff_t*> buffs;
 
@@ -1781,8 +1781,8 @@ struct natures_call_callback_t : public dbc_proc_callback_t
 
 void item::natures_call( special_effect_t& effect )
 {
-  double rating_amount = effect.driver() -> effectN( 2 ).average( effect.item );
-  rating_amount *= effect.item -> sim -> dbc.combat_rating_multiplier( effect.item -> item_level() );
+  double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
+      effect.driver() -> effectN( 2 ).average( effect.item ) );
 
   std::vector<natures_call_proc_t*> procs;
 
@@ -2923,9 +2923,9 @@ void set_bonus::journey_through_time( special_effect_t& effect )
     return;
   }
 
-  auto base_value = e -> trigger() -> effectN( 1 ).average( e -> item );
   // Apply legion Combat rating penalty to the effect
-  base_value *= effect.player -> dbc.combat_rating_multiplier( e -> item -> item_level() );
+  auto base_value = item_database::apply_combat_rating_multiplier( *e -> item,
+    e -> trigger() -> effectN( 1 ).average( e -> item ) );
   // And presume that the extra 1k haste is not penalized as it's not strictly sourced from an item
   base_value += effect.driver() -> effectN( 2 ).average( effect.player );
 
@@ -3143,8 +3143,8 @@ struct eyasus_driver_t : public spell_t
     base_tick_time = data().duration();
     dot_duration = data().duration();
 
-    double amount = effect.driver() -> effectN( 1 ).average( effect.item );
-    amount *= effect.item -> sim -> dbc.combat_rating_multiplier( effect.item -> item_level() );
+    double amount = item_database::apply_combat_rating_multiplier( *effect.item,
+      effect.driver() -> effectN( 1 ).average( effect.item ) );
 
     // Initialize stat buffs
     stat_buffs[ 0 ] = stat_buff_creator_t( effect.player, "lethal_on_board",

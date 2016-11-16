@@ -1770,15 +1770,14 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
       else if ( effect.subtype() == A_MOD_RATING )
       {
         std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );
-        double coeff = 1.0;
         if ( params.item )
         {
-          coeff = source -> dbc.combat_rating_multiplier( params.item -> item_level() );
+          amount = item_database::apply_combat_rating_multiplier( *params.item, amount );
         }
 
         for ( size_t j = 0; j < k.size(); j++ )
         {
-          stats.push_back( buff_stat_t( k[ j ], amount * coeff ) );
+          stats.push_back( buff_stat_t( k[ j ], amount ) );
         }
       }
       else if ( effect.subtype() == A_MOD_DAMAGE_DONE && ( effect.misc_value1() & 0x7E ) )
