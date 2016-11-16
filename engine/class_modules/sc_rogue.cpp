@@ -6269,6 +6269,8 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
+  crit += buffs.mantle_of_the_master_assassin_passive -> stack_value(); // 7.1.5 Legendary
+
   return crit;
 }
 
@@ -6297,6 +6299,8 @@ double rogue_t::composite_spell_crit_chance() const
   crit += buffs.shark_infested_waters -> stack_value();
 
   crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
+
+  crit += buffs.mantle_of_the_master_assassin_passive -> stack_value(); // 7.1.5 Legendary
 
   return crit;
 }
@@ -7552,10 +7556,11 @@ void rogue_t::create_buffs()
                                      .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
                                       buffs.the_dreadlords_deceit -> trigger(); } )
                                      .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
-  buffs.mantle_of_the_master_assassin_passive = buff_creator_t( this, "mantle_of_the_master_assassin_passive", find_spell( 235022 ) )
+  buffs.mantle_of_the_master_assassin_passive = buff_creator_t( this, "master_assassins_initiative_passive", find_spell( 235022 ) )
                                               .duration( sim -> max_time / 2 )
+                                              .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() )
                                               .add_invalidate( CACHE_CRIT_CHANCE );
-  buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "mantle_of_the_master_assassin", find_spell( 235022 ) )
+  buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "master_assassins_initiative", find_spell( 235022 ) )
                                       .duration( timespan_t::from_seconds( 6 ) ) // FIXME: Should be Effect #1 from Spell (id: 235022)
                                       .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() )
                                       .add_invalidate( CACHE_CRIT_CHANCE );
@@ -8313,7 +8318,7 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 208436, shadow_satyrs_walk_t()                );
     unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()             );
     unique_gear::register_special_effect( 209041, insignia_of_ravenholdt_t()            );
-    unique_gear::register_special_effect( 235027, mantle_of_the_master_assassin_t()     );
+    unique_gear::register_special_effect( 235022, mantle_of_the_master_assassin_t()     );
   }
 
   void register_hotfixes() const override
