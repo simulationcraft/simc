@@ -226,6 +226,8 @@ struct rogue_t : public player_t
     buff_t* greenskins_waterlogged_wristcuffs;
     buff_t* the_dreadlords_deceit;
     buff_t* the_dreadlords_deceit_driver;
+    buff_t* mantle_of_the_master_assassin;
+    buff_t* mantle_of_the_master_assassin_passive;
 
     buff_t* deceit;
     buff_t* shadow_strikes;
@@ -537,6 +539,7 @@ struct rogue_t : public player_t
     const spell_data_t* zoldyck_family_training_shackles;
     const spell_data_t* the_dreadlords_deceit;
     const spell_data_t* insignia_of_ravenholdt;
+    const spell_data_t* mantle_of_the_master_assassin;
   } legendary;
 
   // Options
@@ -2461,7 +2464,14 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
         options_str ), greenskins_waterlogged_wristcuffs( nullptr )
   {
-    crit_bonus_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
+    if ( ! maybe_ptr( player -> dbc.ptr ) )
+    {
+      crit_bonus_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
+    }
+    else
+    {
+      crit_bonus_multiplier *= 1.0 + 2.0; // FIXME: Hardcoded for the moment, had issue to get the R2 (id: 235484)
+    }
     base_multiplier *= 1.0 + p -> artifact.black_powder.percent();
   }
 
@@ -2469,10 +2479,8 @@ struct between_the_eyes_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( p() -> buffs.true_bearing -> up() )
-    {
-      p() -> trigger_true_bearing( execute_state );
-    }
+    // TODO : Will it be removed in 7.1.5 ?
+    p() -> trigger_true_bearing( execute_state );
     if ( greenskins_waterlogged_wristcuffs )
     {
       const rogue_attack_state_t* rs = rogue_attack_t::cast_state( execute_state );
@@ -3486,6 +3494,10 @@ struct marked_for_death_t : public rogue_attack_t
   {
     may_miss = may_crit = harmful = callbacks = false;
     energize_type = ENERGIZE_ON_CAST;
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      energize_amount += p -> talent.deeper_stratagem -> effectN( 6 ).base_value();
+    }
   }
 
   // Defined after marked_for_death_debuff_t. Sigh.
@@ -5487,14 +5499,20 @@ void rogue_t::trigger_true_bearing( const action_state_t* state )
   cooldowns.adrenaline_rush -> adjust( v, false );
   cooldowns.sprint -> adjust( v, false );
   // As of 10/27 (7.1 22908), Between the Eyes (199804) doesn't reduce its own CD.
-  if ( ! bugs || state -> action -> id != 199804)
+  // FIXME: Will be removed in 7.1.5
+  if ( ! maybe_ptr( this -> dbc.ptr ) &&
+       (! bugs || state -> action -> id != 199804 ) )
   {
     cooldowns.between_the_eyes -> adjust( v, false );
   }
   cooldowns.vanish -> adjust( v, false );
-  cooldowns.blind -> adjust( v, false );
-  cooldowns.cloak_of_shadows -> adjust( v, false );
-  cooldowns.riposte -> adjust( v, false );
+  // FIXME: Will be removed in 7.1.5
+  if ( ! maybe_ptr( this -> dbc.ptr ) )
+  {
+    cooldowns.blind -> adjust( v, false );
+    cooldowns.cloak_of_shadows -> adjust( v, false );
+    cooldowns.riposte -> adjust( v, false );
+  }
   cooldowns.grappling_hook -> adjust( v, false );
   cooldowns.cannonball_barrage -> adjust( v, false );
   cooldowns.killing_spree -> adjust( v, false );
@@ -5777,6 +5795,12 @@ struct stealth_like_buff_t : public buff_t
           rogue -> gains.master_of_shadows );
     }
 
+    if ( rogue -> legendary.mantle_of_the_master_assassin )
+    {
+      rogue -> buffs.mantle_of_the_master_assassin -> expire();
+      rogue -> buffs.mantle_of_the_master_assassin_passive -> trigger();
+    }
+
     rogue -> buffs.master_of_subtlety -> expire();
     rogue -> buffs.master_of_subtlety_passive -> trigger();
   }
@@ -5784,6 +5808,12 @@ struct stealth_like_buff_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( rogue -> legendary.mantle_of_the_master_assassin )
+    {
+      rogue -> buffs.mantle_of_the_master_assassin_passive -> expire();
+      rogue -> buffs.mantle_of_the_master_assassin -> trigger();
+    }
 
     rogue -> buffs.master_of_subtlety_passive -> expire();
     rogue -> buffs.master_of_subtlety -> trigger();
@@ -5810,6 +5840,12 @@ struct vanish_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
+    if ( rogue -> legendary.mantle_of_the_master_assassin )
+    {
+      rogue -> buffs.mantle_of_the_master_assassin -> expire();
+      rogue -> buffs.mantle_of_the_master_assassin_passive -> trigger();
+    }
+
     rogue -> buffs.master_of_subtlety -> expire();
     rogue -> buffs.master_of_subtlety_passive -> trigger();
   }
@@ -5817,6 +5853,12 @@ struct vanish_t : public buff_t
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    if ( rogue -> legendary.mantle_of_the_master_assassin )
+    {
+      rogue -> buffs.mantle_of_the_master_assassin_passive -> expire();
+      rogue -> buffs.mantle_of_the_master_assassin -> trigger();
+    }
 
     rogue -> buffs.master_of_subtlety_passive -> expire();
     rogue -> buffs.master_of_subtlety -> trigger();
@@ -6213,6 +6255,10 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += buffs.shark_infested_waters -> stack_value();
 
+  // 7.1.5 Legendary
+  crit += buffs.mantle_of_the_master_assassin -> check_value();
+  crit += buffs.mantle_of_the_master_assassin_passive -> check_value();
+
   return crit;
 }
 
@@ -6239,6 +6285,10 @@ double rogue_t::composite_spell_crit_chance() const
   crit += spell.critical_strikes -> effectN( 1 ).percent();
 
   crit += buffs.shark_infested_waters -> stack_value();
+
+  // 7.1.5 Legendary
+  crit += buffs.mantle_of_the_master_assassin -> check_value();
+  crit += buffs.mantle_of_the_master_assassin_passive -> check_value();
 
   return crit;
 }
@@ -7125,7 +7175,7 @@ void rogue_t::init_spells()
 
   talent.slice_and_dice     = find_talent_spell( "Slice and Dice" );
 
-  talent.master_of_subtlety = find_talent_spell( "Master of Subtlety" );
+  talent.master_of_subtlety = find_spell( 31665 ); // FIXME : We have now 2 "Master of Subtlety" spells, so for now we'll use the id to avoid crash.
   talent.weaponmaster       = find_talent_spell( "Weaponmaster" );
   talent.gloomblade         = find_talent_spell( "Gloomblade" );
 
@@ -7413,7 +7463,7 @@ void rogue_t::create_buffs()
                                      .duration( sim -> max_time / 2 )
                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.master_of_subtlety  = buff_creator_t( this, "master_of_subtlety", talent.master_of_subtlety )
-                              .duration( timespan_t::from_seconds( 6 ) )
+                              .duration( timespan_t::from_seconds( 6 ) ) // FIXME: Should be Effect #1 from Spell (id: 31223)
                               .default_value( talent.master_of_subtlety -> effectN( 1 ).percent() )
                               .chance( talent.master_of_subtlety -> ok() )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -7493,7 +7543,13 @@ void rogue_t::create_buffs()
                                      .quiet( true )
                                      .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
                                       buffs.the_dreadlords_deceit -> trigger(); } )
-                                     .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );    
+                                     .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
+  buffs.mantle_of_the_master_assassin_passive = buff_creator_t( this, "mantle_of_the_master_assassin_passive", find_spell( 235027 ) )
+                                              .duration( sim -> max_time / 2 )
+                                              .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() );
+  buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "mantle_of_the_master_assassin", find_spell( 235027 ) )
+                                      .duration( timespan_t::from_seconds( 6 ) ) // FIXME: Should be Effect #1 from Spell (id: 235022)
+                                      .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() );
 
   buffs.fof_fod           = new buffs::fof_fod_t( this );
 
@@ -8211,6 +8267,15 @@ struct insignia_of_ravenholdt_t : public unique_gear::scoped_actor_callback_t<ro
   { rogue -> legendary.insignia_of_ravenholdt = e.driver(); }
 };
 
+struct mantle_of_the_master_assassin_t : public unique_gear::scoped_actor_callback_t<rogue_t>
+{
+  mantle_of_the_master_assassin_t() : super( ROGUE )
+  { }
+
+  void manipulate( rogue_t* rogue, const special_effect_t& e ) override
+  { rogue -> legendary.mantle_of_the_master_assassin = e.driver(); }
+};
+
 struct rogue_module_t : public module_t
 {
   rogue_module_t() : module_t( ROGUE ) {}
@@ -8239,6 +8304,7 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 208436, shadow_satyrs_walk_t()                );
     unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()             );
     unique_gear::register_special_effect( 209041, insignia_of_ravenholdt_t()            );
+    unique_gear::register_special_effect( 235027, mantle_of_the_master_assassin_t()     );
   }
 
   void register_hotfixes() const override
