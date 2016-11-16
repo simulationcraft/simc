@@ -2479,8 +2479,10 @@ struct between_the_eyes_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // TODO : Will it be removed in 7.1.5 ?
-    p() -> trigger_true_bearing( execute_state );
+    if ( p() -> buffs.true_bearing -> up() )
+    {
+      p() -> trigger_true_bearing( execute_state );
+    }
     if ( greenskins_waterlogged_wristcuffs )
     {
       const rogue_attack_state_t* rs = rogue_attack_t::cast_state( execute_state );
@@ -4133,6 +4135,15 @@ struct shadowstrike_t : public rogue_attack_t
       make_event<akaaris_soul_event_t>( *sim, p(), execute_state -> target );
     }
 
+    // TODO: Check if it triggers when the hit is failed
+    // FIXME: Probably better to register the spell rather than doing find_spell here
+    if ( maybe_ptr( p() -> dbc.ptr ) &&
+         p() -> artifact.shadow_nova.rank() &&
+         rng().roll( p() -> find_spell( 209781 ) -> proc_chance() ) )
+    {
+      p() -> shadow_nova -> schedule_execute();
+    }
+
     p() -> buffs.death -> decrement();
 
     if ( result_is_hit( execute_state -> result ) && rng().roll( p() -> sets.set( ROGUE_SUBTLETY, T19, B4 ) -> proc_chance() ) )
@@ -5766,7 +5777,7 @@ struct subterfuge_t : public buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
     // The Glyph of Vanish bug is back, so if Vanish is still up when
     // Subterfuge fades, don't cancel stealth. Instead, the next offensive
-    // action in the sim will trigger a new (3 seconds) of Suberfuge.
+    // action in the sim will trigger a new (3 seconds) of Subterfuge.
     if ( ( rogue -> bugs && (
             rogue -> buffs.vanish -> remains() == timespan_t::zero() ||
             rogue -> buffs.vanish -> check() == 0 ) ) ||
@@ -5818,7 +5829,8 @@ struct stealth_like_buff_t : public buff_t
     rogue -> buffs.master_of_subtlety_passive -> expire();
     rogue -> buffs.master_of_subtlety -> trigger();
 
-    if ( rogue -> artifact.shadow_nova.rank() )
+    if ( ! maybe_ptr( player -> dbc.ptr ) &&
+         rogue -> artifact.shadow_nova.rank() )
     {
       rogue -> shadow_nova -> schedule_execute();
     }
@@ -6255,9 +6267,7 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += buffs.shark_infested_waters -> stack_value();
 
-  // 7.1.5 Legendary
-  crit += buffs.mantle_of_the_master_assassin -> check_value();
-  crit += buffs.mantle_of_the_master_assassin_passive -> check_value();
+  crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
   return crit;
 }
@@ -6286,9 +6296,7 @@ double rogue_t::composite_spell_crit_chance() const
 
   crit += buffs.shark_infested_waters -> stack_value();
 
-  // 7.1.5 Legendary
-  crit += buffs.mantle_of_the_master_assassin -> check_value();
-  crit += buffs.mantle_of_the_master_assassin_passive -> check_value();
+  crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
   return crit;
 }
@@ -7175,7 +7183,7 @@ void rogue_t::init_spells()
 
   talent.slice_and_dice     = find_talent_spell( "Slice and Dice" );
 
-  talent.master_of_subtlety = find_spell( 31665 ); // FIXME : We have now 2 "Master of Subtlety" spells, so for now we'll use the id to avoid crash.
+  talent.master_of_subtlety = find_talent_spell( "Master of Subtlety" );
   talent.weaponmaster       = find_talent_spell( "Weaponmaster" );
   talent.gloomblade         = find_talent_spell( "Gloomblade" );
 
@@ -7544,12 +7552,13 @@ void rogue_t::create_buffs()
                                      .tick_callback( [this]( buff_t*, int, const timespan_t& ) {
                                       buffs.the_dreadlords_deceit -> trigger(); } )
                                      .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
-  buffs.mantle_of_the_master_assassin_passive = buff_creator_t( this, "mantle_of_the_master_assassin_passive", find_spell( 235027 ) )
+  buffs.mantle_of_the_master_assassin_passive = buff_creator_t( this, "mantle_of_the_master_assassin_passive", find_spell( 235022 ) )
                                               .duration( sim -> max_time / 2 )
-                                              .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() );
-  buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "mantle_of_the_master_assassin", find_spell( 235027 ) )
+                                              .add_invalidate( CACHE_CRIT_CHANCE );
+  buffs.mantle_of_the_master_assassin  = buff_creator_t( this, "mantle_of_the_master_assassin", find_spell( 235022 ) )
                                       .duration( timespan_t::from_seconds( 6 ) ) // FIXME: Should be Effect #1 from Spell (id: 235022)
-                                      .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() );
+                                      .default_value( find_spell( 235027 ) -> effectN( 1 ).percent() )
+                                      .add_invalidate( CACHE_CRIT_CHANCE );
 
   buffs.fof_fod           = new buffs::fof_fod_t( this );
 
