@@ -3774,9 +3774,12 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
   struct insanity_loss_event_t final : public player_event_t
   {
     voidform_t* vf;
+    static constexpr double drain_interval = 0.05;
 
     insanity_loss_event_t( voidform_t* s )
-      : player_event_t( *s->player, timespan_t::from_seconds( 0.05 ) ), vf( s )
+      : player_event_t( *s->player,
+                        timespan_t::from_seconds( drain_interval ) ),
+        vf( s )
     {
     }
 
@@ -3792,11 +3795,11 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
       // http://us.battle.net/wow/en/forum/topic/20743504316?page=2#31
       // http://us.battle.net/wow/en/forum/topic/20743504316?page=4#71
       // ---
-      // Drain starts at 9 over 1 second and increases by 1 over 2 seconds per
-      // stack of Voidform. I.E.: 9 over t=0->1, 9.5 over t=1->2, etc.
+      // Drain starts at 8 over 1 second and increases by 1.1 over 2 seconds per
+      // stack of Voidform. I.E.: 8 over t=0->1, 8.55 over t=1->2, etc.
       // Drain happens continuously, like energy in reverse.
-      // We make ticks happen every 0.05sec to get as close to contiunuous as
-      // possible without killing simulation lengths.
+      // We make ticks happen every 0.05sec (drain_interval) to get as close to
+      // contiunuous as possible without killing simulation lengths.
       // CHECK ME: Triggering Voidform in-game and not using any abilities
       // results in 10 stacks, rarely 11 stacks if you have high latency.
       // Sim seems to mostly get 9 stacks, rarely 10 stacks.
@@ -3813,16 +3816,23 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
       // Drain = 8 + 0.55 * drain_stacks
       auto priest = debug_cast<priest_t*>( player() );
 
-      // LOGIC/SANITY CHECK:
-      // Stack 1 = 8 insanity = ( -4000 / -500 )  + ( (1 - 1) * 0.55 ) =  
-      // 8 + ( 0 * 0.55 ) = 8
-      // Stack 2 = 8.55 insanity = ( -4000) / -500 ) + ( (2 - 1) * 0.55 ) =  
-      // 8 + ( 1 * 0.55 ) = 8.55
-      double insanity_loss =
-          ( ( priest->buffs.voidform->data().effectN( 2 ).base_value() /
-              -500 ) +
-            ( ( priest->buffs.insanity_drain_stacks->check() - 1 ) * 0.55 ) ) *
-          0.05;
+      // Base Insanity loss per second
+      double base_insanity_loss =
+          priest->buffs.voidform->data().effectN( 2 ).base_value() / -500.0;
+
+      // Insanity loss per additional Insanity Drain stacks (>1) per second
+      double loss_per_additional_stack =
+          0.55;  // Hardcoded Patch 7.1 2016-11-16
+
+      // Combined Insanity loss per second
+      double insanity_loss_per_second =
+          base_insanity_loss +
+          ( priest->buffs.insanity_drain_stacks->check() - 1 ) *
+              loss_per_additional_stack;
+
+      // Adjust from Insanity Loss per second to Insanity Loss per drain
+      // interval
+      double insanity_loss = insanity_loss_per_second / drain_interval;
 
       if ( insanity_loss > priest->resources.current[ RESOURCE_INSANITY ] )
       {
