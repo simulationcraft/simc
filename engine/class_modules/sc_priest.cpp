@@ -5520,7 +5520,7 @@ void priest_t::apl_shadow()
       "touch.remains>5.5" );
   s2m->add_action( "berserking,if=buff.voidform.stack>=80" );
   s2m->add_action( "dispersion,if=dot.shadow_word_pain.remains>7.5&dot.vampiric_"
-                   "touch.remains>7.5&buff.voidform.stack<10")
+                   "touch.remains>7.5&buff.voidform.stack<10");
   s2m->add_action(
       "shadow_word_death,if=!talent.reaper_of_souls.enabled&current_insanity_"
       "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+15)<"
