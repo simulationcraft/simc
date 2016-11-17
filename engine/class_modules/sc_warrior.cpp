@@ -6037,7 +6037,10 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t*
 {
   double aa = player_t::resource_gain( r, a, gain, action );
 
-  if ( r == RESOURCE_RAGE && talents.frothing_berserker -> ok() && resources.current[ r ] > 99 && frothing_may_trigger )
+  if ( frothing_may_trigger &&
+       r == RESOURCE_RAGE &&
+       talents.frothing_berserker -> ok() &&
+       resources.current[r] > 99 )
   {
     buff.frothing_berserker -> trigger();
     frothing_may_trigger = false;
