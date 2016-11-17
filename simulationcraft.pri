@@ -53,6 +53,11 @@ macx {
     QMAKE_CXXFLAGS += -Wno-inconsistent-missing-override
   }
   LIBS += -framework Security
+
+  CONFIG(sanitize) {
+    QMAKE_CXXFLAGS += -fsanitize=address
+    QMAKE_LFLAGS += -fsanitize=address
+  }
 }
 
 win32 {
