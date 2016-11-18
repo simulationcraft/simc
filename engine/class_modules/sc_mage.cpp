@@ -4901,6 +4901,19 @@ struct frost_nova_t : public mage_spell_t
     }
   }
 };
+
+// Ice Time Super Frost Nova ================================================
+
+struct ice_time_nova_t : public frost_mage_spell_t
+{
+  ice_time_nova_t( mage_t* p ) :
+    frost_mage_spell_t( "ice_time_nova", p, p -> find_spell( 235235 ) )
+  {
+    background = may_crit = true;
+    aoe = -1;
+  }
+};
+
 // Frozen Orb Spell =========================================================
 
 struct frozen_orb_bolt_t : public frost_mage_spell_t
@@ -4965,18 +4978,23 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
 
 struct frozen_orb_t : public frost_mage_spell_t
 {
+  bool ice_time;
+  ice_time_nova_t* ice_time_nova;
+
   //TODO: Redo how frozen_orb_bolt is set up to take base_multipler from parent.
   frozen_orb_bolt_t* frozen_orb_bolt;
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frozen_orb", p,
                         p -> find_class_spell( "Frozen Orb" ) ),
-    frozen_orb_bolt( new frozen_orb_bolt_t( p ) )
+    frozen_orb_bolt( new frozen_orb_bolt_t( p ) ),
+    ice_time_nova( new ice_time_nova_t( p  ) )
   {
     parse_options( options_str );
     hasted_ticks = false;
     base_tick_time    = timespan_t::from_seconds( 0.5 );
     dot_duration      = timespan_t::from_seconds( 10.0 );
     add_child( frozen_orb_bolt );
+    add_child( ice_time_nova );
     may_miss       = false;
     may_crit       = false;
     travel_speed = 20;
@@ -5016,6 +5034,12 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_fof( fof_source_id, 1.0 );
+    }
+
+    if ( ice_time )
+    {
+      ice_time_nova -> target = s -> target;
+      ice_time_nova -> execute();
     }
   }
 };
@@ -9787,6 +9811,18 @@ struct lady_vashjs_grasp_t : public scoped_actor_callback_t<mage_t>
   { actor -> legendary.lady_vashjs_grasp = true; }
 };
 
+struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
+{
+  ice_time_t() : super( MAGE_FROST, "frozen_orb" )
+  { }
+
+  void manipulate( frozen_orb_t* action, const special_effect_t& e ) override
+  {
+    action -> ice_time = true;
+  }
+};
+
+
 // 6.2 Class Trinkets
 
 struct pyrosurge_t : public scoped_action_callback_t<fire_blast_t>
@@ -9859,6 +9895,7 @@ public:
     unique_gear::register_special_effect( 209280, mystic_kilt_of_the_rune_master_t()     );
     unique_gear::register_special_effect( 222276, sorcerous_shadowruby_pendant           );
     unique_gear::register_special_effect( 235940, pyrotex_ignition_cloth_t()             );
+    unique_gear::register_special_effect( 235227, ice_time_t()                           );
   }
 
   virtual void register_hotfixes() const override
