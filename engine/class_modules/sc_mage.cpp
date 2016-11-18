@@ -6367,12 +6367,14 @@ struct rune_of_power_t : public mage_spell_t
 
 struct scorch_t : public fire_mage_spell_t
 {
-  double koralons_burning_touch_multiplier;
+  bool koralons_burning_touch;
+  double koralons_burning_touch_threshold;
 
   scorch_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "scorch", p,
                        p -> find_specialization_spell( "Scorch" ) ),
-    koralons_burning_touch_multiplier( 0.0 )
+    koralons_burning_touch( false ),
+    koralons_burning_touch_threshold( 0.0 )
   {
     parse_options( options_str );
 
@@ -6383,6 +6385,18 @@ struct scorch_t : public fire_mage_spell_t
     consumes_ice_floes = false;
   }
 
+  virtual double composite_crit_chance() const override
+  { 
+    double c = fire_mage_spell_t::composite_crit_chance();
+
+    //TODO: Fix 25% hardcode
+    if ( koralons_burning_touch && ( target -> health_percentage() <= koralons_burning_touch_threshold ) )
+    {
+      c = 1.0;
+    }
+    return c;
+  }
+
   double composite_crit_chance_multiplier() const override
   {
     double m = fire_mage_spell_t::composite_crit_chance_multiplier();
@@ -6391,17 +6405,7 @@ struct scorch_t : public fire_mage_spell_t
 
     return m;
   }
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double ctm = fire_mage_spell_t::composite_target_multiplier( target );
 
-    if ( ( koralons_burning_touch_multiplier > 0.0 ) && ( target -> health_percentage() <= 35 ) )
-    {
-      ctm *= 1.0 + koralons_burning_touch_multiplier;
-    }
-
-    return ctm;
-  }
   virtual void execute() override
   {
     fire_mage_spell_t::execute();
@@ -9739,7 +9743,8 @@ struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
   { }
 
   void manipulate( scorch_t* action, const special_effect_t& e ) override
-  { action -> koralons_burning_touch_multiplier = e.driver() -> effectN( 1 ).percent(); }
+  { action -> koralons_burning_touch = true;
+    action -> koralons_burning_touch_threshold = e.driver() -> effectN( 1 ).base_value(); }
 
 };
 
