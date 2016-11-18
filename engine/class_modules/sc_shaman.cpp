@@ -4106,8 +4106,7 @@ struct lava_burst_t : public shaman_spell_t
          p() -> talent.echo_of_the_elements -> ok() )
     {
       cooldown -> charges = data().charges() +
-        p() -> talent.echo_of_the_elements -> effectN( 2 ).base_value() +
-        ( maybe_ptr( p() -> dbc.ptr ) ? 1 : 0 );
+        p() -> talent.echo_of_the_elements -> effectN( 2 ).base_value();
     }
   }
 
