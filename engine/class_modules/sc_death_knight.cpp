@@ -7737,7 +7737,8 @@ inline double death_knight_t::rune_regen_coefficient() const
 
 void death_knight_t::trigger_runic_empowerment( double rpcost )
 {
-  if ( ! rng().roll( spec.runic_empowerment -> effectN( 1 ).percent() * rpcost ) )
+  double base_chance = spec.runic_empowerment -> effectN( 1 ).percent() / 10.0;
+  if ( ! rng().roll( base_chance * rpcost ) )
     return;
 
   if ( sim -> debug )
@@ -8162,6 +8163,11 @@ struct death_knight_module_t : public module_t {
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Death Knight", "2016-11-18", "Runic Empowerment base proc chance is intended to be 1.5% per Runic Power spent.", 68676, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 15 )
+      .verification_value( 1 );
     /*
     hotfix::register_effect( "Death Knight", "2016-08-23", "Clawing Shadows damage has been changed to 130% weapon damage (was 150% Attack Power).", 324719 )
       .field( "ap_coefficient" )
