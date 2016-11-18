@@ -730,7 +730,8 @@ public:
   // Legendaries
   struct legendary_t {
     // Frost
-    const spell_data_t* koltiras_newfound_will; // Koltira's Newfound Will
+    const spell_data_t* koltiras_newfound_will;
+    const spell_data_t* seal_of_necrofantasia;
     double toravons;
 
     // Unholy
@@ -738,6 +739,14 @@ public:
     double draugr_girdle_everlasting_king;
     double uvanimor_the_unbeautiful;
     timespan_t death_march;
+
+    legendary_t() :
+      koltiras_newfound_will( spell_data_t::not_found() ),
+      seal_of_necrofantasia( spell_data_t::not_found() ),
+      toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
+      uvanimor_the_unbeautiful( 0 ), death_march( timespan_t::zero() )
+    { }
+
   } legendary;
 
   // Runes
@@ -779,8 +788,6 @@ public:
     cooldown.icecap          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
     cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
-
-    legendary.koltiras_newfound_will = spell_data_t::not_found();
 
     regen_type = REGEN_DYNAMIC;
   }
@@ -4193,6 +4200,16 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     energize_type = ENERGIZE_NONE;
   }
 
+  void init() override
+  {
+    death_knight_spell_t::init();
+
+    cooldown -> charges = data().charges() +
+      p() -> legendary.seal_of_necrofantasia -> effectN( 1 ).base_value();
+    cooldown -> duration = data().charge_cooldown() *
+      ( 1.0 - p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
+  }
+
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -4641,6 +4658,16 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
     // Spell has two different periodicities in two effects, weird++. Pick the one that is indicated
     // by the tooltip.
     base_tick_time = data().effectN( 1 ).period();
+  }
+
+  void init() override
+  {
+    death_knight_spell_t::init();
+
+    cooldown -> charges = data().charges() +
+      p() -> legendary.seal_of_necrofantasia -> effectN( 1 ).base_value();
+    cooldown -> duration = data().charge_cooldown() *
+      ( 1.0 - p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
   }
 
   void tick( dot_t* d ) override
@@ -8091,6 +8118,15 @@ struct skullflowers_haemostasis_t : public class_buff_cb_t<buff_t>
   }
 };
 
+struct seal_of_necrofantasia_t : public scoped_actor_callback_t<death_knight_t>
+{
+  seal_of_necrofantasia_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.seal_of_necrofantasia = e.driver(); }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -8117,6 +8153,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 208161, draugr_girdle_everlasting_king_t() );
     unique_gear::register_special_effect( 208786, uvanimor_the_unbeautiful_t() );
     unique_gear::register_special_effect( 208782, koltiras_newfound_will_t() );
+    unique_gear::register_special_effect( 212216, seal_of_necrofantasia_t() );
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
