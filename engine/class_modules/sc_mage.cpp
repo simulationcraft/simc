@@ -1913,6 +1913,10 @@ public:
       c *= 1.0 + arcane_power_reduction;
     }
 
+    if ( p() -> talents.quickening -> ok() && p() -> buffs.quickening -> check() )
+    {
+      c *= 1.0 + ( p() -> buffs.quickening -> data().effectN( 2 ).percent() * p() -> buffs.quickening -> current_stack );
+    }
     return c;
   }
 
