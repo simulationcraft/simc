@@ -525,6 +525,7 @@ public:
     gain_t* draugr_girdle_everlasting_king;
     gain_t* uvanimor_the_unbeautiful;
     gain_t* koltiras_newfound_will;
+    gain_t* t19_4pc_frost;
   } gains;
 
   // Specialization
@@ -2358,7 +2359,7 @@ struct death_knight_action_t : public Base
     return amount;
   }
 
-  virtual void consume_resource() override
+  void consume_resource() override
   {
     action_base_t::consume_resource();
 
@@ -4636,6 +4637,16 @@ struct howling_blast_t : public death_knight_spell_t
     }
 
     return m;
+  }
+
+  gain_t* energize_gain( const action_state_t* /* state */ ) const override
+  {
+    if ( p() -> buffs.rime -> check() && p() -> sets.has_set_bonus( DEATH_KNIGHT_FROST, T19, B4 ) )
+    {
+      return p() -> gains.t19_4pc_frost;
+    }
+
+    return gain;
   }
 
   double action_multiplier() const override
@@ -7207,6 +7218,7 @@ void death_knight_t::init_gains()
   gains.draugr_girdle_everlasting_king   = get_gain( "Draugr, Girdle of the Everlasting King" );
   gains.uvanimor_the_unbeautiful         = get_gain( "Uvanimor, the Unbeautiful"  );
   gains.koltiras_newfound_will           = get_gain( "Koltira's Newfound Will"    );
+  gains.t19_4pc_frost                    = get_gain( "Tier19 Frost 4PC"           );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -7222,7 +7234,7 @@ void death_knight_t::init_procs()
 
   procs.ready_rune               = get_proc( "Rune ready" );
 
-  procs.t19_2pc_unholy           = get_proc( "Unholy Tier19 2PC" );
+  procs.t19_2pc_unholy           = get_proc( "Tier19 Unholy 2PC" );
 }
 
 // death_knight_t::init_resources ===========================================
