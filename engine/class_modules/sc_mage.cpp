@@ -4034,11 +4034,14 @@ struct evocation_t : public arcane_mage_spell_t
 {
   aegwynns_ascendance_t* aegwynns_ascendance;
   double mana_gained;
-
+  bool gravity_spiral;
+  double gravity_spiral_bonus;
   evocation_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "evocation", p,
                          p -> find_class_spell( "Evocation" ) ),
-    mana_gained( 0.0 )
+    mana_gained( 0.0 ),
+    gravity_spiral( false ),
+    gravity_spiral_bonus( 0 )
   {
     parse_options( options_str );
 
@@ -4057,6 +4060,15 @@ struct evocation_t : public arcane_mage_spell_t
     if ( p -> artifact.aegwynns_ascendance.rank() )
     {
       aegwynns_ascendance = new aegwynns_ascendance_t( p );
+    }
+  }
+
+  virtual void init() override
+  {
+    arcane_mage_spell_t::init();
+    if ( gravity_spiral )
+    {
+      cooldown -> charges = 1.0 + gravity_spiral_bonus;
     }
   }
 
@@ -9743,6 +9755,19 @@ struct cord_of_infinity_t : public scoped_actor_callback_t<mage_t>
   void manipulate( mage_t* actor, const special_effect_t& /* e */) override
   { actor -> legendary.cord_of_infinity = true; }
 };
+
+struct gravity_spiral_t : public scoped_action_callback_t<evocation_t>
+{
+  gravity_spiral_t() : super( MAGE_ARCANE, "evocation" )
+  { }
+
+  void manipulate( evocation_t* action, const special_effect_t& e ) override
+  {
+    action -> gravity_spiral = true;
+    action -> gravity_spiral_bonus = e.driver() -> effectN( 1 ).base_value();
+  }
+};
+
 // Fire Legendary Items
 struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
 {
@@ -9822,7 +9847,6 @@ struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
   }
 };
 
-
 // 6.2 Class Trinkets
 
 struct pyrosurge_t : public scoped_action_callback_t<fire_blast_t>
@@ -9896,6 +9920,7 @@ public:
     unique_gear::register_special_effect( 222276, sorcerous_shadowruby_pendant           );
     unique_gear::register_special_effect( 235940, pyrotex_ignition_cloth_t()             );
     unique_gear::register_special_effect( 235227, ice_time_t()                           );
+    unique_gear::register_special_effect( 235273, gravity_spiral_t()                     );
   }
 
   virtual void register_hotfixes() const override
