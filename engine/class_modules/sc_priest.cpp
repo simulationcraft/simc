@@ -3832,7 +3832,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
       // Adjust from Insanity Loss per second to Insanity Loss per drain
       // interval
-      double insanity_loss = insanity_loss_per_second / drain_interval;
+      double insanity_loss = insanity_loss_per_second * drain_interval;
 
       if ( insanity_loss > priest->resources.current[ RESOURCE_INSANITY ] )
       {
