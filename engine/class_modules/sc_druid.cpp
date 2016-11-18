@@ -5961,7 +5961,7 @@ void druid_t::init_spells()
   spec.rake_2 = find_spell( 231052 );
   spec.tigers_fury_2 = find_spell( 231055 );
   spec.ferocious_bite_2 = find_spell( 231056 );
-  spec.shred = find_spell( "Shred" );
+  spec.shred = find_spell( 5221 );
   spec.shred_2 = find_spell( 231063 );
   spec.shred_3 = find_spell( 231057 );
   spec.swipe_2 = find_spell( 231283 );
