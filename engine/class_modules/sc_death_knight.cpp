@@ -464,6 +464,7 @@ public:
     buff_t* frozen_pulse;
 
     stat_buff_t* t19oh_8pc;
+    buff_t* skullflowers_haemostasis;
   } buffs;
 
   struct runeforge_t {
@@ -3378,6 +3379,8 @@ struct blood_boil_t : public death_knight_spell_t
       p() -> pets.dancing_rune_weapon -> ability.blood_boil -> target = execute_state -> target;
       p() -> pets.dancing_rune_weapon -> ability.blood_boil -> execute();
     }
+
+    p() -> buffs.skullflowers_haemostasis -> trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -4066,6 +4069,9 @@ struct death_strike_heal_t : public death_knight_heal_t
     {
       m *= 1.0 + p() -> artifact.ice_in_your_veins.percent();
     }
+
+    m *= 1.0 + p() -> buffs.skullflowers_haemostasis -> stack_value();
+
     return m;
   }
 
@@ -4118,6 +4124,15 @@ struct death_strike_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
+  double action_multiplier() const override
+  {
+    double m = death_knight_melee_attack_t::action_multiplier();
+
+    m *= 1.0 + p() -> buffs.skullflowers_haemostasis -> stack_value();
+
+    return m;
+  }
+
   double cost() const override
   {
     double c = death_knight_melee_attack_t::cost();
@@ -4146,10 +4161,11 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      heal -> schedule_execute();
+      heal -> execute();
     }
 
     p() -> trigger_death_march( execute_state );
+    p() -> buffs.skullflowers_haemostasis -> expire();
   }
 
   bool ready() override
@@ -8057,6 +8073,24 @@ struct death_march_t : public scoped_actor_callback_t<death_knight_t>
   { p -> legendary.death_march = timespan_t::from_seconds( -e.driver() -> effectN( 1 ).base_value() / 10 ); }
 };
 
+struct skullflowers_haemostasis_t : public class_buff_cb_t<buff_t>
+{
+  skullflowers_haemostasis_t() : super( DEATH_KNIGHT, "haemostasis" )
+  { }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  { return debug_cast<death_knight_t*>( e.player ) -> buffs.skullflowers_haemostasis; }
+
+  buff_creator_t creator( const special_effect_t& e ) const override
+  {
+    return super::creator( e )
+           .spell( e.trigger() )
+           .default_value( e.trigger() -> effectN( 1 ).percent() )
+           // Grab 1 second ICD from the driver
+           .cd( e.driver() -> internal_cooldown() );
+  }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -8086,6 +8120,7 @@ struct death_knight_module_t : public module_t {
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
+    unique_gear::register_special_effect( 235558, skullflowers_haemostasis_t(), true );
   }
 
   void register_hotfixes() const override
