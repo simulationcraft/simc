@@ -725,6 +725,7 @@ public:
     proc_t* fs_killing_machine;
     proc_t* ready_rune;
     proc_t* km_natural_expiration;
+    proc_t* t19_2pc_unholy;
   } procs;
 
   // Legendaries
@@ -845,7 +846,7 @@ public:
   double    runes_per_second() const;
   double    rune_regen_coefficient() const;
   void      trigger_runic_empowerment( double rpcost );
-  void      trigger_runic_corruption( double rpcost );
+  bool      trigger_runic_corruption( double rpcost, double override_chance = -1.0 );
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, bool bypass_icd = false );
   void      trigger_death_march( const action_state_t* state );
   void      apply_diseases( action_state_t* state, unsigned diseases );
@@ -2479,6 +2480,16 @@ struct death_knight_action_t : public Base
           {
             dk -> buffs.unholy_frenzy -> trigger();
           }
+
+          // TODO: Is this per festering wound, or one try?
+          if ( dk -> sets.has_set_bonus( DEATH_KNIGHT_UNHOLY, T19, B2 ) )
+          {
+            if ( dk -> trigger_runic_corruption( 0,
+                  dk -> sets.set( DEATH_KNIGHT_UNHOLY, T19, B2 ) -> effectN( 1 ).percent() ) )
+            {
+              dk -> procs.t19_2pc_unholy -> occur();
+            }
+          }
         }
 
         td -> debuff.festering_wound -> decrement( n_executes );
@@ -3969,6 +3980,16 @@ struct death_coil_t : public death_knight_spell_t
       unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ), nullptr, this );
 
     p() -> trigger_death_march( execute_state );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( rng().roll( player -> sets.set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
+    {
+      p() -> trigger_festering_wound( state, 1, true ); // TODO: Does this ignore ICD?
+    }
   }
 };
 
@@ -6120,16 +6141,22 @@ unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
 }
 
 
-void death_knight_t::trigger_runic_corruption( double rpcost )
+bool death_knight_t::trigger_runic_corruption( double rpcost, double override_chance )
 {
-  if ( ! rng().roll( spec.runic_corruption -> effectN( 2 ).percent() * rpcost / 100.0 ) )
-    return;
+  double actual_chance = override_chance != -1.0
+    ? override_chance
+    : ( spec.runic_corruption -> effectN( 2 ).percent() * rpcost / 100.0 );
+
+  if ( ! rng().roll( actual_chance ) )
+    return false;
 
   timespan_t duration = timespan_t::from_seconds( 3.0 * cache.attack_haste() );
   if ( buffs.runic_corruption -> check() == 0 )
     buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
   else
     buffs.runic_corruption -> extend_duration( this, duration );
+
+  return true;
 }
 
 void death_knight_t::trigger_festering_wound( const action_state_t* state, unsigned n, bool bypass_icd )
@@ -7193,7 +7220,9 @@ void death_knight_t::init_procs()
   procs.oblit_killing_machine    = get_proc( "Killing Machine: Obliterate"  );
   procs.fs_killing_machine       = get_proc( "Killing Machine: Frostscythe" );
 
-  procs.ready_rune              = get_proc( "Rune ready" );
+  procs.ready_rune               = get_proc( "Rune ready" );
+
+  procs.t19_2pc_unholy           = get_proc( "Unholy Tier19 2PC" );
 }
 
 // death_knight_t::init_resources ===========================================
