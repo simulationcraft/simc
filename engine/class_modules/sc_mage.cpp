@@ -6041,15 +6041,31 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 {
   phoenixs_flames_splash_t* phoenixs_flames_splash;
 
+  bool pyrotex_ignition_cloth;
+  timespan_t pyrotex_ignition_cloth_reduction;
+
   phoenixs_flames_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "phoenixs_flames", p, p -> artifact.phoenixs_flames ),
-    phoenixs_flames_splash( new phoenixs_flames_splash_t( p, options_str ) )
+    phoenixs_flames_splash( new phoenixs_flames_splash_t( p, options_str ) ),
+    pyrotex_ignition_cloth( false ),
+    pyrotex_ignition_cloth_reduction( timespan_t::from_seconds( 0 ) )
   {
     parse_options( options_str );
 
     triggers_hot_streak = true;
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
+  }
+
+  virtual void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( pyrotex_ignition_cloth )
+    {
+      p() -> cooldowns.combustion
+          -> adjust( -1000 * pyrotex_ignition_cloth_reduction );
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6373,7 +6389,6 @@ struct scorch_t : public fire_mage_spell_t
   { 
     double c = fire_mage_spell_t::composite_crit_chance();
 
-    //TODO: Fix 25% hardcode
     if ( koralons_burning_touch && ( target -> health_percentage() <= koralons_burning_touch_threshold ) )
     {
       c = 1.0;
@@ -9712,8 +9727,8 @@ struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
 
   void manipulate( scorch_t* action, const special_effect_t& e ) override
   { action -> koralons_burning_touch = true;
-    action -> koralons_burning_touch_threshold = e.driver() -> effectN( 1 ).base_value(); }
-
+    action -> koralons_burning_touch_threshold = e.driver() -> effectN( 1 ).base_value(); 
+  }
 };
 
 struct darcklis_dragonfire_diadem_t : public scoped_action_callback_t<dragons_breath_t>
@@ -9734,6 +9749,16 @@ struct marquee_bindings_of_the_sun_king_t : public scoped_action_callback_t<pyro
   { action ->  marquee_bindings_of_the_sun_king_proc_chance = e.driver() -> effectN( 1 ).percent(); }
 };
 
+struct pyrotex_ignition_cloth_t : public scoped_action_callback_t<phoenixs_flames_t>
+{
+  pyrotex_ignition_cloth_t() : super( MAGE_FIRE, "phoenixs_flames" )
+  { }
+
+  void manipulate( phoenixs_flames_t* action, const special_effect_t& e ) override
+  { action -> pyrotex_ignition_cloth = true;
+    action -> pyrotex_ignition_cloth_reduction = e.driver() -> effectN( 1 ).time_value(); 
+  }
+};
 // Frost Legendary Items
 struct magtheridons_banished_bracers_t : public scoped_action_callback_t<ice_lance_t>
 {
@@ -9833,6 +9858,7 @@ public:
     unique_gear::register_special_effect( 209450, marquee_bindings_of_the_sun_king_t()   );
     unique_gear::register_special_effect( 209280, mystic_kilt_of_the_rune_master_t()     );
     unique_gear::register_special_effect( 222276, sorcerous_shadowruby_pendant           );
+    unique_gear::register_special_effect( 235940, pyrotex_ignition_cloth_t()             );
   }
 
   virtual void register_hotfixes() const override
