@@ -2331,27 +2331,28 @@ struct death_knight_action_t : public Base
   death_knight_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
 
-  action_energize_e energize_type_() const override
+  virtual double runic_power_generation_multiplier( const action_state_t* s ) const
   {
-    // Harmful actions that do not consume any resources do not generate RP
-    if ( this -> harmful && this -> resource_consumed == 0 )
+    double m = 1.0;
+
+    if ( p() -> talent.rapid_decomposition -> ok() && td( s -> target ) -> in_aoe_radius() )
     {
-      return ENERGIZE_NONE;
+      m *= 1.0 + p() -> talent.rapid_decomposition -> effectN( 4 ).percent();
     }
 
-    return action_base_t::energize_type_();
+    m *= 1.0 + p() -> artifact.runic_tattoos.data().effectN( 1 ).percent();
+
+    return m;
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double amount = action_base_t::composite_energize_amount( s );
 
-    if ( p() -> talent.rapid_decomposition -> ok() && td( s -> target ) -> in_aoe_radius() )
+    if ( this -> energize_resource_() == RESOURCE_RUNIC_POWER )
     {
-      amount *= 1.0 + p() -> talent.rapid_decomposition -> effectN( 4 ).percent();
+      amount *= this -> runic_power_generation_multiplier( s );
     }
-
-    amount  *= 1.0 + p() -> artifact.runic_tattoos.data().effectN( 1 ).percent();
 
     return amount;
   }
@@ -4601,6 +4602,19 @@ struct howling_blast_t : public death_knight_spell_t
     base_aoe_multiplier = data().effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
     base_multiplier    *= 1.0 + p -> artifact.blast_radius.percent();
+  }
+
+  double runic_power_generation_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::runic_power_generation_multiplier( state );
+
+    if ( p() -> buffs.rime -> check() )
+    {
+      m *= 1.0 + ( p() -> buffs.rime -> data().effectN( 3 ).percent() +
+                   p() -> sets.set( DEATH_KNIGHT_FROST, T19, B4 ) -> effectN( 1 ).percent() );
+    }
+
+    return m;
   }
 
   double action_multiplier() const override
@@ -7057,7 +7071,8 @@ void death_knight_t::create_buffs()
                               .add_invalidate(artifact.frozen_core.rank() ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE)
                               .add_invalidate(legendary.toravons ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE);
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
-                              .trigger_spell( spec.rime );
+                              .trigger_spell( spec.rime )
+                              .chance( spec.rime -> proc_chance() + sets.set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() );
   buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
                               .cd( spec.riposte -> internal_cooldown() )
                               .chance( spec.riposte -> proc_chance() )
