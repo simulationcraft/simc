@@ -5762,6 +5762,9 @@ public:
   virtual action_energize_e energize_type_() const
   { return energize_type; }
 
+  virtual gain_t* energize_gain( const action_state_t* /* state */ ) const
+  { return gain; }
+
   // ==========================
   // mutating virtual functions
   // ==========================

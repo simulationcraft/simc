@@ -1540,7 +1540,7 @@ void action_t::execute()
     auto amount = composite_energize_amount( execute_state );
     if ( amount != 0 )
     {
-      player -> resource_gain( energize_resource_(), amount, gain, this );
+      player -> resource_gain( energize_resource_(), amount, energize_gain( execute_state ), this );
     }
   }
   else if ( energize_type_() == ENERGIZE_PER_HIT )
@@ -1548,7 +1548,7 @@ void action_t::execute()
     auto amount = composite_energize_amount( execute_state ) * num_targets_hit;
     if ( amount != 0 )
     {
-      player -> resource_gain( energize_resource_(), amount, gain, this );
+      player -> resource_gain( energize_resource_(), amount, energize_gain( execute_state ), this );
     }
   }
 
