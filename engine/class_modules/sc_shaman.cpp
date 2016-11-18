@@ -4105,7 +4105,8 @@ struct lava_burst_t : public shaman_spell_t
     if ( player -> specialization() == SHAMAN_ELEMENTAL )
     {
       cooldown -> charges = data().charges() +
-        p() -> talent.echo_of_the_elements -> effectN( 2 ).base_value();
+        p() -> talent.echo_of_the_elements -> effectN( 2 ).base_value() +
+        ( maybe_ptr( p() -> dbc.ptr ) ? 1 : 0 );
     }
   }
 
