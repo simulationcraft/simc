@@ -1469,6 +1469,7 @@ struct imp_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" )
   {
     action_list_str = "firebolt";
+    //owner_coeff.sp_from_sp *= 1.1;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -1487,6 +1488,7 @@ struct felguard_pet_t: public warlock_pet_t
     action_list_str += "/felstorm";
     action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
     owner_coeff.ap_from_sp = 1.1; // HOTFIX
+    //owner_coeff.ap_from_sp *= 1.1;
   }
 
   virtual void init_base_stats() override
@@ -1770,6 +1772,8 @@ struct felhunter_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
     action_list_str = "shadow_bite";
+    //owner_coeff.ap_from_sp *= 1.1;
+    //owner_coeff.sp_from_sp *= 1.1;
   }
 
   virtual void init_base_stats() override
@@ -5352,7 +5356,7 @@ struct channel_demonfire_t: public warlock_spell_t
     add_child( channel_demonfire );
 
 
-    if ( maybe_ptr( p -> dbc.ptr ) )
+    if ( !maybe_ptr( p -> dbc.ptr ) )
     {
       backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 4 ).percent();
       backdraft_tick_time = 1.0 + p -> buffs.backdraft -> data().effectN( 3 ).percent();
