@@ -3217,7 +3217,10 @@ struct doom_t: public warlock_spell_t
     energize_amount = 1;
 
     if ( maybe_ptr( p -> dbc.ptr ) && p -> talents.impending_doom -> ok() )
-     base_tick_time += p -> find_spell( 196270 ) -> effectN( 1 ).time_value();
+    {
+      base_tick_time += p -> find_spell( 196270 ) -> effectN( 1 ).time_value();
+      dot_duration += p -> find_spell( 196270 ) -> effectN( 1 ).time_value();
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
