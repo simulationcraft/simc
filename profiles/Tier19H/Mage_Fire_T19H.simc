@@ -47,6 +47,7 @@ actions.combustion_phase+=/berserking
 actions.combustion_phase+=/arcane_torrent
 actions.combustion_phase+=/use_item,slot=finger1
 actions.combustion_phase+=/use_item,slot=trinket2
+actions.combustion_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.up
 actions.combustion_phase+=/fire_blast,if=buff.heating_up.up
 actions.combustion_phase+=/phoenixs_flames
