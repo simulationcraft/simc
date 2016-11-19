@@ -2341,7 +2341,7 @@ public:
     {
       trigger_ashamanes_rip();
 
-      if ( attack_critical )
+      if ( attack_critical && p() -> specialization() == DRUID_FERAL )
       {
         trigger_primal_fury();
       }
@@ -7923,6 +7923,11 @@ void druid_t::shapeshift( form_e f )
   switch ( f )
   {
   case CAT_FORM:
+    if ( buff.rage_of_the_sleeper -> check() )
+    {
+      buff.rage_of_the_sleeper -> expire();
+    }
+
     buff.cat_form -> trigger();
     break;
   case BEAR_FORM:
