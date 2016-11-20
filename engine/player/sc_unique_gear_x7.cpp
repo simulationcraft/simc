@@ -525,31 +525,46 @@ struct thunder_ritual_impact_t : public spell_t
 
   bool pair_multiplied;
   double chest_multiplier;
+  bool pair_buffed;
   cooldown_t* pair_icd;
 
   thunder_ritual_impact_t( const special_effect_t& effect ) :
     spell_t( "thunder_ritual_damage", effect.player, effect.driver() -> effectN( 1 ).trigger() ),
     pair_multiplied( false ),
-    chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) )
+    chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) ),
+    pair_buffed( false )
   {
     background = may_crit = true;
     callbacks = false;
+    pair_icd = effect.player -> get_cooldown( "paired_trinket_icd" );
+    pair_icd -> duration = timespan_t::from_seconds( 60.0 );
     if ( player -> karazhan_trinkets_paired )
     {
-      pair_icd = effect.player -> get_cooldown( "paired_trinket_icd" );
-      pair_icd -> duration = timespan_t::from_seconds( 60.0 );
+
       pair_multiplied = true;
     }
     base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * chest_multiplier;
   }
 
+  virtual void execute() override
+  {
+    // Reset pair checking
+    pair_buffed = false;
+
+    if( pair_multiplied == true && pair_icd -> up() )
+    {
+      pair_buffed = true;
+      pair_icd -> start();
+    }
+    spell_t::execute();
+  }
+
   double action_multiplier() const override
   {
     double am = spell_t::action_multiplier();
-    if ( pair_icd -> up() )
+    if ( pair_buffed )
     {
       am *= 1.3;
-      pair_icd -> start();
     }
     return am;
   }

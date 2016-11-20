@@ -1252,7 +1252,7 @@ struct bladestorm_t: public warrior_attack_t
   {
     if ( p -> talents.ravager -> ok() )
     {
-      background = true; // Ravager replaces bladestorm for arms. 
+      background = true; // Ravager replaces bladestorm for arms.
     }
     else
     {
@@ -1928,7 +1928,7 @@ struct execute_arms_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
-    
+
     base_crit += p -> artifact.deathblow.percent();
     max_rage = p -> talents.dauntless -> ok() ? 32 : 40;
     if ( p -> talents.sweeping_strikes -> ok() )
@@ -1951,7 +1951,7 @@ struct execute_arms_t: public warrior_attack_t
       double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
       am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
     }
-    if ( execute_sweeping_strike ) execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses. 
+    if ( execute_sweeping_strike ) execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses.
 
     am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
 
@@ -2025,7 +2025,7 @@ struct execute_arms_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    
+
 
     if ( execute_sweeping_strike )
     {
@@ -5048,7 +5048,7 @@ void warrior_t::apl_prot()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  std::string food_name = ( true_level > 100 ) ? "seedbattered_fish_plate" :
+  std::string food_name = ( true_level > 100 ) ? "azshari_salad" :
     ( true_level >  90 ) ? "buttered_sturgeon" :
     ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
     ( true_level >= 80 ) ? "seafood_magnifique_feast" :
@@ -5063,10 +5063,9 @@ void warrior_t::apl_prot()
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* prot = get_action_priority_list( "prot" );
-  action_priority_list_t* prot_aoe = get_action_priority_list( "prot_aoe" );
 
-  default_list -> add_action( this, "intercept" );
   default_list -> add_action( "auto_attack" );
+  default_list -> add_action( this, "intercept" );
 
   size_t num_items = items.size();
   for ( size_t i = 0; i < num_items; i++ )
@@ -5076,50 +5075,37 @@ void warrior_t::apl_prot()
       default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
+
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
 
   default_list -> add_action( "call_action_list,name=prot" );
 
-  //defensive
-  prot -> add_action( this, "Shield Block", "if=!buff.neltharions_fury.up&((cooldown.shield_slam.remains<6&!buff.shield_block.up)|(cooldown.shield_slam.remains<6+buff.shield_block.remains&buff.shield_block.up))" );
-  prot -> add_action( this, "Ignore Pain", "if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&buff.ultimatum.up)|(buff.vengeance_ignore_pain.up&rage>=39)|(talent.vengeance.enabled&!buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage<30)" );
-  prot -> add_action( this, "Focused Rage", "if=(buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(buff.ultimatum.up&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage>=30)|(buff.ultimatum.up&buff.vengeance_ignore_pain.up&cooldown.shield_slam.remains=0&rage<10)|(rage>=100)" );
-  prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20" );
-  prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.50" );
-  prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.50&!cooldown.shield_wall.remains=0" );
-  prot -> add_action( this, "Spell Reflect", "if=incoming_damage_2500ms>health.max*0.20" );
+  // defensive cooldowns
+  prot -> add_action( this, "Spell Reflection", "if=incoming_damage_2500ms>health.max*0.20" );
   prot -> add_action( this, "Stoneform", "if=incoming_damage_2500ms>health.max*0.15" );
+  prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20" );
+  prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.50" );
+  prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.50&!cooldown.last_stand.remains=0" );
 
-  //potion
   if ( sim -> allow_potions && true_level >= 80 )
   {
     prot -> add_action( "potion,name=" + potion_name + ",if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
   }
 
-  //dps-single-target
-  prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.neltharions_fury>=2" );
-  prot -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
-  prot -> add_action( this, "Battle Cry", "if=(talent.vengeance.enabled&talent.ultimatum.enabled&cooldown.shield_slam.remains<=5-gcd.max-0.5)|!talent.vengeance.enabled" );
+  prot -> add_action( this, "Battle Cry", "if=cooldown.shield_slam.remains=0" );
   prot -> add_action( this, "Avatar", "if=talent.avatar.enabled&buff.battle_cry.up" );
   prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&buff.battle_cry.up" );
   prot -> add_action( this, "Ravager", "if=talent.ravager.enabled&buff.battle_cry.up" );
-  prot -> add_action( this, "Neltharion's Fury", "if=incoming_damage_2500ms>health.max*0.20&!buff.shield_block.up" );
+  prot -> add_action( this, "Neltharion's Fury", "if=!buff.shield_block.up&cooldown.shield_block.remains>3&cooldown.shield_slam.remains>3" );
+  prot -> add_action( this, "Shield Block", "if=!buff.neltharions_fury.up&(cooldown.shield_slam.remains=0|action.shield_block.charges=2)" );
   prot -> add_action( this, "Shield Slam", "if=!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up&talent.heavy_repercussions.enabled)" );
-  prot -> add_action( this, "Revenge", "if=cooldown.shield_slam.remains<=gcd.max*2" );
+  prot -> add_action( this, "Impending Victory", "if=cooldown.shield_slam.remains<=gcd.max*1.5&health.pct<=70" );
+  prot -> add_action( this, "Revenge", "if=cooldown.shield_slam.remains<=gcd.max*1.5|spell_targets.revenge>=2" );
+  prot -> add_action( this, "Ignore Pain", "if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&rage>=39)|(talent.vengeance.enabled&!buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage<30)" );
+  prot -> add_action( this, "Focused Rage", "if=(buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up&rage>=59)|(buff.ultimatum.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage>=69)|(rage>=100)" );
+  prot -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap>=4" );
   prot -> add_action( this, "Devastate" );
-
-  //dps-aoe
-  prot_aoe -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
-  prot_aoe -> add_action( this, "Battle Cry", "if=(talent.vengeance.enabled&talent.ultimatum.enabled&cooldown.shield_slam.remains<=5-gcd.max-0.5)|!talent.vengeance.enabled" );
-  prot_aoe -> add_action( this, "Avatar", "if=talent.avatar.enabled&buff.battle_cry.up" );
-  prot_aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&buff.battle_cry.up" );
-  prot_aoe -> add_action( this, "Ravager", "if=talent.ravager.enabled&buff.battle_cry.up" );
-  prot_aoe -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
-  prot_aoe -> add_action( this, "Shield Slam", "if=!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up&talent.heavy_repercussions.enabled)" );
-  prot_aoe -> add_action( this, "Revenge" );
-  prot_aoe -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap>=3" );
-  prot_aoe -> add_action( this, "Devastate" );
 }
 
 // NO Spec Combat Action Priority List
