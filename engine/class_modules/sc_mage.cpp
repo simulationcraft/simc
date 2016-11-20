@@ -9022,18 +9022,6 @@ double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
-
-
-
-
-
-
-
-
-
-
-
-
   if ( spec.critical_mass -> ok() )
   {
     c += spec.critical_mass -> effectN( 1 ).percent();
