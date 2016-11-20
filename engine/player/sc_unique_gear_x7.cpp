@@ -86,6 +86,7 @@ namespace item
   // Legendary
 
   void aggramars_stride( special_effect_t& );
+  void kiljadens_burning_wish( special_effect_t& );
 
 
 
@@ -1732,6 +1733,34 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+
+// Kil'jaeden's Burning Wish ================================================
+struct kiljaedens_burning_wish_t : public spell_t
+{
+  kiljaedens_burning_wish_t( const special_effect_t& effect ) :
+    spell_t( "kiljaedens_burning_wish", effect.player, effect.player -> find_spell( 235999 ) )
+  {
+    background = may_crit = true;
+    aoe = -1;
+    item = effect.item;
+    school = SCHOOL_NONE; // FIXME: Spelldata says physical. Is it really?
+
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+
+    aoe = -1;
+
+    //FIXME: Assume this is kind of slow from wording.
+    //       Get real velocity from in game data after raids open.
+    travel_speed = 25;
+  }
+
+};
+
+void item::kiljadens_burning_wish( special_effect_t& effect )
+{
+  effect.execute_action = new kiljaedens_burning_wish_t( effect );
+  effect.execute_action -> execute();
+}
 // Nature's Call ============================================================
 
 // Helper class so we can handle all of the procs as 1 object.
@@ -3335,6 +3364,7 @@ void unique_gear::register_special_effects_x7()
   /* Legendaries */
   register_special_effect( 207692, cinidaria_the_symbiote_t() );
   register_special_effect( 207438, item::aggramars_stride );
+  register_special_effect( 235991, item::kiljadens_burning_wish );
 
   /* Consumables */
   register_special_effect( 188028, consumable::potion_of_the_old_war );
