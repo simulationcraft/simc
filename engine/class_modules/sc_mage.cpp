@@ -4071,8 +4071,7 @@ struct evocation_t : public arcane_mage_spell_t
     triggers_arcane_missiles = false;
 
     cooldown = p -> cooldowns.evocation;
-    cooldown -> duration += p -> spec.evocation_2 -> effectN( 1 ).time_value();
-
+    cooldown -> duration *= -p -> spec.evocation_2 -> effectN( 1 ).percent();
     if ( p -> artifact.aegwynns_ascendance.rank() )
     {
       aegwynns_ascendance = new aegwynns_ascendance_t( p );
