@@ -29,7 +29,8 @@ actions+=/berserking
 actions+=/arcane_torrent
 actions+=/call_action_list,name=prot
 
-actions.prot=demoralizing_shout,if=incoming_damage_2500ms>health.max*0.20
+actions.prot=spell_reflection,if=incoming_damage_2500ms>health.max*0.20
+actions.prot+=/demoralizing_shout,if=incoming_damage_2500ms>health.max*0.20
 actions.prot+=/last_stand,if=incoming_damage_2500ms>health.max*0.50
 actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.50&!cooldown.last_stand.remains=0
 actions.prot+=/potion,name=unbending_potion,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25

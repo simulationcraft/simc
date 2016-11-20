@@ -5082,7 +5082,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( "call_action_list,name=prot" );
 
   // defensive cooldowns
-  prot -> add_action( this, "Spell Reflect", "if=incoming_damage_2500ms>health.max*0.20" );
+  prot -> add_action( this, "Spell Reflection", "if=incoming_damage_2500ms>health.max*0.20" );
   prot -> add_action( this, "Stoneform", "if=incoming_damage_2500ms>health.max*0.15" );
   prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20" );
   prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.50" );
