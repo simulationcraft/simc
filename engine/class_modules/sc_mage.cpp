@@ -8706,7 +8706,7 @@ void mage_t::apl_fire()
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.combustion.down" );
-  default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&(cooldown.flame_on.remains<5|cooldown.flame_on.remains>30)&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
+  default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
@@ -8747,7 +8747,6 @@ void mage_t::apl_fire()
   rop_phase        -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454" );
   rop_phase        -> add_action( this, "Fireball" );
 
-  active_talents   -> add_talent( this, "Flame On", "if=action.fire_blast.charges=0&(cooldown.combustion.remains>40+(talent.kindling.enabled*25)|target.time_to_die.remains<cooldown.combustion.remains)" );
   active_talents   -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)" );
   active_talents   -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up" );
   active_talents   -> add_talent( this, "Cinderstorm", "if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up" );
