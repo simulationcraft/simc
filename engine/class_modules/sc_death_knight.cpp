@@ -368,7 +368,6 @@ struct death_knight_td_t : public actor_target_data_t {
     dot_t* defile;
     dot_t* frost_fever;
     dot_t* outbreak;
-    dot_t* remorseless_winter;
     dot_t* soul_reaper;
     dot_t* virulent_plague;
   } dot;
@@ -424,6 +423,9 @@ public:
 
   stats_t*  antimagic_shell;
 
+  // Misc
+  std::vector<player_t*> frozen_soul_targets; // List of unique targets damaged by Remorseless Winter
+
   // Buffs
   struct buffs_t {
     buff_t* army_of_the_dead;
@@ -445,6 +447,8 @@ public:
     buff_t* sudden_doom;
     buff_t* vampiric_blood;
     buff_t* will_of_the_necropolis;
+    buff_t* remorseless_winter;
+    buff_t* frozen_soul;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -542,6 +546,7 @@ public:
 
     // Frost
     const spell_data_t* frost_fever;
+    const spell_data_t* remorseless_winter;
     const spell_data_t* runic_empowerment;
     const spell_data_t* killing_machine;
     const spell_data_t* rime;
@@ -902,7 +907,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dot.defile             = target -> get_dot( "defile",             death_knight );
   dot.frost_fever        = target -> get_dot( "frost_fever",        death_knight );
   dot.outbreak           = target -> get_dot( "outbreak",           death_knight );
-  dot.remorseless_winter = target -> get_dot( "remorseless_winter", death_knight );
   dot.soul_reaper        = target -> get_dot( "soul_reaper_dot",    death_knight );
   dot.virulent_plague    = target -> get_dot( "virulent_plague",    death_knight );
 
@@ -2363,17 +2367,18 @@ struct death_knight_action_t : public Base
   {
     action_base_t::consume_resource();
 
-    // TODO: Remorseless winter really needs to be targeted to the dk
-    // TODO: How does Remorseless Winter tick with half-tick extensions?
-    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 &&
-         p() -> talent.gathering_storm -> ok() )
+    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 && p() -> talent.gathering_storm -> ok() )
     {
+      // Gathering storm always benefits from the "base rune cost", even if something would adjust
+      // it
       unsigned consumed = static_cast<unsigned>( this -> base_costs[ RESOURCE_RUNE ] );
-      if ( td( this -> target ) -> dot.remorseless_winter -> is_ticking() )
+      // Don't allow Relentless Winter itself to trigger Gathering Storm
+      if ( p() -> buffs.remorseless_winter -> check() &&
+           this -> data().id() != p() -> spec.remorseless_winter -> id() )
       {
         p() -> buffs.gathering_storm -> trigger( consumed );
         timespan_t base_extension = timespan_t::from_seconds( p() -> talent.gathering_storm -> effectN( 1 ).base_value() / 10.0 );
-        td( this -> target ) -> dot.remorseless_winter -> extend_duration( base_extension * consumed );
+        p() -> buffs.remorseless_winter -> extend_duration( p(), base_extension * consumed );
       }
     }
 
@@ -2970,6 +2975,65 @@ struct pestilence_t : public death_knight_spell_t
     hasted_ticks = may_crit = tick_may_crit =false;
     background = true;
     dot_max_stack = data().max_stacks();
+  }
+};
+
+// Remorseless Winter (aoe damage) ==========================================
+
+struct remorseless_winter_damage_t : public death_knight_spell_t
+{
+  remorseless_winter_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "remorseless_winter_damage", p, p -> find_spell( 196771 ) )
+  {
+    background = true;
+    aoe = -1;
+    base_multiplier *= 1.0 + p -> artifact.dead_of_winter.percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> buffs.gathering_storm -> stack_value();
+
+    return m;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( p() -> artifact.frozen_soul.rank() &&
+         state -> result_amount > 0 &&
+         range::find( p() -> frozen_soul_targets, state -> target ) == p() -> frozen_soul_targets.end() )
+    {
+      p() -> frozen_soul_targets.push_back( state -> target );
+      p() -> buffs.frozen_soul -> trigger();
+    }
+  }
+};
+
+// Frozen Soul damage
+
+struct frozen_soul_t : public death_knight_spell_t
+{
+  double per_target_multiplier;
+
+  frozen_soul_t( death_knight_t* p ) :
+    death_knight_spell_t( "frozen_soul", p, p -> find_spell( 204959 ) ),
+    per_target_multiplier( p -> artifact.frozen_soul.data().effectN( 2 ).percent() )
+  {
+    background = true;
+    aoe = -1;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    m *= 1.0 + per_target_multiplier * p() -> frozen_soul_targets.size();
+
+    return m;
   }
 };
 
@@ -5123,85 +5187,35 @@ struct raise_dead_t : public death_knight_spell_t
 
 // Remorseless Winter =======================================================
 
-struct frozen_soul_t : public death_knight_spell_t
-{
-  const std::vector<player_t*>& targets;
-
-  frozen_soul_t( death_knight_t* p, std::vector<player_t*>& t ) :
-    death_knight_spell_t( "frozen_soul", p, p -> find_spell( 204959 ) ),
-    targets( t )
-  {
-    background = true;
-    aoe = -1;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> artifact.frozen_soul.data().effectN( 2 ).percent() * targets.size();
-
-    return m;
-  }
-};
-
-struct remorseless_winter_damage_t : public death_knight_spell_t
-{
-  std::vector<player_t*>& targets;
-
-  remorseless_winter_damage_t( death_knight_t* p, std::vector<player_t*>& t ) :
-    death_knight_spell_t( "remorseless_winter_damage", p, p -> find_spell( 196771 ) ),
-    targets( t )
-  {
-    background = true;
-    aoe = -1;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    if ( p() -> artifact.frozen_soul.rank() &&
-         range::find( targets, state -> target ) == targets.end() )
-    {
-      targets.push_back( state -> target );
-    }
-  }
-};
-
-// LEGION-TODO: Proper targeting
 struct remorseless_winter_t : public death_knight_spell_t
 {
-  std::vector<player_t*> targets;
-  frozen_soul_t* frozen_soul;
-
   remorseless_winter_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "remorseless_winter", p, p -> find_specialization_spell( "Remorseless Winter" ) ),
-    frozen_soul( p -> artifact.frozen_soul.rank() ? new frozen_soul_t( p, targets ) : nullptr )
+    death_knight_spell_t( "remorseless_winter", p, p -> spec.remorseless_winter )
   {
+    may_crit = may_miss = may_dodge = may_parry = false;
+
     parse_options( options_str );
 
-    hasted_ticks = false;
-    base_multiplier *= 1.0 + p -> artifact.dead_of_winter.percent();
-    tick_action = new remorseless_winter_damage_t( p, targets );
-  }
+    // Periodic behavior handled by the buff
+    dot_duration = timespan_t::zero();
+    base_tick_time = timespan_t::zero();
 
-  void last_tick( dot_t* d ) override
-  {
-    death_knight_spell_t::last_tick( d );
-
-    if ( p() -> artifact.frozen_soul.rank() && targets.size() > 0 )
+    if ( action_t* rw_damage = p -> find_action( "remorseless_winter_damage" ) )
     {
-      frozen_soul -> target = target;
-      frozen_soul -> execute();
-      targets.clear();
+      add_child( rw_damage );
+    }
+
+    if ( action_t* frozen_soul = p -> find_action( "frozen_soul" ) )
+    {
+      add_child( frozen_soul );
     }
   }
 
-  void reset() override
+  void execute() override
   {
-    death_knight_spell_t::reset();
-    targets.clear();
+    death_knight_spell_t::execute();
+
+    p() -> buffs.remorseless_winter -> trigger();
   }
 };
 
@@ -5982,6 +5996,80 @@ struct antimagic_barrier_buff_t : public health_pct_increase_buff_t<buff_t, buff
   }
 };
 
+// Remorseless Winter
+
+struct remorseless_winter_buff_t : public buff_t
+{
+  buff_t*                      gathering_storm; // Gathering Storm buff, needs expiration on trigger
+  remorseless_winter_damage_t* damage; // (AOE) damage that ticks every second
+
+  remorseless_winter_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "remorseless_winter" )
+      .cd( timespan_t::zero() ) // Controlled by the action
+      .spell( p -> spec.remorseless_winter )
+      .refresh_behavior( BUFF_REFRESH_DURATION )
+      .tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
+        damage -> execute();
+      } ) ),
+    gathering_storm( buff_t::find( p, "gathering_storm" ) ),
+    damage( new remorseless_winter_damage_t( p ) )
+  { }
+
+  void execute( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
+  {
+    buff_t::execute( stacks, value, duration );
+
+    // Executing remorseless winter (either new buff or refresh) will cancel any accumulated
+    // Gathering Storms stacks
+    if ( gathering_storm )
+    {
+      gathering_storm -> expire();
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    // Technically, the clearing of Frozen Soul targets should probably happen in frozen_soul_t
+    // (i.e., the damage). However, in game the Frozen Soul (the buff) resets its duration only when
+    // new targets are damaged. Since Gathering Storm can extend Remorseless Winter duration past
+    // the expiration point of Frozen Soul, the explosion may occur early. The Remorseless Winter
+    // pulses after Frozen Soul explosion will not trigger a new Frozen Soul buff, unless new
+    // targets are damaged. Thus, the target list must be cleared after Remorseless Winter expires,
+    // for now.
+    damage -> p() -> frozen_soul_targets.clear();
+  }
+};
+
+// Frozen Soul
+
+struct frozen_soul_buff_t : public buff_t
+{
+  frozen_soul_t* damage;
+
+  frozen_soul_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "frozen_soul" )
+      .spell( p -> find_spell( 189184 ) )
+      .max_stack( p -> artifact.frozen_soul.data().effectN( 1 ).base_value() )
+      .default_value( p -> artifact.frozen_soul.data().effectN( 2 ).percent() )
+      .duration( p -> spec.remorseless_winter -> duration() ) ),
+    damage( new frozen_soul_t( p ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    // Don't trigger damage at the end of iteration when the buff is forcibly expired. Note that
+    // this breaks "cancel buff" behavior, but it is going away in 7.1.5 apparently.
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      damage -> execute();
+    }
+  }
+};
+
 } // UNNAMED NAMESPACE
 
 // Runeforges ==============================================================
@@ -6447,6 +6535,7 @@ void death_knight_t::init_spells()
 
   // Frost
   spec.frost_fever                = find_specialization_spell( "Frost Fever" );
+  spec.remorseless_winter         = find_specialization_spell( "Remorseless Winter" );
   spec.runic_empowerment          = find_specialization_spell( "Runic Empowerment" );
   spec.rime                       = find_specialization_spell( "Rime" );
   spec.killing_machine            = find_specialization_spell( "Killing Machine" );
@@ -7187,6 +7276,11 @@ void death_knight_t::create_buffs()
     .trigger_spell( sets.set( specialization(), T19OH, B8 ) );
 
   buffs.frozen_pulse = buff_creator_t( this, "frozen_pulse", talent.frozen_pulse );
+
+  buffs.frozen_soul = new frozen_soul_buff_t( this );
+
+  // Must be created after Gathering Storms buff (above) to get correct linkage
+  buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -7300,13 +7394,16 @@ void death_knight_t::init_absorb_priority()
 
 // death_knight_t::reset ====================================================
 
-void death_knight_t::reset() {
+void death_knight_t::reset()
+{
   player_t::reset();
+
   runic_power_decay_rate = 1; // 1 RP per second decay
   antimagic_shell_absorbed = 0.0;
   pestilent_pustules = 0;
   crystalline_swords = 0;
   _runes.reset();
+  frozen_soul_targets.clear();
 }
 
 // death_knight_t::assess_heal ==============================================
