@@ -424,7 +424,7 @@ public:
   stats_t*  antimagic_shell;
 
   // Misc
-  std::vector<player_t*> frozen_soul_targets; // List of unique targets damaged by Remorseless Winter
+  std::vector<player_t*> rw_damage_targets; // List of unique targets damaged by Remorseless Winter
 
   // Buffs
   struct buffs_t {
@@ -739,6 +739,7 @@ public:
     // Frost
     const spell_data_t* koltiras_newfound_will;
     const spell_data_t* seal_of_necrofantasia;
+    const spell_data_t* perseverance_of_the_ebon_martyr;
     double toravons;
 
     // Unholy
@@ -750,6 +751,7 @@ public:
     legendary_t() :
       koltiras_newfound_will( spell_data_t::not_found() ),
       seal_of_necrofantasia( spell_data_t::not_found() ),
+      perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
       toravons( 0 ), the_instructors_fourth_lesson( 0 ), draugr_girdle_everlasting_king( 0 ),
       uvanimor_the_unbeautiful( 0 ), death_march( timespan_t::zero() )
     { }
@@ -3003,11 +3005,10 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( p() -> artifact.frozen_soul.rank() &&
-         state -> result_amount > 0 &&
-         range::find( p() -> frozen_soul_targets, state -> target ) == p() -> frozen_soul_targets.end() )
+    if ( state -> result_amount > 0 &&
+         range::find( p() -> rw_damage_targets, state -> target ) == p() -> rw_damage_targets.end() )
     {
-      p() -> frozen_soul_targets.push_back( state -> target );
+      p() -> rw_damage_targets.push_back( state -> target );
       p() -> buffs.frozen_soul -> trigger();
     }
   }
@@ -3031,7 +3032,7 @@ struct frozen_soul_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::action_multiplier();
 
-    m *= 1.0 + per_target_multiplier * p() -> frozen_soul_targets.size();
+    m *= 1.0 + per_target_multiplier * p() -> rw_damage_targets.size();
 
     return m;
   }
@@ -4725,6 +4726,21 @@ struct howling_blast_t : public death_knight_spell_t
     return m;
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_spell_t::composite_target_multiplier( target );
+
+    // Technically, this should probably be keyed on the Remorseless Winter debuff, but this will do
+    // for now.
+    if ( p() -> legendary.perseverance_of_the_ebon_martyr -> ok() &&
+         range::find( p() -> rw_damage_targets, target ) != p() -> rw_damage_targets.end() )
+    {
+      m *= 1.0 + p() -> legendary.perseverance_of_the_ebon_martyr -> effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   double cost() const override
   {
     if ( p() -> buffs.rime -> check() )
@@ -6038,7 +6054,7 @@ struct remorseless_winter_buff_t : public buff_t
     // pulses after Frozen Soul explosion will not trigger a new Frozen Soul buff, unless new
     // targets are damaged. Thus, the target list must be cleared after Remorseless Winter expires,
     // for now.
-    damage -> p() -> frozen_soul_targets.clear();
+    damage -> p() -> rw_damage_targets.clear();
   }
 };
 
@@ -6051,7 +6067,9 @@ struct frozen_soul_buff_t : public buff_t
   frozen_soul_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "frozen_soul" )
       .spell( p -> find_spell( 189184 ) )
-      .max_stack( p -> artifact.frozen_soul.data().effectN( 1 ).base_value() )
+      .max_stack( p -> artifact.frozen_soul.rank()
+        ? p -> artifact.frozen_soul.data().effectN( 1 ).base_value()
+        : 1 )
       .default_value( p -> artifact.frozen_soul.data().effectN( 2 ).percent() )
       .duration( p -> spec.remorseless_winter -> duration() ) ),
     damage( new frozen_soul_t( p ) )
@@ -7403,7 +7421,7 @@ void death_knight_t::reset()
   pestilent_pustules = 0;
   crystalline_swords = 0;
   _runes.reset();
-  frozen_soul_targets.clear();
+  rw_damage_targets.clear();
 }
 
 // death_knight_t::assess_heal ==============================================
@@ -8281,6 +8299,15 @@ struct seal_of_necrofantasia_t : public scoped_actor_callback_t<death_knight_t>
   { p -> legendary.seal_of_necrofantasia = e.driver(); }
 };
 
+struct perseverance_of_the_ebon_martyr_t : public scoped_actor_callback_t<death_knight_t>
+{
+  perseverance_of_the_ebon_martyr_t() : super( DEATH_KNIGHT )
+  { }
+
+  void manipulate( death_knight_t* p, const special_effect_t& e ) override
+  { p -> legendary.perseverance_of_the_ebon_martyr = e.driver(); std::cerr << "super" << std::endl; }
+};
+
 struct death_knight_module_t : public module_t {
   death_knight_module_t() : module_t( DEATH_KNIGHT ) {}
 
@@ -8308,6 +8335,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 208786, uvanimor_the_unbeautiful_t() );
     unique_gear::register_special_effect( 208782, koltiras_newfound_will_t() );
     unique_gear::register_special_effect( 212216, seal_of_necrofantasia_t() );
+    unique_gear::register_special_effect( 216059, perseverance_of_the_ebon_martyr_t() );
     // 7.1.5
     unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
