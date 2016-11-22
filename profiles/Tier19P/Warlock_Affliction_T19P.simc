@@ -27,7 +27,8 @@ actions.precombat+=/potion,name=deadly_grace
 actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 
 # Executed every time the actor is available.
-actions=reap_souls,if=actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react)
+actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react|trinket.stacking_proc.any.react)
+actions+=/reap_souls,if=!buff.deadwind_harvester.remains&!trinket.has_stacking_stat.any&!trinket.has_stat.any&prev_gcd.unstable_affliction
 actions+=/soul_effigy,if=!pet.soul_effigy.active
 actions+=/agony,cycle_targets=1,if=remains<=tick_time+gcd
 actions+=/service_pet,if=dot.corruption.remains&dot.agony.remains
@@ -43,15 +44,22 @@ actions+=/potion,name=deadly_grace,if=buff.soul_harvest.remains|trinket.proc.any
 actions+=/corruption,cycle_targets=1,if=remains<=tick_time+gcd
 actions+=/siphon_life,cycle_targets=1,if=remains<=tick_time+gcd
 actions+=/mana_tap,if=ptr=0&buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=gcd)&target.time_to_die>buff.mana_tap.duration*0.3
+actions+=/life_tap,if=ptr=1&talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd
 actions+=/phantom_singularity
-actions+=/unstable_affliction,if=talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)
+actions+=/haunt,if=ptr=1
+actions+=/unstable_affliction,if=ptr=1&talent.writhe_in_agony.enabled&talent.contagion.enabled
+actions+=/unstable_affliction,if=ptr=1&talent.writhe_in_agony.enabled&(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)
+actions+=/unstable_affliction,if=ptr=1&talent.malefic_grasp.enabled&(target.time_to_die<30|dot.agony.remains>cast_time+8*spell_haste&(dot.corruption.remains>cast_time+8*spell_haste|talent.absolute_corruption.enabled)&(dot.siphon_life.remains>cast_time+8*spell_haste|!talent.siphon_life.enabled)|soul_shard>=4)
+actions+=/unstable_affliction,if=ptr=1&talent.haunt.enabled&(soul_shard>=4|debuff.haunt.remains|target.time_to_die<30)
+actions+=/unstable_affliction,if=ptr=0&talent.contagion.enabled|(soul_shard>=4|trinket.proc.intellect.react|trinket.stacking_proc.mastery.react|trinket.proc.mastery.react|trinket.proc.crit.react|trinket.proc.versatility.react|buff.soul_harvest.remains|buff.deadwind_harvester.remains|buff.compounding_horror.react=5|target.time_to_die<=20)
+actions+=/life_tap,if=ptr=1&talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3
 actions+=/agony,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains
 actions+=/corruption,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains
 actions+=/haunt
 actions+=/siphon_life,cycle_targets=1,if=remains<=duration*0.3&target.time_to_die>=remains
 actions+=/life_tap,if=mana.pct<=10
 actions+=/drain_soul,chain=1,interrupt=1
-actions+=/drain_life,chain=1,interrupt=1
+actions+=/drain_life,chain=1,interrupt=1,if=ptr=0
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
