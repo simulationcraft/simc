@@ -510,6 +510,7 @@ public:
   {
     // Arcane
     artifact_power_t arcane_rebound,
+                     ancient_power,
                      everywhere_at_once, //NYI
                      arcane_purification,
                      aegwynns_imperative,
@@ -544,7 +545,8 @@ public:
                      burning_gaze,
                      big_mouth, //NYI
                      blast_furnace,
-                     wings_of_flame;
+                     wings_of_flame,
+                     empowered_spellblade;
 
     // Frost
     artifact_power_t ebonbolt,
@@ -563,7 +565,8 @@ public:
                      orbital_strike,
                      icy_hand,
                      ice_age,
-                     chilled_to_the_core;
+                     chilled_to_the_core,
+                     spellborne;
   } artifact;
 
 public:
@@ -2110,6 +2113,10 @@ struct arcane_mage_spell_t : public mage_spell_t
          am *= 1.0 + p() -> artifact.might_of_the_guardians.percent();
       }
 
+      if ( p() -> artifact.ancient_power && school == SCHOOL_ARCANE )
+      {
+        am *= 1.0 + p() -> artifact.ancient_power.percent();
+      }
     return am;
   }
 
@@ -2339,6 +2346,11 @@ struct fire_mage_spell_t : public mage_spell_t
       {
          am *= 1.0 + p() -> artifact.wings_of_flame.percent();
       }
+
+      if ( p() -> artifact.empowered_spellblade && school == SCHOOL_FIRE )
+      {
+        am *= 1.0 + p() -> artifact.empowered_spellblade.percent();
+      }
     return am;
   }
 };
@@ -2451,6 +2463,10 @@ struct frost_mage_spell_t : public mage_spell_t
     // Divide effect percent by 10 to convert 5 into 0.5%, not into 5%.
     am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() / 10 );
 
+    if ( p() -> artifact.spellborne && school == SCHOOL_FROST )
+    {
+      am *= 1.0 + p() -> artifact.spellborne.percent();
+    }
     return am;
   }
 
@@ -7874,6 +7890,7 @@ void mage_t::init_spells()
   artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"     );
   artifact.ethereal_sensitivity    = find_artifact_spell( "Ethereal Sensitivity"   );
   artifact.touch_of_the_magi       = find_artifact_spell( "Touch of the Magi"      );
+  artifact.ancient_power           = find_artifact_spell( "Ancient Power"          );
   //Fire
   artifact.aftershocks             = find_artifact_spell( "Aftershocks"            );
   artifact.scorched_earth          = find_artifact_spell( "Scorched Earth"         );
@@ -7892,6 +7909,7 @@ void mage_t::init_spells()
   artifact.burning_gaze            = find_artifact_spell( "Burning Gaze"           );
   artifact.blast_furnace           = find_artifact_spell( "Blast Furnace"          );
   artifact.wings_of_flame          = find_artifact_spell( "Wings of Flame"         );
+  artifact.empowered_spellblade    = find_artifact_spell( "Empowered Spellblade"   );
   //Frost
   artifact.ebonbolt                = find_artifact_spell( "Ebonbolt"               );
   artifact.jouster                 = find_artifact_spell( "Jouster"                );
@@ -7910,6 +7928,7 @@ void mage_t::init_spells()
   artifact.chilled_to_the_core     = find_artifact_spell( "Chilled To The Core"    );
   artifact.shattering_bolts        = find_artifact_spell( "Shattering Bolts"       );
   artifact.ice_nine                = find_artifact_spell( "Ice Nine"               );
+  artifact.spellborne              = find_artifact_spell( "Spellborne"             );
 
 
   // Spec Spells
@@ -8676,6 +8695,7 @@ void mage_t::apl_fire()
     combustion_phase -> add_action( non_special_item_actions[i] );
   }
   combustion_phase -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
+  combustion_phase -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time" );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
   combustion_phase -> add_action( this, "Phoenix's Flames" );

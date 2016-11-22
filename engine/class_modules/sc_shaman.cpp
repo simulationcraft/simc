@@ -4102,9 +4102,11 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::init();
 
-    if ( player -> specialization() == SHAMAN_ELEMENTAL )
+    if ( p() -> specialization() == SHAMAN_ELEMENTAL &&
+         p() -> talent.echo_of_the_elements -> ok() )
     {
-      cooldown -> charges += p() -> talent.echo_of_the_elements -> effectN( 2 ).base_value();
+      cooldown -> charges = data().charges() +
+        p() -> talent.echo_of_the_elements -> effectN( 2 ).base_value();
     }
   }
 

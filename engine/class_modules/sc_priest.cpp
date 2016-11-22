@@ -3774,14 +3774,16 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
   struct insanity_loss_event_t final : public player_event_t
   {
     voidform_t* vf;
-    static constexpr double drain_interval = 0.05;
 
     insanity_loss_event_t( voidform_t* s )
       : player_event_t( *s->player,
-                        timespan_t::from_seconds( drain_interval ) ),
+                        timespan_t::from_seconds( drain_interval() ) ),
         vf( s )
     {
     }
+
+    double drain_interval() const
+    { return 0.05; }
 
     const char* name() const override
     {
@@ -3832,7 +3834,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
       // Adjust from Insanity Loss per second to Insanity Loss per drain
       // interval
-      double insanity_loss = insanity_loss_per_second / drain_interval;
+      double insanity_loss = insanity_loss_per_second * drain_interval();
 
       if ( insanity_loss > priest->resources.current[ RESOURCE_INSANITY ] )
       {

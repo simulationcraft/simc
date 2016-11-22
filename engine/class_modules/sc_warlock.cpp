@@ -291,6 +291,7 @@ public:
     bool stretens_insanity;
     timespan_t wilfreds_sigil_of_superior_summoning;
     double power_cord_of_lethtendris_chance;
+
   } legendary;
 
   // Glyphs
@@ -2182,8 +2183,6 @@ private:
     gain = player -> get_gain( name_str );
 
     can_havoc = false;
-    if ( aoe == 0 )
-      can_havoc = true;
 
     affected_by_contagion = true;
     destro_mastery = true;
@@ -2700,6 +2699,9 @@ struct unstable_affliction_t: public warlock_spell_t
       dual = true;
       tick_may_crit = hasted_ticks = true;
       affected_by_contagion = false;
+
+      if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
+        base_multiplier *= 1.0 + p -> sets.set( WARLOCK_AFFLICTION, T19, B2 ) -> effectN( 1 ).percent();
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -2748,8 +2750,6 @@ struct unstable_affliction_t: public warlock_spell_t
 
         base_tick_time *= 1.0 + period_value;
       }
-
-      snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT | STATE_HASTE;
     }
 
     void tick( dot_t* d ) override
@@ -2859,9 +2859,6 @@ struct unstable_affliction_t: public warlock_spell_t
     spell_power_mod.direct = ptr_spell -> effectN( 1 ).sp_coeff();
     dot_duration = timespan_t::zero(); // DoT managed by ignite action.
     affected_by_contagion = false;
-
-    if ( p -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
-      base_multiplier *= 1.0 + p -> sets.set( WARLOCK_AFFLICTION, T19, B2 ) -> effectN( 1 ).percent();
   }
 
   double cost() const override
@@ -3217,7 +3214,10 @@ struct doom_t: public warlock_spell_t
     energize_amount = 1;
 
     if ( maybe_ptr( p -> dbc.ptr ) && p -> talents.impending_doom -> ok() )
-     base_tick_time += p -> find_spell( 196270 ) -> effectN( 1 ).time_value();
+    {
+      base_tick_time += p -> find_spell( 196270 ) -> effectN( 1 ).time_value();
+      dot_duration += p -> find_spell( 196270 ) -> effectN( 1 ).time_value();
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3489,6 +3489,8 @@ struct immolate_t: public warlock_spell_t
   {
     const spell_data_t* dmg_spell = player -> find_spell( 157736 );
 
+    can_havoc = true;
+
     base_tick_time = dmg_spell -> effectN( 1 ).period();
     dot_duration = dmg_spell -> duration();
     spell_power_mod.tick = dmg_spell -> effectN( 1 ).sp_coeff();
@@ -3569,6 +3571,8 @@ struct conflagrate_t: public warlock_spell_t
   {
     energize_type = ENERGIZE_ON_CAST;
     base_duration = p -> find_spell( 117828 ) -> duration();
+
+    can_havoc = true;
 
     cooldown -> charges += p -> spec.conflagrate_2 -> effectN( 1 ).base_value();
 
@@ -3661,6 +3665,8 @@ struct incinerate_t: public warlock_spell_t
     if ( p -> talents.fire_and_brimstone -> ok() )
       aoe = -1;
 
+    can_havoc = true;
+
     base_execute_time *= 1.0 + p -> artifact.fire_and_the_flames.percent();
     base_multiplier *= 1.0 + p -> artifact.master_of_distaster.percent();
 
@@ -3744,6 +3750,8 @@ struct chaos_bolt_t: public warlock_spell_t
   {
     if ( p -> talents.reverse_entropy -> ok() )
       base_execute_time += p -> talents.reverse_entropy -> effectN( 2 ).time_value();
+
+    can_havoc = true;
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.chaotic_instability.percent();
 
@@ -3913,7 +3921,7 @@ struct dimensional_rift_t : public warlock_spell_t
       {
         if ( p() -> warlock_pet_list.chaos_portal[i] -> is_sleeping() )
         {
-          p() -> warlock_pet_list.chaos_portal[i] -> summon( chaos_tear_duration );
+          p() -> warlock_pet_list.chaos_portal[i] -> summon( chaos_portal_duration );
           p() -> procs.chaos_portal -> occur();
           break;
         }
@@ -4901,6 +4909,8 @@ struct shadowburn_t: public warlock_spell_t
       energize_type = ENERGIZE_ON_CAST;
       base_duration = p -> find_spell( 117828 ) -> duration();
 
+      can_havoc = true;
+
       cooldown -> charges += p -> spec.conflagrate_2 -> effectN( 1 ).base_value();
 
       cooldown -> charges += p -> sets.set( WARLOCK_DESTRUCTION, T19, B4 ) -> effectN( 1 ).base_value();
@@ -5319,7 +5329,8 @@ struct channel_demonfire_tick_t : public warlock_spell_t
     background = true;
     may_miss = false;
     dual = true;
-    can_havoc = true;
+
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
     if ( maybe_ptr( p -> dbc.ptr ) )
     {
@@ -5343,13 +5354,12 @@ struct channel_demonfire_t: public warlock_spell_t
     channeled = true;
     hasted_ticks = true;
     may_crit = false;
-    can_havoc = false;
+    //can_havoc = true;
 
     channel_demonfire = new channel_demonfire_tick_t( p );
     add_child( channel_demonfire );
 
-
-    if ( maybe_ptr( p -> dbc.ptr ) )
+    if ( !maybe_ptr( p -> dbc.ptr ) )
     {
       backdraft_cast_time = 1.0 + p -> buffs.backdraft -> data().effectN( 4 ).percent();
       backdraft_tick_time = 1.0 + p -> buffs.backdraft -> data().effectN( 3 ).percent();
@@ -5412,6 +5422,12 @@ struct channel_demonfire_t: public warlock_spell_t
   //  warlock_spell_t::execute();
 
   //  p() -> buffs.backdraft -> decrement();
+
+  //  if ( p()->artifact.dimension_ripper.rank() && rng().roll( p()->find_spell( 219415 )->proc_chance() ) && p()->cooldowns.dimensional_rift->current_charge < p()->cooldowns.dimensional_rift->charges )
+  //  {
+  //    p()->cooldowns.dimensional_rift->adjust( -p()->cooldowns.dimensional_rift->duration ); //decrease remaining time by the duration of one charge, i.e., add one charge
+  //    p()->procs.dimension_ripper->occur();
+  //  }
   //}
 
   virtual bool ready() override
@@ -7473,7 +7489,7 @@ struct odr_shawl_of_the_ymirjar_t : public scoped_actor_callback_t<warlock_t>
   odr_shawl_of_the_ymirjar_t() : super( WARLOCK_DESTRUCTION )
   { }
 
-  void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
+  void manipulate( warlock_t* a, const special_effect_t& e  ) override
   {
     a -> legendary.odr_shawl_of_the_ymirjar = true;
   }
@@ -7484,7 +7500,7 @@ struct stretens_insanity_t: public scoped_actor_callback_t<warlock_t>
   stretens_insanity_t(): super( WARLOCK_AFFLICTION )
   {}
 
-  void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
+  void manipulate( warlock_t* a, const special_effect_t& e  ) override
   {
     a -> legendary.stretens_insanity = true;
   }
@@ -7495,7 +7511,7 @@ struct feretory_of_souls_t : public scoped_actor_callback_t<warlock_t>
   feretory_of_souls_t() : super( WARLOCK_DESTRUCTION )
   { }
 
-  void manipulate( warlock_t* a, const special_effect_t& /* e */ ) override
+  void manipulate( warlock_t* a, const special_effect_t& e ) override
   {
     a -> legendary.feretory_of_souls = true;
   }
@@ -7515,9 +7531,9 @@ struct warlock_module_t: public module_t
   virtual void static_init() const override
   {
     // Level 100 Class Trinkets
-    unique_gear::register_special_effect( 184922, affliction_trinket);
-    unique_gear::register_special_effect( 184923, demonology_trinket);
-    unique_gear::register_special_effect( 184924, destruction_trinket);
+    unique_gear::register_special_effect( 184922, affliction_trinket );
+    unique_gear::register_special_effect( 184923, demonology_trinket );
+    unique_gear::register_special_effect( 184924, destruction_trinket );
 
     // Legendaries
     register_special_effect( 205797, hood_of_eternal_disdain_t() );
