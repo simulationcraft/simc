@@ -5347,7 +5347,7 @@ void priest_t::apl_shadow()
       "variable,op=set,name=actors_fight_time_mod,value=((450-(time+target."
       "time_to_die))%5),if=time+target.time_to_die<=450" );
   default_list->add_action(
-      "variable,op=set,name=s2mcheck,value=0.8*(135+((raw_haste_pct*25)*(2+(1*"
+      "variable,op=set,name=s2mcheck,value=0.8*(130+((raw_haste_pct*25)*(2+(1*"
       "talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*"
       "talent.sanlayn.enabled))))-(variable.actors_fight_time_mod*nonexecute_"
       "actors_pct)" );
@@ -5445,7 +5445,7 @@ void priest_t::apl_shadow()
   vf->add_action(
       "power_infusion,if=buff.voidform.stack>=10&talent.surrender_to_madness."
       "enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_"
-      "stacks.stack)+25" );
+      "stacks.stack)+41" );
   vf->add_action(
       "berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<="
       "20&!talent.surrender_to_madness.enabled" );
@@ -5531,15 +5531,17 @@ void priest_t::apl_shadow()
       "void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_"
       "touch.remains>5.5" );
   s2m->add_action( "berserking,if=buff.voidform.stack>=80" );
+  s2m->add_action( "dispersion,if=dot.shadow_word_pain.remains>7.5&dot.vampiric_"
+                   "touch.remains>7.5&buff.voidform.stack<10");
   s2m->add_action(
       "shadow_word_death,if=!talent.reaper_of_souls.enabled&current_insanity_"
       "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+15)<"
-      "100&!buff.power_infusion.up&buff.insanity_drain_stacks.stack<=77&"
+      "100&!buff.power_infusion.up&buff.insanity_drain_stacks.stack<=60&"
       "cooldown.shadow_word_death.charges=2" );
   s2m->add_action(
       "shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_"
-      "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+65)<"
-      "100&!buff.power_infusion.up&buff.insanity_drain_stacks.stack<=77&"
+      "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+75)<"
+      "100&!buff.power_infusion.up&buff.insanity_drain_stacks.stack<=60&"
       "cooldown.shadow_word_death.charges=2" );
 
   s2m->add_action(
@@ -5564,9 +5566,11 @@ void priest_t::apl_shadow()
       "100" );
   s2m->add_action(
       "shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_"
-      "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+65)<"
+      "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+75)<"
       "100" );
-  s2m->add_action( "power_infusion,if=buff.insanity_drain_stacks.stack>=77" );
+  s2m->add_action(
+      "power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_"
+      "word_death.remains>3*gcd.max" );
   s2m->add_action(
       "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd."
       "max*0.28" );
@@ -5603,16 +5607,15 @@ void priest_t::apl_shadow()
       "shadow_word_pain,if=!ticking&target.time_to_die>10&(active_enemies<5&"
       "artifact.sphere_of_insanity.rank),cycle_targets=1" );
   s2m->add_action(
-      "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable|action."
-      "void_bolt.usable_in<gcd.max*0.8" );
-  s2m->add_action(
       "mind_flay,line_cd=10,if=!talent.mind_spike.enabled&active_enemies>=2&"
       "active_enemies<"
       "4,chain=1,interrupt_immediate=1,interrupt_if=action.void_bolt.usable" );
   s2m->add_action( "mind_sear,if=active_enemies>=2,interrupt=1" );
   s2m->add_action(
       "mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate=1,"
-      "interrupt_if=action.void_bolt.usable" );
+      "interrupt_if=((current_insanity_drain*gcd.max>insanity&(insanity-(current_"
+      "insanity_drain*gcd.max)+75)<100&cooldown.shadow_word_death.charges>=1)|"
+      "action.void_bolt.usable)&ticks>=2" );
   s2m->add_action( "mind_spike,if=talent.mind_spike.enabled" );
 }
 
