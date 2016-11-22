@@ -1470,6 +1470,7 @@ struct imp_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" )
   {
     action_list_str = "firebolt";
+    //owner_coeff.sp_from_sp *= 1.2;
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -1488,6 +1489,7 @@ struct felguard_pet_t: public warlock_pet_t
     action_list_str += "/felstorm";
     action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
     owner_coeff.ap_from_sp = 1.1; // HOTFIX
+    //owner_coeff.sp_from_sp *= 1.2;
   }
 
   virtual void init_base_stats() override
@@ -1771,6 +1773,8 @@ struct felhunter_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
     action_list_str = "shadow_bite";
+    //owner_coeff.ap_from_sp *= 1.2;
+    //owner_coeff.sp_from_sp *= 1.2;
   }
 
   virtual void init_base_stats() override
@@ -5421,7 +5425,7 @@ struct channel_demonfire_t: public warlock_spell_t
   //{
   //  warlock_spell_t::execute();
 
-  //  p() -> buffs.backdraft -> decrement();
+  //  //p() -> buffs.backdraft -> decrement();
 
   //  if ( p()->artifact.dimension_ripper.rank() && rng().roll( p()->find_spell( 219415 )->proc_chance() ) && p()->cooldowns.dimensional_rift->current_charge < p()->cooldowns.dimensional_rift->charges )
   //  {
@@ -5602,7 +5606,7 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.stretens_insanity -> stack() * buffs.stretens_insanity -> data().effectN( 1 ).percent();
 
   if ( buffs.empowered_life_tap -> check() )
-    m *= 1.0 + talents.empowered_life_tap -> effectN( 1 ).percent();
+    m *= 1.0 + buffs.empowered_life_tap -> data().effectN( 1 ).percent();
 
   if ( buffs.mana_tap -> check() )
     m *= 1.0 + talents.mana_tap -> effectN( 1 ).percent();
@@ -6211,7 +6215,7 @@ void warlock_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
     .tick_behavior( BUFF_TICK_NONE );
-  buffs.empowered_life_tap = buff_creator_t( this, "empowered_life_tap", talents.empowered_life_tap )
+  buffs.empowered_life_tap = buff_creator_t( this, "empowered_life_tap", talents.empowered_life_tap -> effectN( 1 ).trigger() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( BUFF_REFRESH_PANDEMIC )
     .tick_behavior( BUFF_TICK_NONE );
