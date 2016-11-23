@@ -1394,13 +1394,15 @@ public:
     {
       return true;
     }
+#ifndef NDEBUG
     else
     {
       p() -> sim -> out_log.printf( "%s failed verification",
                              ab::name() );
     }
+#endif
 
-    return action_t::verify_actor_spec();
+    return ab::verify_actor_spec();
   }
 };
 
