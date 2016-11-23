@@ -29,7 +29,6 @@ actions.precombat+=/chaos_bolt
 
 # Executed every time the actor is available.
 actions=havoc,target=2,if=active_enemies>1&active_enemies<6&!debuff.havoc.remains
-actions+=/havoc,target=2,if=active_enemies>1&!talent.wreak_havoc.enabled&talent.roaring_blaze.enabled&!debuff.roaring_blaze.remains
 actions+=/dimensional_rift,if=charges=3
 actions+=/immolate,if=remains<=tick_time
 actions+=/immolate,cycle_targets=1,if=active_enemies>1&remains<=tick_time&(!talent.roaring_blaze.enabled|(!debuff.roaring_blaze.remains&action.conflagrate.charges<2))
@@ -38,14 +37,13 @@ actions+=/berserking
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)
-actions+=/shadowburn,if=ptr=1&talent.roaring_blaze.enabled&(charges=2|(charges>=1&recharge_time<gcd)|target.time_to_die<24)
-actions+=/shadowburn,if=ptr=1&talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5
-actions+=/shadowburn
-actions+=/shadowburn,if=ptr=1&!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
+actions+=/shadowburn,if=ptr=1&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
+actions+=/shadowburn,if=ptr=1&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&(charges=2|(charges>=1&recharge_time<gcd)|target.time_to_die<24)
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
+actions+=/life_tap,if=ptr=1&talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<=gcd
 actions+=/service_pet
 actions+=/summon_infernal,if=artifact.lord_of_flames.rank>0&!buff.lord_of_flames.remains
 actions+=/summon_doomguard,if=!talent.grimoire_of_supremacy.enabled&spell_targets.infernal_awakening<3&(target.time_to_die>180|target.health.pct<=20|target.time_to_die<30)
@@ -63,9 +61,10 @@ actions+=/rain_of_fire,if=active_enemies>=4&cooldown.havoc.remains<=12&!talent.w
 actions+=/rain_of_fire,if=active_enemies>=6&talent.wreak_havoc.enabled
 actions+=/dimensional_rift
 actions+=/mana_tap,if=ptr=0&buff.mana_tap.remains<=buff.mana_tap.duration*0.3&(mana.pct<20|buff.mana_tap.remains<=action.chaos_bolt.cast_time)&target.time_to_die>buff.mana_tap.duration*0.3
-actions+=/chaos_bolt
+actions+=/life_tap,if=ptr=1&talent.empowered_life_tap.enabled&buff.empowered_life_tap.remains<duration*0.3
 actions+=/cataclysm
-actions+=/shadowburn,if=ptr=1&!buff.backdraft.remains
+actions+=/chaos_bolt
+actions+=/shadowburn,if=ptr=1
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&!buff.backdraft.remains
 actions+=/immolate,if=!talent.roaring_blaze.enabled&remains<=duration*0.3
 actions+=/life_tap,if=ptr=0&talent.mana_tap.enabled&mana.pct<=10

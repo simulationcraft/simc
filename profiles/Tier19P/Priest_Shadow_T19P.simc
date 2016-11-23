@@ -28,7 +28,7 @@ actions=potion,name=deadly_grace,if=buff.bloodlust.react|target.time_to_die<=40|
 actions+=/variable,op=set,name=actors_fight_time_mod,value=0
 actions+=/variable,op=set,name=actors_fight_time_mod,value=-((-(450)+(time+target.time_to_die))%10),if=time+target.time_to_die>450&time+target.time_to_die<600
 actions+=/variable,op=set,name=actors_fight_time_mod,value=((450-(time+target.time_to_die))%5),if=time+target.time_to_die<=450
-actions+=/variable,op=set,name=s2mcheck,value=0.8*(135+((raw_haste_pct*25)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(variable.actors_fight_time_mod*nonexecute_actors_pct)
+actions+=/variable,op=set,name=s2mcheck,value=0.8*(130+((raw_haste_pct*25)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(variable.actors_fight_time_mod*nonexecute_actors_pct)
 actions+=/variable,op=min,name=s2mcheck,value=180
 actions+=/call_action_list,name=s2m,if=buff.voidform.up&buff.surrender_to_madness.up
 actions+=/call_action_list,name=vf,if=buff.voidform.up
@@ -62,16 +62,17 @@ actions.s2m=shadow_crash,if=talent.shadow_crash.enabled
 actions.s2m+=/mindbender,if=talent.mindbender.enabled
 actions.s2m+=/void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_touch.remains>5.5
 actions.s2m+=/berserking,if=buff.voidform.stack>=80
-actions.s2m+=/shadow_word_death,if=!talent.reaper_of_souls.enabled&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+15)<100&!buff.power_infusion.up&buff.insanity_drain_stacks.stack<=77&cooldown.shadow_word_death.charges=2
-actions.s2m+=/shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+65)<100&!buff.power_infusion.up&buff.insanity_drain_stacks.stack<=77&cooldown.shadow_word_death.charges=2
+actions.s2m+=/dispersion,if=dot.shadow_word_pain.remains>7.5&dot.vampiric_touch.remains>7.5&buff.voidform.stack<10
+actions.s2m+=/shadow_word_death,if=!talent.reaper_of_souls.enabled&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+15)<100&!buff.power_infusion.up&buff.insanity_drain_stacks.stack<=60&cooldown.shadow_word_death.charges=2
+actions.s2m+=/shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+75)<100&!buff.power_infusion.up&buff.insanity_drain_stacks.stack<=60&cooldown.shadow_word_death.charges=2
 actions.s2m+=/void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&dot.vampiric_touch.remains<3.5*gcd&target.time_to_die>10,cycle_targets=1
 actions.s2m+=/void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&(talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled)&target.time_to_die>10,cycle_targets=1
 actions.s2m+=/void_bolt,if=dot.vampiric_touch.remains<3.5*gcd&(talent.sanlayn.enabled|(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank))&target.time_to_die>10,cycle_targets=1
 actions.s2m+=/void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&artifact.sphere_of_insanity.rank&target.time_to_die>10,cycle_targets=1
 actions.s2m+=/void_bolt
 actions.s2m+=/shadow_word_death,if=!talent.reaper_of_souls.enabled&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+15)<100
-actions.s2m+=/shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+65)<100
-actions.s2m+=/power_infusion,if=buff.insanity_drain_stacks.stack>=77
+actions.s2m+=/shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+75)<100
+actions.s2m+=/power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_word_death.remains>3*gcd.max
 actions.s2m+=/wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd.max*0.28
 actions.s2m+=/dispersion,if=current_insanity_drain*gcd.max>insanity&!buff.power_infusion.up
 actions.s2m+=/mind_blast
@@ -87,7 +88,7 @@ actions.s2m+=/shadow_word_pain,if=!ticking&target.time_to_die>10&(active_enemies
 actions.s2m+=/wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable|action.void_bolt.usable_in<gcd.max*0.8
 actions.s2m+=/mind_flay,line_cd=10,if=!talent.mind_spike.enabled&active_enemies>=2&active_enemies<4,chain=1,interrupt_immediate=1,interrupt_if=action.void_bolt.usable
 actions.s2m+=/mind_sear,if=active_enemies>=2,interrupt=1
-actions.s2m+=/mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate=1,interrupt_if=action.void_bolt.usable
+actions.s2m+=/mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate=1,interrupt_if=((current_insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+75)<100&cooldown.shadow_word_death.charges>=1)|action.void_bolt.usable)&ticks>=2
 actions.s2m+=/mind_spike,if=talent.mind_spike.enabled
 
 actions.vf=surrender_to_madness,if=talent.surrender_to_madness.enabled&insanity>=25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-(buff.insanity_drain_stacks.stack)
@@ -97,7 +98,7 @@ actions.vf+=/void_torrent,if=!talent.surrender_to_madness.enabled
 actions.vf+=/mindbender,if=talent.mindbender.enabled&!talent.surrender_to_madness.enabled
 actions.vf+=/mindbender,if=talent.mindbender.enabled&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+30
 actions.vf+=/power_infusion,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<=30&!talent.surrender_to_madness.enabled
-actions.vf+=/power_infusion,if=buff.voidform.stack>=10&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+25
+actions.vf+=/power_infusion,if=buff.voidform.stack>=10&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+41
 actions.vf+=/berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.stack<=20&!talent.surrender_to_madness.enabled
 actions.vf+=/berserking,if=buff.voidform.stack>=10&talent.surrender_to_madness.enabled&target.time_to_die>variable.s2mcheck-(buff.insanity_drain_stacks.stack)+60
 actions.vf+=/void_bolt,if=dot.shadow_word_pain.remains<3.5*gcd&dot.vampiric_touch.remains<3.5*gcd&target.time_to_die>10,cycle_targets=1
