@@ -448,17 +448,24 @@ class CDNIndex(CASCObject):
 			if split[0] != 'us':
 				continue
 
-			# The CDN hash name is what we want at this point
-			self.cdn_hash = split[2]
-			self.version = split[-2]
-
-			version_split = self.version.split('.')
-			if len(version_split) != 4:
-				sys.stderr.write('Unable to parse version "%s" data' % self.version)
+			if len(split) != 7:
+				sys.stderr.write('Version format mismatch, expected 7 fields, got %d\n' % len(split))
 				sys.exit(1)
 
-			self.build_number = int(version_split[-1])
-			self.build_version = '.'.join(version_split[0:-1])
+			# The CDN hash name is what we want at this point
+			self.cdn_hash = split[2]
+			self.version = split[5]
+			self.build_number = int(split[4])
+
+			version_split = self.version.split('.')
+			if len(version_split) == 3:
+				self.build_version = split[6]
+			# Yank out the build number from the version
+			elif len(version_split) == 4:
+				self.build_version = '.'.join(version_split[0:-1])
+			else:
+				sys.stderr.write('Unable to parse version from "%s" data\n' % self.version)
+				sys.exit(1)
 
 			# Also take build configuration information from the versions file
 			# nowadays, as the "CDN" file builds option may have things like
@@ -469,7 +476,7 @@ class CDNIndex(CASCObject):
 			sys.stderr.write('Invalid version file\n')
 			sys.exit(1)
 
-		print('Current build version: %s' % self.version)
+		print('Current build version: %s [%d]' % (self.version, self.build_number))
 
 	def open_cdn_build_cfg(self):
 		path = os.path.join(self.cache_dir('config'), self.cdn_hash)
