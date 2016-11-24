@@ -5243,6 +5243,12 @@ void priest_t::apl_precombat()
     case PRIEST_SHADOW:
     default:
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
+      precombat->add_action( 
+        "variable,op=set,name=s2mbeltcheck,value=1,if=cooldown.mind_blast."
+        "charges>=2" );
+      precombat->add_action(
+        "variable,op=set,name=s2mbeltcheck,value=0,if=cooldown.mind_blast."
+        "charges<=1" );
       precombat->add_action( "mind_blast" );
       break;
   }
@@ -5347,10 +5353,10 @@ void priest_t::apl_shadow()
       "variable,op=set,name=actors_fight_time_mod,value=((450-(time+target."
       "time_to_die))%5),if=time+target.time_to_die<=450" );
   default_list->add_action(
-      "variable,op=set,name=s2mcheck,value=0.8*(130+((raw_haste_pct*25)*(2+(1*"
-      "talent.reaper_of_souls.enabled)+(2*artifact.mass_hysteria.rank)-(1*"
-      "talent.sanlayn.enabled))))-(variable.actors_fight_time_mod*nonexecute_"
-      "actors_pct)" );
+      "variable,op=set,name=s2mcheck,value=0.8*(130+7*variable.s2mbeltcheck+"
+      "((raw_haste_pct*25)*(2+(1*talent.reaper_of_souls.enabled)+(2*artifact."
+      "mass_hysteria.rank)-(1*talent.sanlayn.enabled))))-(variable.actors_fight"
+      "_time_mod*nonexecute_actors_pct)" );
   default_list->add_action( "variable,op=min,name=s2mcheck,value=180" );
   default_list->add_action(
       "call_action_list,name=s2m,if=buff.voidform.up&buff.surrender_to_madness."
