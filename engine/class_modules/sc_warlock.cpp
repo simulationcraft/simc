@@ -7506,7 +7506,7 @@ struct odr_shawl_of_the_ymirjar_t : public scoped_actor_callback_t<warlock_t>
   odr_shawl_of_the_ymirjar_t() : super( WARLOCK_DESTRUCTION )
   { }
 
-  void manipulate( warlock_t* a, const special_effect_t& e  ) override
+  void manipulate( warlock_t* a, const special_effect_t&  ) override
   {
     a -> legendary.odr_shawl_of_the_ymirjar = true;
   }
@@ -7517,7 +7517,7 @@ struct stretens_insanity_t: public scoped_actor_callback_t<warlock_t>
   stretens_insanity_t(): super( WARLOCK_AFFLICTION )
   {}
 
-  void manipulate( warlock_t* a, const special_effect_t& e  ) override
+  void manipulate( warlock_t* a, const special_effect_t&  ) override
   {
     a -> legendary.stretens_insanity = true;
   }
@@ -7528,7 +7528,7 @@ struct feretory_of_souls_t : public scoped_actor_callback_t<warlock_t>
   feretory_of_souls_t() : super( WARLOCK_DESTRUCTION )
   { }
 
-  void manipulate( warlock_t* a, const special_effect_t& e ) override
+  void manipulate( warlock_t* a, const special_effect_t& ) override
   {
     a -> legendary.feretory_of_souls = true;
   }

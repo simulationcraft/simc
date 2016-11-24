@@ -8587,7 +8587,6 @@ struct druid_module_t : public module_t
     register_special_effect( 208219, skysecs_hold_t() );
     register_special_effect( 208190, the_emerald_dreamcatcher_t(), true );
     register_special_effect( 208681, luffa_wrappings_t<thrash_cat_t>( "thrash_cat" ) );
-    register_special_effect( 208681, luffa_wrappings_t<thrash_cat_t::shadow_thrash_t::shadow_thrash_tick_t>( "shadow_thrash" ) );
     register_special_effect( 208681, luffa_wrappings_t<thrash_bear_t>( "thrash_bear" ) );
     // register_special_effect( 208220, amanthuls_wisdom );
     // register_special_effect( 207943, edraith_bonds_of_aglaya );
