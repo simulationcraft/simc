@@ -5613,13 +5613,16 @@ void priest_t::apl_shadow()
       "shadow_word_pain,if=!ticking&target.time_to_die>10&(active_enemies<5&"
       "artifact.sphere_of_insanity.rank),cycle_targets=1" );
   s2m->add_action(
-      "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable|action."
-      "void_bolt.usable_in<gcd.max*0.8" );
-  s2m->add_action(
       "mind_flay,line_cd=10,if=!talent.mind_spike.enabled&active_enemies>=2&"
-      "active_enemies<"
-      "4,chain=1,interrupt_immediate=1,interrupt_if=action.void_bolt.usable" );
-  s2m->add_action( "mind_sear,if=active_enemies>=2,interrupt=1" );
+      "active_enemies<4,chain=1,interrupt_immediate=1,interrupt_if=((current_"
+      "insanity_drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd."
+      "max)+75)<100&cooldown.shadow_word_death.charges>=1)|action.void_bolt."
+      "usable)&ticks>=2" );
+  s2m->add_action( 
+      "mind_sear,if=active_enemies>=2,interrupt=1,interrupt_immediate=1,"
+      "interrupt_if=((current_insanity_drain*gcd.max>insanity&(insanity-(current_"
+      "insanity_drain*gcd.max)+75)<100&cooldown.shadow_word_death.charges>=1)|"
+      "action.void_bolt.usable)&ticks>=2" );
   s2m->add_action(
       "mind_flay,if=!talent.mind_spike.enabled,chain=1,interrupt_immediate=1,"
       "interrupt_if=((current_insanity_drain*gcd.max>insanity&(insanity-(current_"
