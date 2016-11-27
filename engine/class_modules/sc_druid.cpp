@@ -6699,13 +6699,15 @@ void druid_t::apl_feral()
   // On-Use Items
   for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[ i ].has_use_special_effect() )
+    if ( items[i].has_use_special_effect() )
     {
-      std::string line = std::string( "use_item,slot=" ) + items[ i ].slot_name();
-      if ( items[ i ].name_str == "mirror_of_the_blademaster" )
+      std::string line = std::string( "use_item,slot=" ) + items[i].slot_name();
+      if ( items[i].name_str == "mirror_of_the_blademaster" )
         line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.swipe_cat>desired_targets";
-      else if ( items[ i ].name_str != "maalus_the_blood_drinker" )
+      else if ( items[i].name_str != "maalus_the_blood_drinker" )
         line += ",if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20";
+      else if ( items[i].name_str == "ring_of_collapsing_futures" )
+        line += ",if=(buff.tigers_fury.up|target.time_to_die<45)";
 
       def -> add_action( line );
     }
