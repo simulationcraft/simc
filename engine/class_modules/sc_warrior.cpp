@@ -4843,11 +4843,12 @@ void warrior_t::apl_fury()
   {
     if ( items[i].name_str == "ring_of_collapsing_futures" )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.temptation.stack=0&buff.enrage.up" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.temptation.stack=0&buff.enrage.up" );
     }
     else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
+      if ( items[i].name_str != "nitro_boosts" )
+        default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
     }
   }
 
@@ -4986,11 +4987,12 @@ void warrior_t::apl_arms()
   {
     if ( items[i].name_str == "ring_of_collapsing_futures" )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=debuff.colossus_smash.up&debuff.temptation.stack=0" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.battle_cry.up&debuff.colossus_smash.up&!buff.temptation.up" );
     }
     else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str );
+      if ( items[i].name_str != "nitro_boosts" )
+        default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
@@ -5012,7 +5014,7 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   single_target -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1" );
   single_target -> add_action( this, "Slam", "if=spell_targets.whirlwind=1" );
-  single_target -> add_talent( this, "Focused Rage", "if=equipped.archavons_heavy_hand" );
+  single_target -> add_talent( this, "Focused Rage", "if=equipped.archavons_heavy_hand&buff.focused_rage.stack<3" );
   single_target -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets" );
 
   execute -> add_action( this, "Mortal Strike", "if=cooldown_react&buff.battle_cry.up&buff.focused_rage.stack=3" );

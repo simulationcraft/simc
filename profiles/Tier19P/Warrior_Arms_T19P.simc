@@ -87,7 +87,7 @@ actions.single+=/mortal_strike,if=cooldown_react&cooldown.battle_cry.remains>8
 actions.single+=/execute,if=buff.stone_heart.react
 actions.single+=/whirlwind,if=spell_targets.whirlwind>1
 actions.single+=/slam,if=spell_targets.whirlwind=1
-actions.single+=/focused_rage,if=equipped.archavons_heavy_hand
+actions.single+=/focused_rage,if=equipped.archavons_heavy_hand&buff.focused_rage.stack<3
 actions.single+=/bladestorm,interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets
 
 head=vision_of_the_spider_queen,id=137451,bonus_id=1492/1727
