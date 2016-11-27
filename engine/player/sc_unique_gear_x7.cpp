@@ -286,13 +286,14 @@ void item::arans_relaxing_ruby( special_effect_t& effect )
 
 void item::ring_of_collapsing_futures( special_effect_t& effect )
 {
-  struct collapse_t: public proc_spell_t
-  {
+  struct collapse_t: public proc_spell_t {
     collapse_t( const special_effect_t& effect ):
       proc_spell_t( "collapse", effect.player,
                     effect.player -> find_spell( effect.spell_id ),
                     effect.item )
-    {}
+    {
+      base_dd_min = base_dd_max = effect.player ->find_spell( effect.spell_id ) -> effectN( 1 ).base_value(); // Does not scale with ilevel, apparently. 
+    }
   };
 
   struct apply_debuff_t: public action_t
@@ -309,13 +310,11 @@ void item::ring_of_collapsing_futures( special_effect_t& effect )
       callbacks = false;
       collapse = effect.player -> find_action( "collapse" );
       cooldown = base_cd;
-      if ( !collapse )
-      {
+      if ( !collapse ) {
         collapse = effect.player -> create_proc_action( "collapse", effect );
       }
 
-      if ( !collapse )
-      {
+      if ( !collapse ) {
         collapse = new collapse_t( effect );
       }
     }
@@ -454,9 +453,11 @@ struct eye_of_command_cb_t : public dbc_proc_callback_t
 
 // TODO: Autoattacks don't really change targets currently in simc, so this code is for future
 // reference.
+// TODO: For PTR purposes is CR_MULTIPLIER_TRINKET correct, or should it be CR_MULTIPLIER_ARMOR?
 void item::eye_of_command( special_effect_t& effect )
 {
   auto amount = effect.trigger() -> effectN( 1 ).average( effect.item ) *
+                effect.player -> dbc.combat_rating_multiplier( effect.item -> item_level(), CR_MULTIPLIER_TRINKET ) *
                 util::composite_karazhan_empower_multiplier( effect.player );
 
   stat_buff_t* b = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "legions_gaze" ) );

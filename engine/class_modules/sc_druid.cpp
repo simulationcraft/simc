@@ -805,7 +805,8 @@ public:
   form_e get_form() const { return form; }
   void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
-  const spell_data_t* find_affinity_spell( const std::string& );
+  const spell_data_t* find_affinity_spell( const std::string& ) const;
+  specialization_e get_affinity_spec() const;
   void trigger_natures_guardian( const action_state_t* );
   double calculate_expected_max_health() const;
 
@@ -1385,6 +1386,23 @@ public:
       // Trigger buff
       p() -> buff.galactic_guardian -> trigger();
     }
+  }
+
+  bool verify_actor_spec() const override
+  {
+    if ( p() -> find_affinity_spell( ab::name() ) -> found() )
+    {
+      return true;
+    }
+#ifndef NDEBUG
+    else
+    {
+      p() -> sim -> out_log.printf( "%s failed verification",
+                             ab::name() );
+    }
+#endif
+
+    return ab::verify_actor_spec();
   }
 };
 
@@ -2325,7 +2343,7 @@ public:
     {
       trigger_ashamanes_rip();
 
-      if ( attack_critical )
+      if ( attack_critical && p() -> specialization() == DRUID_FERAL )
       {
         trigger_primal_fury();
       }
@@ -5942,13 +5960,13 @@ void druid_t::init_spells()
   spec.rip                        = find_specialization_spell( "Rip" );
   spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat                  = find_spell( 106785 );
-  spec.rake_2 = find_specialization_spell( 231052 );
-  spec.tigers_fury_2 = find_specialization_spell( 231055 );
-  spec.ferocious_bite_2 = find_specialization_spell( 231056 );
-  spec.shred = find_specialization_spell( "Shred" );
-  spec.shred_2 = find_specialization_spell( 231063 );
-  spec.shred_3 = find_specialization_spell( 231057 );
-  spec.swipe_2 = find_specialization_spell( 231283 );
+  spec.rake_2 = find_spell( 231052 );
+  spec.tigers_fury_2 = find_spell( 231055 );
+  spec.ferocious_bite_2 = find_spell( 231056 );
+  spec.shred = find_spell( 5221 );
+  spec.shred_2 = find_spell( 231063 );
+  spec.shred_3 = find_spell( 231057 );
+  spec.swipe_2 = find_spell( 231283 );
 
 
   // Guardian
@@ -6681,13 +6699,15 @@ void druid_t::apl_feral()
   // On-Use Items
   for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[ i ].has_use_special_effect() )
+    if ( items[i].has_use_special_effect() )
     {
-      std::string line = std::string( "use_item,slot=" ) + items[ i ].slot_name();
-      if ( items[ i ].name_str == "mirror_of_the_blademaster" )
+      std::string line = std::string( "use_item,slot=" ) + items[i].slot_name();
+      if ( items[i].name_str == "mirror_of_the_blademaster" )
         line += ",if=raid_event.adds.in>60|!raid_event.adds.exists|spell_targets.swipe_cat>desired_targets";
-      else if ( items[ i ].name_str != "maalus_the_blood_drinker" )
+      else if ( items[i].name_str != "maalus_the_blood_drinker" )
         line += ",if=(buff.tigers_fury.up&(target.time_to_die>trinket.stat.any.cooldown|target.time_to_die<45))|buff.incarnation.remains>20";
+      else if ( items[i].name_str == "ring_of_collapsing_futures" )
+        line += ",if=(buff.tigers_fury.up|target.time_to_die<45)";
 
       def -> add_action( line );
     }
@@ -7907,6 +7927,11 @@ void druid_t::shapeshift( form_e f )
   switch ( f )
   {
   case CAT_FORM:
+    if ( buff.rage_of_the_sleeper -> check() )
+    {
+      buff.rage_of_the_sleeper -> expire();
+    }
+
     buff.cat_form -> trigger();
     break;
   case BEAR_FORM:
@@ -7950,38 +7975,48 @@ void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
   w.swing_time = timespan_t::from_seconds( swing_time );
 }
 
+// druid_t::get_affinity_spec ===============================================
+specialization_e druid_t::get_affinity_spec() const
+{
+  if ( talent.balance_affinity -> ok() )
+  {
+    return DRUID_BALANCE;
+  }
+
+  if ( talent.restoration_affinity -> ok() )
+  {
+    return DRUID_RESTORATION;
+  }
+
+  if ( talent.feral_affinity -> ok() )
+  {
+    return DRUID_FERAL;
+  }
+
+  if ( talent.guardian_affinity -> ok() )
+  {
+    return DRUID_GUARDIAN;
+  }
+
+  return SPEC_NONE;
+}
+
 // druid_t::find_affinity_spell =============================================
 
-const spell_data_t* druid_t::find_affinity_spell( const std::string& name )
+const spell_data_t* druid_t::find_affinity_spell( const std::string& name ) const
 {
   const spell_data_t* spec_spell = find_specialization_spell( name );
 
-  if ( spec_spell )
+  if ( spec_spell->found() )
   {
     return spec_spell;
   }
 
-  if ( talent.balance_affinity -> ok() )
+  spec_spell = find_spell( dbc.specialization_ability_id( get_affinity_spec(), util::inverse_tokenize( name ).c_str() ) );
+
+  if ( spec_spell->found() )
   {
-    if ( util::str_compare_ci( "Starsurge", name             ) ) return find_spell( 197626 );
-    if ( util::str_compare_ci( "Lunar Strike", name          ) ) return find_spell( 197628 );
-    if ( util::str_compare_ci( "Solar Wrath", name           ) ) return find_spell( 197629 );
-    if ( util::str_compare_ci( "Sunfire", name               ) ) return find_spell( 197630 );
-  }
-  else if ( talent.feral_affinity -> ok() )
-  {
-    if ( util::str_compare_ci( "Rip", name                   ) ) return find_spell( 1079 );
-    if ( util::str_compare_ci( "Rake", name                  ) ) return find_spell( 1822 );
-    if ( util::str_compare_ci( "Shred", name                 ) ) return find_spell( 5221 );
-    if ( util::str_compare_ci( "Ferocious Bite", name        ) ) return find_spell( 22568 );
-    if ( util::str_compare_ci( "Swipe", name                 ) ) return find_spell( 213764 );
-  }
-  else if ( talent.guardian_affinity -> ok() )
-  {
-    if ( util::str_compare_ci( "Mangle", name                ) ) return find_spell( 33917 );
-    if ( util::str_compare_ci( "Thrash", name                ) ) return find_spell( 106832 );
-    if ( util::str_compare_ci( "Ironfur", name               ) ) return find_spell( 192081 );
-    if ( util::str_compare_ci( "Frenzied Regeneration", name ) ) return find_spell( 22842 );
+    return spec_spell;
   }
 
   return spell_data_t::not_found();
@@ -8554,7 +8589,6 @@ struct druid_module_t : public module_t
     register_special_effect( 208219, skysecs_hold_t() );
     register_special_effect( 208190, the_emerald_dreamcatcher_t(), true );
     register_special_effect( 208681, luffa_wrappings_t<thrash_cat_t>( "thrash_cat" ) );
-    register_special_effect( 208681, luffa_wrappings_t<thrash_cat_t::shadow_thrash_t::shadow_thrash_tick_t>( "shadow_thrash" ) );
     register_special_effect( 208681, luffa_wrappings_t<thrash_bear_t>( "thrash_bear" ) );
     // register_special_effect( 208220, amanthuls_wisdom );
     // register_special_effect( 207943, edraith_bonds_of_aglaya );
