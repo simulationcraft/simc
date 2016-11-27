@@ -785,6 +785,12 @@ public:
     {
       tactician();
     }
+    if ( p() -> mannoroths_bloodletting_manacles )
+    {
+        p() -> resource_gain( RESOURCE_HEALTH, ( ( tactician_cost() / p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 2 ).base_value() )
+                              * p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 1 ).percent() ) * p() -> resources.max[RESOURCE_HEALTH],
+                              p() -> gain.mannoroths_bloodletting_manacles );
+    }
 
     ab::consume_resource();
 
@@ -795,12 +801,6 @@ public:
       p() -> frothing_may_trigger = true;
     }
 
-    if ( p() -> mannoroths_bloodletting_manacles )
-    {
-      p() -> resource_gain( RESOURCE_HEALTH, ( ( tactician_cost() / p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 2 ).base_value() )
-                            * p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 1 ).percent() ) * p() -> resources.max[ RESOURCE_HEALTH ],
-                            p() -> gain.mannoroths_bloodletting_manacles );
-    }
     if ( p() -> talents.anger_management -> ok() )
     {
       anger_management( rage );
@@ -2243,10 +2243,10 @@ struct hamstring_t: public warrior_attack_t
 
 // Focused Rage ============================================================
 
-struct focused_rage_t: public warrior_spell_t
+struct focused_rage_t: public warrior_attack_t
 {
   focused_rage_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "focused_rage", p, p -> specialization() == WARRIOR_ARMS ? p -> talents.focused_rage : p -> spec.focused_rage )
+    warrior_attack_t( "focused_rage", p, p -> specialization() == WARRIOR_ARMS ? p -> talents.focused_rage : p -> spec.focused_rage )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -2254,7 +2254,7 @@ struct focused_rage_t: public warrior_spell_t
 
   void execute() override
   {
-    warrior_spell_t::execute();
+    warrior_attack_t::execute();
     p() -> buff.focused_rage -> trigger();
 
     if ( p() -> buff.ultimatum -> check() )
@@ -2271,7 +2271,7 @@ struct focused_rage_t: public warrior_spell_t
 
   double cost() const override
   {
-    double c = warrior_spell_t::cost();
+    double c = warrior_attack_t::cost();
     if ( p() -> buff.ultimatum -> check() )
     {
       c *= 1.0 + p() -> buff.ultimatum -> check_value();
@@ -4134,6 +4134,11 @@ struct ignore_pain_t: public warrior_spell_t
     return std::min( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ), std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );
   }
 
+  double tactician_cost() const override
+  {
+    return cost() / ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() );
+  }
+
   double max_ip() const
   {
     double ip_cap = 0;
@@ -4163,7 +4168,6 @@ struct ignore_pain_t: public warrior_spell_t
     {
       amount = max_ip();
     }
-
 
     if(amount > 0.0)
     {
