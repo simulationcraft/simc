@@ -286,13 +286,14 @@ void item::arans_relaxing_ruby( special_effect_t& effect )
 
 void item::ring_of_collapsing_futures( special_effect_t& effect )
 {
-  struct collapse_t: public proc_spell_t
-  {
+  struct collapse_t: public proc_spell_t {
     collapse_t( const special_effect_t& effect ):
       proc_spell_t( "collapse", effect.player,
                     effect.player -> find_spell( effect.spell_id ),
                     effect.item )
-    {}
+    {
+      base_dd_min = base_dd_max = effect.player ->find_spell( effect.spell_id ) -> effectN( 1 ).base_value(); // Does not scale with ilevel, apparently. 
+    }
   };
 
   struct apply_debuff_t: public action_t
@@ -309,13 +310,11 @@ void item::ring_of_collapsing_futures( special_effect_t& effect )
       callbacks = false;
       collapse = effect.player -> find_action( "collapse" );
       cooldown = base_cd;
-      if ( !collapse )
-      {
+      if ( !collapse ) {
         collapse = effect.player -> create_proc_action( "collapse", effect );
       }
 
-      if ( !collapse )
-      {
+      if ( !collapse ) {
         collapse = new collapse_t( effect );
       }
     }
