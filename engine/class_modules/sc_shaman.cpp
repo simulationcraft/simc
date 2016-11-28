@@ -2850,8 +2850,8 @@ struct pristine_protoscale_girdle_dot_t : public shaman_spell_t
   pristine_protoscale_girdle_dot_t( shaman_t* p ) :
     shaman_spell_t( "pristine_protoscale_girdle", p, p -> find_spell( 224852 ) )
   {
-    background = true;
-    callbacks = may_crit = hasted_ticks = false;
+    background = tick_may_crit = true;
+    callbacks = may_crit = false;
 
     dot_max_stack = data().max_stacks();
   }
