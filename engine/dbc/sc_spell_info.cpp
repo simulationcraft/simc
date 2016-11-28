@@ -376,7 +376,7 @@ const char * _property_type_strings[] =
   "Spell Critical Damage", "Spell Penetration",     "Spell Targets",          "Spell Proc Chance",   "Unknown 2",             // 15
   "Spell Target Bonus",    "Spell Global Cooldown", "Spell Periodic Damage",  "Spell Effect 3",      "Spell Power",           // 20
   nullptr,                       "Spell Proc Frequency",  "Spell Damage Taken",     "Spell Dispel Chance", nullptr,                       // 25
-  nullptr,                       nullptr,                       "Spell Effect 4",         nullptr,                     nullptr,                       // 30
+  nullptr,                       nullptr,                       "Spell Effect 4",         nullptr,                     "Runic Power Generation",                       // 30
   nullptr,                       nullptr,                       nullptr,                        nullptr,                     nullptr                        // 35
 };
 

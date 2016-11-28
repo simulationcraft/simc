@@ -506,6 +506,7 @@ public:
   {
     // Arcane
     artifact_power_t arcane_rebound,
+                     ancient_power,
                      everywhere_at_once, //NYI
                      arcane_purification,
                      aegwynns_imperative,
@@ -540,7 +541,8 @@ public:
                      burning_gaze,
                      big_mouth, //NYI
                      blast_furnace,
-                     wings_of_flame;
+                     wings_of_flame,
+                     empowered_spellblade;
 
     // Frost
     artifact_power_t ebonbolt,
@@ -559,7 +561,8 @@ public:
                      orbital_strike,
                      icy_hand,
                      ice_age,
-                     chilled_to_the_core;
+                     chilled_to_the_core,
+                     spellborne;
   } artifact;
 
 public:
@@ -1911,6 +1914,10 @@ public:
       c *= 1.0 + arcane_power_reduction;
     }
 
+    if ( p() -> talents.quickening -> ok() && p() -> buffs.quickening -> check() )
+    {
+      c *= 1.0 + ( p() -> buffs.quickening -> data().effectN( 2 ).percent() * p() -> buffs.quickening -> current_stack );
+    }
     return c;
   }
 
@@ -2101,6 +2108,10 @@ struct arcane_mage_spell_t : public mage_spell_t
          am *= 1.0 + p() -> artifact.might_of_the_guardians.percent();
       }
 
+      if ( p() -> artifact.ancient_power && school == SCHOOL_ARCANE )
+      {
+        am *= 1.0 + p() -> artifact.ancient_power.percent();
+      }
     return am;
   }
 
@@ -2330,6 +2341,11 @@ struct fire_mage_spell_t : public mage_spell_t
       {
          am *= 1.0 + p() -> artifact.wings_of_flame.percent();
       }
+
+      if ( p() -> artifact.empowered_spellblade && school == SCHOOL_FIRE )
+      {
+        am *= 1.0 + p() -> artifact.empowered_spellblade.percent();
+      }
     return am;
   }
 };
@@ -2442,6 +2458,10 @@ struct frost_mage_spell_t : public mage_spell_t
     // Divide effect percent by 10 to convert 5 into 0.5%, not into 5%.
     am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() / 10 );
 
+    if ( p() -> artifact.spellborne && school == SCHOOL_FROST )
+    {
+      am *= 1.0 + p() -> artifact.spellborne.percent();
+    }
     return am;
   }
 
@@ -4031,11 +4051,14 @@ struct evocation_t : public arcane_mage_spell_t
 {
   aegwynns_ascendance_t* aegwynns_ascendance;
   double mana_gained;
-
+  bool gravity_spiral;
+  double gravity_spiral_bonus;
   evocation_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "evocation", p,
                          p -> find_class_spell( "Evocation" ) ),
-    mana_gained( 0.0 )
+    mana_gained( 0.0 ),
+    gravity_spiral( false ),
+    gravity_spiral_bonus( 0 )
   {
     parse_options( options_str );
 
@@ -4049,11 +4072,19 @@ struct evocation_t : public arcane_mage_spell_t
     triggers_arcane_missiles = false;
 
     cooldown = p -> cooldowns.evocation;
-    cooldown -> duration += p -> spec.evocation_2 -> effectN( 1 ).time_value();
-
+    cooldown -> duration *= -p -> spec.evocation_2 -> effectN( 1 ).percent();
     if ( p -> artifact.aegwynns_ascendance.rank() )
     {
       aegwynns_ascendance = new aegwynns_ascendance_t( p );
+    }
+  }
+
+  virtual void init() override
+  {
+    arcane_mage_spell_t::init();
+    if ( gravity_spiral )
+    {
+      cooldown -> charges = 1.0 + gravity_spiral_bonus;
     }
   }
 
@@ -4886,6 +4917,19 @@ struct frost_nova_t : public mage_spell_t
     }
   }
 };
+
+// Ice Time Super Frost Nova ================================================
+
+struct ice_time_nova_t : public frost_mage_spell_t
+{
+  ice_time_nova_t( mage_t* p ) :
+    frost_mage_spell_t( "ice_time_nova", p, p -> find_spell( 235235 ) )
+  {
+    background = may_crit = true;
+    aoe = -1;
+  }
+};
+
 // Frozen Orb Spell =========================================================
 
 struct frozen_orb_bolt_t : public frost_mage_spell_t
@@ -4950,18 +4994,23 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
 
 struct frozen_orb_t : public frost_mage_spell_t
 {
+  bool ice_time;
+  ice_time_nova_t* ice_time_nova;
+
   //TODO: Redo how frozen_orb_bolt is set up to take base_multipler from parent.
   frozen_orb_bolt_t* frozen_orb_bolt;
   frozen_orb_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frozen_orb", p,
                         p -> find_class_spell( "Frozen Orb" ) ),
-    frozen_orb_bolt( new frozen_orb_bolt_t( p ) )
+    frozen_orb_bolt( new frozen_orb_bolt_t( p ) ),
+    ice_time_nova( new ice_time_nova_t( p  ) )
   {
     parse_options( options_str );
     hasted_ticks = false;
     base_tick_time    = timespan_t::from_seconds( 0.5 );
     dot_duration      = timespan_t::from_seconds( 10.0 );
     add_child( frozen_orb_bolt );
+    add_child( ice_time_nova );
     may_miss       = false;
     may_crit       = false;
     travel_speed = 20;
@@ -5001,6 +5050,12 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_fof( fof_source_id, 1.0 );
+    }
+
+    if ( ice_time )
+    {
+      ice_time_nova -> target = s -> target;
+      ice_time_nova -> execute();
     }
   }
 };
@@ -6026,15 +6081,31 @@ struct phoenixs_flames_t : public fire_mage_spell_t
 {
   phoenixs_flames_splash_t* phoenixs_flames_splash;
 
+  bool pyrotex_ignition_cloth;
+  timespan_t pyrotex_ignition_cloth_reduction;
+
   phoenixs_flames_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "phoenixs_flames", p, p -> artifact.phoenixs_flames ),
-    phoenixs_flames_splash( new phoenixs_flames_splash_t( p, options_str ) )
+    phoenixs_flames_splash( new phoenixs_flames_splash_t( p, options_str ) ),
+    pyrotex_ignition_cloth( false ),
+    pyrotex_ignition_cloth_reduction( timespan_t::from_seconds( 0 ) )
   {
     parse_options( options_str );
 
     triggers_hot_streak = true;
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
+  }
+
+  virtual void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( pyrotex_ignition_cloth )
+    {
+      p() -> cooldowns.combustion
+          -> adjust( -1000 * pyrotex_ignition_cloth_reduction );
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6327,12 +6398,14 @@ struct rune_of_power_t : public mage_spell_t
 
 struct scorch_t : public fire_mage_spell_t
 {
-  double koralons_burning_touch_multiplier;
+  bool koralons_burning_touch;
+  double koralons_burning_touch_threshold;
 
   scorch_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "scorch", p,
                        p -> find_specialization_spell( "Scorch" ) ),
-    koralons_burning_touch_multiplier( 0.0 )
+    koralons_burning_touch( false ),
+    koralons_burning_touch_threshold( 0.0 )
   {
     parse_options( options_str );
 
@@ -6343,16 +6416,15 @@ struct scorch_t : public fire_mage_spell_t
     consumes_ice_floes = false;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  virtual double composite_crit_chance() const override
   {
-    double ctm = fire_mage_spell_t::composite_target_multiplier( target );
+    double c = fire_mage_spell_t::composite_crit_chance();
 
-    if ( ( koralons_burning_touch_multiplier > 0.0 ) && ( target -> health_percentage() <= 35 ) )
+    if ( koralons_burning_touch && ( target -> health_percentage() <= koralons_burning_touch_threshold ) )
     {
-      ctm *= 1.0 + koralons_burning_touch_multiplier;
+      c = 1.0;
     }
-
-    return ctm;
+    return c;
   }
   virtual void execute() override
   {
@@ -7827,6 +7899,7 @@ void mage_t::init_spells()
   artifact.everywhere_at_once      = find_artifact_spell( "Everywhere At Once"     );
   artifact.ethereal_sensitivity    = find_artifact_spell( "Ethereal Sensitivity"   );
   artifact.touch_of_the_magi       = find_artifact_spell( "Touch of the Magi"      );
+  artifact.ancient_power           = find_artifact_spell( "Ancient Power"          );
   //Fire
   artifact.aftershocks             = find_artifact_spell( "Aftershocks"            );
   artifact.scorched_earth          = find_artifact_spell( "Scorched Earth"         );
@@ -7845,6 +7918,7 @@ void mage_t::init_spells()
   artifact.burning_gaze            = find_artifact_spell( "Burning Gaze"           );
   artifact.blast_furnace           = find_artifact_spell( "Blast Furnace"          );
   artifact.wings_of_flame          = find_artifact_spell( "Wings of Flame"         );
+  artifact.empowered_spellblade    = find_artifact_spell( "Empowered Spellblade"   );
   //Frost
   artifact.ebonbolt                = find_artifact_spell( "Ebonbolt"               );
   artifact.jouster                 = find_artifact_spell( "Jouster"                );
@@ -7863,6 +7937,7 @@ void mage_t::init_spells()
   artifact.chilled_to_the_core     = find_artifact_spell( "Chilled To The Core"    );
   artifact.shattering_bolts        = find_artifact_spell( "Shattering Bolts"       );
   artifact.ice_nine                = find_artifact_spell( "Ice Nine"               );
+  artifact.spellborne              = find_artifact_spell( "Spellborne"             );
 
 
   // Spec Spells
@@ -8601,7 +8676,7 @@ void mage_t::apl_fire()
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
   default_list -> add_action( this, "Time Warp", "if=(time=0&buff.bloodlust.down)|(buff.bloodlust.down&equipped.132410)" );
   default_list -> add_talent( this, "Mirror Image", "if=buff.combustion.down" );
-  default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&(cooldown.flame_on.remains<5|cooldown.flame_on.remains>30)&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
+  default_list -> add_talent( this, "Rune of Power", "if=cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die.remains<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40" );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor", false ) );
@@ -8625,6 +8700,7 @@ void mage_t::apl_fire()
     combustion_phase -> add_action( non_special_item_actions[i] );
   }
   combustion_phase -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", false ) );
+  combustion_phase -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time" );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.up" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.up" );
   combustion_phase -> add_action( this, "Phoenix's Flames" );
@@ -8641,7 +8717,6 @@ void mage_t::apl_fire()
   rop_phase        -> add_action( this, "Scorch", "if=target.health.pct<=25&equipped.132454" );
   rop_phase        -> add_action( this, "Fireball" );
 
-  active_talents   -> add_talent( this, "Flame On", "if=action.fire_blast.charges=0&(cooldown.combustion.remains>40+(talent.kindling.enabled*25)|target.time_to_die.remains<cooldown.combustion.remains)" );
   active_talents   -> add_talent( this, "Blast Wave", "if=(buff.combustion.down)|(buff.combustion.up&action.fire_blast.charges<1&action.phoenixs_flames.charges<1)" );
   active_talents   -> add_talent( this, "Meteor", "if=cooldown.combustion.remains>30|(cooldown.combustion.remains>target.time_to_die)|buff.rune_of_power.up" );
   active_talents   -> add_talent( this, "Cinderstorm", "if=cooldown.combustion.remains<cast_time&(buff.rune_of_power.up|!talent.rune_on_power.enabled)|cooldown.combustion.remains>10*spell_haste&!buff.combustion.up" );
@@ -8684,7 +8759,6 @@ void mage_t::apl_frost()
   default_list -> add_action( "water_jet,if=prev_gcd.frostbolt&buff.fingers_of_frost.stack<(2+artifact.icy_hand.enabled)&buff.brain_freeze.react=0" );
   default_list -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|(cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down)" );
   default_list -> add_action( this, "Flurry", "if=buff.brain_freeze.react&buff.fingers_of_frost.react=0&prev_gcd.frostbolt" );
-  default_list -> add_talent( this, "Frozen Touch", "if=buff.fingers_of_frost.stack<=(0+artifact.icy_hand.enabled)&((cooldown.icy_veins.remains>30&talent.thermal_void.enabled)|!talent.thermal_void.enabled)" );
   default_list -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react>0" );
   default_list -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react>0&cooldown.icy_veins.remains>10|buff.fingers_of_frost.react>2" );
   default_list -> add_action( this, "Frozen Orb" );
@@ -9681,6 +9755,19 @@ struct cord_of_infinity_t : public scoped_actor_callback_t<mage_t>
   void manipulate( mage_t* actor, const special_effect_t& /* e */) override
   { actor -> legendary.cord_of_infinity = true; }
 };
+
+struct gravity_spiral_t : public scoped_action_callback_t<evocation_t>
+{
+  gravity_spiral_t() : super( MAGE_ARCANE, "evocation" )
+  { }
+
+  void manipulate( evocation_t* action, const special_effect_t& e ) override
+  {
+    action -> gravity_spiral = true;
+    action -> gravity_spiral_bonus = e.driver() -> effectN( 1 ).base_value();
+  }
+};
+
 // Fire Legendary Items
 struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
 {
@@ -9688,8 +9775,9 @@ struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
   { }
 
   void manipulate( scorch_t* action, const special_effect_t& e ) override
-  { action -> koralons_burning_touch_multiplier = e.driver() -> effectN( 1 ).percent(); }
-
+  { action -> koralons_burning_touch = true;
+    action -> koralons_burning_touch_threshold = e.driver() -> effectN( 1 ).base_value();
+  }
 };
 
 struct darcklis_dragonfire_diadem_t : public scoped_action_callback_t<dragons_breath_t>
@@ -9710,6 +9798,16 @@ struct marquee_bindings_of_the_sun_king_t : public scoped_action_callback_t<pyro
   { action ->  marquee_bindings_of_the_sun_king_proc_chance = e.driver() -> effectN( 1 ).percent(); }
 };
 
+struct pyrotex_ignition_cloth_t : public scoped_action_callback_t<phoenixs_flames_t>
+{
+  pyrotex_ignition_cloth_t() : super( MAGE_FIRE, "phoenixs_flames" )
+  { }
+
+  void manipulate( phoenixs_flames_t* action, const special_effect_t& e ) override
+  { action -> pyrotex_ignition_cloth = true;
+    action -> pyrotex_ignition_cloth_reduction = e.driver() -> effectN( 1 ).time_value();
+  }
+};
 // Frost Legendary Items
 struct magtheridons_banished_bracers_t : public scoped_action_callback_t<ice_lance_t>
 {
@@ -9736,6 +9834,17 @@ struct lady_vashjs_grasp_t : public scoped_actor_callback_t<mage_t>
 
   void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
   { actor -> legendary.lady_vashjs_grasp = true; }
+};
+
+struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
+{
+  ice_time_t() : super( MAGE_FROST, "frozen_orb" )
+  { }
+
+  void manipulate( frozen_orb_t* action, const special_effect_t& e ) override
+  {
+    action -> ice_time = true;
+  }
 };
 
 // 6.2 Class Trinkets
@@ -9809,6 +9918,9 @@ public:
     unique_gear::register_special_effect( 209450, marquee_bindings_of_the_sun_king_t()   );
     unique_gear::register_special_effect( 209280, mystic_kilt_of_the_rune_master_t()     );
     unique_gear::register_special_effect( 222276, sorcerous_shadowruby_pendant           );
+    unique_gear::register_special_effect( 235940, pyrotex_ignition_cloth_t()             );
+    unique_gear::register_special_effect( 235227, ice_time_t()                           );
+    unique_gear::register_special_effect( 235273, gravity_spiral_t()                     );
   }
 
   virtual void register_hotfixes() const override

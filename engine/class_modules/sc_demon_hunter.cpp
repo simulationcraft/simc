@@ -411,6 +411,7 @@ public:
     // Havoc
     gain_t* demonic_appetite;
     gain_t* prepared;
+	gain_t* blind_fury;
 
     // Vengeance
     gain_t* damage_taken;
@@ -1564,6 +1565,10 @@ struct blur_t : public demon_hunter_spell_t
 
     if ( p() -> artifact.demon_speed.rank() )
     {
+		if (maybe_ptr(p()->dbc.ptr)){
+			return;
+		}
+
       p() -> cooldown.fel_rush -> reset( false, true );
     }
   }
@@ -1724,6 +1729,10 @@ struct eye_beam_t : public demon_hunter_spell_t
       {
         p() -> cooldown.eye_beam -> adjust( p() -> legendary.raddons_cascading_eyes );
       }
+
+	  if (p()->talent.blind_fury->ok()){
+		  p()->resource_gain(RESOURCE_FURY, 7, p()->gain.blind_fury);
+	  }
     }
   };
 
@@ -1770,11 +1779,19 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     if ( p() -> talent.demonic -> ok() )
     {
+		timespan_t demonicTime;
+		if (maybe_ptr(p()->dbc.ptr)){
+			demonicTime = timespan_t::from_seconds(8);
+		}
+		else{
+			demonicTime = timespan_t::from_seconds(5);
+		}
+
       /* Buff starts when the channel does and lasts for 5 seconds +
       base channel duration. No duration data for demonic. */
       p() -> buff.metamorphosis -> trigger(
         1, p() -> buff.metamorphosis -> default_value, -1.0,
-        timespan_t::from_seconds( 5.0 ) + dot_duration );
+		demonicTime + dot_duration);
     }
 
     // If Metamorphosis has less than channel s remaining, it gets extended so the whole Eye Beam happens during Meta.
@@ -6388,6 +6405,7 @@ void demon_hunter_t::create_gains()
   // Havoc
   gain.demonic_appetite = get_gain( "demonic_appetite" );
   gain.prepared         = get_gain( "prepared" );
+  gain.blind_fury		= get_gain("blind_fury");
 
   // Vengeance
   gain.damage_taken    = get_gain( "damage_taken" );

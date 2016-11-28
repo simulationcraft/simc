@@ -1348,7 +1348,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
   fixed_time( false ), optimize_expressions( false ),
   current_slot( -1 ),
-  optimal_raid( 0 ), log( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( -1 ),
+  optimal_raid( 0 ), log( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),
   normalized_stat( STAT_NONE ),
   default_region_str( "us" ),
   save_prefix_str( "save_" ),
@@ -2148,15 +2148,10 @@ bool sim_t::init_actor( player_t* p )
     if ( m ) m -> init( p );
   }
 
-  if ( default_actions != 0 && ! p -> is_pet() )
+  if ( default_actions != 0 && !p -> is_pet() )
   {
     p -> clear_action_priority_lists();
     p -> action_list_str.clear();
-    if ( default_actions == -1 )
-    {
-      p -> sim -> errorf( "default_actions=1 is now default, if you wish to edit action lists please set default_actions=0 at the top of your simulation." );
-      default_actions = 1;
-    }
   }
 
   p -> init();

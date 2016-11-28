@@ -446,6 +446,7 @@ public:
     artifact_power_t smashed;
     artifact_power_t staggering_around;
     artifact_power_t swift_as_a_coursing_river;
+    artifact_power_t wanderers_hardiness;
 
     // Mistweaver Artifact
     artifact_power_t blessings_of_yulon;
@@ -458,6 +459,7 @@ public:
     artifact_power_t light_on_your_feet_mw;
     artifact_power_t mists_of_life;
     artifact_power_t mists_of_wisdom;
+    artifact_power_t mistweaving;
     artifact_power_t protection_of_shaohao;
     artifact_power_t sheiluns_gift;
     artifact_power_t shroud_of_mist;
@@ -484,6 +486,7 @@ public:
     artifact_power_t tiger_claws;
     artifact_power_t tornado_kicks;
     artifact_power_t transfer_the_power;
+    artifact_power_t windborne_blows;
   } artifact;
 
   struct mastery_spells_t
@@ -6831,6 +6834,7 @@ void monk_t::init_spells()
   artifact.smashed                    = find_artifact_spell( "Smashed" );
   artifact.staggering_around          = find_artifact_spell( "Staggering Around" );
   artifact.swift_as_a_coursing_river  = find_artifact_spell( "Swift as a Coursing River" );
+  artifact.wanderers_hardiness        = find_artifact_spell( "Wanderer's Hardiness" );
 
   // Mistweaver
   artifact.blessings_of_yulon         = find_artifact_spell( "Blessings of Yu'lon" );
@@ -6843,6 +6847,7 @@ void monk_t::init_spells()
   artifact.light_on_your_feet_mw      = find_artifact_spell( "Light on Your Feet" );
   artifact.mists_of_life              = find_artifact_spell( "Mists of Life" );
   artifact.mists_of_wisdom            = find_artifact_spell( "Mists of Wisdom" );
+  artifact.mistweaving                = find_artifact_spell( "Mistweaving" );
   artifact.protection_of_shaohao      = find_artifact_spell( "Protection of Shaohao" );
   artifact.sheiluns_gift              = find_artifact_spell( "Sheilun's Gift" );
   artifact.shroud_of_mist             = find_artifact_spell( "Shroud of Mist" );
@@ -6869,6 +6874,7 @@ void monk_t::init_spells()
   artifact.tiger_claws                = find_artifact_spell( "Tiger Claws" );
   artifact.tornado_kicks              = find_artifact_spell( "Tornado Kicks" );
   artifact.transfer_the_power         = find_artifact_spell( "Transfer the Power" );
+  artifact.windborne_blows            = find_artifact_spell( "Windborne Blows" );
 
   // Specialization spells ====================================
   // Multi-Specialization & Class Spells
@@ -7672,12 +7678,9 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( talent.hit_combo -> ok() )
     m *= 1.0 + buff.hit_combo -> stack_value();
 
-  // Brewmaster Tier 18 (WoD 6.2) trinket effect is in use, Elusive Brew increases damage based on spell data of the special effect.
-/*  if ( eluding_movements )
-  {
-    m *= 1.0 + ( eluding_movements -> driver() -> effectN( 2 ).average( eluding_movements -> item ) / 100 );
-  }
-*/
+  if ( artifact.windborne_blows.rank() )
+    m *= 1.0 + artifact.windborne_blows.percent();
+
   return m;
 }
 
@@ -7714,6 +7717,9 @@ double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
       sef_mult += artifact.spiritual_focus.data().effectN( 2 ).percent();
     m *= 1.0 + sef_mult;
   }
+
+  if ( artifact.mistweaving.rank() )
+    m *= 1.0 + artifact.mistweaving.percent();
 
   return m;
 }
@@ -7842,6 +7848,9 @@ double monk_t::composite_armor_multiplier() const
 
   if ( specialization() == MONK_BREWMASTER )
     a += passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+
+  if ( artifact.wanderers_hardiness.rank() )
+    a *= 1.0 + artifact.wanderers_hardiness.percent();
 
   return a;
 }
@@ -8874,7 +8883,7 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
     {
       monk_t& player;
       sck_stack_expr_t( monk_t& p ) :
-        expr_t( "stack" ),
+        expr_t( "count" ),
         player( p )
       { }
 

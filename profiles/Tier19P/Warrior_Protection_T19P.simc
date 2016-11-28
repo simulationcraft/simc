@@ -15,46 +15,36 @@ spec=protection
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask,type=countless_armies
-actions.precombat+=/food,type=seedbattered_fish_plate
+actions.precombat+=/food,type=azshari_salad
 actions.precombat+=/augmentation,type=defiled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion,name=unbending_potion
 
 # Executed every time the actor is available.
-actions=intercept
-actions+=/auto_attack
+actions=auto_attack
+actions+=/intercept
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/call_action_list,name=prot
 
-actions.prot=shield_block,if=!buff.neltharions_fury.up&((cooldown.shield_slam.remains<6&!buff.shield_block.up)|(cooldown.shield_slam.remains<6+buff.shield_block.remains&buff.shield_block.up))
-actions.prot+=/ignore_pain,if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&buff.ultimatum.up)|(buff.vengeance_ignore_pain.up&rage>=39)|(talent.vengeance.enabled&!buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage<30)
-actions.prot+=/focused_rage,if=(buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(buff.ultimatum.up&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage>=30)|(buff.ultimatum.up&buff.vengeance_ignore_pain.up&cooldown.shield_slam.remains=0&rage<10)|(rage>=100)
+actions.prot=spell_reflection,if=incoming_damage_2500ms>health.max*0.20
 actions.prot+=/demoralizing_shout,if=incoming_damage_2500ms>health.max*0.20
-actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.50
-actions.prot+=/last_stand,if=incoming_damage_2500ms>health.max*0.50&!cooldown.shield_wall.remains=0
+actions.prot+=/last_stand,if=incoming_damage_2500ms>health.max*0.50
+actions.prot+=/shield_wall,if=incoming_damage_2500ms>health.max*0.50&!cooldown.last_stand.remains=0
 actions.prot+=/potion,name=unbending_potion,if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25
-actions.prot+=/call_action_list,name=prot_aoe,if=spell_targets.neltharions_fury>=2
-actions.prot+=/focused_rage,if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled
-actions.prot+=/battle_cry,if=(talent.vengeance.enabled&talent.ultimatum.enabled&cooldown.shield_slam.remains<=5-gcd.max-0.5)|!talent.vengeance.enabled
+actions.prot+=/battle_cry,if=cooldown.shield_slam.remains=0
 actions.prot+=/demoralizing_shout,if=talent.booming_voice.enabled&buff.battle_cry.up
 actions.prot+=/ravager,if=talent.ravager.enabled&buff.battle_cry.up
-actions.prot+=/neltharions_fury,if=incoming_damage_2500ms>health.max*0.20&!buff.shield_block.up
+actions.prot+=/neltharions_fury,if=!buff.shield_block.up&cooldown.shield_block.remains>3&cooldown.shield_slam.remains>3
+actions.prot+=/shield_block,if=!buff.neltharions_fury.up&(cooldown.shield_slam.remains=0|action.shield_block.charges=2)
 actions.prot+=/shield_slam,if=!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up&talent.heavy_repercussions.enabled)
-actions.prot+=/revenge,if=cooldown.shield_slam.remains<=gcd.max*2
+actions.prot+=/revenge,if=cooldown.shield_slam.remains<=gcd.max*1.5|spell_targets.revenge>=2
+actions.prot+=/ignore_pain,if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&rage>=39)|(talent.vengeance.enabled&!buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage<30)
+actions.prot+=/focused_rage,if=(buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up&rage>=59)|(buff.ultimatum.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage>=69)|(rage>=100)
+actions.prot+=/thunder_clap,if=spell_targets.thunder_clap>=4
 actions.prot+=/devastate
-
-actions.prot_aoe=focused_rage,if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled
-actions.prot_aoe+=/battle_cry,if=(talent.vengeance.enabled&talent.ultimatum.enabled&cooldown.shield_slam.remains<=5-gcd.max-0.5)|!talent.vengeance.enabled
-actions.prot_aoe+=/demoralizing_shout,if=talent.booming_voice.enabled&buff.battle_cry.up
-actions.prot_aoe+=/ravager,if=talent.ravager.enabled&buff.battle_cry.up
-actions.prot_aoe+=/neltharions_fury,if=buff.battle_cry.up
-actions.prot_aoe+=/shield_slam,if=!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up&talent.heavy_repercussions.enabled)
-actions.prot_aoe+=/revenge
-actions.prot_aoe+=/thunder_clap,if=spell_targets.thunder_clap>=3
-actions.prot_aoe+=/devastate
 
 head=vision_of_the_spider_queen,id=137451,bonus_id=1492/1727
 neck=raven_filigree_pendant,id=134499,bonus_id=1492/1727,enchant=mark_of_the_heavy_hide

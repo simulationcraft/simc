@@ -5762,6 +5762,9 @@ public:
   virtual action_energize_e energize_type_() const
   { return energize_type; }
 
+  virtual gain_t* energize_gain( const action_state_t* /* state */ ) const
+  { return gain; }
+
   // ==========================
   // mutating virtual functions
   // ==========================
@@ -6738,6 +6741,9 @@ bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
 double curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value );
 bool apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level );
 double apply_combat_rating_multiplier( const item_t& item, double amount );
+
+// Return the combat rating multiplier category for item data
+combat_rating_multiplier_type item_combat_rating_type( const item_data_t* data );
 
 struct token_t
 {

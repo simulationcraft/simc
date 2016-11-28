@@ -1354,7 +1354,7 @@ public:
   { return 0.05; }
 
   // Game data table access
-  double combat_rating_multiplier( unsigned item_level ) const;
+  double combat_rating_multiplier( unsigned item_level, combat_rating_multiplier_type type ) const;
   double melee_crit_base( pet_e t, unsigned level ) const;
   double spell_crit_base( pet_e t, unsigned level ) const;
   double dodge_base( player_e t ) const;

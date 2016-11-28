@@ -62,8 +62,8 @@ int main( int argc, char *argv[] )
   QApplication a( argc, argv );
 
 #ifdef SC_WINDOWS
-  if ( !qEnvironmentVariableIsSet( "QT_OPENGL" ) && QSysInfo::WindowsVersion == QSysInfo::WV_WINDOWS7 )
-  { // We are using ANGLE as the default for windows 7, however, there are rare cases where software opengl
+  if ( !qEnvironmentVariableIsSet( "QT_OPENGL" ) )
+  { // We are using ANGLE as the default for windows, however, there are rare cases where software opengl
     // is the only solution to get simc running. Creating an environmental variable named
     // QT_OPENGL and setting it to software will override this, and checking for QT_OPENGL
     // will ensure that we don't override the override. 

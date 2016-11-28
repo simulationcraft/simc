@@ -1,6 +1,18 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+// Types for CombatRatingsMultByILvl.txt. The ordering is defined by dbc_extract outputter (see
+// dbc_extract.py 'scale' output option), however it follows the current game table ordering.
+enum combat_rating_multiplier_type
+{
+  CR_MULTIPLIER_INVALID = -1,
+  CR_MULTIPLIER_ARMOR,
+  CR_MULTIPLIER_WEAPON,
+  CR_MULTIPLIER_TRINKET,
+  CR_MULTIPLIER_JEWLERY,
+  CR_MULTIPLIER_MAX
+};
+
 enum artifact_trait_type
 {
   ARTIFACT_TRAIT_NORMAL     = 0,

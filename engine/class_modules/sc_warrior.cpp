@@ -785,6 +785,12 @@ public:
     {
       tactician();
     }
+    if ( p() -> mannoroths_bloodletting_manacles )
+    {
+        p() -> resource_gain( RESOURCE_HEALTH, ( ( tactician_cost() / p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 2 ).base_value() )
+                              * p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 1 ).percent() ) * p() -> resources.max[RESOURCE_HEALTH],
+                              p() -> gain.mannoroths_bloodletting_manacles );
+    }
 
     ab::consume_resource();
 
@@ -795,12 +801,6 @@ public:
       p() -> frothing_may_trigger = true;
     }
 
-    if ( p() -> mannoroths_bloodletting_manacles )
-    {
-      p() -> resource_gain( RESOURCE_HEALTH, ( ( tactician_cost() / p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 2 ).base_value() )
-                            * p() -> mannoroths_bloodletting_manacles -> driver() -> effectN( 1 ).percent() ) * p() -> resources.max[ RESOURCE_HEALTH ],
-                            p() -> gain.mannoroths_bloodletting_manacles );
-    }
     if ( p() -> talents.anger_management -> ok() )
     {
       anger_management( rage );
@@ -1252,7 +1252,7 @@ struct bladestorm_t: public warrior_attack_t
   {
     if ( p -> talents.ravager -> ok() )
     {
-      background = true; // Ravager replaces bladestorm for arms. 
+      background = true; // Ravager replaces bladestorm for arms.
     }
     else
     {
@@ -1928,7 +1928,7 @@ struct execute_arms_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
-    
+
     base_crit += p -> artifact.deathblow.percent();
     max_rage = p -> talents.dauntless -> ok() ? 32 : 40;
     if ( p -> talents.sweeping_strikes -> ok() )
@@ -1951,7 +1951,7 @@ struct execute_arms_t: public warrior_attack_t
       double temp_max_rage = max_rage * ( 1.0 + p() -> buff.precise_strikes -> check_value() );
       am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
     }
-    if ( execute_sweeping_strike ) execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses. 
+    if ( execute_sweeping_strike ) execute_sweeping_strike -> dmg_mult = am; // The sweeping strike deals damage based on the action multiplier of the original attack before shattered defenses.
 
     am *= 1.0 + p() -> buff.shattered_defenses -> stack_value();
 
@@ -2025,7 +2025,7 @@ struct execute_arms_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    
+
 
     if ( execute_sweeping_strike )
     {
@@ -2243,10 +2243,10 @@ struct hamstring_t: public warrior_attack_t
 
 // Focused Rage ============================================================
 
-struct focused_rage_t: public warrior_spell_t
+struct focused_rage_t: public warrior_attack_t
 {
   focused_rage_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "focused_rage", p, p -> specialization() == WARRIOR_ARMS ? p -> talents.focused_rage : p -> spec.focused_rage )
+    warrior_attack_t( "focused_rage", p, p -> specialization() == WARRIOR_ARMS ? p -> talents.focused_rage : p -> spec.focused_rage )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -2254,7 +2254,7 @@ struct focused_rage_t: public warrior_spell_t
 
   void execute() override
   {
-    warrior_spell_t::execute();
+    warrior_attack_t::execute();
     p() -> buff.focused_rage -> trigger();
 
     if ( p() -> buff.ultimatum -> check() )
@@ -2271,7 +2271,7 @@ struct focused_rage_t: public warrior_spell_t
 
   double cost() const override
   {
-    double c = warrior_spell_t::cost();
+    double c = warrior_attack_t::cost();
     if ( p() -> buff.ultimatum -> check() )
     {
       c *= 1.0 + p() -> buff.ultimatum -> check_value();
@@ -4134,6 +4134,11 @@ struct ignore_pain_t: public warrior_spell_t
     return std::min( 60.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ), std::max( p() -> resources.current[RESOURCE_RAGE], 20.0 * ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() ) ) );
   }
 
+  double tactician_cost() const override
+  {
+    return cost() / ( 1.0 + p() -> buff.vengeance_ignore_pain -> check_value() );
+  }
+
   double max_ip() const
   {
     double ip_cap = 0;
@@ -4163,7 +4168,6 @@ struct ignore_pain_t: public warrior_spell_t
     {
       amount = max_ip();
     }
-
 
     if(amount > 0.0)
     {
@@ -4837,9 +4841,14 @@ void warrior_t::apl_fury()
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].name_str == "ring_of_collapsing_futures" )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.temptation.stack=0&buff.enrage.up" );
+    }
+    else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    {
+      if ( items[i].name_str != "nitro_boosts" )
+        default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=(spell_targets.whirlwind>1|!raid_event.adds.exists)&((talent.bladestorm.enabled&cooldown.bladestorm.remains=0)|buff.battle_cry.up|target.time_to_die<25)" );
     }
   }
 
@@ -4978,11 +4987,12 @@ void warrior_t::apl_arms()
   {
     if ( items[i].name_str == "ring_of_collapsing_futures" )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.battle_cry.up" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.battle_cry.up&debuff.colossus_smash.up&!buff.temptation.up" );
     }
     else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str  );
+      if ( items[i].name_str != "nitro_boosts" )
+        default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
@@ -5004,7 +5014,7 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
   single_target -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1" );
   single_target -> add_action( this, "Slam", "if=spell_targets.whirlwind=1" );
-  single_target -> add_talent( this, "Focused Rage", "if=equipped.archavons_heavy_hand" );
+  single_target -> add_talent( this, "Focused Rage", "if=equipped.archavons_heavy_hand&buff.focused_rage.stack<3" );
   single_target -> add_action( this, "Bladestorm", "interrupt=1,if=raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets" );
 
   execute -> add_action( this, "Mortal Strike", "if=cooldown_react&buff.battle_cry.up&buff.focused_rage.stack=3" );
@@ -5048,7 +5058,7 @@ void warrior_t::apl_prot()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  std::string food_name = ( true_level > 100 ) ? "seedbattered_fish_plate" :
+  std::string food_name = ( true_level > 100 ) ? "azshari_salad" :
     ( true_level >  90 ) ? "buttered_sturgeon" :
     ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
     ( true_level >= 80 ) ? "seafood_magnifique_feast" :
@@ -5063,10 +5073,9 @@ void warrior_t::apl_prot()
 
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* prot = get_action_priority_list( "prot" );
-  action_priority_list_t* prot_aoe = get_action_priority_list( "prot_aoe" );
 
-  default_list -> add_action( this, "intercept" );
   default_list -> add_action( "auto_attack" );
+  default_list -> add_action( this, "intercept" );
 
   size_t num_items = items.size();
   for ( size_t i = 0; i < num_items; i++ )
@@ -5076,50 +5085,37 @@ void warrior_t::apl_prot()
       default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
+
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] );
 
   default_list -> add_action( "call_action_list,name=prot" );
 
-  //defensive
-  prot -> add_action( this, "Shield Block", "if=!buff.neltharions_fury.up&((cooldown.shield_slam.remains<6&!buff.shield_block.up)|(cooldown.shield_slam.remains<6+buff.shield_block.remains&buff.shield_block.up))" );
-  prot -> add_action( this, "Ignore Pain", "if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&buff.ultimatum.up)|(buff.vengeance_ignore_pain.up&rage>=39)|(talent.vengeance.enabled&!buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage<30)" );
-  prot -> add_action( this, "Focused Rage", "if=(buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(buff.ultimatum.up&buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage>=30)|(buff.ultimatum.up&buff.vengeance_ignore_pain.up&cooldown.shield_slam.remains=0&rage<10)|(rage>=100)" );
-  prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20" );
-  prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.50" );
-  prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.50&!cooldown.shield_wall.remains=0" );
-  prot -> add_action( this, "Spell Reflect", "if=incoming_damage_2500ms>health.max*0.20" );
+  // defensive cooldowns
+  prot -> add_action( this, "Spell Reflection", "if=incoming_damage_2500ms>health.max*0.20" );
   prot -> add_action( this, "Stoneform", "if=incoming_damage_2500ms>health.max*0.15" );
+  prot -> add_action( this, "Demoralizing Shout", "if=incoming_damage_2500ms>health.max*0.20" );
+  prot -> add_action( this, "Last Stand", "if=incoming_damage_2500ms>health.max*0.50" );
+  prot -> add_action( this, "Shield Wall", "if=incoming_damage_2500ms>health.max*0.50&!cooldown.last_stand.remains=0" );
 
-  //potion
   if ( sim -> allow_potions && true_level >= 80 )
   {
     prot -> add_action( "potion,name=" + potion_name + ",if=(incoming_damage_2500ms>health.max*0.15&!buff.potion.up)|target.time_to_die<=25" );
   }
 
-  //dps-single-target
-  prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.neltharions_fury>=2" );
-  prot -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
-  prot -> add_action( this, "Battle Cry", "if=(talent.vengeance.enabled&talent.ultimatum.enabled&cooldown.shield_slam.remains<=5-gcd.max-0.5)|!talent.vengeance.enabled" );
+  prot -> add_action( this, "Battle Cry", "if=cooldown.shield_slam.remains=0" );
   prot -> add_action( this, "Avatar", "if=talent.avatar.enabled&buff.battle_cry.up" );
   prot -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&buff.battle_cry.up" );
   prot -> add_action( this, "Ravager", "if=talent.ravager.enabled&buff.battle_cry.up" );
-  prot -> add_action( this, "Neltharion's Fury", "if=incoming_damage_2500ms>health.max*0.20&!buff.shield_block.up" );
+  prot -> add_action( this, "Neltharion's Fury", "if=!buff.shield_block.up&cooldown.shield_block.remains>3&cooldown.shield_slam.remains>3" );
+  prot -> add_action( this, "Shield Block", "if=!buff.neltharions_fury.up&(cooldown.shield_slam.remains=0|action.shield_block.charges=2)" );
   prot -> add_action( this, "Shield Slam", "if=!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up&talent.heavy_repercussions.enabled)" );
-  prot -> add_action( this, "Revenge", "if=cooldown.shield_slam.remains<=gcd.max*2" );
+  prot -> add_action( this, "Impending Victory", "if=cooldown.shield_slam.remains<=gcd.max*1.5&health.pct<=70" );
+  prot -> add_action( this, "Revenge", "if=cooldown.shield_slam.remains<=gcd.max*1.5|spell_targets.revenge>=2" );
+  prot -> add_action( this, "Ignore Pain", "if=(rage>=60&!talent.vengeance.enabled)|(buff.vengeance_ignore_pain.up&rage>=39)|(talent.vengeance.enabled&!buff.ultimatum.up&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage<30)" );
+  prot -> add_action( this, "Focused Rage", "if=(buff.vengeance_focused_rage.up&!buff.vengeance_ignore_pain.up&rage>=59)|(buff.ultimatum.up&!buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_focused_rage.up&rage>=69)|(rage>=100)" );
+  prot -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap>=4" );
   prot -> add_action( this, "Devastate" );
-
-  //dps-aoe
-  prot_aoe -> add_action( this, "Focused Rage", "if=talent.ultimatum.enabled&buff.ultimatum.up&!talent.vengeance.enabled" );
-  prot_aoe -> add_action( this, "Battle Cry", "if=(talent.vengeance.enabled&talent.ultimatum.enabled&cooldown.shield_slam.remains<=5-gcd.max-0.5)|!talent.vengeance.enabled" );
-  prot_aoe -> add_action( this, "Avatar", "if=talent.avatar.enabled&buff.battle_cry.up" );
-  prot_aoe -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&buff.battle_cry.up" );
-  prot_aoe -> add_action( this, "Ravager", "if=talent.ravager.enabled&buff.battle_cry.up" );
-  prot_aoe -> add_action( this, "Neltharion's Fury", "if=buff.battle_cry.up" );
-  prot_aoe -> add_action( this, "Shield Slam", "if=!(cooldown.shield_block.remains<=gcd.max*2&!buff.shield_block.up&talent.heavy_repercussions.enabled)" );
-  prot_aoe -> add_action( this, "Revenge" );
-  prot_aoe -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap>=3" );
-  prot_aoe -> add_action( this, "Devastate" );
 }
 
 // NO Spec Combat Action Priority List
@@ -6037,7 +6033,10 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t*
 {
   double aa = player_t::resource_gain( r, a, gain, action );
 
-  if ( r == RESOURCE_RAGE && talents.frothing_berserker -> ok() && resources.current[ r ] > 99 && frothing_may_trigger )
+  if ( frothing_may_trigger &&
+       r == RESOURCE_RAGE &&
+       talents.frothing_berserker -> ok() &&
+       resources.current[r] > 99 )
   {
     buff.frothing_berserker -> trigger();
     frothing_may_trigger = false;

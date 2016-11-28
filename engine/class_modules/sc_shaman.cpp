@@ -4102,9 +4102,11 @@ struct lava_burst_t : public shaman_spell_t
   {
     shaman_spell_t::init();
 
-    if ( player -> specialization() == SHAMAN_ELEMENTAL )
+    if ( p() -> specialization() == SHAMAN_ELEMENTAL &&
+         p() -> talent.echo_of_the_elements -> ok() )
     {
-      cooldown -> charges += p() -> talent.echo_of_the_elements -> effectN( 2 ).base_value();
+      cooldown -> charges = data().charges() +
+        p() -> talent.echo_of_the_elements -> effectN( 2 ).base_value();
     }
   }
 
@@ -7917,6 +7919,21 @@ struct eotn_buff_chill_t : public eotn_buff_base_t
   { return debug_cast<shaman_t*>( e.player ) -> buff.eotn_chill; }
 };
 
+struct uncertain_reminder_t : public scoped_actor_callback_t<shaman_t>
+{
+  uncertain_reminder_t() : scoped_actor_callback_t( SHAMAN )
+  { }
+
+  void manipulate( shaman_t* shaman, const special_effect_t& e ) override
+  {
+    auto buff = buff_t::find( shaman, "bloodlust" );
+    if ( buff )
+    {
+      buff -> buff_duration += timespan_t::from_seconds( e.driver() -> effectN( 1 ).base_value() );
+    }
+  }
+};
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN ) {}
@@ -7962,6 +7979,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 207994, eotn_buff_fire_t(), true );
     register_special_effect( 207994, eotn_buff_shock_t(), true );
     register_special_effect( 207994, eotn_buff_chill_t(), true );
+    register_special_effect( 234814, uncertain_reminder_t() );
   }
 
   void register_hotfixes() const override

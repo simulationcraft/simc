@@ -4638,13 +4638,19 @@ struct dire_beast_t: public hunter_spell_t
     const timespan_t base_duration = duration;
     const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_melee_speed();
     double partial_attacks_per_summon = base_duration / swing_time;
-    double base_attacks_per_summon = floor( partial_attacks_per_summon + 0.5 ); // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
+    int base_attacks_per_summon = static_cast<int>(partial_attacks_per_summon);
+    partial_attacks_per_summon -= static_cast<double>(base_attacks_per_summon );
 
-    if ( rng().roll( partial_attacks_per_summon - base_attacks_per_summon ) )
+    if ( rng().roll( partial_attacks_per_summon ) )
       base_attacks_per_summon += 1;
 
     timespan_t summon_duration = base_attacks_per_summon * swing_time;
-    assert( beast );
+
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "Dire Beast summoned with %4.1f autoattacks", base_attacks_per_summon );
+    }
+
     beast -> summon( summon_duration );
 
     if ( p() -> sets.has_set_bonus( HUNTER_BEAST_MASTERY, T18, B4 ) && rng().roll( 0.20 ) )

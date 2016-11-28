@@ -8,7 +8,6 @@
 // - Dreadlord's Deceit doesn't work on weaponmastered Shuriken Storm (Blizzard Bug ?)
 // - Insignia of Ravenholdt doesn't proc from Shuriken Storm nor Shuriken Toss (Blizzard Bug ?)
 // - Akaari's Soul Rip action doesn't benefits from SoD and MoS (Blizzard Bug) despite showing the increases in the tooltip.
-// - Find the exact formula for the Weaponmastered Goremaw's Bite Bug. (x15 seems to be a good guess)
 //
 // Assassination
 // - Balanced Blades [artifact power] spell data claims it's not flat modifier?
@@ -2987,18 +2986,6 @@ struct goremaws_bite_strike_t : public rogue_attack_t
     weapon = w;
   }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    // Weaponmaster Bug
-    if ( secondary_trigger == TRIGGER_WEAPONMASTER ) // Rough estimate of the result in average, it's a server side bug, hard to guess.
-    {
-      m *= 1.0 + 15;
-    }
-
-    return m;
-  }
 };
 
 struct goremaws_bite_t:  public rogue_attack_t
