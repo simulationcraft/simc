@@ -82,6 +82,7 @@ namespace item
   void unstable_horrorslime( special_effect_t& );
   void wriggling_sinew( special_effect_t& );
   void bough_of_corruption( special_effect_t& );
+  void ursocs_rending_paw( special_effect_t& );
 
   // Legendary
 
@@ -1258,6 +1259,19 @@ void item::bough_of_corruption( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new bough_of_corruption_driver_t( effect );
+}
+
+
+void item::ursocs_rending_paw( special_effect_t& effect )
+{
+  effect.proc_flags2_ = PF2_CRIT;
+  effect.trigger_spell_id = 221770;
+
+  auto rend_flesh = effect.create_action();
+  rend_flesh -> update_flags = 0;
+  effect.execute_action = rend_flesh;
+
+  new dbc_proc_callback_t( effect.item, effect );
 }
 
 // Horn of Valor ============================================================
@@ -3329,8 +3343,8 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 221845, item::twisting_wind          );
   register_special_effect( 222187, item::unstable_horrorslime   );
   register_special_effect( 222705, item::bough_of_corruption    );
+  register_special_effect( 221767, item::ursocs_rending_paw     );
   register_special_effect( 222046, item::wriggling_sinew        );
-  register_special_effect( 221767, "ProcOn/crit" );
 
   /* Legion 7.0 Misc */
   register_special_effect( 188026, item::infernal_alchemist_stone       );
