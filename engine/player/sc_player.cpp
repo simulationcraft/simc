@@ -2584,6 +2584,7 @@ bool player_t::init_finished()
   // Sort outbound assessors
   assessor_out_damage.sort();
 
+  // Print items to debug log
   if ( sim -> debug )
   {
     range::for_each( items, [ this ]( const item_t& item ) {
@@ -11517,3 +11518,54 @@ void player_t::adjust_action_queue_time()
 
   queueing -> reschedule_queue_event();
 }
+
+// Verify that the user has an use_item action defined for each on-use item
+bool player_t::verify_use_items() const
+{
+  if ( ! sim -> use_item_verification ||
+       ( action_list_str.empty() && action_priority_list.size() == 0 ) )
+  {
+    return true;
+  }
+
+  std::vector<const use_item_t*> use_actions;
+  std::vector<const item_t*> missing_actions;
+
+  // Collect use_item actions
+  range::for_each( action_list, [ &use_actions ]( const action_t* action ) {
+    if ( auto ptr = dynamic_cast<const use_item_t*>( action ) )
+    {
+      use_actions.push_back( ptr );
+    }
+  } );
+
+  // For all items that have on-use effects, ensure that there's a use action
+  range::for_each( items, [ &use_actions, &missing_actions ]( const item_t& item ) {
+    auto effect_it = range::find_if( item.parsed.special_effects, []( const special_effect_t* effect ) {
+      return effect -> source == SPECIAL_EFFECT_SOURCE_ITEM && effect -> type == SPECIAL_EFFECT_USE;
+    } );
+
+    if ( effect_it != item.parsed.special_effects.end() )
+    {
+      // Each use_item action will have an associated item_t pointer for the item used, so just
+      // compare the effect and use_item "item" pointers
+      auto action_it = range::find_if( use_actions, [ &effect_it ]( const use_item_t* action ) {
+        return action -> item == ( *effect_it ) -> item;
+      } );
+
+      if ( action_it == use_actions.end() )
+      {
+        missing_actions.push_back( &item );
+      }
+    }
+  } );
+
+  // Nag about any items that are missing on-use actions
+  range::for_each( missing_actions, [ this ]( const item_t* item ) {
+    sim -> errorf( "%s missing 'use_item' action for item \"%s\" (slot=%s)",
+      name(), item -> name(), item -> slot_name() );
+  } );
+
+  return missing_actions.size() == 0;
+}
+

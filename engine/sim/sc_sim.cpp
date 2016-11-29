@@ -1356,7 +1356,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
   requires_regen_event( false ), single_actor_batch( false ),
-  enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
+  enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
+  target_adds( 0 ), desired_targets( 0 ), enable_taunts( false ),
+  use_item_verification( true ),
   challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ), disable_artifacts( false ),
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),
@@ -2405,6 +2407,7 @@ bool sim_t::init()
   if ( ! canceled )
   {
     bool ret = true;
+    bool verify_use_items_state = true;
 
     for ( auto& actor : actor_list )
     {
@@ -2413,11 +2416,27 @@ bool sim_t::init()
       {
         ret = false;
       }
+
+      // Some verification stuff to avoid user mistakes
+
+      // .. nag if the user has not added an use_item line for each on-use item
+      if ( ! actor -> verify_use_items() )
+      {
+        verify_use_items_state = false;
+      }
+
     }
 
     if ( ! ret )
     {
       return false;
+    }
+
+    if ( ! verify_use_items_state )
+    {
+      errorf( "Disable this warning by adding 'use_item' actions into the action priority list "
+              "for the actor(s), or add \"use_item_verification=0\" to your list of options "
+              "passed to Simulationcraft." );
     }
   }
 
@@ -3068,6 +3087,7 @@ void sim_t::create_options()
   add_option( opt_float( "tmi_window_global", tmi_window_global ) );
   add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
   add_option( opt_bool( "enable_taunts", enable_taunts ) );
+  add_option( opt_bool( "use_item_verification", use_item_verification ) );
   // Character Creation
   add_option( opt_func( "deathknight", parse_player ) );
   add_option( opt_func( "demonhunter", parse_player ) );
