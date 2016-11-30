@@ -1546,6 +1546,9 @@ struct sim_t : private sc_thread_t
   int         desired_targets; // desired number of targets
   bool        enable_taunts;
 
+  // Disable use-item action verification in the simulator
+  bool        use_item_verification;
+
   // Data access
   dbc_t       dbc;
 
@@ -4036,6 +4039,9 @@ struct player_t : public actor_t
   virtual bool create_actions();
   virtual bool init_actions();
   virtual bool init_finished();
+
+  // Verify that the user input (APL) contains an use-item line for all on-use items
+  virtual bool verify_use_items() const;
 
   virtual void reset();
   virtual void combat_begin();
