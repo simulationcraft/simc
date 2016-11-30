@@ -1,6 +1,6 @@
-#define PTR_TALENT_SIZE (615)
+#define PTR_TALENT_SIZE (616)
 
-// 615 talents, wow build 23038
+// 616 talents, wow build 23109
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -92,7 +92,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Posthaste"                         , 19347, 0x00, 0x0004,   0,   0,   2,  109215,       0,  0 },
   { "Farstrider"                        , 19348, 0x00, 0x0004,   0,   1,   2,  199523,       0,  0 },
   { "A Murder of Crows"                 , 19357, 0x00, 0x0004,   0,   0,   5,  131894,       0,  0 },
-  { "Improved Traps"                    , 19361, 0x00, 0x0004, 255,   1,   3,  199518,       0,  0 },
+  { "Guerilla Tactics"                  , 19361, 0x00, 0x0004, 255,   1,   3,  236698,       0,  0 },
   { "Impending Victory"                 , 19676, 0x00, 0x0001,  73,   0,   1,  202168,   34428,  0 },
   { "Trail of Light"                    , 19752, 0x00, 0x0010, 257,   0,   0,  200128,       0,  0 },
   { "Castigation"                       , 19753, 0x00, 0x0010,   0,   1,   0,  193134,       0,  0 },
@@ -123,7 +123,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Dampen Harm"                       , 20175, 0x00, 0x0200,   0,   2,   4,  122278,       0,  0 },
   { "Invoke Xuen, the White Tiger"      , 20184, 0x00, 0x0200, 269,   1,   5,  123904,       0,  0 },
   { "Chi Wave"                          , 20185, 0x00, 0x0200,   0,   2,   0,  115098,       0,  0 },
-  { "Quickening"                        , 21144, 0x00, 0x0080,  62,   1,   6,  198923,       0,  0 },
+  { "Temporal Flux"                     , 21144, 0x00, 0x0080,  62,   1,   6,  234302,       0,  0 },
   { "Arcane Orb"                        , 21145, 0x00, 0x0080,  62,   2,   6,  153626,       0,  0 },
   { "Absolute Corruption"               , 21180, 0x00, 0x0100, 265,   1,   1,  196103,       0,  0 },
   { "Reverse Entropy"                   , 21181, 0x00, 0x0100, 267,   0,   1,  205148,       0,  0 },
@@ -220,7 +220,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Crashing Storm"                    , 21973, 0x00, 0x0040, 263,   0,   5,  192246,       0,  0 },
   { "Perseverance"                      , 21976, 0x00, 0x0010, 257,   2,   1,  235189,       0,  0 },
   { "Guardian Angel"                    , 21977, 0x00, 0x0010, 257,   1,   3,  200209,       0,  0 },
-  { "Mind Spike"                        , 21978, 0x00, 0x0010, 258,   1,   6,   73510,   15407,  0 },
+  { "Mind Spike"                        , 21978, 0x00, 0x0010, 258,   1,   6,  236741,       0,  0 },
   { "Surrender to Madness"              , 21979, 0x00, 0x0010, 258,   2,   6,  193223,       0,  0 },
   { "Killer Cobra"                      , 21986, 0x00, 0x0004, 253,   1,   6,  199532,       0,  0 },
   { "Cannonball Barrage"                , 21990, 0x00, 0x0008, 260,   0,   5,  185767,       0,  0 },
@@ -498,7 +498,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Shining Force"                     , 22440, 0x00, 0x0010,   0,   0,   2,  204263,       0,  0 },
   { "One with the Pack"                 , 22441, 0x00, 0x0004, 253,   0,   3,  199528,       0,  0 },
   { "Shimmer"                           , 22442, 0x00, 0x0080,   0,   0,   1,  212653,    1953,  0 },
-  { "Presence of Mind"                  , 22443, 0x00, 0x0080,  62,   1,   1,  205025,       0,  0 },
+  { "Slipstream"                        , 22443, 0x00, 0x0080,  62,   1,   1,  236457,       0,  0 },
   { "Mirror Image"                      , 22444, 0x00, 0x0080,   0,   0,   2,   55342,       0,  0 },
   { "Rune of Power"                     , 22445, 0x00, 0x0080,   0,   1,   2,  116011,       0,  0 },
   { "Frigid Winds"                      , 22446, 0x00, 0x0080,  64,   0,   4,  235224,       0,  0 },
@@ -517,7 +517,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Arcane Familiar"                   , 22458, 0x00, 0x0080,  62,   0,   0,  205022,       0,  0 },
   { "Conflagration"                     , 22459, 0x00, 0x0080,  63,   1,   0,  205023,       0,  0 },
   { "Lonely Winter"                     , 22460, 0x00, 0x0080,  64,   1,   0,  205024,   31687,  0 },
-  { "Temporal Flux"                     , 22461, 0x00, 0x0080,  62,   1,   0,  234302,       0,  0 },
+  { "Amplification"                     , 22461, 0x00, 0x0080,  62,   1,   0,  236628,       0,  0 },
   { "Firestarter"                       , 22462, 0x00, 0x0080,  63,   2,   0,  205026,       0,  0 },
   { "Bone Chilling"                     , 22463, 0x00, 0x0080,  64,   2,   0,  205027,       0,  0 },
   { "Words of Power"                    , 22464, 0x00, 0x0080,  62,   2,   0,  205035,       0,  0 },
@@ -566,7 +566,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Fracture"                          , 22509, 0x00, 0x0800, 581,   1,   3,  209795,       0,  0 },
   { "Sigil of Chains"                   , 22510, 0x00, 0x0800, 581,   1,   4,  202138,       0,  0 },
   { "Quickened Sigils"                  , 22511, 0x00, 0x0800, 581,   2,   4,  209281,       0,  0 },
-  { "Demonic Infusion"                  , 22512, 0x00, 0x0800, 581,   0,   5,  236189,       0,  0 },
+  { "Fel Devastation"                   , 22512, 0x00, 0x0800, 581,   0,   5,  212084,       0,  0 },
   { "Blade Turning"                     , 22513, 0x00, 0x0800, 581,   1,   5,  203753,       0,  0 },
   { "Icecap"                            , 22515, 0x00, 0x0020, 251,   0,   2,  207126,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
@@ -601,7 +601,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Frenzy"                            , 22544, 0x00, 0x0001,  72,   1,   5,  206313,       0,  0 },
   { "Concentrated Sigils"               , 22546, 0x00, 0x0800, 581,   0,   4,  207666,       0,  0 },
   { "Demonic"                           , 22547, 0x00, 0x0800, 577,   2,   6,  213410,       0,  0 },
-  { "Fel Devastation"                   , 22548, 0x00, 0x0800, 581,   1,   6,  212084,       0,  0 },
+  { "Demonic Infusion"                  , 22548, 0x00, 0x0800, 581,   1,   6,  236189,       0,  0 },
   { "Execution Sentence"                , 22557, 0x00, 0x0002,  70,   1,   0,  213757,       0,  0 },
   { "Blessed Hammer"                    , 22558, 0x00, 0x0002,  66,   1,   0,  204019,   53595,  0 },
   { "Afterlife"                         , 22562, 0x00, 0x0010, 257,   2,   2,  196707,       0,  0 },
@@ -648,5 +648,6 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Chrono Shift"                      , 22907, 0x00, 0x0080,  62,   0,   4,  235711,       0,  0 },
   { "Blast Wave"                        , 22908, 0x00, 0x0080,  63,   1,   1,  157981,       0,  0 },
   { "Chaos Cleave"                      , 22909, 0x00, 0x0800, 577,   0,   2,  206475,       0,  0 },
+  { "Intimidating Roar"                 , 22916, 0x00, 0x0400, 104,   1,   1,  236748,      99,  0 },
   { 0                                   ,     0, 0x00, 0x0000,   0,   0,   0,       0,       0,  0 },
 };
