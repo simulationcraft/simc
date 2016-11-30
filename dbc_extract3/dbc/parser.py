@@ -94,9 +94,9 @@ class DBCParserBase:
             field_size = field_data[1]
             for sub_idx in range(0, field_data[2]):
                 if field_size == 1:
-                    format_str += data_fmt and data_fmt[type_idx] or 'b'
+                    format_str += data_fmt and data_fmt[type_idx].replace('S', 'B') or 'b'
                 elif field_size == 2:
-                    format_str += data_fmt and data_fmt[type_idx] or 'h'
+                    format_str += data_fmt and data_fmt[type_idx].replace('S', 'H') or 'h'
                 elif field_size >= 3:
                     format_str += data_fmt and data_fmt[type_idx].replace('S', 'I') or 'i'
                 field_idx += 1
@@ -242,8 +242,8 @@ class DBCParserBase:
 
         # Check that at the end of the day, we have a sensible record length
         if not self.raw_outputtable() and unpacker.size > self.parsed_record_size():
-            logging.error("Record size mismatch for %s, expected %u, format has %u",
-                    self.class_name(), self.record_size, unpacker.size)
+            logging.error("Record size mismatch for %s, expected %u (%u), format has %u",
+                    self.class_name(), self.record_size, self.parsed_record_size(), unpacker.size)
             return False
 
         # Validate our json format file against the data we get from the file
