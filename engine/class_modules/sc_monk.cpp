@@ -4464,12 +4464,25 @@ struct crackling_jade_lightning_t: public monk_spell_t
     interrupt_auto_attack = true;
   }
 
+  virtual double cost() const override
+  {
+    double c = monk_spell_t::cost();
+
+    if ( p() -> buff.emperors_electric_charge -> up() )
+      c *= 1 + ( p() -> buff.emperors_electric_charge -> stack() * p() -> passives.the_emperor_capacitor -> effectN( 2 ).percent() );
+
+    return c;
+  }
+
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
   {
     double pm = monk_spell_t::composite_persistent_multiplier( action_state );
 
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
+
+    if ( p() -> buff.emperors_electric_charge -> up() )
+      pm *= 1 + p() -> buff.emperors_electric_charge -> stack_value();
 
     return pm;
   }
@@ -4480,12 +4493,6 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     if ( p() -> specialization() == MONK_MISTWEAVER )
       am *= 1 + p() -> passives.aura_mistweaver_monk -> effectN( 13 ).percent();
-
-    if ( p() -> buff.emperors_electric_charge -> up() )
-    {
-      am *= 1 + p() -> buff.emperors_electric_charge -> stack_value();
-      p() -> buff.emperors_electric_charge -> expire();
-    }
 
     return am;
   }
@@ -4500,6 +4507,9 @@ struct crackling_jade_lightning_t: public monk_spell_t
   void last_tick( dot_t* dot ) override
   {
     monk_spell_t::last_tick( dot );
+
+    if ( p() -> buff.emperors_electric_charge -> up() )
+      p() -> buff.emperors_electric_charge -> expire();
 
     // Reset swing timer
     if ( player -> main_hand_attack )
