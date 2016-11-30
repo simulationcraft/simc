@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -676,7 +676,7 @@ Name             : Rising Sun Kick (id=107428) [Spell Family (53)]
 Class            : Mistweaver Windwalker Monk
 School           : Physical
 Resource         : 2 Chi w/ Windwalker Monk (id=137025)
-Resource         : 2.25% Base Mana (24750 @Level 110) w/ Mistweaver Monk (id=137024)
+Resource         : 2% Base Mana (22000 @Level 110) w/ Mistweaver Monk (id=137024)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1503,7 +1503,7 @@ Tooltip          : Your next spell cast is empowered:
 
 - Effuse's healing is increased by $s2%.
 - Enveloping Mist is instant.
-- Essence Font may be cast while moving.$?a231786[
+- Essence Font may be cast while moving.$?a231876[
 - Renewing Mist does not trigger its cooldown.
 - Vivify costs no mana.][]
 
@@ -1773,11 +1773,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=134001)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 10.00000 | Misc Value: 24 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 13.00000 | Misc Value: 24 | Target: Self(1)
 #2 (id=287388)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=305755)   : Apply Aura (6) | Add Flat Modifier: Spell Power (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Misc Value: 24 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | Misc Value: 24 | Target: Self(1)
                    Affected Spells: Gust of Mists (191894)
 Description      : Effuse, Renewing Mist, Enveloping Mist, and Vivify also cause a gust of healing mists, instantly healing the primary target for $191894s1.
 
@@ -1791,7 +1791,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Lucidity (137331), Mana Tea (197908), Emperor's Electric Charge (235054)
+Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Mistweaver Monk (137024), Lucidity (137331), Mana Tea (197908), The Emperor's Capacitor (235054), 
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -2237,7 +2237,7 @@ Spell Level      : 55
 Range            : 20 yards
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Item - Monk WoD PvP Windwalker 2P Bonus (180743), Cenedril, Reflector of Hatred (208842)
+Affecting spells : Item - Monk WoD PvP Windwalker 2P Bonus (180743)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ .......x ...x.... 
@@ -2260,7 +2260,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Duration         : 6 seconds
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2448,7 +2448,7 @@ Effects          :
 #1 (id=156956)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend(21)
 #2 (id=181288)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.20000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE enemy (instant)(16)
 Description      : Trigger a Zen Pulse around an ally.  Deals $s2 damage to all enemies within $A2 yds of the target. The ally is healed for $198487s1 per enemy damaged.
 
 Name             : Dual Wield (id=124146) [Passive] 
@@ -2505,6 +2505,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=344130)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=357677)   : Apply Aura (6) | Unknown effect sub type (171)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=357678)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
 Description      : $@spelldesc124255
 Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
@@ -2529,6 +2533,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=344131)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=357679)   : Apply Aura (6) | Unknown effect sub type (171)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=357680)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
 Description      : $@spelldesc124255
 Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
@@ -2553,6 +2561,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=344132)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=357681)   : Apply Aura (6) | Unknown effect sub type (171)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=357682)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e
 Description      : $@spelldesc124255
 Tooltip          : $w1 damage is being staggered every $124255t1 sec.
 
@@ -4550,7 +4562,7 @@ Effects          :
 #1 (id=290828)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780), Spinning Crane Kick (101546), Rising Sun Kick (107428), Renewing Mist (115151), Soothing Mist (115175), Revival (115310), Detox (115450), Vivify (116670), Effuse (116694), Rushing Jade Wind (116847), Life Cocoon (116849), Crackling Jade Lightning (117952), Renewing Mist (119611), Enveloping Mist (124682), Rushing Jade Wind (148187), Rising Sun Kick (185099), Essence Font (191837), Refreshing Jade Wind (196725), Soothing Mist (209525), Reawaken (212051), Detox (218164)
-#2 (id=345166)   : Apply Aura (6) | Add Percent Modifier (108)
+#2 (id=345166)   : Apply Aura (6) | Add Percent Modifier: Runic Power Generation (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 34 | Target: Self(1)
                    Affected Spells: Spinning Crane Kick (101546), Rising Sun Kick (107428), Rising Sun Kick (185099)
 Description      : Reduces the mana cost of your spells by $s1% for $d.
@@ -4594,7 +4606,7 @@ Effects          :
 #1 (id=290903)   : Unknown effect type (254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Unknown(132)
 #2 (id=290904)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.20000 | Target: Friend(21)
 Description      : Instantly dash to a friendly player and heal them for $s2.
 
 Name             : Zen Pulse (id=198487) [Spell Family (53)] 
@@ -4613,7 +4625,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=291733)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Friend(21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.20000 | Target: Friend(21)
 Description      : $@spelldesc124081
 
 Name             : Invoke Chi-Ji, the Red Crane (id=198664) [Spell Family (53)] 
@@ -4662,7 +4674,7 @@ Range            : 40 yards
 Cast Time        : 1.8 seconds
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Cooldown         : 30 seconds
+Cooldown         : 15 seconds
 Affecting spells : Stance of the Fierce Tiger (103985), Stagger (115069), Brewmaster Monk (137023), Extend Life (185158)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ..x..... ........ 

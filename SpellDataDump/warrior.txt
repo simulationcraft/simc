@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -117,7 +117,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 Name             : Rend (id=772) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Resource         : 15 Rage
+Resource         : 10 Rage
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -132,8 +132,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=310)      : Apply Aura (6) | Periodic Damage: physical every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.08000 | Mechanic: Bleed | Target: Enemy(6)
-Description      : Wounds the target, causing $o1 Bleed damage over $d.
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.11800 | Mechanic: Bleed | Target: Enemy(6)
+#2 (id=357783)   : School Damage: physical (2)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.08000 | Mechanic: Bleed | Target: Enemy(6)
+Description      : Wounds the target, causing $s2 Bleed damage instantly and an additional $o1 over $d.
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
 Name             : Cleave (id=845) [Spell Family (4)] 
@@ -467,7 +469,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160), Warrior (137047), Thunder Crash (188644), Might of the Vrykul (188783), Crackling Thunder (203201)
+Affecting spells : Demoralizing Shout (1160), Warrior (137047), Thunder Crash (188644), Might of the Vrykul (188783), Crackling Thunder (203201), Kakushan's Stormscale Gauntlets (207844), 
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -486,7 +488,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self(1)
 Description      : Blasts all enemies within $6343A1 yards for $?s12712[${$6343m1*1.2}][$6343m1] damage$?s199045[, rooting them for $199042d and reducing their movement speed by $s2% for $d.][ and reduces their movement speed by $s2% for $d.]
 
-|cFFFFFFFFGenerates $/10;s3 Rage.|r
+|cFFFFFFFFGenerates ${$s4/10} Rage.|r
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Heroic Leap (id=6544) [Spell Family (4)] 
@@ -541,7 +543,7 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
-Affecting spells : Demoralizing Shout (1160), Revenge! (5302), Warrior (137047), Vengeance: Revenge (202573), Kakushan's Stormscale Gauntlets (207844), Rage of the Fallen (216272)
+Affecting spells : Demoralizing Shout (1160), Revenge! (5302), Warrior (137047), Vengeance: Revenge (202573), Rage of the Fallen (216272)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -586,7 +588,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
-Duration         : 1.5 seconds
+Duration         : 2.5 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
@@ -722,7 +724,7 @@ School           : Physical
 Spell Level      : 42
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Affecting spells : Bladestorm (46924), Warpaint (208154), Item - Warrior T19 Fury 4P Bonus (212158), Warlord's Challenge (223662), Bladestorm (227847)
+Affecting spells : Bladestorm (46924), Outburst (206320), Warpaint (208154), Item - Warrior T19 Fury 4P Bonus (212158), Warlord's Challenge (223662), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -889,9 +891,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Enemy(6)
 #3 (id=290322)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self(1)
-Description      : Slams the target with your shield, causing $s1 Physical damage.$?s231834[
+Description      : Slams the target with your shield, causing $s1 Physical damage. $?a231834[
 
-Devastate and Thunder Clap have a $231834% chance to reset the cooldown of Shield Slam.]
+Devastate, Thunder Clap, and Revenge have a $231834s1% chance to reset the cooldown of Shield Slam.][]
 
 |cFFFFFFFFGenerates $/10;s3 Rage.|r
 
@@ -2254,7 +2256,7 @@ Effects          :
 #1 (id=134153)   : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.62000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=297932)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 16 | Scaled Value: 16 | Misc Value: 0x7f | Target: Self(1)
 Description      : Roar explosively, dealing $m1 damage to all enemies within $A1 yards and increasing all damage you deal by $s2% for $d. Dragon Roar ignores all armor and always critically strikes.
 Tooltip          : Damage done increased by $s2%.
 
@@ -2432,7 +2434,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
-Duration         : 4 seconds
+Duration         : 3 seconds
 Proc Chance      : 101%
 Affecting spells : Demoralizing Shout (1160), Warrior (137047), Protection Warrior (137048)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
@@ -2567,7 +2569,7 @@ Effects          :
 #2 (id=186944)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1386 | Target: Self(1)
 #3 (id=191017)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: -87 | Scaled Value: -87 | Target: Self(1)
+                   Base Value: -89 | Scaled Value: -89 | Target: Self(1)
                    Affected Spells: Ravager (152277), Ravager (156287), Ravager (227744), Ravager (228920)
 #4 (id=191018)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -10 | Scaled Value: -10 | Target: Self(1)
@@ -2856,7 +2858,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=210836)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-Description      : Every $s1 Rage you spend reduces the remaining cooldown on Battle Cry$?c1[][, Last Stand, and Shield Wall] by 1 sec.
+Description      : Every $s1 Rage you spend reduces the remaining cooldown on Battle Cry$?c1[][, Last Stand, Shield Wall, and Demoralizing Shout] by 1 sec.
 
 Name             : Expansive Mind (Racial Passive) (id=154746) [Passive] 
 Class            : Warrior
@@ -2888,7 +2890,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=217505)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.70000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.37500 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc152277
 
 Name             : Riposte (id=161798) [Spell Family (4), Passive] 
@@ -3611,9 +3613,9 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=297943)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self(1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self(1)
                    Affected Spells: Mortal Strike (12294)
-Description      : Mortal Strike and Execute hit a second nearby target.
+Description      : Mortal Strike and Execute hit $s1 additional nearby $Ltarget:targets;.
 
 Name             : Bounding Stride (id=202163) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -3802,7 +3804,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298254)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 11 | Target: Self(1)
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 11 | Target: Self(1)
 Description      : Whirlwind deals $s1% increased damage to your primary target. 
 
 Name             : Frenzy (id=202539) [Spell Family (4)] 
@@ -3854,7 +3856,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298627)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 11 | Target: Self(1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 11 | Target: Self(1)
 Description      : Ignore Pain will ignore up to $s1% more damage, based on your missing health.
 
 Name             : Vengeance (id=202572) [Spell Family (4), Passive, Hidden] 
@@ -3965,7 +3967,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298697)   : Apply Aura (6) | Unknown effect sub type (395)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 5839 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 5839 | Target: Self(1)
 Description      : You gain $202602s1% Haste for each enemy within $s1 yards, up to $202602u enemies.
 
 Name             : Titanic Might (id=202612) [Spell Family (4), Passive, Hidden] 
@@ -3983,13 +3985,7 @@ Effects          :
 #1 (id=298712)   : Apply Aura (6) | Add Percent Modifier: Spell Duration (108)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
-#2 (id=298796)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
-#3 (id=298797)   : Apply Aura (6) | Add Percent Modifier (108)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 33 | Target: Self(1)
-                   Affected Spells: Colossus Smash (167105), Colossus Smash (208086)
-Description      : Increases the duration of Colossus Smash by ${($s1/100)*8} sec, but reduces its effectiveness by $s2%.
+Description      : Increases the duration of Colossus Smash by ${($s1/100)*8} sec.
 
 Name             : Booming Voice (id=202743) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4004,13 +4000,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298923)   : Apply Aura (6) | Add Flat Modifier (107)
-                   Base Value: 500 | Scaled Value: 500 | Misc Value: 33 | Target: Self(1)
+                   Base Value: 600 | Scaled Value: 600 | Misc Value: 33 | Target: Self(1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
 #2 (id=298924)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
 #3 (id=298925)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 32 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
 Description      : Demoralizing Shout also generates ${$m1/10} Rage, and increases damage you deal to affected targets by $s2%.
 
@@ -4026,13 +4022,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=298937)   : Apply Aura (6) | Add Percent Modifier: Spell Cooldown (108)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self(1)
+#1 (id=298937)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self(1)
                    Affected Spells: Battle Cry (1719)
 #2 (id=298938)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Battle Cry (1719)
-Description      : Battle Cry generates ${$m2/10} Rage.
+Description      : Battle Cry lasts ${$s1/1000} sec longer and generates ${$m2/10} Rage.
 
 Name             : Carnage (id=202922) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4126,7 +4122,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=299635)   : Apply Aura (6) | Add Percent Modifier: Spell Radius (108)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 6 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Thunder Clap (6343)
 Description      : Increases the radius of Thunder Clap by $s1%.
 
@@ -4327,9 +4323,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=305090)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30000 | Scaled Value: 30000 | Misc Value: 11 | Target: Self(1)
-Description      : Berserker Rage now causes Enrage.
+#1 (id=305090)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11 | Target: Self(1)
+                   Affected Spells: Berserker Rage (18499)
+Description      : Berserker Rage now causes Enrage, and its cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Taste for Blood (id=206333) [Spell Family (4)] 
 Class            : Warrior
@@ -4635,7 +4632,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=320480)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self(1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : Slam and Whirlwind now cause the target to bleed for $s1% additional damage over $215537d. Multiple uses accumulate increased damage.
 
 Name             : In For The Kill (id=215550) [Spell Family (4), Passive] 
@@ -4670,7 +4667,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=320494)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self(1)
+                   Base Value: 300 | Scaled Value: 300 | Misc Value: rage | Target: Self(1)
 Description      : $@spelldesc215550
 
 Name             : War Machine (id=215556) [Spell Family (4), Passive] 
@@ -4714,7 +4711,7 @@ Description      : $@spelldesc215556
 Name             : War Machine (id=215562) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Duration         : 10 seconds
+Duration         : 15 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4742,7 +4739,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=320532)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self(1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self(1)
 #2 (id=320533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | Target: Self(1)
 Description      : Bloodthirst has a $s1% increased critical strike chance against targets above $s2% health.
@@ -4782,7 +4779,7 @@ Attributes       : ........ ........ ........ .....x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=320535)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self(1)
+                   Base Value: 250 | Scaled Value: 250 | Target: Self(1)
                    Affected Spells: Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850)
 Description      : $@spelldesc215569
 Tooltip          : Whirlwind deals $s1% increased damage.
@@ -4815,7 +4812,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=320538)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=320539)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
 Description      : $@spelldesc215571
@@ -5036,7 +5033,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=334376)   : Apply Aura (6) | Unknown effect sub type (81)
-                   Base Value: 20 | Scaled Value: 20 | Value Multiplier: 1 | Misc Value: 127 | Target: Friend(21)
+                   Base Value: 30 | Scaled Value: 30 | Value Multiplier: 1 | Misc Value: 127 | Target: Friend(21)
 Description      : $@spelldesc223657
 Tooltip          : $s1% of damage taken is transferred to the Warrior.
 
@@ -5057,7 +5054,10 @@ Effects          :
 #2 (id=334404)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Berserker Rage (18499)
-Description      : While Berserker Rage is active, you may use Taunt with no cooldown and Taunted enemies move $s2% faster towards you.
+#3 (id=357729)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
+                   Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11 | Target: Self(1)
+                   Affected Spells: Berserker Rage (18499)
+Description      : Reduces the cooldown on Berserker Rage by ${$s3/-1000} sec, and while Berserker Rage is active you may use Taunt with no cooldown and Taunted enemies move $s2% faster towards you.
 
 Name             : Deadly Calm (id=227266) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -5091,7 +5091,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=342507)   : Apply Aura (6) | Modify Parry% (47)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self(1)
 Description      : $@spelldesc152277
 Tooltip          : $?s23922[Chance to Parry increased by $s1%.][Ravager is currently active.]
 
@@ -5235,7 +5235,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349758)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-Description      : Devastate and Thunder Clap have a $s1% chance to reset the remaining cooldown on Shield Slam.
+Description      : Devastate, Thunder Clap, and Revenge have a $s1% chance to reset the remaining cooldown on Shield Slam.
 
 
 Name             : Dual Wield (id=231842) [Spell Family (4), Passive] 

@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -982,7 +982,7 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11232)    : School Damage: fire (2)
-                   Base Value: 25 | Scaled Value: 0 (avg=0.1) | Points Per Level: 0.5 | SP Coefficient: 0.45000 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 25 | Scaled Value: 0 (avg=0.1) | Points Per Level: 0.5 | SP Coefficient: 0.65000 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=242870)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Deals Fire damage to all enemies near the caster.
@@ -1491,9 +1491,9 @@ Effects          :
 #1 (id=40331)    : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 8.05000 | Target: Enemy(6)
 #2 (id=40332)    : Apply Aura (6) | Unknown effect sub type (270)
-                   Base Value: 10 | Scaled Value: 10 | Target: Enemy(6)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Enemy(6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d. If the target dies, Haunt's cooldown is reset.
-Tooltip          : Haunt's cooldown will be reset on death.
+Tooltip          : Taking $s2% increased damage from the Warlock. Haunt's cooldown will be reset on death.
 
 Name             : Shadow Bite (Basic Attack) (id=54049) [Spell Family (57)] 
 Class            : Warlock
@@ -3352,7 +3352,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ........ .....
                  : Channeled (34)
 Effects          :
 #1 (id=242681)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -80 | Scaled Value: -80 | Target: Enemy(6)
+                   Base Value: -70 | Scaled Value: -70 | Target: Enemy(6)
 Description      : Cripples the target, reducing movement speed by $s1% for $d (4 sec in PvP).
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -4465,7 +4465,7 @@ Effects          :
 #2 (id=322167)   : Apply Aura (6) | Add Flat Modifier: Spell Cast Time (107)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 10 | Target: Self(1)
                    Affected Spells: Rain of Fire (5740), Chaos Bolt (116858)
-Description      : Reduces the cast time of Chaos Bolt and Rain of Fire by ${-$m2/1000}.1 sec and they restore $s1% of your maximum mana.
+Description      : Chaos Bolt and Rain of Fire restore $s1% of your maximum mana, and Chaos Bolt's cast time is reduced by ${-$m2/1000}.1 sec.
 
 Name             : Soul Effigy (id=205178) [Spell Family (5)] 
 Class            : Warlock
@@ -5238,7 +5238,7 @@ Name             : Empowered Life Tap (id=235156) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Level      : 1
-Duration         : 10 seconds
+Duration         : 15 seconds
 Triggered by     : Empowered Life Tap (235157)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5248,7 +5248,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=355428)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 12 | Scaled Value: 12 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=355429)   : Apply Aura (6) | Periodic Dummy: every 5 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Damage increased by $s1%.
