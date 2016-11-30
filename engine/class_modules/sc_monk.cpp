@@ -4464,12 +4464,12 @@ struct crackling_jade_lightning_t: public monk_spell_t
     interrupt_auto_attack = true;
   }
 
-  virtual double cost() const override
+  virtual double cost_per_tick( resource_e resource) const override
   {
-    double c = monk_spell_t::cost();
+    double c = monk_spell_t::cost_per_tick( resource );
 
     if ( p() -> buff.emperors_electric_charge -> up() )
-      c *= 1 + ( p() -> buff.emperors_electric_charge -> stack() * p() -> passives.the_emperor_capacitor -> effectN( 2 ).percent() );
+      c *= 1 + ( p() -> buff.emperors_electric_charge -> current_stack * p() -> passives.the_emperor_capacitor -> effectN( 2 ).percent() );
 
     return c;
   }
