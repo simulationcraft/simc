@@ -5526,7 +5526,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
     if ( p -> talents.flame_on -> ok() )
     {
-      cooldown -> duration *=  1.0 + p -> talents.flame_on -> effectN( 2 ).percent();
+      cooldown -> duration -= 1000* p -> talents.flame_on -> effectN( 3 ).time_value(); 
     }
     cooldown -> hasted = true;
     // Fire Blast has a small ICD to prevent it from being double casted
