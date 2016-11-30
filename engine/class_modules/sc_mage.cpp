@@ -433,6 +433,7 @@ public:
     // Frost
     const spell_data_t* brain_freeze,
                       * brain_freeze_2,
+                      * blizzard_2,
                       * fingers_of_frost,
                       * icicles,
                       * icicles_driver,
@@ -3481,21 +3482,18 @@ struct blizzard_shard_t : public frost_mage_spell_t
     return DMG_OVER_TIME;
   }
 
-  virtual void execute() override
+  virtual void impact( action_state_t* s )
   {
-    frost_mage_spell_t::execute();
+    mage_spell_t::impact( s );
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( s -> result ) )
     {
-      double fof_proc_chance = p() -> spec.fingers_of_frost
-                                   -> effectN( 2 ).percent();
-      if ( p() -> talents.frozen_touch -> ok() )
-      {
-        fof_proc_chance *= 1.0 + ( p() -> talents.frozen_touch -> effectN( 1 ).percent() );
-      }
-      trigger_fof( fof_source_id , fof_proc_chance );
+        p() -> cooldowns.frozen_orb
+            -> adjust( -10.0 * p() -> spec.blizzard_2
+                                   -> effectN( 1 ).time_value() );
     }
   }
+
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
   { return frost_mage_spell_t::snapshot_state( s, rt ); }
 
@@ -7931,6 +7929,7 @@ void mage_t::init_spells()
   spec.critical_mass_2       = find_spell( 231630 );
   spec.brain_freeze          = find_specialization_spell( "Brain Freeze"     );
   spec.brain_freeze_2        = find_specialization_spell( 231584 );
+  spec.blizzard_2            = find_spell( 236662 );
   spec.fingers_of_frost      = find_spell( 112965 );
   spec.shatter               = find_specialization_spell( "Shatter"          );
   spec.shatter_2             = find_specialization_spell( 231582 );
