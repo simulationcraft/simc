@@ -1489,7 +1489,7 @@ struct felguard_pet_t: public warlock_pet_t
     action_list_str += "/felstorm";
     action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
     owner_coeff.ap_from_sp = 1.1; // HOTFIX
-    //owner_coeff.sp_from_sp *= 1.2;
+    //owner_coeff.ap_from_sp *= 1.2;
   }
 
   virtual void init_base_stats() override
@@ -2647,9 +2647,10 @@ struct agony_t: public warlock_spell_t
 
     td( d -> target ) -> debuffs_agony -> trigger();
 
+    double tier_bonus = 1.0 + p() -> sets.set( WARLOCK_AFFLICTION, T19, B4 ) -> effectN( 1 ).percent();
 
     double active_agonies = p() -> get_active_dots( internal_id );
-    double accumulator_increment = rng().range( 0.0, p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.48 : 0.32 ) / sqrt( active_agonies );
+    double accumulator_increment = rng().range( 0.0, p() -> sets.has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.32 * tier_bonus : 0.32 ) / sqrt( active_agonies );
 
     p() -> agony_accumulator += accumulator_increment;
 
