@@ -420,6 +420,7 @@ public:
                       * arcane_familiar,
                       * evocation_2,
                       * mage_armor,
+                      * presence_of_mind,
                       * savant;
 
     // Fire
@@ -450,11 +451,10 @@ public:
                       * ray_of_frost,
                       * lonely_winter,
                       * bone_chilling,
-                      * temporal_flux;
+                      * amplification;
 
     // Tier 30
     const spell_data_t* shimmer, // NYI
-                      * presence_of_mind,
                       * ice_block; // NYI
 
     // Tier 45
@@ -491,7 +491,7 @@ public:
 
     // Tier 100
     const spell_data_t* overpowered,
-                      * quickening,
+                      * temporal_flux,
                       * arcane_orb,
                       * kindling,
                       * cinderstorm,
@@ -1914,10 +1914,6 @@ public:
       c *= 1.0 + arcane_power_reduction;
     }
 
-    if ( p() -> talents.quickening -> ok() && p() -> buffs.quickening -> check() )
-    {
-      c *= 1.0 + ( p() -> buffs.quickening -> data().effectN( 2 ).percent() * p() -> buffs.quickening -> current_stack );
-    }
     return c;
   }
 
@@ -2092,7 +2088,8 @@ struct arcane_mage_spell_t : public mage_spell_t
 
   double arcane_charge_damage_bonus() const
   {
-    double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent() +
+    double per_ac_bonus =  ( p() -> spec.arcane_charge -> effectN( 1 ).percent() +
+                             p() -> talents.amplification -> effectN( 1 ).percent() ) +
                           ( p() -> composite_mastery() *
                            p() -> spec.savant -> effectN( 2 ).mastery_value() );
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
@@ -2604,7 +2601,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 {
   presence_of_mind_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "presence_of_mind", p,
-                         p -> find_talent_spell( "Presence of Mind" )  )
+                         p -> find_specialization_spell( "Presence of Mind" )  )
   {
     parse_options( options_str );
     harmful = false;
@@ -2821,7 +2818,6 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> expire();
-    p() -> buffs.quickening -> expire();
 
   }
 
@@ -2969,12 +2965,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
         p() -> cooldowns.presence_of_mind -> start( cd );
       }
     }
-
-    if ( p() -> talents.quickening -> ok() &&
-         p() -> buffs.quickening -> check() < p() -> buffs.quickening -> max_stack() )
-    {
-      p() -> buffs.quickening -> trigger();
-    }
   }
 
   virtual double action_multiplier() const override
@@ -3082,11 +3072,6 @@ struct arcane_explosion_t : public arcane_mage_spell_t
       p() -> buffs.arcane_charge -> trigger();
 
       p() -> buffs.arcane_instability -> trigger();
-    }
-    if ( p() -> talents.quickening -> ok() &&
-         p() -> buffs.quickening -> check() < p() -> buffs.quickening -> max_stack() )
-    {
-      p() -> buffs.quickening -> trigger();
     }
   }
 
@@ -3292,12 +3277,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
 
     p() -> buffs.arcane_missiles -> decrement();
-
-    if ( p() -> talents.quickening -> ok() &&
-         p() -> buffs.quickening -> check() < p() -> buffs.quickening -> max_stack() )
-    {
-      p() -> buffs.quickening -> trigger();
-    }
 
     if ( p() -> sets.has_set_bonus( MAGE_ARCANE, T19, B4 ) )
     {
@@ -7831,18 +7810,16 @@ void mage_t::init_spells()
   // Talents
   // Tier 15
   talents.arcane_familiar = find_talent_spell( "Arcane Familiar" );
-  talents.temporal_flux   = find_talent_spell( "Temporal Flux"   );
-  talents.resonance     = find_talent_spell( "Resonance"         );
+  talents.amplification   = find_talent_spell( "Amplification"   );
+  talents.resonance       = find_talent_spell( "Resonance"       );
   talents.pyromaniac      = find_talent_spell( "Pyromaniac"      );
   talents.conflagration   = find_talent_spell( "Conflagration"   );
-  talents.fire_starter    = find_talent_spell( "Firestarter"    );
+  talents.fire_starter    = find_talent_spell( "Firestarter"     );
   talents.ray_of_frost    = find_talent_spell( "Ray of Frost"    );
   talents.lonely_winter   = find_talent_spell( "Lonely Winter"   );
   talents.bone_chilling   = find_talent_spell( "Bone Chilling"   );
   // Tier 30
   talents.shimmer         = find_talent_spell( "Shimmer"         );
-
-  talents.presence_of_mind= find_talent_spell( "Presence of Mind");
   talents.ice_block       = find_talent_spell( "Ice Block"       );
   // Tier 45
   talents.mirror_image    = find_talent_spell( "Mirror Image"    );
@@ -7873,7 +7850,7 @@ void mage_t::init_spells()
   talents.arctic_gale     = find_talent_spell( "Arctic Gale"     );
   // Tier 100
   talents.overpowered     = find_talent_spell( "Overpowered"     );
-  talents.quickening      = find_talent_spell( "Quickening"      );
+  talents.temporal_flux   = find_talent_spell( "Temporal Flux"   );
   talents.arcane_orb      = find_talent_spell( "Arcane Orb"      );
   talents.kindling        = find_talent_spell( "Kindling"        );
   talents.cinderstorm     = find_talent_spell( "Cinderstorm"     );
@@ -7975,6 +7952,8 @@ void mage_t::init_spells()
   if ( talents.unstable_magic -> ok() )
     unstable_magic_explosion = new actions::unstable_magic_explosion_t( this );
 
+  spec.presence_of_mind      = find_specialization_spell( "Presence of Mind" );
+
   if ( artifact.touch_of_the_magi.rank() )
   {
     touch_of_the_magi_explosion =
@@ -8022,9 +8001,7 @@ void mage_t::create_buffs()
                                   .activated( true )
                                   .cd( timespan_t::zero() )
                                   .duration( timespan_t::zero() );
-  buffs.quickening            = buff_creator_t( this, "quickening", find_spell( 198924 ) )
-                                  .add_invalidate( CACHE_SPELL_HASTE )
-                                  .max_stack( 50 );
+
 
   // 4T18 Temporal Power buff has no duration and stacks multiplicatively
   buffs.temporal_power        = buff_creator_t( this, "temporal_power", find_spell( 190623 ) )
@@ -8883,7 +8860,7 @@ void mage_t::recalculate_resource_max( resource_e rt )
     current_mana_max = resources.max[ rt ];
   }
 
-  if ( pets.arcane_familiar && !pets.arcane_familiar -> is_sleeping() )
+  if ( talents.arcane_familiar -> ok() && pets.arcane_familiar && !pets.arcane_familiar -> is_sleeping() )
   {
     resources.max[ rt ] *= 1.0 +
       spec.arcane_familiar -> effectN( 1 ).percent();
@@ -9044,11 +9021,6 @@ double mage_t::composite_spell_haste() const
   if ( buffs.streaking -> check() )
   {
     h /= 1.0 + buffs.streaking -> data().effectN( 1 ).percent();
-  }
-  // TODO: Double check scaling with hits.
-  if ( buffs.quickening -> check() )
-  {
-    h /= 1.0 + buffs.quickening -> data().effectN( 1 ).percent() * buffs.quickening -> check();
   }
 
   return h;
@@ -9924,7 +9896,14 @@ public:
   }
 
   virtual void register_hotfixes() const override
-  { }
+  {
+    hotfix::register_effect( "Mage", "2016-11-30", "Reverse the incorrect AC mana cost adjustment from 60& back to 120%", 26314 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 120 )
+      .verification_value( 60 );  
+
+  }
 
   virtual bool valid() const override { return true; }
   virtual void init        ( player_t* ) const override {}
