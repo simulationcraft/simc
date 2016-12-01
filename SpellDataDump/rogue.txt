@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -314,7 +314,7 @@ Effects          :
 #5 (id=219899)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Garrote (703), Ambush (8676)
-Description      : Conceals you in the shadows until cancelled, allowing you to stalk enemies without being seen. $?s14062[Movement speed while stealthed is increased by $s3% and damage dealt is increased by $s4%.]?s108209[ Abilities cost $112942s1% less while stealthed. ][]$?s31223[ Attacks from Stealth and for $31666d after deal $31223s1% more damage.][]
+Description      : Conceals you in the shadows until cancelled, allowing you to stalk enemies without being seen. $?s14062[Movement speed while stealthed is increased by $s3% and damage dealt is increased by $s4%.]?s108209[ Abilities cost $112942s1% less while stealthed. ][]$?s31223[ Attacks from Stealth and for $31223s1 sec after deal $31665s1% more damage.][]
 Tooltip          : Stealthed.$?$w3!=0[
 Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
@@ -947,7 +947,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961), Goremaw's Bite (220901)
 #3 (id=180823)   : Dummy (3)
-                   Base Value: 35 | Scaled Value: 35
+                   Base Value: 30 | Scaled Value: 30
 #4 (id=181788)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #5 (id=221864)   : Apply Aura (6) | Dummy (4)
@@ -1977,7 +1977,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
-                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Prey on the Weak (131511), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Alacrity (193538), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Goremaw's Bite (220901)
+                   Affected Spells: Backstab (53), Kidney Shot (408), Garrote (703), Sinister Strike (1752), Kick (1766), Gouge (1776), Stealth (1784), Cheap Shot (1833), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Sprint (2983), Crippling Poison (3408), Crippling Poison (3409), Slice and Dice (5171), Evasion (5277), Mutilate (5374), Sap (6770), Ambush (8676), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Hemorrhage (16511), Mutilate Off-Hand (27576), Spore Cloud (32643), Envenom (32645), Fan of Knives (51723), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade (121473), Shadow Blade Off-hand (121474), Prey on the Weak (131511), Internal Bleeding (154953), Backstab (173458), Poisoned Knife (185565), Kingsbane (192759), Kingsbane (192760), Alacrity (193538), Eviscerate (196819), Finality: Eviscerate (197393), Shuriken Storm (197835), Agonizing Poison (200803), Goremaw's Bite (220901), Kingsbane (222062)
 #2 (id=68391)    : Apply Aura (6) | Unknown effect sub type (343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -3036,7 +3036,7 @@ Effects          :
                    Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283), Death (227151)
 #3 (id=334762)   : Apply Aura (6) | Periodic Heal%: every 1 seconds (20)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Allows use of all Stealth abilities and grants all the combat benefits of Stealth for $d. Effect not broken from taking damage or attacking. $?s14062[Movement speed while active is increased by $1784s3% and damage dealt is increased by $1784s4%. ]?s108209[Abilities cost $112942s1% less while active. ][]$?s31223[Attacks from Shadow Dance and for $31666d after deal $31223s1% more damage.  ][]
+Description      : Allows use of all Stealth abilities and grants all the combat benefits of Stealth for $d. Effect not broken from taking damage or attacking. $?s14062[Movement speed while active is increased by $1784s3% and damage dealt is increased by $1784s4%. ]?s108209[Abilities cost $112942s1% less while active. ][]$?s31223[Attacks from Shadow Dance and for $31223s1 sec after deal $31665s1% more damage.  ][]
 
 Name             : Deepening Shadows (id=185314) [Spell Family (8), Passive] 
 Class            : Subtlety Rogue
@@ -3282,7 +3282,7 @@ Proc Chance      : 101%
 Artifact Power   : Id: 346, Max Rank: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
-Affecting spells : Mastery: Potent Poisons (76803), Kingsbane (192853), Master Poisoner (196864), 
+Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Kingsbane (192853), Master Poisoner (196864), 
 Triggered by     : Push Active Ability to Bar (225882)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3314,7 +3314,7 @@ Name             : Kingsbane (id=192760) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
-Affecting spells : Mastery: Potent Poisons (76803), Kingsbane (192853), Master Poisoner (196864), 
+Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Kingsbane (192853), Master Poisoner (196864), 
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -3500,7 +3500,7 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
 Effects          :
 #1 (id=283683)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 127 | Target: Self(1)
-Description      : For the duration of Roll the Bones, each time you use a finishing move, you reduce the remaining cooldown on Adrenaline Rush, Sprint, Vanish, Grappling Hook, Cannonball Barrage, Killing Spree, Marked for Death, and Death from Above by $s1 sec per combo point spent.
+Description      : For the duration of Roll the Bones, each time you use a finishing move, you reduce the remaining cooldown on Adrenaline Rush, Sprint, Between the Eyes, Vanish, Grappling Hook, Cannonball Barrage, Killing Spree, Marked for Death, and Death from Above by $s1 sec per combo point spent.
 Tooltip          : Finishers reduce the remaining cooldown on many of your abilities by $s1 sec per combo point.
 
 Name             : Deeper Stratagem (id=193531) [Spell Family (8), Passive] 
@@ -4958,7 +4958,7 @@ Name             : Kingsbane (id=222062) [Spell Family (8)]
 Class            : Rogue
 School           : Nature
 Range            : 100 yards
-Affecting spells : Mastery: Potent Poisons (76803), Kingsbane (192853), Master Poisoner (196864), 
+Affecting spells : Mastery: Potent Poisons (76803), Vendetta (79140), Kingsbane (192853), Master Poisoner (196864), 
 Triggered by     : Kingsbane (192759)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5087,7 +5087,7 @@ Description      : Garrote silences the target for $1330d when used from Stealth
 
 
 Name             : Between the Eyes (Rank 2) (id=235484) [Spell Family (8), Passive] 
-Class            : Rogue
+Class            : Outlaw Rogue
 School           : Holy
 Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

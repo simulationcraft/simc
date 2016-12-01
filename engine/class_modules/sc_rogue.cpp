@@ -5497,9 +5497,8 @@ void rogue_t::trigger_true_bearing( const action_state_t* state )
   cooldowns.adrenaline_rush -> adjust( v, false );
   cooldowns.sprint -> adjust( v, false );
   // As of 10/27 (7.1 22908), Between the Eyes (199804) doesn't reduce its own CD.
-  // FIXME: Will be removed in 7.1.5
-  if ( ! maybe_ptr( this -> dbc.ptr ) &&
-       (! bugs || state -> action -> id != 199804 ) )
+  // TODO: Check if BtE does reduce its own CD on PTR.
+  if (! bugs || state -> action -> id != 199804 )
   {
     cooldowns.between_the_eyes -> adjust( v, false );
   }

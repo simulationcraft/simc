@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -512,10 +512,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Proc Flags       : ........ ........ ...x.... ........ 
-                 : Periodic Taken
 Affecting spells : Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Void Ray (205372), Void Siphon (215322)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -531,9 +528,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power: every 0.75 seconds (24)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 13 | Target: Self(1)
-Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.$?a234702[
-
-$234702s1% of all Shadow Word: Pain damage on the target is replicated to all nearby targets][]$?a185916[
+Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.$?a185916[
 
 |cFFFFFFFFGenerates ${4*$m3/100} Insanity over the duration.|r][]
 Tooltip          : $?$w2=0[Taking][Movement speed slowed and taking] Shadow damage every $t1 sec.
@@ -720,7 +715,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1169
-Affecting spells : Priest (137030), Lucidity (137323), Death's Embrace (193645)
+Affecting spells : Priest (137030), Lucidity (137323), Death's Embrace (193645), Zek's Exterminatus (236546), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1651,7 +1646,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Void Ray (205372), Void Siphon (215322)
+Affecting spells : Lucidity (137323), Mental Fatigue (185104), Voidform (194249), Void Siphon (215322)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3116,7 +3111,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283427)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self(1)
-                   Affected Spells: Mind Flay (15407), Mind Spike (73510)
+                   Affected Spells: Mind Flay (15407)
 #2 (id=286617)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 2 (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Mind Blast (8092)
@@ -3125,7 +3120,7 @@ Effects          :
                    Affected Spells: Mind Flay (15407)
 #4 (id=303044)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-                   Affected Spells: Mind Blast (8092), Mind Spike (73510)
+                   Affected Spells: Mind Blast (8092)
 Description      : $?s73510[Mind Spike][Mind Flay] and Mind Blast deal $s3% more damage$?a185916[ and generate $s1% more Insanity][].
 
 Name             : Surrender to Madness (id=193223) [Spell Family (6)] 
@@ -3219,7 +3214,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 #4 (id=285141)   : Apply Aura (6) | Add Percent Modifier: Spell Global Cooldown (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self(1)
-                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Spike (73510), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448)
+                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Spike (73510), Mindbender (123040), Shadow Mend (186263), Shadow Mend (187464), Mindbender (200174), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448), Mind Spike (236741)
 #5 (id=285142)   : Apply Aura (6) | Periodic Dummy: every 1 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=286264)   : Apply Aura (6) | Unknown effect sub type (453)
@@ -3473,7 +3468,7 @@ Effects          :
 #1 (id=289321)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
                    Base Value: -2000 | Scaled Value: -2000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Prayer of Mending (33076)
-Description      : Prayer of Mending's cooldown is reduced by ${$s1/1000} sec, and it now triggers Serendipity, reducing the remaining cooldown on Holy Word: Sanctify.
+Description      : Prayer of Mending's cooldown is reduced by ${$m1/-1000} sec, and it now triggers Serendipity, reducing the remaining cooldown on Holy Word: Sanctify.
 
 Name             : Shield Discipline (id=197045) [Spell Family (6), Passive] 
 Class            : Priest
@@ -3944,6 +3939,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
 Artifact Power   : Id: 764, Max Rank: 1
+Affecting spells : Mental Fatigue (185104)
 Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -4072,7 +4068,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303238)   : Apply Aura (6) | Proc Trigger Spell: Void Ray (42)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 2 | Trigger Spell: 205372 | Target: Self(1)
-Description      : Each time your $?s73510[Mind Spike][Mind Flay] deals damage, you gain $205372s1% increased $?s73510[Mind Spike][Mind Flay] damage for $205372d, stacking up to $205372u times.
+Description      : Each time your $?s73510[Mind Spike][Mind Flay] or Mind Sear deals damage, you gain $205372s1% increased $?s73510[Mind Spike][Mind Flay] and Mind Sear damage for $205372d, stacking up to $205372u times.
 
 Name             : Void Ray (id=205372) [Spell Family (6)] 
 Class            : Priest
@@ -4090,12 +4086,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303239)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Mind Flay (15407)
-#2 (id=341195)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
-                   Affected Spells: Mind Spike (73510)
+                   Affected Spells: Mind Flay (15407), Mind Sear (234702)
 Description      : $@spelldesc205371
-Tooltip          : Increases $?s73510[Mind Spike][Mind Flay] damage by $s1%.
+Tooltip          : Increases $?s73510[Mind Spike][Mind Flay] and Mind Sear damage by $s1%.
 
 Name             : Shadow Crash (id=205385) [Spell Family (6)] 
 Class            : Priest
@@ -4162,7 +4155,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 234746 | Target: Enemy(6)
 #3 (id=308158)   : Energize Power (30)
                    Base Value: 1600 | Scaled Value: 1600 | Misc Value: insanity | Target: Self(1)
-Description      : Sends a bolt of pure void energy at the enemy, causing $s1 Shadow damage$?a231688[ and extending the duration of Shadow Word: Pain and Vampiric Touch on all nearby targets by ${$231688s1/1000} sec][]. Requires Voidform.
+Description      : Sends a bolt of pure void energy at the enemy, causing $s1 Shadow damage$?a231688[  and extending the duration of Shadow Word: Pain and Vampiric Touch on all nearby targets by ${$231688s1/1000}.1 sec][]. Requires Voidform.
 
 |cFFFFFFFFGenerates $/100;s3 Insanity.|r
 
@@ -4240,11 +4233,26 @@ Attributes       : ........ ........ ..x..... .......x   ........ ........ .....
 Effects          :
 #1 (id=307809)   : Apply Aura (6) | Unknown effect sub type (283)
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 196685 | Target: Friend(21)
-                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Divine Hymn (64844), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Sunwell Torrent (28516), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Divine Hymn (64844), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128), Holy Mending (196781), Light of T'uure (208065), Body and Mind (214121)
 #2 (id=308008)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.00000 | Target: Friend(21)
 Description      : Applies Light of the Naaru to the target, healing for $s2 and increasing all healing you do to that target by $208065s1% for $d. Maximum 2 charges.
 Tooltip          : Healing taken from the Priest increased by $s1%.
+
+Name             : Mind Flay (id=208232) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Level      : 1
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=308086)   : Energize Power (30)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: insanity | Target: Self(1)
+Description      : $@spelldesc234702
 
 Name             : Mass Resurrection (id=212036) [Spell Family (6)] 
 Class            : Discipline Holy Priest
@@ -4342,7 +4350,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 10 seconds
 Proc Chance      : 101%
-Affecting spells : Lucidity (137323)
+Affecting spells : Lucidity (137323), Light of T'uure (208065)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4557,7 +4565,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=343561)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Activated by casting Void Eruption. Twists your Shadowform with the powers of the Void, increasing shadow damage you deal by $194249s1%$?s8092[, reducing the cooldown on Mind Blast by ${$194249m6/-1000} sec,][] and granting an additional $194249m3% Haste every $194249t5 sec.
+Description      : Activated by casting Void Eruption. Twists your Shadowform with the powers of the Void, increasing Shadow damage you deal by $194249s1%$?s8092[, reducing the cooldown on Mind Blast by ${$194249m6/-1000} sec,][] and granting an additional $194249m3% Haste every $194249t5 sec.
 
 Your Insanity will drain increasingly fast until it reaches 0 and Voidform ends.
 
@@ -4649,8 +4657,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=349532)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 12 | Target: Self(1)
-Description      : Void Bolt extends the duration of your Shadow Word: Pain and Vampiric Touch on all nearby targets by ${s1/1000} sec.
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 12 | Target: Self(1)
+#2 (id=358154)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
+Description      : Void Bolt extends the duration of your Shadow Word: Pain and Vampiric Touch on all nearby targets by $@switch<$s2>[${$s1/1000}][${$s1/1000}.1] sec.
 
 Name             : Shadow Word: Death (Rank 2) (id=231689) [Spell Family (6), Passive] 
 Class            : Shadow Priest
@@ -4717,22 +4727,43 @@ Description      : Assume a Shadowform, increasing your Shadow damage dealt by $
 Tooltip          : Shadow damage dealt increased by $s1%.
 Physical damage taken reduced by $s2%.
 
-Name             : Mind Flay (Rank 2) (id=234702) [Spell Family (6), Passive] 
+Name             : Mind Flay (id=234696) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Level      : 1
+Range            : 100 yards
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   x....... .x...... ........ .x....x. 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
+Effects          :
+#1 (id=354714)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#2 (id=354715)   : School Damage: shadow (2)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+Description      : $@spelldesc234702
+
+Name             : Mind Sear (id=234702) [Spell Family (6), Passive] 
 Class            : Shadow Priest
 School           : Shadow
 Spell Level      : 26
-Affecting spells : Void Corruption (194016)
+Affecting spells : Void Corruption (194016), Void Ray (205372)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
 #1 (id=354722)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self(1)
-Description      : While channeling Mind Flay, $s1% of all Shadow Word: Pain damage on the target is replicated to all nearby targets.
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self(1)
+Description      : When Mind Flay deals damage, if the target is afflicted by your Shadow Word: Pain, it deals $234696s2 damage to all nearby targets.
+
+|cFFFFFFFFGenerates ${$208232m1/100} Insanity per target hit.|r
 
 Name             : Void Bolt (id=234746) [Spell Family (6), Hidden] 
 Class            : Priest
@@ -4766,5 +4797,37 @@ Effects          :
 #1 (id=355490)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : When you cast Renew on yourself, it reduces all damage you take by $193065s2%.
+
+Name             : Mind Spike (id=236741) [Spell Family (6)] 
+Class            : Priest
+School           : Shadowfrost
+Spell Level      : 1
+Range            : 40 yards
+Cast Time        : 1.5 seconds
+GCD              : 1.5 seconds
+Affecting spells : Lucidity (137323), Mental Fatigue (185104), Voidform (194249), Void Siphon (215322)
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=358113)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
+#2 (id=358114)   : School Damage: shadowfrost (2)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+#3 (id=358115)   : Energize Power (30)
+                   Base Value: 500 | Scaled Value: 500 | Misc Value: insanity | Target: Self(1)
+#4 (id=358116)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | Target: Enemy(6)
+#5 (id=358119)   : Dummy (3)
+                   Base Value: 25 | Scaled Value: 25 | Target: Enemy(6)
+Description      : Drive a shadowy spike into the target's mind, dealing $s2 Shadowfrost damage and detonating your damage over time effects on the target.
+
+For each damage over time effect detonated, Mind Spike gains $s4% damage and Insanity generation, and deals $s5% of its damage to all nearby targets. 
+
+|cFFFFFFFFGenerates ${$m3/100} Insanity.|r
+
 
 

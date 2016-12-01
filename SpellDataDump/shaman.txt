@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 399e3a4)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -1371,7 +1371,7 @@ Resource         : 50 Maelstrom
 Spell Level      : 48
 Range            : 35 yards
 GCD              : 1.5 seconds
-Duration         : 10 seconds
+Duration         : 6 seconds
 Proc Chance      : 100%
 Affecting spells : Elemental Fury (60188), Spiritwalker's Grace (79206), Lucidity (137326), The Ground Trembles (191499), Echoes of the Great Sundering (208723)
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
@@ -1387,7 +1387,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
 #3 (id=263791)   : Unknown effect type (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3691 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
-Description      : Causes the earth within $a1 yards of the target location to tremble and break, dealing ${$SPN*0.3*10*(1+$170374m3/100)} Physical damage over $d and sometimes knocking down enemies.
+Description      : Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d and sometimes knocking down enemies.
+Variables        : $damage=${$SPN*0.5*6}
 
 Name             : Glyph of Deluge (Restoration) (id=63279) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -1704,7 +1705,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
+Description      : An efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -2772,7 +2773,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
 #2 (id=191042)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Echo of the Elements (108283)
 #3 (id=191043)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
@@ -3068,7 +3069,7 @@ Name             : Storm Elemental (id=157299) [Spell Family (11)]
 Class            : Shaman
 School           : Fire
 Spell Level      : 1
-Duration         : 60 seconds
+Duration         : 30 seconds
 Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3272,7 +3273,7 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | Target: Self(1)
 #3 (id=307793)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self(1)
-Description      : Your Lightning Bolt,$?s117014[ Elemental Blast,][]$?s210714[ Icefury,][] Chain Lightning, and Lava Burst casts have a $s1% chance to trigger a second cast on the same target for $s2% of normal damage and Maelstrom generation.
+Description      : Your Lightning Bolt,$?s117014[ Elemental Blast,][]$?s210714[ Icefury,][] Chain Lightning, and Lava Burst casts have a $s1% chance to trigger a second cast on the same target for $s2% of normal damage and $s3% of normal Maelstrom generation.
 
 Name             : Earthen Rage (id=170374) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -3481,7 +3482,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273980)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | Target: Enemy(6)
 Description      : Fires a bolt of lightning at the target, dealing $?s210727[up to ${(1+$210727m2/100)*$s1}][$s1] Nature damage.
 
 Name             : Crash Lightning (id=187874) [Spell Family (11)] 
@@ -3588,7 +3589,6 @@ Description      : Heals a friendly target for $s1.$?a190899[ Consumes $s3 Maels
 Name             : Earthen Spike (id=188089) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
-Resource         : 30 Maelstrom
 Spell Level      : 1
 Range            : 10 yards
 GCD              : 1.5 seconds
@@ -3975,7 +3975,7 @@ Name             : Gust of Wind (id=192063)
 Class            : Shaman
 School           : Physical
 GCD              : 1.5 seconds
-Cooldown         : 20 seconds
+Cooldown         : 15 seconds
 Attributes       : ........ ........ ..x..... .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x....... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4120,7 +4120,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=281806)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | Target: Enemy(6)
 Description      : $@spelldesc192106
 
 Name             : Liquid Magma Totem (id=192222) [Spell Family (11)] 
@@ -4224,7 +4224,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=282020)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 18 | Target: Self(1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Lava Surge (77756)
 Description      : Flame Shock has a $s1% increased chance to trigger Lava Surge.
 
@@ -4248,9 +4248,9 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 1
 GCD              : 1.5 seconds
-Cooldown         : 300 seconds
+Cooldown         : 150 seconds
 Category         : 1572
-Category Cooldown: 300 seconds
+Category Cooldown: 150 seconds
 Affecting spells : Lucidity (137326)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4491,7 +4491,7 @@ Description      : Hand of Gul'dan now also applies Doom to all enemies it hits.
 Name             : Frostbrand (id=196834) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Frost
-Resource         : 35 Maelstrom
+Resource         : 20 Maelstrom
 Spell Level      : 38
 Range            : 10 yards
 GCD              : 1.5 seconds
@@ -4656,7 +4656,7 @@ Tooltip          : Casting Shaman's Lightning Bolt and Chain Lightning also deal
 Name             : Fury of Air (id=197211) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
-Resource         : 5 Maelstrom and 5 Maelstrom per second or tick
+Resource         : 3 Maelstrom and 3 Maelstrom per second or tick
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4687,7 +4687,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289629)   : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 10.00000 | Radius: 11 yards | Target: Unknown(129)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 13.00000 | Radius: 11 yards | Target: Unknown(129)
 #2 (id=290614)   : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Unknown(95) | Target: Unknown(129)
 #3 (id=290630)   : Dummy (3)
@@ -4708,7 +4708,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289974)   : School Damage: nature (2)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.52000 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=289975)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 8 yards | Mechanic: Unknown(88) | Target: At Caster(22) -> AOE enemy(15)
 Description      : $@spelldesc197211
@@ -5315,7 +5315,7 @@ Spell Level      : 1
 Range            : 10 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
-Cooldown         : 40 seconds
+Cooldown         : 45 seconds
 Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5983,7 +5983,7 @@ Effects          :
 #2 (id=312153)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1500 | Scaled Value: 1500 | Target: Self(1)
 #3 (id=312154)   : Apply Aura (6) | Add Flat Modifier: Spell Cooldown (107)
-                   Base Value: 9000 | Scaled Value: 9000 | Misc Value: 11 | Target: Self(1)
+                   Base Value: 12000 | Scaled Value: 12000 | Misc Value: 11 | Target: Self(1)
                    Affected Spells: Lightning Bolt (403), Lightning Bolt (187837), Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
 Description      : Lightning Bolt now consumes up to $s1 Maelstrom for up to $s2% increased damage, but has a $213498t1 sec cooldown.
 
@@ -6071,7 +6071,7 @@ Effects          :
 #1 (id=312326)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=312327)   : Weapon Damage% (31)
-                   Base Value: 35 | Scaled Value: 0.35 | Target: Enemy(6)
+                   Base Value: 25 | Scaled Value: 0.25 | Target: Enemy(6)
 Description      : $@spelldesc210853
 
 Name             : Hex (id=210873) [Spell Family (11)] 
@@ -6250,7 +6250,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=316714)   : Apply Aura (6) | Periodic Dummy: every 9 seconds (226)
+#1 (id=316714)   : Apply Aura (6) | Periodic Dummy: every 12 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc210727
 
@@ -6390,7 +6390,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self(1)
 #4 (id=321048)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-Description      : Blankets the target area in healing rain, restoring ${$215871m1*5} health to up to 6 allies over $d. Stormstrike and Lava Lash extend the duration of Rainfall by $s3 sec, up to a maximum of $s4 sec.
+Description      : Blankets the target area in healing rain, restoring ${$215871m1*5*2/$t2} health to up to 6 allies over $d. Stormstrike and Lava Lash extend the duration of Rainfall by $s3 sec, up to a maximum of $s4 sec.
 Tooltip          : Your Rainfall is currently active.
 
 Name             : Rainfall (id=215871) [Spell Family (11)] 
@@ -6407,7 +6407,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=321041)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Radius: 0 - 12 yards | Target: Unknown(87) -> AOE friendly(31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: Unknown(87) -> AOE friendly(31)
 Description      : $@spelldesc73920
 
 Name             : Disabling Totem (id=216965) 
