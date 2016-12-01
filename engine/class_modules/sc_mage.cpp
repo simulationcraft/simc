@@ -4980,6 +4980,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     frost_mage_spell_t( "frozen_orb", p,
                         p -> find_class_spell( "Frozen Orb" ) ),
     frozen_orb_bolt( new frozen_orb_bolt_t( p ) ),
+    ice_time( false ),
     ice_time_nova( new ice_time_nova_t( p  ) )
   {
     parse_options( options_str );
