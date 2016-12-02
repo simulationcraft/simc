@@ -7498,7 +7498,8 @@ struct sindorei_spite_t : public class_buff_cb_t<warlock_t>
   {
     return super::creator( e )
       .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
