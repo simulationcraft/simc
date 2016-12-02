@@ -2106,6 +2106,8 @@ public:
           if ( !p() -> pet.sef[SEF_FIRE] -> is_sleeping() )
             p() -> pet.sef[SEF_FIRE] -> expiration -> reschedule( p() -> pet.sef[SEF_FIRE] -> expiration -> remains() + timespan_t::from_millis( extension ) );
         }
+
+        // The Emperor's Capacitor Legendary
         if ( p() -> legendary.the_emperors_capacitor )
           p() -> buff.emperors_electric_charge -> trigger( ab::cost() );
       }
@@ -4464,7 +4466,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
     interrupt_auto_attack = true;
   }
 
-  virtual double cost_per_tick( resource_e resource) const override
+  virtual double cost_per_tick( resource_e resource ) const override
   {
     double c = monk_spell_t::cost_per_tick( resource );
 
@@ -6515,6 +6517,83 @@ struct hidden_masters_forbidden_touch_t : public monk_buff_t < buff_t >
       touch_of_death -> start();
   }
 };
+
+// Serenity
+struct serenity_buff_t : public monk_buff_t < buff_t >
+{
+  double percent_adjust;
+  serenity_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ):
+    base_t( p, buff_creator_t( &p, n, s ) ),
+    percent_adjust( 0 )
+  {
+    default_value = s -> effectN( 2 ).percent();
+    if ( monk.artifact.spiritual_focus.rank() )
+      default_value += monk.artifact.spiritual_focus.percent();
+
+    buff_duration = s -> duration();
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
+    percent_adjust = s -> effectN( 4 ).percent(); // saved as -50%
+  }
+
+  // Used on trigger to reduce all cooldowns
+  void cooldown_reduction( cooldown_t* cd )
+  {
+    if ( cd -> down() )
+      // adjusting by -50% of remaining cooldown
+      cd -> adjust( cd -> remains() * percent_adjust, true );
+  }
+
+  // Used on expire_override to revert all cooldowns
+  void cooldown_extension(cooldown_t* cd )
+  {
+    if ( cd -> down() )
+      // adjustin by +100% of remaining cooldown
+      cd -> adjust( cd -> remains(), true );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    return base_t::trigger( stacks, value, chance, duration );
+    // Executing Serenity reduces any current cooldown by 50%
+    // Have to manually adjust each of the affected spells
+    /*cooldown_reduction( monk.cooldown.blackout_kick );
+
+    cooldown_reduction( monk.cooldown.blackout_strike );
+
+    cooldown_reduction( monk.cooldown.rushing_jade_wind );
+
+    cooldown_reduction( monk.cooldown.refreshing_jade_wind );
+
+    cooldown_reduction( monk.cooldown.rising_sun_kick );
+
+    cooldown_reduction( monk.cooldown.fists_of_fury );
+
+    cooldown_reduction( monk.cooldown.strike_of_the_windlord );*/
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    if ( sim -> dbc.ptr )
+    {
+      cooldown_extension( monk.cooldown.blackout_kick );
+
+      cooldown_extension( monk.cooldown.blackout_strike );
+
+      cooldown_extension( monk.cooldown.rushing_jade_wind );
+
+      cooldown_extension( monk.cooldown.refreshing_jade_wind );
+
+      cooldown_extension( monk.cooldown.rising_sun_kick );
+
+      cooldown_extension( monk.cooldown.fists_of_fury );
+
+      cooldown_extension( monk.cooldown.strike_of_the_windlord );
+    }
+    base_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
 }
 
 // ==========================================================================
@@ -7292,16 +7371,19 @@ void monk_t::create_buffs()
     .default_value( passives.hit_combo -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.masterful_strikes = buff_creator_t(this, "masterful_strikes", passives.tier18_2pc_melee )
+  buff.masterful_strikes = buff_creator_t( this, "masterful_strikes", passives.tier18_2pc_melee )
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )
     .add_invalidate( CACHE_MASTERY );
 
+//  buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
+  
   buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
     .default_value( talent.serenity -> effectN( 2 ).percent() +
       ( artifact.spiritual_focus.rank() ? artifact.spiritual_focus.percent() : 0 ) )
     .duration( talent.serenity -> duration() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
 
   buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )

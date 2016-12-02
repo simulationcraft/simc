@@ -1014,6 +1014,7 @@ void player_t::init_base_stats()
   resources.base_multiplier[ RESOURCE_RAGE ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
   resources.base_multiplier[ RESOURCE_ENERGY ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
   resources.base_multiplier[ RESOURCE_RUNIC_POWER ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
+  resources.base_multiplier[ RESOURCE_FOCUS ] *= 1 + racials.expansive_mind -> effectN( 1 ).percent();
 
 
   if ( true_level >= 50 && matching_gear )

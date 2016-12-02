@@ -7429,7 +7429,7 @@ using namespace actions;
 
 struct power_cord_of_lethtendris_t : public scoped_actor_callback_t<warlock_t>
 {
-    power_cord_of_lethtendris_t() : super( WARLOCK_AFFLICTION )
+    power_cord_of_lethtendris_t() : super( WARLOCK )
     {}
 
     void manipulate (warlock_t* p, const special_effect_t& e) override
@@ -7440,7 +7440,7 @@ struct power_cord_of_lethtendris_t : public scoped_actor_callback_t<warlock_t>
 
 struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
 {
-  hood_of_eternal_disdain_t() : super( WARLOCK_AFFLICTION, "agony" )
+  hood_of_eternal_disdain_t() : super( WARLOCK, "agony" )
   {}
 
   void manipulate( agony_t* a, const special_effect_t& e ) override
@@ -7452,7 +7452,7 @@ struct hood_of_eternal_disdain_t : public scoped_action_callback_t<agony_t>
 
 struct kazzaks_final_curse_t : public scoped_action_callback_t<doom_t>
 {
-  kazzaks_final_curse_t() : super( WARLOCK_DEMONOLOGY, "doom" )
+  kazzaks_final_curse_t() : super( WARLOCK, "doom" )
   {}
 
   void manipulate( doom_t* a, const special_effect_t& e ) override
@@ -7463,7 +7463,7 @@ struct kazzaks_final_curse_t : public scoped_action_callback_t<doom_t>
 
 struct recurrent_ritual_t : public scoped_action_callback_t<call_dreadstalkers_t>
 {
-  recurrent_ritual_t() : super( WARLOCK_DEMONOLOGY, "call_dreadstalkers" )
+  recurrent_ritual_t() : super( WARLOCK, "call_dreadstalkers" )
   { }
 
   void manipulate( call_dreadstalkers_t* a, const special_effect_t& e ) override
@@ -7498,7 +7498,8 @@ struct sindorei_spite_t : public class_buff_cb_t<warlock_t>
   {
     return super::creator( e )
       .spell( e.driver() -> effectN( 1 ).trigger() )
-      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+      .default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 

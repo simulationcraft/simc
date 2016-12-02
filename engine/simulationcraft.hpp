@@ -6592,6 +6592,36 @@ struct dbc_proc_callback_t : public action_callback_t
         cooldown -> start();
     }
   }
+
+  // Determine target for the callback (action).
+  virtual player_t* target( const action_state_t* state ) const
+  {
+    // Incoming event to the callback actor, or outgoing
+    bool incoming = state -> target == listener;
+
+    // Outgoing callbacks always target the target of the state object
+    if ( ! incoming )
+    {
+      return state -> target;
+    }
+
+    // Incoming callbacks target either the callback actor, or the source of the incoming state.
+    // Which is selected depends on the type of the callback proc action.
+    //
+    // Technically, this information is exposed in the client data, but simc needs a proper
+    // targeting system first before we start using it.
+    switch ( proc_action -> type )
+    {
+      // Heals are always targeted to the callback actor on incoming events
+      case ACTION_ABSORB:
+      case ACTION_HEAL:
+        return listener;
+      // The rest are targeted to the source of the callback event
+      default:
+        return state -> action -> player;
+    }
+  }
+
 private:
   rng::rng_t& rng() const
   { return listener -> rng(); }
@@ -6633,7 +6663,7 @@ private:
     if ( triggered && proc_action &&
          ( ! proc_buff || proc_buff -> check() == proc_buff -> max_stack() ) )
     {
-      proc_action -> target = state -> target;
+      proc_action -> target = target( state );
       proc_action -> schedule_execute();
 
       // Decide whether to expire the buff even with 1 max stack
