@@ -7383,7 +7383,7 @@ void monk_t::create_buffs()
     .duration( talent.serenity -> duration() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-
+    
 
   buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -7942,7 +7942,7 @@ double monk_t::composite_armor_multiplier() const
     a += passives.aura_brewmaster_monk -> effectN( 6 ).percent();
 
   if ( artifact.wanderers_hardiness.rank() )
-    a *= 1.0 + artifact.wanderers_hardiness.percent();
+    a += artifact.wanderers_hardiness.percent();
 
   return a;
 }
