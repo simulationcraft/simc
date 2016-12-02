@@ -2319,6 +2319,23 @@ struct mind_spike_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
+	  if ( const priest_td_t* td = find_td( s->target ) )
+	  {
+      // If both dots are up
+	    if ( td->dots.shadow_word_pain->is_ticking() && td->dots.shadow_word_pain->is_ticking() )
+	    {
+        base_multiplier *= 3.0;
+        insanity_gain *= 3.0;
+	    }
+      // If only one of the dots is up
+      else if (td->dots.shadow_word_pain->is_ticking() != td->dots.shadow_word_pain->is_ticking())
+      {
+        base_multiplier *= 2.0;
+        insanity_gain *= 2.0;
+      }
+
+	  }
+
     priest_spell_t::impact( s );
 
     generate_insanity( insanity_gain, priest.gains.insanity_mind_spike );
@@ -2327,46 +2344,7 @@ struct mind_spike_t final : public priest_spell_t
     {
       priest_td_t& td = get_td( s->target );
 
-      int prev_stacks    = 0;
-      double prev_damage = 0.0;
-
-      if ( td.buffs.mind_spike->up() )
-      {
-        prev_stacks = td.buffs.mind_spike->check();
-        prev_damage = td.buffs.mind_spike->value();
-        td.buffs.mind_spike->increment();
-      }
-      else
-      {
-        td.buffs.mind_spike->trigger();
-      }
-
-      if ( td.buffs.mind_spike->check() == td.buffs.mind_spike->max_stack() &&
-           td.buffs.mind_spike->check() == prev_stacks )
-      {
-        td.buffs.mind_spike->current_value =
-            round( ( prev_damage / td.buffs.mind_spike->max_stack() ) *
-                       ( td.buffs.mind_spike->max_stack() - 1 ) +
-                   ( s->result_amount *
-                     priest.talents.mind_spike->effectN( 2 ).percent() ) );
-      }
-      else
-      {
-        td.buffs.mind_spike->current_value =
-            prev_damage +
-            s->result_amount *
-                priest.talents.mind_spike->effectN( 2 ).percent();
-        if ( priest.sim->debug )
-        {
-          priest.sim->out_debug.printf(
-              "%s adds %d to mind_spike_detonation, now %d total at %i stacks",
-              priest.name(),
-              s->result_amount *
-                  priest.talents.mind_spike->effectN( 2 ).percent(),
-              td.buffs.mind_spike->current_value,
-              td.buffs.mind_spike->stack() );
-        }
-      }
+      //TODO splash damage
 
       if ( priest.active_items.mental_fatigue )
       {
@@ -2737,9 +2715,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
   shadowy_apparition_spell_t( priest_t& p )
     : priest_spell_t( "shadowy_apparitions", p, p.find_spell( 78203 ) ),
-      insanity_gain( 4 )  // Spell Data missing?
-                          // data().effectN(2).resource(RESOURCE_INSANITY) *
-  // priest.talents.auspicious_spirits->effectN(2).percent() ) )
+      insanity_gain( priest.talents.auspicious_spirits->effectN(2).percent() )
   {
     background   = true;
     proc         = false;
@@ -3278,6 +3254,7 @@ struct vampiric_touch_t final : public priest_spell_t
 struct void_bolt_t final : public priest_spell_t
 {
   double insanity_gain;
+  int dot_extension;
   const spell_data_t* rank2;
 
   void_bolt_t( priest_t& player, const std::string& options_str )
@@ -3288,6 +3265,7 @@ struct void_bolt_t final : public priest_spell_t
     parse_options( options_str );
     use_off_gcd                 = true;
     is_sphere_of_insanity_spell = true;
+	  dot_extension = data().effectN(1).base_value;
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data.
 
@@ -3310,7 +3288,7 @@ struct void_bolt_t final : public priest_spell_t
       cooldown->reset( false );
     }
   }
-
+  
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -3320,13 +3298,26 @@ struct void_bolt_t final : public priest_spell_t
       if ( const priest_td_t* td = find_td( s->target ) )
       {
         if ( td->dots.shadow_word_pain->is_ticking() )
-        {
-          td->dots.shadow_word_pain->refresh_duration();
+        { 
+		      //TODO PTR check
+		      if (true) {
+			      td->dots.shadow_word_pain->extend_duration(timespan_t::from_millis(dot_extension), true );
+		      }
+		      else {
+			    td->dots.shadow_word_pain->refresh_duration();
+		      }
         }
 
         if ( td->dots.vampiric_touch->is_ticking() )
         {
-          td->dots.vampiric_touch->refresh_duration();
+          //TODO PTR check
+          if (true) {
+            td->dots.vampiric_touch->extend_duration(timespan_t::from_millis(dot_extension), true);
+          }
+          else {
+            td->dots.vampiric_touch->refresh_duration();
+          }
+          
         }
       }
     }
@@ -3824,7 +3815,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
       // Insanity loss per additional Insanity Drain stacks (>1) per second
       double loss_per_additional_stack =
-          0.55;  // Hardcoded Patch 7.1 2016-11-16
+          2/3;  // Hardcoded Patch 7.1.5 2016-12-02
 
       // Combined Insanity loss per second
       double insanity_loss_per_second =
