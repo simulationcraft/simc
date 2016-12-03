@@ -2016,30 +2016,65 @@ public:
       // This is an ongoing check; so theoretically it can trigger 2 times from 4 unique CS spells in a row
       // If a spell is used and it is one of the last 3 combo stirke saved, it will not trigger the buff
       // IE: Energizing Elixir -> Strike of the Windlord -> Fists of Fury -> Tiger Palm (trigger) -> Blackout Kick (trigger) -> Tiger Palm -> Rising Sun Kick (trigger)
+      // The triggering CAN reset if the player casts the same ability two times in a row.
+      // IE: Energizing Elixir -> Blackout Kick -> Blackout Kick -> Rising Sun Kick -> Blackout Kick -> Tiger Palm (trigger)
       if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
       {
-        if ( p() -> t19_melee_4_piece_container_1 != CS_NONE && p() -> t19_melee_4_piece_container_2 != CS_NONE  && p() -> t19_melee_4_piece_container_3 != CS_NONE )
+        if ( p() -> t19_melee_4_piece_container_1 != CS_NONE )
         {
-            if ( p() -> t19_melee_4_piece_container_2 != new_ability && p() -> t19_melee_4_piece_container_3 != new_ability )
-            {
-              p() -> t19_melee_4_piece_container_1 = p() -> t19_melee_4_piece_container_2;
-              p() -> t19_melee_4_piece_container_2 = p() -> t19_melee_4_piece_container_3;
-              p() -> t19_melee_4_piece_container_3 = new_ability;
-              p() -> buff.combo_master -> trigger();
-            }
-        }
-        else if ( p() -> t19_melee_4_piece_container_1 != CS_NONE && p() -> t19_melee_4_piece_container_2 != CS_NONE )
-        {
-          if ( p() -> t19_melee_4_piece_container_1 != new_ability && p() -> t19_melee_4_piece_container_2 != new_ability )
+          if ( p() -> t19_melee_4_piece_container_2 != CS_NONE )
           {
-            p() -> t19_melee_4_piece_container_3 = new_ability;
-            p() -> buff.combo_master -> trigger();
+            if ( p() -> t19_melee_4_piece_container_3 != CS_NONE )
+            {
+              // Check if the last two containers are not the same as the new ability
+              if ( p() -> t19_melee_4_piece_container_3 != new_ability )
+              {
+                if ( p() -> t19_melee_4_piece_container_2 != new_ability )
+                {
+                  // if they are not the same adjust containers and trigger the buff
+                  p() -> t19_melee_4_piece_container_1 = p() -> t19_melee_4_piece_container_2;
+                  p() -> t19_melee_4_piece_container_2 = p() -> t19_melee_4_piece_container_3;
+                  p() -> t19_melee_4_piece_container_3 = new_ability;
+                  p() -> buff.combo_master -> trigger();
+                }
+              }
+              // semi-reset if the last ability is the same as the new ability
+              else
+              {
+                p() -> t19_melee_4_piece_container_1 = new_ability;
+                p() -> t19_melee_4_piece_container_2 = CS_NONE;
+                p() -> t19_melee_4_piece_container_3 = CS_NONE;
+              }
+            }
+            // If the 3rd container is blank check if the first two containers are not the same
+            else if ( p() -> t19_melee_4_piece_container_2 != new_ability )
+            {
+              if ( p() -> t19_melee_4_piece_container_1 != new_ability )
+              {
+                // Assign the 3rd container and trigger the buff
+                p() -> t19_melee_4_piece_container_3 = new_ability;
+                p() -> buff.combo_master -> trigger();
+              }
+            }
+            // semi-reset if the last ability is the same as the new ability
+            else
+            {
+                p() -> t19_melee_4_piece_container_1 = new_ability;
+                p() -> t19_melee_4_piece_container_2 = CS_NONE;
+                p() -> t19_melee_4_piece_container_3 = CS_NONE;
+            }
           }
-        }
-        else if ( p() -> t19_melee_4_piece_container_1 != CS_NONE ) 
-        {
-          if ( p() -> t19_melee_4_piece_container_1 != new_ability )
+          // If the 2nd and 3rd container is blank, check if the first container is not the same
+          else if ( p() -> t19_melee_4_piece_container_1 != new_ability )
+            // Assign the second container
             p() -> t19_melee_4_piece_container_2 = new_ability;
+          // semi-reset if the last ability is the same as the new ability
+          else
+          {
+              p() -> t19_melee_4_piece_container_1 = new_ability;
+              p() -> t19_melee_4_piece_container_2 = CS_NONE;
+              p() -> t19_melee_4_piece_container_3 = CS_NONE;
+          }
         }
         else
           p() -> t19_melee_4_piece_container_1 = new_ability;
