@@ -302,8 +302,9 @@ public:
     gain_t* mindbender;
     gain_t* power_word_solace;
     gain_t* insanity_auspicious_spirits;
-    gain_t* insanity_dispersion;
-    gain_t* insanity_void_torrent;
+	gain_t* insanity_dispersion;
+	gain_t* insanity_vampiric_embrace;
+	gain_t* insanity_void_torrent;
     gain_t* insanity_drain;
     gain_t* insanity_mind_blast;
     gain_t* insanity_mind_flay;
@@ -2733,6 +2734,7 @@ struct shadowform_t final : public priest_spell_t
 
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
+
   double insanity_gain;
 
   shadowy_apparition_spell_t( priest_t& p )
@@ -3133,9 +3135,11 @@ struct surrender_to_madness_t final : public priest_spell_t
 
 struct vampiric_embrace_t final : public priest_spell_t
 {
+	double insanity_gain;
   vampiric_embrace_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "vampiric_embrace", p,
-                      p.find_class_spell( "Vampiric Embrace" ) )
+                      p.find_class_spell( "Vampiric Embrace" ) ),
+					  insanity_gain(30)
   {
     parse_options( options_str );
 
@@ -3144,8 +3148,8 @@ struct vampiric_embrace_t final : public priest_spell_t
 
   void execute() override
   {
-    priest_spell_t::execute();
-    priest.buffs.vampiric_embrace->trigger();
+	  generate_insanity(insanity_gain,
+		  priest.gains.insanity_vampiric_embrace);
   }
 
   bool ready() override
@@ -3820,7 +3824,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
       // Base Insanity loss per second
       double base_insanity_loss =
-          priest->buffs.voidform->data().effectN( 2 ).base_value() / -500.0;
+          8;
 
       // Insanity loss per additional Insanity Drain stacks (>1) per second
       double loss_per_additional_stack =
@@ -4401,8 +4405,8 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
       if ( !buffs.voidform->check() )
         return 0.0;
 
-      return ( ( buffs.voidform->data().effectN( 2 ).base_value() / -500.0 ) +
-               ( ( buffs.insanity_drain_stacks->check() - 1 ) / 2.0 ) );
+      return ( 8 +
+               ( ( buffs.insanity_drain_stacks->check() - 1) * 0.55) );
     } );
   }
 
