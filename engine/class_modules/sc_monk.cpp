@@ -2036,8 +2036,11 @@ public:
             p() -> buff.combo_master -> trigger();
           }
         }
-        else if ( p() -> t19_melee_4_piece_container_1 != CS_NONE && p() -> t19_melee_4_piece_container_1 != new_ability )
-          p() -> t19_melee_4_piece_container_2 = new_ability;
+        else if ( p() -> t19_melee_4_piece_container_1 != CS_NONE ) 
+        {
+          if ( p() -> t19_melee_4_piece_container_1 != new_ability )
+            p() -> t19_melee_4_piece_container_2 = new_ability;
+        }
         else
           p() -> t19_melee_4_piece_container_1 = new_ability;
       }
