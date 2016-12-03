@@ -3265,7 +3265,7 @@ struct void_bolt_t final : public priest_spell_t
     parse_options( options_str );
     use_off_gcd                 = true;
     is_sphere_of_insanity_spell = true;
-	  dot_extension = data().effectN(1).base_value;
+    dot_extension = data().effectN(1).base_value();
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data.
 
@@ -3299,19 +3299,17 @@ struct void_bolt_t final : public priest_spell_t
       {
         if ( td->dots.shadow_word_pain->is_ticking() )
         { 
-		      //TODO PTR check
-		      if (true) {
+		      if ( maybe_ptr( player -> dbc.ptr) ) {
 			      td->dots.shadow_word_pain->extend_duration(timespan_t::from_millis(dot_extension), true );
 		      }
 		      else {
-			    td->dots.shadow_word_pain->refresh_duration();
+			      td->dots.shadow_word_pain->refresh_duration();
 		      }
         }
 
         if ( td->dots.vampiric_touch->is_ticking() )
         {
-          //TODO PTR check
-          if (true) {
+          if (maybe_ptr(player->dbc.ptr)) {
             td->dots.vampiric_touch->extend_duration(timespan_t::from_millis(dot_extension), true);
           }
           else {
