@@ -3813,7 +3813,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
       // Insanity loss per additional Insanity Drain stacks (>1) per second
       double loss_per_additional_stack =
-          2/3;  // Hardcoded Patch 7.1.5 2016-12-02
+          2.0/3.0;  // Hardcoded Patch 7.1.5 2016-12-02
 
       // Combined Insanity loss per second
       double insanity_loss_per_second =
