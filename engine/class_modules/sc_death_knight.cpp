@@ -6671,7 +6671,7 @@ void death_knight_t::init_spells()
   artifact.bad_to_the_bone     = find_artifact_spell( "Bad to the Bone" );
   artifact.hypothermia         = find_artifact_spell( "Hypothermia" );
   artifact.soulbiter           = find_artifact_spell( "Soulbiter" );
-
+  // Unholy
   artifact.apocalypse          = find_artifact_spell( "Apocalypse" );
   artifact.feast_of_souls      = find_artifact_spell( "Feast of Souls" );
   artifact.eternal_agony       = find_artifact_spell( "Eternal Agony" );
@@ -6687,6 +6687,25 @@ void death_knight_t::init_spells()
   artifact.double_doom         = find_artifact_spell( "Double Doom" );
   artifact.deadliest_coil      = find_artifact_spell( "Deadliest Coil" );
   artifact.fleshsearer         = find_artifact_spell( "Fleshsearer" );
+  // Blood
+  artifact.consumption         = find_artifact_spell( "Consumption" );
+  artifact.sanguinary_affinity = find_artifact_spell( "Sanguinary Affinity" );
+  artifact.vampiric_fangs      = find_artifact_spell( "Vampiric Fangs" );
+  artifact.rattling_bones      = find_artifact_spell( "Rattling Bones" );
+  artifact.bone_breaker        = find_artifact_spell( "Bone Breaker" );
+  artifact.allconsuming_rot    = find_artifact_spell( "All-Consuming Rot" );
+  artifact.unending_thirst     = find_artifact_spell( "Unending Thirst" );
+  artifact.blood_feast         = find_artifact_spell( "Blood Feast" );
+  artifact.iron_heart          = find_artifact_spell( "Iron Heart" );
+  artifact.veinrender          = find_artifact_spell( "Veinrender" );
+  artifact.umbilicus_eternus   = find_artifact_spell( "Umbilicus Eternus" );
+  artifact.coagulopathy        = find_artifact_spell( "Coagulopathy" );
+  artifact.skeletal_shattering = find_artifact_spell( "Skeletal Shattering" );
+  artifact.grim_perseverance   = find_artifact_spell( "Grim Perseverance" );
+  artifact.meat_shield         = find_artifact_spell( "Meat Shield" );
+  artifact.dance_of_darkness   = find_artifact_spell( "Dance of Darkness" );
+  artifact.mouth_of_hell       = find_artifact_spell( "Mouth of Hell" );
+  artifact.the_hungering_maw   = find_artifact_spell( "The Hungering Maw" );
   // Generic spells
   spell.antimagic_shell        = find_class_spell( "Anti-Magic Shell" );
   spell.blood_rites            = find_spell( 163948 );
