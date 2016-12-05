@@ -2089,7 +2089,20 @@ struct mind_flay_t final : public priest_spell_t
 
   void tick( dot_t* d ) override
   {
-    priest_spell_t::tick( d );
+    if (const priest_td_t* td = find_td(d->target))
+    {
+      if (td->dots.shadow_word_pain->is_ticking())
+      {
+        //AoE flay
+        //mind_sear_t 
+      }
+      else
+      {
+        priest_spell_t::tick(d);
+      }
+    }
+    
+    
 
     if ( priest.active_items.mental_fatigue )
     {
@@ -2324,14 +2337,14 @@ struct mind_spike_t final : public priest_spell_t
       // If both dots are up
 	    if ( td->dots.shadow_word_pain->is_ticking() && td->dots.shadow_word_pain->is_ticking() )
 	    {
-        base_multiplier *= 3.0;
-        insanity_gain *= 3.0;
+        base_multiplier *= 1 + data().effectN(4).percent() * 2;
+        insanity_gain *= 1 + data().effectN(4).percent() * 2;
 	    }
       // If only one of the dots is up
       else if (td->dots.shadow_word_pain->is_ticking() != td->dots.shadow_word_pain->is_ticking())
       {
-        base_multiplier *= 2.0;
-        insanity_gain *= 2.0;
+        base_multiplier *= 1 + data().effectN(4).percent();
+        insanity_gain *= 1 + data().effectN(4).percent();
       }
 
 	  }
