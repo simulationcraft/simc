@@ -2093,6 +2093,7 @@ struct mind_flay_t final : public priest_spell_t
     {
       if (td->dots.shadow_word_pain->is_ticking())
       {
+        priest_spell_t::tick(d);
         //AoE flay
         //mind_sear_t 
       }
@@ -2320,7 +2321,9 @@ struct mind_spike_t final : public priest_spell_t
   {
     parse_options( options_str );
     is_mind_spell               = true;
-    is_sphere_of_insanity_spell = true;
+    //is_sphere_of_insanity_spell = true;
+    aoe = -1;
+    base_aoe_multiplier = data().effectN(5).percent();
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
 
@@ -3455,14 +3458,12 @@ struct void_eruption_t final : public priest_spell_t
       priest.buffs.sphere_of_insanity->current_value = 0.0;
     }
 
-    if ( priest.active_items.mother_shahrazs_seduction &&
-         priest.buffs.lingering_insanity->up() )
+    if ( priest.active_items.mother_shahrazs_seduction )
     {
       int mss_vf_stacks =
-          floor( priest.buffs.lingering_insanity->remains().total_seconds() /
-                 priest.active_items.mother_shahrazs_seduction->driver()
-                     ->effectN( 1 )
-                     .base_value() );
+                  priest.active_items.mother_shahrazs_seduction->driver()
+                  ->effectN(1)
+                  .base_value();
 
       priest.buffs.voidform->bump( mss_vf_stacks );
     }
