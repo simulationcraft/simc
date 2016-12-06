@@ -694,7 +694,26 @@ public:
     artifact_power_t double_doom;
     artifact_power_t deadliest_coil;
     artifact_power_t fleshsearer;
-
+    
+    // Blood
+    artifact_power_t consumption;
+    artifact_power_t sanguinary_affinity;
+    artifact_power_t vampiric_fangs;
+    artifact_power_t rattling_bones;
+    artifact_power_t bone_breaker;
+    artifact_power_t allconsuming_rot;
+    artifact_power_t unending_thirst;
+    artifact_power_t blood_feast;
+    artifact_power_t iron_heart;
+    artifact_power_t veinrender;
+    artifact_power_t umbilicus_eternus;
+    artifact_power_t coagulopathy;
+    artifact_power_t skeletal_shattering;
+    artifact_power_t grim_perseverance;
+    artifact_power_t meat_shield;
+    artifact_power_t dance_of_darkness;
+    artifact_power_t mouth_of_hell;
+    artifact_power_t the_hungering_maw;
   } artifact;
 
   // Spells
