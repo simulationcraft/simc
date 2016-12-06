@@ -3873,6 +3873,8 @@ struct death_and_decay_t : public death_knight_spell_t
     dot_duration          = data().duration(); // 11 with tick_zero
     hasted_ticks          = false;
     tick_may_crit = tick_zero = ignore_false_positive = ground_aoe = true;
+    
+    base_multiplier    *= 1.0 + p -> artifact.allconsuming_rot.percent();
 
     base_tick_time *= 1.0 / ( 1.0 + p -> talent.rapid_decomposition -> effectN( 3 ).percent() );
 
