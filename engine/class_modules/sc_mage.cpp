@@ -973,6 +973,7 @@ struct water_jet_t : public mage_pet_spell_t
   {
     parse_options( options_str );
     channeled = tick_may_crit = true;
+    tick_zero         = true;
 
     if ( p->o()->sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
     {
