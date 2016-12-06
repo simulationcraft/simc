@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -407,7 +407,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=929)      : School Damage: fire (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.82000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Target: Enemy(6)
 Description      : Deals $s1 Fire damage to a target.$?a231795[
 
 Damage increased by $231795s1% if you have Immolated the target.][]
@@ -432,7 +432,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : Cannot crit (93)
 Effects          :
 #1 (id=1298)     : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Radius: 0 - 12 yards | Target: Custom(18) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12000 | Radius: 0 - 12 yards | Target: Custom(18) -> AOE enemy (instant)(16)
 Description      : Drains $s1 health from all nearby enemies.
 
 |cFF777777(Right-Click to toggle)|r
@@ -585,8 +585,9 @@ Effects          :
                    Base Value: 15 | Scaled Value: 352941.6 (avg=0.294118) | Target: Self(1)
 #2 (id=127600)   : Apply Aura (6) | Periodic Heal: every 1 seconds (8)
                    Base Value: 30 | Scaled Value: 70587.6 (avg=0.058823) | Target: Self(1)
-Description      : $?s56224[Restores $o2 health over $d.][Instantly restores health.]
+Description      : Instantly restores $s1 health.
 Tooltip          : $w2 health restored every $t2 sec.
+Variables        : $healthstone=$?s193546[${$s1*1.3}][$s1]
 
 Name             : Seduction (Special Ability) (id=6358) [Spell Family (57)] 
 Class            : Warlock
@@ -691,7 +692,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3106)     : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.907) | SP Coefficient: 0.90700 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.907) | SP Coefficient: 1.10000 | Target: Enemy(6)
 #2 (id=113763)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Lashes the target for $s1 Shadow damage.
@@ -1071,8 +1072,7 @@ Tooltip          : Stunned.
 Name             : Seed of Corruption (id=27243) [Spell Family (5)] 
 Class            : Affliction Warlock
 School           : Shadow
-Resource         : 4.5% Base Mana (49500 @Level 110)
-Resource         : 0 - 1 Soul Shard w/ Sow the Seeds (id=196226)
+Resource         : 1 Soul Shard
 Spell Level      : 38
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -1119,7 +1119,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=16922)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.91, dl=0.15) | SP Coefficient: 1.38000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 1 | Scaled Value: 0 (avg=0.91, dl=0.15) | SP Coefficient: 2.15000 | Radius: 0 - 10 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc27243
 
 Name             : Arcane Torrent (Racial) (id=28730) 
@@ -1176,7 +1176,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .....x.. 
 Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1 | Target: Enemy(6)
@@ -1491,7 +1491,7 @@ Effects          :
 #1 (id=40331)    : School Damage: shadow (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 8.05000 | Target: Enemy(6)
 #2 (id=40332)    : Apply Aura (6) | Unknown effect sub type (270)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Enemy(6)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 127 | Target: Enemy(6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d. If the target dies, Haunt's cooldown is reset.
 Tooltip          : Taking $s2% increased damage from the Warlock. Haunt's cooldown will be reset on death.
 
@@ -1510,7 +1510,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46748)    : School Damage: shadow (2)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Target: Enemy(6)
 Description      : Bites the enemy, causing $s1 Shadow damage.$?a231799[
 
 Damage increased by $231799s1% for each of the master's Affliction damage over time effects on the target.][]
@@ -3027,10 +3027,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 672 | Target: Self(1)
 #3 (id=191035)   : Apply Aura (6) | Unknown effect sub type (232)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self(1)
-#4 (id=191036)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#5 (id=191037)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=191036)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
+#5 (id=191037)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #6 (id=260719)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260720)   : Apply Aura (6) | Dummy (4)
@@ -3294,7 +3294,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : x....x.. ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=219942)   : Apply Aura (6) | Periodic Damage: fire every 3 seconds (3)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.72150 | Chain Targets: 1 | Target: Enemy(6)
@@ -3541,7 +3541,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=244314)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7f | Target: Friend(21)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Friend(21)
 Description      : $@spelldesc171975
 Tooltip          : All damage done increased by $s1%.
 
@@ -3833,6 +3833,22 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 193540 | Target: Self(1)
 Description      : $@spelldesc348
 
+Name             : Iron Stomach (id=193546) [Spell Family (8), Passive] 
+Class            : Rogue, Warlock
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=283945)   : Apply Aura (6) | Add Percent Modifier: Spell Tick Time (108)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 8 | Target: Self(1)
+                   Affected Spells: Crimson Vial (185311), Crimson Vial (212198)
+Description      : Increases the healing you receive from Crimson Vial, healing potions, and healthstones by $s1%.
+
 Name             : Soul Harvest (id=196098) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -3945,7 +3961,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=287839)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 18 | Scaled Value: 18 | Misc Value: 12 | Target: Self(1)
 Description      : You deal $s1% increased damage to targets affected by your Unstable Affliction.
 
 Name             : Sow the Seeds (id=196226) [Spell Family (5), Passive] 
@@ -3960,8 +3976,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=288010)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 37 | Target: Self(1)
-Description      : Seed of Corruption will now consume a Soul Shard, if available, to embed a demon seed in $s1 additional nearby enemies.
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Target: Self(1)
+#2 (id=359452)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self(1)
+Description      : Seed of Corruption will now $@switch<$s2>[][consume a Soul Shard, if available, to ]embed a demon seed in $s1 additional nearby enemies.
 
 Name             : Shadowy Inspiration (id=196269) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -4222,9 +4240,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=288343)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.46620 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.64000 | Target: Enemy(6)
 #2 (id=355453)   : School Damage: fire (2)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23310 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32000 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : $@spelldesc196447
 
 Name             : Channel Demonfire (id=196449) [Spell Family (5), Hidden] 
@@ -4702,7 +4720,6 @@ Class            : Warlock
 School           : Shadow
 Range            : 100 yards
 Velocity         : 25 yards/sec
-Affecting spells : Wakener's Loyalty (236200)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5230,7 +5247,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=355427)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Drain Soul (198590)
 Description      : While channeling Drain Soul, your damage over time effects deal $s1% increased damage to the target.
 
@@ -5238,7 +5255,7 @@ Name             : Empowered Life Tap (id=235156) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Level      : 1
-Duration         : 15 seconds
+Duration         : 20 seconds
 Triggered by     : Empowered Life Tap (235157)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5248,7 +5265,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=355428)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 0x7f | Target: Self(1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self(1)
 #2 (id=355429)   : Apply Aura (6) | Periodic Dummy: every 5 seconds (226)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Damage increased by $s1%.

@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -51,7 +51,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=64)       : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self(1)
-Description      : Charge to an enemy, $?s103828[stunning][rooting] it for $?s103828[$7922d][$105771d].
+Description      : Charge to an enemy, reducing its movement speed by $236027s1% for $236027d$?s103828[, and stunning it for $7922d][].
 
 |cFFFFFFFFGenerates $/10;s2 Rage.|r
 
@@ -328,7 +328,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=755)      : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-Description      : Raise your shield, blocking every melee attack against you for $132404d. These blocks can be critical blocks. Increases Shield Slam damage by $132404s2% while active.
+Description      : Raise your shield, blocking every melee attack against you for $132404d.$?s76857[ These blocks can be critical blocks.][] Increases Shield Slam damage by $132404s2% while active.
 
 Name             : Parry (id=3127) [Passive] 
 Class            : Warrior
@@ -388,11 +388,11 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x ........ .....
 Effects          :
 #1 (id=1868)     : Apply Aura (6) | Unknown effect sub type (407)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy(6)
-#2 (id=1869)     : Apply Aura (6) | Root (26)
+#2 (id=1869)     : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy(6)
 #3 (id=1870)     : Apply Aura (6) | Unknown effect sub type (407)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
-#4 (id=194839)   : Apply Aura (6) | Root (26)
+#4 (id=194839)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #5 (id=200193)   : Apply Aura (6) | Unknown effect sub type (191)
                    Base Value: 7 | Scaled Value: 7 | Target: Enemy(6)
@@ -552,7 +552,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2316)     : School Damage: physical (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.40200 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 6.50000 | Radius: 8 yards | Target: Cone Front(104)
 Description      : Swing in a wide arc, dealing $s1 damage to all enemies in front of you.
 
 Your successful dodges and parries cause your next Revenge to become free.
@@ -588,7 +588,6 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
-Duration         : 2.5 seconds
 Proc Chance      : 101%
 Mechanic         : Unknown(95)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
@@ -601,8 +600,6 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
 Effects          :
 #1 (id=3164)     : School Damage: physical (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.08000 | Radius: 0 - 5 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
-#2 (id=297911)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : Charge an enemy, generate Rage, and stun them for $7922d.
 Tooltip          : Knocked down.
 
@@ -1581,7 +1578,7 @@ Effects          :
 Description      : Increases damage done while Enraged by $s1%.
 
 Name             : Mastery: Critical Block (id=76857) [Spell Family (4), Passive] 
-Class            : Protection Warrior
+Class            : Protection Warrior, Monk
 School           : Physical
 Spell Level      : 78
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1954,27 +1951,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=113014)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self(1)
 Description      : $?s198304[Intercept][Charge] now deals $7922s1 damage to all enemies within $7922A1 yds of the target, and stuns them for $7922d.
-
-Name             : Charge (id=105771) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Range            : 50000 yards
-Duration         : 1 seconds
-Mechanic         : Unknown(58)
-Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Requires line of sight (186)
-Effects          :
-#1 (id=115753)   : Apply Aura (6) | Unknown effect sub type (455)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Chain Targets: 1 | Target: Enemy(6)
-Description      : $@spelldesc100
-Tooltip          : Rooted.
 
 Name             : Storm Bolt (id=107570) [Spell Family (4)] 
 Class            : Warrior
@@ -2115,7 +2093,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=236206)   : Apply Aura (6) | Proc Trigger Spell: Deep Wounds (42)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 115767 | Target: Self(1)
-Description      : Your $?s236282[Devastator][Devastate] and Revenge also cause $115767o1 Bleed damage over $115767d.
+Description      : Your $?s236279[Devastator][Devastate] and Revenge also cause $115767o1 Bleed damage over $115767d.
 
 Name             : Mortal Wounds (id=115804) 
 Class            : Warrior, Hunter, Monk
@@ -2522,8 +2500,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1598 | Target: Self(1)
 #5 (id=191022)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 971 | Target: Self(1)
-#6 (id=260729)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#6 (id=260729)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
 #7 (id=260730)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260731)   : Apply Aura (6) | Dummy (4)
@@ -2574,8 +2552,8 @@ Effects          :
 #4 (id=191018)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -10 | Scaled Value: -10 | Target: Self(1)
                    Affected Spells: Victory Rush (34428), Shockwave (46968), Storm Bolt (107570), Shockwave (132168), Storm Bolt (132169), Impending Victory (202168)
-#5 (id=191019)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=191019)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #6 (id=261027)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=261028)   : Apply Aura (6) | Dummy (4)
@@ -2618,8 +2596,8 @@ Effects          :
 #3 (id=191014)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (168969), Bladestorm (222634), Bladestorm (227847)
-#4 (id=191015)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=191015)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #5 (id=191016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=261047)   : Apply Aura (6) | Dummy (4)
@@ -2662,8 +2640,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179734)   : Apply Aura (6) | Unknown effect sub type (213)
                    Base Value: -20 | Scaled Value: -20 | Target: Self(1)
-#2 (id=191010)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=191010)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #3 (id=191011)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191012)   : Apply Aura (6) | Dummy (4)
@@ -3331,10 +3309,10 @@ Effects          :
 #1 (id=291444)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Unknown(25)
 #2 (id=291445)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: rage | Target: Self(1)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: rage | Target: Self(1)
 Description      : Run at high speed toward an ally or enemy.
 
-When targeting an enemy, Intercept will root for $105771d, but has a minimum range of $s1 yds.
+When targeting an enemy, Intercept will reducing the target's movement speed by $236027s1% for $236027d, but has a minimum range of $s1 yds.
 
 When targeting an ally, Intercept will intercept the next melee or ranged attack against the ally within $147833d while the target remains within $147833A2 yards.
 
@@ -3374,7 +3352,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=292904)   : Apply Aura (6) | Root (26)
+#1 (id=292904)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy(6)
 Description      : $@spelldesc199045
 Tooltip          : Rooted.
@@ -4295,6 +4273,7 @@ Name             : Massacre (id=206316) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Duration         : 10 seconds
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -5269,6 +5248,25 @@ Effects          :
 #1 (id=349779)   : Apply Aura (6) | Modify Cooldown Charge (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1385 | Target: Self(1)
 Description      : Shield Block has ${$s1+1} charges.
+
+Name             : Charge (id=236027) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Range            : 50000 yards
+Duration         : 6 seconds
+Mechanic         : Unknown(88)
+Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Requires line of sight (186)
+Effects          :
+#1 (id=356785)   : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy(6)
+Description      : $@spelldesc100
+Tooltip          : Movement slowed by $s1%.
 
 Name             : Devastator (id=236279) [Passive] 
 Class            : Warrior
