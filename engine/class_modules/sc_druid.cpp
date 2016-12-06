@@ -351,7 +351,14 @@ public:
     buff_t* feral_tier17_4pc;
 
     // Guardian
-    buff_t* adaptive_fur;
+    // adaptive fur for each basic magic school
+    buff_t* adaptive_fur_holy;
+	  buff_t* adaptive_fur_fire;
+	  buff_t* adaptive_fur_nature;
+	  buff_t* adaptive_fur_frost;
+	  buff_t* adaptive_fur_shadow;
+	  buff_t* adaptive_fur_arcane;
+    
     buff_t* barkskin;
     buff_t* bristling_fur;
     buff_t* earthwarden;
@@ -997,8 +1004,8 @@ public:
 
 struct adaptive_fur_t : public druid_buff_t< buff_t >
 {
-  adaptive_fur_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "adaptive_fur", p.find_spell( 200945 ) )
+  adaptive_fur_t( druid_t& p, const std::string& element ) :
+    base_t( p, buff_creator_t( &p, "adaptive_fur_" + element, p.find_spell( 200945 ) )
       .chance( p.artifact.adaptive_fur.data().proc_chance() )
       .default_value( p.find_spell( 200945 ) -> effectN( 1 ).percent() ) )
   {}
@@ -6373,7 +6380,12 @@ void druid_t::create_buffs()
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); 
 
   // Guardian
-  buff.adaptive_fur          = new adaptive_fur_t( *this );
+  buff.adaptive_fur_holy     = new adaptive_fur_t( *this, "holy" );
+  buff.adaptive_fur_fire     = new adaptive_fur_t(*this, "fire");
+  buff.adaptive_fur_nature   = new adaptive_fur_t(*this, "nature");
+  buff.adaptive_fur_frost    = new adaptive_fur_t(*this, "frost");
+  buff.adaptive_fur_shadow   = new adaptive_fur_t(*this, "shadow");
+  buff.adaptive_fur_arcane   = new adaptive_fur_t(*this, "arcane");
 
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
                                .cd( timespan_t::zero() )
@@ -7824,15 +7836,32 @@ void druid_t::target_mitigation( school_e school, dmg_e type, action_state_t* s 
   {
     s -> result_amount *= 1.0 + buff.mark_of_ursol -> value();
   
-    if ( buff.adaptive_fur -> check() && dbc::is_school( school, ( school_e ) ( int ) buff.adaptive_fur -> check_value() ) ) // TOCHECK
-    {
-      s -> result_amount *= 1.0 + buff.adaptive_fur -> value();
-    }
-    else
-    {
-      debug_cast<buffs::adaptive_fur_t*>( buff.adaptive_fur ) -> no_benefit();
-    }
-  }
+    	// adaptive_fur only applies once even on multischool spells. But it applies as soon as one school is active.
+	  if (buff.adaptive_fur_holy->check() && dbc::is_school(school, SCHOOL_HOLY))
+	  {
+		  s->result_amount *= 1.0 + buff.adaptive_fur_holy->value();
+	  }
+	  else if (buff.adaptive_fur_fire->check() && dbc::is_school(school, SCHOOL_FIRE))
+	  {
+	  	s->result_amount *= 1.0 + buff.adaptive_fur_fire->value();
+	  } 
+	  else if (buff.adaptive_fur_nature->check() && dbc::is_school(school, SCHOOL_NATURE))
+	  {
+		  s->result_amount *= 1.0 + buff.adaptive_fur_nature->value();
+	  }
+	  else if (buff.adaptive_fur_frost->check() && dbc::is_school(school, SCHOOL_FROST))
+	  {
+		  s->result_amount *= 1.0 + buff.adaptive_fur_frost->value();
+	  }
+	  else if (buff.adaptive_fur_shadow->check() && dbc::is_school(school, SCHOOL_SHADOW))
+	  {
+		  s->result_amount *= 1.0 + buff.adaptive_fur_shadow->value();
+	  }
+	  else if (buff.adaptive_fur_nature->check() && dbc::is_school(school, SCHOOL_NATURE))
+	  {
+		  s->result_amount *= 1.0 + buff.adaptive_fur_nature->value();
+	  }
+	}
 
   player_t::target_mitigation( school, type, s );
 }
@@ -7853,11 +7882,36 @@ void druid_t::assess_damage( school_e school,
 
   if ( artifact.adaptive_fur.rank() && dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
   {
-    if ( buff.adaptive_fur -> trigger( 1, school ) && sim -> log )
-    {
-      sim -> out_log.printf( "%s %s adapts to %s (%d).", name(), buff.adaptive_fur -> name(),
+     if (dbc::is_school(school, SCHOOL_HOLY) && buff.adaptive_fur_holy -> trigger( 1 ) && sim -> log )
+     {
+       sim -> out_log.printf( "%s %s adapts to %s (%d).", name(), buff.adaptive_fur_holy -> name(),
         util::school_type_string( school ), school );
-    }
+     }
+	   if (dbc::is_school(school, SCHOOL_FIRE) && buff.adaptive_fur_fire->trigger(1) && sim->log)
+	   {
+		   sim->out_log.printf("%s %s adapts to %s (%d).", name(), buff.adaptive_fur_fire->name(),
+			   util::school_type_string(school), school);
+	   }
+	   if (dbc::is_school(school, SCHOOL_NATURE) && buff.adaptive_fur_nature->trigger(1) && sim->log)
+	   {
+		   sim->out_log.printf("%s %s adapts to %s (%d).", name(), buff.adaptive_fur_nature->name(),
+			   util::school_type_string(school), school);
+	   }
+	   if (dbc::is_school(school, SCHOOL_FROST) && buff.adaptive_fur_frost->trigger(1) && sim->log)
+	   {
+		   sim->out_log.printf("%s %s adapts to %s (%d).", name(), buff.adaptive_fur_frost->name(),
+			    util::school_type_string(school), school);
+	   }
+	   if (dbc::is_school(school, SCHOOL_SHADOW) && buff.adaptive_fur_shadow->trigger(1) && sim->log)
+	   {
+		   sim->out_log.printf("%s %s adapts to %s (%d).", name(), buff.adaptive_fur_shadow->name(),
+			   util::school_type_string(school), school);
+	   }
+	   if (dbc::is_school(school, SCHOOL_ARCANE) && buff.adaptive_fur_arcane->trigger(1) && sim->log)
+	   {
+		   sim->out_log.printf("%s %s adapts to %s (%d).", name(), buff.adaptive_fur_arcane->name(),
+			    util::school_type_string(school), school);
+	   }
   }
 }
 
