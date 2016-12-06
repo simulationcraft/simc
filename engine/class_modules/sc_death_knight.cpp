@@ -4886,6 +4886,8 @@ struct marrowrend_t : public death_knight_melee_attack_t
     unholy_coil( nullptr ), unholy_coil_coeff( 0 )
   {
     parse_options( options_str );
+    
+    base_multiplier    *= 1.0 + p -> artifact.bonebreaker.percent();
 
     weapon = &( p -> main_hand_weapon );
   }
