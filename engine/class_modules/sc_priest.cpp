@@ -4888,7 +4888,7 @@ void priest_t::init_spells()
   talents.shadow_crash = find_talent_spell( "Shadow Crash" );
 
   talents.legacy_of_the_void   = find_talent_spell( "Legacy of the Void" );
-  talents.mind_spike = spell_data_t::find(236741, true);// find_talent_spell("Mind Spike");
+  talents.mind_spike = find_talent_spell("Mind Spike");
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // Artifacts
