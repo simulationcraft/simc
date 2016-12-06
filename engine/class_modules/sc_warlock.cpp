@@ -1489,7 +1489,8 @@ struct felguard_pet_t: public warlock_pet_t
     action_list_str += "/felstorm";
     action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
     owner_coeff.ap_from_sp = 1.1; // HOTFIX
-    //owner_coeff.ap_from_sp *= 1.2;
+    if ( maybe_ptr( owner -> dbc.ptr ) )
+      owner_coeff.ap_from_sp *= 1.2; // PTR
   }
 
   virtual void init_base_stats() override
@@ -1773,8 +1774,8 @@ struct felhunter_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
   {
     action_list_str = "shadow_bite";
-    //owner_coeff.ap_from_sp *= 1.2;
-    //owner_coeff.sp_from_sp *= 1.2;
+    if ( maybe_ptr( owner -> dbc.ptr ) )
+      owner_coeff.ap_from_sp *= 1.2; // PTR
   }
 
   virtual void init_base_stats() override
@@ -1799,6 +1800,8 @@ struct succubus_pet_t: public warlock_pet_t
   {
     action_list_str = "lash_of_pain";
     owner_coeff.ap_from_sp = 0.5;
+    if ( maybe_ptr( owner -> dbc.ptr ) )
+      owner_coeff.ap_from_sp *= 1.2;
   }
 
   virtual void init_base_stats() override
@@ -1825,6 +1828,8 @@ struct voidwalker_pet_t: public warlock_pet_t
     warlock_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
   {
     action_list_str = "torment";
+    if ( maybe_ptr( owner -> dbc.ptr ) )
+      owner_coeff.ap_from_sp *= 1.2; // PTR
   }
 
   virtual void init_base_stats() override
