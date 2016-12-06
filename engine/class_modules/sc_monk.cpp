@@ -174,8 +174,10 @@ public:
 
   double gift_of_the_ox_proc_chance;
   unsigned int internal_id;
-  // Counter for when to start the trigger for the 19 4-piece Windwalker Combo Master buff
-  double tier19_4pc_melee_counter;
+  // Containers for when to start the trigger for the 19 4-piece Windwalker Combo Master buff
+  combo_strikes_e t19_melee_4_piece_container_1;
+  combo_strikes_e t19_melee_4_piece_container_2;
+  combo_strikes_e t19_melee_4_piece_container_3;
 
   double weapon_power_mod;
   // Tier 18 (WoD 6.2) trinket effects
@@ -646,10 +648,12 @@ public:
   monk_t( sim_t* sim, const std::string& name, race_e r )
     : player_t( sim, MONK, name, r ),
       active_actions( active_actions_t() ),
-      previous_combo_strike(CS_NONE),
+      previous_combo_strike( CS_NONE ),
       gift_of_the_ox_proc_chance(),
       internal_id(),
-      tier19_4pc_melee_counter(),
+      t19_melee_4_piece_container_1( CS_NONE ),
+      t19_melee_4_piece_container_2( CS_NONE ),
+      t19_melee_4_piece_container_3( CS_NONE ),
       weapon_power_mod(),
       eluding_movements( nullptr ),
       soothing_breeze( nullptr ),
@@ -2008,15 +2012,74 @@ public:
   {
     if ( !compare_previous_combo_strikes( new_ability ) && p() -> mastery.combo_strikes -> ok() )
     {
+      // The set bonus checks the last 3 unique combo strike triggering abilities before triggering a spell
+      // This is an ongoing check; so theoretically it can trigger 2 times from 4 unique CS spells in a row
+      // If a spell is used and it is one of the last 3 combo stirke saved, it will not trigger the buff
+      // IE: Energizing Elixir -> Strike of the Windlord -> Fists of Fury -> Tiger Palm (trigger) -> Blackout Kick (trigger) -> Tiger Palm -> Rising Sun Kick (trigger)
+      // The triggering CAN reset if the player casts the same ability two times in a row.
+      // IE: Energizing Elixir -> Blackout Kick -> Blackout Kick -> Rising Sun Kick -> Blackout Kick -> Tiger Palm (trigger)
       if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
       {
-        if ( p() -> tier19_4pc_melee_counter < 3 )
-          p() -> tier19_4pc_melee_counter++;
-        else
+        if ( p() -> t19_melee_4_piece_container_1 != CS_NONE )
         {
-          p() -> buff.combo_master -> trigger();
-          p() -> tier19_4pc_melee_counter = 0;
+          if ( p() -> t19_melee_4_piece_container_2 != CS_NONE )
+          {
+            if ( p() -> t19_melee_4_piece_container_3 != CS_NONE )
+            {
+              // Check if the last two containers are not the same as the new ability
+              if ( p() -> t19_melee_4_piece_container_3 != new_ability )
+              {
+                if ( p() -> t19_melee_4_piece_container_2 != new_ability )
+                {
+                  // if they are not the same adjust containers and trigger the buff
+                  p() -> t19_melee_4_piece_container_1 = p() -> t19_melee_4_piece_container_2;
+                  p() -> t19_melee_4_piece_container_2 = p() -> t19_melee_4_piece_container_3;
+                  p() -> t19_melee_4_piece_container_3 = new_ability;
+                  p() -> buff.combo_master -> trigger();
+                }
+                // Don't do anything if the second container is the same
+              }
+              // semi-reset if the last ability is the same as the new ability
+              else
+              {
+                p() -> t19_melee_4_piece_container_1 = new_ability;
+                p() -> t19_melee_4_piece_container_2 = CS_NONE;
+                p() -> t19_melee_4_piece_container_3 = CS_NONE;
+              }
+            }
+            // If the 3rd container is blank check if the first two containers are not the same
+            else if ( p() -> t19_melee_4_piece_container_2 != new_ability )
+            {
+              if ( p() -> t19_melee_4_piece_container_1 != new_ability )
+              {
+                // Assign the 3rd container and trigger the buff
+                p() -> t19_melee_4_piece_container_3 = new_ability;
+                p() -> buff.combo_master -> trigger();
+              }
+              // Don't do anything if the first container is the same
+            }
+            // semi-reset if the last ability is the same as the new ability
+            else
+            {
+                p() -> t19_melee_4_piece_container_1 = new_ability;
+                p() -> t19_melee_4_piece_container_2 = CS_NONE;
+                p() -> t19_melee_4_piece_container_3 = CS_NONE;
+            }
+          }
+          // If the 2nd and 3rd container is blank, check if the first container is not the same
+          else if ( p() -> t19_melee_4_piece_container_1 != new_ability )
+            // Assign the second container
+            p() -> t19_melee_4_piece_container_2 = new_ability;
+          // semi-reset if the last ability is the same as the new ability
+          else
+          {
+              p() -> t19_melee_4_piece_container_1 = new_ability;
+              p() -> t19_melee_4_piece_container_2 = CS_NONE;
+              p() -> t19_melee_4_piece_container_3 = CS_NONE;
+          }
         }
+        else
+          p() -> t19_melee_4_piece_container_1 = new_ability;
       }
 
       p() -> buff.combo_strikes -> trigger();
@@ -2028,7 +2091,6 @@ public:
       p() -> buff.combo_strikes -> expire();
       p() -> buff.hit_combo -> expire();
       p() -> buff.combo_master -> expire();
-      p() -> tier19_4pc_melee_counter = 0;
     }
     p() -> previous_combo_strike = new_ability;
   }
@@ -4216,30 +4278,6 @@ struct serenity_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.serenity -> trigger();
-
-    // Executing Serenity reduces any current cooldown by 50%
-    // Have to manually adjust each of the affected spells
-    double percent_adjust = p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50%
-
-    cooldown_reduction( p() -> cooldown.blackout_kick, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.blackout_strike, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.rushing_jade_wind, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.refreshing_jade_wind, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.rising_sun_kick, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.fists_of_fury, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.strike_of_the_windlord, percent_adjust );
-  }
-
-  void cooldown_reduction(cooldown_t* cd, double percent_adjust )
-  {
-    if ( cd -> down() )
-      cd -> adjust( cd -> remains() * percent_adjust);
   }
 };
 
@@ -6518,7 +6556,7 @@ struct hidden_masters_forbidden_touch_t : public monk_buff_t < buff_t >
   }
 };
 
-// Serenity
+// Serenity Buff ==========================================================
 struct serenity_buff_t : public monk_buff_t < buff_t >
 {
   double percent_adjust;
@@ -6555,10 +6593,9 @@ struct serenity_buff_t : public monk_buff_t < buff_t >
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    return base_t::trigger( stacks, value, chance, duration );
     // Executing Serenity reduces any current cooldown by 50%
     // Have to manually adjust each of the affected spells
-    /*cooldown_reduction( monk.cooldown.blackout_kick );
+    cooldown_reduction( monk.cooldown.blackout_kick );
 
     cooldown_reduction( monk.cooldown.blackout_strike );
 
@@ -6570,7 +6607,9 @@ struct serenity_buff_t : public monk_buff_t < buff_t >
 
     cooldown_reduction( monk.cooldown.fists_of_fury );
 
-    cooldown_reduction( monk.cooldown.strike_of_the_windlord );*/
+    cooldown_reduction( monk.cooldown.strike_of_the_windlord );
+
+    return base_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -7375,15 +7414,7 @@ void monk_t::create_buffs()
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )
     .add_invalidate( CACHE_MASTERY );
 
-//  buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
-  
-  buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
-    .default_value( talent.serenity -> effectN( 2 ).percent() +
-      ( artifact.spiritual_focus.rank() ? artifact.spiritual_focus.percent() : 0 ) )
-    .duration( talent.serenity -> duration() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-
+  buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
   buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -7482,6 +7513,9 @@ void monk_t::reset()
   base_t::reset();
 
   previous_combo_strike = CS_NONE;
+  t19_melee_4_piece_container_1 = CS_NONE;
+  t19_melee_4_piece_container_2 = CS_NONE;
+  t19_melee_4_piece_container_3 = CS_NONE;
 }
 
 // monk_t::regen (brews/teas)================================================
@@ -7942,7 +7976,7 @@ double monk_t::composite_armor_multiplier() const
     a += passives.aura_brewmaster_monk -> effectN( 6 ).percent();
 
   if ( artifact.wanderers_hardiness.rank() )
-    a *= 1.0 + artifact.wanderers_hardiness.percent();
+    a += artifact.wanderers_hardiness.percent();
 
   return a;
 }
@@ -8626,7 +8660,7 @@ void monk_t::apl_combat_windwalker()
       def -> add_action( "potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
 
-  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.rising_sun_kick.remains<=4)|buff.serenity.up)" );
+  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=15&cooldown.fists_of_fury.remains<8&cooldown.rising_sun_kick.remains<=4)|buff.serenity.up)" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&cooldown.rising_sun_kick.remains<=6)|buff.storm_earth_and_fire.up)" );
   def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&(!artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7)|buff.serenity.up" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&((!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5)|buff.storm_earth_and_fire.up)" );

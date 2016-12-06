@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -2184,8 +2184,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1667 | Target: Self(1)
 #12 (id=260676)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1668 | Target: Self(1)
-#13 (id=260677)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#13 (id=260677)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
 #14 (id=260678)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #15 (id=260679)   : Apply Aura (6) | Dummy (4)
@@ -2227,8 +2227,8 @@ Effects          :
 #6 (id=260907)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
-#7 (id=260908)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#7 (id=260908)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #8 (id=260909)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260910)   : Apply Aura (6) | Dummy (4)
@@ -2275,8 +2275,8 @@ Effects          :
 #4 (id=191090)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -10 | Scaled Value: -10 | Target: Self(1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
-#5 (id=191091)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=191091)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #6 (id=260917)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260918)   : Apply Aura (6) | Dummy (4)
@@ -2328,10 +2328,10 @@ Effects          :
 #6 (id=260927)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (228288)
-#7 (id=260928)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#8 (id=260929)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#7 (id=260928)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
+#8 (id=260929)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #9 (id=260930)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260931)   : Apply Aura (6) | Dummy (4)
@@ -2979,7 +2979,7 @@ Spell Level      : 40
 Charges          : 1 (15 seconds cooldown)
 Category         : 1668
 Affecting spells : Paladin (137026), Consecration (188370), Consecrated Hammer (203785)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3690,7 +3690,9 @@ Effects          :
 #7 (id=343502)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 3 (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Consecration (188370)
-Description      : Hammer of the Righteous has no cooldown. $?s26573[
+Description      : Hammer of the Righteous has no cooldown. $?s26573&s213652[
+
+Hammer of the Righteous, Shield of the Righteous, and Hand of the Protector now always gain the benefit of Consecration.]?s26573[
 
 Hammer of the Righteous, Shield of the Righteous, and Light of the Protector now always gain the benefit of Consecration.][]
 
@@ -4315,7 +4317,7 @@ Range            : 40 yards
 Charges          : 1 (10 seconds cooldown)
 Category         : 1667
 Affecting spells : Paladin (137026), Consecration (188370), Consecrated Hammer (203785)
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4327,7 +4329,9 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Friend(21)
 #2 (id=317000)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-Description      : Calls down the Light to heal a friendly target for $s1% of the target's missing health.
+Description      : Calls down the Light to heal a friendly target for $s1% of the target's missing health.$?s26573&!s203785[
+
+While you are standing in your Consecration, Hand of the Protector's healing is increased by $188370s2%.][]
 
 Name             : Execution Sentence (id=213757) [Spell Family (10)] 
 Class            : Paladin
@@ -4811,7 +4815,7 @@ Spell Level      : 42
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)

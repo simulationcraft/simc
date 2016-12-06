@@ -307,6 +307,7 @@ public:
     const spell_data_t* bombardment;
     const spell_data_t* trueshot;
     const spell_data_t* lock_and_load;
+    const spell_data_t* marksmans_focus;
 
     // Survival
     const spell_data_t* flanking_strike;
@@ -5595,6 +5596,7 @@ void hunter_t::init_spells()
   specs.carve                = find_specialization_spell( "Carve" );
   specs.tar_trap             = find_specialization_spell( "Tar Trap" );
   specs.explosive_trap       = find_specialization_spell( "Explosive Trap" );
+  specs.marksmans_focus       = find_specialization_spell( "Marksman's Focus" );
 
 
   // Artifact spells
@@ -5667,7 +5669,7 @@ void hunter_t::init_base_stats()
 
   base_focus_regen_per_second = 10.0;
 
-  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + specs.marksmans_focus -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
   stats_tier17_4pc_bm = get_stats( "tier17_4pc_bm" );
   stats_tier18_4pc_bm = get_stats( "tier18_4pc_bm" );

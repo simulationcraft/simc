@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -120,7 +120,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 148037
 Description      : Returns the spirit to the body, restoring a dead target to life with $s1% of maximum health and mana. Cannot be cast when in combat.
 
-Name             : Earthbind Totem (Earth Totem) (id=2484) [Spell Family (11)] 
+Name             : Earthbind Totem (id=2484) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
 Spell Level      : 8
@@ -1442,7 +1442,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=58971)    : Apply Aura (6) | Root (26)
+#1 (id=58971)    : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Roots targets for $d.
 Tooltip          : Rooted.
@@ -1705,7 +1705,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.75000 | Chain Multiplier: 0.2 | Target: Chain Friendly(45)
-Description      : An efficient wave of healing energy that restores $s1 of a friendly targetâ€™s health.
+Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
 Class            : Shaman
@@ -2676,8 +2676,8 @@ Effects          :
                    Affected Spells: Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Feral Lunge (196884), Sundering (197214), Feral Spirit (198506), Feral Spirit (228562)
 #4 (id=191050)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1634 | Target: Self(1)
-#5 (id=191051)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=191051)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #6 (id=260709)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260710)   : Apply Aura (6) | Dummy (4)
@@ -2726,10 +2726,10 @@ Effects          :
                    Affected Spells: Lava Surge (77756)
 #5 (id=191049)   : Apply Aura (6) | Unknown effect sub type (232)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self(1)
-#6 (id=260997)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#7 (id=260998)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#6 (id=260997)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
+#7 (id=260998)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
 #8 (id=260999)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=261000)   : Apply Aura (6) | Dummy (4)
@@ -2775,8 +2775,8 @@ Effects          :
 #2 (id=191042)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Echo of the Elements (108283)
-#3 (id=191043)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#3 (id=191043)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #4 (id=191044)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #5 (id=191045)   : Apply Aura (6) | Dummy (4)
@@ -2822,8 +2822,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | SP Coefficient: 1.00000 | Target: Self(1)
 #4 (id=191040)   : Apply Aura (6) | Increase Energy (35)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 11 | Target: Self(1)
-#5 (id=191041)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=191041)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
 #6 (id=261007)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=261008)   : Apply Aura (6) | Dummy (4)
@@ -3082,7 +3082,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 77936 | Misc Value 2: 0xda1 | Radius: 5 yards | Target: Unknown(43)
 #2 (id=355422)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : $@spelldesc152256
+Description      : $@spelldesc192249
 
 Name             : Wind Gust (id=157331) [Spell Family (11)] 
 Class            : Shaman
@@ -4688,7 +4688,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289629)   : School Damage: physical (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 13.00000 | Radius: 11 yards | Target: Unknown(129)
-#2 (id=290614)   : Apply Aura (6) | Root (26)
+#2 (id=290614)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Unknown(95) | Target: Unknown(129)
 #3 (id=290630)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1 yards | Target: Unknown(47) -> Unknown(107)
@@ -5304,7 +5304,9 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: maelstrom | Target: Self(1)
 #3 (id=297596)   : Trigger Spell: Boulderfist (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218825 | Target: Self(1)
-Description      : Slams your target with the power of stone, dealing $s1 Nature damage and enhancing your weapons for $218825d, increasing your critical strike chance by $218825s1% and all damage you deal by $218825s2%.
+#4 (id=359957)   : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2 | AP Coefficient: 2.50000 | Target: Enemy(6)
+Description      : Slams your target with the power of stone, dealing $s1 Nature damage and enhancing your weapons for $218825d, increasing$@switch<$s4>[][ your critical strike chance by $218825s1% and] all damage you deal by $218825s2%.
 
 |cFFFFFFFFGenerates $s2 Maelstrom.|r
 
