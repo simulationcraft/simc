@@ -3324,7 +3324,9 @@ struct blood_plague_t : public disease_t
 {
   blood_plague_t( death_knight_t* p ) :
     disease_t( p, "blood_plague", 55078 )
-  { }
+  { 
+    base_multiplier *= 1.0 + p -> artifact.coagulopathy.percent();
+  }
 };
 
 // Frost Fever ==============================================================
