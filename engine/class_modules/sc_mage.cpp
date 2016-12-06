@@ -2416,8 +2416,9 @@ struct frost_mage_spell_t : public mage_spell_t
     if ( ! result_is_hit( state -> result ) )
       return;
 
-    // Icicles do not double dip on target based multipliers
-    double m = state -> target_da_multiplier * state -> versatility;
+    // Icicles do not double dip on target based multipliers.
+    // Store versatility modified damage.
+    double m = state -> target_da_multiplier;
     double amount = state -> result_amount / m * p() -> cache.mastery_value();
     if ( p() -> artifact.black_ice.rank() && rng().roll( 0.2 ) )
     {
@@ -2581,10 +2582,11 @@ struct icicle_t : public frost_mage_spell_t
     snapshot_flags &= ~( STATE_SP | STATE_CRIT | STATE_TGT_CRIT );
   }
 
-  virtual double composite_da_multiplier( const action_state_t* ) const override
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
     // Override this to remove composite_player_multiplier benefits (RoP/IF/CttC)
-    // Also remove composute_player_dd_multipliers. Only return action and action_da multipliers.
+    // Also remove composite_player_dd_multipliers. Only return action and action_da multipliers.
+    // TODO: Really, should we be using any multipliers?
     double am = action_multiplier();
     // Icicles shouldn't be double dipping on Bone Chilling.
     if ( p() -> buffs.bone_chilling -> up() )
@@ -2592,6 +2594,8 @@ struct icicle_t : public frost_mage_spell_t
       am /= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() / 10 );
 
     }
+    // Don't double dip on versatility, we stored it when the icicle was gained.
+    am /= s -> versatility;
     return am * action_da_multiplier();
   }
 };
@@ -4671,6 +4675,7 @@ struct frostbolt_t : public frost_mage_spell_t
     icicle( p -> get_stats( "icicle" ) )
   {
     parse_options( options_str );
+    may_crit=false;
     spell_power_mod.direct = p -> find_spell( 228597 ) -> effectN( 1 ).sp_coeff();
     if ( p -> spec.icicles -> ok() )
     {
@@ -5053,8 +5058,6 @@ struct glacial_spike_t : public frost_mage_spell_t
     cooldown -> duration = timespan_t::from_seconds( 1.5 );
     if ( p -> talents.splitting_ice -> ok() )
     {
-      base_multiplier *= 1.0 + p -> talents.splitting_ice
-                                 -> effectN( 3 ).percent();
       aoe = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
       base_aoe_multiplier *= p -> talents.splitting_ice
                                -> effectN( 2 ).percent();
@@ -5129,17 +5132,18 @@ struct glacial_spike_t : public frost_mage_spell_t
       icicle_damage_sum += d.damage;
     }
 
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf("Add %u icicles to glacial_spike for %f damage",
-                              icicle_count, icicle_damage_sum);
-    }
+
     // Note: This needs to be manually added to icicle values for splitting ice, as normally it's a base multiplier.
     if ( p() -> talents.splitting_ice -> ok() )
     {
       icicle_damage_sum *= 1.0 + p() -> talents.splitting_ice -> effectN( 3 ).percent();
     }
 
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf("Add %u icicles to glacial_spike for %f damage",
+                              icicle_count, icicle_damage_sum);
+    }
     // If we're dealing with the first target when using splitting ice, store the total icicle value.
     if ( s -> n_targets > 1 && s -> chain_target == 0 )
     {
@@ -5147,11 +5151,12 @@ struct glacial_spike_t : public frost_mage_spell_t
     }
 
     // If we're dealing with the non-primary target, no icicles exist.
-    // So grab the istored icicle value
+    // So grab the stored icicle value
     if ( s -> chain_target != 0 )
     {
       icicle_damage_sum = stored_icicle_value;
     }
+
     base_dd_min = icicle_damage_sum;
     base_dd_max = icicle_damage_sum;
 
@@ -5166,10 +5171,7 @@ struct glacial_spike_t : public frost_mage_spell_t
     s -> result_amount = calculate_direct_amount( s );
     frost_mage_spell_t::impact( s );
     p() -> buffs.icicles -> expire();
-    if ( p() -> legendary.sephuzs_secret )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
+
   }
 };
 
@@ -5525,7 +5527,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
     if ( p -> talents.flame_on -> ok() )
     {
-      cooldown -> duration -= 1000* p -> talents.flame_on -> effectN( 3 ).time_value(); 
+      cooldown -> duration -= 1000* p -> talents.flame_on -> effectN( 3 ).time_value();
     }
     cooldown -> hasted = true;
     // Fire Blast has a small ICD to prevent it from being double casted
@@ -9901,7 +9903,7 @@ public:
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 120 )
-      .verification_value( 60 );  
+      .verification_value( 60 );
 
   }
 
