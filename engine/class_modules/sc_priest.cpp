@@ -2335,22 +2335,23 @@ struct mind_spike_t final : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
-	  if ( const priest_td_t* td = find_td( s->target ) )
-	  {
+    if ( const priest_td_t* td = find_td( s->target ) )
+    {
       // If both dots are up
-	    if ( td->dots.shadow_word_pain->is_ticking() && td->dots.shadow_word_pain->is_ticking() )
-	    {
-        base_multiplier *= 1 + data().effectN(4).percent() * 2;
-        insanity_gain *= 1 + data().effectN(4).percent() * 2;
-	    }
-      // If only one of the dots is up
-      else if (td->dots.shadow_word_pain->is_ticking() != td->dots.shadow_word_pain->is_ticking())
+      if ( td->dots.shadow_word_pain->is_ticking() && td->dots.vampiric_touch->is_ticking() )
       {
-        base_multiplier *= 1 + data().effectN(4).percent();
-        insanity_gain *= 1 + data().effectN(4).percent();
+	base_multiplier *= 1 + data().effectN(4).percent() * 2;
+	insanity_gain *= 1 + data().effectN(4).percent() * 2;
       }
-
-	  }
+      // If only one of the dots is up
+      else if (td->dots.shadow_word_pain->is_ticking() != td->dots.vampiric_touch->is_ticking())
+      {
+	base_multiplier *= 1 + data().effectN(4).percent();
+	insanity_gain *= 1 + data().effectN(4).percent();
+      }
+      td->dots.shadow_word_pain->reset();
+      td->dots.vampiric_touch->reset();
+    }
 
     priest_spell_t::impact( s );
 
@@ -2359,8 +2360,6 @@ struct mind_spike_t final : public priest_spell_t
     if ( result_is_hit( s->result ) )
     {
       priest_td_t& td = get_td( s->target );
-
-      //TODO splash damage
 
       if ( priest.active_items.mental_fatigue )
       {
