@@ -4644,6 +4644,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     energize_type = ENERGIZE_PER_HIT;
     energize_amount += p -> talent.heartbreaker -> effectN( 1 ).base_value();
+    base_multiplier    *= 1.0 + p -> artifact.veinrender.percent();
 
     weapon = &( p -> main_hand_weapon );
   }
