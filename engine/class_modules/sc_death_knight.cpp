@@ -5807,6 +5807,7 @@ struct vampiric_blood_t : public death_knight_spell_t
 
     harmful = false;
     base_dd_min = base_dd_max = 0;
+    base_multiplier    *= 1.0 + p -> artifact.vampiric_fangs.percent();
   }
 
   void execute() override
