@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
 
 Name             : Dual Wield (Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
@@ -1268,8 +1268,10 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | Misc Value: 127 | Target: Self(1)
 #2 (id=48162)    : Apply Aura (6) | Increase Max Health (Stacking) (250)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-Description      : Embrace your undeath, increasing your maximum health by $s2% and increasing all healing received by $s1% for $d.
-Tooltip          : Maximum health increased by $s2%. Healing received increased by $s1%.
+#3 (id=359059)   : Apply Aura (6) | Modify Absorb% Done (422)
+                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 1.00000 | Target: Self(1)
+Description      : Embrace your undeath, increasing your maximum health by $s2% and increasing all healing and absorbs received by $s1% for $d.
+Tooltip          : Maximum health increased by $s2%. Healing and absorbs received increased by $s1%.
 
 Name             : Dark Command (id=56222) [Spell Family (15)] 
 Class            : Death Knight
@@ -2117,7 +2119,7 @@ Description      : Claw the enemy, dealing $s1% of normal melee damage.
 
 Name             : Sweeping Claws (id=91778) 
 Class            : Death Knight
-School           : Physical
+School           : Shadow
 Resource         : 40 Energy
 Spell Level      : 50
 Range            : 5 yards
@@ -2134,7 +2136,7 @@ Effects          :
                    Base Value: 135 | Scaled Value: 135 | Target: Enemy(6)
 #2 (id=341774)   : Weapon Damage% (31)
                    Base Value: 135 | Scaled Value: 1.35 | Radius: 8 yards | Target: Cone Front(104)
-Description      : Rakes an enemy with deformed claws, dealing $91778s1% of normal damage to the target and nearby enemies.
+Description      : Rakes an enemy with deformed claws, dealing $91778s1% of normal damage as Shadow to the target and nearby enemies.
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
 Class            : Death Knight
@@ -2222,7 +2224,7 @@ Attributes       : ........ ........ ..x..... ........   ...x...x .x...... .....
 Effects          :
 #1 (id=95550)    : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy(6)
-#2 (id=95551)    : Apply Aura (6) | Root (26)
+#2 (id=95551)    : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Mechanic: Unknown(58) | Target: Enemy(6)
 Description      : Charge an enemy, interrupting spellcasting and immobilizing them for $d.
 Tooltip          : Immobilized.
@@ -2620,8 +2622,8 @@ Effects          :
 #5 (id=191180)   : Apply Aura (6) | Add Percent Modifier: Spell Critical Damage (108)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 15 | Target: Self(1)
                    Affected Spells: Frostscythe (207230)
-#6 (id=257279)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#6 (id=257279)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
 #7 (id=260629)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260630)   : Apply Aura (6) | Dummy (4)
@@ -2656,8 +2658,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179689)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#1 (id=179689)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #2 (id=191174)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191175)   : Apply Aura (6) | Dummy (4)
@@ -2698,8 +2700,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179690)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#1 (id=179690)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
 #2 (id=191170)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #3 (id=191171)   : Apply Aura (6) | Dummy (4)
@@ -2758,8 +2760,8 @@ Effects          :
 #6 (id=260807)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Icebound Fortitude (48792)
-#7 (id=260808)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#7 (id=260808)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #8 (id=260809)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260810)   : Apply Aura (6) | Dummy (4)
@@ -3477,7 +3479,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 17 | Target: Self(1)
 #2 (id=287275)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self(1)
-#3 (id=287300)   : Apply Aura (6) | Periodic Energize Power: every 1 seconds (24)
+#3 (id=287300)   : Apply Aura (6) | Periodic Energize Power: every 0.98 seconds (24)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6 | Target: Self(1)
 #4 (id=330524)   : Apply Aura (6) | Add Flat Modifier: Spell Targets (107)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self(1)
@@ -5405,7 +5407,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=306654)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Dealing damage with Death Coil causes your next Scourge Strike to deal $216974s1% increased damage.
+Description      : Dealing damage with Death Coil causes your next $?s207311[Clawing Shadows][Scourge Strike] to deal $216974s1% increased damage.
 
 Name             : Dark Arbiter (id=207349) [Spell Family (15)] 
 Class            : Death Knight
@@ -5605,7 +5607,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : Hack at the enemy, dealing $212335s1% of normal melee damage.$?s63560[
 
-|CFFE55BB0Dark Transformation: Expel vile gas, dealing $212338s1% of normal melee damage to all enemies within $212338A1 yds.|R][]
+|CFFE55BB0Dark Transformation: Expel vile gas, dealing $212338s1% of normal melee damage as Shadow to all enemies within $212338A1 yds.|R][]
 
 Name             : Cleaver (id=212335) 
 Class            : Death Knight
@@ -5647,7 +5649,7 @@ Description      : Smash the target with the blunt side of the cleaver, dealing 
 
 Name             : Vile Gas (id=212338) 
 Class            : Death Knight
-School           : Physical
+School           : Shadow
 Resource         : 40 Energy
 Spell Level      : 1
 Range            : 5 yards

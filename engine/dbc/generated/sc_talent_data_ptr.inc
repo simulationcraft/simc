@@ -1,6 +1,6 @@
-#define PTR_TALENT_SIZE (616)
+#define PTR_TALENT_SIZE (618)
 
-// 616 talents, wow build 23109
+// 618 talents, wow build 23178
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -92,7 +92,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Posthaste"                         , 19347, 0x00, 0x0004,   0,   0,   2,  109215,       0,  0 },
   { "Farstrider"                        , 19348, 0x00, 0x0004,   0,   1,   2,  199523,       0,  0 },
   { "A Murder of Crows"                 , 19357, 0x00, 0x0004,   0,   0,   5,  131894,       0,  0 },
-  { "Guerilla Tactics"                  , 19361, 0x00, 0x0004, 255,   1,   3,  236698,       0,  0 },
+  { "Guerrilla Tactics"                 , 19361, 0x00, 0x0004, 255,   1,   3,  236698,       0,  0 },
   { "Impending Victory"                 , 19676, 0x00, 0x0001,  73,   0,   1,  202168,   34428,  0 },
   { "Trail of Light"                    , 19752, 0x00, 0x0010, 257,   0,   0,  200128,       0,  0 },
   { "Castigation"                       , 19753, 0x00, 0x0010,   0,   1,   0,  193134,       0,  0 },
@@ -272,7 +272,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Black Ox Brew"                     , 22097, 0x00, 0x0200, 268,   1,   2,  115399,       0,  0 },
   { "Light Brewing"                     , 22098, 0x00, 0x0200, 268,   0,   2,  196721,       0,  0 },
   { "Energizing Elixir"                 , 22099, 0x00, 0x0200, 269,   0,   2,  115288,       0,  0 },
-  { "Dizzying Kicks"                    , 22100, 0x00, 0x0200, 269,   1,   3,  196722,       0,  0 },
+  { "Summon Black Ox Statue"            , 22100, 0x00, 0x0200, 269,   1,   3,  115315,  175697,  0 },
   { "Invoke Niuzao, the Black Ox"       , 22101, 0x00, 0x0200, 268,   1,   5,  132578,       0,  0 },
   { "Special Delivery"                  , 22102, 0x00, 0x0200, 268,   2,   5,  196730,       0,  0 },
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
@@ -649,5 +649,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Blast Wave"                        , 22908, 0x00, 0x0080,  63,   1,   1,  157981,       0,  0 },
   { "Chaos Cleave"                      , 22909, 0x00, 0x0800, 577,   0,   2,  206475,       0,  0 },
   { "Intimidating Roar"                 , 22916, 0x00, 0x0400, 104,   1,   1,  236748,      99,  0 },
+  { "Mystic Vitality"                   , 22917, 0x00, 0x0200, 268,   1,   4,  237076,       0,  0 },
+  { "Disengage"                         , 22918, 0x00, 0x0004, 255,   1,   2,     781,       0,  0 },
   { 0                                   ,     0, 0x00, 0x0000,   0,   0,   0,       0,       0,  0 },
 };

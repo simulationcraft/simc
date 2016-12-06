@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
 
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
@@ -733,7 +733,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ..x..... ........ ........ ........   ........ ........ xx...... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
@@ -747,7 +747,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
                    Affected Spells: Regrowth (8936)
 Description      : $@spelldesc113043
-Tooltip          : Your next Regrowth is free.
+Tooltip          : Your next Regrowth is free$?s155577[ and heals for an additonal $w2%][].
 
 Name             : Thick Hide (id=16931) [Spell Family (7), Passive] 
 Class            : Guardian Druid
@@ -1118,7 +1118,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : Shapeshift into $?s114301[Astral Form][Moonkin Form], increasing your Arcane and Nature damage by $s8% and your armor by $m3%, and granting protection from Polymorph effects.$?a231042[
 
-While in this form, single-target attacks against you have a $h% chance make your next Lunar Strike, Solar Wrath or Stellar Flare instant.][]
+While in this form, single-target attacks against you have a $h% chance make your next Lunar Strike instant.][]
 
 The act of shapeshifting frees you from movement impairing effects.
 Tooltip          : Arcane and Nature damage done increased by $s8%.
@@ -1656,7 +1656,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 14 | Target: Self(1)
 #2 (id=334306)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 14 | Target: Self(1)
-Description      : Reduces all damage you take by $50322s1% for $50322d.
+Description      : Reduces all damage you take by $50322s1% for $50322d.  Max $s2 charges.
 Tooltip          : Damage taken reduced by $50322s1%.
 
 Name             : Typhoon (id=61391) [Spell Family (7)] 
@@ -2397,7 +2397,7 @@ Attributes       : ........ ........ ........ ......x.   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=111098)   : Apply Aura (6) | Root (26)
+#1 (id=111098)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Chain Targets: 1000 | Target: Enemy(6)
 Description      : Roots the target in place for $d and spreads to additional nearby enemies. Damage may interrupt the effect. Usable in all shapeshift forms.
 Tooltip          : Rooted.
@@ -2733,7 +2733,7 @@ School           : Physical
 Spell Level      : 12
 Range            : 5 yards
 Stance Mask      : 0x00000011
-Affecting spells : Sharpened Claws (202110), Luffa Wrappings (208681), 
+Affecting spells : Luffa Wrappings (208681), 
 Attributes       : ........ x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3349,10 +3349,10 @@ Effects          :
 #8 (id=260759)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-#9 (id=260760)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#10 (id=260761)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#9 (id=260760)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
+#10 (id=260761)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
 #11 (id=260762)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #12 (id=260763)   : Apply Aura (6) | Dummy (4)
@@ -3396,10 +3396,10 @@ Effects          :
 #6 (id=260767)   : Apply Aura (6) | Add Flat Modifier: Spell Tick Time (107)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 8 | Target: Self(1)
                    Affected Spells: Luffa Wrappings (208681)
-#7 (id=260768)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#8 (id=260769)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#7 (id=260768)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
+#8 (id=260769)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
 #9 (id=260770)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #10 (id=260771)   : Apply Aura (6) | Dummy (4)
@@ -3443,12 +3443,12 @@ Effects          :
 #8 (id=260749)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630)
-#9 (id=260750)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#10 (id=260751)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#11 (id=260752)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#9 (id=260750)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
+#10 (id=260751)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
+#11 (id=260752)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
 #12 (id=260753)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=260754)   : Apply Aura (6) | Dummy (4)
@@ -3495,10 +3495,10 @@ Effects          :
 #3 (id=191147)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Regrowth (8936)
-#4 (id=191148)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#5 (id=191149)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#4 (id=191148)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
+#5 (id=191149)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #6 (id=260777)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260778)   : Apply Aura (6) | Dummy (4)
@@ -3823,7 +3823,7 @@ School           : Physical
 Duration         : Aura (infinite)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5474,7 +5474,7 @@ Duration         : 8 seconds
 Cooldown         : 45 seconds
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   ........ ........ x...x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5485,7 +5485,7 @@ Effects          :
 #2 (id=297781)   : Apply Aura (6) | Periodic Trigger Spell: Combo Point every 1 seconds (23)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 139546 | Target: Self(1)
 Description      : Immediately gain $s1 combo points and an additional $s2 combo point every $t2 sec for $d.
-Tooltip          : Gaining $s2 combo point every $t sec.
+Tooltip          : Gaining $s2 combo point every $t2 sec.
 
 Name             : Sharpened Claws (Honor Talent) (id=202110) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -5500,7 +5500,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=297867)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 100 | Scaled Value: 100 | Target: Self(1)
-                   Affected Spells: Thrash (77758), Swipe (106785), Thrash (106830), Thrash (106832), Thrash (192090), Shadow Thrash (210687), Swipe (213764), Swipe (213771)
+                   Affected Spells: Thrash (77758), Swipe (106785), Thrash (106830), Thrash (192090), Shadow Thrash (210687), Swipe (213764), Swipe (213771)
+#2 (id=360004)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Thrash (192090)
 Description      : Increases the damage done by your Swipe and Thrash by $m1%.
 
 Name             : Feral Affinity (id=202155) [Spell Family (7), Passive] 
@@ -5750,9 +5753,9 @@ School           : Astral
 Spell Level      : 1
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Attributes       : ........ ........ ........ ........   .......x ..x..... ........ ........ 
-                 : ..x..... ........ ........ ......x.   x....... .x...... ........ ......x. 
-                 : ........ .......x ........ ........   ........ ........ ........ ..x..... 
+Attributes       : ........ ........ ........ ...x....   .......x ..x..... ........ ........ 
+                 : ..x..... ........ ......x. ........   x....... .x...... ........ ......x. 
+                 : ....x... .......x ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6103,7 +6106,7 @@ Effects          :
 #1 (id=300992)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self(1)
 Description      : $@spelldesc203974
-Tooltip          : Damage of the next autoattack you take will be reduced by ${$203974s1/$203974m2}%.
+Tooltip          : Damage of the next autoattack you take will be reduced by ${$203974s1/$m1}%.
 
 Name             : Guttural Roars (id=204012) [Spell Family (7), Passive] 
 Class            : Druid
@@ -6168,7 +6171,7 @@ Description      : Summons a beam of lunar light at your location, dealing ${$20
 
 Name             : Lunar Beam (id=204069) [Spell Family (7)] 
 Class            : Druid
-School           : Nature
+School           : Arcane
 Spell Level      : 1
 Range            : 100 yards
 Affecting spells : Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
@@ -6182,7 +6185,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=301153)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.00000 | Target: Self(1)
-#2 (id=301154)   : School Damage: nature (2)
+#2 (id=301154)   : School Damage: arcane (2)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : $@spelldesc204066
 
@@ -6974,7 +6977,7 @@ Effects          :
 #1 (id=348377)   : Apply Aura (6) | Add Flat Modifier: Spell Proc Chance (107)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 18 | Target: Self(1)
                    Affected Spells: Moonkin Form (24858), Incarnation: Chosen of Elune (102560), Moonkin Form (197625)
-Description      : While in Moonkin Form, single-target attacks against you have a $s1% chance make your next Lunar Strike, Solar Wrath or Stellar Flare instant.
+Description      : While in Moonkin Form, single-target attacks against you have a $s1% chance make your next Lunar Strike instant.
 
 
 Name             : Starfall (Rank 2) (id=231049) [Spell Family (7), Passive] 

@@ -2037,6 +2037,7 @@ public:
                   p() -> t19_melee_4_piece_container_3 = new_ability;
                   p() -> buff.combo_master -> trigger();
                 }
+                // Don't do anything if the second container is the same
               }
               // semi-reset if the last ability is the same as the new ability
               else
@@ -2055,6 +2056,7 @@ public:
                 p() -> t19_melee_4_piece_container_3 = new_ability;
                 p() -> buff.combo_master -> trigger();
               }
+              // Don't do anything if the first container is the same
             }
             // semi-reset if the last ability is the same as the new ability
             else
@@ -4276,30 +4278,6 @@ struct serenity_t: public monk_spell_t
     monk_spell_t::execute();
 
     p() -> buff.serenity -> trigger();
-
-    // Executing Serenity reduces any current cooldown by 50%
-    // Have to manually adjust each of the affected spells
-    double percent_adjust = p() -> talent.serenity -> effectN( 4 ).percent(); // saved as -50%
-
-    cooldown_reduction( p() -> cooldown.blackout_kick, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.blackout_strike, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.rushing_jade_wind, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.refreshing_jade_wind, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.rising_sun_kick, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.fists_of_fury, percent_adjust );
-
-    cooldown_reduction( p() -> cooldown.strike_of_the_windlord, percent_adjust );
-  }
-
-  void cooldown_reduction(cooldown_t* cd, double percent_adjust )
-  {
-    if ( cd -> down() )
-      cd -> adjust( cd -> remains() * percent_adjust);
   }
 };
 
@@ -6578,7 +6556,7 @@ struct hidden_masters_forbidden_touch_t : public monk_buff_t < buff_t >
   }
 };
 
-// Serenity
+// Serenity Buff ==========================================================
 struct serenity_buff_t : public monk_buff_t < buff_t >
 {
   double percent_adjust;
@@ -6615,10 +6593,9 @@ struct serenity_buff_t : public monk_buff_t < buff_t >
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    return base_t::trigger( stacks, value, chance, duration );
     // Executing Serenity reduces any current cooldown by 50%
     // Have to manually adjust each of the affected spells
-    /*cooldown_reduction( monk.cooldown.blackout_kick );
+    cooldown_reduction( monk.cooldown.blackout_kick );
 
     cooldown_reduction( monk.cooldown.blackout_strike );
 
@@ -6630,7 +6607,9 @@ struct serenity_buff_t : public monk_buff_t < buff_t >
 
     cooldown_reduction( monk.cooldown.fists_of_fury );
 
-    cooldown_reduction( monk.cooldown.strike_of_the_windlord );*/
+    cooldown_reduction( monk.cooldown.strike_of_the_windlord );
+
+    return base_t::trigger( stacks, value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -7435,15 +7414,7 @@ void monk_t::create_buffs()
     .default_value( passives.tier18_2pc_melee -> effectN( 1 ).base_value() )
     .add_invalidate( CACHE_MASTERY );
 
-//  buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
-  
-  buff.serenity = buff_creator_t( this, "serenity", talent.serenity )
-    .default_value( talent.serenity -> effectN( 2 ).percent() +
-      ( artifact.spiritual_focus.rank() ? artifact.spiritual_focus.percent() : 0 ) )
-    .duration( talent.serenity -> duration() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-    
+  buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
   buff.storm_earth_and_fire = buff_creator_t( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -8689,7 +8660,7 @@ void monk_t::apl_combat_windwalker()
       def -> add_action( "potion,name=virmens_bite,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
 
-  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.rising_sun_kick.remains<=4)|buff.serenity.up)" );
+  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=15&cooldown.fists_of_fury.remains<8&cooldown.rising_sun_kick.remains<=4)|buff.serenity.up)" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&((artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<=14&cooldown.fists_of_fury.remains<=6&cooldown.rising_sun_kick.remains<=6)|buff.storm_earth_and_fire.up)" );
   def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)&(!artifact.strike_of_the_windlord.enabled&cooldown.strike_of_the_windlord.remains<14&cooldown.fists_of_fury.remains<=15&cooldown.rising_sun_kick.remains<7)|buff.serenity.up" );
   def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&((!artifact.strike_of_the_windlord.enabled&cooldown.fists_of_fury.remains<=9&cooldown.rising_sun_kick.remains<=5)|buff.storm_earth_and_fire.up)" );
