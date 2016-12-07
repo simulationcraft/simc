@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -127,7 +127,7 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .....
 Effects          :
 #1 (id=83)       : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.17910 | Radius: 0 - 12 yards | Target: At Caster(22) -> AOE enemy(15)
-#2 (id=84)       : Apply Aura (6) | Root (26)
+#2 (id=84)       : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Unknown(58) | Target: At Caster(22) -> AOE enemy(15)
 Description      : Blasts enemies within $A1 yds of you for $122s1 Frost damage and freezes them in place for $122d. Damage may interrupt the freeze effect.
 Tooltip          : Frozen in place.
@@ -185,7 +185,7 @@ Description      : Causes an explosion of magic around the caster, dealing $s1 A
 
 Damage increased by $36032s1% per Arcane Charge.
 
-Mana cost increased by $36032s2% per Arcane Charge.
+Mana cost increased by $36032s5% per Arcane Charge.
 
 |cFFFFFFFFGenerates 1 Arcane Charge if any targets are hit.|r
 
@@ -562,7 +562,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5792)     : Apply Aura (6) | Unknown effect sub type (112)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 911 | Target: Self(1)
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Flurry (44614), Frozen Orb (84721), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Combustion (190319), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Glacial Spike (199786), Ray of Frost (205021), Ebonbolt (214634), Living Bomb (217694), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Flurry (44614), Frozen Orb (84721), Fire Blast (108853), Frost Bomb (113092), Nether Tempest (114923), Nether Tempest (114954), Comet Storm (153595), Comet Storm (153596), Blast Wave (157981), Ice Nova (157997), Combustion (190319), Blizzard (190356), Blizzard (190357), Aftershocks (194432), Glacial Spike (199786), Ray of Frost (205021), Ebonbolt (214634), Living Bomb (217694), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Ebonbolt (228599), Glacial Spike (228600), Frost Nova (235235)
 #2 (id=99824)    : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
 Description      : Multiplies the critical strike chance of your spells against frozen targets by 1.5, and adds an additional $?a231582[${$s2+$231582s1$}%][$s2%] critical strike chance.
@@ -725,7 +725,7 @@ Description      : Blasts the target with energy, dealing $30451s1 Arcane damage
 
 Damage increased by $36032s1% per Arcane Charge.
 
-Mana cost increased by $36032s2% per Arcane Charge.
+Mana cost increased by $36032s5% per Arcane Charge.
 
 |cFFFFFFFFGenerates 1 Arcane Charge|r
 
@@ -849,7 +849,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=21340)    : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.25) | SP Coefficient: 1.00000 | Target: Enemy(6)
-Description      : Deals ${$s1*0.75} Frost damage to the target.
+Description      : Deals ${$s1} Frost damage to the target.
 
 Name             : Invisibility (id=32612) [Spell Family (3)] 
 Class            : Mage
@@ -915,7 +915,7 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=23237)    : Apply Aura (6) | Root (26)
+#1 (id=23237)    : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(58) | Target: AOE enemy (instant)(16)
 Description      : Blasts enemies in a $a1 yard radius with frost, freezing them in place for up to $d. Damage caused may interrupt the effect. $?s112965[
 
@@ -2525,10 +2525,10 @@ Effects          :
 #2 (id=172453)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Target: Self(1)
                    Affected Spells: Fireball (133), Scorch (2948), Pyroblast (11366), Flurry (44614)
-#3 (id=188984)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#4 (id=188985)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#3 (id=188984)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
+#4 (id=188985)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #5 (id=191129)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #6 (id=257393)   : Apply Aura (6) | Dummy (4)
@@ -2886,7 +2886,7 @@ Description      : Calls down a meteor which lands at the target location after 
 Name             : Meteor (id=153564) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
-Range            : 40 yards
+Range            : 100 yards
 Velocity         : 1 yards/sec
 Affecting spells : Norgannon's Foresight (236380)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3081,7 +3081,7 @@ Description      : $@spelldesc152087
 Name             : Meteor Burn (id=155158) 
 Class            : Mage
 School           : Fire
-Range            : 40 yards
+Range            : 100 yards
 Duration         : 10 seconds
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   .......x ........ ........ ........ 
@@ -3241,6 +3241,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 25 seconds
+Affecting spells : Shatter (12982), Norgannon's Foresight (236380)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3278,7 +3279,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Unknown(25)
 #2 (id=220384)   : School Damage: frost (2)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 4.50000 | Radius: 0 - 8 yards | Target: Unknown(63) -> AOE enemy (instant)(16)
-#3 (id=220385)   : Apply Aura (6) | Root (26)
+#3 (id=220385)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(58) | Target: Unknown(63) -> AOE enemy (instant)(16)
 Description      : Causes a whirl of icy wind around the target enemy or ally, dealing $s2 Frost damage to all enemies within $A2 yards, and freezing them in place for $d. A primary enemy target will take $s1% increased damage.
 Tooltip          : Frozen.
@@ -3748,6 +3749,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=285236)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 23 | Target: Self(1)
+                   Affected Spells: Blazing Barrier (235313)
 Description      : Blazing Barrier reduces all Physical damage you take by $s1%.
 
 Name             : Aftershocks (id=194431) [Spell Family (3), Passive] 
@@ -4010,7 +4012,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Channeled (34)
 Effects          :
@@ -4019,7 +4021,7 @@ Effects          :
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage: frost every 1 seconds (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.94300 | Target: Enemy(6)
 Description      : For the next $d, you can channel a beam of icy power at an enemy, slowing movement by $m1% and dealing $s2 Frost damage every $t2 sec. Each time Ray of Frost deals damage, its damage increases by $208141s1%.
-Tooltip          : Movement slowed by $m1% and taking $s2 Frost damage every $t2 sec.
+Tooltip          : Movement slowed by $w1% and taking $s2 Frost damage every $t2 sec.
 
 Name             : Arcane Familiar (id=205022) [Spell Family (3)] 
 Class            : Mage
@@ -4193,14 +4195,9 @@ Effects          :
 #1 (id=302657)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Target: Self(1)
 #2 (id=355318)   : Apply Aura (6) | Add Flat Modifier (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self(1)
                    Affected Spells: Fingers of Frost (44544)
-#3 (id=355319)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Fingers of Frost (44544)
-Description      : Increases your chance to generate Fingers of Frost charges by $s%. 
-
-Increases the maximum number of Fingers of Frost charges by $s2.
+Description      : Increases your chance to generate Fingers of Frost charges by $s1%.
 
 Name             : Charged Up (id=205032) [Spell Family (3)] 
 Class            : Mage
@@ -4938,7 +4935,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=344289)   : School Damage: frost (2)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 10.00000 | Target: Enemy(6)
-#2 (id=344290)   : Apply Aura (6) | Root (26)
+#2 (id=344290)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(58) | Target: Enemy(6)
 Description      : $@spelldesc199786
 Tooltip          : Frozen in place.
@@ -5188,7 +5185,7 @@ Cooldown         : 25 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Norgannon's Foresight (236380)
+Affecting spells : Molten Skin (194315), Norgannon's Foresight (236380)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -5392,7 +5389,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=357235)   : Apply Aura (6) | Unknown effect sub type (129)
                    Base Value: 30 | Scaled Value: 30 | Target: Self(1)
-Description      : Casting Scorch increases your movement speed by $s% for $s2 seconds.
+Description      : $@spelldesc236298
 Tooltip          : Movement speed increased by $s1%.
 
 Name             : Chrono Shift (id=236299) [Spell Family (3)] 
@@ -5413,7 +5410,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=357237)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy(6)
-Description      : Casting Scorch increases your movement speed by $s% for $s2 seconds.
+Description      : $@spelldesc235711
 Tooltip          : Movement speed slowed by $s1%.
 
 Name             : Slipstream (id=236457) [Spell Family (3), Passive] 

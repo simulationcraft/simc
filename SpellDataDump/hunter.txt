@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build eff2d2b)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -266,7 +266,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=1072)     : Apply Aura (6) | Unknown effect sub type (308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Enemy(6)
-                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200)
+                   Affected Spells: Multi-Shot (2643), Freezing Trap (3355), Concussive Shot (5116), Ice Trap (13809), Explosive Trap (13812), Explosive Trap (13813), Wyvern Sting (19386), Aimed Shot (19434), Intimidation (19577), Chimaera Shot (53209), Bullheaded (63896), Serpent Sting (118253), Barrage (120360), Barrage (120361), Glaive Toss (120761), Glaive Toss (121414), Iron Horde Trip Mine (155918), Steel Trap (162488), Steel Trap (162496), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Aspect of the Turtle (186265), Bursting Shot (186387), Freezing Trap (187650), Freezing Trap (187651), Tar Trap (187698), Tar Trap (187699), Mongoose Bite (190928), Aimed Shot (191043), Explosive Trap (191433), Cobra Shot (193455), Black Arrow (194599), Throwing Axes (200163), Flanking Strike (202800), Chimaera Shot (204304), Flanking Strike (204740), Explosive Shot (212431), Explosive Shot (212680), Sidewinders (214579), Sidewinders (214581), Dire Frenzy (217200)
 Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
 
@@ -420,7 +420,7 @@ School           : Fire
 Spell Level      : 38
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Freezing Trap (3355), Explosive Force (203670), 
+Affecting spells : Freezing Trap (3355), Explosive Force (203670), Guerrilla Tactics (236698)
 Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ......xx .x...... ..x..... ........ 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1113,7 +1113,7 @@ Attributes       : ....x... ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=45785)    : Apply Aura (6) | Root (26)
+#1 (id=45785)    : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=45786)    : Trigger Spell: Charge (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 57627
@@ -2378,7 +2378,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=134592)   : Apply Aura (6) | Periodic Damage: nature every 3 seconds (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 0.87000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 0 (avg=2.6) | AP Coefficient: 1.15000 | Target: Enemy(6)
 Description      : Causes $o1 Nature damage over $d.
 Tooltip          : Causes $w1 Nature damage every $t1 seconds.
 
@@ -2791,7 +2791,7 @@ Attributes       : ........ ........ x....... ........   .......x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=178929)   : Apply Aura (6) | Root (26)
+#1 (id=178929)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc109298
 Tooltip          : Webbed.
@@ -2828,10 +2828,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1674 | Target: Self(1)
 #9 (id=260640)   : Apply Aura (6) | Unknown effect sub type (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1675 | Target: Self(1)
-#10 (id=260641)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#11 (id=260642)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#10 (id=260641)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
+#11 (id=260642)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf9 | Target: Self(1)
 #12 (id=260643)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #13 (id=260644)   : Apply Aura (6) | Dummy (4)
@@ -2878,8 +2878,8 @@ Effects          :
 #4 (id=191140)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Volley (194386), Volley (194392)
-#5 (id=191141)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#5 (id=191141)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #6 (id=260897)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #7 (id=260898)   : Apply Aura (6) | Dummy (4)
@@ -2908,8 +2908,8 @@ Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Multi-Shot (2643)
-#2 (id=191134)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#2 (id=191134)   : Apply Aura (6) | Unknown effect sub type (218)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
 #3 (id=191135)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #4 (id=191136)   : Apply Aura (6) | Dummy (4)
@@ -3415,7 +3415,7 @@ Attributes       : ........ ........ ........ ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=228143)   : Apply Aura (6) | Root (26)
+#1 (id=228143)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc162488
 Tooltip          : Immobilized.
@@ -3723,7 +3723,6 @@ Spell Level      : 26
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Cooldown         : 10 seconds
 Mechanic         : Bleed
 Affecting spells : Hunter (137014), Lacerating Talons (203578)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...... ...x.... 
@@ -3930,7 +3929,7 @@ Spell Level      : 40
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Hunter (137014), Wilderness Expert (197038), Call of the Wild (206332), Embrace of the Aspects (225092), Aspect of the Eagle (231555)
+Affecting spells : Hunter (137014), Wilderness Expert (197038), Call of the Wild (206332), Embrace of the Aspects (225092), Aspect of the Eagle (231555), Flanking Strike (237327)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3963,7 +3962,7 @@ Attributes       : .x..x... ........ x...x... ........   ........ ........ .....
                  : Ranged Ability (1), Stop attacks (20)
 Effects          :
 #1 (id=271387)   : Weapon Damage% (31)
-                   Base Value: 40 | Scaled Value: 0.4 | Radius: 8 yards | Target: Cone Front(104)
+                   Base Value: 60 | Scaled Value: 0.6 | Radius: 8 yards | Target: Cone Front(104)
 #2 (id=271388)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front(104)
 #3 (id=272309)   : Knock Back (98)
@@ -4010,7 +4009,7 @@ Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Cooldown         : 40 seconds
+Cooldown         : 30 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Hunter (137014), Hunter's Guile (203752)
 Attributes       : ....x... ........ x...x... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4069,7 +4068,7 @@ Spell Level      : 36
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Cooldown         : 40 seconds
+Cooldown         : 30 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Hunter (137014), Hunter's Guile (203752)
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4079,7 +4078,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=273748)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187699 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187699 | Radius: 3 yards | Target: Unknown(87) -> AOE enemy (instant)(16)
 Description      : Hurls a tar trap to the target location that creates a $187699s1 yd radius pool of tar around itself for $13810d when the first enemy approaches. All enemies have $135299s1% reduced movement speed while in the area of effect. Trap will exist for $13809d.
 
 Name             : Tar Trap (Frost) (id=187699) [Spell Family (9)] 
@@ -4271,7 +4270,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=279990)   : Apply Aura (6) | Root (26)
+#1 (id=279990)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 Description      : $@spelldesc190925
 Tooltip          : Rooted.
@@ -4383,8 +4382,8 @@ School           : Physical
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Duration         : 3 seconds
-Cooldown         : 30 seconds
+Duration         : 2 seconds
+Cooldown         : 25 seconds
 Affecting spells : Hunter (137014)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4500,7 +4499,7 @@ Spell Level      : 50
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Cooldown         : 40 seconds
+Cooldown         : 30 seconds
 Affecting spells : Freezing Trap (3355), Trap Cooldown Reduction (61255), Hunter (137014), Hunter's Guile (203752)
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -4510,7 +4509,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280811)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 13813 | Radius: 3 - 5 yards | Target: Unknown(87)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 13813 | Radius: 3 yards | Target: Unknown(87)
 Description      : Hurls a fire trap to the target location  that explodes when an enemy approaches, causing $13812s1 Fire damage and burning all enemies within $13812A1 yards for $13812o2 additional Fire damage over $13812d. Trap will exist for $13813d.
 
 Name             : Hatchet Toss (id=193265) [Spell Family (9)] 
@@ -4571,7 +4570,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier: Spell Range (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Bullheaded (63896), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Bursting Shot (186387), Mongoose Bite (190928), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Stampede (201594), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212431), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911)
+                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Wyvern Sting (19386), Aimed Shot (19434), Chimaera Shot (53209), Bullheaded (63896), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), Glaive Toss (120761), Glaive Toss (121414), A Murder of Crows (131894), A Murder of Crows (131900), Flare (132950), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Marked Shot (185901), Bursting Shot (186387), Mongoose Bite (190928), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Stampede (201594), Fury of the Eagle (203415), Windburst (204147), Chimaera Shot (204304), A Murder of Crows (206505), Sentinel (206817), Explosive Shot (212680), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581), Dire Longevity (215911)
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Self(1)
                    Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Explosive Shot (212431), Marked Shot (212621), Piercing Shot (213678)
@@ -4613,7 +4612,7 @@ Spell Level      : 26
 Range            : 100 yards
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Affecting spells : Hunter (137014), Wilderness Expert (197038), Call of the Wild (206332), Embrace of the Aspects (225092), Aspect of the Eagle (231555)
+Affecting spells : Hunter (137014), Wilderness Expert (197038), Call of the Wild (206332), Embrace of the Aspects (225092), Aspect of the Eagle (231555), Flanking Strike (237327)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4665,7 +4664,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283927)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Using Arcane Shot or Multi-Shot three times in a row increases your Focus Regeneration by $193534s1% for $193534d.
+Description      : $?s214579[Sidewinders][Using Arcane Shot or Multi-Shot two times in a row] increases your Focus Regeneration by $193534s1% for $193534d.
 
 Name             : Steady Focus (id=193534) [Spell Family (9)] 
 Class            : Hunter
@@ -4736,7 +4735,7 @@ Effects          :
 #1 (id=285183)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy(6)
 #2 (id=341541)   : Apply Aura (6) | Periodic Damage: physical every 1 seconds (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | Mechanic: Bleed | Target: Enemy(6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | Mechanic: Bleed | Target: Enemy(6)
 Description      : $@spelldesc194277
 Tooltip          : Movement speed reduced by $s1%.
 Suffering $w2 Bleed damage every $t2 sec.
@@ -5226,9 +5225,9 @@ Attributes       : ....x... x....... ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=294038)   : Apply Aura (6) | Unknown effect sub type (271)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy(6)
-                   Affected Spells: Aimed Shot (19434), Arcane Shot (185358), Aimed Shot (191043), Marked Shot (212621)
+                   Affected Spells: Aimed Shot (19434), Arcane Shot (185358), Aimed Shot (191043)
 Description      : $@spelldesc199527
-Tooltip          : Taking $s1% more damage from the Hunter's Arcane Shot, Marked Shot, and Aimed Shot.
+Tooltip          : Taking $s1% more damage from the Hunter's Arcane Shot and Aimed Shot.
 
 Name             : Trailblazer (id=199921) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -5270,7 +5269,7 @@ Attributes       : ........ ........ x.x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
-#1 (id=294569)   : Apply Aura (6) | Root (26)
+#1 (id=294569)   : Apply Aura (6) | Unknown effect sub type (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
 #2 (id=352793)   : Trigger Spell: Ranger's Net (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 206755 | Target: Enemy(6)
@@ -5357,7 +5356,7 @@ Name             : Snake Hunter (id=201078) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
-Cooldown         : 90 seconds
+Cooldown         : 120 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5441,6 +5440,29 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Radius: 0 - 5 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
 Description      : When Freezing Trap's incapacitate effect ends, the victim and all neaby enemies' movement speed is reduced by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
+
+Name             : Super Sticky Tar (id=201158) [Spell Family (9)] 
+Class            : Hunter
+School           : Nature
+Spell Level      : 28
+Range            : 50000 yards
+Duration         : 4 seconds
+Proc Chance      : 100%
+Mechanic         : Unknown(58)
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Attributes       : ........ ........ ........ x.xx....   ...x.x.x ..x..... ........ ........ 
+                 : ..x..... ......x. ...x.... ....x...   ........ ........ ........ ......x. 
+                 : x......x ...x...x ....x... ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... .....x.. ........   ........ ........ ........ ........ 
+                 : .....x.. ....x... ........ ........   ........ ...x.... ....x... ........ 
+                 : x....... ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=296213)   : Apply Aura (6) | Unknown effect sub type (455)
+                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
+Description      : Enemies moving through the tar have a chance to be rooted in place for $d.
+Tooltip          : Stuck in place.
 
 Name             : Steel Trap Expert (id=201199) [Spell Family (9)] 
 Class            : Hunter
@@ -5537,7 +5559,7 @@ Effects          :
                    Base Value: 400 | Scaled Value: 400 | Target: Enemy(6)
 Description      : A coordinated attack on the target, where you deal ${$sw1*$<mult>} Physical damage and your pet deals $<damage> Physical damage.
 
-If the target is attacking you, your pet's attack will deal $s3% increased damage and $s4% increased threat. Otherwise, your attack will deal $s3% increased damage.$?s191334[
+If the target is attacking you, your pet's attack will deal $s3% increased damage and $s4% increased threat. Otherwise, your attack will deal $s3% increased damage.$?s191334&s237327[
 
 Flanking strike has double the normal chance to trigger Hunting Companion.][]
 Variables        : $lowNerf=${$min($pl,20)*0.05}
@@ -5776,7 +5798,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=305648)   : School Damage: nature (2)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.20000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Target: Enemy(6)
 Description      : Deals poison damage to the target.
 
 Name             : Ranger's Net (id=206755) [Spell Family (9)] 
@@ -5977,7 +5999,7 @@ Resource         : 40 Focus
 Spell Level      : 1
 Range            : 8 yards
 GCD              : 1.5 seconds
-Charges          : 3 (15 seconds cooldown)
+Charges          : 3 (12 seconds cooldown)
 Category         : 1616
 Affecting spells : Hunter (137014), Butcher's Bone Apron (236446)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -5990,7 +6012,7 @@ Effects          :
 #1 (id=314957)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 #2 (id=314958)   : Weapon Damage% (31)
-                   Base Value: 518 | Scaled Value: 5.18 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
+                   Base Value: 620 | Scaled Value: 6.2 | Radius: 0 - 8 yards | Target: At Caster(22) -> AOE enemy(15)
 Description      : Strike all nearby enemies in a flurry of strikes, inflicting $sw1 Physical damage to each.
 
 Name             : Marked Shot (id=212621) [Spell Family (9)] 
@@ -5999,7 +6021,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Velocity         : 40 yards/sec
-Affecting spells : Windrunner's Guidance (190457), Precision (190520), Mastery: Sniper Training (193468), True Aim (199803)
+Affecting spells : Windrunner's Guidance (190457), Precision (190520), Mastery: Sniper Training (193468), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6038,6 +6060,7 @@ Class            : Hunter
 School           : Fire
 Spell Level      : 1
 Range            : 100 yards
+Affecting spells : Freezing Trap (3355), Mastery: Sniper Training (193468)
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -6339,7 +6362,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349263)   : Apply Aura (6) | Unknown effect sub type (453)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1635 | Target: Self(1)
-Description      : Harpoon's cooldown is reduced by ${$m1/-1000} sec.
+#2 (id=359383)   : Apply Aura (6) | Unknown effect sub type (453)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1449 | Target: Self(1)
+Description      : The cooldown$?s781[s][] of Harpoon $?s781[and Disengage are][is] reduced by ${$m1/-1000} sec.
 
 Name             : Marksman's Focus (id=231554) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
@@ -6411,7 +6436,7 @@ Name             : Waylay (id=234955) [Spell Family (9), Passive]
 Class            : Survival Hunter
 School           : Physical
 Spell Level      : 44
-Affecting spells : Guerilla Tactics (236698), 
+Affecting spells : Guerrilla Tactics (236698), 
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6421,20 +6446,18 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=355091)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Target: Self(1)
+                   Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1.00000 | Target: Self(1)
 #2 (id=355224)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | SP Coefficient: 1.00000 | Target: Self(1)
 #3 (id=355236)   : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | SP Coefficient: 1.00000 | Target: Self(1)
-#4 (id=355237)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | SP Coefficient: 1.00000 | Target: Self(1)
-Description      : After $s4 sec, your Traps become fully armed, making them especially devastating:
+Description      : After $s1 sec, your Traps become fully armed, making them especially devastating:
 
 $?s162488[$@spellname162488 deals $s3% increased damage if triggered by an enemy that is not in combat.][$@spellname187650 will not break due to damage for the first ${$s2/1000} sec.]
 $@spellname187698 reduces enemies' movement speed by $236699s1% for the first $236699d.$?s191433[
-$@spellname191433 deals $s1% increased damage.][]
+$@spellname191433 staggers the target, causing them to miss their next melee attack.][]
 
-Name             : Guerilla Tactics (id=236698) [Spell Family (9), Passive] 
+Name             : Guerrilla Tactics (id=236698) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -6445,9 +6468,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=358038)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Waylay (234955)
+#1 (id=358038)   : Apply Aura (6) | Add Flat Modifier: Stack Amount (107)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 4 | Target: Self(1)
 #2 (id=358039)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Waylay (234955)
@@ -6455,7 +6477,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Super Sticky Tar (236699)
 #4 (id=358041)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self(1)
                    Affected Spells: Waylay (234955)
 #5 (id=358042)   : Dummy (3)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self(1)
@@ -6463,11 +6485,14 @@ Effects          :
 #6 (id=358043)   : Dummy (3)
                    Base Value: -70 | Scaled Value: -70 | Target: Self(1)
                    Affected Spells: Waylay (234955)
-Description      : Waylay's effects are further strengthened:
+#7 (id=359353)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self(1)
+                   Affected Spells: Explosive Trap (13812)
+Description      : Explosive Trap deals $s7% more damage, and Waylay's effects are further strengthened:
 
-$@spellname187650 will not break due to damage for the first ${($s2+$s5)/1000} seconds.
-$@spellname187698 reduces enemies' movement speed by ${-$s3-$s6}% for the first $236699d seconds.$?s191433[
-$@spellname191433 deals ${$s1+$s4}% increased damage.][]
+$@spellname187650 will not break due to damage for the first ${($s2+$s5)/1000} sec.
+$@spellname187698 reduces enemies' movement speed by ${-$s3-$s6}% for the first $236699d.$?s191433[
+$@spellname191433 causes the target to miss their next ${$s1+$s4} melee attacks.][]
 
 Name             : Super Sticky Tar (id=236699) [Spell Family (9)] 
 Class            : Hunter
@@ -6479,7 +6504,7 @@ Proc Chance      : 100%
 Mechanic         : Unknown(58)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Guerilla Tactics (236698)
+Affecting spells : Guerrilla Tactics (236698)
 Attributes       : ........ ........ ........ x.xx....   ...x.x.x ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   ........ ........ ........ ......x. 
                  : x......x ...x...x ....x... ........   ...x.... ........ .xx..... ........ 
@@ -6491,6 +6516,23 @@ Effects          :
 #1 (id=358044)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 8 yards | Target: AOE enemy (instant)(16)
 Description      : $@spelldesc234955
-Tooltip          : Movement speed slowed by $s1%.
+Tooltip          : Movement speed slowed by $w1%.
+
+Name             : Flanking Strike (Rank 2) (id=237327) [Spell Family (9), Passive] 
+Class            : Survival Hunter
+School           : Nature
+Spell Level      : 78
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=359207)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Aspect of the Eagle (186289), Aspect of the Wild (193530)
+Description      : Flanking strike has double the normal chance to trigger Hunting Companion.
 
 
