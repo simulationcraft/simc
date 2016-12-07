@@ -387,6 +387,7 @@ public:
     cooldown_t* fel_rush;
     cooldown_t* fel_rush_secondary;
     cooldown_t* fury_of_the_illidari;
+	cooldown_t* metamorphosis;
     cooldown_t* nemesis;
     cooldown_t* netherwalk;
     cooldown_t* throw_glaive;
@@ -500,6 +501,8 @@ public:
     // Havoc
     double eternal_hunger;
     timespan_t raddons_cascading_eyes;
+	timespan_t delusions_of_grandeur_reduction;
+	double delusions_of_grandeur_fury_per_time;
 
     // Vengeance
     double cloak_of_fel_flames;
@@ -1227,6 +1230,22 @@ public:
     {
       trigger_refund();
     }
+  }
+
+  virtual void consume_resource() override
+  {
+    ab::consume_resource();
+    resource_e cr = ab::current_resource();
+
+    if (cr != RESOURCE_FURY || ab::base_cost() == 0 || ab::proc) return;
+
+    if (p()->legendary.delusions_of_grandeur_reduction >= timespan_t::zero()) return;
+
+    ab::resource_consumed = ab::cost();
+
+    double ticks = ab::resource_consumed / p()->legendary.delusions_of_grandeur_fury_per_time;
+    double seconds = p()->legendary.delusions_of_grandeur_reduction.total_millis();
+    p()->cooldown.metamorphosis->adjust(timespan_t::from_seconds(ticks * seconds));
   }
 
   virtual bool ready() override
@@ -6376,6 +6395,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.fel_rush             = get_cooldown( "fel_rush" );
   cooldown.fel_rush_secondary   = get_cooldown( "fel_rush_secondary" );
   cooldown.fury_of_the_illidari = get_cooldown( "fury_of_the_illidari" );
+  cooldown.metamorphosis = get_cooldown("metamorphosis");
   cooldown.nemesis              = get_cooldown( "nemesis" );
   cooldown.netherwalk           = get_cooldown( "netherwalk" );
   cooldown.throw_glaive         = get_cooldown( "throw_glaive" );
@@ -7276,6 +7296,21 @@ struct raddons_cascading_eyes_t : public scoped_actor_callback_t<demon_hunter_t>
   }
 };
 
+struct delusions_of_grandeur_t : public scoped_actor_callback_t<demon_hunter_t>
+{
+	delusions_of_grandeur_t() : super(DEMON_HUNTER_HAVOC)
+	{
+	}
+
+	void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
+	{
+		actor->legendary.delusions_of_grandeur_reduction = -e.driver()->effectN(1).time_value();
+		
+		actor->legendary.delusions_of_grandeur_fury_per_time =
+			e.driver()->effectN(2).base_value();
+	}
+};
+
 struct loramus_thalipedes_sacrifice_t
   : public scoped_action_callback_t<fel_rush_t::fel_rush_damage_t>
 {
@@ -7331,6 +7366,7 @@ public:
     register_special_effect( 215149, raddons_cascading_eyes_t() );
     register_special_effect( 210867, runemasters_pauldrons_t() );
     register_special_effect( 210840, the_defilers_lost_vambraces_t() );
+	register_special_effect(209354,  delusions_of_grandeur_t());
   }
 
   void register_hotfixes() const override
