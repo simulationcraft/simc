@@ -2251,7 +2251,7 @@ struct mind_spike_t final : public priest_spell_t
       // If both dots are up
       if (td->dots.shadow_word_pain->is_ticking() && td->dots.vampiric_touch->is_ticking())
       {
-        insanity_multiplier = 11.0 + data().effectN(4).percent() * 2.0;
+        insanity_multiplier = 1.0 + data().effectN(4).percent() * 2.0;
 }
       // If only one of the dots is up
       else if (td->dots.shadow_word_pain->is_ticking() != td->dots.vampiric_touch->is_ticking())
