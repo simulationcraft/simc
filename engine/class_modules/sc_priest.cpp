@@ -3899,6 +3899,30 @@ struct surrender_to_madness_t final : public priest_buff_t<buff_t>
   }
 };
 
+
+/* Custom lingering_insanity buff
+*/
+struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
+{
+  lingering_insanity_t( priest_t& p)
+    : base_t( p, haste_buff_creator_t( &p, "lingering_insanity",
+                                  p.talents.lingering_insanity)
+                .reverse(true)
+                .period(p.find_spell(197937)->effectN( 2 ).period())
+                .tick_behavior(BUFF_TICK_REFRESH)
+                .tick_time_behavior(BUFF_TICK_TIME_UNHASTED)
+                .max_stack(p.find_spell(185916)->effectN( 4 ).base_value() ) // or 18?
+                ) 
+  {
+  }
+
+  void decrement(int stacks, double value) override
+  {
+    auto hidden_lingering_insanity = player->find_spell(1998490);
+    buff_t::decrement(hidden_lingering_insanity->effectN( 1 ).base_value());
+  }
+};
+
 /* Custom archangel buff
  * snapshots evangelism stacks and expires it
  */
@@ -4964,16 +4988,7 @@ void priest_t::create_buffs()
 
   buffs.voidform = new buffs::voidform_t( *this );
 
-  buffs.lingering_insanity = buff_creator_t( this, "lingering_insanity", 
-                                              talents.lingering_insanity )
-                                 .reverse(true)
-                                 .period(timespan_t::from_seconds(1))//talents.lingering_insanity->effectN( 2 ).period())
-                                 .tick_behavior( BUFF_TICK_REFRESH )
-                                 .tick_time_behavior( BUFF_TICK_TIME_UNHASTED )
-                                 .max_stack(100) // or 18?
-                                 ;
-                                 /*.tick_callback([this](buff_t*, int stacks, const timespan_t&) {
-                                    buffs.lingering_insanity->decrement(stacks-2); });*/
+  buffs.lingering_insanity = new buffs::lingering_insanity_t( *this );
 
   buffs.insanity_drain_stacks = new buffs::insanity_drain_stacks_t( *this );
 
