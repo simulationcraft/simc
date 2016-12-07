@@ -2014,7 +2014,7 @@ struct mind_flay_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( priest.talents.mind_spike->ok() )
+    if ( priest.talents.mind_spike->ok() && !maybe_ptr( priest.dbc.ptr )  )
       return false;
 
     return priest_spell_t::ready();
