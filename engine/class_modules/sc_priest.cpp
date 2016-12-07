@@ -3918,7 +3918,7 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
 
   void decrement(int stacks, double value) override
   {
-    auto hidden_lingering_insanity = player->find_spell(1998490);
+    auto hidden_lingering_insanity = player->find_spell(199849);
     buff_t::decrement(hidden_lingering_insanity->effectN( 1 ).base_value());
   }
 };
