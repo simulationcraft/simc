@@ -4968,8 +4968,10 @@ void priest_t::create_buffs()
                                               talents.lingering_insanity )
                                  .reverse(true)
                                  .period(timespan_t::from_seconds(1))//talents.lingering_insanity->effectN( 2 ).period())
-                                 .tick_callback([this](buff_t*, int stacks, const timespan_t&) {
-                                    buffs.lingering_insanity->decrement(stacks-2); });
+                                 .tick_behavior( BUFF_TICK_REFRESH )
+                                 .tick_time_behavior( BUFF_TICK_TIME_UNHASTED );
+                                 /*.tick_callback([this](buff_t*, int stacks, const timespan_t&) {
+                                    buffs.lingering_insanity->decrement(stacks-2); });*/
 
   buffs.insanity_drain_stacks = new buffs::insanity_drain_stacks_t( *this );
 
