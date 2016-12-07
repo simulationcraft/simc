@@ -2211,6 +2211,7 @@ struct mind_spike_t final : public priest_spell_t
     is_mind_spell               = true;
     //is_sphere_of_insanity_spell = true;
     aoe = -1;
+    radius = 8;
     base_aoe_multiplier = data().effectN(5).percent();
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
@@ -3739,7 +3740,9 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
       // Insanity loss per additional Insanity Drain stacks (>1) per second
       double loss_per_additional_stack =
-          2.0/3.0;  // Hardcoded Patch 7.1.5 2016-12-02
+          maybe_ptr( priest->dbc.ptr )
+            ? 2.0/3.0  // Hardcoded Patch 7.1.5 (2016-12-02)
+            : 0.55;   // Hardcoded Patch 7.1.0 (Post hotfix 2016-11-15)
 
       // Combined Insanity loss per second
       double insanity_loss_per_second =
@@ -3839,9 +3842,6 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
   void expire_override( int expiration_stacks,
                         timespan_t remaining_duration ) override
   {
-    if ( priest.buffs.lingering_insanity->check() )
-      priest.buffs.lingering_insanity->expire();
-
     priest.buffs.insanity_drain_stacks->expire();
 
     if ( priest.talents.lingering_insanity->ok())
@@ -3879,74 +3879,6 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     event_t::cancel( insanity_loss );
   }
 };
-
-
-/// Dummy spell for triggering Lingering Insanity Buff as a pre-combat action
-struct lingering_insanity_t final : priest_buff_t<haste_buff_t>
-{
-  struct lingering_insanity_decay_event_t final : public player_event_t
-  {
-    lingering_insanity_t* li;
-    int stack_decay_amount;
-
-    lingering_insanity_decay_event_t(lingering_insanity_t* s)
-      : player_event_t(*s->player,
-        timespan_t::from_seconds(decay_interval())),
-      li(s)
-    {
-      auto priest = debug_cast<priest_t*>(player());
-
-      // Separate spells shows the decay as an effect
-      const spell_data_t* li_buff = priest->find_spell(199849);
-      stack_decay_amount = li_buff->effectN(1).base_value();
-    }
-
-    double decay_interval() const
-    {
-      // Retrieves the Period from the LI effect that it affects
-      return li->data().effectN(2).period().total_seconds();
-    }
-
-    void execute() override
-    {
-      li->decrement(stack_decay_amount);
-    }
-  };
-
-  int stacks_to_trigger;
-
-  timespan_t duration;
-
-  lingering_insanity_t(priest_t& p)
-    : base_t(p, haste_buff_creator_t(&p, "lingering_insanity")
-      .spell(p.find_spell(197937))
-      .add_invalidate(CACHE_HASTE))
-  {
-    /*add_option(opt_int("stacks", stacks_to_trigger, 0, 100));
-    add_option(opt_timespan("duration", duration, timespan_t::zero(),
-      p.buffs.lingering_insanity->buff_duration));
-    parse_options(options_str);
-    ignore_false_positive = true;
-    harmful = false;*/
-  }
-
-  void decrement(int stack_amount)
-  {
-    priest.buffs.lingering_insanity->decrement(stack_amount);
-  }
-
-  bool trigger(int stacks, double value, double chance,
-    timespan_t duration) override
-  {
-    bool r = base_t::trigger(stacks, value, chance, duration);
-
-    priest.buffs.lingering_insanity->trigger(
-      stacks_to_trigger, buff_t::DEFAULT_VALUE(), -1, duration);
-    // TODO 
-    return r;
-  }
-};
-
 
 /* Custom surrender_to_madness buff
 */
@@ -5032,7 +4964,12 @@ void priest_t::create_buffs()
 
   buffs.voidform = new buffs::voidform_t( *this );
 
-  buffs.lingering_insanity = new buffs::lingering_insanity_t(*this);
+  buffs.lingering_insanity = buff_creator_t( this, "lingering_insanity", 
+                                              talents.lingering_insanity )
+                                 .reverse(true)
+                                 .period(timespan_t::from_seconds(1))//talents.lingering_insanity->effectN( 2 ).period())
+                                 .tick_callback([this](buff_t*, int stacks, const timespan_t&) {
+                                    buffs.lingering_insanity->decrement(stacks-2); });
 
   buffs.insanity_drain_stacks = new buffs::insanity_drain_stacks_t( *this );
 
