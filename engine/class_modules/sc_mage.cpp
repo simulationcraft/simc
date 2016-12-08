@@ -1031,7 +1031,7 @@ struct water_jet_t : public mage_pet_spell_t
   }
 
   bool ready() override
-  {blast wa
+  {
     // Not ready, until the owner gives permission to cast
     if ( !autocast && !queued )
       return false;
