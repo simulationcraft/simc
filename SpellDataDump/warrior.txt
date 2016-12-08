@@ -4006,6 +4006,8 @@ Effects          :
 #2 (id=298938)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 3 (107)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 23 | Target: Self(1)
                    Affected Spells: Battle Cry (1719)
+#3 (id=360591)   : Apply Aura (6) | Add Flat Modifier: Spell Duration (107)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self(1)
 Description      : Battle Cry lasts ${$s1/1000} sec longer and generates ${$m2/10} Rage.
 
 Name             : Carnage (id=202922) [Spell Family (4), Passive, Hidden] 
