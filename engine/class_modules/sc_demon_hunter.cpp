@@ -29,6 +29,9 @@ namespace
    Defensive artifact traits
    More thorough caching on blade_dance_expr_t
    Fix Nemesis
+   7.1.5:
+   Fix Prepared
+   Fix Chaos Cleave
 
    Vengeance ----------------------------------------------------------------
    Torment
@@ -1801,6 +1804,10 @@ struct eye_beam_t : public demon_hunter_spell_t
 		timespan_t demonicTime;
 		if (maybe_ptr(p()->dbc.ptr)){
 			demonicTime = timespan_t::from_seconds(8);
+			if (p()->buff.metamorphosis->up()){
+				p()->buff.metamorphosis->extend_duration(p(), demonicTime);
+				return;
+			}
 		}
 		else{
 			demonicTime = timespan_t::from_seconds(5);
