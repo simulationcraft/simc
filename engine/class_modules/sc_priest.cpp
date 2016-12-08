@@ -1868,6 +1868,19 @@ public:
     priest.buffs.shadowy_insight->expire();
   }
 
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier(state);
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
+    return d;
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
@@ -1970,6 +1983,13 @@ struct mind_flay_t final : public priest_spell_t
       am *= 1.0 +
             priest.buffs.void_ray->check() *
                 priest.buffs.void_ray->data().effectN( 1 ).percent();
+
+    
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      am *= 1.0 + ptr_scaling_buff->effectN(2).percent();
+    }
 
     return am;
   }
@@ -2238,6 +2258,12 @@ struct mind_spike_t final : public priest_spell_t
     else if (td.dots.shadow_word_pain->is_ticking() != td.dots.vampiric_touch->is_ticking())
     {
       am *= 1 + data().effectN(4).percent();
+    }
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      am *= 1.0 + ptr_scaling_buff->effectN(1).percent();
     }
 
     return am;
@@ -2548,6 +2574,19 @@ struct shadow_word_death_t final : public priest_spell_t
     }
   }
 
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier(state);
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
+    return d;
+  }
+
   void impact( action_state_t* s ) override
   {
     double total_insanity_gain    = 0.0;
@@ -2610,6 +2649,19 @@ struct shadow_crash_t final : public priest_spell_t
 
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
+  }
+
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier(state);
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
+    return d;
   }
 
   void execute() override
@@ -2854,6 +2906,12 @@ struct shadow_word_pain_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      m *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
     return m;
   }
 };
@@ -2889,8 +2947,15 @@ struct shadow_word_void_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
     return d;
   }
+
 };
 
 struct silence_t final : public priest_spell_t
@@ -3176,6 +3241,12 @@ struct vampiric_touch_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      m *= 1.0 + ptr_scaling_buff->effectN(2).percent();
+    }
+
     return m;
   }
 };
@@ -3395,6 +3466,19 @@ struct void_eruption_t final : public priest_spell_t
     }*/
   }
 
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier(state);
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
+    return d;
+  }
+
   bool ready() override
   {
     if ( !priest.buffs.voidform->check() &&
@@ -3434,6 +3518,19 @@ struct void_torrent_t final : public priest_spell_t
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return timespan_t::from_seconds( 4.0 );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      am *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
+    return am;
   }
 
   timespan_t tick_time( const action_state_t* ) const override
