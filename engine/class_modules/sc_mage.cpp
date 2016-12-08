@@ -3913,14 +3913,6 @@ struct dragons_breath_t : public fire_mage_spell_t
     triggers_pyretic_incantation = true;
   }
 
-  virtual void execute() override
-  {
-    fire_mage_spell_t::execute();
-    if ( p() -> legendary.sephuzs_secret )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
-  }
   virtual double action_multiplier() const override
   {
     double am = fire_mage_spell_t::action_multiplier();
@@ -5455,10 +5447,7 @@ struct ice_nova_t : public frost_mage_spell_t
     s -> result_amount = calculate_direct_amount( s );
 
     frost_mage_spell_t::impact( s );
-    if ( p() -> legendary.sephuzs_secret )
-    {
-      p() -> buffs.sephuzs_secret -> trigger();
-    }
+
   }
 };
 
