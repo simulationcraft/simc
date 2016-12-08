@@ -889,6 +889,8 @@ struct waterbolt_t : public mage_pet_spell_t
     trigger_gcd = timespan_t::zero();
     parse_options( options_str );
     may_crit = true;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
   }
 
   virtual bool init_finished() override
@@ -3480,6 +3482,8 @@ struct blizzard_shard_t : public frost_mage_spell_t
     ground_aoe = true;
     spell_power_mod.direct *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
     chills = true;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
   }
 
   virtual bool init_finished() override
@@ -3759,6 +3763,8 @@ struct comet_storm_projectile_t : public frost_mage_spell_t
     aoe = -1;
     background = true;
     school = SCHOOL_FROST;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
   }
 
   virtual timespan_t travel_time() const override
@@ -3883,6 +3889,8 @@ struct cone_of_cold_t : public frost_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     chills = true;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
   }
 };
 
@@ -3977,9 +3985,10 @@ struct ebonbolt_t : public frost_mage_spell_t
     parse_options( options_str );
     if ( !p -> artifact.ebonbolt.rank() )
     {
-      background=true;
+      background = true;
     }
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
     spell_power_mod.direct = p -> find_spell( 228599 ) -> effectN( 1 ).sp_coeff();
     // Doesn't apply chill debuff but benefits from Bone Chilling somehow
   }
@@ -4695,6 +4704,9 @@ struct frostbolt_t : public frost_mage_spell_t
     icicle( p -> get_stats( "icicle" ) )
   {
     parse_options( options_str );
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
+
     spell_power_mod.direct = p -> find_spell( 228597 ) -> effectN( 1 ).sp_coeff();
     if ( p -> spec.icicles -> ok() )
     {
@@ -5237,6 +5249,8 @@ struct ice_lance_t : public frost_mage_spell_t
     parse_options( options_str );
     spell_power_mod.direct = p -> find_spell( 228598 ) -> effectN( 1 ).sp_coeff();
 
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
 
     if ( p -> talents.frost_bomb -> ok() )
     {
@@ -5419,6 +5433,8 @@ struct ice_nova_t : public frost_mage_spell_t
     parse_options( options_str );
 
     aoe = -1;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
 
     double in_mult = 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
     base_multiplier *= in_mult;
@@ -6339,6 +6355,8 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     channeled         = true;
     hasted_ticks      = true;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
