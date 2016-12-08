@@ -2802,7 +2802,8 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     mystic_kilt_of_the_rune_master_regen( 0.0 )
   {
     parse_options( options_str );
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
     base_aoe_multiplier *= data().effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> artifact.torrential_barrage.percent();
     cooldown -> hasted = true;
@@ -2900,7 +2901,8 @@ struct arcane_blast_t : public arcane_mage_spell_t
     parse_options( options_str );
     triggers_arcane_missiles = false; // Disable default AM proc logic.
     base_multiplier *= 1.0 + p -> artifact.blasting_rod.percent();
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
     if ( p -> wild_arcanist )
     {
       const spell_data_t* data = p -> wild_arcanist -> driver();
@@ -3062,6 +3064,8 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     base_multiplier *= 1.0 + p -> artifact.arcane_purification.percent();
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
     radius += p -> artifact.crackling_energy.data().effectN( 1 ).base_value();
   }
 
@@ -3172,7 +3176,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     temporal_hero_duration = p -> find_spell( 188117 ) -> duration();
 
     base_multiplier *= 1.0 + p -> artifact.aegwynns_fury.percent();
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
     rule_of_threes_ticks = dot_duration / base_tick_time +
       p -> artifact.rule_of_threes.data().effectN( 2 ).base_value();
     rule_of_threes_ratio = ( dot_duration / base_tick_time ) / rule_of_threes_ticks;
@@ -5653,8 +5658,7 @@ living_bomb_explosion_t::
   aoe = -1;
   radius = 10;
   background = true;
-    // PTR Multiplier
-    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
+
   if ( parent_lb -> casted )
   {
     child_lb = new living_bomb_t( p, std::string( "" ), false );
@@ -5959,6 +5963,8 @@ struct nether_tempest_aoe_t: public arcane_mage_spell_t
   {
     aoe = -1;
     background = true;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
   }
 
   virtual resource_e current_resource() const override
@@ -5988,7 +5994,8 @@ struct nether_tempest_t : public arcane_mage_spell_t
     nether_tempest_aoe( new nether_tempest_aoe_t( p ) )
   {
     parse_options( options_str );
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
     // Disable default AM proc logic due to early refresh proc behavior
     triggers_arcane_missiles = false;
 
@@ -6509,6 +6516,8 @@ struct supernova_t : public arcane_mage_spell_t
 
     double sn_mult = 1.0 + p -> talents.supernova -> effectN( 1 ).percent();
     base_multiplier *= sn_mult;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137021 ) -> effectN( 1 ).percent();
     base_aoe_multiplier = 1.0 / sn_mult;
   }
 
