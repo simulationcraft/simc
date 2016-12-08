@@ -1,9 +1,9 @@
-warlock="Warlock_Destruction_T19M"
+warlock="Destro"
 level=110
 race=troll
 role=spell
 position=back
-talents=2301013
+talents=2203022
 artifact=38:142513:142516:142513:0:803:1:804:3:805:3:806:5:807:3:808:3:809:4:810:3:811:3:812:3:813:1:814:1:815:1:816:1:817:1:818:1:1355:1
 spec=destruction
 
@@ -39,7 +39,7 @@ actions+=/arcane_torrent
 actions+=/potion,name=deadly_grace,if=(buff.soul_harvest.remains|trinket.proc.any.react|target.time_to_die<=45)
 actions+=/shadowburn,if=ptr=1&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
 actions+=/shadowburn,if=ptr=1&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
-actions+=/conflagrate,if=talent.roaring_blaze.enabled&(charges=2|(charges>=1&recharge_time<gcd)|target.time_to_die<24)
+actions+=/conflagrate,if=talent.roaring_blaze.enabled&(charges=2+tier19_2pc|(charges>=1+tier19_2pc&recharge_time<gcd)|target.time_to_die<24)
 actions+=/conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.stack>0&dot.immolate.remains>dot.immolate.duration*0.3&(active_enemies=1|soul_shard<3)&soul_shard<5
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&buff.conflagration_of_chaos.remains<=action.chaos_bolt.cast_time
 actions+=/conflagrate,if=!talent.roaring_blaze.enabled&!buff.backdraft.remains&(charges=1&recharge_time<action.chaos_bolt.cast_time|charges=2)&soul_shard<5
@@ -72,7 +72,7 @@ actions+=/incinerate
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1522
-neck=blackened_portalstone_necklace,id=139332,bonus_id=1806,enchant_id=5439
+neck=blackened_portalstone_necklace,id=139332,bonus_id=1806
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
 chest=robes_of_the_ancient_chronicle,id=142297
@@ -96,5 +96,7 @@ main_hand=scepter_of_sargeras,id=128941,gem_id=142513/142516/142513,relic_id=346
 # gear_mastery_rating=3529
 # gear_versatility_rating=405
 # gear_armor=1834
-# set_bonus=tier19p_cloth_2pc=1
+
+set_bonus=tier19p_cloth_2pc=0
+
 default_pet=imp
