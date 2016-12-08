@@ -861,6 +861,7 @@ School           : Physical
 Spell Level      : 16
 GCD              : 1 seconds
 Category         : 47
+Affecting spells : Mystic Vitality (237076)
 Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
                  : x....... ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -870,7 +871,7 @@ Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=128720)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Misc Value 2: 0x2 | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 23 | Misc Value 2: 0x2 | Target: Self(1)
 #2 (id=128724)   : Apply Aura (6) | Unknown effect sub type (312)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 116 | Target: Self(1)
 #3 (id=134152)   : Apply Aura (6) | Absorb Damage (69)
@@ -904,7 +905,7 @@ Effects          :
 #16 (id=287166)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Tiger Palm (100780)
-Description      : You shrug off attacks, delaying $?s196737[${$115069m9+$196737m1}][$115069s9]% of$?s237076[][ Physical] damage, instead taking it over $124273d.$?s237076[][ Affects magical attacks at half effectiveness.]
+Description      : You shrug off attacks, delaying $?s196737[${$115069m9+$196737m1}][$115069s9]% of Physical damage, instead taking it over $124273d. Affects magical attacks at $s1% effectiveness.
 
 Name             : Expel Harm (id=115072) [Spell Family (53)] 
 Class            : Brewmaster Monk
@@ -5402,8 +5403,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=358720)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-Description      : Stagger is now fully effective against magical attacks.
+#1 (id=358720)   : Apply Aura (6) | Add Percent Modifier: Spell Effect 1 (108)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 3 | Target: Self(1)
+                   Affected Spells: Stagger (115069)
+Description      : Stagger is $s1% more effective against magical attacks.
 
 

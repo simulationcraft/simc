@@ -2352,7 +2352,7 @@ Effects          :
                    Affected Spells: Death Strike (45470)
 #2 (id=139194)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
+                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
 Description      : $@spelldesc178819
 Tooltip          : Your next Death Strike is free and its healing is increased by $s1%.
 
@@ -2930,7 +2930,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=194922)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
+                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
 Description      : $@spelldesc144950
 Tooltip          : Death Strike has no resource cost.
 
@@ -4455,7 +4455,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Artifact Power   : Id: 289, Max Rank: 1
-Affecting spells : Dark Succor (101568), Death Knight (137005), Blood Death Knight (137008), Deathbringer (144953), Item - Death Knight T18 Blood 4P Bonus (187873), Unending Thirst (216019), Ossuary (219788), Haemostasis (235559)
+Affecting spells : Death Knight (137005), Blood Death Knight (137008)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5993,7 +5993,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=327516)   : Apply Aura (6) | Add Flat Modifier: Spell Resource Cost (107)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self(1)
-                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
+                   Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
 Description      : $@spelldesc219786
 Tooltip          : Death Strike cost reduced by ${$m1/-10} Runic Power.
 
