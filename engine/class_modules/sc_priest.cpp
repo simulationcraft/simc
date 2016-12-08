@@ -1944,9 +1944,56 @@ public:
   }
 };
 
+
+struct mind_sear_tick_t final : public priest_spell_t
+{
+  double insanity_gain;
+
+  // TODO: Mind Sear is missing damage information in spell data
+  mind_sear_tick_t(priest_t& p)//, const spell_data_t* mind_flay )
+    : priest_spell_t("Mind Sear", p, p.find_spell(234696)),
+    insanity_gain(1)  // TODO: Missing from spell data - 
+                      // PTR data 2016-12-08 
+  {
+    background = true;
+    dual = true;
+    aoe = -1;
+    callbacks = false;
+    direct_tick = true;
+    use_off_gcd = true;
+    energize_type =
+      ENERGIZE_NONE;  // disable resource generation from spell data
+  }
+
+  size_t available_targets(std::vector< player_t* >& tl) const override
+  {
+    priest_spell_t::available_targets(tl);
+
+    // Does not hit the main target
+    auto it = range::find(tl, target);
+    if (it != tl.end())
+    {
+      tl.erase(it);
+    }
+
+    return tl.size();
+  }
+
+  void impact(action_state_t* state) override
+  {
+    priest_spell_t::impact(state);
+
+    if (result_is_hit(state->result))
+    {
+      generate_insanity(insanity_gain, priest.gains.insanity_mind_sear);
+    }
+  }
+};
+
 struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
+  mind_sear_tick_t* mind_sear;
 
   mind_flay_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "mind_flay", p,
@@ -1965,6 +2012,8 @@ struct mind_flay_t final : public priest_spell_t
     is_sphere_of_insanity_spell = true;
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
+
+    mind_sear = new mind_sear_tick_t(p);
 
     if ( p.artifact.void_siphon.rank() )
     {
@@ -1993,24 +2042,84 @@ struct mind_flay_t final : public priest_spell_t
 
     return am;
   }
+  
+  /// Legendary the_twins_painful_touch
+  void spread_twins_painsful_dots(action_state_t* s)
+  {
+    const priest_td_t* td = find_td(s->target);
+    if (!td)
+    {
+      // If we do not have targetdata, the target does not have any dots. bail
+      // out.
+      return;
+    }
+
+    std::array<dot_t*, 2> dots = {
+      { td->dots.shadow_word_pain, td->dots.vampiric_touch } };
+
+    // First check if there is even a dot active, otherwise we can bail out as
+    // well.
+    if (range::find_if(dots, [](const dot_t* d) {
+      return d->remains() > timespan_t::zero();
+    }) == dots.end())
+    {
+      if (sim->debug)
+      {
+        sim->out_debug.printf(
+          "%s %s will not spread the_twins_painful_touch dots because no dot "
+          "is on the target.",
+          priest.name(), name());
+      }
+      return;
+    }
+
+    // Now find 2 targets to spread dots to.
+    double max_distance = 10.0;
+    unsigned max_targets = 2;
+    std::vector<player_t*> valid_targets;
+    range::remove_copy_if(
+      sim->target_list.data(), std::back_inserter(valid_targets),
+      [s, max_distance](const player_t* p) {
+      return s->target->get_player_distance(*p) > max_distance;
+    });
+    // Just cut off to max_targets. No special selection.
+    if (valid_targets.size() > max_targets)
+    {
+      valid_targets.resize(max_targets);
+    }
+    if (sim->debug)
+    {
+      std::string targets;
+      sim->out_debug.printf(
+        "%s %s selected targets for the_twins_painful_touch dots: %s.",
+        priest.name(), name(), targets.c_str());
+    }
+
+    // spread dots to targets
+    for (dot_t* dot : dots)
+    {
+      for (player_t* target : valid_targets)
+      {
+        dot->copy(target, DOT_COPY_CLONE);
+      }
+    }
+  }
 
   void tick( dot_t* d ) override
   {
     if (const priest_td_t* td = find_td(d->target))
     {
+      priest_spell_t::tick(d);
+
       if (td->dots.shadow_word_pain->is_ticking())
       {
-        priest_spell_t::tick(d);
         //AoE flay
+        mind_sear = new mind_sear_tick_t(priest);
+        mind_sear->target = d->target;
+        mind_sear->tick(d);
         //mind_sear_t 
       }
-      else
-      {
-        priest_spell_t::tick(d);
-      }
     }
-    
-    
 
     if ( priest.active_items.mental_fatigue )
     {
@@ -2032,43 +2141,21 @@ struct mind_flay_t final : public priest_spell_t
     generate_insanity( insanity_gain, priest.gains.insanity_mind_flay );
   }
 
+  void impact(action_state_t* s) override
+  {
+    if (priest.buffs.the_twins_painful_touch->up())
+    {
+      spread_twins_painsful_dots(s);
+      priest.buffs.the_twins_painful_touch->expire();
+    }
+  }
+
   bool ready() override
   {
     if ( priest.talents.mind_spike->ok() && !maybe_ptr( priest.dbc.ptr ) )
       return false;
 
     return priest_spell_t::ready();
-  }
-};
-
-struct mind_sear_tick_t final : public priest_spell_t
-{
-  double insanity_gain;
-
-  // TODO: Mind Sear is missing damage information in spell data
-  mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear )
-    : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
-      insanity_gain( 1.5 )  // TODO: Missing from spell data - Hotfixed to 1.5
-                            // from 1 on 2016-09-26.
-  {
-    background  = true;
-    dual        = true;
-    aoe         = -1;
-    callbacks   = false;
-    direct_tick = true;
-    use_off_gcd = true;
-    energize_type =
-        ENERGIZE_NONE;  // disable resource generation from spell data
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    priest_spell_t::impact( state );
-
-    if ( result_is_hit( state->result ) )
-    {
-      generate_insanity( insanity_gain, priest.gains.insanity_mind_sear );
-    }
   }
 };
 
@@ -2079,19 +2166,17 @@ struct mind_sear_t final : public priest_spell_t
                       p.find_specialization_spell( ( "Mind Sear" ) ) )
   {
     parse_options( options_str );
-    channeled           = true;
-    may_crit            = false;
-    hasted_ticks        = false;
-    dynamic_tick_action = true;
-    tick_zero           = false;
+    auto mind_flay      = p.find_spell(237388);
+    channeled           = false;
+    may_crit            = true;
     is_mind_spell       = true;
+ // No data from spell yet
+    spell_power_mod.direct = mind_flay->effectN(1).sp_coeff();
 
     if ( p.artifact.void_corruption.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.void_corruption.percent();
     }
-
-    tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
   }
 
   double action_multiplier() const override
@@ -2106,94 +2191,14 @@ struct mind_sear_t final : public priest_spell_t
     return am;
   }
 
-  void tick( dot_t* d ) override
-  {
-    priest_spell_t::tick( d );
-
-    if ( priest.talents.void_ray->ok() )
-    {
-      priest.buffs.void_ray->trigger();
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    if ( d->current_tick == d->num_ticks )
-    {
-      priest.buffs.mind_sear_on_hit_reset->expire();
-    }
-
-    priest_spell_t::last_tick( d );
-  }
-
-  /// Legendary the_twins_painful_touch
-  void spread_twins_painsful_dots( action_state_t* s )
-  {
-    const priest_td_t* td = find_td( s->target );
-    if ( !td )
-    {
-      // If we do not have targetdata, the target does not have any dots. bail
-      // out.
-      return;
-    }
-
-    std::array<dot_t*, 2> dots = {
-        {td->dots.shadow_word_pain, td->dots.vampiric_touch}};
-
-    // First check if there is even a dot active, otherwise we can bail out as
-    // well.
-    if ( range::find_if( dots, []( const dot_t* d ) {
-           return d->remains() > timespan_t::zero();
-         } ) == dots.end() )
-    {
-      if ( sim->debug )
-      {
-        sim->out_debug.printf(
-            "%s %s will not spread the_twins_painful_touch dots because no dot "
-            "is on the target.",
-            priest.name(), name() );
-      }
-      return;
-    }
-
-    // Now find 2 targets to spread dots to.
-    double max_distance  = 10.0;
-    unsigned max_targets = 2;
-    std::vector<player_t*> valid_targets;
-    range::remove_copy_if(
-        sim->target_list.data(), std::back_inserter( valid_targets ),
-        [s, max_distance]( const player_t* p ) {
-          return s->target->get_player_distance( *p ) > max_distance;
-        } );
-    // Just cut off to max_targets. No special selection.
-    if ( valid_targets.size() > max_targets )
-    {
-      valid_targets.resize( max_targets );
-    }
-    if ( sim->debug )
-    {
-      std::string targets;
-      sim->out_debug.printf(
-          "%s %s selected targets for the_twins_painful_touch dots: %s.",
-          priest.name(), name(), targets.c_str() );
-    }
-
-    // spread dots to targets
-    for ( dot_t* dot : dots )
-    {
-      for ( player_t* target : valid_targets )
-      {
-        dot->copy( target, DOT_COPY_CLONE );
-      }
-    }
-  }
 
   void impact( action_state_t* s ) override
   {
     // Mind Sear does on-hit damage only when there is a GCD of another ability
     // between it, so chaining Mind Sears doesn't allow for the on-hit to happen
     // again.
-    if ( priest.buffs.mind_sear_on_hit_reset->check() == 0 )
+
+    /*if ( priest.buffs.mind_sear_on_hit_reset->check() == 0 )
     {
       priest.buffs.mind_sear_on_hit_reset->trigger( 2, 1, 1,
                                                     tick_time( s ) * 6 );
@@ -2206,13 +2211,13 @@ struct mind_sear_t final : public priest_spell_t
     }
 
     priest_spell_t::impact( s );
-
+    
     // Legendary the_twins_painful_touch
     if ( priest.buffs.the_twins_painful_touch->up() )
     {
-      spread_twins_painsful_dots( s );
-      priest.buffs.the_twins_painful_touch->expire();
-    }
+     // spread_twins_painsful_dots( s );
+     // priest.buffs.the_twins_painful_touch->expire();
+    }/*****/
   }
 };
 
@@ -4699,8 +4704,6 @@ action_t* priest_t::create_action( const std::string& name,
     return new mind_flay_t( *this, options_str );
   if ( name == "mind_spike" )
     return new mind_spike_t( *this, options_str );
-  if ( name == "mind_sear" )
-    return new mind_sear_t( *this, options_str );
   if ( name == "shadowform" )
     return new shadowform_t( *this, options_str );
   if ( name == "shadow_crash" )
