@@ -1029,7 +1029,7 @@ struct water_jet_t : public mage_pet_spell_t
   }
 
   bool ready() override
-  {
+  {blast wa
     // Not ready, until the owner gives permission to cast
     if ( !autocast && !queued )
       return false;
@@ -3436,6 +3436,10 @@ struct blast_wave_t : public fire_mage_spell_t
 
     double bw_mult = 1.0 + p -> talents.blast_wave -> effectN( 1 ).percent();
     base_multiplier *= bw_mult;
+
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
+
     base_aoe_multiplier = 1.0 / bw_mult;
   }
 };
@@ -3609,6 +3613,9 @@ struct cinder_t : public fire_mage_spell_t
     triggers_ignite = true;
     //TODO: Revisit this once skullflower confirms intended behavior.
     triggers_pyretic_incantation = true;
+
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3911,6 +3918,8 @@ struct dragons_breath_t : public fire_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers_pyretic_incantation = true;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 
   virtual void execute() override
@@ -4123,6 +4132,8 @@ struct fireball_t : public fire_mage_spell_t
     triggers_hot_streak = true;
     triggers_ignite = true;
     base_multiplier *= 1.0 + p -> artifact.great_balls_of_fire.percent();
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 
   virtual timespan_t execute_time() const override
@@ -4246,6 +4257,7 @@ struct aftershocks_t : public fire_mage_spell_t
     background = true;
     aoe = -1;
     triggers_ignite = true;
+
   }
 };
 
@@ -4264,6 +4276,8 @@ struct flamestrike_t : public fire_mage_spell_t
     base_multiplier *= 1.0 + p -> artifact.blue_flame_special.percent();
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
     aoe = -1;
 
     if ( p -> artifact.aftershocks.rank() )
@@ -5511,7 +5525,8 @@ struct fire_blast_t : public fire_mage_spell_t
     blast_furnace( nullptr ), fire_blast_crit_chance( 0 )
   {
     parse_options( options_str );
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> artifact.reignition_overdrive.percent();
     trigger_gcd = timespan_t::zero();
     cooldown -> charges = data().charges();
@@ -5638,7 +5653,8 @@ living_bomb_explosion_t::
   aoe = -1;
   radius = 10;
   background = true;
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   if ( parent_lb -> casted )
   {
     child_lb = new living_bomb_t( p, std::string( "" ), false );
@@ -5676,7 +5692,8 @@ living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str,
   explosion( new living_bomb_explosion_t( p, this ) )
 {
   parse_options( options_str );
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   // Why in Azeroth would they put DOT spell data in a separate spell??
   const spell_data_t* dot_data = p -> find_spell( 217694 );
   dot_duration = dot_data -> duration();
@@ -5799,6 +5816,8 @@ struct meteor_burn_t : public fire_mage_spell_t
     dot_duration = timespan_t::zero();
     radius = p -> find_spell( 153564 ) -> effectN( 1 ).radius_max();
     ground_aoe = true;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 
   // Override damage type because Meteor Burn is considered a DOT
@@ -5821,6 +5840,8 @@ struct meteor_impact_t: public fire_mage_spell_t
     ground_aoe = true;
     //TODO: Revisit PI behavior once Skullflower confirms behavior.
     triggers_ignite = true;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 
   timespan_t travel_time() const override
@@ -6038,7 +6059,8 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     background = true;
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
     triggers_ignite = true;
   }
 
@@ -6071,7 +6093,8 @@ struct phoenixs_flames_t : public fire_mage_spell_t
     pyrotex_ignition_cloth_reduction( timespan_t::from_seconds( 0 ) )
   {
     parse_options( options_str );
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
     triggers_hot_streak = true;
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
@@ -6149,7 +6172,8 @@ struct pyroblast_t : public fire_mage_spell_t
     triggers_ignite = true;
     triggers_hot_streak = true;
     triggers_pyretic_incantation = true;
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
     if ( p -> sets.has_set_bonus( MAGE_FIRE, T18, B2 ) )
     {
       conjure_phoenix = new conjure_phoenix_t( p );
@@ -6392,7 +6416,8 @@ struct scorch_t : public fire_mage_spell_t
     triggers_hot_streak = true;
     triggers_ignite = true;
     triggers_pyretic_incantation = true;
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
     consumes_ice_floes = false;
   }
 
@@ -9904,6 +9929,8 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 120 )
       .verification_value( 60 );
+
+
 
   }
 
