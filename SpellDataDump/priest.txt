@@ -148,7 +148,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486), Discipline Priest (137032), Lucidity (137323), To the Pain (193644), Voidform (194249), The Edge of Dark and Light (197715), Kam Xi'raff (233997)
+Affecting spells : Mastery: Madness (77486), Discipline Priest (137032), Shadow Priest (137033), Lucidity (137323), To the Pain (193644), Voidform (194249), The Edge of Dark and Light (197715), Kam Xi'raff (233997)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -362,7 +362,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1602
-Affecting spells : Shadowy Insight (124430), Priest (137030), Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Mind Shattering (193643), Voidform (194249), 
+Affecting spells : Shadowy Insight (124430), Priest (137030), Shadow Priest (137033), Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Mind Shattering (193643), Voidform (194249), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -513,7 +513,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Void Ray (205372), Void Siphon (215322)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Mental Fatigue (185104), Fortress of the Mind (193195), Voidform (194249), Void Ray (205372), Void Siphon (215322)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -715,7 +715,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1169
-Affecting spells : Priest (137030), Lucidity (137323), Death's Embrace (193645), Zeks Exterminatus (236546), 
+Affecting spells : Priest (137030), Shadow Priest (137033), Lucidity (137323), Death's Embrace (193645), Zeks Exterminatus (236546), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -927,7 +927,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 24 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Madness (77486), Lucidity (137323), Touch of Darkness (194007), Voidform (194249), San'layn (199855)
+Affecting spells : Mastery: Madness (77486), Shadow Priest (137033), Lucidity (137323), Touch of Darkness (194007), Voidform (194249), San'layn (199855)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1646,7 +1646,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Lucidity (137323), Mental Fatigue (185104), Voidform (194249), Void Siphon (215322)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Mental Fatigue (185104), Voidform (194249), Void Siphon (215322)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2636,23 +2636,25 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179717)   : Apply Aura (6) | Unknown effect sub type (419)
+#1 (id=179717)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self(1)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mind Spike (73510), Shadowy Apparition (148859), Shadow Word: Death (199911), Shadow Word: Void (205351), Shadow Crash (205385), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360), Mind Spike (236741), Mind Flay (237388)
+#2 (id=191068)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Shadow Word: Pain (589), Mind Flay (15407), Vampiric Touch (34914), Void Torrent (205065)
+#3 (id=191069)   : Apply Aura (6) | Unknown effect sub type (419)
                    Base Value: -80 | Scaled Value: -80 | Target: Self(1)
-#2 (id=191068)   : Apply Aura (6) | Unknown effect sub type (232)
+#4 (id=191070)   : Apply Aura (6) | Unknown effect sub type (232)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self(1)
-#3 (id=191069)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+#5 (id=191071)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 65 | Scaled Value: 65 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Mass Dispel (32375), Mass Dispel (32592), Shadow Mend (186263), Shadow Mend (187464)
-#4 (id=191070)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+#6 (id=260937)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Power Word: Shield (17)
-#5 (id=191071)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+#7 (id=260938)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: -25 | Scaled Value: -25 | Target: Self(1)
                    Affected Spells: Shadow Mend (186263), Shadow Mend (187464)
-#6 (id=260937)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#7 (id=260938)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260939)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260940)   : Apply Aura (6) | Dummy (4)
@@ -2674,6 +2676,10 @@ Effects          :
 #17 (id=327314)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #18 (id=353983)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#19 (id=360469)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#20 (id=360470)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Glyph of Inspired Hymns (Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
@@ -2744,7 +2750,7 @@ Class            : Priest
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Auspicious Spirits (155271), 
+Affecting spells : Shadow Priest (137033), Auspicious Spirits (155271), 
 Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -3207,7 +3213,7 @@ Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... .....
                  : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=285130)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 0x20 | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x20 | Target: Self(1)
 #2 (id=285131)   : Apply Aura (6) | Modify Power Regeneration (85)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 13 | Target: Self(1)
 #3 (id=285132)   : Apply Aura (6) | Modify All Haste% (193)
@@ -3584,7 +3590,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1169
-Affecting spells : Priest (137030), Lucidity (137323), Death's Embrace (193645), Zeks Exterminatus (236546), 
+Affecting spells : Priest (137030), Shadow Priest (137033), Lucidity (137323), Death's Embrace (193645), Zeks Exterminatus (236546), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3963,7 +3969,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
 Artifact Power   : Id: 764, Max Rank: 1
-Affecting spells : Mental Fatigue (185104)
+Affecting spells : Shadow Priest (137033), Mental Fatigue (185104)
 Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -3993,7 +3999,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 3 (20 seconds cooldown)
 Category         : 1590
-Affecting spells : Voidform (194249)
+Affecting spells : Shadow Priest (137033), Voidform (194249)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4110,7 +4116,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303239)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self(1)
-                   Affected Spells: Mind Flay (15407), Mind Sear (234702)
+                   Affected Spells: Mind Flay (15407)
+#2 (id=360407)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self(1)
+                   Affected Spells: Mind Flay (237388)
 Description      : $@spelldesc205371
 Tooltip          : Increases $?s73510[Mind Spike][Mind Flay] and Mind Sear damage by $s1%.
 
@@ -4121,7 +4130,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 2.5 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Voidform (194249)
+Affecting spells : Shadow Priest (137033), Voidform (194249)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4165,7 +4174,7 @@ Velocity         : 20 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
-Affecting spells : Mastery: Madness (77486), Priest (137030), Sinister Thoughts (194026), Voidform (194249), Void (211657), Anund's Last Breath (215210)
+Affecting spells : Mastery: Madness (77486), Priest (137030), Shadow Priest (137033), Sinister Thoughts (194026), Voidform (194249), Void (211657), Anund's Last Breath (215210)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4558,7 +4567,7 @@ GCD              : 1.5 seconds
 Cooldown         : 1.5 seconds
 Category         : 1660
 Category Cooldown: 1.5 seconds
-Affecting spells : Priest (137030), Legacy of the Void (193225), Voidform (194249)
+Affecting spells : Priest (137030), Shadow Priest (137033), Legacy of the Void (193225), Voidform (194249)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4620,7 +4629,7 @@ School           : Shadow
 Spell Level      : 10
 Range            : 100 yards
 Velocity         : 18 yards/sec
-Affecting spells : Priest (137030), Legacy of the Void (193225), Voidform (194249)
+Affecting spells : Priest (137030), Shadow Priest (137033), Legacy of the Void (193225), Voidform (194249)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4681,7 +4690,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=349532)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 12 | Target: Self(1)
 #2 (id=358154)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self(1)
 Description      : Void Bolt extends the duration of your Shadow Word: Pain and Vampiric Touch on all nearby targets by $@switch<$s2>[${$s1/1000}][${$s1/1000}.1] sec.
@@ -4751,30 +4760,10 @@ Description      : Assume a Shadowform, increasing your Shadow damage dealt by $
 Tooltip          : Shadow damage dealt increased by $s1%.
 Physical damage taken reduced by $s2%.
 
-Name             : Mind Flay (id=234696) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Spell Level      : 1
-Range            : 100 yards
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ...x.... ........   x....... .x...... ........ .x....x. 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Not a proc (105)
-Effects          :
-#1 (id=354714)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)
-#2 (id=354715)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy(53) -> AOE enemy (instant)(16)
-Description      : $@spelldesc234702
-
 Name             : Mind Sear (id=234702) [Spell Family (6), Passive] 
 Class            : Shadow Priest
 School           : Shadow
 Spell Level      : 26
-Affecting spells : Void Corruption (194016), Void Ray (205372)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4785,7 +4774,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=354722)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self(1)
-Description      : When Mind Flay deals damage, if the target is afflicted by your Shadow Word: Pain, it deals $234696s2 damage to all nearby targets.
+Description      : When Mind Flay deals damage, if the target is afflicted by your Shadow Word: Pain, it deals $237388s1 damage to all nearby targets.
 
 |cFFFFFFFFGenerates ${$208232m1/100} Insanity per target hit.|r
 
@@ -4829,7 +4818,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Lucidity (137323), Mental Fatigue (185104), Voidform (194249), Void Siphon (215322)
+Affecting spells : Shadow Priest (137033), Lucidity (137323), Mental Fatigue (185104), Voidform (194249), Void Siphon (215322)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4853,5 +4842,23 @@ For each damage over time effect detonated, Mind Spike gains $s4% damage and Ins
 
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r
 
+
+Name             : Mind Flay (id=237388) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Level      : 1
+Range            : 100 yards
+Affecting spells : Shadow Priest (137033), Void Corruption (194016), Void Ray (205372)
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   x....... .x...... ........ .x....x. 
+                 : ........ .......x ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
+Effects          :
+#1 (id=359434)   : School Damage: shadow (2)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Target: Enemy(6)
+Description      : $@spelldesc234702
 
 
