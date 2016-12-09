@@ -1949,11 +1949,13 @@ public:
 struct mind_sear_tick_t final : public priest_spell_t
 {
   player_t* source_target;
+  double insanity_gain;
 
   mind_sear_tick_t(priest_t& p)
     : priest_spell_t("mind_sear_tick", p,
       p.find_spell(234702)),  
-    source_target(nullptr)
+    source_target(nullptr),
+    insanity_gain(1) // Missing from spell data
   {
     may_crit = false;
     background = true;
@@ -1996,6 +1998,16 @@ struct mind_sear_tick_t final : public priest_spell_t
         << " triggered Mind Sear Damage.";
     }
     schedule_execute();
+  }
+
+  void impact(action_state_t* state) override
+  {
+    priest_spell_t::impact(state);
+
+    if (result_is_hit(state->result))
+    {
+      generate_insanity(insanity_gain, priest.gains.insanity_mind_sear);
+    }
   }
 };
 
