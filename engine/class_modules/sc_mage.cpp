@@ -6417,13 +6417,15 @@ struct rune_of_power_t : public mage_spell_t
 struct scorch_t : public fire_mage_spell_t
 {
   bool koralons_burning_touch;
-  double koralons_burning_touch_threshold;
+  double koralons_burning_touch_threshold,
+         koralons_burning_touch_multiplier;
 
   scorch_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "scorch", p,
                        p -> find_specialization_spell( "Scorch" ) ),
     koralons_burning_touch( false ),
-    koralons_burning_touch_threshold( 0.0 )
+    koralons_burning_touch_threshold( 0.0 ),
+    koralons_burning_touch_multiplier( 0.0 )
   {
     parse_options( options_str );
 
@@ -6433,6 +6435,18 @@ struct scorch_t : public fire_mage_spell_t
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
     consumes_ice_floes = false;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    if ( koralons_burning_touch && ( target -> health_percentage() <= koralons_burning_touch_threshold ) )
+    {
+      am *= 1.0 + koralons_burning_touch_multiplier;
+    }
+
+    return am;
   }
 
   virtual double composite_crit_chance() const override
@@ -6445,6 +6459,7 @@ struct scorch_t : public fire_mage_spell_t
     }
     return c;
   }
+
   virtual void execute() override
   {
     fire_mage_spell_t::execute();
@@ -9725,6 +9740,7 @@ static void sorcerous_shadowruby_pendant( special_effect_t& effect )
 {
   effect.execute_action = new sorcerous_shadowruby_pendant_driver_t( effect );
 }
+
 // Mage Legendary Items
 struct sephuzs_secret_t : public scoped_actor_callback_t<mage_t>
 {
@@ -9790,8 +9806,10 @@ struct koralons_burning_touch_t : public scoped_action_callback_t<scorch_t>
   { }
 
   void manipulate( scorch_t* action, const special_effect_t& e ) override
-  { action -> koralons_burning_touch = true;
+  {
+    action -> koralons_burning_touch = true;
     action -> koralons_burning_touch_threshold = e.driver() -> effectN( 1 ).base_value();
+    action -> koralons_burning_touch_multiplier = e.driver() -> effectN( 2 ).percent();
   }
 };
 
