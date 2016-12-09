@@ -40,6 +40,7 @@ namespace actions
 {
 namespace spells
 {
+struct mind_sear_tick_t;
 struct shadowy_apparition_spell_t;
 struct sphere_of_insanity_spell_t;
 }
@@ -361,6 +362,7 @@ public:
   // Special
   struct
   {
+    actions::spells::mind_sear_tick_t* mind_sear_tick;
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
     actions::spells::sphere_of_insanity_spell_t* sphere_of_insanity;
     action_t* mental_fortitude;
@@ -1944,13 +1946,74 @@ public:
   }
 };
 
-
 struct mind_sear_tick_t final : public priest_spell_t
+{
+  player_t* source_target;
+
+  mind_sear_tick_t(priest_t& p)
+    : priest_spell_t("mind_sear_tick", p,
+      p.find_spell(234702)),  
+    source_target(nullptr)
+  {
+    may_crit = false;
+    background = true;
+    proc = false;
+    callbacks = true;
+    may_miss = false;
+    aoe = -1;
+    is_sphere_of_insanity_spell = false;
+    range = 8.0;
+    trigger_gcd = timespan_t::zero();
+    school = SCHOOL_SHADOW;
+    spell_power_mod.direct = p.find_spell(234696)->effectN(2).sp_coeff();
+  }
+
+  double calculate_direct_amount(action_state_t* state) const override
+  {
+    if (state->target == source_target)  // This is the original target
+                                             //  Do no damage.
+    {
+      return 0;
+    }
+    else  // Other targets, do normal damage.
+    {
+      return priest_spell_t::calculate_direct_amount(state);
+    }
+  }
+
+ /* void impact(action_state_t* state) override
+  {
+    priest_spell_t::impact(state);
+
+    priest_td_t& td = get_td(state->target);
+
+    if (state->target == source_target)  // This is the target Mind Flay 
+                                             // is attacking.
+    {
+      td.buffs.mind_spike->expire();
+    }
+  }*/
+
+  // Trigger aoe damage
+  void trigger(player_t* target)
+  {
+    source_target = target;
+
+    if (priest.sim->debug)
+    {
+      priest.sim->out_debug << priest.name()
+        << " triggered Mind Sear Damage.";
+    }
+    schedule_execute();
+  }
+};
+/*
+struct mind_sear_tick_og_t final : public priest_spell_t
 {
   double insanity_gain;
 
   // TODO: Mind Sear is missing damage information in spell data
-  mind_sear_tick_t(priest_t& p)//, const spell_data_t* mind_flay )
+  mind_sear_tick_og_t(priest_t& p)//, const spell_data_t* mind_flay )
     : priest_spell_t("Mind Sear", p, p.find_spell(234696)),
     insanity_gain(1)  // TODO: Missing from spell data - 
                       // PTR data 2016-12-08 
@@ -1963,6 +2026,8 @@ struct mind_sear_tick_t final : public priest_spell_t
     use_off_gcd = true;
     energize_type =
       ENERGIZE_NONE;  // disable resource generation from spell data
+
+    spell_power_mod.direct = p.find_spell(234696)->effectN(2).sp_coeff();
   }
 
   size_t available_targets(std::vector< player_t* >& tl) const override
@@ -1989,11 +2054,10 @@ struct mind_sear_tick_t final : public priest_spell_t
     }
   }
 };
-
+*/
 struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
-  mind_sear_tick_t* mind_sear;
 
   mind_flay_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "mind_flay", p,
@@ -2013,7 +2077,9 @@ struct mind_flay_t final : public priest_spell_t
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
 
-    mind_sear = new mind_sear_tick_t(p);
+    priest.active_spells.mind_sear_tick =
+      new mind_sear_tick_t(p);
+    add_child(priest.active_spells.mind_sear_tick);
 
     if ( p.artifact.void_siphon.rank() )
     {
@@ -2114,10 +2180,7 @@ struct mind_flay_t final : public priest_spell_t
       if (td->dots.shadow_word_pain->is_ticking())
       {
         //AoE flay
-        mind_sear = new mind_sear_tick_t(priest);
-        mind_sear->target = d->target;
-        mind_sear->tick(d);
-        //mind_sear_t 
+        priest.active_spells.mind_sear_tick->trigger( d->target );
       }
     }
 
@@ -2143,6 +2206,7 @@ struct mind_flay_t final : public priest_spell_t
 
   void impact(action_state_t* s) override
   {
+    priest_spell_t::impact(s);
     if (priest.buffs.the_twins_painful_touch->up())
     {
       spread_twins_painsful_dots(s);
