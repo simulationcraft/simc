@@ -647,9 +647,12 @@ private:
 public:
   typedef hunter_action_t base_t;
 
+  bool benefits_from_sniper_training;
+
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
-                   ab( n, player, s )
+                   ab( n, player, s ),
+                   benefits_from_sniper_training( ab::base_cost() > 0.0 )
   {
   }
 
@@ -675,6 +678,9 @@ public:
 
     if ( p() -> buffs.t19_4p_mongoose_power -> up() && ab::special )
       am *= 1.0 + p() -> buffs.t19_4p_mongoose_power -> default_value;
+
+    if ( benefits_from_sniper_training && p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
     return am;
   }
@@ -2581,16 +2587,6 @@ struct volley_tick_t: hunter_ranged_attack_t
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     travel_speed = 0.0;
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
 };
 
 struct volley_t: hunter_ranged_attack_t
@@ -2806,16 +2802,6 @@ struct barrage_t: public hunter_ranged_attack_t
 
   bool usable_moving() const override
   { return true; }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
 };
 
 // Multi Shot Attack =================================================================
@@ -3082,15 +3068,6 @@ struct black_arrow_t: public hunter_ranged_attack_t
     else
       p() -> dark_minion[ 1 ] -> summon( duration );
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
 };
 
 // Bursting Shot ======================================================================
@@ -3107,7 +3084,6 @@ struct bursting_shot_t : public hunter_ranged_attack_t
   virtual double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
-    am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
     if ( p() -> legendary.magnetized_blasting_cap_launcher )
     {
       am *= 1.0 + p() -> legendary.magnetized_blasting_cap_launcher -> driver() -> effectN( 2 ).percent();
@@ -3124,6 +3100,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     background = true;
     parse_spell_data( *p -> specs.aimed_shot );
+    benefits_from_sniper_training = true;
 
     if ( p -> artifacts.wind_arrows.rank() )
       base_multiplier *= 1.0 +  p -> artifacts.wind_arrows.percent();
@@ -3135,9 +3112,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   virtual double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
     if ( p() -> buffs.trick_shot -> up() )
       am *= 1.0 + p() -> buffs.trick_shot -> default_value;
@@ -3563,16 +3537,6 @@ struct marked_shot_t: public hunter_ranged_attack_t
 
     return m;
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
 };
 
 // Piercing Shot  =========================================================================
@@ -3600,9 +3564,6 @@ struct piercing_shot_t: public hunter_ranged_attack_t
   virtual double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
     am *= std::min( 100.0, p() -> resources.current[RESOURCE_FOCUS] ) / 100;
 
@@ -3726,15 +3687,6 @@ struct windburst_t: hunter_ranged_attack_t
       hunter_td_t* td = this -> td( execute_state -> target );
       td -> debuffs.vulnerable -> trigger();
     }
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
   }
 
   virtual bool usable_moving() const override
@@ -4412,6 +4364,7 @@ struct peck_t : public hunter_spell_t
     may_block = false;
     may_dodge = false;
     travel_speed = 0.0;
+    benefits_from_sniper_training = true;
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
@@ -4420,9 +4373,6 @@ struct peck_t : public hunter_spell_t
   {
     double am = hunter_spell_t::action_multiplier();
     am *= p() -> beast_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
     return am;
   }
