@@ -1962,72 +1962,13 @@ struct mind_sear_tick_t final : public priest_spell_t
     may_miss = false;
     aoe = -1;
     is_sphere_of_insanity_spell = false;
+    is_mind_spell = true;
     range = 8.0;
     trigger_gcd = timespan_t::zero();
     school = SCHOOL_SHADOW;
-    spell_power_mod.direct = p.find_spell(234696)->effectN(2).sp_coeff();
-  }
-
-  double calculate_direct_amount(action_state_t* state) const override
-  {
-    if (state->target == source_target)  // This is the original target
-                                             //  Do no damage.
-    {
-      return 0;
-    }
-    else  // Other targets, do normal damage.
-    {
-      return priest_spell_t::calculate_direct_amount(state);
-    }
-  }
-
- /* void impact(action_state_t* state) override
-  {
-    priest_spell_t::impact(state);
-
-    priest_td_t& td = get_td(state->target);
-
-    if (state->target == source_target)  // This is the target Mind Flay 
-                                             // is attacking.
-    {
-      td.buffs.mind_spike->expire();
-    }
-  }*/
-
-  // Trigger aoe damage
-  void trigger(player_t* target)
-  {
-    source_target = target;
-
-    if (priest.sim->debug)
-    {
-      priest.sim->out_debug << priest.name()
-        << " triggered Mind Sear Damage.";
-    }
-    schedule_execute();
-  }
-};
-/*
-struct mind_sear_tick_og_t final : public priest_spell_t
-{
-  double insanity_gain;
-
-  // TODO: Mind Sear is missing damage information in spell data
-  mind_sear_tick_og_t(priest_t& p)//, const spell_data_t* mind_flay )
-    : priest_spell_t("Mind Sear", p, p.find_spell(234696)),
-    insanity_gain(1)  // TODO: Missing from spell data - 
-                      // PTR data 2016-12-08 
-  {
-    background = true;
-    dual = true;
-    aoe = -1;
-    callbacks = false;
-    direct_tick = true;
-    use_off_gcd = true;
-    energize_type =
-      ENERGIZE_NONE;  // disable resource generation from spell data
-
-    spell_power_mod.direct = p.find_spell(234696)->effectN(2).sp_coeff();
+    spell_power_mod.direct = 0.4; 
+    // Spell not bringing the coeff?
+    //p.find_spell(234696)->effectN(2).sp_coeff();
   }
 
   size_t available_targets(std::vector< player_t* >& tl) const override
@@ -2044,17 +1985,20 @@ struct mind_sear_tick_og_t final : public priest_spell_t
     return tl.size();
   }
 
-  void impact(action_state_t* state) override
+  // Trigger aoe damage
+  void trigger(player_t* target)
   {
-    priest_spell_t::impact(state);
+    source_target = target;
 
-    if (result_is_hit(state->result))
+    if (priest.sim->debug)
     {
-      generate_insanity(insanity_gain, priest.gains.insanity_mind_sear);
+      priest.sim->out_debug << priest.name()
+        << " triggered Mind Sear Damage.";
     }
+    schedule_execute();
   }
 };
-*/
+
 struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
@@ -3520,19 +3464,6 @@ struct void_eruption_t final : public priest_spell_t
 
       priest.buffs.voidform->bump( mss_vf_stacks );
     }
-
-    /*if ( priest.talents.void_lord->ok() &&
-         priest.buffs.lingering_insanity->up() )
-    {
-      timespan_t time =
-          priest.buffs.lingering_insanity->remains() -
-          ( priest.talents.void_lord->effectN( 1 ).time_value() * 1000 );
-      priest.buffs.lingering_insanity->extend_duration( player, -time );
-    }
-    else
-    {
-      priest.buffs.lingering_insanity->expire();
-    }*/
   }
 
   double composite_da_multiplier(const action_state_t* state) const override
