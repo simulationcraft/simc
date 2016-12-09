@@ -2112,6 +2112,8 @@ public:
   bool    requires_stealth;
   bool    consumes_combo_points;
   bool    consumes_clearcasting;
+  bool    triggers_ashamanes_bite;
+  bool    triggers_primal_fury;
   bool    trigger_tier17_2pc;
   struct {
     bool direct, tick;
@@ -2125,8 +2127,10 @@ public:
     base_t( token, p, s ),
     requires_stealth( false ),
     consumes_combo_points( false ),
-    consumes_clearcasting( true ),
+    consumes_clearcasting( false ),
     trigger_tier17_2pc( false ),
+    triggers_ashamanes_bite ( true ),
+    triggers_primal_fury ( true ),
     snapshots_tf( true ),
     snapshots_sr( true )
   {
@@ -2341,9 +2345,12 @@ public:
 
     if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
     {
-      trigger_ashamanes_rip();
-
-      if ( attack_critical && p() -> specialization() == DRUID_FERAL )
+       if (triggers_ashamanes_bite) 
+       {
+          trigger_ashamanes_rip();
+       }
+      
+      if ( attack_critical && p() -> specialization() == DRUID_FERAL && triggers_primal_fury)
       {
         trigger_primal_fury();
       }
@@ -2549,6 +2556,8 @@ struct ashamanes_frenzy_driver_t : public cat_attack_t
       consumes_bloodtalons = false; // BT is applied by driver.
       ignite_multiplier = dot_duration / data().effectN( 3 ).period();
       dot_duration = timespan_t::zero(); // DoT is applied by ignite action.
+      triggers_ashamanes_bite = false;
+      triggers_primal_fury = false;
     }
 
     void impact( action_state_t* s ) override
@@ -3041,6 +3050,7 @@ struct shred_t : public cat_attack_t
   {
     base_crit += p -> artifact.feral_power.percent();
     base_multiplier *= 1.0 + p -> artifact.shredder_fangs.percent();
+    consumes_clearcasting = true;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3081,6 +3091,11 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
+    if ( sim->dbc.ptr && p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up() ) //PTR 7.1.5
+    {
+       m *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
+    }
+
     if ( stealthed() )
       m *= 1.0 + data().effectN( 4 ).percent();
 
@@ -3101,6 +3116,7 @@ public:
     energize_amount = data().effectN( 1 ).percent();
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type = ENERGIZE_ON_HIT;
+    consumes_clearcasting = true;
 
     base_multiplier *= 1.0 + player -> artifact.sharpened_claws.percent();
   }
@@ -3120,6 +3136,11 @@ public:
 
   virtual void execute() override
   {
+     if (sim->dbc.ptr && p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up()) //PTR 7.1.5
+     {
+        base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
+     }
+
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> up();
@@ -3208,7 +3229,10 @@ struct thrash_cat_t : public cat_attack_t
   {
     aoe = -1;
     spell_power_mod.direct = 0;
-    
+    triggers_primal_fury = false;
+    triggers_ashamanes_bite = false;
+    consumes_clearcasting = true;
+
     trigger_tier17_2pc = p -> sets.has_set_bonus( DRUID_FERAL, T17, B2 );
 
     if ( p -> sets.has_set_bonus( DRUID_FERAL, T19, B2 ) )
@@ -3232,6 +3256,11 @@ struct thrash_cat_t : public cat_attack_t
 
   void execute() override
   {
+    if (sim->dbc.ptr && p()->talent.moment_of_clarity->ok() && p()->buff.clearcasting->up()) //PTR 7.1.5
+    {
+       base_multiplier *= 1.0 + p()->talent.moment_of_clarity->effectN(5).percent();
+    }
+
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> trigger( 1,
