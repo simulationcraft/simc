@@ -193,7 +193,6 @@ public:
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
     proc_t* no_vuln_aimed_shot;
-    proc_t* no_vuln_marked_shot;
     proc_t* zevrims_hunger;
     proc_t* convergence;
     proc_t* marking_targets;
@@ -3428,16 +3427,9 @@ struct marked_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     // Consume Hunter's Mark and apply appropriate debuffs. Vulnerable applies on cast.
-    bool no_vuln_check = true;
     std::vector<player_t*> marked_shot_targets = execute_state -> action -> target_list();
     for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
     {
-      if ( !td( marked_shot_targets[i] ) -> debuffs.vulnerable -> check() && no_vuln_check )
-      {
-        p() -> procs.no_vuln_marked_shot -> occur();
-        no_vuln_check = false; // Don't show multiple procs for one cast
-      }
-
       if ( td( marked_shot_targets[i] ) -> debuffs.hunters_mark -> up() )
         td( marked_shot_targets[i] ) -> debuffs.vulnerable -> trigger();
 
@@ -3516,9 +3508,6 @@ struct marked_shot_t: public hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
     hunter_td_t* td = this -> td( t );
-    if ( td -> debuffs.vulnerable -> up() )
-      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
-
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
@@ -5910,7 +5899,6 @@ void hunter_t::init_procs()
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
   procs.no_vuln_aimed_shot           = get_proc( "no_vuln_aimed_shot" );
-  procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
   procs.convergence                  = get_proc( "convergence" );
   procs.marking_targets              = get_proc( "marking_targets" );
