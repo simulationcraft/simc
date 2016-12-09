@@ -647,12 +647,9 @@ private:
 public:
   typedef hunter_action_t base_t;
 
-  bool lone_wolf;
-
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
-                   ab( n, player, s ),
-                   lone_wolf( player -> talents.lone_wolf -> ok() )
+                   ab( n, player, s )
   {
   }
 
@@ -675,9 +672,6 @@ public:
   double action_multiplier() const override
   {
     double am = ab::action_multiplier();
-
-    if ( lone_wolf )
-      am *= 1.0 + p() -> talents.lone_wolf -> effectN( 1 ).percent();
 
     if ( p() -> buffs.t19_4p_mongoose_power -> up() && ab::special )
       am *= 1.0 + p() -> buffs.t19_4p_mongoose_power -> default_value;
@@ -6512,6 +6506,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( artifacts.voice_of_the_wild_gods.rank() )
     m *= 1.0 + artifacts.voice_of_the_wild_gods.percent();
+
+  if ( talents.lone_wolf -> ok() )
+    m *= 1.0 + talents.lone_wolf -> effectN( 1 ).percent();
 
   return m;
 }
