@@ -2022,7 +2022,6 @@ public:
       {
         p() -> buff.combo_strikes -> expire();
         p() -> buff.hit_combo -> expire();
-        p() -> buff.combo_master -> expire();
       }
       p() -> previous_combo_strike = new_ability;
 
