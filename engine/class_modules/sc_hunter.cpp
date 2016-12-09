@@ -193,6 +193,7 @@ public:
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
     proc_t* no_vuln_aimed_shot;
+    proc_t* no_vuln_piercing_shot;
     proc_t* zevrims_hunger;
     proc_t* convergence;
     proc_t* marking_targets;
@@ -3535,6 +3536,9 @@ struct piercing_shot_t: public hunter_ranged_attack_t
   {
     p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
+
+    if ( ! td( execute_state -> target ) -> debuffs.vulnerable -> check() )
+      p() -> procs.no_vuln_piercing_shot -> occur();
   }
 
   virtual double action_multiplier() const override
@@ -3544,6 +3548,17 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     am *= std::min( 100.0, p() -> resources.current[RESOURCE_FOCUS] ) / 100;
 
     return am;
+  }
+
+  virtual double composite_target_da_multiplier(player_t* t) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier(t);
+
+    hunter_td_t* td = this -> td( t );
+    if ( td -> debuffs.vulnerable -> up() )
+      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+
+    return m;
   }
 };
 
@@ -5899,6 +5914,7 @@ void hunter_t::init_procs()
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
   procs.no_vuln_aimed_shot           = get_proc( "no_vuln_aimed_shot" );
+  procs.no_vuln_piercing_shot        = get_proc( "no_vuln_piercing_shot" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
   procs.convergence                  = get_proc( "convergence" );
   procs.marking_targets              = get_proc( "marking_targets" );
