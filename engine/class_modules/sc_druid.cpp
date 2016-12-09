@@ -2736,6 +2736,10 @@ struct ferocious_bite_t : public cat_attack_t
     energize_type      = ENERGIZE_NONE; // disable negative energy gain in spell data
 
     crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent();
+    if (p->talent.sabertooth->ok())
+    {
+       base_multiplier *= 1.0 + p->talent.sabertooth->effectN(1).percent();
+    }
   } 
 
   double maximum_energy() const
