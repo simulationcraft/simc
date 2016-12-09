@@ -223,7 +223,7 @@ Effects          :
 #4 (id=164016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 919296 | Target: Self(1)
 #5 (id=167022)   : Apply Aura (6) | Unknown effect sub type (213)
-                   Base Value: 80 | Scaled Value: 80 | Target: Self(1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self(1)
 
 Name             : Rake (id=1822) [Spell Family (7)] 
 Class            : Feral Druid
@@ -333,7 +333,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -647,7 +647,7 @@ Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000012
-Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Restoration Druid (137012), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Astral Power (197911), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), Galactic Guardian (213708), 
+Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Astral Power (197911), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), Galactic Guardian (213708), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1260,7 +1260,7 @@ Effects          :
 #3 (id=281797)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy(6)
 #4 (id=290296)   : Energize Power (30)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: rage | Target: Self(1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self(1)
 Description      : Mangle the target for $sw2 Physical damage.$?a231064[ Deals $s3% additional damage against bleeding targets.][]
 
 |cFFFFFFFFGenerates ${$m4/10} Rage.|r
@@ -1812,10 +1812,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68110)    : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Self(1)
                    Affected Spells: Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
 #2 (id=90627)    : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | Misc Value: 3 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 3 | Target: Self(1)
                    Affected Spells: Solar Empowerment (164545), Lunar Empowerment (164547), Stellar Empowerment (197637)
 Description      : Increases Starfall and Starsurge damage, and the effect of Lunar, Solar, and Stellar Empowerments by an additional $s1%.
 
@@ -1893,7 +1893,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Mastery: Starlight (77492), Lucidity (137247), Thrash (192090), Astral Influence (197524), Scythe of the Stars (202433), Oneth's Intuition (209406), Ekowraith, Creator of Worlds (210667), The Emerald Dreamcatcher (224706)
+Affecting spells : Mastery: Starlight (77492), Balance Druid (137013), Lucidity (137247), Thrash (192090), Astral Influence (197524), Scythe of the Stars (202433), Oneth's Intuition (209406), Ekowraith, Creator of Worlds (210667), The Emerald Dreamcatcher (224706)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2191,7 +2191,7 @@ Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Astral Power (197911), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
+Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Astral Power (197911), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2291,7 +2291,7 @@ Class            : Druid
 School           : Arcane
 Spell Level      : 1
 GCD              : 1.5 seconds
-Cooldown         : 40 seconds
+Cooldown         : 30 seconds
 Affecting spells : Lucidity (137247), Astral Influence (197524), Ekowraith, Creator of Worlds (210667)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2453,7 +2453,7 @@ Effects          :
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Brutal Slash (202028), Ashamane's Rip (210705)
 #3 (id=310507)   : Apply Aura (6) | Unknown effect sub type (418)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770), Touch of the Moon (203018)
+                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770), Touch of the Moon (203018), Fury of Elune (211545)
 Description      : An improved Cat Form that allows the use of Prowl while in combat, causes Shred and Rake to deal damage as if stealth were active, reduces the cost of all Cat Form abilities by $s2%, and increases maximum Energy by $s3.
 
 Lasts $d. You may shapeshift in and out of this improved Cat Form for its duration.
@@ -2815,10 +2815,10 @@ Effects          :
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Moonfire (155625), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Ashamane's Rip (210705)
 #2 (id=219222)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770), Touch of the Moon (203018)
+                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770), Touch of the Moon (203018), Fury of Elune (211545)
 #3 (id=219223)   : Apply Aura (6) | Unknown effect sub type (418)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self(1)
-                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770), Touch of the Moon (203018)
+                   Affected Spells: Rake (1822), Shred (5221), Maim (22570), Savage Roar (52610), Thrash (77758), Skull Bash (93985), Swipe (106785), Thrash (106830), Skull Bash (106839), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rake (155722), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Fury of Elune (202770), Touch of the Moon (203018), Fury of Elune (211545)
 Description      : Reduces the cost of all Cat Form abilities by $s1% and increases maximum Energy by $s3 for $d. Requires Cat Form.
 Tooltip          : Reduces the cost of all Cat Form abilities by $s1% and increases maximum Energy by $s3.
 
@@ -3487,22 +3487,24 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179696)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self(1)
+                   Affected Spells: Solar Wrath (5176), Moonfire (8921), Starsurge (78674), Sunfire (93402), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Starfall (191034), Starfall (191037), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Fury of Elune (211545)
+#2 (id=191146)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22 | Target: Self(1)
+                   Affected Spells: Moonfire (8921), Sunfire (93402), Moonfire (164812), Sunfire (164815), Sunfire (197630), Stellar Flare (202347), Fury of Elune (202770), Fury of Elune (211545)
+#3 (id=191147)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
                    Affected Spells: Regrowth (8936)
-#2 (id=191146)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
+#4 (id=191148)   : Apply Aura (6) | Add Percent Modifier: Spell Periodic Damage (108)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Target: Self(1)
                    Affected Spells: Regrowth (8936)
-#3 (id=191147)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
+#5 (id=191149)   : Apply Aura (6) | Add Percent Modifier: Spell Resource Cost (108)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 14 | Target: Self(1)
                    Affected Spells: Regrowth (8936)
-#4 (id=191148)   : Apply Aura (6) | Unknown effect sub type (218)
+#6 (id=260777)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf7 | Target: Self(1)
-#5 (id=191149)   : Apply Aura (6) | Unknown effect sub type (218)
+#7 (id=260778)   : Apply Aura (6) | Unknown effect sub type (218)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 0xf8 | Target: Self(1)
-#6 (id=260777)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
-#7 (id=260778)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #8 (id=260779)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #9 (id=260780)   : Apply Aura (6) | Dummy (4)
@@ -3522,6 +3524,10 @@ Effects          :
 #16 (id=351083)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #17 (id=351084)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#18 (id=360584)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
+#19 (id=360585)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 
 Name             : Displacer Beast (id=137452) [Spell Family (7)] 
@@ -3995,7 +4001,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=221438)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 4 (107)
-                   Base Value: 70 | Scaled Value: 70 | Misc Value: 32 | Target: Self(1)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 32 | Target: Self(1)
                    Affected Spells: Mangle (33917), Enraged Mangle (202085)
 #2 (id=221439)   : Apply Aura (6) | Add Percent Modifier: Generic Modifier (108)
                    Base Value: 25 | Scaled Value: 25 | Target: Self(1)
@@ -4249,7 +4255,7 @@ Spell Level      : 3
 Range            : 100 yards
 Duration         : 16 seconds
 Stance Mask      : 0x40000013
-Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Restoration Druid (137012), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Balance Overrides Passive (106732), Guardian Druid (137010), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Lunar Inspiration (155627), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Feral Overrides Passive (197692), Twin Moonfire (200818), Twilight Glow (202386), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4272,7 +4278,7 @@ Spell Level      : 16
 Range            : 100 yards
 Duration         : 12 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Astral Power (197911), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
+Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Astral Power (197911), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ .x...... ..x..... ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4629,7 +4635,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Triggered by     : Solar Empowerment (164545)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4655,7 +4661,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Stance Mask      : 0x40000000
-Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Oneth's Overconfidence (209407), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Balance Druid (137013), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Oneth's Overconfidence (209407), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4681,7 +4687,7 @@ School           : Astral
 Spell Level      : 76
 Range            : 50000 yards
 Velocity         : 0.8 yards/sec
-Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Mastery: Starlight (77492), Soul of the Forest (114107), Balance Druid (137013), Lucidity (137247), Thrash (192090), Astral Influence (197524), Stellar Drift (202354), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   x....... .x...... ....x... .x....x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -4804,7 +4810,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x40000002
-Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Skywrath (214514)
 Triggered by     : Lunar Empowerment (164547)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5035,10 +5041,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier: Spell Range (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Brutal Slash (202028), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Lunar Beam (204069), Force of Nature (205636), Shadow Thrash (210687), Ashamane's Rip (210705), Ashamane's Frenzy (210722), Ashamane's Frenzy (210723), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
 #2 (id=314659)   : Apply Aura (6) | Unknown effect sub type (153)
                    Base Value: 5 | Scaled Value: 5 | Target: Self(1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Touch of the Moon (203018), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Remove Corruption (2782), Solar Wrath (5176), Healing Touch (5185), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Typhoon (61391), Thrash (77758), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Nature's Cure (88423), Sunfire (93402), Skull Bash (93985), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102401), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Enraged Mangle (202085), Stellar Flare (202347), New Moon (202767), Half Moon (202768), Fury of Elune (202770), Full Moon (202771), Touch of the Moon (203018), Lunar Beam (204069), Force of Nature (205636), Ashamane's Rip (210705), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier: Spell Radius (107)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Target: Self(1)
                    Affected Spells: Incapacitating Roar (99), Tranquility (740), Typhoon (61391), Thrash (77758), Displacer Beast (102280), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Brutal Slash (202028), Lunar Beam (204069), Shadow Thrash (210687), Power of the Archdruid (213121), Brambles (213709), Swipe (213771), Intimidating Roar (236748)
@@ -5092,7 +5098,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 28 yards/sec
 Cooldown         : 10 seconds
-Affecting spells : Mastery: Starlight (77492), Lucidity (137247), Thrash (192090), Astral Influence (197524), Scythe of the Stars (202433), Oneth's Intuition (209406), Ekowraith, Creator of Worlds (210667), The Emerald Dreamcatcher (224706)
+Affecting spells : Mastery: Starlight (77492), Balance Druid (137013), Lucidity (137247), Thrash (192090), Astral Influence (197524), Scythe of the Stars (202433), Oneth's Intuition (209406), Ekowraith, Creator of Worlds (210667), The Emerald Dreamcatcher (224706)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5118,7 +5124,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Dark Side of the Moon (202384), Warrior of Elune (202425), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Skywrath (214514)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5141,7 +5147,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Incarnation: Chosen of Elune (102560), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
+Affecting spells : Incarnation: Chosen of Elune (102560), Balance Druid (137013), Lucidity (137247), Solar Empowerment (164545), Lunar Empowerment (164547), Item - Druid T17 Balance 2P Bonus (165433), Celestial Fury (180719), Thrash (192090), Celestial Alignment (194223), Astral Influence (197524), Astral Power (197911), Solar Stabbing (202426), Blessing of Elune (202737), Ekowraith, Creator of Worlds (210667), Solar Empowerment (211089), Skywrath (214514)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5160,7 +5166,7 @@ Resource         : 12% Base Mana (26400 @Level 110)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Astral Power (197911), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
+Affecting spells : Balance Overrides Passive (106732), Restoration Druid (137012), Balance Druid (137013), Lucidity (137247), Persistence (186396), Thrash (192090), Astral Influence (197524), Stellar Empowerment (197637), Astral Power (197911), Sunfire Burns (202466), Ekowraith, Creator of Worlds (210667), Sunblind (213682)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5635,7 +5641,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 24 seconds
-Affecting spells : Astral Influence (197524), Stellar Empowerment (197637), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Balance Druid (137013), Astral Influence (197524), Stellar Empowerment (197637), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5812,7 +5818,7 @@ Velocity         : 20 yards/sec
 Charges          : 3 (15 seconds cooldown)
 Category         : 1584
 Artifact Power   : Id: 1049, Max Rank: 1
-Affecting spells : Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Balance Druid (137013), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Triggered by     : Push Active Ability to Bar (225865)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5840,7 +5846,7 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (15 seconds cooldown)
 Category         : 1584
-Affecting spells : Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Balance Druid (137013), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5866,7 +5872,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 90 seconds
-Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Balance Druid (137013), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -5896,7 +5902,7 @@ GCD              : 1.5 seconds
 Velocity         : 0.9 yards/sec
 Charges          : 3 (15 seconds cooldown)
 Category         : 1584
-Affecting spells : Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
+Affecting spells : Balance Druid (137013), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6622,6 +6628,7 @@ Name             : Fury of Elune (id=211545) [Spell Family (7)]
 Class            : Druid
 School           : Astral
 Range            : 100 yards
+Affecting spells : Incarnation: King of the Jungle (102543), Berserk (106951), Balance Druid (137013), Astral Influence (197524), Ekowraith, Creator of Worlds (210667), 
 Attributes       : ........ ........ x....... x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ......x.   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -6730,7 +6737,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=317115)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 2 (107)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self(1)
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: 12 | Target: Self(1)
                    Affected Spells: Moonfire (8921)
 #2 (id=317116)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy(6)

@@ -1237,18 +1237,18 @@ public:
 
   virtual void consume_resource() override
   {
-	ab::consume_resource();
-	resource_e cr = current_resource();
+    ab::consume_resource();
+    resource_e cr = ab::current_resource();
 
-	if (cr != RESOURCE_FURY || base_cost() == 0 || proc) return;
+    if (cr != RESOURCE_FURY || ab::base_cost() == 0 || ab::proc) return;
 
-	if (p()->legendary.delusions_of_grandeur_reduction >= timespan_t::zero()) return;
+    if (p()->legendary.delusions_of_grandeur_reduction >= timespan_t::zero()) return;
 
-	resource_consumed = cost();
+    ab::resource_consumed = ab::cost();
 
-	double ticks = resource_consumed / p()->legendary.delusions_of_grandeur_fury_per_time;
-	double seconds = p()->legendary.delusions_of_grandeur_reduction.total_millis();
-	p()->cooldown.metamorphosis->adjust(timespan_t::from_seconds(ticks * seconds));
+    double ticks = ab::resource_consumed / p()->legendary.delusions_of_grandeur_fury_per_time;
+    double seconds = p()->legendary.delusions_of_grandeur_reduction.total_millis();
+    p()->cooldown.metamorphosis->adjust(timespan_t::from_seconds(ticks * seconds));
   }
 
   virtual bool ready() override
