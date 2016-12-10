@@ -57,6 +57,7 @@ struct paladin_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* execution_sentence;
+    dot_t* wake_of_ashes;
   } dots;
 
   struct buffs_t
@@ -97,6 +98,7 @@ public:
   const special_effect_t* liadrins_fury_unleashed;
   const special_effect_t* justice_gaze;
   const special_effect_t* chain_of_thrayn;
+  const special_effect_t* ashes_to_dust;
 
   struct active_actions_t
   {
@@ -240,6 +242,7 @@ public:
     const spell_data_t* liadrins_fury_unleashed;
     const spell_data_t* justice_gaze;
     const spell_data_t* chain_of_thrayn;
+    const spell_data_t* ashes_to_dust;
     const spell_data_t* consecration_bonus;
   } spells;
 
@@ -452,6 +455,7 @@ public:
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    composite_spell_power( school_e school ) const override;
   virtual double    composite_spell_power_multiplier() const override;
@@ -4173,6 +4177,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
+  dots.wake_of_ashes = target -> get_dot( "wake_of_ashes", paladin );
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
@@ -5201,6 +5206,7 @@ void paladin_t::init_spells()
   spells.liadrins_fury_unleashed       = find_spell( 208408 );
   spells.justice_gaze                  = find_spell( 211557 );
   spells.chain_of_thrayn               = find_spell( 206338 );
+  spells.ashes_to_dust                 = find_spell( 236106 );
   spells.consecration_bonus            = find_spell( 188370 );
 
   // Masteries
@@ -5549,6 +5555,24 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   if ( school == SCHOOL_HOLY )
     m *= 1.0 + artifact.truthguards_light.percent();
+
+  return m;
+}
+
+
+double paladin_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  paladin_td_t* td = get_target_data( target );
+
+  if ( td -> dots.wake_of_ashes -> is_ticking() )
+  {
+    if ( ashes_to_dust )
+    {
+      m *= 1.0 + spells.ashes_to_dust -> effectN( 1 ).percent();
+    }
+  }
 
   return m;
 }
@@ -6197,6 +6221,12 @@ static void chain_of_thrayn( special_effect_t& effect )
   do_trinket_init( s, PALADIN_RETRIBUTION, s -> chain_of_thrayn, effect );
 }
 
+static void ashes_to_dust( special_effect_t& effect )
+{
+  paladin_t* s = debug_cast<paladin_t*>( effect.player );
+  do_trinket_init( s, PALADIN_RETRIBUTION, s -> ashes_to_dust, effect );
+}
+
 // PALADIN MODULE INTERFACE =================================================
 
 struct paladin_module_t : public module_t
@@ -6218,6 +6248,7 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 207633, whisper_of_the_nathrezim );
     unique_gear::register_special_effect( 208408, liadrins_fury_unleashed );
     unique_gear::register_special_effect( 206338, chain_of_thrayn );
+    unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
   }
 
