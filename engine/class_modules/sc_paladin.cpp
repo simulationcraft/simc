@@ -512,6 +512,7 @@ public:
 };
 
 
+
 // ==========================================================================
 // Paladin Buffs, Part One
 // ==========================================================================
@@ -2912,6 +2913,45 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
   }
 };
 
+
+// Custom events
+struct whisper_of_the_nathrezim_event_t : public event_t
+{
+  paladin_t* paladin;
+
+  whisper_of_the_nathrezim_event_t( paladin_t* p, timespan_t delay ) :
+    event_t( *p, delay ), paladin( p )
+  {
+  }
+
+  const char* name() const override
+  { return "whisper_of_the_nathrezim_delay"; }
+
+  void execute() override
+  {
+    paladin -> buffs.whisper_of_the_nathrezim -> trigger();
+  }
+};
+
+struct echoed_spell_event_t : public event_t
+{
+  paladin_melee_attack_t* echo;
+  paladin_t* paladin;
+
+  echoed_spell_event_t( paladin_t* p, paladin_melee_attack_t* spell, timespan_t delay ) :
+    event_t( *p, delay ), paladin( p ), echo( spell )
+  {
+  }
+
+  const char* name() const override
+  { return "echoed_spell_delay"; }
+
+  void execute() override
+  {
+    echo -> schedule_execute();
+  }
+};
+
 // Melee Attack =============================================================
 
 struct melee_t : public paladin_melee_attack_t
@@ -3291,7 +3331,7 @@ struct divine_storm_t: public holy_power_consumer_t
 
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
-      echoed_spell -> schedule_execute();
+      make_event<echoed_spell_event_t>( *sim, p(), echoed_spell, timespan_t::from_millis( 800 ) );
     }
 
     if ( p() -> whisper_of_the_nathrezim )
@@ -3299,7 +3339,7 @@ struct divine_storm_t: public holy_power_consumer_t
       if ( p() -> buffs.whisper_of_the_nathrezim -> up() )
         p() -> buffs.whisper_of_the_nathrezim -> expire();
 
-      p() -> buffs.whisper_of_the_nathrezim -> trigger();
+      make_event<whisper_of_the_nathrezim_event_t>( *sim, p(), timespan_t::from_millis( 300 ) );
     }
   }
 
@@ -3931,14 +3971,14 @@ struct templars_verdict_t : public holy_power_consumer_t
 
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
-      echoed_spell -> schedule_execute();
+      make_event<echoed_spell_event_t>( *sim, p(), echoed_spell, timespan_t::from_millis( 800 ) );
     }
 
     if ( p() -> whisper_of_the_nathrezim )
     {
       if ( p() -> buffs.whisper_of_the_nathrezim -> up() )
         p() -> buffs.whisper_of_the_nathrezim -> expire();
-      p() -> buffs.whisper_of_the_nathrezim -> trigger();
+      make_event<whisper_of_the_nathrezim_event_t>( *sim, p(), timespan_t::from_millis( 300 ) );
     }
   }
 };
