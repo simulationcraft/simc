@@ -96,6 +96,7 @@ public:
   const special_effect_t* whisper_of_the_nathrezim;
   const special_effect_t* liadrins_fury_unleashed;
   const special_effect_t* justice_gaze;
+  const special_effect_t* chain_of_thrayn;
 
   struct active_actions_t
   {
@@ -238,6 +239,7 @@ public:
     const spell_data_t* divine_purpose_ret;
     const spell_data_t* liadrins_fury_unleashed;
     const spell_data_t* justice_gaze;
+    const spell_data_t* chain_of_thrayn;
     const spell_data_t* consecration_bonus;
   } spells;
 
@@ -1137,7 +1139,7 @@ struct bastion_of_light_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-  
+
     p()->cooldowns.shield_of_the_righteous->reset(false, true);
   }
 };
@@ -1814,10 +1816,13 @@ struct execution_sentence_t : public paladin_spell_t
       p() -> buffs.crusade -> trigger( num_stacks );
     }
 
-    if ( p() -> talents.fist_of_justice -> ok() )
+    if ( !maybe_ptr( p() -> dbc.ptr ) )
     {
-      double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      if ( p() -> talents.fist_of_justice -> ok() )
+      {
+        double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
+        p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      }
     }
   }
 
@@ -2896,10 +2901,13 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       p() -> buffs.crusade -> trigger( num_stacks );
     }
 
-    if ( p() -> talents.fist_of_justice -> ok() )
+    if ( !maybe_ptr( p() -> dbc.ptr ) )
     {
-      double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      if ( p() -> talents.fist_of_justice -> ok() )
+      {
+        double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
+        p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      }
     }
   }
 };
@@ -3582,7 +3590,7 @@ struct judgment_t : public paladin_melee_attack_t
     // no weapon multiplier
     weapon_multiplier = 0.0;
     may_block = may_parry = may_dodge = false;
-  cooldown->charges = 1;
+    cooldown -> charges = 1;
     hasted_cd = true;
 
     // TODO: this is a hack; figure out what's really going on here.
@@ -3599,10 +3607,24 @@ struct judgment_t : public paladin_melee_attack_t
     }
     else if ( p -> specialization() == PALADIN_PROTECTION )
     {
-    cooldown->charges *= 1.0 + p->talents.crusaders_judgment->effectN(1).base_value();
+      cooldown -> charges *= 1.0 + p->talents.crusaders_judgment->effectN(1).base_value();
       cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
       sotr_cdr = -1.0 * timespan_t::from_seconds( 2 ); // hack for p -> spec.judgment_2 -> effectN( 1 ).base_value()
+    }
+  }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> talents.fist_of_justice -> ok() )
+      {
+        double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
+        p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      }
     }
   }
 
@@ -5138,6 +5160,7 @@ void paladin_t::init_spells()
   spells.divine_purpose_ret            = find_spell( 223817 );
   spells.liadrins_fury_unleashed       = find_spell( 208408 );
   spells.justice_gaze                  = find_spell( 211557 );
+  spells.chain_of_thrayn               = find_spell( 206338 );
   spells.consecration_bonus            = find_spell( 188370 );
 
   // Masteries
@@ -5445,10 +5468,22 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // Avenging Wrath buffs everything
   if ( buffs.avenging_wrath -> check() )
+  {
     m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
+    if ( chain_of_thrayn )
+    {
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+    }
+  }
 
   if ( buffs.crusade -> check() )
+  {
     m *= 1.0 + buffs.crusade -> get_damage_mod();
+    if ( chain_of_thrayn )
+    {
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+    }
+  }
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
 
@@ -5485,10 +5520,23 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
   double m = player_t::composite_player_heal_multiplier( s );
 
   if ( buffs.avenging_wrath -> check() )
+  {
     m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
+    if ( chain_of_thrayn )
+    {
+      // TODO: fix this for holy
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
+    }
+  }
 
   if ( buffs.crusade -> check() )
+  {
     m *= 1.0 + buffs.crusade -> get_healing_mod();
+    if ( chain_of_thrayn )
+    {
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
+    }
+  }
 
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
@@ -6103,6 +6151,12 @@ static void justice_gaze( special_effect_t& effect )
   do_trinket_init( s, PALADIN_RETRIBUTION, s -> justice_gaze, effect );
 }
 
+static void chain_of_thrayn( special_effect_t& effect )
+{
+  paladin_t* s = debug_cast<paladin_t*>( effect.player );
+  do_trinket_init( s, PALADIN_RETRIBUTION, s -> chain_of_thrayn, effect );
+}
+
 // PALADIN MODULE INTERFACE =================================================
 
 struct paladin_module_t : public module_t
@@ -6123,6 +6177,7 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 184911, retribution_trinket );
     unique_gear::register_special_effect( 207633, whisper_of_the_nathrezim );
     unique_gear::register_special_effect( 208408, liadrins_fury_unleashed );
+    unique_gear::register_special_effect( 206338, chain_of_thrayn );
     unique_gear::register_special_effect( 211557, justice_gaze );
   }
 
