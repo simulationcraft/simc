@@ -126,6 +126,7 @@ public:
 
   struct dots_t
   {
+    dot_t* breath_of_fire;
     dot_t* enveloping_mist;
     dot_t* renewing_mist;
     dot_t* soothing_mist;
@@ -2033,54 +2034,54 @@ public:
       // IE: Energizing Elixir -> Blackout Kick -> Blackout Kick -> Rising Sun Kick -> Blackout Kick -> Tiger Palm (trigger)
       if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
       {
-        if ( p() -> t19_melee_4_piece_container_1 != CS_NONE )
+        if ( p() -> t19_melee_4_piece_container_3 != CS_NONE )
         {
-          if ( p() -> t19_melee_4_piece_container_2 != CS_NONE )
+          // Check if the last two containers are not the same as the new ability
+          if ( p() -> t19_melee_4_piece_container_3 != new_ability )
           {
-            if ( p() -> t19_melee_4_piece_container_3 != CS_NONE )
+            if ( p() -> t19_melee_4_piece_container_2 != new_ability )
             {
-              // Check if the last two containers are not the same as the new ability
-              if ( p() -> t19_melee_4_piece_container_3 != new_ability )
-              {
-                if ( p() -> t19_melee_4_piece_container_2 != new_ability )
-                {
-                  // if they are not the same adjust containers and trigger the buff
-                  p() -> t19_melee_4_piece_container_1 = p() -> t19_melee_4_piece_container_2;
-                  p() -> t19_melee_4_piece_container_2 = p() -> t19_melee_4_piece_container_3;
-                  p() -> t19_melee_4_piece_container_3 = new_ability;
-                  p() -> buff.combo_master -> trigger();
-                }
-                // Don't do anything if the second container is the same
-              }
-              // semi-reset if the last ability is the same as the new ability
-              else
-              {
-                p() -> t19_melee_4_piece_container_1 = new_ability;
-                p() -> t19_melee_4_piece_container_2 = CS_NONE;
-                p() -> t19_melee_4_piece_container_3 = CS_NONE;
-              }
+              // if they are not the same adjust containers and trigger the buff
+              p() -> t19_melee_4_piece_container_1 = p() -> t19_melee_4_piece_container_2;
+              p() -> t19_melee_4_piece_container_2 = p() -> t19_melee_4_piece_container_3;
+              p() -> t19_melee_4_piece_container_3 = new_ability;
+              p() -> buff.combo_master -> trigger();
             }
-            // If the 3rd container is blank check if the first two containers are not the same
-            else if ( p() -> t19_melee_4_piece_container_2 != new_ability )
-            {
-              if ( p() -> t19_melee_4_piece_container_1 != new_ability )
-              {
-                // Assign the 3rd container and trigger the buff
-                p() -> t19_melee_4_piece_container_3 = new_ability;
-                p() -> buff.combo_master -> trigger();
-              }
-              // Don't do anything if the first container is the same
-            }
-            // semi-reset if the last ability is the same as the new ability
-            else
-            {
-                p() -> t19_melee_4_piece_container_1 = new_ability;
-                p() -> t19_melee_4_piece_container_2 = CS_NONE;
-                p() -> t19_melee_4_piece_container_3 = CS_NONE;
-            }
+            // Don't do anything if the second container is the same
           }
+          // semi-reset if the last ability is the same as the new ability
+          else
+          {
+            p() -> t19_melee_4_piece_container_1 = new_ability;
+            p() -> t19_melee_4_piece_container_2 = CS_NONE;
+            p() -> t19_melee_4_piece_container_3 = CS_NONE;
+          }
+        }
+        else if ( p() -> t19_melee_4_piece_container_2 != CS_NONE )
+        {
+          // If the 3rd container is blank check if the first two containers are not the same
+          if ( p() -> t19_melee_4_piece_container_2 != new_ability )
+          {
+            if ( p() -> t19_melee_4_piece_container_1 != new_ability )
+            {
+              // Assign the 3rd container and trigger the buff
+              p() -> t19_melee_4_piece_container_3 = new_ability;
+              p() -> buff.combo_master -> trigger();
+            }
+            // Don't do anything if the first container is the same
+          }
+          // semi-reset if the last ability is the same as the new ability
+          else
+          {
+              p() -> t19_melee_4_piece_container_1 = new_ability;
+              p() -> t19_melee_4_piece_container_2 = CS_NONE;
+              p() -> t19_melee_4_piece_container_3 = CS_NONE;
+          }
+        }
+        else if ( p() -> t19_melee_4_piece_container_1 != CS_NONE )
+        {
           // If the 2nd and 3rd container is blank, check if the first container is not the same
-          else if ( p() -> t19_melee_4_piece_container_1 != new_ability )
+          if ( p() -> t19_melee_4_piece_container_1 != new_ability )
             // Assign the second container
             p() -> t19_melee_4_piece_container_2 = new_ability;
           // semi-reset if the last ability is the same as the new ability
@@ -4647,7 +4648,7 @@ struct breath_of_fire_t: public monk_spell_t
       double am = monk_spell_t::action_multiplier();
 
       if ( p() -> artifact.hot_blooded.rank() )
-        am *= 1 + p() -> artifact.hot_blooded.percent();
+        am *= 1 + p() -> artifact.hot_blooded.data().effectN( 1 ).percent();
 
       return am;
     }
@@ -6673,6 +6674,7 @@ monk( *p )
   debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire_target" )
     .cd( timespan_t::zero() );
 
+  dots.breath_of_fire = target -> get_dot( "breath_of_fire_dot", p );
   dots.enveloping_mist = target -> get_dot( "enveloping_mist", p );
   dots.renewing_mist = target -> get_dot( "renewing_mist", p );
   dots.soothing_mist = target -> get_dot( "soothing_mist", p );
@@ -7160,7 +7162,7 @@ void monk_t::init_spells()
   if ( talent.chi_orbit -> ok() )
     active_actions.chi_orbit = new actions::chi_orbit_t( this );
 
-  if (specialization() == MONK_BREWMASTER)
+  if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
 }
 
@@ -8263,6 +8265,12 @@ void monk_t::target_mitigation( school_e school,
       if ( buff.exploding_keg -> up() ) 
         s -> result_amount *= 1.0 + buff.exploding_keg -> value();
 
+      if ( artifact.hot_blooded.rank() )
+      {
+        if ( monk_t::get_target_data( s -> target ) -> dots.breath_of_fire ->is_ticking() )
+          s -> result_amount *= 1.0 - artifact.hot_blooded.data().effectN( 2 ).percent();
+      }
+      
       // Passive sources (Sturdy Ox)
       if ( school != SCHOOL_PHYSICAL )
         // TODO: Magical Damage reduction (currently set to zero, but effect is still in place)
