@@ -57,6 +57,7 @@ struct paladin_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* execution_sentence;
+    dot_t* wake_of_ashes;
   } dots;
 
   struct buffs_t
@@ -96,6 +97,8 @@ public:
   const special_effect_t* whisper_of_the_nathrezim;
   const special_effect_t* liadrins_fury_unleashed;
   const special_effect_t* justice_gaze;
+  const special_effect_t* chain_of_thrayn;
+  const special_effect_t* ashes_to_dust;
 
   struct active_actions_t
   {
@@ -238,6 +241,8 @@ public:
     const spell_data_t* divine_purpose_ret;
     const spell_data_t* liadrins_fury_unleashed;
     const spell_data_t* justice_gaze;
+    const spell_data_t* chain_of_thrayn;
+    const spell_data_t* ashes_to_dust;
     const spell_data_t* consecration_bonus;
   } spells;
 
@@ -450,6 +455,7 @@ public:
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_haste() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
   virtual double    composite_spell_power( school_e school ) const override;
   virtual double    composite_spell_power_multiplier() const override;
@@ -508,6 +514,7 @@ public:
     return td;
   }
 };
+
 
 
 // ==========================================================================
@@ -1137,7 +1144,7 @@ struct bastion_of_light_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-  
+
     p()->cooldowns.shield_of_the_righteous->reset(false, true);
   }
 };
@@ -1814,10 +1821,13 @@ struct execution_sentence_t : public paladin_spell_t
       p() -> buffs.crusade -> trigger( num_stacks );
     }
 
-    if ( p() -> talents.fist_of_justice -> ok() )
+    if ( !maybe_ptr( p() -> dbc.ptr ) )
     {
-      double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      if ( p() -> talents.fist_of_justice -> ok() )
+      {
+        double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
+        p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      }
     }
   }
 
@@ -2896,11 +2906,53 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
       p() -> buffs.crusade -> trigger( num_stacks );
     }
 
-    if ( p() -> talents.fist_of_justice -> ok() )
+    if ( !maybe_ptr( p() -> dbc.ptr ) )
     {
-      double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      if ( p() -> talents.fist_of_justice -> ok() )
+      {
+        double reduction = p() -> talents.fist_of_justice -> effectN( 2 ).base_value();
+        p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      }
     }
+  }
+};
+
+
+// Custom events
+struct whisper_of_the_nathrezim_event_t : public event_t
+{
+  paladin_t* paladin;
+
+  whisper_of_the_nathrezim_event_t( paladin_t* p, timespan_t delay ) :
+    event_t( *p, delay ), paladin( p )
+  {
+  }
+
+  const char* name() const override
+  { return "whisper_of_the_nathrezim_delay"; }
+
+  void execute() override
+  {
+    paladin -> buffs.whisper_of_the_nathrezim -> trigger();
+  }
+};
+
+struct echoed_spell_event_t : public event_t
+{
+  paladin_melee_attack_t* echo;
+  paladin_t* paladin;
+
+  echoed_spell_event_t( paladin_t* p, paladin_melee_attack_t* spell, timespan_t delay ) :
+    event_t( *p, delay ), paladin( p ), echo( spell )
+  {
+  }
+
+  const char* name() const override
+  { return "echoed_spell_delay"; }
+
+  void execute() override
+  {
+    echo -> schedule_execute();
   }
 };
 
@@ -3283,7 +3335,7 @@ struct divine_storm_t: public holy_power_consumer_t
 
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
-      echoed_spell -> schedule_execute();
+      make_event<echoed_spell_event_t>( *sim, p(), echoed_spell, timespan_t::from_millis( 800 ) );
     }
 
     if ( p() -> whisper_of_the_nathrezim )
@@ -3291,7 +3343,7 @@ struct divine_storm_t: public holy_power_consumer_t
       if ( p() -> buffs.whisper_of_the_nathrezim -> up() )
         p() -> buffs.whisper_of_the_nathrezim -> expire();
 
-      p() -> buffs.whisper_of_the_nathrezim -> trigger();
+      make_event<whisper_of_the_nathrezim_event_t>( *sim, p(), timespan_t::from_millis( 300 ) );
     }
   }
 
@@ -3582,7 +3634,7 @@ struct judgment_t : public paladin_melee_attack_t
     // no weapon multiplier
     weapon_multiplier = 0.0;
     may_block = may_parry = may_dodge = false;
-  cooldown->charges = 1;
+    cooldown -> charges = 1;
     hasted_cd = true;
 
     // TODO: this is a hack; figure out what's really going on here.
@@ -3599,10 +3651,24 @@ struct judgment_t : public paladin_melee_attack_t
     }
     else if ( p -> specialization() == PALADIN_PROTECTION )
     {
-    cooldown->charges *= 1.0 + p->talents.crusaders_judgment->effectN(1).base_value();
+      cooldown -> charges *= 1.0 + p->talents.crusaders_judgment->effectN(1).base_value();
       cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
       base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
       sotr_cdr = -1.0 * timespan_t::from_seconds( 2 ); // hack for p -> spec.judgment_2 -> effectN( 1 ).base_value()
+    }
+  }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      if ( p() -> talents.fist_of_justice -> ok() )
+      {
+        double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
+        p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+      }
     }
   }
 
@@ -3909,14 +3975,14 @@ struct templars_verdict_t : public holy_power_consumer_t
 
     if ( p() -> artifact.echo_of_the_highlord.rank() )
     {
-      echoed_spell -> schedule_execute();
+      make_event<echoed_spell_event_t>( *sim, p(), echoed_spell, timespan_t::from_millis( 800 ) );
     }
 
     if ( p() -> whisper_of_the_nathrezim )
     {
       if ( p() -> buffs.whisper_of_the_nathrezim -> up() )
         p() -> buffs.whisper_of_the_nathrezim -> expire();
-      p() -> buffs.whisper_of_the_nathrezim -> trigger();
+      make_event<whisper_of_the_nathrezim_event_t>( *sim, p(), timespan_t::from_millis( 300 ) );
     }
   }
 };
@@ -4111,6 +4177,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_target_data_t( target, paladin )
 {
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
+  dots.wake_of_ashes = target -> get_dot( "wake_of_ashes", paladin );
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
   buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
@@ -5138,6 +5205,8 @@ void paladin_t::init_spells()
   spells.divine_purpose_ret            = find_spell( 223817 );
   spells.liadrins_fury_unleashed       = find_spell( 208408 );
   spells.justice_gaze                  = find_spell( 211557 );
+  spells.chain_of_thrayn               = find_spell( 206338 );
+  spells.ashes_to_dust                 = find_spell( 236106 );
   spells.consecration_bonus            = find_spell( 188370 );
 
   // Masteries
@@ -5445,10 +5514,22 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // Avenging Wrath buffs everything
   if ( buffs.avenging_wrath -> check() )
+  {
     m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
+    if ( chain_of_thrayn )
+    {
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+    }
+  }
 
   if ( buffs.crusade -> check() )
+  {
     m *= 1.0 + buffs.crusade -> get_damage_mod();
+    if ( chain_of_thrayn )
+    {
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+    }
+  }
 
   m *= 1.0 + buffs.wings_of_liberty -> current_stack * buffs.wings_of_liberty -> current_value;
 
@@ -5478,6 +5559,24 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+
+double paladin_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = player_t::composite_player_target_multiplier( target, school );
+
+  paladin_td_t* td = get_target_data( target );
+
+  if ( td -> dots.wake_of_ashes -> is_ticking() )
+  {
+    if ( ashes_to_dust )
+    {
+      m *= 1.0 + spells.ashes_to_dust -> effectN( 1 ).percent();
+    }
+  }
+
+  return m;
+}
+
 // paladin_t::composite_player_heal_multiplier ==============================
 
 double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) const
@@ -5485,10 +5584,23 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
   double m = player_t::composite_player_heal_multiplier( s );
 
   if ( buffs.avenging_wrath -> check() )
+  {
     m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
+    if ( chain_of_thrayn )
+    {
+      // TODO: fix this for holy
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
+    }
+  }
 
   if ( buffs.crusade -> check() )
+  {
     m *= 1.0 + buffs.crusade -> get_healing_mod();
+    if ( chain_of_thrayn )
+    {
+      m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
+    }
+  }
 
   // WoD Ret PvP 4-piece buffs everything
   if ( buffs.vindicators_fury -> check() )
@@ -6103,6 +6215,18 @@ static void justice_gaze( special_effect_t& effect )
   do_trinket_init( s, PALADIN_RETRIBUTION, s -> justice_gaze, effect );
 }
 
+static void chain_of_thrayn( special_effect_t& effect )
+{
+  paladin_t* s = debug_cast<paladin_t*>( effect.player );
+  do_trinket_init( s, PALADIN_RETRIBUTION, s -> chain_of_thrayn, effect );
+}
+
+static void ashes_to_dust( special_effect_t& effect )
+{
+  paladin_t* s = debug_cast<paladin_t*>( effect.player );
+  do_trinket_init( s, PALADIN_RETRIBUTION, s -> ashes_to_dust, effect );
+}
+
 // PALADIN MODULE INTERFACE =================================================
 
 struct paladin_module_t : public module_t
@@ -6123,6 +6247,8 @@ struct paladin_module_t : public module_t
     unique_gear::register_special_effect( 184911, retribution_trinket );
     unique_gear::register_special_effect( 207633, whisper_of_the_nathrezim );
     unique_gear::register_special_effect( 208408, liadrins_fury_unleashed );
+    unique_gear::register_special_effect( 206338, chain_of_thrayn );
+    unique_gear::register_special_effect( 236106, ashes_to_dust );
     unique_gear::register_special_effect( 211557, justice_gaze );
   }
 

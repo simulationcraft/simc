@@ -3120,6 +3120,8 @@ struct life_tap_t: public warlock_spell_t
 
 struct shadow_bolt_t: public warlock_spell_t
 {
+  cooldown_t* icd;
+
   shadow_bolt_t( warlock_t* p ):
     warlock_spell_t( p, "Shadow Bolt" )
   {
@@ -3127,7 +3129,9 @@ struct shadow_bolt_t: public warlock_spell_t
     energize_resource = RESOURCE_SOUL_SHARD;
     energize_amount = 1;
 
-    if ( p->sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) )
+    icd = p -> get_cooldown( "discord_icd" );
+
+    if ( p -> sets.set( WARLOCK_DEMONOLOGY, T17, B4 ) )
     {
       if ( rng().roll( p->sets.set( WARLOCK_DEMONOLOGY, T17, B4 )->effectN( 1 ).percent() ) )
       {
@@ -3177,20 +3181,21 @@ struct shadow_bolt_t: public warlock_spell_t
     if ( p() -> buffs.shadowy_inspiration -> check() )
       p() -> buffs.shadowy_inspiration -> expire();
 
-    if ( p() -> artifact.thalkiels_discord.rank() )
+    if ( p() -> artifact.thalkiels_discord.rank() && icd -> up() )
     {
       if ( rng().roll( p() -> artifact.thalkiels_discord.data().proc_chance() ) )
       {
         make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
           .target( execute_state -> target )
-          .x( execute_state -> target -> x_position )
+          .x( execute_state -> target->x_position )
           .y( execute_state -> target -> y_position )
           .pulse_time( timespan_t::from_millis( 1500 ) )
           .duration( p() -> find_spell( 211729 ) -> duration() )
           .start_time( sim -> current_time() )
           .action( p() -> active.thalkiels_discord ) );
 
-        p() -> procs.thalkiels_discord -> occur();
+        p() -> procs.thalkiels_discord->occur();
+        icd -> start( timespan_t::from_seconds( 6.0 ) );
       }
     }
 
@@ -4143,12 +4148,15 @@ struct rain_of_fire_t : public warlock_spell_t
 
 struct demonwrath_tick_t: public warlock_spell_t
 {
+  cooldown_t* icd;
 
   demonwrath_tick_t( warlock_t* p, const spell_data_t& ):
     warlock_spell_t( "demonwrath_tick", p, p -> find_spell( 193439 ) )
   {
     aoe = -1;
     background = true;
+
+    icd = p -> get_cooldown( "discord_icd" );
   }
 
   void impact( action_state_t* s ) override
@@ -4171,6 +4179,24 @@ struct demonwrath_tick_t: public warlock_spell_t
         p() -> shard_react = p() -> sim -> current_time();
       else
         p() -> shard_react = timespan_t::max();
+    }
+
+    if ( maybe_ptr( p() -> dbc.ptr) && p() -> artifact.thalkiels_discord.rank() && icd -> up() )
+    {
+      if ( rng().roll( p() -> artifact.thalkiels_discord.data().proc_chance() ) )
+      {
+        make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+          .target( execute_state -> target )
+          .x( execute_state -> target->x_position )
+          .y( execute_state -> target->y_position )
+          .pulse_time( timespan_t::from_millis( 1500 ) )
+          .duration( p() -> find_spell( 211729 ) -> duration() )
+          .start_time( sim -> current_time() )
+          .action( p() -> active.thalkiels_discord ) );
+
+        p() -> procs.thalkiels_discord->occur();
+        icd -> start( timespan_t::from_seconds( 6.0 ) );
+      }
     }
   }
 };

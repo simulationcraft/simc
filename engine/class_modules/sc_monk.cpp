@@ -2010,8 +2010,21 @@ public:
   // Used to trigger Windwalker's Combo Strike Mastery; Triggers prior to calculating damage
   void combo_strikes_trigger( combo_strikes_e new_ability )
   {
-    if ( !compare_previous_combo_strikes( new_ability ) && p() -> mastery.combo_strikes -> ok() )
+    if ( p() -> mastery.combo_strikes -> ok() )
     {
+      if ( !compare_previous_combo_strikes( new_ability ) )
+      {
+        p() -> buff.combo_strikes -> trigger();
+        if ( p() -> talent.hit_combo -> ok() )
+          p() -> buff.hit_combo -> trigger();
+      }
+      else
+      {
+        p() -> buff.combo_strikes -> expire();
+        p() -> buff.hit_combo -> expire();
+      }
+      p() -> previous_combo_strike = new_ability;
+
       // The set bonus checks the last 3 unique combo strike triggering abilities before triggering a spell
       // This is an ongoing check; so theoretically it can trigger 2 times from 4 unique CS spells in a row
       // If a spell is used and it is one of the last 3 combo stirke saved, it will not trigger the buff
@@ -2081,18 +2094,7 @@ public:
         else
           p() -> t19_melee_4_piece_container_1 = new_ability;
       }
-
-      p() -> buff.combo_strikes -> trigger();
-      if ( p() -> talent.hit_combo -> ok() )
-        p() -> buff.hit_combo -> trigger();
     }
-    else
-    {
-      p() -> buff.combo_strikes -> expire();
-      p() -> buff.hit_combo -> expire();
-      p() -> buff.combo_master -> expire();
-    }
-    p() -> previous_combo_strike = new_ability;
   }
 
   double cost() const override
