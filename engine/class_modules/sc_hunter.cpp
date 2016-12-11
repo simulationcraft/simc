@@ -656,12 +656,9 @@ private:
 public:
   typedef hunter_action_t base_t;
 
-  bool lone_wolf;
-
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
-                   ab( n, player, s ),
-                   lone_wolf( player -> talents.lone_wolf -> ok() )
+                   ab( n, player, s )
   {
   }
 
@@ -5352,6 +5349,7 @@ dots( dots_t() )
       buff_creator_t(*this, "vulnerability")
       .spell(p->find_spell(187131))
       .default_value(p->find_spell(187131)->effectN(2).percent())
+      .duration(timespan_t::from_seconds(6.0))
       .refresh_behavior(BUFF_REFRESH_DURATION);
   }
   else {
@@ -5377,7 +5375,8 @@ dots( dots_t() )
         .spell( p -> find_spell( 199803 ) )
         .default_value( p -> find_spell( 199803 ) 
                           -> effectN( 1 )
-                            .percent() );
+                            .percent() )
+        .max_stack(maybe_ptr(p->dbc.ptr) ? 10 : 8);
 
   debuffs.lacerate = 
     buff_creator_t( *this, "lacerate" )
