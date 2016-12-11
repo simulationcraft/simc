@@ -867,6 +867,10 @@ struct water_elemental_pet_t : public mage_pet_t
                o()->incanters_flow_stack_mult;
     }
 
+    if (  o() -> artifact.spellborne )
+    {
+      m *= 1.0 + o() -> artifact.spellborne.percent();
+    }
     return m;
   }
 };
@@ -976,7 +980,8 @@ struct water_jet_t : public mage_pet_spell_t
     parse_options( options_str );
     channeled = tick_may_crit = true;
     tick_zero         = true;
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
     if ( p->o()->sets.has_set_bonus( MAGE_FROST, T18, B4 ) )
     {
       dot_duration += p->find_spell( 185971 )->effectN( 1 ).time_value();
@@ -2595,7 +2600,10 @@ struct icicle_t : public frost_mage_spell_t
     if ( p() -> buffs.bone_chilling -> up() )
     {
       am /= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() / 10 );
-
+    }
+    if ( p() -> artifact.spellborne )
+    {
+      am /= 1.0 + p() -> artifact.spellborne.percent();
     }
     // Don't double dip on versatility, we stored it when the icicle was gained.
     am /= s -> versatility;
@@ -3476,8 +3484,6 @@ struct blizzard_shard_t : public frost_mage_spell_t
     ground_aoe = true;
     spell_power_mod.direct *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
     chills = true;
-    // PTR Multiplier
-    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
   }
 
   virtual bool init_finished() override
@@ -3535,7 +3541,8 @@ struct blizzard_t : public frost_mage_spell_t
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks = true;
     cooldown -> hasted = true;
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
     tick_action = new blizzard_shard_t( p );
   }
   virtual double composite_crit_chance() const override
@@ -4419,6 +4426,8 @@ struct flurry_bolt_t : public frost_mage_spell_t
     {
       base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
     }
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
   }
   virtual action_state_t* new_state() override
   {
@@ -4525,7 +4534,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     // Approximate travel time from in game data.
     // TODO: Improve approximation
-    return timespan_t::from_seconds( ( player -> current.distance / 38 ) );
+    return timespan_t::from_seconds( ( player -> current.distance / 29 ) );
   }
 
   virtual timespan_t execute_time() const override
@@ -4952,6 +4961,8 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       base_multiplier *= 1.0 + ( p -> talents.lonely_winter -> effectN( 1 ).percent() +
                                p -> artifact.its_cold_outside.data().effectN( 2 ).percent() );
     }
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137020 ) -> effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p -> artifact.orbital_strike.percent();
     chills = true;
   }
