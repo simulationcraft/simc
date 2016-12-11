@@ -3440,14 +3440,8 @@ struct blast_wave_t : public fire_mage_spell_t
     parse_options( options_str );
     triggers_pyretic_incantation = true;
     aoe = -1;
-
-    double bw_mult = 1.0 + p -> talents.blast_wave -> effectN( 1 ).percent();
-    base_multiplier *= bw_mult;
-
     // PTR Multiplier
     base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
-
-    base_aoe_multiplier = 1.0 / bw_mult;
   }
 };
 
@@ -4243,6 +4237,8 @@ struct flame_patch_t : public fire_mage_spell_t
     background = true;
     ground_aoe = background = true;
     school = SCHOOL_FIRE;
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   }
 
   // Override damage type to avoid triggering Doom Nova
@@ -5663,7 +5659,8 @@ living_bomb_explosion_t::
   aoe = -1;
   radius = 10;
   background = true;
-
+    // PTR Multiplier
+    base_multiplier *= 1.0 + p -> find_spell( 137019 ) -> effectN( 1 ).percent();
   if ( parent_lb -> casted )
   {
     child_lb = new living_bomb_t( p, std::string( "" ), false );
