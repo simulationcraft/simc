@@ -13,6 +13,9 @@
 // Survival
 //   - Harpoon legendary
 //
+// Marksmanship
+//   - Sentinel (PTR)
+//
 // ==========================================================================
 
 namespace
@@ -193,6 +196,12 @@ public:
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
     proc_t* no_vuln_aimed_shot;
+    proc_t* vuln_aimed_15;
+    proc_t* vuln_aimed_30;
+    proc_t* vuln_aimed_45;
+    proc_t* vuln_aimed_60;
+    proc_t* vuln_aimed_75;
+    proc_t* vuln_aimed_90;
     proc_t* no_vuln_marked_shot;
     proc_t* zevrims_hunger;
     proc_t* convergence;
@@ -675,9 +684,6 @@ public:
   double action_multiplier() const override
   {
     double am = ab::action_multiplier();
-
-    if ( lone_wolf )
-      am *= 1.0 + p() -> talents.lone_wolf -> effectN( 1 ).percent();
 
     if ( p() -> buffs.t19_4p_mongoose_power -> up() && ab::special )
       am *= 1.0 + p() -> buffs.t19_4p_mongoose_power -> default_value;
@@ -2483,7 +2489,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     if ( require_pre )
     {
       p() -> buffs.pre_steady_focus -> trigger( 1 );
-      if ( p() -> buffs.pre_steady_focus -> stack() < 3 )
+      if ( p() -> buffs.pre_steady_focus -> stack() < (maybe_ptr(p()->dbc.ptr) ? 2 : 3) )
         return;
     }
 
@@ -2769,13 +2775,16 @@ struct barrage_t: public hunter_ranged_attack_t
   struct barrage_damage_t: public attacks::hunter_ranged_attack_t
   {
     barrage_damage_t( hunter_t* player ):
-      attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 2 ).trigger() )
+      attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( maybe_ptr( player -> dbc.ptr ) ? 1 : 2 ).trigger() )
     {
       background = true;
       may_crit = true;
       weapon = &( player -> main_hand_weapon );
       aoe = -1;
-      base_aoe_multiplier = 0.5;
+
+      if (!maybe_ptr(player->dbc.ptr))
+        base_aoe_multiplier = 0.5;
+
       range = radius;
       range = 0;
       travel_speed = 0.0;
@@ -3160,8 +3169,14 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
     hunter_td_t* td = this -> td( t );
 
-    if ( td -> debuffs.vulnerable -> up() )
-      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+    if ( td -> debuffs.vulnerable -> up() ) {
+      if ( maybe_ptr(t->dbc.ptr) && p()->talents.patient_sniper->ok() ) {
+        m *= 1.0 + td->debuffs.vulnerable->default_value + td->debuffs.vulnerable->data().effectN(1).percent() * td->debuffs.vulnerable->current_tick;
+      }
+      else {
+        m *= 1.0 + td->debuffs.vulnerable->check_stack_value();
+      }
+    }
 
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
@@ -3290,15 +3305,39 @@ struct aimed_shot_t: public aimed_shot_base_t
     return cost;
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual void impact(action_state_t* s) override
   {
-    aimed_shot_base_t::impact( s );
+    aimed_shot_base_t::impact(s);
 
-    if ( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
-      trigger_piercing_shots( s );
+    if (p()->buffs.careful_aim->value() && s->result == RESULT_CRIT)
+      trigger_piercing_shots(s);
 
-    if ( !td( s -> target ) -> debuffs.vulnerable -> check() )
-      p() -> procs.no_vuln_aimed_shot -> occur();
+    if (!td(s->target)->debuffs.vulnerable->check()) {
+      p()->procs.no_vuln_aimed_shot->occur();
+    }
+    else if (p()->talents.patient_sniper->ok()) {
+      // Rather helpful for debugging apl development.
+      switch (td(s->target)->debuffs.vulnerable->current_tick) {
+      case 1:
+        p()->procs.vuln_aimed_15->occur();
+        break;
+      case 2:
+        p()->procs.vuln_aimed_30->occur();
+        break;
+      case 3:
+        p()->procs.vuln_aimed_45->occur();
+        break;
+      case 4:
+        p()->procs.vuln_aimed_60->occur();
+        break;
+      case 5:
+        p()->procs.vuln_aimed_75->occur();
+        break;
+      case 6:
+        p()->procs.vuln_aimed_90->occur();
+        break;
+      }
+    }
   }
 
   virtual void execute() override
@@ -3477,7 +3516,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
     std::vector<player_t*> marked_shot_targets = execute_state -> action -> target_list();
     for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
     {
-      if ( !td( marked_shot_targets[i] ) -> debuffs.vulnerable -> check() && no_vuln_check )
+      if ( !td( marked_shot_targets[i] ) -> debuffs.vulnerable -> check() && no_vuln_check && !maybe_ptr(p()->dbc.ptr))
       {
         p() -> procs.no_vuln_marked_shot -> occur();
         no_vuln_check = false; // Don't show multiple procs for one cast
@@ -3561,7 +3600,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
     hunter_td_t* td = this -> td( t );
-    if ( td -> debuffs.vulnerable -> up() )
+    if ( td -> debuffs.vulnerable -> up() && !maybe_ptr(t->dbc.ptr))
       m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
 
     if ( td -> debuffs.true_aim -> up() )
@@ -3603,6 +3642,23 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
   }
 
+  virtual double composite_target_da_multiplier(player_t* t) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier(t);
+
+    hunter_td_t* td = this->td(t);
+    if (td->debuffs.vulnerable->up() && maybe_ptr(t->dbc.ptr)) {
+      if (p()->talents.patient_sniper->ok()) {
+        m *= 1.0 + td->debuffs.vulnerable->default_value + td->debuffs.vulnerable->data().effectN(1).percent() * td->debuffs.vulnerable->current_tick;
+      }
+      else {
+        m *= 1.0 + td->debuffs.vulnerable->check_stack_value();
+      }
+    }
+
+    return m;
+  }
+
   virtual double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
@@ -3640,6 +3696,15 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     initial_target = p() -> target;
 
     hunter_ranged_attack_t::execute();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    am *= 1.0 + p()->cache.mastery() * p()->mastery.sniper_training->effectN(2).mastery_value();
+
+    return am;
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -5281,30 +5346,32 @@ dots( dots_t() )
   debuffs.hunters_mark = 
     buff_creator_t( *this, "hunters_mark" )
       .spell( p -> find_spell( 185365 ) );
-  if ( p -> talents.patient_sniper -> ok() )
-  {
-    debuffs.vulnerable = 
-      buff_creator_t( *this, "vulnerability" )
-        .spell( p -> find_spell( 187131 ) )
-        .default_value( p -> find_spell( 187131 ) 
-                          -> effectN( 2 )
-                            .percent() + 
-                              p -> talents.patient_sniper 
-                                -> effectN( 2 )
-                                  .percent() )
-        .duration( timespan_t::from_seconds( 6.0 ) )
-        .max_stack( 1 );
+
+  if (maybe_ptr(p->dbc.ptr)) {
+    debuffs.vulnerable =
+      buff_creator_t(*this, "vulnerability")
+      .spell(p->find_spell(187131))
+      .default_value(p->find_spell(187131)->effectN(2).percent())
+      .refresh_behavior(BUFF_REFRESH_DURATION);
   }
-  else
-  {
-    debuffs.vulnerable = 
-      buff_creator_t( *this, "vulnerability" )
-        .spell( p -> find_spell( 187131 ) )
-        .default_value( p -> find_spell( 187131 ) 
-                          -> effectN( 2 )
-                            .percent() )
-        .max_stack( 2 );
+  else {
+    if (p->talents.patient_sniper->ok()) {
+      debuffs.vulnerable =
+        buff_creator_t(*this, "vulnerability")
+        .spell(p->find_spell(187131))
+        .default_value(p->find_spell(187131)->effectN(2).percent() + p->talents.patient_sniper->effectN(2).percent())
+        .duration(timespan_t::from_seconds(6.0))
+        .max_stack(1);
+    }
+    else {
+      debuffs.vulnerable =
+        buff_creator_t(*this, "vulnerability")
+        .spell(p->find_spell(187131))
+        .default_value(p->find_spell(187131)->effectN(2).percent())
+        .max_stack(2);
+    }
   }
+
   debuffs.true_aim = 
     buff_creator_t( *this, "true_aim" )
         .spell( p -> find_spell( 199803 ) )
@@ -5669,7 +5736,7 @@ void hunter_t::init_base_stats()
 
   base_focus_regen_per_second = 10.0;
 
-  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + specs.marksmans_focus -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + specs.marksmans_focus -> effectN( 1 ).resource( RESOURCE_FOCUS ) + (!maybe_ptr(dbc.ptr) ? talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS ) : 0);
 
   stats_tier17_4pc_bm = get_stats( "tier17_4pc_bm" );
   stats_tier18_4pc_bm = get_stats( "tier18_4pc_bm" );
@@ -5977,6 +6044,12 @@ void hunter_t::init_procs()
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
   procs.no_vuln_aimed_shot           = get_proc( "no_vuln_aimed_shot" );
+  procs.vuln_aimed_15                = get_proc( "vuln_aimed_15" );
+  procs.vuln_aimed_30                = get_proc( "vuln_aimed_30" );
+  procs.vuln_aimed_45                = get_proc( "vuln_aimed_45" );
+  procs.vuln_aimed_60                = get_proc( "vuln_aimed_60" );
+  procs.vuln_aimed_75                = get_proc( "vuln_aimed_75" );
+  procs.vuln_aimed_90                = get_proc( "vuln_aimed_90" );
   procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
   procs.convergence                  = get_proc( "convergence" );
@@ -6088,7 +6161,7 @@ void hunter_t::init_action_list()
     if ( true_level > 100 )
       precombat -> add_action( "augmentation,type=defiled" );
 
-    if ( specialization() == HUNTER_BEAST_MASTERY )
+    if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_MARKSMANSHIP )
     {
       precombat -> add_action( "volley,toggle=on" );
     }
@@ -6509,6 +6582,10 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( artifacts.windflight_arrows.rank() )
     m *= 1.0 + artifacts.windflight_arrows.percent();
+
+  if (talents.lone_wolf->ok()) {
+    m *= 1.0 + talents.lone_wolf->effectN(1).percent();
+  }
 
   if ( artifacts.voice_of_the_wild_gods.rank() )
     m *= 1.0 + artifacts.voice_of_the_wild_gods.percent();
