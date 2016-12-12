@@ -2781,12 +2781,26 @@ struct barrage_t: public hunter_ranged_attack_t
       weapon = &( player -> main_hand_weapon );
       aoe = -1;
 
-      if (!maybe_ptr(player->dbc.ptr))
+      if (!maybe_ptr(player->dbc.ptr)) {
         base_aoe_multiplier = 0.5;
+      }
+      else {
+        may_proc_bullseye = false;
+      }
 
       range = radius;
       range = 0;
       travel_speed = 0.0;
+    }
+
+    void impact(action_state_t* s) override {
+      attacks::hunter_ranged_attack_t::impact(s);
+
+      if (maybe_ptr(player->dbc.ptr)) {
+        // At least simulate the random chance of hitting for Bullseye stacking.
+        if (rng().roll(0.5) && p()->artifacts.bullseye.rank() && s->target->health_percentage() <= p()->artifacts.bullseye.value())
+          p()->buffs.bullseye->trigger();
+      }
     }
   };
 
@@ -2798,6 +2812,9 @@ struct barrage_t: public hunter_ranged_attack_t
     may_block = false;
     hasted_ticks = false;
     channeled = true;
+
+    if (maybe_ptr(player->dbc.ptr))
+      base_multiplier = 0.5;
 
     tick_zero = true;
     dynamic_tick_action = true;
@@ -3315,9 +3332,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     if (!td(s->target)->debuffs.vulnerable->check()) {
       p()->procs.no_vuln_aimed_shot->occur();
     }
-
-    else if (p()->talents.patient_sniper->ok()) {
-      // Rather helpful for debugging apl development.
+    else if (maybe_ptr(p()->dbc.ptr) && p()->talents.patient_sniper->ok()) {
       switch (td(s->target)->debuffs.vulnerable->current_tick) {
       case 1:
         p()->procs.vuln_aimed_15->occur();
@@ -4504,7 +4519,8 @@ struct peck_t : public hunter_spell_t
   {
     hunter_spell_t::impact(s);
 
-    p()->buffs.bullseye->trigger();
+    if (p()->artifacts.bullseye.rank() && s->target->health_percentage() <= p()->artifacts.bullseye.value())
+      p()->buffs.bullseye->trigger();
   }
 };
 
