@@ -43,7 +43,6 @@ actions.build+=/arcane_blast
 
 actions.burn=call_action_list,name=cooldowns
 actions.burn+=/arcane_missiles,if=buff.arcane_missiles.react=3
-actions.burn+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
 actions.burn+=/presence_of_mind,if=buff.arcane_power.remains>2*gcd
 actions.burn+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.burn+=/arcane_blast,if=active_enemies<=1&mana.pct%10*execute_time>target.time_to_die
@@ -58,7 +57,6 @@ actions.burn+=/arcane_blast
 actions.burn+=/evocation,interrupt_if=mana.pct>99
 
 actions.conserve=arcane_missiles,if=buff.arcane_missiles.react=3
-actions.conserve+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
 actions.conserve+=/arcane_blast,if=mana.pct>99
 actions.conserve+=/nether_tempest,if=(refreshable|!ticking)
 actions.conserve+=/arcane_blast,if=buff.rhonins_assaulting_armwraps.up&equipped.132413
@@ -85,7 +83,6 @@ actions.init_burn+=/rune_of_power
 actions.init_burn+=/start_burn_phase,if=((cooldown.evocation.remains-(2*burn_phase_duration))%2<burn_phase_duration)|cooldown.arcane_power.remains=0|target.time_to_die<55
 
 actions.rop_phase=arcane_missiles,if=buff.arcane_missiles.react=3
-actions.rop_phase+=/arcane_explosion,if=buff.quickening.remains<action.arcane_blast.cast_time&talent.quickening.enabled
 actions.rop_phase+=/nether_tempest,if=dot.nether_tempest.remains<=2|!ticking
 actions.rop_phase+=/arcane_missiles,if=buff.arcane_charge.stack=4
 actions.rop_phase+=/arcane_explosion,if=active_enemies>1
@@ -93,7 +90,7 @@ actions.rop_phase+=/arcane_blast,if=mana.pct>45
 actions.rop_phase+=/arcane_barrage
 
 head=hood_of_darkened_visions,id=139189,bonus_id=1806
-neck=sea_fan_pendant,id=142428,bonus_id=3469,enchant=mark_of_the_hidden_satyr
+neck=sea_fan_pendant,id=142428,bonus_id=3469
 shoulders=ancient_dreamwoven_mantle,id=139191,bonus_id=1806
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant=binding_of_intellect
 chest=robes_of_the_ancient_chronicle,id=142297
