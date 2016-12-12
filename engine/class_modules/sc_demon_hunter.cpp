@@ -474,6 +474,7 @@ public:
     spell_t* anguish;
     attack_t* demon_blades;
     spell_t* inner_demons;
+	attack_t* chaos_cleave;
 
     // Vengeance
     heal_t* charred_warblades;
@@ -3356,8 +3357,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       assert( eff.type() == E_TRIGGER_SPELL );
 
       dual = background = true;
-      aoe = data().effectN( 1 ).chain_target() +
-            p -> talent.chaos_cleave -> effectN( 1 ).base_value();
+	  aoe = data().effectN(1).chain_target();
+
+	  if (!maybe_ptr(p->dbc.ptr))
+	  {
+		  aoe += p->talent.chaos_cleave->effectN(1).base_value();
+	  }
+
       chain_multiplier = data().effectN( 1 ).chain_multiplier();
       may_refund       = weapon == &( p -> off_hand_weapon );
 
@@ -3402,6 +3408,14 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
                             parent -> gain );
       }
     }
+
+	void impact(action_state_t* state) override
+	{
+		demon_hunter_attack_t::impact(state);
+		p()->active.chaos_cleave->base_dd_min = state->result_total;
+		p()->active.chaos_cleave->base_dd_max = state->result_total;
+		p()->active.chaos_cleave->schedule_execute();
+	}
   };
 
   struct chaos_strike_event_t : public event_t
@@ -3447,8 +3461,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   {
     energize_amount =
       p -> spec.chaos_strike_refund -> effectN( 1 ).resource( RESOURCE_FURY );
-    aoe = s -> effectN( 1 ).chain_target() +
-          p -> talent.chaos_cleave -> effectN( 1 ).base_value();
+	aoe = s->effectN(1).chain_target();
+
+	if (!maybe_ptr(p->dbc.ptr))
+	{
+		aoe += p->talent.chaos_cleave->effectN(1).base_value();
+	}
+
 
     // Don't put damage modifiers here, they should go in chaos_strike_damage_t.
     // Crit chance modifiers need to be in here, not chaos_strike_damage_t.
@@ -3594,6 +3613,41 @@ struct chaos_strike_t : public chaos_strike_base_t
 
     return chaos_strike_base_t::ready();
   }
+};
+
+// Chaos Cleave =============================================================
+struct chaos_cleave_t : public demon_hunter_attack_t
+{
+	chaos_cleave_t(demon_hunter_t* p) : demon_hunter_attack_t(
+		"chaos_cleave", p, p->find_talent_spell("Chaos Cleave"))
+	{
+		may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
+		background = true;
+		aoe = -1;
+		weapon = &p->main_hand_weapon;
+		weapon_multiplier = 0;
+		radius = 8;
+		range = -1.0;
+		school = SCHOOL_CHAOS;
+	}
+
+	void snapshot_state(action_state_t* s, dmg_e rt) override
+	{
+		demon_hunter_attack_t::snapshot_state(s, rt);
+		s->da_multiplier =  p()->talent.chaos_cleave->effectN(2).percent();
+	}
+
+	result_e calculate_result(action_state_t* s) const override
+	{
+		result_e r = demon_hunter_attack_t::calculate_result(s);
+
+		if (result_is_miss(r))
+		{
+			return r;
+		}
+
+		return RESULT_HIT;
+	}
 };
 
 // Annihilation =============================================================
@@ -6026,6 +6080,11 @@ void demon_hunter_t::init_spells()
   if ( artifact.anguish_of_the_deceiver.rank() )
   {
     active.anguish = new anguish_t( this );
+  }
+
+  if (talent.chaos_cleave->ok())
+  {
+	  active.chaos_cleave = new chaos_cleave_t( this );
   }
 
   if ( artifact.charred_warblades.rank() )
