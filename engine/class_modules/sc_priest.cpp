@@ -2254,10 +2254,9 @@ struct mind_spike_t final : public priest_spell_t
   {
     parse_options( options_str );
     is_mind_spell               = true;
-    //is_sphere_of_insanity_spell = true;
     aoe = -1;
     radius = 8;
-    base_aoe_multiplier = data().effectN(5).percent();
+    base_aoe_multiplier = 0.25;//data().effectN(5).percent();
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
 
@@ -3324,23 +3323,12 @@ struct void_bolt_t final : public priest_spell_t
       {
         if ( td->dots.shadow_word_pain->is_ticking() )
         { 
-		      if ( maybe_ptr( player -> dbc.ptr) ) {
-			      td->dots.shadow_word_pain->extend_duration(timespan_t::from_millis(dot_extension), true );
-		      }
-		      else {
-			      td->dots.shadow_word_pain->refresh_duration();
-		      }
+			    td->dots.shadow_word_pain->extend_duration(timespan_t::from_millis(dot_extension), true );
         }
 
         if ( td->dots.vampiric_touch->is_ticking() )
         {
-          if (maybe_ptr(player->dbc.ptr)) {
-            td->dots.vampiric_touch->extend_duration(timespan_t::from_millis(dot_extension), true);
-          }
-          else {
-            td->dots.vampiric_touch->refresh_duration();
-          }
-          
+          td->dots.vampiric_touch->extend_duration(timespan_t::from_millis(dot_extension), true);         
         }
       }
     }
@@ -3849,9 +3837,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
       // Insanity loss per additional Insanity Drain stacks (>1) per second
       double loss_per_additional_stack =
-          maybe_ptr( priest->dbc.ptr )
-            ? 2.0/3.0  // Hardcoded Patch 7.1.5 (2016-12-02)
-            : 0.55;   // Hardcoded Patch 7.1.0 (Post hotfix 2016-11-15)
+        2.0 / 3.0;  // Hardcoded Patch 7.1.5 (2016-12-02)
 
       // Combined Insanity loss per second
       double insanity_loss_per_second =
