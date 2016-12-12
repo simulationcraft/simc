@@ -338,6 +338,7 @@ public:
     artifact_power_t sharpened_glaives;
     artifact_power_t unleashed_demons;
     artifact_power_t warglaives_of_chaos;
+	artifact_power_t chaos_burn;
 
     // NYI
     artifact_power_t deceivers_fury;
@@ -6006,6 +6007,7 @@ void demon_hunter_t::init_spells()
   artifact.sharpened_glaives    = find_artifact_spell( "Sharpened Glaives" );
   artifact.unleashed_demons     = find_artifact_spell( "Unleashed Demons" );
   artifact.warglaives_of_chaos  = find_artifact_spell( "Warglaives of Chaos" );
+  artifact.chaos_burn			= find_artifact_spell("Chaos Burn");
 
   // Vengeance -- The Aldrachi Warblades
   artifact.aldrachi_design      = find_artifact_spell( "Aldrachi Design" );
@@ -6710,6 +6712,8 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> check() )
     m *= 1.0 + talent.razor_spikes -> effectN( 1 ).percent();
+
+  m *= 1.0 + artifact.chaos_burn.percent();
 
   return m;
 }
