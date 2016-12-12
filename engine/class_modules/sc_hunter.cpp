@@ -201,7 +201,6 @@ public:
     proc_t* vuln_aimed_45;
     proc_t* vuln_aimed_60;
     proc_t* vuln_aimed_75;
-    proc_t* vuln_aimed_90;
     proc_t* no_vuln_marked_shot;
     proc_t* zevrims_hunger;
     proc_t* convergence;
@@ -2408,10 +2407,12 @@ namespace attacks
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
   bool may_proc_mm_feet;
+  bool may_proc_bullseye;
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ):
                           base_t( n, player, s ),
-                          may_proc_mm_feet( false )
+                          may_proc_mm_feet( false ),
+                          may_proc_bullseye( true )
   {
     if ( player -> main_hand_weapon.type == WEAPON_NONE )
       background = true;
@@ -2464,7 +2465,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     base_t::impact( s );
 
-    if ( p() -> artifacts.bullseye.rank() && s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() )
+    if ( p() -> artifacts.bullseye.rank() && s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() && may_proc_bullseye)
       p() -> buffs.bullseye -> trigger();
   }
 
@@ -2661,6 +2662,7 @@ struct auto_shot_t: public ranged_t
   auto_shot_t( hunter_t* p ): ranged_t( p, "auto_shot", spell_data_t::nil() ), volley_tick( nullptr ),
     volley_tick_cost( 0 )
   {
+    may_proc_bullseye = false;
     school = SCHOOL_PHYSICAL;
     range = 40.0;
 
@@ -3253,6 +3255,7 @@ struct legacy_of_the_windrunners_t: aimed_shot_base_t
   legacy_of_the_windrunners_t( hunter_t* p ):
     aimed_shot_base_t( "legacy_of_the_windrunners", p, p -> artifacts.legacy_of_the_windrunners )
   {
+    may_proc_bullseye = false;
     background = true;
     dual = true;
     proc = true;
@@ -3312,6 +3315,7 @@ struct aimed_shot_t: public aimed_shot_base_t
     if (!td(s->target)->debuffs.vulnerable->check()) {
       p()->procs.no_vuln_aimed_shot->occur();
     }
+
     else if (p()->talents.patient_sniper->ok()) {
       // Rather helpful for debugging apl development.
       switch (td(s->target)->debuffs.vulnerable->current_tick) {
@@ -3329,9 +3333,6 @@ struct aimed_shot_t: public aimed_shot_base_t
         break;
       case 5:
         p()->procs.vuln_aimed_75->occur();
-        break;
-      case 6:
-        p()->procs.vuln_aimed_90->occur();
         break;
       }
     }
@@ -3467,6 +3468,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
     call_of_the_hunter_t( hunter_t* p ):
       hunter_ranged_attack_t( "call_of_the_hunter", p, p -> find_spell( 191070 ) )
     {
+      may_proc_bullseye = false;
       aoe = -1;
       background = true;
     }
@@ -4497,6 +4499,13 @@ struct peck_t : public hunter_spell_t
 
   virtual void try_steady_focus() override
   {}
+
+  virtual void impact(action_state_t* s) override
+  {
+    hunter_spell_t::impact(s);
+
+    p()->buffs.bullseye->trigger();
+  }
 };
 
 // TODO this should reset CD if the target dies
@@ -4540,11 +4549,33 @@ struct moc_t : public hunter_spell_t
 
 struct sentinel_t : public hunter_spell_t
 {
-  sentinel_t( hunter_t* p, const std::string& options_str ) :
-    hunter_spell_t( "sentinel", p, p -> talents.sentinel )
+  struct sentinel_mark_t : public hunter_spell_t
+  {
+    sentinel_mark_t(hunter_t* p) :
+      hunter_spell_t("sentinel_mark", p)
+    {
+      aoe = -1;
+      ground_aoe = background = dual = tick_zero = true;
+      harmful = false;
+      callbacks = false;
+      radius = p->find_spell(206817)->effectN(1).radius();
+    }
+
+    void impact(action_state_t* s) override
+    {
+      p()->buffs.hunters_mark_exists->trigger();
+      td(s->target)->debuffs.hunters_mark->trigger();
+    }
+  };
+
+  sentinel_mark_t* sentinel_mark;
+
+  sentinel_t(hunter_t* p, const std::string& options_str) :
+    hunter_spell_t("sentinel", p, p -> talents.sentinel),
+    sentinel_mark(new sentinel_mark_t(p))
   {
     harmful = false;
-    parse_options( options_str );
+    parse_options(options_str);
     aoe = -1;
   }
 
@@ -4552,17 +4583,31 @@ struct sentinel_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.hunters_mark_exists -> trigger();
+    if (maybe_ptr(p()->dbc.ptr)) {
+      make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
+        .target(execute_state->target)
+        .x(execute_state->target->x_position)
+        .y(execute_state->target->y_position)
+        .pulse_time(timespan_t::from_seconds(data().effectN(2).base_value()))
+        .duration(data().duration())
+        .start_time(sim->current_time())
+        .action(sentinel_mark)
+        .hasted(ground_aoe_params_t::NOTHING), true);
+    }
+    else {
+      p()->buffs.hunters_mark_exists->trigger();
+    }
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual void impact(action_state_t* s) override
   {
-    hunter_spell_t::impact( s );
+    hunter_spell_t::impact(s);
 
-    td( s -> target ) -> debuffs.hunters_mark -> trigger();
+    if (!maybe_ptr(p()->dbc.ptr)) {
+      td(s->target)->debuffs.hunters_mark->trigger();
+    }
   }
 };
-
 
 
 //==============================
@@ -6048,7 +6093,6 @@ void hunter_t::init_procs()
   procs.vuln_aimed_45                = get_proc( "vuln_aimed_45" );
   procs.vuln_aimed_60                = get_proc( "vuln_aimed_60" );
   procs.vuln_aimed_75                = get_proc( "vuln_aimed_75" );
-  procs.vuln_aimed_90                = get_proc( "vuln_aimed_90" );
   procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
   procs.convergence                  = get_proc( "convergence" );
@@ -6058,7 +6102,7 @@ void hunter_t::init_procs()
   procs.animal_instincts_aspect      = get_proc( "animal_instincts_aspect" );
   procs.animal_instincts_harpoon     = get_proc( "animal_instincts_harpoon" );
   procs.animal_instincts_flanking    = get_proc( "animal_instincts_flanking" );
-  procs.animal_instincts             = get_proc("animal_instincts");
+  procs.animal_instincts             = get_proc(" animal_instincts ");
 }
 
 // hunter_t::init_rng =======================================================
