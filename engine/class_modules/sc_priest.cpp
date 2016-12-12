@@ -40,7 +40,7 @@ namespace actions
 {
 namespace spells
 {
-struct mind_spike_detonation_t;
+struct mind_sear_tick_t;
 struct shadowy_apparition_spell_t;
 struct sphere_of_insanity_spell_t;
 }
@@ -204,7 +204,7 @@ public:
 
     const spell_data_t* mind_bomb;
 
-    const spell_data_t* void_lord;
+    const spell_data_t* lingering_insanity;
     const spell_data_t* reaper_of_souls;
     const spell_data_t* void_ray;
 
@@ -362,7 +362,7 @@ public:
   // Special
   struct
   {
-    actions::spells::mind_spike_detonation_t* mind_spike_detonation;
+    actions::spells::mind_sear_tick_t* mind_sear_tick;
     actions::spells::shadowy_apparition_spell_t* shadowy_apparitions;
     actions::spells::sphere_of_insanity_spell_t* sphere_of_insanity;
     action_t* mental_fortitude;
@@ -1815,102 +1815,6 @@ struct levitate_t final : public priest_spell_t
   }
 };
 
-/// Dummy spell for triggering Lingering Insanity Buff as a pre-combat action
-struct lingering_insanity_t final : public priest_spell_t
-{
-  int stacks_to_trigger;
-  timespan_t duration;
-
-  lingering_insanity_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "trigger_lingering_insanity", p, spell_data_t::nil() ),
-      stacks_to_trigger( 0 ),
-      duration( timespan_t::min() )
-  {
-    add_option( opt_int( "stacks", stacks_to_trigger, 0, 100 ) );
-    add_option( opt_timespan( "duration", duration, timespan_t::zero(),
-                              p.buffs.lingering_insanity->buff_duration ) );
-    parse_options( options_str );
-    ignore_false_positive = true;
-    harmful               = false;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.buffs.lingering_insanity->trigger(
-        stacks_to_trigger, buff_t::DEFAULT_VALUE(), -1, duration );
-  }
-};
-
-struct mind_spike_detonation_t final : public priest_spell_t
-{
-  double detonation_amount;
-  player_t* detonation_target;
-
-  mind_spike_detonation_t( priest_t& p )
-    : priest_spell_t( "mind_spike_detonation", p,
-                      p.find_spell( 217676 ) ),  //.talents.mind_spike)
-      detonation_amount( 0.0 ),
-      detonation_target( nullptr )
-  {
-    may_crit                    = false;
-    background                  = true;
-    proc                        = false;
-    callbacks                   = true;
-    may_miss                    = false;
-    aoe                         = -1;
-    is_sphere_of_insanity_spell = true;
-    range                       = 8.0;
-    trigger_gcd                 = timespan_t::zero();
-    school                      = SCHOOL_SHADOWFROST;
-  }
-
-  double calculate_direct_amount( action_state_t* state ) const override
-  {
-    if ( state->target == detonation_target )  // This is the target we
-                                               // detonated against. Do full
-                                               // damage
-    {
-      return detonation_amount;
-    }
-    else  // Other targets, do half damage.
-    {
-      return detonation_amount / 2.0;
-    }
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    priest_spell_t::impact( state );
-
-    priest_td_t& td = get_td( state->target );
-
-    if ( state->target == detonation_target )  // This is the target we
-                                               // detonated against. Remove
-                                               // debuff
-    {
-      td.buffs.mind_spike->expire();
-    }
-  }
-
-  // Trigger mind spike explosion
-  void trigger( player_t* target )
-  {
-    priest_td_t& td = get_td( target );
-
-    detonation_amount = td.buffs.mind_spike->value();
-    detonation_target = target;
-
-    if ( priest.sim->debug )
-    {
-      priest.sim->out_debug << priest.name()
-                            << " triggered Mind Spike Detonation.";
-    }
-    schedule_execute();
-  }
-};
-
 struct mind_blast_t final : public priest_spell_t
 {
 private:
@@ -1937,14 +1841,6 @@ public:
     if ( player.artifact.mind_shattering.rank() )
     {
       base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
-    }
-
-    if ( !priest.active_spells.mind_spike_detonation &&
-         priest.talents.mind_spike->ok() )
-    {
-      priest.active_spells.mind_spike_detonation =
-          new mind_spike_detonation_t( player );
-      add_child( priest.active_spells.mind_spike_detonation );
     }
 
     // Disable dynamic hasted cooldown scaling as it is causing a double-dip in
@@ -1974,6 +1870,19 @@ public:
     priest.buffs.shadowy_insight->expire();
   }
 
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier(state);
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
+    return d;
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
@@ -1988,13 +1897,6 @@ public:
 
     priest_td_t& td = get_td( s->target );
 
-    if ( priest.active_spells.mind_spike_detonation )
-    {
-      if ( td.buffs.mind_spike->up() )
-      {
-        priest.active_spells.mind_spike_detonation->trigger( s->target );
-      }
-    }
   }
 
   timespan_t execute_time() const override
@@ -2044,6 +1946,71 @@ public:
   }
 };
 
+struct mind_sear_tick_t final : public priest_spell_t
+{
+  player_t* source_target;
+  double insanity_gain;
+
+  mind_sear_tick_t(priest_t& p)
+    : priest_spell_t("mind_sear_tick", p,
+      p.find_spell(234702)),  
+    source_target(nullptr),
+    insanity_gain(1) // Missing from spell data
+  {
+    may_crit = false;
+    background = true;
+    proc = false;
+    callbacks = true;
+    may_miss = false;
+    aoe = -1;
+    is_sphere_of_insanity_spell = false;
+    is_mind_spell = true;
+    range = 8.0;
+    trigger_gcd = timespan_t::zero();
+    school = SCHOOL_SHADOW;
+    spell_power_mod.direct = 0.4; 
+    // Spell not bringing the coeff?
+    //p.find_spell(234696)->effectN(2).sp_coeff();
+  }
+
+  size_t available_targets(std::vector< player_t* >& tl) const override
+  {
+    priest_spell_t::available_targets(tl);
+
+    // Does not hit the main target
+    auto it = range::find(tl, target);
+    if (it != tl.end())
+    {
+      tl.erase(it);
+    }
+
+    return tl.size();
+  }
+
+  // Trigger aoe damage
+  void trigger(player_t* target)
+  {
+    source_target = target;
+
+    if (priest.sim->debug)
+    {
+      priest.sim->out_debug << priest.name()
+        << " triggered Mind Sear Damage.";
+    }
+    schedule_execute();
+  }
+
+  void impact(action_state_t* state) override
+  {
+    priest_spell_t::impact(state);
+
+    if (result_is_hit(state->result))
+    {
+      generate_insanity(insanity_gain, priest.gains.insanity_mind_sear);
+    }
+  }
+};
+
 struct mind_flay_t final : public priest_spell_t
 {
   double insanity_gain;
@@ -2066,6 +2033,10 @@ struct mind_flay_t final : public priest_spell_t
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
 
+    priest.active_spells.mind_sear_tick =
+      new mind_sear_tick_t(p);
+    add_child(priest.active_spells.mind_sear_tick);
+
     if ( p.artifact.void_siphon.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
@@ -2084,12 +2055,90 @@ struct mind_flay_t final : public priest_spell_t
             priest.buffs.void_ray->check() *
                 priest.buffs.void_ray->data().effectN( 1 ).percent();
 
+    
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      am *= 1.0 + ptr_scaling_buff->effectN(2).percent();
+    }
+
     return am;
+  }
+  
+  /// Legendary the_twins_painful_touch
+  void spread_twins_painsful_dots(action_state_t* s)
+  {
+    const priest_td_t* td = find_td(s->target);
+    if (!td)
+    {
+      // If we do not have targetdata, the target does not have any dots. bail
+      // out.
+      return;
+    }
+
+    std::array<dot_t*, 2> dots = {
+      { td->dots.shadow_word_pain, td->dots.vampiric_touch } };
+
+    // First check if there is even a dot active, otherwise we can bail out as
+    // well.
+    if (range::find_if(dots, [](const dot_t* d) {
+      return d->remains() > timespan_t::zero();
+    }) == dots.end())
+    {
+      if (sim->debug)
+      {
+        sim->out_debug.printf(
+          "%s %s will not spread the_twins_painful_touch dots because no dot "
+          "is on the target.",
+          priest.name(), name());
+      }
+      return;
+    }
+
+    // Now find 2 targets to spread dots to.
+    double max_distance = 10.0;
+    unsigned max_targets = 2;
+    std::vector<player_t*> valid_targets;
+    range::remove_copy_if(
+      sim->target_list.data(), std::back_inserter(valid_targets),
+      [s, max_distance](const player_t* p) {
+      return s->target->get_player_distance(*p) > max_distance;
+    });
+    // Just cut off to max_targets. No special selection.
+    if (valid_targets.size() > max_targets)
+    {
+      valid_targets.resize(max_targets);
+    }
+    if (sim->debug)
+    {
+      std::string targets;
+      sim->out_debug.printf(
+        "%s %s selected targets for the_twins_painful_touch dots: %s.",
+        priest.name(), name(), targets.c_str());
+    }
+
+    // spread dots to targets
+    for (dot_t* dot : dots)
+    {
+      for (player_t* target : valid_targets)
+      {
+        dot->copy(target, DOT_COPY_CLONE);
+      }
+    }
   }
 
   void tick( dot_t* d ) override
   {
-    priest_spell_t::tick( d );
+    if (const priest_td_t* td = find_td(d->target))
+    {
+      priest_spell_t::tick(d);
+
+      if (td->dots.shadow_word_pain->is_ticking())
+      {
+        //AoE flay
+        priest.active_spells.mind_sear_tick->trigger( d->target );
+      }
+    }
 
     if ( priest.active_items.mental_fatigue )
     {
@@ -2111,43 +2160,22 @@ struct mind_flay_t final : public priest_spell_t
     generate_insanity( insanity_gain, priest.gains.insanity_mind_flay );
   }
 
+  void impact(action_state_t* s) override
+  {
+    priest_spell_t::impact(s);
+    if (priest.buffs.the_twins_painful_touch->up())
+    {
+      spread_twins_painsful_dots(s);
+      priest.buffs.the_twins_painful_touch->expire();
+    }
+  }
+
   bool ready() override
   {
     if ( priest.talents.mind_spike->ok() && !maybe_ptr( priest.dbc.ptr ) )
       return false;
 
     return priest_spell_t::ready();
-  }
-};
-
-struct mind_sear_tick_t final : public priest_spell_t
-{
-  double insanity_gain;
-
-  // TODO: Mind Sear is missing damage information in spell data
-  mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear )
-    : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
-      insanity_gain( 1.5 )  // TODO: Missing from spell data - Hotfixed to 1.5
-                            // from 1 on 2016-09-26.
-  {
-    background  = true;
-    dual        = true;
-    aoe         = -1;
-    callbacks   = false;
-    direct_tick = true;
-    use_off_gcd = true;
-    energize_type =
-        ENERGIZE_NONE;  // disable resource generation from spell data
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    priest_spell_t::impact( state );
-
-    if ( result_is_hit( state->result ) )
-    {
-      generate_insanity( insanity_gain, priest.gains.insanity_mind_sear );
-    }
   }
 };
 
@@ -2158,19 +2186,17 @@ struct mind_sear_t final : public priest_spell_t
                       p.find_specialization_spell( ( "Mind Sear" ) ) )
   {
     parse_options( options_str );
-    channeled           = true;
-    may_crit            = false;
-    hasted_ticks        = false;
-    dynamic_tick_action = true;
-    tick_zero           = false;
+    auto mind_flay      = p.find_spell(237388);
+    channeled           = false;
+    may_crit            = true;
     is_mind_spell       = true;
+ // No data from spell yet
+    spell_power_mod.direct = mind_flay->effectN(1).sp_coeff();
 
     if ( p.artifact.void_corruption.rank() )
     {
       base_multiplier *= 1.0 + p.artifact.void_corruption.percent();
     }
-
-    tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
   }
 
   double action_multiplier() const override
@@ -2185,94 +2211,14 @@ struct mind_sear_t final : public priest_spell_t
     return am;
   }
 
-  void tick( dot_t* d ) override
-  {
-    priest_spell_t::tick( d );
-
-    if ( priest.talents.void_ray->ok() )
-    {
-      priest.buffs.void_ray->trigger();
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    if ( d->current_tick == d->num_ticks )
-    {
-      priest.buffs.mind_sear_on_hit_reset->expire();
-    }
-
-    priest_spell_t::last_tick( d );
-  }
-
-  /// Legendary the_twins_painful_touch
-  void spread_twins_painsful_dots( action_state_t* s )
-  {
-    const priest_td_t* td = find_td( s->target );
-    if ( !td )
-    {
-      // If we do not have targetdata, the target does not have any dots. bail
-      // out.
-      return;
-    }
-
-    std::array<dot_t*, 2> dots = {
-        {td->dots.shadow_word_pain, td->dots.vampiric_touch}};
-
-    // First check if there is even a dot active, otherwise we can bail out as
-    // well.
-    if ( range::find_if( dots, []( const dot_t* d ) {
-           return d->remains() > timespan_t::zero();
-         } ) == dots.end() )
-    {
-      if ( sim->debug )
-      {
-        sim->out_debug.printf(
-            "%s %s will not spread the_twins_painful_touch dots because no dot "
-            "is on the target.",
-            priest.name(), name() );
-      }
-      return;
-    }
-
-    // Now find 2 targets to spread dots to.
-    double max_distance  = 10.0;
-    unsigned max_targets = 2;
-    std::vector<player_t*> valid_targets;
-    range::remove_copy_if(
-        sim->target_list.data(), std::back_inserter( valid_targets ),
-        [s, max_distance]( const player_t* p ) {
-          return s->target->get_player_distance( *p ) > max_distance;
-        } );
-    // Just cut off to max_targets. No special selection.
-    if ( valid_targets.size() > max_targets )
-    {
-      valid_targets.resize( max_targets );
-    }
-    if ( sim->debug )
-    {
-      std::string targets;
-      sim->out_debug.printf(
-          "%s %s selected targets for the_twins_painful_touch dots: %s.",
-          priest.name(), name(), targets.c_str() );
-    }
-
-    // spread dots to targets
-    for ( dot_t* dot : dots )
-    {
-      for ( player_t* target : valid_targets )
-      {
-        dot->copy( target, DOT_COPY_CLONE );
-      }
-    }
-  }
 
   void impact( action_state_t* s ) override
   {
     // Mind Sear does on-hit damage only when there is a GCD of another ability
     // between it, so chaining Mind Sears doesn't allow for the on-hit to happen
     // again.
-    if ( priest.buffs.mind_sear_on_hit_reset->check() == 0 )
+
+    /*if ( priest.buffs.mind_sear_on_hit_reset->check() == 0 )
     {
       priest.buffs.mind_sear_on_hit_reset->trigger( 2, 1, 1,
                                                     tick_time( s ) * 6 );
@@ -2285,19 +2231,20 @@ struct mind_sear_t final : public priest_spell_t
     }
 
     priest_spell_t::impact( s );
-
+    
     // Legendary the_twins_painful_touch
     if ( priest.buffs.the_twins_painful_touch->up() )
     {
-      spread_twins_painsful_dots( s );
-      priest.buffs.the_twins_painful_touch->expire();
-    }
+     // spread_twins_painsful_dots( s );
+     // priest.buffs.the_twins_painful_touch->expire();
+    }/*****/
   }
 };
 
 struct mind_spike_t final : public priest_spell_t
 {
   double insanity_gain;
+  double insanity_multiplier;
 
   mind_spike_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "mind_spike", p, p.talents.mind_spike ),
@@ -2307,7 +2254,9 @@ struct mind_spike_t final : public priest_spell_t
   {
     parse_options( options_str );
     is_mind_spell               = true;
-    is_sphere_of_insanity_spell = true;
+    aoe = -1;
+    radius = 8;
+    base_aoe_multiplier = 0.25;//data().effectN(5).percent();
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
 
@@ -2317,56 +2266,64 @@ struct mind_spike_t final : public priest_spell_t
     }
   }
 
+  double composite_target_multiplier(player_t* t) const override
+  {
+    double am = priest_spell_t::composite_target_multiplier(t);
+
+    priest_td_t& td = get_td(t);
+
+    // If both dots are up
+    if (td.dots.shadow_word_pain->is_ticking() && td.dots.vampiric_touch->is_ticking())
+    {
+      am *= 1 + data().effectN(4).percent() * 2;
+      // sim->out_debug << "Mind Spike damage multiplied by " << 1.0 + data().effectN(4).percent() * 2.0;
+    }
+    // If only one of the dots is up
+    else if (td.dots.shadow_word_pain->is_ticking() != td.dots.vampiric_touch->is_ticking())
+    {
+      am *= 1 + data().effectN(4).percent();
+    }
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      am *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
+    return am;
+  }
+
   void impact( action_state_t* s ) override
   {
+	  if ( const priest_td_t* td = find_td( s->target ) )
+	  {
+      
+      // If both dots are up
+      if (td->dots.shadow_word_pain->is_ticking() && td->dots.vampiric_touch->is_ticking())
+      {
+        insanity_multiplier = 1.0 + data().effectN(4).percent() * 2.0;
+}
+      // If only one of the dots is up
+      else if (td->dots.shadow_word_pain->is_ticking() != td->dots.vampiric_touch->is_ticking())
+      {
+        insanity_multiplier = 1.0 + data().effectN(4).percent();
+      }
+      else
+      {
+        insanity_multiplier = 1.0;
+      }
+
+      td->dots.shadow_word_pain->cancel();
+      td->dots.vampiric_touch->cancel();
+	  }
+
     priest_spell_t::impact( s );
 
-    generate_insanity( insanity_gain, priest.gains.insanity_mind_spike );
+    generate_insanity( insanity_gain * insanity_multiplier, priest.gains.insanity_mind_spike );
 
     if ( result_is_hit( s->result ) )
     {
       priest_td_t& td = get_td( s->target );
-
-      int prev_stacks    = 0;
-      double prev_damage = 0.0;
-
-      if ( td.buffs.mind_spike->up() )
-      {
-        prev_stacks = td.buffs.mind_spike->check();
-        prev_damage = td.buffs.mind_spike->value();
-        td.buffs.mind_spike->increment();
-      }
-      else
-      {
-        td.buffs.mind_spike->trigger();
-      }
-
-      if ( td.buffs.mind_spike->check() == td.buffs.mind_spike->max_stack() &&
-           td.buffs.mind_spike->check() == prev_stacks )
-      {
-        td.buffs.mind_spike->current_value =
-            round( ( prev_damage / td.buffs.mind_spike->max_stack() ) *
-                       ( td.buffs.mind_spike->max_stack() - 1 ) +
-                   ( s->result_amount *
-                     priest.talents.mind_spike->effectN( 2 ).percent() ) );
-      }
-      else
-      {
-        td.buffs.mind_spike->current_value =
-            prev_damage +
-            s->result_amount *
-                priest.talents.mind_spike->effectN( 2 ).percent();
-        if ( priest.sim->debug )
-        {
-          priest.sim->out_debug.printf(
-              "%s adds %d to mind_spike_detonation, now %d total at %i stacks",
-              priest.name(),
-              s->result_amount *
-                  priest.talents.mind_spike->effectN( 2 ).percent(),
-              td.buffs.mind_spike->current_value,
-              td.buffs.mind_spike->stack() );
-        }
-      }
 
       if ( priest.active_items.mental_fatigue )
       {
@@ -2641,6 +2598,19 @@ struct shadow_word_death_t final : public priest_spell_t
     }
   }
 
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier(state);
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
+    return d;
+  }
+
   void impact( action_state_t* s ) override
   {
     double total_insanity_gain    = 0.0;
@@ -2705,6 +2675,19 @@ struct shadow_crash_t final : public priest_spell_t
         ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier(state);
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
+    return d;
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
@@ -2737,9 +2720,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
   shadowy_apparition_spell_t( priest_t& p )
     : priest_spell_t( "shadowy_apparitions", p, p.find_spell( 78203 ) ),
-      insanity_gain( 4 )  // Spell Data missing?
-                          // data().effectN(2).resource(RESOURCE_INSANITY) *
-  // priest.talents.auspicious_spirits->effectN(2).percent() ) )
+      insanity_gain( priest.talents.auspicious_spirits->effectN(2).percent() )
   {
     background   = true;
     proc         = false;
@@ -2949,6 +2930,12 @@ struct shadow_word_pain_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      m *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
     return m;
   }
 };
@@ -2984,8 +2971,15 @@ struct shadow_word_void_t final : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier( state );
 
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
     return d;
   }
+
 };
 
 struct silence_t final : public priest_spell_t
@@ -3271,6 +3265,12 @@ struct vampiric_touch_t final : public priest_spell_t
                    priest.buffs.voidform->stack() );
     }
 
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      m *= 1.0 + ptr_scaling_buff->effectN(2).percent();
+    }
+
     return m;
   }
 };
@@ -3278,6 +3278,7 @@ struct vampiric_touch_t final : public priest_spell_t
 struct void_bolt_t final : public priest_spell_t
 {
   double insanity_gain;
+  int dot_extension;
   const spell_data_t* rank2;
 
   void_bolt_t( priest_t& player, const std::string& options_str )
@@ -3288,6 +3289,7 @@ struct void_bolt_t final : public priest_spell_t
     parse_options( options_str );
     use_off_gcd                 = true;
     is_sphere_of_insanity_spell = true;
+    dot_extension = data().effectN(1).base_value();
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data.
 
@@ -3310,7 +3312,7 @@ struct void_bolt_t final : public priest_spell_t
       cooldown->reset( false );
     }
   }
-
+  
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -3320,13 +3322,13 @@ struct void_bolt_t final : public priest_spell_t
       if ( const priest_td_t* td = find_td( s->target ) )
       {
         if ( td->dots.shadow_word_pain->is_ticking() )
-        {
-          td->dots.shadow_word_pain->refresh_duration();
+        { 
+			    td->dots.shadow_word_pain->extend_duration(timespan_t::from_millis(dot_extension), true );
         }
 
         if ( td->dots.vampiric_touch->is_ticking() )
         {
-          td->dots.vampiric_touch->refresh_duration();
+          td->dots.vampiric_touch->extend_duration(timespan_t::from_millis(dot_extension), true);         
         }
       }
     }
@@ -3453,30 +3455,28 @@ struct void_eruption_t final : public priest_spell_t
       priest.buffs.sphere_of_insanity->current_value = 0.0;
     }
 
-    if ( priest.active_items.mother_shahrazs_seduction &&
-         priest.buffs.lingering_insanity->up() )
+    if ( priest.active_items.mother_shahrazs_seduction )
     {
       int mss_vf_stacks =
-          floor( priest.buffs.lingering_insanity->remains().total_seconds() /
-                 priest.active_items.mother_shahrazs_seduction->driver()
-                     ->effectN( 1 )
-                     .base_value() );
+                  priest.active_items.mother_shahrazs_seduction->driver()
+                  ->effectN(1)
+                  .base_value();
 
       priest.buffs.voidform->bump( mss_vf_stacks );
     }
+  }
 
-    if ( priest.talents.void_lord->ok() &&
-         priest.buffs.lingering_insanity->up() )
+  double composite_da_multiplier(const action_state_t* state) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier(state);
+
+    if (maybe_ptr(priest.dbc.ptr))
     {
-      timespan_t time =
-          priest.buffs.lingering_insanity->remains() -
-          ( priest.talents.void_lord->effectN( 1 ).time_value() * 1000 );
-      priest.buffs.lingering_insanity->extend_duration( player, -time );
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
     }
-    else
-    {
-      priest.buffs.lingering_insanity->expire();
-    }
+
+    return d;
   }
 
   bool ready() override
@@ -3518,6 +3518,19 @@ struct void_torrent_t final : public priest_spell_t
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return timespan_t::from_seconds( 4.0 );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if (maybe_ptr(priest.dbc.ptr))
+    {
+      auto ptr_scaling_buff = priest.find_spell(137033);
+      am *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+    }
+
+    return am;
   }
 
   timespan_t tick_time( const action_state_t* ) const override
@@ -3824,7 +3837,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
       // Insanity loss per additional Insanity Drain stacks (>1) per second
       double loss_per_additional_stack =
-          0.55;  // Hardcoded Patch 7.1 2016-11-16
+        2.0 / 3.0;  // Hardcoded Patch 7.1.5 (2016-12-02)
 
       // Combined Insanity loss per second
       double insanity_loss_per_second =
@@ -3924,12 +3937,10 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
   void expire_override( int expiration_stacks,
                         timespan_t remaining_duration ) override
   {
-    if ( priest.buffs.lingering_insanity->check() )
-      priest.buffs.lingering_insanity->expire();
-
     priest.buffs.insanity_drain_stacks->expire();
 
-    priest.buffs.lingering_insanity->trigger( expiration_stacks );
+    if ( priest.talents.lingering_insanity->ok())
+      priest.buffs.lingering_insanity->trigger( expiration_stacks );
 
     priest.buffs.the_twins_painful_touch->expire();
 
@@ -3980,6 +3991,30 @@ struct surrender_to_madness_t final : public priest_buff_t<buff_t>
     base_t::expire_override( expiration_stacks, remaining_duration );
 
     priest.buffs.voidform->expire();
+  }
+};
+
+
+/* Custom lingering_insanity buff
+*/
+struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
+{
+  lingering_insanity_t( priest_t& p)
+    : base_t( p, haste_buff_creator_t( &p, "lingering_insanity",
+                                  p.talents.lingering_insanity)
+                .reverse(true)
+                .period(p.find_spell(197937)->effectN( 2 ).period())
+                .tick_behavior(BUFF_TICK_REFRESH)
+                .tick_time_behavior(BUFF_TICK_TIME_UNHASTED)
+                .max_stack(p.find_spell(185916)->effectN( 4 ).base_value() ) // or 18?
+                ) 
+  {
+  }
+
+  void decrement(int stacks, double value) override
+  {
+    auto hidden_lingering_insanity = player->find_spell(199849);
+    buff_t::decrement(hidden_lingering_insanity->effectN( 1 ).base_value());
   }
 };
 
@@ -4147,13 +4182,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p )
     buffs.mental_fatigue =
         buff_creator_t( *this, "mental_fatigue" ).chance( 0 );
   }
-
-  if ( priest.talents.mind_spike->ok() )
-    buffs.mind_spike = buff_creator_t( *this, "mind_spike" )
-                           .spell( p.talents.mind_spike )
-                           .default_value( 0.0 )
-                           .duration( timespan_t::from_seconds( 10 ) )
-                           .max_stack( 10 );  // FIXME no value in Data?
 
   buffs.schism = buff_creator_t( *this, "schism" ).spell( p.talents.schism );
 
@@ -4568,10 +4596,10 @@ double priest_t::composite_player_heal_multiplier(
     m *= 1.0 + buffs.twist_of_fate->current_value;
   }
 
-  if ( specs.voidform->ok() && talents.void_lord->ok() &&
+  /*if ( specs.voidform->ok() && talents.void_lord->ok() &&
        buffs.voidform->check() )
     m *= 1.0 + talents.void_lord->effectN( 1 ).percent();
-
+    */
   if ( specs.grace->ok() )
     m *= 1.0 + specs.grace->effectN( 1 ).percent();
 
@@ -4590,10 +4618,10 @@ double priest_t::composite_player_absorb_multiplier(
 {
   double m = player_t::composite_player_absorb_multiplier( s );
 
-  if ( specs.voidform->ok() && talents.void_lord->ok() &&
+  /*if ( specs.voidform->ok() && talents.void_lord->ok() &&
        buffs.voidform->check() )
     m *= 1.0 + talents.void_lord->effectN( 1 ).percent();
-
+    */
   if ( specs.grace->ok() )
     m *= 1.0 + specs.grace->effectN( 2 ).percent();
 
@@ -4663,16 +4691,12 @@ action_t* priest_t::create_action( const std::string& name,
     return new vampiric_embrace_t( *this, options_str );
 
   // Shadow
-  if ( name == "lingering_insanity" )
-    return new lingering_insanity_t( *this, options_str );
   if ( name == "mind_blast" )
     return new mind_blast_t( *this, options_str );
   if ( name == "mind_flay" )
     return new mind_flay_t( *this, options_str );
   if ( name == "mind_spike" )
     return new mind_spike_t( *this, options_str );
-  if ( name == "mind_sear" )
-    return new mind_sear_t( *this, options_str );
   if ( name == "shadowform" )
     return new shadowform_t( *this, options_str );
   if ( name == "shadow_crash" )
@@ -4902,7 +4926,7 @@ void priest_t::init_spells()
 
   talents.mind_bomb = find_talent_spell( "Mind Bomb" );
 
-  talents.void_lord       = find_talent_spell( "Void Lord" );
+  talents.lingering_insanity       = find_talent_spell( "Lingering Insanity" );
   talents.reaper_of_souls = find_talent_spell( "Reaper of Souls" );
   talents.void_ray        = find_talent_spell( "Void Ray" );
 
@@ -4913,7 +4937,7 @@ void priest_t::init_spells()
   talents.shadow_crash = find_talent_spell( "Shadow Crash" );
 
   talents.legacy_of_the_void   = find_talent_spell( "Legacy of the Void" );
-  talents.mind_spike           = find_talent_spell( "Mind Spike" );
+  talents.mind_spike = find_talent_spell("Mind Spike");
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // Artifacts
@@ -5057,9 +5081,7 @@ void priest_t::create_buffs()
 
   buffs.voidform = new buffs::voidform_t( *this );
 
-  buffs.lingering_insanity = haste_buff_creator_t( this, "lingering_insanity" )
-                                 .spell( find_spell( 197937 ) )
-                                 .add_invalidate( CACHE_HASTE );
+  buffs.lingering_insanity = new buffs::lingering_insanity_t( *this );
 
   buffs.insanity_drain_stacks = new buffs::insanity_drain_stacks_t( *this );
 
