@@ -3412,9 +3412,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 	void impact(action_state_t* state) override
 	{
 		demon_hunter_attack_t::impact(state);
-		p()->active.chaos_cleave->base_dd_min = state->result_total;
-		p()->active.chaos_cleave->base_dd_max = state->result_total;
-		p()->active.chaos_cleave->schedule_execute();
+
+		if (p()->talent.chaos_cleave->ok() && maybe_ptr(p()->dbc.ptr))
+		{
+			p()->active.chaos_cleave->base_dd_min = state->result_total;
+			p()->active.chaos_cleave->base_dd_max = state->result_total;
+			p()->active.chaos_cleave->schedule_execute();
+		}
 	}
   };
 
