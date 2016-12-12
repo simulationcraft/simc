@@ -29,9 +29,6 @@ namespace
    Defensive artifact traits
    More thorough caching on blade_dance_expr_t
    Fix Nemesis
-   7.1.5:
-   Fix Prepared
-   Fix Chaos Cleave
 
    Vengeance ----------------------------------------------------------------
    Torment
@@ -5336,21 +5333,32 @@ void demon_hunter_t::create_buffs()
   // TODO: Buffs for each race?
   buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  buff.prepared =
-    buff_creator_t( this, "prepared",
-                    talent.prepared -> effectN( 1 ).trigger() )
-    .trigger_spell( talent.prepared )
-    .default_value(
-      talent.prepared -> effectN( 1 ).trigger() -> effectN( 1 ).resource(
-        RESOURCE_FURY ) *
-      ( 1.0 +
-        sets.set( DEMON_HUNTER_HAVOC, T19, B2 )
-         -> effectN( 1 )
-        .percent() ) )
-  .tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
-    resource_gain( RESOURCE_FURY, b -> check_value(), gain.prepared );
-  } );
+  
+  if (maybe_ptr(dbc.ptr)){
+	  buff.prepared =
+		  buff_creator_t(this, "prepared",
+		  talent.prepared->effectN(1).trigger())
+		  .trigger_spell(talent.prepared)
+		  .period(timespan_t::from_millis(100))
+		  .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource( RESOURCE_FURY) *
+				(1.0 +sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) / 
+				(talent.prepared->effectN(1).trigger()->duration().total_millis() / 100))
+		  .tick_callback([this](buff_t* b, int, const timespan_t&) {
+		  resource_gain(RESOURCE_FURY, b->check_value(), gain.prepared);
+	  });
+  }
+  else{
+	  buff.prepared =
+		  buff_creator_t(this, "prepared",
+		  talent.prepared->effectN(1).trigger())
+		  .trigger_spell(talent.prepared)
+		  .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource(RESOURCE_FURY) *
+			(1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()))
+		  .tick_callback([this](buff_t* b, int, const timespan_t&) {
+		  resource_gain(RESOURCE_FURY, b->check_value(), gain.prepared);
+	  });
+  }
+  
 
   buff.rage_of_the_illidari =
     buff_creator_t( this, "rage_of_the_illidari", find_spell( 217060 ) );
