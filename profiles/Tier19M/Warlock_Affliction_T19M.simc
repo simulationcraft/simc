@@ -1,9 +1,9 @@
-warlock="Aff"
+warlock="Warlock_Affliction_T19M"
 level=110
 race=human
 role=spell
 position=back
-talents=3201021
+talents=2301011
 artifact=39:142512:142510:142512:0:915:3:916:3:917:3:918:3:919:3:920:3:921:6:922:3:923:3:924:1:925:1:926:1:927:1:928:1:929:1:999:1:1353:1
 spec=affliction
 
@@ -24,8 +24,7 @@ actions.precombat+=/augmentation,type=defiled
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/potion,name=deadly_grace
-actions.precombat+=/mana_tap,if=talent.mana_tap&!buff.mana_tap.remains&ptr=0
-actions.precombat+=/life_tap,if=talent.empowered_life_tap.enabled&!buff.empowered_life_tap.remains&ptr=1
+actions.precombat+=/mana_tap,if=talent.mana_tap.enabled&!buff.mana_tap.remains
 
 # Executed every time the actor is available.
 actions=reap_souls,if=!buff.deadwind_harvester.remains&(buff.soul_harvest.remains|buff.tormented_souls.react>=8|target.time_to_die<=buff.tormented_souls.react*5|trinket.proc.any.react|trinket.stacking_proc.any.react)
@@ -64,7 +63,7 @@ actions+=/drain_life,chain=1,interrupt=1,if=ptr=0
 actions+=/life_tap
 
 head=collar_of_enclosure,id=134424,bonus_id=1727/1522
-neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,gems=150mastery
+neck=cursed_beartooth_necklace,id=139239,bonus_id=1806,gems=150mastery,enchant=mark_of_the_hidden_satyr
 shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727/1522
 back=drape_of_the_unworthy,id=142521,bonus_id=3469/1512,enchant_id=5436
 chest=robes_of_the_ancient_chronicle,id=142297
@@ -88,7 +87,5 @@ main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=142512/142510/142512
 # gear_mastery_rating=8794
 # gear_versatility_rating=740
 # gear_armor=1838
-
-set_bonus=tier19p_cloth_2pc=0
-
+# set_bonus=tier19p_cloth_2pc=1
 default_pet=felhunter
