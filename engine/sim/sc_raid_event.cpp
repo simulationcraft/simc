@@ -383,19 +383,40 @@ struct distraction_event_t : public raid_event_t
 struct invulnerable_event_t : public raid_event_t
 {
   bool retarget;
+  player_t* target;
 
   invulnerable_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "invulnerable" ), retarget( false )
+    raid_event_t( s, "invulnerable" ), retarget( false ), target( s -> target )
   {
     add_option( opt_bool( "retarget", retarget ) );
+    add_option( opt_func( "target", std::bind( &invulnerable_event_t::parse_target,
+      this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
 
     parse_options( options_str );
   }
 
+  bool parse_target( sim_t* /* sim */, const std::string& /* name */, const std::string& value )
+  {
+    auto it = range::find_if( sim -> target_list, [ &value ]( const player_t* target ) {
+      return util::str_compare_ci( value, target -> name() );
+    } );
+
+    if ( it != sim -> target_list.end() )
+    {
+      target = *it;
+      return true;
+    }
+    else
+    {
+      sim -> errorf( "Unknown invulnerability raid event target '%s'", value.c_str() );
+      return false;
+    }
+  }
+
   void _start() override
   {
-    sim -> target -> clear_debuffs();
-    sim -> target -> debuffs.invulnerable -> increment();
+    target -> clear_debuffs();
+    target -> debuffs.invulnerable -> increment();
 
     range::for_each( sim -> player_non_sleeping_list, []( player_t* p ) {
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
@@ -405,19 +426,19 @@ struct invulnerable_event_t : public raid_event_t
     if ( retarget )
     {
       range::for_each( sim -> player_non_sleeping_list, [ this ]( player_t* p ) {
-        p -> acquire_target( ACTOR_INVULNERABLE, sim -> target );
+        p -> acquire_target( ACTOR_INVULNERABLE, target );
       } );
     }
   }
 
   void _finish() override
   {
-    sim -> target -> debuffs.invulnerable -> decrement();
+    target -> debuffs.invulnerable -> decrement();
 
     if ( retarget )
     {
       range::for_each( sim -> player_non_sleeping_list, [ this ]( player_t* p ) {
-        p -> acquire_target( ACTOR_VULNERABLE, sim -> target );
+        p -> acquire_target( ACTOR_VULNERABLE, target );
       } );
     }
 
