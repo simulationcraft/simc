@@ -3618,7 +3618,7 @@ double player_t::composite_rating( rating_e rating ) const
 
 double player_t::composite_player_vulnerability( school_e /* school */ ) const
 {
-  double m = 1.0;
+  double m = debuffs.invulnerable -> check() ? 0.0 : 1.0;
 
   if ( debuffs.vulnerable -> check() )
     m *= 1.0 + debuffs.vulnerable -> value();
@@ -5777,6 +5777,11 @@ void player_t::target_mitigation( school_e school,
 
   // TODO-WOD: Where should this be? Or does it matter?
   s -> result_amount *= 1.0 - cache.mitigation_versatility();
+
+  if ( debuffs.invulnerable -> check() )
+  {
+    s -> result_amount = 0;
+  }
 
   if ( school == SCHOOL_PHYSICAL && dmg_type == DMG_DIRECT )
   {
