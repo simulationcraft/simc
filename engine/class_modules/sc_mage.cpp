@@ -1161,17 +1161,17 @@ struct arcane_blast_t : public mirror_image_spell_t
     // MI Arcane Charges are still hardcoded as 25% damage gains
     am *= 1.0 + p()->arcane_charge->check() * 0.25;
 
-    if ( o()-> artifact.spellborne && o() -> specialization == MAGE_FROST )
+    if ( o()-> artifact.spellborne && o() -> specialization() == MAGE_FROST )
     {
       am *= 1.0 + o() -> artifact.spellborne.percent();
     }
 
-    if ( o()-> artifact.empowered_spellblade && o() -> specialization == MAGE_FIRE )
+    if ( o()-> artifact.empowered_spellblade && o() -> specialization() == MAGE_FIRE )
     {
       am *= 1.0 + o() -> artifact.empowered_spellblade.percent();
     }
 
-    if ( o()-> artifact.ancient_power && o() -> specialization == MAGE_ARCANE )
+    if ( o()-> artifact.ancient_power && o() -> specialization() == MAGE_ARCANE )
     {
       am *= 1.0 + o() -> artifact.ancient_power.percent();
     }
