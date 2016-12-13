@@ -782,9 +782,9 @@ public:
   double current_stagger_tick_dmg_percent();
   double current_stagger_dot_remains();
   double stagger_pct();
-//  combo_strikes_e convert_expression_action_to_enum( action_t* a );
   void trigger_celestial_fortune( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
+  bool rjw_trigger_mark_of_the_crane();
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
   double clear_stagger();
@@ -1363,6 +1363,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   {
     double pm = sef_melee_attack_t::composite_persistent_multiplier( action_state );
 
+    // Current bug where Transfer the Power is not being applied to SEF's Fists of Fury
     if ( o() -> buff.transfer_the_power -> up() )
     {
       pm /= 1 + o() -> buff.transfer_the_power -> stack_value();
@@ -1404,6 +1405,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       tick_action = new sef_tick_action_t( "rushing_jade_wind_tick", player,
           player -> o() -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
+    }
+
+    virtual void execute() override
+    {
+      sef_melee_attack_t::execute();
+      
+      o() -> rjw_trigger_mark_of_the_crane();
     }
   };
 
@@ -3272,6 +3280,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
         buff_t::DEFAULT_VALUE(),
         1.0,
         composite_dot_duration( execute_state ) );
+
+    p() -> rjw_trigger_mark_of_the_crane();
 
     if ( p() -> buff.masterful_strikes -> up() )
        p() -> buff.masterful_strikes -> decrement();
@@ -6768,6 +6778,60 @@ void monk_t::trigger_mark_of_the_crane( action_state_t* s )
   get_target_data( s -> target ) -> debuff.mark_of_the_crane -> trigger();
 }
 
+bool monk_t::rjw_trigger_mark_of_the_crane()
+{
+  if ( sim -> dbc.ptr )
+  {
+    if ( specialization() == MONK_WINDWALKER )
+    {
+      int mark_of_the_crane_max = talent.rushing_jade_wind -> effectN( 2 ).base_value();
+      int mark_of_the_crane_counter = 0;
+      auto targets = sim -> target_non_sleeping_list.data();
+
+      // If the number of targets is less than or equal to the max number mark of the Cranes being applied,
+      // just apply the debuff to all targets; or refresh the buff if it is already up
+      if ( targets.max_size() <= mark_of_the_crane_max )
+      {
+        for ( player_t* target : targets )
+          get_target_data( target ) -> debuff.mark_of_the_crane -> trigger();
+      }
+      else
+      {
+        // First of all find targets that do not have the cyclone strike debuff applied and apply a cyclone
+        for ( player_t* target : targets )
+        {
+          if ( !get_target_data( target ) -> debuff.mark_of_the_crane -> up() )
+          {
+            get_target_data( target ) -> debuff.mark_of_the_crane -> trigger();
+            mark_of_the_crane_counter++;
+          }
+
+          if ( mark_of_the_crane_counter == mark_of_the_crane_max )
+            return true;
+        }
+
+        // If all targets have the debuff, find the lowest duration of cyclone strike debuff and refresh it
+        player_t* lowest_duration = targets[0];
+
+        for ( mark_of_the_crane_counter; mark_of_the_crane_counter < mark_of_the_crane_max; mark_of_the_crane_counter++)
+        {
+          for ( player_t* target : targets )
+          {
+            if ( get_target_data( target ) -> debuff.mark_of_the_crane -> remains() <
+              get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> remains() )
+              lowest_duration = target;
+          }
+          
+          get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> trigger();
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+  return false;
+}
+
 player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
 {
   std::vector<player_t*> targets = state -> action -> target_list();
@@ -8267,7 +8331,7 @@ void monk_t::target_mitigation( school_e school,
 
       if ( artifact.hot_blooded.rank() )
       {
-        if ( monk_t::get_target_data( s -> target ) -> dots.breath_of_fire ->is_ticking() )
+        if ( monk_t::get_target_data( s -> target ) -> dots.breath_of_fire -> is_ticking() )
           s -> result_amount *= 1.0 - artifact.hot_blooded.data().effectN( 2 ).percent();
       }
       
