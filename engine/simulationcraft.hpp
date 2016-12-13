@@ -3528,6 +3528,7 @@ struct player_t : public actor_t
   double       height; // Actor height, only used for enemies. Affects the travel distance calculation for spells.
   double       combat_reach; // AKA hitbox size, for enemies.
   int          timewalk;
+  player_t*    default_target;
 
   // dynamic attributes - things which change during combat
   player_t*   target;
@@ -4619,6 +4620,10 @@ public:
   // Outgoing damage assessors, pipeline is invoked on all objects passing through
   // action_t::assess_damage.
   assessor::state_assessor_pipeline_t assessor_out_damage;
+
+  // Poor man's targeting support, acquire_target is triggered by various events (see
+  // retarget_event_e) in the core. Context contains the triggering entity (if relevant)
+  virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr );
 };
 
 
@@ -5868,6 +5873,10 @@ public:
   {
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
+
+  // Acquire a new target, where the context is the actor that sources the retarget event, and the
+  // actor-level candidate is given as a parameter (selected by player_t::acquire_target).
+  virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */, player_t* /* candidate_target */ );
 };
 
 struct call_action_list_t : public action_t

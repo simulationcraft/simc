@@ -3567,3 +3567,35 @@ void action_t::reschedule_queue_event()
     queue_event = make_event<queued_action_execute_event_t>( *sim, this, new_queue_delay, off_gcd );
   }
 }
+
+// Default target acquirement simply assigns the actor-selected candidate target to the current
+// target. Event contains the retarget event type, context contains the (optional) actor that
+// triggered the event.
+void action_t::acquire_target( retarget_event_e /* event */,
+                               player_t*        /* context */,
+                               player_t*        candidate_target )
+{
+  // Don't change targets if they are not of the same generic type (both enemies, or both
+  // friendlies)
+  if ( target -> is_enemy() != candidate_target -> is_enemy() )
+  {
+    return;
+  }
+
+  // If the user has indicated a target number for the action, don't adjust targets
+  if ( target_number > 0 )
+  {
+    return;
+  }
+
+  if ( target != candidate_target )
+  {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s %s target change, current=%s candidate=%s", player -> name(),
+        name(), target -> name(), candidate_target -> name() );
+    }
+    target = candidate_target;
+    target_cache.is_valid = false;
+  }
+}
