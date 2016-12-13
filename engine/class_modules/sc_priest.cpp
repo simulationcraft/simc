@@ -1953,7 +1953,7 @@ struct mind_sear_tick_t final : public priest_spell_t
 
   mind_sear_tick_t(priest_t& p)
     : priest_spell_t("mind_sear_tick", p,
-      p.find_spell(234702)),  
+      p.find_spell(234702)),
     source_target(nullptr),
     insanity_gain(1) // Missing from spell data
   {
@@ -1968,7 +1968,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     range = 8.0;
     trigger_gcd = timespan_t::zero();
     school = SCHOOL_SHADOW;
-    spell_power_mod.direct = 0.4; 
+    spell_power_mod.direct = 0.4;
     // Spell not bringing the coeff?
     //p.find_spell(234696)->effectN(2).sp_coeff();
   }
@@ -2055,7 +2055,7 @@ struct mind_flay_t final : public priest_spell_t
             priest.buffs.void_ray->check() *
                 priest.buffs.void_ray->data().effectN( 1 ).percent();
 
-    
+
     if (maybe_ptr(priest.dbc.ptr))
     {
       auto ptr_scaling_buff = priest.find_spell(137033);
@@ -2064,7 +2064,7 @@ struct mind_flay_t final : public priest_spell_t
 
     return am;
   }
-  
+
   /// Legendary the_twins_painful_touch
   void spread_twins_painsful_dots(action_state_t* s)
   {
@@ -2231,7 +2231,7 @@ struct mind_sear_t final : public priest_spell_t
     }
 
     priest_spell_t::impact( s );
-    
+
     // Legendary the_twins_painful_touch
     if ( priest.buffs.the_twins_painful_touch->up() )
     {
@@ -2297,7 +2297,7 @@ struct mind_spike_t final : public priest_spell_t
   {
 	  if ( const priest_td_t* td = find_td( s->target ) )
 	  {
-      
+
       // If both dots are up
       if (td->dots.shadow_word_pain->is_ticking() && td->dots.vampiric_touch->is_ticking())
       {
@@ -3312,7 +3312,7 @@ struct void_bolt_t final : public priest_spell_t
       cooldown->reset( false );
     }
   }
-  
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -3322,13 +3322,13 @@ struct void_bolt_t final : public priest_spell_t
       if ( const priest_td_t* td = find_td( s->target ) )
       {
         if ( td->dots.shadow_word_pain->is_ticking() )
-        { 
+        {
 			    td->dots.shadow_word_pain->extend_duration(timespan_t::from_millis(dot_extension), true );
         }
 
         if ( td->dots.vampiric_touch->is_ticking() )
         {
-          td->dots.vampiric_touch->extend_duration(timespan_t::from_millis(dot_extension), true);         
+          td->dots.vampiric_touch->extend_duration(timespan_t::from_millis(dot_extension), true);
         }
       }
     }
@@ -4007,7 +4007,7 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
                 .tick_behavior(BUFF_TICK_REFRESH)
                 .tick_time_behavior(BUFF_TICK_TIME_UNHASTED)
                 .max_stack(p.find_spell(185916)->effectN( 4 ).base_value() ) // or 18?
-                ) 
+                )
   {
   }
 
@@ -5265,7 +5265,7 @@ void priest_t::apl_precombat()
     case PRIEST_SHADOW:
     default:
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
-      precombat->add_action( 
+      precombat->add_action(
         "variable,op=set,name=s2mbeltcheck,value=1,if=cooldown.mind_blast."
         "charges>=2" );
       precombat->add_action(
@@ -5452,8 +5452,8 @@ void priest_t::apl_shadow()
       "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
       "death.up|buff.shadowy_insight.up)&target.time_to_die<=variable.s2mcheck-"
       "(buff.insanity_drain_stacks.stack)" );
-  vf->add_actions(
-      "actions.vf+=/void_bolt,if=set_bonus.tier19_4pc&buff.voidform.stack<6" );	  
+  vf->add_action(
+      "actions.vf+=/void_bolt,if=set_bonus.tier19_4pc&buff.voidform.stack<6" );
   vf->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   vf->add_action(
       "void_torrent,if=dot.shadow_word_pain.remains>5.5&dot.vampiric_"
@@ -5548,7 +5548,7 @@ void priest_t::apl_shadow()
   vf->add_action( "shadow_word_pain" );
 
   // Surrender to Madness APL
-  s2m->add_action( "void_bolt,if=set_bonus.tier19_4pc&buff.voidform.stack<6" );	
+  s2m->add_action( "void_bolt,if=set_bonus.tier19_4pc&buff.voidform.stack<6" );
   s2m->add_action( "shadow_crash,if=talent.shadow_crash.enabled" );
   s2m->add_action( "mindbender,if=talent.mindbender.enabled" );
   s2m->add_action(
@@ -5587,7 +5587,7 @@ void priest_t::apl_shadow()
       "shadow_word_death,if=talent.reaper_of_souls.enabled&current_insanity_"
       "drain*gcd.max>insanity&(insanity-(current_insanity_drain*gcd.max)+60)<"
       "100" );
-  s2m->add_action( 
+  s2m->add_action(
       "power_infusion,if=cooldown.shadow_word_death.charges=0&cooldown.shadow_"
       "word_death.remains>2*gcd.max" );
   s2m->add_action(
