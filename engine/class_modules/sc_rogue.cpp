@@ -5898,6 +5898,12 @@ struct vanish_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
 
+    if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() )
+    {
+      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
+          rogue -> gains.master_of_shadows );
+    }
+
     if ( rogue -> legendary.mantle_of_the_master_assassin )
     {
       rogue -> buffs.mantle_of_the_master_assassin -> expire();
