@@ -10,6 +10,15 @@
 // Enumerations =============================================================
 // annex _e to enumerations
 
+// Retargeting request event sources. Context in ACTOR_ is the actor that triggered the event
+enum retarget_event_e
+{
+  ACTOR_ARISE = 0U,     // Any actor arises
+  ACTOR_DEMISE,         // Any actor demises
+  ACTOR_INVULNERABLE,   // Actor becomes invulnerable
+  ACTOR_VULNERABLE,     // Actor becomes vulnerable (after becoming invulnerable)
+  SELF_ARISE            // Actor has arisen (no context provided)
+};
 
 // Misc (legion) related constants
 enum

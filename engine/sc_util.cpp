@@ -2033,6 +2033,20 @@ const char* util::item_quality_string( int quality )
   }
 }
 
+// retarget_event_string ====================================================
+const char* util::retarget_event_string( retarget_event_e event )
+{
+  switch ( event )
+  {
+    case ACTOR_ARISE: return "actor_arise";
+    case ACTOR_DEMISE: return "actor_demise";
+    case ACTOR_INVULNERABLE: return "actor_invulnerable";
+    case ACTOR_VULNERABLE: return "actor_vulnnerable";
+    case SELF_ARISE: return "self_arise";
+    default: return "unknown";
+  }
+}
+
 // specialization_string ====================================================
 
 const char* util::specialization_string( specialization_e spec )

@@ -553,6 +553,7 @@ player_t::player_t( sim_t*             s,
   death_pct( 0.0 ),
   height( 0 ),
   combat_reach( 1.0 ),
+  default_target( nullptr ),
 
   // dynamic stuff
   target( 0 ),
@@ -1609,6 +1610,8 @@ void player_t::init_target()
   {
     target = sim -> target;
   }
+
+  default_target = target;
 }
 
 // player_t::init_use_item_actions ==========================================
@@ -3615,7 +3618,7 @@ double player_t::composite_rating( rating_e rating ) const
 
 double player_t::composite_player_vulnerability( school_e /* school */ ) const
 {
-  double m = 1.0;
+  double m = debuffs.invulnerable -> check() ? 0.0 : 1.0;
 
   if ( debuffs.vulnerable -> check() )
     m *= 1.0 + debuffs.vulnerable -> value();
@@ -4226,6 +4229,9 @@ void player_t::reset()
 
   change_position( initial.position );
 
+  // Restore default target
+  target = default_target;
+
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s current stats ( reset to initial ): %s", name(), current.to_string().c_str() );
@@ -4488,11 +4494,21 @@ void player_t::arise()
   {
     sim -> active_enemies++;
     sim -> target_non_sleeping_list.push_back( this );
+
+    // When an enemy arises, trigger players to potentially acquire a new target
+    range::for_each( sim -> player_non_sleeping_list, [ this ]( player_t* p ) {
+      p -> acquire_target( ACTOR_ARISE, this );
+    } );
   }
   else
   {
     sim -> active_allies++;
     sim -> player_non_sleeping_list.push_back( this );
+
+    // Find a target to shoot on. This is to ensure that transient friendly allies (such as dynamic
+    // pets) can cope with a situation, where the primary target for example is invulnerable, so
+    // they need to figure out a (more valid) target to shoot spells on.
+    acquire_target( SELF_ARISE );
   }
 
   if ( has_foreground_actions( *this ) )
@@ -4579,6 +4595,11 @@ void player_t::demise()
   {
     sim -> active_enemies--;
     sim -> target_non_sleeping_list.find_and_erase_unordered( this );
+
+    // When an enemy dies, trigger players to acquire a new target
+    range::for_each( sim -> player_non_sleeping_list, [ this ]( player_t* p ) {
+      p -> acquire_target( ACTOR_DEMISE, this );
+    } );
   }
   else
   {
@@ -5756,6 +5777,11 @@ void player_t::target_mitigation( school_e school,
 
   // TODO-WOD: Where should this be? Or does it matter?
   s -> result_amount *= 1.0 - cache.mitigation_versatility();
+
+  if ( debuffs.invulnerable -> check() )
+  {
+    s -> result_amount = 0;
+  }
 
   if ( school == SCHOOL_PHYSICAL && dmg_type == DMG_DIRECT )
   {
@@ -11568,5 +11594,50 @@ bool player_t::verify_use_items() const
   } );
 
   return missing_actions.size() == 0;
+}
+
+// Figure out a target out of all non-sleeping targets. Skip "invulnerable" ones for now, anything
+// else is fair game.
+//
+// TODO: This skips certain very custom targets (such as Soul Effigy), is it a problem (since those
+// usually are handled in action target cache regeneration)?
+void player_t::acquire_target( retarget_event_e event, player_t* context )
+{
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "%s retargeting event=%s context=%s",
+        name(), util::retarget_event_string( event ), context ? context -> name() : "NONE" );
+  }
+
+  player_t* candidate_target = nullptr;
+
+  // TODO: Fancier system
+  for ( auto enemy : sim -> target_non_sleeping_list )
+  {
+    if ( enemy -> debuffs.invulnerable -> up() )
+    {
+      continue;
+    }
+
+    candidate_target = enemy;
+    break;
+  }
+
+  // Only perform target acquisition if the actor's current target would change (to the candidate
+  // target).
+  if ( candidate_target && candidate_target != target )
+  {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf( "%s acquiring (new) target, current=%s candidate=%s",
+          name(), target ? target -> name() : "NONE",
+          candidate_target ? candidate_target -> name() : "NONE" );
+    }
+
+    target = candidate_target;
+    range::for_each( action_list, [ event, context, candidate_target ]( action_t* action ) {
+      action -> acquire_target( event, context, candidate_target );
+    } );
+  }
 }
 
