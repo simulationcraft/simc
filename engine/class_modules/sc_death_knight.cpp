@@ -4891,7 +4891,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
     
-    //base_multiplier    *= 1.0 + p -> artifact.bonebreaker.percent();
+    base_multiplier    *= 1.0 + p -> artifact.bone_breaker.percent();
 
     weapon = &( p -> main_hand_weapon );
   }
