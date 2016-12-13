@@ -1161,6 +1161,21 @@ struct arcane_blast_t : public mirror_image_spell_t
     // MI Arcane Charges are still hardcoded as 25% damage gains
     am *= 1.0 + p()->arcane_charge->check() * 0.25;
 
+    if ( o()-> artifact.spellborne && o() -> specialization == MAGE_FROST )
+    {
+      am *= 1.0 + o() -> artifact.spellborne.percent();
+    }
+
+    if ( o()-> artifact.empowered_spellblade && o() -> specialization == MAGE_FIRE )
+    {
+      am *= 1.0 + o() -> artifact.empowered_spellblade.percent();
+    }
+
+    if ( o()-> artifact.ancient_power && o() -> specialization == MAGE_ARCANE )
+    {
+      am *= 1.0 + o() -> artifact.ancient_power.percent();
+    }
+
     return am;
   }
 };
@@ -2467,7 +2482,6 @@ struct frost_mage_spell_t : public mage_spell_t
     // NOTE!!: As of Legion, Icicles benefit from anything inside frost_mage_spell_t::action_multiplier()! Always check
     // for icicle interaction if something is added here, and adjust icicle_t::composite_da_multiplier() accordingly.
     double am = mage_spell_t::action_multiplier();
-
     // Divide effect percent by 10 to convert 5 into 0.5%, not into 5%.
     am *= 1.0 + ( p() -> buffs.bone_chilling -> current_stack * p() -> talents.bone_chilling -> effectN( 1 ).percent() / 10 );
 
