@@ -544,6 +544,7 @@ struct rogue_t : public player_t
   // Options
   uint32_t fof_p1, fof_p2, fof_p3;
   int initial_combo_points;
+  int ssw_refund_offset;
 
   rogue_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
@@ -577,7 +578,8 @@ struct rogue_t : public player_t
     prng( prng_t() ),
     legendary( legendary_t() ),
     fof_p1( 0 ), fof_p2( 0 ), fof_p3( 0 ),
-    initial_combo_points( 0 )
+    initial_combo_points( 0 ),
+    ssw_refund_offset(0)
   {
     // Cooldowns
     cooldowns.adrenaline_rush     = get_cooldown( "adrenaline_rush"     );
@@ -4142,15 +4144,17 @@ struct shadowstrike_t : public rogue_attack_t
     if ( shadow_satyrs_walk )
     {
       const spell_data_t* base_proc = p() -> find_spell( 224914 );
-      // To be fixed
-      // Distance set to 5y as a default value
-      double distance = 5;
+      // TODO: Use real Distance
+      // Distance set to 4y as a default value
+      double distance = 4;
       double grant_energy = base_proc -> effectN( 1 ).base_value();
       while (distance > shadow_satyrs_walk -> effectN( 2 ).base_value())
       {
         grant_energy += shadow_satyrs_walk -> effectN( 1 ).base_value();
         distance -= shadow_satyrs_walk -> effectN( 2 ).base_value();
       }
+      // Add the refund offset option
+      grant_energy += p()->ssw_refund_offset;
       p() -> resource_gain( RESOURCE_ENERGY, grant_energy, p() -> gains.shadow_satyrs_walk );
     }
   }
@@ -6784,12 +6788,12 @@ void rogue_t::init_action_list()
     precombat -> add_action( this, "Symbols of Death" );
 
     // Main Rotation
-    def -> add_action( "variable,name=ssw_er,value=equipped.shadow_satyrs_walk*(10+floor(target.distance*0.5))" );
-    def -> add_action( "variable,name=ed_threshold,value=energy.deficit<=(20+talent.vigor.enabled*35+talent.master_of_shadows.enabled*25+variable.ssw_er)" );
+    def -> add_action( "variable,name=ssw_refund,value=equipped.shadow_satyrs_walk*(12+ssw_refund_offset)" );
+    def -> add_action( "variable,name=ed_threshold,value=energy.deficit<=(15+talent.vigor.enabled*35+talent.master_of_shadows.enabled*30+variable.ssw_refund)" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.all", "Fully switch to the Stealthed Rotation (by doing so, it forces pooling if nothing is available)" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=5|(combo_points>=4&spell_targets.shuriken_storm>=3&spell_targets.shuriken_storm<=4)" );
-    def -> add_action( "call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&(variable.ed_threshold|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)|target.time_to_die<12|spell_targets.shuriken_storm>=5)" );
+    def -> add_action( "call_action_list,name=stealth_cds,if=combo_points.deficit>=2+talent.premeditation.enabled&((variable.ed_threshold&(!equipped.shadow_satyrs_walk|energy.deficit>=10))|(cooldown.shadowmeld.up&!cooldown.vanish.up&cooldown.shadow_dance.charges<=1)|target.time_to_die<12*cooldown.shadow_dance.charges_fractional*(1+equipped.shadow_satyrs_walk*0.5)|spell_targets.shuriken_storm>=5)" );
     def -> add_action( "call_action_list,name=build,if=variable.ed_threshold" );
 
     // Cooldowns
@@ -6804,8 +6808,8 @@ void rogue_t::init_action_list()
       else
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
-    cds -> add_action( this, "Shadow Blades", "if=!stealthed.all" );
-    cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|target.time_to_die<8)" );
+    cds -> add_action( this, "Shadow Blades", "if=combo_points<=2|(equipped.denial_of_the_halfgiants&combo_points>=1)" );
+    cds -> add_action( this, "Goremaw's Bite", "if=!stealthed.all&cooldown.shadow_dance.charges_fractional<=2.45&((combo_points.deficit>=4-(time<10)*2&energy.deficit>50+talent.vigor.enabled*25-(time>=10)*15)|target.time_to_die<8)" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|(raid_event.adds.in>40&combo_points.deficit>=4+talent.deeper_strategem.enabled+talent.anticipation.enabled)" );
 
     // Builders
@@ -6837,8 +6841,8 @@ void rogue_t::init_action_list()
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges_fractional>=2.45" );
     stealth_cds -> add_action( this, "Vanish" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=charges>=2&combo_points<=1" );
-    stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40-variable.ssw_er" );
-    stealth_cds -> add_action( "shadowmeld,if=energy>=40-variable.ssw_er&energy.deficit>10" );
+    stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40-variable.ssw_refund" );
+    stealth_cds -> add_action( "shadowmeld,if=energy>=40-variable.ssw_refund&energy.deficit>=10+variable.ssw_refund" );
     stealth_cds -> add_action( this, "Shadow Dance", "if=combo_points<=1" );
   }
 
@@ -6945,6 +6949,10 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       n_buffs += buffs.buried_treasure -> check() != 0;
       return n_buffs;
     } );
+  }
+  else if (util::str_compare_ci(name_str, "ssw_refund_offset"))
+  {
+    return make_ref_expr(name_str, ssw_refund_offset);
   }
 
   // Split expressions
@@ -7712,6 +7720,7 @@ void rogue_t::create_options()
   add_option( opt_func( "main_hand_secondary", parse_mainhand_secondary ) );
   add_option( opt_int( "initial_combo_points", initial_combo_points ) );
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
+  add_option( opt_int("ssw_refund_offset", ssw_refund_offset) );
 
   player_t::create_options();
 }

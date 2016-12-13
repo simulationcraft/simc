@@ -6074,6 +6074,11 @@ struct remorseless_winter_buff_t : public buff_t
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
+    if ( gathering_storm )
+    {
+      gathering_storm -> expire();
+    }
+
     // Technically, the clearing of Frozen Soul targets should probably happen in frozen_soul_t
     // (i.e., the damage). However, in game the Frozen Soul (the buff) resets its duration only when
     // new targets are damaged. Since Gathering Storm can extend Remorseless Winter duration past

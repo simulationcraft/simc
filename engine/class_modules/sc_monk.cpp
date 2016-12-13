@@ -126,6 +126,7 @@ public:
 
   struct dots_t
   {
+    dot_t* breath_of_fire;
     dot_t* enveloping_mist;
     dot_t* renewing_mist;
     dot_t* soothing_mist;
@@ -781,9 +782,9 @@ public:
   double current_stagger_tick_dmg_percent();
   double current_stagger_dot_remains();
   double stagger_pct();
-//  combo_strikes_e convert_expression_action_to_enum( action_t* a );
   void trigger_celestial_fortune( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
+  bool rjw_trigger_mark_of_the_crane();
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
   double clear_stagger();
@@ -1362,6 +1363,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   {
     double pm = sef_melee_attack_t::composite_persistent_multiplier( action_state );
 
+    // Current bug where Transfer the Power is not being applied to SEF's Fists of Fury
     if ( o() -> buff.transfer_the_power -> up() )
     {
       pm /= 1 + o() -> buff.transfer_the_power -> stack_value();
@@ -1403,6 +1405,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       tick_action = new sef_tick_action_t( "rushing_jade_wind_tick", player,
           player -> o() -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
+    }
+
+    virtual void execute() override
+    {
+      sef_melee_attack_t::execute();
+      
+      o() -> rjw_trigger_mark_of_the_crane();
     }
   };
 
@@ -2010,8 +2019,21 @@ public:
   // Used to trigger Windwalker's Combo Strike Mastery; Triggers prior to calculating damage
   void combo_strikes_trigger( combo_strikes_e new_ability )
   {
-    if ( !compare_previous_combo_strikes( new_ability ) && p() -> mastery.combo_strikes -> ok() )
+    if ( p() -> mastery.combo_strikes -> ok() )
     {
+      if ( !compare_previous_combo_strikes( new_ability ) )
+      {
+        p() -> buff.combo_strikes -> trigger();
+        if ( p() -> talent.hit_combo -> ok() )
+          p() -> buff.hit_combo -> trigger();
+      }
+      else
+      {
+        p() -> buff.combo_strikes -> expire();
+        p() -> buff.hit_combo -> expire();
+      }
+      p() -> previous_combo_strike = new_ability;
+
       // The set bonus checks the last 3 unique combo strike triggering abilities before triggering a spell
       // This is an ongoing check; so theoretically it can trigger 2 times from 4 unique CS spells in a row
       // If a spell is used and it is one of the last 3 combo stirke saved, it will not trigger the buff
@@ -2020,54 +2042,54 @@ public:
       // IE: Energizing Elixir -> Blackout Kick -> Blackout Kick -> Rising Sun Kick -> Blackout Kick -> Tiger Palm (trigger)
       if ( p() -> sets.has_set_bonus( MONK_WINDWALKER, T19, B4 ) )
       {
-        if ( p() -> t19_melee_4_piece_container_1 != CS_NONE )
+        if ( p() -> t19_melee_4_piece_container_3 != CS_NONE )
         {
-          if ( p() -> t19_melee_4_piece_container_2 != CS_NONE )
+          // Check if the last two containers are not the same as the new ability
+          if ( p() -> t19_melee_4_piece_container_3 != new_ability )
           {
-            if ( p() -> t19_melee_4_piece_container_3 != CS_NONE )
+            if ( p() -> t19_melee_4_piece_container_2 != new_ability )
             {
-              // Check if the last two containers are not the same as the new ability
-              if ( p() -> t19_melee_4_piece_container_3 != new_ability )
-              {
-                if ( p() -> t19_melee_4_piece_container_2 != new_ability )
-                {
-                  // if they are not the same adjust containers and trigger the buff
-                  p() -> t19_melee_4_piece_container_1 = p() -> t19_melee_4_piece_container_2;
-                  p() -> t19_melee_4_piece_container_2 = p() -> t19_melee_4_piece_container_3;
-                  p() -> t19_melee_4_piece_container_3 = new_ability;
-                  p() -> buff.combo_master -> trigger();
-                }
-                // Don't do anything if the second container is the same
-              }
-              // semi-reset if the last ability is the same as the new ability
-              else
-              {
-                p() -> t19_melee_4_piece_container_1 = new_ability;
-                p() -> t19_melee_4_piece_container_2 = CS_NONE;
-                p() -> t19_melee_4_piece_container_3 = CS_NONE;
-              }
+              // if they are not the same adjust containers and trigger the buff
+              p() -> t19_melee_4_piece_container_1 = p() -> t19_melee_4_piece_container_2;
+              p() -> t19_melee_4_piece_container_2 = p() -> t19_melee_4_piece_container_3;
+              p() -> t19_melee_4_piece_container_3 = new_ability;
+              p() -> buff.combo_master -> trigger();
             }
-            // If the 3rd container is blank check if the first two containers are not the same
-            else if ( p() -> t19_melee_4_piece_container_2 != new_ability )
-            {
-              if ( p() -> t19_melee_4_piece_container_1 != new_ability )
-              {
-                // Assign the 3rd container and trigger the buff
-                p() -> t19_melee_4_piece_container_3 = new_ability;
-                p() -> buff.combo_master -> trigger();
-              }
-              // Don't do anything if the first container is the same
-            }
-            // semi-reset if the last ability is the same as the new ability
-            else
-            {
-                p() -> t19_melee_4_piece_container_1 = new_ability;
-                p() -> t19_melee_4_piece_container_2 = CS_NONE;
-                p() -> t19_melee_4_piece_container_3 = CS_NONE;
-            }
+            // Don't do anything if the second container is the same
           }
+          // semi-reset if the last ability is the same as the new ability
+          else
+          {
+            p() -> t19_melee_4_piece_container_1 = new_ability;
+            p() -> t19_melee_4_piece_container_2 = CS_NONE;
+            p() -> t19_melee_4_piece_container_3 = CS_NONE;
+          }
+        }
+        else if ( p() -> t19_melee_4_piece_container_2 != CS_NONE )
+        {
+          // If the 3rd container is blank check if the first two containers are not the same
+          if ( p() -> t19_melee_4_piece_container_2 != new_ability )
+          {
+            if ( p() -> t19_melee_4_piece_container_1 != new_ability )
+            {
+              // Assign the 3rd container and trigger the buff
+              p() -> t19_melee_4_piece_container_3 = new_ability;
+              p() -> buff.combo_master -> trigger();
+            }
+            // Don't do anything if the first container is the same
+          }
+          // semi-reset if the last ability is the same as the new ability
+          else
+          {
+              p() -> t19_melee_4_piece_container_1 = new_ability;
+              p() -> t19_melee_4_piece_container_2 = CS_NONE;
+              p() -> t19_melee_4_piece_container_3 = CS_NONE;
+          }
+        }
+        else if ( p() -> t19_melee_4_piece_container_1 != CS_NONE )
+        {
           // If the 2nd and 3rd container is blank, check if the first container is not the same
-          else if ( p() -> t19_melee_4_piece_container_1 != new_ability )
+          if ( p() -> t19_melee_4_piece_container_1 != new_ability )
             // Assign the second container
             p() -> t19_melee_4_piece_container_2 = new_ability;
           // semi-reset if the last ability is the same as the new ability
@@ -2081,18 +2103,7 @@ public:
         else
           p() -> t19_melee_4_piece_container_1 = new_ability;
       }
-
-      p() -> buff.combo_strikes -> trigger();
-      if ( p() -> talent.hit_combo -> ok() )
-        p() -> buff.hit_combo -> trigger();
     }
-    else
-    {
-      p() -> buff.combo_strikes -> expire();
-      p() -> buff.hit_combo -> expire();
-      p() -> buff.combo_master -> expire();
-    }
-    p() -> previous_combo_strike = new_ability;
   }
 
   double cost() const override
@@ -3269,6 +3280,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
         buff_t::DEFAULT_VALUE(),
         1.0,
         composite_dot_duration( execute_state ) );
+
+    p() -> rjw_trigger_mark_of_the_crane();
 
     if ( p() -> buff.masterful_strikes -> up() )
        p() -> buff.masterful_strikes -> decrement();
@@ -4645,7 +4658,7 @@ struct breath_of_fire_t: public monk_spell_t
       double am = monk_spell_t::action_multiplier();
 
       if ( p() -> artifact.hot_blooded.rank() )
-        am *= 1 + p() -> artifact.hot_blooded.percent();
+        am *= 1 + p() -> artifact.hot_blooded.data().effectN( 1 ).percent();
 
       return am;
     }
@@ -6671,6 +6684,7 @@ monk( *p )
   debuff.storm_earth_and_fire = buff_creator_t( *this, "storm_earth_and_fire_target" )
     .cd( timespan_t::zero() );
 
+  dots.breath_of_fire = target -> get_dot( "breath_of_fire_dot", p );
   dots.enveloping_mist = target -> get_dot( "enveloping_mist", p );
   dots.renewing_mist = target -> get_dot( "renewing_mist", p );
   dots.soothing_mist = target -> get_dot( "soothing_mist", p );
@@ -6762,6 +6776,60 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
 void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 {
   get_target_data( s -> target ) -> debuff.mark_of_the_crane -> trigger();
+}
+
+bool monk_t::rjw_trigger_mark_of_the_crane()
+{
+  if ( sim -> dbc.ptr )
+  {
+    if ( specialization() == MONK_WINDWALKER )
+    {
+      int mark_of_the_crane_max = talent.rushing_jade_wind -> effectN( 2 ).base_value();
+      int mark_of_the_crane_counter = 0;
+      auto targets = sim -> target_non_sleeping_list.data();
+
+      // If the number of targets is less than or equal to the max number mark of the Cranes being applied,
+      // just apply the debuff to all targets; or refresh the buff if it is already up
+      if ( targets.max_size() <= mark_of_the_crane_max )
+      {
+        for ( player_t* target : targets )
+          get_target_data( target ) -> debuff.mark_of_the_crane -> trigger();
+      }
+      else
+      {
+        // First of all find targets that do not have the cyclone strike debuff applied and apply a cyclone
+        for ( player_t* target : targets )
+        {
+          if ( !get_target_data( target ) -> debuff.mark_of_the_crane -> up() )
+          {
+            get_target_data( target ) -> debuff.mark_of_the_crane -> trigger();
+            mark_of_the_crane_counter++;
+          }
+
+          if ( mark_of_the_crane_counter == mark_of_the_crane_max )
+            return true;
+        }
+
+        // If all targets have the debuff, find the lowest duration of cyclone strike debuff and refresh it
+        player_t* lowest_duration = targets[0];
+
+        for ( mark_of_the_crane_counter; mark_of_the_crane_counter < mark_of_the_crane_max; mark_of_the_crane_counter++)
+        {
+          for ( player_t* target : targets )
+          {
+            if ( get_target_data( target ) -> debuff.mark_of_the_crane -> remains() <
+              get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> remains() )
+              lowest_duration = target;
+          }
+          
+          get_target_data( lowest_duration ) -> debuff.mark_of_the_crane -> trigger();
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+  return false;
 }
 
 player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
@@ -7158,7 +7226,7 @@ void monk_t::init_spells()
   if ( talent.chi_orbit -> ok() )
     active_actions.chi_orbit = new actions::chi_orbit_t( this );
 
-  if (specialization() == MONK_BREWMASTER)
+  if ( specialization() == MONK_BREWMASTER )
     active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
 }
 
@@ -8261,6 +8329,12 @@ void monk_t::target_mitigation( school_e school,
       if ( buff.exploding_keg -> up() ) 
         s -> result_amount *= 1.0 + buff.exploding_keg -> value();
 
+      if ( artifact.hot_blooded.rank() )
+      {
+        if ( monk_t::get_target_data( s -> target ) -> dots.breath_of_fire -> is_ticking() )
+          s -> result_amount *= 1.0 - artifact.hot_blooded.data().effectN( 2 ).percent();
+      }
+      
       // Passive sources (Sturdy Ox)
       if ( school != SCHOOL_PHYSICAL )
         // TODO: Magical Damage reduction (currently set to zero, but effect is still in place)

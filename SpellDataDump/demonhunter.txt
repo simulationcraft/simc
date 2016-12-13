@@ -1020,7 +1020,7 @@ Effects          :
 #1 (id=293648)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=293649)   : Weapon Damage% (31)
-                   Base Value: 440 | Scaled Value: 4.4 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 485 | Scaled Value: 4.85 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -1136,7 +1136,7 @@ Effects          :
 #1 (id=296759)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=296760)   : Weapon Damage% (31)
-                   Base Value: 572 | Scaled Value: 5.72 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 630 | Scaled Value: 6.3 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc201427
 
 Name             : Fury of the Illidari (Artifact) (id=201467) [Spell Family (107)] 
@@ -1457,7 +1457,7 @@ Effects          :
 #1 (id=300260)   : Apply Aura (6) | Proc Trigger Spell: Demon Blades (42)
                    Base Value: 65 | Scaled Value: 65 | Trigger Spell: 203796 | Target: Self(1)
 #2 (id=350250)   : Apply Aura (6) | Add Flat Modifier: Spell Effect 1 (107)
-                   Base Value: -6 | Scaled Value: -6 | Misc Value: 3
+                   Base Value: -8 | Scaled Value: -8 | Misc Value: 3
                    Affected Spells: Anger of the Half-Giants (208827)
 Description      : Your auto attacks have a $h% chance to deal additional Shadow damage and generate Fury.
 
@@ -2644,7 +2644,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=310970)   : Energize Power (30)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: fury | Target: Self(1)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: fury | Target: Self(1)
 Description      : Increases your Fury by $s1.
 
 Name             : Consume Soul (id=210042) [Spell Family (107)] 
@@ -3093,7 +3093,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self(1)
 #3 (id=315636)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 0x7f | Target: Self(1)
-#4 (id=357029)   : Apply Aura (6) | Unknown effect sub type (171)
+#4 (id=357029)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 Description      : $@spelldesc198589
 Tooltip          : Dodge increased by $s2%.
@@ -3444,7 +3444,7 @@ Effects          :
 #1 (id=331359)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=331360)   : Weapon Damage% (31)
-                   Base Value: 275 | Scaled Value: 2.75 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 305 | Scaled Value: 3.05 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
@@ -3654,7 +3654,7 @@ Effects          :
 #1 (id=342015)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 #2 (id=342016)   : Weapon Damage% (31)
-                   Base Value: 357 | Scaled Value: 3.57 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
+                   Base Value: 397 | Scaled Value: 3.97 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy(6)
 Description      : Slice your target for ${$sw1+$201428sw1} Chaos damage.  Critical strikes do not consume Fury.
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 

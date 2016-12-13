@@ -338,6 +338,7 @@ public:
     artifact_power_t sharpened_glaives;
     artifact_power_t unleashed_demons;
     artifact_power_t warglaives_of_chaos;
+	artifact_power_t chaos_burn;
 
     // NYI
     artifact_power_t deceivers_fury;
@@ -387,6 +388,7 @@ public:
     cooldown_t* fel_rush;
     cooldown_t* fel_rush_secondary;
     cooldown_t* fury_of_the_illidari;
+	cooldown_t* metamorphosis;
     cooldown_t* nemesis;
     cooldown_t* netherwalk;
     cooldown_t* throw_glaive;
@@ -470,6 +472,7 @@ public:
     spell_t* anguish;
     attack_t* demon_blades;
     spell_t* inner_demons;
+	attack_t* chaos_cleave;
 
     // Vengeance
     heal_t* charred_warblades;
@@ -500,6 +503,8 @@ public:
     // Havoc
     double eternal_hunger;
     timespan_t raddons_cascading_eyes;
+	timespan_t delusions_of_grandeur_reduction;
+	double delusions_of_grandeur_fury_per_time;
 
     // Vengeance
     double cloak_of_fel_flames;
@@ -1229,6 +1234,22 @@ public:
     }
   }
 
+  virtual void consume_resource() override
+  {
+    ab::consume_resource();
+    resource_e cr = ab::current_resource();
+
+    if (cr != RESOURCE_FURY || ab::base_cost() == 0 || ab::proc) return;
+
+    if (p()->legendary.delusions_of_grandeur_reduction >= timespan_t::zero()) return;
+
+    ab::resource_consumed = ab::cost();
+
+    double ticks = ab::resource_consumed / p()->legendary.delusions_of_grandeur_fury_per_time;
+    double seconds = p()->legendary.delusions_of_grandeur_reduction.total_millis();
+    p()->cooldown.metamorphosis->adjust(timespan_t::from_seconds(ticks * seconds));
+  }
+
   virtual bool ready() override
   {
     if ( ( ab::execute_time() > timespan_t::zero() || ab::channeled ) &&
@@ -1782,6 +1803,10 @@ struct eye_beam_t : public demon_hunter_spell_t
 		timespan_t demonicTime;
 		if (maybe_ptr(p()->dbc.ptr)){
 			demonicTime = timespan_t::from_seconds(8);
+			if (p()->buff.metamorphosis->up()){
+				p()->buff.metamorphosis->extend_duration(p(), demonicTime);
+				return;
+			}
 		}
 		else{
 			demonicTime = timespan_t::from_seconds(5);
@@ -3330,8 +3355,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       assert( eff.type() == E_TRIGGER_SPELL );
 
       dual = background = true;
-      aoe = data().effectN( 1 ).chain_target() +
-            p -> talent.chaos_cleave -> effectN( 1 ).base_value();
+	  aoe = data().effectN(1).chain_target();
+
+	  if (!maybe_ptr(p->dbc.ptr))
+	  {
+		  aoe += p->talent.chaos_cleave->effectN(1).base_value();
+	  }
+
       chain_multiplier = data().effectN( 1 ).chain_multiplier();
       may_refund       = weapon == &( p -> off_hand_weapon );
 
@@ -3376,6 +3406,18 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
                             parent -> gain );
       }
     }
+
+	void impact(action_state_t* state) override
+	{
+		demon_hunter_attack_t::impact(state);
+
+		if (p()->talent.chaos_cleave->ok() && maybe_ptr(p()->dbc.ptr))
+		{
+			p()->active.chaos_cleave->base_dd_min = state->result_total;
+			p()->active.chaos_cleave->base_dd_max = state->result_total;
+			p()->active.chaos_cleave->schedule_execute();
+		}
+	}
   };
 
   struct chaos_strike_event_t : public event_t
@@ -3421,8 +3463,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   {
     energize_amount =
       p -> spec.chaos_strike_refund -> effectN( 1 ).resource( RESOURCE_FURY );
-    aoe = s -> effectN( 1 ).chain_target() +
-          p -> talent.chaos_cleave -> effectN( 1 ).base_value();
+	aoe = s->effectN(1).chain_target();
+
+	if (!maybe_ptr(p->dbc.ptr))
+	{
+		aoe += p->talent.chaos_cleave->effectN(1).base_value();
+	}
+
 
     // Don't put damage modifiers here, they should go in chaos_strike_damage_t.
     // Crit chance modifiers need to be in here, not chaos_strike_damage_t.
@@ -3568,6 +3615,41 @@ struct chaos_strike_t : public chaos_strike_base_t
 
     return chaos_strike_base_t::ready();
   }
+};
+
+// Chaos Cleave =============================================================
+struct chaos_cleave_t : public demon_hunter_attack_t
+{
+	chaos_cleave_t(demon_hunter_t* p) : demon_hunter_attack_t(
+		"chaos_cleave", p, p->find_talent_spell("Chaos Cleave"))
+	{
+		may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
+		background = true;
+		aoe = -1;
+		weapon = &p->main_hand_weapon;
+		weapon_multiplier = 0;
+		radius = 8;
+		range = -1.0;
+		school = SCHOOL_CHAOS;
+	}
+
+	void snapshot_state(action_state_t* s, dmg_e rt) override
+	{
+		demon_hunter_attack_t::snapshot_state(s, rt);
+		s->da_multiplier =  p()->talent.chaos_cleave->effectN(2).percent();
+	}
+
+	result_e calculate_result(action_state_t* s) const override
+	{
+		result_e r = demon_hunter_attack_t::calculate_result(s);
+
+		if (result_is_miss(r))
+		{
+			return r;
+		}
+
+		return RESULT_HIT;
+	}
 };
 
 // Annihilation =============================================================
@@ -5252,21 +5334,32 @@ void demon_hunter_t::create_buffs()
   // TODO: Buffs for each race?
   buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  buff.prepared =
-    buff_creator_t( this, "prepared",
-                    talent.prepared -> effectN( 1 ).trigger() )
-    .trigger_spell( talent.prepared )
-    .default_value(
-      talent.prepared -> effectN( 1 ).trigger() -> effectN( 1 ).resource(
-        RESOURCE_FURY ) *
-      ( 1.0 +
-        sets.set( DEMON_HUNTER_HAVOC, T19, B2 )
-         -> effectN( 1 )
-        .percent() ) )
-  .tick_callback( [this]( buff_t* b, int, const timespan_t& ) {
-    resource_gain( RESOURCE_FURY, b -> check_value(), gain.prepared );
-  } );
+  
+  if (maybe_ptr(dbc.ptr)){
+	  buff.prepared =
+		  buff_creator_t(this, "prepared",
+		  talent.prepared->effectN(1).trigger())
+		  .trigger_spell(talent.prepared)
+		  .period(timespan_t::from_millis(100))
+		  .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource( RESOURCE_FURY) *
+				(1.0 +sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()) / 
+				(talent.prepared->effectN(1).trigger()->duration().total_millis() / 100))
+		  .tick_callback([this](buff_t* b, int, const timespan_t&) {
+		  resource_gain(RESOURCE_FURY, b->check_value(), gain.prepared);
+	  });
+  }
+  else{
+	  buff.prepared =
+		  buff_creator_t(this, "prepared",
+		  talent.prepared->effectN(1).trigger())
+		  .trigger_spell(talent.prepared)
+		  .default_value(talent.prepared->effectN(1).trigger()->effectN(1).resource(RESOURCE_FURY) *
+			(1.0 + sets.set(DEMON_HUNTER_HAVOC, T19, B2)->effectN(1).percent()))
+		  .tick_callback([this](buff_t* b, int, const timespan_t&) {
+		  resource_gain(RESOURCE_FURY, b->check_value(), gain.prepared);
+	  });
+  }
+  
 
   buff.rage_of_the_illidari =
     buff_creator_t( this, "rage_of_the_illidari", find_spell( 217060 ) );
@@ -5914,6 +6007,7 @@ void demon_hunter_t::init_spells()
   artifact.sharpened_glaives    = find_artifact_spell( "Sharpened Glaives" );
   artifact.unleashed_demons     = find_artifact_spell( "Unleashed Demons" );
   artifact.warglaives_of_chaos  = find_artifact_spell( "Warglaives of Chaos" );
+  artifact.chaos_burn			= find_artifact_spell("Chaos Burn");
 
   // Vengeance -- The Aldrachi Warblades
   artifact.aldrachi_design      = find_artifact_spell( "Aldrachi Design" );
@@ -6000,6 +6094,11 @@ void demon_hunter_t::init_spells()
   if ( artifact.anguish_of_the_deceiver.rank() )
   {
     active.anguish = new anguish_t( this );
+  }
+
+  if (talent.chaos_cleave->ok())
+  {
+	  active.chaos_cleave = new chaos_cleave_t( this );
   }
 
   if ( artifact.charred_warblades.rank() )
@@ -6376,6 +6475,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.fel_rush             = get_cooldown( "fel_rush" );
   cooldown.fel_rush_secondary   = get_cooldown( "fel_rush_secondary" );
   cooldown.fury_of_the_illidari = get_cooldown( "fury_of_the_illidari" );
+  cooldown.metamorphosis = get_cooldown("metamorphosis");
   cooldown.nemesis              = get_cooldown( "nemesis" );
   cooldown.netherwalk           = get_cooldown( "netherwalk" );
   cooldown.throw_glaive         = get_cooldown( "throw_glaive" );
@@ -6612,6 +6712,8 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.demon_spikes -> check() )
     m *= 1.0 + talent.razor_spikes -> effectN( 1 ).percent();
+
+  m *= 1.0 + artifact.chaos_burn.percent();
 
   return m;
 }
@@ -7276,6 +7378,21 @@ struct raddons_cascading_eyes_t : public scoped_actor_callback_t<demon_hunter_t>
   }
 };
 
+struct delusions_of_grandeur_t : public scoped_actor_callback_t<demon_hunter_t>
+{
+	delusions_of_grandeur_t() : super(DEMON_HUNTER_HAVOC)
+	{
+	}
+
+	void manipulate(demon_hunter_t* actor, const special_effect_t& e) override
+	{
+		actor->legendary.delusions_of_grandeur_reduction = -e.driver()->effectN(1).time_value();
+		
+		actor->legendary.delusions_of_grandeur_fury_per_time =
+			e.driver()->effectN(2).base_value();
+	}
+};
+
 struct loramus_thalipedes_sacrifice_t
   : public scoped_action_callback_t<fel_rush_t::fel_rush_damage_t>
 {
@@ -7331,6 +7448,7 @@ public:
     register_special_effect( 215149, raddons_cascading_eyes_t() );
     register_special_effect( 210867, runemasters_pauldrons_t() );
     register_special_effect( 210840, the_defilers_lost_vambraces_t() );
+	register_special_effect(209354,  delusions_of_grandeur_t());
   }
 
   void register_hotfixes() const override
