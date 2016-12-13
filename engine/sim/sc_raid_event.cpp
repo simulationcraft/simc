@@ -379,31 +379,48 @@ struct distraction_event_t : public raid_event_t
 
 // Invulnerable =============================================================
 
+// TODO: Support more than sim -> target
 struct invulnerable_event_t : public raid_event_t
 {
+  bool retarget;
+
   invulnerable_event_t( sim_t* s, const std::string& options_str ) :
-    raid_event_t( s, "invulnerable" )
+    raid_event_t( s, "invulnerable" ), retarget( false )
   {
+    add_option( opt_bool( "retarget", retarget ) );
+
     parse_options( options_str );
   }
 
-  virtual void _start() override
+  void _start() override
   {
+    sim -> target -> clear_debuffs();
     sim -> target -> debuffs.invulnerable -> increment();
 
-    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
-    {
-      player_t* p = sim -> player_list[ i ];
+    range::for_each( sim -> player_non_sleeping_list, []( player_t* p ) {
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> halt();
-    }
+    } );
 
-    sim -> target -> clear_debuffs();
+    if ( retarget )
+    {
+      range::for_each( sim -> player_non_sleeping_list, [ this ]( player_t* p ) {
+        p -> acquire_target( ACTOR_INVULNERABLE, sim -> target );
+      } );
+    }
   }
 
-  virtual void _finish() override
+  void _finish() override
   {
     sim -> target -> debuffs.invulnerable -> decrement();
+
+    if ( retarget )
+    {
+      range::for_each( sim -> player_non_sleeping_list, [ this ]( player_t* p ) {
+        p -> acquire_target( ACTOR_VULNERABLE, sim -> target );
+      } );
+    }
+
   }
 };
 
