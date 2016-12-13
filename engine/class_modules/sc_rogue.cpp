@@ -7742,6 +7742,16 @@ void rogue_t::copy_from( player_t* source )
     weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str = \
       rogue -> weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str;
   }
+
+  if ( rogue -> initial_combo_points != 0 )
+  {
+    initial_combo_points = rogue -> initial_combo_points;
+  }
+
+  if ( rogue -> ssw_refund_offset != 0 )
+  {
+    ssw_refund_offset = rogue -> ssw_refund_offset;
+  }
 }
 
 // rogue_t::create_profile  =================================================
