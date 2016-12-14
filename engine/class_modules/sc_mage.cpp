@@ -2425,6 +2425,13 @@ struct frost_mage_spell_t : public mage_spell_t
 
     // Icicles do not double dip on target based multipliers
     double m = state -> target_da_multiplier * state -> versatility;
+    // Invulnerability event may make it so that there's no damage associated with the icicle
+    // trigger. In that case, don't trigger any icicle gains.
+    if ( m == 0 )
+    {
+      return;
+    }
+
     double amount = state -> result_amount / m * p() -> cache.mastery_value();
     if ( p() -> artifact.black_ice.rank() && rng().roll( 0.2 ) )
     {
