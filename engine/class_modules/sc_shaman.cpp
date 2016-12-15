@@ -7893,7 +7893,9 @@ struct eotn_buff_base_t : public class_buff_cb_t<buff_t>
   {
     return super::creator( e )
            .spell( e.player -> find_spell( sid ) )
-           .default_value( e.player -> find_spell( sid ) -> effectN( 1 ).percent() )
+           // PTR data changes the bonus to 1.5%, which is expressed as "15" in client spell data,
+           // instead of "2" (2%)
+           .default_value( e.player -> find_spell( sid ) -> effectN( 1 ).percent() * ( e.player -> dbc.ptr ? .1 : 1 ) )
            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
