@@ -5516,18 +5516,25 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   if ( buffs.avenging_wrath -> check() )
   {
     m *= 1.0 + buffs.avenging_wrath -> get_damage_mod();
-    if ( chain_of_thrayn )
+    if ( maybe_ptr( dbc.ptr ) )
     {
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      if ( chain_of_thrayn )
+      {
+        m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      }
     }
+
   }
 
   if ( buffs.crusade -> check() )
   {
     m *= 1.0 + buffs.crusade -> get_damage_mod();
-    if ( chain_of_thrayn )
+    if ( maybe_ptr( dbc.ptr ) )
     {
-      m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      if ( chain_of_thrayn )
+      {
+        m *= 1.0 + spells.chain_of_thrayn -> effectN( 4 ).percent();
+      }
     }
   }
 
