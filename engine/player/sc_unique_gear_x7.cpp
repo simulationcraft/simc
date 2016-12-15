@@ -277,7 +277,7 @@ void item::arans_relaxing_ruby( special_effect_t& effect )
   // Adjust frost base RPPM: https://www.altered-time.com/forum/viewtopic.php?f=2&t=3416
   if ( effect.player -> specialization() == MAGE_FROST )
   {
-    effect.rppm_modifier_ = 0.818;
+    effect.ppm_ = -1.35;
   }
 
   if ( ! action )
@@ -1923,12 +1923,6 @@ void item::faulty_countermeasures( special_effect_t& effect )
   effect2 -> name_str       = "brittle";
   effect2 -> spell_id       = effect.driver() -> id();
   effect2 -> cooldown_      = timespan_t::zero();
-
-  // 2016-09-13: Enhancement RPPM hotfixed 1.8 -> 0.8, does not show in client data
-  if ( effect.player -> specialization() == SHAMAN_ENHANCEMENT )
-  {
-    effect2 -> rppm_modifier_ = 0.8;
-  }
 
   effect.player -> special_effects.push_back( effect2 );
 
