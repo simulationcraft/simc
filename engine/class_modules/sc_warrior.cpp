@@ -583,7 +583,8 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, deadly_calm;
+  bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, deadly_calm, 
+    arms_damage_increase, fury_damage_increase;
   double tactician_per_rage, arms_t19_4p_chance;
 private:
   typedef Base ab; // action base, eg. spell_t
@@ -600,6 +601,8 @@ public:
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
     dauntless( ab::data().affected_by( player -> talents.dauntless -> effectN( 1 ) ) ),
     deadly_calm( ab::data().affected_by( player -> spec.battle_cry -> effectN( 4 ) ) ),
+    arms_damage_increase( ab::data().affected_by( player -> spell.arms_warrior -> effectN( 2 ) ) ),
+    fury_damage_increase( ab::data().affected_by( player -> spell.fury_warrior -> effectN( 1 ) ) ),
     tactician_per_rage( 0 ), arms_t19_4p_chance( 0 ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
@@ -608,6 +611,14 @@ public:
     tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100  );
     tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
     arms_t19_4p_chance = p() -> sets.set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).percent();
+
+    if ( maybe_ptr( player ->dbc.ptr ) )
+    {
+      if ( arms_damage_increase )
+        weapon_multiplier *= 1.0 + player ->spell.arms_warrior -> effectN( 2 ).percent();
+      if ( fury_damage_increase  )
+        weapon_multiplier *= 1.0 + player ->spell.fury_warrior ->effectN( 1 ).percent();
+    }
   }
 
   void init() override
@@ -1224,9 +1235,12 @@ struct bladestorm_tick_t: public warrior_attack_t
   {
     dual = true;
     aoe = -1;
-    if ( p -> specialization() == WARRIOR_ARMS )
+    if ( p->specialization() == WARRIOR_ARMS )
     {
-      weapon_multiplier *= 1.0 + p -> spell.arms_warrior -> effectN( 3 ).percent();
+      if ( maybe_ptr( p->dbc.ptr ) )
+        weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 5 ).percent();
+      else
+        weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 3 ).percent();
     }
   }
 
@@ -3041,6 +3055,11 @@ struct ravager_tick_t: public warrior_attack_t
   {
     aoe = -1;
     dual = ground_aoe = true;
+    if ( p->specialization() == WARRIOR_ARMS )
+    {
+      if ( maybe_ptr( p->dbc.ptr ) )
+        weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 3 ).percent();
+    }
   }
 };
 
@@ -5715,10 +5734,12 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
   }
 
-  // Physical damage only.
   if ( specialization() == WARRIOR_ARMS )
   {
-    m *= 1.0 + spell.arms_warrior -> effectN( 2 ).percent();
+    if ( maybe_ptr( dbc.ptr ))
+      m *= 1.0 + spell.arms_warrior -> effectN( 4 ).percent();
+    else
+      m *= 1.0 + spell.arms_warrior -> effectN( 2 ).percent();
   }
   // Arms no longer has enrage, so no need to check for it.
   else if ( buff.enrage -> check() )
