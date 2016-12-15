@@ -274,10 +274,18 @@ void item::arans_relaxing_ruby( special_effect_t& effect )
     action = effect.player -> create_proc_action( "flame_wreath", effect );
   }
 
+  // Adjust frost base RPPM: https://www.altered-time.com/forum/viewtopic.php?f=2&t=3416
+  if ( effect.player -> specialization() == MAGE_FROST )
+  {
+    effect.rppm_modifier_ = 0.818;
+  }
+
   if ( ! action )
   {
     action = new flame_wreath_t( effect );
   }
+
+
 
   effect.execute_action = action;
   effect.proc_flags2_ = PF2_ALL_HIT;
@@ -293,7 +301,7 @@ void item::ring_of_collapsing_futures( special_effect_t& effect )
                     effect.player -> find_spell( effect.spell_id ),
                     effect.item )
     {
-      base_dd_min = base_dd_max = effect.player ->find_spell( effect.spell_id ) -> effectN( 1 ).base_value(); // Does not scale with ilevel, apparently. 
+      base_dd_min = base_dd_max = effect.player ->find_spell( effect.spell_id ) -> effectN( 1 ).base_value(); // Does not scale with ilevel, apparently.
     }
   };
 
@@ -3406,10 +3414,10 @@ void unique_gear::register_hotfixes_x7()
     .modifier( 1.1 )
     .verification_value( 26.48617 );
 
-  hotfix::register_spell( "Aran's Relaxing Ruby", "2016-11-08", "In-game testing shows that the actual rppm is 1.8 rather than 0.92. We slightly underestimate at 1.75 here.", 230257 )
+  hotfix::register_spell( "Aran's Relaxing Ruby", "2016-11-08", "In-game testing shows that the actual rppm is 1.7 rather than 0.92. We slightly underestimate at 1.65 here.", 230257 )
     .field( "rppm" )
     .operation( hotfix::HOTFIX_SET )
-    .modifier( 1.75 )
+    .modifier( 1.65 )
     .verification_value( 0.92 );
 
 }
