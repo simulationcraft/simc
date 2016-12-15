@@ -615,9 +615,9 @@ public:
     if ( maybe_ptr( player ->dbc.ptr ) )
     {
       if ( arms_damage_increase )
-        weapon_multiplier *= 1.0 + player ->spell.arms_warrior -> effectN( 2 ).percent();
+        ab::weapon_multiplier *= 1.0 + player ->spell.arms_warrior -> effectN( 2 ).percent();
       if ( fury_damage_increase  )
-        weapon_multiplier *= 1.0 + player ->spell.fury_warrior ->effectN( 1 ).percent();
+        ab::weapon_multiplier *= 1.0 + player ->spell.fury_warrior ->effectN( 1 ).percent();
     }
   }
 
