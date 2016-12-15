@@ -1,4 +1,4 @@
-SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 2b2fc10)
+SimulationCraft 710-03 for World of Warcraft 7.1.0 PTR (wow build 22995, git build 6bee682)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -4300,7 +4300,7 @@ Effects          :
 #1 (id=284355)   : School Damage: nature (2)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.55000 | Target: Enemy(6)
 #2 (id=284413)   : Energize Power (30)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: maelstrom | Target: Self(1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: maelstrom | Target: Self(1)
 Description      : Assaults your target with earthen power, dealing $s1 Nature damage.
 
 |cFFFFFFFFGenerates $s2 Maelstrom.|r
@@ -5293,7 +5293,7 @@ Class            : Shaman
 School           : Nature
 Range            : 10 yards
 GCD              : 1.5 seconds
-Charges          : 2 (7.5 seconds cooldown)
+Charges          : 2 (6 seconds cooldown)
 Category         : 1634
 Affecting spells : Enhancement Shaman (137041), Gathering of the Maelstrom (198349), Weapons of the Elements (215381)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... .x...... ........ 
@@ -5310,7 +5310,7 @@ Effects          :
 #3 (id=297596)   : Trigger Spell: Boulderfist (64)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218825 | Target: Self(1)
 #4 (id=359957)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | AP Coefficient: 2.50000 | Target: Enemy(6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 2.50000 | Target: Enemy(6)
 Description      : Slams your target with the power of stone, dealing $s1 Nature damage and enhancing your weapons for $218825d, increasing$@switch<$s4>[][ your critical strike chance by $218825s1% and] all damage you deal by $218825s2%.
 
 |cFFFFFFFFGenerates $s2 Maelstrom.|r
@@ -5710,7 +5710,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=307693)   : Unknown effect type (202) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self(1)
-Description      : Damaging enemies with your Fire, Frost, or Nature abilities increases all damage you deal by $207995s1% for $207995d. Each element adds a separate application.
+Description      : Damaging enemies with your Fire, Frost, or Nature abilities increases all damage you deal by ${$207995s1/10}.1% for $207995d. Each element adds a separate application.
 
 Name             : Fire of the Twisting Nether (id=207995) 
 Class            : Shaman
@@ -5724,9 +5724,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307694)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x200007f | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x200007f | Target: Self(1)
 Description      : $@spelldesc207994
-Tooltip          : All damage done increased by $s1%.
+Tooltip          : All damage done increased by ${$s1/10}.1%.
 
 Name             : Chill of the Twisting Nether (id=207998) 
 Class            : Shaman
@@ -5740,9 +5740,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307698)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x200007f | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x200007f | Target: Self(1)
 Description      : $@spelldesc207994
-Tooltip          : All damage done increased by $s1%.
+Tooltip          : All damage done increased by ${$s1/10}.1%.
 
 Name             : Shock of the Twisting Nether (id=207999) 
 Class            : Shaman
@@ -5756,9 +5756,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307699)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 0x200007f | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x200007f | Target: Self(1)
 Description      : $@spelldesc207994
-Tooltip          : All damage done increased by $s1%.
+Tooltip          : All damage done increased by ${$s1/10}.1%.
 
 Name             : Totem Mastery (id=210643) [Spell Family (11)] 
 Class            : Shaman
@@ -6265,7 +6265,7 @@ Description      : $@spelldesc210727
 Name             : The Deceiver's Blood Pact (id=214131) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
-Proc Chance      : 30%
+Proc Chance      : 15%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6277,7 +6277,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=317947)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self(1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self(1)
 Description      : Earth Shock has a $h% chance to refund all of the Maelstrom spent.
 
 Name             : The Deceiver's Blood Pact (id=214134) [Spell Family (11)] 
@@ -6480,11 +6480,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=325882)   : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self(1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self(1)
 #2 (id=325883)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self(1)
 Description      : $@spelldesc201897
-Tooltip          : Critical strike chance increased by $s1%. Damage dealt increased by $s2%.
+Tooltip          : $@switch<$201897s4>[][Critical strike chance increased by $s1%. ]Damage dealt increased by $s2%.
 
 Name             : Icefury Overload (id=219271) [Spell Family (11)] 
 Class            : Shaman

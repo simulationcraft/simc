@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (618)
 
-// 618 talents, wow build 23194
+// 618 talents, wow build 23244
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -183,7 +183,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Spring Blossoms"                   , 21716, 0x00, 0x0400, 105,   0,   5,  207385,       0,  0 },
   { "Grimoire of Synergy"               , 21717, 0x00, 0x0100, 266,   2,   5,  171975,       0,  0 },
   { "Power Infusion"                    , 21718, 0x00, 0x0010, 258,   0,   5,   10060,       0,  0 },
-  { "Shadow Crash"                      , 21719, 0x00, 0x0010, 258,   1,   5,  205385,       0,  0 },
+  { "Misery"                            , 21719, 0x00, 0x0010, 258,   1,   5,  238558,       0,  0 },
   { "Mindbender"                        , 21720, 0x00, 0x0010, 258,   2,   5,  200174,   34433,  0 },
   { "Light of the Naaru"                , 21750, 0x00, 0x0010, 257,   0,   3,  196985,       0,  0 },
   { "Lingering Insanity"                , 21751, 0x00, 0x0010, 258,   0,   3,  199849,       0,  0 },
@@ -220,7 +220,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Crashing Storm"                    , 21973, 0x00, 0x0040, 263,   0,   5,  192246,       0,  0 },
   { "Perseverance"                      , 21976, 0x00, 0x0010, 257,   2,   1,  235189,       0,  0 },
   { "Guardian Angel"                    , 21977, 0x00, 0x0010, 257,   1,   3,  200209,       0,  0 },
-  { "Mind Spike"                        , 21978, 0x00, 0x0010, 258,   1,   6,  236741,       0,  0 },
+  { "Shadow Crash"                      , 21978, 0x00, 0x0010, 258,   1,   6,  205385,       0,  0 },
   { "Surrender to Madness"              , 21979, 0x00, 0x0010, 258,   2,   6,  193223,       0,  0 },
   { "Killer Cobra"                      , 21986, 0x00, 0x0004, 253,   1,   6,  199532,       0,  0 },
   { "Cannonball Barrage"                , 21990, 0x00, 0x0008, 260,   0,   5,  185767,       0,  0 },
