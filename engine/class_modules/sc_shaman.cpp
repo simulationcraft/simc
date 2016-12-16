@@ -6861,6 +6861,7 @@ void shaman_t::init_action_list_enhancement()
   def -> add_action( this, "Stormstrike", "if=active_enemies>=3&!talent.hailstorm.enabled" );
   def -> add_action( this, "Windstrike", "if=buff.stormbringer.react" );
   def -> add_action( this, "Stormstrike", "if=buff.stormbringer.react" );
+  def -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&buff.landslide.remains<gcd" );
   def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd" );
   def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<gcd");
   def -> add_talent( this, "Windsong");
