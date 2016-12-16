@@ -3408,7 +3408,7 @@ void unique_gear::register_hotfixes_x7()
     .modifier( 1.1 )
     .verification_value( 26.48617 );
 
-  hotfix::register_spell( "Aran's Relaxing Ruby", "2016-11-08", "In-game testing shows that the actual rppm is 1.7 rather than 0.92. We slightly underestimate at 1.65 here.", 230257 )
+  hotfix::register_spell( "Aran's Relaxing Ruby", "2016-11-08", "In-game testing shows that the actual rppm is 1.7 rather than 0.92. We slightly underestimate at 1.65 here.", 230257, hotfix::HOTFIX_FLAG_LIVE )
     .field( "rppm" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 1.65 )

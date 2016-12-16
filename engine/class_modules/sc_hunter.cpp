@@ -193,6 +193,17 @@ public:
     proc_t* mortal_wounds;
     proc_t* t18_4pc_sv;
     proc_t* no_vuln_aimed_shot;
+    proc_t* vuln_aimed_15;
+    proc_t* vuln_aimed_30;
+    proc_t* vuln_aimed_45;
+    proc_t* vuln_aimed_60;
+    proc_t* vuln_aimed_75;
+    proc_t* no_vuln_piercing_shot;
+    proc_t* vuln_piercing_15;
+    proc_t* vuln_piercing_30;
+    proc_t* vuln_piercing_45;
+    proc_t* vuln_piercing_60;
+    proc_t* vuln_piercing_75;
     proc_t* no_vuln_marked_shot;
     proc_t* zevrims_hunger;
     proc_t* convergence;
@@ -647,12 +658,12 @@ private:
 public:
   typedef hunter_action_t base_t;
 
-  bool lone_wolf;
+  bool benefits_from_sniper_training;
 
   hunter_action_t( const std::string& n, hunter_t* player,
                    const spell_data_t* s = spell_data_t::nil() ):
                    ab( n, player, s ),
-                   lone_wolf( player -> talents.lone_wolf -> ok() )
+                   benefits_from_sniper_training( ab::base_cost() > 0.0 )
   {
   }
 
@@ -676,11 +687,11 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( lone_wolf )
-      am *= 1.0 + p() -> talents.lone_wolf -> effectN( 1 ).percent();
-
     if ( p() -> buffs.t19_4p_mongoose_power -> up() && ab::special )
       am *= 1.0 + p() -> buffs.t19_4p_mongoose_power -> default_value;
+
+    if ( benefits_from_sniper_training && p() -> mastery.sniper_training -> ok() )
+      am *= 1.0 + p()->cache.mastery() * p()->mastery.sniper_training->effectN(2).mastery_value();
 
     return am;
   }
@@ -2405,10 +2416,12 @@ namespace attacks
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
   bool may_proc_mm_feet;
+  bool may_proc_bullseye;
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ):
                           base_t( n, player, s ),
-                          may_proc_mm_feet( false )
+                          may_proc_mm_feet( false ),
+                          may_proc_bullseye( true )
   {
     if ( player -> main_hand_weapon.type == WEAPON_NONE )
       background = true;
@@ -2461,7 +2474,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     base_t::impact( s );
 
-    if ( p() -> artifacts.bullseye.rank() && s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() )
+    if ( p() -> artifacts.bullseye.rank() && s -> target -> health_percentage() <= p() -> artifacts.bullseye.value() && may_proc_bullseye)
       p() -> buffs.bullseye -> trigger();
   }
 
@@ -2483,7 +2496,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     if ( require_pre )
     {
       p() -> buffs.pre_steady_focus -> trigger( 1 );
-      if ( p() -> buffs.pre_steady_focus -> stack() < 3 )
+      if ( p() -> buffs.pre_steady_focus -> stack() < (maybe_ptr(p()->dbc.ptr) ? 2 : 3) )
         return;
     }
 
@@ -2587,16 +2600,6 @@ struct volley_tick_t: hunter_ranged_attack_t
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
     travel_speed = 0.0;
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
 };
 
 struct volley_t: hunter_ranged_attack_t
@@ -2658,6 +2661,7 @@ struct auto_shot_t: public ranged_t
   auto_shot_t( hunter_t* p ): ranged_t( p, "auto_shot", spell_data_t::nil() ), volley_tick( nullptr ),
     volley_tick_cost( 0 )
   {
+    may_proc_bullseye = false;
     school = SCHOOL_PHYSICAL;
     range = 40.0;
 
@@ -2769,16 +2773,33 @@ struct barrage_t: public hunter_ranged_attack_t
   struct barrage_damage_t: public attacks::hunter_ranged_attack_t
   {
     barrage_damage_t( hunter_t* player ):
-      attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 2 ).trigger() )
+      attacks::hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( maybe_ptr( player -> dbc.ptr ) ? 1 : 2 ).trigger() )
     {
       background = true;
       may_crit = true;
       weapon = &( player -> main_hand_weapon );
       aoe = -1;
-      base_aoe_multiplier = 0.5;
+
+      if (!maybe_ptr(player->dbc.ptr)) {
+        base_aoe_multiplier = 0.5;
+      }
+      else {
+        may_proc_bullseye = false;
+      }
+
       range = radius;
       range = 0;
       travel_speed = 0.0;
+    }
+
+    void impact(action_state_t* s) override {
+      attacks::hunter_ranged_attack_t::impact(s);
+
+      if (maybe_ptr(player->dbc.ptr)) {
+        // At least simulate the random chance of hitting for Bullseye stacking.
+        if (rng().roll(0.5) && p()->artifacts.bullseye.rank() && s->target->health_percentage() <= p()->artifacts.bullseye.value())
+          p()->buffs.bullseye->trigger();
+      }
     }
   };
 
@@ -2790,6 +2811,9 @@ struct barrage_t: public hunter_ranged_attack_t
     may_block = false;
     hasted_ticks = false;
     channeled = true;
+
+    if (maybe_ptr(player->dbc.ptr))
+      base_multiplier = 0.5;
 
     tick_zero = true;
     dynamic_tick_action = true;
@@ -2812,16 +2836,6 @@ struct barrage_t: public hunter_ranged_attack_t
 
   bool usable_moving() const override
   { return true; }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
 };
 
 // Multi Shot Attack =================================================================
@@ -2933,6 +2947,14 @@ struct multi_shot_t: public hunter_ranged_attack_t
       return false;
 
     return hunter_ranged_attack_t::ready();
+  }
+
+  virtual double cast_regen() const
+  {
+    double base = base_t::cast_regen();
+    double energize = target_list().size() * energize_amount;
+
+    return base + energize;
   }
 };
 
@@ -3088,15 +3110,6 @@ struct black_arrow_t: public hunter_ranged_attack_t
     else
       p() -> dark_minion[ 1 ] -> summon( duration );
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
-  }
 };
 
 // Bursting Shot ======================================================================
@@ -3113,11 +3126,10 @@ struct bursting_shot_t : public hunter_ranged_attack_t
   virtual double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
-    am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
+
     if ( p() -> legendary.magnetized_blasting_cap_launcher )
-    {
       am *= 1.0 + p() -> legendary.magnetized_blasting_cap_launcher -> driver() -> effectN( 2 ).percent();
-    }
+
     return am;
   }
 };
@@ -3142,9 +3154,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
     if ( p() -> buffs.trick_shot -> up() )
       am *= 1.0 + p() -> buffs.trick_shot -> default_value;
 
@@ -3160,8 +3169,14 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
     hunter_td_t* td = this -> td( t );
 
-    if ( td -> debuffs.vulnerable -> up() )
-      m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
+    if ( td -> debuffs.vulnerable -> up() ) {
+      if ( maybe_ptr(t->dbc.ptr) && p()->talents.patient_sniper->ok() ) {
+        m *= 1.0 + td->debuffs.vulnerable->default_value + td->debuffs.vulnerable->data().effectN(1).percent() * td->debuffs.vulnerable->current_tick;
+      }
+      else {
+        m *= 1.0 + td->debuffs.vulnerable->check_stack_value();
+      }
+    }
 
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
@@ -3241,6 +3256,7 @@ struct legacy_of_the_windrunners_t: aimed_shot_base_t
   legacy_of_the_windrunners_t( hunter_t* p ):
     aimed_shot_base_t( "legacy_of_the_windrunners", p, p -> artifacts.legacy_of_the_windrunners )
   {
+    may_proc_bullseye = false;
     background = true;
     dual = true;
     proc = true;
@@ -3255,6 +3271,7 @@ struct aimed_shot_t: public aimed_shot_base_t
   benefit_t* aimed_in_ca;
   trick_shot_t* trick_shot;
   legacy_of_the_windrunners_t* legacy_of_the_windrunners;
+
   aimed_shot_t( hunter_t* p, const std::string& options_str ):
     aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_ca( p -> get_benefit( "aimed_in_careful_aim" ) ),
@@ -3290,15 +3307,35 @@ struct aimed_shot_t: public aimed_shot_base_t
     return cost;
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual void impact(action_state_t* s) override
   {
-    aimed_shot_base_t::impact( s );
+    aimed_shot_base_t::impact(s);
 
-    if ( p() -> buffs.careful_aim -> value() && s -> result == RESULT_CRIT )
-      trigger_piercing_shots( s );
+    if (p()->buffs.careful_aim->value() && s->result == RESULT_CRIT)
+      trigger_piercing_shots(s);
 
-    if ( !td( s -> target ) -> debuffs.vulnerable -> check() )
-      p() -> procs.no_vuln_aimed_shot -> occur();
+    if (!td(s->target)->debuffs.vulnerable->check()) {
+      p()->procs.no_vuln_aimed_shot->occur();
+    }
+    else if (maybe_ptr(p()->dbc.ptr) && p()->talents.patient_sniper->ok()) {
+      switch (td(s->target)->debuffs.vulnerable->current_tick) {
+      case 1:
+        p()->procs.vuln_aimed_15->occur();
+        break;
+      case 2:
+        p()->procs.vuln_aimed_30->occur();
+        break;
+      case 3:
+        p()->procs.vuln_aimed_45->occur();
+        break;
+      case 4:
+        p()->procs.vuln_aimed_60->occur();
+        break;
+      case 5:
+        p()->procs.vuln_aimed_75->occur();
+        break;
+      }
+    }
   }
 
   virtual void execute() override
@@ -3420,6 +3457,11 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     return hunter_ranged_attack_t::ready();
   }
+
+  virtual double cast_regen() const
+  {
+    return base_t::cast_regen() + focus_gain;
+  }
 };
 
 // Marked Shot Attack =================================================================
@@ -3431,12 +3473,14 @@ struct marked_shot_t: public hunter_ranged_attack_t
     call_of_the_hunter_t( hunter_t* p ):
       hunter_ranged_attack_t( "call_of_the_hunter", p, p -> find_spell( 191070 ) )
     {
+      may_proc_bullseye = false;
       aoe = -1;
       background = true;
     }
   };
 
   call_of_the_hunter_t* call_of_the_hunter;
+
   marked_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "marked_shot", p, p -> find_specialization_spell( "Marked Shot" ) ), call_of_the_hunter( nullptr )
   {
@@ -3477,7 +3521,7 @@ struct marked_shot_t: public hunter_ranged_attack_t
     std::vector<player_t*> marked_shot_targets = execute_state -> action -> target_list();
     for ( size_t i = 0; i < marked_shot_targets.size(); i++ )
     {
-      if ( !td( marked_shot_targets[i] ) -> debuffs.vulnerable -> check() && no_vuln_check )
+      if ( !td( marked_shot_targets[i] ) -> debuffs.vulnerable -> check() && no_vuln_check && !maybe_ptr(p()->dbc.ptr))
       {
         p() -> procs.no_vuln_marked_shot -> occur();
         no_vuln_check = false; // Don't show multiple procs for one cast
@@ -3561,23 +3605,13 @@ struct marked_shot_t: public hunter_ranged_attack_t
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
     hunter_td_t* td = this -> td( t );
-    if ( td -> debuffs.vulnerable -> up() )
+    if ( td -> debuffs.vulnerable -> up() && !maybe_ptr(t->dbc.ptr))
       m *= 1.0 + td -> debuffs.vulnerable -> check_stack_value();
 
     if ( td -> debuffs.true_aim -> up() )
       m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
 
     return m;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
   }
 };
 
@@ -3603,12 +3637,54 @@ struct piercing_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
   }
 
+  virtual void impact(action_state_t* s) override
+  {
+    hunter_ranged_attack_t::impact(s);
+
+    if (!td(s->target)->debuffs.vulnerable->check()) {
+      p()->procs.no_vuln_piercing_shot->occur();
+    }
+    else if (maybe_ptr(p()->dbc.ptr) && p()->talents.patient_sniper->ok()) {
+      switch (td(s->target)->debuffs.vulnerable->current_tick) {
+      case 1:
+        p()->procs.vuln_piercing_15->occur();
+        break;
+      case 2:
+        p()->procs.vuln_piercing_30->occur();
+        break;
+      case 3:
+        p()->procs.vuln_piercing_45->occur();
+        break;
+      case 4:
+        p()->procs.vuln_piercing_60->occur();
+        break;
+      case 5:
+        p()->procs.vuln_piercing_75->occur();
+        break;
+      }
+    }
+  }
+
+  virtual double composite_target_da_multiplier(player_t* t) const override
+  {
+    double m = hunter_ranged_attack_t::composite_target_da_multiplier(t);
+
+    hunter_td_t* td = this->td(t);
+    if (td->debuffs.vulnerable->up() && maybe_ptr(t->dbc.ptr)) {
+      if (p()->talents.patient_sniper->ok()) {
+        m *= 1.0 + td->debuffs.vulnerable->default_value + td->debuffs.vulnerable->data().effectN(1).percent() * td->debuffs.vulnerable->current_tick;
+      }
+      else {
+        m *= 1.0 + td->debuffs.vulnerable->check_stack_value();
+      }
+    }
+
+    return m;
+  }
+
   virtual double action_multiplier() const override
   {
     double am = hunter_ranged_attack_t::action_multiplier();
-
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
     am *= std::min( 100.0, p() -> resources.current[RESOURCE_FOCUS] ) / 100;
 
@@ -3640,6 +3716,15 @@ struct explosive_shot_t: public hunter_ranged_attack_t
     initial_target = p() -> target;
 
     hunter_ranged_attack_t::execute();
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+
+    am *= 1.0 + p()->cache.mastery() * p()->mastery.sniper_training->effectN(2).mastery_value();
+
+    return am;
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const override
@@ -3710,6 +3795,11 @@ struct sidewinders_t: hunter_ranged_attack_t
     if ( p() -> legendary.mm_waist )
       p() -> buffs.sentinels_sight -> trigger();
   }
+
+  virtual double cast_regen() const 
+  {
+    return base_t::cast_regen() + energize_amount;
+  }
 };
 
 // WindBurst =========================================================================
@@ -3732,15 +3822,6 @@ struct windburst_t: hunter_ranged_attack_t
       hunter_td_t* td = this -> td( execute_state -> target );
       td -> debuffs.vulnerable -> trigger();
     }
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = hunter_ranged_attack_t::action_multiplier();
-
-    am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
-    return am;
   }
 
   virtual bool usable_moving() const override
@@ -4418,6 +4499,7 @@ struct peck_t : public hunter_spell_t
     may_block = false;
     may_dodge = false;
     travel_speed = 0.0;
+    benefits_from_sniper_training = true;
   }
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
@@ -4427,14 +4509,19 @@ struct peck_t : public hunter_spell_t
     double am = hunter_spell_t::action_multiplier();
     am *= p() -> beast_multiplier();
 
-    if ( p() -> mastery.sniper_training -> ok() )
-      am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
-
     return am;
   }
 
   virtual void try_steady_focus() override
   {}
+
+  virtual void impact(action_state_t* s) override
+  {
+    hunter_spell_t::impact(s);
+
+    if (p()->artifacts.bullseye.rank() && s->target->health_percentage() <= p()->artifacts.bullseye.value())
+      p()->buffs.bullseye->trigger();
+  }
 };
 
 // TODO this should reset CD if the target dies
@@ -4478,11 +4565,33 @@ struct moc_t : public hunter_spell_t
 
 struct sentinel_t : public hunter_spell_t
 {
-  sentinel_t( hunter_t* p, const std::string& options_str ) :
-    hunter_spell_t( "sentinel", p, p -> talents.sentinel )
+  struct sentinel_mark_t : public hunter_spell_t
+  {
+    sentinel_mark_t(hunter_t* p) :
+      hunter_spell_t("sentinel_mark", p)
+    {
+      aoe = -1;
+      ground_aoe = background = dual = tick_zero = true;
+      harmful = false;
+      callbacks = false;
+      radius = p->find_spell(206817)->effectN(1).radius();
+    }
+
+    void impact(action_state_t* s) override
+    {
+      p()->buffs.hunters_mark_exists->trigger();
+      td(s->target)->debuffs.hunters_mark->trigger();
+    }
+  };
+
+  sentinel_mark_t* sentinel_mark;
+
+  sentinel_t(hunter_t* p, const std::string& options_str) :
+    hunter_spell_t("sentinel", p, p -> talents.sentinel),
+    sentinel_mark(new sentinel_mark_t(p))
   {
     harmful = false;
-    parse_options( options_str );
+    parse_options(options_str);
     aoe = -1;
   }
 
@@ -4490,17 +4599,31 @@ struct sentinel_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    p() -> buffs.hunters_mark_exists -> trigger();
+    if (maybe_ptr(p()->dbc.ptr)) {
+      make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
+        .target(execute_state->target)
+        .x(execute_state->target->x_position)
+        .y(execute_state->target->y_position)
+        .pulse_time(timespan_t::from_seconds(data().effectN(2).base_value()))
+        .duration(data().duration())
+        .start_time(sim->current_time())
+        .action(sentinel_mark)
+        .hasted(ground_aoe_params_t::NOTHING), true);
+    }
+    else {
+      p()->buffs.hunters_mark_exists->trigger();
+    }
   }
 
-  virtual void impact( action_state_t* s ) override
+  virtual void impact(action_state_t* s) override
   {
-    hunter_spell_t::impact( s );
+    hunter_spell_t::impact(s);
 
-    td( s -> target ) -> debuffs.hunters_mark -> trigger();
+    if (!maybe_ptr(p()->dbc.ptr)) {
+      td(s->target)->debuffs.hunters_mark->trigger();
+    }
   }
 };
-
 
 
 //==============================
@@ -5281,36 +5404,40 @@ dots( dots_t() )
   debuffs.hunters_mark = 
     buff_creator_t( *this, "hunters_mark" )
       .spell( p -> find_spell( 185365 ) );
-  if ( p -> talents.patient_sniper -> ok() )
-  {
-    debuffs.vulnerable = 
-      buff_creator_t( *this, "vulnerability" )
-        .spell( p -> find_spell( 187131 ) )
-        .default_value( p -> find_spell( 187131 ) 
-                          -> effectN( 2 )
-                            .percent() + 
-                              p -> talents.patient_sniper 
-                                -> effectN( 2 )
-                                  .percent() )
-        .duration( timespan_t::from_seconds( 6.0 ) )
-        .max_stack( 1 );
+
+  if (maybe_ptr(p->dbc.ptr)) {
+    debuffs.vulnerable =
+      buff_creator_t(*this, "vulnerability")
+      .spell(p->find_spell(187131))
+      .default_value(p->find_spell(187131)->effectN(2).percent())
+      .duration(timespan_t::from_seconds(6.0))
+      .refresh_behavior(BUFF_REFRESH_DURATION);
   }
-  else
-  {
-    debuffs.vulnerable = 
-      buff_creator_t( *this, "vulnerability" )
-        .spell( p -> find_spell( 187131 ) )
-        .default_value( p -> find_spell( 187131 ) 
-                          -> effectN( 2 )
-                            .percent() )
-        .max_stack( 2 );
+  else {
+    if (p->talents.patient_sniper->ok()) {
+      debuffs.vulnerable =
+        buff_creator_t(*this, "vulnerability")
+        .spell(p->find_spell(187131))
+        .default_value(p->find_spell(187131)->effectN(2).percent() + p->talents.patient_sniper->effectN(2).percent())
+        .duration(timespan_t::from_seconds(6.0))
+        .max_stack(1);
+    }
+    else {
+      debuffs.vulnerable =
+        buff_creator_t(*this, "vulnerability")
+        .spell(p->find_spell(187131))
+        .default_value(p->find_spell(187131)->effectN(2).percent())
+        .max_stack(2);
+    }
   }
+
   debuffs.true_aim = 
     buff_creator_t( *this, "true_aim" )
         .spell( p -> find_spell( 199803 ) )
         .default_value( p -> find_spell( 199803 ) 
                           -> effectN( 1 )
-                            .percent() );
+                            .percent() )
+        .max_stack(maybe_ptr(p->dbc.ptr) ? 10 : 8);
 
   debuffs.lacerate = 
     buff_creator_t( *this, "lacerate" )
@@ -5669,7 +5796,7 @@ void hunter_t::init_base_stats()
 
   base_focus_regen_per_second = 10.0;
 
-  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + specs.marksmans_focus -> effectN( 1 ).resource( RESOURCE_FOCUS ) + talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + specs.marksmans_focus -> effectN( 1 ).resource( RESOURCE_FOCUS ) + (!maybe_ptr(dbc.ptr) ? talents.patient_sniper -> effectN( 1 ).resource( RESOURCE_FOCUS ) : 0);
 
   stats_tier17_4pc_bm = get_stats( "tier17_4pc_bm" );
   stats_tier18_4pc_bm = get_stats( "tier18_4pc_bm" );
@@ -5977,6 +6104,17 @@ void hunter_t::init_procs()
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.t18_4pc_sv                   = get_proc( "t18_4pc_sv" );
   procs.no_vuln_aimed_shot           = get_proc( "no_vuln_aimed_shot" );
+  procs.vuln_aimed_15                = get_proc( "vuln_aimed_15" );
+  procs.vuln_aimed_30                = get_proc( "vuln_aimed_30" );
+  procs.vuln_aimed_45                = get_proc( "vuln_aimed_45" );
+  procs.vuln_aimed_60                = get_proc( "vuln_aimed_60" );
+  procs.vuln_aimed_75                = get_proc( "vuln_aimed_75" );
+  procs.no_vuln_piercing_shot        = get_proc(" no_vuln_piercing_shot ");
+  procs.vuln_piercing_15             = get_proc(" vuln_piercing_15" );
+  procs.vuln_piercing_30             = get_proc(" vuln_piercing_30" );
+  procs.vuln_piercing_45             = get_proc(" vuln_piercing_45" );
+  procs.vuln_piercing_60             = get_proc(" vuln_piercing_60" );
+  procs.vuln_piercing_75             = get_proc(" vuln_piercing_75" );
   procs.no_vuln_marked_shot          = get_proc( "no_vuln_marked_shot" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
   procs.convergence                  = get_proc( "convergence" );
@@ -5986,7 +6124,7 @@ void hunter_t::init_procs()
   procs.animal_instincts_aspect      = get_proc( "animal_instincts_aspect" );
   procs.animal_instincts_harpoon     = get_proc( "animal_instincts_harpoon" );
   procs.animal_instincts_flanking    = get_proc( "animal_instincts_flanking" );
-  procs.animal_instincts             = get_proc("animal_instincts");
+  procs.animal_instincts             = get_proc(" animal_instincts ");
 }
 
 // hunter_t::init_rng =======================================================
@@ -6088,7 +6226,7 @@ void hunter_t::init_action_list()
     if ( true_level > 100 )
       precombat -> add_action( "augmentation,type=defiled" );
 
-    if ( specialization() == HUNTER_BEAST_MASTERY )
+    if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_MARKSMANSHIP )
     {
       precombat -> add_action( "volley,toggle=on" );
     }
@@ -6509,6 +6647,10 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( artifacts.windflight_arrows.rank() )
     m *= 1.0 + artifacts.windflight_arrows.percent();
+
+  if (talents.lone_wolf->ok()) {
+    m *= 1.0 + talents.lone_wolf->effectN(1).percent();
+  }
 
   if ( artifacts.voice_of_the_wild_gods.rank() )
     m *= 1.0 + artifacts.voice_of_the_wild_gods.percent();
