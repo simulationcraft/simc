@@ -1269,15 +1269,81 @@ void item::bough_of_corruption( special_effect_t& effect )
   new bough_of_corruption_driver_t( effect );
 }
 
-
 void item::ursocs_rending_paw( special_effect_t& effect )
 {
+  struct rending_flesh_t: public residual_action::residual_periodic_action_t < attack_t > {
+    double crit_chance_of_last_impact;
+    player_t* player_;
+    rending_flesh_t( const special_effect_t& effect ):
+      residual_action::residual_periodic_action_t<attack_t>( "rend_flesh", effect.player, effect.player -> find_spell( effect.trigger_spell_id ) ),
+      crit_chance_of_last_impact( 0 ), player_( effect.player )
+    {
+      base_td = base_dd_max = base_dd_min = 0;
+      attack_power_mod.tick = 0;
+      tick_may_crit = true;
+    }
+
+    double calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const override
+    {
+      double amount = 0.0;
+
+      if ( dot_t* d = find_dot( state->target ) )
+      {
+        residual_action::residual_periodic_state_t* dot_state = debug_cast<residual_action::residual_periodic_state_t*>( d->state );
+        amount += dot_state->tick_amount;
+      }
+
+      state->result_raw = amount;
+
+      state->result = RESULT_HIT; // Reset result to hit, as it has already been rolled inside tick().
+      if ( rng().roll( composite_crit_chance() ) )
+        state->result = RESULT_CRIT;
+
+      if ( state->result == RESULT_CRIT )
+        amount *= 1.0 + total_crit_bonus( state );
+
+      amount *= dmg_multiplier;
+
+      state->result_total = amount;
+
+      return amount;
+    }
+
+    double composite_crit_chance() const override
+    {
+      return crit_chance_of_last_impact;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      residual_periodic_action_t::impact( s );
+      crit_chance_of_last_impact = player_ -> composite_melee_crit_chance(); // Uses crit chance of the last autoattack to proc it.
+    }
+  };
+
+  struct rending_flesh_execute_t: spell_t {
+    rending_flesh_t* rend;
+    rending_flesh_execute_t( const special_effect_t& effect ):
+      spell_t( "rending_flesh_trigger", effect.player, effect.player -> find_spell( effect.trigger_spell_id ) ),
+      rend( nullptr )
+    {
+      rend = new rending_flesh_t( effect );
+      background = true;
+      base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * 4;
+      dot_duration = timespan_t::zero();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      residual_action::trigger( rend, s -> target, s -> result_amount );
+    }
+  };
+
   effect.proc_flags2_ = PF2_CRIT;
   effect.trigger_spell_id = 221770;
 
-  auto rend_flesh = effect.create_action();
-  rend_flesh -> update_flags = 0;
-  effect.execute_action = rend_flesh;
+  auto rend = new rending_flesh_execute_t( effect );
+  effect.execute_action = rend;
 
   new dbc_proc_callback_t( effect.item, effect );
 }
