@@ -7,4 +7,4 @@ This file is saved in the same folder as the program after each simulation. Make
 
 #### Reproduction Steps:
 
-Please include any other steps necessary to recreate the problem, or include logs/data to show what is occuring in game if there is an issue with how something is modeled.
+Please include any other steps necessary to recreate the problem, or include logs/data to show what is occurring in game if there is an issue with how something is modeled.
