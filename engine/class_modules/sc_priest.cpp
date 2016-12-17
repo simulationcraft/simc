@@ -212,10 +212,9 @@ public:
     const spell_data_t* auspicious_spirits;
     const spell_data_t* shadowy_insight;
 
-    const spell_data_t* shadow_crash;
-
     const spell_data_t* legacy_of_the_void;
-    const spell_data_t* mind_spike;
+ //   const spell_data_t* mind_spike;
+	const spell_data_t* shadow_crash;
     const spell_data_t* surrender_to_madness;
   } talents;
 
@@ -2170,13 +2169,7 @@ struct mind_flay_t final : public priest_spell_t
     }
   }
 
-  bool ready() override
-  {
-    if ( priest.talents.mind_spike->ok() && !maybe_ptr( priest.dbc.ptr ) )
-      return false;
 
-    return priest_spell_t::ready();
-  }
 };
 
 struct mind_sear_t final : public priest_spell_t
@@ -2241,132 +2234,7 @@ struct mind_sear_t final : public priest_spell_t
   }
 };
 
-struct mind_spike_t final : public priest_spell_t
-{
-  double insanity_gain;
-  double insanity_multiplier;
 
-  mind_spike_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "mind_spike", p, p.talents.mind_spike ),
-      insanity_gain(
-          data().effectN( 3 ).resource( RESOURCE_INSANITY ) *
-          ( 1.0 + p.talents.fortress_of_the_mind->effectN( 1 ).percent() ) )
-  {
-    parse_options( options_str );
-    is_mind_spell               = true;
-    aoe = -1;
-    radius = 8;
-    base_aoe_multiplier = 0.25;//data().effectN(5).percent();
-    energize_type =
-        ENERGIZE_NONE;  // disable resource generation from spell data
-
-    if ( p.artifact.void_siphon.rank() )
-    {
-      base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
-    }
-  }
-
-  double composite_target_multiplier(player_t* t) const override
-  {
-    double am = priest_spell_t::composite_target_multiplier(t);
-
-    priest_td_t& td = get_td(t);
-
-    // If both dots are up
-    if (td.dots.shadow_word_pain->is_ticking() && td.dots.vampiric_touch->is_ticking())
-    {
-      am *= 1 + data().effectN(4).percent() * 2;
-      // sim->out_debug << "Mind Spike damage multiplied by " << 1.0 + data().effectN(4).percent() * 2.0;
-    }
-    // If only one of the dots is up
-    else if (td.dots.shadow_word_pain->is_ticking() != td.dots.vampiric_touch->is_ticking())
-    {
-      am *= 1 + data().effectN(4).percent();
-    }
-
-    if (maybe_ptr(priest.dbc.ptr))
-    {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      am *= 1.0 + ptr_scaling_buff->effectN(1).percent();
-    }
-
-    return am;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-	  if ( const priest_td_t* td = find_td( s->target ) )
-	  {
-
-      // If both dots are up
-      if (td->dots.shadow_word_pain->is_ticking() && td->dots.vampiric_touch->is_ticking())
-      {
-        insanity_multiplier = 1.0 + data().effectN(4).percent() * 2.0;
-}
-      // If only one of the dots is up
-      else if (td->dots.shadow_word_pain->is_ticking() != td->dots.vampiric_touch->is_ticking())
-      {
-        insanity_multiplier = 1.0 + data().effectN(4).percent();
-      }
-      else
-      {
-        insanity_multiplier = 1.0;
-      }
-
-      td->dots.shadow_word_pain->cancel();
-      td->dots.vampiric_touch->cancel();
-	  }
-
-    priest_spell_t::impact( s );
-
-    generate_insanity( insanity_gain * insanity_multiplier, priest.gains.insanity_mind_spike );
-
-    if ( result_is_hit( s->result ) )
-    {
-      priest_td_t& td = get_td( s->target );
-
-      if ( priest.active_items.mental_fatigue )
-      {
-        // Assumes trigger on hit, not on damage
-        td.buffs.mental_fatigue->trigger();
-      }
-    }
-
-    trigger_void_tendril();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( priest.talents.void_ray->ok() )
-    {
-      priest.buffs.void_ray->trigger();
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = priest_spell_t::action_multiplier();
-
-    if ( priest.talents.void_ray->ok() && priest.buffs.void_ray->check() )
-    {
-      am *= 1.0 +
-            priest.buffs.void_ray->check() *
-                priest.buffs.void_ray->data().effectN( 1 ).percent();
-    }
-
-    return am;
-  }
-
-  bool ready() override
-  {
-    if ( !priest.talents.mind_spike->ok() )
-      return false;
-
-    return priest_spell_t::ready();
-  }
-};
 
 struct pain_suppression_t final : public priest_spell_t
 {
@@ -4430,7 +4298,8 @@ expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
         return 0.0;
 
       return ( ( buffs.voidform->data().effectN( 2 ).base_value() / -500.0 ) +
-               ( ( buffs.insanity_drain_stacks->check() - 1 ) / 2.0 ) );
+               ( ( buffs.insanity_drain_stacks->check() - 1 ) *2.0/3.0 ) );
+	  //hardcoded patch 7.1.5 2016/12/17
     } );
   }
 
@@ -4695,8 +4564,6 @@ action_t* priest_t::create_action( const std::string& name,
     return new mind_blast_t( *this, options_str );
   if ( name == "mind_flay" )
     return new mind_flay_t( *this, options_str );
-  if ( name == "mind_spike" )
-    return new mind_spike_t( *this, options_str );
   if ( name == "shadowform" )
     return new shadowform_t( *this, options_str );
   if ( name == "shadow_crash" )
@@ -4937,7 +4804,7 @@ void priest_t::init_spells()
   talents.shadow_crash = find_talent_spell( "Shadow Crash" );
 
   talents.legacy_of_the_void   = find_talent_spell( "Legacy of the Void" );
-  talents.mind_spike = find_talent_spell("Mind Spike");
+  
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // Artifacts
