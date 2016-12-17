@@ -1329,7 +1329,7 @@ void item::ursocs_rending_paw( special_effect_t& effect )
     {
       rend = new rending_flesh_t( effect );
       background = true;
-      base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * 4;
+      base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * 4; //We're tossing the entire dot into the ignite.
       dot_duration = timespan_t::zero();
     }
 
