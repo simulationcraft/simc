@@ -863,6 +863,10 @@ public:
 
   void trigger_blessing_of_might( action_state_t* s )
   {
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+    {
+      return;
+    }
     int num = ( p() -> fake_gbom ) ? 3 : 1;
     for ( int i = 0; i < num; i++ )
     {
@@ -895,7 +899,7 @@ public:
   {
     ab::impact( s );
 
-    if ( ab::harmful && should_trigger_bom )
+    if ( ab::harmful && should_trigger_bom && !maybe_ptr( p() -> dbc.ptr ) )
       trigger_blessing_of_might( s );
 
     if ( td( s -> target ) -> buffs.judgment_of_light -> up() )
@@ -1502,6 +1506,14 @@ struct consecration_tick_t : public paladin_spell_t
     background  = true;
     may_crit    = true;
     ground_aoe = true;
+    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    {
+      if ( maybe_ptr( p -> dbc.ptr ) )
+      {
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
+      }
+    }
   }
 };
 
@@ -2680,6 +2692,12 @@ struct wake_of_ashes_t : public paladin_spell_t
        attack_power_mod.tick = 0;
        dot_duration = timespan_t::zero();
     }
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      // TODO: does the dot need this too?
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+    }
   }
 
   bool ready() override
@@ -3056,7 +3074,13 @@ struct crusader_strike_t : public holy_power_generator_t
 
     if ( p -> specialization() == PALADIN_RETRIBUTION )
     {
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
+      if ( maybe_ptr( p -> dbc.ptr ) )
+      {
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 7 ).percent();
+      }
+      else
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
     }
 
 
@@ -3109,6 +3133,10 @@ struct zeal_t : public holy_power_generator_t
     parse_options( options_str );
 
     base_multiplier *= 1.0 + p -> artifact.blade_of_light.percent();
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+    }
     base_crit += p -> artifact.sharpened_edge.percent();
     chain_multiplier = data().effectN( 1 ).chain_multiplier();
 
@@ -3149,6 +3177,10 @@ struct blade_of_justice_t : public holy_power_generator_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
 
     base_multiplier *= 1.0 + p -> artifact.deliver_the_justice.percent();
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+    }
 
     background = ( p -> talents.divine_hammer -> ok() );
 
@@ -3228,6 +3260,10 @@ struct echoed_divine_storm_t: public paladin_melee_attack_t
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+    }
 
     // TODO: figure out where this is from
     base_multiplier *= 0.9;
@@ -3299,6 +3335,10 @@ struct divine_storm_t: public holy_power_consumer_t
     base_multiplier *= 1.0 + p -> artifact.divine_tempest.percent( 2 );
     if ( p -> talents.final_verdict -> ok() )
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 2 ).percent();
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+    }
 
     // TODO: figure out where this is from
     base_multiplier *= 0.9;
@@ -3562,7 +3602,15 @@ struct judgment_aoe_t : public paladin_melee_attack_t
       aoe = 1 + p -> spec.judgment_2 -> effectN( 1 ).base_value();
 
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 4 ).percent();
+      if ( maybe_ptr( p -> dbc.ptr ) )
+      {
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 7 ).percent();
+      }
+      else
+      {
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
+      }
 
       if ( p -> talents.greater_judgment -> ok() )
       {
@@ -3642,7 +3690,13 @@ struct judgment_t : public paladin_melee_attack_t
     {
       base_costs[ RESOURCE_MANA ] = 0;
       base_multiplier *= 1.0 + p -> artifact.highlords_judgment.percent();
-      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
+      if ( maybe_ptr( p -> dbc.ptr ) )
+      {
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 7 ).percent();
+      }
+      else
+        base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 5 ).percent();
       impact_action = new judgment_aoe_t( p, options_str );
     }
     else if ( p -> specialization() == PALADIN_HOLY )
@@ -3869,6 +3923,10 @@ struct echoed_templars_verdict_t : public paladin_melee_attack_t
 
     // TODO: this happened in 7.1, but not sure where it came from
     base_multiplier *= 0.9;
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+    }
   }
 
   virtual double action_multiplier() const override
@@ -3932,6 +3990,10 @@ struct templars_verdict_t : public holy_power_consumer_t
       base_multiplier *= 1.0 + p -> talents.final_verdict -> effectN( 1 ).percent();
 
     base_multiplier *= 0.9;
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+    }
 
     // Okay, when did this get reset to 1?
     weapon_multiplier = 0;
@@ -3998,6 +4060,11 @@ struct justicars_vengeance_t : public holy_power_consumer_t
     hasted_gcd = true;
 
     weapon_multiplier = 0; // why is this needed?
+
+    if ( maybe_ptr( p -> dbc.ptr ) )
+    {
+      base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 1 ).percent();
+    }
   }
 
   virtual double cost() const override
@@ -4197,7 +4264,10 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "crusade"                   ) return new crusade_t                  ( this, options_str );
   if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
   if ( name == "blessed_hammer"            ) return new blessed_hammer_t           ( this, options_str );
-  if ( name == "greater_blessing_of_might" ) return new blessing_of_might_t        ( this, options_str );
+  if ( !maybe_ptr( this -> dbc.ptr ) )
+  {
+    if ( name == "greater_blessing_of_might" ) return new blessing_of_might_t        ( this, options_str );
+  }
   if ( name == "blessing_of_protection"    ) return new blessing_of_protection_t   ( this, options_str );
   if ( name == "blessing_of_spellwarding"  ) return new blessing_of_spellwarding_t ( this, options_str );
   if ( name == "blinding_light"            ) return new blinding_light_t           ( this, options_str );
@@ -4524,7 +4594,14 @@ void paladin_t::create_buffs()
   buffs.zeal                           = buff_creator_t( this, "zeal" ).spell( find_spell( 217020 ) );
   buffs.seal_of_light                  = buff_creator_t( this, "seal_of_light" ).spell( find_spell( 202273 ) );
   buffs.the_fires_of_justice           = buff_creator_t( this, "the_fires_of_justice" ).spell( find_spell( 209785 ) );
-  buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
+  if ( maybe_ptr( this -> dbc.ptr ) )
+  {
+    buffs.blessing_of_might = nullptr;
+  }
+  else
+  {
+    buffs.blessing_of_might              = buff_creator_t( this, "blessing_of_might" ).spell( find_spell( 203528 ) );
+  }
   buffs.blade_of_wrath               = buff_creator_t( this, "blade_of_wrath" ).spell( find_spell( 231843 ) );
   buffs.divine_purpose                 = buff_creator_t( this, "divine_purpose" ).spell( find_spell( 223819 ) );
   buffs.divine_steed                   = buff_creator_t( this, "divine_steed", find_spell( "Divine Steed" ) )
@@ -4781,7 +4858,8 @@ void paladin_t::generate_action_prio_list_ret()
   if ( true_level > 100 )
     precombat -> add_action( "augmentation,type=defiled" );
 
-  precombat -> add_action( this, "Greater Blessing of Might" );
+  if ( !maybe_ptr( dbc.ptr ) )
+    precombat -> add_action( this, "Greater Blessing of Might" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -5039,7 +5117,8 @@ void paladin_t::init_action_list()
     return;
   }
 
-  active_blessing_of_might_proc      = new blessing_of_might_proc_t     ( this );
+  if ( !maybe_ptr( this -> dbc.ptr ) )
+    active_blessing_of_might_proc      = new blessing_of_might_proc_t     ( this );
   active_shield_of_vengeance_proc    = new shield_of_vengeance_proc_t   ( this );
 
   // create action priority lists
@@ -5510,7 +5589,12 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 
   // "Sword of Light" buffs everything now
   if ( specialization() == PALADIN_RETRIBUTION )
-    m *= 1.0 + passives.retribution_paladin -> effectN( 4 ).percent();
+  {
+    if ( maybe_ptr( dbc.ptr ) )
+      m *= 1.0 + passives.retribution_paladin -> effectN( 6 ).percent();
+    else
+      m *= 1.0 + passives.retribution_paladin -> effectN( 4 ).percent();
+  }
 
   // Avenging Wrath buffs everything
   if ( buffs.avenging_wrath -> check() )
@@ -5629,7 +5713,10 @@ double paladin_t::composite_spell_power( school_e school ) const
       sp = passives.guarded_by_the_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
-      sp = passives.retribution_paladin -> effectN( 3 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      if ( maybe_ptr( dbc.ptr ) )
+        sp = passives.retribution_paladin -> effectN( 5 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      else
+        sp = passives.retribution_paladin -> effectN( 3 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
       break;
     default:
       break;
