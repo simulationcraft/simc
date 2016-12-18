@@ -8688,13 +8688,13 @@ struct druid_module_t : public module_t
 
   virtual void register_hotfixes() const override 
   {
+    
+    hotfix::register_spell( "Druid", "2016-12-18", "Incorrect spell level for starfall damage component.", 191037 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 40 )
+      .verification_value( 76 );
     /*
-    hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.", 232416 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.10 )
-      .verification_value( 1.0 );
-
     hotfix::register_effect( "Druid", "2016-09-23", "Sunfire damage increased by 10%.-dot", 232417 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
