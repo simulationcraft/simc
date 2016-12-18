@@ -212,9 +212,10 @@ public:
     const spell_data_t* auspicious_spirits;
     const spell_data_t* shadowy_insight;
 
+    const spell_data_t* misery;
+
     const spell_data_t* legacy_of_the_void;
- //   const spell_data_t* mind_spike;
-	const spell_data_t* shadow_crash;
+	  const spell_data_t* shadow_crash;
     const spell_data_t* surrender_to_madness;
   } talents;
 
@@ -1895,9 +1896,6 @@ public:
   {
     priest_spell_t::impact( s );
     generate_insanity( insanity_gain, priest.gains.insanity_mind_blast );
-
-    priest_td_t& td = get_td( s->target );
-
   }
 
   timespan_t execute_time() const override
@@ -2686,14 +2684,15 @@ struct sphere_of_insanity_spell_t final : public priest_spell_t
 struct shadow_word_pain_t final : public priest_spell_t
 {
   double insanity_gain;
+  bool casted;
 
-  shadow_word_pain_t( priest_t& p, const std::string& options_str )
+  shadow_word_pain_t( priest_t& p, const std::string& options_str, bool _casted = true )
     : priest_spell_t( "shadow_word_pain", p,
                       p.find_class_spell( "Shadow Word: Pain" ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
-
+    casted = _casted;
     may_crit  = true;
     tick_zero = false;
     energize_type =
@@ -2730,15 +2729,18 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
+    if (casted) 
+    {
+    generate_insanity( insanity_gain,
+                       priest.gains.insanity_shadow_word_pain_onhit );
+    }
+
     if ( priest.buffs.sphere_of_insanity->up() )
     {
       priest.active_spells.sphere_of_insanity->trigger(
           priest.buffs.sphere_of_insanity->current_value );
       priest.buffs.sphere_of_insanity->current_value = 0;
     }
-
-    generate_insanity( insanity_gain,
-                       priest.gains.insanity_shadow_word_pain_onhit );
   }
 
   void tick( dot_t* d ) override
@@ -3019,6 +3021,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 struct vampiric_touch_t final : public priest_spell_t
 {
   double insanity_gain;
+  shadow_word_pain_t* child_swp;
 
   vampiric_touch_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "vampiric_touch", p,
@@ -3028,6 +3031,11 @@ struct vampiric_touch_t final : public priest_spell_t
     parse_options( options_str );
     init_mental_fortitude();
     may_crit = false;
+    if (priest.talents.misery->ok())
+    {
+      child_swp = new shadow_word_pain_t(priest, std::string(""), false);
+      child_swp->background = true;
+    }
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
 
@@ -3081,6 +3089,12 @@ struct vampiric_touch_t final : public priest_spell_t
 
     generate_insanity( insanity_gain,
                        priest.gains.insanity_vampiric_touch_onhit );
+
+    if (priest.talents.misery->ok())
+    {
+      child_swp->target = s->target;
+      child_swp->execute();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -4795,10 +4809,10 @@ void priest_t::init_spells()
   talents.auspicious_spirits = find_talent_spell( "Auspicious Spirits" );
   talents.shadowy_insight    = find_talent_spell( "Shadowy Insight" );
 
-  talents.shadow_crash = find_talent_spell( "Shadow Crash" );
+  talents.misery = find_talent_spell( "Misery" );
 
   talents.legacy_of_the_void   = find_talent_spell( "Legacy of the Void" );
-  
+  talents.shadow_crash = find_talent_spell( "Shadow Crash" );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // Artifacts
