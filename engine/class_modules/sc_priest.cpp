@@ -1255,6 +1255,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool is_mind_spell;
   bool is_sphere_of_insanity_spell;
+  // PTR hotfix spell for Shadow
+  const spell_data_t* ptr_shadow_scaling_buff;
 
   priest_spell_t( const std::string& n, priest_t& player,
                   const spell_data_t* s = spell_data_t::nil() )
@@ -1263,6 +1265,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       is_sphere_of_insanity_spell( false )
   {
     weapon_multiplier = 0.0;
+    ptr_shadow_scaling_buff = priest.find_spell(137033);
   }
 
   bool usable_moving() const override
@@ -1875,8 +1878,7 @@ public:
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return d;
@@ -2057,8 +2059,7 @@ struct mind_flay_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      am *= 1.0 + ptr_scaling_buff->effectN(2).percent();
+      am *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
     }
 
     return am;
@@ -2472,8 +2473,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return d;
@@ -2549,8 +2549,7 @@ struct shadow_crash_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return d;
@@ -2800,8 +2799,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      m *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      m *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return m;
@@ -2841,8 +2839,7 @@ struct shadow_word_void_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return d;
@@ -3135,8 +3132,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      m *= 1.0 + ptr_scaling_buff->effectN(2).percent();
+      m *= 1.0 + ptr_shadow_scaling_buff->effectN(2).percent();
     }
 
     return m;
@@ -3340,8 +3336,7 @@ struct void_eruption_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      d *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      d *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return d;
@@ -3394,8 +3389,7 @@ struct void_torrent_t final : public priest_spell_t
 
     if (maybe_ptr(priest.dbc.ptr))
     {
-      auto ptr_scaling_buff = priest.find_spell(137033);
-      am *= 1.0 + ptr_scaling_buff->effectN(1).percent();
+      am *= 1.0 + ptr_shadow_scaling_buff->effectN(1).percent();
     }
 
     return am;
