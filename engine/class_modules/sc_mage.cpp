@@ -246,6 +246,7 @@ public:
          global_cinder_count,
          incanters_flow_stack_mult,
          iv_haste;
+  bool blessing_of_wisdom;
 
   // Benefits
   struct benefits_t
@@ -279,7 +280,6 @@ public:
           * quickening;
     buffs::arcane_missiles_t* arcane_missiles;
 
-    stat_buff_t* mage_armor;
 
     // Fire
     buff_t* combustion,
@@ -322,6 +322,9 @@ public:
           * sephuzs_secret,
           * shard_time_warp,
           * zannesu_journey;
+    
+    // Miscellaneous Buffs
+    buff_t* greater_blessing_of_widsom;
 
   } buffs;
 
@@ -343,7 +346,8 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* evocation,
+    gain_t* greater_blessing_of_wisdom,
+          * evocation,
           * mystic_kilt_of_the_rune_master;
   } gains;
 
@@ -419,7 +423,6 @@ public:
                       * arcane_charge_passive,
                       * arcane_familiar,
                       * evocation_2,
-                      * mage_armor,
                       * presence_of_mind,
                       * savant;
 
@@ -7661,6 +7664,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, MAGE, name, r ),
+  blessing_of_wisdom( false ),
   current_target( target ),
   icicle( nullptr ),
   icicle_event( nullptr ),
@@ -7843,7 +7847,7 @@ action_t* mage_t::create_proc_action( const std::string& name, const special_eff
 void mage_t::create_options()
 {
   add_option( opt_float( "global_cinder_count", global_cinder_count ) );
-
+  add_option( opt_bool( "blessing_of_wisdom", blessing_of_wisdom ) );
   player_t::create_options();
 }
 // mage_t::create_pets ========================================================
@@ -8082,7 +8086,6 @@ void mage_t::create_buffs()
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   if ( artifact.aegwynns_imperative.rank() )
     buffs.arcane_power -> buff_duration += artifact.aegwynns_imperative.time_value();
-  buffs.mage_armor            = stat_buff_creator_t( this, "mage_armor", find_spell( 6117 ) );
   buffs.presence_of_mind      = buff_creator_t( this, "presence_of_mind", find_spell( 205025 ) )
                                   .activated( true )
                                   .cd( timespan_t::zero() )
@@ -8171,6 +8174,14 @@ void mage_t::create_buffs()
   buffs.sephuzs_secret     = new buffs::sephuzs_secret_buff_t( this );
 
   buffs.kaelthas_ultimate_ability = buff_creator_t( this, "kaelthas_ultimate_ability", find_spell( 209455 ) );
+
+  //Misc
+
+  buffs.greater_blessing_of_widsom = buff_creator_t( this, "greater_blessing_of_wisdom", find_spell( 203539 ) )
+                                                    .tick_callback( [ this ]( buff_t*, int, const timespan_t& )
+                                                                    { resource_gain( RESOURCE_MANA, resources.max[ RESOURCE_MANA ]*0.002,
+                                                                      gains.greater_blessing_of_wisdom ); } )
+                                                    .period( find_spell( 203539 ) -> effectN( 2 ).period() );
 }
 
 // mage_t::init_gains =======================================================
@@ -8179,8 +8190,9 @@ void mage_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.evocation              = get_gain( "evocation"              );
+  gains.evocation                      = get_gain( "evocation"                      );
   gains.mystic_kilt_of_the_rune_master = get_gain( "Mystic Kilt of the Rune Master" );
+  gains.greater_blessing_of_wisdom     = get_gain( "Greater Blessing of Wisdom"     );
 }
 
 // mage_t::init_procs =======================================================
@@ -9246,7 +9258,6 @@ void mage_t::arise()
   switch ( specialization() )
   {
     case MAGE_ARCANE:
-      buffs.mage_armor -> trigger();
       break;
     case MAGE_FROST:
       break;
@@ -9265,6 +9276,10 @@ void mage_t::arise()
       benefits.fingers_of_frost -> get_source_id( "Lady Vashj's Grasp" );
   }
 
+  if ( blessing_of_wisdom )
+  {
+    buffs.greater_blessing_of_widsom -> trigger();
+  }
   if ( spec.ignite -> ok()  )
   {
     timespan_t first_spread = timespan_t::from_seconds( rng().real() * 2.0 );
