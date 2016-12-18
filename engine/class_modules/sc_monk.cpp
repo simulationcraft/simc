@@ -1908,7 +1908,10 @@ public:
         if ( ab::data().affected_by( player -> spec.stagger -> effectN( 15 ) ) )
           ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( 15 ).percent(); // -100% for Brewmasters
         // Hasted Cooldown
-        ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 1 ) );
+        if ( player -> sim -> dbc.ptr )
+          ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 3 ) );
+        else
+          ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_brewmaster_monk -> effectN( 1 ) );
         break;
       }
       case MONK_MISTWEAVER:
@@ -1927,8 +1930,17 @@ public:
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) );
         // Cooldown reduction
-        if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
-          ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 1 ).percent(); // saved as -100
+        if ( player -> sim -> dbc.ptr )
+        {
+          if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 3 ) ) )
+            ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 3 ).percent(); // saved as -100
+
+        }
+        else
+        {
+          if ( ab::data().affected_by( player -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
+            ab::cooldown -> duration *= 1 + player -> passives.aura_windwalker_monk -> effectN( 1 ).percent(); // saved as -100
+        }
         break;
       }
       default: break;
@@ -2302,6 +2314,31 @@ struct monk_spell_t: public monk_action_t < spell_t >
 
     return m;
   }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_multiplier();
+
+    if ( p() -> specialization() == MONK_WINDWALKER && sim -> dbc.ptr )
+    {
+      if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
+
+      if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 2 ) ) )
+        am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 2 ).percent();
+    }
+    else if ( p() -> specialization() == MONK_BREWMASTER && sim -> dbc.ptr )
+    {
+      if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
+
+      if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 2 ) ) )
+        am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 2 ).percent();
+    }
+
+    return am;
+  }
+
 };
 
 struct monk_heal_t: public monk_action_t < heal_t >
@@ -2345,6 +2382,16 @@ struct monk_heal_t: public monk_action_t < heal_t >
       if ( p() -> buff.extend_life -> up() )
         am *= 1.0 + p() -> buff.extend_life -> value();
     }
+    else if ( p() -> specialization() == MONK_WINDWALKER && sim -> dbc.ptr )
+    {
+      if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
+    }
+    else if ( p() -> specialization() == MONK_BREWMASTER && sim -> dbc.ptr )
+    {
+      if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
+    }
 
     return am;
   }
@@ -2358,6 +2405,7 @@ struct monk_heal_t: public monk_action_t < heal_t >
       if ( p() -> buff.the_mists_of_sheilun -> up() )
         atm *= 1.0 + p() -> buff.the_mists_of_sheilun -> value();
     }
+
     return atm;
   }
 };
@@ -2382,6 +2430,25 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     double m = base_t::composite_target_multiplier( t );
 
     return m;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = base_t::action_multiplier();
+
+    if ( p() -> specialization() == MONK_WINDWALKER && sim -> dbc.ptr )
+    {
+      if ( this -> data().affected_by( p() -> passives.aura_windwalker_monk -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> passives.aura_windwalker_monk -> effectN( 1 ).percent();
+    }
+    else if ( p() -> specialization() == MONK_BREWMASTER && sim -> dbc.ptr )
+    {
+      if ( this -> data().affected_by( p() -> passives.aura_brewmaster_monk -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> passives.aura_brewmaster_monk -> effectN( 1 ).percent();
+    }
+
+
+    return am;
   }
 
   // Physical tick_action abilities need amount_type() override, so the
@@ -2420,7 +2487,10 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+      if ( sim -> dbc.ptr )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 7 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
     }
 
     return am;
@@ -2473,7 +2543,10 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     if ( p -> specialization() == MONK_WINDWALKER )
     {
-      energize_amount = p -> passives.aura_windwalker_monk -> effectN( 2 ).base_value();
+      if ( sim -> dbc.ptr )
+        energize_amount = p -> passives.aura_windwalker_monk -> effectN( 4 ).base_value();
+      else
+        energize_amount = p -> passives.aura_windwalker_monk -> effectN( 2 ).base_value();
     }
     else
       energize_type = ENERGIZE_NONE;
@@ -2503,7 +2576,10 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      if ( sim -> dbc.ptr )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
 
       if ( p() -> artifact.face_palm.rank() )
       {
@@ -3252,7 +3328,10 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 3 ).percent();
+      if ( sim -> dbc.ptr )
+        pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 5 ).percent();
+      else
+        pm *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 3 ).percent();
     }
 
     return pm;
@@ -6017,7 +6096,13 @@ struct chi_wave_heal_tick_t: public monk_heal_t
         sef_mult += p() -> artifact.spiritual_focus.data().effectN( 3 ).percent();
       am *= 1.0 + sef_mult;
     }
-    am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+    if ( p() -> specialization() == MONK_BREWMASTER )
+    {
+      if ( sim -> dbc.ptr )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+    }
 
     return am;
   }
@@ -6048,7 +6133,11 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      if ( sim -> dbc.ptr )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+
     }
     return am;
   }
@@ -6135,7 +6224,10 @@ struct chi_burst_heal_t: public monk_heal_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      if ( sim -> dbc.ptr )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
     }
 
     return am;
@@ -6168,7 +6260,11 @@ struct chi_burst_damage_t: public monk_spell_t
 
     if ( p() -> specialization() == MONK_BREWMASTER )
     {
-      am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+      if ( sim -> dbc.ptr )
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 6 ).percent();
+      else
+        am *= 1 + p() -> passives.aura_brewmaster_monk -> effectN( 4 ).percent();
+
     }
     return am;
   }

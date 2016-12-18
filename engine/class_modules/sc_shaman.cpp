@@ -985,6 +985,12 @@ public:
       maelstrom_gain = effect.resource( RESOURCE_MAELSTROM );
       ab::energize_type = ENERGIZE_NONE; // disable resource generation from spell data.
     }
+
+    if ( player -> dbc.ptr &&
+         ab::data().affected_by( player -> spec.enhancement_shaman -> effectN( 1 ) ) )
+    {
+      ab::base_multiplier *= 1.0 + player -> spec.enhancement_shaman -> effectN( 1 ).percent();
+    }
   }
 
   std::string full_name() const
@@ -6049,7 +6055,7 @@ void shaman_t::init_base_stats()
     resources.base[ RESOURCE_MAELSTROM ] = 100;
 
   if ( spec.enhancement_shaman -> ok() )
-    resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman -> effectN( 4 ).base_value();
+    resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman -> effectN( dbc.ptr ? 5 : 4 ).base_value();
 
   base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
   base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
@@ -6855,6 +6861,7 @@ void shaman_t::init_action_list_enhancement()
   def -> add_action( this, "Stormstrike", "if=active_enemies>=3&!talent.hailstorm.enabled" );
   def -> add_action( this, "Windstrike", "if=buff.stormbringer.react" );
   def -> add_action( this, "Stormstrike", "if=buff.stormbringer.react" );
+  def -> add_action( this, "Rockbiter", "if=talent.landslide.enabled&buff.landslide.remains<gcd" );
   def -> add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<gcd" );
   def -> add_action( this, "Flametongue", "if=buff.flametongue.remains<gcd");
   def -> add_talent( this, "Windsong");
@@ -7131,7 +7138,7 @@ double shaman_t::composite_spell_power( school_e school ) const
   double sp = 0;
 
   if ( specialization() == SHAMAN_ENHANCEMENT )
-    sp = composite_attack_power_multiplier() * cache.attack_power() * spec.enhancement_shaman -> effectN( 1 ).percent();
+    sp = composite_attack_power_multiplier() * cache.attack_power() * spec.enhancement_shaman -> effectN( dbc.ptr ? 2 : 1 ).percent();
   else
     sp = player_t::composite_spell_power( school );
 
@@ -7887,7 +7894,9 @@ struct eotn_buff_base_t : public class_buff_cb_t<buff_t>
   {
     return super::creator( e )
            .spell( e.player -> find_spell( sid ) )
-           .default_value( e.player -> find_spell( sid ) -> effectN( 1 ).percent() )
+           // PTR data changes the bonus to 1.5%, which is expressed as "15" in client spell data,
+           // instead of "2" (2%)
+           .default_value( e.player -> find_spell( sid ) -> effectN( 1 ).percent() * ( e.player -> dbc.ptr ? .1 : 1 ) )
            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };

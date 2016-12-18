@@ -327,8 +327,9 @@ struct rogue_t : public player_t
     const spell_data_t* shadowstep;
 
     // Generic
-    const spell_data_t* subtlety_rogue;
+    const spell_data_t* assassination_rogue;
     const spell_data_t* outlaw_rogue;
+    const spell_data_t* subtlety_rogue;
 
     // Assassination
     const spell_data_t* assassins_resolve;
@@ -819,9 +820,38 @@ struct rogue_attack_t : public melee_attack_t
       }
 
       if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_DAMAGE )
+      {
         base_ta_adder = effect.bonus( player );
+      }
       else if ( effect.type() == E_SCHOOL_DAMAGE )
+      {
         base_dd_adder = effect.bonus( player );
+      }
+    }
+
+    // FIXME: Apply "spec aura"
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      if ( data().affected_by( p -> spec.assassination_rogue -> effectN( 1 ) ) )
+      {
+        base_multiplier *= 1.0 + p -> spec.assassination_rogue -> effectN( 1 ).percent();
+      }
+      if ( data().affected_by( p -> spec.assassination_rogue -> effectN( 2 ) ) )
+      {
+        base_multiplier *= 1.0 + p -> spec.assassination_rogue -> effectN( 2 ).percent();
+      }
+      if ( data().affected_by( p -> spec.outlaw_rogue -> effectN( 1 ) ) )
+      {
+        base_multiplier *= 1.0 + p -> spec.outlaw_rogue -> effectN( 1 ).percent();
+      }
+      if ( data().affected_by( p -> spec.subtlety_rogue -> effectN( 1 ) ) )
+      {
+        base_multiplier *= 1.0 + p -> spec.subtlety_rogue -> effectN( 1 ).percent();
+      }
+      if ( data().affected_by( p -> spec.subtlety_rogue -> effectN( 2 ) ) )
+      {
+        base_multiplier *= 1.0 + p -> spec.subtlety_rogue -> effectN( 2 ).percent();
+      }
     }
   }
 
@@ -1101,8 +1131,17 @@ struct rogue_attack_t : public melee_attack_t
          ( p() -> buffs.stealth -> check() || p() -> buffs.shadow_dance -> check() ||
            p() -> buffs.vanish -> check() ) )
     {
-      m *= 1.0 + ( p() -> talent.nightstalker -> effectN( 2 ).percent() +
-                   p() -> spec.subtlety_rogue -> effectN( 1 ).percent() );
+      // FIXME: Effect is the 4th on PTR due to "spec aura"
+      if ( maybe_ptr( player -> dbc.ptr ) )
+      {
+        m *= 1.0 + ( p() -> talent.nightstalker -> effectN( 2 ).percent() +
+                     p() -> spec.subtlety_rogue -> effectN( 4 ).percent() );
+      }
+      else
+      {
+        m *= 1.0 + ( p() -> talent.nightstalker -> effectN( 2 ).percent() +
+                     p() -> spec.subtlety_rogue -> effectN( 2 ).percent() );
+      }
     }
 
     return m;
@@ -1522,7 +1561,15 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     // Rogue Assassination Hidden Passive (Additive, it's +15% on the primary effect)
     if ( p() -> specialization() == ROGUE_ASSASSINATION )
     {
-      m += p() -> find_spell( 137037 ) -> effectN( 1 ).percent(); 
+      // FIXME: Effect is the 3rd on PTR due to "spec aura"
+      if ( maybe_ptr( player -> dbc.ptr ) )
+      {
+        m += p() -> spec.assassination_rogue -> effectN( 3 ).percent();
+      }
+      else
+      {
+        m += p() -> spec.assassination_rogue -> effectN( 1 ).percent();
+      }
     }
 
     return m;
@@ -2100,8 +2147,17 @@ double rogue_attack_t::cost() const
   if ( p() -> talent.shadow_focus -> ok() &&
        ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.shadow_dance -> check() ) )
   {
-    c *= 1.0 + ( p() -> spell.shadow_focus -> effectN( 1 ).percent() +
-                 p() -> spec.subtlety_rogue -> effectN( 3 ).percent() );
+    // FIXME: Effect is the 5th on PTR due to "spec aura"
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      c *= 1.0 + ( p() -> spell.shadow_focus -> effectN( 1 ).percent() +
+                   p() -> spec.subtlety_rogue -> effectN( 5 ).percent() );
+    }
+    else
+    {
+      c *= 1.0 + ( p() -> spell.shadow_focus -> effectN( 1 ).percent() +
+                   p() -> spec.subtlety_rogue -> effectN( 3 ).percent() );
+    }
   }
 
   if ( base_costs[ RESOURCE_COMBO_POINT ] > 0 )
@@ -5501,8 +5557,8 @@ void rogue_t::trigger_true_bearing( const action_state_t* state )
   cooldowns.adrenaline_rush -> adjust( v, false );
   cooldowns.sprint -> adjust( v, false );
   // As of 10/27 (7.1 22908), Between the Eyes (199804) doesn't reduce its own CD.
-  // TODO: Check if BtE does reduce its own CD on PTR.
-  if (! bugs || state -> action -> id != 199804 )
+  // FIXME: In 7.1.5 the bug seems to be fixed
+  if (! bugs || state -> action -> id != 199804 || maybe_ptr( this -> dbc.ptr ) )
   {
     cooldowns.between_the_eyes -> adjust( v, false );
   }
@@ -5841,6 +5897,12 @@ struct vanish_t : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     buff_t::execute( stacks, value, duration );
+
+    if ( rogue -> in_combat && rogue -> talent.master_of_shadows -> ok() )
+    {
+      rogue -> resource_gain( RESOURCE_ENERGY, rogue -> spell.master_of_shadows -> effectN( 1 ).base_value(),
+          rogue -> gains.master_of_shadows );
+    }
 
     if ( rogue -> legendary.mantle_of_the_master_assassin )
     {
@@ -7090,8 +7152,9 @@ void rogue_t::init_spells()
   spec.shadowstep           = find_specialization_spell( "Shadowstep" );
 
   // Generic
-  spec.subtlety_rogue       = find_specialization_spell( "Subtlety Rogue" );
+  spec.assassination_rogue  = find_specialization_spell( "Assassination Rogue" );
   spec.outlaw_rogue         = find_specialization_spell( "Outlaw Rogue" );
+  spec.subtlety_rogue       = find_specialization_spell( "Subtlety Rogue" );
 
   // Assassination
   spec.assassins_resolve    = find_specialization_spell( "Assassin's Resolve" );
