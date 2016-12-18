@@ -2695,6 +2695,11 @@ struct shadow_word_pain_t final : public priest_spell_t
     casted = _casted;
     may_crit  = true;
     tick_zero = false;
+    if (!casted)
+    {
+    base_dd_max = 0.0;
+    base_dd_min = 0.0;
+    }
     energize_type =
         ENERGIZE_NONE;  // disable resource generation from spell data
 
@@ -2724,6 +2729,14 @@ struct shadow_word_pain_t final : public priest_spell_t
       add_child( priest.active_spells.sphere_of_insanity );
     }
   }
+
+  double spell_direct_power_coefficient(const action_state_t* s) const override
+  {
+    return casted
+      ? priest_spell_t::spell_direct_power_coefficient(s)
+      : 0.0;
+  }
+
 
   void impact( action_state_t* s ) override
   {
