@@ -1107,7 +1107,10 @@ struct melee_t: public warrior_attack_t
     else
     {
       warrior_attack_t::execute();
-      p() -> buff.fury_trinket -> trigger();
+      if ( p() -> level < 110 )
+      {
+        p() -> buff.fury_trinket -> trigger();
+      }
       if ( rng().roll( arms_trinket_chance ) ) // Same
       {
         p() -> cooldown.colossus_smash -> reset( true );
