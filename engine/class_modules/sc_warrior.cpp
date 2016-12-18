@@ -2572,7 +2572,7 @@ struct heroic_charge_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> cooldown.heroic_leap -> up() && !disable_leap )
+    if ( !disable_leap && p() -> cooldown.heroic_leap -> up() )
     {// We are moving 10 yards, and heroic leap always executes in 0.5 seconds.
       // Do some hacky math to ensure it will only take 0.5 seconds, since it will certainly
       // be the highest temporary movement speed buff.
