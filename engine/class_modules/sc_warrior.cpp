@@ -2553,10 +2553,14 @@ struct heroic_charge_movement_ticker_t: public event_t
 struct heroic_charge_t: public warrior_attack_t
 {
   heroic_leap_t* leap;
+  bool disable_leap;
   heroic_charge_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() ), leap( nullptr )
+    warrior_attack_t( "heroic_charge", p, spell_data_t::nil() ), leap( nullptr ),
+     disable_leap( false )
   {
+    add_option( opt_bool( "disable_heroic_leap", disable_leap ) );
     parse_options( options_str );
+
     leap = new heroic_leap_t( p, "" );
     trigger_gcd = timespan_t::zero();
     ignore_false_positive = true;
@@ -2568,7 +2572,7 @@ struct heroic_charge_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> cooldown.heroic_leap -> up() )
+    if ( p() -> cooldown.heroic_leap -> up() && !disable_leap )
     {// We are moving 10 yards, and heroic leap always executes in 0.5 seconds.
       // Do some hacky math to ensure it will only take 0.5 seconds, since it will certainly
       // be the highest temporary movement speed buff.
