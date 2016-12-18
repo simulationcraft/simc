@@ -1027,6 +1027,7 @@ public:
     add_invalidate( CACHE_STAMINA );
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_EXP );
+    add_invalidate( CACHE_CRIT_AVOIDANCE );
 
     if ( p.spec.killer_instinct -> ok() )
       add_invalidate( CACHE_AGILITY );
@@ -6460,7 +6461,7 @@ void druid_t::create_buffs()
 
   buff.rage_of_the_sleeper   = buff_creator_t( this, "rage_of_the_sleeper", &artifact.rage_of_the_sleeper.data() )
                                .cd( timespan_t::zero() )
-                               .default_value( -artifact.rage_of_the_sleeper.data().effectN( 1 ).percent() )
+                               .default_value( -artifact.rage_of_the_sleeper.data().effectN( 4 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                .add_invalidate( CACHE_LEECH );
 
