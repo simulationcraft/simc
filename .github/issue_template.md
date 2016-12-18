@@ -1,4 +1,4 @@
-Please include a brief overview of the issue in the title above.
+Please include a brief overview of the issue in the title above, as well as completing the following:
 
 #### Simulationcraft Version
 
