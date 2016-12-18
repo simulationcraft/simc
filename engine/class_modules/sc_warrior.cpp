@@ -1107,9 +1107,9 @@ struct melee_t: public warrior_attack_t
     else
     {
       warrior_attack_t::execute();
-      if ( p() -> level < 110 )
+      if ( p() -> level() < 110 )
       {
-        p() -> buff.fury_trinket -> trigger();
+      p() -> buff.fury_trinket -> trigger();
       }
       if ( rng().roll( arms_trinket_chance ) ) // Same
       {
