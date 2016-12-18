@@ -5274,10 +5274,6 @@ void priest_t::apl_shadow()
   main->add_action(
       "mindbender,if=talent.mindbender.enabled&set_bonus.tier18_2pc" );
   main->add_action(
-      "mind_spike,if=talent.mind_spike.enabled&dot.shadow_word_pain."
-      "remains<2&dot.vampric_touch.remains<3&dot.shadow_word_pain.ticking&"
-      "dot.vampiric_touch.ticking,cycle_targets=1" );
-  main->add_action(
       "shadow_word_pain,if=!ticking&talent.legacy_of_the_void.enabled&insanity>"
       "=70,cycle_targets=1" );
   main->add_action(
@@ -5382,10 +5378,6 @@ void priest_t::apl_shadow()
       "wait,sec=action.mind_blast.usable_in,if=action.mind_blast.usable_in<gcd."
       "max*0.28" );
   vf->add_action( "shadow_word_death,if=cooldown.shadow_word_death.charges=2" );
-  vf->add_action(
-      "mind_spike,if=talent.mind_spike.enabled&dot.shadow_word_pain.remains<2&dot."
-      "vampric_touch.remains<3&dot.shadow_word_pain.ticking&dot.vampiric_touch."
-      "ticking,cycle_targets=1" );
   vf->add_action(
       "shadowfiend,if=!talent.mindbender.enabled,if=buff.voidform.stack>15" );
   vf->add_action(
