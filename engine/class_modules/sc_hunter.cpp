@@ -3681,12 +3681,14 @@ struct windburst_t: hunter_ranged_attack_t
   {
     p() -> no_steady_focus();
     hunter_ranged_attack_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
 
     if ( p() -> artifacts.mark_of_the_windrunner.rank() )
-    {
-      hunter_td_t* td = this -> td( execute_state -> target );
-      td -> debuffs.vulnerable -> trigger();
-    }
+      td( s -> target ) -> debuffs.vulnerable -> trigger();
   }
 
   virtual bool usable_moving() const override
