@@ -5677,7 +5677,7 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
   if ( buffs.avenging_wrath -> check() )
   {
     m *= 1.0 + buffs.avenging_wrath -> get_healing_mod();
-    if ( chain_of_thrayn )
+    if ( chain_of_thrayn && maybe_ptr( dbc.ptr ) )
     {
       // TODO: fix this for holy
       m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
@@ -5687,7 +5687,7 @@ double paladin_t::composite_player_heal_multiplier( const action_state_t* s ) co
   if ( buffs.crusade -> check() )
   {
     m *= 1.0 + buffs.crusade -> get_healing_mod();
-    if ( chain_of_thrayn )
+    if ( chain_of_thrayn && maybe_ptr( dbc.ptr ) )
     {
       m *= 1.0 + spells.chain_of_thrayn -> effectN( 2 ).percent();
     }
