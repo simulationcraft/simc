@@ -1323,6 +1323,13 @@ struct internal_bleeding_t : public rogue_attack_t
     // Need to fake this here so it uses the correct AP coefficient
     base_costs[ RESOURCE_COMBO_POINT ] = 1; 
   }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+
+    p() -> trigger_venomous_wounds( d -> state );
+  }
 };
 
 struct weaponmaster_strike_t : public rogue_attack_t
